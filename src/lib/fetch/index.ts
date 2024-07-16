@@ -15,7 +15,7 @@ export async function azleFetch(
     logWarnings(init);
 
     if (process.env.AZLE_TEST_FETCH === 'true') {
-        console.log('azleFetch has been called');
+        console.info('azleFetch has been called');
     }
 
     const url = getUrl(input);

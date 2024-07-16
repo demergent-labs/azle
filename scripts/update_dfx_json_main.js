@@ -58,7 +58,7 @@ fs.readdir(examplesDir, { withFileTypes: true }, (err, entries) => {
                         console.error(`Error writing updated dfx.json: ${err}`);
                         return;
                     }
-                    console.log(`Successfully updated ${dfxFilePath}`);
+                    console.info(`Successfully updated ${dfxFilePath}`);
                 }
             );
         });

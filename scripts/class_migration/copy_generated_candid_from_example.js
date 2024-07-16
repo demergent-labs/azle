@@ -8,7 +8,7 @@ const copyFile = (src, dest) => {
         if (err) {
             console.error(`Error copying file from ${src} to ${dest}: ${err}`);
         } else {
-            console.log(`File copied from ${src} to ${dest}`);
+            console.info(`File copied from ${src} to ${dest}`);
         }
     });
 };

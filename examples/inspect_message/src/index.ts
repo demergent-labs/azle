@@ -2,7 +2,7 @@ import { bool, Canister, ic, inspectMessage, update } from 'azle/experimental';
 
 export default Canister({
     inspectMessage: inspectMessage(() => {
-        console.log('inspectMessage called');
+        console.info('inspectMessage called');
 
         if (ic.methodName() === 'accessible') {
             ic.acceptMessage();

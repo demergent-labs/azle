@@ -3,8 +3,10 @@ import {
     bool,
     nat16,
     nat64,
+    None,
     Opt,
     query,
+    Some,
     StableBTreeMap,
     Tuple,
     update,
@@ -18,10 +20,20 @@ export const stableMap1Methods = {
         return stableMap1.containsKey(key);
     }),
     stableMap1Get: query([nat16], Opt(blob), (key) => {
-        return stableMap1.get(key);
+        const result = stableMap1.get(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap1Insert: update([nat16, blob], Opt(blob), (key, value) => {
-        return stableMap1.insert(key, value);
+        const result = stableMap1.insert(key, value);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap1IsEmpty: query([], bool, () => {
         return stableMap1.isEmpty();
@@ -36,7 +48,12 @@ export const stableMap1Methods = {
         return stableMap1.len();
     }),
     stableMap1Remove: update([nat16], Opt(blob), (key) => {
-        return stableMap1.remove(key);
+        const result = stableMap1.remove(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap1Values: query([], Vec(blob), () => {
         return stableMap1.values();

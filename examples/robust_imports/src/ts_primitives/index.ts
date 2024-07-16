@@ -12,7 +12,7 @@ export const checkPrimAliases = query(
     MyVoid,
     (param1, param2, param3, param4, param5) => {
         if (param1) {
-            console.log(`${param2}, ${param3}, ${param4}, ${param5}`);
+            console.info(`${param2}, ${param3}, ${param4}, ${param5}`);
         }
     }
 );

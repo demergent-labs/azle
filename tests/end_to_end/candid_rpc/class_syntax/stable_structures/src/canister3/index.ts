@@ -1,11 +1,4 @@
-import {
-    convertOpt,
-    IDL,
-    Principal,
-    query,
-    StableBTreeMap,
-    update
-} from 'azle';
+import { IDL, Principal, query, StableBTreeMap, update } from 'azle';
 
 import { Callback, Reaction, User } from '../types';
 
@@ -33,7 +26,12 @@ export default class {
 
     @query([IDL.Float32], IDL.Opt(IDL.Opt(IDL.Bool)))
     stableMap10Get(key: number): [[boolean] | []] | [] {
-        return convertOpt(stableMap10.get(key));
+        const result = stableMap10.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Float32, IDL.Opt(IDL.Bool)], IDL.Opt(IDL.Opt(IDL.Bool)))
@@ -41,7 +39,12 @@ export default class {
         key: number,
         value: [boolean] | []
     ): [[boolean] | []] | [] {
-        return convertOpt(stableMap10.insert(key, value));
+        const result = stableMap10.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -66,7 +69,12 @@ export default class {
 
     @update([IDL.Float32], IDL.Opt(IDL.Opt(IDL.Bool)))
     stableMap10Remove(key: number): [[boolean] | []] | [] {
-        return convertOpt(stableMap10.remove(key));
+        const result = stableMap10.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Opt(IDL.Bool)))
@@ -83,12 +91,22 @@ export default class {
 
     @query([IDL.Nat], IDL.Opt(User))
     stableMap11Get(key: bigint): [User] | [] {
-        return convertOpt(stableMap11.get(key));
+        const result = stableMap11.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Nat, User], IDL.Opt(User))
     stableMap11Insert(key: bigint, value: User): [User] | [] {
-        return convertOpt(stableMap11.insert(key, value));
+        const result = stableMap11.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -113,7 +131,12 @@ export default class {
 
     @update([IDL.Nat], IDL.Opt(User))
     stableMap11Remove(key: bigint): [User] | [] {
-        return convertOpt(stableMap11.remove(key));
+        const result = stableMap11.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(User))
@@ -130,12 +153,22 @@ export default class {
 
     @query([IDL.Vec(IDL.Nat8)], IDL.Opt(Reaction))
     stableMap12Get(key: Uint8Array): [Reaction] | [] {
-        return convertOpt(stableMap12.get(key));
+        const result = stableMap12.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Vec(IDL.Nat8), Reaction], IDL.Opt(Reaction))
     stableMap12Insert(key: Uint8Array, value: Reaction): [Reaction] | [] {
-        return convertOpt(stableMap12.insert(key, value));
+        const result = stableMap12.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -160,7 +193,12 @@ export default class {
 
     @update([IDL.Vec(IDL.Nat8)], IDL.Opt(Reaction))
     stableMap12Remove(key: Uint8Array): [Reaction] | [] {
-        return convertOpt(stableMap12.remove(key));
+        const result = stableMap12.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(Reaction))
@@ -177,12 +215,22 @@ export default class {
 
     @query([IDL.Text], IDL.Opt(IDL.Principal))
     stableMap13Get(key: string): [Principal] | [] {
-        return convertOpt(stableMap13.get(key));
+        const result = stableMap13.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Text, IDL.Principal], IDL.Opt(IDL.Principal))
     stableMap13Insert(key: string, value: Principal): [Principal] | [] {
-        return convertOpt(stableMap13.insert(key, value));
+        const result = stableMap13.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -207,7 +255,12 @@ export default class {
 
     @update([IDL.Text], IDL.Opt(IDL.Principal))
     stableMap13Remove(key: string): [Principal] | [] {
-        return convertOpt(stableMap13.remove(key));
+        const result = stableMap13.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Principal))
@@ -224,12 +277,22 @@ export default class {
 
     @query([IDL.Text], IDL.Opt(Callback))
     stableMap14Get(key: string): [Callback] | [] {
-        return convertOpt(stableMap14.get(key));
+        const result = stableMap14.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Text, Callback], IDL.Opt(Callback))
     stableMap14Insert(key: string, value: Callback): [Callback] | [] {
-        return convertOpt(stableMap14.insert(key, value));
+        const result = stableMap14.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -254,7 +317,12 @@ export default class {
 
     @update([IDL.Text], IDL.Opt(Callback))
     stableMap14Remove(key: string): [Callback] | [] {
-        return convertOpt(stableMap14.remove(key));
+        const result = stableMap14.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(Callback))
@@ -271,12 +339,22 @@ export default class {
 
     @query([Callback], IDL.Opt(IDL.Text))
     stableMap15Get(key: Callback): [string] | [] {
-        return convertOpt(stableMap15.get(key));
+        const result = stableMap15.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([Callback, IDL.Text], IDL.Opt(IDL.Text))
     stableMap15Insert(key: Callback, value: string): [string] | [] {
-        return convertOpt(stableMap15.insert(key, value));
+        const result = stableMap15.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -301,7 +379,12 @@ export default class {
 
     @update([Callback], IDL.Opt(IDL.Text))
     stableMap15Remove(key: Callback): [string] | [] {
-        return convertOpt(stableMap15.remove(key));
+        const result = stableMap15.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Text))
@@ -319,19 +402,21 @@ export default class {
     @query([IDL.Text], IDL.Opt(IDL.Text))
     stableMap16Get(key: string): [string] | [] {
         const result = stableMap16.get(key);
-        if ('None' in result) {
+        if (result === null) {
             return [];
+        } else {
+            return [JSON.stringify(result)];
         }
-        return [JSON.stringify(result.Some)];
     }
 
     @update([IDL.Text, IDL.Text], IDL.Opt(IDL.Text))
     stableMap16Insert(key: string, value: string): [string] | [] {
         const result = stableMap16.insert(key, JSON.parse(value));
-        if ('None' in result) {
+        if (result === null) {
             return [];
+        } else {
+            return [JSON.stringify(result)];
         }
-        return [JSON.stringify(result.Some)];
     }
 
     @query([], IDL.Bool)
@@ -359,10 +444,11 @@ export default class {
     @update([IDL.Text], IDL.Opt(IDL.Text))
     stableMap16Remove(key: string): [string] | [] {
         const result = stableMap16.remove(key);
-        if ('None' in result) {
+        if (result === null) {
             return [];
+        } else {
+            return [JSON.stringify(result)];
         }
-        return [JSON.stringify(result.Some)];
     }
 
     @query([], IDL.Vec(IDL.Text))
@@ -379,12 +465,22 @@ export default class {
 
     @query([IDL.Text], IDL.Opt(IDL.Text))
     stableMap17Get(key: string): [string] | [] {
-        return convertOpt(stableMap17.get(JSON.parse(key)));
+        const result = stableMap17.get(JSON.parse(key));
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Text, IDL.Text], IDL.Opt(IDL.Text))
     stableMap17Insert(key: string, value: string): [string] | [] {
-        return convertOpt(stableMap17.insert(JSON.parse(key), value));
+        const result = stableMap17.insert(JSON.parse(key), value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -411,7 +507,12 @@ export default class {
 
     @update([IDL.Text], IDL.Opt(IDL.Text))
     stableMap17Remove(key: string): [string] | [] {
-        return convertOpt(stableMap17.remove(JSON.parse(key)));
+        const result = stableMap17.remove(JSON.parse(key));
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Text))

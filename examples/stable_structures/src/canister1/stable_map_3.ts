@@ -2,8 +2,10 @@ import {
     bool,
     int,
     nat64,
+    None,
     Opt,
     query,
+    Some,
     StableBTreeMap,
     Tuple,
     update,
@@ -19,10 +21,20 @@ export const stableMap3Methods = {
         return stableMap3.containsKey(key);
     }),
     stableMap3Get: query([Reaction], Opt(int), (key) => {
-        return stableMap3.get(key);
+        const result = stableMap3.get(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap3Insert: update([Reaction, int], Opt(int), (key, value) => {
-        return stableMap3.insert(key, value);
+        const result = stableMap3.insert(key, value);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap3IsEmpty: query([], bool, () => {
         return stableMap3.isEmpty();
@@ -37,7 +49,12 @@ export const stableMap3Methods = {
         return stableMap3.len();
     }),
     stableMap3Remove: update([Reaction], Opt(int), (key) => {
-        return stableMap3.remove(key);
+        const result = stableMap3.remove(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap3Values: query([], Vec(int), () => {
         return stableMap3.values();

@@ -21,20 +21,20 @@ export const stableMap16Methods = {
     stableMap16Get: query([text], Opt(text), (key) => {
         const result = stableMap16.get(key);
 
-        if ('None' in result) {
+        if (result === null) {
             return None;
         }
 
-        return Some(JSON.stringify(result.Some));
+        return Some(JSON.stringify(result));
     }),
     stableMap16Insert: update([text, text], Opt(text), (key, value) => {
         const result = stableMap16.insert(key, JSON.parse(value));
 
-        if ('None' in result) {
+        if (result === null) {
             return None;
         }
 
-        return Some(JSON.stringify(result.Some));
+        return Some(JSON.stringify(result));
     }),
     stableMap16IsEmpty: query([], bool, () => {
         return stableMap16.isEmpty();
@@ -53,11 +53,11 @@ export const stableMap16Methods = {
     stableMap16Remove: update([text], Opt(text), (key) => {
         const result = stableMap16.remove(key);
 
-        if ('None' in result) {
+        if (result === null) {
             return None;
         }
 
-        return Some(JSON.stringify(result.Some));
+        return Some(JSON.stringify(result));
     }),
     stableMap16Values: query([], Vec(text), () => {
         return stableMap16.values().map((value) => JSON.stringify(value));

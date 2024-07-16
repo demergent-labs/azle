@@ -46,8 +46,8 @@ export default Canister({
         return payments;
     }),
     wallet_receive: update([Opt(ReceiveOptions)], Void, (_receiveOptions) => {
-        console.log('wallet_receive');
-        console.log(`cycles available: ${ic.msgCyclesAvailable()}`);
+        console.info('wallet_receive');
+        console.info(`cycles available: ${ic.msgCyclesAvailable()}`);
 
         const callerInWhitelist = principalsWhitelist.includes(
             ic.caller().toText()

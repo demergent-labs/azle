@@ -53,7 +53,7 @@ fs.readFile(packageJsonPath, 'utf8', (err, data) => {
     }
 
     if (!tsNodeRemoved) {
-        console.log('ts-node not found in dependencies or devDependencies.');
+        console.info('ts-node not found in dependencies or devDependencies.');
         return;
     }
 
@@ -70,7 +70,7 @@ fs.readFile(packageJsonPath, 'utf8', (err, data) => {
                 return;
             }
 
-            console.log('package.json successfully updated.');
+            console.info('package.json successfully updated.');
         }
     );
 });

@@ -30,7 +30,11 @@ export default Server(initServer, {
         stableDbMap.insert('DATABASE', db.export());
     }),
     postUpgrade: postUpgrade([], async () => {
-        db = await initDb(stableDbMap.get('DATABASE').Some);
+        const database = stableDbMap.get('DATABASE');
+        if (database === null) {
+            throw new Error('Failed to get database');
+        }
+        db = await initDb(database);
         drizzleDb = drizzle(db, { schema });
     })
 });

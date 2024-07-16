@@ -26,19 +26,20 @@ let entries: {
 export default class {
     @init([])
     init(): void {
-        console.log('init');
+        console.info('init');
 
         stableStorage.insert('entries', []);
     }
 
     @postUpgrade([])
     postUpgrade(): void {
-        console.log('postUpgrade');
+        console.info('postUpgrade');
 
-        const stableEntriesOpt = stableStorage.get('entries');
+        const stableEntries = stableStorage.get('entries');
 
-        const stableEntries =
-            'None' in stableEntriesOpt ? [] : stableEntriesOpt.Some;
+        if (stableEntries === null) {
+            return;
+        }
 
         entries = stableEntries.reduce((result, entry) => {
             return {
@@ -50,7 +51,7 @@ export default class {
 
     @preUpgrade
     preUpgrade(): void {
-        console.log('preUpgrade');
+        console.info('preUpgrade');
 
         stableStorage.insert(
             'entries',

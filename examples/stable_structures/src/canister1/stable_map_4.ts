@@ -2,8 +2,10 @@ import {
     bool,
     float32,
     nat64,
+    None,
     Opt,
     query,
+    Some,
     StableBTreeMap,
     Tuple,
     update,
@@ -19,10 +21,20 @@ export const stableMap4Methods = {
         return stableMap4.containsKey(key);
     }),
     stableMap4Get: query([User], Opt(float32), (key) => {
-        return stableMap4.get(key);
+        const result = stableMap4.get(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap4Insert: update([User, float32], Opt(float32), (key, value) => {
-        return stableMap4.insert(key, value);
+        const result = stableMap4.insert(key, value);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap4IsEmpty: query([], bool, () => {
         return stableMap4.isEmpty();
@@ -37,7 +49,12 @@ export const stableMap4Methods = {
         return stableMap4.len();
     }),
     stableMap4Remove: update([User], Opt(float32), (key) => {
-        return stableMap4.remove(key);
+        const result = stableMap4.remove(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap4Values: query([], Vec(float32), () => {
         return stableMap4.values();

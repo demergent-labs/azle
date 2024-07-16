@@ -2,8 +2,10 @@ import {
     bool,
     float64,
     nat64,
+    None,
     Opt,
     query,
+    Some,
     StableBTreeMap,
     text,
     Tuple,
@@ -18,13 +20,23 @@ export const stableMap9Methods = {
         return stableMap9.containsKey(key);
     }),
     stableMap9Get: query([float64], Opt(Vec(text)), (key) => {
-        return stableMap9.get(key);
+        const result = stableMap9.get(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap9Insert: update(
         [float64, Vec(text)],
         Opt(Vec(text)),
         (key, value) => {
-            return stableMap9.insert(key, value);
+            const result = stableMap9.insert(key, value);
+            if (result === null) {
+                return None;
+            } else {
+                return Some(result);
+            }
         }
     ),
     stableMap9IsEmpty: query([], bool, () => {
@@ -40,7 +52,12 @@ export const stableMap9Methods = {
         return stableMap9.len();
     }),
     stableMap9Remove: update([float64], Opt(Vec(text)), (key) => {
-        return stableMap9.remove(key);
+        const result = stableMap9.remove(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap9Values: query([], Vec(Vec(text)), () => {
         return stableMap9.values();

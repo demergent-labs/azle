@@ -38,7 +38,7 @@ export async function generateCandidAndCanisterMethods(
                     len
                 );
                 const message = new TextDecoder('utf8').decode(memory);
-                console.log(message);
+                console.info(message);
             },
             global_timer_set: (): void => {},
             instruction_counter: (): void => {},
@@ -81,7 +81,7 @@ export async function generateCandidAndCanisterMethods(
         //             len
         //         );
         //         const message = new TextDecoder('utf8').decode(memory);
-        //         console.log(message);
+        //         console.info(message);
         //     }
         // }
     });

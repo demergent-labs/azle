@@ -8,7 +8,7 @@ export default class {
 
     @query([IDL.Text], IDL.Text)
     printString(string: string): string {
-        console.log(typeof string);
+        console.info(typeof string);
         return string;
     }
 
@@ -19,7 +19,7 @@ export default class {
 
     @query([IDL.Text], IDL.Text)
     printText(text: string): string {
-        console.log(typeof text);
+        console.info(typeof text);
         return text;
     }
 
@@ -30,7 +30,7 @@ export default class {
 
     @query([IDL.Float64], IDL.Float64)
     printNumber(number: number): number {
-        console.log(typeof number);
+        console.info(typeof number);
         return number;
     }
 
@@ -41,7 +41,7 @@ export default class {
 
     @query([IDL.Int], IDL.Int)
     printInt(int: bigint): bigint {
-        console.log(typeof int);
+        console.info(typeof int);
         return int;
     }
 
@@ -52,7 +52,7 @@ export default class {
 
     @query([IDL.Int64], IDL.Int64)
     printInt64(int64: bigint): bigint {
-        console.log(typeof int64);
+        console.info(typeof int64);
         return int64;
     }
 
@@ -63,7 +63,7 @@ export default class {
 
     @query([IDL.Int32], IDL.Int32)
     printInt32(int32: bigint): bigint {
-        console.log(typeof int32);
+        console.info(typeof int32);
         return int32;
     }
 
@@ -74,7 +74,7 @@ export default class {
 
     @query([IDL.Int16], IDL.Int16)
     printInt16(int16: number): number {
-        console.log(typeof int16);
+        console.info(typeof int16);
         return int16;
     }
 
@@ -85,7 +85,7 @@ export default class {
 
     @query([IDL.Int8], IDL.Int8)
     printInt8(int8: number): number {
-        console.log(typeof int8);
+        console.info(typeof int8);
         return int8;
     }
 
@@ -96,7 +96,7 @@ export default class {
 
     @query([IDL.Nat], IDL.Nat)
     printNat(nat: bigint): bigint {
-        console.log(typeof nat);
+        console.info(typeof nat);
         return nat;
     }
 
@@ -107,7 +107,7 @@ export default class {
 
     @query([IDL.Nat64], IDL.Nat64)
     printNat64(nat64: bigint): bigint {
-        console.log(typeof nat64);
+        console.info(typeof nat64);
         return nat64;
     }
 
@@ -118,7 +118,7 @@ export default class {
 
     @query([IDL.Nat32], IDL.Nat32)
     printNat32(nat32: number): number {
-        console.log(typeof nat32);
+        console.info(typeof nat32);
         return nat32;
     }
 
@@ -129,7 +129,7 @@ export default class {
 
     @query([IDL.Nat16], IDL.Nat16)
     printNat16(nat16: number): number {
-        console.log(typeof nat16);
+        console.info(typeof nat16);
         return nat16;
     }
 
@@ -140,7 +140,7 @@ export default class {
 
     @query([IDL.Nat8], IDL.Nat8)
     printNat8(nat8: number): number {
-        console.log(typeof nat8);
+        console.info(typeof nat8);
         return nat8;
     }
 
@@ -151,7 +151,7 @@ export default class {
 
     @query([IDL.Float64], IDL.Float64)
     printFloat64(float64: number): number {
-        console.log(typeof float64);
+        console.info(typeof float64);
         return float64;
     }
 
@@ -162,7 +162,7 @@ export default class {
 
     @query([IDL.Float32], IDL.Float32)
     printFloat32(float32: number): number {
-        console.log(typeof float32);
+        console.info(typeof float32);
         return float32;
     }
 
@@ -173,7 +173,7 @@ export default class {
 
     @query([IDL.Bool], IDL.Bool)
     printBool(bool: boolean): boolean {
-        console.log(typeof bool);
+        console.info(typeof bool);
         return bool;
     }
 
@@ -184,7 +184,7 @@ export default class {
 
     @query([IDL.Principal], IDL.Principal)
     printPrincipal(principal: Principal): Principal {
-        console.log(typeof principal);
+        console.info(typeof principal);
         return principal;
     }
 
@@ -195,7 +195,7 @@ export default class {
 
     @query([IDL.Null], IDL.Null)
     printNull(Null: null): null {
-        console.log(typeof Null);
+        console.info(typeof Null);
         return Null;
     }
 
@@ -206,7 +206,7 @@ export default class {
 
     @query([IDL.Reserved], IDL.Reserved)
     printReserved(reserved: any): any {
-        console.log(typeof reserved);
+        console.info(typeof reserved);
         return reserved;
     }
 
@@ -218,7 +218,7 @@ export default class {
     // but there is no way to pass an "empty" value as an argument.
     @query([IDL.Empty], IDL.Empty)
     printEmpty(empty: any): never {
-        console.log(typeof empty);
+        console.info(typeof empty);
         throw 'Anything you want';
     }
 }

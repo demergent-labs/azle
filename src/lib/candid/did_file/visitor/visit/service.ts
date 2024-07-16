@@ -89,7 +89,7 @@ function getSystemMethod(
     );
 
     if (result[0].length > 1) {
-        console.log(
+        console.info(
             `WARNING: too many ${methodName} methods detected. Expected no more than 1, found ${result[0].length}`
         );
     }

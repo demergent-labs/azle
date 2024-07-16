@@ -68,11 +68,11 @@ export default class {
 
     @query([], StableFunc)
     getStableFunc(): StableFunc {
-        const stableFuncOpt = stableStorage.get('stableFunc');
-        if ('None' in stableFuncOpt) {
+        const stableFunc = stableStorage.get('stableFunc');
+        if (stableFunc === null) {
             return [Principal.from('aaaaa-aa'), 'raw_rand'];
         }
-        return stableFuncOpt.Some;
+        return stableFunc;
     }
 
     @query([BasicFunc], BasicFunc)

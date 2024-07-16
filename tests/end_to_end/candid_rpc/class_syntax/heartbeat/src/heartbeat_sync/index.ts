@@ -6,7 +6,7 @@ export default class {
     @heartbeat
     heartbeat(): void {
         initialized = true;
-        console.log('heartbeat initialized', initialized);
+        console.info('heartbeat initialized', initialized);
     }
 
     @query([], IDL.Bool)

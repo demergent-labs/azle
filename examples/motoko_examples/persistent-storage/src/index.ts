@@ -25,33 +25,32 @@ export default Canister({
         return redeployed;
     }),
     increment: update([], nat, () => {
-        const counterOpt = stableStorage.get('counter');
-        const counter =
-            'None' in counterOpt
-                ? ic.trap('counter not defined')
-                : counterOpt.Some + 1n;
+        const counter = stableStorage.get('counter');
+        if (counter === null) {
+            return ic.trap('counter not defined');
+        }
+        const incrementedCounter = counter + 1n;
 
-        stableStorage.insert('counter', counter);
+        stableStorage.insert('counter', incrementedCounter);
 
-        return counter;
+        return incrementedCounter;
     }),
     get: query([], nat, () => {
-        const counterOpt = stableStorage.get('counter');
-        const counter =
-            'None' in counterOpt
-                ? ic.trap('counter not defined')
-                : counterOpt.Some;
+        const counter = stableStorage.get('counter');
+
+        if (counter === null) {
+            return ic.trap('counter not defined');
+        }
 
         return counter;
     }),
     reset: update([], nat, () => {
         stableStorage.insert('counter', 0n);
 
-        const counterOpt = stableStorage.get('counter');
-        const counter =
-            'None' in counterOpt
-                ? ic.trap('counter not defined')
-                : counterOpt.Some;
+        const counter = stableStorage.get('counter');
+        if (counter === null) {
+            return ic.trap('counter not defined');
+        }
 
         return counter;
     })

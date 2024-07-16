@@ -69,7 +69,7 @@ export async function createPost(postCreate: PostCreate): Promise<Post> {
 }
 
 export async function updatePost(postUpdate: PostUpdate): Promise<Post> {
-    console.log('postUpdate', postUpdate);
+    console.info('postUpdate', postUpdate);
 
     await Post.update(postUpdate.id, {
         title: postUpdate.title,

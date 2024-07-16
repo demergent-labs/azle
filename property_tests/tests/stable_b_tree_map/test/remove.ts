@@ -14,7 +14,9 @@ export function RemoveTestArb(
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'Opt',
-                'update'
+                'update',
+                'None',
+                'Some'
             ]);
 
             const paramCandidTypeObjects = [
@@ -42,8 +44,13 @@ export function RemoveTestArb(
 }
 
 function generateBody(stableBTreeMapName: string): string {
-    return `
-        return ${stableBTreeMapName}.remove(param0);
+    return /*TS*/ `
+        const result = ${stableBTreeMapName}.remove(param0);
+        if (result === null) {
+            return None
+        } else {
+            return Some(result)
+        }
     `;
 }
 

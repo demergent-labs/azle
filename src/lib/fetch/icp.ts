@@ -32,8 +32,8 @@ export async function fetchIcp(
             idlFactory;
         }
         catch(error) {
-            console.log('eval error');
-            console.log(error);
+            console.info('eval error');
+            console.info(error);
         }
     `);
 

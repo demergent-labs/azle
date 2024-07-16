@@ -12,11 +12,11 @@ const removeDirectory = (dirPath) => {
             if (err) {
                 console.error(`Error removing directory ${dirPath}: ${err}`);
             } else {
-                console.log(`Successfully removed directory: ${dirPath}`);
+                console.info(`Successfully removed directory: ${dirPath}`);
             }
         });
     } else {
-        console.log(`Directory not found: ${dirPath}`);
+        console.info(`Directory not found: ${dirPath}`);
     }
 };
 

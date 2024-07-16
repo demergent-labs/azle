@@ -1,8 +1,10 @@
 import {
     bool,
     nat64,
+    None,
     Opt,
     query,
+    Some,
     StableBTreeMap,
     text,
     Tuple,
@@ -19,10 +21,20 @@ export const stableMap14Methods = {
         return stableMap14.containsKey(key);
     }),
     stableMap14Get: query([text], Opt(Callback), (key) => {
-        return stableMap14.get(key);
+        const result = stableMap14.get(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap14Insert: update([text, Callback], Opt(Callback), (key, value) => {
-        return stableMap14.insert(key, value);
+        const result = stableMap14.insert(key, value);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap14IsEmpty: query([], bool, () => {
         return stableMap14.isEmpty();
@@ -37,7 +49,12 @@ export const stableMap14Methods = {
         return stableMap14.len();
     }),
     stableMap14Remove: update([text], Opt(Callback), (key) => {
-        return stableMap14.remove(key);
+        const result = stableMap14.remove(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap14Values: query([], Vec(Callback), () => {
         return stableMap14.values();

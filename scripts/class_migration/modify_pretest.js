@@ -51,7 +51,7 @@ fs.readFile(pretestFilePath, 'utf8', (err, data) => {
             );
             return;
         } else {
-            console.log('pretest.ts successfully modified.');
+            console.info('pretest.ts successfully modified.');
         }
     });
 });

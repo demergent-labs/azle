@@ -55,7 +55,7 @@ export default class {
     @update([IDL.Nat64])
     clearTimer(timerId: bigint): void {
         clearTimer(timerId);
-        console.log(`timer ${timerId} cancelled`);
+        console.info(`timer ${timerId} cancelled`);
     }
 
     @update([IDL.Nat64, IDL.Nat64], TimerIds)
@@ -66,17 +66,17 @@ export default class {
 
         const inlineId = setTimer(delay, () => {
             statusReport.inline = 1;
-            console.log('Inline timer called');
+            console.info('Inline timer called');
         });
 
         const captureId = setTimer(delay, () => {
             statusReport.capture = capturedValue;
-            console.log(`Timer captured value ${capturedValue}`);
+            console.info(`Timer captured value ${capturedValue}`);
         });
 
         const repeatId = setTimerInterval(interval, () => {
             statusReport.repeat++;
-            console.log(`Repeating timer. Call ${statusReport.repeat}`);
+            console.info(`Repeating timer. Call ${statusReport.repeat}`);
         });
 
         const singleCrossCanisterId = setTimer(
@@ -107,17 +107,17 @@ export default class {
 
 function oneTimeTimerCallback(): void {
     statusReport.single = true;
-    console.log('oneTimeTimerCallback called');
+    console.info('oneTimeTimerCallback called');
 }
 
 async function singleCrossCanisterTimerCallback(): Promise<void> {
-    console.log('singleCrossCanisterTimerCallback');
+    console.info('singleCrossCanisterTimerCallback');
 
     statusReport.singleCrossCanister = await getRandomness();
 }
 
 async function repeatCrossCanisterTimerCallback(): Promise<void> {
-    console.log('repeatCrossCanisterTimerCallback');
+    console.info('repeatCrossCanisterTimerCallback');
 
     statusReport.repeatCrossCanister = Uint8Array.from([
         ...statusReport.repeatCrossCanister,

@@ -17,7 +17,7 @@ if (!updateScriptPath) {
     process.exit(1);
 }
 const fullScriptPath = path.resolve(updateScriptPath);
-console.log(fullScriptPath);
+console.info(fullScriptPath);
 
 // Read all subdirectories in the current directory
 fs.readdir(currentDirectory, (err, files) => {
@@ -50,10 +50,10 @@ fs.readdir(currentDirectory, (err, files) => {
                         return;
                     }
 
-                    console.log(
+                    console.info(
                         `Successfully updated package in directory ${file}`
                     );
-                    console.log(stdout);
+                    console.info(stdout);
                 }
             );
         }

@@ -3,10 +3,12 @@ import {
     Canister,
     ic,
     nat64,
+    None,
     Opt,
     Principal,
     query,
     Record,
+    Some,
     StableBTreeMap,
     text,
     update,
@@ -51,16 +53,19 @@ export default Canister({
         return users.values();
     }),
     readUserById: query([Principal], Opt(User), (id) => {
-        return users.get(id);
+        const result = users.get(id);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     deleteUser: update([Principal], User, (id) => {
-        const userOpt = users.get(id);
+        const user = users.get(id);
 
-        if ('None' in userOpt) {
+        if (user === null) {
             throw new Error(`User does not exist: ${id.toText()}`);
         }
-
-        const user = userOpt.Some;
 
         user.recordingIds.forEach((recordingId) => {
             recordings.remove(recordingId);
@@ -74,13 +79,11 @@ export default Canister({
         [blob, text, Principal],
         Recording,
         (audio, name, userId) => {
-            const userOpt = users.get(userId);
+            const user = users.get(userId);
 
-            if ('None' in userOpt) {
+            if (user === null) {
                 throw new Error(`User does not exist: ${userId.toText()}`);
             }
-
-            const user = userOpt.Some;
 
             const id = generateId();
             const recording: Recording = {
@@ -107,26 +110,27 @@ export default Canister({
         return recordings.values();
     }),
     readRecordingById: query([Principal], Opt(Recording), (id) => {
-        return recordings.get(id);
+        const result = recordings.get(id);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     deleteRecording: update([Principal], Recording, (id) => {
-        const recordingOpt = recordings.get(id);
+        const recording = recordings.get(id);
 
-        if ('None' in recordingOpt) {
+        if (recording === null) {
             throw new Error(`Recording does not exist: ${id.toText()}`);
         }
 
-        const recording = recordingOpt.Some;
+        const user = users.get(recording.userId);
 
-        const userOpt = users.get(recording.userId);
-
-        if ('None' in userOpt) {
+        if (user === null) {
             throw new Error(
                 `User does not exist: ${recording.userId.toText()}`
             );
         }
-
-        const user = userOpt.Some;
 
         const updatedUser: User = {
             ...user,
