@@ -14,98 +14,103 @@ import { green } from './utils/colors';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { CompilerInfo } from './utils/types';
 
-const commandExecuted = await handleCli();
+azle();
 
-if (commandExecuted === true) {
-    process.exit();
-}
+async function azle(): Promise<void> {
+    const commandExecuted = await handleCli();
 
-const {
-    stdioType,
-    wasmedgeQuickJsPath,
-    replicaWebServerPort,
-    canisterName,
-    canisterPath,
-    canisterConfig,
-    candidPath,
-    envVars,
-    rustStagingWasmPath,
-    canisterId,
-    reloadedJsPath,
-    esmAliases,
-    esmExternals
-} = await getNames();
+    if (commandExecuted === true) {
+        return;
+    }
 
-await time(
-    `\nBuilding canister ${green(canisterName)}`,
-    'default',
-    async () => {
-        createAzleDirectories(canisterPath);
+    const {
+        stdioType,
+        wasmedgeQuickJsPath,
+        replicaWebServerPort,
+        canisterName,
+        canisterPath,
+        canisterConfig,
+        candidPath,
+        envVars,
+        rustStagingWasmPath,
+        canisterId,
+        reloadedJsPath,
+        esmAliases,
+        esmExternals
+    } = await getNames();
 
-        const canisterJavaScript = unwrap(
-            await getCanisterJavaScript(
+    await time(
+        `\nBuilding canister ${green(canisterName)}`,
+        'default',
+        async () => {
+            createAzleDirectories(canisterPath);
+
+            const canisterJavaScript = unwrap(
+                await getCanisterJavaScript(
+                    canisterConfig.main,
+                    wasmedgeQuickJsPath,
+                    esmAliases,
+                    esmExternals
+                )
+            );
+
+            await writeFile(join(canisterPath, 'main.js'), canisterJavaScript);
+
+            const { candid, canisterMethods } =
+                await getCandidAndCanisterMethods(
+                    canisterConfig.candid_gen,
+                    candidPath,
+                    canisterName,
+                    stdioType,
+                    envVars,
+                    rustStagingWasmPath,
+                    canisterJavaScript,
+                    canisterConfig,
+                    canisterPath
+                );
+
+            // This is for the dfx.json candid property
+            await writeFile(candidPath, candid);
+
+            const compilerInfo: CompilerInfo = {
+                // The spread is because canisterMethods is a function with properties
+                canister_methods: {
+                    ...canisterMethods
+                },
+                env_vars: envVars
+            };
+
+            await generateWasmBinary(
+                canisterName,
+                stdioType,
+                canisterJavaScript,
+                compilerInfo,
+                canisterConfig,
+                canisterPath
+            );
+
+            if (
+                canisterConfig.build_assets !== undefined &&
+                canisterConfig.build_assets !== null
+            ) {
+                execSyncPretty(canisterConfig.build_assets, stdioType);
+            }
+
+            setupFileWatcher(
+                reloadedJsPath,
+                canisterId,
                 canisterConfig.main,
                 wasmedgeQuickJsPath,
                 esmAliases,
-                esmExternals
-            )
-        );
-
-        await writeFile(join(canisterPath, 'main.js'), canisterJavaScript);
-
-        const { candid, canisterMethods } = await getCandidAndCanisterMethods(
-            canisterConfig.candid_gen,
-            candidPath,
-            canisterName,
-            stdioType,
-            envVars,
-            rustStagingWasmPath,
-            canisterJavaScript,
-            canisterConfig,
-            canisterPath
-        );
-
-        // This is for the dfx.json candid property
-        await writeFile(candidPath, candid);
-
-        const compilerInfo: CompilerInfo = {
-            // The spread is because canisterMethods is a function with properties
-            canister_methods: {
-                ...canisterMethods
-            },
-            env_vars: envVars
-        };
-
-        await generateWasmBinary(
-            canisterName,
-            stdioType,
-            canisterJavaScript,
-            compilerInfo,
-            canisterConfig,
-            canisterPath
-        );
-
-        if (
-            canisterConfig.build_assets !== undefined &&
-            canisterConfig.build_assets !== null
-        ) {
-            execSyncPretty(canisterConfig.build_assets, stdioType);
+                esmExternals,
+                canisterName,
+                canisterMethods.post_upgrade?.index ?? -1
+            );
         }
+    );
 
-        setupFileWatcher(
-            reloadedJsPath,
-            canisterId,
-            canisterConfig.main,
-            wasmedgeQuickJsPath,
-            esmAliases,
-            esmExternals,
-            canisterName,
-            canisterMethods.post_upgrade?.index ?? -1
-        );
-    }
-);
-
-logSuccess(canisterName, canisterId, replicaWebServerPort);
+    logSuccess(canisterName, canisterId, replicaWebServerPort);
+}
 
 async function createAzleDirectories(canisterPath: string): Promise<void> {
     await rm(canisterPath, { recursive: true, force: true });
