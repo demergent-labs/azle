@@ -4,7 +4,14 @@ import { join } from 'path';
 
 function pretest(): void {
     linkAndInstallPatch(
-        join('examples', 'motoko_examples', 'persistent-storage')
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'motoko_examples',
+            'persistent-storage'
+        )
     );
 
     execSync(`dfx canister uninstall-code persistent_storage || true`, {
