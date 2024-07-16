@@ -10,8 +10,7 @@ import { CanisterConfig, Toml } from './utils/types';
 
 export async function prepareRustStagingArea(
     canisterConfig: CanisterConfig,
-    canisterPath: string,
-    canisterJavaScript: string
+    canisterPath: string
 ): Promise<void> {
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
         canisterConfig.opt_level ?? '0'
@@ -41,6 +40,4 @@ export async function prepareRustStagingArea(
         `${AZLE_PACKAGE_PATH}/src/compiler/rust/open_value_sharing`,
         `${canisterPath}/open_value_sharing`
     );
-
-    await writeFile(`${canisterPath}/canister/src/main.js`, canisterJavaScript);
 }

@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL, JsonValue } from '@dfinity/candid';
 
 import { handleUncaughtError } from './error';
 import { reply } from './ic_apis';
@@ -7,52 +7,61 @@ type CanisterMethodMode =
     | 'query'
     | 'update'
     | 'init'
-    | 'heartbeat'
-    | 'inspectMessage'
     | 'postUpgrade'
-    | 'preUpgrade';
+    | 'preUpgrade'
+    | 'inspectMessage'
+    | 'heartbeat';
 
-export function executeWithCandidSerde(
+export async function executeAndReplyWithCandidSerde(
     mode: CanisterMethodMode,
     args: any[],
-    callback: any,
+    callback: (...args: any) => any,
     paramIdlTypes: IDL.Type[],
     returnIdlType: IDL.Type | undefined,
     manual: boolean
-): void {
-    const decodedArgs = IDL.decode(paramIdlTypes, args[0]);
+): Promise<void> {
+    const decodedArgs = decodeArgs(mode, args, paramIdlTypes);
+    const unencodedResult = await getUnencodedResult(decodedArgs, callback);
+    encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
+}
 
-    const result = getResult(decodedArgs, callback);
-
-    if (mode === 'init' || mode === 'postUpgrade') {
-        return;
-    }
-
+function decodeArgs(
+    mode: CanisterMethodMode,
+    args: any[],
+    paramIdlTypes: IDL.Type[]
+): JsonValue[] {
     if (
-        result !== undefined &&
-        result !== null &&
-        typeof result.then === 'function'
+        mode === 'init' ||
+        mode === 'postUpgrade' ||
+        mode === 'query' ||
+        mode === 'update'
     ) {
-        result
-            .then((result: any) => {
-                if (!manual) {
-                    reply({ data: result, idlType: returnIdlType });
-                }
-            })
-            .catch((error: any) => {
-                handleUncaughtError(error);
-            });
+        return IDL.decode(paramIdlTypes, args[0]);
     } else {
-        if (!manual) {
-            reply({ data: result, idlType: returnIdlType });
-        }
+        return [];
     }
 }
 
-function getResult(args: any[], callback: any): any {
+async function getUnencodedResult(
+    args: JsonValue[],
+    callback: (...args: any) => any
+): Promise<any> {
     try {
-        return callback(...args);
+        return await callback(...args);
     } catch (error) {
         handleUncaughtError(error);
     }
+}
+
+function encodeResultAndReply(
+    mode: CanisterMethodMode,
+    manual: boolean,
+    unencodedResult: any,
+    returnIdlType: IDL.Type | undefined
+): void {
+    if ((mode !== 'query' && mode !== 'update') || manual === true) {
+        return;
+    }
+
+    reply({ data: unencodedResult, idlType: returnIdlType });
 }

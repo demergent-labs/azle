@@ -34,6 +34,8 @@ export async function compileTypeScriptToJavaScript(
             if (isClassSyntaxExport(CanisterMethods)) {
                 const canister = new CanisterMethods.default();
 
+                globalThis._azleCanisterClassInstance = canister;
+
                 globalThis.candidInfoFunction = () => {
                     return JSON.stringify({
                         candid: '',

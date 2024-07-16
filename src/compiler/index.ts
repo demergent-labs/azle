@@ -1,4 +1,7 @@
+#!/usr/bin/env tsx
+
 import { mkdir, rm, writeFile } from 'fs/promises';
+import { join } from 'path';
 
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
 import { generateWasmBinary } from './generate_wasm_binary';
@@ -50,6 +53,8 @@ async function azle(): Promise<void> {
                     esmExternals
                 )
             );
+
+            await writeFile(join(canisterPath, 'main.js'), canisterJavaScript);
 
             const { candid, canisterMethods } =
                 await getCandidAndCanisterMethods(
