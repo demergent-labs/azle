@@ -1,8 +1,8 @@
 {
     "name": "new_end_to_end_test_functional_syntax",
     "scripts": {
-        "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "pretest": "[ \"$AZLE_QUICK_TEST\" != \"true\" ] && tsx test/pretest.ts",
+        "test": "[ \"$AZLE_QUICK_TEST\" != \"true\" ] && jest"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
