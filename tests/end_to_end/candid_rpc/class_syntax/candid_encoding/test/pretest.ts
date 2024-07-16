@@ -3,7 +3,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'candid_encoding'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'candid_encoding'
+        )
+    );
 
     execSync(`dfx canister uninstall-code candid_encoding || true`, {
         stdio: 'inherit'

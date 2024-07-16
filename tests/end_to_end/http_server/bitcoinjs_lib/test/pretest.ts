@@ -3,7 +3,9 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'bitcore_lib'));
+    linkAndInstallPatch(
+        join('tests', 'end_to_end', 'http_server', 'bitcore_lib')
+    );
 
     execSync(`dfx canister uninstall-code bitcoinjs || true`, {
         stdio: 'inherit'

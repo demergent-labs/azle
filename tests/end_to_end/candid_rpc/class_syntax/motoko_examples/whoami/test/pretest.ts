@@ -8,7 +8,16 @@ const someoneIdentity = createIdentity(2);
 export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'motoko_examples', 'whoami'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'motoko_examples',
+            'whoami'
+        )
+    );
 
     execSync(`dfx canister uninstall-code whoami || true`, {
         stdio: 'inherit'

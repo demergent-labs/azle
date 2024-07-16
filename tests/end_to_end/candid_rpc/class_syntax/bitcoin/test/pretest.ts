@@ -3,7 +3,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'bitcoin'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'bitcoin'
+        )
+    );
 
     execSync(`rm -rf .bitcoin/data/regtest`, {
         stdio: 'inherit'

@@ -3,7 +3,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'key_value_store'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'key_value_store'
+        )
+    );
 
     execSync(`dfx canister uninstall-code key_value_store || true`, {
         stdio: 'inherit'

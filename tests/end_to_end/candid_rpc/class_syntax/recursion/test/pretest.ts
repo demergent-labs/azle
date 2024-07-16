@@ -4,7 +4,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'recursion'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'recursion'
+        )
+    );
 
     execSync(`dfx canister uninstall-code recursive_canister || true`, {
         stdio: 'inherit'

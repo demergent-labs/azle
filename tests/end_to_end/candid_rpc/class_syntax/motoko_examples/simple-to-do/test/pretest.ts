@@ -3,7 +3,16 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'motoko_examples', 'simple-to-do'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'motoko_examples',
+            'simple-to-do'
+        )
+    );
 
     execSync(`dfx canister uninstall-code simple_to_do || true`, {
         stdio: 'inherit'
