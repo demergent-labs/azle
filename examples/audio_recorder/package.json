@@ -5,7 +5,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.22.0"
+        "azle": "0.23.0-rc.8"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.3",
