@@ -60,9 +60,15 @@ jobs:
             - id: example_directories
               # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
               # TODO we want to be able to easily include and exclude examples though
+              # TODO we have a number of flaky tests and we have moved them to the top of the list here so we can keep a better eye on them until we have resolved their flakyness
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "property_tests/tests/service",
+                    "property_tests/tests/stable_b_tree_map",
+                    "tests/end_to_end/http_server/ethers_base",
+                    "tests/end_to_end/http_server/http_outcall_fetch",
+                    "tests/end_to_end/http_server/ic_evm_rpc",
                     "examples/basic_bitcoin",
                     "examples/bitcoin_psbt",
                     "examples/ckbtc",
@@ -95,8 +101,6 @@ jobs:
                     "property_tests/tests/principal",
                     "property_tests/tests/record",
                     "property_tests/tests/recursive",
-                    "property_tests/tests/service",
-                    "property_tests/tests/stable_b_tree_map",
                     "property_tests/tests/text",
                     "property_tests/tests/tuple",
                     "property_tests/tests/variant",
@@ -145,6 +149,7 @@ jobs:
                     "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/superheroes",
                     "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/threshold_ecdsa",
                     "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/whoami",
+                    "tests/end_to_end/candid_rpc/class_syntax/new",
                     "tests/end_to_end/candid_rpc/class_syntax/notify_raw",
                     "tests/end_to_end/candid_rpc/class_syntax/null_example",
                     "tests/end_to_end/candid_rpc/class_syntax/optional_types",
@@ -210,7 +215,6 @@ jobs:
                     "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/superheroes",
                     "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/threshold_ecdsa",
                     "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/whoami",
-                    "tests/end_to_end/candid_rpc/functional_syntax/new",
                     "tests/end_to_end/candid_rpc/functional_syntax/notify_raw",
                     "tests/end_to_end/candid_rpc/functional_syntax/null_example",
                     "tests/end_to_end/candid_rpc/functional_syntax/optional_types",
@@ -238,14 +242,11 @@ jobs:
                     "tests/end_to_end/http_server/bitcoinjs_lib",
                     "tests/end_to_end/http_server/bitcore_lib",
                     "tests/end_to_end/http_server/ethers",
-                    "tests/end_to_end/http_server/ethers_base",
                     "tests/end_to_end/http_server/express",
                     "tests/end_to_end/http_server/fetch_ic",
                     "tests/end_to_end/http_server/file_protocol",
                     "tests/end_to_end/http_server/fs",
-                    "tests/end_to_end/http_server/http_outcall_fetch",
                     "tests/end_to_end/http_server/hybrid_canister",
-                    "tests/end_to_end/http_server/ic_evm_rpc",
                     "tests/end_to_end/http_server/internet_identity",
                     "tests/end_to_end/http_server/large_files",
                     "tests/end_to_end/http_server/nest",
@@ -254,7 +255,7 @@ jobs:
                     "tests/end_to_end/http_server/sqlite_drizzle",
                     "tests/end_to_end/http_server/sqlite_typeorm",
                     "tests/end_to_end/http_server/tfjs",
-                    "tests/end_to_end/http_server/web_assembly",
+                    "tests/end_to_end/http_server/web_assembly"
                   ]
                   END
                   )
