@@ -8,7 +8,7 @@
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
-        "ethereum_json_rpc_end_to_end_test_functional_syntax": "file:../../../../../examples/ethereum_json_rpc",
+        "ethereum_json_rpc_end_to_end_test_functional_syntax": "file:../../functional_syntax/ethereum_json_rpc",
         "jest": "^29.7.0",
         "ts-jest": "^29.1.4",
         "tsx": "^4.15.7",

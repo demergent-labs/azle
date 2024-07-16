@@ -12,7 +12,7 @@
     },
     "devDependencies": {
         "@dfinity/agent": "0.11.1",
-        "bitcoin_end_to_end_test_functional_syntax": "file:../../../../../examples/bitcoin",
+        "bitcoin_end_to_end_test_functional_syntax": "file:../../functional_syntax/bitcoin",
         "jest": "^29.7.0",
         "ts-jest": "^29.1.4",
         "tsx": "^4.15.7",

@@ -22,7 +22,7 @@
         "process": "^0.11.10",
         "stream-browserify": "^3.0.0",
         "style-loader": "^3.3.0",
-        "superheroes_end_to_end_test_functional_syntax": "file:../../../../../../examples/motoko_examples/superheroes",
+        "superheroes_end_to_end_test_functional_syntax": "file:../../../functional_syntax/motoko_examples/superheroes",
         "terser-webpack-plugin": "^5.3.0",
         "ts-jest": "^29.1.4",
         "ts-loader": "^9.4.0",
