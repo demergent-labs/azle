@@ -1,8 +1,8 @@
-import { deepEqual, getActor } from 'azle/property_tests';
+import { getActor } from 'azle/property_tests';
 import { QueryMethod } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
 import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
-import { AzleResult, Test } from 'azle/property_tests/test';
+import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
 export function GetTestArb(
@@ -70,9 +70,9 @@ function generateTests(
                         keySampleAgentArgumentValue
                     );
 
-                    return {
-                        Ok: deepEqual(result, [valueSampleAgentArgumentValue])
-                    };
+                    return testEquality(result, [
+                        valueSampleAgentArgumentValue
+                    ]);
                 }
             }
         ],
@@ -86,9 +86,9 @@ function generateTests(
                         keySampleAgentArgumentValue
                     );
 
-                    return {
-                        Ok: deepEqual(result, [valueSampleAgentArgumentValue])
-                    };
+                    return testEquality(result, [
+                        valueSampleAgentArgumentValue
+                    ]);
                 }
             }
         ],
@@ -102,9 +102,7 @@ function generateTests(
                         keySampleAgentArgumentValue
                     );
 
-                    return {
-                        Ok: deepEqual(result, [])
-                    };
+                    return testEquality(result, []);
                 }
             }
         ]

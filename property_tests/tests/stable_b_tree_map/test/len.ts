@@ -1,8 +1,8 @@
-import { deepEqual, getActor } from 'azle/property_tests';
+import { getActor } from 'azle/property_tests';
 import { QueryMethod } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
 import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
-import { AzleResult, Test } from 'azle/property_tests/test';
+import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
 export function LenTestArb(
@@ -49,9 +49,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return {
-                        Ok: deepEqual(result, 1n)
-                    };
+                    return testEquality(result, 1n);
                 }
             }
         ],
@@ -63,9 +61,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return {
-                        Ok: deepEqual(result, 1n)
-                    };
+                    return testEquality(result, 1n);
                 }
             }
         ],
@@ -77,9 +73,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return {
-                        Ok: deepEqual(result, 0n)
-                    };
+                    return testEquality(result, 0n);
                 }
             }
         ]
