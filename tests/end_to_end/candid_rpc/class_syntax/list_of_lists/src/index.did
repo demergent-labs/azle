@@ -8,7 +8,7 @@ service: () -> {
     listOfInt: (vec vec vec int) -> (vec vec vec int) query;
     listOfInt16: (vec vec vec int16) -> (vec vec vec int16) query;
     listOfInt32: (vec vec vec int32) -> (vec vec vec int32) query;
-    listOfInt64: (vec vec vec int64) -> (vec vec vec int64) query;
+    listOfInt64: (vec vec vec int64) -> (vec vec vec nat64) query;
     listOfInt8: (vec vec vec int8) -> (vec vec vec int8) query;
     listOfListOfBlob: (vec vec vec nat8) -> (vec vec vec nat8) query;
     listOfListOfInt8: () -> (vec vec vec vec vec vec vec int8) query;
