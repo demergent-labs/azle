@@ -3,7 +3,7 @@
 There are a number of limitations that you are likely to run into while you develop with Azle on ICP. These are generally the most limiting:
 
 -   5 billion instruction limit for query calls (HTTP GET requests) (~1 second of computation)
--   20 billion instruction limit for update calls (HTTP POST/etc requests) (~5 seconds of computation)
+-   40 billion instruction limit for update calls (HTTP POST/etc requests) (~10 seconds of computation)
 -   2 MiB request size limit
 -   3 MiB response size limit
 -   4 GiB heap limit

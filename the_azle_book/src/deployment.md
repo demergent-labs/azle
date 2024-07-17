@@ -4,7 +4,6 @@
 -   [Deploying to the local replica](#deploying-to-the-local-replica)
 -   [Interacting with your canister](#interacting-with-your-canister)
 -   [Deploying to mainnet](#deploying-to-mainnet)
--   [Common deployment issues](#common-deployment-issues)
 
 There are two main [ICP](https://internetcomputer.org/) environments that you will generally interact with: [the local replica](#deploying-to-the-local-replica) and [mainnet](#deploying-to-mainnet).
 
@@ -39,9 +38,7 @@ Error: Failed to kill all processes.  Remaining: 627221 626923 627260
 Then try this:
 
 ```bash
-sudo kill -9 627221
-sudo kill -9 626923
-sudo kill -9 627260
+dfx killall
 ```
 
 If your replica starts behaving strangely, we recommend starting the replica clean, which will clean the `dfx` state of your project:
@@ -64,7 +61,7 @@ To deploy all canisters defined in your `dfx.json`:
 dfx deploy
 ```
 
-If you are building an HTTP-based canister and would like your canister to autoreload on file changes (DO NOT deploy to mainnet with autoreload enabled):
+If you would like your canister to autoreload on file changes:
 
 ```bash
 AZLE_AUTORELOAD=true dfx deploy
@@ -117,20 +114,3 @@ dfx deploy --network ic [canisterName]
 ```
 
 The URL of your canister on mainnet will look like this: `https://[canisterId].raw.icp0.io`.
-
-## Common deployment issues
-
-If you run into an error during deployment, try the following:
-
-1. Ensure that you have followed the installation instructions exactly as specified in [the Get Started chapter](./get_started.md#installation)
-2. Start the whole deployment process from scratch and look for more error output by doing the following:
-    1. In your replica terminal:
-        1. Terminate the replica in your terminal or run `dfx stop` if your replica is running in the background
-        2. `dfx start --clean --host 127.0.0.1:8000`
-    2. In your project terminal at the root directory of your project:
-        1. `rm -rf node_modules`
-        2. `npm install`
-        3. `npx azle clean`
-        4. `AZLE_VERBOSE=true dfx deploy`
-3. If the build process hangs on `Waiting for VM ...`, see [this issue for possible fixes](https://github.com/containers/podman/issues/20776)
-4. If the problem is still not resolved, reach out with the error output in [the Discord channel](https://discord.gg/5Hb6rM2QUM)
