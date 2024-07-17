@@ -10,9 +10,9 @@ The following examples should be very useful as you get started using SQLite in 
 
 Examples:
 
--   [sqlite](https://github.com/demergent-labs/azle/tree/main/examples/sqlite)
--   [sqlite_drizzle](https://github.com/demergent-labs/azle/tree/main/examples/sqlite_drizzle)
--   [sqlite_typeorm](https://github.com/demergent-labs/azle/tree/main/examples/sqlite_typeorm)
+-   [sqlite](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/sqlite)
+-   [sqlite_drizzle](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/sqlite_drizzle)
+-   [sqlite_typeorm](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/sqlite_typeorm)
 
 ## sql.js
 

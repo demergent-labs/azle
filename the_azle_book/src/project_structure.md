@@ -119,26 +119,6 @@ See [the Assets chapter](./assets.md) for more information:
 }
 ```
 
-### Assets Large
-
-See [the Assets chapter](./assets.md) for more information:
-
-```json
-{
-    "canisters": {
-        "api": {
-            "type": "azle",
-            "main": "src/api.ts",
-            "assets_large": [
-                ["assets/auto", "assets"],
-                ["assets/permanent", "assets"],
-                ["assets/single_asset.txt", "assets/text/single.txt"]
-            ]
-        }
-    }
-}
-```
-
 ### Build Assets
 
 See [the Assets chapter](./assets.md) for more information:
@@ -193,24 +173,6 @@ This can be useful if you need to polyfill certain packages that might not exist
             "esm_aliases": {
                 "crypto": "crypto-browserify"
             }
-        }
-    }
-}
-```
-
-### Opt Level
-
-To optimize the Wasm binary of an Azle canister, you can add the `opt_level` property to your `dfx.json` with the following options: `"0"`, `"1"`, `"2"`, `"3"`, or `"4"`. `"0"` is the default option if `opt_level` is not specified.
-
-Each option is intended to reduce the size of your Wasm binary as the value increases. Each option is likely to take longer to compile than the previous option. It is recommended to start at `"1"` and increase only as necessary.
-
-```json
-{
-    "canisters": {
-        "api": {
-            "type": "azle",
-            "main": "src/api.ts",
-            "opt_level": "4"
         }
     }
 }

@@ -15,19 +15,11 @@ Please remember that Azle is in beta and thus it may have unknown security vulne
 
 > Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-On Ubuntu/WSL:
+You will need [Node.js 20](#nodejs-20) and [dfx](#dfx) to develop ICP applications with Azle:
 
-```bash
-sudo apt-get install podman
-```
+### Node.js 20
 
-On Mac:
-
-```bash
-brew install podman
-```
-
-It's recommended to use nvm and Node.js 20:
+It's recommended to use nvm to install Node.js 20:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -45,10 +37,12 @@ Check that the installation went smoothly by looking for clean output from the f
 node --version
 ```
 
+### dfx
+
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.20.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.21.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -57,38 +51,43 @@ Check that the installation went smoothly by looking for clean output from the f
 dfx --version
 ```
 
-If after trying to run `dfx --version` you encounter an error such as `dfx: command not found`, you might need to add `$HOME/bin` to your path. Here's an example of doing this in your `.bashrc`:
-
-```bash
-echo 'export PATH="$PATH:$HOME/bin"' >> "$HOME/.bashrc"
-```
-
 ## Deployment
 
+To create and deploy a simple sample application called `hello_world`:
+
 ```bash
-npx azle new hello_world
+# create a new default project called hello_world
+npx azle new hello_world --http-server
 cd hello_world
+```
 
+```bash
+# install all npm dependencies including azle
 npm install
+```
 
+```bash
+# install the azle dfx extension
 npx azle install-dfx-extension
+```
 
-dfx start --clean --host 127.0.0.1:8000
+```bash
+# start up a local ICP replica
+dfx start --clean
 ```
 
 In a separate terminal in the `hello_world` directory:
 
 ```bash
+# deploy your canister
 dfx deploy
 ```
 
-If you are building an HTTP-based canister and would like your canister to autoreload on file changes (DO NOT deploy to mainnet with autoreload enabled):
+If you would like your canister to autoreload on file changes:
 
 ```bash
 AZLE_AUTORELOAD=true dfx deploy
 ```
-
-If you have problems deploying see [Common deployment issues](https://demergent-labs.github.io/azle/deployment.html#common-deployment-issues).
 
 View your frontend in a web browser at `http://[canisterId].localhost:8000`.
 

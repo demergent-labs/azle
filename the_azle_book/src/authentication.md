@@ -1,6 +1,6 @@
 # Authentication TL;DR
 
-Azle canisters can import `ic` from `azle` and use `ic.caller()` to get the [principal (public-key linked identifier)](https://internetcomputer.org/docs/current/references/ic-interface-spec#principal) of the initiator of an HTTP request. HTTP requests are anonymous (principal `2vxsx-fae`) by default, but authentication with web browsers (and maybe Node.js) can be done using a JWT-like API from `azle/http_client`.
+Azle canisters can import `caller` from `azle` and use it to get the [principal (public-key linked identifier)](https://internetcomputer.org/docs/current/references/ic-interface-spec#principal) of the initiator of an HTTP request. HTTP requests are anonymous (principal `2vxsx-fae`) by default, but authentication with web browsers (and maybe Node.js) can be done using a JWT-like API from `azle/http_client`.
 
 First you import `toJwt` from `azle/http_client`:
 
@@ -122,13 +122,13 @@ export class AzleApp extends LitElement {
 Here's an example of the backend of that same simple web application:
 
 ```typescript
-import { ic } from 'azle/experimental';
+import { caller } from 'azle';
 import express from 'express';
 
 const app = express();
 
 app.get('/whoami', (req, res) => {
-    res.send(ic.caller().toString());
+    res.send(caller().toString());
 });
 
 app.use(express.static('/dist'));
@@ -140,9 +140,8 @@ app.listen();
 
 Examples:
 
--   [ckbtc](https://github.com/demergent-labs/azle/tree/main/examples/ckbtc)
--   [fetch_ic](https://github.com/demergent-labs/azle/tree/main/examples/fetch_ic)
--   [internet_identity](https://github.com/demergent-labs/azle/tree/main/examples/internet_identity)
+-   [fetch_ic](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/fetch_ic)
+-   [internet_identity](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/internet_identity)
 
 ## Under-the-hood
 
