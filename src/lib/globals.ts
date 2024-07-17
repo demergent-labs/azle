@@ -7,6 +7,7 @@ import { v4 } from 'uuid';
 import { azleFetch } from './fetch';
 import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
+import { IDL } from './stable';
 import { jsonReplacer } from './stable_structures/stable_json';
 
 type CanisterMethods = {
@@ -64,6 +65,10 @@ declare global {
     var _azleCanisterMethods: CanisterMethods;
     // eslint-disable-next-line no-var
     var _azleCanisterMethodsIndex: number;
+    // eslint-disable-next-line no-var
+    var _azleCanisterMethodIdlTypes: { [key: string]: IDL.FuncClass };
+    // eslint-disable-next-line no-var
+    var _azleInitAndPostUpgradeIdlTypes: IDL.FuncClass[];
 }
 
 globalThis._azleInsideCanister =
@@ -78,6 +83,10 @@ if (globalThis._azleInsideCanister) {
         updates: [],
         callbacks: {}
     };
+
+    globalThis._azleCanisterMethodIdlTypes = {};
+
+    globalThis._azleInitAndPostUpgradeIdlTypes = [];
 
     globalThis._azleInitCalled = false;
     globalThis._azlePostUpgradeCalled = false;

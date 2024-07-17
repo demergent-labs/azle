@@ -1,4 +1,0 @@
-service: () -> {
-    getEntries: () -> (vec record {key:text; value:nat64}) query;
-    setEntry: (record {key:text; value:nat64}) -> ();
-}

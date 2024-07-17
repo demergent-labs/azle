@@ -153,7 +153,7 @@ export default class {
 
     @query(
         [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Int64)))],
-        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat64)))
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Int64)))
     )
     listOfInt64(param: bigint[][][]): bigint[][][] {
         return param;

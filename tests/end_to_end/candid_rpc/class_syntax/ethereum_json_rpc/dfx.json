@@ -3,8 +3,7 @@
         "ethereum_json_rpc": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/ethereum_json_rpc",
                 "node_compatibility": true

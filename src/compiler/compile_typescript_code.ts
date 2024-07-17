@@ -13,7 +13,7 @@ export async function compileTypeScriptToJavaScript(
     esmExternals: string[]
 ): Promise<Result<JavaScript, unknown>> {
     try {
-        const imports = `
+        const imports = /*TS*/ `
             import 'reflect-metadata';
 
             // Trying to make sure that all globalThis dependencies are defined
@@ -26,6 +26,7 @@ export async function compileTypeScriptToJavaScript(
             ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
             import { toDidString } from 'azle/src/lib/candid/did_file/to_did_string';
+            import { IDL } from 'azle';
             import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/candid/did_file/visitor';
             export { Principal } from '@dfinity/principal';
             export * from './${main}';
@@ -33,12 +34,18 @@ export async function compileTypeScriptToJavaScript(
 
             if (isClassSyntaxExport(CanisterMethods)) {
                 const canister = new CanisterMethods.default();
+                const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
+                const candid = canisterIdlType.accept(new DidVisitor(), {
+                    ...getDefaultVisitorData(),
+                    isFirstService: true,
+                    systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
+                });
 
                 globalThis._azleCanisterClassInstance = canister;
 
                 globalThis.candidInfoFunction = () => {
                     return JSON.stringify({
-                        candid: '',
+                        candid: toDidString(candid),
                         canisterMethods: globalThis._azleCanisterMethods
                     });
                 };

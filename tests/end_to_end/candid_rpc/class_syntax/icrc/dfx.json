@@ -3,8 +3,7 @@
         "proxy": {
             "type": "azle",
             "main": "canisters/proxy/index.ts",
-            "candid": "canisters/proxy/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "env": ["ICRC_PRINCIPAL"],
             "declarations": {
                 "output": "test/dfx_generated/proxy",

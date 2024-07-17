@@ -16,6 +16,10 @@ export function postUpgrade<This, Args extends any[], Return>(
             index
         };
 
+        globalThis._azleInitAndPostUpgradeIdlTypes.push(
+            IDL.Func(paramIdlTypes, [], ['post_upgrade'])
+        );
+
         globalThis._azleCanisterMethods.callbacks[index.toString()] = (
             ...args: any[]
         ): void => {

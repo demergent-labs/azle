@@ -3,8 +3,7 @@
         "whoami": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/whoami",
                 "node_compatibility": true
