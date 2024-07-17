@@ -14,13 +14,10 @@ export type Test<> = {
     test?: () => Promise<AzleResult>;
 };
 
-// TODO get rid of this union once the jest migration is complete
-export type AzleResult =
-    | Partial<{
-          Ok: { isSuccessful: boolean; message?: string };
-          Err: string;
-      }>
-    | Partial<{ Ok: boolean; Err: string }>;
+export type AzleResult = Partial<{
+    Ok: { isSuccessful: boolean; message?: string };
+    Err: string;
+}>;
 
 // TODO should this just return a boolean?
 // TODO then the function calling can decide to throw or not
@@ -74,20 +71,10 @@ export async function runTests(
                 }
             }
 
-            // TODO replace this with the below commented out code once jest migration is complete
-            const message =
-                typeof result.Ok === 'object' && result.Ok !== null
-                    ? result.Ok.message
-                    : undefined;
-            const successful =
-                typeof result.Ok === 'boolean'
-                    ? result.Ok
-                    : result.Ok.isSuccessful;
-
-            if (successful !== true) {
+            if (result.Ok.isSuccessful !== true) {
                 console.info('\x1b[31m', `test: ${test.name} failed`);
-                if (message !== undefined) {
-                    console.info('\x1b[31m', `${message}`);
+                if (result.Ok.message !== undefined) {
+                    console.info('\x1b[31m', `${result.Ok.message}`);
                 }
                 console.info('\x1b[0m');
 
@@ -97,21 +84,6 @@ export async function runTests(
                     return false;
                 }
             }
-
-            // TODO bring this back once jest migration is complete
-            // if (result.Ok.isSuccessful !== true) {
-            //     console.info('\x1b[31m', `test: ${test.name} failed`);
-            //     if (result.Ok.message !== undefined) {
-            //         console.info('\x1b[31m', `${result.Ok.message}`);
-            //     }
-            //     console.info('\x1b[0m');
-
-            //     if (exitProcess) {
-            //         process.exit(1);
-            //     } else {
-            //         return false;
-            //     }
-            // }
 
             console.info('\x1b[32m', `test: ${test.name} passed`);
             console.info('\x1b[0m');
