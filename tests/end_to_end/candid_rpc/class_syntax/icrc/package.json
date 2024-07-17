@@ -8,7 +8,7 @@
     },
     "devDependencies": {
         "@dfinity/agent": "0.14.1",
-        "icrc_end_to_end_test_functional_syntax": "file:../../../../../examples/icrc",
+        "icrc_end_to_end_test_functional_syntax": "file:../../functional_syntax/icrc",
         "jest": "^29.7.0",
         "ts-jest": "^29.1.5",
         "tsx": "^4.15.7",

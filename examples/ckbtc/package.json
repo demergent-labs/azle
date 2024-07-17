@@ -1,5 +1,4 @@
 {
-    "name": "ckbtc_end_to_end_test_functional_syntax",
     "scripts": {
         "bitcoin": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
         "ic": "dfx start --clean --host 127.0.0.1:8000 --enable-bitcoin",
@@ -20,9 +19,8 @@
         "frontend": "npx open-cli http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000/",
         "mint": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 $npm_config_address",
         "build": "cd wallet/frontend && npm run build",
-        "pre_tests": "tsx test/pretest.ts",
-        "tests": "npm run pre_tests && jest",
-        "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
+        "pretest": "tsx test/pretest.ts",
+        "test": "jest"
     },
     "dependencies": {
         "azle": "0.22.0"
@@ -30,6 +28,7 @@
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
         "@dfinity/identity": "^0.19.2",
+        "ckbtc_end_to_end_test_functional_syntax": "file:../../tests/end_to_end/candid_rpc/functional_syntax/ckbtc",
         "jest": "^29.7.0",
         "ts-jest": "^29.1.4",
         "tsx": "^4.15.7",

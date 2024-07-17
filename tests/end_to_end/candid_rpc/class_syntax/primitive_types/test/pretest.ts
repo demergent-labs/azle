@@ -3,7 +3,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'primitive_types'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'primitive_types'
+        )
+    );
 
     execSync(`dfx canister uninstall-code primitive_types || true`, {
         stdio: 'inherit'

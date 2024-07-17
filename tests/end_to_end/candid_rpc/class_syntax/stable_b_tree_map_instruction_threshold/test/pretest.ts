@@ -4,7 +4,13 @@ import { join } from 'path';
 
 function pretest(): void {
     linkAndInstallPatch(
-        join('examples', 'stable_b_tree_map_instruction_threshold')
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'stable_b_tree_map_instruction_threshold'
+        )
     );
 
     execSync(

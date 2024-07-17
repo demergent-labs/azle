@@ -13,7 +13,7 @@ const importLines = [
 ];
 
 // Line to add after function pretest(): void {
-const additionalLine = `    linkAndInstallPatch(join('examples', '${currentDirectory}'));\n`;
+const additionalLine = `    linkAndInstallPatch(join('tests', 'end_to_end', 'candid_rpc', 'functional_syntax', '${currentDirectory}'));\n`;
 
 // Read the pretest.ts file
 fs.readFile(pretestFilePath, 'utf8', (err, data) => {

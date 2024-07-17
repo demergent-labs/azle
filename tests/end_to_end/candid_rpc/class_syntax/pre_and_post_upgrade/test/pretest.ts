@@ -3,7 +3,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'pre_and_post_upgrade'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'pre_and_post_upgrade'
+        )
+    );
 
     execSync(`dfx canister uninstall-code pre_and_post_upgrade || true`, {
         stdio: 'inherit'

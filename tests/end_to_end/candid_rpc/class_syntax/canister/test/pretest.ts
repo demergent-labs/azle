@@ -4,7 +4,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'canister'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'canister'
+        )
+    );
 
     execSync(`dfx canister uninstall-code canister || true`, {
         stdio: 'inherit'

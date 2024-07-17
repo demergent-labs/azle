@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env -S tsx --abort-on-uncaught-exception
 
 import { mkdir, rm, writeFile } from 'fs/promises';
 import { join } from 'path';

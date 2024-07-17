@@ -3,7 +3,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'outgoing_http_requests'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'outgoing_http_requests'
+        )
+    );
 
     execSync(`dfx canister uninstall-code outgoing_http_requests || true`, {
         stdio: 'inherit'

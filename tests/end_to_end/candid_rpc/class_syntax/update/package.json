@@ -12,6 +12,6 @@
         "ts-jest": "^29.1.5",
         "tsx": "^4.15.7",
         "typescript": "^5.2.2",
-        "update_end_to_end_test_functional_syntax": "file:../../../../../examples/update"
+        "update_end_to_end_test_functional_syntax": "file:../../functional_syntax/update"
     }
 }

@@ -3,7 +3,9 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(icrcPath: string): void {
-    linkAndInstallPatch(join('examples', 'icrc'));
+    linkAndInstallPatch(
+        join('tests', 'end_to_end', 'candid_rpc', 'functional_syntax', 'icrc')
+    );
 
     execSync(`dfx canister uninstall-code proxy || true`, {
         stdio: 'inherit'

@@ -4,7 +4,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(icp_ledger_path: string): void {
-    linkAndInstallPatch(join('examples', 'ledger_canister'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'ledger_canister'
+        )
+    );
 
     execSync(`dfx canister uninstall-code icp_ledger || true`, {
         stdio: 'inherit'

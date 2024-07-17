@@ -1,28 +1,18 @@
-import {
-    blob,
-    Canister,
-    nat8,
-    nat32,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    Record,
-    Result,
-    text,
-    update,
-    Variant,
-    Vec
-} from 'azle/experimental';
+import { IDL } from 'azle';
 
-const Utxo = Record({
-    outpoint: Record({ txid: Vec(nat8), vout: nat32 }),
-    value: nat64,
-    height: nat32
+import {
+    UpdateBalanceError,
+    UtxoStatus
+} from '../frontend/wallet/frontend/dfx_generate/wallet_backend/wallet_backend.did';
+
+const Utxo = IDL.Record({
+    outpoint: IDL.Record({ txid: IDL.Vec(IDL.Nat8), vout: IDL.Nat32 }),
+    value: IDL.Nat64,
+    height: IDL.Nat32
 });
 
 // The result of an [update_balance] call.
-const UtxoStatus = Variant({
+const UtxoStatus = IDL.Variant({
     // The minter ignored this UTXO because UTXO's value is too small to pay
     // the KYT fees. This state is final, retrying [update_balance] call will
     // have no effect on this UTXO.
@@ -35,48 +25,48 @@ const UtxoStatus = Variant({
     // should eventually advance the UTXO to the [Minted] state.
     Checked: Utxo,
     // The UTXO passed the KYT check, and ckBTC has been minted.
-    Minted: Record({
-        block_index: nat64,
-        minted_amount: nat64,
+    Minted: IDL.Record({
+        block_index: IDL.Nat64,
+        minted_amount: IDL.Nat64,
         utxo: Utxo
     })
 });
 
-const UpdateBalanceError = Variant({
+const UpdateBalanceError = IDL.Variant({
     // There are no new UTXOs to process.
-    NoNewUtxos: Record({
-        current_confirmations: Opt(nat32),
-        required_confirmations: nat32
+    NoNewUtxos: IDL.Record({
+        current_confirmations: IDL.Opt(IDL.Nat32),
+        required_confirmations: IDL.Nat32
     }),
     // The minter is already processing another update balance request for the caller.
-    AlreadyProcessing: Null,
+    AlreadyProcessing: IDL.Null,
     // The minter is overloaded, retry the request.
     // The payload contains a human-readable message explaining what caused the unavailability.
-    TemporarilyUnavailable: text,
+    TemporarilyUnavailable: IDL.Text,
     // A generic error reserved for future extensions.
-    GenericError: Record({ error_message: text, error_code: nat64 })
+    GenericError: IDL.Record({ error_message: IDL.Text, error_code: IDL.Nat64 })
 });
 
-export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
+export const UpdateBalanceResult = IDL.Variant({
+    Ok: IDL.Vec(UtxoStatus),
+    Err: UpdateBalanceError
+});
+export type UpdateBalanceResult =
+    | { Ok: UtxoStatus[] }
+    | { Err: UpdateBalanceError };
 
-export const Minter = Canister({
-    get_btc_address: update(
-        [
-            Record({
-                owner: Opt(Principal),
-                subaccount: Opt(blob)
-            })
-        ],
-        text
-    ),
+export const GetBtcAddressArgs = IDL.Record({
+    owner: IDL.Opt(IDL.Principal),
+    subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
+});
 
-    update_balance: update(
-        [
-            Record({
-                owner: Opt(Principal),
-                subaccount: Opt(blob)
-            })
-        ],
-        UpdateBalanceResult
-    )
+export const UpdateBalanceArgs = IDL.Record({
+    owner: IDL.Opt(IDL.Principal),
+    subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
+});
+
+export const Minter = IDL.Service({
+    get_btc_address: IDL.Func([GetBtcAddressArgs], [IDL.Text]),
+
+    update_balance: IDL.Func([UpdateBalanceArgs], [UpdateBalanceResult])
 });

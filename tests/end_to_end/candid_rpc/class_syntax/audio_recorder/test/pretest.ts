@@ -3,7 +3,15 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'audio_recorder'));
+    linkAndInstallPatch(
+        join(
+            'tests',
+            'end_to_end',
+            'candid_rpc',
+            'functional_syntax',
+            'audio_recorder'
+        )
+    );
 
     execSync(`dfx canister uninstall-code audio_recorder || true`, {
         stdio: 'inherit'
