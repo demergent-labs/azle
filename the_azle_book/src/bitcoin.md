@@ -3,10 +3,10 @@
 Examples:
 
 -   [basic_bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/basic_bitcoin)
--   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
+-   [bitcoin](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/bitcoin)
 -   [bitcoin_psbt](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin_psbt)
--   [bitcoinjs_lib](https://github.com/demergent-labs/azle/tree/main/examples/bitcoinjs_lib)
--   [bitcore_lib](https://github.com/demergent-labs/azle/tree/main/examples/bitcore_lib)
+-   [bitcoinjs_lib](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/bitcoinjs_lib)
+-   [bitcore_lib](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/bitcore_lib)
 -   [ckbtc](https://github.com/demergent-labs/azle/tree/main/examples/ckbtc)
 
 There are two main ways to interact with Bitcoin on ICP: through the [management canister](#management-canister) and through the [ckBTC canister](#ckbtc).

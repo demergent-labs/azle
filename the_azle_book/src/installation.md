@@ -2,18 +2,6 @@
 
 > Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-On Ubuntu/WSL:
-
-```bash
-sudo apt-get install podman
-```
-
-On Mac:
-
-```bash
-brew install podman
-```
-
 It's recommended to use nvm and Node.js 20:
 
 ```bash
