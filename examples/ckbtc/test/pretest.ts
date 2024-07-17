@@ -3,7 +3,9 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'ckbtc'));
+    linkAndInstallPatch(
+        join('tests', 'end_to_end', 'candid_rpc', 'functional_syntax', 'ckbtc')
+    );
 
     uninstall(
         'ckbtc',
