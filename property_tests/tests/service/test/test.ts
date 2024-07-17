@@ -24,7 +24,7 @@ const AllServicesQueryMethodArb = QueryMethodArb(
 const CanisterConfigArb = fc
     .array(AllServicesQueryMethodArb, {
         ...defaultArrayConstraints,
-        maxLength: 45
+        maxLength: 30 // If the number of generated services is too large we will run out of space in the wasm custom section.
     })
     .map((queryMethods): CanisterConfig => {
         return { queryMethods };
