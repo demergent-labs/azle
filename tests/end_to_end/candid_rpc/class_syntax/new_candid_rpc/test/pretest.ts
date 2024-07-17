@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 import { version } from '../../../../../../package.json';
 
 function pretest(): void {
-    execSync(`npx -y azle@${version} new hello_world --http-server`, {
+    execSync(`npx -y azle@${version} new hello_world`, {
         stdio: 'inherit'
     });
 
@@ -20,6 +20,10 @@ function pretest(): void {
     });
 
     execSync(`cd hello_world && dfx deploy`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`cd hello_world && dfx generate`, {
         stdio: 'inherit'
     });
 }
