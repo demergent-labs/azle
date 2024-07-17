@@ -68,7 +68,7 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleCanisterMethodIdlTypes: { [key: string]: IDL.FuncClass };
     // eslint-disable-next-line no-var
-    var _azleSystemCanisterMethodIdlTypes: IDL.FuncClass[];
+    var _azleInitAndPostUpgradeIdlTypes: IDL.FuncClass[];
 }
 
 globalThis._azleInsideCanister =
@@ -86,7 +86,7 @@ if (globalThis._azleInsideCanister) {
 
     globalThis._azleCanisterMethodIdlTypes = {};
 
-    globalThis._azleSystemCanisterMethodIdlTypes = [];
+    globalThis._azleInitAndPostUpgradeIdlTypes = [];
 
     globalThis._azleInitCalled = false;
     globalThis._azlePostUpgradeCalled = false;

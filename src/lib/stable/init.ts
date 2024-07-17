@@ -16,10 +16,9 @@ export function init<This, Args extends any[], Return>(
             index
         };
 
-        globalThis._azleSystemCanisterMethodIdlTypes = [
-            ...globalThis._azleSystemCanisterMethodIdlTypes,
+        globalThis._azleInitAndPostUpgradeIdlTypes.push(
             IDL.Func(paramIdlTypes, [], ['init'])
-        ];
+        );
 
         globalThis._azleCanisterMethods.callbacks[index.toString()] = (
             ...args: any[]

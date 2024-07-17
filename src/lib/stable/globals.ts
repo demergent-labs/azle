@@ -9,5 +9,9 @@ declare global {
 
 globalThis._azleCanisterMethodsIndex = 0;
 
+globalThis._azleCanisterMethodIdlTypes = {};
+
+globalThis._azleInitAndPostUpgradeIdlTypes = [];
+
 globalThis.TextDecoder = TextDecoder;
 globalThis.TextEncoder = TextEncoder;

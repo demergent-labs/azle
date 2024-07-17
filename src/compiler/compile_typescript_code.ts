@@ -38,7 +38,7 @@ export async function compileTypeScriptToJavaScript(
                 const candid = canisterIdlType.accept(new DidVisitor(), {
                     ...getDefaultVisitorData(),
                     isFirstService: true,
-                    systemFuncs: globalThis._azleSystemCanisterMethodIdlTypes
+                    systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
                 });
 
                 globalThis._azleCanisterClassInstance = canister;
