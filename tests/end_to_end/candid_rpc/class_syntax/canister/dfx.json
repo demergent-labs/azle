@@ -3,7 +3,6 @@
         "canister": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
             "candid_gen": "automatic",
             "env": ["SOME_CANISTER_PRINCIPAL"],
             "assets": [["src/some_canister.did", "candid/some_canister.did"]],

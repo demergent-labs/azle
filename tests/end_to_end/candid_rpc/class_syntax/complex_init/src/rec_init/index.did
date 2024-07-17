@@ -1,4 +1,0 @@
-type rec_0 = variant {Leaf; Branch:rec_0};
-service: (rec_0) -> {
-    countBranches: () -> (nat) query;
-}

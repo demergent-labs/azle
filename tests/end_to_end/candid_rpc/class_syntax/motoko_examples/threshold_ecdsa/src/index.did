@@ -1,4 +1,0 @@
-service: () -> {
-    publicKey: () -> (record {publicKey:vec nat8});
-    sign: (vec nat8) -> (record {signature:vec nat8});
-}

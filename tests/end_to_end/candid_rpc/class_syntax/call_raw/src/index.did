@@ -1,3 +1,0 @@
-service: () -> {
-    executeCallRaw: (principal, text, text, nat64) -> (text);
-}

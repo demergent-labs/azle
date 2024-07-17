@@ -1,5 +1,0 @@
-service: () -> {
-    getCanisterBalance: () -> (nat64) query;
-    sendCycles: () -> (nat64);
-    sendCyclesNotify: () -> ();
-}
