@@ -1,14 +1,19 @@
-// TODO if these tests break just delete azle/examples/hello_world/node_modules
+import { execSync } from 'child_process';
 
-import { getCanisterId } from '../../../../../../dfx'; // We don't want to install Azle
-import { runTests } from '../../../../../../test'; // We don't want to install Azle
-import { createActor } from './dfx_generated/hello_world';
-import { getTests } from './tests';
+import { version } from '../../../../../../package.json';
 
-const helloWorldCanister = createActor(getCanisterId('hello_world'), {
-    agentOptions: {
-        host: 'http://127.0.0.1:8000'
-    }
-});
+function pretest(): void {
+    execSync(`npx -y azle@${version} new hello_world`, {
+        stdio: 'inherit'
+    });
 
-runTests(getTests(helloWorldCanister));
+    execSync(`cd hello_world && npm install`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`cd hello_world && npm test`, {
+        stdio: 'inherit'
+    });
+}
+
+pretest();
