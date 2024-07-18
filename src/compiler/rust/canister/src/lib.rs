@@ -1,4 +1,9 @@
-use std::{cell::RefCell, collections::BTreeMap, collections::HashMap, convert::TryInto};
+use std::{
+    cell::RefCell,
+    collections::{BTreeMap, HashMap},
+    convert::TryInto,
+    env::args,
+};
 
 use ic_stable_structures::{
     memory_manager::{MemoryId, MemoryManager, VirtualMemory},
@@ -212,6 +217,13 @@ fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
 // TODO will this work for queries as well?
 #[ic_cdk_macros::update]
 pub fn _azle_chunk() {}
+
+async fn chunk() {
+    let id = ic_cdk::id();
+    let method = "_azle_chunk";
+    let args_raw = [68, 73, 68, 76, 0, 0]; // '()' pre encoded
+    ic_cdk::api::call::call_raw128(id, method, args_raw, 0).await;
+}
 
 #[inline(never)]
 #[no_mangle]
@@ -467,7 +479,7 @@ fn reload_js(
 }
 
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
-pub fn upload_file_chunk(
+pub async fn upload_file_chunk(
     dest_path: String,
     timestamp: u64,
     start_index: u64,
@@ -493,7 +505,8 @@ pub fn upload_file_chunk(
     );
 
     if uploaded_file_len == total_file_len {
-        start_hash(dest_path)
+        chunk().await;
+        hash_file(&dest_path).await;
     }
 }
 
@@ -504,12 +517,6 @@ pub fn guard_against_non_controllers() -> Result<(), String> {
     return Err(
         "Not Authorized: only controllers of this canister may call this method".to_string(),
     );
-}
-
-pub fn start_hash(dest_path: String) {
-    let delay = core::time::Duration::new(0, 0);
-    let hash_closure = || hash_file(dest_path);
-    ic_cdk_timers::set_timer(delay, hash_closure);
 }
 
 pub fn bytes_to_human_readable(size_in_bytes: u64) -> String {
@@ -632,9 +639,55 @@ fn delete_if_exists(path: &str) -> std::io::Result<()> {
     Ok(())
 }
 
-pub fn hash_file(path: String) {
-    clear_file_hash(&path);
-    hash_file_by_parts(&path, 0)
+pub async fn hash_file(path: &str) {
+    clear_file_hash(path);
+
+    let file_length = std::fs::metadata(path).unwrap().len();
+    let limit = 75 * 1024 * 1024; // This limit will be determine by how much hashing an update method can do without running out of cycles. It runs out somewhere between 75 and 80
+                                  // This limit must be the same as on the node side or else the hashes will not match
+    let mut file = std::fs::File::open(path).unwrap();
+
+    let mut position = 0;
+
+    loop {
+        let percentage = position / file_length.max(1) * 100;
+        ic_cdk::println!(
+            "Hashing: {} | {}/{} : {:.2}%",
+            path,
+            bytes_to_human_readable(position),
+            bytes_to_human_readable(file_length),
+            percentage
+        );
+
+        std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(position)).unwrap();
+
+        let mut buffer = vec![0; limit];
+        let bytes_read = std::io::Read::read(&mut file, &mut buffer).unwrap();
+
+        let previous_hash = get_partial_file_hash(path);
+
+        if bytes_read != 0 {
+            let new_hash = hash_chunk_with(&buffer, previous_hash.as_ref());
+            set_partial_hash(path, new_hash);
+            set_bytes_hashed(path, position + bytes_read as u64);
+            position += bytes_read as u64;
+            chunk().await;
+            continue;
+        } else {
+            // No more bytes to hash, set as final hash for this file
+            let final_hash = match previous_hash {
+                Some(hash) => hash,
+                None => {
+                    let empty_file_hash = hash_chunk_with(&[], None);
+                    empty_file_hash
+                }
+            };
+            chunk().await;
+            set_file_hash(path, final_hash);
+            clear_file_info(path);
+            break;
+        }
+    }
 }
 
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
@@ -652,53 +705,6 @@ pub fn get_file_hash(path: String) -> Option<String> {
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
 pub fn get_hash_status(path: String) -> Option<(u64, u64)> {
     Some((get_bytes_hashed(&path), get_file_size(&path)?))
-}
-
-fn hash_file_by_parts(path: &str, position: u64) {
-    let file_length = std::fs::metadata(path).unwrap().len();
-    let percentage = position / file_length.max(1) * 100;
-    ic_cdk::println!(
-        "Hashing: {} | {}/{} : {:.2}%",
-        path,
-        bytes_to_human_readable(position),
-        bytes_to_human_readable(file_length),
-        percentage
-    );
-    let mut file = std::fs::File::open(&path).unwrap();
-
-    std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(position)).unwrap();
-
-    // Read the bytes
-    let limit = 75 * 1024 * 1024; // This limit will be determine by how much hashing an update method can do without running out of cycles. It runs out somewhere between 75 and 80
-                                  // This limit must be the same as on the node side or else the hashes will not match
-    let mut buffer = vec![0; limit];
-    let bytes_read = std::io::Read::read(&mut file, &mut buffer).unwrap();
-
-    let previous_hash = get_partial_file_hash(path);
-
-    if bytes_read != 0 {
-        let new_hash = hash_chunk_with(&buffer, previous_hash.as_ref());
-        set_partial_hash(path, new_hash);
-        set_bytes_hashed(path, position + bytes_read as u64);
-        spawn_hash_by_parts(path.to_string(), position + bytes_read as u64)
-    } else {
-        // No more bytes to hash, set as final hash for this file
-        let final_hash = match previous_hash {
-            Some(hash) => hash,
-            None => {
-                let empty_file_hash = hash_chunk_with(&[], None);
-                empty_file_hash
-            }
-        };
-        set_file_hash(path, final_hash);
-        clear_file_info(path);
-    }
-}
-
-fn spawn_hash_by_parts(path: String, position: u64) {
-    let delay = core::time::Duration::new(0, 0);
-    let closure = move || hash_file_by_parts(&path, position);
-    ic_cdk_timers::set_timer(delay, closure);
 }
 
 pub fn get_partial_file_hash(path: &str) -> Option<Vec<u8>> {

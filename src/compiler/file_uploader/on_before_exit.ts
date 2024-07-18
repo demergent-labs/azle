@@ -1,12 +1,9 @@
 import { Dest, Src } from '.';
 import { getListOfIncompleteFiles } from './incomplete_files';
-import { getOngoingHashingJobs, OngoingHashingJob } from './ongoing_hashes';
 import { UploaderActor } from './uploader_actor';
 
 export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor): void {
-    let hashingComplete = false;
     let cleanUpComplete = false;
-    let ongoingHashingJobs: OngoingHashingJob[] = [];
 
     process.on('beforeExit', async () => {
         if (cleanUpComplete) {
@@ -17,26 +14,10 @@ export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor): void {
             return;
         }
 
-        if (hashingComplete) {
-            await cleanup(paths, actor);
-            cleanUpComplete = true;
-            return;
-        }
-
-        ongoingHashingJobs = await getOngoingHashingJobs(
-            paths,
-            ongoingHashingJobs,
-            actor
-        );
-
-        hashingComplete = ongoingHashingJobs.length === 0;
-
-        if (!hashingComplete) {
-            console.info(
-                `Waiting 5 seconds before checking hashing status again...`
-            );
-            await new Promise((resolve) => setTimeout(resolve, 5000));
-        }
+        console.info('Cleaning up incomplete files');
+        await cleanup(paths, actor);
+        cleanUpComplete = true;
+        return;
     });
 }
 

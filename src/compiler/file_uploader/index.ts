@@ -30,7 +30,7 @@ export async function uploadFiles(
     }
 
     console.info(
-        'Finished uploading files. Waiting for file hashing to finish...'
+        'Finished uploading files. Waiting for all async processes to end...' // TODO what's happening is that the last bit of the uploadFile doesn't await the last chunk I think, so we do still need to add the onBeforeExit so we don't exit until that is done
     );
 
     onBeforeExit(expandedPaths, actor);
