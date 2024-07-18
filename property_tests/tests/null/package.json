@@ -3,7 +3,7 @@
         "test": "tsx test/test.ts"
     },
     "dependencies": {
-        "azle": "0.22.0"
+        "azle": "0.23.0-rc.12"
     },
     "devDependencies": {
         "tsx": "^4.15.7",
