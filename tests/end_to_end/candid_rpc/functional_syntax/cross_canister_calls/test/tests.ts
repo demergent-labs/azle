@@ -103,7 +103,7 @@ export function getTests(
             const canister1Id = getCanisterId('canister1');
             const canister2Id = getCanisterId('canister2');
             const partialErrorMessage = new RegExp(
-                `Error from Canister ${canister1Id}: Canister trapped explicitly: Uncaught Error: Rejection code 5, IC0503: Error from Canister ${canister2Id}: Canister trapped explicitly: hahahaha`
+                `Error from Canister ${canister1Id}: Canister called \`ic0.trap\` with message: Uncaught Error: Rejection code 5, IC0503: Error from Canister ${canister2Id}: Canister called \`ic0.trap\` with message: hahahaha`
             );
 
             await expect(canister1.trap()).rejects.toThrow(partialErrorMessage);

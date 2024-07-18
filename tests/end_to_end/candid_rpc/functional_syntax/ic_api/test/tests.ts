@@ -204,7 +204,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             await expect(icApiCanister.trap(message)).rejects.toThrow(
                 `IC0503: Error from Canister ${getCanisterId(
                     'ic_api'
-                )}: Canister trapped explicitly: ${message}`
+                )}: Canister called \`ic0.trap\` with message: ${message}`
             );
         });
     };
