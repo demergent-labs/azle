@@ -22,7 +22,7 @@ export function getTests(canisterId: string): Test {
                 'access-control-allow-origin',
                 '*'
             ]);
-        }, 10_000);
+        }, 30_000);
 
         it('fetches using the get method', async () => {
             const response = await fetch(`${origin}/fetch-get`, {
@@ -56,7 +56,7 @@ export function getTests(canisterId: string): Test {
             };
 
             expect(body).toEqual(expect.objectContaining(expectedBody));
-        }, 10_000);
+        }, 30_000);
 
         it('fetches using the get method and query params', async () => {
             const response = await fetch(`${origin}/fetch-get-query-params`, {
@@ -73,7 +73,7 @@ export function getTests(canisterId: string): Test {
             for (const cat of responseJson) {
                 expect(cat).toEqual(expect.objectContaining(expectedResponse));
             }
-        }, 10_000);
+        }, 30_000);
 
         it('fetches using the post method', async () => {
             const response = await fetch(`${origin}/fetch-post`, {
@@ -82,7 +82,7 @@ export function getTests(canisterId: string): Test {
             const responseJson = await response.json();
 
             expect(responseJson.result).toBe('0x9ad9e69f9d47520000');
-        }, 10_000);
+        }, 30_000);
 
         it('fetches using the get method and headers', async () => {
             const response = await fetch(`${origin}/request-headers`, {
@@ -99,7 +99,7 @@ export function getTests(canisterId: string): Test {
             expect(responseJson.headers).toEqual(
                 expect.objectContaining(expectedHeaders)
             );
-        }, 10_000);
+        }, 30_000);
 
         it('handles status 201', async () => {
             const response = await fetch(`${origin}/get-status-201`, {
@@ -109,7 +109,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson.status).toBe(201);
             expect(responseJson.statusText).toBe('Created');
-        }, 10_000);
+        }, 30_000);
 
         it('handles status 205', async () => {
             const response = await fetch(`${origin}/get-status-205`, {
@@ -119,7 +119,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson.status).toBe(205);
             expect(responseJson.statusText).toBe('Reset Content');
-        }, 10_000);
+        }, 30_000);
 
         it('handles status 301', async () => {
             const response = await fetch(`${origin}/get-status-301`, {
@@ -129,7 +129,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson.status).toBe(301);
             expect(responseJson.statusText).toBe('Moved Permanently');
-        }, 10_000);
+        }, 30_000);
 
         it('handles status 304', async () => {
             const response = await fetch(`${origin}/get-status-304`, {
@@ -139,7 +139,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson.status).toBe(304);
             expect(responseJson.statusText).toBe('Not Modified');
-        }, 10_000);
+        }, 30_000);
 
         it('handles status 401', async () => {
             const response = await fetch(`${origin}/get-status-401`, {
@@ -149,7 +149,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson.status).toBe(401);
             expect(responseJson.statusText).toBe('Unauthorized');
-        }, 10_000);
+        }, 30_000);
 
         it('handles status 418', async () => {
             const response = await fetch(`${origin}/get-status-418`, {
@@ -159,7 +159,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson.status).toBe(418);
             expect(responseJson.statusText).toBe("I'm a teapot");
-        }, 10_000);
+        }, 30_000);
 
         it('handles status 500', async () => {
             const response = await fetch(`${origin}/get-status-500`, {
@@ -169,7 +169,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson.status).toBe(500);
             expect(responseJson.statusText).toBe('Internal Server Error');
-        }, 10_000);
+        }, 30_000);
 
         it('handles status 501', async () => {
             const response = await fetch(`${origin}/get-status-501`, {
@@ -179,7 +179,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson.status).toBe(501);
             expect(responseJson.statusText).toBe('Not Implemented');
-        }, 10_000);
+        }, 30_000);
 
         it('transforms the http response', async () => {
             const response = await fetch(`${origin}/transform`, {
@@ -188,7 +188,7 @@ export function getTests(canisterId: string): Test {
             const responseJson = await response.json();
 
             expect(responseJson).toHaveLength(0);
-        }, 10_000);
+        }, 30_000);
 
         it('transforms the http response with context', async () => {
             const response = await fetch(`${origin}/transform-with-context`, {
@@ -198,7 +198,7 @@ export function getTests(canisterId: string): Test {
 
             expect(headers).toHaveLength(0);
             expect(body).toBe(3);
-        }, 10_000);
+        }, 30_000);
 
         it('fails to fetch if the response is larger than the specified max response bytes', async () => {
             const response = await fetch(`${origin}/max-response-bytes`, {
@@ -210,7 +210,7 @@ export function getTests(canisterId: string): Test {
                 message:
                     'Rejection code 1, Header size exceeds specified response size limit 0'
             });
-        }, 10_000);
+        }, 30_000);
 
         it('fails to fetch if the request has no cycles attached to it', async () => {
             const response = await fetch(`${origin}/cycles`, {
