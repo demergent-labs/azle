@@ -45,8 +45,9 @@ export function RemoveTestArb(
 
 function generateBody(stableBTreeMapName: string): string {
     return /*TS*/ `
+        const containsKey = ${stableBTreeMapName}.containsKey(param0); // For situations where the stored value is literally null
         const result = ${stableBTreeMapName}.remove(param0);
-        if (result === null) {
+        if (result === null && !containsKey) {
             return None
         } else {
             return Some(result)
