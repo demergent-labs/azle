@@ -1,22 +1,19 @@
-import { Server } from 'azle/experimental';
 import express, { Request } from 'express';
 import { existsSync, statSync } from 'fs';
 
-export default Server(() => {
-    const app = express();
+const app = express();
 
-    app.get('/exists', (req: Request<any, any, any, { path: string }>, res) => {
-        res.send(existsSync(req.query.path));
-    });
-
-    app.get('/size', (req: Request<any, any, any, { path: string }>, res) => {
-        res.json(getFileSize(req.query.path));
-    });
-
-    app.use(express.static('/assets'));
-
-    return app.listen();
+app.get('/exists', (req: Request<any, any, any, { path: string }>, res) => {
+    res.send(existsSync(req.query.path));
 });
+
+app.get('/size', (req: Request<any, any, any, { path: string }>, res) => {
+    res.json(getFileSize(req.query.path));
+});
+
+app.use(express.static('/assets'));
+
+app.listen();
 
 function getFileSize(path: string): number {
     try {
