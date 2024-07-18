@@ -319,7 +319,7 @@ export function getTests(
             const rejectionMessage = 'Anything you want';
             const canisterId = '[a-z2-7-]{27}';
             const expectedErrorMessage = new RegExp(
-                `Call failed:\\s*Canister: ${canisterId}\\s*Method: getEmpty \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "IC0503: Error from Canister ${canisterId}: Canister trapped explicitly: Uncaught Error: ${rejectionMessage}.*"`
+                `Call failed:\\s*Canister: ${canisterId}\\s*Method: getEmpty \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "IC0503: Error from Canister ${canisterId}: Canister called \`ic0.trap\` with message: Uncaught Error: ${rejectionMessage}.*"`
             );
             await expect(primitiveTypesCanister.getEmpty()).rejects.toThrow(
                 expectedErrorMessage

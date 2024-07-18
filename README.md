@@ -27,12 +27,21 @@ Please remember that Azle is in beta and thus it may have unknown security vulne
 
 ## Get Started
 
-The quickest way to get started is through the [hello_world example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world).
+The quickest way to get started is through the [hello_world Candid RPC example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world_candid_rpc) or the [hello_world HTTP Server example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world).
 
-You can also create the [hello_world example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world) locally like this:
+You can create the hello_world Candid RPC example locally like this:
 
 ```bash
 npx azle new hello_world
+cd hello_world
+
+# Now read the README.md
+```
+
+You can create the hello_world HTTP Server example locally like this:
+
+```bash
+npx azle new hello_world --http-server
 cd hello_world
 
 # Now read the README.md
