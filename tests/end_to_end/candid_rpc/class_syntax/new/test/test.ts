@@ -1,12 +1,19 @@
-// TODO if these tests break just delete azle/examples/hello_world/node_modules
-
 import { execSync } from 'child_process';
 
-import { runTests } from '../../../../../../test'; // We don't want to install Azle
-import { getTests } from './tests';
+import { version } from '../../../../../../package.json';
 
-const canisterId = execSync(`cd hello_world && dfx canister id backend`)
-    .toString()
-    .trim();
+function pretest(): void {
+    execSync(`npx -y azle@${version} new hello_world --http-server`, {
+        stdio: 'inherit'
+    });
 
-runTests(getTests(canisterId));
+    execSync(`cd hello_world && npm install`, {
+        stdio: 'inherit'
+    });
+
+    execSync(`cd hello_world && npm test`, {
+        stdio: 'inherit'
+    });
+}
+
+pretest();

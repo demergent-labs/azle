@@ -1,8 +1,7 @@
 {
     "name": "new_end_to_end_test_functional_syntax",
     "scripts": {
-        "pretest": "if [ \"$AZLE_QUICK_TEST\" != \"true\" ]; then tsx test/pretest.ts; else echo 'Skipping pretests'; fi",
-        "test": "if [ \"$AZLE_QUICK_TEST\" != \"true\" ]; then jest; else echo 'Skipping tests'; fi"
+        "test": "if [ \"$AZLE_QUICK_TEST\" != \"true\" ]; then tsx test/test.ts; else echo 'Skipping pretests'; fi"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
