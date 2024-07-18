@@ -40,7 +40,7 @@
         "last 2 edge version"
     ],
     "dependencies": {
-        "azle": "0.22.0",
+        "azle": "0.23.0-rc.11",
         "react": "^17.0.2",
         "react-dom": "^17.0.2"
     }
