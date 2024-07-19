@@ -1,8 +1,8 @@
 import { Principal } from '../';
 
 /**
- * Returns the caller of the current call
- * @returns the caller of the current call
+ * Returns the principal of the caller of the current call
+ * @returns the principal of the caller of the current call
  */
 export function caller(): Principal {
     if (globalThis._azleIc === undefined) {
