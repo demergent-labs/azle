@@ -46,9 +46,13 @@ export function GetTestArb(
 function generateBody(stableBTreeMapName: string): string {
     return /*TS*/ `
         const result = ${stableBTreeMapName}.get(param0);
-        if (result === null) {
+        const containsKey = ${stableBTreeMapName}.containsKey(param0); // For situations where the stored value is literally null
+        console.log("contains key?", containsKey)
+        if (result === null && !containsKey) {
+            console.log("return none")
             return None
         } else {
+            console.log("return some")
             return Some(result)
         }
     `;
