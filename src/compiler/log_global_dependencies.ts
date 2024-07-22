@@ -18,5 +18,4 @@ Rust Version: ${rustVersion}`;
         globalDependencies,
         'utf-8'
     );
-    console.log('Global dependencies written to global_dependencies file.');
 }
