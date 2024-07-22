@@ -6,7 +6,6 @@ import { execSync } from 'child_process';
 import fc from 'fast-check';
 
 import { createActor } from './dfx_generated/canister';
-import { _SERVICE } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
