@@ -70,9 +70,26 @@ export function getTests(canisterId: string): Test {
             15 * 60 * 1_000
         );
 
-        // TODO right now the test can not tell if the files are there because they were uploaded again or if they are there because they were in stable memory. It would be good to develop a test to determine that.
         describe(
             'verify files specified in dfx.json exist after redeploy',
+            getDfxConfigFileTests(origin)
+        );
+
+        please(
+            'redeploy with no upload',
+            async () => {
+                execSync(
+                    `AZLE_DISABLE_AUTO_FILE_UPLOAD=true dfx deploy --upgrade-unchanged`,
+                    {
+                        stdio: 'inherit'
+                    }
+                );
+            },
+            1 * 60 * 1_000
+        );
+
+        describe(
+            'verify files specified in dfx.json exist after redeploy even with file uploading disabled',
             getDfxConfigFileTests(origin)
         );
 
@@ -80,7 +97,7 @@ export function getTests(canisterId: string): Test {
 
         // Run the huge file tests only once at the end so they don't slow down the rest of the test process
         // TODO CI CD isn't working with the 2GiB or bigger tests so we're just going to have this one for local tests.
-        describe.skip('huge files tests', hugeFilesTests(origin));
+        describe('huge files tests', hugeFilesTests(origin));
     };
 }
 

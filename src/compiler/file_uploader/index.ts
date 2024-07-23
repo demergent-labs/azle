@@ -12,7 +12,10 @@ export async function uploadFiles(
     canisterName: string,
     paths: [Src, Dest][]
 ): Promise<void> {
-    if (paths.length === 0) {
+    if (
+        paths.length === 0 ||
+        process.env.AZLE_DISABLE_AUTO_FILE_UPLOAD === 'true'
+    ) {
         return;
     }
 
