@@ -27,6 +27,6 @@ async function cleanup(
 ): Promise<void> {
     const incompleteFiles = await getListOfIncompleteFiles(paths, actor);
     for (const [_, path] of incompleteFiles) {
-        await actor.clear_file_and_info(path);
+        await actor._azle_clear_file_and_info(path);
     }
 }

@@ -136,7 +136,7 @@ export function verifyUpload(
             getCanisterId('backend'),
             AZLE_UPLOADER_IDENTITY_NAME
         );
-        const hash = await actor.get_file_hash(canisterPath);
+        const hash = await actor._azle_get_file_hash(canisterPath);
 
         expect(hash).toStrictEqual([expectedHash]);
     });
