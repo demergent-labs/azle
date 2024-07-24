@@ -1,7 +1,7 @@
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
 import { createAuthenticatedAgent, getCanisterId, whoami } from 'azle/dfx';
-import { expect, it, please, Test } from 'azle/test';
+import { defaultParams, expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
@@ -100,11 +100,9 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                {
-                    numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
-                }
+                defaultParams
             );
-        }, 1_000_000);
+        });
 
         it('should return the caller principal for query and update', async () => {
             await fc.assert(
@@ -134,10 +132,8 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                {
-                    numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
-                }
+                defaultParams
             );
-        }, 1_000_000);
+        });
     };
 }

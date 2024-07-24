@@ -1,9 +1,11 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
+import { ActorSubclass } from '@dfinity/agent';
 import { describe, expect, test } from '@jest/globals';
 import { join } from 'path';
 
+import { getCanisterId } from '../dfx';
 import { execSyncPretty } from '../src/compiler/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
 
@@ -114,4 +116,24 @@ function processEnvVars(): {
         shouldRunTypeChecks,
         shouldRunBenchmarks
     };
+}
+
+export const defaultParams = {
+    numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
+    endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
+};
+
+export async function getCanisterActor<T>(
+    canisterName: string
+): Promise<ActorSubclass<T>> {
+    const { createActor } = await import(
+        join(process.cwd(), 'test', 'dfx_generated', canisterName)
+    );
+    const actor = createActor(getCanisterId(canisterName), {
+        agentOptions: {
+            host: 'http://127.0.0.1:8000'
+        }
+    });
+
+    return actor;
 }
