@@ -13,7 +13,7 @@ const hugeAutoGenAutoUploadSmallFileInfos: [number, Unit][] = [[0, 'GiB']]; // T
 const runTestsAnyways = true;
 
 const hugeAutoGenAutoUploadFileInfos: [number, Unit][] =
-    process.env.AZLE_QUICK_TEST === 'true' && runTestsAnyways
+    process.env.AZLE_QUICK_TEST === 'true' && !runTestsAnyways
         ? hugeAutoGenAutoUploadSmallFileInfos
         : [
               ...hugeAutoGenAutoUploadSmallFileInfos,
