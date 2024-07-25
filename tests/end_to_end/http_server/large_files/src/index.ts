@@ -1,19 +1,21 @@
 import express, { Request } from 'express';
-import {
-    access,
-    copyFile,
-    mkdir,
-    readFile,
-    rename,
-    stat,
-    unlink,
-    writeFile
-} from 'fs/promises';
+import { access, readFile, stat } from 'fs/promises';
+import mime from 'mime';
+import { extname } from 'path';
 
-import { ls, lsHtml, tree } from './list_files';
+import { ls } from './list_files';
 
 const app = express();
 app.use(express.json());
+
+app.get('/', async (req, res) => {
+    res.send(
+        `<pre>${await ls(undefined, {
+            recursive: true,
+            display: 'html'
+        })}</pre>`
+    );
+});
 
 app.get(
     '/exists',
@@ -35,64 +37,42 @@ app.get('/size', async (req: Request<any, any, any, { path: string }>, res) => {
 app.get(
     '/ls',
     async (
-        req: Request<any, any, any, { path: string; recursive: boolean }>,
+        req: Request<
+            any,
+            any,
+            any,
+            {
+                path: string;
+                recursive: boolean;
+                display: 'tree' | 'html' | 'unix';
+            }
+        >,
         res
     ) => {
-        res.send(`<pre>${await ls(req.query.path, req.query.recursive)}</pre>`);
+        res.send(
+            `<pre>${await ls(req.query.path, {
+                recursive: req.query.recursive,
+                display: req.query.display
+            })}</pre>`
+        );
     }
 );
-
-app.get(
-    '/lsHtml',
-    async (
-        req: Request<any, any, any, { path: string; recursive: boolean }>,
-        res
-    ) => {
-        res.send(`${await lsHtml(req.query.path, req.query.recursive)}`);
-    }
-);
-
-app.get('/tree', async (req: Request<any, any, any, { path: string }>, res) => {
-    res.send(`<pre>${await tree(req.query.path)}</pre>`);
-});
 
 app.get(
     '/read-file',
     async (req: Request<any, any, any, { path: string }>, res) => {
-        const content = await readFile(req.query.path, 'utf8');
+        const filePath = req.query.path;
+        const fileExt = extname(filePath);
+        const mimeType = mime.lookup(fileExt) || 'application/octet-stream';
+        console.log('This is the mimeType');
+        console.log(mimeType);
+
+        const content = await readFile(filePath);
+
+        res.setHeader('Content-Type', mimeType);
         res.send(content);
     }
 );
-
-app.post('/write-file', async (req, res) => {
-    const { path: filePath, content } = req.body;
-    await writeFile(filePath, content, 'utf8');
-    res.send(`File written to ${filePath}`);
-});
-
-app.post('/create-directory', async (req, res) => {
-    const { path: dirPath } = req.body;
-    await mkdir(dirPath);
-    res.send(`Directory created at ${dirPath}`);
-});
-
-app.post('/copy-file', async (req, res) => {
-    const { source, destination } = req.body;
-    await copyFile(source, destination);
-    res.send(`File copied from ${source} to ${destination}`);
-});
-
-app.post('/delete-file', async (req, res) => {
-    const { path: filePath } = req.body;
-    await unlink(filePath);
-    res.send(`File deleted at ${filePath}`);
-});
-
-app.post('/rename-file', async (req, res) => {
-    const { oldPath, newPath } = req.body;
-    await rename(oldPath, newPath);
-    res.send(`File renamed from ${oldPath} to ${newPath}`);
-});
 
 app.use(express.static('/assets'));
 

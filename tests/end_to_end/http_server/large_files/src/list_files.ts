@@ -2,7 +2,28 @@ import { id } from 'azle';
 import { readdir, stat } from 'fs/promises';
 import { basename, join } from 'path';
 
+type LsOptions = {
+    recursive: boolean;
+    display: 'html' | 'tree' | 'unix';
+};
+
 export async function ls(
+    path: string = '.',
+    options: LsOptions = { recursive: true, display: 'unix' }
+): Promise<string> {
+    if (options.display === 'unix') {
+        return unix(path, options.recursive);
+    }
+    if (options.display === 'html') {
+        return html(path, options.recursive);
+    }
+    if (options.display === 'tree') {
+        return tree(path);
+    }
+    return 'Invalid display type: expecting "unix", "html", or "tree"';
+}
+
+async function unix(
     path: string = '.',
     recursive: boolean = false
 ): Promise<string> {
@@ -29,14 +50,14 @@ export async function ls(
             const fullPath = join(path, item);
             const stats = await stat(fullPath);
             if (stats.isDirectory()) {
-                result += `${fullPath}\n${await ls(fullPath, recursive)}\n`;
+                result += `${fullPath}\n${await unix(fullPath, recursive)}\n`;
             }
         }
     }
     return result;
 }
 
-export async function tree(
+async function tree(
     dirPath: string = '.',
     indent: string = ''
 ): Promise<string> {
@@ -59,7 +80,7 @@ export async function tree(
     return result;
 }
 
-export async function lsHtml(
+async function html(
     path: string = '.',
     recursive: boolean = false
 ): Promise<string> {
@@ -77,7 +98,7 @@ export async function lsHtml(
         result += createHtmlListItem(fullPath, isDirectory);
         const stats = await stat(fullPath);
         if (recursive && stats.isDirectory()) {
-            result += `${await lsHtml(fullPath, recursive)}`;
+            result += `${await html(fullPath, recursive)}`;
         }
     }
 
