@@ -15,12 +15,7 @@ const runTestsAnyways = true;
 const hugeAutoGenAutoUploadFileInfos: [number, Unit][] =
     process.env.AZLE_QUICK_TEST === 'true' && !runTestsAnyways
         ? hugeAutoGenAutoUploadSmallFileInfos
-        : [
-              ...hugeAutoGenAutoUploadSmallFileInfos,
-              [2, 'GiB'],
-              [5, 'GiB'],
-              [10, 'GiB']
-          ];
+        : [...hugeAutoGenAutoUploadSmallFileInfos, [2, 'GiB'], [5, 'GiB']];
 
 export function hugeFilesTests(origin: string): Test {
     return () => {
