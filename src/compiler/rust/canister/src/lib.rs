@@ -477,7 +477,7 @@ pub async fn _azle_upload_file_chunk(
     file_bytes: Vec<u8>,
     total_file_len: u64,
 ) {
-    upload_file::upload_file_chunk(
+    upload_file::upload_file_chunk::upload_file_chunk(
         dest_path,
         timestamp,
         start_index,
@@ -489,10 +489,10 @@ pub async fn _azle_upload_file_chunk(
 
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
 pub fn _azle_clear_file_and_info(path: String) {
-    upload_file::reset_for_new_upload(&path, 0).unwrap()
+    upload_file::reset::reset_for_new_upload(&path, 0).unwrap()
 }
 
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_file_hash(path: String) -> Option<String> {
-    upload_file::get_file_hash(path)
+    upload_file::hash::get_file_hash(path)
 }
