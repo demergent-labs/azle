@@ -97,7 +97,7 @@ export function getTests(canisterId: string): Test {
 
         // Run the huge file tests only once at the end so they don't slow down the rest of the test process
         // TODO CI CD isn't working with the 2GiB or bigger tests so we're just going to have this one for local tests.
-        describe('huge files tests', hugeFilesTests(origin));
+        describe.only('huge files tests', hugeFilesTests(origin));
     };
 }
 
