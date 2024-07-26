@@ -41,19 +41,14 @@ export async function uploadFile(
             )}%`
         );
 
-        const uploadPromise = actor._azle_upload_file_chunk(
-            destPath,
-            uploadStartTime,
-            BigInt(startIndex),
-            bytesToUpload.subarray(0, bytesRead),
-            BigInt(fileSize)
-        );
-
         promises.push(
-            uploadPromise.catch((error) => {
-                console.error(error);
-                throw error; // Re-throw the error to propagate it to the Promise.all check
-            })
+            actor._azle_upload_file_chunk(
+                destPath,
+                uploadStartTime,
+                BigInt(startIndex),
+                bytesToUpload.subarray(0, bytesRead),
+                BigInt(fileSize)
+            )
         );
     }
 
