@@ -10,13 +10,15 @@ export async function uploadFile(
     destPath: Dest,
     chunkSize: number,
     actor: UploaderActor
-): Promise<void> {
+): Promise<void | void[]> {
     if (!(await shouldBeUploaded(srcPath, destPath, actor))) {
         return;
     }
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;
     const file = await open(srcPath, 'r');
+    const promises: Promise<void>[] = [];
+
     for (let startIndex = 0; startIndex <= fileSize; startIndex += chunkSize) {
         let buffer = Buffer.alloc(chunkSize);
         const { buffer: bytesToUpload, bytesRead } = await file.read(
@@ -38,22 +40,26 @@ export async function uploadFile(
                 2
             )}%`
         );
-        // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
-        // The above throttling is sufficient to manage the speed of uploads
-        actor
-            ._azle_upload_file_chunk(
-                destPath,
-                uploadStartTime,
-                BigInt(startIndex),
-                bytesToUpload.subarray(0, bytesRead),
-                BigInt(fileSize)
-            )
-            .catch((error) => {
+
+        const uploadPromise = actor._azle_upload_file_chunk(
+            destPath,
+            uploadStartTime,
+            BigInt(startIndex),
+            bytesToUpload.subarray(0, bytesRead),
+            BigInt(fileSize)
+        );
+
+        promises.push(
+            uploadPromise.catch((error) => {
                 console.error(error);
-            });
+                throw error; // Re-throw the error to propagate it to the Promise.all check
+            })
+        );
     }
+
     file.close();
-    console.info();
+
+    return Promise.all(promises);
 }
 
 async function throttle(): Promise<void> {
