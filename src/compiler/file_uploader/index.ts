@@ -1,7 +1,6 @@
 import { getCanisterId } from '../../../dfx';
 import { generateUploaderIdentity } from '../uploader_identity';
 import { expandPaths } from './expand_paths';
-import { onBeforeExit } from './on_before_exit';
 import { uploadFile } from './upload_file';
 import { createActor } from './uploader_actor';
 
@@ -31,26 +30,17 @@ export async function uploadFiles(
 
     for (const [srcPath, destPath] of expandedPaths) {
         // Await each upload so the canister doesn't get overwhelmed by requests
-        let thing = uploadFile(srcPath, destPath, chunkSize, actor).catch(
-            async (error) => {
-                console.info(`Error uploading ${srcPath}: ${error}`);
-                await actor._azle_clear_file_and_info(destPath);
-            }
+        uploadPromises.push(
+            uploadFile(srcPath, destPath, chunkSize, actor).catch(
+                async (error) => {
+                    console.info(`Error uploading ${srcPath}:\n${error}`);
+                    await actor._azle_clear_file_and_info(destPath);
+                }
+            )
         );
-        uploadPromises.push(thing);
     }
 
-    try {
-        await Promise.all(uploadPromises);
-        console.info('All files uploaded successfully.');
-    } catch (error) {
-        console.error('One or more uploads failed.');
-        console.info(error);
-    }
+    await Promise.all(uploadPromises);
 
-    console.info(
-        'Finished uploading files. Waiting for all async processes to end...' // TODO what's happening is that the last bit of the uploadFile doesn't await the last chunk I think, so we do still need to add the onBeforeExit so we don't exit until that is done
-    );
-
-    onBeforeExit(expandedPaths, actor);
+    console.info('Finished uploading files');
 }
