@@ -1,7 +1,6 @@
 import { describe } from '@jest/globals';
 import { please, Test } from 'azle/test';
 import { execSync } from 'child_process';
-import { rm } from 'fs-extra';
 import { join } from 'path';
 
 import { Unit } from '../../../../../scripts/file_generator';
@@ -17,16 +16,6 @@ const hugeAutoGenAutoUploadFileInfos: [number, Unit][] =
 
 export function hugeFilesTests(origin: string): Test {
     return () => {
-        please(
-            'remove all other auto generated files so there is room for huge files',
-            async () => {
-                await rm(join('assets', 'auto'), {
-                    recursive: true,
-                    force: true
-                });
-            }
-        );
-
         describe.each(hugeAutoGenAutoUploadFileInfos)(
             'generate huge files',
             (size, units) => {
