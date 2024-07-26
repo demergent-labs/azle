@@ -1,5 +1,6 @@
 {
     "scripts": {
+        "postinstall": "mkdir -p assets/auto",
         "pretest": "tsx test/pretest.ts",
         "test": "jest"
     },
