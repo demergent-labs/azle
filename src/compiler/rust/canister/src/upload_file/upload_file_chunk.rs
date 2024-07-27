@@ -12,6 +12,12 @@ pub async fn upload_file_chunk(
     file_bytes: Vec<u8>,
     total_file_len: u64,
 ) {
+    if dest_path.contains("trap") {
+        panic!("The dest_path contains 'trap'");
+    } else {
+        ic_cdk::println!("I guess {} doesn't contain trap", dest_path)
+    }
+
     let is_latest_version = check_if_latest_version(&dest_path, timestamp);
 
     if !is_latest_version {
