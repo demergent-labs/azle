@@ -10,9 +10,9 @@ export async function uploadFile(
     destPath: Dest,
     chunkSize: number,
     actor: UploaderActor
-): Promise<void | void[]> {
+): Promise<Promise<void>[]> {
     if (!(await shouldBeUploaded(srcPath, destPath, actor))) {
-        return;
+        return [];
     }
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;
@@ -42,19 +42,21 @@ export async function uploadFile(
         );
 
         promises.push(
-            actor._azle_upload_file_chunk(
-                destPath,
-                uploadStartTime,
-                BigInt(startIndex),
-                bytesToUpload.subarray(0, bytesRead),
-                BigInt(fileSize)
-            )
+            actor
+                ._azle_upload_file_chunk(
+                    destPath,
+                    uploadStartTime,
+                    BigInt(startIndex),
+                    bytesToUpload.subarray(0, bytesRead),
+                    BigInt(fileSize)
+                )
+                .catch()
         );
     }
 
     file.close();
 
-    return Promise.all(promises);
+    return promises;
 }
 
 async function throttle(): Promise<void> {

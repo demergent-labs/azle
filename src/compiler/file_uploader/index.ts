@@ -26,19 +26,20 @@ export async function uploadFiles(
 
     const expandedPaths = await expandPaths(paths);
 
-    let uploadPromises: Promise<void | void[]>[] = [];
+    let uploadPromises: Promise<void>[] = [];
 
     for (const [srcPath, destPath] of expandedPaths) {
         // Await each upload so the canister doesn't get overwhelmed by requests
         uploadPromises.push(
-            uploadFile(srcPath, destPath, chunkSize, actor).catch(
-                async (error) => {
-                    console.info(`Error uploading ${srcPath}:\n${error}`);
-                    await actor._azle_clear_file_and_info(destPath);
-                }
-            )
+            ...(await uploadFile(srcPath, destPath, chunkSize, actor))
         );
     }
+    // .catch(
+    //     async (error) => {
+    //         console.info(`Error uploading ${srcPath}:\n${error}`);
+    //         await actor._azle_clear_file_and_info(destPath);
+    //     }
+    // )
 
     await Promise.all(uploadPromises);
 
