@@ -9,9 +9,12 @@ export async function logGlobalDependencies(): Promise<void> {
     const nodeVersion = execSyncPretty('node --version');
     const rustVersion = execSyncPretty('rustc --version');
 
-    const globalDependencies = `wasi2ic version: ${wasiVersion}
-node version: ${nodeVersion}
-rustc version: ${rustVersion}`;
+    const globalDependencies =
+        `wasi2ic version: ${wasiVersion}` +
+        `\n` +
+        `node version: ${nodeVersion}` +
+        `\n` +
+        `rustc version: ${rustVersion}`;
 
     await writeFile(
         join(AZLE_PACKAGE_PATH, 'global_dependencies'),
