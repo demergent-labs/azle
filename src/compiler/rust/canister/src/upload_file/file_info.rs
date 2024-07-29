@@ -1,13 +1,6 @@
 use crate::upload_file::Timestamp;
+use crate::FILE_INFO;
 use std::{cell::RefCell, collections::BTreeMap};
-
-type Hash = Option<Vec<u8>>;
-type BytesReceived = u64;
-type BytesHashed = u64;
-
-thread_local! {
-    static FILE_INFO: RefCell<BTreeMap<String, (Timestamp, BytesReceived, Hash, BytesHashed)>> = RefCell::new(BTreeMap::new());
-}
 
 pub fn initialize_file_info(path: &str, timestamp: Timestamp) {
     FILE_INFO.with(|file_info| {

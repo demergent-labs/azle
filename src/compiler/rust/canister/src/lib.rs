@@ -22,6 +22,7 @@ mod upload_file;
 mod web_assembly;
 
 use guards::guard_against_non_controllers;
+use upload_file::Timestamp;
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
@@ -66,6 +67,10 @@ impl Storable for AzleStableBTreeMapValue {
     const BOUND: Bound = Bound::Unbounded;
 }
 
+type Hash = Option<Vec<u8>>;
+type BytesReceived = u64;
+type BytesHashed = u64;
+
 #[derive(Debug, Serialize, Deserialize)]
 struct WasmData {
     env_vars: Vec<(String, String)>,
@@ -85,6 +90,8 @@ thread_local! {
     static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
 
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
+
+    static FILE_INFO: RefCell<BTreeMap<String, (Timestamp, BytesReceived, Hash, BytesHashed)>> = RefCell::new(BTreeMap::new());
 }
 
 #[no_mangle]
@@ -477,7 +484,7 @@ pub async fn _azle_upload_file_chunk(
     file_bytes: Vec<u8>,
     total_file_len: u64,
 ) {
-    upload_file::upload_file_chunk::upload_file_chunk(
+    upload_file::upload_file_chunk(
         dest_path,
         timestamp,
         start_index,
@@ -489,10 +496,10 @@ pub async fn _azle_upload_file_chunk(
 
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
 pub fn _azle_clear_file_and_info(path: String) {
-    upload_file::reset::reset_for_new_upload(&path, 0).unwrap()
+    upload_file::reset_for_new_upload(&path, 0).unwrap()
 }
 
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_file_hash(path: String) -> Option<String> {
-    upload_file::hash::get_file_hash(path)
+    upload_file::get_file_hash(path)
 }
