@@ -99,6 +99,10 @@ export function whoami(): string {
     return execSync(`dfx identity whoami`).toString().trim();
 }
 
+export function whoamiPrincipal(): string {
+    return execSync(`dfx identity get-principal`).toString().trim();
+}
+
 type StorageMode = 'keyring' | 'password-protected' | 'plaintext';
 
 export function generateIdentity(name: string): Buffer {
