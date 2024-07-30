@@ -40,11 +40,6 @@ export type AzleIc = {
         intervalString: string,
         timerCallbackId: string
     ) => string;
-    stableBytes: () => ArrayBuffer;
-    stableGrow: (newPages: string) => string;
-    stableRead: (offset: string, length: string) => ArrayBuffer;
-    stableSize: () => string;
-    stableWrite: (offset: string, buf: ArrayBuffer) => void;
     time: () => string;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
