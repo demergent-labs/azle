@@ -1,6 +1,5 @@
 export { acceptMessage } from './accept_message';
 export { argDataRaw } from './arg_data_raw';
-export { argDataRawSize } from './arg_data_raw_size';
 export { call } from './call';
 export { caller } from './caller';
 export { candidCompiler } from './candid_compiler';

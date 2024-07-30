@@ -47,7 +47,6 @@
         -   [Call APIs](./reference/call_apis/call_apis.md)
             -   [accept message](./reference/call_apis/accept_message.md)
             -   [arg data raw](./reference/call_apis/arg_data_raw.md)
-            -   [arg data raw size](./reference/call_apis/arg_data_raw_size.md)
             -   [call](./reference/call_apis/call.md)
             -   [call raw](./reference/call_apis/call_raw.md)
             -   [call raw 128](./reference/call_apis/call_raw128.md)

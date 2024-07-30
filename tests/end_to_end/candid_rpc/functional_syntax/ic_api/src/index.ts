@@ -7,7 +7,6 @@ import {
     int8,
     Manual,
     nat,
-    nat32,
     nat64,
     Opt,
     Principal,
@@ -57,14 +56,6 @@ export default Canister({
         blob,
         (_arg1, _arg2, _arg3, _arg4) => {
             return ic.argDataRaw();
-        }
-    ),
-    // returns the length of the argument data in bytes
-    argDataRawSize: query(
-        [blob, int8, bool, text],
-        nat32,
-        (_arg1, _arg2, _arg3, _arg4) => {
-            return ic.argDataRawSize();
         }
     ),
     // returns the principal of the identity that called this function

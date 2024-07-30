@@ -4,7 +4,6 @@
  */
 export type AzleIc = {
     argDataRaw: () => ArrayBuffer;
-    argDataRawSize: () => string;
     callRaw: (
         promiseId: string,
         canisterIdBytes: ArrayBuffer,

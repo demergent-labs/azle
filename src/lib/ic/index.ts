@@ -1,6 +1,5 @@
 import { acceptMessage } from './accept_message';
 import { argDataRaw } from './arg_data_raw';
-import { argDataRawSize } from './arg_data_raw_size';
 import { call } from './call';
 import { callRaw } from './call_raw';
 import { caller } from './caller';
@@ -44,7 +43,6 @@ export * from './types';
 /** API entrypoint for interacting with the Internet Computer */
 export const ic = {
     acceptMessage,
-    argDataRawSize,
     argDataRaw,
     call,
     callRaw,

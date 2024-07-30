@@ -2,7 +2,6 @@
 
 -   [accept message](./accept_message.md)
 -   [arg data raw](./arg_data_raw.md)
--   [arg data raw size](./arg_data_raw_size.md)
 -   [call](./call.md)
 -   [call raw](./call_raw.md)
 -   [call raw 128](./call_raw128.md)

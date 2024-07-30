@@ -1,6 +1,5 @@
 mod accept_message;
 mod arg_data_raw;
-mod arg_data_raw_size;
 mod call_raw;
 mod caller;
 mod candid_compiler;
@@ -62,13 +61,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "argDataRaw",
         context
             .new_function::<arg_data_raw::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "argDataRawSize",
-        context
-            .new_function::<arg_data_raw_size::NativeFunction>("")
             .into(),
     );
 
