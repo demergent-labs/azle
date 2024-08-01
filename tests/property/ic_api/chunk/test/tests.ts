@@ -54,5 +54,51 @@ export function getTests(): Test {
                 defaultParams
             );
         });
+
+        it('should not hit the instruction limit with chunking in a timer', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+
+            await fc.assert(
+                fc.asyncProperty(
+                    fc.nat({
+                        max: 200
+                    }),
+                    async (constant) => {
+                        await actor.measureSumTimer(
+                            20_000_000 + 1_000_000 * constant,
+                            true
+                        );
+
+                        let continueLoop: boolean = true;
+
+                        while (continueLoop) {
+                            const timerStarted = await actor.getTimerStarted();
+
+                            expect(timerStarted).toStrictEqual(true);
+
+                            const timerEnded = await actor.getTimerEnded();
+
+                            if (timerEnded === true) {
+                                const timerInstructions =
+                                    await actor.getTimerInstructions();
+
+                                expect(
+                                    timerInstructions
+                                ).toBeGreaterThanOrEqual(
+                                    updateCallInstructionLimit
+                                );
+
+                                continueLoop = false;
+                            } else {
+                                await new Promise((resolve) =>
+                                    setTimeout(resolve, 5_000)
+                                );
+                            }
+                        }
+                    }
+                ),
+                defaultParams
+            );
+        });
     };
 }
