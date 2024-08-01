@@ -9,7 +9,7 @@ export function getTests(): Test {
     return () => {
         const updateCallInstructionLimit = 40_000_000_000n;
 
-        it.only('should hit the instruction limit without chunking', async () => {
+        it('should hit the instruction limit without chunking', async () => {
             const actor = await getCanisterActor<Actor>('canister');
 
             await fc.assert(
