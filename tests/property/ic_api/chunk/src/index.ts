@@ -1,25 +1,18 @@
-import { IDL, instructionCounter, query, update } from 'azle';
+import { chunk, IDL, performanceCounter, update } from 'azle';
 
 export default class {
-    @query([IDL.Nat32], IDL.Nat64)
-    queryInstructionCounter(loops: number): bigint {
-        sum(loops);
+    @update([IDL.Nat32, IDL.Bool], IDL.Nat64)
+    async measureSum(loops: number, shouldChunk: boolean): Promise<bigint> {
+        let _sum = 0;
 
-        return instructionCounter();
-    }
+        for (let i = 0; i < loops; i++) {
+            _sum += (i % 100) * (i % 100);
 
-    @update([IDL.Nat32], IDL.Nat64)
-    updateInstructionCounter(loops: number): bigint {
-        sum(loops);
+            if (shouldChunk && i % 15_000_000 === 0) {
+                await chunk();
+            }
+        }
 
-        return instructionCounter();
-    }
-}
-
-function sum(loops: number): void {
-    let _sum = 0;
-
-    for (let i = 0; i < loops; i++) {
-        _sum += (i % 100) * (i % 100);
+        return performanceCounter(1);
     }
 }
