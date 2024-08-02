@@ -36,7 +36,8 @@ async function azle(): Promise<void> {
         canisterId,
         reloadedJsPath,
         esmAliases,
-        esmExternals
+        esmExternals,
+        experimental
     } = await getNames();
 
     await time(
@@ -66,7 +67,8 @@ async function azle(): Promise<void> {
                     rustStagingWasmPath,
                     canisterJavaScript,
                     canisterConfig,
-                    canisterPath
+                    canisterPath,
+                    experimental
                 );
 
             // This is for the dfx.json candid property
@@ -86,7 +88,8 @@ async function azle(): Promise<void> {
                 canisterJavaScript,
                 compilerInfo,
                 canisterConfig,
-                canisterPath
+                canisterPath,
+                experimental
             );
 
             if (
@@ -104,7 +107,8 @@ async function azle(): Promise<void> {
                 esmAliases,
                 esmExternals,
                 canisterName,
-                canisterMethods.post_upgrade?.index ?? -1
+                canisterMethods.post_upgrade?.index ?? -1,
+                experimental
             );
         }
     );

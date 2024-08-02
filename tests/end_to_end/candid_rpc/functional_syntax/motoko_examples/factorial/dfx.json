@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "test/dfx_generated/factorial",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

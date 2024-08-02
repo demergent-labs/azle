@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "test/dfx_generated/complex_init",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "rec_init": {
@@ -16,6 +19,9 @@
             "declarations": {
                 "output": "test/dfx_generated/rec_init",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

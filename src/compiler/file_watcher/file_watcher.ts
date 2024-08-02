@@ -9,7 +9,10 @@ import { ok } from '../utils/result';
 
 type ActorReloadJs = ActorSubclass<_SERVICE>;
 interface _SERVICE {
-    reload_js: ActorMethod<[bigint, bigint, Uint8Array, bigint, number], void>;
+    reload_js: ActorMethod<
+        [bigint, bigint, Uint8Array, bigint, number, boolean],
+        void
+    >;
 }
 
 // We have made this mutable to help with speed
@@ -24,6 +27,7 @@ const esmAliases = JSON.parse(process.argv[6]);
 const esmExternals = JSON.parse(process.argv[7]);
 const canisterName = process.argv[8];
 const postUpgradeIndex = Number(process.argv[9]);
+const experimental = process.argv[10] === 'true' ? true : false;
 
 // TODO https://github.com/demergent-labs/azle/issues/1664
 const watcher = watch([`**/*.ts`, `**/*.js`], {
@@ -98,7 +102,8 @@ async function reloadJs(
                 chunkNumber,
                 chunk,
                 BigInt(reloadedJs.length),
-                postUpgradeIndex
+                postUpgradeIndex,
+                experimental
             )
             .catch((error) => {
                 if (process.env.AZLE_VERBOSE === 'true') {
@@ -131,7 +136,8 @@ async function createActorReloadJs(
                         IDL.Nat64,
                         IDL.Vec(IDL.Nat8),
                         IDL.Nat64,
-                        IDL.Int32
+                        IDL.Int32,
+                        IDL.Bool
                     ],
                     [],
                     []

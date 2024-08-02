@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "test/dfx_generated/candid_encoding",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

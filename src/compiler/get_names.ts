@@ -56,6 +56,8 @@ export async function getNames() {
     const esmAliases = canisterConfig.esm_aliases ?? {};
     const esmExternals = canisterConfig.esm_externals ?? [];
 
+    const experimental = canisterConfig.custom?.experimental ?? false;
+
     return {
         stdioType,
         wasmedgeQuickJsName,
@@ -70,7 +72,8 @@ export async function getNames() {
         canisterId,
         reloadedJsPath,
         esmAliases,
-        esmExternals
+        esmExternals,
+        experimental
     };
 }
 

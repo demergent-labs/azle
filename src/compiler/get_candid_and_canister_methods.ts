@@ -21,7 +21,8 @@ export async function getCandidAndCanisterMethods(
     rustStagingWasmPath: string,
     js: string,
     canisterConfig: CanisterConfig,
-    canisterPath: string
+    canisterPath: string,
+    experimental: boolean
 ): Promise<{
     candid: string;
     canisterMethods: CanisterMethods;
@@ -48,11 +49,15 @@ export async function getCandidAndCanisterMethods(
             js,
             compilerInfo,
             canisterConfig,
-            canisterPath
+            canisterPath,
+            experimental
         );
 
         const { candid, canisterMethods } =
-            await generateCandidAndCanisterMethods(rustStagingWasmPath);
+            await generateCandidAndCanisterMethods(
+                rustStagingWasmPath,
+                experimental
+            );
 
         return {
             candid: candidGen === 'custom' ? customCandid : candid,

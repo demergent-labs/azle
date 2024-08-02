@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "test/dfx_generated/simple_erc20",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

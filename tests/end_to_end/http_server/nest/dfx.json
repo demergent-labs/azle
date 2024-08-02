@@ -3,7 +3,10 @@
         "api": {
             "type": "azle",
             "main": "src/main.ts",
-            "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"]
+            "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"],
+            "custom": {
+                "experimental": true
+            }
         }
     }
 }

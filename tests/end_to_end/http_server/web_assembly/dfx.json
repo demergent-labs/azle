@@ -2,7 +2,10 @@
     "canisters": {
         "web_assembly": {
             "type": "azle",
-            "main": "src/index.ts"
+            "main": "src/index.ts",
+            "custom": {
+                "experimental": true
+            }
         }
     }
 }
