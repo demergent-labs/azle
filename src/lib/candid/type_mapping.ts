@@ -1,4 +1,4 @@
-import { AzleResult, Result } from '../system_types';
+import { AzleResult, Result } from '../experimental/system_types';
 import { AzleBlob, blob } from './types/constructed/blob';
 import { AzleOpt, Opt } from './types/constructed/opt';
 import { AzleTuple } from './types/constructed/tuple';

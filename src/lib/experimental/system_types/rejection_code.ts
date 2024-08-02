@@ -1,5 +1,5 @@
-import { Variant } from '../candid/types/constructed/variant';
-import { Null } from '../candid/types/primitive/null';
+import { Variant } from '../../candid/types/constructed/variant';
+import { Null } from '../../candid/types/primitive/null';
 
 /**
  * Indicates an error was encountered during a canister method.
