@@ -22,11 +22,11 @@ import { text } from '../candid/types/primitive/text';
 import { Func } from '../candid/types/reference/func';
 import { Canister } from '../candid/types/reference/service';
 import { CanisterOptions } from '../candid/types/reference/service/canister_function';
-import { init } from '../canister_methods/methods/init';
-import { postUpgrade } from '../canister_methods/methods/post_upgrade';
-import { query } from '../canister_methods/methods/query';
-import { update } from '../canister_methods/methods/update';
 import { ic } from '../ic';
+import { init } from './canister_methods/methods/init';
+import { postUpgrade } from './canister_methods/methods/post_upgrade';
+import { query } from './canister_methods/methods/query';
+import { update } from './canister_methods/methods/update';
 
 export type HeaderField = [text, text];
 export const HeaderField = Tuple(text, text);

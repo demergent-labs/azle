@@ -1,12 +1,12 @@
-import { CandidType } from '../../candid/candid_type';
-import { TypeMapping } from '../../candid/type_mapping';
+import { CandidType } from '../../../candid/candid_type';
+import { TypeMapping } from '../../../candid/type_mapping';
 import { executeMethod } from '../execute_method';
 import { isAsync } from '../is_async';
 import { Callback } from '../types/callback';
 import { CanisterMethodInfo } from '../types/canister_method_info';
 import { MethodArgs } from '../types/method_args';
 
-export function update<
+export function query<
     const Params extends ReadonlyArray<CandidType>,
     Return extends CandidType,
     GenericCallback extends Callback<Params, Return>
@@ -18,12 +18,13 @@ export function update<
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
+    // TODO maybe the cross canister callback should be made here?
     const finalCallback =
         callback === undefined
             ? undefined
             : (...args: any[]): void => {
                   executeMethod(
-                      'update',
+                      'query',
                       args,
                       callback,
                       paramCandidTypes as unknown as CandidType[],
@@ -33,7 +34,7 @@ export function update<
               };
 
     return {
-        mode: 'update',
+        mode: 'query',
         callback: finalCallback,
         paramCandidTypes: paramCandidTypes as unknown as CandidType[],
         returnCandidType,

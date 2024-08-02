@@ -1,11 +1,11 @@
-import { CandidType } from '../../candid/candid_type';
-import { TypeMapping } from '../../candid/type_mapping';
-import { Void } from '../../candid/types/primitive/void';
+import { CandidType } from '../../../candid/candid_type';
+import { TypeMapping } from '../../../candid/type_mapping';
+import { Void } from '../../../candid/types/primitive/void';
 import { executeMethod } from '../execute_method';
 import { Callback } from '../types/callback';
 import { CanisterMethodInfo } from '../types/canister_method_info';
 
-export function init<
+export function postUpgrade<
     const Params extends ReadonlyArray<CandidType>,
     GenericCallback extends Callback<Params, typeof Void>
 >(
@@ -19,7 +19,7 @@ export function init<
             ? undefined
             : (...args: any[]): void => {
                   executeMethod(
-                      'init',
+                      'postUpgrade',
                       args,
                       callback,
                       paramCandidTypes as unknown as CandidType[],
@@ -29,9 +29,9 @@ export function init<
               };
 
     return {
-        mode: 'init',
+        mode: 'postUpgrade',
         callback: finalCallback,
-        paramCandidTypes: paramCandidTypes as any,
+        paramCandidTypes: paramCandidTypes as unknown as CandidType[],
         returnCandidType: Void,
         async: false,
         index: globalThis._azleCanisterMethodsIndex++
