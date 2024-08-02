@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { CandidType as RuntimeCandidType } from '../../../src/lib';
+import { CandidType as RuntimeCandidType } from '../../../src/lib/experimental';
 import { CandidValueConstraints } from './candid_values_arb';
 import { BlobArb } from './constructed/blob_arb';
 import { OptArb } from './constructed/opt_arb';

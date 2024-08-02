@@ -1,4 +1,4 @@
-import { RequireExactlyOne } from '../../lib';
+import { RequireExactlyOne } from '../../lib/experimental';
 import { ConsumerConfig } from '../get_consumer_config';
 
 export type AzleError = {

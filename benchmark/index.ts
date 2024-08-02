@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 
-import { nat64 } from '../src/lib';
+import { nat64 } from '../src/lib/experimental';
 import { create_csv_report } from './csv';
 import { create_markdown_report } from './markdown';
 import { run_setup } from './setup';

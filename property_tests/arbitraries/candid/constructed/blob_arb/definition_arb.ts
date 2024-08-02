@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { blob } from '../../../../../src/lib';
+import { blob } from '../../../../../src/lib/experimental';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     BlobCandidDefinition,

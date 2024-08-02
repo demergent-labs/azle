@@ -21,7 +21,7 @@ import {
     reserved,
     text,
     Void
-} from '../../../src/lib';
+} from '../../../src/lib/experimental';
 import { testCandidType, testSerializable } from '../../assert_type';
 
 export const ExampleRecord = Record({

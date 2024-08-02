@@ -1,4 +1,4 @@
-import { blob } from '../../../src/lib';
+import { blob } from '../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

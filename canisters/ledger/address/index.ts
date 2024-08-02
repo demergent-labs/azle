@@ -1,7 +1,7 @@
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import { sha224 } from 'js-sha256';
 
-import { blob, Principal } from '../../../src/lib';
+import { blob, Principal } from '../../../src/lib/experimental';
 import { Address } from '../index';
 
 // TODO we need to review these heavily

@@ -1,4 +1,4 @@
-import { Principal } from '../../../src/lib';
+import { Principal } from '../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

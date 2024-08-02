@@ -21,7 +21,7 @@ export async function compileTypeScriptToJavaScript(
             import 'azle';
 
             // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
-            import { ethersGetUrl, ic, Server } from 'azle/src/lib/index';
+            import { ethersGetUrl, ic, Server } from 'azle/src/lib/experimental/index';
             import { ethers } from 'ethers';
             ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
