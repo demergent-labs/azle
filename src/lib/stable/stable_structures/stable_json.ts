@@ -1,4 +1,4 @@
-import { Principal } from '../candid/types/reference/principal';
+import { Principal } from '../../candid/types/reference/principal';
 import { Serializable } from './stable_b_tree_map';
 
 export function StableJson(options?: {

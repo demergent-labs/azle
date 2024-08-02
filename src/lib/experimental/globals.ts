@@ -8,7 +8,7 @@ import { azleFetch } from '../fetch';
 import { ic } from '../ic';
 import { AzleIc } from '../ic/types/azle_ic';
 import { IDL } from '../stable';
-import { jsonReplacer } from '../stable_structures/stable_json';
+import { jsonReplacer } from '../stable/stable_structures/stable_json';
 
 type CanisterMethods = {
     candid: string;
