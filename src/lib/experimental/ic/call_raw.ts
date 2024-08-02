@@ -1,9 +1,9 @@
+import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid';
 
 import { blob } from '../candid/types/constructed/blob';
 import { nat } from '../candid/types/primitive/nats/nat';
 import { text } from '../candid/types/primitive/text';
-import { Principal } from '../experimental';
 
 /**
  * Performs an asynchronous call to another canister using the [System API](

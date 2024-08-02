@@ -4,11 +4,11 @@ import { TextDecoder, TextEncoder } from 'text-encoding';
 import { URL } from 'url';
 import { v4 } from 'uuid';
 
-import { ic } from '../ic';
-import { AzleIc } from '../ic/types/azle_ic';
 import { IDL } from '../stable';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { azleFetch } from './fetch';
+import { ic } from './ic';
+import { AzleIc } from './ic/types/azle_ic';
 
 type CanisterMethods = {
     candid: string;

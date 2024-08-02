@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { AzleResult } from '../../../../../experimental/system_types';
+import { AzleResult } from '../../../../../system_types';
 import { DecodeVisitor } from '../../decode_visitor';
 import { EncodeVisitor } from '../../encode_visitor';
 import { VisitorData, VisitorResult } from '../../types';

@@ -1,4 +1,4 @@
-import { CanisterMethodInfo } from '../../../../experimental/canister_methods/types/canister_method_info';
+import { CanisterMethodInfo } from '../../../../canister_methods/types/canister_method_info';
 import { CandidType, TypeMapping } from '../../../index';
 import { _AzleRecursiveFunction } from '../../../recursive';
 import { Principal } from '../principal';

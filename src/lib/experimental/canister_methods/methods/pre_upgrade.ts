@@ -1,4 +1,4 @@
-import { Void } from '../../../candid/types/primitive/void';
+import { Void } from '../../candid/types/primitive/void';
 import { isAsync } from '../is_async';
 import { CanisterMethodInfo } from '../types/canister_method_info';
 

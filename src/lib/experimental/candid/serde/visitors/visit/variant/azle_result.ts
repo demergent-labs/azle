@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { Result } from '../../../../../experimental/system_types/result';
+import { Result } from '../../../../../system_types/result';
 import { DecodeVisitor } from '../../decode_visitor';
 import { EncodeVisitor } from '../../encode_visitor';
 import { VisitorData } from '../../types';

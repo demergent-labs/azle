@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { CanisterMethodInfo } from '../../../../../experimental/canister_methods/types/canister_method_info';
+import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { ic } from '../../../../../ic';
 import { CandidType, Parent, toIdlTypeArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';

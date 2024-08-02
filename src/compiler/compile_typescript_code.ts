@@ -25,9 +25,9 @@ export async function compileTypeScriptToJavaScript(
             import { ethers } from 'ethers';
             ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
-            import { toDidString } from 'azle/src/lib/candid/did_file/to_did_string';
+            import { toDidString } from 'azle/src/lib/experimental/candid/did_file/to_did_string';
             import { IDL } from 'azle';
-            import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/candid/did_file/visitor';
+            import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/experimental/candid/did_file/visitor';
             export { Principal } from '@dfinity/principal';
             export * from './${main}';
             import * as CanisterMethods from './${main}';

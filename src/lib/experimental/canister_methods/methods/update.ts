@@ -1,5 +1,5 @@
-import { CandidType } from '../../../candid/candid_type';
-import { TypeMapping } from '../../../candid/type_mapping';
+import { CandidType } from '../../candid/candid_type';
+import { TypeMapping } from '../../candid/type_mapping';
 import { executeMethod } from '../execute_method';
 import { isAsync } from '../is_async';
 import { Callback } from '../types/callback';

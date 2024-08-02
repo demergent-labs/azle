@@ -1,4 +1,4 @@
-import { RejectionCode } from '../experimental/system_types';
+import { RejectionCode } from '../system_types';
 
 /**
  * Returns the rejection code from the most recently executed cross-canister

@@ -1,6 +1,6 @@
 import { Void } from '../candid/types/primitive/void';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { inspectMessage } from '../experimental/canister_methods/methods/inspect_message'; // Used for links in comments
+import { inspectMessage } from '../canister_methods/methods/inspect_message'; // Used for links in comments
 
 /**
  * Accepts the ingress message. Calling from outside the

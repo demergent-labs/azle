@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { ic, Principal } from '../../experimental';
+import { ic, Principal } from '..';
 import { getUrl } from './url';
 
 export async function fetchIcp(
