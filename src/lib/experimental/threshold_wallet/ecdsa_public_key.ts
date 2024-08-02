@@ -1,4 +1,4 @@
-import { Principal, serialize } from '../experimental';
+import { Principal, serialize } from '..';
 import { ThresholdKeyInfo } from './wallet';
 
 export async function ecdsaPublicKey(
