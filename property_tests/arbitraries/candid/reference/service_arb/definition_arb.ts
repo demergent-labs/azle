@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Canister } from '../../../../../src/lib/candid/types/reference/service';
+import { Canister } from '../../../../../src/lib/experimental/candid/types/reference/service';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,

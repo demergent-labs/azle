@@ -1,4 +1,4 @@
-import { executeAndReplyWithCandidSerde } from './execute_with_candid_serde';
+import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
 
 export function preUpgrade<This, Args extends any[], Return>(
     originalMethod: (this: This, ...args: Args) => Return,

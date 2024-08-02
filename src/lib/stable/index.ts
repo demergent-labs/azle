@@ -1,14 +1,14 @@
 import './globals';
-export { heartbeat } from './heartbeat';
+export { heartbeat } from './canister_methods/heartbeat';
+export { init } from './canister_methods/init';
+export { inspectMessage } from './canister_methods/inspect_message';
+export { postUpgrade } from './canister_methods/post_upgrade';
+export { preUpgrade } from './canister_methods/pre_upgrade';
+export { query } from './canister_methods/query';
+export { update } from './canister_methods/update';
 export * from './ic_apis';
-export { init } from './init';
-export { inspectMessage } from './inspect_message';
-export { postUpgrade } from './post_upgrade';
-export { preUpgrade } from './pre_upgrade';
-export { query } from './query';
 export * from './stable_structures/stable_b_tree_map';
 export * from './stable_structures/stable_json';
-export { update } from './update';
 export * from '@dfinity/candid';
 export * from '@dfinity/principal';
 

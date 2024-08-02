@@ -1,8 +1,8 @@
 import { IDL } from '@dfinity/candid';
 
-import { executeAndReplyWithCandidSerde } from './execute_with_candid_serde';
+import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
 
-export function init<This, Args extends any[], Return>(
+export function postUpgrade<This, Args extends any[], Return>(
     paramIdlTypes: IDL.Type[]
 ) {
     return (
@@ -11,20 +11,20 @@ export function init<This, Args extends any[], Return>(
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
 
-        globalThis._azleCanisterMethods.init = {
+        globalThis._azleCanisterMethods.post_upgrade = {
             name: context.name as string,
             index
         };
 
         globalThis._azleInitAndPostUpgradeIdlTypes.push(
-            IDL.Func(paramIdlTypes, [], ['init'])
+            IDL.Func(paramIdlTypes, [], ['post_upgrade'])
         );
 
         globalThis._azleCanisterMethods.callbacks[index.toString()] = (
             ...args: any[]
         ): void => {
             executeAndReplyWithCandidSerde(
-                'init',
+                'postUpgrade',
                 args,
                 originalMethod.bind(globalThis._azleCanisterClassInstance),
                 paramIdlTypes,

@@ -1,11 +1,12 @@
 import { IDL } from '@dfinity/candid';
 
-import { executeAndReplyWithCandidSerde } from './execute_with_candid_serde';
+import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
 
-export function update<This, Args extends any[], Return>(
+export function query<This, Args extends any[], Return>(
     paramIdlTypes: IDL.Type[],
     returnIdlType?: IDL.Type,
     options?: {
+        composite?: boolean;
         manual?: boolean;
     }
 ) {
@@ -15,19 +16,25 @@ export function update<This, Args extends any[], Return>(
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
         const name = context.name as string;
+        const composite = options?.composite ?? false;
 
-        globalThis._azleCanisterMethods.updates.push({ name, index });
+        globalThis._azleCanisterMethods.queries.push({
+            name,
+            index,
+            composite
+        });
 
         globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
             paramIdlTypes,
-            returnIdlType === undefined ? [] : [returnIdlType]
+            returnIdlType === undefined ? [] : [returnIdlType],
+            ['query']
         );
 
         globalThis._azleCanisterMethods.callbacks[index.toString()] = (
             ...args: any[]
         ): void => {
             executeAndReplyWithCandidSerde(
-                'update',
+                'query',
                 args,
                 originalMethod.bind(globalThis._azleCanisterClassInstance),
                 paramIdlTypes,
