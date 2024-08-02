@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 export { DecodeVisitor } from './decode_visitor';
 export { EncodeVisitor } from './encode_visitor';
 

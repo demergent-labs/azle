@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import './register_get_url';
 
 import { ethers } from 'ethers';

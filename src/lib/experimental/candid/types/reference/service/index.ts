@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { CanisterMethodInfo } from '../../../../canister_methods/types/canister_method_info';
 import { CandidType, TypeMapping } from '../../../index';
 import { _AzleRecursiveFunction } from '../../../recursive';

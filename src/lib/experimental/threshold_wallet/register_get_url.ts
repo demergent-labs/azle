@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 // TODO unfortunately this is highly unlikely to work in production because
 // TODO of the headers...we need a good transform
 // TODO what if the nodes automatically removed conflicting information?

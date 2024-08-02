@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { nat } from '../candid/types/primitive/nats/nat';
 import { Void } from '../candid/types/primitive/void';
 import { notifyRaw } from './notify_raw';

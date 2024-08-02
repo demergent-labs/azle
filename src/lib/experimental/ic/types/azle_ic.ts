@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 /**
  * The interface for our rust methods it slightly different than the interface
  * we expose to the users. This is the interface for the rust functions.

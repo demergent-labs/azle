@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 // TODO We currently do not have an implementation of ReadableStream
 // TODO thus our body is done with Uint8Array or Buffer
 

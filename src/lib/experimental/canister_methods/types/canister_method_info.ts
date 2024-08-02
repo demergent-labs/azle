@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 // To achieve the developer facing type inference API we often introduce type
 // parameters that are used by the consumer of the function but not by the
 // function itself

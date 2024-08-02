@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { blob } from '../candid/types/constructed/blob';
 import { nat } from '../candid/types/primitive/nats/nat';
 import { text } from '../candid/types/primitive/text';

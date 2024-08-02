@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { bool } from '../candid/types/primitive/bool';
 import { Principal } from '../candid/types/reference/principal';
 

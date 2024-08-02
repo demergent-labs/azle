@@ -1,3 +1,9 @@
+import { experimentalMessage } from './experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Server as NodeServer, ServerResponse } from 'http';

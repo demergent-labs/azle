@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { Void } from '../../candid/types/primitive/void';
 import { executeMethod } from '../execute_method';
 import { CanisterMethodInfo } from '../types/canister_method_info';

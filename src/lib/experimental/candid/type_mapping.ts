@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { AzleResult, Result } from '../system_types';
 import { AzleBlob, blob } from './types/constructed/blob';
 import { AzleOpt, Opt } from './types/constructed/opt';

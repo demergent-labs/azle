@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { handleUncaughtError } from '../../stable/error';
 import { CandidType } from '../candid/candid_type';
 import { decode } from '../candid/serde/decode';

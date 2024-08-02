@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { Void } from '../../candid/types/primitive/void';
 import { ic } from '../../ic';
 import { isAsync } from '../is_async';

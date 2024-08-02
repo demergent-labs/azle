@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { CandidTypesDefs, VisitorResult } from './visitor/index.js';
 
 export function toDidString(result: VisitorResult): string {

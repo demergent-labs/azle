@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../../../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { IDL } from '@dfinity/candid';
 
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';

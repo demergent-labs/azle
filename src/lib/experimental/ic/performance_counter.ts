@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { nat32 } from '../candid/types/primitive/nats/nat32';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 

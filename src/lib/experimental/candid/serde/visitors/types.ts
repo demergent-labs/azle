@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 /*
  * The VisitorData gives us js_data which is the data that is about to be
  * encoded or was just decoded. js_class is the CandidType that can be used to

@@ -1,3 +1,9 @@
+import { experimentalMessage } from './experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { Buffer } from 'buffer';
 import * as process from 'process';
 import { TextDecoder, TextEncoder } from 'text-encoding';
@@ -31,6 +37,8 @@ type CanisterMethod = {
 };
 
 declare global {
+    // eslint-disable-next-line no-var
+    var _azleExperimental: boolean;
     // eslint-disable-next-line no-var
     var _azleInsideCanister: boolean;
     // eslint-disable-next-line no-var
