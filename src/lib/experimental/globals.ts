@@ -6,53 +6,12 @@ if (globalThis._azleExperimental !== true) {
 
 import { Buffer } from 'buffer';
 import * as process from 'process';
-import { TextDecoder, TextEncoder } from 'text-encoding';
 import { URL } from 'url';
 import { v4 } from 'uuid';
 
-import { IDL } from '../stable';
-import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { azleFetch } from './fetch';
-import { ic } from './ic';
-import { AzleIc } from './ic/types/azle_ic';
-
-type CanisterMethods = {
-    candid: string;
-    queries: CanisterMethod[];
-    updates: CanisterMethod[];
-    init?: CanisterMethod;
-    pre_upgrade?: CanisterMethod;
-    post_upgrade?: CanisterMethod;
-    heartbeat?: CanisterMethod;
-    inspect_message?: CanisterMethod;
-    callbacks: {
-        [key: string]: (...args: any) => any;
-    };
-};
-
-type CanisterMethod = {
-    name: string;
-    index: number;
-    composite?: boolean;
-};
 
 declare global {
-    // eslint-disable-next-line no-var
-    var _azleExperimental: boolean;
-    // eslint-disable-next-line no-var
-    var _azleInsideCanister: boolean;
-    // eslint-disable-next-line no-var
-    var _azleWasmtimeCandidEnvironment: boolean;
-    // eslint-disable-next-line no-var
-    var _azleIc: AzleIc | undefined;
-    // eslint-disable-next-line no-var
-    var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
-    // eslint-disable-next-line no-var
-    var _azleRejectIds: { [key: string]: (err: any) => void };
-    // eslint-disable-next-line no-var
-    var _azleIcTimers: { [key: string]: string };
-    // eslint-disable-next-line no-var
-    var _azleTimerCallbacks: { [key: string]: () => void };
     // eslint-disable-next-line no-var
     var _azleWebAssembly: any;
     // eslint-disable-next-line no-var
@@ -65,179 +24,101 @@ declare global {
     var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
-    // eslint-disable-next-line no-var
-    var _azleInitCalled: boolean;
-    // eslint-disable-next-line no-var
-    var _azlePostUpgradeCalled: boolean;
-    // eslint-disable-next-line no-var
-    var _azleCanisterMethods: CanisterMethods;
-    // eslint-disable-next-line no-var
-    var _azleCanisterMethodsIndex: number;
-    // eslint-disable-next-line no-var
-    var _azleCanisterMethodIdlTypes: { [key: string]: IDL.FuncClass };
-    // eslint-disable-next-line no-var
-    var _azleInitAndPostUpgradeIdlTypes: IDL.FuncClass[];
 }
 
-globalThis._azleInsideCanister =
-    globalThis._azleIc === undefined ? false : true;
+globalThis.window = globalThis as any;
 
-if (globalThis._azleInsideCanister) {
-    globalThis._azleCanisterMethodsIndex = 0;
+const originalSetTimeout = setTimeout;
 
-    globalThis._azleCanisterMethods = {
-        candid: '',
-        queries: [],
-        updates: [],
-        callbacks: {}
-    };
+(globalThis as any).setTimeout = (
+    handler: TimerHandler,
+    timeout?: number
+): number => {
+    if (timeout !== undefined && timeout !== 0) {
+        console.warn(
+            `Azle Warning: setTimeout may not behave as expected with milliseconds above 0; called with ${timeout} milliseconds`,
+            new Error().stack
+        );
+    }
 
-    globalThis._azleCanisterMethodIdlTypes = {};
+    return originalSetTimeout(handler, 0);
+};
 
-    globalThis._azleInitAndPostUpgradeIdlTypes = [];
+globalThis.Buffer = Buffer;
 
-    globalThis._azleInitCalled = false;
-    globalThis._azlePostUpgradeCalled = false;
+globalThis.process = process;
 
-    globalThis.window = globalThis as any;
+// TODO These write implementations are not correct, they are just good enough
+// TODO to get NestJS logging looking pretty good
+globalThis.process = {
+    ...process,
+    stdout: {
+        write: (message: string) => {
+            stdioWrite(message);
+        }
+    } as any,
+    stderr: {
+        write: (message: string) => {
+            stdioWrite(message);
+        }
+    } as any
+};
 
-    const log = (...args: any[]): void => {
-        const jsonStringifiedArgs = args
-            .map((arg) => {
-                if (arg instanceof Error) {
-                    return `${arg.name}: ${arg.message} at ${arg.stack}`;
-                } else {
-                    return JSON.stringify(arg, jsonReplacer, 4);
-                }
-            })
-            .join(' ');
+globalThis.clearInterval = (): void => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
 
-        ic.print(jsonStringifiedArgs);
-    };
+globalThis.global = globalThis;
+(globalThis as any).self = globalThis;
 
-    globalThis.console = {
-        ...globalThis.console,
-        log,
-        error: log,
-        warn: log,
-        info: log
-    };
+globalThis.TypeError = globalThis.Error;
 
-    const originalSetTimeout = setTimeout;
+globalThis.WebAssembly = {
+    instantiate: (...args: any[]) => {
+        const uuid = v4();
 
-    (globalThis as any).setTimeout = (
-        handler: TimerHandler,
-        timeout?: number
-    ): number => {
-        if (timeout !== undefined && timeout !== 0) {
-            console.warn(
-                `Azle Warning: setTimeout may not behave as expected with milliseconds above 0; called with ${timeout} milliseconds`,
-                new Error().stack
-            );
+        const instantiatedSource = globalThis._azleWebAssembly.instantiate(
+            uuid,
+            ...args
+        );
+        const exportEntries = Object.entries(
+            instantiatedSource.instance.exports
+        );
+
+        for (const [key, value] of exportEntries) {
+            if (typeof value === 'function') {
+                instantiatedSource.instance.exports[key] = value.bind({
+                    instanceUuid: uuid,
+                    exportName: key
+                });
+            }
         }
 
-        return originalSetTimeout(handler, 0);
-    };
+        return instantiatedSource;
+    }
+} as any;
 
-    globalThis.TextDecoder = TextDecoder;
-    globalThis.TextEncoder = TextEncoder;
-    globalThis._azleIcTimers = {};
-    globalThis._azleResolveIds = {};
-    globalThis._azleRejectIds = {};
-    globalThis._azleTimerCallbacks = {};
+(globalThis as any).fetch = azleFetch;
 
-    // TODO be careful we are using a random seed of 0 I think
-    // TODO the randomness is predictable
-    globalThis.crypto = {
-        ...globalThis.crypto,
-        getRandomValues: ((array: Uint8Array) => {
-            // TODO the type is wrong of array
-            // TODO this could possibly be any kind of TypedArray
+(globalThis as any).URL = URL;
 
-            for (let i = 0; i < array.length; i++) {
-                array[i] = Math.floor(Math.random() * 256);
-            }
+// Unfortunately NestJS needs RegExp.leftContext to work
+const originalExec = RegExp.prototype.exec;
 
-            return array;
-        }) as any
-    };
+Object.defineProperty(RegExp.prototype, 'leftContext', {
+    value: '',
+    writable: true,
+    configurable: true
+});
 
-    globalThis.Buffer = Buffer;
+RegExp.prototype.exec = function (string): RegExpExecArray | null {
+    const match = originalExec.call(this, string);
+    if (match) {
+        RegExp.leftContext = (string ?? '').substring(0, match.index);
+    }
+    return match;
+};
 
-    globalThis.process = process;
-
-    // TODO These write implementations are not correct, they are just good enough
-    // TODO to get NestJS logging looking pretty good
-    globalThis.process = {
-        ...process,
-        stdout: {
-            write: (message: string) => {
-                stdioWrite(message);
-            }
-        } as any,
-        stderr: {
-            write: (message: string) => {
-                stdioWrite(message);
-            }
-        } as any
-    };
-
-    globalThis.clearInterval = (): void => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
-
-    globalThis.global = globalThis;
-    (globalThis as any).self = globalThis;
-
-    globalThis.TypeError = globalThis.Error;
-
-    globalThis.WebAssembly = {
-        instantiate: (...args: any[]) => {
-            const uuid = v4();
-
-            const instantiatedSource = globalThis._azleWebAssembly.instantiate(
-                uuid,
-                ...args
-            );
-            const exportEntries = Object.entries(
-                instantiatedSource.instance.exports
-            );
-
-            for (const [key, value] of exportEntries) {
-                if (typeof value === 'function') {
-                    instantiatedSource.instance.exports[key] = value.bind({
-                        instanceUuid: uuid,
-                        exportName: key
-                    });
-                }
-            }
-
-            return instantiatedSource;
-        }
-    } as any;
-
-    (globalThis as any).fetch = azleFetch;
-
-    (globalThis as any).URL = URL;
-
-    // Unfortunately NestJS needs RegExp.leftContext to work
-    const originalExec = RegExp.prototype.exec;
-
-    Object.defineProperty(RegExp.prototype, 'leftContext', {
-        value: '',
-        writable: true,
-        configurable: true
-    });
-
-    RegExp.prototype.exec = function (string): RegExpExecArray | null {
-        const match = originalExec.call(this, string);
-        if (match) {
-            RegExp.leftContext = (string ?? '').substring(0, match.index);
-        }
-        return match;
-    };
-
-    global.Intl = require('intl');
-    require('intl/locale-data/jsonp/en.js');
-}
+global.Intl = require('intl');
+require('intl/locale-data/jsonp/en.js');
 
 function stdioWrite(message: string): void {
     // eslint-disable-next-line

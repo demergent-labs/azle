@@ -51,7 +51,8 @@ async function azle(): Promise<void> {
                     canisterConfig.main,
                     wasmedgeQuickJsPath,
                     esmAliases,
-                    esmExternals
+                    esmExternals,
+                    experimental
                 )
             );
 

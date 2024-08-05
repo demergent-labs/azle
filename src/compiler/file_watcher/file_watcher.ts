@@ -50,7 +50,8 @@ watcher.on('all', async (event, path) => {
                 actor,
                 reloadedJsPath,
                 mainPath,
-                wasmedgeQuickJsPath
+                wasmedgeQuickJsPath,
+                experimental
             );
         } catch (error) {
             console.error(error);
@@ -62,13 +63,15 @@ async function reloadJs(
     actor: ActorReloadJs,
     reloadedJsPath: string,
     mainPath: string,
-    wasmedgeQuickJsPath: string
+    wasmedgeQuickJsPath: string,
+    experimental: boolean
 ): Promise<void> {
     const canisterJavaScriptResult = await getCanisterJavaScript(
         mainPath,
         wasmedgeQuickJsPath,
         esmAliases,
-        esmExternals
+        esmExternals,
+        experimental
     );
 
     if (!ok(canisterJavaScriptResult)) {
