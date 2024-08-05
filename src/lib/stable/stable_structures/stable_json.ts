@@ -1,4 +1,5 @@
 import { Principal } from '@dfinity/principal';
+import { TextDecoder, TextEncoder } from 'text-encoding';
 
 import { Serializable } from './stable_b_tree_map';
 
@@ -6,6 +7,9 @@ export function StableJson(options?: {
     replacer?: typeof jsonReplacer;
     reviver?: typeof jsonReviver;
 }): Serializable {
+    const textEncoder = new TextEncoder();
+    const textDecoder = new TextDecoder();
+
     return {
         toBytes(data: any): Uint8Array {
             const result = JSON.stringify(
@@ -13,11 +17,11 @@ export function StableJson(options?: {
                 options?.replacer ?? jsonReplacer
             );
 
-            return Uint8Array.from(Buffer.from(result));
+            return textEncoder.encode(result);
         },
         fromBytes(bytes: Uint8Array): any {
             return JSON.parse(
-                Buffer.from(bytes).toString(),
+                textDecoder.decode(bytes),
                 options?.reviver ?? jsonReviver
             );
         }
