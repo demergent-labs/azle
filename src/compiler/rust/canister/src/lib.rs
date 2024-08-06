@@ -397,6 +397,18 @@ fn initialize_js(
         ic::register(context);
         web_assembly::register(context);
 
+        let mut env = context.new_object();
+
+        for (key, value) in std::env::vars() {
+            env.set(&key, context.new_string(&value).into());
+        }
+
+        let mut process = context.new_object();
+
+        process.set("env", env.into());
+
+        context.get_global().set("process", process.into());
+
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
         context.eval_global_str(format!("globalThis._azleExperimental = {experimental};"));
