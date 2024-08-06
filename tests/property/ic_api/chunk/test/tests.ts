@@ -69,6 +69,11 @@ export function getTests(): Test {
                             true
                         );
 
+                        // We want to give the timer enough time to at least get started
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 5_000)
+                        );
+
                         let continueLoop: boolean = true;
 
                         while (continueLoop) {
