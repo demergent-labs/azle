@@ -52,7 +52,7 @@ app.get(
         res.send(
             `<pre>${await ls(req.query.path, {
                 recursive: req.query.recursive,
-                display: req.query.display
+                display: req.query.display ?? 'html'
             })}</pre>`
         );
     }
@@ -64,8 +64,6 @@ app.get(
         const filePath = req.query.path;
         const fileExt = extname(filePath);
         const mimeType = mime.lookup(fileExt) || 'application/octet-stream';
-        console.log('This is the mimeType');
-        console.log(mimeType);
 
         const content = await readFile(filePath);
 

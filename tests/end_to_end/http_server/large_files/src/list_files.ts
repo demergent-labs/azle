@@ -20,7 +20,7 @@ export async function ls(
     if (options.display === 'tree') {
         return tree(path);
     }
-    return 'Invalid display type: expecting "unix", "html", or "tree"';
+    return `Invalid display type: expecting "unix", "html", or "tree". Received: ${options.display}`;
 }
 
 async function unix(
@@ -108,7 +108,7 @@ async function html(
 
 function createHtmlListItem(path: string, isDirectory: boolean): string {
     const link = isDirectory
-        ? `/lsHtml?path=${encodeURIComponent(path)}`
+        ? `/ls?path=${encodeURIComponent(path)}&display=html`
         : `/read-file?path=${encodeURIComponent(path)}`;
     return `<li><a href="${link}">${basename(path)}</a></li>`;
 }
