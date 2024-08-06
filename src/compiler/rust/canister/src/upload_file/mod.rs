@@ -1,7 +1,5 @@
 use wasmedge_quickjs::AsObject;
 
-use crate::chunk;
-
 mod bytes_to_human_readable;
 mod file_info;
 mod hash;
