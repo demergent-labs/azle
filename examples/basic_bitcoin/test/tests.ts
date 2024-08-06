@@ -1,3 +1,5 @@
+globalThis._azleExperimental = true;
+
 import { beforeAll } from '@jest/globals';
 import { jsonParse, jsonStringify } from 'azle/experimental';
 import { GetUtxosResult, Utxo } from 'azle/experimental/canisters/management';
