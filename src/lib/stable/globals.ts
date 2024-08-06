@@ -45,6 +45,8 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
+    var _azleInsideCanister: boolean;
+    // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
     // eslint-disable-next-line no-var
     var _azleRejectIds: { [key: string]: (err: any) => void };
@@ -56,67 +58,72 @@ declare global {
     var _azleWasmtimeCandidEnvironment: boolean;
 }
 
-globalThis._azleCanisterMethodsIndex = 0;
+globalThis._azleInsideCanister =
+    globalThis._azleIc === undefined ? false : true;
 
-globalThis._azleCanisterMethodIdlTypes = {};
+if (globalThis._azleInsideCanister === true) {
+    globalThis._azleCanisterMethodsIndex = 0;
 
-globalThis._azleInitAndPostUpgradeIdlTypes = [];
+    globalThis._azleCanisterMethodIdlTypes = {};
 
-globalThis._azleCanisterMethods = {
-    candid: '',
-    queries: [],
-    updates: [],
-    callbacks: {}
-};
+    globalThis._azleInitAndPostUpgradeIdlTypes = [];
 
-globalThis._azleTimerCallbacks = {};
+    globalThis._azleCanisterMethods = {
+        candid: '',
+        queries: [],
+        updates: [],
+        callbacks: {}
+    };
 
-globalThis._azleIcTimers = {};
+    globalThis._azleTimerCallbacks = {};
 
-globalThis._azleRejectIds = {};
+    globalThis._azleIcTimers = {};
 
-globalThis._azleResolveIds = {};
+    globalThis._azleRejectIds = {};
 
-globalThis.TextDecoder = TextDecoder;
-globalThis.TextEncoder = TextEncoder;
+    globalThis._azleResolveIds = {};
 
-// TODO be careful we are using a random seed of 0 I think
-// TODO the randomness is predictable
-globalThis.crypto = {
-    ...globalThis.crypto,
-    getRandomValues: ((array: Uint8Array) => {
-        // TODO the type is wrong of array
-        // TODO this could possibly be any kind of TypedArray
+    globalThis.TextDecoder = TextDecoder;
+    globalThis.TextEncoder = TextEncoder;
 
-        for (let i = 0; i < array.length; i++) {
-            array[i] = Math.floor(Math.random() * 256);
-        }
+    // TODO be careful we are using a random seed of 0 I think
+    // TODO the randomness is predictable
+    globalThis.crypto = {
+        ...globalThis.crypto,
+        getRandomValues: ((array: Uint8Array) => {
+            // TODO the type is wrong of array
+            // TODO this could possibly be any kind of TypedArray
 
-        return array;
-    }) as any
-};
-
-globalThis._azleInitCalled = false;
-globalThis._azlePostUpgradeCalled = false;
-
-const log = (...args: any[]): void => {
-    const jsonStringifiedArgs = args
-        .map((arg) => {
-            if (arg instanceof Error) {
-                return `${arg.name}: ${arg.message} at ${arg.stack}`;
-            } else {
-                return JSON.stringify(arg, jsonReplacer, 4);
+            for (let i = 0; i < array.length; i++) {
+                array[i] = Math.floor(Math.random() * 256);
             }
-        })
-        .join(' ');
 
-    print(jsonStringifiedArgs);
-};
+            return array;
+        }) as any
+    };
 
-globalThis.console = {
-    ...globalThis.console,
-    log,
-    error: log,
-    warn: log,
-    info: log
-};
+    globalThis._azleInitCalled = false;
+    globalThis._azlePostUpgradeCalled = false;
+
+    const log = (...args: any[]): void => {
+        const jsonStringifiedArgs = args
+            .map((arg) => {
+                if (arg instanceof Error) {
+                    return `${arg.name}: ${arg.message} at ${arg.stack}`;
+                } else {
+                    return JSON.stringify(arg, jsonReplacer, 4);
+                }
+            })
+            .join(' ');
+
+        print(jsonStringifiedArgs);
+    };
+
+    globalThis.console = {
+        ...globalThis.console,
+        log,
+        error: log,
+        warn: log,
+        info: log
+    };
+}

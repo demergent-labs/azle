@@ -26,99 +26,104 @@ declare global {
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
 }
 
-globalThis.window = globalThis as any;
+globalThis._azleInsideCanister =
+    globalThis._azleIc === undefined ? false : true;
 
-const originalSetTimeout = setTimeout;
+if (globalThis._azleInsideCanister === true) {
+    globalThis.window = globalThis as any;
 
-(globalThis as any).setTimeout = (
-    handler: TimerHandler,
-    timeout?: number
-): number => {
-    if (timeout !== undefined && timeout !== 0) {
-        console.warn(
-            `Azle Warning: setTimeout may not behave as expected with milliseconds above 0; called with ${timeout} milliseconds`,
-            new Error().stack
-        );
-    }
+    const originalSetTimeout = setTimeout;
 
-    return originalSetTimeout(handler, 0);
-};
-
-globalThis.Buffer = Buffer;
-
-globalThis.process = process;
-
-// TODO These write implementations are not correct, they are just good enough
-// TODO to get NestJS logging looking pretty good
-globalThis.process = {
-    ...process,
-    stdout: {
-        write: (message: string) => {
-            stdioWrite(message);
+    (globalThis as any).setTimeout = (
+        handler: TimerHandler,
+        timeout?: number
+    ): number => {
+        if (timeout !== undefined && timeout !== 0) {
+            console.warn(
+                `Azle Warning: setTimeout may not behave as expected with milliseconds above 0; called with ${timeout} milliseconds`,
+                new Error().stack
+            );
         }
-    } as any,
-    stderr: {
-        write: (message: string) => {
-            stdioWrite(message);
-        }
-    } as any
-};
 
-globalThis.clearInterval = (): void => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
+        return originalSetTimeout(handler, 0);
+    };
 
-globalThis.global = globalThis;
-(globalThis as any).self = globalThis;
+    globalThis.Buffer = Buffer;
 
-globalThis.TypeError = globalThis.Error;
+    globalThis.process = process;
 
-globalThis.WebAssembly = {
-    instantiate: (...args: any[]) => {
-        const uuid = v4();
-
-        const instantiatedSource = globalThis._azleWebAssembly.instantiate(
-            uuid,
-            ...args
-        );
-        const exportEntries = Object.entries(
-            instantiatedSource.instance.exports
-        );
-
-        for (const [key, value] of exportEntries) {
-            if (typeof value === 'function') {
-                instantiatedSource.instance.exports[key] = value.bind({
-                    instanceUuid: uuid,
-                    exportName: key
-                });
+    // TODO These write implementations are not correct, they are just good enough
+    // TODO to get NestJS logging looking pretty good
+    globalThis.process = {
+        ...process,
+        stdout: {
+            write: (message: string) => {
+                stdioWrite(message);
             }
+        } as any,
+        stderr: {
+            write: (message: string) => {
+                stdioWrite(message);
+            }
+        } as any
+    };
+
+    globalThis.clearInterval = (): void => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
+
+    globalThis.global = globalThis;
+    (globalThis as any).self = globalThis;
+
+    globalThis.TypeError = globalThis.Error;
+
+    globalThis.WebAssembly = {
+        instantiate: (...args: any[]) => {
+            const uuid = v4();
+
+            const instantiatedSource = globalThis._azleWebAssembly.instantiate(
+                uuid,
+                ...args
+            );
+            const exportEntries = Object.entries(
+                instantiatedSource.instance.exports
+            );
+
+            for (const [key, value] of exportEntries) {
+                if (typeof value === 'function') {
+                    instantiatedSource.instance.exports[key] = value.bind({
+                        instanceUuid: uuid,
+                        exportName: key
+                    });
+                }
+            }
+
+            return instantiatedSource;
         }
+    } as any;
 
-        return instantiatedSource;
-    }
-} as any;
+    (globalThis as any).fetch = azleFetch;
 
-(globalThis as any).fetch = azleFetch;
+    (globalThis as any).URL = URL;
 
-(globalThis as any).URL = URL;
+    // Unfortunately NestJS needs RegExp.leftContext to work
+    const originalExec = RegExp.prototype.exec;
 
-// Unfortunately NestJS needs RegExp.leftContext to work
-const originalExec = RegExp.prototype.exec;
+    Object.defineProperty(RegExp.prototype, 'leftContext', {
+        value: '',
+        writable: true,
+        configurable: true
+    });
 
-Object.defineProperty(RegExp.prototype, 'leftContext', {
-    value: '',
-    writable: true,
-    configurable: true
-});
+    RegExp.prototype.exec = function (string): RegExpExecArray | null {
+        const match = originalExec.call(this, string);
+        if (match) {
+            RegExp.leftContext = (string ?? '').substring(0, match.index);
+        }
+        return match;
+    };
 
-RegExp.prototype.exec = function (string): RegExpExecArray | null {
-    const match = originalExec.call(this, string);
-    if (match) {
-        RegExp.leftContext = (string ?? '').substring(0, match.index);
-    }
-    return match;
-};
-
-global.Intl = require('intl');
-require('intl/locale-data/jsonp/en.js');
+    global.Intl = require('intl');
+    require('intl/locale-data/jsonp/en.js');
+}
 
 function stdioWrite(message: string): void {
     // eslint-disable-next-line
