@@ -26,5 +26,5 @@ fs.writeFile(jestConfigPath, newJestConfigContent, 'utf8', (err) => {
         return;
     }
 
-    console.log('jest.config.js successfully overwritten.');
+    console.info('jest.config.js successfully overwritten.');
 });
