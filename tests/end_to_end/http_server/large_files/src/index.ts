@@ -8,14 +8,15 @@ import { ls } from './list_files';
 const app = express();
 app.use(express.json());
 
-app.get('/', async (req, res) => {
-    res.send(
-        `<pre>${await ls(undefined, {
-            recursive: true,
-            display: 'html'
-        })}</pre>`
-    );
-});
+app.get(
+    '/',
+    async (
+        req: Request<any, any, any, { path: string; recursive: boolean }>,
+        res
+    ) => {
+        res.send(`<pre>${await ls(req.query.path, req.query.recursive)}</pre>`);
+    }
+);
 
 app.get(
     '/exists',
@@ -33,30 +34,6 @@ app.get('/size', async (req: Request<any, any, any, { path: string }>, res) => {
     const size = await getFileSize(req.query.path);
     res.json(size);
 });
-
-app.get(
-    '/ls',
-    async (
-        req: Request<
-            any,
-            any,
-            any,
-            {
-                path: string;
-                recursive: boolean;
-                display: 'tree' | 'html' | 'unix';
-            }
-        >,
-        res
-    ) => {
-        res.send(
-            `<pre>${await ls(req.query.path, {
-                recursive: req.query.recursive,
-                display: req.query.display ?? 'html'
-            })}</pre>`
-        );
-    }
-);
 
 app.get(
     '/read-file',

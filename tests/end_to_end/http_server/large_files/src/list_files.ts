@@ -2,92 +2,14 @@ import { id } from 'azle';
 import { readdir, stat } from 'fs/promises';
 import { basename, join } from 'path';
 
-type LsOptions = {
-    recursive: boolean;
-    display: 'html' | 'tree' | 'unix';
-};
-
 export async function ls(
     path: string = '.',
-    options: LsOptions = { recursive: true, display: 'unix' }
-): Promise<string> {
-    if (options.display === 'unix') {
-        return unix(path, options.recursive);
-    }
-    if (options.display === 'html') {
-        return html(path, options.recursive);
-    }
-    if (options.display === 'tree') {
-        return tree(path);
-    }
-    return `Invalid display type: expecting "unix", "html", or "tree". Received: ${options.display}`;
-}
-
-async function unix(
-    path: string = '.',
     recursive: boolean = false
 ): Promise<string> {
     const stats = await stat(path);
 
     if (!stats.isDirectory()) {
-        return `${await getFileDetails(path, await getSizePadding(path))}\n`;
-    }
-
-    let result = '';
-    const items = await sortDirContents(path);
-    for (const item of items) {
-        const fullPath = join(path, item);
-
-        result += `${await getFileDetails(
-            fullPath,
-            await getSizePadding(path)
-        )}\n`;
-    }
-
-    if (recursive) {
-        result += '\n';
-        for (const item of items) {
-            const fullPath = join(path, item);
-            const stats = await stat(fullPath);
-            if (stats.isDirectory()) {
-                result += `${fullPath}\n${await unix(fullPath, recursive)}\n`;
-            }
-        }
-    }
-    return result;
-}
-
-async function tree(
-    dirPath: string = '.',
-    indent: string = ''
-): Promise<string> {
-    let result = '';
-    const items = await sortDirContents(dirPath);
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-
-        const fullPath = join(dirPath, item);
-        const stats = await stat(fullPath);
-        const isLastItem = i === items.length - 1;
-        const newIndent = indent + (isLastItem ? '    ' : '│   ');
-
-        result += `${indent + (isLastItem ? '└── ' : '├── ') + item}\n`;
-
-        if (stats.isDirectory()) {
-            result += await tree(fullPath, newIndent);
-        }
-    }
-    return result;
-}
-
-async function html(
-    path: string = '.',
-    recursive: boolean = false
-): Promise<string> {
-    const stats = await stat(path);
-
-    if (!stats.isDirectory()) {
-        return `<ul>${createHtmlListItem(path, false)}</ul>\n`;
+        return `<ul>${await createHtmlListItem(path, false)}</ul>\n`;
     }
 
     let result = '<ul>';
@@ -95,10 +17,10 @@ async function html(
     for (const item of items) {
         const fullPath = join(path, item);
         const isDirectory = (await stat(fullPath)).isDirectory();
-        result += createHtmlListItem(fullPath, isDirectory);
+        result += await createHtmlListItem(fullPath, isDirectory);
         const stats = await stat(fullPath);
         if (recursive && stats.isDirectory()) {
-            result += `${await html(fullPath, recursive)}`;
+            result += `${await ls(fullPath, recursive)}`;
         }
     }
 
@@ -106,50 +28,18 @@ async function html(
     return result;
 }
 
-function createHtmlListItem(path: string, isDirectory: boolean): string {
-    const link = isDirectory
-        ? `/ls?path=${encodeURIComponent(path)}&display=html`
-        : `/read-file?path=${encodeURIComponent(path)}`;
-    return `<li><a href="${link}">${basename(path)}</a></li>`;
-}
-
-async function getSizePadding(dirPath: string): Promise<number> {
-    const stats = await stat(dirPath);
-    if (!stats.isDirectory()) {
-        return stats.size.toString().length;
-    }
-
-    let biggest = 0;
-    const items = await readdir(dirPath);
-    for (const item of items) {
-        const filePath = join(dirPath, item);
-        const stats = await stat(filePath);
-        if (stats.size > biggest) {
-            biggest = stats.size;
-        }
-    }
-    return biggest.toString().length;
-}
-
-function padString(str: string, length: number): string {
-    // Calculate the number of spaces needed to pad
-    let padding = length - str.length;
-
-    // If padding is less than or equal to 0, return the original string
-    if (padding <= 0) {
-        return str;
-    }
-
-    // Create a string with the necessary number of spaces
-    let paddedString = ' '.repeat(padding) + str;
-
-    return paddedString;
-}
-
-async function getFileDetails(
-    filePath: string,
-    sizePadding: number
+async function createHtmlListItem(
+    path: string,
+    isDirectory: boolean
 ): Promise<string> {
+    const link = isDirectory
+        ? `/?path=${encodeURIComponent(path)}`
+        : `/read-file?path=${encodeURIComponent(path)}`;
+    const title = await getFileDetails(path);
+    return `<li title="${title}"><a href="${link}">${basename(path)}</a></li>`;
+}
+
+async function getFileDetails(filePath: string): Promise<string> {
     // Get file statistics
     const stats = await stat(filePath);
 
@@ -178,7 +68,7 @@ async function getFileDetails(
     const owner = id();
 
     // Get file size
-    const size = padString(stats.size.toString(), sizePadding);
+    const size = stats.size.toString();
 
     // Get last modification time
     const modTime = new Date(stats.mtime);
