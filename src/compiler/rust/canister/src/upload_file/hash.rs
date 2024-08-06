@@ -101,7 +101,7 @@ fn load_hashes() -> Result<HashMap<String, Vec<u8>>, std::io::Error> {
     let file_hash_path = get_file_hash_path();
     let buffer = std::fs::read(file_hash_path)?;
 
-    serde_json::from_slice(&buffer)?
+    Ok(serde_json::from_slice(&buffer)?)
 }
 
 fn save_hashes(file_hashes: &HashMap<String, Vec<u8>>) -> Result<(), std::io::Error> {
