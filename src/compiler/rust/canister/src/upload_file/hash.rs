@@ -4,6 +4,10 @@ use crate::chunk;
 use crate::upload_file::bytes_to_human_readable;
 use crate::upload_file::file_info;
 
+pub fn init_hashes() -> Result<(), std::io::Error> {
+    save_hashes(&HashMap::new())
+}
+
 pub fn get_file_hash(path: String) -> Option<String> {
     Some(
         load_hashes()
@@ -95,10 +99,6 @@ fn hash_chunk_with(data: &[u8], previous_hash: Option<&Vec<u8>>) -> Vec<u8> {
 
 fn load_hashes() -> Result<HashMap<String, Vec<u8>>, std::io::Error> {
     let file_hash_path = get_file_hash_path();
-    if !file_hash_path.exists() {
-        // If File doesn't exist yet return empty hash map
-        return Ok(HashMap::new());
-    }
     let buffer = std::fs::read(file_hash_path)?;
 
     Ok(if buffer.is_empty() {

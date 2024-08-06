@@ -33,7 +33,7 @@ export async function uploadFiles(
     }
 
     console.info(
-        'Finished uploading files. Waiting for all async processes to end...' // TODO what's happening is that the last bit of the uploadFile doesn't await the last chunk I think, so we do still need to add the onBeforeExit so we don't exit until that is done
+        'Finished uploading files. Waiting for all chunks to finish uploading...' // TODO remove after https://github.com/demergent-labs/azle/issues/1996 is complete
     );
 
     onBeforeExit(expandedPaths, actor);

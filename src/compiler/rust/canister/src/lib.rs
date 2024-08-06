@@ -332,6 +332,8 @@ pub fn init(function_index: i32, pass_arg_data: i32) {
     ic_cdk::spawn(async move {
         open_value_sharing::init(&wasm_data.consumer).await;
     });
+
+    upload_file::init_hashes().unwrap();
 }
 
 #[no_mangle]
