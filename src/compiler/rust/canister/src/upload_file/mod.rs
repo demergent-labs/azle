@@ -6,7 +6,7 @@ mod hash;
 mod reset;
 mod upload_file_chunk;
 
-pub use hash::hash_file;
+pub use hash::get_file_hash;
 pub use reset::reset_for_new_upload;
 pub use upload_file_chunk::upload_file_chunk;
 
