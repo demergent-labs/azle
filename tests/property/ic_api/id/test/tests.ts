@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { expect, it, Test } from 'azle/test';
+import { defaultPropTestParams, expect, it, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
@@ -89,11 +89,8 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                {
-                    numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
-                    endOnFailure: true
-                }
+                defaultPropTestParams
             );
-        }, 1_000_000);
+        });
     };
 }
