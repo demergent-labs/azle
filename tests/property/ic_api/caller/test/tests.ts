@@ -1,7 +1,7 @@
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
 import { createAuthenticatedAgent, getCanisterId, whoami } from 'azle/dfx';
-import { defaultParams, expect, it, please, Test } from 'azle/test';
+import { defaultPropTestParams, expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
@@ -19,7 +19,6 @@ export function getTests(): Test {
 
             const initCaller = await actor.getInitCaller();
 
-            expect(initCaller[0]?.toText()).toBe(agentPrincipalText);
             expect(initCaller[0]?.toText()).toBe(agentPrincipalText);
         });
 
@@ -40,7 +39,6 @@ export function getTests(): Test {
             const preUpgradeCaller = await actor.getPreUpgradeCaller();
 
             expect(preUpgradeCaller[0]?.toText()).toBe(agentPrincipalText);
-            expect(preUpgradeCaller[0]?.toText()).toBe(agentPrincipalText);
         });
 
         it('should return the postUpgrade principal', async () => {
@@ -53,7 +51,6 @@ export function getTests(): Test {
 
             const postUpgradeCaller = await actor.getPostUpgradeCaller();
 
-            expect(postUpgradeCaller[0]?.toText()).toBe(agentPrincipalText);
             expect(postUpgradeCaller[0]?.toText()).toBe(agentPrincipalText);
         });
 
@@ -100,7 +97,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultParams
+                defaultPropTestParams
             );
         });
 
@@ -132,7 +129,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultParams
+                defaultPropTestParams
             );
         });
     };
