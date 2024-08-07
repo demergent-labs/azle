@@ -1,10 +1,15 @@
 import { Principal } from '@dfinity/principal';
-import { defaultPropTestParams, expect, it, Test } from 'azle/test';
+import {
+    defaultPropTestParams,
+    expect,
+    getCanisterActor,
+    it,
+    Test
+} from 'azle/test';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
-import { createActor } from './dfx_generated/canister';
-import { _SERVICE } from './dfx_generated/canister/canister.did';
+import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
@@ -46,11 +51,7 @@ export function getTests(): Test {
                             `dfx deploy canister --no-wallet --specified-id ${canisterIdText}`
                         );
 
-                        const actor = createActor(canisterIdText, {
-                            agentOptions: {
-                                host: 'http://127.0.0.1:8000'
-                            }
-                        });
+                        const actor = await getCanisterActor<Actor>('canister');
 
                         const initId = await actor.getInitId();
                         expect(initId[0]?.toText()).toEqual(canisterIdText);
