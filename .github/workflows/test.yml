@@ -258,6 +258,7 @@ jobs:
                     "tests/end_to_end/http_server/web_assembly",
                     "tests/property/ic_api/caller",
                     "tests/property/ic_api/id",
+                    "tests/property/ic_api/instruction_counter",
                     "tests/property/ic_api/is_controller",
                     "tests/property/ic_api/time",
                     "tests/property/ic_api/trap"
