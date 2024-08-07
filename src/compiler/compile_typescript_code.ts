@@ -32,9 +32,7 @@ export async function compileTypeScriptToJavaScript(
 function getImports(main: string, experimental: boolean): string {
     if (experimental === false) {
         return /*TS*/ `
-            // Trying to make sure that all globalThis dependencies are defined
-            // Before the developer imports azle on their own
-            import 'azle';
+            import 'azle/src/lib/stable/globals';
 
             import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
 
@@ -62,15 +60,13 @@ function getImports(main: string, experimental: boolean): string {
         `;
     } else {
         return /*TS*/ `
-            import 'reflect-metadata';
+            import 'azle/src/lib/stable/globals';
+            import 'azle/src/lib/experimental/globals';
 
-            // Trying to make sure that all globalThis dependencies are defined
-            // Before the developer imports azle on their own
-            import 'azle';
-            import 'azle/experimental';
+            import 'reflect-metadata';  
 
             // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
-            import { ethersGetUrl, ic, Server } from 'azle/src/lib/experimental/index';
+            import { ethersGetUrl, Server } from 'azle/src/lib/experimental';
             import { ethers } from 'ethers';
             ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 

@@ -7,7 +7,7 @@ if (globalThis._azleExperimental !== true) {
 import { inflate } from 'pako';
 
 import { HttpTransform } from '../../../../canisters/management';
-import { ic } from '..';
+import { ic } from '../ic';
 import { azleFetch, serialize } from '.';
 import { AzleFetchResponse } from './response';
 import { getUrl } from './url';

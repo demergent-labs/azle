@@ -6,6 +6,7 @@ if (globalThis._azleExperimental !== true) {
 
 import { Buffer } from 'buffer';
 import * as process from 'process';
+import { TextDecoder, TextEncoder } from 'text-encoding';
 import { URL } from 'url';
 import { v4 } from 'uuid';
 
@@ -30,6 +31,13 @@ globalThis._azleInsideCanister =
     globalThis._azleIc === undefined ? false : true;
 
 if (globalThis._azleInsideCanister === true) {
+    // Even though these are set in stable/globals
+    // we must set them again here because importing the url module above
+    // seemingly resets globalThis.TextDecoder and globalThis.TextEncoder
+    // to the wasmedge-quickjs versions which break with a RangeError: The "ascii" encoding is not supported
+    globalThis.TextDecoder = TextDecoder;
+    globalThis.TextEncoder = TextEncoder;
+
     globalThis.window = globalThis as any;
 
     const originalSetTimeout = setTimeout;

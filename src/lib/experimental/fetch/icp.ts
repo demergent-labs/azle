@@ -5,8 +5,9 @@ if (globalThis._azleExperimental !== true) {
 }
 
 import { IDL } from '@dfinity/candid';
+import { Principal } from '@dfinity/principal';
 
-import { ic, Principal } from '..';
+import { ic } from '../ic';
 import { getUrl } from './url';
 
 export async function fetchIcp(

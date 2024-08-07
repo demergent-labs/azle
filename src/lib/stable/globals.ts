@@ -61,6 +61,9 @@ declare global {
 globalThis._azleInsideCanister =
     globalThis._azleIc === undefined ? false : true;
 
+// TODO do we need to disable setTimeout, setInterval, etc?
+// TODO do we need to disable any other wasmedge-quickjs globals
+// TODO that we don't think are stable yet?
 if (globalThis._azleInsideCanister === true) {
     globalThis._azleCanisterMethodsIndex = 0;
 
