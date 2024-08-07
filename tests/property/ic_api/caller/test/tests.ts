@@ -1,7 +1,7 @@
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
 import { createAuthenticatedAgent, getCanisterId, whoami } from 'azle/dfx';
-import { defaultParams, expect, it, please, Test } from 'azle/test';
+import { defaultPropTestParams, expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
@@ -100,7 +100,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultParams
+                defaultPropTestParams
             );
         });
 
@@ -132,7 +132,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultParams
+                defaultPropTestParams
             );
         });
     };
