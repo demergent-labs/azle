@@ -1,8 +1,8 @@
 import { Principal } from '..';
 
 /**
- * Gets the id of this canister
- * @returns the canister id
+ * Returns the canister's id as a principal
+ * @returns the canister's id as a principal
  */
 export function id(): Principal {
     if (globalThis._azleIc === undefined) {
