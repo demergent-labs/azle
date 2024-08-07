@@ -45,7 +45,7 @@ async function fillFileWithRandomBytes(
     for (let i = 0; i < totalChunks; i++) {
         const remainingBytes = sizeInBytes - i * defaultChunkSize;
         const chunkSize = Math.min(remainingBytes, defaultChunkSize);
-        const randomBytes = await createRandomBytes(chunkSize);
+        const randomBytes = createRandomBytes(chunkSize);
         await appendFile(path, randomBytes);
     }
 }
