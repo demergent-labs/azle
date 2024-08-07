@@ -74,32 +74,6 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toBe(candidString);
         });
 
-        it('calls argDataRawSize on the ic object', async () => {
-            const blobString = 'Surprise!';
-            const blob = Uint8Array.from(
-                blobString.split('').map((char) => char.charCodeAt(0))
-            );
-            const int = 127;
-            const bool = true;
-            const string = 'test';
-
-            const resultArgDataRawSize = await icApiCanister.argDataRawSize(
-                blob,
-                int,
-                bool,
-                string
-            );
-
-            const resultArgDataRaw = await icApiCanister.argDataRaw(
-                blob,
-                int,
-                bool,
-                string
-            );
-
-            expect(resultArgDataRaw).toHaveLength(resultArgDataRawSize);
-        });
-
         it('calls caller on the ic object', async () => {
             const result = await icApiCanister.caller();
 

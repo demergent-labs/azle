@@ -1,6 +1,5 @@
 import { acceptMessage } from './accept_message';
 import { argDataRaw } from './arg_data_raw';
-import { argDataRawSize } from './arg_data_raw_size';
 import { call } from './call';
 import { callRaw } from './call_raw';
 import { caller } from './caller';
@@ -31,11 +30,6 @@ import { setCertifiedData } from './set_certified_data';
 import { setOutgoingHttpOptions } from './set_outgoing_http_options';
 import { setTimer } from './set_timer';
 import { setTimerInterval } from './set_timer_interval';
-import { stableBytes } from './stable_bytes';
-import { stableGrow } from './stable_grow';
-import { stableRead } from './stable_read';
-import { stableSize } from './stable_size';
-import { stableWrite } from './stable_write';
 import { time } from './time';
 import { trap } from './trap';
 
@@ -44,7 +38,6 @@ export * from './types';
 /** API entrypoint for interacting with the Internet Computer */
 export const ic = {
     acceptMessage,
-    argDataRawSize,
     argDataRaw,
     call,
     callRaw,
@@ -76,11 +69,6 @@ export const ic = {
     setOutgoingHttpOptions,
     setTimer,
     setTimerInterval,
-    stableBytes,
-    stableGrow,
-    stableRead,
-    stableSize,
-    stableWrite,
     time,
     trap
 };

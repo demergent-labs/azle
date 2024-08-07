@@ -1,6 +1,5 @@
 import {
     argDataRaw,
-    argDataRawSize,
     caller,
     canisterBalance,
     canisterVersion,
@@ -69,17 +68,6 @@ export default class {
         _arg4: string
     ): Uint8Array {
         return argDataRaw();
-    }
-
-    // returns the length of the argument data in bytes
-    @query([IDL.Vec(IDL.Nat8), IDL.Int8, IDL.Bool, IDL.Text], IDL.Nat32)
-    argDataRawSize(
-        _arg1: Uint8Array,
-        _arg2: number,
-        _arg3: boolean,
-        _arg4: string
-    ): number {
-        return argDataRawSize();
     }
 
     // returns the principal of the identity that called this function

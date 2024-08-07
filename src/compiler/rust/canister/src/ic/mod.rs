@@ -1,6 +1,5 @@
 mod accept_message;
 mod arg_data_raw;
-mod arg_data_raw_size;
 mod call_raw;
 mod caller;
 mod candid_compiler;
@@ -37,11 +36,6 @@ mod stable_b_tree_map_keys;
 mod stable_b_tree_map_len;
 mod stable_b_tree_map_remove;
 mod stable_b_tree_map_values;
-mod stable_bytes;
-mod stable_grow;
-mod stable_read;
-mod stable_size;
-mod stable_write;
 mod time;
 mod trap;
 
@@ -62,13 +56,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "argDataRaw",
         context
             .new_function::<arg_data_raw::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "argDataRawSize",
-        context
-            .new_function::<arg_data_raw_size::NativeFunction>("")
             .into(),
     );
 
@@ -234,41 +221,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "setTimerInterval",
         context
             .new_function::<set_timer_interval::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stableGrow",
-        context
-            .new_function::<stable_grow::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stableRead",
-        context
-            .new_function::<stable_read::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stableSize",
-        context
-            .new_function::<stable_size::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stableWrite",
-        context
-            .new_function::<stable_write::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stableBytes",
-        context
-            .new_function::<stable_bytes::NativeFunction>("")
             .into(),
     );
 
