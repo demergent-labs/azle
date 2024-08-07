@@ -12,7 +12,10 @@ export async function uploadFiles(
     canisterName: string,
     paths: [Src, Dest][]
 ): Promise<void> {
-    if (paths.length === 0) {
+    if (
+        paths.length === 0 ||
+        process.env.AZLE_DISABLE_AUTO_FILE_UPLOAD === 'true'
+    ) {
         return;
     }
 
@@ -30,7 +33,7 @@ export async function uploadFiles(
     }
 
     console.info(
-        'Finished uploading files. Waiting for file hashing to finish...'
+        'Finished uploading files. Waiting for all chunks to finish uploading...' // TODO remove after https://github.com/demergent-labs/azle/issues/1996 is complete
     );
 
     onBeforeExit(expandedPaths, actor);
