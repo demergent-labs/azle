@@ -20,7 +20,6 @@ export function getTests(): Test {
             const initCaller = await actor.getInitCaller();
 
             expect(initCaller[0]?.toText()).toBe(agentPrincipalText);
-            expect(initCaller[0]?.toText()).toBe(agentPrincipalText);
         });
 
         please('deploy the canister again', () => {
@@ -40,7 +39,6 @@ export function getTests(): Test {
             const preUpgradeCaller = await actor.getPreUpgradeCaller();
 
             expect(preUpgradeCaller[0]?.toText()).toBe(agentPrincipalText);
-            expect(preUpgradeCaller[0]?.toText()).toBe(agentPrincipalText);
         });
 
         it('should return the postUpgrade principal', async () => {
@@ -53,7 +51,6 @@ export function getTests(): Test {
 
             const postUpgradeCaller = await actor.getPostUpgradeCaller();
 
-            expect(postUpgradeCaller[0]?.toText()).toBe(agentPrincipalText);
             expect(postUpgradeCaller[0]?.toText()).toBe(agentPrincipalText);
         });
 
