@@ -19,7 +19,7 @@ export function getAuthorizationTests(): Test {
             );
 
             await expect(
-                actor.upload_file_chunk(
+                actor._azle_upload_file_chunk(
                     destPath,
                     0n,
                     0n,
@@ -31,24 +31,14 @@ export function getAuthorizationTests(): Test {
             );
         });
 
-        it('fails to get hash status from an unauthorized actor', async () => {
-            const actor = await createActor(
-                getCanisterId('backend'),
-                unauthorizedUser
-            );
-            await expect(
-                actor.get_hash_status('assets/test0B')
-            ).rejects.toThrow(
-                /Not Authorized: only controllers of this canister may call this method/
-            );
-        });
-
         it('fails to get hash from an unauthorized actor', async () => {
             const actor = await createActor(
                 getCanisterId('backend'),
                 unauthorizedUser
             );
-            await expect(actor.get_file_hash('assets/test0B')).rejects.toThrow(
+            await expect(
+                actor._azle_get_file_hash('assets/test0B')
+            ).rejects.toThrow(
                 /Not Authorized: only controllers of this canister may call this method/
             );
         });
@@ -59,7 +49,7 @@ export function getAuthorizationTests(): Test {
                 unauthorizedUser
             );
             await expect(
-                actor.clear_file_and_info('assets/test0B')
+                actor._azle_clear_file_and_info('assets/test0B')
             ).rejects.toThrow(
                 /Not Authorized: only controllers of this canister may call this method/
             );
