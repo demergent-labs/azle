@@ -1,5 +1,5 @@
 use crate::upload_file::Timestamp;
-use crate::FILE_INFO;
+use crate::upload_file::FILE_INFO;
 use std::{cell::RefCell, collections::BTreeMap};
 
 pub fn initialize_file_info(path: &str, timestamp: Timestamp) {

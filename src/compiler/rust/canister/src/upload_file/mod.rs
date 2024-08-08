@@ -1,3 +1,5 @@
+use std::{cell::RefCell, collections::BTreeMap};
+
 use wasmedge_quickjs::AsObject;
 
 mod bytes_to_human_readable;
@@ -11,3 +13,11 @@ pub use reset::reset_for_new_upload;
 pub use upload_file_chunk::upload_file_chunk;
 
 pub type Timestamp = u64;
+
+type Hash = Option<Vec<u8>>;
+type BytesReceived = u64;
+type BytesHashed = u64;
+
+thread_local! {
+    static FILE_INFO: RefCell<BTreeMap<String, (Timestamp, BytesReceived, Hash, BytesHashed)>> = RefCell::new(BTreeMap::new());
+}

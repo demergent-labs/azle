@@ -75,15 +75,6 @@ impl Storable for AzleStableBTreeMapValue {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-#[cfg(feature = "experimental")]
-type Hash = Option<Vec<u8>>;
-
-#[cfg(feature = "experimental")]
-type BytesReceived = u64;
-
-#[cfg(feature = "experimental")]
-type BytesHashed = u64;
-
 #[derive(Debug, Serialize, Deserialize)]
 struct WasmData {
     env_vars: Vec<(String, String)>,
@@ -108,9 +99,6 @@ thread_local! {
 
     #[cfg(feature = "experimental")]
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
-
-    #[cfg(feature = "experimental")]
-    static FILE_INFO: RefCell<BTreeMap<String, (Timestamp, BytesReceived, Hash, BytesHashed)>> = RefCell::new(BTreeMap::new());
 }
 
 #[no_mangle]
