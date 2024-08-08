@@ -1,6 +1,6 @@
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
-use crate::WASM_INSTANCES;
+use crate::web_assembly::WASM_INSTANCES;
 
 // TODO technically this should return a promise because that the official API
 pub struct NativeFunction;

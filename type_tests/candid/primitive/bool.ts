@@ -1,4 +1,4 @@
-import { bool } from '../../../src/lib';
+import { bool } from '../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

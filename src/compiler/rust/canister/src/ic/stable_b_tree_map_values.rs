@@ -2,7 +2,7 @@ use std::convert::TryInto;
 
 use wasmedge_quickjs::{Context, JsArray, JsFn, JsValue};
 
-use crate::STABLE_B_TREE_MAPS;
+use crate::stable_b_tree_map::STABLE_B_TREE_MAPS;
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {

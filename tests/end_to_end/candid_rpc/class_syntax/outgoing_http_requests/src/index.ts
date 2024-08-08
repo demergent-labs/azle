@@ -43,7 +43,7 @@ export default class {
             payment: 50_000_000n
         });
 
-        return Buffer.from(httpResponse.body).toString();
+        return new TextDecoder().decode(httpResponse.body);
     }
 
     @update([], HttpResponse, { manual: true })

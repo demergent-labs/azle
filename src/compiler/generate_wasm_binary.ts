@@ -4,7 +4,10 @@ import { logGlobalDependencies } from './log_global_dependencies';
 import { manipulateWasmBinary } from './manipulate_wasm_binary';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import { STATIC_CANISTER_TEMPLATE_PATH } from './utils/global_paths';
+import {
+    EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH,
+    STABLE_STATIC_CANISTER_TEMPLATE_PATH
+} from './utils/global_paths';
 import { CanisterConfig, CompilerInfo } from './utils/types';
 
 export async function generateWasmBinary(
@@ -13,7 +16,8 @@ export async function generateWasmBinary(
     js: string,
     compilerInfo: CompilerInfo,
     canisterConfig: CanisterConfig,
-    canisterPath: string
+    canisterPath: string,
+    experimental: boolean
 ): Promise<void> {
     if (process.env.AZLE_GEN_WASM === 'true') {
         await logGlobalDependencies();
@@ -21,22 +25,39 @@ export async function generateWasmBinary(
         await prepareRustStagingArea(canisterConfig, canisterPath);
 
         compileRustCodeNatively(
-            STATIC_CANISTER_TEMPLATE_PATH,
+            STABLE_STATIC_CANISTER_TEMPLATE_PATH,
             canisterName,
+            false,
+            stdio
+        );
+
+        compileRustCodeNatively(
+            EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH,
+            canisterName,
+            true,
             stdio
         );
     }
 
-    await manipulateWasmBinary(canisterName, js, compilerInfo, canisterConfig);
+    await manipulateWasmBinary(
+        canisterName,
+        js,
+        compilerInfo,
+        canisterConfig,
+        experimental
+    );
 }
 
 function compileRustCodeNatively(
     wasmDest: string,
     canisterName: string,
+    experimental: boolean,
     stdio: IOType
 ): void {
     execSyncPretty(
-        `CARGO_TARGET_DIR=target cargo build --target wasm32-wasi --manifest-path .azle/${canisterName}/canister/Cargo.toml --release`,
+        `CARGO_TARGET_DIR=target cargo build --target wasm32-wasi --manifest-path .azle/${canisterName}/canister/Cargo.toml --release${
+            experimental === true ? ' --features "experimental"' : ''
+        }`,
         stdio
     );
 

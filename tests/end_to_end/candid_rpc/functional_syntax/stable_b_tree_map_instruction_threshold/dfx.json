@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "test/dfx_generated/stable_b_tree_map_instruction_threshold",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

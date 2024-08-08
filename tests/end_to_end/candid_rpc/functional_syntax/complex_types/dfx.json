@@ -8,6 +8,9 @@
             "declarations": {
                 "output": "test/dfx_generated/complex_types",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

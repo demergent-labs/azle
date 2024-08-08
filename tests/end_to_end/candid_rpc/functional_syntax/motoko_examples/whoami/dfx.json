@@ -10,6 +10,9 @@
             "declarations": {
                 "output": "test/dfx_generated/whoami",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

@@ -5,93 +5,46 @@ use std::{
     env::args,
 };
 
+use guards::guard_against_non_controllers;
 use ic_stable_structures::{
     memory_manager::{MemoryId, MemoryManager, VirtualMemory},
     storable::Bound,
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
-use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use wasmedge_quickjs::AsObject;
 
+#[cfg(feature = "experimental")]
+mod autoreload;
+mod candid;
 mod chunk;
 mod guards;
 mod ic;
+mod stable_b_tree_map;
+#[cfg(feature = "experimental")]
 mod upload_file;
+#[cfg(feature = "experimental")]
 mod web_assembly;
 
-use guards::guard_against_non_controllers;
-use upload_file::Timestamp;
+#[cfg(feature = "experimental")]
+use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
-#[allow(unused)]
-type AzleStableBTreeMap = StableBTreeMap<AzleStableBTreeMapKey, AzleStableBTreeMapValue, Memory>;
-
-#[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
-struct AzleStableBTreeMapKey {
-    bytes: Vec<u8>,
-}
-
-impl Storable for AzleStableBTreeMapKey {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-        std::borrow::Cow::Borrowed(&self.bytes)
-    }
-
-    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-        AzleStableBTreeMapKey {
-            bytes: bytes.to_vec(),
-        }
-    }
-
-    const BOUND: Bound = Bound::Unbounded;
-}
-
-#[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
-struct AzleStableBTreeMapValue {
-    bytes: Vec<u8>,
-}
-
-impl Storable for AzleStableBTreeMapValue {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-        std::borrow::Cow::Borrowed(&self.bytes)
-    }
-
-    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-        AzleStableBTreeMapValue {
-            bytes: bytes.to_vec(),
-        }
-    }
-
-    const BOUND: Bound = Bound::Unbounded;
-}
-
-type Hash = Option<Vec<u8>>;
-type BytesReceived = u64;
-type BytesHashed = u64;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct WasmData {
     env_vars: Vec<(String, String)>,
+    #[cfg(feature = "experimental")]
     consumer: Consumer,
     management_did: String,
+    experimental: bool,
 }
 
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
-
-    static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-
-    static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
-
-    static WASM_INSTANCES: RefCell<HashMap<String, (wasmi::Instance, wasmi::Store<()>)>> = RefCell::new(HashMap::new());
-
-    static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
-
-    static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
-
-    static FILE_INFO: RefCell<BTreeMap<String, (Timestamp, BytesReceived, Hash, BytesHashed)>> = RefCell::new(BTreeMap::new());
+    pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }
 
 #[no_mangle]
@@ -141,72 +94,7 @@ pub fn execute_js(function_index: i32, pass_arg_data: i32) {
     });
 }
 
-// Heavily inspired by https://stackoverflow.com/a/47676844
-#[no_mangle]
-pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
-    std::panic::set_hook(Box::new(|panic_info| {
-        let msg = match panic_info.payload().downcast_ref::<&str>() {
-            Some(s) => *s,
-            None => "Unknown panic message",
-        };
-        let location = if let Some(location) = panic_info.location() {
-            format!(" at {}:{}", location.file(), location.line())
-        } else {
-            " (unknown location)".to_string()
-        };
-
-        let message = &format!("Panic occurred: {}{}", msg, location);
-
-        ic_cdk::println!("{}", message);
-    }));
-
-    RUNTIME.with(|runtime| {
-        let mut runtime = wasmedge_quickjs::Runtime::new();
-
-        runtime.run_with_context(|context| {
-            context.get_global().set(
-                "_azleWasmtimeCandidEnvironment",
-                wasmedge_quickjs::JsValue::Bool(true),
-            );
-
-            ic::register(context);
-
-            let js = get_js_code();
-
-            // TODO what do we do if there is an error in here?
-            context.eval_global_str("globalThis.exports = {};".to_string());
-            context.eval_module_str(std::str::from_utf8(&js).unwrap().to_string(), "azle_main");
-
-            run_event_loop(context);
-
-            let global = context.get_global();
-
-            let candid_info_function = global.get("candidInfoFunction").to_function().unwrap();
-
-            let candid_info = candid_info_function.call(&[]);
-
-            // TODO error handling is mostly done in JS right now
-            // TODO we would really like wasmedge-quickjs to add
-            // TODO good error info to JsException and move error handling
-            // TODO out of our own code
-            match &candid_info {
-                wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                    js_exception.dump_error();
-                    panic!("TODO needs error info");
-                }
-                _ => run_event_loop(context),
-            };
-
-            let candid_info_string = candid_info.to_string().unwrap().to_string();
-
-            let c_string = std::ffi::CString::new(candid_info_string).unwrap();
-
-            c_string.into_raw()
-        })
-    })
-}
-
-fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
+pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
     context.promise_loop_poll();
 
     loop {
@@ -318,6 +206,7 @@ pub fn init(function_index: i32, pass_arg_data: i32) {
         MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
     ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
+    #[cfg(feature = "experimental")]
     std::fs::write("/candid/icp/management.did", &wasm_data.management_did).unwrap();
 
     let js = get_js_code();
@@ -327,12 +216,15 @@ pub fn init(function_index: i32, pass_arg_data: i32) {
         true,
         function_index,
         pass_arg_data,
+        wasm_data.experimental,
     );
 
+    #[cfg(feature = "experimental")]
     ic_cdk::spawn(async move {
         open_value_sharing::init(&wasm_data.consumer).await;
     });
 
+    #[cfg(feature = "experimental")]
     upload_file::init_hashes().unwrap();
 }
 
@@ -373,6 +265,7 @@ pub fn post_upgrade(function_index: i32, pass_arg_data: i32) {
         MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
     ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
+    #[cfg(feature = "experimental")]
     std::fs::write("/candid/icp/management.did", &wasm_data.management_did).unwrap();
 
     let js = get_js_code();
@@ -382,22 +275,50 @@ pub fn post_upgrade(function_index: i32, pass_arg_data: i32) {
         false,
         function_index,
         pass_arg_data,
+        wasm_data.experimental,
     );
 
+    #[cfg(feature = "experimental")]
     ic_cdk::spawn(async move {
         open_value_sharing::init(&wasm_data.consumer).await;
     });
 }
 
-fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
+pub fn initialize_js(
+    js: &str,
+    init: bool,
+    function_index: i32,
+    pass_arg_data: i32,
+    experimental: bool,
+) {
     let mut rt = wasmedge_quickjs::Runtime::new();
 
     let r = rt.run_with_context(|context| {
         ic::register(context);
+
+        #[cfg(feature = "experimental")]
         web_assembly::register(context);
+
+        let mut env = context.new_object();
+
+        for (key, value) in std::env::vars() {
+            env.set(&key, context.new_string(&value).into());
+        }
+
+        let mut process = context.new_object();
+
+        process.set("env", env.into());
+
+        context.get_global().set("process", process.into());
+
+        context.get_global().set(
+            "_azleWasmtimeCandidEnvironment",
+            wasmedge_quickjs::JsValue::Bool(false),
+        );
 
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
+        context.eval_global_str(format!("globalThis._azleExperimental = {experimental};"));
         context.eval_module_str(js.to_string(), "azle_main");
 
         run_event_loop(context);
@@ -442,42 +363,27 @@ fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) 
     });
 }
 
+#[cfg(feature = "experimental")]
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
-fn reload_js(
+fn _azle_reload_js(
     timestamp: u64,
     chunk_number: u64,
     js_bytes: Vec<u8>,
     total_len: u64,
     function_index: i32,
+    experimental: bool,
 ) {
-    RELOADED_JS_TIMESTAMP.with(|reloaded_js_timestamp| {
-        let mut reloaded_js_timestamp_mut = reloaded_js_timestamp.borrow_mut();
-
-        if timestamp > *reloaded_js_timestamp_mut {
-            *reloaded_js_timestamp_mut = timestamp;
-
-            RELOADED_JS.with(|reloaded_js| {
-                let mut reloaded_js_mut = reloaded_js.borrow_mut();
-                reloaded_js_mut.clear();
-            });
-        }
-    });
-
-    RELOADED_JS.with(|reloaded_js| {
-        let mut reloaded_js_mut = reloaded_js.borrow_mut();
-        reloaded_js_mut.insert(chunk_number, js_bytes);
-
-        let reloaded_js_complete_bytes: Vec<u8> =
-            reloaded_js_mut.values().flat_map(|v| v.clone()).collect();
-
-        if reloaded_js_complete_bytes.len() as u64 == total_len {
-            let js_string = String::from_utf8_lossy(&reloaded_js_complete_bytes);
-            initialize_js(&js_string, false, function_index, 1); // TODO should the last arg be 0?
-            ic_cdk::println!("Azle: Reloaded canister JavaScript");
-        }
-    });
+    autoreload::reload_js(
+        timestamp,
+        chunk_number,
+        js_bytes,
+        total_len,
+        function_index,
+        experimental,
+    );
 }
 
+#[cfg(feature = "experimental")]
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
 pub async fn _azle_upload_file_chunk(
     dest_path: String,
@@ -496,11 +402,13 @@ pub async fn _azle_upload_file_chunk(
     .await
 }
 
+#[cfg(feature = "experimental")]
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
 pub fn _azle_clear_file_and_info(path: String) {
     upload_file::reset_for_new_upload(&path, 0).unwrap()
 }
 
+#[cfg(feature = "experimental")]
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_file_hash(path: String) -> Option<String> {
     upload_file::get_file_hash(path)

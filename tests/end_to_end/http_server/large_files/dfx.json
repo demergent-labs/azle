@@ -7,7 +7,10 @@
                 ["assets/auto", "assets"],
                 ["assets/permanent", "assets"],
                 ["assets/single_asset.txt", "assets/text/single.txt"]
-            ]
+            ],
+            "custom": {
+                "experimental": true
+            }
         }
     }
 }

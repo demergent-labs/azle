@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "src/declarations/minimal_dapp",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "minimal_dapp_assets": {

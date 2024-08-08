@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "src/declarations/phone_book",
                 "node_compatibility": false
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "www": {

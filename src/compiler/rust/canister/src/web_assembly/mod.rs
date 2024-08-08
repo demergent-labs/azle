@@ -1,6 +1,12 @@
+use std::{cell::RefCell, collections::HashMap};
+
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
 mod instantiate;
+
+thread_local! {
+    static WASM_INSTANCES: RefCell<HashMap<String, (wasmi::Instance, wasmi::Store<()>)>> = RefCell::new(HashMap::new());
+}
 
 #[allow(unused)]
 pub fn register(context: &mut wasmedge_quickjs::Context) {
