@@ -15,6 +15,8 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use wasmedge_quickjs::AsObject;
 
+#[cfg(feature = "experimental")]
+mod autoreload;
 mod chunk;
 mod guards;
 mod ic;
@@ -25,8 +27,6 @@ mod web_assembly;
 
 #[cfg(feature = "experimental")]
 use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
-#[cfg(feature = "experimental")]
-use upload_file::Timestamp;
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
@@ -86,12 +86,6 @@ thread_local! {
     static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
     static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
-
-    #[cfg(feature = "experimental")]
-    static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
-
-    #[cfg(feature = "experimental")]
-    static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
 }
 
 #[no_mangle]
@@ -400,7 +394,7 @@ pub fn post_upgrade(function_index: i32, pass_arg_data: i32) {
     });
 }
 
-fn initialize_js(
+pub fn initialize_js(
     js: &str,
     init: bool,
     function_index: i32,
@@ -481,7 +475,7 @@ fn initialize_js(
 
 #[cfg(feature = "experimental")]
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
-fn reload_js(
+fn _azle_reload_js(
     timestamp: u64,
     chunk_number: u64,
     js_bytes: Vec<u8>,
@@ -489,32 +483,14 @@ fn reload_js(
     function_index: i32,
     experimental: bool,
 ) {
-    RELOADED_JS_TIMESTAMP.with(|reloaded_js_timestamp| {
-        let mut reloaded_js_timestamp_mut = reloaded_js_timestamp.borrow_mut();
-
-        if timestamp > *reloaded_js_timestamp_mut {
-            *reloaded_js_timestamp_mut = timestamp;
-
-            RELOADED_JS.with(|reloaded_js| {
-                let mut reloaded_js_mut = reloaded_js.borrow_mut();
-                reloaded_js_mut.clear();
-            });
-        }
-    });
-
-    RELOADED_JS.with(|reloaded_js| {
-        let mut reloaded_js_mut = reloaded_js.borrow_mut();
-        reloaded_js_mut.insert(chunk_number, js_bytes);
-
-        let reloaded_js_complete_bytes: Vec<u8> =
-            reloaded_js_mut.values().flat_map(|v| v.clone()).collect();
-
-        if reloaded_js_complete_bytes.len() as u64 == total_len {
-            let js_string = String::from_utf8_lossy(&reloaded_js_complete_bytes);
-            initialize_js(&js_string, false, function_index, 1, experimental); // TODO should the last arg be 0?
-            ic_cdk::println!("Azle: Reloaded canister JavaScript");
-        }
-    });
+    autoreload::reload_js(
+        timestamp,
+        chunk_number,
+        js_bytes,
+        total_len,
+        function_index,
+        experimental,
+    );
 }
 
 #[cfg(feature = "experimental")]
