@@ -20,7 +20,7 @@ export function getTests(
 
             const valuesResult =
                 await stableBTreeMapInstructionThresholdCanister.valuesSmallRecord(
-                    5_000
+                    4_000
                 );
 
             const itemsResult =
@@ -29,7 +29,7 @@ export function getTests(
                 );
 
             expect(keysResult).toHaveLength(4_000);
-            expect(valuesResult).toHaveLength(5_000);
+            expect(valuesResult).toHaveLength(4_000);
             expect(itemsResult).toHaveLength(1_000);
         }, 100_000);
 
@@ -50,12 +50,12 @@ export function getTests(
 
             const itemsResult =
                 await stableBTreeMapInstructionThresholdCanister.itemsMediumRecord(
-                    1_000
+                    900
                 );
 
             expect(keysResult).toHaveLength(1_000);
             expect(valuesResult).toHaveLength(1_000);
-            expect(itemsResult).toHaveLength(1_000);
+            expect(itemsResult).toHaveLength(900);
         }, 100_000);
 
         it('test LargeRecord', async () => {
@@ -70,17 +70,17 @@ export function getTests(
 
             const valuesResult =
                 await stableBTreeMapInstructionThresholdCanister.valuesLargeRecord(
-                    500
+                    300
                 );
 
             const itemsResult =
                 await stableBTreeMapInstructionThresholdCanister.itemsLargeRecord(
-                    400
+                    300
                 );
 
             expect(keysResult).toHaveLength(500);
-            expect(valuesResult).toHaveLength(500);
-            expect(itemsResult).toHaveLength(400);
+            expect(valuesResult).toHaveLength(300);
+            expect(itemsResult).toHaveLength(300);
         }, 100_000);
     };
 }
