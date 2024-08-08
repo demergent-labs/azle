@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../../src/lib/experimental/experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 // Some JS docs licensed under:
 //
 // - https://github.com/dfinity/cdk-rs/blob/main/LICENSE

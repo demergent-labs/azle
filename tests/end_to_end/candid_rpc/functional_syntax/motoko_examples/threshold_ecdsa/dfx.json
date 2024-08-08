@@ -8,6 +8,9 @@
             "declarations": {
                 "output": "test/dfx_generated/threshold_ecdsa",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

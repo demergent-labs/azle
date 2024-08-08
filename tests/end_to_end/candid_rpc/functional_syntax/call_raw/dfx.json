@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "test/dfx_generated/call_raw",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

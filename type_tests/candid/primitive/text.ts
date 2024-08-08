@@ -1,4 +1,4 @@
-import { text } from '../../../src/lib';
+import { text } from '../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

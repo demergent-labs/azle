@@ -1,4 +1,4 @@
-import { Manual, text } from '../../src/lib';
+import { Manual, text } from '../../src/lib/experimental';
 import { AssertType, NotAnyAndExact, testCandidType } from '../assert_type';
 import { TypeMapping } from '../../src/lib/candid/type_mapping';
 

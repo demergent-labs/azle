@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../../../src/lib/experimental/experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import { sha224 } from 'js-sha256';
 

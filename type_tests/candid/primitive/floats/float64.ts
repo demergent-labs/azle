@@ -1,4 +1,4 @@
-import { float64 } from '../../../../src/lib';
+import { float64 } from '../../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

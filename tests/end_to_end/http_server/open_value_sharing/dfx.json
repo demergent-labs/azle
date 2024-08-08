@@ -9,6 +9,7 @@
                 "node_compatibility": true
             },
             "custom": {
+                "experimental": true,
                 "openValueSharing": {
                     "killSwitch": false,
                     "period": 1,
@@ -29,6 +30,9 @@
             "declarations": {
                 "output": "test/dfx_generated/wallet",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

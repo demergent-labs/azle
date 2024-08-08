@@ -17,7 +17,8 @@ export async function manipulateWasmBinary(
     canisterName: string,
     js: string,
     compilerInfo: CompilerInfo,
-    canisterConfig: CanisterConfig
+    canisterConfig: CanisterConfig,
+    experimental: boolean
 ): Promise<void> {
     const originalWasm = await readFile(
         join(AZLE_PACKAGE_PATH, `static_canister_template.wasm`)
@@ -130,7 +131,8 @@ export async function manipulateWasmBinary(
                 await readFile(
                     join(AZLE_PACKAGE_PATH, 'canisters', 'management', 'ic.did')
                 )
-            ).toString()
+            ).toString(),
+            experimental
         })
     );
 

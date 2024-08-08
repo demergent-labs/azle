@@ -1,4 +1,4 @@
-import { reserved } from '../../../src/lib';
+import { reserved } from '../../../src/lib/experimental';
 import {
     AssertType,
     IsAny,
