@@ -421,6 +421,11 @@ fn initialize_js(
 
         context.get_global().set("process", process.into());
 
+        context.get_global().set(
+            "_azleWasmtimeCandidEnvironment",
+            wasmedge_quickjs::JsValue::Bool(false),
+        );
+
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
         context.eval_global_str(format!("globalThis._azleExperimental = {experimental};"));

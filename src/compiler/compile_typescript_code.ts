@@ -39,7 +39,11 @@ function getImports(main: string, experimental: boolean): string {
             export * from './${main}';
             import * as CanisterMethods from './${main}';
 
-            const canister = new CanisterMethods.default();
+            if (globalThis._azleWasmtimeCandidEnvironment === false) {
+                const canister = new CanisterMethods.default();
+                globalThis._azleCanisterClassInstance = canister;
+            }
+
             const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
             const candid = canisterIdlType.accept(new DidVisitor(), {
                 ...getDefaultVisitorData(),
@@ -47,7 +51,6 @@ function getImports(main: string, experimental: boolean): string {
                 systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
             });
 
-            globalThis._azleCanisterClassInstance = canister;
 
             globalThis.candidInfoFunction = () => {
                 return JSON.stringify({
@@ -76,15 +79,17 @@ function getImports(main: string, experimental: boolean): string {
             import * as CanisterMethods from './${main}';
 
             if (isClassSyntaxExport(CanisterMethods)) {
-                const canister = new CanisterMethods.default();
+                if (globalThis._azleWasmtimeCandidEnvironment === false) {
+                    const canister = new CanisterMethods.default();
+                    globalThis._azleCanisterClassInstance = canister;
+                }
+
                 const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
                 const candid = canisterIdlType.accept(new DidVisitor(), {
                     ...getDefaultVisitorData(),
                     isFirstService: true,
                     systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
                 });
-
-                globalThis._azleCanisterClassInstance = canister;
 
                 globalThis.candidInfoFunction = () => {
                     return JSON.stringify({

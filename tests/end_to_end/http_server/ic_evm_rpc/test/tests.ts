@@ -1,3 +1,5 @@
+globalThis._azleExperimental = true;
+
 // TODO These tests must be from from dfx --start to generate fresh addresses
 
 // If 0x9Ac70EE21bE697173b74aF64399d850038697FD3 ever runs out of sepETH,
