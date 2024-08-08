@@ -13,7 +13,7 @@ ic-cdk-macros = "0.8.4"
 ic-cdk-timers = "0.6.0"
 candid = "0.10.2"
 candid_parser = "0.1.2"
-ic-stable-structures = "0.6.2"
+ic-stable-structures = "0.6.5"
 open_value_sharing = { path = "../open_value_sharing" }
 slotmap = "=1.0.6"
 wasmi = "0.31.2"
@@ -21,11 +21,7 @@ sha2 = "0.10.8"
 serde = "1.0.202"
 serde_json = "1.0.107"
 
-# TODO transient feature can be removed once https://github.com/demergent-labs/azle/issues/1731 is resolved
-# ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "88bddc8190caf93a1e052f0513b5d6bc074929c3" }
-ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "88bddc8190caf93a1e052f0513b5d6bc074929c3", features = [
-    "transient",
-] }
+ic-wasi-polyfill = "0.5.0"
 
 wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "c21ff69f442998e4cda4619166e23a9bc91418be" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }

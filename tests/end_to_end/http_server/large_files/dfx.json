@@ -2,7 +2,7 @@
     "canisters": {
         "backend": {
             "type": "azle",
-            "main": "src/backend/index.ts",
+            "main": "src/index.ts",
             "assets": [
                 ["assets/auto", "assets"],
                 ["assets/permanent", "assets"],

@@ -118,7 +118,7 @@ function processEnvVars(): {
     };
 }
 
-export const defaultParams = {
+export const defaultPropTestParams = {
     numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
     endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
 };
