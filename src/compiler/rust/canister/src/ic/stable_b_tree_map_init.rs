@@ -1,7 +1,8 @@
 use ic_stable_structures::{memory_manager::MemoryId, StableBTreeMap};
 use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-use crate::{MEMORY_MANAGER_REF_CELL, STABLE_B_TREE_MAPS};
+use crate::stable_b_tree_map::STABLE_B_TREE_MAPS;
+use crate::MEMORY_MANAGER_REF_CELL;
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {

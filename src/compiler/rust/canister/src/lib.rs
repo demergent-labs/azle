@@ -20,6 +20,7 @@ mod autoreload;
 mod chunk;
 mod guards;
 mod ic;
+mod stable_b_tree_map;
 #[cfg(feature = "experimental")]
 mod upload_file;
 #[cfg(feature = "experimental")]
@@ -30,46 +31,6 @@ use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
-#[allow(unused)]
-type AzleStableBTreeMap = StableBTreeMap<AzleStableBTreeMapKey, AzleStableBTreeMapValue, Memory>;
-
-#[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
-struct AzleStableBTreeMapKey {
-    bytes: Vec<u8>,
-}
-
-impl Storable for AzleStableBTreeMapKey {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-        std::borrow::Cow::Borrowed(&self.bytes)
-    }
-
-    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-        AzleStableBTreeMapKey {
-            bytes: bytes.to_vec(),
-        }
-    }
-
-    const BOUND: Bound = Bound::Unbounded;
-}
-
-#[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
-struct AzleStableBTreeMapValue {
-    bytes: Vec<u8>,
-}
-
-impl Storable for AzleStableBTreeMapValue {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-        std::borrow::Cow::Borrowed(&self.bytes)
-    }
-
-    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-        AzleStableBTreeMapValue {
-            bytes: bytes.to_vec(),
-        }
-    }
-
-    const BOUND: Bound = Bound::Unbounded;
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 struct WasmData {
@@ -82,10 +43,7 @@ struct WasmData {
 
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
-
-    static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-
-    static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
+    pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }
 
 #[no_mangle]
