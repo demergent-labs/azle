@@ -32,6 +32,9 @@
             "declarations": {
                 "node_compatibility": true,
                 "output": "wallet/frontend/dfx_generated/wallet_backend"
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "wallet_frontend": {

@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { CandidType, Vec } from '../../../../../src/lib';
+import { CandidType, Vec } from '../../../../../src/lib/experimental';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,

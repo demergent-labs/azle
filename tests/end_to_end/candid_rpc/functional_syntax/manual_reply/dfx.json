@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "test/dfx_generated/manual_reply",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

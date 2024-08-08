@@ -1,4 +1,4 @@
-import { nat64 } from '../../../../src/lib';
+import { nat64 } from '../../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

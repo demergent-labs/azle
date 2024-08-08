@@ -8,6 +8,9 @@
             "declarations": {
                 "output": "test/dfx_generated/management_canister",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

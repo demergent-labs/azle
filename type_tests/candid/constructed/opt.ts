@@ -8,7 +8,7 @@ import {
     Record,
     RequireExactlyOne,
     text
-} from '../../../src/lib';
+} from '../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

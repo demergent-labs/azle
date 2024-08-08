@@ -17,7 +17,7 @@ import {
     text,
     Variant,
     RequireExactlyOne
-} from '../../../src/lib';
+} from '../../../src/lib/experimental';
 import { testCandidType, testSerializable } from '../../assert_type';
 
 export const ExampleVariant = Variant({

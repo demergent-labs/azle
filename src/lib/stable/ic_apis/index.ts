@@ -25,7 +25,6 @@ export { rejectCode } from './reject_code';
 export { rejectMessage } from './reject_message';
 export { reply } from './reply';
 export { setCertifiedData } from './set_certified_data';
-export { setOutgoingHttpOptions } from './set_outgoing_http_options';
 export { setTimer } from './set_timer';
 export { setTimerInterval } from './set_timer_interval';
 export { time } from './time';

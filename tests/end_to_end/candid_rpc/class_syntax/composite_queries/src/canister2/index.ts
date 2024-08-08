@@ -1,14 +1,13 @@
 import { call, IDL, query, reply, update } from 'azle';
 
-const canister3Id = getCanister3Id();
-
-let counter: bigint = 0n;
-
 export default class {
+    canister3Id: string = getCanister3Id();
+    counter: bigint = 0n;
+
     @query([], IDL.Nat)
     incCounter(): bigint {
-        counter += 1n;
-        return counter;
+        this.counter += 1n;
+        return this.counter;
     }
 
     @query([], IDL.Text)
@@ -35,7 +34,7 @@ export default class {
         composite: true
     })
     async deepQuery(): Promise<string> {
-        return await call(canister3Id, 'deepQuery', {
+        return await call(this.canister3Id, 'deepQuery', {
             returnIdlType: IDL.Text
         });
     }
@@ -44,10 +43,6 @@ export default class {
 function getCanister3Id(): string {
     if (process.env.CANISTER3_PRINCIPAL !== undefined) {
         return process.env.CANISTER3_PRINCIPAL;
-    }
-
-    if (globalThis._azleInsideCanister === true) {
-        return 'PRE_INIT_EXECUTION';
     }
 
     throw new Error(`process.env.CANISTER3_PRINCIPAL is not defined`);

@@ -3,8 +3,8 @@ import fc from 'fast-check';
 import {
     query,
     update
-} from '../../../../../src/lib/canister_methods/methods/';
-import { CanisterMethodInfo } from '../../../../../src/lib/canister_methods/types/canister_method_info';
+} from '../../../../../src/lib/experimental/canister_methods/methods/';
+import { CanisterMethodInfo } from '../../../../../src/lib/experimental/canister_methods/types/canister_method_info';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import {
     CandidDefinition,

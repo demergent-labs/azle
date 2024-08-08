@@ -1,3 +1,9 @@
+import { experimentalMessage } from '../../../src/lib/experimental/experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
 import { blob, Null, Opt, Principal, Record, text, Variant, Vec } from '../../';
 
 export const EcdsaCurve = Variant({

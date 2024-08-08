@@ -1,4 +1,4 @@
-import { RequireExactlyOne } from '../../lib';
+import { RequireExactlyOne } from '../../lib/experimental';
 import { ConsumerConfig } from '../get_consumer_config';
 
 export type AzleError = {
@@ -30,6 +30,7 @@ export type CanisterConfig = Readonly<{
     esm_externals?: string[];
     // TODO we should move all custom properties into custom in a subsequent PR
     custom?: {
+        experimental?: boolean;
         openValueSharing?: ConsumerConfig;
     };
 }>;

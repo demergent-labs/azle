@@ -14,7 +14,14 @@ export const AZLE_PACKAGE_PATH = join(
     '..'
 );
 
-export const STATIC_CANISTER_TEMPLATE_PATH = join(
+export const STABLE_STATIC_CANISTER_TEMPLATE_PATH = join(
     AZLE_PACKAGE_PATH,
-    `static_canister_template.wasm`
+    'canister_templates',
+    'stable.wasm'
+);
+
+export const EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH = join(
+    AZLE_PACKAGE_PATH,
+    'canister_templates',
+    'experimental.wasm'
 );

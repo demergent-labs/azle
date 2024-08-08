@@ -3,7 +3,10 @@
         "fs": {
             "type": "azle",
             "main": "src/index.ts",
-            "assets": [["src/image.jpg", "image.jpg"]]
+            "assets": [["src/image.jpg", "image.jpg"]],
+            "custom": {
+                "experimental": true
+            }
         }
     }
 }

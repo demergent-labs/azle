@@ -8,6 +8,9 @@
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_async",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "heartbeat_sync": {
@@ -17,6 +20,9 @@
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_sync",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

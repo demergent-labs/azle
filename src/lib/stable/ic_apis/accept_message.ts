@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { inspectMessage } from '../inspect_message'; // Used for links in comments
+import { inspectMessage } from '../canister_methods/inspect_message'; // Used for links in comments
 
 /**
  * Accepts the ingress message. Calling from outside the

@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "dfx_generated/robust_imports",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }
