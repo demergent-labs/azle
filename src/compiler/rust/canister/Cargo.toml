@@ -6,6 +6,9 @@ edition = "2018"
 [lib]
 crate-type = ["cdylib"]
 
+[features]
+experimental = []
+
 [dependencies]
 anyhow = "1.0.75"
 ic-cdk = "0.12.1"
