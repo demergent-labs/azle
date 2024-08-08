@@ -5,14 +5,12 @@ use std::{
     env::args,
 };
 
+use guards::guard_against_non_controllers;
 use ic_stable_structures::{
     memory_manager::{MemoryId, MemoryManager, VirtualMemory},
     storable::Bound,
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
-#[cfg(feature = "experimental")]
-use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
-
 use serde::{Deserialize, Serialize};
 use std::fs;
 use wasmedge_quickjs::AsObject;
@@ -20,15 +18,13 @@ use wasmedge_quickjs::AsObject;
 mod chunk;
 mod guards;
 mod ic;
-
 #[cfg(feature = "experimental")]
 mod upload_file;
-
 #[cfg(feature = "experimental")]
 mod web_assembly;
 
-use guards::guard_against_non_controllers;
-
+#[cfg(feature = "experimental")]
+use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
 #[cfg(feature = "experimental")]
 use upload_file::Timestamp;
 
@@ -90,9 +86,6 @@ thread_local! {
     static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
     static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
-
-    #[cfg(feature = "experimental")]
-    static WASM_INSTANCES: RefCell<HashMap<String, (wasmi::Instance, wasmi::Store<()>)>> = RefCell::new(HashMap::new());
 
     #[cfg(feature = "experimental")]
     static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
