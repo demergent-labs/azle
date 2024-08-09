@@ -261,6 +261,7 @@ jobs:
                     "tests/property/ic_api/id",
                     "tests/property/ic_api/instruction_counter",
                     "tests/property/ic_api/is_controller",
+                    "tests/property/ic_api/performance_counter",
                     "tests/property/ic_api/time",
                     "tests/property/ic_api/trap"
                   ]
