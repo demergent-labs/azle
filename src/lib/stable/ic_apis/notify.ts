@@ -1,4 +1,4 @@
-import { IDL, Principal } from '../';
+import { IDL, Principal } from '..';
 
 /**
  * Performs a cross-canister call without awaiting the result

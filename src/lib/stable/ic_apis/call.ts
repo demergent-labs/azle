@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'; // TODO is uuid experimental?
 
-import { IDL, Principal } from '../';
+import { IDL, Principal } from '..';
 
 export async function call(
     canisterId: Principal | string,

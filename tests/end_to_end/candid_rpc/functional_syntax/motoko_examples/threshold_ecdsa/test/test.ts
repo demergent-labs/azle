@@ -1,7 +1,7 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
 
-import { createActor } from './dfx_generated/threshold_ecdsa/';
+import { createActor } from './dfx_generated/threshold_ecdsa';
 import { getTests } from './tests';
 
 const tEcdsaCanister = createActor(getCanisterId('threshold_ecdsa'), {

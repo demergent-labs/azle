@@ -4,7 +4,14 @@ if (globalThis._azleExperimental !== true) {
     throw new Error(experimentalMessage('azle/experimental'));
 }
 
-import { blob, Null, Opt, Principal, Record, text, Variant, Vec } from '../../';
+import { blob } from '../../../src/lib/experimental/candid/types/constructed/blob';
+import { Opt } from '../../../src/lib/experimental/candid/types/constructed/opt';
+import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
+import { Variant } from '../../../src/lib/experimental/candid/types/constructed/variant';
+import { Vec } from '../../../src/lib/experimental/candid/types/constructed/vec';
+import { Null } from '../../../src/lib/experimental/candid/types/primitive/null';
+import { text } from '../../../src/lib/experimental/candid/types/primitive/text';
+import { Principal } from '../../../src/lib/experimental/candid/types/reference/principal';
 
 export const EcdsaCurve = Variant({
     secp256k1: Null

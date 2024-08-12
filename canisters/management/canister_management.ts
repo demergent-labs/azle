@@ -1,4 +1,4 @@
-import { IDL, Principal } from '../../';
+import { IDL, Principal } from '../..';
 
 export const CanisterId = IDL.Principal;
 export type CanisterId = Principal;

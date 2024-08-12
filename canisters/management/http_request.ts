@@ -1,4 +1,4 @@
-import { IDL, Principal } from '../../';
+import { IDL, Principal } from '../..';
 
 export const HttpHeader = IDL.Record({
     name: IDL.Text,

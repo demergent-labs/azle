@@ -1,4 +1,4 @@
-// import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
+// import * as ecc from 'tiny-secp256k1/lib'; // TODO we should switch to this import as soon as we have wasm support
 import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import * as bitcoin from 'bitcoinjs-lib';
 import * as bitcoinMessage from 'bitcoinjs-message';

@@ -4,7 +4,13 @@ if (globalThis._azleExperimental !== true) {
     throw new Error(experimentalMessage('azle/experimental'));
 }
 
-import { blob, nat, nat64, Null, Opt, Record, Variant } from '../../';
+import { blob } from '../../../src/lib/experimental/candid/types/constructed/blob';
+import { Opt } from '../../../src/lib/experimental/candid/types/constructed/opt';
+import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
+import { Variant } from '../../../src/lib/experimental/candid/types/constructed/variant';
+import { nat } from '../../../src/lib/experimental/candid/types/primitive/nats/nat';
+import { nat64 } from '../../../src/lib/experimental/candid/types/primitive/nats/nat64';
+import { Null } from '../../../src/lib/experimental/candid/types/primitive/null';
 import {
     BadBurn,
     BadFee,

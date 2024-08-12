@@ -4,7 +4,7 @@
 //
 // Some documentation changed from original work.
 
-import { IDL, Principal } from '../../';
+import { IDL, Principal } from '../..';
 
 /** Argument type of managementCanister.canister_info. */
 export const CanisterInfoArgs = IDL.Record({

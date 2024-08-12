@@ -1,4 +1,4 @@
-import { Principal } from '../';
+import { Principal } from '..';
 
 /**
  * Returns the principal of the caller of the current call

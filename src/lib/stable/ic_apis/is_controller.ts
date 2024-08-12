@@ -1,4 +1,4 @@
-import { Principal } from '../';
+import { Principal } from '..';
 
 /** Determine if a {@link Principal} is a controller of the canister. */
 export function isController(principal: Principal): boolean {

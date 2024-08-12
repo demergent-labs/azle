@@ -1,4 +1,4 @@
-import { trap } from '.';
+import { trap } from './ic_apis/trap';
 
 export function handleUncaughtError(rawError: any): never {
     const error = rawError instanceof Error ? rawError : new Error(rawError);
