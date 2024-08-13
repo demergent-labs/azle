@@ -13,6 +13,8 @@ import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
 
+const syntax = 'functional';
+
 const StableBTreeMapTestArb = fc
     .array(
         StableBTreeMapArb.chain((stableBTreeMap) => {
@@ -89,4 +91,4 @@ const StableBTreeMapTestArb = fc
         };
     });
 
-runPropTests(CanisterArb(StableBTreeMapTestArb));
+runPropTests(CanisterArb(StableBTreeMapTestArb, syntax));

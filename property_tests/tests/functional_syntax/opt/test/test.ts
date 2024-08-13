@@ -10,10 +10,17 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const AllOptsQueryMethodArb = QueryMethodArb(fc.array(OptArb()), OptArb(), {
-    generateBody,
-    generateTests
-});
+const syntax = 'functional';
+
+const AllOptsQueryMethodArb = QueryMethodArb(
+    fc.array(OptArb(syntax)),
+    OptArb(syntax),
+    {
+        generateBody,
+        generateTests,
+        syntax
+    }
+);
 
 const CanisterConfigArb = fc
     .array(AllOptsQueryMethodArb, defaultArrayConstraints)
@@ -21,4 +28,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb, syntax));

@@ -10,14 +10,17 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
+const syntax = 'functional';
+
 const AllServicesQueryMethodArb = QueryMethodArb(
-    fc.uniqueArray(ServiceArb(), {
+    fc.uniqueArray(ServiceArb(syntax), {
         selector: (entry) => entry.src.candidTypeAnnotation
     }),
-    ServiceArb(),
+    ServiceArb(syntax),
     {
         generateBody,
-        generateTests
+        generateTests,
+        syntax
     }
 );
 
@@ -30,4 +33,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb, syntax));

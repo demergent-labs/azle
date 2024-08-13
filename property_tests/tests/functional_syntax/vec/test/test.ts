@@ -10,10 +10,17 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const AllVecsQueryMethodArb = QueryMethodArb(fc.array(VecArb()), VecArb(), {
-    generateBody,
-    generateTests
-});
+const syntax = 'functional';
+
+const AllVecsQueryMethodArb = QueryMethodArb(
+    fc.array(VecArb(syntax)),
+    VecArb(syntax),
+    {
+        generateBody,
+        generateTests,
+        syntax
+    }
+);
 
 const CanisterConfigArb = fc
     .array(AllVecsQueryMethodArb, defaultArrayConstraints)
@@ -21,4 +28,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb, syntax));
