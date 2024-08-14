@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
+import { Syntax } from '../../../types';
 import { OptCandidDefinition } from '../../candid_definition_arb/types';
 import {
     CandidValueArb,
@@ -12,8 +13,9 @@ import { RecursiveShapes } from '../../recursive';
 import { Opt } from '.';
 
 type SomeOrNone = 'Some' | 'None';
+const syntax = 'functional';
 
-export function OptValuesArb(
+export function FunctionalOptValuesArb(
     optDefinition: OptCandidDefinition,
     recursiveShapes: RecursiveShapes,
     constraints: CandidValueConstraints = {
@@ -22,7 +24,7 @@ export function OptValuesArb(
 ): fc.Arbitrary<CandidValues<Opt>> {
     const depthLevel = constraints?.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
     if (depthLevel < 1) {
-        return fc.constant(generateNoneValue());
+        return fc.constant(generateNoneValue(syntax));
     }
     const innerValue = fc.tuple(
         fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
@@ -33,7 +35,11 @@ export function OptValuesArb(
     );
 
     return innerValue.map(([someOrNone, innerType]) => {
-        const valueLiteral = generateValueLiteral(someOrNone, innerType);
+        const valueLiteral = generateValueLiteral(
+            someOrNone,
+            innerType,
+            syntax
+        );
         const agentArgumentValue = generateValue(someOrNone, innerType);
         const agentResponseValue = generateValue(someOrNone, innerType, true);
 
@@ -45,9 +51,9 @@ export function OptValuesArb(
     });
 }
 
-function generateNoneValue(): CandidValues<Opt> {
+function generateNoneValue(syntax: Syntax): CandidValues<Opt> {
     return {
-        valueLiteral: 'None',
+        valueLiteral: syntax === 'functional' ? 'None' : '[]',
         agentArgumentValue: [],
         agentResponseValue: []
     };
@@ -71,11 +77,14 @@ function generateValue(
 
 function generateValueLiteral(
     someOrNone: SomeOrNone,
-    innerType: CandidValues<CorrespondingJSType>
+    innerType: CandidValues<CorrespondingJSType>,
+    syntax: Syntax
 ): string {
     if (someOrNone === 'Some') {
-        return `Some(${innerType.valueLiteral})`;
+        return syntax === 'functional'
+            ? `Some(${innerType.valueLiteral})`
+            : `[${innerType.valueLiteral}]`;
     } else {
-        return `None`;
+        return syntax === 'functional' ? `None` : '[]';
     }
 }

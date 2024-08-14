@@ -12,7 +12,7 @@ import {
     VecCandidDefinition
 } from './candid_definition_arb/types';
 import { BlobValuesArb } from './constructed/blob_arb/values_arb';
-import { OptValuesArb } from './constructed/opt_arb/values_arb';
+import { FunctionalOptValuesArb } from './constructed/opt_arb/functional_values_arb';
 import { RecordValuesArb } from './constructed/record_arb/values_arb';
 import { TupleValuesArb } from './constructed/tuple_arb/values_arbs';
 import { VariantValuesArb } from './constructed/variant_arb/values_arb';
@@ -69,7 +69,8 @@ export function CandidValueArb(
         return BlobValuesArb();
     }
     if (candidType === 'Opt') {
-        return OptValuesArb(
+        // TODO see comment on FunctionalServiceValuesArb below
+        return FunctionalOptValuesArb(
             candidTypeMeta as OptCandidDefinition,
             recursiveShapes,
             constraints
@@ -164,6 +165,7 @@ export function CandidValueArb(
         // TODO but also that's a little weird that I haven't run into any problems yet
         // TODO but maybe we should have a different way of handling the syntax selection. Like if it's a global setting should we have some global variable instead?
         // TODO or maybe an environment variable?
+        // TODO all of this also applies to the FunctionalOptValuesArb above
         return FunctionalServiceValueArb(
             candidTypeMeta as ServiceCandidDefinition
         );
