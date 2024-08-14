@@ -23,6 +23,7 @@ export type ServiceMethodDefinition = {
     imports: Set<string>;
     variableAliasDeclarations: string[];
     src: string;
+    idl: string;
 };
 
 export function ServiceMethodArb(
@@ -63,6 +64,9 @@ export function ServiceMethodArb(
                 );
 
                 const src = `${name}: ${mode}([${paramCandidTypeObjects}], ${returnType.candidMeta.candidTypeObject})`;
+                const idl = `${name}: IDL.Func([${paramCandidTypeObjects}], [${
+                    returnType.candidMeta.candidTypeObject
+                }], ${mode === 'query' ? '["query"]' : 'undefined'})`;
 
                 const imports = params.reduce(
                     (acc, param) => {
@@ -83,7 +87,8 @@ export function ServiceMethodArb(
                         runtimeCandidTypeObject,
                         imports,
                         variableAliasDeclarations,
-                        src
+                        src,
+                        idl
                     },
                     recursiveShapes
                 };

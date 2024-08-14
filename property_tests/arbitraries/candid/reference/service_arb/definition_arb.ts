@@ -113,6 +113,8 @@ function generateVariableAliasDeclarations(
         (serviceMethod) => serviceMethod.variableAliasDeclarations
     );
     if (useTypeDeclaration) {
+        const type =
+            syntax === 'functional' ? [] : [`type ${name} = Principal`];
         return [
             ...serviceMethodTypeAliasDecls,
             `const ${name} = ${
@@ -124,7 +126,8 @@ function generateVariableAliasDeclarations(
                           syntax
                       )
                     : generateIdl(serviceMethods)
-            };`
+            };`,
+            ...type
         ];
     }
     return serviceMethodTypeAliasDecls;
@@ -147,7 +150,7 @@ function generateCandidTypeAnnotation(
 
 function generateIdl(serviceMethods: ServiceMethodDefinition[]): string {
     const methods = serviceMethods
-        .map((serviceMethod) => serviceMethod.src)
+        .map((serviceMethod) => serviceMethod.idl)
         .filter((typeDeclaration) => typeDeclaration)
         .join(',\n');
 
