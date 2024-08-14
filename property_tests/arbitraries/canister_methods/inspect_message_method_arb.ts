@@ -45,7 +45,14 @@ export function InspectMessageMethodArb(constraints: {
                         : constraints.callbackLocation ??
                           defaultCallbackLocation;
 
-                const imports = new Set(['inspectMessage', 'ic']);
+                const inspectMessageImports =
+                    constraints.syntax === 'functional'
+                        ? ['ic']
+                        : ['caller', 'acceptMessage', 'methodName'];
+                const imports = new Set([
+                    'inspectMessage',
+                    ...inspectMessageImports
+                ]);
 
                 const callback = generateCallback(
                     [],
