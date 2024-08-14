@@ -1,0 +1,127 @@
+import { runPropTests } from 'azle/property_tests';
+import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
+import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
+import {
+    CanisterArb,
+    CanisterConfig
+} from 'azle/property_tests/arbitraries/canister_arb';
+import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/init_method_arb';
+import {
+    QueryMethod,
+    QueryMethodArb
+} from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
+import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
+import fc from 'fast-check';
+
+import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
+import { generateBody as initBodyGenerator } from './generate_init_body';
+import { generateTests } from './generate_tests';
+
+const syntax = 'class';
+
+// TODO multiplying by zero is to remove -0
+// TODO we should open an issue with agent-js
+// TODO the agent should encode and decode -0 correctly
+// https://github.com/demergent-labs/azle/issues/1511
+// TODO Infinity and NaN can't be used in this context
+// https://github.com/dfinity/candid/issues/499
+const valueConstraints = {
+    noDefaultInfinity: true,
+    noNaN: true,
+    noNegativeZero: true
+};
+const SimpleInitMethodArb = InitMethodArb(
+    fc.array(CandidValueAndMetaArb(syntax, valueConstraints)),
+    {
+        generateBody: initBodyGenerator,
+        generateTests,
+        syntax
+    }
+);
+
+const HeterogeneousQueryMethodArb = QueryMethodArb(
+    fc.array(CandidValueAndMetaArb(syntax)),
+    CandidReturnTypeArb(syntax),
+    {
+        generateBody: callableMethodBodyGenerator,
+        generateTests: () => [],
+        syntax
+    }
+);
+
+const HeterogeneousUpdateMethodArb = UpdateMethodArb(
+    fc.array(CandidValueAndMetaArb(syntax)),
+    CandidReturnTypeArb(syntax),
+    {
+        generateBody: callableMethodBodyGenerator,
+        generateTests: () => [],
+        syntax
+    }
+);
+
+const small = {
+    minLength: 0,
+    maxLength: 20
+};
+
+const CanisterConfigArb = fc
+    .tuple(
+        SimpleInitMethodArb,
+        fc.array(HeterogeneousQueryMethodArb, small),
+        fc.array(HeterogeneousUpdateMethodArb, small)
+    )
+    .map(
+        ([initMethod, queryMethods, updateMethods]): CanisterConfig<
+            CorrespondingJSType,
+            CorrespondingJSType
+        > => {
+            const initParamTypes = initMethod.params.map(
+                (param) => param.value.src.candidTypeObject
+            );
+
+            const globalInitVariableNames = initMethod.params.map(
+                (_, i) => `initParam${i}`
+            );
+            const globalInitVariableDeclarations = initMethod.params.map(
+                (param, i) =>
+                    `let initParam${i}: ${param.value.src.candidTypeAnnotation};`
+            );
+
+            const globalDeclarations = [
+                'let initialized: boolean = false;',
+                ...globalInitVariableDeclarations
+            ];
+
+            const getInitValues = generateGetInitValuesCanisterMethod(
+                initParamTypes,
+                globalInitVariableNames
+            );
+
+            return {
+                initMethod,
+                globalDeclarations,
+                queryMethods: [getInitValues, ...queryMethods],
+                updateMethods
+            };
+        }
+    );
+
+runPropTests(CanisterArb(CanisterConfigArb, syntax));
+
+function generateGetInitValuesCanisterMethod(
+    paramTypes: string[],
+    globalInitVariableNames: string[]
+): QueryMethod {
+    return {
+        imports: new Set(['IDL', 'query']),
+        globalDeclarations: [],
+        sourceCode: /*TS*/ `
+            @query([], IDL.Tuple(IDL.Bool, ${paramTypes.join()}))
+            getInitValues(){
+                return [initialized, ${globalInitVariableNames.join()}]
+            }
+        `,
+        tests: []
+    };
+}
