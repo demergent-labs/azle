@@ -5,11 +5,11 @@ import { ServiceCandidDefinition } from '../../candid_definition_arb/types';
 import { CandidValues } from '../../candid_values_arb';
 import { PrincipalValueArb } from '../principal_arb';
 
-export function ServiceValueArb(
-    serviceDefinition: ServiceCandidDefinition
+export function ClassServiceValueArb(
+    _serviceDefinition: ServiceCandidDefinition
 ): fc.Arbitrary<CandidValues<Principal>> {
     return PrincipalValueArb().map((principal) => {
-        const valueLiteral = `${serviceDefinition.name}(${principal.valueLiteral})`;
+        const valueLiteral = `${principal.valueLiteral}`;
         const value = principal.agentArgumentValue;
 
         return {

@@ -44,7 +44,7 @@ import { RecursiveShapes } from './recursive';
 import { RecursiveNameValuesArb } from './recursive/values_arb';
 import { FuncValueArb } from './reference/func_arb/values_arb';
 import { PrincipalValueArb } from './reference/principal_arb';
-import { ServiceValueArb } from './reference/service_arb/values_arb';
+import { FunctionalServiceValueArb } from './reference/service_arb/functional_values_arb';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
@@ -158,7 +158,15 @@ export function CandidValueArb(
         return PrincipalValueArb();
     }
     if (candidType === 'Service') {
-        return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
+        // TODO This seems problematic. I was trying to avoid having to pass the syntax variable through all of the values just so that Service and Opt can work.
+        // TODO But now that we have this here and it looks like we might not be able to avoid it
+        // TODO But we might be able to keep going, I haven't run into any problems yet
+        // TODO but also that's a little weird that I haven't run into any problems yet
+        // TODO but maybe we should have a different way of handling the syntax selection. Like if it's a global setting should we have some global variable instead?
+        // TODO or maybe an environment variable?
+        return FunctionalServiceValueArb(
+            candidTypeMeta as ServiceCandidDefinition
+        );
     }
     if (candidType === 'Recursive') {
         return RecursiveNameValuesArb(

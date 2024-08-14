@@ -9,8 +9,9 @@ import {
 } from '../../candid_definition_arb/types';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
+import { ClassServiceValueArb } from './class_values_arb';
 import { ServiceDefinitionArb } from './definition_arb';
-import { ServiceValueArb } from './values_arb';
+import { FunctionalServiceValueArb } from './functional_values_arb';
 
 // TODO:
 // - services that are more than type-definitions, i.e. have functionality
@@ -34,6 +35,8 @@ export function ServiceArb(
 ): fc.Arbitrary<CandidValueAndMeta<Principal>> {
     return CandidValueAndMetaArbGenerator(
         ServiceDefinitionArb(innerCandidDefinitionArb, syntax),
-        ServiceValueArb
+        syntax === 'functional'
+            ? FunctionalServiceValueArb
+            : ClassServiceValueArb
     );
 }
