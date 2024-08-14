@@ -18,6 +18,8 @@ import { generateBody as callableMethodBodyGenerator } from './generate_callable
 import { generateBody as initBodyGenerator } from './generate_init_body';
 import { generateTests } from './generate_tests';
 
+const syntax = 'functional';
+
 // TODO multiplying by zero is to remove -0
 // TODO we should open an issue with agent-js
 // TODO the agent should encode and decode -0 correctly
@@ -30,28 +32,31 @@ const valueConstraints = {
     noNegativeZero: true
 };
 const SimpleInitMethodArb = InitMethodArb(
-    fc.array(CandidValueAndMetaArb(valueConstraints)),
+    fc.array(CandidValueAndMetaArb(syntax, valueConstraints)),
     {
         generateBody: initBodyGenerator,
-        generateTests
+        generateTests,
+        syntax
     }
 );
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
-    fc.array(CandidValueAndMetaArb()),
-    CandidReturnTypeArb(),
+    fc.array(CandidValueAndMetaArb(syntax)),
+    CandidReturnTypeArb(syntax),
     {
         generateBody: callableMethodBodyGenerator,
-        generateTests: () => []
+        generateTests: () => [],
+        syntax
     }
 );
 
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-    fc.array(CandidValueAndMetaArb()),
-    CandidReturnTypeArb(),
+    fc.array(CandidValueAndMetaArb(syntax)),
+    CandidReturnTypeArb(syntax),
     {
         generateBody: callableMethodBodyGenerator,
-        generateTests: () => []
+        generateTests: () => [],
+        syntax
     }
 );
 
@@ -102,7 +107,7 @@ const CanisterConfigArb = fc
         }
     );
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb, syntax));
 
 function generateGetInitValuesCanisterMethod(
     paramTypes: string[],

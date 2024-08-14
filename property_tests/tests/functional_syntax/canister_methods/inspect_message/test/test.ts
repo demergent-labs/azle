@@ -12,7 +12,7 @@ import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_method
 import fc from 'fast-check';
 import { v4 } from 'uuid';
 
-import { CorrespondingJSType } from '../../../../arbitraries/candid/corresponding_js_type';
+import { CorrespondingJSType } from '../../../../../arbitraries/candid/corresponding_js_type';
 import { generateTests } from './generate_tests';
 
 export type InspectMessageBehavior = 'ACCEPT' | 'RETURN' | 'THROW';
@@ -20,6 +20,8 @@ export type InspectMessageBehavior = 'ACCEPT' | 'RETURN' | 'THROW';
 const AZLE_ACCEPT_IDENTITY_NAME = `_prop_test_azle_accept_identity_${v4()}`;
 const AZLE_RETURN_IDENTITY_NAME = `_prop_test_azle_return_identity_${v4()}`;
 const AZLE_THROW_IDENTITY_NAME = `_prop_test_azle_throw_identity_${v4()}`;
+
+const syntax = 'functional';
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -38,16 +40,18 @@ function CanisterConfigArb() {
 
     const InspectMessageArb = InspectMessageMethodArb({
         generateBody: () => generateInspectMessageMethodBody(),
-        generateTests: () => []
+        generateTests: () => [],
+        syntax
     });
 
     const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-        fc.array(CandidValueAndMetaArb()),
-        CandidReturnTypeArb(),
+        fc.array(CandidValueAndMetaArb(syntax)),
+        CandidReturnTypeArb(syntax),
         {
             generateBody: (_, returnType) =>
                 `return ${returnType.src.valueLiteral}`,
-            generateTests: (...args) => generateTests(...args, agents)
+            generateTests: (...args) => generateTests(...args, agents),
+            syntax
         }
     );
 
@@ -71,7 +75,7 @@ function CanisterConfigArb() {
         );
 }
 
-runPropTests(CanisterArb(CanisterConfigArb()));
+runPropTests(CanisterArb(CanisterConfigArb(), syntax));
 
 function generateInspectMessageMethodBody(): string {
     const acceptPrincipal = getPrincipal(AZLE_ACCEPT_IDENTITY_NAME);

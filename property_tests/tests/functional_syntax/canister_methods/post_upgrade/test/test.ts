@@ -33,8 +33,10 @@ import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_
 import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
 import { globalInitVarName, globalPostUpgradeVarName } from './global_var_name';
 
+const syntax = 'functional';
+
 const CanisterConfigArb = fc
-    .array(candidDefinitionArb({}))
+    .array(candidDefinitionArb({}, undefined, syntax))
     .chain((paramDefinitionsWithShapes) => {
         const initParamValues = definitionsToValueAndMetaArb(
             paramDefinitionsWithShapes
@@ -50,32 +52,36 @@ const CanisterConfigArb = fc
 
         const SimpleInitMethodArb = InitMethodArb(initDeployParamsArb, {
             generateBody: initMethodBodyGenerator,
-            generateTests: generateInitTests
+            generateTests: generateInitTests,
+            syntax
         });
 
         const SimplePostUpgradeMethodArb = PostUpgradeMethodArb(
             postUpgradeParamsArb,
             {
                 generateBody: postUpgradeMethodBodyGenerator,
-                generateTests: generatePostUpgradeTests
+                generateTests: generatePostUpgradeTests,
+                syntax
             }
         );
 
         const HeterogeneousQueryMethodArb = QueryMethodArb(
-            fc.array(CandidValueAndMetaArb()),
-            CandidReturnTypeArb(),
+            fc.array(CandidValueAndMetaArb(syntax)),
+            CandidReturnTypeArb(syntax),
             {
                 generateBody: callableMethodBodyGenerator,
-                generateTests: () => []
+                generateTests: () => [],
+                syntax
             }
         );
 
         const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-            fc.array(CandidValueAndMetaArb()),
-            CandidReturnTypeArb(),
+            fc.array(CandidValueAndMetaArb(syntax)),
+            CandidReturnTypeArb(syntax),
             {
                 generateBody: callableMethodBodyGenerator,
-                generateTests: () => []
+                generateTests: () => [],
+                syntax
             }
         );
 
@@ -281,4 +287,4 @@ function definitionsToValueAndMetaArb(
         );
 }
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb, syntax));

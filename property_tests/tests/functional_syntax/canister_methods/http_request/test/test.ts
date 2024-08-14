@@ -13,7 +13,9 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const CanisterConfigArb = RecordArb()
+const syntax = 'functional';
+
+const CanisterConfigArb = RecordArb(syntax)
     .chain((record) => {
         const HttpRequestMethodArb = QueryMethodArb(
             fc.tuple(HttpRequestArb()),
@@ -21,7 +23,8 @@ const CanisterConfigArb = RecordArb()
             {
                 name: 'http_request',
                 generateBody,
-                generateTests
+                generateTests,
+                syntax
             }
         );
 
@@ -33,4 +36,4 @@ const CanisterConfigArb = RecordArb()
         };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb, syntax));

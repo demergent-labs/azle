@@ -15,29 +15,34 @@ import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_method
 import { AzleResult, testEquality } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
+const syntax = 'functional';
+
 const SimplePreUpgradeArb = PreUpgradeMethodArb({
     generateBody: () =>
         /*TS*/ `stable.insert(PRE_UPGRADE_HOOK_EXECUTED, true);`,
-    generateTests: () => []
+    generateTests: () => [],
+    syntax
 });
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
-    fc.array(CandidValueAndMetaArb()),
-    CandidReturnTypeArb(),
+    fc.array(CandidValueAndMetaArb(syntax)),
+    CandidReturnTypeArb(syntax),
     {
         generateBody: (_, returnType) =>
             `return ${returnType.src.valueLiteral}`,
-        generateTests: () => []
+        generateTests: () => [],
+        syntax
     }
 );
 
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-    fc.array(CandidValueAndMetaArb()),
-    CandidReturnTypeArb(),
+    fc.array(CandidValueAndMetaArb(syntax)),
+    CandidReturnTypeArb(syntax),
     {
         generateBody: (_, returnType) =>
             `return ${returnType.src.valueLiteral}`,
-        generateTests: () => []
+        generateTests: () => [],
+        syntax
     }
 );
 
@@ -79,7 +84,7 @@ const CanisterConfigArb = fc
         }
     );
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb, syntax));
 
 function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
     return {

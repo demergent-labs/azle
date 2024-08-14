@@ -17,12 +17,15 @@ import { generateTests } from './generate_tests';
 // TODO nat
 // TODO update methods
 
+const syntax = 'functional';
+
 const HeterogeneousQueryMethodArb = QueryMethodArb(
-    fc.array(CandidValueAndMetaArb()),
-    CandidReturnTypeArb(),
+    fc.array(CandidValueAndMetaArb(syntax)),
+    CandidReturnTypeArb(syntax),
     {
         generateBody,
-        generateTests
+        generateTests,
+        syntax
     }
 );
 
@@ -32,4 +35,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb, syntax));
