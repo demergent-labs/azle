@@ -5,6 +5,7 @@ import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
+import { Syntax } from '../types';
 import { BodyArb } from './body_arb';
 import { HttpHeadersArb } from './headers_arb';
 
@@ -60,7 +61,8 @@ export function HttpResponseValueArb<T>(): fc.Arbitrary<HttpResponse<T>> {
         });
 }
 export function HttpResponseArb<T extends CorrespondingJSType = any>(
-    token: CandidValueAndMeta<CorrespondingJSType>
+    token: CandidValueAndMeta<CorrespondingJSType>,
+    syntax: Syntax
 ): fc.Arbitrary<
     CandidValueAndMeta<HttpResponse<T>, HttpResponseAgentResponseValue>
 > {
@@ -87,6 +89,11 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
 
         const bodySrc = blobToSrcLiteral(response.body);
 
+        const responseImports =
+            syntax === 'functional'
+                ? ['HttpResponse', 'bool', 'None']
+                : ['IDL', 'Principal'];
+
         return {
             value: {
                 agentArgumentValue: response,
@@ -97,25 +104,32 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
             },
             src: {
                 candidTypeAnnotation: `HttpResponse<${token.src.candidTypeAnnotation}>`,
-                candidTypeObject: `HttpResponse(${token.src.candidTypeObject})`,
-                variableAliasDeclarations: token.src.variableAliasDeclarations,
-                imports: new Set([
-                    'HttpResponse',
-                    'bool',
-                    'None',
-                    ...token.src.imports
-                ]),
+                candidTypeObject:
+                    syntax === 'functional'
+                        ? `HttpResponse(${token.src.candidTypeObject})`
+                        : 'HttpResponse',
+                variableAliasDeclarations: [
+                    ...token.src.variableAliasDeclarations,
+                    generateVariableAliasDeclarations(
+                        syntax,
+                        token.src.candidTypeObject,
+                        token.src.candidTypeAnnotation
+                    )
+                ],
+                imports: new Set([...responseImports, ...token.src.imports]),
                 valueLiteral: `{
                 status_code: ${response.status_code},
                     headers: [${headerStrings}],
                     body: ${bodySrc},
-                    upgrade: None,
-                    streaming_strategy: None
-                }`
+                    upgrade: ${syntax === 'class' ? '[]' : 'None'},
+                    streaming_strategy: ${syntax === 'class' ? '[]' : 'None'}
+                }`,
+                idl: 'HttpResponse'
             }
         };
     });
 }
+
 function hasBody(statusCode: number): boolean {
     // The following code must not have content according to the http spec
     // https://www.rfc-editor.org/rfc/rfc9110.html
@@ -129,4 +143,60 @@ function hasBody(statusCode: number): boolean {
     } else {
         return true;
     }
+}
+
+function generateVariableAliasDeclarations(
+    syntax: Syntax,
+    TokenIdl: string,
+    TokenType: string
+): string {
+    if (syntax === 'class') {
+        return /*TS*/ `
+            type HeaderField = [string, string];
+            const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
+            const StreamingCallbackHttpResponse = IDL.Record({
+                body: IDL.Vec(IDL.Nat8),
+                token: IDL.Opt(${TokenIdl})
+            });
+            type StreamingCallbackHttpResponse = {
+                body: Uint8Array;
+                token: [${TokenType}] | [];
+            };
+            const Callback = IDL.Func(
+                [${TokenIdl}],
+                [IDL.Opt(StreamingCallbackHttpResponse)],
+                ['query']
+            );
+            type Callback = [Principal, string];
+            const CallbackStrategy = IDL.Record({
+                callback: Callback,
+                token: ${TokenIdl}
+            });
+            type CallbackStrategy = {
+                callback: Callback;
+                token: ${TokenType};
+            };
+            const StreamingStrategy = IDL.Variant({
+                Callback: CallbackStrategy
+            });
+            type StreamingStrategy = {
+                Callback: CallbackStrategy;
+            };
+            const HttpResponse = IDL.Record({
+                status_code: IDL.Nat16,
+                headers: IDL.Vec(HeaderField),
+                body: IDL.Vec(IDL.Nat8),
+                upgrade: IDL.Opt(IDL.Bool),
+                streaming_strategy: IDL.Opt(StreamingStrategy)
+            });
+            type HttpResponse = {
+                status_code: number;
+                headers: HeaderField[];
+                body: Uint8Array;
+                upgrade: [boolean] | [];
+                streaming_strategy: [StreamingStrategy] | [];
+            };
+        `;
+    }
+    return '';
 }
