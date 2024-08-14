@@ -5,6 +5,7 @@ import { Test } from '../../test';
 import { CandidReturnType } from '../candid/candid_return_type_arb';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
+import { Syntax } from '../types';
 
 export type BodyGenerator<
     ParamAgentArgumentValue extends CorrespondingJSType = undefined,
@@ -63,13 +64,23 @@ export function generateCallback<
         ReturnAgentType
     >,
     callbackLocation: CallbackLocation,
-    callbackName: string
+    callbackName: string,
+    syntax: Syntax
 ): string {
     const paramNames = namedParams
-        .map((namedParam) => namedParam.name)
+        .map((namedParam) => {
+            if (syntax === 'functional') {
+                return namedParam.name;
+            }
+            return `${namedParam.name}: ${namedParam.value.src.candidTypeAnnotation}`;
+        })
         .join(', ');
 
     const body = generateBody(namedParams, returnType);
+
+    if (syntax === 'class') {
+        return `(${paramNames}){${body}}`;
+    }
 
     if (callbackLocation === 'INLINE') {
         return `(${paramNames}) => {${body}}`;

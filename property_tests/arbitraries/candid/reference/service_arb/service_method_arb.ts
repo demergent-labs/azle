@@ -6,6 +6,7 @@ import {
 } from '../../../../../src/lib/experimental/canister_methods/methods/';
 import { CanisterMethodInfo } from '../../../../../src/lib/experimental/canister_methods/types/canister_method_info';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { Syntax } from '../../../types';
 import {
     CandidDefinition,
     WithShapes,
@@ -25,14 +26,15 @@ export type ServiceMethodDefinition = {
 };
 
 export function ServiceMethodArb(
-    candidDefArb: WithShapesArb<CandidDefinition>
+    candidDefArb: WithShapesArb<CandidDefinition>,
+    syntax: Syntax
 ): WithShapesArb<ServiceMethodDefinition> {
     return fc
         .tuple(
             JsFunctionNameArb,
             fc.constantFrom<Mode>('query', 'update'),
             fc.array(candidDefArb),
-            fc.oneof(candidDefArb, VoidDefinitionArb())
+            fc.oneof(candidDefArb, VoidDefinitionArb(syntax))
         )
         .map(
             ([

@@ -5,6 +5,7 @@ import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { VoidArb } from '../candid/primitive/void';
+import { Syntax } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -43,6 +44,7 @@ export function PostUpgradeMethodArb<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
         >;
+        syntax: Syntax;
         callbackLocation?: CallbackLocation;
     }
 ): fc.Arbitrary<
@@ -52,7 +54,7 @@ export function PostUpgradeMethodArb<
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
-            VoidArb(),
+            VoidArb(constraints.syntax),
             fc.constantFrom<CallbackLocation>('INLINE', 'STANDALONE'),
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
@@ -71,7 +73,10 @@ export function PostUpgradeMethodArb<
                 ParamAgentResponseValue
             > => {
                 const callbackLocation =
-                    constraints.callbackLocation ?? defaultCallbackLocation;
+                    constraints.syntax === 'class'
+                        ? 'INLINE'
+                        : constraints.callbackLocation ??
+                          defaultCallbackLocation;
 
                 const imports = new Set([
                     'postUpgrade',
@@ -90,7 +95,8 @@ export function PostUpgradeMethodArb<
                     returnType,
                     constraints.generateBody,
                     callbackLocation,
-                    callbackName
+                    callbackName,
+                    constraints.syntax
                 );
 
                 const variableAliasDeclarations = paramTypes
@@ -105,7 +111,8 @@ export function PostUpgradeMethodArb<
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
-                    callbackLocation === 'STANDALONE' ? callbackName : callback
+                    callbackLocation === 'STANDALONE' ? callbackName : callback,
+                    constraints.syntax
                 );
 
                 const tests = constraints.generateTests(
@@ -131,11 +138,20 @@ function generateSourceCode<
 >(
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
-    callback: string
+    callback: string,
+    syntax: Syntax
 ): string {
     const paramCandidTypeObjects = paramTypes
         .map((param) => param.src.candidTypeObject)
         .join(', ');
 
-    return `${functionName}: postUpgrade([${paramCandidTypeObjects}], ${callback})`;
+    if (syntax === 'functional') {
+        return `${functionName}: postUpgrade([${paramCandidTypeObjects}], ${callback})`;
+    } else {
+        return (
+            `@postUpgrade([${paramCandidTypeObjects}])` +
+            `\n` +
+            `${functionName}${callback}`
+        );
+    }
 }

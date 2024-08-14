@@ -2,6 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Variant } from '../../../../../src/lib/experimental';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { Syntax } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -24,12 +25,18 @@ type RuntimeVariant = {
 export function VariantDefinitionArb(
     candidTypeArbForFields: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
+    syntax: Syntax,
     constraints: DefinitionConstraints
 ): WithShapesArb<VariantCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            VariantFieldsArb(candidTypeArbForFields, parents, constraints),
+            VariantFieldsArb(
+                candidTypeArbForFields,
+                parents,
+                syntax,
+                constraints
+            ),
             fc.boolean()
         )
         .map(
@@ -50,13 +57,15 @@ export function VariantDefinitionArb(
                 const candidTypeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    fields
+                    fields,
+                    syntax
                 );
 
                 const candidTypeObject = generateCandidTypeObject(
                     useTypeDeclaration,
                     name,
-                    fields
+                    fields,
+                    syntax
                 );
 
                 const runtimeCandidTypeObject =
@@ -66,10 +75,11 @@ export function VariantDefinitionArb(
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        fields
+                        fields,
+                        syntax
                     );
 
-                const imports = generateImports(fields);
+                const imports = generateImports(fields, syntax);
 
                 return {
                     definition: {
@@ -79,7 +89,8 @@ export function VariantDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Variant'
+                            candidType: 'Variant',
+                            idl: generateIdl(fields)
                         },
                         innerTypes: fields
                     },
@@ -92,6 +103,7 @@ export function VariantDefinitionArb(
 function VariantFieldsArb(
     candidTypeArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
+    syntax: Syntax,
     constraints: DefinitionConstraints
 ): fc.Arbitrary<FieldAndShapes[]> {
     // Although no minLength is technically required (according to the
@@ -111,6 +123,7 @@ function VariantFieldsArb(
                             candidTypeArb,
                             index,
                             parents,
+                            syntax,
                             constraints
                         )
                     )
@@ -131,13 +144,14 @@ function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
     index: number,
     parents: RecursiveCandidName[],
+    syntax: Syntax,
     constraints: DefinitionConstraints
 ): WithShapesArb<CandidDefinition> {
     const depthLevel = constraints?.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || index < 1) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents)(depthLevel);
+            return candidArb(parents, syntax)(depthLevel);
         }
         return fc.oneof(
             {
@@ -148,44 +162,77 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents)(depthLevel),
+                arbitrary: candidArb(parents, syntax)(depthLevel),
                 weight: 1
             }
         );
     });
 }
 
-function generateImports(fields: Field[]): Set<string> {
-    const fieldImports = fields.flatMap((field) => [
+function generateImports(fields: Field[], syntax: Syntax): Set<string> {
+    const fieldImports = fields.flatMap((field): string[] => [
         ...field[1].candidMeta.imports
     ]);
-    return new Set([...fieldImports, 'RequireExactlyOne', 'Variant']);
+    const variantImports =
+        syntax === 'functional' ? ['RequireExactlyOne', 'Variant'] : ['IDL'];
+    return new Set([...fieldImports, ...variantImports]);
 }
 
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[]
+    fields: Field[],
+    syntax: Syntax
 ): string[] {
-    const fieldTypeDeclarations = fields.flatMap(
-        (field) => field[1].candidMeta.variableAliasDeclarations
+    const fieldVariableAliasDeclarations = fields.flatMap(
+        (field): string[] => field[1].candidMeta.variableAliasDeclarations
     );
+    const type =
+        syntax === 'functional'
+            ? []
+            : [
+                  `type ${name} = ${generateCandidTypeAnnotation(
+                      false,
+                      name,
+                      fields,
+                      syntax
+                  )}`
+              ];
     if (useTypeDeclaration) {
         return [
-            ...fieldTypeDeclarations,
-            `const ${name} = ${generateCandidTypeObject(false, name, fields)};`
+            ...fieldVariableAliasDeclarations,
+            `const ${name} = ${generateCandidTypeObject(
+                false,
+                name,
+                fields,
+                syntax
+            )};`,
+            ...type
         ];
     }
-    return fieldTypeDeclarations;
+    return fieldVariableAliasDeclarations;
 }
 
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[]
+    fields: Field[],
+    syntax: Syntax
 ): string {
     if (useTypeDeclaration === true) {
+        if (syntax === 'class') {
+            return name;
+        }
         return `typeof ${name}.tsType`;
+    }
+
+    if (syntax === 'class') {
+        return fields
+            .map(
+                ([fieldName, fieldDataType]) =>
+                    `{${fieldName}: ${fieldDataType.candidMeta.candidTypeAnnotation}}`
+            )
+            .join('|');
     }
 
     return `RequireExactlyOne<{${fields
@@ -196,19 +243,33 @@ function generateCandidTypeAnnotation(
         .join(',')}}>`;
 }
 
+function generateIdl(fields: Field[]): string {
+    return `IDL.Variant({${fields
+        .map(
+            ([fieldName, fieldDefinition]) =>
+                `${fieldName}: ${fieldDefinition.candidMeta.idl}`
+        )
+        .join(',')}})`;
+}
+
 function generateCandidTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[]
+    fields: Field[],
+    syntax: Syntax
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
+    if (syntax === 'class') {
+        return generateIdl(fields);
+    }
+
     return `Variant({${fields
         .map(
-            ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.candidTypeObject}`
+            ([fieldName, fieldDefinition]) =>
+                `${fieldName}: ${fieldDefinition.candidMeta.candidTypeObject}`
         )
         .join(',')}})`;
 }

@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';
+import { Syntax } from '../../types';
 import { complexCandidDefinitionMemo } from '../candid_definition_arb/complex_candid_definition_memo';
 import { RecursiveCandidDefinition } from '../candid_definition_arb/types';
 import { CandidValueAndMeta } from '../candid_value_and_meta_arb';
@@ -11,9 +12,11 @@ import { RecursiveValuesArb } from './values_arb';
 export type Recursive = any;
 export type RecursiveShapes = { [key: string]: RecursiveCandidDefinition };
 
-export function RecursiveArb(): fc.Arbitrary<CandidValueAndMeta<Recursive>> {
+export function RecursiveArb(
+    syntax: Syntax
+): fc.Arbitrary<CandidValueAndMeta<Recursive>> {
     return CandidValueAndMetaArbGenerator(
-        RecursiveDefinitionArb(complexCandidDefinitionMemo, [], {
+        RecursiveDefinitionArb(complexCandidDefinitionMemo, [], syntax, {
             depthLevel: DEFAULT_DEFINITION_MAX_DEPTH
         }),
         RecursiveValuesArb

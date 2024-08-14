@@ -2,6 +2,7 @@ import fc from 'fast-check';
 
 import { Test } from '../../test';
 import { VoidArb } from '../candid/primitive/void';
+import { Syntax } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -21,12 +22,13 @@ export type PreUpgradeMethod = {
 export function PreUpgradeMethodArb(constraints: {
     generateBody: BodyGenerator;
     generateTests: TestsGenerator;
+    syntax: Syntax;
     callbackLocation?: CallbackLocation;
 }): fc.Arbitrary<PreUpgradeMethod> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb(),
+            VoidArb(constraints.syntax),
             CallbackLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
@@ -41,7 +43,10 @@ export function PreUpgradeMethodArb(constraints: {
                 callbackName
             ]): PreUpgradeMethod => {
                 const callbackLocation =
-                    constraints.callbackLocation ?? defaultCallbackLocation;
+                    constraints.syntax === 'class'
+                        ? 'INLINE'
+                        : constraints.callbackLocation ??
+                          defaultCallbackLocation;
 
                 const imports = new Set(['preUpgrade']);
 
@@ -50,15 +55,21 @@ export function PreUpgradeMethodArb(constraints: {
                     returnType,
                     constraints.generateBody,
                     callbackLocation,
-                    callbackName
+                    callbackName,
+                    constraints.syntax
                 );
 
                 const globalDeclarations =
                     callbackLocation === 'STANDALONE' ? [callback] : [];
 
-                const sourceCode = `${functionName}: preUpgrade(${
-                    callbackLocation === 'STANDALONE' ? callbackName : callback
-                })`;
+                const sourceCode =
+                    constraints.syntax === 'functional'
+                        ? `${functionName}: preUpgrade(${
+                              callbackLocation === 'STANDALONE'
+                                  ? callbackName
+                                  : callback
+                          })`
+                        : `@preUpgrade\n${functionName}${callback}`;
 
                 const tests = constraints.generateTests(
                     functionName,

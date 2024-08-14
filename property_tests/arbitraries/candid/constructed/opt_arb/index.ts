@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../../config';
+import { Syntax } from '../../../types';
 import { candidDefinitionMemo } from '../../candid_definition_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
@@ -12,10 +13,11 @@ import { OptValuesArb } from './values_arb';
 export type Opt = [CorrespondingJSType] | never[];
 
 export function OptArb(
+    syntax: Syntax,
     constraints?: CandidValueConstraints
 ): fc.Arbitrary<CandidValueAndMeta<Opt>> {
     return CandidValueAndMetaArbGenerator(
-        OptDefinitionArb(candidDefinitionMemo, [], {
+        OptDefinitionArb(candidDefinitionMemo, [], syntax, {
             depthLevel: DEFAULT_DEFINITION_MAX_DEPTH
         }),
         OptValuesArb,

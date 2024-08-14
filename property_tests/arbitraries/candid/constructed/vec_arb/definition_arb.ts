@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Vec } from '../../../../../src/lib/experimental';
+import { Syntax } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -15,12 +16,13 @@ import {
 export function VecDefinitionArb(
     candidTypeArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
+    syntax: Syntax,
     constraints: DefinitionConstraints
 ): WithShapesArb<VecCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            possiblyRecursiveArb(candidTypeArb, parents, constraints),
+            possiblyRecursiveArb(candidTypeArb, parents, syntax, constraints),
             fc.boolean()
         )
         .map(
@@ -34,13 +36,15 @@ export function VecDefinitionArb(
                 const candidTypeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    innerType
+                    innerType,
+                    syntax
                 );
 
                 const candidTypeObject = generateCandidTypeObject(
                     useTypeDeclaration,
                     name,
-                    innerType
+                    innerType,
+                    syntax
                 );
 
                 const runtimeCandidTypeObject =
@@ -50,10 +54,11 @@ export function VecDefinitionArb(
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        innerType
+                        innerType,
+                        syntax
                     );
 
-                const imports = generateImports(innerType);
+                const imports = generateImports(innerType, syntax);
 
                 return {
                     definition: {
@@ -63,7 +68,8 @@ export function VecDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Vec'
+                            candidType: 'Vec',
+                            idl: generateIdl(innerType)
                         },
                         innerType: innerType
                     },
@@ -76,13 +82,14 @@ export function VecDefinitionArb(
 function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
+    syntax: Syntax,
     constraints: DefinitionConstraints
 ): WithShapesArb<CandidDefinition> {
     const depthLevel = constraints?.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents)(depthLevel);
+            return candidArb(parents, syntax)(depthLevel);
         }
         return fc.oneof(
             {
@@ -93,54 +100,89 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents)(depthLevel),
+                arbitrary: candidArb(parents, syntax)(depthLevel),
                 weight: 1
             }
         );
     });
 }
 
+function generateImports(
+    innerType: CandidDefinition,
+    syntax: Syntax
+): Set<string> {
+    const vecImports = syntax === 'functional' ? ['Vec'] : ['IDL'];
+    return new Set([...innerType.candidMeta.imports, ...vecImports]);
+}
+
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    syntax: Syntax
 ): string[] {
     if (useTypeDeclaration) {
+        const type =
+            syntax === 'functional'
+                ? []
+                : [
+                      `type ${name} = ${generateCandidTypeAnnotation(
+                          false,
+                          name,
+                          innerType,
+                          syntax
+                      )}`
+                  ];
         return [
             ...innerType.candidMeta.variableAliasDeclarations,
             `const ${name} = ${generateCandidTypeObject(
                 false,
                 name,
-                innerType
-            )};`
+                innerType,
+                syntax
+            )};`,
+            ...type
         ];
     }
     return innerType.candidMeta.variableAliasDeclarations;
 }
 
-function generateImports(innerType: CandidDefinition): Set<string> {
-    return new Set([...innerType.candidMeta.imports, 'Vec']);
-}
-
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    syntax: Syntax
 ): string {
     if (useTypeDeclaration === true) {
+        if (syntax === 'class') {
+            return name;
+        }
         return `typeof ${name}.tsType`;
+    }
+
+    if (syntax === 'class') {
+        return `${innerType.candidMeta.candidTypeAnnotation}[]`;
     }
 
     return `Vec<${innerType.candidMeta.candidTypeAnnotation}>`;
 }
 
+function generateIdl(innerType: CandidDefinition): string {
+    return `IDL.Vec(${innerType.candidMeta.idl})`;
+}
+
 function generateCandidTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    syntax: Syntax
 ): string {
     if (useTypeDeclaration === true) {
         return name;
+    }
+
+    if (syntax === 'class') {
+        return generateIdl(innerType);
     }
 
     return `Vec(${innerType.candidMeta.candidTypeObject})`;

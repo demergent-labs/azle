@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Syntax } from '../../types';
 import { BoolDefinitionArb } from '../primitive/bool';
 import { Float32DefinitionArb } from '../primitive/floats/float32_arb';
 import { Float64DefinitionArb } from '../primitive/floats/float64_arb';
@@ -43,26 +44,51 @@ export const PRIM_ARB_COUNT = 16;
 const PRIM_DEF_WEIGHTS_DEFAULT = {};
 
 export function primitiveCandidDefinitionArb(
+    syntax: Syntax,
     constraints: PrimitiveDefinitionWeights = PRIM_DEF_WEIGHTS_DEFAULT
 ): WithShapesArb<PrimitiveDefinition> {
     return fc.oneof(
-        { arbitrary: BoolDefinitionArb(), weight: constraints.bool ?? 1 },
-        { arbitrary: Float32DefinitionArb(), weight: constraints.float32 ?? 1 },
-        { arbitrary: Float64DefinitionArb(), weight: constraints.float64 ?? 1 },
-        { arbitrary: IntDefinitionArb(), weight: constraints.int ?? 1 },
-        { arbitrary: Int8DefinitionArb(), weight: constraints.int8 ?? 1 },
-        { arbitrary: Int16DefinitionArb(), weight: constraints.int16 ?? 1 },
-        { arbitrary: Int32DefinitionArb(), weight: constraints.int32 ?? 1 },
-        { arbitrary: Int64DefinitionArb(), weight: constraints.int64 ?? 1 },
-        { arbitrary: NatDefinitionArb(), weight: constraints.nat ?? 1 },
-        { arbitrary: Nat8DefinitionArb(), weight: constraints.nat8 ?? 1 },
-        { arbitrary: Nat16DefinitionArb(), weight: constraints.nat16 ?? 1 },
-        { arbitrary: Nat32DefinitionArb(), weight: constraints.nat32 ?? 1 },
-        { arbitrary: Nat64DefinitionArb(), weight: constraints.nat64 ?? 1 },
-        { arbitrary: NullDefinitionArb(), weight: constraints.null ?? 1 },
-        { arbitrary: TextDefinitionArb(), weight: constraints.text ?? 1 },
+        { arbitrary: BoolDefinitionArb(syntax), weight: constraints.bool ?? 1 },
         {
-            arbitrary: PrincipalDefinitionArb(),
+            arbitrary: Float32DefinitionArb(syntax),
+            weight: constraints.float32 ?? 1
+        },
+        {
+            arbitrary: Float64DefinitionArb(syntax),
+            weight: constraints.float64 ?? 1
+        },
+        { arbitrary: IntDefinitionArb(syntax), weight: constraints.int ?? 1 },
+        { arbitrary: Int8DefinitionArb(syntax), weight: constraints.int8 ?? 1 },
+        {
+            arbitrary: Int16DefinitionArb(syntax),
+            weight: constraints.int16 ?? 1
+        },
+        {
+            arbitrary: Int32DefinitionArb(syntax),
+            weight: constraints.int32 ?? 1
+        },
+        {
+            arbitrary: Int64DefinitionArb(syntax),
+            weight: constraints.int64 ?? 1
+        },
+        { arbitrary: NatDefinitionArb(syntax), weight: constraints.nat ?? 1 },
+        { arbitrary: Nat8DefinitionArb(syntax), weight: constraints.nat8 ?? 1 },
+        {
+            arbitrary: Nat16DefinitionArb(syntax),
+            weight: constraints.nat16 ?? 1
+        },
+        {
+            arbitrary: Nat32DefinitionArb(syntax),
+            weight: constraints.nat32 ?? 1
+        },
+        {
+            arbitrary: Nat64DefinitionArb(syntax),
+            weight: constraints.nat64 ?? 1
+        },
+        { arbitrary: NullDefinitionArb(syntax), weight: constraints.null ?? 1 },
+        { arbitrary: TextDefinitionArb(syntax), weight: constraints.text ?? 1 },
+        {
+            arbitrary: PrincipalDefinitionArb(syntax),
             weight: constraints.principal ?? 1
         }
     );

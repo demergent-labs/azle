@@ -5,6 +5,7 @@ import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { VoidArb } from '../candid/primitive/void';
+import { Syntax } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -44,6 +45,7 @@ export function InitMethodArb<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
         >;
+        syntax: Syntax;
         callbackLocation?: CallbackLocation;
     }
 ): fc.Arbitrary<InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>> {
@@ -51,7 +53,7 @@ export function InitMethodArb<
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
-            VoidArb(),
+            VoidArb(constraints.syntax),
             CallbackLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
@@ -70,7 +72,10 @@ export function InitMethodArb<
                 ParamAgentResponseValue
             > => {
                 const callbackLocation =
-                    constraints.callbackLocation ?? defaultCallbackLocation;
+                    constraints.syntax === 'class'
+                        ? 'INLINE'
+                        : constraints.callbackLocation ??
+                          defaultCallbackLocation;
 
                 const imports = new Set([
                     'init',
@@ -89,7 +94,8 @@ export function InitMethodArb<
                     returnType,
                     constraints.generateBody,
                     callbackLocation,
-                    callbackName
+                    callbackName,
+                    constraints.syntax
                 );
 
                 const variableAliasDeclarations = paramTypes
@@ -104,7 +110,8 @@ export function InitMethodArb<
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
-                    callbackLocation === 'STANDALONE' ? callbackName : callback
+                    callbackLocation === 'STANDALONE' ? callbackName : callback,
+                    constraints.syntax
                 );
 
                 const tests = constraints.generateTests(
@@ -130,11 +137,20 @@ function generateSourceCode<
 >(
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
-    callback: string
+    callback: string,
+    syntax: Syntax
 ): string {
     const paramCandidTypeObjects = paramTypes
         .map((param) => param.src.candidTypeObject)
         .join(', ');
 
-    return `${functionName}: init([${paramCandidTypeObjects}], ${callback})`;
+    if (syntax === 'functional') {
+        return `${functionName}: init([${paramCandidTypeObjects}], ${callback})`;
+    } else {
+        return (
+            `@init([${paramCandidTypeObjects}])` +
+            `\n` +
+            `${functionName}${callback}`
+        );
+    }
 }

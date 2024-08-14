@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Syntax } from '../../../types';
 import {
     IntCandidDefinition,
     WithShapesArb
@@ -12,12 +13,19 @@ import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
 import { numberToSrcLiteral } from '../../to_src_literal/number';
 import { NumberArb } from '.';
 
-export function Int16Arb(): fc.Arbitrary<CandidValueAndMeta<number>> {
-    return CandidValueAndMetaArbGenerator(Int16DefinitionArb(), Int16ValueArb);
+export function Int16Arb(
+    syntax: Syntax
+): fc.Arbitrary<CandidValueAndMeta<number>> {
+    return CandidValueAndMetaArbGenerator(
+        Int16DefinitionArb(syntax),
+        Int16ValueArb
+    );
 }
 
-export function Int16DefinitionArb(): WithShapesArb<IntCandidDefinition> {
-    return SimpleCandidDefinitionArb('int16');
+export function Int16DefinitionArb(
+    syntax: Syntax
+): WithShapesArb<IntCandidDefinition> {
+    return SimpleCandidDefinitionArb('int16', syntax);
 }
 
 export function Int16ValueArb(): fc.Arbitrary<CandidValues<number>> {

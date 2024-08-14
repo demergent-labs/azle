@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Syntax } from '../../../types';
 import { candidDefinitionArb } from '../../candid_definition_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
@@ -13,10 +14,11 @@ export type Record = {
 };
 
 export function RecordArb(
+    syntax: Syntax,
     constraints?: CandidValueConstraints
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
     return CandidValueAndMetaArbGenerator(
-        RecordDefinitionArb(candidDefinitionArb({})),
+        RecordDefinitionArb(candidDefinitionArb({}, undefined, syntax), syntax),
         RecordValuesArb,
         constraints
     );

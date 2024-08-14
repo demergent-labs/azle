@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType as RuntimeCandidType } from '../../../src/lib/experimental';
+import { Syntax } from '../types';
 import { CandidValueConstraints } from './candid_values_arb';
 import { BlobArb } from './constructed/blob_arb';
 import { OptArb } from './constructed/opt_arb';
@@ -40,6 +41,7 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
         variableAliasDeclarations: string[];
         imports: Set<string>;
         valueLiteral: string;
+        idl: string;
     };
 };
 
@@ -47,32 +49,33 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
  * An arbitrary representing all possible Candid types.
  */
 export function CandidValueAndMetaArb(
+    syntax: Syntax,
     constraints?: CandidValueConstraints
 ): fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>> {
     return fc.oneof(
-        BlobArb(),
-        OptArb(constraints),
-        RecordArb(constraints),
-        TupleArb(constraints),
-        VariantArb(constraints),
-        VecArb(constraints),
-        Float32Arb(constraints),
-        Float64Arb(constraints),
-        IntArb(),
-        Int8Arb(),
-        Int16Arb(),
-        Int32Arb(),
-        Int64Arb(),
-        NatArb(),
-        Nat8Arb(),
-        Nat16Arb(),
-        Nat32Arb(),
-        Nat64Arb(),
-        BoolArb(),
-        NullArb(),
-        TextArb(constraints),
-        FuncArb(),
-        PrincipalArb()
+        BlobArb(syntax),
+        OptArb(syntax, constraints),
+        RecordArb(syntax, constraints),
+        TupleArb(syntax, constraints),
+        VariantArb(syntax, constraints),
+        VecArb(syntax, constraints),
+        Float32Arb(syntax, constraints),
+        Float64Arb(syntax, constraints),
+        IntArb(syntax),
+        Int8Arb(syntax),
+        Int16Arb(syntax),
+        Int32Arb(syntax),
+        Int64Arb(syntax),
+        NatArb(syntax),
+        Nat8Arb(syntax),
+        Nat16Arb(syntax),
+        Nat32Arb(syntax),
+        Nat64Arb(syntax),
+        BoolArb(syntax),
+        NullArb(syntax),
+        TextArb(syntax, constraints),
+        FuncArb(syntax),
+        PrincipalArb(syntax)
     );
 }
 

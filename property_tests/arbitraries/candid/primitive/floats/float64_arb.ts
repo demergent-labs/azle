@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Syntax } from '../../../types';
 import {
     FloatCandidDefinition,
     WithShapesArb
@@ -17,17 +18,20 @@ export interface Float64Constraints extends fc.Float64ArrayConstraints {
 }
 
 export function Float64Arb(
+    syntax: Syntax,
     constraints?: Float64Constraints
 ): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(
-        Float64DefinitionArb(),
+        Float64DefinitionArb(syntax),
         Float64ValueArb,
         constraints
     );
 }
 
-export function Float64DefinitionArb(): WithShapesArb<FloatCandidDefinition> {
-    return SimpleCandidDefinitionArb('float64');
+export function Float64DefinitionArb(
+    syntax: Syntax
+): WithShapesArb<FloatCandidDefinition> {
+    return SimpleCandidDefinitionArb('float64', syntax);
 }
 
 export function Float64ValueArb<C extends Float64Constraints>(

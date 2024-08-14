@@ -2,6 +2,7 @@ import fc from 'fast-check';
 
 import { Test } from '../../test';
 import { VoidArb } from '../candid/primitive/void';
+import { Syntax } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -21,12 +22,13 @@ export type InspectMessageMethod = {
 export function InspectMessageMethodArb(constraints: {
     generateBody: BodyGenerator;
     generateTests: TestsGenerator;
+    syntax: Syntax;
     callbackLocation?: CallbackLocation;
 }): fc.Arbitrary<InspectMessageMethod> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb(),
+            VoidArb(constraints.syntax),
             CallbackLocationArb,
             UniqueIdentifierArb('globalNames')
         )
@@ -38,7 +40,10 @@ export function InspectMessageMethodArb(constraints: {
                 callbackName
             ]): InspectMessageMethod => {
                 const callbackLocation =
-                    constraints.callbackLocation ?? defaultCallbackLocation;
+                    constraints.syntax === 'class'
+                        ? 'INLINE'
+                        : constraints.callbackLocation ??
+                          defaultCallbackLocation;
 
                 const imports = new Set(['inspectMessage', 'ic']);
 
@@ -47,15 +52,23 @@ export function InspectMessageMethodArb(constraints: {
                     returnType,
                     constraints.generateBody,
                     callbackLocation,
-                    callbackName
+                    callbackName,
+                    constraints.syntax
                 );
 
                 const globalDeclarations =
                     callbackLocation === 'STANDALONE' ? [callback] : [];
 
-                const sourceCode = `${functionName}: inspectMessage(${
-                    callbackLocation === 'STANDALONE' ? callbackName : callback
-                })`;
+                const sourceCode =
+                    constraints.syntax === 'functional'
+                        ? `${functionName}: inspectMessage(${
+                              callbackLocation === 'STANDALONE'
+                                  ? callbackName
+                                  : callback
+                          })`
+                        : `@inspectMessage` +
+                          `\n` +
+                          `${functionName}${callback}`;
 
                 const tests = constraints.generateTests(
                     functionName,

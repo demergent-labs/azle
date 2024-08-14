@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Recursive } from '../../../../src/lib/experimental';
+import { Syntax } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -15,6 +16,7 @@ import {
 export function RecursiveDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
+    syntax: Syntax,
     constraints: DefinitionConstraints
 ): WithShapesArb<RecursiveCandidDefinition> {
     return UniqueIdentifierArb('globalNames')
@@ -26,7 +28,8 @@ export function RecursiveDefinitionArb(
                     candidTypeAnnotation: `typeof ${name}.tsType`,
                     imports: new Set(),
                     variableAliasDeclarations: [],
-                    runtimeCandidTypeObject: Recursive(() => undefined)
+                    runtimeCandidTypeObject: Recursive(() => undefined),
+                    idl: 'IDL.Rec()'
                 },
                 name
             };
@@ -34,7 +37,7 @@ export function RecursiveDefinitionArb(
         })
         .chain((innerRecDef) => {
             return fc.tuple(
-                candidTypeArbForInnerType([innerRecDef, ...parents], {
+                candidTypeArbForInnerType([innerRecDef, ...parents], syntax, {
                     recursiveWeights: true, // This should be true so that the below weights will be respected all the way down. Until those issues are resolved we can't have blobs, tuples or vecs anywhere in any recursive shapes
                     weights: {
                         blob: 0,
@@ -73,7 +76,8 @@ export function RecursiveDefinitionArb(
                         variableAliasDeclarations,
                         imports,
                         candidType: 'Recursive',
-                        runtimeCandidTypeObject
+                        runtimeCandidTypeObject,
+                        idl: 'IDL.Rec()'
                     },
                     name,
                     innerType

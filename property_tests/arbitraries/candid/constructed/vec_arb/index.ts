@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../../config';
+import { Syntax } from '../../../types';
 import { candidDefinitionMemo } from '../../candid_definition_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
@@ -21,10 +22,11 @@ export type Vec =
     | BigInt64Array;
 
 export function VecArb(
+    syntax: Syntax,
     constraints?: CandidValueConstraints
 ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
     return CandidValueAndMetaArbGenerator(
-        VecDefinitionArb(candidDefinitionMemo, [], {
+        VecDefinitionArb(candidDefinitionMemo, [], syntax, {
             depthLevel: DEFAULT_DEFINITION_MAX_DEPTH
         }),
         VecValuesArb,

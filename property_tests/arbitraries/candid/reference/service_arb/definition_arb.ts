@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { Canister } from '../../../../../src/lib/experimental/candid/types/reference/service';
+import { Syntax } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -14,12 +15,13 @@ import {
 } from './service_method_arb';
 
 export function ServiceDefinitionArb(
-    fieldCandidDefArb: WithShapesArb<CandidDefinition>
+    fieldCandidDefArb: WithShapesArb<CandidDefinition>,
+    syntax: Syntax
 ): WithShapesArb<ServiceCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb), {
+            fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb, syntax), {
                 selector: (entry) => entry.definition.name
             }),
             fc.constant(true) // TODO This needs to be true, I don't know why we set up to be an arbitrary boolean if it has to be true
@@ -42,13 +44,15 @@ export function ServiceDefinitionArb(
 
                 const candidTypeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
-                    name
+                    name,
+                    syntax
                 );
 
                 const candidTypeObject = generateCandidTypeObject(
                     useTypeDeclaration,
                     name,
-                    fields
+                    fields,
+                    syntax
                 );
 
                 const runtimeCandidTypeObject =
@@ -58,10 +62,11 @@ export function ServiceDefinitionArb(
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        fields
+                        fields,
+                        syntax
                     );
 
-                const imports = generateImports(fields);
+                const imports = generateImports(fields, syntax);
 
                 return {
                     definition: {
@@ -72,7 +77,8 @@ export function ServiceDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Service'
+                            candidType: 'Service',
+                            idl: generateIdl(fields)
                         },
                         funcs: fields
                     },
@@ -82,10 +88,26 @@ export function ServiceDefinitionArb(
         );
 }
 
+function generateImports(
+    serviceMethods: ServiceMethodDefinition[],
+    syntax: Syntax
+): Set<string> {
+    const serviceImports = syntax === 'functional' ? ['Canister'] : ['IDL'];
+    return new Set([
+        ...serviceMethods.flatMap((serviceMethod) =>
+            Array.from(serviceMethod.imports)
+        ),
+        'Principal',
+        'query',
+        ...serviceImports
+    ]);
+}
+
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    serviceMethods: ServiceMethodDefinition[]
+    serviceMethods: ServiceMethodDefinition[],
+    syntax: Syntax
 ): string[] {
     const serviceMethodTypeAliasDecls = serviceMethods.flatMap(
         (serviceMethod) => serviceMethod.variableAliasDeclarations
@@ -93,11 +115,16 @@ function generateVariableAliasDeclarations(
     if (useTypeDeclaration) {
         return [
             ...serviceMethodTypeAliasDecls,
-            `const ${name} = ${generateCandidTypeObject(
-                false,
-                name,
-                serviceMethods
-            )};`
+            `const ${name} = ${
+                syntax === 'functional'
+                    ? generateCandidTypeObject(
+                          false,
+                          name,
+                          serviceMethods,
+                          syntax
+                      )
+                    : generateIdl(serviceMethods)
+            };`
         ];
     }
     return serviceMethodTypeAliasDecls;
@@ -105,19 +132,33 @@ function generateVariableAliasDeclarations(
 
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
-    name: string
+    name: string,
+    syntax: Syntax
 ): string {
     if (useTypeDeclaration === true) {
+        if (syntax === 'class') {
+            return name;
+        }
         return `typeof ${name}.tsType`;
     }
 
     return '[Principal]';
 }
 
+function generateIdl(serviceMethods: ServiceMethodDefinition[]): string {
+    const methods = serviceMethods
+        .map((serviceMethod) => serviceMethod.src)
+        .filter((typeDeclaration) => typeDeclaration)
+        .join(',\n');
+
+    return `IDL.Service({${methods}})`;
+}
+
 function generateCandidTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    serviceMethods: ServiceMethodDefinition[]
+    serviceMethods: ServiceMethodDefinition[],
+    syntax: Syntax
 ): string {
     if (useTypeDeclaration === true) {
         return name;
@@ -127,6 +168,10 @@ function generateCandidTypeObject(
         .map((serviceMethod) => serviceMethod.src)
         .filter((typeDeclaration) => typeDeclaration)
         .join(',\n');
+
+    if (syntax === 'class') {
+        return `IDL.Service({${methods}})`;
+    }
 
     return `Canister({${methods}})`;
 }
@@ -144,17 +189,4 @@ function generateRuntimeCandidTypeObject(
     }, {});
 
     return Canister(methods);
-}
-
-function generateImports(
-    serviceMethods: ServiceMethodDefinition[]
-): Set<string> {
-    return new Set([
-        ...serviceMethods.flatMap((serviceMethod) =>
-            Array.from(serviceMethod.imports)
-        ),
-        'Canister',
-        'Principal',
-        'query'
-    ]);
 }
