@@ -14,7 +14,7 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const syntax = 'functional';
+const syntax = 'class';
 
 const HttpRequestUpdateMethodArb = RecordArb(syntax).chain((record) => {
     const HttpRequestMethodArb = UpdateMethodArb(
@@ -47,34 +47,32 @@ runPropTests(CanisterArb(CanisterConfigArb, syntax));
 
 function generateHttpRequestMethod(): QueryMethod {
     return {
-        imports: new Set([
-            'query',
-            'HttpRequest',
-            'HttpResponse',
-            'Null',
-            'Some'
-        ]),
+        imports: new Set(['query']),
         globalDeclarations: [],
-        sourceCode: /*TS*/ `http_request: query([HttpRequest], HttpResponse(Null), () => {
-            return {
-                status_code: 204,
-                headers: [],
-                body: new Uint8Array(),
-                streaming_strategy: None,
-                upgrade: Some(true)
-            };
-        })`,
+        sourceCode: /*TS*/ `
+            @query([HttpRequest], HttpResponse)
+            http_request() {
+                return {
+                    status_code: 204,
+                    headers: [],
+                    body: new Uint8Array(),
+                    streaming_strategy: [],
+                    upgrade: [true]
+                };
+            }`,
         tests: []
     };
 }
 
 function generateGetStateMethod(): QueryMethod {
     return {
-        imports: new Set(['query', 'nat8']),
+        imports: new Set(['query', 'IDL']),
         globalDeclarations: ['let state: number = 0;'],
-        sourceCode: /*TS*/ `get_state: query([], nat8, () => {
-            return state;
-        })`,
+        sourceCode: /*TS*/ `
+            @query([], IDL.Nat8)
+            get_state(){
+                return state;
+            }`,
         tests: []
     };
 }

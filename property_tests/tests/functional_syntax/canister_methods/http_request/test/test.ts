@@ -18,8 +18,8 @@ const syntax = 'functional';
 const CanisterConfigArb = RecordArb(syntax)
     .chain((record) => {
         const HttpRequestMethodArb = QueryMethodArb(
-            fc.tuple(HttpRequestArb()),
-            HttpResponseArb(record),
+            fc.tuple(HttpRequestArb(syntax)),
+            HttpResponseArb(record, syntax),
             {
                 name: 'http_request',
                 generateBody,
