@@ -13,7 +13,7 @@ import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
 
-const syntax = 'functional';
+const syntax = 'class';
 
 const StableBTreeMapTestArb = fc
     .array(
