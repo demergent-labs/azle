@@ -143,21 +143,23 @@ function generateCandidTypeAnnotation(
         return `typeof ${name}.tsType`;
     }
 
-    const innerTypes = fields.map(
-        (field) => field.candidMeta.candidTypeAnnotation
-    );
+    const innerTypesAsString = fields
+        .map((field) => field.candidMeta.candidTypeAnnotation)
+        .join(', ');
 
     if (syntax === 'class') {
-        return `[${innerTypes.join(', ')}]`;
+        return `[${innerTypesAsString}]`;
     }
 
-    return `Tuple<[${innerTypes.join(', ')}]>`;
+    return `Tuple<[${innerTypesAsString}]>`;
 }
 
 function generateIdl(fields: CandidDefinition[]): string {
-    const innerTypes = fields.map((field) => field.candidMeta.idl);
+    const innerTypesAsString = fields
+        .map((field) => field.candidMeta.candidTypeAnnotation)
+        .join(', ');
 
-    return `IDL.Tuple(${innerTypes.join(', ')})`;
+    return `IDL.Tuple(${innerTypesAsString})`;
 }
 
 function generateCandidTypeObject(
@@ -170,13 +172,15 @@ function generateCandidTypeObject(
         return name;
     }
 
+    const innerTypesAsString = fields
+        .map((field) => field.candidMeta.candidTypeObject)
+        .join(', ');
+
     if (syntax === 'class') {
-        return generateIdl(fields);
+        return `IDL.Tuple(${innerTypesAsString})`;
     }
 
-    const innerTypes = fields.map((field) => field.candidMeta.candidTypeObject);
-
-    return `Tuple(${innerTypes.join(', ')})`;
+    return `Tuple(${innerTypesAsString})`;
 }
 
 function generateRuntimeCandidTypeObject(

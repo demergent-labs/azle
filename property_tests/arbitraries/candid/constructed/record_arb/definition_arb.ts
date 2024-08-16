@@ -158,13 +158,8 @@ function generateCandidTypeAnnotation(
         .join(',')}}`;
 }
 
-function generateIdl(fields: Field[]): string {
-    return `IDL.Record({${fields
-        .map(
-            ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.idl}`
-        )
-        .join(',')}})`;
+function generateIdl(_fields: Field[]): string {
+    return '';
 }
 
 function generateCandidTypeObject(
@@ -177,16 +172,18 @@ function generateCandidTypeObject(
         return name;
     }
 
-    if (syntax === 'class') {
-        return generateIdl(fields);
-    }
-
-    return `Record({${fields
+    const fieldsAsString = fields
         .map(
             ([fieldName, fieldDefinition]) =>
                 `${fieldName}: ${fieldDefinition.candidMeta.candidTypeObject}`
         )
-        .join(',')}})`;
+        .join(',');
+
+    if (syntax === 'class') {
+        return `IDL.Record({${fieldsAsString}})`;
+    }
+
+    return `Record({${fieldsAsString}})`;
 }
 
 function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {

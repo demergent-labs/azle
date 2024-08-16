@@ -43,8 +43,12 @@ export function VariantDefinitionArb(
             ([
                 name,
                 fieldsAndShapes,
-                useTypeDeclaration
+                useTypeDeclarationChance
             ]): WithShapes<VariantCandidDefinition> => {
+                const useTypeDeclaration =
+                    (constraints.forceInline === undefined ||
+                        constraints.forceInline === false) &&
+                    useTypeDeclarationChance;
                 const fields = fieldsAndShapes.map(
                     (field): Field => [field[0], field[1].definition]
                 );
@@ -243,13 +247,8 @@ function generateCandidTypeAnnotation(
         .join(',')}}>`;
 }
 
-function generateIdl(fields: Field[]): string {
-    return `IDL.Variant({${fields
-        .map(
-            ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.idl}`
-        )
-        .join(',')}})`;
+function generateIdl(_fields: Field[]): string {
+    return '';
 }
 
 function generateCandidTypeObject(
@@ -262,16 +261,17 @@ function generateCandidTypeObject(
         return name;
     }
 
-    if (syntax === 'class') {
-        return generateIdl(fields);
-    }
-
-    return `Variant({${fields
+    const fieldsAsString = fields
         .map(
             ([fieldName, fieldDefinition]) =>
                 `${fieldName}: ${fieldDefinition.candidMeta.candidTypeObject}`
         )
-        .join(',')}})`;
+        .join(',');
+    if (syntax === 'class') {
+        return `IDL.Variant({${fieldsAsString}})`;
+    }
+
+    return `Variant({${fieldsAsString}})`;
 }
 
 function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {

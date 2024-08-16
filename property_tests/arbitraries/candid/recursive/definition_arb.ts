@@ -25,11 +25,14 @@ export function RecursiveDefinitionArb(
                 candidMeta: {
                     candidType: 'Recursive',
                     candidTypeObject: name,
-                    candidTypeAnnotation: `typeof ${name}.tsType`,
+                    candidTypeAnnotation:
+                        syntax === 'functional'
+                            ? `typeof ${name}.tsType`
+                            : name,
                     imports: new Set(),
                     variableAliasDeclarations: [],
                     runtimeCandidTypeObject: Recursive(() => undefined),
-                    idl: 'IDL.Rec()'
+                    idl: name
                 },
                 name
             };
@@ -47,7 +50,8 @@ export function RecursiveDefinitionArb(
                         // https://github.com/demergent-labs/azle/issues/1518
                         // https://github.com/demergent-labs/azle/issues/1513
                         // https://github.com/demergent-labs/azle/issues/1525
-                    }
+                    },
+                    forceInline: true
                 })(constraints.depthLevel ?? 0),
                 fc.constant(innerRecDef)
             );
@@ -62,9 +66,9 @@ export function RecursiveDefinitionArb(
                     candidMeta: { candidTypeObject, candidTypeAnnotation }
                 } = recCanDef;
                 const variableAliasDeclarations =
-                    generateVariableAliasDeclarations(name, innerType);
+                    generateVariableAliasDeclarations(name, innerType, syntax);
 
-                const imports = generateImports(innerType);
+                const imports = generateImports(innerType, syntax);
 
                 const runtimeCandidTypeObject =
                     generateRuntimeCandidTypeObject(innerType);
@@ -77,7 +81,7 @@ export function RecursiveDefinitionArb(
                         imports,
                         candidType: 'Recursive',
                         runtimeCandidTypeObject,
-                        idl: 'IDL.Rec()'
+                        idl: name
                     },
                     name,
                     innerType
@@ -95,16 +99,29 @@ export function RecursiveDefinitionArb(
 
 function generateVariableAliasDeclarations(
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    syntax: Syntax
 ): string[] {
+    if (syntax === 'class') {
+        return [
+            ...innerType.candidMeta.variableAliasDeclarations,
+            `const ${name} = IDL.Rec()`,
+            `${name}.fill(${innerType.candidMeta.candidTypeObject})`,
+            `type ${name} = ${innerType.candidMeta.candidTypeAnnotation}`
+        ];
+    }
     return [
         `const ${name} = Recursive(() => ${innerType.candidMeta.candidTypeObject});`,
         ...innerType.candidMeta.variableAliasDeclarations
     ];
 }
 
-function generateImports(innerType: CandidDefinition): Set<string> {
-    return new Set([...innerType.candidMeta.imports, 'Recursive']);
+function generateImports(
+    innerType: CandidDefinition,
+    syntax: Syntax
+): Set<string> {
+    const recursiveImports = syntax === 'functional' ? 'Recursive' : 'IDL';
+    return new Set([...innerType.candidMeta.imports, recursiveImports]);
 }
 
 function generateRuntimeCandidTypeObject(

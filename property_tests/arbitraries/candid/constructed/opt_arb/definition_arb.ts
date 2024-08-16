@@ -34,8 +34,12 @@ export function OptDefinitionArb(
             ([
                 name,
                 innerTypeAndShapes,
-                useTypeDeclaration
+                useTypeDeclarationChance
             ]): WithShapes<OptCandidDefinition> => {
+                const useTypeDeclaration =
+                    (constraints.forceInline === undefined ||
+                        constraints.forceInline === false) &&
+                    useTypeDeclarationChance;
                 const { definition: innerType, recursiveShapes } =
                     innerTypeAndShapes;
                 const candidTypeAnnotation = generateCandidTypeAnnotation(
@@ -174,8 +178,8 @@ function generateCandidTypeAnnotation(
     return `Opt<${innerType.candidMeta.candidTypeAnnotation}>`;
 }
 
-function generateIdl(innerType: CandidDefinition): string {
-    return `IDL.Opt(${innerType.candidMeta.idl})`;
+function generateIdl(_innerType: CandidDefinition): string {
+    return '';
 }
 
 function generateCandidTypeObject(

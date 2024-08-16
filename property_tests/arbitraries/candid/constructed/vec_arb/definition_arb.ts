@@ -29,8 +29,12 @@ export function VecDefinitionArb(
             ([
                 name,
                 innerTypeAndShapes,
-                useTypeDeclaration
+                useTypeDeclarationChance
             ]): WithShapes<VecCandidDefinition> => {
+                const useTypeDeclaration =
+                    (constraints.forceInline === undefined ||
+                        constraints.forceInline === false) &&
+                    useTypeDeclarationChance;
                 const { definition: innerType, recursiveShapes } =
                     innerTypeAndShapes;
                 const candidTypeAnnotation = generateCandidTypeAnnotation(
@@ -167,8 +171,8 @@ function generateCandidTypeAnnotation(
     return `Vec<${innerType.candidMeta.candidTypeAnnotation}>`;
 }
 
-function generateIdl(innerType: CandidDefinition): string {
-    return `IDL.Vec(${innerType.candidMeta.idl})`;
+function generateIdl(_innerType: CandidDefinition): string {
+    return '';
 }
 
 function generateCandidTypeObject(
@@ -182,7 +186,7 @@ function generateCandidTypeObject(
     }
 
     if (syntax === 'class') {
-        return generateIdl(innerType);
+        return `IDL.Vec(${innerType.candidMeta.candidTypeObject})`;
     }
 
     return `Vec(${innerType.candidMeta.candidTypeObject})`;

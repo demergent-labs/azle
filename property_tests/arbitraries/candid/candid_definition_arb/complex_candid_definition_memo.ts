@@ -42,7 +42,8 @@ export function complexCandidDefinitionMemo(
             constraints.recursiveWeights ?? false
                 ? constraints.weights ?? {}
                 : {},
-        recursiveWeights: constraints.recursiveWeights
+        recursiveWeights: constraints.recursiveWeights,
+        forceInline: constraints.forceInline
     };
     return fc.memo((depthLevel) => {
         return fc.oneof(

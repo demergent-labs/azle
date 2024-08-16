@@ -108,13 +108,13 @@ function generateImports(
     returnFunc: CandidDefinition,
     syntax: Syntax
 ): Set<string> {
-    const funcImports =
-        syntax === 'functional' ? ['Func', 'Principal'] : ['IDL'];
+    const funcImports = syntax === 'functional' ? ['Func'] : ['IDL'];
 
     return new Set([
         ...params.flatMap((param) => [...param.candidMeta.imports]),
         ...returnFunc.candidMeta.imports,
-        ...funcImports
+        ...funcImports,
+        'Principal'
     ]);
 }
 
@@ -177,15 +177,11 @@ function generateCandidTypeAnnotation(
 }
 
 function generateIdl(
-    paramCandids: CandidDefinition[],
-    returnCandid: CandidDefinition,
-    mode: Mode
+    _paramCandids: CandidDefinition[],
+    _returnCandid: CandidDefinition,
+    _mode: Mode
 ): string {
-    const params = paramCandids.map((param) => param.candidMeta.idl).join(', ');
-
-    return `IDL.Func([${params}], [${returnCandid.candidMeta.idl}], ${
-        mode === 'update' ? '' : `['${mode}']`
-    })`;
+    return '';
 }
 
 function generateCandidTypeObject(
@@ -200,15 +196,19 @@ function generateCandidTypeObject(
         return name;
     }
 
-    if (syntax === 'class') {
-        return generateIdl(paramCandids, returnCandid, mode);
-    }
-
     const params = paramCandids
         .map((param) => param.candidMeta.candidTypeObject)
         .join(', ');
 
-    return `Func([${params}], ${returnCandid.candidMeta.candidTypeObject}, '${mode}')`;
+    const returnType = returnCandid.candidMeta.candidTypeObject;
+
+    if (syntax === 'class') {
+        return `IDL.Func([${params}], [${returnType}], ${
+            mode === 'update' ? '' : `['${mode}']`
+        })`;
+    }
+
+    return `Func([${params}], ${returnType}, '${mode}')`;
 }
 
 function generateRuntimeCandidTypeObject(

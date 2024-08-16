@@ -21,6 +21,7 @@ export type DefinitionConstraints = Partial<{
     depthLevel: number;
     recursiveWeights: boolean;
     weights: CandidDefinitionWeights;
+    forceInline?: boolean;
 }>;
 
 export type CandidDefinitionWeights = Partial<
