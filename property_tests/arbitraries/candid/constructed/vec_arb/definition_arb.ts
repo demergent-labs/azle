@@ -72,8 +72,7 @@ export function VecDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Vec',
-                            idl: generateIdl(innerType)
+                            candidType: 'Vec'
                         },
                         innerType: innerType
                     },
@@ -169,10 +168,6 @@ function generateCandidTypeAnnotation(
     }
 
     return `Vec<${innerType.candidMeta.candidTypeAnnotation}>`;
-}
-
-function generateIdl(_innerType: CandidDefinition): string {
-    return '';
 }
 
 function generateCandidTypeObject(

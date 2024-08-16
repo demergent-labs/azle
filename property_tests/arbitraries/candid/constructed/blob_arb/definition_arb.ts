@@ -50,8 +50,7 @@ export function _VecNat8DefinitionArb(
                             : candidTypeObject,
                         variableAliasDeclarations,
                         imports,
-                        candidType: 'blob',
-                        idl
+                        candidType: 'blob'
                     }
                 },
                 recursiveShapes: {}

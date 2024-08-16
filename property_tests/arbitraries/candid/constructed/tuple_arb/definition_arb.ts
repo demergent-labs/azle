@@ -74,8 +74,7 @@ export function TupleDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Tuple',
-                            idl: generateIdl(fields)
+                            candidType: 'Tuple'
                         },
                         innerTypes: fields
                     },
@@ -152,14 +151,6 @@ function generateCandidTypeAnnotation(
     }
 
     return `Tuple<[${innerTypesAsString}]>`;
-}
-
-function generateIdl(fields: CandidDefinition[]): string {
-    const innerTypesAsString = fields
-        .map((field) => field.candidMeta.candidTypeAnnotation)
-        .join(', ');
-
-    return `IDL.Tuple(${innerTypesAsString})`;
 }
 
 function generateCandidTypeObject(

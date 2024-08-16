@@ -77,8 +77,7 @@ export function ServiceDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Service',
-                            idl: generateIdl(fields)
+                            candidType: 'Service'
                         },
                         funcs: fields
                     },
@@ -117,16 +116,12 @@ function generateVariableAliasDeclarations(
             syntax === 'functional' ? [] : [`type ${name} = Principal`];
         return [
             ...serviceMethodTypeAliasDecls,
-            `const ${name} = ${
-                syntax === 'functional'
-                    ? generateCandidTypeObject(
-                          false,
-                          name,
-                          serviceMethods,
-                          syntax
-                      )
-                    : generateIdl(serviceMethods)
-            };`,
+            `const ${name} = ${generateCandidTypeObject(
+                false,
+                name,
+                serviceMethods,
+                syntax
+            )};`,
             ...type
         ];
     }
@@ -148,15 +143,6 @@ function generateCandidTypeAnnotation(
     return '[Principal]';
 }
 
-function generateIdl(serviceMethods: ServiceMethodDefinition[]): string {
-    const methods = serviceMethods
-        .map((serviceMethod) => serviceMethod.idl)
-        .filter((typeDeclaration) => typeDeclaration)
-        .join(',\n');
-
-    return `IDL.Service({${methods}})`;
-}
-
 function generateCandidTypeObject(
     useTypeDeclaration: boolean,
     name: string,
@@ -167,14 +153,19 @@ function generateCandidTypeObject(
         return name;
     }
 
+    if (syntax === 'class') {
+        const methods = serviceMethods
+            .map((serviceMethod) => serviceMethod.idl)
+            .filter((typeDeclaration) => typeDeclaration)
+            .join(',\n');
+
+        return `IDL.Service({${methods}})`;
+    }
+
     const methods = serviceMethods
         .map((serviceMethod) => serviceMethod.src)
         .filter((typeDeclaration) => typeDeclaration)
         .join(',\n');
-
-    if (syntax === 'class') {
-        return `IDL.Service({${methods}})`;
-    }
 
     return `Canister({${methods}})`;
 }

@@ -93,8 +93,7 @@ export function VariantDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Variant',
-                            idl: generateIdl(fields)
+                            candidType: 'Variant'
                         },
                         innerTypes: fields
                     },
@@ -245,10 +244,6 @@ function generateCandidTypeAnnotation(
                 `${fieldName}: ${fieldDataType.candidMeta.candidTypeAnnotation}`
         )
         .join(',')}}>`;
-}
-
-function generateIdl(_fields: Field[]): string {
-    return '';
 }
 
 function generateCandidTypeObject(

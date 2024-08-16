@@ -77,8 +77,7 @@ export function OptDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Opt',
-                            idl: generateIdl(innerType)
+                            candidType: 'Opt'
                         },
                         innerType
                     },
@@ -176,10 +175,6 @@ function generateCandidTypeAnnotation(
     }
 
     return `Opt<${innerType.candidMeta.candidTypeAnnotation}>`;
-}
-
-function generateIdl(_innerType: CandidDefinition): string {
-    return '';
 }
 
 function generateCandidTypeObject(

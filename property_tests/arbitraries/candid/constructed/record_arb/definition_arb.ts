@@ -83,8 +83,7 @@ export function RecordDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Record',
-                            idl: generateIdl(fields)
+                            candidType: 'Record'
                         },
                         innerTypes: fields
                     },
@@ -156,10 +155,6 @@ function generateCandidTypeAnnotation(
                 `${fieldName}: ${fieldDefinition.candidMeta.candidTypeAnnotation}`
         )
         .join(',')}}`;
-}
-
-function generateIdl(_fields: Field[]): string {
-    return '';
 }
 
 function generateCandidTypeObject(

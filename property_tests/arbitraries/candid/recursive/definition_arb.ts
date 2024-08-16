@@ -31,8 +31,7 @@ export function RecursiveDefinitionArb(
                             : name,
                     imports: new Set(),
                     variableAliasDeclarations: [],
-                    runtimeCandidTypeObject: Recursive(() => undefined),
-                    idl: name
+                    runtimeCandidTypeObject: Recursive(() => undefined)
                 },
                 name
             };
@@ -80,8 +79,7 @@ export function RecursiveDefinitionArb(
                         variableAliasDeclarations,
                         imports,
                         candidType: 'Recursive',
-                        runtimeCandidTypeObject,
-                        idl: name
+                        runtimeCandidTypeObject
                     },
                     name,
                     innerType

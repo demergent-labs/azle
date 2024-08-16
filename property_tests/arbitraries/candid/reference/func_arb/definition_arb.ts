@@ -91,8 +91,7 @@ export function FuncDefinitionArb(
                             runtimeCandidTypeObject,
                             variableAliasDeclarations,
                             imports,
-                            candidType: 'Func',
-                            idl: generateIdl(params, returnFunc, mode)
+                            candidType: 'Func'
                         },
                         paramCandidMeta: params,
                         returnCandidMeta: returnFunc
@@ -174,14 +173,6 @@ function generateCandidTypeAnnotation(
     }
 
     return `[Principal, string]`;
-}
-
-function generateIdl(
-    _paramCandids: CandidDefinition[],
-    _returnCandid: CandidDefinition,
-    _mode: Mode
-): string {
-    return '';
 }
 
 function generateCandidTypeObject(

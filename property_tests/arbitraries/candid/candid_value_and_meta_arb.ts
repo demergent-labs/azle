@@ -41,7 +41,6 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
         variableAliasDeclarations: string[];
         imports: Set<string>;
         valueLiteral: string;
-        idl: string;
     };
 };
 

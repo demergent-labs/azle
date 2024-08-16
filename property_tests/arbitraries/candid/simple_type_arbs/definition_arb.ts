@@ -54,8 +54,7 @@ export function SimpleCandidDefinitionArb(
                             candidType,
                             runtimeCandidTypeObject,
                             imports: generateImports(candidType, syntax),
-                            variableAliasDeclarations,
-                            idl
+                            variableAliasDeclarations
                         }
                     },
                     recursiveShapes: {}

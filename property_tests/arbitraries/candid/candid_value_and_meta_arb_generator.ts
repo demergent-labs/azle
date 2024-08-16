@@ -40,8 +40,7 @@ export function definitionAndValueToValueAndMeta(
         candidTypeObject,
         imports,
         variableAliasDeclarations,
-        runtimeCandidTypeObject,
-        idl
+        runtimeCandidTypeObject
     } = definition.candidMeta;
     const { valueLiteral, agentArgumentValue, agentResponseValue } = value;
     return {
@@ -50,8 +49,7 @@ export function definitionAndValueToValueAndMeta(
             candidTypeObject,
             imports,
             valueLiteral,
-            variableAliasDeclarations,
-            idl
+            variableAliasDeclarations
         },
         value: {
             agentArgumentValue,

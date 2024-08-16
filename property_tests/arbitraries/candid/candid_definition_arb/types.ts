@@ -111,5 +111,4 @@ type CandidMeta = {
     variableAliasDeclarations: string[];
     imports: Set<string>;
     candidType: CandidType;
-    idl: string;
 };
