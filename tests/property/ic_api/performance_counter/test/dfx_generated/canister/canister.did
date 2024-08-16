@@ -1,6 +1,0 @@
-service: () -> {
-    queryPerformanceCounter0: (nat32) -> (nat64) query;
-    queryPerformanceCounter1: (nat32) -> (nat64) query;
-    updatePerformanceCounter0: (nat32) -> (nat64);
-    updatePerformanceCounter1: (nat32) -> (nat64);
-}

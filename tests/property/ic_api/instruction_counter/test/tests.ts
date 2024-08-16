@@ -1,4 +1,10 @@
-import { defaultParams, expect, getCanisterActor, it, Test } from 'azle/test';
+import {
+    defaultPropTestParams,
+    expect,
+    getCanisterActor,
+    it,
+    Test
+} from 'azle/test';
 import fc from 'fast-check';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
@@ -34,7 +40,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultParams
+                defaultPropTestParams
             );
         });
 
@@ -78,7 +84,7 @@ export function getTests(): Test {
                         expect(instructions1).toBeLessThan(instructionsAfter1);
                     }
                 ),
-                defaultParams
+                defaultPropTestParams
             );
         });
     };
