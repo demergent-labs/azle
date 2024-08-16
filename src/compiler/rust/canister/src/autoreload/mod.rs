@@ -1,6 +1,6 @@
 use std::{cell::RefCell, collections::BTreeMap};
 
-use crate::initialize_js;
+use crate::init_and_post_upgrade::initialize_js;
 
 thread_local! {
     static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);

@@ -19,8 +19,10 @@ use wasmedge_quickjs::AsObject;
 mod autoreload;
 mod candid;
 mod chunk;
+mod execute_method_js;
 mod guards;
 mod ic;
+mod init_and_post_upgrade;
 mod stable_b_tree_map;
 #[cfg(feature = "experimental")]
 mod upload_file;
@@ -47,53 +49,6 @@ thread_local! {
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }
 
-#[no_mangle]
-#[allow(unused)]
-pub fn execute_js(function_index: i32, pass_arg_data: i32) {
-    let function_name = &function_index.to_string();
-    let pass_arg_data = if pass_arg_data == 1 { true } else { false };
-
-    RUNTIME.with(|runtime| {
-        let mut runtime = runtime.borrow_mut();
-        let runtime = runtime.as_mut().unwrap();
-
-        runtime.run_with_context(|context| {
-            let global = context.get_global();
-            let exports = global.get("exports");
-
-            let canister_methods = exports.get("canisterMethods").unwrap();
-
-            let callbacks = canister_methods.get("callbacks").unwrap();
-            let method_callback = callbacks.get(function_name).unwrap();
-
-            let candid_args = if pass_arg_data {
-                ic_cdk::api::call::arg_data_raw()
-            } else {
-                vec![]
-            };
-
-            let candid_args_js_value: wasmedge_quickjs::JsValue =
-                context.new_array_buffer(&candid_args).into();
-
-            let method_callback_function = method_callback.to_function().unwrap();
-
-            let result = method_callback_function.call(&[candid_args_js_value]);
-
-            // TODO error handling is mostly done in JS right now
-            // TODO we would really like wasmedge-quickjs to add
-            // TODO good error info to JsException and move error handling
-            // TODO out of our own code
-            match &result {
-                wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                    js_exception.dump_error();
-                    panic!("TODO needs error info");
-                }
-                _ => run_event_loop(context),
-            };
-        });
-    });
-}
-
 pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
     context.promise_loop_poll();
 
@@ -111,6 +66,7 @@ pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
 #[ic_cdk_macros::update]
 pub fn _azle_chunk() {}
 
+// TODO move the wasm functions into their own module
 #[inline(never)]
 #[no_mangle]
 extern "C" fn init_js_passive_data(js_vec_location: i32) -> usize {
@@ -169,200 +125,6 @@ pub extern "C" fn get_wasm_data() -> WasmData {
     serde_json::from_str(std::str::from_utf8(&wasm_data_vec).unwrap()).unwrap()
 }
 
-#[no_mangle]
-#[allow(unused)]
-pub fn init(function_index: i32, pass_arg_data: i32) {
-    std::panic::set_hook(Box::new(|panic_info| {
-        let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
-            *s
-        } else if let Some(s) = panic_info.payload().downcast_ref::<String>() {
-            s.as_str()
-        } else {
-            "Unknown panic message"
-        };
-
-        let location = if let Some(location) = panic_info.location() {
-            format!(" at {}:{}", location.file(), location.line())
-        } else {
-            " (unknown location)".to_string()
-        };
-
-        let message = &format!("Panic occurred: {}{}", msg, location);
-
-        ic_cdk::println!("{}", message);
-
-        ic_cdk::trap(message);
-    }));
-
-    let wasm_data = get_wasm_data();
-
-    let env_vars: Vec<(&str, &str)> = wasm_data
-        .env_vars
-        .iter()
-        .map(|(key, value)| (key.as_str(), value.as_str()))
-        .collect();
-
-    let polyfill_memory =
-        MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
-    ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
-
-    #[cfg(feature = "experimental")]
-    std::fs::write("/candid/icp/management.did", &wasm_data.management_did).unwrap();
-
-    let js = get_js_code();
-
-    initialize_js(
-        std::str::from_utf8(&js).unwrap(),
-        true,
-        function_index,
-        pass_arg_data,
-        wasm_data.experimental,
-    );
-
-    #[cfg(feature = "experimental")]
-    ic_cdk::spawn(async move {
-        open_value_sharing::init(&wasm_data.consumer).await;
-    });
-
-    #[cfg(feature = "experimental")]
-    upload_file::init_hashes().unwrap();
-}
-
-#[no_mangle]
-#[allow(unused)]
-pub fn post_upgrade(function_index: i32, pass_arg_data: i32) {
-    std::panic::set_hook(Box::new(|panic_info| {
-        let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
-            *s
-        } else if let Some(s) = panic_info.payload().downcast_ref::<String>() {
-            s.as_str()
-        } else {
-            "Unknown panic message"
-        };
-
-        let location = if let Some(location) = panic_info.location() {
-            format!(" at {}:{}", location.file(), location.line())
-        } else {
-            " (unknown location)".to_string()
-        };
-
-        let message = &format!("Panic occurred: {}{}", msg, location);
-
-        ic_cdk::println!("{}", message);
-
-        ic_cdk::trap(message);
-    }));
-
-    let wasm_data = get_wasm_data();
-
-    let env_vars: Vec<(&str, &str)> = wasm_data
-        .env_vars
-        .iter()
-        .map(|(key, value)| (key.as_str(), value.as_str()))
-        .collect();
-
-    let polyfill_memory =
-        MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
-    ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
-
-    #[cfg(feature = "experimental")]
-    std::fs::write("/candid/icp/management.did", &wasm_data.management_did).unwrap();
-
-    let js = get_js_code();
-
-    initialize_js(
-        std::str::from_utf8(&js).unwrap(),
-        false,
-        function_index,
-        pass_arg_data,
-        wasm_data.experimental,
-    );
-
-    #[cfg(feature = "experimental")]
-    ic_cdk::spawn(async move {
-        open_value_sharing::init(&wasm_data.consumer).await;
-    });
-}
-
-pub fn initialize_js(
-    js: &str,
-    init: bool,
-    function_index: i32,
-    pass_arg_data: i32,
-    experimental: bool,
-) {
-    let mut rt = wasmedge_quickjs::Runtime::new();
-
-    let r = rt.run_with_context(|context| {
-        ic::register(context);
-
-        #[cfg(feature = "experimental")]
-        web_assembly::register(context);
-
-        let mut env = context.new_object();
-
-        for (key, value) in std::env::vars() {
-            env.set(&key, context.new_string(&value).into());
-        }
-
-        let mut process = context.new_object();
-
-        process.set("env", env.into());
-
-        context.get_global().set("process", process.into());
-
-        context.get_global().set(
-            "_azleWasmtimeCandidEnvironment",
-            wasmedge_quickjs::JsValue::Bool(false),
-        );
-
-        // TODO what do we do if there is an error in here?
-        context.eval_global_str("globalThis.exports = {};".to_string());
-        context.eval_global_str(format!("globalThis._azleExperimental = {experimental};"));
-        context.eval_module_str(js.to_string(), "azle_main");
-
-        run_event_loop(context);
-
-        // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
-
-        // match &temp {
-        //     wasmedge_quickjs::JsValue::Exception(js_exception) => {
-        //         js_exception.dump_error();
-        //         panic!("we had an error");
-        //     },
-        //     _ => {}
-        // };
-
-        // ic_cdk::println!("temp: {:#?}", temp);
-    });
-
-    RUNTIME.with(|runtime| {
-        let mut runtime = runtime.borrow_mut();
-        *runtime = Some(rt);
-    });
-
-    if function_index != -1 {
-        execute_js(function_index, pass_arg_data);
-    }
-
-    // _azleInitCalled and _azlePostUpgradeCalled refer to Azle's own init/post_upgrade methods being called
-    // these variables do not indicate if the developer's own init/post_upgrade methods were called
-    RUNTIME.with(|runtime| {
-        let mut runtime = runtime.borrow_mut();
-        let runtime = runtime.as_mut().unwrap();
-
-        runtime.run_with_context(|context| {
-            let assignment = if init {
-                "globalThis._azleInitCalled = true;"
-            } else {
-                "globalThis._azlePostUpgradeCalled = true;"
-            };
-
-            context.eval_global_str(assignment.to_string());
-        });
-    });
-}
-
 #[cfg(feature = "experimental")]
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
 fn _azle_reload_js(
@@ -371,7 +133,7 @@ fn _azle_reload_js(
     js_bytes: Vec<u8>,
     total_len: u64,
     function_index: i32,
-    experimental: bool,
+    experimental: bool, // TODO we should be able to get rid of this parameter
 ) {
     autoreload::reload_js(
         timestamp,
@@ -379,7 +141,7 @@ fn _azle_reload_js(
         js_bytes,
         total_len,
         function_index,
-        experimental,
+        experimental, // TODO we should be able to get rid of this argument
     );
 }
 

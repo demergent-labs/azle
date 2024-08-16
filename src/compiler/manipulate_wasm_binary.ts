@@ -41,7 +41,7 @@ export async function manipulateWasmBinary(
                         ? 'canister_composite_query'
                         : 'canister_query'
                 } ${functionName}`,
-                'execute_js',
+                'execute_method_js',
                 index,
                 true
             );
@@ -53,7 +53,7 @@ export async function manipulateWasmBinary(
             addCanisterMethod(
                 module,
                 `canister_update ${functionName}`,
-                'execute_js',
+                'execute_method_js',
                 index,
                 true
             );
@@ -80,7 +80,7 @@ export async function manipulateWasmBinary(
         addCanisterMethod(
             module,
             'canister_pre_upgrade',
-            'execute_js',
+            'execute_method_js',
             compilerInfo.canister_methods.pre_upgrade.index,
             false
         );
@@ -90,7 +90,7 @@ export async function manipulateWasmBinary(
         addCanisterMethod(
             module,
             'canister_inspect_message',
-            'execute_js',
+            'execute_method_js',
             compilerInfo.canister_methods.inspect_message.index,
             false
         );
@@ -100,7 +100,7 @@ export async function manipulateWasmBinary(
         addCanisterMethod(
             module,
             'canister_heartbeat',
-            'execute_js',
+            'execute_method_js',
             compilerInfo.canister_methods.heartbeat.index,
             false
         );
