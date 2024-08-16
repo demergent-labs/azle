@@ -1,5 +1,6 @@
 import { IOType } from 'child_process';
 
+import { logGlobalDependencies } from './log_global_dependencies';
 import { manipulateWasmBinary } from './manipulate_wasm_binary';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { execSyncPretty } from './utils/exec_sync_pretty';
@@ -15,6 +16,8 @@ export async function generateWasmBinary(
     canisterPath: string
 ): Promise<void> {
     if (process.env.AZLE_GEN_WASM === 'true') {
+        await logGlobalDependencies();
+
         await prepareRustStagingArea(canisterConfig, canisterPath);
 
         compileRustCodeNatively(

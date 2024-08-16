@@ -46,7 +46,7 @@ impl JsFn for NativeFunction {
 
                 // Err(anyhow::anyhow!(err_string))
 
-                panic!(err_string);
+                panic!("{}", err_string);
             }
         }
     }
