@@ -3,6 +3,7 @@ import { createAuthenticatedAgentSync, getPrincipal } from 'azle/dfx';
 import { runPropTests } from 'azle/property_tests';
 import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
 import {
     CanisterArb,
     CanisterConfig
@@ -12,7 +13,6 @@ import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_method
 import fc from 'fast-check';
 import { v4 } from 'uuid';
 
-import { CorrespondingJSType } from '../../../../../arbitraries/candid/corresponding_js_type';
 import { generateTests } from './generate_tests';
 
 export type InspectMessageBehavior = 'ACCEPT' | 'RETURN' | 'THROW';
