@@ -1,0 +1,7 @@
+service: () -> {
+    getTimerEnded: () -> (bool) query;
+    getTimerInstructions: () -> (nat64) query;
+    getTimerStarted: () -> (bool) query;
+    measureSum: (nat32, bool) -> (nat64);
+    measureSumTimer: (nat32, bool) -> ();
+}

@@ -41,7 +41,7 @@ export async function uploadFile(
         // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
         // The above throttling is sufficient to manage the speed of uploads
         actor
-            .upload_file_chunk(
+            ._azle_upload_file_chunk(
                 destPath,
                 uploadStartTime,
                 BigInt(startIndex),
@@ -81,7 +81,7 @@ async function shouldBeUploaded(
     actor: UploaderActor
 ): Promise<boolean> {
     const localHash = (await hashFile(srcPath)).toString('hex');
-    const canisterHashOption = await actor.get_file_hash(destPath);
+    const canisterHashOption = await actor._azle_get_file_hash(destPath);
     if (canisterHashOption.length === 0) {
         return true;
     }

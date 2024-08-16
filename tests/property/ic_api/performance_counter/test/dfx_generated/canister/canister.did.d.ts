@@ -1,0 +1,12 @@
+import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
+
+export interface _SERVICE {
+    queryPerformanceCounter0: ActorMethod<[number], bigint>;
+    queryPerformanceCounter1: ActorMethod<[number], bigint>;
+    updatePerformanceCounter0: ActorMethod<[number], bigint>;
+    updatePerformanceCounter1: ActorMethod<[number], bigint>;
+}
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];
