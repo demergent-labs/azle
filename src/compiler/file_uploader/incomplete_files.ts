@@ -17,7 +17,7 @@ async function hasValidHash(
     actor: UploaderActor
 ): Promise<boolean> {
     try {
-        const hashOption = await actor.get_file_hash(path);
+        const hashOption = await actor._azle_get_file_hash(path);
         return hashOption.length === 1;
     } catch {
         return false;

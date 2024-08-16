@@ -1,5 +1,11 @@
 import { Principal } from '@dfinity/principal';
-import { defaultParams, expect, getCanisterActor, it, Test } from 'azle/test';
+import {
+    defaultPropTestParams,
+    expect,
+    getCanisterActor,
+    it,
+    Test
+} from 'azle/test';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
@@ -84,7 +90,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultParams
+                defaultPropTestParams
             );
         });
     };
