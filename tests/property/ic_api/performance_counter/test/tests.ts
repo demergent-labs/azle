@@ -17,7 +17,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.nat({
-                        max: 100 // Our algorithm for determinstically checking the number of instructions based on the number of loops breaks down soon after 100 iterations
+                        max: 100 // Our algorithm for deterministically checking the number of instructions based on the number of loops breaks down soon after 100 iterations
                     }),
                     async (loops) => {
                         const instructions =
@@ -30,13 +30,12 @@ export function getTests(): Test {
                         } = await getBaseInstructionCountsQuery0();
 
                         expect(instructions).toStrictEqual(
-                            loops0Instructions +
-                                (loops === 0
-                                    ? 0n
-                                    : loops === 1
-                                    ? zeroToOneDelta
-                                    : zeroToOneDelta +
-                                      (BigInt(loops) - 1n) * oneToTwoDelta)
+                            getExpectedQueryInstructions(
+                                loops,
+                                loops0Instructions,
+                                zeroToOneDelta,
+                                oneToTwoDelta
+                            )
                         );
                     }
                 ),
@@ -94,7 +93,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.nat({
-                        max: 100 // Our algorithm for determinstically checking the number of instructions based on the number of loops breaks down soon after 100 iterations
+                        max: 100 // Our algorithm for deterministically checking the number of instructions based on the number of loops breaks down soon after 100 iterations
                     }),
                     async (loops) => {
                         const instructions =
@@ -107,13 +106,12 @@ export function getTests(): Test {
                         } = await getBaseInstructionCountsQuery1();
 
                         expect(instructions).toStrictEqual(
-                            loops0Instructions +
-                                (loops === 0
-                                    ? 0n
-                                    : loops === 1
-                                    ? zeroToOneDelta
-                                    : zeroToOneDelta +
-                                      (BigInt(loops) - 1n) * oneToTwoDelta)
+                            getExpectedQueryInstructions(
+                                loops,
+                                loops0Instructions,
+                                zeroToOneDelta,
+                                oneToTwoDelta
+                            )
                         );
                     }
                 ),
@@ -234,4 +232,25 @@ function percentageDifferenceBigInt(value1: bigint, value2: bigint): bigint {
     const average = (value1 + value2) / 2n;
     const percentageDifference = (difference * 100n) / average;
     return percentageDifference;
+}
+
+function getExpectedQueryInstructions(
+    loops: number,
+    loops0Instructions: bigint,
+    zeroToOneDelta: bigint,
+    oneToTwoDelta: bigint
+): bigint {
+    if (loops === 0) {
+        return loops0Instructions;
+    }
+
+    if (loops === 1) {
+        return loops0Instructions + zeroToOneDelta;
+    }
+
+    return (
+        loops0Instructions +
+        zeroToOneDelta +
+        (BigInt(loops) - 1n) * oneToTwoDelta
+    );
 }
