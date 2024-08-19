@@ -17,7 +17,7 @@ pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
     // This causes problems during Wasm binary manipulation
     format!("prevent init and post_upgrade optimization");
 
-    initialize(function_index, pass_arg_data);
+    initialize(true, function_index, pass_arg_data);
 
     #[cfg(feature = "experimental")]
     upload_file::init_hashes().unwrap();
@@ -26,12 +26,10 @@ pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
 #[inline(never)]
 #[no_mangle]
 pub extern "C" fn post_upgrade(function_index: i32, pass_arg_data: i32) {
-    initialize(function_index, pass_arg_data);
+    initialize(false, function_index, pass_arg_data);
 }
 
-fn initialize(function_index: i32, pass_arg_data: i32) {
-    ic_cdk::println!("hello");
-
+fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
     std::panic::set_hook(Box::new(|panic_info| {
         let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
             *s
@@ -73,7 +71,7 @@ fn initialize(function_index: i32, pass_arg_data: i32) {
 
     initialize_js(
         std::str::from_utf8(&js).unwrap(),
-        true,
+        init,
         function_index,
         pass_arg_data,
         wasm_data.experimental,
