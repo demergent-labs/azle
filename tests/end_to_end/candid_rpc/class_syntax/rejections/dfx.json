@@ -12,6 +12,9 @@
             "declarations": {
                 "output": "test/dfx_generated/rejections",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "some_canister": {
