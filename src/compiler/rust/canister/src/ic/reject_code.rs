@@ -2,7 +2,7 @@ use wasmedge_quickjs::{Context, JsFn, JsValue};
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
-    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+    fn call(context: &mut Context, _this_val: JsValue, _argv: &[JsValue]) -> JsValue {
         let reject_code = ic_cdk::api::call::reject_code();
 
         let reject_code_number = match reject_code {

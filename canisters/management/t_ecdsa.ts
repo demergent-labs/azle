@@ -1,4 +1,5 @@
-import { IDL, Principal } from '../..';
+import { IDL } from '@dfinity/candid';
+import { Principal } from '@dfinity/principal';
 
 export const EcdsaCurve = IDL.Variant({
     secp256k1: IDL.Null

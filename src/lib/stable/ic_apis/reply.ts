@@ -1,4 +1,4 @@
-import { IDL } from '..';
+import { IDL } from '@dfinity/candid';
 
 type ReplyInput<T> =
     | {

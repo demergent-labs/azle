@@ -6,7 +6,9 @@
 //
 // Some documentation changed from original work.
 
-import { IDL, Principal } from '../../';
+import { IDL } from '@dfinity/candid';
+import { Principal } from '@dfinity/principal';
+
 import * as icrc from '../icrc';
 
 // Amount of tokens, measured in 10^-8 of a token.

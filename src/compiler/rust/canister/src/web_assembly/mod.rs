@@ -1,4 +1,4 @@
-use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
+use wasmedge_quickjs::AsObject;
 
 mod instantiate;
 

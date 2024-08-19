@@ -2,7 +2,7 @@ use wasmedge_quickjs::{Context, JsFn, JsValue};
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
-    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+    fn call(_context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
         let first_arg_option = argv.get(0);
 
         if let Some(first_arg) = first_arg_option {

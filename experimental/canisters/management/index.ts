@@ -10,7 +10,12 @@ if (globalThis._azleExperimental !== true) {
 //
 // Some documentation changed from original work.
 
-import { blob, Canister, Principal, update, Vec, Void } from '../../';
+import { blob } from '../../../src/lib/experimental/candid/types/constructed/blob';
+import { Vec } from '../../../src/lib/experimental/candid/types/constructed/vec';
+import { Void } from '../../../src/lib/experimental/candid/types/primitive/void';
+import { Principal } from '../../../src/lib/experimental/candid/types/reference/principal';
+import { Canister } from '../../../src/lib/experimental/candid/types/reference/service';
+import { update } from '../../../src/lib/experimental/canister_methods/methods/update';
 import {
     GetBalanceArgs,
     GetCurrentFeePercentilesArgs,

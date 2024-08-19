@@ -10,7 +10,7 @@ import { CandidValues } from '../../candid_values_arb';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
 import { numberToSrcLiteral } from '../../to_src_literal/number';
-import { NumberArb } from './';
+import { NumberArb } from '.';
 
 export function Int16Arb(): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(Int16DefinitionArb(), Int16ValueArb);
