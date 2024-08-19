@@ -9,35 +9,23 @@ use crate::{
 #[cfg(feature = "experimental")]
 use crate::{upload_file, web_assembly};
 
-#[no_mangle]
-#[allow(unused)]
 #[inline(never)]
+#[no_mangle]
 pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
     // Without something like this the init and post_upgrade functions
     // seem to be optimized into the same function in the Wasm binary
     // This causes problems during Wasm binary manipulation
     format!("prevent init and post_upgrade optimization");
 
-    initialize_init(function_index, pass_arg_data);
+    initialize(function_index, pass_arg_data);
 
     #[cfg(feature = "experimental")]
     upload_file::init_hashes().unwrap();
 }
 
+#[inline(never)]
 #[no_mangle]
-#[allow(unused)]
-#[inline(never)]
 pub extern "C" fn post_upgrade(function_index: i32, pass_arg_data: i32) {
-    initialize_post_upgrade(function_index, pass_arg_data);
-}
-
-#[inline(never)]
-fn initialize_init(function_index: i32, pass_arg_data: i32) {
-    initialize(function_index, pass_arg_data);
-}
-
-#[inline(never)]
-fn initialize_post_upgrade(function_index: i32, pass_arg_data: i32) {
     initialize(function_index, pass_arg_data);
 }
 

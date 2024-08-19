@@ -1,9 +1,6 @@
 use wasmedge_quickjs::AsObject;
 
-use crate::ic;
-use crate::run_event_loop;
-use crate::wasm_binary_manipulation::get_js_code;
-use crate::RUNTIME;
+use crate::{ic, run_event_loop, wasm_binary_manipulation::get_js_code, RUNTIME};
 
 // Heavily inspired by https://stackoverflow.com/a/47676844
 #[no_mangle]
