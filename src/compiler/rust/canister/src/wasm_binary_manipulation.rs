@@ -1,4 +1,15 @@
-// TODO move the wasm functions into their own module
+use open_value_sharing::Consumer;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct WasmData {
+    pub env_vars: Vec<(String, String)>,
+    #[cfg(feature = "experimental")]
+    pub consumer: Consumer,
+    pub management_did: String,
+    pub experimental: bool,
+}
+
 #[inline(never)]
 #[no_mangle]
 extern "C" fn init_js_passive_data(js_vec_location: i32) -> usize {
@@ -14,9 +25,7 @@ extern "C" fn js_passive_data_size() -> usize {
 }
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
-#[inline(never)]
-#[no_mangle]
-pub extern "C" fn get_js_code() -> Vec<u8> {
+pub fn get_js_code() -> Vec<u8> {
     let size = unsafe { js_passive_data_size() };
     let mut js_vec = vec![243; size];
     let js_vec_location = js_vec.as_mut_ptr() as i32;
@@ -43,9 +52,7 @@ extern "C" fn wasm_data_passive_data_size() -> usize {
 }
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
-#[inline(never)]
-#[no_mangle]
-pub extern "C" fn get_wasm_data() -> WasmData {
+pub fn get_wasm_data() -> WasmData {
     let size = unsafe { wasm_data_passive_data_size() };
     let mut wasm_data_vec = vec![243; size];
     let wasm_data_vec_location = wasm_data_vec.as_mut_ptr() as i32;

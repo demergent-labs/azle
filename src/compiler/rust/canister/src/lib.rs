@@ -11,7 +11,6 @@ use ic_stable_structures::{
     storable::Bound,
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
-use serde::{Deserialize, Serialize};
 use std::fs;
 use wasmedge_quickjs::AsObject;
 
@@ -31,19 +30,10 @@ mod wasm_binary_manipulation;
 mod web_assembly;
 
 #[cfg(feature = "experimental")]
-use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
+use open_value_sharing::{PeriodicBatch, PERIODIC_BATCHES};
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
-
-#[derive(Debug, Serialize, Deserialize)]
-struct WasmData {
-    env_vars: Vec<(String, String)>,
-    #[cfg(feature = "experimental")]
-    consumer: Consumer,
-    management_did: String,
-    experimental: bool,
-}
 
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
