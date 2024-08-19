@@ -4,7 +4,10 @@
             "type": "azle",
             "main": "src/backend/server.ts",
             "assets": [["src/frontend/dist", "dist"]],
-            "build_assets": "npm run build"
+            "build_assets": "npm run build",
+            "custom": {
+                "experimental": true
+            }
         },
         "internet_identity": {
             "type": "custom",

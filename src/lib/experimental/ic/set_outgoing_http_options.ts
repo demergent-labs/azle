@@ -1,0 +1,22 @@
+import { experimentalMessage } from '../experimental';
+
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage('azle/experimental'));
+}
+
+export function setOutgoingHttpOptions(options: {
+    maxResponseBytes?: bigint;
+    subnetSize?: number;
+    cycles?: bigint;
+    transformMethodName?: string;
+    transformContext?: Uint8Array;
+}): void {
+    globalThis._azleOutgoingHttpOptionsMaxResponseBytes =
+        options.maxResponseBytes;
+    globalThis._azleOutgoingHttpOptionsSubnetSize = options.subnetSize;
+    globalThis._azleOutgoingHttpOptionsCycles = options.cycles;
+    globalThis._azleOutgoingHttpOptionsTransformMethodName =
+        options.transformMethodName;
+    globalThis._azleOutgoingHttpOptionsTransformContext =
+        options.transformContext;
+}

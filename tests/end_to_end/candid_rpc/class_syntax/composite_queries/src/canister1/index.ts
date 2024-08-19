@@ -1,16 +1,15 @@
 import { call, id, IDL, query, reply, update } from 'azle';
 
-const canister2Id = getCanister2Id();
+export default class Canister {
+    canister2Id: string = getCanister2Id();
+    counter: bigint = 0n;
 
-let counter: bigint = 0n;
-
-export default class {
     // Composite query calling a query
     @query([], IDL.Text, {
         composite: true
     })
     async simpleCompositeQuery(): Promise<string> {
-        return await call(canister2Id, 'simpleQuery', {
+        return await call(this.canister2Id, 'simpleQuery', {
             returnIdlType: IDL.Text
         });
     }
@@ -20,7 +19,7 @@ export default class {
         composite: true
     })
     async manualQuery(): Promise<string> {
-        return await call(canister2Id, 'manualQuery', {
+        return await call(this.canister2Id, 'manualQuery', {
             returnIdlType: IDL.Text
         });
     }
@@ -32,7 +31,7 @@ export default class {
     })
     async totallyManualQuery(): Promise<void> {
         reply({
-            data: await call(canister2Id, 'manualQuery', {
+            data: await call(this.canister2Id, 'manualQuery', {
                 returnIdlType: IDL.Text
             }),
             idlType: IDL.Text
@@ -44,7 +43,7 @@ export default class {
         composite: true
     })
     async deepQuery(): Promise<string> {
-        return await call(canister2Id, 'deepQuery', {
+        return await call(this.canister2Id, 'deepQuery', {
             returnIdlType: IDL.Text
         });
     }
@@ -54,7 +53,7 @@ export default class {
         composite: true
     })
     async updateQuery(): Promise<string> {
-        return await call(canister2Id, 'updateQuery', {
+        return await call(this.canister2Id, 'updateQuery', {
             returnIdlType: IDL.Text
         });
     }
@@ -62,7 +61,7 @@ export default class {
     // Composite query being called by a query method. SHOULDN'T WORK
     @query([], IDL.Text)
     async simpleQuery(): Promise<string> {
-        return await call(canister2Id, 'simpleQuery', {
+        return await call(this.canister2Id, 'simpleQuery', {
             returnIdlType: IDL.Text
         });
     }
@@ -70,7 +69,7 @@ export default class {
     // Composite query being called by an update method. SHOULDN'T WORK
     @update([], IDL.Text)
     async simpleUpdate(): Promise<string> {
-        return await call(canister2Id, 'deepQuery', {
+        return await call(this.canister2Id, 'deepQuery', {
             returnIdlType: IDL.Text
         });
     }
@@ -80,9 +79,9 @@ export default class {
         composite: true
     })
     incCounter(): bigint {
-        counter += 1n;
+        this.counter += 1n;
 
-        return counter;
+        return this.counter;
     }
 
     // Composite query calling queries on the same canister
@@ -90,12 +89,12 @@ export default class {
         composite: true
     })
     async incCanister1(): Promise<bigint> {
-        counter += 1n;
+        this.counter += 1n;
 
         const canister1AResult = await incCanister();
         const canister1BResult = await incCanister();
 
-        return counter + canister1AResult + canister1BResult;
+        return this.counter + canister1AResult + canister1BResult;
     }
 
     // Composite query calling queries that modify the state
@@ -103,22 +102,18 @@ export default class {
         composite: true
     })
     async incCanister2(): Promise<bigint> {
-        counter += 1n;
+        this.counter += 1n;
 
-        const canister2AResult = await incCanister2();
-        const canister2BResult = await incCanister2();
+        const canister2AResult = await incCanister2(this);
+        const canister2BResult = await incCanister2(this);
 
-        return counter + canister2AResult + canister2BResult;
+        return this.counter + canister2AResult + canister2BResult;
     }
 }
 
 function getCanister2Id(): string {
     if (process.env.CANISTER2_PRINCIPAL !== undefined) {
         return process.env.CANISTER2_PRINCIPAL;
-    }
-
-    if (globalThis._azleInsideCanister === true) {
-        return 'PRE_INIT_EXECUTION';
     }
 
     throw new Error(`process.env.CANISTER2_PRINCIPAL is not defined`);
@@ -130,8 +125,8 @@ async function incCanister(): Promise<bigint> {
     });
 }
 
-async function incCanister2(): Promise<bigint> {
-    return await call(canister2Id, 'incCounter', {
+async function incCanister2(canister: Canister): Promise<bigint> {
+    return await call(canister.canister2Id, 'incCounter', {
         returnIdlType: IDL.Nat
     });
 }

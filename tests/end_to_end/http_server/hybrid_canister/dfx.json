@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "test/dfx_generated/server",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "server_init_and_post_upgrade": {
@@ -17,6 +20,9 @@
             "declarations": {
                 "output": "test/dfx_generated/server_init_and_post_upgrade",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "canister": {
@@ -26,6 +32,9 @@
             "declarations": {
                 "output": "test/dfx_generated/canister",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "canister_init_and_post_upgrade": {
@@ -36,6 +45,9 @@
             "declarations": {
                 "output": "test/dfx_generated/canister_init_and_post_upgrade",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

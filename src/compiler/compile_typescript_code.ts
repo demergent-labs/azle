@@ -2,6 +2,7 @@ import { build } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 import * as path from 'path';
 
+import { experimentalMessage } from '../lib/experimental/experimental';
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 import { Result } from './utils/result';
 import { JavaScript, TypeScript } from './utils/types';
@@ -10,38 +11,85 @@ export async function compileTypeScriptToJavaScript(
     main: string,
     wasmedgeQuickJsPath: string,
     esmAliases: Record<string, string>,
-    esmExternals: string[]
+    esmExternals: string[],
+    experimental: boolean
 ): Promise<Result<JavaScript, unknown>> {
-    try {
-        const imports = /*TS*/ `
-            import 'reflect-metadata';
+    const imports = getImports(main, experimental);
 
-            // Trying to make sure that all globalThis dependencies are defined
-            // Before the developer imports azle on their own
-            import 'azle';
+    const bundledJavaScript = await bundleFromString(
+        imports,
+        wasmedgeQuickJsPath,
+        esmAliases,
+        esmExternals,
+        experimental
+    );
+
+    return {
+        ok: bundledJavaScript
+    };
+}
+
+function getImports(main: string, experimental: boolean): string {
+    if (experimental === false) {
+        return /*TS*/ `
+            import 'azle/src/lib/stable/globals';
+
+            import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
+
+            export * from './${main}';
+            import * as CanisterMethods from './${main}';
+
+            if (globalThis._azleWasmtimeCandidEnvironment === false) {
+                const canister = new CanisterMethods.default();
+                globalThis._azleCanisterClassInstance = canister;
+            }
+
+            const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
+            const candid = canisterIdlType.accept(new DidVisitor(), {
+                ...getDefaultVisitorData(),
+                isFirstService: true,
+                systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
+            });
+
+
+            globalThis.candidInfoFunction = () => {
+                return JSON.stringify({
+                    candid: toDidString(candid),
+                    canisterMethods: globalThis._azleCanisterMethods
+                });
+            };
+
+            globalThis.exports.canisterMethods = globalThis._azleCanisterMethods;
+        `;
+    } else {
+        return /*TS*/ `
+            import 'azle/src/lib/stable/globals';
+            import 'azle/src/lib/experimental/globals';
+
+            import 'reflect-metadata';  
 
             // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
-            import { ethersGetUrl, ic, Server } from 'azle/src/lib/index';
+            import { ethersGetUrl, Server } from 'azle/src/lib/experimental';
             import { ethers } from 'ethers';
             ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
-            import { toDidString } from 'azle/src/lib/candid/did_file/to_did_string';
-            import { IDL } from 'azle';
-            import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/candid/did_file/visitor';
+            import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
             export { Principal } from '@dfinity/principal';
             export * from './${main}';
             import * as CanisterMethods from './${main}';
 
             if (isClassSyntaxExport(CanisterMethods)) {
-                const canister = new CanisterMethods.default();
+                if (globalThis._azleWasmtimeCandidEnvironment === false) {
+                    const canister = new CanisterMethods.default();
+                    globalThis._azleCanisterClassInstance = canister;
+                }
+
                 const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
                 const candid = canisterIdlType.accept(new DidVisitor(), {
                     ...getDefaultVisitorData(),
                     isFirstService: true,
                     systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
                 });
-
-                globalThis._azleCanisterClassInstance = canister;
 
                 globalThis.candidInfoFunction = () => {
                     return JSON.stringify({
@@ -81,9 +129,7 @@ export async function compileTypeScriptToJavaScript(
                     globalThis.exports.canisterMethods = canisterMethods;
                 });
             }
-        `;
 
-        const isClassSyntaxExport = `
             function isClassSyntaxExport(module) {
                 const isNothing = module === undefined || module.default === undefined;
                 const isFunctionalSyntaxExport =
@@ -92,22 +138,6 @@ export async function compileTypeScriptToJavaScript(
                 return !isNothing && !isFunctionalSyntaxExport;
             }
         `;
-
-        const bundledJavaScript = await bundleFromString(
-            `
-            ${imports}
-            ${isClassSyntaxExport}
-`,
-            wasmedgeQuickJsPath,
-            esmAliases,
-            esmExternals
-        );
-
-        return {
-            ok: bundledJavaScript
-        };
-    } catch (err) {
-        return { err };
     }
 }
 
@@ -115,7 +145,8 @@ export async function bundleFromString(
     ts: TypeScript,
     wasmedgeQuickJsPath: string,
     esmAliases: Record<string, string>,
-    esmExternals: string[]
+    esmExternals: string[],
+    experimental: boolean
 ): Promise<JavaScript> {
     const finalWasmedgeQuickJsPath =
         process.env.AZLE_WASMEDGE_QUICKJS_DIR ?? wasmedgeQuickJsPath;
@@ -201,7 +232,24 @@ export async function bundleFromString(
             ...esmAliases
         },
         external: [...externalImplemented, ...externalNotImplemented],
-        plugins: [esbuildPluginTsc()]
+        plugins: [
+            {
+                name: 'Azle experimental check',
+                setup(build): void {
+                    if (experimental === false) {
+                        build.onResolve(
+                            {
+                                filter: /^internal$|^util$|^fs$|^fmt$|^assert$|^buffer$|^path$|^stream$|^process$|^url$|^events$|^string_decoder$|^punycode$|^querystring$|^whatwg_url$|^encoding$|^http$|^os$|^crypto$|^zlib$|^internal\/deps\/acorn\/acorn\/dist\/acorn$|^internal\/deps\/acorn\/acorn-walk\/dist\/walk$|^perf_hooks$|^async_hooks$|^https$|^_node:fs$|^_node:os$|^_node:crypto$|^qjs:os$|^_encoding$|^wasi_net$|^wasi_http$/
+                            },
+                            (args) => {
+                                throw new Error(experimentalMessage(args.path));
+                            }
+                        );
+                    }
+                }
+            },
+            esbuildPluginTsc()
+        ]
     });
 
     const bundleArray = buildResult.outputFiles[0].contents;

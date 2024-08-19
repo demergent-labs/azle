@@ -13,7 +13,8 @@ export async function generateWasmBinary(
     js: string,
     compilerInfo: CompilerInfo,
     canisterConfig: CanisterConfig,
-    canisterPath: string
+    canisterPath: string,
+    experimental: boolean
 ): Promise<void> {
     if (process.env.AZLE_GEN_WASM === 'true') {
         await logGlobalDependencies();
@@ -27,7 +28,13 @@ export async function generateWasmBinary(
         );
     }
 
-    await manipulateWasmBinary(canisterName, js, compilerInfo, canisterConfig);
+    await manipulateWasmBinary(
+        canisterName,
+        js,
+        compilerInfo,
+        canisterConfig,
+        experimental
+    );
 }
 
 function compileRustCodeNatively(

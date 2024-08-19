@@ -7,6 +7,9 @@
             "declarations": {
                 "output": "dfx_generated/list_of_lists",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

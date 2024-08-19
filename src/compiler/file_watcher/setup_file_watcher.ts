@@ -12,7 +12,8 @@ export function setupFileWatcher(
     esmAliases: Record<string, string>,
     esmExternals: string[],
     canisterName: string,
-    postUpgradeIndex: number
+    postUpgradeIndex: number,
+    experimental: boolean
 ): void {
     try {
         // TODO should we check that this was successful in killing
@@ -46,7 +47,8 @@ export function setupFileWatcher(
             JSON.stringify(esmAliases),
             JSON.stringify(esmExternals),
             canisterName,
-            postUpgradeIndex.toString()
+            postUpgradeIndex.toString(),
+            experimental.toString()
         ],
         {
             detached: true,

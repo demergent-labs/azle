@@ -1,4 +1,4 @@
-import { int8 } from '../../../../src/lib';
+import { int8 } from '../../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

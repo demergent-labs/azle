@@ -1,9 +1,9 @@
-// TODO These tests must be from from dfx --start to generate fresh addresses
+import 'azle/test/set_experimental';
 
+// TODO These tests must be from from dfx --start to generate fresh addresses
 // If 0x9Ac70EE21bE697173b74aF64399d850038697FD3 ever runs out of Base ETH or USDC,
 // just use a faucet like https://www.ethereum-ecosystem.com/faucets/base-sepolia to get some more
 // We should be good for a few hundred tests
-
 import { jsonParse } from 'azle/experimental';
 import { expect, it, Test, wait } from 'azle/test';
 

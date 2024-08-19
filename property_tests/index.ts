@@ -1,3 +1,5 @@
+import './set_experimental';
+
 import { execSync } from 'child_process';
 // @ts-ignore
 import libraryDeepEqual from 'deep-is';

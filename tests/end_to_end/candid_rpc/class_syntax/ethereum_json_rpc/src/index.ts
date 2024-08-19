@@ -76,14 +76,13 @@ async function getBalance(
                     },
                     headers: [],
                     body: [
-                        Buffer.from(
+                        new TextEncoder().encode(
                             JSON.stringify({
                                 jsonrpc: '2.0',
                                 method: 'eth_getBalance',
                                 params: [ethereumAddress, 'earliest'],
                                 id: 1
-                            }),
-                            'utf-8'
+                            })
                         )
                     ],
                     transform: [
@@ -101,7 +100,7 @@ async function getBalance(
         }
     );
 
-    return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+    return new TextDecoder().decode(httpResponse.body.buffer);
 }
 async function getBlockByNumber(url: string, number: number): Promise<string> {
     const httpResponse = await call(
@@ -119,14 +118,13 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
                     },
                     headers: [],
                     body: [
-                        Buffer.from(
+                        new TextEncoder().encode(
                             JSON.stringify({
                                 jsonrpc: '2.0',
                                 method: 'eth_getBlockByNumber',
                                 params: [`0x${number.toString(16)}`, false],
                                 id: 1
-                            }),
-                            'utf-8'
+                            })
                         )
                     ],
                     transform: [
@@ -144,5 +142,5 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
         }
     );
 
-    return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+    return new TextDecoder().decode(httpResponse.body.buffer);
 }

@@ -5,5 +5,5 @@ service: () -> {
     getNotification: () -> (text) query;
     receiveNotification: (text) -> ();
     transfer: (text, text, nat64) -> (nat64);
-    trap: () -> (text) query;
+    trap: () -> (empty) query;
 }

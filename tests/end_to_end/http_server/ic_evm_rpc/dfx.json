@@ -4,7 +4,10 @@
             "type": "azle",
             "main": "src/server.ts",
             "assets": [["src/candid/evm_rpc.did", "src/candid/evm_rpc.did"]],
-            "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai"
+            "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai",
+            "custom": {
+                "experimental": true
+            }
         },
         "evm_rpc": {
             "specified_id": "be2us-64aaa-aaaaa-qaabq-cai",

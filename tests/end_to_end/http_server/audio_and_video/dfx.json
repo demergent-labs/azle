@@ -18,7 +18,10 @@
                     "media/popeye_the_sailor_meets_sindbad_the_sailor.mp4"
                 ]
             ],
-            "build_assets": "npm run build"
+            "build_assets": "npm run build",
+            "custom": {
+                "experimental": true
+            }
         }
     }
 }

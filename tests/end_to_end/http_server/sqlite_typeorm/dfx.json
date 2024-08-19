@@ -3,7 +3,10 @@
         "sqlite_typeorm": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid_gen": "automatic"
+            "candid_gen": "automatic",
+            "custom": {
+                "experimental": true
+            }
         }
     }
 }

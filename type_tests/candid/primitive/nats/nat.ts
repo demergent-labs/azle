@@ -1,4 +1,4 @@
-import { nat } from '../../../../src/lib';
+import { nat } from '../../../../src/lib/experimental';
 import {
     AssertType,
     NotAnyAndExact,

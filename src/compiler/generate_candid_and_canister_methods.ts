@@ -3,7 +3,8 @@ import { readFile } from 'fs/promises';
 import { CanisterMethods } from './utils/types';
 
 export async function generateCandidAndCanisterMethods(
-    wasmFilePath: string
+    wasmFilePath: string,
+    experimental: boolean
 ): Promise<{
     candid: string;
     canisterMethods: CanisterMethods;
@@ -87,7 +88,9 @@ export async function generateCandidAndCanisterMethods(
     });
 
     // TODO can we simplify this to be more like azle_log above?
-    const candidPointer = (wasmInstance.exports as any).get_candid_pointer();
+    const candidPointer = (wasmInstance.exports as any).get_candid_pointer(
+        experimental === true ? 1 : 0
+    );
 
     const memory = new Uint8Array((wasmInstance.exports.memory as any).buffer);
 
