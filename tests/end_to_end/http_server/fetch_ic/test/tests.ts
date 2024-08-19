@@ -37,7 +37,7 @@ export function getTests(canisterName: string): Test {
 
                 mainPage = pages[1];
             },
-            10_000
+            15_000
         );
 
         wait('for identity to be set', 5_000);

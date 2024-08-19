@@ -83,60 +83,74 @@ app.post(
 app.post(
     '/transfer-from-canister',
     async (req: Request<any, any, { to: string; value: string }>, res) => {
-        if (canisterAddress.value === null) {
-            canisterAddress.value = ethers.computeAddress(
-                ethers.hexlify(await ecdsaPublicKey([ic.id().toUint8Array()]))
+        try {
+            if (canisterAddress.value === null) {
+                canisterAddress.value = ethers.computeAddress(
+                    ethers.hexlify(
+                        await ecdsaPublicKey([ic.id().toUint8Array()])
+                    )
+                );
+            }
+
+            const to = req.body.to;
+            const value = ethers.parseEther(req.body.value);
+            const maxPriorityFeePerGas = await ethMaxPriorityFeePerGas();
+            const baseFeePerGas = BigInt(
+                (await ethFeeHistory()).Consistent?.Ok[0].baseFeePerGas[0]
             );
-        }
+            const maxFeePerGas = baseFeePerGas * 2n + maxPriorityFeePerGas;
+            const gasLimit = 21_000n;
+            const nonce = await ethGetTransactionCount(canisterAddress.value);
 
-        const to = req.body.to;
-        const value = ethers.parseEther(req.body.value);
-        const maxPriorityFeePerGas = await ethMaxPriorityFeePerGas();
-        const baseFeePerGas = BigInt(
-            (await ethFeeHistory()).Consistent?.Ok[0].baseFeePerGas[0]
-        );
-        const maxFeePerGas = baseFeePerGas * 2n + maxPriorityFeePerGas;
-        const gasLimit = 21_000n;
-        const nonce = await ethGetTransactionCount(canisterAddress.value);
+            let tx = ethers.Transaction.from({
+                to,
+                value,
+                maxPriorityFeePerGas,
+                maxFeePerGas,
+                gasLimit,
+                nonce,
+                chainId
+            });
 
-        let tx = ethers.Transaction.from({
-            to,
-            value,
-            maxPriorityFeePerGas,
-            maxFeePerGas,
-            gasLimit,
-            nonce,
-            chainId
-        });
+            const unsignedSerializedTx = tx.unsignedSerialized;
+            const unsignedSerializedTxHash =
+                ethers.keccak256(unsignedSerializedTx);
 
-        const unsignedSerializedTx = tx.unsignedSerialized;
-        const unsignedSerializedTxHash = ethers.keccak256(unsignedSerializedTx);
+            const signedSerializedTxHash = await signWithEcdsa(
+                [ic.id().toUint8Array()],
+                ethers.getBytes(unsignedSerializedTxHash)
+            );
 
-        const signedSerializedTxHash = await signWithEcdsa(
-            [ic.id().toUint8Array()],
-            ethers.getBytes(unsignedSerializedTxHash)
-        );
+            const { r, s, v } = calculateRsvForTEcdsa(
+                canisterAddress.value,
+                unsignedSerializedTxHash,
+                signedSerializedTxHash
+            );
 
-        const { r, s, v } = calculateRsvForTEcdsa(
-            canisterAddress.value,
-            unsignedSerializedTxHash,
-            signedSerializedTxHash
-        );
+            tx.signature = {
+                r,
+                s,
+                v
+            };
 
-        tx.signature = {
-            r,
-            s,
-            v
-        };
+            const rawTransaction = tx.serialized;
 
-        const rawTransaction = tx.serialized;
+            const result = await ethSendRawTransaction(rawTransaction);
 
-        const result = await ethSendRawTransaction(rawTransaction);
-
-        if (result.Consistent?.Ok?.Ok.length === 1) {
-            res.send('transaction sent');
-        } else {
-            res.status(500).send('transaction failed');
+            if (result.Consistent?.Ok?.Ok.length === 1) {
+                res.send('transaction sent');
+            } else {
+                res.status(500).send('transaction failed');
+            }
+        } catch (error: any) {
+            res.status(500).json({
+                success: false,
+                error: {
+                    code: error.code || 'UNKNOWN_ERROR',
+                    message: error.message,
+                    details: error.info || null
+                }
+            });
         }
     }
 );

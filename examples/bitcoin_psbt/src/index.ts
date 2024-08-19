@@ -69,17 +69,28 @@ app.get('/get-p2wpkh-address', async (req, res) => {
 /// Sends the given amount of bitcoin from this canister to the given address.
 /// Returns the transaction ID.
 app.post('/send', async (req, res) => {
-    const { destinationAddress, amountInSatoshi } = req.body;
+    try {
+        const { destinationAddress, amountInSatoshi } = req.body;
 
-    const txId = await bitcoinWallet.send(
-        NETWORK,
-        DERIVATION_PATH,
-        KEY_NAME,
-        destinationAddress,
-        BigInt(jsonParse(JSON.stringify(amountInSatoshi)))
-    );
+        const txId = await bitcoinWallet.send(
+            NETWORK,
+            DERIVATION_PATH,
+            KEY_NAME,
+            destinationAddress,
+            BigInt(jsonParse(JSON.stringify(amountInSatoshi)))
+        );
 
-    res.send(txId);
+        res.send(txId);
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            error: {
+                code: error.code || 'UNKNOWN_ERROR',
+                message: error.message,
+                details: error.info || null
+            }
+        });
+    }
 });
 
 app.listen();
