@@ -23,9 +23,10 @@ const autoGenAutoUploadSmallFileInfos: [number, Unit][] = [
 ];
 
 const autoGenAutoUploadFileInfos: [number, Unit][] =
-    process.env.AZLE_QUICK_TEST === 'true'
-        ? autoGenAutoUploadSmallFileInfos
-        : [...autoGenAutoUploadSmallFileInfos, [250, 'MiB'], [1, 'GiB']];
+    process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
+    process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
+        ? [...autoGenAutoUploadSmallFileInfos, [250, 'MiB'], [1, 'GiB']]
+        : autoGenAutoUploadSmallFileInfos;
 
 const permanentFiles: string[] = [
     'photos/people/george-washington.tif',

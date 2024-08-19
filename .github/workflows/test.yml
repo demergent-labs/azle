@@ -289,7 +289,7 @@ jobs:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
-            AZLE_QUICK_TEST: ${{ matrix.azle_source == 'repo'}}
+            AZLE_TEST_RUN_ON_RELEASE: ${{ matrix.azle_source == 'npm'}}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
