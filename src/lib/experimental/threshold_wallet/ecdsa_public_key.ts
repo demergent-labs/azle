@@ -4,7 +4,9 @@ if (globalThis._azleExperimental !== true) {
     throw new Error(experimentalMessage('azle/experimental'));
 }
 
-import { Principal, serialize } from '..';
+import { Principal } from '@dfinity/principal';
+
+import { serialize } from '../fetch';
 import { ThresholdKeyInfo } from './wallet';
 
 export async function ecdsaPublicKey(

@@ -4,7 +4,8 @@
 //
 // Some documentation changed from original work.
 
-import { IDL, Principal } from '../..';
+import { IDL } from '@dfinity/candid';
+import { Principal } from '@dfinity/principal';
 
 /** Argument type of managementCanister.canister_info. */
 export const CanisterInfoArgs = IDL.Record({

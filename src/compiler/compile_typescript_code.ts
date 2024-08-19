@@ -66,7 +66,7 @@ function getImports(main: string, experimental: boolean): string {
             import 'azle/src/lib/stable/globals';
             import 'azle/src/lib/experimental/globals';
 
-            import 'reflect-metadata';  
+            import 'reflect-metadata';
 
             // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
             import { ethersGetUrl, Server } from 'azle/src/lib/experimental';
