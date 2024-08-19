@@ -10,16 +10,14 @@ if (globalThis._azleExperimental !== true) {
 //
 // Some documentation changed from original work.
 
-import {
-    nat8,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    Record,
-    Variant,
-    Vec
-} from '../../';
+import { Opt } from '../../../src/lib/experimental/candid/types/constructed/opt';
+import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
+import { Variant } from '../../../src/lib/experimental/candid/types/constructed/variant';
+import { Vec } from '../../../src/lib/experimental/candid/types/constructed/vec';
+import { nat8 } from '../../../src/lib/experimental/candid/types/primitive/nats/nat8';
+import { nat64 } from '../../../src/lib/experimental/candid/types/primitive/nats/nat64';
+import { Null } from '../../../src/lib/experimental/candid/types/primitive/null';
+import { Principal } from '../../../src/lib/experimental/candid/types/reference/principal';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { managementCanister } from '.'; // Used for links in comments
 

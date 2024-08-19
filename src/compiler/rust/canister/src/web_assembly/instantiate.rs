@@ -5,7 +5,7 @@ use crate::web_assembly::WASM_INSTANCES;
 // TODO technically this should return a promise because that the official API
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
-    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+    fn call(context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
         let instance_uuid = if let JsValue::String(js_string) = argv.get(0).unwrap() {
             js_string.to_string()
         } else {
@@ -21,7 +21,7 @@ impl JsFn for NativeFunction {
         let engine = wasmi::Engine::default();
         let module = wasmi::Module::new(&engine, &mut &wasm_bytes[..]).unwrap();
 
-        let mut linker = <wasmi::Linker<()>>::new(&engine);
+        let linker = <wasmi::Linker<()>>::new(&engine);
 
         let mut store = wasmi::Store::new(&engine, ());
 
@@ -33,7 +33,7 @@ impl JsFn for NativeFunction {
 
         let mut exports_js_object = context.new_object();
 
-        for (index, export) in instance.exports(&mut store).enumerate() {
+        for export in instance.exports(&mut store) {
             let export_name = export.name();
 
             exports_js_object.set(
@@ -41,7 +41,7 @@ impl JsFn for NativeFunction {
                 context
                     .wrap_function(
                         export_name,
-                        move |context: &mut Context, this_val: JsValue, argv: &[JsValue]| {
+                        move |_context: &mut Context, this_val: JsValue, argv: &[JsValue]| {
                             let this_val_js_object = this_val.to_obj().unwrap();
 
                             let instance_uuid = this_val_js_object

@@ -4,7 +4,9 @@ if (globalThis._azleExperimental !== true) {
     throw new Error(experimentalMessage('azle/experimental'));
 }
 
-import { nat, Record, text } from '../../';
+import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
+import { nat } from '../../../src/lib/experimental/candid/types/primitive/nats/nat';
+import { text } from '../../../src/lib/experimental/candid/types/primitive/text';
 
 export const BadFee = Record({
     expected_fee: nat

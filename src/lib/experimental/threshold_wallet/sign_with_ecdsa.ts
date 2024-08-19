@@ -4,7 +4,7 @@ if (globalThis._azleExperimental !== true) {
     throw new Error(experimentalMessage('azle/experimental'));
 }
 
-import { serialize } from '..';
+import { serialize } from '../fetch';
 import { ThresholdKeyInfo } from './wallet';
 
 export async function signWithEcdsa(

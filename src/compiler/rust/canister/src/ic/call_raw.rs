@@ -4,7 +4,7 @@ use crate::{run_event_loop, RUNTIME};
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
-    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+    fn call(_context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
         let promise_id = if let JsValue::String(js_string) = argv.get(0).unwrap() {
             js_string.to_string()
         } else {

@@ -1,4 +1,4 @@
-import { Principal } from '../';
+import { Principal } from '@dfinity/principal';
 
 /**
  * Returns the principal of the caller of the current call

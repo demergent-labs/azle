@@ -1,7 +1,5 @@
 use std::{cell::RefCell, collections::BTreeMap};
 
-use wasmedge_quickjs::AsObject;
-
 mod bytes_to_human_readable;
 mod file_info;
 mod hash;

@@ -2,7 +2,7 @@ use wasmedge_quickjs::{Context, JsFn, JsValue};
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
-    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+    fn call(context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
         let candid_encoded = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(0).unwrap() {
             js_array_buffer.to_vec()
         } else {

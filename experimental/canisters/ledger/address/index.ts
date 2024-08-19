@@ -4,10 +4,11 @@ if (globalThis._azleExperimental !== true) {
     throw new Error(experimentalMessage('azle/experimental'));
 }
 
+import { Principal } from '@dfinity/principal';
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import { sha224 } from 'js-sha256';
 
-import { blob, Principal } from '../../../';
+import { blob } from '../../../../src/lib/experimental/candid/types/constructed/blob';
 import { Address } from '../index';
 
 // TODO we need to review these heavily

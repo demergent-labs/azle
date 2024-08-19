@@ -1,6 +1,4 @@
-use crate::upload_file::Timestamp;
-use crate::upload_file::FILE_INFO;
-use std::{cell::RefCell, collections::BTreeMap};
+use crate::upload_file::{Timestamp, FILE_INFO};
 
 pub fn initialize_file_info(path: &str, timestamp: Timestamp) {
     FILE_INFO.with(|file_info| {

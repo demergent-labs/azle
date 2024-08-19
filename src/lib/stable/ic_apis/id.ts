@@ -1,4 +1,4 @@
-import { Principal } from '..';
+import { Principal } from '@dfinity/principal';
 
 /**
  * Returns the canister's id as a principal

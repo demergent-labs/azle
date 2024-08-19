@@ -1,8 +1,8 @@
-use wasmedge_quickjs::{Context, JsArrayBuffer, JsFn, JsValue};
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
-    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+    fn call(context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
         let candid_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
             js_string.to_string()
         } else {
