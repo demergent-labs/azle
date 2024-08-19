@@ -2,8 +2,8 @@ use ic_stable_structures::memory_manager::MemoryId;
 use wasmedge_quickjs::AsObject;
 
 use crate::{
-    execute_method_js, get_js_code, get_wasm_data, ic, run_event_loop, MEMORY_MANAGER_REF_CELL,
-    RUNTIME,
+    execute_method_js, get_wasm_data, ic, run_event_loop, wasm_binary_manipulation::get_js_code,
+    MEMORY_MANAGER_REF_CELL, RUNTIME,
 };
 
 #[cfg(feature = "experimental")]
