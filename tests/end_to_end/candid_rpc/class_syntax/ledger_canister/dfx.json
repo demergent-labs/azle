@@ -9,6 +9,9 @@
             "declarations": {
                 "output": "test/dfx_generated/ledger_canister",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "icp_ledger": {
