@@ -1,11 +1,9 @@
-globalThis._azleExperimental = true;
+import 'azle/test/set_experimental';
 
 // TODO These tests must be from from dfx --start to generate fresh addresses
-
 // If 0x9Ac70EE21bE697173b74aF64399d850038697FD3 ever runs out of sepETH,
 // just use a faucet like https://sepolia-faucet.pk910.de/ to get some more
 // We should be good for many thousands of tests
-
 import { jsonParse } from 'azle/experimental';
 import { expect, it, Test, wait } from 'azle/test';
 
