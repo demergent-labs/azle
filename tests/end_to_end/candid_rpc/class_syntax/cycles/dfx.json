@@ -19,6 +19,9 @@
             "declarations": {
                 "output": "test/dfx_generated/intermediary",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         }
     }

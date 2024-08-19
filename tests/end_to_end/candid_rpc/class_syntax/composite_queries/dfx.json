@@ -16,6 +16,9 @@
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "canister2": {
@@ -28,6 +31,9 @@
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "canister3": {

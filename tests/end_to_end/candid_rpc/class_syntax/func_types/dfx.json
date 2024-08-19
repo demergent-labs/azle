@@ -11,6 +11,9 @@
             "declarations": {
                 "output": "test/dfx_generated/func_types",
                 "node_compatibility": true
+            },
+            "custom": {
+                "experimental": true
             }
         },
         "notifiers": {

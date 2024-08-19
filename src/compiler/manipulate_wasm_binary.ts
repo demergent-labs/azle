@@ -6,7 +6,11 @@ import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { getConsumer } from './get_consumer_config';
-import { AZLE_PACKAGE_PATH } from './utils/global_paths';
+import {
+    AZLE_PACKAGE_PATH,
+    EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH,
+    STABLE_STATIC_CANISTER_TEMPLATE_PATH
+} from './utils/global_paths';
 import { CanisterConfig, CompilerInfo } from './utils/types';
 
 // TODO put the licenses in the binary? Or with Azle? Probably with Azle actually
@@ -21,7 +25,9 @@ export async function manipulateWasmBinary(
     experimental: boolean
 ): Promise<void> {
     const originalWasm = await readFile(
-        join(AZLE_PACKAGE_PATH, `static_canister_template.wasm`)
+        experimental === true
+            ? EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH
+            : STABLE_STATIC_CANISTER_TEMPLATE_PATH
     );
 
     const module = binaryen.readBinary(originalWasm);
