@@ -24,7 +24,9 @@ export function GetTestArb(
             ].join(', ');
 
             const returnCandidTypeObject = `Opt(${stableBTreeMap.valueSample.src.candidTypeObject})`;
-            const body = generateBody(stableBTreeMap.name);
+            const valueTypeIsNull =
+                stableBTreeMap.valueSample.src.candidTypeAnnotation === 'Null';
+            const body = generateBody(stableBTreeMap.name, valueTypeIsNull);
 
             const tests = generateTests(
                 functionName,
@@ -43,10 +45,14 @@ export function GetTestArb(
         });
 }
 
-function generateBody(stableBTreeMapName: string): string {
+function generateBody(
+    stableBTreeMapName: string,
+    valueTypeIsNull: boolean
+): string {
     return /*TS*/ `
         const result = ${stableBTreeMapName}.get(param0);
-        if (result === null) {
+        const containsKey = ${stableBTreeMapName}.containsKey(param0); // For situations where the stored value is literally null
+        if (result === null ${valueTypeIsNull ? '&& !containsKey' : ''}) {
             return None
         } else {
             return Some(result)

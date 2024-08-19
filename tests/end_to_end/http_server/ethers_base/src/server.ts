@@ -65,24 +65,35 @@ app.post(
 app.post(
     '/transfer-from-canister',
     async (req: Request<any, any, { to: string; value: string }>, res) => {
-        const wallet = new ThresholdWallet(
-            {
-                derivationPath: [ic.id().toUint8Array()]
-            },
-            ethers.getDefaultProvider('https://sepolia.base.org')
-        );
+        try {
+            const wallet = new ThresholdWallet(
+                {
+                    derivationPath: [ic.id().toUint8Array()]
+                },
+                ethers.getDefaultProvider('https://sepolia.base.org')
+            );
 
-        const to = req.body.to;
-        const value = ethers.parseEther(req.body.value);
-        const gasLimit = 21_000n;
+            const to = req.body.to;
+            const value = ethers.parseEther(req.body.value);
+            const gasLimit = 21_000n;
 
-        const tx = await wallet.sendTransaction({
-            to,
-            value,
-            gasLimit
-        });
+            const tx = await wallet.sendTransaction({
+                to,
+                value,
+                gasLimit
+            });
 
-        res.send(`transaction sent with hash: ${tx.hash}`);
+            res.send(`transaction sent with hash: ${tx.hash}`);
+        } catch (error: any) {
+            res.status(500).json({
+                success: false,
+                error: {
+                    code: error.code || 'UNKNOWN_ERROR',
+                    message: error.message,
+                    details: error.info || null
+                }
+            });
+        }
     }
 );
 

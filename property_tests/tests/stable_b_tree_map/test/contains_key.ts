@@ -40,7 +40,7 @@ export function ContainsKeyTestArb(
 }
 
 function generateBody(stableBTreeMapName: string): string {
-    return `
+    return /*TS*/ `
         return ${stableBTreeMapName}.containsKey(param0);
     `;
 }
