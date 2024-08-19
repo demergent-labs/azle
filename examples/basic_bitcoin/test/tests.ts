@@ -1,4 +1,4 @@
-globalThis._azleExperimental = true;
+import 'azle/test/set_experimental';
 
 import { beforeAll } from '@jest/globals';
 import { jsonParse, jsonStringify } from 'azle/experimental';
