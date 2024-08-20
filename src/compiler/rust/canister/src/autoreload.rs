@@ -13,7 +13,6 @@ pub fn reload_js(
     js_bytes: Vec<u8>,
     total_len: u64,
     function_index: i32,
-    experimental: bool,
 ) {
     RELOADED_JS_TIMESTAMP.with(|reloaded_js_timestamp| {
         let mut reloaded_js_timestamp_mut = reloaded_js_timestamp.borrow_mut();
@@ -37,7 +36,7 @@ pub fn reload_js(
 
         if reloaded_js_complete_bytes.len() as u64 == total_len {
             let js_string = String::from_utf8_lossy(&reloaded_js_complete_bytes);
-            initialize_js(&js_string, false, function_index, 1, experimental); // TODO should the last arg be 0?
+            initialize_js(&js_string, false, function_index, 1, true); // TODO should the last arg be 0?
             ic_cdk::println!("Azle: Reloaded canister JavaScript");
         }
     });

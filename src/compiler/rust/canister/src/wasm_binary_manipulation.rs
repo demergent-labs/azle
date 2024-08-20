@@ -1,3 +1,4 @@
+#[allow(unused)]
 use open_value_sharing::Consumer;
 use serde::{Deserialize, Serialize};
 
@@ -26,13 +27,11 @@ extern "C" fn js_passive_data_size() -> usize {
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
 pub fn get_js_code() -> Vec<u8> {
-    let size = unsafe { js_passive_data_size() };
+    let size = js_passive_data_size();
     let mut js_vec = vec![243; size];
     let js_vec_location = js_vec.as_mut_ptr() as i32;
 
-    unsafe {
-        init_js_passive_data(js_vec_location);
-    }
+    init_js_passive_data(js_vec_location);
 
     js_vec
 }
@@ -53,13 +52,11 @@ extern "C" fn wasm_data_passive_data_size() -> usize {
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
 pub fn get_wasm_data() -> WasmData {
-    let size = unsafe { wasm_data_passive_data_size() };
+    let size = wasm_data_passive_data_size();
     let mut wasm_data_vec = vec![243; size];
     let wasm_data_vec_location = wasm_data_vec.as_mut_ptr() as i32;
 
-    unsafe {
-        init_wasm_data_passive_data(wasm_data_vec_location);
-    }
+    init_wasm_data_passive_data(wasm_data_vec_location);
 
     serde_json::from_str(std::str::from_utf8(&wasm_data_vec).unwrap()).unwrap()
 }

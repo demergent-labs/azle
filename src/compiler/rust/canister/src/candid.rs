@@ -21,7 +21,7 @@ pub fn get_candid_pointer(experimental: i32) -> *mut std::os::raw::c_char {
         ic_cdk::println!("{}", message);
     }));
 
-    RUNTIME.with(|runtime| {
+    RUNTIME.with(|_| {
         let mut runtime = wasmedge_quickjs::Runtime::new();
 
         runtime.run_with_context(|context| {

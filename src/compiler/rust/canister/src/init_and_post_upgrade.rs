@@ -92,7 +92,7 @@ pub fn initialize_js(
 ) {
     let mut rt = wasmedge_quickjs::Runtime::new();
 
-    let r = rt.run_with_context(|context| {
+    rt.run_with_context(|context| {
         ic::register(context);
 
         #[cfg(feature = "experimental")]

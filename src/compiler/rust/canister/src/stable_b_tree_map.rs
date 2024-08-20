@@ -1,15 +1,6 @@
-use std::{
-    cell::RefCell,
-    collections::{BTreeMap, HashMap},
-    convert::TryInto,
-    env::args,
-};
+use std::{cell::RefCell, collections::BTreeMap};
 
-use ic_stable_structures::{
-    memory_manager::{MemoryId, MemoryManager, VirtualMemory},
-    storable::Bound,
-    DefaultMemoryImpl, StableBTreeMap, Storable,
-};
+use ic_stable_structures::{storable::Bound, StableBTreeMap, Storable};
 
 use crate::Memory;
 

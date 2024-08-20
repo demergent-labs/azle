@@ -1,18 +1,11 @@
-use std::{
-    cell::RefCell,
-    collections::{BTreeMap, HashMap},
-    convert::TryInto,
-    env::args,
-};
+use std::cell::RefCell;
 
+#[allow(unused)]
 use guards::guard_against_non_controllers;
 use ic_stable_structures::{
-    memory_manager::{MemoryId, MemoryManager, VirtualMemory},
-    storable::Bound,
-    DefaultMemoryImpl, StableBTreeMap, Storable,
+    memory_manager::{MemoryManager, VirtualMemory},
+    DefaultMemoryImpl,
 };
-use std::fs;
-use wasmedge_quickjs::AsObject;
 
 #[cfg(feature = "experimental")]
 mod autoreload;
@@ -28,9 +21,6 @@ mod upload_file;
 mod wasm_binary_manipulation;
 #[cfg(feature = "experimental")]
 mod web_assembly;
-
-#[cfg(feature = "experimental")]
-use open_value_sharing::{PeriodicBatch, PERIODIC_BATCHES};
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
@@ -65,16 +55,8 @@ fn _azle_reload_js(
     js_bytes: Vec<u8>,
     total_len: u64,
     function_index: i32,
-    experimental: bool, // TODO we should be able to get rid of this parameter
 ) {
-    autoreload::reload_js(
-        timestamp,
-        chunk_number,
-        js_bytes,
-        total_len,
-        function_index,
-        experimental, // TODO we should be able to get rid of this argument
-    );
+    autoreload::reload_js(timestamp, chunk_number, js_bytes, total_len, function_index);
 }
 
 #[cfg(feature = "experimental")]
