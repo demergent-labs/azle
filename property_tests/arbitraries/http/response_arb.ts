@@ -150,8 +150,8 @@ function generateVariableAliasDeclarations(
 ): string {
     if (api === 'class') {
         return /*TS*/ `
-            type HeaderField = [string, string];
             const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
+            type HeaderField = [string, string];
             const StreamingCallbackHttpResponse = IDL.Record({
                 body: IDL.Vec(IDL.Nat8),
                 token: IDL.Opt(${TokenIdl})

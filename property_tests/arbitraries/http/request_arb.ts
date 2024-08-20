@@ -146,16 +146,9 @@ export function HttpRequestArb(
 function generateVariableAliasDeclarations(api: Api): string {
     if (api === 'class') {
         return /*TS*/ `
-        export type RequestHeaderField = [string, string];
         export const RequestHeaderField = IDL.Tuple(IDL.Text, IDL.Text);
+        export type RequestHeaderField = [string, string];
 
-        export type HttpRequest = {
-            method: string;
-            url: string;
-            headers: RequestHeaderField[];
-            body: Uint8Array;
-            certificate_version: [number] | [];
-        };
         export const HttpRequest = IDL.Record({
             method: IDL.Text,
             url: IDL.Text,
@@ -163,6 +156,13 @@ function generateVariableAliasDeclarations(api: Api): string {
             body: IDL.Vec(IDL.Nat8),
             certificate_version: IDL.Opt(IDL.Nat16)
         });
+        export type HttpRequest = {
+            method: string;
+            url: string;
+            headers: RequestHeaderField[];
+            body: Uint8Array;
+            certificate_version: [number] | [];
+        };
     `;
     }
     return '';

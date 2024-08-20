@@ -77,7 +77,7 @@ export function generateMethodImplementation<
     const body = generateBody(namedParams, returnType);
 
     if (api === 'class') {
-        return `(${paramNames}) {${body}}`;
+        return `(${paramNames}): ${returnType.src.typeAnnotation} {${body}}`;
     }
 
     if (methodImplementationLocation === 'INLINE') {

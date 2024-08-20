@@ -97,8 +97,8 @@ function generateVariableAliasDeclarations(
     if (useTypeDeclaration) {
         if (api === 'class') {
             return [
-                `type ${name} = ${simpleCandidTypeToTsType(candidType)}`,
-                `const ${name} = ${toIDL(candidType)};`
+                `const ${name} = ${toIDL(candidType)};`,
+                `type ${name} = ${simpleCandidTypeToTsType(candidType)}`
             ];
         }
         return [`const ${name} = ${candidType};`];

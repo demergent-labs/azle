@@ -160,7 +160,7 @@ function generateCandidTypeAnnotation(
     }
 
     if (api === 'class') {
-        return `${innerType.candidMeta.typeAnnotation}[]`;
+        return toClassTypeAnnotation(innerType);
     }
 
     return `Vec<${innerType.candidMeta.typeAnnotation}>`;
@@ -185,4 +185,40 @@ function generateTypeObject(
 
 function generateRuntimeTypeObject(innerType: CandidDefinition): CandidType {
     return Vec(innerType.candidMeta.runtimeTypeObject);
+}
+
+function toClassTypeAnnotation(innerType: CandidDefinition): string {
+    if (innerType.candidMeta.candidType === 'int64') {
+        return `BigInt64Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'int32') {
+        return `Int32Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'int16') {
+        return `Int16Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'int8') {
+        return `Int8Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'nat64') {
+        return `BigUint64Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'nat32') {
+        return `Uint32Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'nat16') {
+        return `Uint16Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'nat8') {
+        return `Uint8Array`;
+    }
+
+    return `${innerType.candidMeta.typeAnnotation}[]`;
 }

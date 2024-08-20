@@ -99,18 +99,18 @@ function generateVariableAliasDeclarations(
     const fieldVariableAliasDeclarations = fields.flatMap(
         (field) => field.candidMeta.variableAliasDeclarations
     );
-    const type =
-        api === 'functional'
-            ? []
-            : [
-                  `type ${name} = ${generateCandidTypeAnnotation(
-                      false,
-                      name,
-                      fields,
-                      api
-                  )}`
-              ];
     if (useTypeDeclaration) {
+        const type =
+            api === 'functional'
+                ? []
+                : [
+                      `type ${name} = ${generateCandidTypeAnnotation(
+                          false,
+                          name,
+                          fields,
+                          api
+                      )}`
+                  ];
         return [
             ...fieldVariableAliasDeclarations,
             `const ${name} = ${generateTypeObject(false, name, fields, api)};`,
