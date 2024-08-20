@@ -9,8 +9,8 @@ import { ok } from '../utils/result';
 
 type ActorReloadJs = ActorSubclass<_SERVICE>;
 interface _SERVICE {
-    reload_js: ActorMethod<
-        [bigint, bigint, Uint8Array, bigint, number, boolean],
+    _azle_reload_js: ActorMethod<
+        [bigint, bigint, Uint8Array, bigint, number],
         void
     >;
 }
@@ -100,13 +100,12 @@ async function reloadJs(
         }
 
         actor
-            .reload_js(
+            ._azle_reload_js(
                 timestamp,
                 chunkNumber,
                 chunk,
                 BigInt(reloadedJs.length),
-                postUpgradeIndex,
-                experimental
+                postUpgradeIndex
             )
             .catch((error) => {
                 if (process.env.AZLE_VERBOSE === 'true') {
@@ -133,14 +132,13 @@ async function createActorReloadJs(
     return Actor.createActor(
         ({ IDL }) => {
             return IDL.Service({
-                reload_js: IDL.Func(
+                _azle_reload_js: IDL.Func(
                     [
                         IDL.Nat64,
                         IDL.Nat64,
                         IDL.Vec(IDL.Nat8),
                         IDL.Nat64,
-                        IDL.Int32,
-                        IDL.Bool
+                        IDL.Int32
                     ],
                     [],
                     []

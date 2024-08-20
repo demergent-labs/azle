@@ -1,7 +1,6 @@
 import { IOType } from 'child_process';
 
 import { logGlobalDependencies } from './log_global_dependencies';
-import { manipulateWasmBinary } from './manipulate_wasm_binary';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import {
@@ -9,6 +8,7 @@ import {
     STABLE_STATIC_CANISTER_TEMPLATE_PATH
 } from './utils/global_paths';
 import { CanisterConfig, CompilerInfo } from './utils/types';
+import { manipulateWasmBinary } from './wasm_binary_manipulation';
 
 export async function generateWasmBinary(
     canisterName: string,

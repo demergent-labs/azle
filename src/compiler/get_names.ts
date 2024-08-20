@@ -45,13 +45,7 @@ export async function getNames() {
 
     const canisterId = getCanisterId(canisterName);
 
-    const reloadedJsPath = join(
-        '.azle',
-        canisterName,
-        'canister',
-        'src',
-        'main_reloaded.js'
-    );
+    const reloadedJsPath = join('.azle', canisterName, 'main_reloaded.js');
 
     const esmAliases = canisterConfig.esm_aliases ?? {};
     const esmExternals = canisterConfig.esm_externals ?? [];
