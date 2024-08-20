@@ -142,6 +142,7 @@ function generateSourceCode(
     ]
         .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
         .join();
+    const importLocation = `azle${api === 'functional' ? '/experimental' : ''}`;
 
     const declarationsFromCanisterMethods = canisterMethods.flatMap(
         (method) => method.globalDeclarations
@@ -179,7 +180,7 @@ function generateSourceCode(
     `;
 
     return /*TS*/ `
-        import { ${imports} } from 'azle';
+        import { ${imports} } from '${importLocation}';
 
         // @ts-ignore
         import deepEqual from 'deep-is';
