@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Recursive } from '../../../../src/lib/experimental';
-import { Syntax } from '../../types';
+import { Api } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -16,7 +16,7 @@ import {
 export function RecursiveDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints
 ): WithShapesArb<RecursiveCandidDefinition> {
     return UniqueIdentifierArb('globalNames')
@@ -24,14 +24,12 @@ export function RecursiveDefinitionArb(
             const recCanDef: RecursiveCandidName = {
                 candidMeta: {
                     candidType: 'Recursive',
-                    candidTypeObject: name,
-                    candidTypeAnnotation:
-                        syntax === 'functional'
-                            ? `typeof ${name}.tsType`
-                            : name,
+                    typeObject: name,
+                    typeAnnotation:
+                        api === 'functional' ? `typeof ${name}.tsType` : name,
                     imports: new Set(),
                     variableAliasDeclarations: [],
-                    runtimeCandidTypeObject: Recursive(() => undefined)
+                    runtimeTypeObject: Recursive(() => undefined)
                 },
                 name
             };
@@ -39,7 +37,7 @@ export function RecursiveDefinitionArb(
         })
         .chain((innerRecDef) => {
             return fc.tuple(
-                candidTypeArbForInnerType([innerRecDef, ...parents], syntax, {
+                candidTypeArbForInnerType([innerRecDef, ...parents], api, {
                     recursiveWeights: true, // This should be true so that the below weights will be respected all the way down. Until those issues are resolved we can't have blobs, tuples or vecs anywhere in any recursive shapes
                     weights: {
                         blob: 0,
@@ -62,24 +60,23 @@ export function RecursiveDefinitionArb(
             ]): WithShapes<RecursiveCandidDefinition> => {
                 const {
                     name,
-                    candidMeta: { candidTypeObject, candidTypeAnnotation }
+                    candidMeta: { typeObject, typeAnnotation }
                 } = recCanDef;
                 const variableAliasDeclarations =
-                    generateVariableAliasDeclarations(name, innerType, syntax);
+                    generateVariableAliasDeclarations(name, innerType, api);
 
-                const imports = generateImports(innerType, syntax);
+                const imports = generateImports(innerType, api);
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(innerType);
+                const runtimeTypeObject = generateRuntimeTypeObject(innerType);
 
                 const recursiveShape: RecursiveCandidDefinition = {
                     candidMeta: {
-                        candidTypeObject,
-                        candidTypeAnnotation,
+                        typeObject,
+                        typeAnnotation,
                         variableAliasDeclarations,
                         imports,
                         candidType: 'Recursive',
-                        runtimeCandidTypeObject
+                        runtimeTypeObject
                     },
                     name,
                     innerType
@@ -98,32 +95,27 @@ export function RecursiveDefinitionArb(
 function generateVariableAliasDeclarations(
     name: string,
     innerType: CandidDefinition,
-    syntax: Syntax
+    api: Api
 ): string[] {
-    if (syntax === 'class') {
+    if (api === 'class') {
         return [
             ...innerType.candidMeta.variableAliasDeclarations,
             `const ${name} = IDL.Rec()`,
-            `${name}.fill(${innerType.candidMeta.candidTypeObject})`,
-            `type ${name} = ${innerType.candidMeta.candidTypeAnnotation}`
+            `${name}.fill(${innerType.candidMeta.typeObject})`,
+            `type ${name} = ${innerType.candidMeta.typeAnnotation}`
         ];
     }
     return [
-        `const ${name} = Recursive(() => ${innerType.candidMeta.candidTypeObject});`,
+        `const ${name} = Recursive(() => ${innerType.candidMeta.typeObject});`,
         ...innerType.candidMeta.variableAliasDeclarations
     ];
 }
 
-function generateImports(
-    innerType: CandidDefinition,
-    syntax: Syntax
-): Set<string> {
-    const recursiveImports = syntax === 'functional' ? 'Recursive' : 'IDL';
+function generateImports(innerType: CandidDefinition, api: Api): Set<string> {
+    const recursiveImports = api === 'functional' ? 'Recursive' : 'IDL';
     return new Set([...innerType.candidMeta.imports, recursiveImports]);
 }
 
-function generateRuntimeCandidTypeObject(
-    innerType: CandidDefinition
-): CandidType {
-    return Recursive(() => innerType.candidMeta.runtimeCandidTypeObject);
+function generateRuntimeTypeObject(innerType: CandidDefinition): CandidType {
+    return Recursive(() => innerType.candidMeta.runtimeTypeObject);
 }

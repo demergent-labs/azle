@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import {
     IntCandidDefinition,
     WithShapesArb
@@ -12,19 +12,17 @@ import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb
 import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
 import { bigintToSrcLiteral } from '../../to_src_literal/bigint';
 
-export function Int64Arb(
-    syntax: Syntax
-): fc.Arbitrary<CandidValueAndMeta<bigint>> {
+export function Int64Arb(api: Api): fc.Arbitrary<CandidValueAndMeta<bigint>> {
     return CandidValueAndMetaArbGenerator(
-        Int64DefinitionArb(syntax),
+        Int64DefinitionArb(api),
         Int64ValueArb
     );
 }
 
 export function Int64DefinitionArb(
-    syntax: Syntax
+    api: Api
 ): WithShapesArb<IntCandidDefinition> {
-    return SimpleCandidDefinitionArb('int64', syntax);
+    return SimpleCandidDefinitionArb('int64', api);
 }
 
 export function Int64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {

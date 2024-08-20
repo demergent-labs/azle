@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Variant } from '../../../../../src/lib/experimental';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -25,18 +25,13 @@ type RuntimeVariant = {
 export function VariantDefinitionArb(
     candidTypeArbForFields: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints
 ): WithShapesArb<VariantCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            VariantFieldsArb(
-                candidTypeArbForFields,
-                parents,
-                syntax,
-                constraints
-            ),
+            VariantFieldsArb(candidTypeArbForFields, parents, api, constraints),
             fc.boolean()
         )
         .map(
@@ -58,39 +53,38 @@ export function VariantDefinitionArb(
                     },
                     {}
                 );
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
                     fields,
-                    syntax
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
                     fields,
-                    syntax
+                    api
                 );
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(fields);
+                const runtimeTypeObject = generateRuntimeTypeObject(fields);
 
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
                         fields,
-                        syntax
+                        api
                     );
 
-                const imports = generateImports(fields, syntax);
+                const imports = generateImports(fields, api);
 
                 return {
                     definition: {
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Variant'
@@ -106,7 +100,7 @@ export function VariantDefinitionArb(
 function VariantFieldsArb(
     candidTypeArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints
 ): fc.Arbitrary<FieldAndShapes[]> {
     // Although no minLength is technically required (according to the
@@ -126,7 +120,7 @@ function VariantFieldsArb(
                             candidTypeArb,
                             index,
                             parents,
-                            syntax,
+                            api,
                             constraints
                         )
                     )
@@ -147,14 +141,14 @@ function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
     index: number,
     parents: RecursiveCandidName[],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints
 ): WithShapesArb<CandidDefinition> {
     const depthLevel = constraints?.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || index < 1) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents, syntax)(depthLevel);
+            return candidArb(parents, api)(depthLevel);
         }
         return fc.oneof(
             {
@@ -165,19 +159,19 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents, syntax)(depthLevel),
+                arbitrary: candidArb(parents, api)(depthLevel),
                 weight: 1
             }
         );
     });
 }
 
-function generateImports(fields: Field[], syntax: Syntax): Set<string> {
+function generateImports(fields: Field[], api: Api): Set<string> {
     const fieldImports = fields.flatMap((field): string[] => [
         ...field[1].candidMeta.imports
     ]);
     const variantImports =
-        syntax === 'functional' ? ['RequireExactlyOne', 'Variant'] : ['IDL'];
+        api === 'functional' ? ['RequireExactlyOne', 'Variant'] : ['IDL'];
     return new Set([...fieldImports, ...variantImports]);
 }
 
@@ -185,31 +179,26 @@ function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
     fields: Field[],
-    syntax: Syntax
+    api: Api
 ): string[] {
     const fieldVariableAliasDeclarations = fields.flatMap(
         (field): string[] => field[1].candidMeta.variableAliasDeclarations
     );
     const type =
-        syntax === 'functional'
+        api === 'functional'
             ? []
             : [
                   `type ${name} = ${generateCandidTypeAnnotation(
                       false,
                       name,
                       fields,
-                      syntax
+                      api
                   )}`
               ];
     if (useTypeDeclaration) {
         return [
             ...fieldVariableAliasDeclarations,
-            `const ${name} = ${generateCandidTypeObject(
-                false,
-                name,
-                fields,
-                syntax
-            )};`,
+            `const ${name} = ${generateTypeObject(false, name, fields, api)};`,
             ...type
         ];
     }
@@ -220,20 +209,20 @@ function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
     fields: Field[],
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
-        if (syntax === 'class') {
+        if (api === 'class') {
             return name;
         }
         return `typeof ${name}.tsType`;
     }
 
-    if (syntax === 'class') {
+    if (api === 'class') {
         return fields
             .map(
                 ([fieldName, fieldDataType]) =>
-                    `{${fieldName}: ${fieldDataType.candidMeta.candidTypeAnnotation}}`
+                    `{${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}}`
             )
             .join('|');
     }
@@ -241,16 +230,16 @@ function generateCandidTypeAnnotation(
     return `RequireExactlyOne<{${fields
         .map(
             ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.candidTypeAnnotation}`
+                `${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}`
         )
         .join(',')}}>`;
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
     fields: Field[],
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
@@ -259,22 +248,22 @@ function generateCandidTypeObject(
     const fieldsAsString = fields
         .map(
             ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.candidTypeObject}`
+                `${fieldName}: ${fieldDefinition.candidMeta.typeObject}`
         )
         .join(',');
-    if (syntax === 'class') {
+    if (api === 'class') {
         return `IDL.Variant({${fieldsAsString}})`;
     }
 
     return `Variant({${fieldsAsString}})`;
 }
 
-function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {
+function generateRuntimeTypeObject(fields: Field[]): CandidType {
     const azleVariantConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RuntimeVariant => {
             return {
                 ...acc,
-                [fieldName]: fieldDefinition.candidMeta.runtimeCandidTypeObject
+                [fieldName]: fieldDefinition.candidMeta.runtimeTypeObject
             };
         },
         {}

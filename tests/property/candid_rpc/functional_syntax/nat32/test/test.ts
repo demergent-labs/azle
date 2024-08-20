@@ -10,15 +10,15 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const syntax = 'functional';
+const api = 'functional';
 
 const AllNat32sQueryMethodArb = QueryMethodArb(
-    fc.array(Nat32Arb(syntax)),
-    Nat32Arb(syntax),
+    fc.array(Nat32Arb(api)),
+    Nat32Arb(api),
     {
         generateBody,
         generateTests,
-        syntax
+        api
     }
 );
 
@@ -28,4 +28,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb, syntax));
+runPropTests(CanisterArb(CanisterConfigArb, api));

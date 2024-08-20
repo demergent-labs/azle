@@ -19,10 +19,10 @@ export function ValuesTestArb(
                 'query'
             ]);
 
-            const returnCandidTypeObject = `IDL.Vec(${stableBTreeMap.valueSample.src.candidTypeObject})`;
+            const returnTypeObject = `IDL.Vec(${stableBTreeMap.valueSample.src.typeObject})`;
             const body = generateBody(
                 stableBTreeMap.name,
-                stableBTreeMap.valueSample.src.candidTypeAnnotation
+                stableBTreeMap.valueSample.src.typeAnnotation
             );
 
             const tests = generateTests(
@@ -33,7 +33,7 @@ export function ValuesTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `@query([], ${returnCandidTypeObject})
+                sourceCode: `@query([], ${returnTypeObject})
                 ${functionName}() {
                 ${body}
             }`,
@@ -68,10 +68,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from([valueSample.value.agentArgumentValue])
                     );
                 }
@@ -87,10 +87,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from([valueSample.value.agentArgumentValue])
                     );
                 }
@@ -106,10 +106,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from([])
                     );
                 }

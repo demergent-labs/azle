@@ -36,17 +36,17 @@ export function definitionAndValueToValueAndMeta(
     value: CandidValues<CorrespondingJSType>
 ): CandidValueAndMeta<CorrespondingJSType> {
     const {
-        candidTypeAnnotation,
-        candidTypeObject,
+        typeAnnotation,
+        typeObject,
         imports,
         variableAliasDeclarations,
-        runtimeCandidTypeObject
+        runtimeTypeObject
     } = definition.candidMeta;
     const { valueLiteral, agentArgumentValue, agentResponseValue } = value;
     return {
         src: {
-            candidTypeAnnotation,
-            candidTypeObject,
+            typeAnnotation,
+            typeObject,
             imports,
             valueLiteral,
             variableAliasDeclarations
@@ -54,7 +54,7 @@ export function definitionAndValueToValueAndMeta(
         value: {
             agentArgumentValue,
             agentResponseValue,
-            runtimeCandidTypeObject
+            runtimeTypeObject
         }
     };
 }

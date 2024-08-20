@@ -10,15 +10,15 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const syntax = 'functional';
+const api = 'functional';
 
 const AllRecordsQueryMethodArb = QueryMethodArb(
-    fc.array(RecordArb(syntax)),
-    RecordArb(syntax),
+    fc.array(RecordArb(api)),
+    RecordArb(api),
     {
         generateBody,
         generateTests,
-        syntax
+        api
     }
 );
 
@@ -28,4 +28,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb, syntax));
+runPropTests(CanisterArb(CanisterConfigArb, api));

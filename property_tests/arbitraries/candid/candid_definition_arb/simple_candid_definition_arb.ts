@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Syntax } from '../../types';
+import { Api } from '../../types';
 import { BoolDefinitionArb } from '../primitive/bool';
 import { Float32DefinitionArb } from '../primitive/floats/float32_arb';
 import { Float64DefinitionArb } from '../primitive/floats/float64_arb';
@@ -44,51 +44,51 @@ export const PRIM_ARB_COUNT = 16;
 const PRIM_DEF_WEIGHTS_DEFAULT = {};
 
 export function primitiveCandidDefinitionArb(
-    syntax: Syntax,
+    api: Api,
     constraints: PrimitiveDefinitionWeights = PRIM_DEF_WEIGHTS_DEFAULT
 ): WithShapesArb<PrimitiveDefinition> {
     return fc.oneof(
-        { arbitrary: BoolDefinitionArb(syntax), weight: constraints.bool ?? 1 },
+        { arbitrary: BoolDefinitionArb(api), weight: constraints.bool ?? 1 },
         {
-            arbitrary: Float32DefinitionArb(syntax),
+            arbitrary: Float32DefinitionArb(api),
             weight: constraints.float32 ?? 1
         },
         {
-            arbitrary: Float64DefinitionArb(syntax),
+            arbitrary: Float64DefinitionArb(api),
             weight: constraints.float64 ?? 1
         },
-        { arbitrary: IntDefinitionArb(syntax), weight: constraints.int ?? 1 },
-        { arbitrary: Int8DefinitionArb(syntax), weight: constraints.int8 ?? 1 },
+        { arbitrary: IntDefinitionArb(api), weight: constraints.int ?? 1 },
+        { arbitrary: Int8DefinitionArb(api), weight: constraints.int8 ?? 1 },
         {
-            arbitrary: Int16DefinitionArb(syntax),
+            arbitrary: Int16DefinitionArb(api),
             weight: constraints.int16 ?? 1
         },
         {
-            arbitrary: Int32DefinitionArb(syntax),
+            arbitrary: Int32DefinitionArb(api),
             weight: constraints.int32 ?? 1
         },
         {
-            arbitrary: Int64DefinitionArb(syntax),
+            arbitrary: Int64DefinitionArb(api),
             weight: constraints.int64 ?? 1
         },
-        { arbitrary: NatDefinitionArb(syntax), weight: constraints.nat ?? 1 },
-        { arbitrary: Nat8DefinitionArb(syntax), weight: constraints.nat8 ?? 1 },
+        { arbitrary: NatDefinitionArb(api), weight: constraints.nat ?? 1 },
+        { arbitrary: Nat8DefinitionArb(api), weight: constraints.nat8 ?? 1 },
         {
-            arbitrary: Nat16DefinitionArb(syntax),
+            arbitrary: Nat16DefinitionArb(api),
             weight: constraints.nat16 ?? 1
         },
         {
-            arbitrary: Nat32DefinitionArb(syntax),
+            arbitrary: Nat32DefinitionArb(api),
             weight: constraints.nat32 ?? 1
         },
         {
-            arbitrary: Nat64DefinitionArb(syntax),
+            arbitrary: Nat64DefinitionArb(api),
             weight: constraints.nat64 ?? 1
         },
-        { arbitrary: NullDefinitionArb(syntax), weight: constraints.null ?? 1 },
-        { arbitrary: TextDefinitionArb(syntax), weight: constraints.text ?? 1 },
+        { arbitrary: NullDefinitionArb(api), weight: constraints.null ?? 1 },
+        { arbitrary: TextDefinitionArb(api), weight: constraints.text ?? 1 },
         {
-            arbitrary: PrincipalDefinitionArb(syntax),
+            arbitrary: PrincipalDefinitionArb(api),
             weight: constraints.principal ?? 1
         }
     );

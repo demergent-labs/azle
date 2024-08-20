@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import { OptCandidDefinition } from '../../candid_definition_arb/types';
 import {
     CandidValueArb,
@@ -13,7 +13,7 @@ import { RecursiveShapes } from '../../recursive';
 import { Opt } from '.';
 
 type SomeOrNone = 'Some' | 'None';
-const syntax = 'class';
+const api = 'class';
 
 export function ClassOptValuesArb(
     optDefinition: OptCandidDefinition,
@@ -24,7 +24,7 @@ export function ClassOptValuesArb(
 ): fc.Arbitrary<CandidValues<Opt>> {
     const depthLevel = constraints?.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
     if (depthLevel < 1) {
-        return fc.constant(generateNoneValue(syntax));
+        return fc.constant(generateNoneValue(api));
     }
     const innerValue = fc.tuple(
         fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
@@ -35,11 +35,7 @@ export function ClassOptValuesArb(
     );
 
     return innerValue.map(([someOrNone, innerType]) => {
-        const valueLiteral = generateValueLiteral(
-            someOrNone,
-            innerType,
-            syntax
-        );
+        const valueLiteral = generateValueLiteral(someOrNone, innerType, api);
         const agentArgumentValue = generateValue(someOrNone, innerType);
         const agentResponseValue = generateValue(someOrNone, innerType, true);
 
@@ -51,9 +47,9 @@ export function ClassOptValuesArb(
     });
 }
 
-function generateNoneValue(syntax: Syntax): CandidValues<Opt> {
+function generateNoneValue(api: Api): CandidValues<Opt> {
     return {
-        valueLiteral: syntax === 'functional' ? 'None' : '[]',
+        valueLiteral: api === 'functional' ? 'None' : '[]',
         agentArgumentValue: [],
         agentResponseValue: []
     };
@@ -78,13 +74,13 @@ function generateValue(
 function generateValueLiteral(
     someOrNone: SomeOrNone,
     innerType: CandidValues<CorrespondingJSType>,
-    syntax: Syntax
+    api: Api
 ): string {
     if (someOrNone === 'Some') {
-        return syntax === 'functional'
+        return api === 'functional'
             ? `Some(${innerType.valueLiteral})`
             : `[${innerType.valueLiteral}]`;
     } else {
-        return syntax === 'functional' ? `None` : '[]';
+        return api === 'functional' ? `None` : '[]';
     }
 }

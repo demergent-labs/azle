@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Vec } from '../../../../../src/lib/experimental';
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -16,13 +16,13 @@ import {
 export function VecDefinitionArb(
     candidTypeArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints
 ): WithShapesArb<VecCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            possiblyRecursiveArb(candidTypeArb, parents, syntax, constraints),
+            possiblyRecursiveArb(candidTypeArb, parents, api, constraints),
             fc.boolean()
         )
         .map(
@@ -37,39 +37,38 @@ export function VecDefinitionArb(
                     useTypeDeclarationChance;
                 const { definition: innerType, recursiveShapes } =
                     innerTypeAndShapes;
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
                     innerType,
-                    syntax
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
                     innerType,
-                    syntax
+                    api
                 );
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(innerType);
+                const runtimeTypeObject = generateRuntimeTypeObject(innerType);
 
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
                         innerType,
-                        syntax
+                        api
                     );
 
-                const imports = generateImports(innerType, syntax);
+                const imports = generateImports(innerType, api);
 
                 return {
                     definition: {
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Vec'
@@ -85,14 +84,14 @@ export function VecDefinitionArb(
 function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints
 ): WithShapesArb<CandidDefinition> {
     const depthLevel = constraints?.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents, syntax)(depthLevel);
+            return candidArb(parents, api)(depthLevel);
         }
         return fc.oneof(
             {
@@ -103,18 +102,15 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents, syntax)(depthLevel),
+                arbitrary: candidArb(parents, api)(depthLevel),
                 weight: 1
             }
         );
     });
 }
 
-function generateImports(
-    innerType: CandidDefinition,
-    syntax: Syntax
-): Set<string> {
-    const vecImports = syntax === 'functional' ? ['Vec'] : ['IDL'];
+function generateImports(innerType: CandidDefinition, api: Api): Set<string> {
+    const vecImports = api === 'functional' ? ['Vec'] : ['IDL'];
     return new Set([...innerType.candidMeta.imports, ...vecImports]);
 }
 
@@ -122,27 +118,27 @@ function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
     innerType: CandidDefinition,
-    syntax: Syntax
+    api: Api
 ): string[] {
     if (useTypeDeclaration) {
         const type =
-            syntax === 'functional'
+            api === 'functional'
                 ? []
                 : [
                       `type ${name} = ${generateCandidTypeAnnotation(
                           false,
                           name,
                           innerType,
-                          syntax
+                          api
                       )}`
                   ];
         return [
             ...innerType.candidMeta.variableAliasDeclarations,
-            `const ${name} = ${generateCandidTypeObject(
+            `const ${name} = ${generateTypeObject(
                 false,
                 name,
                 innerType,
-                syntax
+                api
             )};`,
             ...type
         ];
@@ -154,41 +150,39 @@ function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
     innerType: CandidDefinition,
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
-        if (syntax === 'class') {
+        if (api === 'class') {
             return name;
         }
         return `typeof ${name}.tsType`;
     }
 
-    if (syntax === 'class') {
-        return `${innerType.candidMeta.candidTypeAnnotation}[]`;
+    if (api === 'class') {
+        return `${innerType.candidMeta.typeAnnotation}[]`;
     }
 
-    return `Vec<${innerType.candidMeta.candidTypeAnnotation}>`;
+    return `Vec<${innerType.candidMeta.typeAnnotation}>`;
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
     innerType: CandidDefinition,
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
-    if (syntax === 'class') {
-        return `IDL.Vec(${innerType.candidMeta.candidTypeObject})`;
+    if (api === 'class') {
+        return `IDL.Vec(${innerType.candidMeta.typeObject})`;
     }
 
-    return `Vec(${innerType.candidMeta.candidTypeObject})`;
+    return `Vec(${innerType.candidMeta.typeObject})`;
 }
 
-function generateRuntimeCandidTypeObject(
-    innerType: CandidDefinition
-): CandidType {
-    return Vec(innerType.candidMeta.runtimeCandidTypeObject);
+function generateRuntimeTypeObject(innerType: CandidDefinition): CandidType {
+    return Vec(innerType.candidMeta.runtimeTypeObject);
 }

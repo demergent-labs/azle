@@ -17,17 +17,17 @@ export function GetTestArb(
                 'IDL'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.keySample.src.candidTypeObject
+            const paramTypeObjects = [
+                stableBTreeMap.keySample.src.typeObject
             ].join(', ');
 
             const paramNames = [
-                `param0: ${stableBTreeMap.keySample.src.candidTypeAnnotation}`
+                `param0: ${stableBTreeMap.keySample.src.typeAnnotation}`
             ].join(', ');
 
-            const returnCandidTypeObject = `IDL.Opt(${stableBTreeMap.valueSample.src.candidTypeObject})`;
+            const returnTypeObject = `IDL.Opt(${stableBTreeMap.valueSample.src.typeObject})`;
             const valueTypeIsNull =
-                stableBTreeMap.valueSample.src.candidTypeAnnotation === 'null';
+                stableBTreeMap.valueSample.src.typeAnnotation === 'null';
             const body = generateBody(stableBTreeMap.name, valueTypeIsNull);
 
             const tests = generateTests(
@@ -39,7 +39,7 @@ export function GetTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `@query([${paramCandidTypeObjects}], ${returnCandidTypeObject})
+                sourceCode: `@query([${paramTypeObjects}], ${returnTypeObject})
                 ${functionName}(${paramNames}) {
                 ${body}
             }`,

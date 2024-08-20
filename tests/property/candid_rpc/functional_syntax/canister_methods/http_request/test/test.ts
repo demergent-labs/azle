@@ -13,18 +13,18 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const syntax = 'functional';
+const api = 'functional';
 
-const CanisterConfigArb = RecordArb(syntax)
+const CanisterConfigArb = RecordArb(api)
     .chain((record) => {
         const HttpRequestMethodArb = QueryMethodArb(
-            fc.tuple(HttpRequestArb(syntax)),
-            HttpResponseArb(record, syntax),
+            fc.tuple(HttpRequestArb(api)),
+            HttpResponseArb(record, api),
             {
                 name: 'http_request',
                 generateBody,
                 generateTests,
-                syntax
+                api
             }
         );
 
@@ -36,4 +36,4 @@ const CanisterConfigArb = RecordArb(syntax)
         };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb, syntax));
+runPropTests(CanisterArb(CanisterConfigArb, api));

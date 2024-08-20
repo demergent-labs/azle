@@ -1,1 +1,1 @@
-export type Syntax = 'class' | 'functional';
+export type Api = 'class' | 'functional';

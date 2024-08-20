@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';
-import { Syntax } from '../../types';
+import { Api } from '../../types';
 import { RecursiveShapes } from '../recursive';
 import {
     COMPLEX_ARB_COUNT,
@@ -25,29 +25,29 @@ import {
 export function candidDefinitionArb(
     recursiveShapes: RecursiveShapes,
     parents: RecursiveCandidName[] = [],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints = {}
 ): CandidDefinitionArb {
     return candidDefinitionMemo(
         parents,
-        syntax,
+        api,
         constraints
     )(constraints.depthLevel ?? DEFAULT_DEFINITION_MAX_DEPTH);
 }
 
 export function candidDefinitionMemo(
     parents: RecursiveCandidName[],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints = {}
 ): CandidDefinitionMemo {
     return fc.memo((depthLevel) => {
         if (depthLevel <= 1) {
-            return primitiveCandidDefinitionArb(syntax);
+            return primitiveCandidDefinitionArb(api);
         }
         return fc.oneof(
             {
                 arbitrary: primitiveCandidDefinitionArb(
-                    syntax,
+                    api,
                     constraints.weights
                 ),
                 weight: PRIM_ARB_COUNT
@@ -55,7 +55,7 @@ export function candidDefinitionMemo(
             {
                 arbitrary: complexCandidDefinitionMemo(
                     parents,
-                    syntax,
+                    api,
                     constraints
                 )(depthLevel - 1),
                 weight: COMPLEX_ARB_COUNT
@@ -63,7 +63,7 @@ export function candidDefinitionMemo(
             {
                 arbitrary: recursiveCandidDefinitionMemo(
                     parents,
-                    syntax
+                    api
                 )(depthLevel - 1),
                 weight: REC_ARB_COUNT
             }

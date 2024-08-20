@@ -9,7 +9,7 @@ import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { UpdateMethod } from './canister_methods/update_method_arb';
-import { Syntax } from './types';
+import { Api } from './types';
 
 export type Canister = {
     initArgs: string[] | undefined;
@@ -53,7 +53,7 @@ export function CanisterArb<
     configArb: fc.Arbitrary<
         CanisterConfig<ParamAgentArgumentValue, ParamAgentResponseValue>
     >,
-    syntax: Syntax
+    api: Api
 ): fc.Arbitrary<Canister> {
     return configArb.map((config): Canister => {
         const canisterMethods: CanisterMethod<
@@ -72,7 +72,7 @@ export function CanisterArb<
 
         const initArgs = config.initMethod?.params.map((param) => {
             const value = param.value.value;
-            return value.runtimeCandidTypeObject
+            return value.runtimeTypeObject
                 .getIdlType([])
                 .accept(new CliStringVisitor(), {
                     value: value.agentArgumentValue
@@ -82,7 +82,7 @@ export function CanisterArb<
         const postUpgradeArgs = config.postUpgradeMethod?.params.map(
             (param) => {
                 const value = param.value.value;
-                return value.runtimeCandidTypeObject
+                return value.runtimeTypeObject
                     .getIdlType([])
                     .accept(new CliStringVisitor(), {
                         value: value.agentArgumentValue
@@ -93,7 +93,7 @@ export function CanisterArb<
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
             canisterMethods,
-            syntax
+            api
         );
 
         const tests = canisterMethods.reduce(
@@ -131,24 +131,12 @@ export function CanisterArb<
 function generateSourceCode(
     globalDeclarations: string[],
     canisterMethods: (UpdateMethod | QueryMethod)[],
-    syntax: 'class' | 'functional'
+    api: 'class' | 'functional'
 ): string {
-    if (syntax === 'functional') {
-        return generateFunctionalSourceCode(
-            globalDeclarations,
-            canisterMethods
-        );
-    } else {
-        return generateClassSourceCode(globalDeclarations, canisterMethods);
-    }
-}
-
-function generateClassSourceCode(
-    globalDeclarations: string[],
-    canisterMethods: (UpdateMethod | QueryMethod)[]
-): string {
+    const canisterImports = api === 'functional' ? ['Canister'] : [];
     const imports = [
         ...new Set([
+            ...canisterImports,
             ...canisterMethods.flatMap((method) => [...method.imports])
         ])
     ]
@@ -164,6 +152,31 @@ function generateClassSourceCode(
     ].join('\n');
 
     const sourceCodes = canisterMethods.map((method) => method.sourceCode);
+
+    const canister =
+        api === 'functional'
+            ? `
+        export default Canister({
+            ${sourceCodes.join(',\n    ')}
+        });
+            `
+            : `
+        export default class {
+            ${sourceCodes.join('\n    ')}
+        };
+    `;
+
+    // TODO remove this in favor of getting the right values from the arbs if its class api
+    const optHack =
+        api === 'functional'
+            ? ''
+            : `
+        function Some<T>(value: T): T[] {
+            return [value];
+        }
+
+        const None: any[] = [];
+    `;
 
     return /*TS*/ `
         import { ${imports} } from 'azle';
@@ -171,59 +184,12 @@ function generateClassSourceCode(
         // @ts-ignore
         import deepEqual from 'deep-is';
 
-        // TODO remove this in favor of getting the right values from the arbs if its class syntax
-        function Some<T>(value: T): T[] {
-            return [value];
-        }
-
-        // TODO remove this in favor of getting the right values from the arbs if its class syntax
-        const None: any[] = [];
+        ${optHack}
 
         // #region Declarations
         ${declarations}
         // #endregion Declarations
 
-        export default class {
-            ${sourceCodes.join('\n    ')}
-        };
-    `;
-}
-
-function generateFunctionalSourceCode(
-    globalDeclarations: string[],
-    canisterMethods: (UpdateMethod | QueryMethod)[]
-): string {
-    const imports = [
-        ...new Set([
-            'Canister',
-            ...canisterMethods.flatMap((method) => [...method.imports])
-        ])
-    ]
-        .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
-        .join();
-
-    const declarationsFromCanisterMethods = canisterMethods.flatMap(
-        (method) => method.globalDeclarations
-    );
-
-    const declarations = [
-        ...new Set([...globalDeclarations, ...declarationsFromCanisterMethods])
-    ].join('\n');
-
-    const sourceCodes = canisterMethods.map((method) => method.sourceCode);
-
-    return /*TS*/ `
-        import { ${imports} } from 'azle/experimental';
-
-        // @ts-ignore
-        import deepEqual from 'deep-is';
-
-        // #region Declarations
-        ${declarations}
-        // #endregion Declarations
-
-        export default Canister({
-            ${sourceCodes.join(',\n    ')}
-        });
+        ${canister}
     `;
 }

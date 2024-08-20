@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Syntax } from '../../types';
+import { Api } from '../../types';
 import {
     VoidCandidDefinition,
     WithShapesArb
@@ -12,19 +12,14 @@ import { SimpleCandidDefinitionArb } from '../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
 import { voidToSrcLiteral } from '../to_src_literal/void';
 
-export function VoidArb(
-    syntax: Syntax
-): fc.Arbitrary<CandidValueAndMeta<undefined>> {
-    return CandidValueAndMetaArbGenerator(
-        VoidDefinitionArb(syntax),
-        VoidValueArb
-    );
+export function VoidArb(api: Api): fc.Arbitrary<CandidValueAndMeta<undefined>> {
+    return CandidValueAndMetaArbGenerator(VoidDefinitionArb(api), VoidValueArb);
 }
 
 export function VoidDefinitionArb(
-    syntax: Syntax
+    api: Api
 ): WithShapesArb<VoidCandidDefinition> {
-    return SimpleCandidDefinitionArb('Void', syntax);
+    return SimpleCandidDefinitionArb('Void', api);
 }
 
 export function VoidValueArb(): fc.Arbitrary<CandidValues<undefined>> {

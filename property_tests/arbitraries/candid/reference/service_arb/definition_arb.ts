@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { Canister } from '../../../../../src/lib/experimental/candid/types/reference/service';
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -16,12 +16,12 @@ import {
 
 export function ServiceDefinitionArb(
     fieldCandidDefArb: WithShapesArb<CandidDefinition>,
-    syntax: Syntax
+    api: Api
 ): WithShapesArb<ServiceCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb, syntax), {
+            fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb, api), {
                 selector: (entry) => entry.definition.name
             }),
             fc.constant(true) // TODO This needs to be true, I don't know why we set up to be an arbitrary boolean if it has to be true
@@ -42,39 +42,38 @@ export function ServiceDefinitionArb(
                     {}
                 );
 
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    syntax
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
                     fields,
-                    syntax
+                    api
                 );
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(fields);
+                const runtimeTypeObject = generateRuntimeTypeObject(fields);
 
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
                         fields,
-                        syntax
+                        api
                     );
 
-                const imports = generateImports(fields, syntax);
+                const imports = generateImports(fields, api);
 
                 return {
                     definition: {
                         name,
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Service'
@@ -89,9 +88,9 @@ export function ServiceDefinitionArb(
 
 function generateImports(
     serviceMethods: ServiceMethodDefinition[],
-    syntax: Syntax
+    api: Api
 ): Set<string> {
-    const serviceImports = syntax === 'functional' ? ['Canister'] : ['IDL'];
+    const serviceImports = api === 'functional' ? ['Canister'] : ['IDL'];
     return new Set([
         ...serviceMethods.flatMap((serviceMethod) =>
             Array.from(serviceMethod.imports)
@@ -106,21 +105,20 @@ function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
     serviceMethods: ServiceMethodDefinition[],
-    syntax: Syntax
+    api: Api
 ): string[] {
     const serviceMethodTypeAliasDecls = serviceMethods.flatMap(
         (serviceMethod) => serviceMethod.variableAliasDeclarations
     );
     if (useTypeDeclaration) {
-        const type =
-            syntax === 'functional' ? [] : [`type ${name} = Principal`];
+        const type = api === 'functional' ? [] : [`type ${name} = Principal`];
         return [
             ...serviceMethodTypeAliasDecls,
-            `const ${name} = ${generateCandidTypeObject(
+            `const ${name} = ${generateTypeObject(
                 false,
                 name,
                 serviceMethods,
-                syntax
+                api
             )};`,
             ...type
         ];
@@ -131,10 +129,10 @@ function generateVariableAliasDeclarations(
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
-        if (syntax === 'class') {
+        if (api === 'class') {
             return name;
         }
         return `typeof ${name}.tsType`;
@@ -143,17 +141,17 @@ function generateCandidTypeAnnotation(
     return '[Principal]';
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
     serviceMethods: ServiceMethodDefinition[],
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
-    if (syntax === 'class') {
+    if (api === 'class') {
         const methods = serviceMethods
             .map((serviceMethod) => serviceMethod.idl)
             .filter((typeDeclaration) => typeDeclaration)
@@ -172,13 +170,11 @@ function generateCandidTypeObject(
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function generateRuntimeCandidTypeObject(
-    serviceMethods: ServiceMethodDefinition[]
-) {
+function generateRuntimeTypeObject(serviceMethods: ServiceMethodDefinition[]) {
     const methods = serviceMethods.reduce((acc, serviceMethod) => {
         return {
             ...acc,
-            [serviceMethod.name]: serviceMethod.runtimeCandidTypeObject
+            [serviceMethod.name]: serviceMethod.runtimeTypeObject
         };
     }, {});
 

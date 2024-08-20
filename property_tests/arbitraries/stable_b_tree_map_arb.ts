@@ -5,7 +5,7 @@ import {
     CandidValueAndMetaArb
 } from './candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
-import { Syntax } from './types';
+import { Api } from './types';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { createUniquePrimitiveArb } from './unique_primitive_arb';
 
@@ -19,14 +19,12 @@ export type StableBTreeMap = {
     valueSample: CandidValueAndMeta<CorrespondingJSType>;
 };
 
-export function StableBTreeMapArb(
-    syntax: Syntax
-): fc.Arbitrary<StableBTreeMap> {
+export function StableBTreeMapArb(api: Api): fc.Arbitrary<StableBTreeMap> {
     return fc
         .tuple(
-            CandidValueAndMetaArb(syntax),
+            CandidValueAndMetaArb(api),
             argumentInfoArb(),
-            CandidValueAndMetaArb(syntax),
+            CandidValueAndMetaArb(api),
             argumentInfoArb(),
             UniqueIdentifierArb('globalNames'),
             createUniquePrimitiveArb(
@@ -56,11 +54,11 @@ export function StableBTreeMapArb(
                     valueSample,
                     keySerializableType,
                     valueSerializableType,
-                    syntax
+                    api
                 );
 
-                const key = keySample.src.candidTypeAnnotation;
-                const value = valueSample.src.candidTypeAnnotation;
+                const key = keySample.src.typeAnnotation;
+                const value = valueSample.src.typeAnnotation;
 
                 return {
                     name,
@@ -78,16 +76,16 @@ function getSerializableArguments(
     valueSample: StableBTreeMap['valueSample'],
     keySerializableType: SerializableType,
     valueSerializableType: SerializableType,
-    syntax: Syntax
+    api: Api
 ): string {
     const keyArgument =
-        keySerializableType === 'STABLE_JSON' || syntax === 'class'
+        keySerializableType === 'STABLE_JSON' || api === 'class'
             ? 'stableJson'
-            : keySample.src.candidTypeObject;
+            : keySample.src.typeObject;
     const valueArgument =
-        valueSerializableType === 'STABLE_JSON' || syntax === 'class'
+        valueSerializableType === 'STABLE_JSON' || api === 'class'
             ? 'stableJson'
-            : valueSample.src.candidTypeObject;
+            : valueSample.src.typeObject;
 
     return `, ${keyArgument}, ${valueArgument}`;
 }

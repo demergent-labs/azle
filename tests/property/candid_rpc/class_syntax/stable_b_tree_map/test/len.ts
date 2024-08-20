@@ -17,7 +17,7 @@ export function LenTestArb(
                 'query'
             ]);
 
-            const returnCandidTypeObject = `IDL.Nat64`;
+            const returnTypeObject = `IDL.Nat64`;
             const body = generateBody(stableBTreeMap.name);
 
             const tests = generateTests(functionName);
@@ -25,7 +25,7 @@ export function LenTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `@query([], ${returnCandidTypeObject})
+                sourceCode: `@query([], ${returnTypeObject})
                 ${functionName}() {
                 ${body}
             }`,

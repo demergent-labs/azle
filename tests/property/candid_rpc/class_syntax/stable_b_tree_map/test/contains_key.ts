@@ -17,15 +17,15 @@ export function ContainsKeyTestArb(
                 'query'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.keySample.src.candidTypeObject
+            const paramTypeObjects = [
+                stableBTreeMap.keySample.src.typeObject
             ].join(', ');
 
             const paramName = [
-                `param0: ${stableBTreeMap.keySample.src.candidTypeAnnotation}`
+                `param0: ${stableBTreeMap.keySample.src.typeAnnotation}`
             ].join(', ');
 
-            const returnCandidTypeObject = 'IDL.Bool';
+            const returnTypeObject = 'IDL.Bool';
             const body = generateBody(stableBTreeMap.name);
             const tests = generateTests(
                 functionName,
@@ -39,8 +39,8 @@ export function ContainsKeyTestArb(
                     functionName,
                     paramName,
                     body,
-                    paramCandidTypeObjects,
-                    returnCandidTypeObject
+                    paramTypeObjects,
+                    returnTypeObject
                 ),
                 tests
             };
@@ -51,11 +51,11 @@ function generateSourceCode(
     functionName: string,
     paramName: string,
     body: string,
-    paramCandidTypeObjects: string,
-    returnCandidTypeObject: string
+    paramTypeObjects: string,
+    returnTypeObject: string
 ): string {
     return `
-        @query([${paramCandidTypeObjects}], ${returnCandidTypeObject})
+        @query([${paramTypeObjects}], ${returnTypeObject})
         ${functionName}(${paramName}) {
             ${body}
         }`;

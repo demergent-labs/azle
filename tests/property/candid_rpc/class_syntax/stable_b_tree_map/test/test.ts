@@ -13,11 +13,11 @@ import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
 
-const syntax = 'class';
+const api = 'class';
 
 const StableBTreeMapTestArb = fc
     .array(
-        StableBTreeMapArb(syntax).chain((stableBTreeMap) => {
+        StableBTreeMapArb(api).chain((stableBTreeMap) => {
             return fc
                 .tuple(
                     IsEmptyTestArb(stableBTreeMap),
@@ -91,4 +91,4 @@ const StableBTreeMapTestArb = fc
         };
     });
 
-runPropTests(CanisterArb(StableBTreeMapTestArb, syntax));
+runPropTests(CanisterArb(StableBTreeMapTestArb, api));

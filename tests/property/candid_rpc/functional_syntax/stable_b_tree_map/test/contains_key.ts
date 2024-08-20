@@ -17,11 +17,11 @@ export function ContainsKeyTestArb(
                 'query'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.keySample.src.candidTypeObject
+            const paramTypeObjects = [
+                stableBTreeMap.keySample.src.typeObject
             ].join(', ');
 
-            const returnCandidTypeObject = `bool`;
+            const returnTypeObject = `bool`;
             const body = generateBody(stableBTreeMap.name);
             const tests = generateTests(
                 functionName,
@@ -31,7 +31,7 @@ export function ContainsKeyTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0) => {
+                sourceCode: `${functionName}: query([${paramTypeObjects}], ${returnTypeObject}, (param0) => {
                 ${body}
             })`,
                 tests

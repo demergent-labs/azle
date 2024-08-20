@@ -19,12 +19,12 @@ export function InsertTestArb(
                 'Some'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.keySample.src.candidTypeObject,
-                stableBTreeMap.valueSample.src.candidTypeObject
+            const paramTypeObjects = [
+                stableBTreeMap.keySample.src.typeObject,
+                stableBTreeMap.valueSample.src.typeObject
             ].join(', ');
 
-            const returnCandidTypeObject = `Opt(${stableBTreeMap.valueSample.src.candidTypeObject})`;
+            const returnTypeObject = `Opt(${stableBTreeMap.valueSample.src.typeObject})`;
             const body = generateBody(stableBTreeMap.name);
 
             const tests = generateTests(
@@ -36,7 +36,7 @@ export function InsertTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0, param1) => {
+                sourceCode: `${functionName}: update([${paramTypeObjects}], ${returnTypeObject}, (param0, param1) => {
                 ${body}
             })`,
                 tests

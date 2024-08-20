@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import fc from 'fast-check';
 
-import { Syntax } from '../../types';
+import { Api } from '../../types';
 import {
     PrincipalCandidDefinition,
     WithShapesArb
@@ -14,18 +14,18 @@ import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
 import { principalToSrcLiteral } from '../to_src_literal/principal';
 
 export function PrincipalArb(
-    syntax: Syntax
+    api: Api
 ): fc.Arbitrary<CandidValueAndMeta<Principal>> {
     return CandidValueAndMetaArbGenerator(
-        PrincipalDefinitionArb(syntax),
+        PrincipalDefinitionArb(api),
         PrincipalValueArb
     );
 }
 
 export function PrincipalDefinitionArb(
-    syntax: Syntax
+    api: Api
 ): WithShapesArb<PrincipalCandidDefinition> {
-    return SimpleCandidDefinitionArb('Principal', syntax);
+    return SimpleCandidDefinitionArb('Principal', api);
 }
 
 export function PrincipalValueArb(): fc.Arbitrary<CandidValues<Principal>> {

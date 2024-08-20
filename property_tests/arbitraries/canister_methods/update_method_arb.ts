@@ -5,13 +5,13 @@ import { Test } from '../../test';
 import { CandidReturnType } from '../candid/candid_return_type_arb';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
-import { Syntax } from '../types';
+import { Api } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    CallbackLocation,
-    generateCallback,
+    generateMethodImplementation,
     isDefined,
+    MethodImplementationLocation,
     TestsGenerator
 } from '.';
 
@@ -50,8 +50,8 @@ export function UpdateMethodArb<
             ReturnTypeAgentArgumentValue,
             ReturnTypeAgentResponseValue
         >;
-        syntax: Syntax;
-        callbackLocation?: CallbackLocation;
+        api: Api;
+        methodImplementationLocation?: MethodImplementationLocation;
         name?: string;
     }
 ): fc.Arbitrary<UpdateMethod> {
@@ -60,7 +60,10 @@ export function UpdateMethodArb<
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
             returnTypeArb,
-            fc.constantFrom<CallbackLocation>('INLINE', 'STANDALONE'),
+            fc.constantFrom<MethodImplementationLocation>(
+                'INLINE',
+                'STANDALONE'
+            ),
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -71,14 +74,14 @@ export function UpdateMethodArb<
                 defaultFunctionName,
                 paramTypes,
                 returnType,
-                defaultCallbackLocation,
-                callbackName
+                defaultMethodImplementationLocation,
+                methodName
             ]): UpdateMethod => {
-                const callbackLocation =
-                    constraints.syntax === 'class'
+                const methodImplementationLocation =
+                    constraints.api === 'class'
                         ? 'INLINE'
-                        : constraints.callbackLocation ??
-                          defaultCallbackLocation;
+                        : constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation;
                 const functionName = constraints.name ?? defaultFunctionName;
 
                 const imports = new Set([
@@ -94,13 +97,13 @@ export function UpdateMethodArb<
                     })
                 );
 
-                const callback = generateCallback(
+                const methodImplementation = generateMethodImplementation(
                     namedParams,
                     returnType,
                     constraints.generateBody,
-                    callbackLocation,
-                    callbackName,
-                    constraints.syntax
+                    methodImplementationLocation,
+                    methodName,
+                    constraints.api
                 );
 
                 const candidTypeDeclarations = [
@@ -111,16 +114,18 @@ export function UpdateMethodArb<
                 ].filter(isDefined);
 
                 const globalDeclarations =
-                    callbackLocation === 'STANDALONE'
-                        ? [...candidTypeDeclarations, callback]
+                    methodImplementationLocation === 'STANDALONE'
+                        ? [...candidTypeDeclarations, methodImplementation]
                         : candidTypeDeclarations;
 
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
                     returnType,
-                    callbackLocation === 'STANDALONE' ? callbackName : callback,
-                    constraints.syntax
+                    methodImplementationLocation === 'STANDALONE'
+                        ? methodName
+                        : methodImplementation,
+                    constraints.api
                 );
 
                 const tests = constraints.generateTests(
@@ -148,22 +153,18 @@ function generateSourceCode<
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
     returnType: CandidValueAndMeta<ReturnType, ReturnAgentType>,
-    callback: string,
-    syntax: Syntax
+    methodImplementation: string,
+    api: Api
 ): string {
-    const paramCandidTypeObjects = paramTypes
-        .map((param) => param.src.candidTypeObject)
+    const paramTypeObjects = paramTypes
+        .map((param) => param.src.typeObject)
         .join(', ');
 
-    const returnCandidTypeObject = returnType.src.candidTypeObject;
+    const returnTypeObject = returnType.src.typeObject;
 
-    if (syntax === 'functional') {
-        return `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, ${callback})`;
+    if (api === 'functional') {
+        return `${functionName}: update([${paramTypeObjects}], ${returnTypeObject}, ${methodImplementation})`;
     } else {
-        return (
-            `@update([${paramCandidTypeObjects}], ${returnCandidTypeObject})` +
-            `\n` +
-            `${functionName}${callback}`
-        );
+        return `@update([${paramTypeObjects}], ${returnTypeObject})\n${functionName}${methodImplementation}`;
     }
 }

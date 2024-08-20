@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Syntax } from '../../types';
+import { Api } from '../../types';
 import { RecursiveDefinitionArb } from '../recursive/definition_arb';
 import { complexCandidDefinitionMemo } from './complex_candid_definition_memo';
 import { CandidDefinitionMemo, RecursiveCandidName } from './types';
@@ -14,10 +14,10 @@ export const REC_ARB_COUNT = 0;
 
 export function recursiveCandidDefinitionMemo(
     parents: RecursiveCandidName[],
-    syntax: Syntax
+    api: Api
 ): CandidDefinitionMemo {
     return fc.memo((depthLevel) =>
-        RecursiveDefinitionArb(complexCandidDefinitionMemo, parents, syntax, {
+        RecursiveDefinitionArb(complexCandidDefinitionMemo, parents, api, {
             depthLevel: depthLevel
         })
     );

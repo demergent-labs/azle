@@ -5,14 +5,14 @@ import { Test } from '../../test';
 import { CandidReturnType } from '../candid/candid_return_type_arb';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
-import { Syntax } from '../types';
+import { Api } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    CallbackLocation,
-    CallbackLocationArb,
-    generateCallback,
+    generateMethodImplementation,
     isDefined,
+    MethodImplementationLocation,
+    MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
 
@@ -51,8 +51,8 @@ export function QueryMethodArb<
             ReturnTypeAgentArgumentValue,
             ReturnTypeAgentResponseValue
         >;
-        syntax: Syntax;
-        callbackLocation?: CallbackLocation;
+        api: Api;
+        methodImplementationLocation?: MethodImplementationLocation;
         name?: string;
     }
 ): fc.Arbitrary<QueryMethod> {
@@ -61,7 +61,7 @@ export function QueryMethodArb<
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
             returnTypeArb,
-            CallbackLocationArb,
+            MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -72,14 +72,14 @@ export function QueryMethodArb<
                 defaultFunctionName,
                 paramTypes,
                 returnType,
-                defaultCallbackLocation,
-                callbackName
+                defaultMethodImplementationLocation,
+                methodName
             ]): QueryMethod => {
-                const callbackLocation =
-                    constraints.syntax === 'class'
+                const methodImplementationLocation =
+                    constraints.api === 'class'
                         ? 'INLINE'
-                        : constraints.callbackLocation ??
-                          defaultCallbackLocation;
+                        : constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation;
                 const functionName = constraints.name ?? defaultFunctionName;
 
                 const imports = new Set([
@@ -95,13 +95,13 @@ export function QueryMethodArb<
                     })
                 );
 
-                const callback = generateCallback(
+                const methodImplementation = generateMethodImplementation(
                     namedParams,
                     returnType,
                     constraints.generateBody,
-                    callbackLocation,
-                    callbackName,
-                    constraints.syntax
+                    methodImplementationLocation,
+                    methodName,
+                    constraints.api
                 );
 
                 const candidTypeDeclarations = [
@@ -112,16 +112,18 @@ export function QueryMethodArb<
                 ].filter(isDefined);
 
                 const globalDeclarations =
-                    callbackLocation === 'STANDALONE'
-                        ? [...candidTypeDeclarations, callback]
+                    methodImplementationLocation === 'STANDALONE'
+                        ? [...candidTypeDeclarations, methodImplementation]
                         : candidTypeDeclarations;
 
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
                     returnType,
-                    callbackLocation === 'STANDALONE' ? callbackName : callback,
-                    constraints.syntax
+                    methodImplementationLocation === 'STANDALONE'
+                        ? methodName
+                        : methodImplementation,
+                    constraints.api
                 );
 
                 const tests = constraints.generateTests(
@@ -149,22 +151,18 @@ function generateSourceCode<
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
     returnType: CandidValueAndMeta<ReturnType, ReturnAgentType>,
-    callback: string,
-    syntax: Syntax
+    methodImplementation: string,
+    api: Api
 ): string {
-    const paramCandidTypeObjects = paramTypes
-        .map((param) => param.src.candidTypeObject)
+    const paramTypeObjects = paramTypes
+        .map((param) => param.src.typeObject)
         .join(', ');
 
-    const returnCandidTypeObject = returnType.src.candidTypeObject;
+    const returnTypeObject = returnType.src.typeObject;
 
-    if (syntax === 'functional') {
-        return `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidTypeObject}, ${callback})`;
+    if (api === 'functional') {
+        return `${functionName}: query([${paramTypeObjects}], ${returnTypeObject}, ${methodImplementation})`;
     } else {
-        return (
-            `@query([${paramCandidTypeObjects}], ${returnCandidTypeObject})` +
-            `\n` +
-            `${functionName}${callback}`
-        );
+        return `@query([${paramTypeObjects}], ${returnTypeObject})\n${functionName}${methodImplementation}`;
     }
 }

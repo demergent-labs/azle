@@ -5,13 +5,13 @@ import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { VoidArb } from '../candid/primitive/void';
-import { Syntax } from '../types';
+import { Api } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    CallbackLocation,
-    generateCallback,
+    generateMethodImplementation,
     isDefined,
+    MethodImplementationLocation,
     TestsGenerator
 } from '.';
 
@@ -44,8 +44,8 @@ export function PostUpgradeMethodArb<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
         >;
-        syntax: Syntax;
-        callbackLocation?: CallbackLocation;
+        api: Api;
+        methodImplementationLocation?: MethodImplementationLocation;
     }
 ): fc.Arbitrary<
     PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
@@ -54,8 +54,11 @@ export function PostUpgradeMethodArb<
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
-            VoidArb(constraints.syntax),
-            fc.constantFrom<CallbackLocation>('INLINE', 'STANDALONE'),
+            VoidArb(constraints.api),
+            fc.constantFrom<MethodImplementationLocation>(
+                'INLINE',
+                'STANDALONE'
+            ),
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -66,17 +69,17 @@ export function PostUpgradeMethodArb<
                 functionName,
                 paramTypes,
                 returnType,
-                defaultCallbackLocation,
-                callbackName
+                defaultMethodImplementationLocation,
+                methodName
             ]): PostUpgradeMethod<
                 ParamAgentArgumentValue,
                 ParamAgentResponseValue
             > => {
-                const callbackLocation =
-                    constraints.syntax === 'class'
+                const methodImplementationLocation =
+                    constraints.api === 'class'
                         ? 'INLINE'
-                        : constraints.callbackLocation ??
-                          defaultCallbackLocation;
+                        : constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation;
 
                 const imports = new Set([
                     'postUpgrade',
@@ -90,13 +93,13 @@ export function PostUpgradeMethodArb<
                     })
                 );
 
-                const callback = generateCallback(
+                const methodImplementation = generateMethodImplementation(
                     namedParams,
                     returnType,
                     constraints.generateBody,
-                    callbackLocation,
-                    callbackName,
-                    constraints.syntax
+                    methodImplementationLocation,
+                    methodName,
+                    constraints.api
                 );
 
                 const variableAliasDeclarations = paramTypes
@@ -104,15 +107,17 @@ export function PostUpgradeMethodArb<
                     .filter(isDefined);
 
                 const globalDeclarations =
-                    callbackLocation === 'STANDALONE'
-                        ? [...variableAliasDeclarations, callback]
+                    methodImplementationLocation === 'STANDALONE'
+                        ? [...variableAliasDeclarations, methodImplementation]
                         : variableAliasDeclarations;
 
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
-                    callbackLocation === 'STANDALONE' ? callbackName : callback,
-                    constraints.syntax
+                    methodImplementationLocation === 'STANDALONE'
+                        ? methodName
+                        : methodImplementation,
+                    constraints.api
                 );
 
                 const tests = constraints.generateTests(
@@ -138,20 +143,16 @@ function generateSourceCode<
 >(
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
-    callback: string,
-    syntax: Syntax
+    methodImplementation: string,
+    api: Api
 ): string {
-    const paramCandidTypeObjects = paramTypes
-        .map((param) => param.src.candidTypeObject)
+    const paramTypeObjects = paramTypes
+        .map((param) => param.src.typeObject)
         .join(', ');
 
-    if (syntax === 'functional') {
-        return `${functionName}: postUpgrade([${paramCandidTypeObjects}], ${callback})`;
+    if (api === 'functional') {
+        return `${functionName}: postUpgrade([${paramTypeObjects}], ${methodImplementation})`;
     } else {
-        return (
-            `@postUpgrade([${paramCandidTypeObjects}])` +
-            `\n` +
-            `${functionName}${callback}`
-        );
+        return `@postUpgrade([${paramTypeObjects}])\n${functionName}${methodImplementation}`;
     }
 }

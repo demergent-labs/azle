@@ -159,11 +159,11 @@ export function CandidValueArb(
         return PrincipalValueArb();
     }
     if (candidType === 'Service') {
-        // TODO This seems problematic. I was trying to avoid having to pass the syntax variable through all of the values just so that Service and Opt can work.
+        // TODO This seems problematic. I was trying to avoid having to pass the api variable through all of the values just so that Service and Opt can work.
         // TODO But now that we have this here and it looks like we might not be able to avoid it
         // TODO But we might be able to keep going, I haven't run into any problems yet
         // TODO but also that's a little weird that I haven't run into any problems yet
-        // TODO but maybe we should have a different way of handling the syntax selection. Like if it's a global setting should we have some global variable instead?
+        // TODO but maybe we should have a different way of handling the api selection. Like if it's a global setting should we have some global variable instead?
         // TODO or maybe an environment variable?
         // TODO all of this also applies to the FunctionalOptValuesArb above
         return FunctionalServiceValueArb(

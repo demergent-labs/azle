@@ -1,25 +1,25 @@
 import fc from 'fast-check';
 
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
 import { _VecNat8DefinitionArb, BlobDefinitionArb } from './definition_arb';
 import { BlobValuesArb } from './values_arb';
 
 export function BlobArb(
-    syntax: Syntax
+    api: Api
 ): fc.Arbitrary<CandidValueAndMeta<Uint8Array>> {
-    if (syntax === 'class') {
+    if (api === 'class') {
         return CandidValueAndMetaArbGenerator(
-            _VecNat8DefinitionArb(syntax),
+            _VecNat8DefinitionArb(api),
             BlobValuesArb
         );
     }
     return fc.oneof(
         CandidValueAndMetaArbGenerator(
-            _VecNat8DefinitionArb(syntax),
+            _VecNat8DefinitionArb(api),
             BlobValuesArb
         ),
-        CandidValueAndMetaArbGenerator(BlobDefinitionArb(syntax), BlobValuesArb)
+        CandidValueAndMetaArbGenerator(BlobDefinitionArb(api), BlobValuesArb)
     );
 }

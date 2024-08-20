@@ -2,13 +2,13 @@ import fc from 'fast-check';
 
 import { Test } from '../../test';
 import { VoidArb } from '../candid/primitive/void';
-import { Syntax } from '../types';
+import { Api } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    CallbackLocation,
-    CallbackLocationArb,
-    generateCallback,
+    generateMethodImplementation,
+    MethodImplementationLocation,
+    MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
 
@@ -22,14 +22,14 @@ export type PreUpgradeMethod = {
 export function PreUpgradeMethodArb(constraints: {
     generateBody: BodyGenerator;
     generateTests: TestsGenerator;
-    syntax: Syntax;
-    callbackLocation?: CallbackLocation;
+    api: Api;
+    methodImplementationLocation?: MethodImplementationLocation;
 }): fc.Arbitrary<PreUpgradeMethod> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb(constraints.syntax),
-            CallbackLocationArb,
+            VoidArb(constraints.api),
+            MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -39,37 +39,39 @@ export function PreUpgradeMethodArb(constraints: {
             ([
                 functionName,
                 returnType,
-                defaultCallbackLocation,
-                callbackName
+                defaultMethodImplementationLocation,
+                methodName
             ]): PreUpgradeMethod => {
-                const callbackLocation =
-                    constraints.syntax === 'class'
+                const methodImplementationLocation =
+                    constraints.api === 'class'
                         ? 'INLINE'
-                        : constraints.callbackLocation ??
-                          defaultCallbackLocation;
+                        : constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation;
 
                 const imports = new Set(['preUpgrade']);
 
-                const callback = generateCallback(
+                const methodImplementation = generateMethodImplementation(
                     [],
                     returnType,
                     constraints.generateBody,
-                    callbackLocation,
-                    callbackName,
-                    constraints.syntax
+                    methodImplementationLocation,
+                    methodName,
+                    constraints.api
                 );
 
                 const globalDeclarations =
-                    callbackLocation === 'STANDALONE' ? [callback] : [];
+                    methodImplementationLocation === 'STANDALONE'
+                        ? [methodImplementation]
+                        : [];
 
                 const sourceCode =
-                    constraints.syntax === 'functional'
+                    constraints.api === 'functional'
                         ? `${functionName}: preUpgrade(${
-                              callbackLocation === 'STANDALONE'
-                                  ? callbackName
-                                  : callback
+                              methodImplementationLocation === 'STANDALONE'
+                                  ? methodName
+                                  : methodImplementation
                           })`
-                        : `@preUpgrade\n${functionName}${callback}`;
+                        : `@preUpgrade\n${functionName}${methodImplementation}`;
 
                 const tests = constraints.generateTests(
                     functionName,

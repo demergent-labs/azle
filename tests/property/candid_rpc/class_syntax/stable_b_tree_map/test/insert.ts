@@ -17,17 +17,17 @@ export function InsertTestArb(
                 'update'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.keySample.src.candidTypeObject,
-                stableBTreeMap.valueSample.src.candidTypeObject
+            const paramTypeObjects = [
+                stableBTreeMap.keySample.src.typeObject,
+                stableBTreeMap.valueSample.src.typeObject
             ].join(', ');
 
             const paramNames = [
-                `param0: ${stableBTreeMap.keySample.src.candidTypeAnnotation}`,
-                `param1: ${stableBTreeMap.valueSample.src.candidTypeAnnotation}`
+                `param0: ${stableBTreeMap.keySample.src.typeAnnotation}`,
+                `param1: ${stableBTreeMap.valueSample.src.typeAnnotation}`
             ].join(', ');
 
-            const returnCandidTypeObject = `IDL.Opt(${stableBTreeMap.valueSample.src.candidTypeObject})`;
+            const returnTypeObject = `IDL.Opt(${stableBTreeMap.valueSample.src.typeObject})`;
             const body = generateBody(stableBTreeMap.name);
 
             const tests = generateTests(
@@ -39,7 +39,7 @@ export function InsertTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `@update([${paramCandidTypeObjects}], ${returnCandidTypeObject})
+                sourceCode: `@update([${paramTypeObjects}], ${returnTypeObject})
                 ${functionName}(${paramNames}) {
                 ${body}
             }`,

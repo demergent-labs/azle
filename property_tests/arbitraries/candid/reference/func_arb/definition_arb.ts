@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType } from '../../../../../src/lib/experimental/candid/candid_type';
 import { Func } from '../../../../../src/lib/experimental/candid/types/reference/func';
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -16,13 +16,13 @@ type Mode = 'query' | 'update' | 'oneway';
 
 export function FuncDefinitionArb(
     candidDefArb: WithShapesArb<CandidDefinition>,
-    syntax: Syntax
+    api: Api
 ): WithShapesArb<FuncCandidDefinition> {
     return fc
         .constantFrom<Mode>('query', 'update', 'oneway')
         .chain((mode) => {
             const returnType =
-                mode === 'oneway' ? VoidDefinitionArb(syntax) : candidDefArb;
+                mode === 'oneway' ? VoidDefinitionArb(api) : candidDefArb;
 
             return fc.tuple(
                 UniqueIdentifierArb('globalNames'),
@@ -50,22 +50,22 @@ export function FuncDefinitionArb(
                     },
                     returnFuncAndShapes.recursiveShapes
                 );
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    syntax
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
                     params,
                     returnFunc,
                     mode,
-                    syntax
+                    api
                 );
 
-                const runtimeCandidTypeObject = generateRuntimeCandidTypeObject(
+                const runtimeTypeObject = generateRuntimeTypeObject(
                     params,
                     returnFunc,
                     mode
@@ -78,17 +78,17 @@ export function FuncDefinitionArb(
                         params,
                         returnFunc,
                         mode,
-                        syntax
+                        api
                     );
 
-                const imports = generateImports(params, returnFunc, syntax);
+                const imports = generateImports(params, returnFunc, api);
 
                 return {
                     definition: {
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Func'
@@ -105,9 +105,9 @@ export function FuncDefinitionArb(
 function generateImports(
     params: CandidDefinition[],
     returnFunc: CandidDefinition,
-    syntax: Syntax
+    api: Api
 ): Set<string> {
-    const funcImports = syntax === 'functional' ? ['Func'] : ['IDL'];
+    const funcImports = api === 'functional' ? ['Func'] : ['IDL'];
 
     return new Set([
         ...params.flatMap((param) => [...param.candidMeta.imports]),
@@ -123,7 +123,7 @@ function generateVariableAliasDeclarations(
     paramCandids: CandidDefinition[],
     returnCandid: CandidDefinition,
     mode: Mode,
-    syntax: Syntax
+    api: Api
 ): string[] {
     const paramTypeDeclarations = paramCandids.flatMap(
         (param) => param.candidMeta.variableAliasDeclarations
@@ -133,25 +133,25 @@ function generateVariableAliasDeclarations(
 
     if (useTypeDeclaration === true) {
         const type =
-            syntax === 'functional'
+            api === 'functional'
                 ? []
                 : [
                       `type ${name} = ${generateCandidTypeAnnotation(
                           false,
                           name,
-                          syntax
+                          api
                       )}`
                   ];
         return [
             ...paramTypeDeclarations,
             ...returnTypeDeclaration,
-            `const ${name} = ${generateCandidTypeObject(
+            `const ${name} = ${generateTypeObject(
                 false,
                 name,
                 paramCandids,
                 returnCandid,
                 mode,
-                syntax
+                api
             )}`,
             ...type
         ];
@@ -163,10 +163,10 @@ function generateVariableAliasDeclarations(
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
-        if (syntax === 'class') {
+        if (api === 'class') {
             return name;
         }
         return `typeof ${name}.tsType`;
@@ -175,25 +175,25 @@ function generateCandidTypeAnnotation(
     return `[Principal, string]`;
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
     paramCandids: CandidDefinition[],
     returnCandid: CandidDefinition,
     mode: Mode,
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
     const params = paramCandids
-        .map((param) => param.candidMeta.candidTypeObject)
+        .map((param) => param.candidMeta.typeObject)
         .join(', ');
 
-    const returnType = returnCandid.candidMeta.candidTypeObject;
+    const returnType = returnCandid.candidMeta.typeObject;
 
-    if (syntax === 'class') {
+    if (api === 'class') {
         return `IDL.Func([${params}], [${returnType}], ${
             mode === 'update' ? '' : `['${mode}']`
         })`;
@@ -202,14 +202,14 @@ function generateCandidTypeObject(
     return `Func([${params}], ${returnType}, '${mode}')`;
 }
 
-function generateRuntimeCandidTypeObject(
+function generateRuntimeTypeObject(
     paramCandids: CandidDefinition[],
     returnCandid: CandidDefinition,
     mode: Mode
 ): CandidType {
     const params = paramCandids.map(
-        (param) => param.candidMeta.runtimeCandidTypeObject
+        (param) => param.candidMeta.runtimeTypeObject
     );
 
-    return Func(params, returnCandid.candidMeta.runtimeCandidTypeObject, mode);
+    return Func(params, returnCandid.candidMeta.runtimeTypeObject, mode);
 }

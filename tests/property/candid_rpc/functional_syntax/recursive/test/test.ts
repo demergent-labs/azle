@@ -11,18 +11,18 @@ import fc from 'fast-check';
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const syntax = 'functional';
+const api = 'functional';
 
 const AllRecursiveQueryMethodArb = fc.oneof(
-    QueryMethodArb(fc.array(RecursiveArb(syntax)), RecursiveArb(syntax), {
+    QueryMethodArb(fc.array(RecursiveArb(api)), RecursiveArb(api), {
         generateBody,
         generateTests,
-        syntax
+        api
     }),
-    UpdateMethodArb(fc.array(RecursiveArb(syntax)), RecursiveArb(syntax), {
+    UpdateMethodArb(fc.array(RecursiveArb(api)), RecursiveArb(api), {
         generateBody,
         generateTests,
-        syntax
+        api
     })
 );
 
@@ -32,4 +32,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb, syntax), true);
+runPropTests(CanisterArb(CanisterConfigArb, api), true);

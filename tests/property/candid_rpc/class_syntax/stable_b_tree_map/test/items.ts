@@ -17,7 +17,7 @@ export function ItemsTestArb(
                 'query'
             ]);
 
-            const returnCandidTypeObject = `IDL.Vec(IDL.Tuple(${stableBTreeMap.keySample.src.candidTypeObject}, ${stableBTreeMap.valueSample.src.candidTypeObject}))`;
+            const returnTypeObject = `IDL.Vec(IDL.Tuple(${stableBTreeMap.keySample.src.typeObject}, ${stableBTreeMap.valueSample.src.typeObject}))`;
             const body = generateBody(stableBTreeMap.name);
 
             const tests = generateTests(
@@ -29,7 +29,7 @@ export function ItemsTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `@query([], ${returnCandidTypeObject})
+                sourceCode: `@query([], ${returnTypeObject})
                 ${functionName}() {
                 ${body}
             }`,

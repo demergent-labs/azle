@@ -18,7 +18,7 @@ import { generateBody as callableMethodBodyGenerator } from './generate_callable
 import { generateBody as initBodyGenerator } from './generate_init_body';
 import { generateTests } from './generate_tests';
 
-const syntax = 'class';
+const api = 'class';
 
 // TODO multiplying by zero is to remove -0
 // TODO we should open an issue with agent-js
@@ -32,31 +32,31 @@ const valueConstraints = {
     noNegativeZero: true
 };
 const SimpleInitMethodArb = InitMethodArb(
-    fc.array(CandidValueAndMetaArb(syntax, valueConstraints)),
+    fc.array(CandidValueAndMetaArb(api, valueConstraints)),
     {
         generateBody: initBodyGenerator,
         generateTests,
-        syntax
+        api
     }
 );
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
-    fc.array(CandidValueAndMetaArb(syntax)),
-    CandidReturnTypeArb(syntax),
+    fc.array(CandidValueAndMetaArb(api)),
+    CandidReturnTypeArb(api),
     {
         generateBody: callableMethodBodyGenerator,
         generateTests: () => [],
-        syntax
+        api
     }
 );
 
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-    fc.array(CandidValueAndMetaArb(syntax)),
-    CandidReturnTypeArb(syntax),
+    fc.array(CandidValueAndMetaArb(api)),
+    CandidReturnTypeArb(api),
     {
         generateBody: callableMethodBodyGenerator,
         generateTests: () => [],
-        syntax
+        api
     }
 );
 
@@ -77,7 +77,7 @@ const CanisterConfigArb = fc
             CorrespondingJSType
         > => {
             const initParamTypes = initMethod.params.map(
-                (param) => param.value.src.candidTypeObject
+                (param) => param.value.src.typeObject
             );
 
             const globalInitVariableNames = initMethod.params.map(
@@ -85,7 +85,7 @@ const CanisterConfigArb = fc
             );
             const globalInitVariableDeclarations = initMethod.params.map(
                 (param, i) =>
-                    `let initParam${i}: ${param.value.src.candidTypeAnnotation};`
+                    `let initParam${i}: ${param.value.src.typeAnnotation};`
             );
 
             const globalDeclarations = [
@@ -107,7 +107,7 @@ const CanisterConfigArb = fc
         }
     );
 
-runPropTests(CanisterArb(CanisterConfigArb, syntax));
+runPropTests(CanisterArb(CanisterConfigArb, api));
 
 function generateGetInitValuesCanisterMethod(
     paramTypes: string[],

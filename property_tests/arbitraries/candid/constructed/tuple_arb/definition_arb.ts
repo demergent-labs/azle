@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Tuple } from '../../../../../src/lib/experimental';
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -13,7 +13,7 @@ import { RecursiveShapes } from '../../recursive';
 
 export function TupleDefinitionArb(
     candidTypeArbForFields: WithShapesArb<CandidDefinition>,
-    syntax: Syntax
+    api: Api
 ): WithShapesArb<TupleCandidDefinition> {
     return fc
         .tuple(
@@ -39,39 +39,38 @@ export function TupleDefinitionArb(
                     },
                     {}
                 );
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
                     fields,
-                    syntax
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
                     fields,
-                    syntax
+                    api
                 );
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(fields);
+                const runtimeTypeObject = generateRuntimeTypeObject(fields);
 
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
                         fields,
-                        syntax
+                        api
                     );
 
-                const imports = generateImports(fields, syntax);
+                const imports = generateImports(fields, api);
 
                 return {
                     definition: {
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Tuple'
@@ -84,45 +83,37 @@ export function TupleDefinitionArb(
         );
 }
 
-function generateImports(
-    fields: CandidDefinition[],
-    syntax: Syntax
-): Set<string> {
+function generateImports(fields: CandidDefinition[], api: Api): Set<string> {
     const fieldImports = fields.flatMap((field) => [
         ...field.candidMeta.imports
     ]);
-    const tupleImports = syntax === 'functional' ? ['Tuple'] : ['IDL'];
+    const tupleImports = api === 'functional' ? ['Tuple'] : ['IDL'];
     return new Set([...fieldImports, ...tupleImports]);
 }
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
     fields: CandidDefinition[],
-    syntax: Syntax
+    api: Api
 ): string[] {
     const fieldVariableAliasDeclarations = fields.flatMap(
         (field) => field.candidMeta.variableAliasDeclarations
     );
     const type =
-        syntax === 'functional'
+        api === 'functional'
             ? []
             : [
                   `type ${name} = ${generateCandidTypeAnnotation(
                       false,
                       name,
                       fields,
-                      syntax
+                      api
                   )}`
               ];
     if (useTypeDeclaration) {
         return [
             ...fieldVariableAliasDeclarations,
-            `const ${name} = ${generateCandidTypeObject(
-                false,
-                name,
-                fields,
-                syntax
-            )};`,
+            `const ${name} = ${generateTypeObject(false, name, fields, api)};`,
             ...type
         ];
     }
@@ -133,52 +124,50 @@ function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
     fields: CandidDefinition[],
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
-        if (syntax === 'class') {
+        if (api === 'class') {
             return name;
         }
         return `typeof ${name}.tsType`;
     }
 
     const innerTypesAsString = fields
-        .map((field) => field.candidMeta.candidTypeAnnotation)
+        .map((field) => field.candidMeta.typeAnnotation)
         .join(', ');
 
-    if (syntax === 'class') {
+    if (api === 'class') {
         return `[${innerTypesAsString}]`;
     }
 
     return `Tuple<[${innerTypesAsString}]>`;
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
     fields: CandidDefinition[],
-    syntax: Syntax
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
     const innerTypesAsString = fields
-        .map((field) => field.candidMeta.candidTypeObject)
+        .map((field) => field.candidMeta.typeObject)
         .join(', ');
 
-    if (syntax === 'class') {
+    if (api === 'class') {
         return `IDL.Tuple(${innerTypesAsString})`;
     }
 
     return `Tuple(${innerTypesAsString})`;
 }
 
-function generateRuntimeCandidTypeObject(
-    fields: CandidDefinition[]
-): CandidType {
+function generateRuntimeTypeObject(fields: CandidDefinition[]): CandidType {
     const innerTypes = fields.map(
-        (field) => field.candidMeta.runtimeCandidTypeObject
+        (field) => field.candidMeta.runtimeTypeObject
     );
 
     return Tuple(...innerTypes);

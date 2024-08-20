@@ -21,7 +21,7 @@ const AZLE_ACCEPT_IDENTITY_NAME = `_prop_test_azle_accept_identity_${v4()}`;
 const AZLE_RETURN_IDENTITY_NAME = `_prop_test_azle_return_identity_${v4()}`;
 const AZLE_THROW_IDENTITY_NAME = `_prop_test_azle_throw_identity_${v4()}`;
 
-const syntax = 'functional';
+const api = 'functional';
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -41,17 +41,17 @@ function CanisterConfigArb() {
     const InspectMessageArb = InspectMessageMethodArb({
         generateBody: () => generateInspectMessageMethodBody(),
         generateTests: () => [],
-        syntax
+        api
     });
 
     const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-        fc.array(CandidValueAndMetaArb(syntax)),
-        CandidReturnTypeArb(syntax),
+        fc.array(CandidValueAndMetaArb(api)),
+        CandidReturnTypeArb(api),
         {
             generateBody: (_, returnType) =>
                 `return ${returnType.src.valueLiteral}`,
             generateTests: (...args) => generateTests(...args, agents),
-            syntax
+            api
         }
     );
 
@@ -75,7 +75,7 @@ function CanisterConfigArb() {
         );
 }
 
-runPropTests(CanisterArb(CanisterConfigArb(), syntax));
+runPropTests(CanisterArb(CanisterConfigArb(), api));
 
 function generateInspectMessageMethodBody(): string {
     const acceptPrincipal = getPrincipal(AZLE_ACCEPT_IDENTITY_NAME);

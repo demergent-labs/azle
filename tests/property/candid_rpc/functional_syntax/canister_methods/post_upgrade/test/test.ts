@@ -33,10 +33,10 @@ import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_
 import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
 import { globalInitVarName, globalPostUpgradeVarName } from './global_var_name';
 
-const syntax = 'functional';
+const api = 'functional';
 
 const CanisterConfigArb = fc
-    .array(candidDefinitionArb({}, undefined, syntax))
+    .array(candidDefinitionArb({}, undefined, api))
     .chain((paramDefinitionsWithShapes) => {
         const initParamValues = definitionsToValueAndMetaArb(
             paramDefinitionsWithShapes
@@ -53,7 +53,7 @@ const CanisterConfigArb = fc
         const SimpleInitMethodArb = InitMethodArb(initDeployParamsArb, {
             generateBody: initMethodBodyGenerator,
             generateTests: generateInitTests,
-            syntax
+            api
         });
 
         const SimplePostUpgradeMethodArb = PostUpgradeMethodArb(
@@ -61,27 +61,27 @@ const CanisterConfigArb = fc
             {
                 generateBody: postUpgradeMethodBodyGenerator,
                 generateTests: generatePostUpgradeTests,
-                syntax
+                api
             }
         );
 
         const HeterogeneousQueryMethodArb = QueryMethodArb(
-            fc.array(CandidValueAndMetaArb(syntax)),
-            CandidReturnTypeArb(syntax),
+            fc.array(CandidValueAndMetaArb(api)),
+            CandidReturnTypeArb(api),
             {
                 generateBody: callableMethodBodyGenerator,
                 generateTests: () => [],
-                syntax
+                api
             }
         );
 
         const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-            fc.array(CandidValueAndMetaArb(syntax)),
-            CandidReturnTypeArb(syntax),
+            fc.array(CandidValueAndMetaArb(api)),
+            CandidReturnTypeArb(api),
             {
                 generateBody: callableMethodBodyGenerator,
                 generateTests: () => [],
-                syntax
+                api
             }
         );
 
@@ -108,9 +108,9 @@ const CanisterConfigArb = fc
             queryMethods,
             updateMethods
         ]): CanisterConfig<CorrespondingJSType, CorrespondingJSType> => {
-            const paramCandidTypeObjects = postUpgradeParams.map(
-                // The candidTypeObjects ought to be the same so it doesn't mater which we use to generate this list
-                (param) => param.src.candidTypeObject
+            const paramTypeObjects = postUpgradeParams.map(
+                // The typeObjects ought to be the same so it doesn't mater which we use to generate this list
+                (param) => param.src.typeObject
             );
 
             const globalInitVariableNames = initParams.map((_, i) =>
@@ -121,14 +121,12 @@ const CanisterConfigArb = fc
             );
             const globalInitVariableDeclarations = initParams.map(
                 (param, i) =>
-                    `let ${globalInitVarName(i)}: ${
-                        param.src.candidTypeAnnotation
-                    };`
+                    `let ${globalInitVarName(i)}: ${param.src.typeAnnotation};`
             );
             const globalPostUpgradeVariableDeclarations = postUpgradeParams.map(
                 (param, i) =>
                     `let ${globalPostUpgradeVarName(i)}: ${
-                        param.src.candidTypeAnnotation
+                        param.src.typeAnnotation
                     };`
             );
 
@@ -141,12 +139,12 @@ const CanisterConfigArb = fc
 
             const getPostUpgradeValues =
                 generateGetPostUpgradeValuesCanisterMethod(
-                    paramCandidTypeObjects,
+                    paramTypeObjects,
                     globalPostUpgradeVariableNames
                 );
 
             const getInitValues = generateGetInitValuesCanisterMethod(
-                paramCandidTypeObjects,
+                paramTypeObjects,
                 globalInitVariableNames
             );
 
@@ -173,7 +171,7 @@ const CanisterConfigArb = fc
     );
 
 function generateGetPostUpgradeValuesCanisterMethod(
-    paramCandidTypeObjects: string[],
+    paramTypeObjects: string[],
     globalVariableNames: string[]
 ): QueryMethod {
     return {
@@ -181,7 +179,7 @@ function generateGetPostUpgradeValuesCanisterMethod(
         globalDeclarations: [],
         sourceCode: /*TS*/ `getPostUpgradeValues: query(
             [],
-            Tuple(bool, ${paramCandidTypeObjects.join()}),
+            Tuple(bool, ${paramTypeObjects.join()}),
             () => {return [postUpgradeExecuted, ${globalVariableNames.join()}]}
         )`,
         tests: []
@@ -189,7 +187,7 @@ function generateGetPostUpgradeValuesCanisterMethod(
 }
 
 function generateGetInitValuesCanisterMethod(
-    paramCandidTypeObjects: string[],
+    paramTypeObjects: string[],
     globalVariableNames: string[]
 ): QueryMethod {
     return {
@@ -197,7 +195,7 @@ function generateGetInitValuesCanisterMethod(
         globalDeclarations: [],
         sourceCode: /*TS*/ `getInitValues: query(
             [],
-            Tuple(bool, ${paramCandidTypeObjects.join()}),
+            Tuple(bool, ${paramTypeObjects.join()}),
             () => {return [initExecuted, ${globalVariableNames.join()}]}
         )`,
         tests: []
@@ -287,4 +285,4 @@ function definitionsToValueAndMetaArb(
         );
 }
 
-runPropTests(CanisterArb(CanisterConfigArb, syntax));
+runPropTests(CanisterArb(CanisterConfigArb, api));

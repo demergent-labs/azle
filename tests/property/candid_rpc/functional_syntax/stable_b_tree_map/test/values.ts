@@ -19,10 +19,10 @@ export function ValuesTestArb(
                 'query'
             ]);
 
-            const returnCandidTypeObject = `Vec(${stableBTreeMap.valueSample.src.candidTypeObject})`;
+            const returnTypeObject = `Vec(${stableBTreeMap.valueSample.src.typeObject})`;
             const body = generateBody(
                 stableBTreeMap.name,
-                stableBTreeMap.valueSample.src.candidTypeAnnotation
+                stableBTreeMap.valueSample.src.typeAnnotation
             );
 
             const tests = generateTests(
@@ -33,7 +33,7 @@ export function ValuesTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: query([], ${returnCandidTypeObject}, () => {
+                sourceCode: `${functionName}: query([], ${returnTypeObject}, () => {
                 ${body}
             })`,
                 tests
@@ -67,10 +67,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from([valueSample.value.agentArgumentValue])
                     );
                 }
@@ -86,10 +86,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from([valueSample.value.agentArgumentValue])
                     );
                 }
@@ -105,10 +105,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            valueSample.src.candidTypeAnnotation
+                            valueSample.src.typeAnnotation
                         ).from([])
                     );
                 }

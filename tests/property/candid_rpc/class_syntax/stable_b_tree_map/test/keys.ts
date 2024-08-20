@@ -19,10 +19,10 @@ export function KeysTestArb(
                 'query'
             ]);
 
-            const returnCandidTypeObject = `IDL.Vec(${stableBTreeMap.keySample.src.candidTypeObject})`;
+            const returnTypeObject = `IDL.Vec(${stableBTreeMap.keySample.src.typeObject})`;
             const body = generateBody(
                 stableBTreeMap.name,
-                stableBTreeMap.keySample.src.candidTypeAnnotation
+                stableBTreeMap.keySample.src.typeAnnotation
             );
 
             const tests = generateTests(functionName, stableBTreeMap.keySample);
@@ -30,7 +30,7 @@ export function KeysTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `@query([], ${returnCandidTypeObject})
+                sourceCode: `@query([], ${returnTypeObject})
                 ${functionName}() {
                 ${body}
             }`,
@@ -65,10 +65,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            keySample.src.candidTypeAnnotation
+                            keySample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            keySample.src.candidTypeAnnotation
+                            keySample.src.typeAnnotation
                         ).from([keySample.value.agentArgumentValue])
                     );
                 }
@@ -84,10 +84,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            keySample.src.candidTypeAnnotation
+                            keySample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            keySample.src.candidTypeAnnotation
+                            keySample.src.typeAnnotation
                         ).from([keySample.value.agentArgumentValue])
                     );
                 }
@@ -103,10 +103,10 @@ function generateTests(
 
                     return testEquality(
                         getArrayForCandidType(
-                            keySample.src.candidTypeAnnotation
+                            keySample.src.typeAnnotation
                         ).from(result),
                         getArrayForCandidType(
-                            keySample.src.candidTypeAnnotation
+                            keySample.src.typeAnnotation
                         ).from([])
                     );
                 }

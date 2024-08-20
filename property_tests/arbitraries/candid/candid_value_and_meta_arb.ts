@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType as RuntimeCandidType } from '../../../src/lib/experimental';
-import { Syntax } from '../types';
+import { Api } from '../types';
 import { CandidValueConstraints } from './candid_values_arb';
 import { BlobArb } from './constructed/blob_arb';
 import { OptArb } from './constructed/opt_arb';
@@ -33,11 +33,11 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
     value: {
         agentArgumentValue: T;
         agentResponseValue: E;
-        runtimeCandidTypeObject: RuntimeCandidType;
+        runtimeTypeObject: RuntimeCandidType;
     };
     src: {
-        candidTypeAnnotation: string;
-        candidTypeObject: string;
+        typeAnnotation: string;
+        typeObject: string;
         variableAliasDeclarations: string[];
         imports: Set<string>;
         valueLiteral: string;
@@ -48,33 +48,33 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
  * An arbitrary representing all possible Candid types.
  */
 export function CandidValueAndMetaArb(
-    syntax: Syntax,
+    api: Api,
     constraints?: CandidValueConstraints
 ): fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>> {
     return fc.oneof(
-        BlobArb(syntax),
-        OptArb(syntax, constraints),
-        RecordArb(syntax, constraints),
-        TupleArb(syntax, constraints),
-        VariantArb(syntax, constraints),
-        VecArb(syntax, constraints),
-        Float32Arb(syntax, constraints),
-        Float64Arb(syntax, constraints),
-        IntArb(syntax),
-        Int8Arb(syntax),
-        Int16Arb(syntax),
-        Int32Arb(syntax),
-        Int64Arb(syntax),
-        NatArb(syntax),
-        Nat8Arb(syntax),
-        Nat16Arb(syntax),
-        Nat32Arb(syntax),
-        Nat64Arb(syntax),
-        BoolArb(syntax),
-        NullArb(syntax),
-        TextArb(syntax, constraints),
-        FuncArb(syntax),
-        PrincipalArb(syntax)
+        BlobArb(api),
+        OptArb(api, constraints),
+        RecordArb(api, constraints),
+        TupleArb(api, constraints),
+        VariantArb(api, constraints),
+        VecArb(api, constraints),
+        Float32Arb(api, constraints),
+        Float64Arb(api, constraints),
+        IntArb(api),
+        Int8Arb(api),
+        Int16Arb(api),
+        Int32Arb(api),
+        Int64Arb(api),
+        NatArb(api),
+        Nat8Arb(api),
+        Nat16Arb(api),
+        Nat32Arb(api),
+        Nat64Arb(api),
+        BoolArb(api),
+        NullArb(api),
+        TextArb(api, constraints),
+        FuncArb(api),
+        PrincipalArb(api)
     );
 }
 

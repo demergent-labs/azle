@@ -2,13 +2,13 @@ import fc from 'fast-check';
 
 import { Test } from '../../test';
 import { VoidArb } from '../candid/primitive/void';
-import { Syntax } from '../types';
+import { Api } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    CallbackLocation,
-    CallbackLocationArb,
-    generateCallback,
+    generateMethodImplementation,
+    MethodImplementationLocation,
+    MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
 
@@ -22,31 +22,31 @@ export type InspectMessageMethod = {
 export function InspectMessageMethodArb(constraints: {
     generateBody: BodyGenerator;
     generateTests: TestsGenerator;
-    syntax: Syntax;
-    callbackLocation?: CallbackLocation;
+    api: Api;
+    methodImplementationLocation?: MethodImplementationLocation;
 }): fc.Arbitrary<InspectMessageMethod> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb(constraints.syntax),
-            CallbackLocationArb,
+            VoidArb(constraints.api),
+            MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
         )
         .map(
             ([
                 functionName,
                 returnType,
-                defaultCallbackLocation,
-                callbackName
+                defaultMethodImplementationLocation,
+                methodName
             ]): InspectMessageMethod => {
-                const callbackLocation =
-                    constraints.syntax === 'class'
+                const methodImplementationLocation =
+                    constraints.api === 'class'
                         ? 'INLINE'
-                        : constraints.callbackLocation ??
-                          defaultCallbackLocation;
+                        : constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation;
 
                 const inspectMessageImports =
-                    constraints.syntax === 'functional'
+                    constraints.api === 'functional'
                         ? ['ic']
                         : ['caller', 'acceptMessage', 'methodName'];
                 const imports = new Set([
@@ -54,28 +54,28 @@ export function InspectMessageMethodArb(constraints: {
                     ...inspectMessageImports
                 ]);
 
-                const callback = generateCallback(
+                const methodImplementation = generateMethodImplementation(
                     [],
                     returnType,
                     constraints.generateBody,
-                    callbackLocation,
-                    callbackName,
-                    constraints.syntax
+                    methodImplementationLocation,
+                    methodName,
+                    constraints.api
                 );
 
                 const globalDeclarations =
-                    callbackLocation === 'STANDALONE' ? [callback] : [];
+                    methodImplementationLocation === 'STANDALONE'
+                        ? [methodImplementation]
+                        : [];
 
                 const sourceCode =
-                    constraints.syntax === 'functional'
+                    constraints.api === 'functional'
                         ? `${functionName}: inspectMessage(${
-                              callbackLocation === 'STANDALONE'
-                                  ? callbackName
-                                  : callback
+                              methodImplementationLocation === 'STANDALONE'
+                                  ? methodName
+                                  : methodImplementation
                           })`
-                        : `@inspectMessage` +
-                          `\n` +
-                          `${functionName}${callback}`;
+                        : `@inspectMessage\n${functionName}${methodImplementation}`;
 
                 const tests = constraints.generateTests(
                     functionName,

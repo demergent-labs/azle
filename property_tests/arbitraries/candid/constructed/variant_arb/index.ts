@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../../config';
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import { candidDefinitionMemo } from '../../candid_definition_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
@@ -15,11 +15,11 @@ export type Variant = {
 };
 
 export function VariantArb(
-    syntax: Syntax,
+    api: Api,
     constraints?: CandidValueConstraints
 ): fc.Arbitrary<CandidValueAndMeta<Variant>> {
     return CandidValueAndMetaArbGenerator(
-        VariantDefinitionArb(candidDefinitionMemo, [], syntax, {
+        VariantDefinitionArb(candidDefinitionMemo, [], api, {
             depthLevel: DEFAULT_DEFINITION_MAX_DEPTH - 1
         }),
         VariantValuesArb,

@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Syntax } from '../../types';
+import { Api } from '../../types';
 import { BlobDefinitionArb } from '../constructed/blob_arb/definition_arb';
 import { OptDefinitionArb } from '../constructed/opt_arb/definition_arb';
 import { RecordDefinitionArb } from '../constructed/record_arb/definition_arb';
@@ -32,7 +32,7 @@ export const COMPLEX_ARB_COUNT = 8;
 
 export function complexCandidDefinitionMemo(
     parents: RecursiveCandidName[],
-    syntax: Syntax,
+    api: Api,
     constraints: DefinitionConstraints = {}
 ): CandidDefinitionMemo {
     const weights = constraints.weights ?? {};
@@ -48,17 +48,13 @@ export function complexCandidDefinitionMemo(
     return fc.memo((depthLevel) => {
         return fc.oneof(
             {
-                arbitrary: BlobDefinitionArb(syntax),
+                arbitrary: BlobDefinitionArb(api),
                 weight: weights.blob ?? 1
             },
             {
                 arbitrary: FuncDefinitionArb(
-                    candidDefinitionMemo(
-                        [],
-                        syntax,
-                        newConstraints
-                    )(depthLevel),
-                    syntax
+                    candidDefinitionMemo([], api, newConstraints)(depthLevel),
+                    api
                 ),
                 weight: weights.func ?? 1
             },
@@ -66,30 +62,22 @@ export function complexCandidDefinitionMemo(
                 arbitrary: OptDefinitionArb(
                     candidDefinitionMemo,
                     parents,
-                    syntax,
+                    api,
                     newConstraints
                 ),
                 weight: weights.opt ?? 1
             },
             {
                 arbitrary: RecordDefinitionArb(
-                    candidDefinitionMemo(
-                        [],
-                        syntax,
-                        newConstraints
-                    )(depthLevel),
-                    syntax
+                    candidDefinitionMemo([], api, newConstraints)(depthLevel),
+                    api
                 ),
                 weight: weights.record ?? 1
             },
             {
                 arbitrary: TupleDefinitionArb(
-                    candidDefinitionMemo(
-                        [],
-                        syntax,
-                        newConstraints
-                    )(depthLevel),
-                    syntax
+                    candidDefinitionMemo([], api, newConstraints)(depthLevel),
+                    api
                 ),
                 weight: weights.tuple ?? 1
             },
@@ -97,7 +85,7 @@ export function complexCandidDefinitionMemo(
                 arbitrary: VariantDefinitionArb(
                     candidDefinitionMemo,
                     parents,
-                    syntax,
+                    api,
                     newConstraints
                 ),
                 weight: weights.variant ?? 1
@@ -106,19 +94,15 @@ export function complexCandidDefinitionMemo(
                 arbitrary: VecDefinitionArb(
                     candidDefinitionMemo,
                     parents,
-                    syntax,
+                    api,
                     constraints
                 ),
                 weight: weights.vec ?? 1
             },
             {
                 arbitrary: ServiceDefinitionArb(
-                    candidDefinitionMemo(
-                        [],
-                        syntax,
-                        newConstraints
-                    )(depthLevel),
-                    syntax
+                    candidDefinitionMemo([], api, newConstraints)(depthLevel),
+                    api
                 ),
                 weight: weights.service ?? 0
                 // TODO Service is disabled until it is more refined. Maybe the

@@ -6,7 +6,7 @@ import {
 } from '../../../../../src/lib/experimental/canister_methods/methods/';
 import { CanisterMethodInfo } from '../../../../../src/lib/experimental/canister_methods/types/canister_method_info';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
-import { Syntax } from '../../../types';
+import { Api } from '../../../types';
 import {
     CandidDefinition,
     WithShapes,
@@ -19,7 +19,7 @@ type Mode = 'query' | 'update';
 
 export type ServiceMethodDefinition = {
     name: string;
-    runtimeCandidTypeObject: CanisterMethodInfo<CandidType[], CandidType>;
+    runtimeTypeObject: CanisterMethodInfo<CandidType[], CandidType>;
     imports: Set<string>;
     variableAliasDeclarations: string[];
     src: string;
@@ -28,14 +28,14 @@ export type ServiceMethodDefinition = {
 
 export function ServiceMethodArb(
     candidDefArb: WithShapesArb<CandidDefinition>,
-    syntax: Syntax
+    api: Api
 ): WithShapesArb<ServiceMethodDefinition> {
     return fc
         .tuple(
             JsFunctionNameArb,
             fc.constantFrom<Mode>('query', 'update'),
             fc.array(candidDefArb),
-            fc.oneof(candidDefArb, VoidDefinitionArb(syntax))
+            fc.oneof(candidDefArb, VoidDefinitionArb(api))
         )
         .map(
             ([
@@ -49,8 +49,8 @@ export function ServiceMethodArb(
                 const recursiveShapes = paramsAndShapes.reduce((acc, thing) => {
                     return { ...acc, ...thing.recursiveShapes };
                 }, returnTypeAndShapes.recursiveShapes);
-                const paramCandidTypeObjects = params.map(
-                    (param) => param.candidMeta.candidTypeObject
+                const paramTypeObjects = params.map(
+                    (param) => param.candidMeta.typeObject
                 );
 
                 const variableAliasDeclarations = params.reduce(
@@ -63,9 +63,9 @@ export function ServiceMethodArb(
                     returnType.candidMeta.variableAliasDeclarations
                 );
 
-                const src = `${name}: ${mode}([${paramCandidTypeObjects}], ${returnType.candidMeta.candidTypeObject})`;
-                const idl = `${name}: IDL.Func([${paramCandidTypeObjects}], [${
-                    returnType.candidMeta.candidTypeObject
+                const src = `${name}: ${mode}([${paramTypeObjects}], ${returnType.candidMeta.typeObject})`;
+                const idl = `${name}: IDL.Func([${paramTypeObjects}], [${
+                    returnType.candidMeta.typeObject
                 }], ${mode === 'query' ? '["query"]' : 'undefined'})`;
 
                 const imports = params.reduce(
@@ -75,7 +75,7 @@ export function ServiceMethodArb(
                     new Set([mode, ...returnType.candidMeta.imports])
                 );
 
-                const runtimeCandidTypeObject = generateRuntimeCandidTypeObject(
+                const runtimeTypeObject = generateRuntimeTypeObject(
                     mode,
                     params,
                     returnType
@@ -84,7 +84,7 @@ export function ServiceMethodArb(
                 return {
                     definition: {
                         name,
-                        runtimeCandidTypeObject,
+                        runtimeTypeObject,
                         imports,
                         variableAliasDeclarations,
                         src,
@@ -96,17 +96,16 @@ export function ServiceMethodArb(
         );
 }
 
-function generateRuntimeCandidTypeObject(
+function generateRuntimeTypeObject(
     mode: Mode,
     params: CandidDefinition[],
     returnType: CandidDefinition
 ): CanisterMethodInfo<CandidType[], CandidType> {
     const queryOrUpdate = mode === 'query' ? query : update;
-    const paramCandidTypeObjects = params.map(
-        (param) => param.candidMeta.runtimeCandidTypeObject
+    const paramTypeObjects = params.map(
+        (param) => param.candidMeta.runtimeTypeObject
     );
-    const returnCandidTypeObject =
-        returnType.candidMeta.runtimeCandidTypeObject;
+    const returnTypeObject = returnType.candidMeta.runtimeTypeObject;
 
-    return queryOrUpdate(paramCandidTypeObjects, returnCandidTypeObject);
+    return queryOrUpdate(paramTypeObjects, returnTypeObject);
 }

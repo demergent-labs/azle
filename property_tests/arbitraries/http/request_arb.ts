@@ -4,7 +4,7 @@ import { HttpRequest, None, Some } from '../../../src/lib/experimental';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
-import { Syntax } from '../types';
+import { Api } from '../types';
 import { BodyArb } from './body_arb';
 import { HttpHeadersArb } from './headers_arb';
 
@@ -89,7 +89,7 @@ function HttpRequestValueArb() {
 }
 
 export function HttpRequestArb(
-    syntax: Syntax
+    api: Api
 ): fc.Arbitrary<CandidValueAndMeta<HttpRequest>> {
     return HttpRequestValueArb().map((httpRequest) => {
         const headerStrings = httpRequest.headers
@@ -103,31 +103,31 @@ export function HttpRequestArb(
 
         const certificateVersion =
             'Some' in httpRequest.certificate_version
-                ? syntax === 'functional'
+                ? api === 'functional'
                     ? `Some(${httpRequest.certificate_version.Some})`
                     : `[${httpRequest.certificate_version.Some}]`
-                : syntax === 'functional'
+                : api === 'functional'
                 ? `None`
                 : [];
 
         const optImport =
-            syntax === 'functional'
+            api === 'functional'
                 ? ['Some' in httpRequest.certificate_version ? 'Some' : 'None']
                 : [];
 
-        const requestImport = syntax === 'functional' ? 'HttpRequest' : 'IDL';
+        const requestImport = api === 'functional' ? 'HttpRequest' : 'IDL';
 
         return {
             value: {
                 agentArgumentValue: httpRequest,
                 agentResponseValue: httpRequest,
-                runtimeCandidTypeObject: HttpRequest
+                runtimeTypeObject: HttpRequest
             },
             src: {
-                candidTypeAnnotation: 'HttpRequest',
-                candidTypeObject: 'HttpRequest',
+                typeAnnotation: 'HttpRequest',
+                typeObject: 'HttpRequest',
                 variableAliasDeclarations: [
-                    generateVariableAliasDeclarations(syntax)
+                    generateVariableAliasDeclarations(api)
                 ],
                 imports: new Set([requestImport, ...optImport]),
                 valueLiteral: `{
@@ -143,8 +143,8 @@ export function HttpRequestArb(
     });
 }
 
-function generateVariableAliasDeclarations(syntax: Syntax): string {
-    if (syntax === 'class') {
+function generateVariableAliasDeclarations(api: Api): string {
+    if (api === 'class') {
         return /*TS*/ `
         export type RequestHeaderField = [string, string];
         export const RequestHeaderField = IDL.Tuple(IDL.Text, IDL.Text);

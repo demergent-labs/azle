@@ -19,13 +19,13 @@ export function GetTestArb(
                 'Some'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.keySample.src.candidTypeObject
+            const paramTypeObjects = [
+                stableBTreeMap.keySample.src.typeObject
             ].join(', ');
 
-            const returnCandidTypeObject = `Opt(${stableBTreeMap.valueSample.src.candidTypeObject})`;
+            const returnTypeObject = `Opt(${stableBTreeMap.valueSample.src.typeObject})`;
             const valueTypeIsNull =
-                stableBTreeMap.valueSample.src.candidTypeAnnotation === 'Null';
+                stableBTreeMap.valueSample.src.typeAnnotation === 'Null';
             const body = generateBody(stableBTreeMap.name, valueTypeIsNull);
 
             const tests = generateTests(
@@ -37,7 +37,7 @@ export function GetTestArb(
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0) => {
+                sourceCode: `${functionName}: query([${paramTypeObjects}], ${returnTypeObject}, (param0) => {
                 ${body}
             })`,
                 tests
