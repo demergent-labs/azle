@@ -89,7 +89,7 @@ export async function runPropTests(
                         );
 
                         execSync(
-                            `node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
+                            `tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
                             {
                                 stdio: 'inherit'
                             }
