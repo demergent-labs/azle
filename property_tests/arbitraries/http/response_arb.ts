@@ -101,7 +101,10 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
                 runtimeTypeObject: HttpResponse(token.value.runtimeTypeObject)
             },
             src: {
-                typeAnnotation: `HttpResponse<${token.src.typeAnnotation}>`,
+                typeAnnotation:
+                    api === 'functional'
+                        ? `HttpResponse<${token.src.typeAnnotation}>`
+                        : 'HttpResponse',
                 typeObject:
                     api === 'functional'
                         ? `HttpResponse(${token.src.typeObject})`
