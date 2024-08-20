@@ -119,7 +119,7 @@ function generateNonEmptyHeaderCheck(name: string, value: string): string {
 
 function generateBodyCheck(body: Uint8Array, requestParamName: string): string {
     return `if (${requestParamName}.method !== 'GET' && ${requestParamName}.body !== undefined) {
-        const requestBody = Buffer.from(${requestParamName}.body).toString('utf-8');
+        const requestBody = new TextDecoder().decode(${requestParamName}.body);
         const expectedBody = "${escape(Buffer.from(body).toString('utf-8'))}"
         if (requestBody !== expectedBody) {
                 throw new Error(\`Unexpected value for body. Expected \${expectedBody}, but received \${requestBody}\`)

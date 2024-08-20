@@ -88,7 +88,7 @@ runPropTests(CanisterArb(CanisterConfigArb, api));
 
 function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
     return {
-        imports: new Set(['query', 'StableBTreeMap']),
+        imports: new Set(['query', 'StableBTreeMap', 'IDL']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `
             @query([], IDL.Opt(IDL.Bool))
