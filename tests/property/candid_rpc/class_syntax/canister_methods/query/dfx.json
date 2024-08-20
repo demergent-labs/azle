@@ -7,9 +7,6 @@
             "declarations": {
                 "output": "test/dfx_generated/canister",
                 "node_compatibility": true
-            },
-            "custom": {
-                "experimental": true
             }
         }
     }
