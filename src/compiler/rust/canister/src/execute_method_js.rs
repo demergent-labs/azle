@@ -14,11 +14,8 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
 
         runtime.run_with_context(|context| {
             let global = context.get_global();
-            let exports = global.get("exports");
 
-            let canister_methods = exports.get("canisterMethods").unwrap();
-
-            let callbacks = canister_methods.get("callbacks").unwrap();
+            let callbacks = global.get("_azleCallbacks");
             let method_callback = callbacks.get(function_name).unwrap();
 
             let candid_args = if pass_arg_data {

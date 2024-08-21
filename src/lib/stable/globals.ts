@@ -1,37 +1,22 @@
 import { IDL } from '@dfinity/candid';
 import { TextDecoder, TextEncoder } from 'text-encoding';
 
+import { MethodMeta } from '../../build/stable/compile/candid_and_method_meta';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { print } from './ic_apis';
 import { AzleIc } from './ic_apis/azle_ic';
 
-type CanisterMethods = {
-    candid: string;
-    queries: CanisterMethod[];
-    updates: CanisterMethod[];
-    init?: CanisterMethod;
-    pre_upgrade?: CanisterMethod;
-    post_upgrade?: CanisterMethod;
-    heartbeat?: CanisterMethod;
-    inspect_message?: CanisterMethod;
-    callbacks: {
-        [key: string]: (...args: any) => any;
-    };
-};
-
-type CanisterMethod = {
-    name: string;
-    index: number;
-    composite?: boolean;
+type Callbacks = {
+    [key: string]: (...args: any) => any;
 };
 
 declare global {
     // eslint-disable-next-line no-var
+    var _azleCallbacks: Callbacks;
+    // eslint-disable-next-line no-var
     var _azleCanisterClassInstance: any;
     // eslint-disable-next-line no-var
     var _azleCanisterMethodIdlTypes: { [key: string]: IDL.FuncClass };
-    // eslint-disable-next-line no-var
-    var _azleCanisterMethods: CanisterMethods;
     // eslint-disable-next-line no-var
     var _azleCanisterMethodsIndex: number;
     // eslint-disable-next-line no-var
@@ -46,6 +31,8 @@ declare global {
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
     var _azleInsideCanister: boolean;
+    // eslint-disable-next-line no-var
+    var _azleMethodMeta: MethodMeta;
     // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
     // eslint-disable-next-line no-var
@@ -65,17 +52,17 @@ globalThis._azleInsideCanister =
 // TODO do we need to disable any other wasmedge-quickjs globals
 // TODO that we don't think are stable yet?
 if (globalThis._azleInsideCanister === true) {
+    globalThis._azleCallbacks = {};
+
     globalThis._azleCanisterMethodsIndex = 0;
 
     globalThis._azleCanisterMethodIdlTypes = {};
 
     globalThis._azleInitAndPostUpgradeIdlTypes = [];
 
-    globalThis._azleCanisterMethods = {
-        candid: '',
+    globalThis._azleMethodMeta = {
         queries: [],
-        updates: [],
-        callbacks: {}
+        updates: []
     };
 
     globalThis._azleTimerCallbacks = {};

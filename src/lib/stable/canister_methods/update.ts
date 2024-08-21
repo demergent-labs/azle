@@ -16,14 +16,14 @@ export function update<This, Args extends any[], Return>(
         const index = globalThis._azleCanisterMethodsIndex++;
         const name = context.name as string;
 
-        globalThis._azleCanisterMethods.updates.push({ name, index });
+        globalThis._azleMethodMeta.updates?.push({ name, index });
 
         globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
             paramIdlTypes,
             returnIdlType === undefined ? [] : [returnIdlType]
         );
 
-        globalThis._azleCanisterMethods.callbacks[index.toString()] = (
+        globalThis._azleCallbacks[index.toString()] = (
             ...args: any[]
         ): void => {
             executeAndReplyWithCandidSerde(

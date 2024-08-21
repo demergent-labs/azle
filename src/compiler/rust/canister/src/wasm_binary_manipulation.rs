@@ -7,8 +7,8 @@ pub struct WasmData {
     pub env_vars: Vec<(String, String)>,
     #[cfg(feature = "experimental")]
     pub consumer: Consumer,
+    #[cfg(feature = "experimental")]
     pub management_did: String,
-    pub experimental: bool,
 }
 
 #[inline(never)]

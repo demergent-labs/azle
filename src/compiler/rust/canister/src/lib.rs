@@ -30,6 +30,8 @@ thread_local! {
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }
 
+const EXPERIMENTAL: bool = cfg!(feature = "experimental");
+
 pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
     context.promise_loop_poll();
 

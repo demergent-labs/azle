@@ -3,7 +3,7 @@ use wasmedge_quickjs::AsObject;
 
 use crate::{
     execute_method_js, ic, run_event_loop, wasm_binary_manipulation::get_js_code,
-    wasm_binary_manipulation::get_wasm_data, MEMORY_MANAGER_REF_CELL, RUNTIME,
+    wasm_binary_manipulation::get_wasm_data, EXPERIMENTAL, MEMORY_MANAGER_REF_CELL, RUNTIME,
 };
 
 #[cfg(feature = "experimental")]
@@ -74,7 +74,6 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
         init,
         function_index,
         pass_arg_data,
-        wasm_data.experimental,
     );
 
     #[cfg(feature = "experimental")]
@@ -83,13 +82,7 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
     });
 }
 
-pub fn initialize_js(
-    js: &str,
-    init: bool,
-    function_index: i32,
-    pass_arg_data: i32,
-    experimental: bool,
-) {
+pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
     let mut rt = wasmedge_quickjs::Runtime::new();
 
     rt.run_with_context(|context| {
@@ -117,7 +110,7 @@ pub fn initialize_js(
 
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
-        context.eval_global_str(format!("globalThis._azleExperimental = {experimental};"));
+        context.eval_global_str(format!("globalThis._azleExperimental = {EXPERIMENTAL};"));
         context.eval_module_str(js.to_string(), "azle_main");
 
         run_event_loop(context);

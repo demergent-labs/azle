@@ -11,7 +11,7 @@ export function init<This, Args extends any[], Return>(
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
 
-        globalThis._azleCanisterMethods.init = {
+        globalThis._azleMethodMeta.init = {
             name: context.name as string,
             index
         };
@@ -20,7 +20,7 @@ export function init<This, Args extends any[], Return>(
             IDL.Func(paramIdlTypes, [], ['init'])
         );
 
-        globalThis._azleCanisterMethods.callbacks[index.toString()] = (
+        globalThis._azleCallbacks[index.toString()] = (
             ...args: any[]
         ): void => {
             executeAndReplyWithCandidSerde(

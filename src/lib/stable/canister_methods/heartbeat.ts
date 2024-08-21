@@ -6,12 +6,12 @@ export function heartbeat<This, Args extends any[], Return>(
 ): void {
     const index = globalThis._azleCanisterMethodsIndex++;
 
-    globalThis._azleCanisterMethods.heartbeat = {
+    globalThis._azleMethodMeta.heartbeat = {
         name: context.name as string,
         index
     };
 
-    globalThis._azleCanisterMethods.callbacks[index.toString()] = (): void => {
+    globalThis._azleCallbacks[index.toString()] = (): void => {
         executeAndReplyWithCandidSerde(
             'heartbeat',
             [],

@@ -36,7 +36,7 @@ pub fn reload_js(
 
         if reloaded_js_complete_bytes.len() as u64 == total_len {
             let js_string = String::from_utf8_lossy(&reloaded_js_complete_bytes);
-            initialize_js(&js_string, false, function_index, 1, true); // TODO should the last arg be 0?
+            initialize_js(&js_string, false, function_index, 1); // TODO should the last arg be 0?
             ic_cdk::println!("Azle: Reloaded canister JavaScript");
         }
     });

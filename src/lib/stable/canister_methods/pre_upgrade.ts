@@ -6,12 +6,12 @@ export function preUpgrade<This, Args extends any[], Return>(
 ): void {
     const index = globalThis._azleCanisterMethodsIndex++;
 
-    globalThis._azleCanisterMethods.pre_upgrade = {
+    globalThis._azleMethodMeta.pre_upgrade = {
         name: context.name as string,
         index
     };
 
-    globalThis._azleCanisterMethods.callbacks[index.toString()] = (): void => {
+    globalThis._azleCallbacks[index.toString()] = (): void => {
         executeAndReplyWithCandidSerde(
             'preUpgrade',
             [],
