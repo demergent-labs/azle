@@ -84,8 +84,11 @@ const CanisterConfigArb = fc
             CorrespondingJSType,
             CorrespondingJSType
         > => {
-            const initParamTypes = initMethod.params.map(
+            const initParamTypeObjects = initMethod.params.map(
                 (param) => param.value.src.typeObject
+            );
+            const initParamTypeAnnotations = initMethod.params.map(
+                (param) => param.value.src.typeAnnotation
             );
 
             const globalInitVariableNames = initMethod.params.map(
@@ -102,7 +105,8 @@ const CanisterConfigArb = fc
             ];
 
             const getInitValues = generateGetInitValuesCanisterMethod(
-                initParamTypes,
+                initParamTypeObjects,
+                initParamTypeAnnotations,
                 globalInitVariableNames
             );
 
@@ -118,15 +122,16 @@ const CanisterConfigArb = fc
 runPropTests(CanisterArb(context, CanisterConfigArb));
 
 function generateGetInitValuesCanisterMethod(
-    paramTypes: string[],
+    paramTypeObjects: string[],
+    paramTypeAnnotations: string[],
     globalInitVariableNames: string[]
 ): QueryMethod {
     return {
         imports: new Set(['IDL', 'query']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `
-            @query([], IDL.Tuple(IDL.Bool, ${paramTypes.join()}))
-            getInitValues(){
+            @query([], IDL.Tuple(IDL.Bool, ${paramTypeObjects.join()}))
+            getInitValues(): [boolean, ${paramTypeAnnotations.join()}] {
                 return [initialized, ${globalInitVariableNames.join()}]
             }
         `,

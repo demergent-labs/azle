@@ -3,8 +3,15 @@ import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candi
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
 
 export function generateBody(
-    _namedParams: Named<CandidValueAndMeta<CorrespondingJSType>>[],
+    namedParams: Named<CandidValueAndMeta<CorrespondingJSType>>[],
     returnType: CandidValueAndMeta<CorrespondingJSType>
 ): string {
-    return `return ${returnType.src.valueLiteral}`;
+    // Print out params to avoid unused parameter warnings
+    const printParams = namedParams.map(
+        (param) => `console.log(${param.name})`
+    );
+    return /*TS*/ `
+        ${printParams.join('\n')}
+        return ${returnType.src.valueLiteral}
+    `;
 }
