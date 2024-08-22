@@ -1,0 +1,17 @@
+{
+    "scripts": {
+        "pretest": "tsx test/pretest.ts",
+        "test": "jest"
+    },
+    "dependencies": {
+        "azle": "0.23.0"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "^0.19.2",
+        "async_await_end_to_end_test_functional_api": "file:../../functional_api/async_await",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.1.5",
+        "tsx": "^4.15.7",
+        "typescript": "^5.2.2"
+    }
+}

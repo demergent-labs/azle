@@ -35,7 +35,7 @@ fs.readFile(packageJsonPath, 'utf8', (err, packageData) => {
 
     // Get the current directory name
     const currentDirectory = path.basename(process.cwd());
-    const devDependencyKey = `${currentDirectory}_end_to_end_test_functional_syntax`;
+    const devDependencyKey = `${currentDirectory}_end_to_end_test_functional_api`;
     const devDependencyPath = packageJson.devDependencies[devDependencyKey];
 
     if (!devDependencyPath || !devDependencyPath.startsWith('file:')) {

@@ -5,7 +5,7 @@ import * as path from 'path';
 const currentDirectory = path.basename(process.cwd());
 
 // Define the new name for the package
-const newName = `${currentDirectory}_end_to_end_test_functional_syntax`;
+const newName = `${currentDirectory}_end_to_end_test_functional_api`;
 
 // Path to the package.json file
 const packageJsonPath = path.join(process.cwd(), 'package.json');

@@ -5,8 +5,8 @@ import * as path from 'path';
 const currentDirectory = path.basename(process.cwd());
 
 // Define the new dev dependency
-const newDependencyName = `${currentDirectory}_end_to_end_test_functional_syntax`;
-const newDependencyPath = `file:../../functional_syntax/${currentDirectory}`;
+const newDependencyName = `${currentDirectory}_end_to_end_test_functional_api`;
+const newDependencyPath = `file:../../functional_api/${currentDirectory}`;
 
 // Path to the package.json file
 const packageJsonPath = path.join(process.cwd(), 'package.json');

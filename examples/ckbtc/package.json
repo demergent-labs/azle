@@ -28,7 +28,7 @@
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
         "@dfinity/identity": "^0.19.2",
-        "ckbtc_end_to_end_test_functional_syntax": "file:../../tests/end_to_end/candid_rpc/functional_syntax/ckbtc",
+        "ckbtc_end_to_end_test_functional_api": "file:../../tests/end_to_end/candid_rpc/functional_api/ckbtc",
         "jest": "^29.7.0",
         "ts-jest": "^29.1.4",
         "tsx": "^4.15.7",

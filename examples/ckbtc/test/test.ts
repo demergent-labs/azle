@@ -4,8 +4,8 @@ import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
-import { Config } from 'ckbtc_end_to_end_test_functional_syntax/test/test';
-import { getTests } from 'ckbtc_end_to_end_test_functional_syntax/test/tests';
+import { Config } from 'ckbtc_end_to_end_test_functional_api/test/test';
+import { getTests } from 'ckbtc_end_to_end_test_functional_api/test/tests';
 import { existsSync, rmSync } from 'fs-extra';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects

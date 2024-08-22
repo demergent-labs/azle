@@ -11,7 +11,7 @@ const testFilePath = path.join(process.cwd(), 'test', 'test.ts');
 const existingImportStatement = "import { getTests } from './tests';";
 
 // New import statement to add
-const newImportStatement = `import { getTests } from '${currentDirectory}_end_to_end_test_functional_syntax/test/tests';`;
+const newImportStatement = `import { getTests } from '${currentDirectory}_end_to_end_test_functional_api/test/tests';`;
 
 // Read the test.ts file
 fs.readFile(testFilePath, 'utf8', (err, data) => {

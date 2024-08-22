@@ -1,0 +1,21 @@
+{
+    "name": "bitcoin_end_to_end_test_functional_api",
+    "scripts": {
+        "bitcoind": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
+        "bitcoin-cli": "bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data -rpcport=18443",
+        "deploy": "./scripts/deploy.sh bitcoin",
+        "install": "./scripts/install.sh",
+        "pretest": "tsx test/pretest.ts",
+        "test": "jest"
+    },
+    "dependencies": {
+        "azle": "0.23.0"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "0.11.1",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.1.4",
+        "tsx": "^4.15.7",
+        "typescript": "^5.2.2"
+    }
+}
