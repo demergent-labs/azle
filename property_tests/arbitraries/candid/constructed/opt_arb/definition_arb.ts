@@ -87,13 +87,19 @@ function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[]
 ): WithShapesArb<CandidDefinition> {
-    const constraints = context.constraints;
-    const depthLevel = constraints.depthLevel ?? 0;
+    const depthLevel = context.constraints.depthLevel ?? 0;
+    const newContext = {
+        ...context,
+        constraints: {
+            ...context.constraints,
+            depthLevel: depthLevel - 1
+        }
+    };
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || depthLevel < 1) {
             // If there are no recursive parents or we have reached a depth
             // level of 0 just do a regular arb inner type
-            return candidArb(context, parents)(depthLevel);
+            return candidArb(newContext, parents)(depthLevel);
         }
         return fc.oneof(
             {
@@ -104,7 +110,7 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(context, parents)(depthLevel),
+                arbitrary: candidArb(newContext, parents)(depthLevel),
                 weight: 1
             }
         );
