@@ -26,6 +26,7 @@ export function RemoveTestArb(
             ].join(', ');
 
             const returnTypeObject = `IDL.Opt(${stableBTreeMap.valueSample.src.typeObject})`;
+            const returnTypeAnnotation = `[${stableBTreeMap.valueSample.src.typeAnnotation}] | []`;
             const valueTypeIsNull =
                 stableBTreeMap.valueSample.src.typeAnnotation === 'null';
             const body = generateBody(stableBTreeMap.name, valueTypeIsNull);
@@ -40,7 +41,7 @@ export function RemoveTestArb(
                 imports,
                 globalDeclarations: [],
                 sourceCode: `@update([${paramTypeObjects}], ${returnTypeObject})
-                ${functionName}(${paramNames}) {
+                ${functionName}(${paramNames}): ${returnTypeAnnotation} {
                 ${body}
             }`,
                 tests
@@ -53,12 +54,16 @@ function generateBody(
     valueTypeIsNull: boolean
 ): string {
     return /*TS*/ `
-        const containsKey = ${stableBTreeMapName}.containsKey(param0); // For situations where the stored value is literally null
+        ${
+            valueTypeIsNull
+                ? `const containsKey = ${stableBTreeMapName}.containsKey(param0);`
+                : ''
+        }
         const result = ${stableBTreeMapName}.remove(param0);
         if (result === null ${valueTypeIsNull ? '&& !containsKey' : ''}) {
-            return None
+            return []
         } else {
-            return Some(result)
+            return [result]
         }
     `;
 }

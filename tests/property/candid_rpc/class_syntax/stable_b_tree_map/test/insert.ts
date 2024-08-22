@@ -28,6 +28,7 @@ export function InsertTestArb(
             ].join(', ');
 
             const returnTypeObject = `IDL.Opt(${stableBTreeMap.valueSample.src.typeObject})`;
+            const returnTypeAnnotation = `[${stableBTreeMap.valueSample.src.typeAnnotation}] | []`;
             const body = generateBody(stableBTreeMap.name);
 
             const tests = generateTests(
@@ -40,7 +41,7 @@ export function InsertTestArb(
                 imports,
                 globalDeclarations: [],
                 sourceCode: `@update([${paramTypeObjects}], ${returnTypeObject})
-                ${functionName}(${paramNames}) {
+                ${functionName}(${paramNames}): ${returnTypeAnnotation} {
                 ${body}
             }`,
                 tests
@@ -52,9 +53,9 @@ function generateBody(stableBTreeMapName: string): string {
     return /*TS*/ `
         const result = ${stableBTreeMapName}.insert(param0, param1);
         if (result === null) {
-            return None
+            return []
         } else {
-            return Some(result)
+            return [result]
         }
     `;
 }

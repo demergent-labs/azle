@@ -25,7 +25,7 @@ export function IsEmptyTestArb(
                 imports,
                 globalDeclarations: [],
                 sourceCode: `@query([], IDL.Bool)
-                ${functionName}() {
+                ${functionName}(): boolean {
                 ${body}
             }`,
                 tests

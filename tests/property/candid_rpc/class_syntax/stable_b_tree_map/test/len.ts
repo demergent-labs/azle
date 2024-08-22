@@ -18,6 +18,7 @@ export function LenTestArb(
             ]);
 
             const returnTypeObject = `IDL.Nat64`;
+            const returnTypeAnnotation = `bigint`;
             const body = generateBody(stableBTreeMap.name);
 
             const tests = generateTests(functionName);
@@ -26,7 +27,7 @@ export function LenTestArb(
                 imports,
                 globalDeclarations: [],
                 sourceCode: `@query([], ${returnTypeObject})
-                ${functionName}() {
+                ${functionName}(): ${returnTypeAnnotation} {
                 ${body}
             }`,
                 tests

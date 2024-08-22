@@ -26,6 +26,7 @@ export function ContainsKeyTestArb(
             ].join(', ');
 
             const returnTypeObject = 'IDL.Bool';
+            const returnTypeAnnotation = 'boolean';
             const body = generateBody(stableBTreeMap.name);
             const tests = generateTests(
                 functionName,
@@ -40,7 +41,8 @@ export function ContainsKeyTestArb(
                     paramName,
                     body,
                     paramTypeObjects,
-                    returnTypeObject
+                    returnTypeObject,
+                    returnTypeAnnotation
                 ),
                 tests
             };
@@ -52,11 +54,12 @@ function generateSourceCode(
     paramName: string,
     body: string,
     paramTypeObjects: string,
-    returnTypeObject: string
+    returnTypeObject: string,
+    returnTypeAnnotation: string
 ): string {
     return `
         @query([${paramTypeObjects}], ${returnTypeObject})
-        ${functionName}(${paramName}) {
+        ${functionName}(${paramName}): ${returnTypeAnnotation} {
             ${body}
         }`;
 }

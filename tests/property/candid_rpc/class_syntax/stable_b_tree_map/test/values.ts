@@ -5,7 +5,11 @@ import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_iden
 import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
-import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
+import {
+    getArrayForCandidTypeObject,
+    getArrayStringForTypeObject,
+    getArrayTypeAnnotation
+} from './utils';
 
 export function ValuesTestArb(
     stableBTreeMap: StableBTreeMap
@@ -20,9 +24,13 @@ export function ValuesTestArb(
             ]);
 
             const returnTypeObject = `IDL.Vec(${stableBTreeMap.valueSample.src.typeObject})`;
+            const returnTypeAnnotation = getArrayTypeAnnotation(
+                stableBTreeMap.valueSample.src.typeObject,
+                stableBTreeMap.valueSample.src.typeAnnotation
+            );
             const body = generateBody(
                 stableBTreeMap.name,
-                stableBTreeMap.valueSample.src.typeAnnotation
+                stableBTreeMap.valueSample.src.typeObject
             );
 
             const tests = generateTests(
@@ -34,7 +42,7 @@ export function ValuesTestArb(
                 imports,
                 globalDeclarations: [],
                 sourceCode: `@query([], ${returnTypeObject})
-                ${functionName}() {
+                ${functionName}(): ${returnTypeAnnotation} {
                 ${body}
             }`,
                 tests
@@ -44,11 +52,11 @@ export function ValuesTestArb(
 
 function generateBody(
     stableBTreeMapName: string,
-    stableBTreeMapValueCandidTypeAnnotation: string
+    stableBTreeMapValueTypeObject: string
 ): string {
     return `
-        return ${getArrayStringForCandidType(
-            stableBTreeMapValueCandidTypeAnnotation
+        return ${getArrayStringForTypeObject(
+            stableBTreeMapValueTypeObject
         )}(${stableBTreeMapName}.values());
     `;
 }
@@ -67,11 +75,11 @@ function generateTests(
                     const result = await actor[functionName]();
 
                     return testEquality(
-                        getArrayForCandidType(
-                            valueSample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            valueSample.src.typeObject
                         ).from(result),
-                        getArrayForCandidType(
-                            valueSample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            valueSample.src.typeObject
                         ).from([valueSample.value.agentArgumentValue])
                     );
                 }
@@ -86,11 +94,11 @@ function generateTests(
                     const result = await actor[functionName]();
 
                     return testEquality(
-                        getArrayForCandidType(
-                            valueSample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            valueSample.src.typeObject
                         ).from(result),
-                        getArrayForCandidType(
-                            valueSample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            valueSample.src.typeObject
                         ).from([valueSample.value.agentArgumentValue])
                     );
                 }
@@ -105,11 +113,11 @@ function generateTests(
                     const result = await actor[functionName]();
 
                     return testEquality(
-                        getArrayForCandidType(
-                            valueSample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            valueSample.src.typeObject
                         ).from(result),
-                        getArrayForCandidType(
-                            valueSample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            valueSample.src.typeObject
                         ).from([])
                     );
                 }

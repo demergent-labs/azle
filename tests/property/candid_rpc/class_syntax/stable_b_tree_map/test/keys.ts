@@ -5,7 +5,11 @@ import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_iden
 import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
-import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
+import {
+    getArrayForCandidTypeObject,
+    getArrayStringForTypeObject,
+    getArrayTypeAnnotation
+} from './utils';
 
 export function KeysTestArb(
     stableBTreeMap: StableBTreeMap
@@ -20,9 +24,13 @@ export function KeysTestArb(
             ]);
 
             const returnTypeObject = `IDL.Vec(${stableBTreeMap.keySample.src.typeObject})`;
+            const returnTypeAnnotation = getArrayTypeAnnotation(
+                stableBTreeMap.keySample.src.typeObject,
+                stableBTreeMap.keySample.src.typeAnnotation
+            );
             const body = generateBody(
                 stableBTreeMap.name,
-                stableBTreeMap.keySample.src.typeAnnotation
+                stableBTreeMap.keySample.src.typeObject
             );
 
             const tests = generateTests(functionName, stableBTreeMap.keySample);
@@ -31,7 +39,7 @@ export function KeysTestArb(
                 imports,
                 globalDeclarations: [],
                 sourceCode: `@query([], ${returnTypeObject})
-                ${functionName}() {
+                ${functionName}(): ${returnTypeAnnotation} {
                 ${body}
             }`,
                 tests
@@ -41,11 +49,11 @@ export function KeysTestArb(
 
 function generateBody(
     stableBTreeMapName: string,
-    stableBTreeMapKeyCandidTypeAnnotation: string
+    stableBTreeMapKeyTypeObject: string
 ): string {
     return `
-        return ${getArrayStringForCandidType(
-            stableBTreeMapKeyCandidTypeAnnotation
+        return ${getArrayStringForTypeObject(
+            stableBTreeMapKeyTypeObject
         )}(${stableBTreeMapName}.keys());
     `;
 }
@@ -64,11 +72,11 @@ function generateTests(
                     const result = await actor[functionName]();
 
                     return testEquality(
-                        getArrayForCandidType(
-                            keySample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            keySample.src.typeObject
                         ).from(result),
-                        getArrayForCandidType(
-                            keySample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            keySample.src.typeObject
                         ).from([keySample.value.agentArgumentValue])
                     );
                 }
@@ -83,11 +91,11 @@ function generateTests(
                     const result = await actor[functionName]();
 
                     return testEquality(
-                        getArrayForCandidType(
-                            keySample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            keySample.src.typeObject
                         ).from(result),
-                        getArrayForCandidType(
-                            keySample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            keySample.src.typeObject
                         ).from([keySample.value.agentArgumentValue])
                     );
                 }
@@ -102,11 +110,11 @@ function generateTests(
                     const result = await actor[functionName]();
 
                     return testEquality(
-                        getArrayForCandidType(
-                            keySample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            keySample.src.typeObject
                         ).from(result),
-                        getArrayForCandidType(
-                            keySample.src.typeAnnotation
+                        getArrayForCandidTypeObject(
+                            keySample.src.typeObject
                         ).from([])
                     );
                 }
