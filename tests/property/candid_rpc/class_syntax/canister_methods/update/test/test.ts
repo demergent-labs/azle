@@ -6,21 +6,25 @@ import {
     CanisterConfig
 } from 'azle/property_tests/arbitraries/canister_arb';
 import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
+import { Api } from 'azle/property_tests/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const api = 'class';
+const api: Api = 'class';
+const context = { api, constraints: {} };
 
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-    fc.array(CandidValueAndMetaArb(api)),
-    CandidReturnTypeArb(api),
     {
-        generateBody,
-        generateTests,
-        api
-    }
+        api,
+        constraints: {
+            generateBody,
+            generateTests
+        }
+    },
+    fc.array(CandidValueAndMetaArb(context)),
+    CandidReturnTypeArb(context)
 );
 
 const CanisterConfigArb = fc
@@ -29,4 +33,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb, api));
+runPropTests(CanisterArb(context, CanisterConfigArb));

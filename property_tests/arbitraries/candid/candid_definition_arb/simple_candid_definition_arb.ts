@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Api } from '../../types';
+import { Context } from '../../types';
 import { BoolDefinitionArb } from '../primitive/bool';
 import { Float32DefinitionArb } from '../primitive/floats/float32_arb';
 import { Float64DefinitionArb } from '../primitive/floats/float64_arb';
@@ -41,54 +41,86 @@ export type PrimitiveDefinitionWeights = Partial<{
 // The number of options below (bool, float32, float64, int, nat, etc)
 export const PRIM_ARB_COUNT = 16;
 
-const PRIM_DEF_WEIGHTS_DEFAULT = {};
+const PRIM_DEF_WEIGHTS_DEFAULT = {
+    bool: undefined,
+    float32: undefined,
+    float64: undefined,
+    int: undefined,
+    int8: undefined,
+    int16: undefined,
+    int32: undefined,
+    int64: undefined,
+    nat: undefined,
+    nat8: undefined,
+    nat16: undefined,
+    nat32: undefined,
+    nat64: undefined,
+    null: undefined,
+    text: undefined,
+    principal: undefined
+};
 
 export function primitiveCandidDefinitionArb(
-    api: Api,
-    constraints: PrimitiveDefinitionWeights = PRIM_DEF_WEIGHTS_DEFAULT
+    context: Context<PrimitiveDefinitionWeights | undefined>
 ): WithShapesArb<PrimitiveDefinition> {
+    const constraints = context.constraints ?? PRIM_DEF_WEIGHTS_DEFAULT;
     return fc.oneof(
-        { arbitrary: BoolDefinitionArb(api), weight: constraints.bool ?? 1 },
         {
-            arbitrary: Float32DefinitionArb(api),
+            arbitrary: BoolDefinitionArb(context),
+            weight: constraints.bool ?? 1
+        },
+        {
+            arbitrary: Float32DefinitionArb(context),
             weight: constraints.float32 ?? 1
         },
         {
-            arbitrary: Float64DefinitionArb(api),
+            arbitrary: Float64DefinitionArb(context),
             weight: constraints.float64 ?? 1
         },
-        { arbitrary: IntDefinitionArb(api), weight: constraints.int ?? 1 },
-        { arbitrary: Int8DefinitionArb(api), weight: constraints.int8 ?? 1 },
+        { arbitrary: IntDefinitionArb(context), weight: constraints.int ?? 1 },
         {
-            arbitrary: Int16DefinitionArb(api),
+            arbitrary: Int8DefinitionArb(context),
+            weight: constraints.int8 ?? 1
+        },
+        {
+            arbitrary: Int16DefinitionArb(context),
             weight: constraints.int16 ?? 1
         },
         {
-            arbitrary: Int32DefinitionArb(api),
+            arbitrary: Int32DefinitionArb(context),
             weight: constraints.int32 ?? 1
         },
         {
-            arbitrary: Int64DefinitionArb(api),
+            arbitrary: Int64DefinitionArb(context),
             weight: constraints.int64 ?? 1
         },
-        { arbitrary: NatDefinitionArb(api), weight: constraints.nat ?? 1 },
-        { arbitrary: Nat8DefinitionArb(api), weight: constraints.nat8 ?? 1 },
+        { arbitrary: NatDefinitionArb(context), weight: constraints.nat ?? 1 },
         {
-            arbitrary: Nat16DefinitionArb(api),
+            arbitrary: Nat8DefinitionArb(context),
+            weight: constraints.nat8 ?? 1
+        },
+        {
+            arbitrary: Nat16DefinitionArb(context),
             weight: constraints.nat16 ?? 1
         },
         {
-            arbitrary: Nat32DefinitionArb(api),
+            arbitrary: Nat32DefinitionArb(context),
             weight: constraints.nat32 ?? 1
         },
         {
-            arbitrary: Nat64DefinitionArb(api),
+            arbitrary: Nat64DefinitionArb(context),
             weight: constraints.nat64 ?? 1
         },
-        { arbitrary: NullDefinitionArb(api), weight: constraints.null ?? 1 },
-        { arbitrary: TextDefinitionArb(api), weight: constraints.text ?? 1 },
         {
-            arbitrary: PrincipalDefinitionArb(api),
+            arbitrary: NullDefinitionArb(context),
+            weight: constraints.null ?? 1
+        },
+        {
+            arbitrary: TextDefinitionArb(context),
+            weight: constraints.text ?? 1
+        },
+        {
+            arbitrary: PrincipalDefinitionArb(context),
             weight: constraints.principal ?? 1
         }
     );

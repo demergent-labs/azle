@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType as RuntimeCandidType } from '../../../src/lib/experimental';
-import { Api } from '../types';
+import { Context } from '../types';
 import { CandidValueConstraints } from './candid_values_arb';
 import { BlobArb } from './constructed/blob_arb';
 import { OptArb } from './constructed/opt_arb';
@@ -48,33 +48,32 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
  * An arbitrary representing all possible Candid types.
  */
 export function CandidValueAndMetaArb(
-    api: Api,
-    constraints?: CandidValueConstraints
+    context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>> {
     return fc.oneof(
-        BlobArb(api),
-        OptArb(api, constraints),
-        RecordArb(api, constraints),
-        TupleArb(api, constraints),
-        VariantArb(api, constraints),
-        VecArb(api, constraints),
-        Float32Arb(api, constraints),
-        Float64Arb(api, constraints),
-        IntArb(api),
-        Int8Arb(api),
-        Int16Arb(api),
-        Int32Arb(api),
-        Int64Arb(api),
-        NatArb(api),
-        Nat8Arb(api),
-        Nat16Arb(api),
-        Nat32Arb(api),
-        Nat64Arb(api),
-        BoolArb(api),
-        NullArb(api),
-        TextArb(api, constraints),
-        FuncArb(api),
-        PrincipalArb(api)
+        BlobArb(context),
+        OptArb(context),
+        RecordArb(context),
+        TupleArb(context),
+        VariantArb(context),
+        VecArb(context),
+        Float32Arb(context),
+        Float64Arb(context),
+        IntArb(context),
+        Int8Arb(context),
+        Int16Arb(context),
+        Int32Arb(context),
+        Int64Arb(context),
+        NatArb(context),
+        Nat8Arb(context),
+        Nat16Arb(context),
+        Nat32Arb(context),
+        Nat64Arb(context),
+        BoolArb(context),
+        NullArb(context),
+        TextArb(context),
+        FuncArb(context),
+        PrincipalArb(context)
     );
 }
 

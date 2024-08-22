@@ -5,7 +5,7 @@ import {
     CandidValueAndMetaArb
 } from './candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
-import { Api } from './types';
+import { Api, Context } from './types';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { createUniquePrimitiveArb } from './unique_primitive_arb';
 
@@ -19,12 +19,14 @@ export type StableBTreeMap = {
     valueSample: CandidValueAndMeta<CorrespondingJSType>;
 };
 
-export function StableBTreeMapArb(api: Api): fc.Arbitrary<StableBTreeMap> {
+export function StableBTreeMapArb(
+    context: Context
+): fc.Arbitrary<StableBTreeMap> {
     return fc
         .tuple(
-            CandidValueAndMetaArb(api),
+            CandidValueAndMetaArb(context),
             argumentInfoArb(),
-            CandidValueAndMetaArb(api),
+            CandidValueAndMetaArb(context),
             argumentInfoArb(),
             UniqueIdentifierArb('globalNames'),
             createUniquePrimitiveArb(
@@ -54,7 +56,7 @@ export function StableBTreeMapArb(api: Api): fc.Arbitrary<StableBTreeMap> {
                     valueSample,
                     keySerializableType,
                     valueSerializableType,
-                    api
+                    context.api
                 );
 
                 const key = keySample.src.typeAnnotation;

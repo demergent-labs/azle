@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Api } from '../types';
+import { Context } from '../types';
 import {
     CandidValueAndMeta,
     CandidValueAndMetaArb
@@ -11,10 +11,10 @@ import { VoidArb } from './primitive/void';
 export type CandidReturnType = CorrespondingJSType | undefined;
 
 export function CandidReturnTypeArb(
-    api: Api
+    context: Context
 ): fc.Arbitrary<CandidValueAndMeta<CandidReturnType>> {
     return fc.oneof(
-        { arbitrary: CandidValueAndMetaArb(api), weight: 17 },
-        { arbitrary: VoidArb(api), weight: 1 }
+        { arbitrary: CandidValueAndMetaArb(context), weight: 17 },
+        { arbitrary: VoidArb(context), weight: 1 }
     );
 }

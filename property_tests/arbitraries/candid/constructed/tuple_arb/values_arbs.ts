@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
+import { Context } from '../../../types';
 import { TupleCandidDefinition } from '../../candid_definition_arb/types';
 import {
     CandidValueArb,
@@ -12,17 +13,25 @@ import { RecursiveShapes } from '../../recursive';
 import { ReturnTuple, Tuple } from '.';
 
 export function TupleValuesArb(
+    context: Context<CandidValueConstraints>,
     tupleDefinition: TupleCandidDefinition,
-    recursiveShapes: RecursiveShapes,
-    constraints?: CandidValueConstraints
+    recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<Tuple, ReturnTuple>> {
-    const depthLevel = constraints?.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
+    const depthLevel =
+        context.constraints?.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
     const fieldValues = tupleDefinition.innerTypes.map((innerType) => {
         const result: fc.Arbitrary<CandidValues<CorrespondingJSType>> =
-            CandidValueArb(innerType, recursiveShapes, {
-                ...constraints,
-                depthLevel: depthLevel - 1
-            });
+            CandidValueArb(
+                {
+                    ...context,
+                    constraints: {
+                        ...context.constraints,
+                        depthLevel: depthLevel - 1
+                    }
+                },
+                innerType,
+                recursiveShapes
+            );
         return result;
     });
 

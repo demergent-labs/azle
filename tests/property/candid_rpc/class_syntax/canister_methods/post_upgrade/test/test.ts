@@ -24,6 +24,7 @@ import {
 } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
 import { DEFAULT_VALUE_MAX_DEPTH } from 'azle/property_tests/arbitraries/config';
+import { Api } from 'azle/property_tests/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
@@ -33,10 +34,11 @@ import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_
 import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
 import { globalInitVarName, globalPostUpgradeVarName } from './global_var_name';
 
-const api = 'class';
+const api: Api = 'class';
+const context = { api, constraints: {} };
 
 const CanisterConfigArb = fc
-    .array(candidDefinitionArb({}, undefined, api))
+    .array(candidDefinitionArb(context, {}))
     .chain((paramDefinitionsWithShapes) => {
         const initParamValues = definitionsToValueAndMetaArb(
             paramDefinitionsWithShapes
@@ -50,39 +52,50 @@ const CanisterConfigArb = fc
         const initDeployParamsArb = fc.constant(initParams);
         const postUpgradeParamsArb = fc.constant(postUpgradeParams);
 
-        const SimpleInitMethodArb = InitMethodArb(initDeployParamsArb, {
-            generateBody: initMethodBodyGenerator,
-            generateTests: generateInitTests,
-            api
-        });
+        const SimpleInitMethodArb = InitMethodArb(
+            {
+                api,
+                constraints: {
+                    generateBody: initMethodBodyGenerator,
+                    generateTests: generateInitTests
+                }
+            },
+            initDeployParamsArb
+        );
 
         const SimplePostUpgradeMethodArb = PostUpgradeMethodArb(
-            postUpgradeParamsArb,
             {
-                generateBody: postUpgradeMethodBodyGenerator,
-                generateTests: generatePostUpgradeTests,
-                api
-            }
+                api,
+                constraints: {
+                    generateBody: postUpgradeMethodBodyGenerator,
+                    generateTests: generatePostUpgradeTests
+                }
+            },
+            postUpgradeParamsArb
         );
 
         const HeterogeneousQueryMethodArb = QueryMethodArb(
-            fc.array(CandidValueAndMetaArb(api)),
-            CandidReturnTypeArb(api),
             {
-                generateBody: callableMethodBodyGenerator,
-                generateTests: () => [],
-                api
-            }
+                api,
+                constraints: {
+                    generateBody: callableMethodBodyGenerator,
+                    generateTests: () => []
+                }
+            },
+            fc.array(CandidValueAndMetaArb(context)),
+            CandidReturnTypeArb(context)
         );
 
         const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-            fc.array(CandidValueAndMetaArb(api)),
-            CandidReturnTypeArb(api),
             {
-                generateBody: callableMethodBodyGenerator,
-                generateTests: () => [],
-                api
-            }
+                api,
+                constraints: {
+                    generateBody: callableMethodBodyGenerator,
+                    generateTests: () => []
+                }
+            },
+            fc.array(CandidValueAndMetaArb(context)),
+            CandidReturnTypeArb(context)
         );
 
         const small = {
@@ -265,12 +278,19 @@ function definitionsToValueAndMetaArb(
                     // https://github.com/demergent-labs/azle/issues/1511
                     // TODO Infinity and NaN can't be used in this context
                     // https://github.com/dfinity/candid/issues/499
-                    CandidValueArb(definition, recursiveShapes, {
-                        noDefaultInfinity: true,
-                        noNaN: true,
-                        noNegativeZero: true,
-                        depthLevel: DEFAULT_VALUE_MAX_DEPTH
-                    })
+                    CandidValueArb(
+                        {
+                            api,
+                            constraints: {
+                                noDefaultInfinity: true,
+                                noNaN: true,
+                                noNegativeZero: true,
+                                depthLevel: DEFAULT_VALUE_MAX_DEPTH
+                            }
+                        },
+                        definition,
+                        recursiveShapes
+                    )
                 )
             )
         )
@@ -289,4 +309,4 @@ function definitionsToValueAndMetaArb(
         );
 }
 
-runPropTests(CanisterArb(CanisterConfigArb, api));
+runPropTests(CanisterArb(context, CanisterConfigArb));

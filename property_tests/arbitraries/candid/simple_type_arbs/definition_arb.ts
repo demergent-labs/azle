@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Api } from '../../types';
+import { Api, Context } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     PrimitiveDefinition,
@@ -11,8 +11,8 @@ import { SimpleCandidType, simpleCandidTypeToTsType } from '../candid_type';
 import { candidTypeToRuntimeTypeObject } from './candid_type_to_azle_candid_type';
 
 export function SimpleCandidDefinitionArb(
+    context: Context,
     candidType: SimpleCandidType,
-    api: Api,
     useVariableAliasDeclaration?: boolean
 ): WithShapesArb<PrimitiveDefinition> {
     return fc
@@ -28,13 +28,13 @@ export function SimpleCandidDefinitionArb(
                 const useTypeDeclaration =
                     useTypeDeclarationChance && candidType !== 'Void';
                 const typeAnnotation =
-                    api === 'functional'
+                    context.api === 'functional'
                         ? candidType
                         : simpleCandidTypeToTsType(candidType);
                 const idl = toIDL(candidType);
                 const typeObject = useTypeDeclaration
                     ? name
-                    : api === 'functional'
+                    : context.api === 'functional'
                     ? candidType
                     : idl;
                 const runtimeTypeObject =
@@ -44,7 +44,7 @@ export function SimpleCandidDefinitionArb(
                         name,
                         candidType,
                         useTypeDeclaration,
-                        api
+                        context.api
                     );
                 return {
                     definition: {
@@ -53,7 +53,7 @@ export function SimpleCandidDefinitionArb(
                             typeObject,
                             candidType,
                             runtimeTypeObject,
-                            imports: generateImports(candidType, api),
+                            imports: generateImports(candidType, context.api),
                             variableAliasDeclarations
                         }
                     },

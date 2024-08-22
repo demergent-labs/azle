@@ -5,7 +5,7 @@ import { Test } from '../../test';
 import { CandidReturnType } from '../candid/candid_return_type_arb';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
-import { Api } from '../types';
+import { Api, Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -29,16 +29,7 @@ export function QueryMethodArb<
     ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 >(
-    paramTypeArrayArb: fc.Arbitrary<
-        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
-    >,
-    returnTypeArb: fc.Arbitrary<
-        CandidValueAndMeta<
-            ReturnTypeAgentArgumentValue,
-            ReturnTypeAgentResponseValue
-        >
-    >,
-    constraints: {
+    context: Context<{
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue,
@@ -51,11 +42,21 @@ export function QueryMethodArb<
             ReturnTypeAgentArgumentValue,
             ReturnTypeAgentResponseValue
         >;
-        api: Api;
         methodImplementationLocation?: MethodImplementationLocation;
         name?: string;
-    }
+    }>,
+    paramTypeArrayArb: fc.Arbitrary<
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
+    >,
+    returnTypeArb: fc.Arbitrary<
+        CandidValueAndMeta<
+            ReturnTypeAgentArgumentValue,
+            ReturnTypeAgentResponseValue
+        >
+    >
 ): fc.Arbitrary<QueryMethod> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
@@ -76,7 +77,7 @@ export function QueryMethodArb<
                 methodName
             ]): QueryMethod => {
                 const methodImplementationLocation =
-                    constraints.api === 'class'
+                    api === 'class'
                         ? 'INLINE'
                         : constraints.methodImplementationLocation ??
                           defaultMethodImplementationLocation;
@@ -101,7 +102,7 @@ export function QueryMethodArb<
                     constraints.generateBody,
                     methodImplementationLocation,
                     methodName,
-                    constraints.api
+                    api
                 );
 
                 const candidTypeDeclarations = [
@@ -123,7 +124,7 @@ export function QueryMethodArb<
                     methodImplementationLocation === 'STANDALONE'
                         ? methodName
                         : methodImplementation,
-                    constraints.api
+                    api
                 );
 
                 const tests = constraints.generateTests(

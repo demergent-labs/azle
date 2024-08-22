@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType } from '../../../../../src/lib/experimental/candid/candid_type';
 import { Func } from '../../../../../src/lib/experimental/candid/types/reference/func';
-import { Api } from '../../../types';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -15,14 +15,14 @@ import { VoidDefinitionArb } from '../../primitive/void';
 type Mode = 'query' | 'update' | 'oneway';
 
 export function FuncDefinitionArb(
-    candidDefArb: WithShapesArb<CandidDefinition>,
-    api: Api
+    context: Context,
+    candidDefArb: WithShapesArb<CandidDefinition>
 ): WithShapesArb<FuncCandidDefinition> {
     return fc
         .constantFrom<Mode>('query', 'update', 'oneway')
         .chain((mode) => {
             const returnType =
-                mode === 'oneway' ? VoidDefinitionArb(api) : candidDefArb;
+                mode === 'oneway' ? VoidDefinitionArb(context) : candidDefArb;
 
             return fc.tuple(
                 UniqueIdentifierArb('globalNames'),
@@ -40,6 +40,7 @@ export function FuncDefinitionArb(
                 mode,
                 useTypeDeclaration
             ]): WithShapes<FuncCandidDefinition> => {
+                const api = context.api;
                 const params = paramsAndShapes.map(
                     (paramAndShapes) => paramAndShapes.definition
                 );

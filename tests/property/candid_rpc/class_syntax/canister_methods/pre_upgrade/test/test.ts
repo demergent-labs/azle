@@ -12,38 +12,46 @@ import {
     QueryMethodArb
 } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
+import { Api } from 'azle/property_tests/arbitraries/types';
 import { AzleResult, testEquality } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
-const api = 'class';
+const api: Api = 'class';
+const context = { api, constraints: {} };
 
 const SimplePreUpgradeArb = PreUpgradeMethodArb({
-    generateBody: () =>
-        /*TS*/ `stable.insert(PRE_UPGRADE_HOOK_EXECUTED, true);`,
-    generateTests: () => [],
-    api
+    api,
+    constraints: {
+        generateBody: () =>
+            /*TS*/ `stable.insert(PRE_UPGRADE_HOOK_EXECUTED, true);`,
+        generateTests: () => []
+    }
 });
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
-    fc.array(CandidValueAndMetaArb(api)),
-    CandidReturnTypeArb(api),
     {
-        generateBody: (_, returnType) =>
-            `return ${returnType.src.valueLiteral}`,
-        generateTests: () => [],
-        api
-    }
+        api,
+        constraints: {
+            generateBody: (_, returnType) =>
+                `return ${returnType.src.valueLiteral}`,
+            generateTests: () => []
+        }
+    },
+    fc.array(CandidValueAndMetaArb(context)),
+    CandidReturnTypeArb(context)
 );
 
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-    fc.array(CandidValueAndMetaArb(api)),
-    CandidReturnTypeArb(api),
     {
-        generateBody: (_, returnType) =>
-            `return ${returnType.src.valueLiteral}`,
-        generateTests: () => [],
-        api
-    }
+        api,
+        constraints: {
+            generateBody: (_, returnType) =>
+                `return ${returnType.src.valueLiteral}`,
+            generateTests: () => []
+        }
+    },
+    fc.array(CandidValueAndMetaArb(context)),
+    CandidReturnTypeArb(context)
 );
 
 const small = {
@@ -84,7 +92,7 @@ const CanisterConfigArb = fc
         }
     );
 
-runPropTests(CanisterArb(CanisterConfigArb, api));
+runPropTests(CanisterArb(context, CanisterConfigArb));
 
 function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
     return {

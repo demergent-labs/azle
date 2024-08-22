@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Api } from '../../types';
+import { Context } from '../../types';
 import {
     NullCandidDefinition,
     WithShapesArb
@@ -12,14 +12,20 @@ import { SimpleCandidDefinitionArb } from '../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
 import { nullToSrcLiteral } from '../to_src_literal/null';
 
-export function NullArb(api: Api): fc.Arbitrary<CandidValueAndMeta<null>> {
-    return CandidValueAndMetaArbGenerator(NullDefinitionArb(api), NullValueArb);
+export function NullArb(
+    context: Context
+): fc.Arbitrary<CandidValueAndMeta<null>> {
+    return CandidValueAndMetaArbGenerator(
+        context,
+        NullDefinitionArb(context),
+        NullValueArb
+    );
 }
 
 export function NullDefinitionArb(
-    api: Api
+    context: Context
 ): WithShapesArb<NullCandidDefinition> {
-    return SimpleCandidDefinitionArb('Null', api);
+    return SimpleCandidDefinitionArb(context, 'Null');
 }
 
 export function NullValueArb(): fc.Arbitrary<CandidValues<null>> {

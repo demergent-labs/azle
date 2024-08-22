@@ -9,7 +9,7 @@ import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { UpdateMethod } from './canister_methods/update_method_arb';
-import { Api } from './types';
+import { Context } from './types';
 
 export type Canister = {
     initArgs: string[] | undefined;
@@ -50,10 +50,10 @@ export function CanisterArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 >(
+    context: Context,
     configArb: fc.Arbitrary<
         CanisterConfig<ParamAgentArgumentValue, ParamAgentResponseValue>
-    >,
-    api: Api
+    >
 ): fc.Arbitrary<Canister> {
     return configArb.map((config): Canister => {
         const canisterMethods: CanisterMethod<
@@ -93,7 +93,7 @@ export function CanisterArb<
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
             canisterMethods,
-            api
+            context.api
         );
 
         const tests = canisterMethods.reduce(

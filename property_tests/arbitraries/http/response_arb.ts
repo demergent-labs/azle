@@ -5,7 +5,7 @@ import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
-import { Api } from '../types';
+import { Api, Context } from '../types';
 import { BodyArb } from './body_arb';
 import { HttpHeadersArb } from './headers_arb';
 
@@ -61,11 +61,12 @@ export function HttpResponseValueArb<T>(): fc.Arbitrary<HttpResponse<T>> {
         });
 }
 export function HttpResponseArb<T extends CorrespondingJSType = any>(
-    token: CandidValueAndMeta<CorrespondingJSType>,
-    api: Api
+    context: Context,
+    token: CandidValueAndMeta<CorrespondingJSType>
 ): fc.Arbitrary<
     CandidValueAndMeta<HttpResponse<T>, HttpResponseAgentResponseValue>
 > {
+    const api = context.api;
     return HttpResponseValueArb<T>().map((response) => {
         const lowerCasedHeaders = response.headers.map<[string, string]>(
             ([name, value]) => [name.toLowerCase(), value]

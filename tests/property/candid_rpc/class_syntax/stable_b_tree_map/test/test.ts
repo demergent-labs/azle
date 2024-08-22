@@ -1,6 +1,7 @@
 import { runPropTests } from 'azle/property_tests';
 import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
 import { StableBTreeMapArb } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
+import { Context } from 'azle/property_tests/arbitraries/types';
 import fc from 'fast-check';
 
 import { ContainsKeyTestArb } from './contains_key';
@@ -13,11 +14,11 @@ import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
 
-const api = 'class';
+const context: Context = { api: 'class', constraints: {} };
 
 const StableBTreeMapTestArb = fc
     .array(
-        StableBTreeMapArb(api).chain((stableBTreeMap) => {
+        StableBTreeMapArb(context).chain((stableBTreeMap) => {
             return fc
                 .tuple(
                     IsEmptyTestArb(stableBTreeMap),
@@ -91,4 +92,4 @@ const StableBTreeMapTestArb = fc
         };
     });
 
-runPropTests(CanisterArb(StableBTreeMapTestArb, api));
+runPropTests(CanisterArb(context, StableBTreeMapTestArb));

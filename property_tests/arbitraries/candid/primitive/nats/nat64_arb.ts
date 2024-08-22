@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Api } from '../../../types';
+import { Context } from '../../../types';
 import {
     NatCandidDefinition,
     WithShapesArb
@@ -12,17 +12,20 @@ import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb
 import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
 import { bigintToSrcLiteral } from '../../to_src_literal/bigint';
 
-export function Nat64Arb(api: Api): fc.Arbitrary<CandidValueAndMeta<bigint>> {
+export function Nat64Arb(
+    context: Context
+): fc.Arbitrary<CandidValueAndMeta<bigint>> {
     return CandidValueAndMetaArbGenerator(
-        Nat64DefinitionArb(api),
+        context,
+        Nat64DefinitionArb(context),
         Nat64ValueArb
     );
 }
 
 export function Nat64DefinitionArb(
-    api: Api
+    context: Context
 ): WithShapesArb<NatCandidDefinition> {
-    return SimpleCandidDefinitionArb('nat64', api);
+    return SimpleCandidDefinitionArb(context, 'nat64');
 }
 
 export function Nat64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {

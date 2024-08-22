@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';
-import { Api } from '../../types';
+import { Context } from '../../types';
 import { RecursiveShapes } from '../recursive';
 import {
     COMPLEX_ARB_COUNT,
@@ -23,47 +23,47 @@ import {
 } from './types';
 
 export function candidDefinitionArb(
+    context: Context<DefinitionConstraints | undefined>,
     recursiveShapes: RecursiveShapes,
-    parents: RecursiveCandidName[] = [],
-    api: Api,
-    constraints: DefinitionConstraints = {}
+    parents: RecursiveCandidName[] = []
 ): CandidDefinitionArb {
-    return candidDefinitionMemo(
-        parents,
-        api,
-        constraints
-    )(constraints.depthLevel ?? DEFAULT_DEFINITION_MAX_DEPTH);
+    const depthLevel =
+        context.constraints?.depthLevel ?? DEFAULT_DEFINITION_MAX_DEPTH;
+    return candidDefinitionMemo(context, parents)(depthLevel);
 }
 
 export function candidDefinitionMemo(
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints = {}
+    context: Context<DefinitionConstraints | undefined>,
+    parents: RecursiveCandidName[]
 ): CandidDefinitionMemo {
+    const api = context.api;
     return fc.memo((depthLevel) => {
         if (depthLevel <= 1) {
-            return primitiveCandidDefinitionArb(api);
+            return primitiveCandidDefinitionArb({
+                ...context,
+                constraints: context.constraints?.weights
+            });
         }
+        const constraints = context.constraints;
         return fc.oneof(
             {
-                arbitrary: primitiveCandidDefinitionArb(
-                    api,
-                    constraints.weights
-                ),
+                arbitrary: primitiveCandidDefinitionArb({
+                    ...context,
+                    constraints: constraints?.weights
+                }),
                 weight: PRIM_ARB_COUNT
             },
             {
                 arbitrary: complexCandidDefinitionMemo(
-                    parents,
-                    api,
-                    constraints
+                    { ...context, constraints: context.constraints ?? {} },
+                    parents
                 )(depthLevel - 1),
                 weight: COMPLEX_ARB_COUNT
             },
             {
                 arbitrary: recursiveCandidDefinitionMemo(
-                    parents,
-                    api
+                    { api, constraints: undefined }, // TODO was it the old way to not have constraints here? Should it be?
+                    parents
                 )(depthLevel - 1),
                 weight: REC_ARB_COUNT
             }

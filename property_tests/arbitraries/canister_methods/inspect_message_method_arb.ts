@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { Test } from '../../test';
 import { VoidArb } from '../candid/primitive/void';
-import { Api } from '../types';
+import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -19,16 +19,19 @@ export type InspectMessageMethod = {
     tests: Test[][];
 };
 
-export function InspectMessageMethodArb(constraints: {
-    generateBody: BodyGenerator;
-    generateTests: TestsGenerator;
-    api: Api;
-    methodImplementationLocation?: MethodImplementationLocation;
-}): fc.Arbitrary<InspectMessageMethod> {
+export function InspectMessageMethodArb(
+    context: Context<{
+        generateBody: BodyGenerator;
+        generateTests: TestsGenerator;
+        methodImplementationLocation?: MethodImplementationLocation;
+    }>
+): fc.Arbitrary<InspectMessageMethod> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb(constraints.api),
+            VoidArb(context),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
         )
@@ -40,13 +43,13 @@ export function InspectMessageMethodArb(constraints: {
                 methodName
             ]): InspectMessageMethod => {
                 const methodImplementationLocation =
-                    constraints.api === 'class'
+                    api === 'class'
                         ? 'INLINE'
                         : constraints.methodImplementationLocation ??
                           defaultMethodImplementationLocation;
 
                 const inspectMessageImports =
-                    constraints.api === 'functional'
+                    api === 'functional'
                         ? ['ic']
                         : ['caller', 'acceptMessage', 'methodName'];
                 const imports = new Set([
@@ -60,7 +63,7 @@ export function InspectMessageMethodArb(constraints: {
                     constraints.generateBody,
                     methodImplementationLocation,
                     methodName,
-                    constraints.api
+                    api
                 );
 
                 const globalDeclarations =
@@ -69,7 +72,7 @@ export function InspectMessageMethodArb(constraints: {
                         : [];
 
                 const sourceCode =
-                    constraints.api === 'functional'
+                    api === 'functional'
                         ? `${functionName}: inspectMessage(${
                               methodImplementationLocation === 'STANDALONE'
                                   ? methodName

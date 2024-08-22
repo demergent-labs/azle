@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Vec } from '../../../../../src/lib/experimental';
-import { Api } from '../../../types';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -14,15 +14,15 @@ import {
 } from '../../candid_definition_arb/types';
 
 export function VecDefinitionArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<VecCandidDefinition> {
+    const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            possiblyRecursiveArb(candidTypeArb, parents, api, constraints),
+            possiblyRecursiveArb(context, candidTypeArb, parents),
             fc.boolean()
         )
         .map(
@@ -32,8 +32,8 @@ export function VecDefinitionArb(
                 useTypeDeclarationChance
             ]): WithShapes<VecCandidDefinition> => {
                 const useTypeDeclaration =
-                    (constraints.forceInline === undefined ||
-                        constraints.forceInline === false) &&
+                    (context.constraints.forceInline === undefined ||
+                        context.constraints.forceInline === false) &&
                     useTypeDeclarationChance;
                 const { definition: innerType, recursiveShapes } =
                     innerTypeAndShapes;
@@ -82,16 +82,15 @@ export function VecDefinitionArb(
 }
 
 function possiblyRecursiveArb(
+    context: Context<DefinitionConstraints>,
     candidArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<CandidDefinition> {
-    const depthLevel = constraints?.depthLevel ?? 0;
+    const depthLevel = context.constraints.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents, api)(depthLevel);
+            return candidArb(context, parents)(depthLevel);
         }
         return fc.oneof(
             {
@@ -102,7 +101,7 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents, api)(depthLevel),
+                arbitrary: candidArb(context, parents)(depthLevel),
                 weight: 1
             }
         );

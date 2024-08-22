@@ -5,13 +5,14 @@ import { Test } from '../../test';
 import { CandidReturnType } from '../candid/candid_return_type_arb';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
-import { Api } from '../types';
+import { Api, Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
     generateMethodImplementation,
     isDefined,
     MethodImplementationLocation,
+    MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
 
@@ -28,16 +29,7 @@ export function UpdateMethodArb<
     ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 >(
-    paramTypeArrayArb: fc.Arbitrary<
-        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
-    >,
-    returnTypeArb: fc.Arbitrary<
-        CandidValueAndMeta<
-            ReturnTypeAgentArgumentValue,
-            ReturnTypeAgentResponseValue
-        >
-    >,
-    constraints: {
+    context: Context<{
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue,
@@ -50,20 +42,27 @@ export function UpdateMethodArb<
             ReturnTypeAgentArgumentValue,
             ReturnTypeAgentResponseValue
         >;
-        api: Api;
         methodImplementationLocation?: MethodImplementationLocation;
         name?: string;
-    }
+    }>,
+    paramTypeArrayArb: fc.Arbitrary<
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
+    >,
+    returnTypeArb: fc.Arbitrary<
+        CandidValueAndMeta<
+            ReturnTypeAgentArgumentValue,
+            ReturnTypeAgentResponseValue
+        >
+    >
 ): fc.Arbitrary<UpdateMethod> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
             returnTypeArb,
-            fc.constantFrom<MethodImplementationLocation>(
-                'INLINE',
-                'STANDALONE'
-            ),
+            MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -78,7 +77,7 @@ export function UpdateMethodArb<
                 methodName
             ]): UpdateMethod => {
                 const methodImplementationLocation =
-                    constraints.api === 'class'
+                    api === 'class'
                         ? 'INLINE'
                         : constraints.methodImplementationLocation ??
                           defaultMethodImplementationLocation;
@@ -103,7 +102,7 @@ export function UpdateMethodArb<
                     constraints.generateBody,
                     methodImplementationLocation,
                     methodName,
-                    constraints.api
+                    api
                 );
 
                 const candidTypeDeclarations = [
@@ -125,7 +124,7 @@ export function UpdateMethodArb<
                     methodImplementationLocation === 'STANDALONE'
                         ? methodName
                         : methodImplementation,
-                    constraints.api
+                    api
                 );
 
                 const tests = constraints.generateTests(

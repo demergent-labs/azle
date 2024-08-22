@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Opt } from '../../../../../src/lib/experimental';
-import { Api } from '../../../types';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -14,20 +14,16 @@ import {
 } from '../../candid_definition_arb/types';
 
 export function OptDefinitionArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<OptCandidDefinition> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            possiblyRecursiveArb(
-                candidTypeArbForInnerType,
-                parents,
-                api,
-                constraints
-            ),
+            possiblyRecursiveArb(context, candidTypeArbForInnerType, parents),
             fc.boolean()
         )
         .map(
@@ -87,17 +83,17 @@ export function OptDefinitionArb(
 }
 
 function possiblyRecursiveArb(
+    context: Context<DefinitionConstraints>,
     candidArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<CandidDefinition> {
+    const constraints = context.constraints;
     const depthLevel = constraints.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || depthLevel < 1) {
             // If there are no recursive parents or we have reached a depth
             // level of 0 just do a regular arb inner type
-            return candidArb(parents, api)(depthLevel);
+            return candidArb(context, parents)(depthLevel);
         }
         return fc.oneof(
             {
@@ -108,7 +104,7 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents, api)(depthLevel),
+                arbitrary: candidArb(context, parents)(depthLevel),
                 weight: 1
             }
         );

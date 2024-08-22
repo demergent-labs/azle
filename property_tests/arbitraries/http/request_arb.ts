@@ -4,7 +4,7 @@ import { HttpRequest, None, Some } from '../../../src/lib/experimental';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
-import { Api } from '../types';
+import { Api, Context } from '../types';
 import { BodyArb } from './body_arb';
 import { HttpHeadersArb } from './headers_arb';
 
@@ -89,8 +89,9 @@ function HttpRequestValueArb() {
 }
 
 export function HttpRequestArb(
-    api: Api
+    context: Context
 ): fc.Arbitrary<CandidValueAndMeta<HttpRequest>> {
+    const api = context.api;
     return HttpRequestValueArb().map((httpRequest) => {
         const headerStrings = httpRequest.headers
             .map(

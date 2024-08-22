@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { Test } from '../../test';
 import { VoidArb } from '../candid/primitive/void';
-import { Api } from '../types';
+import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -19,16 +19,19 @@ export type PreUpgradeMethod = {
     tests: Test[][];
 };
 
-export function PreUpgradeMethodArb(constraints: {
-    generateBody: BodyGenerator;
-    generateTests: TestsGenerator;
-    api: Api;
-    methodImplementationLocation?: MethodImplementationLocation;
-}): fc.Arbitrary<PreUpgradeMethod> {
+export function PreUpgradeMethodArb(
+    context: Context<{
+        generateBody: BodyGenerator;
+        generateTests: TestsGenerator;
+        methodImplementationLocation?: MethodImplementationLocation;
+    }>
+): fc.Arbitrary<PreUpgradeMethod> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb(constraints.api),
+            VoidArb(context),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
@@ -43,7 +46,7 @@ export function PreUpgradeMethodArb(constraints: {
                 methodName
             ]): PreUpgradeMethod => {
                 const methodImplementationLocation =
-                    constraints.api === 'class'
+                    api === 'class'
                         ? 'INLINE'
                         : constraints.methodImplementationLocation ??
                           defaultMethodImplementationLocation;
@@ -56,7 +59,7 @@ export function PreUpgradeMethodArb(constraints: {
                     constraints.generateBody,
                     methodImplementationLocation,
                     methodName,
-                    constraints.api
+                    api
                 );
 
                 const globalDeclarations =
@@ -65,7 +68,7 @@ export function PreUpgradeMethodArb(constraints: {
                         : [];
 
                 const sourceCode =
-                    constraints.api === 'functional'
+                    api === 'functional'
                         ? `${functionName}: preUpgrade(${
                               methodImplementationLocation === 'STANDALONE'
                                   ? methodName

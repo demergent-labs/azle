@@ -10,6 +10,7 @@ import {
 } from 'azle/property_tests/arbitraries/canister_arb';
 import { InspectMessageMethodArb } from 'azle/property_tests/arbitraries/canister_methods/inspect_message_method_arb';
 import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
+import { Api } from 'azle/property_tests/arbitraries/types';
 import fc from 'fast-check';
 import { v4 } from 'uuid';
 
@@ -21,7 +22,8 @@ const AZLE_ACCEPT_IDENTITY_NAME = `_prop_test_azle_accept_identity_${v4()}`;
 const AZLE_RETURN_IDENTITY_NAME = `_prop_test_azle_return_identity_${v4()}`;
 const AZLE_THROW_IDENTITY_NAME = `_prop_test_azle_throw_identity_${v4()}`;
 
-const api = 'functional';
+const api: Api = 'functional';
+const context = { api, constraints: {} };
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -39,20 +41,24 @@ function CanisterConfigArb() {
     ];
 
     const InspectMessageArb = InspectMessageMethodArb({
-        generateBody: () => generateInspectMessageMethodBody(),
-        generateTests: () => [],
-        api
+        api,
+        constraints: {
+            generateBody: () => generateInspectMessageMethodBody(),
+            generateTests: () => []
+        }
     });
 
     const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-        fc.array(CandidValueAndMetaArb(api)),
-        CandidReturnTypeArb(api),
         {
-            generateBody: (_, returnType) =>
-                `return ${returnType.src.valueLiteral}`,
-            generateTests: (...args) => generateTests(...args, agents),
-            api
-        }
+            api,
+            constraints: {
+                generateBody: (_, returnType) =>
+                    `return ${returnType.src.valueLiteral}`,
+                generateTests: (...args) => generateTests(...args, agents)
+            }
+        },
+        fc.array(CandidValueAndMetaArb(context)),
+        CandidReturnTypeArb(context)
     );
 
     const small = {
@@ -75,7 +81,7 @@ function CanisterConfigArb() {
         );
 }
 
-runPropTests(CanisterArb(CanisterConfigArb(), api));
+runPropTests(CanisterArb(context, CanisterConfigArb()));
 
 function generateInspectMessageMethodBody(): string {
     const acceptPrincipal = getPrincipal(AZLE_ACCEPT_IDENTITY_NAME);

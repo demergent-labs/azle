@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Context } from '../types';
 import {
     CandidDefinition,
     OptCandidDefinition,
@@ -12,7 +13,7 @@ import {
     VecCandidDefinition
 } from './candid_definition_arb/types';
 import { BlobValuesArb } from './constructed/blob_arb/values_arb';
-import { FunctionalOptValuesArb } from './constructed/opt_arb/functional_values_arb';
+import { OptValuesArb } from './constructed/opt_arb/values_arb';
 import { RecordValuesArb } from './constructed/record_arb/values_arb';
 import { TupleValuesArb } from './constructed/tuple_arb/values_arbs';
 import { VariantValuesArb } from './constructed/variant_arb/values_arb';
@@ -44,7 +45,7 @@ import { RecursiveShapes } from './recursive';
 import { RecursiveNameValuesArb } from './recursive/values_arb';
 import { FuncValueArb } from './reference/func_arb/values_arb';
 import { PrincipalValueArb } from './reference/principal_arb';
-import { FunctionalServiceValueArb } from './reference/service_arb/functional_values_arb';
+import { ServiceValueArb } from './reference/service_arb/values_arb';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
@@ -60,58 +61,57 @@ export interface CandidValueConstraints
 }
 
 export function CandidValueArb(
+    context: Context<CandidValueConstraints>,
     candidTypeMeta: CandidDefinition,
-    recursiveShapes: RecursiveShapes,
-    constraints: CandidValueConstraints
+    recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === 'blob') {
         return BlobValuesArb();
     }
     if (candidType === 'Opt') {
-        // TODO see comment on FunctionalServiceValuesArb below
-        return FunctionalOptValuesArb(
+        return OptValuesArb(
+            context,
             candidTypeMeta as OptCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'Record') {
         return RecordValuesArb(
+            context,
             candidTypeMeta as RecordCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'Tuple') {
         return TupleValuesArb(
+            context,
             candidTypeMeta as TupleCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'Variant') {
         return VariantValuesArb(
+            context,
             candidTypeMeta as VariantCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'Vec') {
         return VecValuesArb(
+            context,
             candidTypeMeta as VecCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'bool') {
         return BoolValueArb();
     }
     if (candidType === 'float32') {
-        return Float32ValueArb(undefined, undefined, constraints);
+        return Float32ValueArb(context);
     }
     if (candidType === 'float64') {
-        return Float64ValueArb(undefined, undefined, constraints);
+        return Float64ValueArb(context);
     }
     if (candidType === 'int') {
         return IntValueArb();
@@ -147,34 +147,28 @@ export function CandidValueArb(
         return NullValueArb();
     }
     if (candidType === 'text') {
-        return TextValueArb();
+        return TextValueArb(context);
     }
     if (candidType === 'Void') {
         return VoidValueArb();
     }
     if (candidType === 'Func') {
-        return FuncValueArb();
+        return FuncValueArb(context);
     }
     if (candidType === 'Principal') {
         return PrincipalValueArb();
     }
     if (candidType === 'Service') {
-        // TODO This seems problematic. I was trying to avoid having to pass the api variable through all of the values just so that Service and Opt can work.
-        // TODO But now that we have this here and it looks like we might not be able to avoid it
-        // TODO But we might be able to keep going, I haven't run into any problems yet
-        // TODO but also that's a little weird that I haven't run into any problems yet
-        // TODO but maybe we should have a different way of handling the api selection. Like if it's a global setting should we have some global variable instead?
-        // TODO or maybe an environment variable?
-        // TODO all of this also applies to the FunctionalOptValuesArb above
-        return FunctionalServiceValueArb(
+        return ServiceValueArb(
+            context,
             candidTypeMeta as ServiceCandidDefinition
         );
     }
     if (candidType === 'Recursive') {
         return RecursiveNameValuesArb(
+            context,
             candidTypeMeta as RecursiveCandidName | RecursiveCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     throw new Error('Unreachable');

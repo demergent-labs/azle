@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Tuple } from '../../../../../src/lib/experimental';
-import { Api } from '../../../types';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -12,9 +12,10 @@ import {
 import { RecursiveShapes } from '../../recursive';
 
 export function TupleDefinitionArb(
-    candidTypeArbForFields: WithShapesArb<CandidDefinition>,
-    api: Api
+    context: Context,
+    candidTypeArbForFields: WithShapesArb<CandidDefinition>
 ): WithShapesArb<TupleCandidDefinition> {
+    const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),

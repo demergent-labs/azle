@@ -1,6 +1,7 @@
 import fc, { ArrayConstraints } from 'fast-check';
 
 import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
+import { Context } from '../../../types';
 import {
     CandidDefinition,
     OptCandidDefinition,
@@ -28,13 +29,12 @@ const NULL_VEC_SIZE_LIMIT = 2_000_000;
 const EMPTYISH_VEC_SIZE_LIMIT = 0;
 
 export function VecValuesArb(
+    context: Context<CandidValueConstraints>,
     vecDefinition: VecCandidDefinition,
-    recursiveShapes: RecursiveShapes,
-    constraints: CandidValueConstraints = {
-        depthLevel: DEFAULT_VALUE_MAX_DEPTH
-    }
+    recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<Vec>> {
-    const depthLevel = constraints.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
+    const depthLevel =
+        context.constraints?.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
     if (depthLevel < 1) {
         return fc.constant(
             generateEmptyVec(vecDefinition.innerType.candidMeta.candidType)
@@ -48,10 +48,17 @@ export function VecValuesArb(
         .chain(([arrayTemplate, innerType]) =>
             fc.tuple(
                 ...arrayTemplate.map(() =>
-                    CandidValueArb(innerType, recursiveShapes, {
-                        ...constraints,
-                        depthLevel: depthLevel - 1
-                    })
+                    CandidValueArb(
+                        {
+                            ...context,
+                            constraints: {
+                                ...context.constraints,
+                                depthLevel: depthLevel - 1
+                            }
+                        },
+                        innerType,
+                        recursiveShapes
+                    )
                 )
             )
         );

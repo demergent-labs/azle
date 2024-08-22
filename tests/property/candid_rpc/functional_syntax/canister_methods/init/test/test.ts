@@ -12,13 +12,15 @@ import {
     QueryMethodArb
 } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
+import { Api } from 'azle/property_tests/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
 import { generateBody as initBodyGenerator } from './generate_init_body';
 import { generateTests } from './generate_tests';
 
-const api = 'functional';
+const api: Api = 'functional';
+const context = { api, constraints: {} };
 
 // TODO multiplying by zero is to remove -0
 // TODO we should open an issue with agent-js
@@ -32,32 +34,38 @@ const valueConstraints = {
     noNegativeZero: true
 };
 const SimpleInitMethodArb = InitMethodArb(
-    fc.array(CandidValueAndMetaArb(api, valueConstraints)),
     {
-        generateBody: initBodyGenerator,
-        generateTests,
-        api
-    }
+        api,
+        constraints: {
+            generateBody: initBodyGenerator,
+            generateTests
+        }
+    },
+    fc.array(CandidValueAndMetaArb({ api, constraints: valueConstraints }))
 );
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
-    fc.array(CandidValueAndMetaArb(api)),
-    CandidReturnTypeArb(api),
     {
-        generateBody: callableMethodBodyGenerator,
-        generateTests: () => [],
-        api
-    }
+        api,
+        constraints: {
+            generateBody: callableMethodBodyGenerator,
+            generateTests: () => []
+        }
+    },
+    fc.array(CandidValueAndMetaArb(context)),
+    CandidReturnTypeArb(context)
 );
 
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-    fc.array(CandidValueAndMetaArb(api)),
-    CandidReturnTypeArb(api),
     {
-        generateBody: callableMethodBodyGenerator,
-        generateTests: () => [],
-        api
-    }
+        api,
+        constraints: {
+            generateBody: callableMethodBodyGenerator,
+            generateTests: () => []
+        }
+    },
+    fc.array(CandidValueAndMetaArb(context)),
+    CandidReturnTypeArb(context)
 );
 
 const small = {
@@ -107,7 +115,7 @@ const CanisterConfigArb = fc
         }
     );
 
-runPropTests(CanisterArb(CanisterConfigArb, api));
+runPropTests(CanisterArb(context, CanisterConfigArb));
 
 function generateGetInitValuesCanisterMethod(
     paramTypes: string[],

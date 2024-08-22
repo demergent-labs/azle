@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Variant } from '../../../../../src/lib/experimental';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
-import { Api } from '../../../types';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -23,15 +23,18 @@ type RuntimeVariant = {
 };
 
 export function VariantDefinitionArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArbForFields: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<VariantCandidDefinition> {
+    console.log(parents);
+    console.log(context);
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            VariantFieldsArb(candidTypeArbForFields, parents, api, constraints),
+            VariantFieldsArb(context, candidTypeArbForFields, parents),
             fc.boolean()
         )
         .map(
@@ -98,10 +101,9 @@ export function VariantDefinitionArb(
 }
 
 function VariantFieldsArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): fc.Arbitrary<FieldAndShapes[]> {
     // Although no minLength is technically required (according to the
     // spec), the DFX CLI itself currently errors out trying to pass
@@ -117,11 +119,10 @@ function VariantFieldsArb(
                     fc.tuple(
                         fc.constant(name),
                         possiblyRecursiveArb(
+                            context,
                             candidTypeArb,
                             index,
-                            parents,
-                            api,
-                            constraints
+                            parents
                         )
                     )
                 )
@@ -138,17 +139,16 @@ function VariantFieldsArb(
 // complicated approach would involve the guaranteed base case being in any one
 // of the fields, instead of always the first one.
 function possiblyRecursiveArb(
+    context: Context<DefinitionConstraints>,
     candidArb: RecursiveCandidDefinitionMemo,
     index: number,
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<CandidDefinition> {
-    const depthLevel = constraints?.depthLevel ?? 0;
+    const depthLevel = context.constraints?.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || index < 1) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents, api)(depthLevel);
+            return candidArb(context, parents)(depthLevel);
         }
         return fc.oneof(
             {
@@ -159,7 +159,7 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents, api)(depthLevel),
+                arbitrary: candidArb(context, parents)(depthLevel),
                 weight: 1
             }
         );

@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Record } from '../../../../../src/lib/experimental';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
-import { Api } from '../../../types';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -20,9 +20,10 @@ type RuntimeRecord = {
 };
 
 export function RecordDefinitionArb(
-    fieldCandidDefArb: CandidDefinitionArb,
-    api: Api
+    context: Context,
+    fieldCandidDefArb: CandidDefinitionArb
 ): WithShapesArb<RecordCandidDefinition> {
+    const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),

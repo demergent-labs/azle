@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { blob } from '../../../../../src/lib/experimental';
-import { Api } from '../../../types';
+import { Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     BlobCandidDefinition,
@@ -11,20 +11,21 @@ import {
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 
 export function BlobDefinitionArb(
-    api: Api
+    context: Context
 ): WithShapesArb<BlobCandidDefinition> {
-    if (api === 'class') {
-        return _VecNat8DefinitionArb(api);
+    if (context.api === 'class') {
+        return _VecNat8DefinitionArb(context);
     }
     return fc.oneof(
-        SimpleCandidDefinitionArb('blob', api),
-        _VecNat8DefinitionArb(api)
+        SimpleCandidDefinitionArb(context, 'blob'),
+        _VecNat8DefinitionArb(context)
     );
 }
 
 export function _VecNat8DefinitionArb(
-    api: Api
+    context: Context
 ): WithShapesArb<BlobCandidDefinition> {
+    const api = context.api;
     return fc
         .tuple(UniqueIdentifierArb('globalNames'), fc.boolean())
         .map(([name, useTypeDeclaration]): WithShapes<BlobCandidDefinition> => {

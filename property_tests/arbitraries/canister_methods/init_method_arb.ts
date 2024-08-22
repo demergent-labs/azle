@@ -5,7 +5,7 @@ import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { VoidArb } from '../candid/primitive/void';
-import { Api } from '../types';
+import { Api, Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -33,10 +33,7 @@ export function InitMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 >(
-    paramTypeArrayArb: fc.Arbitrary<
-        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
-    >,
-    constraints: {
+    context: Context<{
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
@@ -45,15 +42,19 @@ export function InitMethodArb<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
         >;
-        api: Api;
         methodImplementationLocation?: MethodImplementationLocation;
-    }
+    }>,
+    paramTypeArrayArb: fc.Arbitrary<
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
+    >
 ): fc.Arbitrary<InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
-            VoidArb(constraints.api),
+            VoidArb(context),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
@@ -72,7 +73,7 @@ export function InitMethodArb<
                 ParamAgentResponseValue
             > => {
                 const methodImplementationLocation =
-                    constraints.api === 'class'
+                    api === 'class'
                         ? 'INLINE'
                         : constraints.methodImplementationLocation ??
                           defaultMethodImplementationLocation;
@@ -95,7 +96,7 @@ export function InitMethodArb<
                     constraints.generateBody,
                     methodImplementationLocation,
                     methodName,
-                    constraints.api
+                    api
                 );
 
                 const variableAliasDeclarations = paramTypes
@@ -113,7 +114,7 @@ export function InitMethodArb<
                     methodImplementationLocation === 'STANDALONE'
                         ? methodName
                         : methodImplementation,
-                    constraints.api
+                    api
                 );
 
                 const tests = constraints.generateTests(

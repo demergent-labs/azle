@@ -5,23 +5,27 @@ import {
     CanisterConfig
 } from 'azle/property_tests/arbitraries/canister_arb';
 import { QueryMethodArb } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
+import { Api } from 'azle/property_tests/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const api = 'functional';
+const api: Api = 'functional';
+const context = { api, constraints: {} };
 
 const AllServicesQueryMethodArb = QueryMethodArb(
-    fc.uniqueArray(ServiceArb(api), {
+    {
+        api,
+        constraints: {
+            generateBody,
+            generateTests
+        }
+    },
+    fc.uniqueArray(ServiceArb(context), {
         selector: (entry) => entry.src.typeAnnotation
     }),
-    ServiceArb(api),
-    {
-        generateBody,
-        generateTests,
-        api
-    }
+    ServiceArb(context)
 );
 
 const CanisterConfigArb = fc
@@ -33,4 +37,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb, api));
+runPropTests(CanisterArb(context, CanisterConfigArb));

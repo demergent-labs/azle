@@ -5,7 +5,7 @@ import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { VoidArb } from '../candid/primitive/void';
-import { Api } from '../types';
+import { Api, Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
@@ -32,10 +32,7 @@ export function PostUpgradeMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 >(
-    paramTypeArrayArb: fc.Arbitrary<
-        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
-    >,
-    constraints: {
+    context: Context<{
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
@@ -44,17 +41,21 @@ export function PostUpgradeMethodArb<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
         >;
-        api: Api;
         methodImplementationLocation?: MethodImplementationLocation;
-    }
+    }>,
+    paramTypeArrayArb: fc.Arbitrary<
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
+    >
 ): fc.Arbitrary<
     PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
 > {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
-            VoidArb(constraints.api),
+            VoidArb(context),
             fc.constantFrom<MethodImplementationLocation>(
                 'INLINE',
                 'STANDALONE'
@@ -76,7 +77,7 @@ export function PostUpgradeMethodArb<
                 ParamAgentResponseValue
             > => {
                 const methodImplementationLocation =
-                    constraints.api === 'class'
+                    api === 'class'
                         ? 'INLINE'
                         : constraints.methodImplementationLocation ??
                           defaultMethodImplementationLocation;
@@ -99,7 +100,7 @@ export function PostUpgradeMethodArb<
                     constraints.generateBody,
                     methodImplementationLocation,
                     methodName,
-                    constraints.api
+                    api
                 );
 
                 const variableAliasDeclarations = paramTypes
@@ -117,7 +118,7 @@ export function PostUpgradeMethodArb<
                     methodImplementationLocation === 'STANDALONE'
                         ? methodName
                         : methodImplementation,
-                    constraints.api
+                    api
                 );
 
                 const tests = constraints.generateTests(

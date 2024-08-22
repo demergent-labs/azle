@@ -1,14 +1,20 @@
 import fc from 'fast-check';
 
+import { Context } from '../../../types';
 import { CandidValues } from '../../candid_values_arb';
 import { TextValueArb } from '../../primitive/text';
 import { PrincipalValueArb } from '../principal_arb';
 import { Func } from '.';
 
-export function FuncValueArb(): fc.Arbitrary<CandidValues<Func>> {
+export function FuncValueArb(
+    context: Context
+): fc.Arbitrary<CandidValues<Func>> {
     return fc
         .tuple(
-            TextValueArb(undefined, undefined, { isJsFunctionName: true }),
+            TextValueArb({
+                ...context,
+                constraints: { isJsFunctionName: true }
+            }),
             PrincipalValueArb()
         )
         .map(([name, principal]) => {

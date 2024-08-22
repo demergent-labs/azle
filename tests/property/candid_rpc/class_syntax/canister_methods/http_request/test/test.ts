@@ -8,24 +8,28 @@ import {
 import { QueryMethodArb } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { HttpRequestArb } from 'azle/property_tests/arbitraries/http/request_arb';
 import { HttpResponseArb } from 'azle/property_tests/arbitraries/http/response_arb';
+import { Api } from 'azle/property_tests/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const api = 'class';
+const api: Api = 'class';
+const context = { api, constraints: {} };
 
-const CanisterConfigArb = RecordArb(api)
+const CanisterConfigArb = RecordArb(context)
     .chain((record) => {
         const HttpRequestMethodArb = QueryMethodArb(
-            fc.tuple(HttpRequestArb(api)),
-            HttpResponseArb(record, api),
             {
-                name: 'http_request',
-                generateBody,
-                generateTests,
-                api
-            }
+                api,
+                constraints: {
+                    name: 'http_request',
+                    generateBody,
+                    generateTests
+                }
+            },
+            fc.tuple(HttpRequestArb(context)),
+            HttpResponseArb(context, record)
         );
 
         return HttpRequestMethodArb;
@@ -36,4 +40,4 @@ const CanisterConfigArb = RecordArb(api)
         };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb, api));
+runPropTests(CanisterArb(context, CanisterConfigArb));

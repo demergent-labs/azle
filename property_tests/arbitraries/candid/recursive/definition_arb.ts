@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Recursive } from '../../../../src/lib/experimental';
-import { Api } from '../../types';
+import { Api, Context } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -14,11 +14,11 @@ import {
 } from '../candid_definition_arb/types';
 
 export function RecursiveDefinitionArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    api: Api,
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<RecursiveCandidDefinition> {
+    const api = context.api;
     return UniqueIdentifierArb('globalNames')
         .chain((name): fc.Arbitrary<RecursiveCandidName> => {
             const recCanDef: RecursiveCandidName = {
@@ -37,19 +37,25 @@ export function RecursiveDefinitionArb(
         })
         .chain((innerRecDef) => {
             return fc.tuple(
-                candidTypeArbForInnerType([innerRecDef, ...parents], api, {
-                    recursiveWeights: true, // This should be true so that the below weights will be respected all the way down. Until those issues are resolved we can't have blobs, tuples or vecs anywhere in any recursive shapes
-                    weights: {
-                        blob: 0,
-                        tuple: 0,
-                        vec: 0
-                        // TODO there are a lot of bugs with recursion so we are disabling the problematic types until the issues are resolved
-                        // https://github.com/demergent-labs/azle/issues/1518
-                        // https://github.com/demergent-labs/azle/issues/1513
-                        // https://github.com/demergent-labs/azle/issues/1525
+                candidTypeArbForInnerType(
+                    {
+                        ...context,
+                        constraints: {
+                            recursiveWeights: true, // This should be true so that the below weights will be respected all the way down. Until those issues are resolved we can't have blobs, tuples or vecs anywhere in any recursive shapes
+                            weights: {
+                                blob: 0,
+                                tuple: 0,
+                                vec: 0
+                                // TODO there are a lot of bugs with recursion so we are disabling the problematic types until the issues are resolved
+                                // https://github.com/demergent-labs/azle/issues/1518
+                                // https://github.com/demergent-labs/azle/issues/1513
+                                // https://github.com/demergent-labs/azle/issues/1525
+                            },
+                            forceInline: true
+                        }
                     },
-                    forceInline: true
-                })(constraints.depthLevel ?? 0),
+                    [innerRecDef, ...parents]
+                )(context.constraints.depthLevel ?? 0),
                 fc.constant(innerRecDef)
             );
         })

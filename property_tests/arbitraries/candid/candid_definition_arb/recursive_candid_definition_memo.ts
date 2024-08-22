@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Api } from '../../types';
+import { Context } from '../../types';
 import { RecursiveDefinitionArb } from '../recursive/definition_arb';
 import { complexCandidDefinitionMemo } from './complex_candid_definition_memo';
 import { CandidDefinitionMemo, RecursiveCandidName } from './types';
@@ -13,12 +13,14 @@ export const REC_ARB_COUNT = 0;
 // https://github.com/demergent-labs/azle/issues/1525
 
 export function recursiveCandidDefinitionMemo(
-    parents: RecursiveCandidName[],
-    api: Api
+    context: Context,
+    parents: RecursiveCandidName[]
 ): CandidDefinitionMemo {
     return fc.memo((depthLevel) =>
-        RecursiveDefinitionArb(complexCandidDefinitionMemo, parents, api, {
-            depthLevel: depthLevel
-        })
+        RecursiveDefinitionArb(
+            { ...context, constraints: { depthLevel: depthLevel } },
+            complexCandidDefinitionMemo,
+            parents
+        )
     );
 }

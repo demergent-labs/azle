@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { Canister } from '../../../../../src/lib/experimental/candid/types/reference/service';
-import { Api } from '../../../types';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -15,13 +15,14 @@ import {
 } from './service_method_arb';
 
 export function ServiceDefinitionArb(
-    fieldCandidDefArb: WithShapesArb<CandidDefinition>,
-    api: Api
+    context: Context,
+    fieldCandidDefArb: WithShapesArb<CandidDefinition>
 ): WithShapesArb<ServiceCandidDefinition> {
+    const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb, api), {
+            fc.uniqueArray(ServiceMethodArb(context, fieldCandidDefArb), {
                 selector: (entry) => entry.definition.name
             }),
             fc.constant(true) // TODO This needs to be true, I don't know why we set up to be an arbitrary boolean if it has to be true
