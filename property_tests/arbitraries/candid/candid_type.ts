@@ -44,7 +44,7 @@ export function simpleCandidTypeToTsType(type: SimpleCandidType): string {
     }
 
     if (type === 'blob') {
-        return 'number[]';
+        return 'Uint8Array';
     }
 
     if (type === 'bool') {
