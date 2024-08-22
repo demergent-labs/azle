@@ -167,25 +167,10 @@ function generateSourceCode(
         };
     `;
 
-    // TODO remove this in favor of getting the right values from the arbs if its class api
-    const optHack =
-        api === 'functional'
-            ? ''
-            : `
-        function Some<T>(value: T): T[] {
-            return [value];
-        }
-
-        const None: any[] = [];
-    `;
-
     return /*TS*/ `
         import { ${imports} } from '${importLocation}';
-
         // @ts-ignore
         import deepEqual from 'deep-is';
-
-        ${optHack}
 
         // #region Declarations
         ${declarations}
