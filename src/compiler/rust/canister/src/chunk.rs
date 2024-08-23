@@ -1,3 +1,4 @@
+#[allow(unused)]
 pub async fn chunk() {
     let id = ic_cdk::id();
     let method = "_azle_chunk";

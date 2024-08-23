@@ -1,5 +1,4 @@
-use crate::upload_file::Timestamp;
-use crate::FILE_INFO;
+use crate::upload_file::{Timestamp, FILE_INFO};
 
 pub fn initialize_file_info(path: &str, timestamp: Timestamp) {
     FILE_INFO.with(|file_info| {
