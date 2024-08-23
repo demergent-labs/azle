@@ -16,11 +16,11 @@ function getPrelude(main: string): string {
 
             import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
 
-            export * from './${main}';
-            import * as CanisterClass from './${main}';
+            import CanisterClass from './${main}';
 
+            // TODO _azleWasmtimeCandidEnvironment we run in a node wasm environment not wasmtime
             if (globalThis._azleWasmtimeCandidEnvironment === false) {
-                const canisterClassInstance = new CanisterClass.default();
+                const canisterClassInstance = new CanisterClass();
                 globalThis._azleCanisterClassInstance = canisterClassInstance;
             }
 
@@ -30,7 +30,6 @@ function getPrelude(main: string): string {
                 isFirstService: true,
                 systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
             });
-
 
             globalThis._azleGetCandidAndMethodMeta = () => {
                 return JSON.stringify({

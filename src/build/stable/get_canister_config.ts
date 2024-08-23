@@ -12,6 +12,7 @@ type DfxJson = {
 export type CanisterConfig = {
     main?: string;
     custom?: {
+        assets?: [string, string][];
         candid_gen?: CandidGen;
         env?: EnvVars;
         experimental?: boolean;
