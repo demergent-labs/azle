@@ -1,7 +1,7 @@
 import { HttpRequest } from 'azle/experimental';
-import { Named } from 'azle/property_tests';
-import { CandidReturnType } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { Named } from 'azle/test/property';
+import { CandidReturnType } from 'azle/test/property/arbitraries/candid/candid_return_type_arb';
+import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
 
 export function generateBody(
     namedParams: Named<CandidValueAndMeta<HttpRequest>>[],

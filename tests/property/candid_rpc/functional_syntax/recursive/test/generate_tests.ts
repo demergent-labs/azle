@@ -1,7 +1,7 @@
-import { getActor, Named } from 'azle/property_tests';
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
-import { Recursive } from 'azle/property_tests/arbitraries/candid/recursive';
-import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
+import { getActor, Named } from 'azle/test/property';
+import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { Recursive } from 'azle/test/property/arbitraries/candid/recursive';
+import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 
 export function generateTests(
     functionName: string,

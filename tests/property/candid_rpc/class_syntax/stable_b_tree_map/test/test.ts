@@ -1,7 +1,7 @@
-import { runPropTests } from 'azle/property_tests';
-import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
-import { StableBTreeMapArb } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
-import { Context } from 'azle/property_tests/arbitraries/types';
+import { runPropTests } from 'azle/test/property';
+import { CanisterArb } from 'azle/test/property/arbitraries/canister_arb';
+import { StableBTreeMapArb } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
+import { Context } from 'azle/test/property/arbitraries/types';
 import fc from 'fast-check';
 
 import { ContainsKeyTestArb } from './contains_key';

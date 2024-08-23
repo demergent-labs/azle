@@ -1,18 +1,18 @@
-import { runPropTests } from 'azle/property_tests';
-import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
-import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
-import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
+import { runPropTests } from 'azle/test/property';
+import { CandidReturnTypeArb } from 'azle/test/property/arbitraries/candid/candid_return_type_arb';
+import { CandidValueAndMetaArb } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
 import {
     CanisterArb,
     CanisterConfig
-} from 'azle/property_tests/arbitraries/canister_arb';
-import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/init_method_arb';
+} from 'azle/test/property/arbitraries/canister_arb';
+import { InitMethodArb } from 'azle/test/property/arbitraries/canister_methods/init_method_arb';
 import {
     QueryMethod,
     QueryMethodArb
-} from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
-import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
-import { Api } from 'azle/property_tests/arbitraries/types';
+} from 'azle/test/property/arbitraries/canister_methods/query_method_arb';
+import { UpdateMethodArb } from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
+import { Api } from 'azle/test/property/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
