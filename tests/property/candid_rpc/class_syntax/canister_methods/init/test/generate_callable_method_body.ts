@@ -8,7 +8,7 @@ export function generateBody(
 ): string {
     // Print out params to avoid unused parameter warnings
     const printParams = namedParams.map(
-        (param) => `console.log(${param.name})`
+        (param) => `console.info(${param.name})`
     );
     return /*TS*/ `
         ${printParams.join('\n')}

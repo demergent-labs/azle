@@ -18,7 +18,7 @@ export function recursiveCandidDefinitionMemo(
 ): CandidDefinitionMemo {
     return fc.memo((depthLevel) =>
         RecursiveDefinitionArb(
-            { ...context, constraints: { depthLevel: depthLevel } },
+            { ...context, constraints: { depthLevel } },
             complexCandidDefinitionMemo,
             parents
         )

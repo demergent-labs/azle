@@ -223,5 +223,5 @@ function toClassTypeAnnotation(innerType: CandidDefinition): string {
         return `Uint8Array`;
     }
 
-    return `${innerType.candidMeta.typeAnnotation}[]`;
+    return `(${innerType.candidMeta.typeAnnotation})[]`;
 }

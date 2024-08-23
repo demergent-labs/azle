@@ -36,7 +36,6 @@ export function candidDefinitionMemo(
     context: Context<DefinitionConstraints | undefined>,
     parents: RecursiveCandidName[]
 ): CandidDefinitionMemo {
-    const api = context.api;
     return fc.memo((depthLevel) => {
         if (depthLevel <= 1) {
             return primitiveCandidDefinitionArb({
@@ -62,7 +61,7 @@ export function candidDefinitionMemo(
             },
             {
                 arbitrary: recursiveCandidDefinitionMemo(
-                    { api, constraints: undefined }, // TODO was it the old way to not have constraints here? Should it be?
+                    context,
                     parents
                 )(depthLevel - 1),
                 weight: REC_ARB_COUNT
