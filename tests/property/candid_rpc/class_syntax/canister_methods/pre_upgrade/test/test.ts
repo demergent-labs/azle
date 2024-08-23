@@ -19,14 +19,17 @@ import fc from 'fast-check';
 const api: Api = 'class';
 const context = { api, constraints: {} };
 
-const SimplePreUpgradeArb = PreUpgradeMethodArb({
-    api,
-    constraints: {
+const SimplePreUpgradeArb = PreUpgradeMethodArb(
+    {
+        api,
+        constraints: {}
+    },
+    {
         generateBody: () =>
             /*TS*/ `stable.insert(PRE_UPGRADE_HOOK_EXECUTED, true);`,
         generateTests: () => []
     }
-});
+);
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
     {

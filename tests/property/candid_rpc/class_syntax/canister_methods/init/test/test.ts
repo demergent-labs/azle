@@ -36,10 +36,11 @@ const valueConstraints = {
 const SimpleInitMethodArb = InitMethodArb(
     {
         api,
-        constraints: {
-            generateBody: initBodyGenerator,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody: initBodyGenerator,
+        generateTests
     },
     fc.array(CandidValueAndMetaArb({ api, constraints: valueConstraints }))
 );
