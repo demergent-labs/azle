@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Vec } from '../../../../../src/lib/experimental';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -13,54 +14,61 @@ import {
 } from '../../candid_definition_arb/types';
 
 export function VecDefinitionArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<VecCandidDefinition> {
+    const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            possiblyRecursiveArb(candidTypeArb, parents, constraints),
+            possiblyRecursiveArb(context, candidTypeArb, parents),
             fc.boolean()
         )
         .map(
             ([
                 name,
                 innerTypeAndShapes,
-                useTypeDeclaration
+                useTypeDeclarationChance
             ]): WithShapes<VecCandidDefinition> => {
+                const useTypeDeclaration =
+                    (context.constraints.forceInline === undefined ||
+                        context.constraints.forceInline === false) &&
+                    useTypeDeclarationChance;
                 const { definition: innerType, recursiveShapes } =
                     innerTypeAndShapes;
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    innerType
+                    innerType,
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
-                    innerType
+                    innerType,
+                    api
                 );
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(innerType);
+                const runtimeTypeObject = generateRuntimeTypeObject(innerType);
 
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        innerType
+                        innerType,
+                        api
                     );
 
-                const imports = generateImports(innerType);
+                const imports = generateImports(innerType, api);
 
                 return {
                     definition: {
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Vec'
@@ -74,15 +82,19 @@ export function VecDefinitionArb(
 }
 
 function possiblyRecursiveArb(
+    context: Context<DefinitionConstraints>,
     candidArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<CandidDefinition> {
-    const depthLevel = constraints?.depthLevel ?? 0;
+    const depthLevel = context.constraints.depthLevel ?? 0;
+    const newContext = {
+        ...context,
+        constraints: { ...context.constraints, depthLevel: depthLevel - 1 }
+    };
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents)(depthLevel);
+            return candidArb(newContext, parents)(depthLevel);
         }
         return fc.oneof(
             {
@@ -93,61 +105,123 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents)(depthLevel),
+                arbitrary: candidArb(newContext, parents)(depthLevel),
                 weight: 1
             }
         );
     });
 }
 
+function generateImports(innerType: CandidDefinition, api: Api): Set<string> {
+    const vecImports = api === 'functional' ? ['Vec'] : ['IDL'];
+    return new Set([...innerType.candidMeta.imports, ...vecImports]);
+}
+
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    api: Api
 ): string[] {
     if (useTypeDeclaration) {
+        const type =
+            api === 'functional'
+                ? []
+                : [
+                      `type ${name} = ${generateCandidTypeAnnotation(
+                          false,
+                          name,
+                          innerType,
+                          api
+                      )}`
+                  ];
         return [
             ...innerType.candidMeta.variableAliasDeclarations,
-            `const ${name} = ${generateCandidTypeObject(
+            `const ${name} = ${generateTypeObject(
                 false,
                 name,
-                innerType
-            )};`
+                innerType,
+                api
+            )};`,
+            ...type
         ];
     }
     return innerType.candidMeta.variableAliasDeclarations;
 }
 
-function generateImports(innerType: CandidDefinition): Set<string> {
-    return new Set([...innerType.candidMeta.imports, 'Vec']);
-}
-
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
+        if (api === 'class') {
+            return name;
+        }
         return `typeof ${name}.tsType`;
     }
 
-    return `Vec<${innerType.candidMeta.candidTypeAnnotation}>`;
+    if (api === 'class') {
+        return toClassTypeAnnotation(innerType);
+    }
+
+    return `Vec<${innerType.candidMeta.typeAnnotation}>`;
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
-    return `Vec(${innerType.candidMeta.candidTypeObject})`;
+    if (api === 'class') {
+        return `IDL.Vec(${innerType.candidMeta.typeObject})`;
+    }
+
+    return `Vec(${innerType.candidMeta.typeObject})`;
 }
 
-function generateRuntimeCandidTypeObject(
-    innerType: CandidDefinition
-): CandidType {
-    return Vec(innerType.candidMeta.runtimeCandidTypeObject);
+function generateRuntimeTypeObject(innerType: CandidDefinition): CandidType {
+    return Vec(innerType.candidMeta.runtimeTypeObject);
+}
+
+function toClassTypeAnnotation(innerType: CandidDefinition): string {
+    if (innerType.candidMeta.candidType === 'int64') {
+        return `BigInt64Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'int32') {
+        return `Int32Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'int16') {
+        return `Int16Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'int8') {
+        return `Int8Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'nat64') {
+        return `BigUint64Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'nat32') {
+        return `Uint32Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'nat16') {
+        return `Uint16Array`;
+    }
+
+    if (innerType.candidMeta.candidType === 'nat8') {
+        return `Uint8Array`;
+    }
+
+    return `(${innerType.candidMeta.typeAnnotation})[]`;
 }

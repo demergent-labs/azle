@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
+import { Context } from '../../../types';
 import { RecordCandidDefinition } from '../../candid_definition_arb/types';
 import {
     CandidValueArb,
@@ -15,18 +16,26 @@ type Field = [string, CandidValues<CorrespondingJSType>];
 type ArbField = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
 export function RecordValuesArb(
+    context: Context<CandidValueConstraints>,
     recordDefinition: RecordCandidDefinition,
-    recursiveShapes: RecursiveShapes,
-    constraints?: CandidValueConstraints
+    recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<Record>> {
-    const depthLevel = constraints?.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
+    const depthLevel =
+        context.constraints?.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
     const fieldValues = recordDefinition.innerTypes.map(([name, innerType]) => {
         const result: ArbField = [
             name,
-            CandidValueArb(innerType, recursiveShapes, {
-                ...constraints,
-                depthLevel: depthLevel - 1
-            })
+            CandidValueArb(
+                {
+                    ...context,
+                    constraints: {
+                        ...context.constraints,
+                        depthLevel: depthLevel - 1
+                    }
+                },
+                innerType,
+                recursiveShapes
+            )
         ];
         return result;
     });

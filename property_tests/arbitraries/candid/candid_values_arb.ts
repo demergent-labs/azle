@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Context } from '../types';
 import {
     CandidDefinition,
     OptCandidDefinition,
@@ -60,9 +61,9 @@ export interface CandidValueConstraints
 }
 
 export function CandidValueArb(
+    context: Context<CandidValueConstraints>,
     candidTypeMeta: CandidDefinition,
-    recursiveShapes: RecursiveShapes,
-    constraints: CandidValueConstraints
+    recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === 'blob') {
@@ -70,47 +71,47 @@ export function CandidValueArb(
     }
     if (candidType === 'Opt') {
         return OptValuesArb(
+            context,
             candidTypeMeta as OptCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'Record') {
         return RecordValuesArb(
+            context,
             candidTypeMeta as RecordCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'Tuple') {
         return TupleValuesArb(
+            context,
             candidTypeMeta as TupleCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'Variant') {
         return VariantValuesArb(
+            context,
             candidTypeMeta as VariantCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'Vec') {
         return VecValuesArb(
+            context,
             candidTypeMeta as VecCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     if (candidType === 'bool') {
         return BoolValueArb();
     }
     if (candidType === 'float32') {
-        return Float32ValueArb(undefined, undefined, constraints);
+        return Float32ValueArb(context);
     }
     if (candidType === 'float64') {
-        return Float64ValueArb(undefined, undefined, constraints);
+        return Float64ValueArb(context);
     }
     if (candidType === 'int') {
         return IntValueArb();
@@ -146,25 +147,28 @@ export function CandidValueArb(
         return NullValueArb();
     }
     if (candidType === 'text') {
-        return TextValueArb();
+        return TextValueArb(context);
     }
     if (candidType === 'Void') {
         return VoidValueArb();
     }
     if (candidType === 'Func') {
-        return FuncValueArb();
+        return FuncValueArb({ ...context, constraints: {} });
     }
     if (candidType === 'Principal') {
         return PrincipalValueArb();
     }
     if (candidType === 'Service') {
-        return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
+        return ServiceValueArb(
+            { ...context, constraints: {} },
+            candidTypeMeta as ServiceCandidDefinition
+        );
     }
     if (candidType === 'Recursive') {
         return RecursiveNameValuesArb(
+            context,
             candidTypeMeta as RecursiveCandidName | RecursiveCandidDefinition,
-            recursiveShapes,
-            constraints
+            recursiveShapes
         );
     }
     throw new Error('Unreachable');

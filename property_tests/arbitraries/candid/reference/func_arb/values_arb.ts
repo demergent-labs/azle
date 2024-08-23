@@ -1,20 +1,29 @@
 import fc from 'fast-check';
 
-import { CandidValues } from '../../candid_values_arb';
-import { TextArb } from '../../primitive/text';
-import { PrincipalArb } from '../principal_arb';
+import { Context } from '../../../types';
+import { CandidValueConstraints, CandidValues } from '../../candid_values_arb';
+import { TextValueArb } from '../../primitive/text';
+import { PrincipalValueArb } from '../principal_arb';
 import { Func } from '.';
 
-export function FuncValueArb(): fc.Arbitrary<CandidValues<Func>> {
+export function FuncValueArb(
+    context: Context<CandidValueConstraints>
+): fc.Arbitrary<CandidValues<Func>> {
     return fc
-        .tuple(TextArb({ isJsFunctionName: true }), PrincipalArb())
+        .tuple(
+            TextValueArb({
+                ...context,
+                constraints: { isJsFunctionName: true }
+            }),
+            PrincipalValueArb()
+        )
         .map(([name, principal]) => {
             const value: Func = [
-                principal.value.agentArgumentValue,
-                name.value.agentArgumentValue
+                principal.agentArgumentValue,
+                name.agentArgumentValue
             ];
 
-            const valueLiteral = `[${principal.src.valueLiteral}, ${name.src.valueLiteral}]`;
+            const valueLiteral = `[${principal.valueLiteral}, ${name.valueLiteral}]`;
 
             return {
                 valueLiteral,

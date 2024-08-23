@@ -4,6 +4,7 @@ import { HttpRequest, None, Some } from '../../../src/lib/experimental';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
+import { Api, Context } from '../types';
 import { BodyArb } from './body_arb';
 import { HttpHeadersArb } from './headers_arb';
 
@@ -87,9 +88,10 @@ function HttpRequestValueArb() {
         );
 }
 
-export function HttpRequestArb(): fc.Arbitrary<
-    CandidValueAndMeta<HttpRequest>
-> {
+export function HttpRequestArb(
+    context: Context
+): fc.Arbitrary<CandidValueAndMeta<HttpRequest>> {
+    const api = context.api;
     return HttpRequestValueArb().map((httpRequest) => {
         const headerStrings = httpRequest.headers
             .map(
@@ -102,31 +104,67 @@ export function HttpRequestArb(): fc.Arbitrary<
 
         const certificateVersion =
             'Some' in httpRequest.certificate_version
-                ? `Some(${httpRequest.certificate_version.Some})`
-                : `None`;
+                ? api === 'functional'
+                    ? `Some(${httpRequest.certificate_version.Some})`
+                    : `[${httpRequest.certificate_version.Some}]`
+                : api === 'functional'
+                ? `None`
+                : [];
 
         const optImport =
-            'Some' in httpRequest.certificate_version ? 'Some' : 'None';
+            api === 'functional'
+                ? ['Some' in httpRequest.certificate_version ? 'Some' : 'None']
+                : [];
+
+        const requestImport = api === 'functional' ? 'HttpRequest' : 'IDL';
 
         return {
             value: {
                 agentArgumentValue: httpRequest,
                 agentResponseValue: httpRequest,
-                runtimeCandidTypeObject: HttpRequest
+                runtimeTypeObject: HttpRequest
             },
             src: {
-                candidTypeAnnotation: 'HttpRequest',
-                candidTypeObject: 'HttpRequest',
-                variableAliasDeclarations: [],
-                imports: new Set(['HttpRequest', optImport]),
+                typeAnnotation: 'HttpRequest',
+                typeObject: 'HttpRequest',
+                variableAliasDeclarations: [
+                    generateVariableAliasDeclarations(api)
+                ],
+                imports: new Set([requestImport, ...optImport]),
                 valueLiteral: `{
                     method: '${httpRequest.method}',
                     url: '${httpRequest.url}',
                     headers: [${headerStrings}],
                     body: ${bodySrc},
                     certificate_version: ${certificateVersion}
-                }`
+                }`,
+                idl: 'HttpRequest'
             }
         };
     });
+}
+
+function generateVariableAliasDeclarations(api: Api): string {
+    if (api === 'class') {
+        return /*TS*/ `
+        export const RequestHeaderField = IDL.Tuple(IDL.Text, IDL.Text);
+        export type RequestHeaderField = [string, string];
+
+        export const HttpRequest = IDL.Record({
+            method: IDL.Text,
+            url: IDL.Text,
+            headers: IDL.Vec(RequestHeaderField),
+            body: IDL.Vec(IDL.Nat8),
+            certificate_version: IDL.Opt(IDL.Nat16)
+        });
+        export type HttpRequest = {
+            method: string;
+            url: string;
+            headers: RequestHeaderField[];
+            body: Uint8Array;
+            certificate_version: [number] | [];
+        };
+    `;
+    }
+    return '';
 }

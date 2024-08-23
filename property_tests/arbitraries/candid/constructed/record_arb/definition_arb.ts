@@ -2,6 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Record } from '../../../../../src/lib/experimental';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -19,8 +20,10 @@ type RuntimeRecord = {
 };
 
 export function RecordDefinitionArb(
+    context: Context,
     fieldCandidDefArb: CandidDefinitionArb
 ): WithShapesArb<RecordCandidDefinition> {
+    const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
@@ -46,36 +49,38 @@ export function RecordDefinitionArb(
                     },
                     {}
                 );
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    fields
+                    fields,
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
-                    fields
+                    fields,
+                    api
                 );
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(fields);
+                const runtimeTypeObject = generateRuntimeTypeObject(fields);
 
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        fields
+                        fields,
+                        api
                     );
 
-                const imports = generateImports(fields);
+                const imports = generateImports(fields, api);
 
                 return {
                     definition: {
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Record'
@@ -88,74 +93,99 @@ export function RecordDefinitionArb(
         );
 }
 
-function generateImports(fields: Field[]): Set<string> {
+function generateImports(fields: Field[], api: Api): Set<string> {
     const fieldImports = fields.flatMap((field): string[] => [
         ...field[1].candidMeta.imports
     ]);
-    return new Set([...fieldImports, 'Record']);
+    const recordImports = api === 'functional' ? ['Record'] : ['IDL'];
+    return new Set([...fieldImports, ...recordImports]);
+}
+
+function generateVariableAliasDeclarations(
+    useTypeDeclaration: boolean,
+    name: string,
+    fields: Field[],
+    api: Api
+): string[] {
+    const fieldVariableAliasDeclarations = fields.flatMap(
+        (field): string[] => field[1].candidMeta.variableAliasDeclarations
+    );
+    if (useTypeDeclaration) {
+        const type =
+            api === 'functional'
+                ? []
+                : [
+                      `type ${name} = ${generateCandidTypeAnnotation(
+                          false,
+                          name,
+                          fields,
+                          api
+                      )}`
+                  ];
+        return [
+            ...fieldVariableAliasDeclarations,
+            `const ${name} = ${generateTypeObject(false, name, fields, api)};`,
+            ...type
+        ];
+    }
+    return fieldVariableAliasDeclarations;
 }
 
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[]
+    fields: Field[],
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
+        if (api === 'class') {
+            return name;
+        }
         return `typeof ${name}.tsType`;
     }
 
     return `{${fields
         .map(
             ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.candidTypeAnnotation}`
+                `${fieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`
         )
         .join(',')}}`;
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[]
+    fields: Field[],
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
-    return `Record({${fields
+    const fieldsAsString = fields
         .map(
             ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.candidTypeObject}`
+                `${fieldName}: ${fieldDefinition.candidMeta.typeObject}`
         )
-        .join(',')}})`;
+        .join(',');
+
+    if (api === 'class') {
+        return `IDL.Record({${fieldsAsString}})`;
+    }
+
+    return `Record({${fieldsAsString}})`;
 }
 
-function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {
+function generateRuntimeTypeObject(fields: Field[]): CandidType {
     const azleRecordConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RuntimeRecord => {
             return {
                 ...acc,
-                [fieldName]: fieldDefinition.candidMeta.runtimeCandidTypeObject
+                [fieldName]: fieldDefinition.candidMeta.runtimeTypeObject
             };
         },
         {}
     );
 
     return Record(azleRecordConstructorObj);
-}
-
-function generateVariableAliasDeclarations(
-    useTypeDeclaration: boolean,
-    name: string,
-    fields: Field[]
-): string[] {
-    const fieldVariableAliasDefinitions = fields.flatMap(
-        (field): string[] => field[1].candidMeta.variableAliasDeclarations
-    );
-    if (useTypeDeclaration) {
-        return [
-            ...fieldVariableAliasDefinitions,
-            `const ${name} = ${generateCandidTypeObject(false, name, fields)};`
-        ];
-    }
-    return fieldVariableAliasDefinitions;
 }

@@ -1,6 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import fc from 'fast-check';
 
+import { Context } from '../../../types';
 import { candidDefinitionArb } from '../../candid_definition_arb';
 import {
     CandidDefinition,
@@ -24,12 +25,15 @@ import { ServiceValueArb } from './values_arb';
 // });
 
 export function ServiceArb(
+    context: Context,
     innerCandidDefinitionArb: WithShapesArb<CandidDefinition> = candidDefinitionArb(
+        context,
         {}
     )
 ): fc.Arbitrary<CandidValueAndMeta<Principal>> {
     return CandidValueAndMetaArbGenerator(
-        ServiceDefinitionArb(innerCandidDefinitionArb),
+        context,
+        ServiceDefinitionArb(context, innerCandidDefinitionArb),
         ServiceValueArb
     );
 }

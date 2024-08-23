@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Context } from '../../../types';
 import {
     FloatCandidDefinition,
     WithShapesArb
@@ -17,25 +18,30 @@ export interface Float32Constraints extends fc.Float32ArrayConstraints {
 }
 
 export function Float32Arb(
-    constraints?: Float32Constraints
+    context: Context<Float32Constraints>
 ): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(
-        Float32DefinitionArb(),
-        Float32ValueArb,
-        constraints
+        context,
+        Float32DefinitionArb({ ...context, constraints: {} }),
+        Float32ValueArb
     );
 }
 
-export function Float32DefinitionArb(): WithShapesArb<FloatCandidDefinition> {
-    return SimpleCandidDefinitionArb('float32');
+export function Float32DefinitionArb(
+    context: Context
+): WithShapesArb<FloatCandidDefinition> {
+    return SimpleCandidDefinitionArb(context, 'float32');
 }
 
 export function Float32ValueArb<C extends Float32Constraints>(
+    context: Context<C>,
     _?: FloatCandidDefinition,
-    _recShapes?: RecursiveShapes,
-    constraints?: C
+    _recShapes?: RecursiveShapes
 ): fc.Arbitrary<CandidValues<number>> {
-    return SimpleCandidValuesArb(float32(constraints), floatToSrcLiteral);
+    return SimpleCandidValuesArb(
+        float32(context.constraints),
+        floatToSrcLiteral
+    );
 }
 
 function float32(constraints?: Float32Constraints): fc.Arbitrary<number> {

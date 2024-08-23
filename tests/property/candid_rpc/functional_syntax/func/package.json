@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "test": "tsx test/test.ts"
+    },
+    "dependencies": {
+        "azle": "0.23.0"
+    }
+}

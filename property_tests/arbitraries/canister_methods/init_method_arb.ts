@@ -5,13 +5,14 @@ import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { VoidArb } from '../candid/primitive/void';
+import { Api, Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    CallbackLocation,
-    CallbackLocationArb,
-    generateCallback,
+    CanisterMethodConstraints,
+    generateMethodImplementation,
     isDefined,
+    MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
 
@@ -32,10 +33,8 @@ export function InitMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 >(
-    paramTypeArrayArb: fc.Arbitrary<
-        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
-    >,
-    constraints: {
+    context: Context<CanisterMethodConstraints>,
+    generator: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
@@ -44,15 +43,19 @@ export function InitMethodArb<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
         >;
-        callbackLocation?: CallbackLocation;
-    }
+    },
+    paramTypeArrayArb: fc.Arbitrary<
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
+    >
 ): fc.Arbitrary<InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
-            VoidArb(),
-            CallbackLocationArb,
+            VoidArb({ ...context, constraints: {} }),
+            MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -63,14 +66,17 @@ export function InitMethodArb<
                 functionName,
                 paramTypes,
                 returnType,
-                defaultCallbackLocation,
-                callbackName
+                defaultMethodImplementationLocation,
+                methodName
             ]): InitMethod<
                 ParamAgentArgumentValue,
                 ParamAgentResponseValue
             > => {
-                const callbackLocation =
-                    constraints.callbackLocation ?? defaultCallbackLocation;
+                const methodImplementationLocation =
+                    api === 'class'
+                        ? 'INLINE'
+                        : constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation;
 
                 const imports = new Set([
                     'init',
@@ -84,12 +90,13 @@ export function InitMethodArb<
                     })
                 );
 
-                const callback = generateCallback(
+                const methodImplementation = generateMethodImplementation(
                     namedParams,
                     returnType,
-                    constraints.generateBody,
-                    callbackLocation,
-                    callbackName
+                    generator.generateBody,
+                    methodImplementationLocation,
+                    methodName,
+                    api
                 );
 
                 const variableAliasDeclarations = paramTypes
@@ -97,17 +104,20 @@ export function InitMethodArb<
                     .filter(isDefined);
 
                 const globalDeclarations =
-                    callbackLocation === 'STANDALONE'
-                        ? [...variableAliasDeclarations, callback]
+                    methodImplementationLocation === 'STANDALONE'
+                        ? [...variableAliasDeclarations, methodImplementation]
                         : variableAliasDeclarations;
 
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
-                    callbackLocation === 'STANDALONE' ? callbackName : callback
+                    methodImplementationLocation === 'STANDALONE'
+                        ? methodName
+                        : methodImplementation,
+                    api
                 );
 
-                const tests = constraints.generateTests(
+                const tests = generator.generateTests(
                     functionName,
                     namedParams,
                     returnType
@@ -130,11 +140,16 @@ function generateSourceCode<
 >(
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
-    callback: string
+    methodImplementation: string,
+    api: Api
 ): string {
-    const paramCandidTypeObjects = paramTypes
-        .map((param) => param.src.candidTypeObject)
+    const paramTypeObjects = paramTypes
+        .map((param) => param.src.typeObject)
         .join(', ');
 
-    return `${functionName}: init([${paramCandidTypeObjects}], ${callback})`;
+    if (api === 'functional') {
+        return `${functionName}: init([${paramTypeObjects}], ${methodImplementation})`;
+    } else {
+        return `@init([${paramTypeObjects}])\n${functionName}${methodImplementation}`;
+    }
 }

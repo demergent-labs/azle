@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
+import { Api, Context } from '../../../types';
 import { OptCandidDefinition } from '../../candid_definition_arb/types';
 import {
     CandidValueArb,
@@ -14,26 +15,32 @@ import { Opt } from '.';
 type SomeOrNone = 'Some' | 'None';
 
 export function OptValuesArb(
+    context: Context<CandidValueConstraints>,
     optDefinition: OptCandidDefinition,
-    recursiveShapes: RecursiveShapes,
-    constraints: CandidValueConstraints = {
-        depthLevel: DEFAULT_VALUE_MAX_DEPTH
-    }
+    recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<Opt>> {
-    const depthLevel = constraints?.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
+    const constraints = context.constraints ?? {
+        depthLevel: DEFAULT_VALUE_MAX_DEPTH
+    };
+    const api = context.api;
+    const depthLevel = constraints.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
     if (depthLevel < 1) {
-        return fc.constant(generateNoneValue());
+        return fc.constant(generateNoneValue(api));
     }
     const innerValue = fc.tuple(
         fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
-        CandidValueArb(optDefinition.innerType, recursiveShapes, {
-            ...constraints,
-            depthLevel: depthLevel - 1
-        })
+        CandidValueArb(
+            {
+                api,
+                constraints: { ...constraints, depthLevel: depthLevel - 1 }
+            },
+            optDefinition.innerType,
+            recursiveShapes
+        )
     );
 
     return innerValue.map(([someOrNone, innerType]) => {
-        const valueLiteral = generateValueLiteral(someOrNone, innerType);
+        const valueLiteral = generateValueLiteral(someOrNone, innerType, api);
         const agentArgumentValue = generateValue(someOrNone, innerType);
         const agentResponseValue = generateValue(someOrNone, innerType, true);
 
@@ -45,9 +52,9 @@ export function OptValuesArb(
     });
 }
 
-function generateNoneValue(): CandidValues<Opt> {
+function generateNoneValue(api: Api): CandidValues<Opt> {
     return {
-        valueLiteral: 'None',
+        valueLiteral: api === 'functional' ? 'None' : '[]',
         agentArgumentValue: [],
         agentResponseValue: []
     };
@@ -71,11 +78,14 @@ function generateValue(
 
 function generateValueLiteral(
     someOrNone: SomeOrNone,
-    innerType: CandidValues<CorrespondingJSType>
+    innerType: CandidValues<CorrespondingJSType>,
+    api: Api
 ): string {
     if (someOrNone === 'Some') {
-        return `Some(${innerType.valueLiteral})`;
+        return api === 'functional'
+            ? `Some(${innerType.valueLiteral})`
+            : `[${innerType.valueLiteral}]`;
     } else {
-        return `None`;
+        return api === 'functional' ? `None` : '[]';
     }
 }

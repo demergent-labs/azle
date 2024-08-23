@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType as RuntimeCandidType } from '../../../../src/lib/experimental/candid/candid_type';
+import { Context } from '../../types';
 import { CandidType } from '../candid_type';
 import { RecursiveShapes } from '../recursive';
 import { ServiceMethodDefinition } from '../reference/service_arb/service_method_arb';
@@ -11,14 +12,15 @@ export type CandidDefinitionMemo = (
     depthLevel: number
 ) => WithShapesArb<CandidDefinition>;
 export type RecursiveCandidDefinitionMemo = (
-    parents: RecursiveCandidName[],
-    constraints?: DefinitionConstraints
+    context: Context<DefinitionConstraints>,
+    parents: RecursiveCandidName[]
 ) => CandidDefinitionMemo;
 
 export type DefinitionConstraints = Partial<{
     depthLevel: number;
     recursiveWeights: boolean;
     weights: CandidDefinitionWeights;
+    forceInline?: boolean;
 }>;
 
 export type CandidDefinitionWeights = Partial<
@@ -102,9 +104,9 @@ export type RecursiveCandidDefinition = {
 };
 
 type CandidMeta = {
-    candidTypeAnnotation: string; // Either a type reference or type literal
-    candidTypeObject: string;
-    runtimeCandidTypeObject: RuntimeCandidType;
+    typeAnnotation: string; // Either a type reference or type literal
+    typeObject: string;
+    runtimeTypeObject: RuntimeCandidType;
     variableAliasDeclarations: string[];
     imports: Set<string>;
     candidType: CandidType;

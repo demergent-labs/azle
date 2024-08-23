@@ -9,6 +9,7 @@ import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { UpdateMethod } from './canister_methods/update_method_arb';
+import { Context } from './types';
 
 export type Canister = {
     initArgs: string[] | undefined;
@@ -49,6 +50,7 @@ export function CanisterArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 >(
+    context: Context,
     configArb: fc.Arbitrary<
         CanisterConfig<ParamAgentArgumentValue, ParamAgentResponseValue>
     >
@@ -70,7 +72,7 @@ export function CanisterArb<
 
         const initArgs = config.initMethod?.params.map((param) => {
             const value = param.value.value;
-            return value.runtimeCandidTypeObject
+            return value.runtimeTypeObject
                 .getIdlType([])
                 .accept(new CliStringVisitor(), {
                     value: value.agentArgumentValue
@@ -80,7 +82,7 @@ export function CanisterArb<
         const postUpgradeArgs = config.postUpgradeMethod?.params.map(
             (param) => {
                 const value = param.value.value;
-                return value.runtimeCandidTypeObject
+                return value.runtimeTypeObject
                     .getIdlType([])
                     .accept(new CliStringVisitor(), {
                         value: value.agentArgumentValue
@@ -90,7 +92,8 @@ export function CanisterArb<
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
-            canisterMethods
+            canisterMethods,
+            context.api
         );
 
         const tests = canisterMethods.reduce(
@@ -127,16 +130,19 @@ export function CanisterArb<
 
 function generateSourceCode(
     globalDeclarations: string[],
-    canisterMethods: (UpdateMethod | QueryMethod)[]
+    canisterMethods: (UpdateMethod | QueryMethod)[],
+    api: 'class' | 'functional'
 ): string {
+    const canisterImports = api === 'functional' ? ['Canister'] : [];
     const imports = [
         ...new Set([
-            'Canister',
+            ...canisterImports,
             ...canisterMethods.flatMap((method) => [...method.imports])
         ])
     ]
         .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
         .join();
+    const importLocation = `azle${api === 'functional' ? '/experimental' : ''}`;
 
     const declarationsFromCanisterMethods = canisterMethods.flatMap(
         (method) => method.globalDeclarations
@@ -148,9 +154,21 @@ function generateSourceCode(
 
     const sourceCodes = canisterMethods.map((method) => method.sourceCode);
 
-    return /*TS*/ `
-        import { ${imports} } from 'azle/experimental';
+    const canister =
+        api === 'functional'
+            ? `
+        export default Canister({
+            ${sourceCodes.join(',\n    ')}
+        });
+            `
+            : `
+        export default class {
+            ${sourceCodes.join('\n    ')}
+        };
+    `;
 
+    return /*TS*/ `
+        import { ${imports} } from '${importLocation}';
         // @ts-ignore
         import deepEqual from 'deep-is';
 
@@ -158,8 +176,6 @@ function generateSourceCode(
         ${declarations}
         // #endregion Declarations
 
-        export default Canister({
-            ${sourceCodes.join(',\n    ')}
-        });
+        ${canister}
     `;
 }

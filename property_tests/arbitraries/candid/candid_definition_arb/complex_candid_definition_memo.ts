@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Context } from '../../types';
 import { BlobDefinitionArb } from '../constructed/blob_arb/definition_arb';
 import { OptDefinitionArb } from '../constructed/opt_arb/definition_arb';
 import { RecordDefinitionArb } from '../constructed/record_arb/definition_arb';
@@ -30,9 +31,10 @@ export type ComplexDefinitionWeights = Partial<{
 export const COMPLEX_ARB_COUNT = 8;
 
 export function complexCandidDefinitionMemo(
-    parents: RecursiveCandidName[],
-    constraints: DefinitionConstraints = {}
+    context: Context<DefinitionConstraints>,
+    parents: RecursiveCandidName[]
 ): CandidDefinitionMemo {
+    const constraints = context.constraints;
     const weights = constraints.weights ?? {};
     const newConstraints: DefinitionConstraints = {
         depthLevel: constraints.depthLevel,
@@ -40,59 +42,68 @@ export function complexCandidDefinitionMemo(
             constraints.recursiveWeights ?? false
                 ? constraints.weights ?? {}
                 : {},
-        recursiveWeights: constraints.recursiveWeights
+        recursiveWeights: constraints.recursiveWeights,
+        forceInline: constraints.forceInline
+    };
+    const newContext = {
+        api: context.api,
+        constraints: newConstraints
     };
     return fc.memo((depthLevel) => {
         return fc.oneof(
             {
-                arbitrary: BlobDefinitionArb(),
+                arbitrary: BlobDefinitionArb({ ...context, constraints: {} }),
                 weight: weights.blob ?? 1
             },
             {
                 arbitrary: FuncDefinitionArb(
-                    candidDefinitionMemo([], newConstraints)(depthLevel)
+                    { ...context, constraints: {} },
+                    candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.func ?? 1
             },
             {
                 arbitrary: OptDefinitionArb(
+                    newContext,
                     candidDefinitionMemo,
-                    parents,
-                    newConstraints
+                    parents
                 ),
                 weight: weights.opt ?? 1
             },
             {
                 arbitrary: RecordDefinitionArb(
-                    candidDefinitionMemo([], newConstraints)(depthLevel)
+                    { ...context, constraints: {} },
+                    candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.record ?? 1
             },
             {
                 arbitrary: TupleDefinitionArb(
-                    candidDefinitionMemo([], newConstraints)(depthLevel)
+                    { ...context, constraints: {} },
+                    candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.tuple ?? 1
             },
             {
                 arbitrary: VariantDefinitionArb(
+                    { ...context, constraints: newConstraints },
                     candidDefinitionMemo,
-                    parents,
-                    newConstraints
+                    parents
                 ),
                 weight: weights.variant ?? 1
             },
             {
                 arbitrary: VecDefinitionArb(
+                    context,
                     candidDefinitionMemo,
-                    parents,
-                    constraints
+                    parents
                 ),
                 weight: weights.vec ?? 1
             },
             {
                 arbitrary: ServiceDefinitionArb(
-                    candidDefinitionMemo([], newConstraints)(depthLevel)
+                    { ...context, constraints: {} },
+                    candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.service ?? 0
                 // TODO Service is disabled until it is more refined. Maybe the

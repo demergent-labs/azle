@@ -1,6 +1,7 @@
 import fc, { StringSharedConstraints } from 'fast-check';
 
 import { JsFunctionNameArb } from '../../js_function_name_arb';
+import { Context } from '../../types';
 import {
     TextCandidDefinition,
     WithShapesArb
@@ -19,24 +20,27 @@ export interface TextConstraints extends StringSharedConstraints {
 }
 
 export function TextArb(
-    constraints?: TextConstraints
+    context: Context<TextConstraints>
 ): fc.Arbitrary<CandidValueAndMeta<string>> {
     return CandidValueAndMetaArbGenerator(
-        TextDefinitionArb(),
-        TextValueArb,
-        constraints
+        context,
+        TextDefinitionArb({ ...context, constraints: {} }),
+        TextValueArb
     );
 }
 
-export function TextDefinitionArb(): WithShapesArb<TextCandidDefinition> {
-    return SimpleCandidDefinitionArb('text');
+export function TextDefinitionArb(
+    context: Context
+): WithShapesArb<TextCandidDefinition> {
+    return SimpleCandidDefinitionArb(context, 'text');
 }
 
 export function TextValueArb(
+    context: Context<TextConstraints>,
     _?: TextCandidDefinition,
-    _recShapes?: RecursiveShapes,
-    constraints?: TextConstraints
+    _recShapes?: RecursiveShapes
 ): fc.Arbitrary<CandidValues<string>> {
+    const constraints = context.constraints;
     const canStartWithDigit = constraints?.canStartWithDigit ?? true;
     const isJSName = constraints?.isJsFunctionName ?? false;
     const textArb = isJSName

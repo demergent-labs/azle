@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { DEFAULT_VALUE_MAX_DEPTH } from '../../config';
+import { Context } from '../../types';
 import {
     RecursiveCandidDefinition,
     RecursiveCandidName
@@ -13,24 +14,28 @@ import {
 import { Recursive, RecursiveShapes } from '.';
 
 export function RecursiveNameValuesArb(
+    context: Context<CandidValueConstraints>,
     recDefinition: RecursiveCandidName | RecursiveCandidDefinition,
-    recursiveShapes: RecursiveShapes,
-    constraints: CandidValueConstraints
+    recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<Recursive>> {
     const recShape = recursiveShapes[recDefinition.name];
-    return RecursiveValuesArb(recShape, recursiveShapes, constraints);
+    return RecursiveValuesArb(context, recShape, recursiveShapes);
 }
 
 export function RecursiveValuesArb(
+    context: Context<CandidValueConstraints>,
     recDefinition: RecursiveCandidDefinition,
-    recursiveShapes: RecursiveShapes,
-    constraints: CandidValueConstraints = {
-        depthLevel: DEFAULT_VALUE_MAX_DEPTH
-    }
+    recursiveShapes: RecursiveShapes
 ): fc.Arbitrary<CandidValues<Recursive>> {
+    const constraints = context.constraints ?? {
+        depthLevel: DEFAULT_VALUE_MAX_DEPTH
+    };
     return CandidValueArb(
+        {
+            ...context,
+            constraints
+        },
         recDefinition.innerType,
-        recursiveShapes,
-        constraints
+        recursiveShapes
     );
 }

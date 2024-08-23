@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Opt } from '../../../../../src/lib/experimental';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -13,58 +14,62 @@ import {
 } from '../../candid_definition_arb/types';
 
 export function OptDefinitionArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<OptCandidDefinition> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            possiblyRecursiveArb(
-                candidTypeArbForInnerType,
-                parents,
-                constraints
-            ),
+            possiblyRecursiveArb(context, candidTypeArbForInnerType, parents),
             fc.boolean()
         )
         .map(
             ([
                 name,
                 innerTypeAndShapes,
-                useTypeDeclaration
+                useTypeDeclarationChance
             ]): WithShapes<OptCandidDefinition> => {
+                const useTypeDeclaration =
+                    (constraints.forceInline === undefined ||
+                        constraints.forceInline === false) &&
+                    useTypeDeclarationChance;
                 const { definition: innerType, recursiveShapes } =
                     innerTypeAndShapes;
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    innerType
+                    innerType,
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
-                    innerType
+                    innerType,
+                    api
                 );
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(innerType);
+                const runtimeTypeObject = generateRuntimeTypeObject(innerType);
 
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        innerType
+                        innerType,
+                        api
                     );
 
-                const imports = generateImports(innerType);
+                const imports = generateImports(innerType, api);
 
                 return {
                     definition: {
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Opt'
@@ -78,16 +83,23 @@ export function OptDefinitionArb(
 }
 
 function possiblyRecursiveArb(
+    context: Context<DefinitionConstraints>,
     candidArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<CandidDefinition> {
-    const depthLevel = constraints.depthLevel ?? 0;
+    const depthLevel = context.constraints.depthLevel ?? 0;
+    const newContext = {
+        ...context,
+        constraints: {
+            ...context.constraints,
+            depthLevel: depthLevel - 1
+        }
+    };
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || depthLevel < 1) {
             // If there are no recursive parents or we have reached a depth
             // level of 0 just do a regular arb inner type
-            return candidArb(parents)(depthLevel);
+            return candidArb(newContext, parents)(depthLevel);
         }
         return fc.oneof(
             {
@@ -98,26 +110,45 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents)(depthLevel),
+                arbitrary: candidArb(newContext, parents)(depthLevel),
                 weight: 1
             }
         );
     });
 }
 
+function generateImports(innerType: CandidDefinition, api: Api): Set<string> {
+    const optImports = api === 'functional' ? ['Opt', 'Some', 'None'] : ['IDL'];
+    return new Set([...innerType.candidMeta.imports, ...optImports]);
+}
+
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    api: Api
 ): string[] {
     if (useTypeDeclaration) {
+        const type =
+            api === 'functional'
+                ? []
+                : [
+                      `type ${name} = ${generateCandidTypeAnnotation(
+                          false,
+                          name,
+                          innerType,
+                          api
+                      )}`
+                  ];
         return [
             ...innerType.candidMeta.variableAliasDeclarations,
-            `const ${name} = ${generateCandidTypeObject(
+            `const ${name} = ${generateTypeObject(
                 false,
                 name,
-                innerType
-            )};`
+                innerType,
+                api
+            )};`,
+            ...type
         ];
     }
     return innerType.candidMeta.variableAliasDeclarations;
@@ -126,33 +157,40 @@ function generateVariableAliasDeclarations(
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    api: Api
 ): string {
-    if (useTypeDeclaration) {
+    if (useTypeDeclaration === true) {
+        if (api === 'class') {
+            return name;
+        }
         return `typeof ${name}.tsType`;
     }
 
-    return `Opt<${innerType.candidMeta.candidTypeAnnotation}>`;
+    if (api === 'class') {
+        return `[${innerType.candidMeta.typeAnnotation}] | []`;
+    }
+
+    return `Opt<${innerType.candidMeta.typeAnnotation}>`;
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition
+    innerType: CandidDefinition,
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
-    return `Opt(${innerType.candidMeta.candidTypeObject})`;
+    if (api === 'class') {
+        return `IDL.Opt(${innerType.candidMeta.typeObject})`;
+    }
+
+    return `Opt(${innerType.candidMeta.typeObject})`;
 }
 
-function generateRuntimeCandidTypeObject(
-    innerType: CandidDefinition
-): CandidType {
-    return Opt(innerType.candidMeta.runtimeCandidTypeObject);
-}
-
-function generateImports(innerType: CandidDefinition): Set<string> {
-    return new Set([...innerType.candidMeta.imports, 'Opt', 'Some', 'None']);
+function generateRuntimeTypeObject(innerType: CandidDefinition): CandidType {
+    return Opt(innerType.candidMeta.runtimeTypeObject);
 }

@@ -1,5 +1,6 @@
 import fc from 'fast-check';
 
+import { Context } from '../../../types';
 import { candidDefinitionArb } from '../../candid_definition_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
@@ -12,11 +13,14 @@ export type Tuple = CorrespondingJSType[];
 export type ReturnTuple = Tuple | Record<string, never>;
 
 export function TupleArb(
-    constraints?: CandidValueConstraints
+    context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValueAndMeta<Tuple, ReturnTuple>> {
     return CandidValueAndMetaArbGenerator(
-        TupleDefinitionArb(candidDefinitionArb({})),
-        TupleValuesArb,
-        constraints
+        context,
+        TupleDefinitionArb(
+            { ...context, constraints: {} },
+            candidDefinitionArb(context, {})
+        ),
+        TupleValuesArb
     );
 }

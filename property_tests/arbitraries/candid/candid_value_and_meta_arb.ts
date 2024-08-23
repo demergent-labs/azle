@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType as RuntimeCandidType } from '../../../src/lib/experimental';
+import { Context } from '../types';
 import { CandidValueConstraints } from './candid_values_arb';
 import { BlobArb } from './constructed/blob_arb';
 import { OptArb } from './constructed/opt_arb';
@@ -32,11 +33,11 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
     value: {
         agentArgumentValue: T;
         agentResponseValue: E;
-        runtimeCandidTypeObject: RuntimeCandidType;
+        runtimeTypeObject: RuntimeCandidType;
     };
     src: {
-        candidTypeAnnotation: string;
-        candidTypeObject: string;
+        typeAnnotation: string;
+        typeObject: string;
         variableAliasDeclarations: string[];
         imports: Set<string>;
         valueLiteral: string;
@@ -47,32 +48,33 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
  * An arbitrary representing all possible Candid types.
  */
 export function CandidValueAndMetaArb(
-    constraints?: CandidValueConstraints
+    context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>> {
+    const noConstraints = { ...context, constraints: {} };
     return fc.oneof(
-        BlobArb(),
-        OptArb(constraints),
-        RecordArb(constraints),
-        TupleArb(constraints),
-        VariantArb(constraints),
-        VecArb(constraints),
-        Float32Arb(constraints),
-        Float64Arb(constraints),
-        IntArb(),
-        Int8Arb(),
-        Int16Arb(),
-        Int32Arb(),
-        Int64Arb(),
-        NatArb(),
-        Nat8Arb(),
-        Nat16Arb(),
-        Nat32Arb(),
-        Nat64Arb(),
-        BoolArb(),
-        NullArb(),
-        TextArb(constraints),
-        FuncArb(),
-        PrincipalArb()
+        BlobArb(noConstraints),
+        OptArb(context),
+        RecordArb(context),
+        TupleArb(context),
+        VariantArb(context),
+        VecArb(context),
+        Float32Arb(context),
+        Float64Arb(context),
+        IntArb(noConstraints),
+        Int8Arb(noConstraints),
+        Int16Arb(noConstraints),
+        Int32Arb(noConstraints),
+        Int64Arb(noConstraints),
+        NatArb(noConstraints),
+        Nat8Arb(noConstraints),
+        Nat16Arb(noConstraints),
+        Nat32Arb(noConstraints),
+        Nat64Arb(noConstraints),
+        BoolArb(noConstraints),
+        NullArb(noConstraints),
+        TextArb(context),
+        FuncArb(noConstraints),
+        PrincipalArb(noConstraints)
     );
 }
 

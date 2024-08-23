@@ -29,3 +29,53 @@ export type SimpleCandidType =
     | 'Principal'
     | 'text'
     | 'Void';
+
+export function simpleCandidTypeToTsType(type: SimpleCandidType): string {
+    if (type === 'Null') {
+        return 'null';
+    }
+
+    if (type === 'Principal') {
+        return 'Principal';
+    }
+
+    if (type === 'Void') {
+        return 'void';
+    }
+
+    if (type === 'blob') {
+        return 'Uint8Array';
+    }
+
+    if (type === 'bool') {
+        return 'boolean';
+    }
+
+    if (
+        type === 'float32' ||
+        type === 'float64' ||
+        type === 'int8' ||
+        type === 'int16' ||
+        type === 'int32' ||
+        type === 'nat16' ||
+        type === 'nat32' ||
+        type === 'nat8'
+    ) {
+        return 'number';
+    }
+
+    if (
+        type === 'int' ||
+        type === 'int64' ||
+        type === 'nat' ||
+        type === 'nat64'
+    ) {
+        return 'bigint';
+    }
+
+    if (type === 'text') {
+        return 'string';
+    }
+
+    throw new Error('Unreachable');
+}

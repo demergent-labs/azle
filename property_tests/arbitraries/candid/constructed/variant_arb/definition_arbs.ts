@@ -2,6 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Variant } from '../../../../../src/lib/experimental';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -22,22 +23,28 @@ type RuntimeVariant = {
 };
 
 export function VariantDefinitionArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArbForFields: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<VariantCandidDefinition> {
+    const api = context.api;
+    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            VariantFieldsArb(candidTypeArbForFields, parents, constraints),
+            VariantFieldsArb(context, candidTypeArbForFields, parents),
             fc.boolean()
         )
         .map(
             ([
                 name,
                 fieldsAndShapes,
-                useTypeDeclaration
+                useTypeDeclarationChance
             ]): WithShapes<VariantCandidDefinition> => {
+                const useTypeDeclaration =
+                    (constraints.forceInline === undefined ||
+                        constraints.forceInline === false) &&
+                    useTypeDeclarationChance;
                 const fields = fieldsAndShapes.map(
                     (field): Field => [field[0], field[1].definition]
                 );
@@ -47,36 +54,38 @@ export function VariantDefinitionArb(
                     },
                     {}
                 );
-                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    fields
+                    fields,
+                    api
                 );
 
-                const candidTypeObject = generateCandidTypeObject(
+                const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
-                    fields
+                    fields,
+                    api
                 );
 
-                const runtimeCandidTypeObject =
-                    generateRuntimeCandidTypeObject(fields);
+                const runtimeTypeObject = generateRuntimeTypeObject(fields);
 
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        fields
+                        fields,
+                        api
                     );
 
-                const imports = generateImports(fields);
+                const imports = generateImports(fields, api);
 
                 return {
                     definition: {
                         candidMeta: {
-                            candidTypeAnnotation,
-                            candidTypeObject,
-                            runtimeCandidTypeObject,
+                            typeAnnotation,
+                            typeObject,
+                            runtimeTypeObject,
                             variableAliasDeclarations,
                             imports,
                             candidType: 'Variant'
@@ -90,9 +99,9 @@ export function VariantDefinitionArb(
 }
 
 function VariantFieldsArb(
+    context: Context<DefinitionConstraints>,
     candidTypeArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidName[],
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): fc.Arbitrary<FieldAndShapes[]> {
     // Although no minLength is technically required (according to the
     // spec), the DFX CLI itself currently errors out trying to pass
@@ -108,10 +117,10 @@ function VariantFieldsArb(
                     fc.tuple(
                         fc.constant(name),
                         possiblyRecursiveArb(
+                            context,
                             candidTypeArb,
                             index,
-                            parents,
-                            constraints
+                            parents
                         )
                     )
                 )
@@ -128,16 +137,20 @@ function VariantFieldsArb(
 // complicated approach would involve the guaranteed base case being in any one
 // of the fields, instead of always the first one.
 function possiblyRecursiveArb(
+    context: Context<DefinitionConstraints>,
     candidArb: RecursiveCandidDefinitionMemo,
     index: number,
-    parents: RecursiveCandidName[],
-    constraints: DefinitionConstraints
+    parents: RecursiveCandidName[]
 ): WithShapesArb<CandidDefinition> {
-    const depthLevel = constraints?.depthLevel ?? 0;
+    const depthLevel = context.constraints?.depthLevel ?? 0;
+    const newContext = {
+        ...context,
+        constraints: { ...context.constraints, depthLevel: depthLevel - 1 }
+    };
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || index < 1) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents)(depthLevel);
+            return candidArb(newContext, parents)(depthLevel);
         }
         return fc.oneof(
             {
@@ -148,77 +161,111 @@ function possiblyRecursiveArb(
                 weight: 1
             },
             {
-                arbitrary: candidArb(parents)(depthLevel),
+                arbitrary: candidArb(newContext, parents)(depthLevel),
                 weight: 1
             }
         );
     });
 }
 
-function generateImports(fields: Field[]): Set<string> {
-    const fieldImports = fields.flatMap((field) => [
+function generateImports(fields: Field[], api: Api): Set<string> {
+    const fieldImports = fields.flatMap((field): string[] => [
         ...field[1].candidMeta.imports
     ]);
-    return new Set([...fieldImports, 'RequireExactlyOne', 'Variant']);
+    const variantImports =
+        api === 'functional' ? ['RequireExactlyOne', 'Variant'] : ['IDL'];
+    return new Set([...fieldImports, ...variantImports]);
 }
 
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[]
+    fields: Field[],
+    api: Api
 ): string[] {
-    const fieldTypeDeclarations = fields.flatMap(
-        (field) => field[1].candidMeta.variableAliasDeclarations
+    const fieldVariableAliasDeclarations = fields.flatMap(
+        (field): string[] => field[1].candidMeta.variableAliasDeclarations
     );
     if (useTypeDeclaration) {
+        const type =
+            api === 'functional'
+                ? []
+                : [
+                      `type ${name} = ${generateCandidTypeAnnotation(
+                          false,
+                          name,
+                          fields,
+                          api
+                      )}`
+                  ];
         return [
-            ...fieldTypeDeclarations,
-            `const ${name} = ${generateCandidTypeObject(false, name, fields)};`
+            ...fieldVariableAliasDeclarations,
+            `const ${name} = ${generateTypeObject(false, name, fields, api)};`,
+            ...type
         ];
     }
-    return fieldTypeDeclarations;
+    return fieldVariableAliasDeclarations;
 }
 
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[]
+    fields: Field[],
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
+        if (api === 'class') {
+            return name;
+        }
         return `typeof ${name}.tsType`;
+    }
+
+    if (api === 'class') {
+        return fields
+            .map(
+                ([fieldName, fieldDataType]) =>
+                    `{${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}}`
+            )
+            .join('|');
     }
 
     return `RequireExactlyOne<{${fields
         .map(
             ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.candidTypeAnnotation}`
+                `${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}`
         )
         .join(',')}}>`;
 }
 
-function generateCandidTypeObject(
+function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[]
+    fields: Field[],
+    api: Api
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
-    return `Variant({${fields
+    const fieldsAsString = fields
         .map(
-            ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.candidTypeObject}`
+            ([fieldName, fieldDefinition]) =>
+                `${fieldName}: ${fieldDefinition.candidMeta.typeObject}`
         )
-        .join(',')}})`;
+        .join(',');
+    if (api === 'class') {
+        return `IDL.Variant({${fieldsAsString}})`;
+    }
+
+    return `Variant({${fieldsAsString}})`;
 }
 
-function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {
+function generateRuntimeTypeObject(fields: Field[]): CandidType {
     const azleVariantConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RuntimeVariant => {
             return {
                 ...acc,
-                [fieldName]: fieldDefinition.candidMeta.runtimeCandidTypeObject
+                [fieldName]: fieldDefinition.candidMeta.runtimeTypeObject
             };
         },
         {}
