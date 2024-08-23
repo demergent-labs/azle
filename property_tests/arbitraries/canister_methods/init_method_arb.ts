@@ -54,7 +54,7 @@ export function InitMethodArb<
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
-            VoidArb(context),
+            VoidArb({ ...context, constraints: {} }),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something

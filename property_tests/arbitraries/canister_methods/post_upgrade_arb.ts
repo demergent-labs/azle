@@ -55,7 +55,7 @@ export function PostUpgradeMethodArb<
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
-            VoidArb(context),
+            VoidArb({ ...context, constraints: {} }),
             fc.constantFrom<MethodImplementationLocation>(
                 'INLINE',
                 'STANDALONE'

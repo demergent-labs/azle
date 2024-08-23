@@ -36,10 +36,11 @@ const valueConstraints = {
 const SimpleInitMethodArb = InitMethodArb(
     {
         api,
-        constraints: {
-            generateBody: initBodyGenerator,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody: initBodyGenerator,
+        generateTests
     },
     fc.array(CandidValueAndMetaArb({ api, constraints: valueConstraints }))
 );
@@ -47,10 +48,11 @@ const SimpleInitMethodArb = InitMethodArb(
 const HeterogeneousQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody: callableMethodBodyGenerator,
-            generateTests: () => []
-        }
+        constraints: {}
+    },
+    {
+        generateBody: callableMethodBodyGenerator,
+        generateTests: () => []
     },
     fc.array(CandidValueAndMetaArb(context)),
     CandidReturnTypeArb(context)
@@ -59,10 +61,11 @@ const HeterogeneousQueryMethodArb = QueryMethodArb(
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
     {
         api,
-        constraints: {
-            generateBody: callableMethodBodyGenerator,
-            generateTests: () => []
-        }
+        constraints: {}
+    },
+    {
+        generateBody: callableMethodBodyGenerator,
+        generateTests: () => []
     },
     fc.array(CandidValueAndMetaArb(context)),
     CandidReturnTypeArb(context)

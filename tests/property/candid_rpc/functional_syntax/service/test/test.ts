@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllServicesQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.uniqueArray(ServiceArb(context), {
         selector: (entry) => entry.src.typeAnnotation

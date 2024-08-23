@@ -23,10 +23,12 @@ const HttpRequestUpdateMethodArb = RecordArb(context).chain((record) => {
         {
             api,
             constraints: {
-                name: 'http_request_update',
-                generateBody,
-                generateTests
+                name: 'http_request_update'
             }
+        },
+        {
+            generateBody,
+            generateTests
         },
         fc.tuple(HttpRequestArb(context)),
         HttpResponseArb(context, record)

@@ -52,12 +52,12 @@ export function complexCandidDefinitionMemo(
     return fc.memo((depthLevel) => {
         return fc.oneof(
             {
-                arbitrary: BlobDefinitionArb(context),
+                arbitrary: BlobDefinitionArb({ ...context, constraints: {} }),
                 weight: weights.blob ?? 1
             },
             {
                 arbitrary: FuncDefinitionArb(
-                    context,
+                    { ...context, constraints: {} },
                     candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.func ?? 1
@@ -72,21 +72,21 @@ export function complexCandidDefinitionMemo(
             },
             {
                 arbitrary: RecordDefinitionArb(
-                    context,
+                    { ...context, constraints: {} },
                     candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.record ?? 1
             },
             {
                 arbitrary: TupleDefinitionArb(
-                    context,
+                    { ...context, constraints: {} },
                     candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.tuple ?? 1
             },
             {
                 arbitrary: VariantDefinitionArb(
-                    newContext,
+                    { ...context, constraints: newConstraints },
                     candidDefinitionMemo,
                     parents
                 ),
@@ -102,7 +102,7 @@ export function complexCandidDefinitionMemo(
             },
             {
                 arbitrary: ServiceDefinitionArb(
-                    context,
+                    { ...context, constraints: {} },
                     candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.service ?? 0

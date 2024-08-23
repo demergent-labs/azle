@@ -31,11 +31,12 @@ const SimplePreUpgradeArb = PreUpgradeMethodArb({
 const HeterogeneousQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody: (_, returnType) =>
-                `return ${returnType.src.valueLiteral}`,
-            generateTests: () => []
-        }
+        constraints: {}
+    },
+    {
+        generateBody: (_, returnType) =>
+            `return ${returnType.src.valueLiteral}`,
+        generateTests: () => []
     },
     fc.array(CandidValueAndMetaArb(context)),
     CandidReturnTypeArb(context)
@@ -44,11 +45,12 @@ const HeterogeneousQueryMethodArb = QueryMethodArb(
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
     {
         api,
-        constraints: {
-            generateBody: (_, returnType) =>
-                `return ${returnType.src.valueLiteral}`,
-            generateTests: () => []
-        }
+        constraints: {}
+    },
+    {
+        generateBody: (_, returnType) =>
+            `return ${returnType.src.valueLiteral}`,
+        generateTests: () => []
     },
     fc.array(CandidValueAndMetaArb(context)),
     CandidReturnTypeArb(context)

@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllPrincipalsQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(PrincipalArb(context)),
     PrincipalArb(context)

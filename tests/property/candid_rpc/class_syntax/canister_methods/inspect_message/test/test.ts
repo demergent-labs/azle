@@ -51,11 +51,12 @@ function CanisterConfigArb() {
     const HeterogeneousUpdateMethodArb = UpdateMethodArb(
         {
             api,
-            constraints: {
-                generateBody: (_, returnType) =>
-                    `return ${returnType.src.valueLiteral}`,
-                generateTests: (...args) => generateTests(...args, agents)
-            }
+            constraints: {}
+        },
+        {
+            generateBody: (_, returnType) =>
+                `return ${returnType.src.valueLiteral}`,
+            generateTests: (...args) => generateTests(...args, agents)
         },
         fc.array(CandidValueAndMetaArb(context)),
         CandidReturnTypeArb(context)

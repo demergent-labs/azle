@@ -50,8 +50,9 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
 export function CandidValueAndMetaArb(
     context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>> {
+    const noConstraints = { ...context, constraints: {} };
     return fc.oneof(
-        BlobArb(context),
+        BlobArb(noConstraints),
         OptArb(context),
         RecordArb(context),
         TupleArb(context),
@@ -59,21 +60,21 @@ export function CandidValueAndMetaArb(
         VecArb(context),
         Float32Arb(context),
         Float64Arb(context),
-        IntArb(context),
-        Int8Arb(context),
-        Int16Arb(context),
-        Int32Arb(context),
-        Int64Arb(context),
-        NatArb(context),
-        Nat8Arb(context),
-        Nat16Arb(context),
-        Nat32Arb(context),
-        Nat64Arb(context),
-        BoolArb(context),
-        NullArb(context),
+        IntArb(noConstraints),
+        Int8Arb(noConstraints),
+        Int16Arb(noConstraints),
+        Int32Arb(noConstraints),
+        Int64Arb(noConstraints),
+        NatArb(noConstraints),
+        Nat8Arb(noConstraints),
+        Nat16Arb(noConstraints),
+        Nat32Arb(noConstraints),
+        Nat64Arb(noConstraints),
+        BoolArb(noConstraints),
+        NullArb(noConstraints),
         TextArb(context),
-        FuncArb(context),
-        PrincipalArb(context)
+        FuncArb(noConstraints),
+        PrincipalArb(noConstraints)
     );
 }
 

@@ -19,10 +19,11 @@ const AllRecursiveQueryMethodArb = fc.oneof(
     QueryMethodArb(
         {
             api,
-            constraints: {
-                generateBody,
-                generateTests
-            }
+            constraints: {}
+        },
+        {
+            generateBody,
+            generateTests
         },
         fc.array(RecursiveArb(context)),
         RecursiveArb(context)
@@ -30,10 +31,11 @@ const AllRecursiveQueryMethodArb = fc.oneof(
     UpdateMethodArb(
         {
             api,
-            constraints: {
-                generateBody,
-                generateTests
-            }
+            constraints: {}
+        },
+        {
+            generateBody,
+            generateTests
         },
         fc.array(RecursiveArb(context)),
         RecursiveArb(context)

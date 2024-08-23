@@ -55,10 +55,11 @@ const CanisterConfigArb = fc
         const SimpleInitMethodArb = InitMethodArb(
             {
                 api,
-                constraints: {
-                    generateBody: initMethodBodyGenerator,
-                    generateTests: generateInitTests
-                }
+                constraints: {}
+            },
+            {
+                generateBody: initMethodBodyGenerator,
+                generateTests: generateInitTests
             },
             initDeployParamsArb
         );
@@ -66,10 +67,11 @@ const CanisterConfigArb = fc
         const SimplePostUpgradeMethodArb = PostUpgradeMethodArb(
             {
                 api,
-                constraints: {
-                    generateBody: postUpgradeMethodBodyGenerator,
-                    generateTests: generatePostUpgradeTests
-                }
+                constraints: {}
+            },
+            {
+                generateBody: postUpgradeMethodBodyGenerator,
+                generateTests: generatePostUpgradeTests
             },
             postUpgradeParamsArb
         );
@@ -77,10 +79,11 @@ const CanisterConfigArb = fc
         const HeterogeneousQueryMethodArb = QueryMethodArb(
             {
                 api,
-                constraints: {
-                    generateBody: callableMethodBodyGenerator,
-                    generateTests: () => []
-                }
+                constraints: {}
+            },
+            {
+                generateBody: callableMethodBodyGenerator,
+                generateTests: () => []
             },
             fc.array(CandidValueAndMetaArb(context)),
             CandidReturnTypeArb(context)

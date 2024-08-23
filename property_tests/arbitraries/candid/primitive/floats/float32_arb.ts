@@ -22,7 +22,7 @@ export function Float32Arb(
 ): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        Float32DefinitionArb(context),
+        Float32DefinitionArb({ ...context, constraints: {} }),
         Float32ValueArb
     );
 }

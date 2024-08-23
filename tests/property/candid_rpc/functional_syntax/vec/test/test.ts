@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllVecsQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(VecArb(context)),
     VecArb(context)

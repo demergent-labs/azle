@@ -24,10 +24,11 @@ const context = { api, constraints: {} };
 const HeterogeneousQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(CandidValueAndMetaArb(context)),
     CandidReturnTypeArb(context)

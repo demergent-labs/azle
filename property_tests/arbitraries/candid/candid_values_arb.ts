@@ -153,14 +153,14 @@ export function CandidValueArb(
         return VoidValueArb();
     }
     if (candidType === 'Func') {
-        return FuncValueArb(context);
+        return FuncValueArb({ ...context, constraints: {} });
     }
     if (candidType === 'Principal') {
         return PrincipalValueArb();
     }
     if (candidType === 'Service') {
         return ServiceValueArb(
-            context,
+            { ...context, constraints: {} },
             candidTypeMeta as ServiceCandidDefinition
         );
     }

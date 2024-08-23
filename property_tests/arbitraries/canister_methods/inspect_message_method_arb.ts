@@ -31,7 +31,7 @@ export function InspectMessageMethodArb(
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb(context),
+            VoidArb({ ...context, constraints: {} }),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
         )

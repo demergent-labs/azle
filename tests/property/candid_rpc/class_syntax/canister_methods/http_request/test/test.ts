@@ -23,10 +23,12 @@ const CanisterConfigArb = RecordArb(context)
             {
                 api,
                 constraints: {
-                    name: 'http_request',
-                    generateBody,
-                    generateTests
+                    name: 'http_request'
                 }
+            },
+            {
+                generateBody,
+                generateTests
             },
             fc.tuple(HttpRequestArb(context)),
             HttpResponseArb(context, record)

@@ -41,86 +41,74 @@ export type PrimitiveDefinitionWeights = Partial<{
 // The number of options below (bool, float32, float64, int, nat, etc)
 export const PRIM_ARB_COUNT = 16;
 
-const PRIM_DEF_WEIGHTS_DEFAULT = {
-    bool: undefined,
-    float32: undefined,
-    float64: undefined,
-    int: undefined,
-    int8: undefined,
-    int16: undefined,
-    int32: undefined,
-    int64: undefined,
-    nat: undefined,
-    nat8: undefined,
-    nat16: undefined,
-    nat32: undefined,
-    nat64: undefined,
-    null: undefined,
-    text: undefined,
-    principal: undefined
-};
-
 export function primitiveCandidDefinitionArb(
-    context: Context<PrimitiveDefinitionWeights | undefined>
+    context: Context<PrimitiveDefinitionWeights | Record<string, never>>
 ): WithShapesArb<PrimitiveDefinition> {
-    const constraints = context.constraints ?? PRIM_DEF_WEIGHTS_DEFAULT;
+    const constraints = context.constraints;
+    const newContext = { ...context, constraints: {} };
     return fc.oneof(
         {
-            arbitrary: BoolDefinitionArb(context),
+            arbitrary: BoolDefinitionArb(newContext),
             weight: constraints.bool ?? 1
         },
         {
-            arbitrary: Float32DefinitionArb(context),
+            arbitrary: Float32DefinitionArb(newContext),
             weight: constraints.float32 ?? 1
         },
         {
-            arbitrary: Float64DefinitionArb(context),
+            arbitrary: Float64DefinitionArb(newContext),
             weight: constraints.float64 ?? 1
         },
-        { arbitrary: IntDefinitionArb(context), weight: constraints.int ?? 1 },
         {
-            arbitrary: Int8DefinitionArb(context),
+            arbitrary: IntDefinitionArb(newContext),
+            weight: constraints.int ?? 1
+        },
+        {
+            arbitrary: Int8DefinitionArb(newContext),
             weight: constraints.int8 ?? 1
         },
         {
-            arbitrary: Int16DefinitionArb(context),
+            arbitrary: Int16DefinitionArb(newContext),
             weight: constraints.int16 ?? 1
         },
         {
-            arbitrary: Int32DefinitionArb(context),
+            arbitrary: Int32DefinitionArb(newContext),
             weight: constraints.int32 ?? 1
         },
         {
-            arbitrary: Int64DefinitionArb(context),
+            arbitrary: Int64DefinitionArb(newContext),
             weight: constraints.int64 ?? 1
         },
-        { arbitrary: NatDefinitionArb(context), weight: constraints.nat ?? 1 },
         {
-            arbitrary: Nat8DefinitionArb(context),
+            arbitrary: NatDefinitionArb(newContext),
+            weight: constraints.nat ?? 1
+        },
+        {
+            arbitrary: Nat8DefinitionArb(newContext),
             weight: constraints.nat8 ?? 1
         },
         {
-            arbitrary: Nat16DefinitionArb(context),
+            arbitrary: Nat16DefinitionArb(newContext),
             weight: constraints.nat16 ?? 1
         },
         {
-            arbitrary: Nat32DefinitionArb(context),
+            arbitrary: Nat32DefinitionArb(newContext),
             weight: constraints.nat32 ?? 1
         },
         {
-            arbitrary: Nat64DefinitionArb(context),
+            arbitrary: Nat64DefinitionArb(newContext),
             weight: constraints.nat64 ?? 1
         },
         {
-            arbitrary: NullDefinitionArb(context),
+            arbitrary: NullDefinitionArb(newContext),
             weight: constraints.null ?? 1
         },
         {
-            arbitrary: TextDefinitionArb(context),
+            arbitrary: TextDefinitionArb(newContext),
             weight: constraints.text ?? 1
         },
         {
-            arbitrary: PrincipalDefinitionArb(context),
+            arbitrary: PrincipalDefinitionArb(newContext),
             weight: constraints.principal ?? 1
         }
     );

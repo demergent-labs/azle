@@ -17,7 +17,10 @@ export function TupleArb(
 ): fc.Arbitrary<CandidValueAndMeta<Tuple, ReturnTuple>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        TupleDefinitionArb(context, candidDefinitionArb(context, {})),
+        TupleDefinitionArb(
+            { ...context, constraints: {} },
+            candidDefinitionArb(context, {})
+        ),
         TupleValuesArb
     );
 }

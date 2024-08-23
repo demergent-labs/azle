@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllRecordsQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(RecordArb(context)),
     RecordArb(context)

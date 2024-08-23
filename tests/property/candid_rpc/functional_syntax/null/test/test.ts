@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllNullsQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(NullArb(context)),
     NullArb(context)

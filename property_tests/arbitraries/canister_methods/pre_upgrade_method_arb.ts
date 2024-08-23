@@ -31,7 +31,7 @@ export function PreUpgradeMethodArb(
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb(context),
+            VoidArb({ ...context, constraints: {} }),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something

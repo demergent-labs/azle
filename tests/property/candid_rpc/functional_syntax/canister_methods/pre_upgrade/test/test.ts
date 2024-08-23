@@ -19,23 +19,27 @@ import fc from 'fast-check';
 const api: Api = 'functional';
 const context = { api, constraints: {} };
 
-const SimplePreUpgradeArb = PreUpgradeMethodArb({
-    api,
-    constraints: {
+const SimplePreUpgradeArb = PreUpgradeMethodArb(
+    {
+        api,
+        constraints: {}
+    },
+    {
         generateBody: () =>
             /*TS*/ `stable.insert(PRE_UPGRADE_HOOK_EXECUTED, true);`,
         generateTests: () => []
     }
-});
+);
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody: (_, returnType) =>
-                `return ${returnType.src.valueLiteral}`,
-            generateTests: () => []
-        }
+        constraints: {}
+    },
+    {
+        generateBody: (_, returnType) =>
+            `return ${returnType.src.valueLiteral}`,
+        generateTests: () => []
     },
     fc.array(CandidValueAndMetaArb(context)),
     CandidReturnTypeArb(context)
@@ -44,11 +48,12 @@ const HeterogeneousQueryMethodArb = QueryMethodArb(
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
     {
         api,
-        constraints: {
-            generateBody: (_, returnType) =>
-                `return ${returnType.src.valueLiteral}`,
-            generateTests: () => []
-        }
+        constraints: {}
+    },
+    {
+        generateBody: (_, returnType) =>
+            `return ${returnType.src.valueLiteral}`,
+        generateTests: () => []
     },
     fc.array(CandidValueAndMetaArb(context)),
     CandidReturnTypeArb(context)

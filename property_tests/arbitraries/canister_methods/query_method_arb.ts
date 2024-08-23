@@ -30,6 +30,10 @@ export function QueryMethodArb<
     ReturnTypeAgentResponseValue
 >(
     context: Context<{
+        methodImplementationLocation?: MethodImplementationLocation;
+        name?: string;
+    }>,
+    generator: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue,
@@ -42,9 +46,7 @@ export function QueryMethodArb<
             ReturnTypeAgentArgumentValue,
             ReturnTypeAgentResponseValue
         >;
-        methodImplementationLocation?: MethodImplementationLocation;
-        name?: string;
-    }>,
+    },
     paramTypeArrayArb: fc.Arbitrary<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
     >,
@@ -99,7 +101,7 @@ export function QueryMethodArb<
                 const methodImplementation = generateMethodImplementation(
                     namedParams,
                     returnType,
-                    constraints.generateBody,
+                    generator.generateBody,
                     methodImplementationLocation,
                     methodName,
                     api
@@ -127,7 +129,7 @@ export function QueryMethodArb<
                     api
                 );
 
-                const tests = constraints.generateTests(
+                const tests = generator.generateTests(
                     functionName,
                     namedParams,
                     returnType

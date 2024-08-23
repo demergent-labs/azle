@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllFloat64sQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(Float64Arb(context)),
     Float64Arb(context)

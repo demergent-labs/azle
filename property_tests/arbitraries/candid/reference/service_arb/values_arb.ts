@@ -3,11 +3,11 @@ import fc from 'fast-check';
 
 import { Context } from '../../../types';
 import { ServiceCandidDefinition } from '../../candid_definition_arb/types';
-import { CandidValues } from '../../candid_values_arb';
+import { CandidValueConstraints, CandidValues } from '../../candid_values_arb';
 import { PrincipalValueArb } from '../principal_arb';
 
 export function ServiceValueArb(
-    context: Context,
+    context: Context<CandidValueConstraints>,
     serviceDefinition: ServiceCandidDefinition
 ): fc.Arbitrary<CandidValues<Principal>> {
     return PrincipalValueArb().map((principal) => {

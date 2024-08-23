@@ -23,13 +23,19 @@ export type UpdateMethod = {
     tests: Test[][];
 };
 
+export type UpdateConstraints = {
+    methodImplementationLocation?: MethodImplementationLocation;
+    name?: string;
+};
+
 export function UpdateMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
     ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 >(
-    context: Context<{
+    context: Context<UpdateConstraints>,
+    generator: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue,
@@ -42,9 +48,7 @@ export function UpdateMethodArb<
             ReturnTypeAgentArgumentValue,
             ReturnTypeAgentResponseValue
         >;
-        methodImplementationLocation?: MethodImplementationLocation;
-        name?: string;
-    }>,
+    },
     paramTypeArrayArb: fc.Arbitrary<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
     >,
@@ -99,7 +103,7 @@ export function UpdateMethodArb<
                 const methodImplementation = generateMethodImplementation(
                     namedParams,
                     returnType,
-                    constraints.generateBody,
+                    generator.generateBody,
                     methodImplementationLocation,
                     methodName,
                     api
@@ -127,7 +131,7 @@ export function UpdateMethodArb<
                     api
                 );
 
-                const tests = constraints.generateTests(
+                const tests = generator.generateTests(
                     functionName,
                     namedParams,
                     returnType

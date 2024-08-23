@@ -77,10 +77,11 @@ const CanisterConfigArb = fc
         const HeterogeneousQueryMethodArb = QueryMethodArb(
             {
                 api,
-                constraints: {
-                    generateBody: callableMethodBodyGenerator,
-                    generateTests: () => []
-                }
+                constraints: {}
+            },
+            {
+                generateBody: callableMethodBodyGenerator,
+                generateTests: () => []
             },
             fc.array(CandidValueAndMetaArb(context)),
             CandidReturnTypeArb(context)
@@ -89,10 +90,11 @@ const CanisterConfigArb = fc
         const HeterogeneousUpdateMethodArb = UpdateMethodArb(
             {
                 api,
-                constraints: {
-                    generateBody: callableMethodBodyGenerator,
-                    generateTests: () => []
-                }
+                constraints: {}
+            },
+            {
+                generateBody: callableMethodBodyGenerator,
+                generateTests: () => []
             },
             fc.array(CandidValueAndMetaArb(context)),
             CandidReturnTypeArb(context)

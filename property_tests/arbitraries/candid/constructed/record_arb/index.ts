@@ -18,7 +18,10 @@ export function RecordArb(
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        RecordDefinitionArb(context, candidDefinitionArb(context, {})),
+        RecordDefinitionArb(
+            { ...context, constraints: {} },
+            candidDefinitionArb(context, {})
+        ),
         RecordValuesArb
     );
 }

@@ -1,13 +1,13 @@
 import fc from 'fast-check';
 
 import { Context } from '../../../types';
-import { CandidValues } from '../../candid_values_arb';
+import { CandidValueConstraints, CandidValues } from '../../candid_values_arb';
 import { TextValueArb } from '../../primitive/text';
 import { PrincipalValueArb } from '../principal_arb';
 import { Func } from '.';
 
 export function FuncValueArb(
-    context: Context
+    context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValues<Func>> {
     return fc
         .tuple(

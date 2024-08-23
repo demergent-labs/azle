@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllInt8sQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(Int8Arb(context)),
     Int8Arb(context)

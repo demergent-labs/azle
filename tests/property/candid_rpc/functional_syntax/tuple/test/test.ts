@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllTuplesQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.uniqueArray(TupleArb(context), {
         selector: (entry) => entry.src.typeAnnotation

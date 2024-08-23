@@ -18,10 +18,11 @@ const context = { api, constraints: {} };
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(CandidValueAndMetaArb(context)),
     CandidReturnTypeArb(context)

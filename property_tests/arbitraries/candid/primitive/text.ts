@@ -24,7 +24,7 @@ export function TextArb(
 ): fc.Arbitrary<CandidValueAndMeta<string>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        TextDefinitionArb(context),
+        TextDefinitionArb({ ...context, constraints: {} }),
         TextValueArb
     );
 }
