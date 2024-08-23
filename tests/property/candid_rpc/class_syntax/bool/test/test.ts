@@ -17,10 +17,11 @@ const context = { api, constraints: {} };
 const AllBoolsQueryMethodArb = QueryMethodArb(
     {
         api,
-        constraints: {
-            generateBody,
-            generateTests
-        }
+        constraints: {}
+    },
+    {
+        generateBody,
+        generateTests
     },
     fc.array(BoolArb(context)),
     BoolArb(context)

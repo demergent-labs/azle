@@ -11,8 +11,8 @@ import {
     BodyGenerator,
     generateMethodImplementation,
     isDefined,
-    MethodImplementationLocation,
     MethodImplementationLocationArb,
+    QueryOrUpdateConstraints,
     TestsGenerator
 } from '.';
 
@@ -23,18 +23,13 @@ export type UpdateMethod = {
     tests: Test[][];
 };
 
-export type UpdateConstraints = {
-    methodImplementationLocation?: MethodImplementationLocation;
-    name?: string;
-};
-
 export function UpdateMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
     ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 >(
-    context: Context<UpdateConstraints>,
+    context: Context<QueryOrUpdateConstraints>,
     generator: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,

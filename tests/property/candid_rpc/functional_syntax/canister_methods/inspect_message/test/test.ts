@@ -40,13 +40,16 @@ function CanisterConfigArb() {
         [createAuthenticatedAgentSync(AZLE_THROW_IDENTITY_NAME, true), 'THROW']
     ];
 
-    const InspectMessageArb = InspectMessageMethodArb({
-        api,
-        constraints: {
+    const InspectMessageArb = InspectMessageMethodArb(
+        {
+            api,
+            constraints: {}
+        },
+        {
             generateBody: () => generateInspectMessageMethodBody(),
             generateTests: () => []
         }
-    });
+    );
 
     const HeterogeneousUpdateMethodArb = UpdateMethodArb(
         {

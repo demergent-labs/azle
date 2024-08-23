@@ -11,8 +11,8 @@ import {
     BodyGenerator,
     generateMethodImplementation,
     isDefined,
-    MethodImplementationLocation,
     MethodImplementationLocationArb,
+    QueryOrUpdateConstraints,
     TestsGenerator
 } from '.';
 
@@ -29,10 +29,7 @@ export function QueryMethodArb<
     ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 >(
-    context: Context<{
-        methodImplementationLocation?: MethodImplementationLocation;
-        name?: string;
-    }>,
+    context: Context<QueryOrUpdateConstraints>,
     generator: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,

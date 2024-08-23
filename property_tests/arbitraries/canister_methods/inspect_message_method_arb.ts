@@ -6,8 +6,8 @@ import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
+    CanisterMethodConstraints,
     generateMethodImplementation,
-    MethodImplementationLocation,
     MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
@@ -20,11 +20,11 @@ export type InspectMessageMethod = {
 };
 
 export function InspectMessageMethodArb(
-    context: Context<{
+    context: Context<CanisterMethodConstraints>,
+    generator: {
         generateBody: BodyGenerator;
         generateTests: TestsGenerator;
-        methodImplementationLocation?: MethodImplementationLocation;
-    }>
+    }
 ): fc.Arbitrary<InspectMessageMethod> {
     const api = context.api;
     const constraints = context.constraints;
@@ -60,7 +60,7 @@ export function InspectMessageMethodArb(
                 const methodImplementation = generateMethodImplementation(
                     [],
                     returnType,
-                    constraints.generateBody,
+                    generator.generateBody,
                     methodImplementationLocation,
                     methodName,
                     api
@@ -80,7 +80,7 @@ export function InspectMessageMethodArb(
                           })`
                         : `@inspectMessage\n${functionName}${methodImplementation}`;
 
-                const tests = constraints.generateTests(
+                const tests = generator.generateTests(
                     functionName,
                     [],
                     returnType

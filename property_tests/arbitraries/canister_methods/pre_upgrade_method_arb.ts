@@ -6,8 +6,8 @@ import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
+    CanisterMethodConstraints,
     generateMethodImplementation,
-    MethodImplementationLocation,
     MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
@@ -20,11 +20,11 @@ export type PreUpgradeMethod = {
 };
 
 export function PreUpgradeMethodArb(
-    context: Context<{
+    context: Context<CanisterMethodConstraints>,
+    generator: {
         generateBody: BodyGenerator;
         generateTests: TestsGenerator;
-        methodImplementationLocation?: MethodImplementationLocation;
-    }>
+    }
 ): fc.Arbitrary<PreUpgradeMethod> {
     const api = context.api;
     const constraints = context.constraints;
@@ -56,7 +56,7 @@ export function PreUpgradeMethodArb(
                 const methodImplementation = generateMethodImplementation(
                     [],
                     returnType,
-                    constraints.generateBody,
+                    generator.generateBody,
                     methodImplementationLocation,
                     methodName,
                     api
@@ -76,7 +76,7 @@ export function PreUpgradeMethodArb(
                           })`
                         : `@preUpgrade\n${functionName}${methodImplementation}`;
 
-                const tests = constraints.generateTests(
+                const tests = generator.generateTests(
                     functionName,
                     [],
                     returnType

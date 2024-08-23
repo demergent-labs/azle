@@ -9,9 +9,9 @@ import { Api, Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
+    CanisterMethodConstraints,
     generateMethodImplementation,
     isDefined,
-    MethodImplementationLocation,
     MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
@@ -33,7 +33,8 @@ export function InitMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 >(
-    context: Context<{
+    context: Context<CanisterMethodConstraints>,
+    generator: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
@@ -42,8 +43,7 @@ export function InitMethodArb<
             ParamAgentArgumentValue,
             ParamAgentResponseValue
         >;
-        methodImplementationLocation?: MethodImplementationLocation;
-    }>,
+    },
     paramTypeArrayArb: fc.Arbitrary<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
     >
@@ -93,7 +93,7 @@ export function InitMethodArb<
                 const methodImplementation = generateMethodImplementation(
                     namedParams,
                     returnType,
-                    constraints.generateBody,
+                    generator.generateBody,
                     methodImplementationLocation,
                     methodName,
                     api
@@ -117,7 +117,7 @@ export function InitMethodArb<
                     api
                 );
 
-                const tests = constraints.generateTests(
+                const tests = generator.generateTests(
                     functionName,
                     namedParams,
                     returnType

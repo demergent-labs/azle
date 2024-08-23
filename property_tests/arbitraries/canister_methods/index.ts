@@ -40,6 +40,15 @@ export type TestsGenerator<
 
 export type MethodImplementationLocation = 'INLINE' | 'STANDALONE';
 
+export type CanisterMethodConstraints = {
+    methodImplementationLocation?: MethodImplementationLocation;
+};
+
+export type QueryOrUpdateConstraints = {
+    methodImplementationLocation?: MethodImplementationLocation;
+    name?: string;
+};
+
 export const MethodImplementationLocationArb =
     fc.constantFrom<MethodImplementationLocation>('INLINE', 'STANDALONE');
 
