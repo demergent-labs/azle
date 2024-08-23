@@ -6,7 +6,7 @@ import { TextConstraints } from './candid/primitive/text';
 import {
     CanisterMethodConstraints,
     QueryOrUpdateConstraints
-} from './canister_methods/';
+} from './canister_methods';
 
 export type Api = 'class' | 'functional';
 
