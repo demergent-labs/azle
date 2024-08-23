@@ -1,6 +1,6 @@
-import { Named } from 'azle/property_tests';
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
-import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
+import { Named } from 'azle/test/property';
+import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
 
 export function generateBody(
     namedParams: Named<CandidValueAndMeta<CorrespondingJSType>>[],

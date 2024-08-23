@@ -1,10 +1,10 @@
-import { getActor, Named } from 'azle/property_tests';
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { getActor, Named } from 'azle/test/property';
+import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
 import {
     ReturnTuple,
     Tuple
-} from 'azle/property_tests/arbitraries/candid/constructed/tuple_arb';
-import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
+} from 'azle/test/property/arbitraries/candid/constructed/tuple_arb';
+import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 
 export function generateTests(
     functionName: string,

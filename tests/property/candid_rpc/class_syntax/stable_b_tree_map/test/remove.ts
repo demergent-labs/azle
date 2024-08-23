@@ -1,8 +1,8 @@
-import { getActor } from 'azle/property_tests';
-import { QueryMethod } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
-import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
-import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
-import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
+import { getActor } from 'azle/test/property';
+import { QueryMethod } from 'azle/test/property/arbitraries/canister_methods/query_method_arb';
+import { StableBTreeMap } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
+import { UniqueIdentifierArb } from 'azle/test/property/arbitraries/unique_identifier_arb';
+import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 import fc from 'fast-check';
 
 export function RemoveTestArb(

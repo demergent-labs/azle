@@ -1,8 +1,8 @@
 import { HttpRequest, HttpResponse } from 'azle/experimental';
-import { Named } from 'azle/property_tests';
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
-import { HttpResponseAgentResponseValue } from 'azle/property_tests/arbitraries/http/response_arb';
-import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
+import { Named } from 'azle/test/property';
+import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { HttpResponseAgentResponseValue } from 'azle/test/property/arbitraries/http/response_arb';
+import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 
 import { fletch } from './fletch';
 
