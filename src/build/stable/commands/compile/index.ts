@@ -2,7 +2,7 @@ import { IOType } from 'child_process';
 import { mkdir, rm, writeFile } from 'fs/promises';
 import { join } from 'path';
 
-import { CanisterConfig } from '../get_canister_config';
+import { CanisterConfig } from '../../utils/get_canister_config';
 import { getCandidAndMethodMeta } from './candid_and_method_meta';
 import { compile as compileJavaScript } from './javascript';
 import { getWasmBinary } from './wasm_binary';
@@ -15,7 +15,7 @@ type Context = {
     wasmBinaryPath: string;
 };
 
-export async function compile(
+export async function runCommand(
     canisterName: string,
     canisterConfig: CanisterConfig
 ): Promise<void> {

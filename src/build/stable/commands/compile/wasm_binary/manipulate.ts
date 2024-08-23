@@ -5,12 +5,12 @@ import binaryen from 'binaryen';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { MethodMeta } from '../candid_and_method_meta';
 import {
     AZLE_PACKAGE_PATH,
     STABLE_STATIC_CANISTER_TEMPLATE_PATH
-} from '../utils/global_paths';
-import { EnvVars } from '../utils/types';
+} from '../../../utils/global_paths';
+import { EnvVars } from '../../../utils/types';
+import { MethodMeta } from '../candid_and_method_meta';
 
 // TODO put the licenses in the binary? Or with Azle? Probably with Azle actually
 // TODO it would be neat to be the licenses in all Azle binaries though

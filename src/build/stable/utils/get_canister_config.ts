@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
 
-import { EnvVars } from './compile/utils/types';
+import { EnvVars } from './types';
 
 type DfxJson = {
     canisters?: {

@@ -4,7 +4,7 @@ import { mkdir, writeFile } from 'fs/promises';
 import { copy } from 'fs-extra/esm';
 import { join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '../utils/global_paths';
+import { AZLE_PACKAGE_PATH } from '../../../utils/global_paths';
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 
 export async function prepareRustStagingArea(

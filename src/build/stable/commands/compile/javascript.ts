@@ -1,7 +1,7 @@
 import { build } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 
-import { experimentalMessage } from '../../../lib/experimental/experimental';
+import { experimentalMessage } from '../../../../lib/experimental/experimental';
 
 export async function compile(main: string): Promise<string> {
     const imports = getPrelude(main);

@@ -1,7 +1,7 @@
 import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 
-import { CanisterConfig } from '../../get_canister_config';
+import { CanisterConfig } from '../../../utils/get_canister_config';
 import { getWasmBinary } from '../wasm_binary';
 import { execute } from './execute';
 

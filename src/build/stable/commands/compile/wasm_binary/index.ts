@@ -1,10 +1,10 @@
 import { IOType } from 'child_process';
 import { existsSync } from 'fs';
 
-import { CanisterConfig } from '../../get_canister_config';
+import { CanisterConfig } from '../../../utils/get_canister_config';
+import { STABLE_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
+import { logGlobalDependencies } from '../../../utils/log_global_dependencies';
 import { MethodMeta } from '../candid_and_method_meta';
-import { STABLE_STATIC_CANISTER_TEMPLATE_PATH } from '../utils/global_paths';
-import { logGlobalDependencies } from '../utils/log_global_dependencies';
 import { compile } from './compile';
 import { manipulateWasmBinary } from './manipulate';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';

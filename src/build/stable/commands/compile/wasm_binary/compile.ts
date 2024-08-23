@@ -1,6 +1,6 @@
 import { IOType } from 'child_process';
 
-import { execSyncPretty } from '../utils/exec_sync_pretty';
+import { execSyncPretty } from '../../../utils/exec_sync_pretty';
 
 export function compile(
     wasmDest: string,

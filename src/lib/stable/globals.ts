@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 import { TextDecoder, TextEncoder } from 'text-encoding';
 
-import { MethodMeta } from '../../build/stable/compile/candid_and_method_meta';
+import { MethodMeta } from '../../build/stable/commands/compile/candid_and_method_meta';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { print } from './ic_apis';
 import { AzleIc } from './ic_apis/azle_ic';
