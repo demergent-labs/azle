@@ -23,7 +23,7 @@ import {
 } from './types';
 
 export function candidDefinitionArb(
-    context: Context<DefinitionConstraints | Record<string, never>>,
+    context: Context<DefinitionConstraints>,
     recursiveShapes: RecursiveShapes,
     parents: RecursiveCandidName[] = []
 ): CandidDefinitionArb {
@@ -33,7 +33,7 @@ export function candidDefinitionArb(
 }
 
 export function candidDefinitionMemo(
-    context: Context<DefinitionConstraints | Record<string, never>>,
+    context: Context<DefinitionConstraints>,
     parents: RecursiveCandidName[]
 ): CandidDefinitionMemo {
     return fc.memo((depthLevel) => {

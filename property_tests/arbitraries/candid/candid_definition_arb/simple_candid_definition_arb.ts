@@ -20,29 +20,29 @@ import { PrincipalDefinitionArb } from '../reference/principal_arb';
 import { PrimitiveDefinition, WithShapesArb } from './types';
 
 export type PrimitiveDefinitionWeights = Partial<{
-    bool: number;
-    float32: number;
-    float64: number;
-    int: number;
-    int8: number;
-    int16: number;
-    int32: number;
-    int64: number;
-    nat: number;
-    nat8: number;
-    nat16: number;
-    nat32: number;
-    nat64: number;
-    null: number;
-    text: number;
-    principal: number;
+    bool?: number;
+    float32?: number;
+    float64?: number;
+    int?: number;
+    int8?: number;
+    int16?: number;
+    int32?: number;
+    int64?: number;
+    nat?: number;
+    nat8?: number;
+    nat16?: number;
+    nat32?: number;
+    nat64?: number;
+    null?: number;
+    text?: number;
+    principal?: number;
 }>;
 
 // The number of options below (bool, float32, float64, int, nat, etc)
 export const PRIM_ARB_COUNT = 16;
 
 export function primitiveCandidDefinitionArb(
-    context: Context<PrimitiveDefinitionWeights | Record<string, never>>
+    context: Context<PrimitiveDefinitionWeights>
 ): WithShapesArb<PrimitiveDefinition> {
     const constraints = context.constraints;
     const newContext = { ...context, constraints: {} };
