@@ -1,5 +1,4 @@
 {
-    "name": "new_end_to_end_test_functional_syntax",
     "scripts": {
         "test": "if [ \"$AZLE_TEST_RUN_ON_RELEASE\" = \"true\" ]; then tsx test/test.ts; else echo 'Skipping pretests'; fi"
     },

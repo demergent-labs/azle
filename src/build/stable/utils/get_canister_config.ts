@@ -1,8 +1,6 @@
 import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
 
-import { EnvVars } from './types';
-
 type DfxJson = {
     canisters?: {
         [key: string]: CanisterConfig | undefined;
@@ -14,7 +12,7 @@ export type CanisterConfig = {
     custom?: {
         assets?: [string, string][];
         candid_gen?: CandidGen;
-        env?: EnvVars;
+        env?: string[];
         experimental?: boolean;
     };
 };

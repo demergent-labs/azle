@@ -3,7 +3,7 @@
 import { IOType } from 'child_process';
 
 import { experimentalMessage } from './experimental/experimental_message';
-import { runCommand as runCompileCommand } from './stable/commands/compile';
+import { runCommand as runStableCompileCommand } from './stable/commands/compile';
 import { runCommand as runInstallDfxExtension } from './stable/commands/install_dfx_extension';
 import { getCanisterConfig } from './stable/utils/get_canister_config';
 import { Command } from './stable/utils/types';
@@ -68,6 +68,6 @@ async function handleCommandCompile(): Promise<void> {
     const experimental = canisterConfig?.custom?.experimental === true;
 
     if (experimental === false) {
-        await runCompileCommand(canisterName, canisterConfig);
+        await runStableCompileCommand(canisterName, canisterConfig);
     }
 }

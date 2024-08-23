@@ -1,3 +1,7 @@
+// TODO go through everything and make functions only accept what they need
+// TODO move all types to utils/types
+// TODO move everything into the appropriate location
+
 import { IOType } from 'child_process';
 import { mkdir, rm, writeFile } from 'fs/promises';
 import { join } from 'path';

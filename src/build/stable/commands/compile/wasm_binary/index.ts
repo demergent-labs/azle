@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { CanisterConfig } from '../../../utils/get_canister_config';
 import { STABLE_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
 import { logGlobalDependencies } from '../../../utils/log_global_dependencies';
+import { EnvVars } from '../../../utils/types';
 import { MethodMeta } from '../candid_and_method_meta';
 import { compile } from './compile';
 import { manipulateWasmBinary } from './manipulate';
@@ -35,7 +36,25 @@ export async function getWasmBinary(
 
     return await manipulateWasmBinary(
         js,
-        canisterConfig.custom?.env ?? [],
+        getEnvVars(canisterConfig),
         methodMeta
     );
+}
+
+function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
+    const env = canisterConfig.custom?.env ?? [];
+
+    return env
+        .filter((envVarName) => process.env[envVarName] !== undefined)
+        .map((envVarName) => {
+            const envVarValue = process.env[envVarName];
+
+            if (envVarValue === undefined) {
+                throw new Error(
+                    `Environment variable ${envVarName} must be undefined`
+                );
+            }
+
+            return [envVarName, envVarValue];
+        });
 }
