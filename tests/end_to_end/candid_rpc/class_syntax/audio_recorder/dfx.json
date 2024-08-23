@@ -3,7 +3,7 @@
         "audio_recorder": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid_gen": "automatic",
+
             "declarations": {
                 "output": "test/dfx_generated/audio_recorder",
                 "node_compatibility": true

@@ -3,7 +3,7 @@
         "superheroes": {
             "type": "azle",
             "main": "src/superheroes/index.ts",
-            "candid_gen": "automatic",
+
             "declarations": {
                 "output": "src/declarations",
                 "node_compatibility": true

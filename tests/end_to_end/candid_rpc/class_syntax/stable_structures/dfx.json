@@ -3,7 +3,7 @@
         "canister1": {
             "type": "azle",
             "main": "src/canister1/index.ts",
-            "candid_gen": "automatic",
+
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
@@ -12,7 +12,7 @@
         "canister2": {
             "type": "azle",
             "main": "src/canister2/index.ts",
-            "candid_gen": "automatic",
+
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
@@ -21,7 +21,7 @@
         "canister3": {
             "type": "azle",
             "main": "src/canister3/index.ts",
-            "candid_gen": "automatic",
+
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true

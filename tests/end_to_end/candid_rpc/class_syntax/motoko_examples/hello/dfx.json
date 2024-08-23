@@ -3,7 +3,7 @@
         "hello": {
             "type": "azle",
             "main": "src/hello/index.ts",
-            "candid_gen": "automatic",
+
             "declarations": {
                 "output": "dfx_generated/hello",
                 "node_compatibility": true

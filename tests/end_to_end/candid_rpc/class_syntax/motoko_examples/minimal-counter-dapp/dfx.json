@@ -3,7 +3,7 @@
         "minimal_dapp": {
             "type": "azle",
             "main": "src/minimal_dapp/index.ts",
-            "candid_gen": "automatic",
+
             "declarations": {
                 "output": "src/declarations/minimal_dapp",
                 "node_compatibility": true
