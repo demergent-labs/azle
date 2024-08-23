@@ -12,7 +12,6 @@ export const AZLE_PACKAGE_PATH = join(
     '..',
     '..',
     '..',
-    '..',
     '..'
 );
 
