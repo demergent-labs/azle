@@ -350,7 +350,8 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               name: Set test name
               id: set-test-name
-              run: echo "::set-output name=test_name::$(basename ${{ matrix.example_directories }})"
+              run: |
+                  echo "TEST_NAME=$(basename ${{ matrix.example_directories }})" >> $GITHUB_ENV
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/checkout@v4
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
