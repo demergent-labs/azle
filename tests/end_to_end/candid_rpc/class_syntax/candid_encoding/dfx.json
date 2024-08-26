@@ -3,7 +3,6 @@
         "candid_encoding": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/candid_encoding",
                 "node_compatibility": true

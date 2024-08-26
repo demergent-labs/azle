@@ -3,7 +3,6 @@
         "hello": {
             "type": "azle",
             "main": "src/hello/index.ts",
-
             "declarations": {
                 "output": "dfx_generated/hello",
                 "node_compatibility": true

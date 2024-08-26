@@ -3,7 +3,6 @@
         "list_of_lists": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "dfx_generated/list_of_lists",
                 "node_compatibility": true

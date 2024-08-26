@@ -3,7 +3,6 @@
         "complex_types": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/complex_types",
                 "node_compatibility": true

@@ -3,7 +3,6 @@
         "update": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/update",
                 "node_compatibility": true

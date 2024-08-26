@@ -3,7 +3,6 @@
         "key_value_store": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/key_value_store",
                 "node_compatibility": true

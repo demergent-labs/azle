@@ -3,7 +3,6 @@
         "calc": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/calc",
                 "node_compatibility": true

@@ -3,7 +3,6 @@
         "manual_reply": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/manual_reply",
                 "node_compatibility": true

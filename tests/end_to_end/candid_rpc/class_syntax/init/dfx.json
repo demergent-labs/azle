@@ -3,7 +3,6 @@
         "init": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/init",
                 "node_compatibility": true

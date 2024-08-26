@@ -3,7 +3,6 @@
         "primitive_types": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/primitive_types",
                 "node_compatibility": true

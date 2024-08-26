@@ -3,7 +3,6 @@
         "query": {
             "type": "azle",
             "main": "src/index.ts",
-
             "declarations": {
                 "output": "test/dfx_generated/query",
                 "node_compatibility": true
