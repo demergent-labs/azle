@@ -64,9 +64,7 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
-                    "tests/property/candid_rpc/class_api/service",
                     "tests/property/candid_rpc/class_api/stable_b_tree_map",
-                    "tests/property/candid_rpc/functional_api/service",
                     "tests/property/candid_rpc/functional_api/stable_b_tree_map",
                     "tests/end_to_end/http_server/ethers_base",
                     "tests/end_to_end/http_server/http_outcall_fetch",
@@ -104,6 +102,7 @@ jobs:
                     "tests/property/candid_rpc/class_api/principal",
                     "tests/property/candid_rpc/class_api/record",
                     "tests/property/candid_rpc/class_api/recursive",
+                    "tests/property/candid_rpc/class_api/service",
                     "tests/property/candid_rpc/class_api/text",
                     "tests/property/candid_rpc/class_api/tuple",
                     "tests/property/candid_rpc/class_api/variant",
@@ -136,6 +135,7 @@ jobs:
                     "tests/property/candid_rpc/functional_api/principal",
                     "tests/property/candid_rpc/functional_api/record",
                     "tests/property/candid_rpc/functional_api/recursive",
+                    "tests/property/candid_rpc/functional_api/service",
                     "tests/property/candid_rpc/functional_api/text",
                     "tests/property/candid_rpc/functional_api/tuple",
                     "tests/property/candid_rpc/functional_api/variant",
