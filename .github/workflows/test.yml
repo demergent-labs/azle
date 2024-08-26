@@ -344,6 +344,14 @@ jobs:
                 example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
         steps:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Echo test name
+              id: echo-test-name
+              run: echo "${{ matrix.example_directories }}"
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Set test name
+              id: set-test-name
+              run: echo "::set-output name=test_name::$(basename ${{ matrix.example_directories }})"
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/checkout@v4
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/setup-node@v4
@@ -372,10 +380,6 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: npm install
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Set test name
-              id: set-test-name
-              run: echo "::set-output name=test_name::$(basename ${{ matrix.example_directories }})"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
