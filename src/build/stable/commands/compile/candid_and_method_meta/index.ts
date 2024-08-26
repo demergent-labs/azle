@@ -1,39 +1,22 @@
 import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 
-import { CanisterConfig } from '../../../utils/get_canister_config';
+import { CandidGen, EnvVars, MethodMeta } from '../../../utils/types';
 import { getWasmBinary } from '../wasm_binary';
 import { execute } from './execute';
 
-export type MethodMeta = {
-    queries?: Method[];
-    updates?: Method[];
-    init?: Method;
-    pre_upgrade?: Method;
-    post_upgrade?: Method;
-    heartbeat?: Method;
-    inspect_message?: Method;
-};
-
-export type Method = {
-    name: string;
-    composite?: boolean;
-    index: number;
-};
-
 export async function getCandidAndMethodMeta(
     canisterName: string,
-    canisterConfig: CanisterConfig,
+    candidGen: CandidGen | undefined,
     canisterPath: string,
     candidPath: string,
     js: string,
-    ioType: IOType
+    ioType: IOType,
+    envVars: EnvVars
 ): Promise<{
     candid: string;
     methodMeta: MethodMeta;
 }> {
-    const candidGen = canisterConfig.custom?.candid_gen;
-
     if (
         candidGen === undefined ||
         candidGen === 'automatic' ||
@@ -43,7 +26,7 @@ export async function getCandidAndMethodMeta(
             canisterName,
             ioType,
             js,
-            canisterConfig,
+            envVars,
             canisterPath
         );
 

@@ -2,6 +2,7 @@
 
 import { IOType } from 'child_process';
 
+import { runCommand as runExperimentalCompileCommand } from './experimental/commands/compile';
 import { experimentalMessage } from './experimental/experimental_message';
 import { runCommand as runStableCompileCommand } from './stable/commands/compile';
 import { runCommand as runInstallDfxExtension } from './stable/commands/install_dfx_extension';
@@ -34,7 +35,7 @@ async function build(): Promise<void> {
     }
 
     if (command === 'compile') {
-        await handleCommandCompile();
+        await handleCommandCompile(ioType);
 
         return;
     }
@@ -61,13 +62,26 @@ async function handleCommandUploadAssets(): Promise<void> {
     }
 }
 
-async function handleCommandCompile(): Promise<void> {
+async function handleCommandCompile(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
     const experimental = canisterConfig?.custom?.experimental === true;
 
     if (experimental === false) {
-        await runStableCompileCommand(canisterName, canisterConfig);
+        await runStableCompileCommand(canisterName, canisterConfig, ioType);
+    } else {
+        // TODO the developer needs to somehow have their build process fail if they try to
+        // TODO do something that isn't experimental in their code
+        // TODO how will this work with the build process?
+        // TODO hmmmm...at runtime we check for imports
+        // TODO and we will check for globals
+        // TODO and if they try to import from any azle code it will throw
+        // TODO is that good enough?
+        // TODO maybe we need to check for experimental values in the dfx.json custom property
+        // TODO and throw if we see them?
+        // TODO we must throw if they EVER try to do anything experimental and they have not
+        // TODO set the experimental flag
+        await runExperimentalCompileCommand(canisterName, canisterConfig);
     }
 }

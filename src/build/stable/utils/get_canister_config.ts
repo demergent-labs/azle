@@ -1,23 +1,7 @@
 import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
 
-type DfxJson = {
-    canisters?: {
-        [key: string]: CanisterConfig | undefined;
-    };
-};
-
-export type CanisterConfig = {
-    main?: string;
-    custom?: {
-        assets?: [string, string][];
-        candid_gen?: CandidGen;
-        env?: string[];
-        experimental?: boolean;
-    };
-};
-
-type CandidGen = 'automatic' | 'custom';
+import { CanisterConfig, DfxJson } from './types';
 
 export async function getCanisterConfig(
     canisterName: string
