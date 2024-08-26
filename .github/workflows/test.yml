@@ -317,7 +317,7 @@ jobs:
                     echo "::set-output name=should_run_tests::true"
                   fi
     basic-integration-tests:
-        name: ${{matrix.example_directories}}
+        name: cool ${{matrix.example_directories}} | ${{matrix.azle_source}}
         needs: release-candidate-deploy
         runs-on: ${{ matrix.os }}
         env:
