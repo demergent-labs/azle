@@ -317,6 +317,7 @@ jobs:
                     echo "::set-output name=should_run_tests::true"
                   fi
     basic-integration-tests:
+        name: $(basename ${{matrix.example_directories}}) | ${{matrix.azle_source}} | ${{matrix.example_directories}}
         needs: release-candidate-deploy
         runs-on: ${{ matrix.os }}
         env:
@@ -343,6 +344,15 @@ jobs:
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
                 example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
         steps:
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Echo test name
+              id: echo-test-name
+              run: echo "${{ matrix.example_directories }}"
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Set test name
+              id: set-test-name
+              run: |
+                  echo "TEST_NAME=$(basename ${{ matrix.example_directories }})" >> $GITHUB_ENV
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/checkout@v4
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
