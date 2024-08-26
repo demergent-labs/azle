@@ -372,6 +372,10 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: npm install
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Set test name
+              id: set-test-name
+              run: echo "::set-output name=test_name::$(basename ${{ matrix.example_directories }})"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
