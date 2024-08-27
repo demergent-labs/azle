@@ -1,6 +1,7 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
+import { getCanisterId } from '../../../../../dfx';
 import { version } from '../../../../../package.json';
 import { getContext as getStableContext } from '../../../stable/commands/compile/get_context';
 import {
@@ -17,8 +18,12 @@ export async function getContext(
 ): Promise<Context> {
     const stableContext = getStableContext(canisterName, canisterConfig);
 
+    const canisterId = getCanisterId(canisterName);
+
     const esmAliases = canisterConfig.custom?.esm_aliases ?? {};
     const esmExternals = canisterConfig.custom?.esm_externals ?? [];
+
+    const reloadedJsPath = join('.azle', canisterName, 'main_reloaded.js');
 
     const consumer = await getConsumer(canisterConfig);
     const managementDid = (
@@ -40,8 +45,10 @@ export async function getContext(
 
     return {
         ...stableContext,
+        canisterId,
         esmAliases,
         esmExternals,
+        reloadedJsPath,
         wasmData,
         wasmedgeQuickJsPath
     };

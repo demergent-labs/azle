@@ -7,6 +7,7 @@ import {
 import { execSyncPretty } from '../../../stable/utils/exec_sync_pretty';
 import { CanisterConfig } from '../../../stable/utils/types';
 import { getCandidAndMethodMeta } from './candid_and_method_meta';
+import { setupFileWatcher } from './file_watcher/setup_file_watcher';
 import { getContext } from './get_context';
 import { compile as compileJavaScript } from './javascript';
 import { getWasmBinary } from './wasm_binary';
@@ -17,11 +18,13 @@ export async function runCommand(
     ioType: IOType
 ): Promise<void> {
     const {
+        canisterId,
         canisterPath,
         candidPath,
         esmAliases,
         esmExternals,
         main,
+        reloadedJsPath,
         wasmBinaryPath,
         wasmData,
         wasmedgeQuickJsPath
@@ -65,6 +68,17 @@ export async function runCommand(
     );
 
     buildAssets(canisterConfig, ioType);
+
+    setupFileWatcher(
+        reloadedJsPath,
+        canisterId,
+        main,
+        wasmedgeQuickJsPath,
+        esmAliases,
+        esmExternals,
+        canisterName,
+        methodMeta.post_upgrade?.index ?? -1
+    );
 }
 
 function buildAssets(canisterConfig: CanisterConfig, ioType: IOType): void {
