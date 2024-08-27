@@ -3,6 +3,7 @@
 import { IOType } from 'child_process';
 
 import { runCommand as runExperimentalCompileCommand } from './experimental/commands/compile';
+import { runCommand as runUploadAssetsCommand } from './experimental/commands/upload_assets';
 import { experimentalMessage } from './experimental/utils/experimental_message';
 import { runCommand as runStableCompileCommand } from './stable/commands/compile';
 import { runCommand as runInstallDfxExtension } from './stable/commands/install_dfx_extension';
@@ -59,6 +60,8 @@ async function handleCommandUploadAssets(): Promise<void> {
         if (canisterConfig.custom?.assets !== undefined) {
             throw new Error(experimentalMessage('the upload-assets command'));
         }
+    } else {
+        await runUploadAssetsCommand();
     }
 }
 
