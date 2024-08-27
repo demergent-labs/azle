@@ -7,7 +7,7 @@ export type CandidAndMethodMeta = {
     methodMeta: MethodMeta;
 };
 
-export type CandidGen = 'automatic' | 'custom';
+export type CandidGen = 'automatic' | 'custom' | 'http';
 
 // TODO in stable we should detect if certain properties exist
 // TODO and throw if not in experimental mode

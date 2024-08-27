@@ -6,6 +6,7 @@ import {
 } from '../../../stable/commands/compile';
 import { execSyncPretty } from '../../../stable/utils/exec_sync_pretty';
 import { CanisterConfig } from '../../../stable/utils/types';
+import { logSuccess } from '../../utils/log_success';
 import { getCandidAndMethodMeta } from './candid_and_method_meta';
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
 import { getContext } from './get_context';
@@ -79,6 +80,10 @@ export async function runCommand(
         canisterName,
         methodMeta.post_upgrade?.index ?? -1
     );
+
+    if (canisterConfig.custom?.candid_gen === 'http') {
+        logSuccess(canisterName, canisterId);
+    }
 }
 
 function buildAssets(canisterConfig: CanisterConfig, ioType: IOType): void {

@@ -1,13 +1,22 @@
 #!/usr/bin/env -S tsx --abort-on-uncaught-exception
 
 import { IOType } from 'child_process';
+import { join } from 'path';
 
+import { version as azleVersion } from '../../package.json';
 import { runCommand as runExperimentalCompileCommand } from './experimental/commands/compile';
 import { runCommand as runUploadAssetsCommand } from './experimental/commands/upload_assets';
-import { experimentalMessage } from './experimental/utils/experimental_message';
+import {
+    experimentalMessageCli,
+    experimentalMessageDfxJson
+} from './experimental/utils/experimental_message';
+import { runCommand as runCleanCommand } from './stable/commands/clean';
 import { runCommand as runStableCompileCommand } from './stable/commands/compile';
-import { runCommand as runInstallDfxExtension } from './stable/commands/install_dfx_extension';
+import { runCommand as runInstallDfxExtensionCommand } from './stable/commands/install_dfx_extension';
+import { runCommand as runNewCommand } from './stable/commands/new';
+import { runCommand as runVersionCommand } from './stable/commands/version';
 import { getCanisterConfig } from './stable/utils/get_canister_config';
+import { AZLE_PACKAGE_PATH } from './stable/utils/global_paths';
 import { Command } from './stable/utils/types';
 
 build();
@@ -24,19 +33,37 @@ async function build(): Promise<void> {
     const ioType = process.env.AZLE_VERBOSE === 'true' ? 'inherit' : 'pipe';
 
     if (command === 'install-dfx-extension') {
-        handleCommandInstallDfxExtension(ioType);
+        handleInstallDfxExtensionCommand(ioType);
 
         return;
     }
 
     if (command === 'upload-assets') {
-        await handleCommandUploadAssets();
+        await handleUploadAssetsCommand();
 
         return;
     }
 
     if (command === 'compile') {
-        await handleCommandCompile(ioType);
+        await handleCompileCommand(ioType);
+
+        return;
+    }
+
+    if (command === '--version') {
+        runVersionCommand();
+
+        return;
+    }
+
+    if (command === 'clean') {
+        await runCleanCommand();
+
+        return;
+    }
+
+    if (command === 'new') {
+        await handleNewCommand();
 
         return;
     }
@@ -46,11 +73,11 @@ async function build(): Promise<void> {
     );
 }
 
-function handleCommandInstallDfxExtension(ioType: IOType): void {
-    runInstallDfxExtension(ioType);
+function handleInstallDfxExtensionCommand(ioType: IOType): void {
+    runInstallDfxExtensionCommand(ioType);
 }
 
-async function handleCommandUploadAssets(): Promise<void> {
+async function handleUploadAssetsCommand(): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
@@ -58,14 +85,16 @@ async function handleCommandUploadAssets(): Promise<void> {
 
     if (experimental === false) {
         if (canisterConfig.custom?.assets !== undefined) {
-            throw new Error(experimentalMessage('the upload-assets command'));
+            throw new Error(
+                experimentalMessageDfxJson('the upload-assets command')
+            );
         }
     } else {
         await runUploadAssetsCommand();
     }
 }
 
-async function handleCommandCompile(ioType: IOType): Promise<void> {
+async function handleCompileCommand(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
@@ -90,5 +119,27 @@ async function handleCommandCompile(ioType: IOType): Promise<void> {
             canisterConfig,
             ioType
         );
+    }
+}
+
+async function handleNewCommand(): Promise<void> {
+    const experimental = process.argv.includes('--experimental');
+
+    if (experimental === false) {
+        if (process.argv.includes('--http-server')) {
+            throw new Error(experimentalMessageCli('the --http-server option'));
+        }
+
+        const templatePath = join(
+            AZLE_PACKAGE_PATH,
+            'examples',
+            'hello_world_candid_rpc'
+        );
+
+        await runNewCommand(azleVersion, templatePath);
+    } else {
+        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
+
+        await runNewCommand(azleVersion, templatePath);
     }
 }

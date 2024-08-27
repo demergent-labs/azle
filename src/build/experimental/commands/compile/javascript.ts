@@ -133,7 +133,10 @@ export function getBuildOptions(
     const customJsModulesPath = join(
         AZLE_PACKAGE_PATH,
         'src',
-        'compiler',
+        'build',
+        'experimental',
+        'commands',
+        'compile',
         'custom_js_modules'
     );
 
