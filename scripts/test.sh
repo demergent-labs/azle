@@ -5,15 +5,15 @@ BASE_DIR="."
 EXAMPLES_DIR="$BASE_DIR/examples"
 TESTS_DIR="$BASE_DIR/tests"
 
-# Function to discover test directories
-discover_directories() {
+# Function to discover npm package directories
+discover_npm_packages() {
     local dir=$1
-    find "$dir" -type d
+    find "$dir" -type d -exec test -f "{}/package.json" \; -print
 }
 
-# Discover directories in examples and tests
-example_directories=$(discover_directories "$EXAMPLES_DIR")
-test_directories=$(discover_directories "$TESTS_DIR")
+# Discover npm packages in examples and tests
+example_directories=$(discover_npm_packages "$EXAMPLES_DIR")
+test_directories=$(discover_npm_packages "$TESTS_DIR")
 
 # Combine all directories into a single list
 all_directories=$(echo -e "$example_directories\n$test_directories")
