@@ -5,6 +5,7 @@
             "main": "src/backend/server.ts",
             "custom": {
                 "experimental": true,
+                "candid_gen": "http",
                 "assets": [
                     ["src/frontend/dist", "dist"],
                     ["src/backend/media/audio.ogg", "media/audio.ogg"],

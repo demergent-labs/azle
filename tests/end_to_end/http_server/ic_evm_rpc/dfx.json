@@ -6,6 +6,7 @@
             "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai",
             "custom": {
                 "experimental": true,
+                "candid_gen": "http",
                 "assets": [["src/candid/evm_rpc.did", "src/candid/evm_rpc.did"]]
             }
         },

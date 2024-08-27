@@ -5,6 +5,7 @@
             "main": "src/backend.ts",
             "custom": {
                 "experimental": true,
+                "candid_gen": "http",
                 "assets": [["src/assets", "assets"]]
             }
         }

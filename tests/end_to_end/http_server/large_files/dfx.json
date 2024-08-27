@@ -5,6 +5,7 @@
             "main": "src/index.ts",
             "custom": {
                 "experimental": true,
+                "candid_gen": "http",
                 "assets": [
                     ["assets/auto", "assets"],
                     ["assets/permanent", "assets"],

@@ -23,7 +23,19 @@ export async function compile(
     );
     const bundled = await bundle(buildOptions);
 
-    return bundled;
+    return bundled
+        .replace(
+            /__toCommonJS\(assert_exports\)\);/g,
+            `__toCommonJS(assert_exports)).default;`
+        )
+        .replace(
+            /__toCommonJS\(stream_exports\)\);/g,
+            `__toCommonJS(stream_exports)).default;`
+        )
+        .replace(
+            /__toCommonJS\(http_exports\)\);/g,
+            `__toCommonJS(http_exports)).default;`
+        );
 }
 
 // TODO clean this up beautifully
@@ -44,7 +56,6 @@ export function getPrelude(main: string): string {
 
         import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
         export { Principal } from '@dfinity/principal';
-        export * from './${main}'; // TODO can we remove this?
         import * as Canister from './${main}';
 
         if (isClassSyntaxExport(Canister)) {
@@ -117,6 +128,7 @@ export function getBuildOptions(
         ...externalNotImplementedDev
     ];
 
+    // TODO we need to move custom_js_modules into build/experimental
     const customJsModulesPath = join(
         AZLE_PACKAGE_PATH,
         'src',
@@ -126,6 +138,7 @@ export function getBuildOptions(
 
     // TODO we need to remove the plugins here
     // TODO we do not want anything stopping us
+    // TODO should I just make an empty plugin array below? Probably less confusing
     const { plugins: _plugins, ...stableBuildOptions } =
         getStableBuildOptions(ts);
 

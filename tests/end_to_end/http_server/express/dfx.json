@@ -5,6 +5,7 @@
             "main": "src/backend/index.ts",
             "custom": {
                 "experimental": true,
+                "candid_gen": "http",
                 "assets": [["src/frontend/dist", "dist"]],
                 "build_assets": "npm run build"
             }
