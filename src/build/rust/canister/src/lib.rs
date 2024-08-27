@@ -1,3 +1,8 @@
+// TODO the plan is to integrate rquickjs for stable
+// TODO and at that time create two crates
+// TODO we should place each crate at src/build/stable/commands/compile/rust
+// TODO and src/build/experimental/commands/compile/rust respectively
+
 use std::cell::RefCell;
 
 #[allow(unused)]
