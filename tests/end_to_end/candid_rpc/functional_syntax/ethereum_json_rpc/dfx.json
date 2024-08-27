@@ -3,14 +3,13 @@
         "ethereum_json_rpc": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid_gen": "automatic",
-            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/ethereum_json_rpc",
                 "node_compatibility": true
             },
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "env": ["AZLE_TEST_FETCH"]
             }
         }
     }

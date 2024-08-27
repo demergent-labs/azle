@@ -3,14 +3,13 @@
         "timers": {
             "type": "azle",
             "main": "src/timers.ts",
-            "candid_gen": "automatic",
-            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/timers",
                 "node_compatibility": true
             },
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "env": ["AZLE_TEST_FETCH"]
             }
         }
     }
