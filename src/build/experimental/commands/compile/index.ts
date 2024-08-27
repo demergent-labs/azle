@@ -4,6 +4,7 @@ import {
     createHiddenAzleDirectories,
     writeGeneratedFiles
 } from '../../../stable/commands/compile';
+import { execSyncPretty } from '../../../stable/utils/exec_sync_pretty';
 import { CanisterConfig } from '../../../stable/utils/types';
 import { getCandidAndMethodMeta } from './candid_and_method_meta';
 import { getContext } from './get_context';
@@ -62,4 +63,15 @@ export async function runCommand(
         javaScript,
         wasmBinary
     );
+
+    buildAssets(canisterConfig, ioType);
+}
+
+function buildAssets(canisterConfig: CanisterConfig, ioType: IOType): void {
+    if (
+        canisterConfig.custom?.build_assets !== undefined &&
+        canisterConfig.custom?.build_assets !== null
+    ) {
+        execSyncPretty(canisterConfig.custom.build_assets, ioType);
+    }
 }

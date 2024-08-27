@@ -17,6 +17,7 @@ export type CanisterConfig = {
     main?: string;
     custom?: {
         assets?: [string, string][];
+        build_assets?: string;
         candid_gen?: CandidGen;
         env?: string[];
         esm_aliases: Record<string, string>;
