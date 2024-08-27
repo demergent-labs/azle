@@ -1,18 +1,9 @@
-// import { func, indexLiteral, instr } from '@webassemblyjs/ast';
-// import { addExport } from '@webassemblyjs/wasm-edit';
-// import { decode, encode } from '@webassemblyjs/wasm-parser';
 import binaryen from 'binaryen';
 import { readFile } from 'fs/promises';
-import { join } from 'path';
 
-import {
-    AZLE_PACKAGE_PATH,
-    STABLE_STATIC_CANISTER_TEMPLATE_PATH
-} from '../../../utils/global_paths';
+import { STABLE_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
 import { EnvVars, MethodMeta } from '../../../utils/types';
 
-// TODO put the licenses in the binary? Or with Azle? Probably with Azle actually
-// TODO it would be neat to be the licenses in all Azle binaries though
 // TODO can we make the start function just load the passive segment into memory?
 
 export async function manipulateWasmBinary(
@@ -117,12 +108,7 @@ export async function manipulateWasmBinary(
     const jsEncoded = new TextEncoder().encode(js);
     const wasmDataEncoded = new TextEncoder().encode(
         JSON.stringify({
-            env_vars: envVars,
-            management_did: (
-                await readFile(
-                    join(AZLE_PACKAGE_PATH, 'canisters', 'management', 'ic.did')
-                )
-            ).toString()
+            env_vars: envVars
         })
     );
 

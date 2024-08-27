@@ -5,12 +5,18 @@ export type CandidAndMethodMeta = {
 
 export type CandidGen = 'automatic' | 'custom';
 
+// TODO in stable we should detect if certain properties exist
+// TODO and throw if not in experimental mode
+// TODO should the experimental properties only be defined
+// TODO in an experimental version of CanisterConfig?
 export type CanisterConfig = {
     main?: string;
     custom?: {
         assets?: [string, string][];
         candid_gen?: CandidGen;
         env?: string[];
+        esm_aliases: Record<string, string>;
+        esm_externals: string[];
         experimental?: boolean;
     };
 };

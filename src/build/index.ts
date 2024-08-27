@@ -3,7 +3,7 @@
 import { IOType } from 'child_process';
 
 import { runCommand as runExperimentalCompileCommand } from './experimental/commands/compile';
-import { experimentalMessage } from './experimental/experimental_message';
+import { experimentalMessage } from './experimental/utils/experimental_message';
 import { runCommand as runStableCompileCommand } from './stable/commands/compile';
 import { runCommand as runInstallDfxExtension } from './stable/commands/install_dfx_extension';
 import { getCanisterConfig } from './stable/utils/get_canister_config';
@@ -82,6 +82,10 @@ async function handleCommandCompile(ioType: IOType): Promise<void> {
         // TODO and throw if we see them?
         // TODO we must throw if they EVER try to do anything experimental and they have not
         // TODO set the experimental flag
-        await runExperimentalCompileCommand(canisterName, canisterConfig);
+        await runExperimentalCompileCommand(
+            canisterName,
+            canisterConfig,
+            ioType
+        );
     }
 }

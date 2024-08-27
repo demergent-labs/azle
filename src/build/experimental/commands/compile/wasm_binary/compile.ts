@@ -1,6 +1,6 @@
 import { IOType } from 'child_process';
 
-import { execSyncPretty } from '../../../utils/exec_sync_pretty';
+import { execSyncPretty } from '../../../../stable/utils/exec_sync_pretty';
 
 export function compile(
     wasmDest: string,
@@ -8,7 +8,7 @@ export function compile(
     stdio: IOType
 ): void {
     execSyncPretty(
-        `CARGO_TARGET_DIR=target cargo build --target wasm32-wasi --manifest-path .azle/${canisterName}/canister/Cargo.toml --release`,
+        `CARGO_TARGET_DIR=target cargo build --target wasm32-wasi --manifest-path .azle/${canisterName}/canister/Cargo.toml --release --features "experimental"`,
         stdio
     );
 

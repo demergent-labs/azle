@@ -1,11 +1,12 @@
-import { build } from 'esbuild';
+import { build, BuildOptions } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 
 import { experimentalMessage } from '../../../../lib/experimental/experimental';
 
 export async function compile(main: string): Promise<string> {
-    const imports = getPrelude(main);
-    const bundled = await bundle(imports);
+    const prelude = getPrelude(main);
+    const buildOptions = getBuildOptions(prelude);
+    const bundled = await bundle(buildOptions);
 
     return bundled;
 }
@@ -40,9 +41,24 @@ function getPrelude(main: string): string {
         `;
 }
 
-export async function bundle(ts: string): Promise<string> {
-    // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
-    const buildResult = await build({
+export async function bundle(buildOptions: BuildOptions): Promise<string> {
+    const buildResult = await build(buildOptions);
+
+    if (buildResult.outputFiles === undefined) {
+        throw new Error(
+            `Azle: Build process failed to produce JavaScript output files`
+        );
+    }
+
+    const bundleArray = buildResult.outputFiles[0].contents;
+    const bundleString = Buffer.from(bundleArray).toString('utf-8');
+
+    return bundleString;
+}
+
+// TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
+export function getBuildOptions(ts: string): BuildOptions {
+    return {
         stdin: {
             contents: ts,
             resolveDir: process.cwd()
@@ -70,10 +86,5 @@ export async function bundle(ts: string): Promise<string> {
             },
             esbuildPluginTsc()
         ]
-    });
-
-    const bundleArray = buildResult.outputFiles[0].contents;
-    const bundleString = Buffer.from(bundleArray).toString('utf-8');
-
-    return bundleString;
+    };
 }

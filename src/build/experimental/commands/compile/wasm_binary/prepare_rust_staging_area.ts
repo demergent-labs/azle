@@ -4,8 +4,8 @@ import { mkdir, writeFile } from 'fs/promises';
 import { copy } from 'fs-extra/esm';
 import { join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '../../../utils/global_paths';
-import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
+import { generateWorkspaceCargoToml } from '../../../../stable/commands/compile/wasm_binary/generate_cargo_toml_files';
+import { AZLE_PACKAGE_PATH } from '../../../../stable/utils/global_paths';
 
 export async function prepareRustStagingArea(
     canisterPath: string
@@ -26,5 +26,14 @@ export async function prepareRustStagingArea(
     await copy(
         `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister`,
         `${canisterPath}/canister`
+    );
+
+    if (!existsSync(`${canisterPath}/open_value_sharing`)) {
+        await mkdir(`${canisterPath}/open_value_sharing`);
+    }
+
+    await copy(
+        `${AZLE_PACKAGE_PATH}/src/compiler/rust/open_value_sharing`,
+        `${canisterPath}/open_value_sharing`
     );
 }
