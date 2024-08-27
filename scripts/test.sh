@@ -5,16 +5,16 @@ BASE_DIR="."
 EXAMPLES_DIR="$BASE_DIR/examples"
 TESTS_DIR="$BASE_DIR/tests"
 
-# Directories to exclude
+# Excluded directories
 EXCLUDE_DIRS=(
-    "tests/property/candid_rpc/class_api/stable_b_tree_map"
-    "tests/property/candid_rpc/functional_api/stable_b_tree_map"
+    "$EXAMPLES_DIR/ckbtc/wallet/frontend"
+    "$TESTS_DIR/end_to_end/candid_rpc/functional_syntax/ckbtc/wallet/frontend"
 )
 
 # Function to discover test directories
 discover_directories() {
     local dir=$1
-    find "$dir" -type d ! -path "*/node_modules/*"
+    find "$dir" -type d -not -path "*/node_modules/*" -exec test -f "{}/package.json" \; -print
 }
 
 # Function to check if a directory is excluded
@@ -28,21 +28,57 @@ is_excluded() {
     return 1
 }
 
-# Discover directories in examples and tests
-example_directories=$(discover_directories "$EXAMPLES_DIR")
-test_directories=$(discover_directories "$TESTS_DIR")
+# Generate JSON object for each directory
+generate_json() {
+    local dir=$1
+    local name=$(basename "$dir")
+    local type=""
+    local syntax=""
+    local api=""
 
-# Combine all directories into a single list and filter out excluded directories
-all_directories=$(echo -e "$example_directories\n$test_directories" | while read -r dir; do
-    if is_excluded "$dir"; then
-        continue
+    if [[ "$dir" == "$EXAMPLES_DIR"* ]]; then
+        type="ex"
+    elif [[ "$dir" == "$TESTS_DIR/property"* ]]; then
+        type="prop"
+        if [[ "$dir" == *"/candid_rpc/"* ]]; then
+            syntax="crpc"
+            if [[ "$dir" == *"/functional_api/"* ]]; then
+                api="functional"
+            elif [[ "$dir" == *"/class_api/"* ]]; then
+                api="class"
+            fi
+        elif [[ "$dir" == *"/ic_api/"* ]]; then
+            syntax="ic_api"
+        fi
+    elif [[ "$dir" == "$TESTS_DIR/end_to_end"* ]]; then
+        type="e2e"
+        if [[ "$dir" == *"/http_server/"* ]]; then
+            syntax="http"
+        elif [[ "$dir" == *"/candid_rpc/"* ]]; then
+            syntax="crpc"
+        fi
     fi
-    if [[ -f "$dir/package.json" ]]; then
-        echo "$dir"
+
+    # Construct JSON object
+    echo "{"
+    echo "  \"path\": \"$dir\","
+    echo "  \"name\": \"$name\","
+    echo "  \"type\": \"$type\","
+    [[ -n "$syntax" ]] && echo "  \"syntax\": \"$syntax\","
+    [[ -n "$api" ]] && echo "  \"api\": \"$api\","
+    echo "},"
+}
+
+# Discover directories in examples and tests, excluding specified directories
+all_directories=$(discover_directories "$EXAMPLES_DIR")
+all_directories+=$'\n'
+all_directories+=$(discover_directories "$TESTS_DIR")
+
+# Sort, filter, and generate JSON objects
+echo "["
+echo "$all_directories" | sort | while read -r dir; do
+    if ! is_excluded "$dir"; then
+        generate_json "$dir"
     fi
-done)
-
-# Sort the directories alphabetically and output them
-sorted_directories=$(echo "$all_directories" | sort)
-
-echo "$sorted_directories"
+done | sed '$ s/,$//'  # Remove the last comma
+echo "]"
