@@ -42,5 +42,7 @@ all_directories=$(echo -e "$example_directories\n$test_directories" | while read
     fi
 done)
 
-# Output the directories
-echo "$all_directories"
+# Sort the directories alphabetically and output them
+sorted_directories=$(echo "$all_directories" | sort)
+
+echo "$sorted_directories"
