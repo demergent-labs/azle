@@ -7,14 +7,22 @@ TESTS_DIR="$BASE_DIR/tests"
 
 # Excluded directories
 EXCLUDE_DIRS=(
-    "$EXAMPLES_DIR/ckbtc/wallet/frontend"
-    "$TESTS_DIR/end_to_end/candid_rpc/functional_syntax/ckbtc/wallet/frontend"
+    "$EXAMPLES_DIR/filter_example"
+    "$TESTS_DIR/end_to_end/candid_rpc/functional_syntax/filter_example"
 )
 
 # Function to discover test directories
 discover_directories() {
     local dir=$1
-    find "$dir" -type d -not -path "*/node_modules/*" -exec test -f "{}/package.json" \; -print
+    find "$dir" -type d -not -path "*/node_modules/*" -exec sh -c '
+        for pkg in "$@"; do
+            if [ -f "$pkg/package.json" ]; then
+                if jq -e ".scripts.test" "$pkg/package.json" > /dev/null; then
+                    echo "$pkg"
+                fi
+            fi
+        done
+    ' sh {} +
 }
 
 # Function to check if a directory is excluded
