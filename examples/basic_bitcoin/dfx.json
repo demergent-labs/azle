@@ -3,9 +3,9 @@
         "basic_bitcoin": {
             "type": "azle",
             "main": "src/index.ts",
-            "env": ["BITCOIN_NETWORK"],
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "env": ["BITCOIN_NETWORK"]
             }
         }
     },

@@ -24,12 +24,15 @@
             "type": "azle",
             "main": "wallet/backend/index.ts",
             "candid": "wallet/backend/index.did",
-            "candid_gen": "custom",
-            "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"],
-            "assets": [["minter/minter.did", "minter/minter.did"]],
             "declarations": {
                 "node_compatibility": true,
                 "output": "wallet/frontend/dfx_generated/wallet_backend"
+            },
+            "custom": {
+                "experimental": true,
+                "assets": [["minter/minter.did", "minter/minter.did"]],
+                "candid_gen": "custom",
+                "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"]
             }
         },
         "wallet_frontend": {
