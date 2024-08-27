@@ -20,6 +20,63 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 jobs:
+    generate-tests:
+        runs-on: ubuntu-latest
+        outputs:
+            all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get_all_tests
+              name: generateTests
+              run: |
+                  ALL_TESTS=$(./scripts/test.sh | base64 -d)
+                  echo "all_tests=$ALL_TESTS" >> $GITHUB_OUTPUT
+            - name: Print the captured output
+              run: |
+                  echo "${{ steps.get_all_tests.outputs.all_tests }}" | tail
+    debug-generate-tests:
+        name: ${{matrix.tests.name}}
+        needs: generate-tests
+        runs-on: ubuntu-latests
+        strategy:
+            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
+            matrix:
+                tests: ${{ fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
+        steps:
+            - name: Echo test
+              id: echo-test
+              run: echo "${{ matrix.tests }}"
+            - name: Echo test path
+              id: echo-test-path
+              run: echo "${{ matrix.tests.path }}"
+            - name: Echo test name
+              id: echo-test-name
+              run: echo "${{ matrix.tests.name }}"
+    test-path-generate:
+        runs-on: ubuntu-latest
+        outputs:
+            all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get_all_tests
+              name: generateTests
+              run: |
+                  ALL_TESTS=$(./scripts/test.sh | base64 -d)
+                  echo "::set-output name=all_tests::$ALL_TESTS"
+            - name: Print the captured output
+              run: echo "${{ steps.get_all_tests.outputs.all_tests }}"
+    test-path-debugging:
+        name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}}
+        runs-on: ubuntu-latest
+        needs: test-path-generate
+        strategy:
+            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
+            matrix:
+                tests: ${{ fromJSON(needs.test-path-generate.outputs.all_tests) || fromJSON('["dummy"]') }}
+        steps:
+            - name: Echo test
+              id: echo-test
+              run: echo "${{ matrix.tests.path }}"
     release-candidate-deploy:
         runs-on: ubuntu-latest
         env:
@@ -64,240 +121,8 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
-                    "tests/property/candid_rpc/class_api/stable_b_tree_map",
-                    "tests/property/candid_rpc/functional_api/stable_b_tree_map",
-                    "tests/end_to_end/http_server/ethers_base",
-                    "tests/end_to_end/http_server/http_outcall_fetch",
-                    "tests/end_to_end/http_server/ic_evm_rpc",
-                    "examples/basic_bitcoin",
-                    "examples/bitcoin_psbt",
-                    "examples/ckbtc",
                     "examples/hello_world",
-                    "examples/hello_world_candid_rpc",
-                    "tests/property/candid_rpc/class_api/blob",
-                    "tests/property/candid_rpc/class_api/bool",
-                    "tests/property/candid_rpc/class_api/canister_methods/http_request",
-                    "tests/property/candid_rpc/class_api/canister_methods/http_request_update",
-                    "tests/property/candid_rpc/class_api/canister_methods/init",
-                    "tests/property/candid_rpc/class_api/canister_methods/inspect_message",
-                    "tests/property/candid_rpc/class_api/canister_methods/post_upgrade",
-                    "tests/property/candid_rpc/class_api/canister_methods/pre_upgrade",
-                    "tests/property/candid_rpc/class_api/canister_methods/query",
-                    "tests/property/candid_rpc/class_api/canister_methods/update",
-                    "tests/property/candid_rpc/class_api/float32",
-                    "tests/property/candid_rpc/class_api/float64",
-                    "tests/property/candid_rpc/class_api/func",
-                    "tests/property/candid_rpc/class_api/int",
-                    "tests/property/candid_rpc/class_api/int16",
-                    "tests/property/candid_rpc/class_api/int32",
-                    "tests/property/candid_rpc/class_api/int64",
-                    "tests/property/candid_rpc/class_api/int8",
-                    "tests/property/candid_rpc/class_api/nat",
-                    "tests/property/candid_rpc/class_api/nat16",
-                    "tests/property/candid_rpc/class_api/nat32",
-                    "tests/property/candid_rpc/class_api/nat64",
-                    "tests/property/candid_rpc/class_api/nat8",
-                    "tests/property/candid_rpc/class_api/null",
-                    "tests/property/candid_rpc/class_api/opt",
-                    "tests/property/candid_rpc/class_api/principal",
-                    "tests/property/candid_rpc/class_api/record",
-                    "tests/property/candid_rpc/class_api/recursive",
-                    "tests/property/candid_rpc/class_api/service",
-                    "tests/property/candid_rpc/class_api/text",
-                    "tests/property/candid_rpc/class_api/tuple",
-                    "tests/property/candid_rpc/class_api/variant",
-                    "tests/property/candid_rpc/class_api/vec",
-                    "tests/property/candid_rpc/functional_api/blob",
-                    "tests/property/candid_rpc/functional_api/bool",
-                    "tests/property/candid_rpc/functional_api/canister_methods/http_request",
-                    "tests/property/candid_rpc/functional_api/canister_methods/http_request_update",
-                    "tests/property/candid_rpc/functional_api/canister_methods/init",
-                    "tests/property/candid_rpc/functional_api/canister_methods/inspect_message",
-                    "tests/property/candid_rpc/functional_api/canister_methods/post_upgrade",
-                    "tests/property/candid_rpc/functional_api/canister_methods/pre_upgrade",
-                    "tests/property/candid_rpc/functional_api/canister_methods/query",
-                    "tests/property/candid_rpc/functional_api/canister_methods/update",
-                    "tests/property/candid_rpc/functional_api/float32",
-                    "tests/property/candid_rpc/functional_api/float64",
-                    "tests/property/candid_rpc/functional_api/func",
-                    "tests/property/candid_rpc/functional_api/int",
-                    "tests/property/candid_rpc/functional_api/int16",
-                    "tests/property/candid_rpc/functional_api/int32",
-                    "tests/property/candid_rpc/functional_api/int64",
-                    "tests/property/candid_rpc/functional_api/int8",
-                    "tests/property/candid_rpc/functional_api/nat",
-                    "tests/property/candid_rpc/functional_api/nat16",
-                    "tests/property/candid_rpc/functional_api/nat32",
-                    "tests/property/candid_rpc/functional_api/nat64",
-                    "tests/property/candid_rpc/functional_api/nat8",
-                    "tests/property/candid_rpc/functional_api/null",
-                    "tests/property/candid_rpc/functional_api/opt",
-                    "tests/property/candid_rpc/functional_api/principal",
-                    "tests/property/candid_rpc/functional_api/record",
-                    "tests/property/candid_rpc/functional_api/recursive",
-                    "tests/property/candid_rpc/functional_api/service",
-                    "tests/property/candid_rpc/functional_api/text",
-                    "tests/property/candid_rpc/functional_api/tuple",
-                    "tests/property/candid_rpc/functional_api/variant",
-                    "tests/property/candid_rpc/functional_api/vec",
-                    "tests/end_to_end/candid_rpc/class_syntax/async_await",
-                    "tests/end_to_end/candid_rpc/class_syntax/audio_recorder",
-                    "tests/end_to_end/candid_rpc/class_syntax/bitcoin",
-                    "tests/end_to_end/candid_rpc/class_syntax/blob_array",
-                    "tests/end_to_end/candid_rpc/class_syntax/bytes",
-                    "tests/end_to_end/candid_rpc/class_syntax/call_raw",
-                    "tests/end_to_end/candid_rpc/class_syntax/candid_encoding",
-                    "tests/end_to_end/candid_rpc/class_syntax/candid_keywords",
-                    "tests/end_to_end/candid_rpc/class_syntax/canister",
-                    "tests/end_to_end/candid_rpc/class_syntax/complex_init",
-                    "tests/end_to_end/candid_rpc/class_syntax/complex_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/composite_queries",
-                    "tests/end_to_end/candid_rpc/class_syntax/counter",
-                    "tests/end_to_end/candid_rpc/class_syntax/cross_canister_calls",
-                    "tests/end_to_end/candid_rpc/class_syntax/cycles",
-                    "tests/end_to_end/candid_rpc/class_syntax/date",
-                    "tests/end_to_end/candid_rpc/class_syntax/ethereum_json_rpc",
-                    "tests/end_to_end/candid_rpc/class_syntax/func_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/heartbeat",
-                    "tests/end_to_end/candid_rpc/class_syntax/ic_api",
-                    "tests/end_to_end/candid_rpc/class_syntax/icrc",
-                    "tests/end_to_end/candid_rpc/class_syntax/imports",
-                    "tests/end_to_end/candid_rpc/class_syntax/init",
-                    "tests/end_to_end/candid_rpc/class_syntax/inspect_message",
-                    "tests/end_to_end/candid_rpc/class_syntax/key_value_store",
-                    "tests/end_to_end/candid_rpc/class_syntax/ledger_canister",
-                    "tests/end_to_end/candid_rpc/class_syntax/list_of_lists",
-                    "tests/end_to_end/candid_rpc/class_syntax/management_canister",
-                    "tests/end_to_end/candid_rpc/class_syntax/manual_reply",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/calc",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/counter",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/echo",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/factorial",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/hello",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/hello-world",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/http_counter",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/minimal-counter-dapp",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/persistent-storage",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/phone-book",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/quicksort",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/simple-to-do",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/superheroes",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/threshold_ecdsa",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/whoami",
-                    "tests/end_to_end/candid_rpc/class_syntax/new_candid_rpc",
-                    "tests/end_to_end/candid_rpc/class_syntax/notify_raw",
-                    "tests/end_to_end/candid_rpc/class_syntax/null_example",
-                    "tests/end_to_end/candid_rpc/class_syntax/optional_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/outgoing_http_requests",
-                    "tests/end_to_end/candid_rpc/class_syntax/pre_and_post_upgrade",
-                    "tests/end_to_end/candid_rpc/class_syntax/primitive_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/principal",
-                    "tests/end_to_end/candid_rpc/class_syntax/query",
-                    "tests/end_to_end/candid_rpc/class_syntax/randomness",
-                    "tests/end_to_end/candid_rpc/class_syntax/recursion",
-                    "tests/end_to_end/candid_rpc/class_syntax/rejections",
-                    "tests/end_to_end/candid_rpc/class_syntax/simple_erc20",
-                    "tests/end_to_end/candid_rpc/class_syntax/simple_user_accounts",
-                    "tests/end_to_end/candid_rpc/class_syntax/stable_b_tree_map_instruction_threshold",
-                    "tests/end_to_end/candid_rpc/class_syntax/stable_structures",
-                    "tests/end_to_end/candid_rpc/class_syntax/timers",
-                    "tests/end_to_end/candid_rpc/class_syntax/tuple_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/update",
-                    "tests/end_to_end/candid_rpc/class_syntax/vanilla_js",
-                    "tests/end_to_end/candid_rpc/functional_syntax/async_await",
-                    "tests/end_to_end/candid_rpc/functional_syntax/audio_recorder",
-                    "tests/end_to_end/candid_rpc/functional_syntax/bitcoin",
-                    "tests/end_to_end/candid_rpc/functional_syntax/blob_array",
-                    "tests/end_to_end/candid_rpc/functional_syntax/bytes",
-                    "tests/end_to_end/candid_rpc/functional_syntax/call_raw",
-                    "tests/end_to_end/candid_rpc/functional_syntax/candid_encoding",
-                    "tests/end_to_end/candid_rpc/functional_syntax/candid_keywords",
-                    "tests/end_to_end/candid_rpc/functional_syntax/canister",
-                    "tests/end_to_end/candid_rpc/functional_syntax/ckbtc",
-                    "tests/end_to_end/candid_rpc/functional_syntax/complex_init",
-                    "tests/end_to_end/candid_rpc/functional_syntax/complex_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/composite_queries",
-                    "tests/end_to_end/candid_rpc/functional_syntax/counter",
-                    "tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls",
-                    "tests/end_to_end/candid_rpc/functional_syntax/cycles",
-                    "tests/end_to_end/candid_rpc/functional_syntax/date",
-                    "tests/end_to_end/candid_rpc/functional_syntax/ethereum_json_rpc",
-                    "tests/end_to_end/candid_rpc/functional_syntax/func_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/heartbeat",
-                    "tests/end_to_end/candid_rpc/functional_syntax/ic_api",
-                    "tests/end_to_end/candid_rpc/functional_syntax/icrc",
-                    "tests/end_to_end/candid_rpc/functional_syntax/imports",
-                    "tests/end_to_end/candid_rpc/functional_syntax/init",
-                    "tests/end_to_end/candid_rpc/functional_syntax/inspect_message",
-                    "tests/end_to_end/candid_rpc/functional_syntax/key_value_store",
-                    "tests/end_to_end/candid_rpc/functional_syntax/ledger_canister",
-                    "tests/end_to_end/candid_rpc/functional_syntax/list_of_lists",
-                    "tests/end_to_end/candid_rpc/functional_syntax/management_canister",
-                    "tests/end_to_end/candid_rpc/functional_syntax/manual_reply",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/calc",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/counter",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/echo",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/factorial",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/hello",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/hello-world",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/http_counter",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/minimal-counter-dapp",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/persistent-storage",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/phone-book",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/quicksort",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/simple-to-do",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/superheroes",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/threshold_ecdsa",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/whoami",
-                    "tests/end_to_end/candid_rpc/functional_syntax/notify_raw",
-                    "tests/end_to_end/candid_rpc/functional_syntax/null_example",
-                    "tests/end_to_end/candid_rpc/functional_syntax/optional_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/outgoing_http_requests",
-                    "tests/end_to_end/candid_rpc/functional_syntax/pre_and_post_upgrade",
-                    "tests/end_to_end/candid_rpc/functional_syntax/primitive_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/principal",
-                    "tests/end_to_end/candid_rpc/functional_syntax/query",
-                    "tests/end_to_end/candid_rpc/functional_syntax/randomness",
-                    "tests/end_to_end/candid_rpc/functional_syntax/recursion",
-                    "tests/end_to_end/candid_rpc/functional_syntax/rejections",
-                    "tests/end_to_end/candid_rpc/functional_syntax/robust_imports",
-                    "tests/end_to_end/candid_rpc/functional_syntax/simple_erc20",
-                    "tests/end_to_end/candid_rpc/functional_syntax/simple_user_accounts",
-                    "tests/end_to_end/candid_rpc/functional_syntax/stable_b_tree_map_instruction_threshold",
-                    "tests/end_to_end/candid_rpc/functional_syntax/stable_structures",
-                    "tests/end_to_end/candid_rpc/functional_syntax/timers",
-                    "tests/end_to_end/candid_rpc/functional_syntax/tuple_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/update",
-                    "tests/end_to_end/candid_rpc/functional_syntax/vanilla_js",
-                    "tests/end_to_end/http_server/apollo_server",
-                    "tests/end_to_end/http_server/audio_and_video",
-                    "tests/end_to_end/http_server/autoreload",
-                    "tests/end_to_end/http_server/bitcoinjs_lib",
-                    "tests/end_to_end/http_server/bitcore_lib",
-                    "tests/end_to_end/http_server/ethers",
-                    "tests/end_to_end/http_server/express",
-                    "tests/end_to_end/http_server/fetch_ic",
-                    "tests/end_to_end/http_server/file_protocol",
-                    "tests/end_to_end/http_server/fs",
-                    "tests/end_to_end/http_server/hybrid_canister",
-                    "tests/end_to_end/http_server/internet_identity",
-                    "tests/end_to_end/http_server/large_files",
-                    "tests/end_to_end/http_server/nest",
-                    "tests/end_to_end/http_server/new",
-                    "tests/end_to_end/http_server/open_value_sharing",
-                    "tests/end_to_end/http_server/sqlite",
-                    "tests/end_to_end/http_server/sqlite_drizzle",
-                    "tests/end_to_end/http_server/sqlite_typeorm",
-                    "tests/end_to_end/http_server/tfjs",
-                    "tests/end_to_end/http_server/web_assembly",
-                    "tests/property/ic_api/caller",
-                    "tests/property/ic_api/chunk",
-                    "tests/property/ic_api/id",
-                    "tests/property/ic_api/instruction_counter",
-                    "tests/property/ic_api/is_controller",
-                    "tests/property/ic_api/performance_counter",
-                    "tests/property/ic_api/time",
-                    "tests/property/ic_api/trap"
+                    "examples/hello_world2"
                   ]
                   END
                   )
@@ -305,6 +130,12 @@ jobs:
                   EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
                   EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
                   echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
+                  echo "Here it is the same"
+                  echo $EXAMPLE_DIRECTORIES
+                  echo "Here is the example dirs differently too"
+                  echo "${{ steps.example_directories.outputs.example_directories }}"
+            - name: Print the captured output
+              run: echo "${{ steps.example_directories.outputs.example_directories }}"
             - id: should_run_tests
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
@@ -317,7 +148,7 @@ jobs:
                     echo "::set-output name=should_run_tests::true"
                   fi
     basic-integration-tests:
-        name: $(basename ${{matrix.example_directories}}) | ${{matrix.azle_source}} | ${{matrix.example_directories}}
+        name: ${{matrix.example_directories}} from ${{matrix.azle_source}}
         needs: release-candidate-deploy
         runs-on: ${{ matrix.os }}
         env:

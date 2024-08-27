@@ -71,10 +71,16 @@ generate_json() {
     echo "{"
     echo "  \"path\": \"$dir\","
     echo "  \"name\": \"$name\","
-    echo "  \"type\": \"$type\","
-    [[ -n "$syntax" ]] && echo "  \"syntax\": \"$syntax\","
-    [[ -n "$api" ]] && echo "  \"api\": \"$api\","
-    echo "},"
+    echo "  \"type\": \"$type\""
+    [[ -n "$syntax" ]] && echo "  ,\"syntax\": \"$syntax\""
+    [[ -n "$api" ]] && echo "  ,\"api\": \"$api\""
+    echo "}"
+}
+
+generate_json_new() {
+    local dir=$1
+    local name=$(basename "$dir")
+    echo "{path: \"$dir\", name: \"$name\""}
 }
 
 # Discover directories in examples and tests, excluding specified directories
@@ -82,11 +88,34 @@ all_directories=$(discover_directories "$EXAMPLES_DIR")
 all_directories+=$'\n'
 all_directories+=$(discover_directories "$TESTS_DIR")
 
+# EXAMPLE_DIRECTORIES=$(cat << END
+#     "HERE/hello_world",
+#     "HERE/hello_world2",
+#     "HERE/hello_world3"
+# END
+# )
+
+# Initialize an empty variable to store the JSON result
+json_result="["
+
 # Sort, filter, and generate JSON objects
-echo "["
-echo "$all_directories" | sort | while read -r dir; do
+while read -r dir; do
     if ! is_excluded "$dir"; then
-        generate_json "$dir"
+        json_result+=$(generate_json "$dir")
+        json_result+=","
     fi
-done | sed '$ s/,$//'  # Remove the last comma
-echo "]"
+done <<< "$(echo "$all_directories" | sort)"  # Feed sorted directories into the loop
+
+# Remove the last comma and close the JSON array
+json_result=$(echo "$json_result" | sed '$ s/,$//')
+# json_result=$(echo "$json_result" | sed ':a;N;$!ba;s/\n//g') # Remove new lines
+json_result+="]"
+
+# Store the result in a variable (you can use it as needed)
+result="$json_result"
+result="${result//'%'/'%25'}"
+result="${result//$'\n'/'%0A'}"
+result="${result//$'\r'/'%0D'}"
+
+# Print the result if needed
+echo "$result" | base64
