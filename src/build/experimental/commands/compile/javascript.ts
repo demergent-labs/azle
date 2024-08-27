@@ -1,4 +1,5 @@
 import { BuildOptions } from 'esbuild';
+import esbuildPluginTsc from 'esbuild-plugin-tsc';
 import { join } from 'path';
 
 import {
@@ -136,11 +137,7 @@ export function getBuildOptions(
         'custom_js_modules'
     );
 
-    // TODO we need to remove the plugins here
-    // TODO we do not want anything stopping us
-    // TODO should I just make an empty plugin array below? Probably less confusing
-    const { plugins: _plugins, ...stableBuildOptions } =
-        getStableBuildOptions(ts);
+    const stableBuildOptions = getStableBuildOptions(ts);
 
     return {
         ...stableBuildOptions,
@@ -181,6 +178,7 @@ export function getBuildOptions(
             https: join(customJsModulesPath, 'https.ts'),
             ...esmAliases
         },
-        external: [...externalImplemented, ...externalNotImplemented]
+        external: [...externalImplemented, ...externalNotImplemented],
+        plugins: [esbuildPluginTsc()]
     };
 }
