@@ -25,7 +25,6 @@
         "wallet": {
             "type": "azle",
             "main": "src/wallet.ts",
-            "candid_gen": "automatic",
             "specified_id": "bw4dl-smaaa-aaaaa-qaacq-cai",
             "declarations": {
                 "output": "test/dfx_generated/wallet",

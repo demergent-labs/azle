@@ -3,9 +3,9 @@
         "fs": {
             "type": "azle",
             "main": "src/index.ts",
-            "assets": [["src/image.jpg", "image.jpg"]],
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "assets": [["src/image.jpg", "image.jpg"]]
             }
         }
     }

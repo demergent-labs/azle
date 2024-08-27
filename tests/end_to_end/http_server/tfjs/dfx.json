@@ -3,9 +3,9 @@
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "assets": [["src/spam", "spam"]],
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "assets": [["src/spam", "spam"]]
             }
         }
     }

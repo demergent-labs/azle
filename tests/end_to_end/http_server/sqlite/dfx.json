@@ -3,7 +3,6 @@
         "sqlite": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid_gen": "automatic",
             "custom": {
                 "experimental": true
             }
