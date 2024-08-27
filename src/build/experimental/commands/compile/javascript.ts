@@ -143,6 +143,8 @@ export function getBuildOptions(
         'custom_js_modules'
     );
 
+    // TODO we need to remove the plugins here
+    // TODO we do not want anything stopping us
     const stableBuildOptions = getStableBuildOptions(ts);
 
     return {

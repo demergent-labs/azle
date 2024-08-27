@@ -60,3 +60,7 @@ export type MethodMeta = {
     heartbeat?: Method;
     inspect_message?: Method;
 };
+
+export type WasmData = {
+    env_vars: EnvVars;
+};
