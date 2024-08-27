@@ -4,11 +4,11 @@ import {
     createHiddenAzleDirectories,
     writeGeneratedFiles
 } from '../../../stable/commands/compile';
-import { getWasmBinary } from '../../../stable/commands/compile/wasm_binary';
 import { CanisterConfig } from '../../../stable/utils/types';
 import { getCandidAndMethodMeta } from './candid_and_method_meta';
 import { getContext } from './get_context';
 import { compile as compileJavaScript } from './javascript';
+import { getWasmBinary } from './wasm_binary';
 
 export async function runCommand(
     canisterName: string,
@@ -18,13 +18,13 @@ export async function runCommand(
     const {
         canisterPath,
         candidPath,
-        envVars,
         esmAliases,
         esmExternals,
         main,
         wasmBinaryPath,
+        wasmData,
         wasmedgeQuickJsPath
-    } = getContext(canisterName, canisterConfig);
+    } = await getContext(canisterName, canisterConfig);
 
     await createHiddenAzleDirectories(canisterPath);
 
@@ -42,14 +42,14 @@ export async function runCommand(
         candidPath,
         javaScript,
         ioType,
-        envVars
+        wasmData
     );
 
     const wasmBinary = await getWasmBinary(
         canisterName,
         ioType,
         javaScript,
-        envVars,
+        wasmData,
         canisterPath,
         methodMeta
     );

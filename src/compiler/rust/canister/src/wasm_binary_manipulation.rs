@@ -1,5 +1,6 @@
-#[allow(unused)]
+#[cfg(feature = "experimental")]
 use open_value_sharing::Consumer;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]

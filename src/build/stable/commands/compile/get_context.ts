@@ -22,16 +22,19 @@ export function getContext(
         throw new Error(`Azle: CANISTER_CANDID_PATH is not defined`);
     }
 
-    const envVars = getEnvVars(canisterConfig);
-
     const wasmBinaryPath = join(canisterPath, `${canisterName}.wasm`);
 
+    const envVars = getEnvVars(canisterConfig);
+    const wasmData = {
+        env_vars: envVars
+    };
+
     return {
-        main,
         canisterPath,
         candidPath,
-        envVars,
-        wasmBinaryPath
+        main,
+        wasmBinaryPath,
+        wasmData
     };
 }
 

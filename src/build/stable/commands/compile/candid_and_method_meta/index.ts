@@ -1,7 +1,7 @@
 import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 
-import { CandidAndMethodMeta, CandidGen, EnvVars } from '../../../utils/types';
+import { CandidAndMethodMeta, CandidGen, WasmData } from '../../../utils/types';
 import { getWasmBinary } from '../wasm_binary';
 import { execute } from './execute';
 
@@ -12,7 +12,7 @@ export async function getCandidAndMethodMeta(
     candidPath: string,
     js: string,
     ioType: IOType,
-    envVars: EnvVars
+    wasmData: WasmData
 ): Promise<CandidAndMethodMeta> {
     if (
         candidGen === undefined ||
@@ -25,7 +25,7 @@ export async function getCandidAndMethodMeta(
             canisterName,
             ioType,
             js,
-            envVars,
+            wasmData,
             canisterPath
         );
     }
@@ -37,20 +37,20 @@ export async function getCandidAndMethodMeta(
     throw new Error(`dfx.json: "candid_gen": "${candidGen}" is not supported`);
 }
 
-export async function handleAutomaticAndCustom(
+async function handleAutomaticAndCustom(
     candidGen: CandidGen | undefined,
     candidPath: string,
     canisterName: string,
     ioType: IOType,
     js: string,
-    envVars: EnvVars,
+    wasmData: WasmData,
     canisterPath: string
 ): Promise<CandidAndMethodMeta> {
     const wasmBinary = await getWasmBinary(
         canisterName,
         ioType,
         js,
-        envVars,
+        wasmData,
         canisterPath
     );
 

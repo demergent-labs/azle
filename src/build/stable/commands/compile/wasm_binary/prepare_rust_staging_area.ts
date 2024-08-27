@@ -27,4 +27,13 @@ export async function prepareRustStagingArea(
         `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister`,
         `${canisterPath}/canister`
     );
+
+    if (!existsSync(`${canisterPath}/open_value_sharing`)) {
+        await mkdir(`${canisterPath}/open_value_sharing`);
+    }
+
+    await copy(
+        `${AZLE_PACKAGE_PATH}/src/compiler/rust/open_value_sharing`,
+        `${canisterPath}/open_value_sharing`
+    );
 }

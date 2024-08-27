@@ -7,7 +7,7 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [features]
-experimental = []
+experimental = ["open_value_sharing", "wasmi"]
 
 [dependencies]
 anyhow = "1.0.75"
@@ -17,14 +17,18 @@ ic-cdk-timers = "0.6.0"
 candid = "0.10.2"
 candid_parser = "0.1.2"
 ic-stable-structures = "0.6.5"
-open_value_sharing = { path = "../open_value_sharing" }
 slotmap = "=1.0.6"
-wasmi = "0.31.2"
 sha2 = "0.10.8"
 serde = "1.0.202"
 serde_json = "1.0.107"
-
 ic-wasi-polyfill = "0.5.0"
-
 wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "573c6c07316de64e4bb9a9561b079f265fd9bcc4" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }
+
+[dependencies.open_value_sharing]
+optional = true
+path = "../open_value_sharing"
+
+[dependencies.wasmi]
+optional = true
+version = "0.31.2"

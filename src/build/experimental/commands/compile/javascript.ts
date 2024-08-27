@@ -3,7 +3,8 @@ import { join } from 'path';
 
 import {
     bundle,
-    getBuildOptions as getStableBuildOptions
+    getBuildOptions as getStableBuildOptions,
+    handleClassApiCanister
 } from '../../../stable/commands/compile/javascript';
 import { AZLE_PACKAGE_PATH } from '../../../stable/utils/global_paths';
 
@@ -25,6 +26,10 @@ export async function compile(
     return bundled;
 }
 
+// TODO clean this up beautifully
+// TODO make the CanisterMethods thing pristine
+// TODO it's a bit confusing right now
+// TODO do not repeat from stable
 export function getPrelude(main: string): string {
     return /*TS*/ `
         import 'azle/src/lib/stable/globals';
@@ -39,30 +44,11 @@ export function getPrelude(main: string): string {
 
         import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
         export { Principal } from '@dfinity/principal';
-        export * from './${main}';
-        import * as CanisterMethods from './${main}';
+        export * from './${main}'; // TODO can we remove this?
+        import * as Canister from './${main}';
 
-        if (isClassSyntaxExport(CanisterMethods)) {
-            if (globalThis._azleWasmtimeCandidEnvironment === false) {
-                const canister = new CanisterMethods.default();
-                globalThis._azleCanisterClassInstance = canister;
-            }
-
-            const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
-            const candid = canisterIdlType.accept(new DidVisitor(), {
-                ...getDefaultVisitorData(),
-                isFirstService: true,
-                systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
-            });
-
-            globalThis.candidInfoFunction = () => {
-                return JSON.stringify({
-                    candid: toDidString(candid),
-                    canisterMethods: globalThis._azleCanisterMethods
-                });
-            };
-
-            globalThis.exports.canisterMethods = globalThis._azleCanisterMethods;
+        if (isClassSyntaxExport(Canister)) {
+            ${handleClassApiCanister()}
         }
         else {
             // TODO This setTimeout is here to allow asynchronous operations during canister initialization
@@ -70,35 +56,30 @@ export function getPrelude(main: string): string {
             // This seems to work no matter how many async tasks are awaited, but I am still unsure about how it will
             // behave in all async situations
             setTimeout(() => {
-                const canisterMethods = CanisterMethods.default !== undefined ? CanisterMethods.default() : Server(() => globalThis._azleNodeServer)();
+                const canister = Canister.default !== undefined ? Canister.default() : Server(() => globalThis._azleNodeServer)();
 
-                globalThis.candidInfoFunction = () => {
-                    const candidInfo = canisterMethods.getIdlType([]).accept(new DidVisitor(), {
-                        ...getDefaultVisitorData(),
-                        isFirstService: true,
-                        systemFuncs: canisterMethods.getSystemFunctionIdlTypes()
-                    });
+                const candid = canister.getIdlType([]).accept(new DidVisitor(), {
+                    ...getDefaultVisitorData(),
+                    isFirstService: true,
+                    systemFuncs: canister.getSystemFunctionIdlTypes()
+                });
 
+                globalThis._azleCallbacks = canister.callbacks;
+
+                globalThis._azleGetCandidAndMethodMeta = () => {
                     return JSON.stringify({
-                        candid: toDidString(candidInfo),
-                        canisterMethods: {
-                            // TODO The spread is because canisterMethods is a function with properties
-                            // TODO we should probably just grab the props out that we need
-                            ...canisterMethods
-                        }
+                        candid: toDidString(candid),
+                        methodMeta: canister.methodMeta
                     });
                 };
-
-                // TODO I do not know how to get the module exports yet with wasmedge_quickjs
-                globalThis.exports.canisterMethods = canisterMethods;
             });
         }
 
-        function isClassSyntaxExport(module) {
-            const isNothing = module === undefined || module.default === undefined;
+        function isClassSyntaxExport(canister) {
+            const isNothing = canister === undefined || canister.default === undefined;
             const isFunctionalSyntaxExport =
-                module?.default?.isCanister === true ||
-                module?.default?.isRecursive === true;
+                canister?.default?.isCanister === true ||
+                canister?.default?.isRecursive === true;
             return !isNothing && !isFunctionalSyntaxExport;
         }
     `;
@@ -145,7 +126,8 @@ export function getBuildOptions(
 
     // TODO we need to remove the plugins here
     // TODO we do not want anything stopping us
-    const stableBuildOptions = getStableBuildOptions(ts);
+    const { plugins: _plugins, ...stableBuildOptions } =
+        getStableBuildOptions(ts);
 
     return {
         ...stableBuildOptions,

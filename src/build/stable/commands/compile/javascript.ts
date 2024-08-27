@@ -17,28 +17,34 @@ function getPrelude(main: string): string {
 
             import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
 
-            import CanisterClass from './${main}';
+            import Canister from './${main}';
 
-            // TODO _azleWasmtimeCandidEnvironment we run in a node wasm environment not wasmtime
-            if (globalThis._azleWasmtimeCandidEnvironment === false) {
-                const canisterClassInstance = new CanisterClass();
-                globalThis._azleCanisterClassInstance = canisterClassInstance;
-            }
-
-            const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
-            const candid = canisterIdlType.accept(new DidVisitor(), {
-                ...getDefaultVisitorData(),
-                isFirstService: true,
-                systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
-            });
-
-            globalThis._azleGetCandidAndMethodMeta = () => {
-                return JSON.stringify({
-                    candid: toDidString(candid),
-                    methodMeta: globalThis._azleMethodMeta
-                });
-            };
+            ${handleClassApiCanister()}
         `;
+}
+
+export function handleClassApiCanister(): string {
+    return /*TS*/ `
+        // TODO _azleWasmtimeCandidEnvironment we run in a node wasm environment not wasmtime
+        if (globalThis._azleWasmtimeCandidEnvironment === false) {
+            const canisterClassInstance = new Canister();
+            globalThis._azleCanisterClassInstance = canisterClassInstance;
+        }
+
+        const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
+        const candid = canisterIdlType.accept(new DidVisitor(), {
+            ...getDefaultVisitorData(),
+            isFirstService: true,
+            systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
+        });
+
+        globalThis._azleGetCandidAndMethodMeta = () => {
+            return JSON.stringify({
+                candid: toDidString(candid),
+                methodMeta: globalThis._azleMethodMeta
+            });
+        };
+    `;
 }
 
 export async function bundle(buildOptions: BuildOptions): Promise<string> {

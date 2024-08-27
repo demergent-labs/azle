@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 
 import { STABLE_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
 import { logGlobalDependencies } from '../../../utils/log_global_dependencies';
-import { EnvVars, MethodMeta, WasmData } from '../../../utils/types';
+import { MethodMeta, WasmData } from '../../../utils/types';
 import { compile } from './compile';
 import { manipulateWasmBinary } from './manipulate';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
@@ -12,7 +12,7 @@ export async function getWasmBinary(
     canisterName: string,
     stdio: IOType,
     js: string,
-    envVars: EnvVars,
+    wasmData: WasmData,
     canisterPath: string,
     methodMeta?: MethodMeta
 ): Promise<Uint8Array> {
@@ -27,10 +27,10 @@ export async function getWasmBinary(
         compile(STABLE_STATIC_CANISTER_TEMPLATE_PATH, canisterName, stdio);
     }
 
-    // TODO move WasmData up...I think maybe that should be in the context
-    const wasmData: WasmData = {
-        env_vars: envVars
-    };
-
-    return await manipulateWasmBinary(js, wasmData, methodMeta);
+    return await manipulateWasmBinary<WasmData>(
+        js,
+        STABLE_STATIC_CANISTER_TEMPLATE_PATH,
+        wasmData,
+        methodMeta
+    );
 }

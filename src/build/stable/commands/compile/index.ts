@@ -13,7 +13,7 @@ export async function runCommand(
     canisterConfig: CanisterConfig,
     ioType: IOType
 ): Promise<void> {
-    const { main, canisterPath, candidPath, envVars, wasmBinaryPath } =
+    const { main, canisterPath, candidPath, wasmBinaryPath, wasmData } =
         getContext(canisterName, canisterConfig);
 
     await createHiddenAzleDirectories(canisterPath);
@@ -27,14 +27,14 @@ export async function runCommand(
         candidPath,
         javaScript,
         ioType,
-        envVars
+        wasmData
     );
 
     const wasmBinary = await getWasmBinary(
         canisterName,
         ioType,
         javaScript,
-        envVars,
+        wasmData,
         canisterPath,
         methodMeta
     );

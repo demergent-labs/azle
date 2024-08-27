@@ -1,3 +1,7 @@
+// TODO should we consolidate ConsumerConfig?
+// TODO should we only have stable things in here?
+import { ConsumerConfig } from '../../experimental/commands/compile/open_value_sharing/consumer';
+
 export type CandidAndMethodMeta = {
     candid: string;
     methodMeta: MethodMeta;
@@ -18,15 +22,16 @@ export type CanisterConfig = {
         esm_aliases: Record<string, string>;
         esm_externals: string[];
         experimental?: boolean;
+        openValueSharing?: ConsumerConfig;
     };
 };
 
 export type Context = {
-    main: string;
     canisterPath: string;
     candidPath: string;
-    envVars: EnvVars;
+    main: string;
     wasmBinaryPath: string;
+    wasmData: WasmData;
 };
 
 export type Command =

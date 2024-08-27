@@ -1,16 +1,16 @@
 import binaryen from 'binaryen';
 import { readFile } from 'fs/promises';
 
-import { STABLE_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
-import { MethodMeta, WasmData } from '../../../utils/types';
+import { MethodMeta } from '../../../utils/types';
 
 // TODO can we make the start function just load the passive segment into memory?
-export async function manipulateWasmBinary(
+export async function manipulateWasmBinary<T extends Record<string, unknown>>(
     js: string,
-    wasmData: WasmData,
+    canisterTemplatePath: string,
+    wasmData: T,
     methodMeta?: MethodMeta
 ): Promise<Uint8Array> {
-    const module = await getModule(STABLE_STATIC_CANISTER_TEMPLATE_PATH);
+    const module = await getModule(canisterTemplatePath);
 
     addCanisterMethodProxies(module, methodMeta);
 
