@@ -123,6 +123,9 @@ jobs:
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
                 tests: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' && fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
         steps:
+            - if: ${{env.SHOULD_RUN_TEST}}
+              name: Report full path of test
+              run: echo ${{matrix.tests.path}}
             - if: ${{ env.SHOULD_RUN_TEST }}
               uses: actions/checkout@v4
             - if: ${{ env.SHOULD_RUN_TEST }}
