@@ -123,49 +123,63 @@ jobs:
               with:
                   node-version: 20
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
-              name: Install dfx
+              name: Run Pre-Test Azle Setup
               run: |
+
+                  # Install dfx
                   DFXVM_INIT_YES=true DFX_VERSION=0.21.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && matrix.os == 'macos-latest' }}
+
+                  # MacOS-specific DNS configuration
+                  if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+                      sudo networksetup -setdnsservers Ethernet 9.9.9.9
+                  fi
+
+                  # Install dependencies
+                  npm install
+
+                  # Link azle if the source is repo
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link
+                  fi
+
+                  # Run linting
+                  npm run lint
+
               shell: bash -l {0}
-              # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
+            - if: ${{needs.determine-should-run-tests.outputs.should_run_tests}}
+              name: Run Pre-Test Test Setup
               run: |
-                  sudo networksetup -setdnsservers Ethernet 9.9.9.9
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
-              shell: bash -l {0} # This ensures that the script runs in a login shell, making it easier to work with environment variables
-              run: npm install
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && matrix.azle_source == 'repo' }}
-              shell: bash -l {0}
-              run: npm link
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
-              shell: bash -l {0}
-              run: npm run lint
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
-              shell: bash -l {0}
+
+                  npm install
+
+                  # Link azle in the test directory if the source is repo
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link azle
+                  fi
+
+                  # Install the azle dfx extension
+                  npx azle install-dfx-extension
               working-directory: ${{ matrix.tests.path }}
-              run: npm install
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
-              working-directory: ${{ matrix.tests.path }}
-              run: npm link azle
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
-              working-directory: ${{ matrix.tests.path }}
-              run: npx azle install-dfx-extension
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
-              working-directory: ${{ matrix.tests.path }}
-              run: dfx start --clean --background --host 127.0.0.1:8000
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               name: Run Test
               run: |
-                  if [[ !contains('${{ github.head_ref }}', 'release--') && !('${{ github.ref }}' == 'refs/heads/main' && contains('${{ github.event.head_commit.message }}', 'Merge pull request') && contains('${{ github.event.head_commit.message }}', 'demergent-labs/release--')) ]]; then
-                  export RUNS=5
-                  elif [[ contains('${{ github.head_ref }}', 'release--') && !('${{ github.ref }}' == 'refs/heads/main' && contains('${{ github.event.head_commit.message }}', 'Merge pull request') && contains('${{ github.event.head_commit.message }}', 'demergent-labs/release--')) ]]; then
-                  export RUNS=10
-                  elif [[ '${{ github.ref }}' == 'refs/heads/main' && contains('${{ github.event.head_commit.message }}', 'Merge pull request') && contains('${{ github.event.head_commit.message }}', 'demergent-labs/release--') ]]; then
-                      export RUNS=100
+                  BRANCH_NAME="${{ github.head_ref }}"
+                  MAIN_BRANCH='refs/heads/main'
+                  COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+                  RELEASE_TAG='release--'
+                  RELEASE_PR_MERGE_MSG='Merge pull request'
+                  RELEASE_REPO_MSG='demergent-labs/release--'
+
+                  if [[ $BRANCH_NAME != *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then
+                      RUNS=5
+                  elif [[ $BRANCH_NAME == *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then
+                      RUNS=10
+                  elif [[ ${{ github.ref }} == "$MAIN_BRANCH" && $COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"* ]]; then
+                      RUNS=100
                   else
-                      export RUNS=5
+                      RUNS=5
                   fi
 
                   AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
