@@ -5,9 +5,8 @@
     "scripts": {
         "typecheck": "tsc --noEmit",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --ext .js,.ts --cache --fix; else eslint . --ext .js,.ts --cache; fi",
-        "prepare": "husky install",
-        "test": "test/test.sh",
-        "install": "./install_script.sh"
+        "prepare": "./install_wasmedge_quickjs.sh && husky install",
+        "test": "test/test.sh"
     },
     "type": "module",
     "bin": {

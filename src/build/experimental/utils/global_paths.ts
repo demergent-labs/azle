@@ -7,3 +7,8 @@ export const EXPERIMENTAL_CANISTER_TEMPLATE_PATH = join(
     'canister_templates',
     'experimental.wasm'
 );
+
+export const WASMEDGE_QUICKJS_PATH = join(
+    AZLE_PACKAGE_PATH,
+    'wasmedge_quickjs'
+);

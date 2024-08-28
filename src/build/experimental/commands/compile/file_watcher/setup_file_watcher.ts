@@ -3,12 +3,12 @@ import { join } from 'path';
 
 import { execSyncPretty } from '../../../../stable/utils/exec_sync_pretty';
 import { AZLE_PACKAGE_PATH } from '../../../../stable/utils/global_paths';
+import { WASMEDGE_QUICKJS_PATH } from '../../../utils/global_paths';
 
 export function setupFileWatcher(
     reloadedJsPath: string,
     canisterId: string,
     mainPath: string,
-    wasmedgeQuickJsPath: string,
     esmAliases: Record<string, string>,
     esmExternals: string[],
     canisterName: string,
@@ -45,7 +45,7 @@ export function setupFileWatcher(
             reloadedJsPath,
             canisterId,
             mainPath,
-            wasmedgeQuickJsPath,
+            WASMEDGE_QUICKJS_PATH,
             JSON.stringify(esmAliases),
             JSON.stringify(esmExternals),
             canisterName,
