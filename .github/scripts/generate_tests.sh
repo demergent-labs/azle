@@ -113,9 +113,9 @@ json_result+="]"
 
 # Store the result in a variable (you can use it as needed)
 result="$json_result"
-result="${result//'%'/'%25'}"
-result="${result//$'\n'/'%0A'}"
-result="${result//$'\r'/'%0D'}"
+# result="${result//'%'/'%25'}"
+# result="${result//$'\n'/'%0A'}"
+# result="${result//$'\r'/'%0D'}"
 
 # Print the result if needed
 echo "$result" | base64
