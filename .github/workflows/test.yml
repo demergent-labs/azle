@@ -34,7 +34,6 @@ jobs:
               id: get_all_tests
               run: |
                   all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
-                  echo "${all_tests}"
                   echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
             - uses: actions/checkout@v4
 
