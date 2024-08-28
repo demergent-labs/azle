@@ -87,7 +87,8 @@ jobs:
 
     release-candidate-deploy:
         name: Deploy Release Candidate for Release Branches
-        if: ${{ contains(github.head_ref, 'release--') }}
+        # Only run this job if it's a release branch
+        if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
         needs:
             - generate-tests
             - determine-should-run-tests
@@ -95,7 +96,6 @@ jobs:
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            SHOULD_RUN_TEST: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
         steps:
             - uses: actions/checkout@v4
               with:
@@ -112,16 +112,14 @@ jobs:
                   DFXVM_INIT_YES=true DFX_VERSION=0.21.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
             # TODO we should use some Action-specific bot account
-            - if: contains(github.head_ref, 'release--')
-              name: Configure git for Publishing Release
+            - name: Configure git for Publishing Release
               run: |
                   git config --global user.name 'Jordan Last'
                   git config --global user.email 'jordan.michael.last@gmail.com'
                   git config --global commit.gpgsign true
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-            - if: ${{ !env.SHOULD_RUN_TEST }}
-              name: Publish Release
+            - name: Publish Release
               run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
 
     run-test:
@@ -136,7 +134,6 @@ jobs:
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
             AZLE_TEST_RUN_ON_RELEASE: ${{ contains(github.head_ref, 'release--') }}
-            SHOULD_RUN_TEST: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
@@ -156,15 +153,16 @@ jobs:
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
                 tests: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' && fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
         steps:
-            - if: ${{env.SHOULD_RUN_TEST}}
-              name: Report full path of test
+            - name: Report full path of test
               run: echo ${{matrix.tests.path}}
+
             - uses: actions/checkout@v4
+
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
-            - if: ${{ env.SHOULD_RUN_TEST }}
-              name: Run Pre-Test Azle Setup
+
+            - name: Run Pre-Test Azle Setup
               run: |
 
                   # Install dfx
@@ -176,39 +174,32 @@ jobs:
                       sudo networksetup -setdnsservers Ethernet 9.9.9.9
                   fi
 
-                  # Install dependencies
                   npm install
 
-                  # Link azle if the source is repo
                   if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
                       npm link
                   fi
 
-                  # Run linting
                   npm run lint
-
               shell: bash -l {0}
-            - if: ${{env.SHOULD_RUN_TEST}}
-              name: Run Pre-Test Test Setup
-              run: |
 
+            - name: Run Pre-Test Test Setup
+              run: |
                   npm install
 
-                  # Link azle in the test directory if the source is repo
                   if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
                       npm link azle
                   fi
 
-                  # Install the azle dfx extension
                   npx azle install-dfx-extension
               working-directory: ${{ matrix.tests.path }}
               shell: bash -l {0}
-            - if: ${{ env.SHOULD_RUN_TEST }}
-              name: Start dfx
+
+            - name: Start dfx
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
-            - if: ${{ env.SHOULD_RUN_TEST }}
-              name: Run Test
+
+            - name: Run Test
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
                   MAIN_BRANCH='refs/heads/main'
