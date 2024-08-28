@@ -28,51 +28,15 @@ jobs:
             - uses: actions/checkout@v4
             - id: get_all_tests
               name: generateTests
-              run: |
-                  ALL_TESTS=$(./scripts/test.sh | base64 -d)
-                  echo "all_tests=$ALL_TESTS" >> $GITHUB_OUTPUT
-            - name: Print the captured output
-              run: |
-                  echo "${{ steps.get_all_tests.outputs.all_tests }}" | tail
-    debug-generate-tests:
-        name: ${{matrix.tests.name}}
+              run: echo "::set-output name=all_tests::$(./scripts/test.sh | base64 -d)"
+    test-path-debugging:
+        name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}}
+        runs-on: ubuntu-latest
         needs: generate-tests
-        runs-on: ubuntu-latests
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
                 tests: ${{ fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
-        steps:
-            - name: Echo test
-              id: echo-test
-              run: echo "${{ matrix.tests }}"
-            - name: Echo test path
-              id: echo-test-path
-              run: echo "${{ matrix.tests.path }}"
-            - name: Echo test name
-              id: echo-test-name
-              run: echo "${{ matrix.tests.name }}"
-    test-path-generate:
-        runs-on: ubuntu-latest
-        outputs:
-            all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
-        steps:
-            - uses: actions/checkout@v4
-            - id: get_all_tests
-              name: generateTests
-              run: |
-                  ALL_TESTS=$(./scripts/test.sh | base64 -d)
-                  echo "::set-output name=all_tests::$ALL_TESTS"
-            - name: Print the captured output
-              run: echo "${{ steps.get_all_tests.outputs.all_tests }}"
-    test-path-debugging:
-        name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}}
-        runs-on: ubuntu-latest
-        needs: test-path-generate
-        strategy:
-            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
-            matrix:
-                tests: ${{ fromJSON(needs.test-path-generate.outputs.all_tests) || fromJSON('["dummy"]') }}
         steps:
             - name: Echo test
               id: echo-test
@@ -148,8 +112,10 @@ jobs:
                     echo "::set-output name=should_run_tests::true"
                   fi
     basic-integration-tests:
-        name: ${{matrix.example_directories}} from ${{matrix.azle_source}}
-        needs: release-candidate-deploy
+        name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}} / ${{matrix.azle_source}}
+        needs:
+            - release-candidate-deploy
+            - generate-tests
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
@@ -173,17 +139,8 @@ jobs:
                     - include_npm: true
                       azle_source: repo
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
-                example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
+                tests: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
         steps:
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Echo test name
-              id: echo-test-name
-              run: echo "${{ matrix.example_directories }}"
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Set test name
-              id: set-test-name
-              run: |
-                  echo "TEST_NAME=$(basename ${{ matrix.example_directories }})" >> $GITHUB_ENV
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/checkout@v4
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
@@ -211,29 +168,29 @@ jobs:
               run: npm run lint
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
+              working-directory: ${{ matrix.tests.path }}
               run: npm install
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
+              working-directory: ${{ matrix.tests.path }}
               run: npm link azle
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              working-directory: ${{ matrix.example_directories }}
+              working-directory: ${{ matrix.tests.path }}
               run: npx azle install-dfx-extension
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              working-directory: ${{ matrix.example_directories }}
+              working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
+              working-directory: ${{ matrix.tests.path }}
               run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true npm test
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
+              working-directory: ${{ matrix.tests.path }}
               run: AZLE_PROPTEST_NUM_RUNS=10 AZLE_PROPTEST_VERBOSE=true npm test
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
+              working-directory: ${{ matrix.tests.path }}
               run: AZLE_PROPTEST_NUM_RUNS=100 AZLE_PROPTEST_VERBOSE=true npm test
 
     check-basic-integration-tests-success:
