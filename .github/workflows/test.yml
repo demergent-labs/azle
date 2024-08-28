@@ -30,9 +30,13 @@ jobs:
             all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
         steps:
             - uses: actions/checkout@v4
-            - id: get_all_tests
-              name: Generate Tests
-              run: echo "all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)" >> "$GITHUB_OUTPUT"
+            - name: Generate Tests
+              id: get_all_tests
+              run: |
+                  all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
+                  echo "${all_tests}"
+                  echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
+            - uses: actions/checkout@v4
 
     determine-should-run-tests:
         name: Determine If Tests Should Run
