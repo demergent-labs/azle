@@ -1,8 +1,6 @@
 import { build, BuildOptions } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 
-import { experimentalMessage } from '../../../../lib/experimental/experimental';
-
 export async function compile(main: string): Promise<string> {
     const prelude = getPrelude(main);
     const buildOptions = getBuildOptions(prelude);
@@ -92,4 +90,20 @@ export function getBuildOptions(ts: string): BuildOptions {
             esbuildPluginTsc()
         ]
     };
+}
+
+function experimentalMessage(importName: string): string {
+    return `Azle: experimental mode must be enabled to import from ${importName}. You can enable experimental mode in your dfx.json file like this:
+{
+    "canisters": {
+        "canisterName": {
+            "type": "azle",
+            "main": "index.ts",
+            "custom": {
+                "experimental": true
+            }
+        }
+    }
+}
+`;
 }

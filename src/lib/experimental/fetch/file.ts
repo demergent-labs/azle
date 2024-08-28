@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../experimental';
 
 import { readFile } from 'fs/promises';
 

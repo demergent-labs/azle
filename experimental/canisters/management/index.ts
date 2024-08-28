@@ -1,15 +1,10 @@
-import { experimentalMessage } from '../../../src/lib/experimental/experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../src/lib/experimental/experimental';
 
 // Some JS docs licensed under:
 //
 // - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
 //
 // Some documentation changed from original work.
-
 import { blob } from '../../../src/lib/experimental/candid/types/constructed/blob';
 import { Vec } from '../../../src/lib/experimental/candid/types/constructed/vec';
 import { Void } from '../../../src/lib/experimental/candid/types/primitive/void';

@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../../../experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../experimental';
 
 import { IDL } from '@dfinity/candid';
 import { Principal as DfinityPrincipal } from '@dfinity/principal';

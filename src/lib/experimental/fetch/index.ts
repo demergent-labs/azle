@@ -1,14 +1,9 @@
-import { experimentalMessage } from '../experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../experimental';
 
 // TODO what happens if you have a bunch of fetches in your dependencies, all in a row?
 // TODO how would you set options for each individually?
 // TODO it seems like you might not be able to do that
 // TODO we have got to get rid of the need to set all of these custom things
-
 import { fetchFile } from './file';
 import { fetchHttp } from './http';
 import { fetchIcp } from './icp';

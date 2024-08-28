@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../experimental';
 
 import { blob } from '../candid/types/constructed/blob';
 import { None, Opt, Some } from '../candid/types/constructed/opt';
