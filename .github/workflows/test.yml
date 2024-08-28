@@ -10,10 +10,13 @@
 # Feature branch pull requests (pull requests without release-- in the base branch name) will run all tests against the code found in the repository.
 # Release branch pull requests (pull requests with release-- in the base branch name) will run all tests against the code found in the repository and the code deployed by the GitHub Action to npm.
 # Pushes to main will run all tests against the code in the repository if the latest commit was not a merge of a release branch, and will run tests against the code in the repository and the code deployed by the GitHub Action to npm otherwise.
-# The azle-tests matrix spins up one job per combination of example directory and code source (repo or npm).
-# The check-azle-tests-success job is designed to ensure that all jobs spun up from the matrix in the azle-tests have succeeded
+# The run-test matrix spins up one job per combination of example directory and code source (repo or npm).
+# The check-run-test-success job is designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
 
-name: Azle Tests
+## TODO make variable for isRelease
+## TODO make sure comments are throughout and not all at the top
+
+name: Tests
 on:
     push:
         branches:
@@ -83,7 +86,7 @@ jobs:
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
             - if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
               run: ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
-    azle-tests:
+    run-test:
         name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}} / ${{matrix.azle_source}}
         needs:
             - determine-should-run-tests
@@ -110,7 +113,7 @@ jobs:
                       azle_source: npm
                     - include_npm: true
                       azle_source: repo
-                # If should_run_tests is false, we still want the steps of this job to execute so that check-azle-tests-success will run. We do this by creating an array with one dummy element
+                # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
                 tests: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' && fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
         steps:
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
@@ -130,7 +133,7 @@ jobs:
               run: |
                   sudo networksetup -setdnsservers Ethernet 9.9.9.9
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
-              shell: bash -l {0} # TODO figure out why this is here and comment about it
+              shell: bash -l {0} # This ensures that the script runs in a login shell, making it easier to work with environment variables
               run: npm install
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
@@ -152,28 +155,34 @@ jobs:
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.tests.path }}
-              run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true npm test
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.tests.path }}
-              run: AZLE_PROPTEST_NUM_RUNS=10 AZLE_PROPTEST_VERBOSE=true npm test
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.tests.path }}
-              run: AZLE_PROPTEST_NUM_RUNS=100 AZLE_PROPTEST_VERBOSE=true npm test
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
+              name: Run Test
+              run: |
+                  if [[ !contains('${{ github.head_ref }}', 'release--') && !('${{ github.ref }}' == 'refs/heads/main' && contains('${{ github.event.head_commit.message }}', 'Merge pull request') && contains('${{ github.event.head_commit.message }}', 'demergent-labs/release--')) ]]; then
+                  export RUNS=5
+                  elif [[ contains('${{ github.head_ref }}', 'release--') && !('${{ github.ref }}' == 'refs/heads/main' && contains('${{ github.event.head_commit.message }}', 'Merge pull request') && contains('${{ github.event.head_commit.message }}', 'demergent-labs/release--')) ]]; then
+                  export RUNS=10
+                  elif [[ '${{ github.ref }}' == 'refs/heads/main' && contains('${{ github.event.head_commit.message }}', 'Merge pull request') && contains('${{ github.event.head_commit.message }}', 'demergent-labs/release--') ]]; then
+                      export RUNS=100
+                  else
+                      export RUNS=5
+                  fi
 
-    check-azle-tests-success:
-        needs: azle-tests
+                  AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
+              shell: bash -l {0}
+              working-directory: ${{ matrix.tests.path }}
+
+    check-basic-integration-test-success:
+        name: Check Azle Tests Succeeded
+        needs: run-test
         runs-on: ubuntu-latest
         if: success()
         steps:
             - run: exit 0
 
-    check-azle-tests-failure:
-        needs: azle-tests
+    check-basic-integration-test-failure:
+        name: Check Azle Tests Didn't Fail
+        needs: run-test
         runs-on: ubuntu-latest
         if: failure()
         steps:
