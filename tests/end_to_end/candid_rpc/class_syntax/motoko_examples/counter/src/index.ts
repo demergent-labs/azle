@@ -1,20 +1,20 @@
 import { IDL, query, update } from 'azle';
 
-let counter: bigint = 0n;
-
 export default class {
+    counter: bigint = 0n;
+
     @query([], IDL.Nat)
     get(): bigint {
-        return counter;
+        return this.counter;
     }
 
     @update([IDL.Nat])
     set(n: bigint): void {
-        counter = n;
+        this.counter = n;
     }
 
     @update([])
     inc(): void {
-        counter += 1n;
+        this.counter += 1n;
     }
 }

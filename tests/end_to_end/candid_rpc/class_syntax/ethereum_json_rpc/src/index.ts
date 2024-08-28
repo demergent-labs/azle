@@ -16,17 +16,17 @@ import {
     PRINCIPAL
 } from 'azle/canisters/management';
 
-let stableStorage = StableBTreeMap<string, string>(0);
-
 export default class {
+    stableStorage = StableBTreeMap<string, string>(0);
+
     @init([IDL.Text])
     init(ethereumUrl: string): void {
-        stableStorage.insert('ethereumUrl', ethereumUrl);
+        this.stableStorage.insert('ethereumUrl', ethereumUrl);
     }
 
     @update([IDL.Text], IDL.Text)
     async ethGetBalance(ethereumAddress: string): Promise<string> {
-        const url = stableStorage.get('ethereumUrl');
+        const url = this.stableStorage.get('ethereumUrl');
 
         if (url === null) {
             throw new Error('ethereumUrl is not defined');
@@ -37,7 +37,7 @@ export default class {
 
     @update([IDL.Nat32], IDL.Text)
     async ethGetBlockByNumber(number: number): Promise<string> {
-        const urlOpt = stableStorage.get('ethereumUrl');
+        const urlOpt = this.stableStorage.get('ethereumUrl');
 
         if (urlOpt === null) {
             throw new Error('ethereumUrl is not defined');
