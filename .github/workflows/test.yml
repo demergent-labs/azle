@@ -66,15 +66,24 @@ jobs:
               run: |
                   echo "Hello from crazy check"
                   if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
-                      echo "I'm not going to see this since I'm not doing a release"
+                      echo "1 I'm not going to see this since I'm not doing a release"
                   else
-                      echo "I'm going to see this since I'm not doing a release"
+                      echo "2 I'm going to see this since I'm not doing a release"
                   fi
                   if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "false" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
-                      echo "I'm going to see this since I'm not doing a release"
+                      echo "3 I'm going to see this since I'm not doing a release"
                   else
-                      echo "I'm not going to see this since I'm not doing a release"
+                      echo "4 I'm not going to see this since I'm not doing a release"
                   fi
+                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "false" ]]; then
+                      echo "5 I'm going to see this since I'm not doing a release"
+                  else
+                      echo "6 I'm not going to see this since I'm not doing a release"
+                  fi
+                  echo "false"
+                  echo "${{env.IS_RELEASE_CANDIDATE}}"
+                  echo false
+                  echo ${{env.IS_RELEASE_CANDIDATE}}
 
     release-candidate-deploy:
         name: Deploy Release Candidate for Release Branches
