@@ -17,7 +17,7 @@ import { runCommand as runNewCommand } from './stable/commands/new';
 import { runCommand as runVersionCommand } from './stable/commands/version';
 import { getCanisterConfig } from './stable/utils/get_canister_config';
 import { AZLE_PACKAGE_PATH } from './stable/utils/global_paths';
-import { Command } from './stable/utils/types';
+import { CanisterConfig, Command } from './stable/utils/types';
 
 build();
 
@@ -101,19 +101,10 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
     const experimental = canisterConfig?.custom?.experimental === true;
 
     if (experimental === false) {
+        checkForExperimentalDfxJsonFields(canisterConfig);
+
         await runStableCompileCommand(canisterName, canisterConfig, ioType);
     } else {
-        // TODO the developer needs to somehow have their build process fail if they try to
-        // TODO do something that isn't experimental in their code
-        // TODO how will this work with the build process?
-        // TODO hmmmm...at runtime we check for imports
-        // TODO and we will check for globals
-        // TODO and if they try to import from any azle code it will throw
-        // TODO is that good enough?
-        // TODO maybe we need to check for experimental values in the dfx.json custom property
-        // TODO and throw if we see them?
-        // TODO we must throw if they EVER try to do anything experimental and they have not
-        // TODO set the experimental flag
         await runExperimentalCompileCommand(
             canisterName,
             canisterConfig,
@@ -141,5 +132,55 @@ async function handleNewCommand(): Promise<void> {
         const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
 
         await runNewCommand(azleVersion, templatePath);
+    }
+}
+
+function checkForExperimentalDfxJsonFields(
+    canisterConfig: CanisterConfig
+): void {
+    if (canisterConfig.custom?.assets !== undefined) {
+        throw new Error(
+            experimentalMessageDfxJson('the assets field in your dfx.json file')
+        );
+    }
+
+    if (canisterConfig.custom?.build_assets !== undefined) {
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the build_assets field in your dfx.json file'
+            )
+        );
+    }
+
+    if (canisterConfig.custom?.candid_gen === 'http') {
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the "candid_gen": "http" field in your dfx.json file'
+            )
+        );
+    }
+
+    if (canisterConfig.custom?.esm_aliases !== undefined) {
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the esm_aliases field in your dfx.json file'
+            )
+        );
+    }
+
+    if (canisterConfig.custom?.esm_externals !== undefined) {
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the esm_externals field in your dfx.json file'
+            )
+        );
+    }
+
+    if (canisterConfig.custom?.openValueSharing !== undefined) {
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the openValueSharing field in your dfx.json file'
+            )
+        );
     }
 }
