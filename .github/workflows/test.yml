@@ -30,7 +30,8 @@ jobs:
               name: generateTests
               run: |
                   ALL_TESTS=$(./scripts/test.sh | base64 -d)
-                  echo "all_tests=$ALL_TESTS" >> $GITHUB_OUTPUT
+                  echo "::set-output name=all_tests::$ALL_TESTS"
+                  # echo "all_tests=$ALL_TESTS" >> $GITHUB_OUTPUT
             - name: Print the captured output
               run: echo "${{ steps.get_all_tests.outputs.all_tests }}"
     debug-generate-tests:
@@ -61,7 +62,8 @@ jobs:
               name: generateTests
               run: |
                   ALL_TESTS=$(./scripts/test.sh | base64 -d)
-                  echo "all_tests=$ALL_TESTS" >> $GITHUB_OUTPUT
+                  echo "::set-output name=all_tests::$ALL_TESTS"
+                  # echo "all_tests=$ALL_TESTS" >> $GITHUB_OUTPUT
             - name: Print the captured output
               run: echo "${{ steps.get_all_tests.outputs.all_tests }}"
     test-path-debugging:
