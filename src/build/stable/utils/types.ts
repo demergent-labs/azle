@@ -1,5 +1,3 @@
-// TODO should we consolidate ConsumerConfig?
-// TODO should we only have stable things in here?
 import { ConsumerConfig } from '../../experimental/commands/compile/open_value_sharing/consumer';
 
 export type CandidAndMethodMeta = {
@@ -9,10 +7,6 @@ export type CandidAndMethodMeta = {
 
 export type CandidGen = 'automatic' | 'custom' | 'http';
 
-// TODO in stable we should detect if certain properties exist
-// TODO and throw if not in experimental mode
-// TODO should the experimental properties only be defined
-// TODO in an experimental version of CanisterConfig?
 export type CanisterConfig = {
     main?: string;
     custom?: {
