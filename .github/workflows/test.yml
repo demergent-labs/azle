@@ -31,10 +31,11 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - id: get_all_tests
-              name: generateTests
+              name: Generate Tests
               run: echo "::set-output name=all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)"
+
     determine-should-run-tests:
-        name: Determine Should Run Tests
+        name: Determine If Tests Should Run
         runs-on: ubuntu-latest
         outputs:
             should_run_tests: ${{ steps.determine_should_run_tests.outputs.should_run_tests }}
@@ -51,6 +52,7 @@ jobs:
                   else
                       echo "::set-output name=should_run_tests::true"
                   fi
+
     release-candidate-deploy:
         name: Deploy Release candidate for release branches
         needs:
@@ -60,6 +62,7 @@ jobs:
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SHOULD_RUN_TEST: ${{needs.determine-should-run-tests.outputs.should_run_tests}}
         steps:
             - uses: actions/checkout@v4
               with:
@@ -85,11 +88,12 @@ jobs:
                   git config --global commit.gpgsign true
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-            - if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
+            - if: ${{ !env.SHOULD_RUN_TEST }}
               name: Publish Release
               run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
+
     run-test:
-        name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}} / ${{matrix.azle_source}}
+        name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
             - generate-tests
@@ -99,6 +103,7 @@ jobs:
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
             AZLE_TEST_RUN_ON_RELEASE: ${{ contains(github.head_ref, 'release--') }}
+            SHOULD_RUN_TEST: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
@@ -118,13 +123,13 @@ jobs:
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
                 tests: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' && fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
         steps:
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
+            - if: ${{ env.SHOULD_RUN_TEST }}
               uses: actions/checkout@v4
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
+            - if: ${{ env.SHOULD_RUN_TEST }}
               uses: actions/setup-node@v4
               with:
                   node-version: 20
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
+            - if: ${{ env.SHOULD_RUN_TEST }}
               name: Run Pre-Test Azle Setup
               run: |
 
@@ -149,7 +154,7 @@ jobs:
                   npm run lint
 
               shell: bash -l {0}
-            - if: ${{needs.determine-should-run-tests.outputs.should_run_tests}}
+            - if: ${{env.SHOULD_RUN_TEST}}
               name: Run Pre-Test Test Setup
               run: |
 
@@ -164,11 +169,11 @@ jobs:
                   npx azle install-dfx-extension
               working-directory: ${{ matrix.tests.path }}
               shell: bash -l {0}
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
+            - if: ${{ env.SHOULD_RUN_TEST }}
               name: Start dfx
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
-            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
+            - if: ${{ env.SHOULD_RUN_TEST }}
               name: Run Test
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
