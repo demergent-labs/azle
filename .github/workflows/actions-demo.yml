@@ -50,3 +50,12 @@ jobs:
             # }
             - run: echo '${{ toJSON(needs.make-output.outputs) }}'
             - run: echo '${{ toJSON(needs.make-output.outputs.all_tests) }}'
+    use-output-again:
+        runs-on: ubuntu-latest
+        needs: [make-output]
+        strategy:
+            matrix:
+                version: ${{ toJSON(needs.make-output.outputs.all_tests) }}
+        steps:
+            - run: echo '${{ toJSON(needs.make-output.outputs) }}'
+            - run: echo '${{ toJSON(needs.make-output.outputs.all_tests) }}'
