@@ -10,8 +10,8 @@
 # Feature branch pull requests (pull requests without release-- in the base branch name) will run all tests against the code found in the repository.
 # Release branch pull requests (pull requests with release-- in the base branch name) will run all tests against the code found in the repository and the code deployed by the GitHub Action to npm.
 # Pushes to main will run all tests against the code in the repository if the latest commit was not a merge of a release branch, and will run tests against the code in the repository and the code deployed by the GitHub Action to npm otherwise.
-# The basic-integration-tests matrix spins up one job per combination of example directory and code source (repo or npm).
-# The check-basic-integration-tests-success job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
+# The azle-tests matrix spins up one job per combination of example directory and code source (repo or npm).
+# The check-azle-tests-success job is designed to ensure that all jobs spun up from the matrix in the azle-tests have succeeded
 
 name: Azle Tests
 on:
@@ -21,6 +21,7 @@ on:
     pull_request: # Runs on pull requests to any branch
 jobs:
     generate-tests:
+        name: Generate Tests
         runs-on: ubuntu-latest
         outputs:
             all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
@@ -74,18 +75,15 @@ jobs:
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
             # TODO we should use some Action-specific bot account
             - if: contains(github.head_ref, 'release--')
-              run: git config --global user.name 'Jordan Last'
-            - if: contains(github.head_ref, 'release--')
-              run: git config --global user.email 'jordan.michael.last@gmail.com'
-            - if: contains(github.head_ref, 'release--')
-              run: git config --global commit.gpgsign true
-            - if: contains(github.head_ref, 'release--')
-              run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
-            - if: contains(github.head_ref, 'release--')
-              run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+              run: |
+                  git config --global user.name 'Jordan Last'
+                  git config --global user.email 'jordan.michael.last@gmail.com'
+                  git config --global commit.gpgsign true
+                  echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+                  git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
             - if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
               run: ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
-    basic-integration-tests:
+    azle-tests:
         name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}} / ${{matrix.azle_source}}
         needs:
             - determine-should-run-tests
@@ -112,7 +110,7 @@ jobs:
                       azle_source: npm
                     - include_npm: true
                       azle_source: repo
-                # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
+                # If should_run_tests is false, we still want the steps of this job to execute so that check-azle-tests-success will run. We do this by creating an array with one dummy element
                 tests: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' && fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
         steps:
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
@@ -167,15 +165,15 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               run: AZLE_PROPTEST_NUM_RUNS=100 AZLE_PROPTEST_VERBOSE=true npm test
 
-    check-basic-integration-tests-success:
-        needs: basic-integration-tests
+    check-azle-tests-success:
+        needs: azle-tests
         runs-on: ubuntu-latest
         if: success()
         steps:
             - run: exit 0
 
-    check-basic-integration-tests-failure:
-        needs: basic-integration-tests
+    check-azle-tests-failure:
+        needs: azle-tests
         runs-on: ubuntu-latest
         if: failure()
         steps:
