@@ -45,22 +45,22 @@ jobs:
     make-new-output:
         runs-on: ubuntu-latest
         outputs:
-            all_tests: ${{ steps.gen_tests.outputs.all_tests }}
+            all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
         steps:
             - uses: actions/checkout@v4
-            - name: Generate tests
-              id: gen_tests
+            - name: Generate Tests
+              id: get_all_tests
               run: |
                   all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
                   echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
     make-old-output:
         runs-on: ubuntu-latest
         outputs:
-            all_tests: ${{ steps.gen_tests.outputs.all_tests }}
+            all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
         steps:
             - uses: actions/checkout@v4
-            - name: Generate tests
-              id: gen_tests
+            - name: Generate Tests
+              id: get_all_tests
               run: echo "::set-output name=all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)"
     generate-tests:
         name: Generate Tests
@@ -69,8 +69,8 @@ jobs:
             all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
         steps:
             - uses: actions/checkout@v4
-            - id: get_all_tests
-              name: Generate Tests
+            - name: Generate Tests
+              id: get_all_tests
               run: echo "::set-output name=all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)"
     use-new-output:
         runs-on: ubuntu-latest
