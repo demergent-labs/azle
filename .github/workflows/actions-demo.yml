@@ -110,11 +110,12 @@ jobs:
             - name: Report full path of test
               run: echo ${{matrix.tests.path}}
     use-old-output:
-        name: OLD ${{matrix.version.name}}
+        name: OLD ${{matrix.test.name}}
         runs-on: ubuntu-latest
-        needs: [make-old-output]
+        needs:
+            - make-old-output
         strategy:
             matrix:
-                version: ${{ toJSON(needs.make-old-output.outputs.all_tests) }}
+                test: ${{ toJSON(needs.make-old-output.outputs.all_tests) }}
         steps:
-            - run: echo '${{ toJSON(matrix.version) }}'
+            - run: echo '${{ toJSON(matrix.test.path) }}'
