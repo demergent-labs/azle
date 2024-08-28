@@ -22,6 +22,8 @@ on:
         branches:
             - main
     pull_request: # Runs on pull requests to any branch
+env:
+    IS_RELEASE_CANDIDATE: ${{ contains(github.head_ref, 'release--') }}
 jobs:
     generate-tests:
         name: Generate Tests
@@ -54,14 +56,29 @@ jobs:
                       IS_AUTOMATED_RELEASE="true"
                   fi
 
-                  if [[ "$IS_RELEASE_CANDIDATE" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
+                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
                       echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
                   else
                       echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
                   fi
+            - id: make_sure_im_not_crazy
+              name: Crazy Check
+              run: |
+                  echo "Hello from crazy check"
+                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
+                      echo "I'm not going to see this since I'm not doing a release"
+                  else
+                      echo "I'm going to see this since I'm not doing a release"
+                  fi
+                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "false" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
+                      echo "I'm going to see this since I'm not doing a release"
+                  else
+                      echo "I'm not going to see this since I'm not doing a release"
+                  fi
 
     release-candidate-deploy:
-        name: Deploy Release candidate for release branches
+        name: Deploy Release Candidate for Release Branches
+        if: ${{ contains(github.head_ref, 'release--') }}
         needs:
             - generate-tests
             - determine-should-run-tests
@@ -69,11 +86,11 @@ jobs:
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            SHOULD_RUN_TEST: ${{needs.determine-should-run-tests.outputs.should_run_tests}}
+            SHOULD_RUN_TEST: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ contains(github.head_ref, 'release--') && github.event.pull_request.head.ref || github.ref }}
+                  ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
             - uses: actions/setup-node@v4
               with:
@@ -81,8 +98,7 @@ jobs:
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-            - if: contains(github.head_ref, 'release--')
-              name: Install dfx
+            - name: Install dfx
               run: |
                   DFXVM_INIT_YES=true DFX_VERSION=0.21.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
@@ -104,6 +120,7 @@ jobs:
         needs:
             - determine-should-run-tests
             - generate-tests
+        if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
@@ -133,10 +150,8 @@ jobs:
             - if: ${{env.SHOULD_RUN_TEST}}
               name: Report full path of test
               run: echo ${{matrix.tests.path}}
-            - if: ${{ env.SHOULD_RUN_TEST }}
-              uses: actions/checkout@v4
-            - if: ${{ env.SHOULD_RUN_TEST }}
-              uses: actions/setup-node@v4
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
               with:
                   node-version: 20
             - if: ${{ env.SHOULD_RUN_TEST }}
