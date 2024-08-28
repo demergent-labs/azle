@@ -39,10 +39,6 @@ export async function compile(
         );
 }
 
-// TODO clean this up beautifully
-// TODO make the CanisterMethods thing pristine
-// TODO it's a bit confusing right now
-// TODO do not repeat from stable
 export function getPrelude(main: string): string {
     return /*TS*/ `
         import 'azle/src/lib/stable/globals';
@@ -129,7 +125,6 @@ export function getBuildOptions(
         ...externalNotImplementedDev
     ];
 
-    // TODO we need to move custom_js_modules into build/experimental
     const customJsModulesPath = join(
         AZLE_PACKAGE_PATH,
         'src',

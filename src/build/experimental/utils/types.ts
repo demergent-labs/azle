@@ -15,5 +15,5 @@ export type Context = {
 
 export type WasmData = {
     consumer: Consumer;
-    management_did: string;
+    managementDid: string;
 } & StableWasmData;

@@ -26,7 +26,7 @@ export function getContext(
 
     const envVars = getEnvVars(canisterConfig);
     const wasmData = {
-        env_vars: envVars
+        envVars
     };
 
     return {

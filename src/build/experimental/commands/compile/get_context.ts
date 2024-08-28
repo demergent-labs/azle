@@ -34,7 +34,7 @@ export async function getContext(
     const wasmData: WasmData = {
         ...stableContext.wasmData,
         consumer,
-        management_did: managementDid // TODO should we just do the camelCase snake case Rust thing to unify these across the languages?
+        managementDid
     };
 
     const wasmedgeQuickJsName = `wasmedge-quickjs_${version}`;

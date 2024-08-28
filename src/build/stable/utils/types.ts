@@ -68,5 +68,5 @@ export type MethodMeta = {
 };
 
 export type WasmData = {
-    env_vars: EnvVars;
+    envVars: EnvVars;
 };
