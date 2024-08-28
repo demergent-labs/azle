@@ -1,20 +1,7 @@
-# TODO the next great simplification might be deploying multiple examples to one dfx replica instance: https://forum.dfinity.org/t/use-the-same-local-replica-for-multiple-projects/11900
-# TODO this might allow us to avoid spinning up so many jobs in the matrix
-
 # This GitHub Action flow works as follows:
-# The tests are currently simple example-based integration tests.
-# Each directory in the examples directory represents an example project and is intended to have tests that ensure the canisters contained in that example function properly.
+# Each directory in the examples and tests directory represents an example project and is intended to have tests that ensure the canisters contained in that example function properly.
 # These tests are currently written in TypeScript and are intended to be run in a Node.js environment.
 # This GitHub Action takes care of deploying to npm and GitHub.
-# Tests can either run against the current code of Azle found in the repository, or the code deployed by the GitHub Action to npm.
-# Feature branch pull requests (pull requests without release-- in the base branch name) will run all tests against the code found in the repository.
-# Release branch pull requests (pull requests with release-- in the base branch name) will run all tests against the code found in the repository and the code deployed by the GitHub Action to npm.
-# Pushes to main will run all tests against the code in the repository if the latest commit was not a merge of a release branch, and will run tests against the code in the repository and the code deployed by the GitHub Action to npm otherwise.
-# The run-test matrix spins up one job per combination of example directory and code source (repo or npm).
-# The check-run-test-success job is designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
-
-## TODO make variable for isRelease
-## TODO make sure comments are throughout and not all at the top
 
 name: Tests
 on:
@@ -34,6 +21,7 @@ jobs:
             - uses: actions/checkout@v4
             - name: Generate Tests
               id: get_all_tests
+              # Automatically find all azle tests
               run: echo "all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)" >> "$GITHUB_OUTPUT"
 
     determine-should-run-tests:
@@ -44,6 +32,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - id: determine_should_run_tests
+              # Determine if tests should run for this pr. If it's a manually submitted release candidate no tests will run.
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
@@ -61,30 +50,10 @@ jobs:
                   else
                       echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
                   fi
-                  echo "Hello from crazy check"
-                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
-                      echo "1 I'm not going to see this since I'm not doing a release"
-                  else
-                      echo "2 I'm going to see this since I'm not doing a release"
-                  fi
-                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "false" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
-                      echo "3 I'm going to see this since I'm not doing a release"
-                  else
-                      echo "4 I'm not going to see this since I'm not doing a release"
-                  fi
-                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "false" ]]; then
-                      echo "5 I'm going to see this since I'm not doing a release"
-                  else
-                      echo "6 I'm not going to see this since I'm not doing a release"
-                  fi
-                  echo "false"
-                  echo "${{env.IS_RELEASE_CANDIDATE}}"
-                  echo false
-                  echo ${{env.IS_RELEASE_CANDIDATE}}
 
     release-candidate-deploy:
         name: Deploy Release Candidate for Release Branches
-        # Only run this job if it's a release branch
+        # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
         if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
         needs:
             - generate-tests
@@ -120,6 +89,10 @@ jobs:
               run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
 
     run-test:
+        # Tests can either run against the current code of Azle found in the repository, or the code deployed by the GitHub Action to npm.
+        # Feature branch pull requests (pull requests without release-- in the base branch name) will run all tests against the code found in the repository.
+        # Release branch pull requests (pull requests with release-- in the base branch name) will run all tests against the code found in the repository and the code deployed by the GitHub Action to npm.
+        # Pushes to main will run all tests against the code in the repository if the latest commit was not a merge of a release branch, and will run tests against the code in the repository and the code deployed by the GitHub Action to npm otherwise.
         name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
@@ -133,7 +106,7 @@ jobs:
             AZLE_TEST_RUN_ON_RELEASE: ${{ contains(github.head_ref, 'release--') }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
-            matrix:
+            matrix: # spins up one job per combination of test and code source (repo or npm).
                 # os: [macos-latest]
                 os: [ubuntu-latest]
                 include_npm:
@@ -205,12 +178,36 @@ jobs:
                   RELEASE_PR_MERGE_MSG='Merge pull request'
                   RELEASE_REPO_MSG='demergent-labs/release--'
 
+                  IS_FEATURE_PR=true
+                  IS_RELEASE_PR=false
+                  IS_MERGE_TO_MAIN_FROM_RELEASE=false
+
+                  # Check if it's a feature pull request
                   if [[ $BRANCH_NAME != *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then
-                      RUNS=5
-                  elif [[ $BRANCH_NAME == *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then
-                      RUNS=10
-                  elif [[ ${{ github.ref }} == "$MAIN_BRANCH" && $COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"* ]]; then
+                      IS_FEATURE_PR=true
+                  else
+                      IS_FEATURE_PR=false
+                  fi
+
+                  # Check if it's a release candidate pull request
+                  if [[ $BRANCH_NAME == *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then
+                      IS_RELEASE_PR=true
+                  else
+                      IS_RELEASE_PR=false
+                  fi
+
+                  # Check if it's a merge from a release candidate into main
+                  if [[ ${{ github.ref }} == "$MAIN_BRANCH" && $COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"* ]]; then
+                      IS_MERGE_TO_MAIN_FROM_RELEASE=true
+                  else
+                      IS_MERGE_TO_MAIN_FROM_RELEASE=false
+                  fi
+
+                  # Determine the number of runs based on the conditions
+                  if [[ $IS_MERGE_TO_MAIN_FROM_RELEASE == true ]]; then
                       RUNS=100
+                  elif [[ $IS_RELEASE_PR == true ]]; then
+                      RUNS=10
                   else
                       RUNS=5
                   fi
@@ -219,6 +216,7 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}
 
+    # These final jobs are designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
     check-basic-integration-test-success:
         name: Check Azle Tests Succeeded
         needs: run-test
