@@ -29,19 +29,9 @@ jobs:
             - id: get_all_tests
               name: generateTests
               run: echo "::set-output name=all_tests::$(./scripts/test.sh | base64 -d)"
-    test-path-debugging:
-        name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}}
-        runs-on: ubuntu-latest
-        needs: generate-tests
-        strategy:
-            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
-            matrix:
-                tests: ${{ fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
-        steps:
-            - name: Echo test
-              id: echo-test
-              run: echo "${{ matrix.tests.path }}"
     release-candidate-deploy:
+        name: Deploy Release candidate for release branches
+        needs: generate-tests
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
@@ -49,7 +39,6 @@ jobs:
         outputs:
             # These outputs are used to pass information along to the next job
             should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }} # We only want the next job to run the tests once we have finished deploying to npm and GitHub
-            example_directories: ${{ steps.example_directories.outputs.example_directories }}
         steps:
             - uses: actions/checkout@v4
               # if: contains(github.head_ref, 'release--')
@@ -78,28 +67,6 @@ jobs:
               run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
             - if: contains(github.head_ref, 'release--')
               run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-            - id: example_directories
-              # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
-              # TODO we want to be able to easily include and exclude examples though
-              # TODO we have a number of flaky tests and we have moved them to the top of the list here so we can keep a better eye on them until we have resolved their flakyness
-              run: |
-                  EXAMPLE_DIRECTORIES=$(cat << END
-                  [
-                    "examples/hello_world",
-                    "examples/hello_world2"
-                  ]
-                  END
-                  )
-                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
-                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
-                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
-                  echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
-                  echo "Here it is the same"
-                  echo $EXAMPLE_DIRECTORIES
-                  echo "Here is the example dirs differently too"
-                  echo "${{ steps.example_directories.outputs.example_directories }}"
-            - name: Print the captured output
-              run: echo "${{ steps.example_directories.outputs.example_directories }}"
             - id: should_run_tests
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
@@ -107,7 +74,7 @@ jobs:
                   COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
                   if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
                   then
-                    ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }}
+                    ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
                   else
                     echo "::set-output name=should_run_tests::true"
                   fi
