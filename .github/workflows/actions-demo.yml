@@ -22,6 +22,7 @@ jobs:
             output_1: ${{ steps.gen_output.outputs.output_1 }}
             output_2: ${{ steps.gen_output.outputs.output_2 }}
             output_3: ${{ steps.gen_output.outputs.output_3 }}
+            all_tests: ${{ steps.gen_tests.outputs.all_tests }}
         strategy:
             matrix:
                 version: [1, 2, 3]
@@ -31,6 +32,11 @@ jobs:
               run: |
                   version="${{ matrix.version }}"
                   echo "output_${version}=${version}" >> "$GITHUB_OUTPUT"
+            - name: Generate tests
+              id: gen_tests
+              run: |
+                  version="${{ matrix.version }}"
+                  echo "all_tests=${version}" >> "$GITHUB_OUTPUT"
     use-output:
         runs-on: ubuntu-latest
         needs: [make-output]
@@ -42,3 +48,4 @@ jobs:
             #   "output_3": "3"
             # }
             - run: echo '${{ toJSON(needs.make-output.outputs) }}'
+            - run: echo '${{ toJSON(needs.make-output.outputs.all_tests) }}'
