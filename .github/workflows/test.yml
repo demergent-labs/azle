@@ -165,6 +165,7 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               shell: bash -l {0}
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
+              name: Start dfx
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
             - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
