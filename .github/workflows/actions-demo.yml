@@ -62,6 +62,16 @@ jobs:
             - name: Generate tests
               id: gen_tests
               run: echo "::set-output name=all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)"
+    generate-tests:
+        name: Generate Tests
+        runs-on: ubuntu-latest
+        outputs:
+            all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get_all_tests
+              name: Generate Tests
+              run: echo "::set-output name=all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)"
     use-new-output:
         runs-on: ubuntu-latest
         needs: [make-new-output]
@@ -69,8 +79,7 @@ jobs:
             matrix:
                 version: ${{ toJSON(needs.make-new-output.outputs.all_tests) }}
         steps:
-            - run: echo '${{ toJSON(needs.make-new-output.outputs) }}'
-            - run: echo '${{ toJSON(needs.make-new-output.outputs.all_tests) }}'
+            - run: echo '${{ toJSON(matrix.version) }}'
     use-old-output:
         runs-on: ubuntu-latest
         needs: [make-old-output]
@@ -78,4 +87,16 @@ jobs:
             matrix:
                 version: ${{ toJSON(needs.make-old-output.outputs.all_tests) }}
         steps:
-            - run: echo '${{ toJSON(needs.make-old-output.outputs.all_tests) }}'
+            - run: echo '${{ toJSON(matrix.version) }}'
+    run-test:
+        name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}}'
+        needs:
+            - generate-tests
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                tests: ${{ fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
+        steps:
+            - name: Report full path of test
+              run: echo ${{matrix.tests.path}}
