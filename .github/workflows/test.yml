@@ -29,22 +29,38 @@ jobs:
             - id: get_all_tests
               name: generateTests
               run: echo "::set-output name=all_tests::$(./scripts/test.sh | base64 -d)"
+    determine-should-run-tests:
+        name: Determine Should Run Tests
+        runs-on: ubuntu-latest
+        outputs:
+            should_run_tests: ${{ steps.determine_should_run_tests.outputs.should_run_tests }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: determine_should_run_tests
+              run: |
+                  BRANCH_NAME="${{ github.head_ref }}"
+                  RELEASE_VERSION="${BRANCH_NAME:9}"
+                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
+                  if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
+                  then
+                      echo "::set-output name=should_run_tests::false"
+                  else
+                      echo "::set-output name=should_run_tests::true"
+                  fi
     release-candidate-deploy:
         name: Deploy Release candidate for release branches
-        needs: generate-tests
+        needs:
+            - generate-tests
+            - determine-should-run-tests
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        outputs:
-            # These outputs are used to pass information along to the next job
-            should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }} # We only want the next job to run the tests once we have finished deploying to npm and GitHub
         steps:
             - uses: actions/checkout@v4
-              # if: contains(github.head_ref, 'release--')
               with:
-                  ref: ${{ contains(github.head_ref, 'release--') && github.event.pull_request.head.ref || github.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
+                  ref: ${{ contains(github.head_ref, 'release--') && github.event.pull_request.head.ref || github.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
@@ -67,21 +83,12 @@ jobs:
               run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
             - if: contains(github.head_ref, 'release--')
               run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-            - id: should_run_tests
-              run: |
-                  BRANCH_NAME="${{ github.head_ref }}"
-                  RELEASE_VERSION="${BRANCH_NAME:9}"
-                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-                  if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
-                  then
-                    ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
-                  else
-                    echo "::set-output name=should_run_tests::true"
-                  fi
+            - if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
+              run: ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
     basic-integration-tests:
         name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}} / ${{matrix.azle_source}}
         needs:
-            - release-candidate-deploy
+            - determine-should-run-tests
             - generate-tests
         runs-on: ${{ matrix.os }}
         env:
@@ -106,56 +113,56 @@ jobs:
                     - include_npm: true
                       azle_source: repo
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
-                tests: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
+                tests: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' && fromJSON(needs.generate-tests.outputs.all_tests) || fromJSON('["dummy"]') }}
         steps:
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               uses: actions/checkout@v4
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               uses: actions/setup-node@v4
               with:
                   node-version: 20
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               name: Install dfx
               run: |
                   DFXVM_INIT_YES=true DFX_VERSION=0.21.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'macos-latest' }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && matrix.os == 'macos-latest' }}
               shell: bash -l {0}
               # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
               run: |
                   sudo networksetup -setdnsservers Ethernet 9.9.9.9
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
               run: npm install
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               run: npm link
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               shell: bash -l {0}
               run: npm run lint
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}
               run: npm install
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}
               run: npm link azle
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               working-directory: ${{ matrix.tests.path }}
               run: npx azle install-dfx-extension
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}
               run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true npm test
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}
               run: AZLE_PROPTEST_NUM_RUNS=10 AZLE_PROPTEST_VERBOSE=true npm test
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
+            - if: ${{ needs.determine-should-run-tests.outputs.should_run_tests && (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}
               run: AZLE_PROPTEST_NUM_RUNS=100 AZLE_PROPTEST_VERBOSE=true npm test
