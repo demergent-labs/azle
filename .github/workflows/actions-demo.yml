@@ -102,3 +102,27 @@ jobs:
         steps:
             - name: Report full path of test
               run: echo ${{matrix.tests.path}}
+    run-test-new:
+        name: 'NEW ${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}}'
+        needs:
+            - make-new-output
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                tests: ${{ fromJSON(needs.make-new-output.outputs.all_tests) || fromJSON('["dummy"]') }}
+        steps:
+            - name: Report full path of test
+              run: echo ${{matrix.tests.path}}
+    run-test-old:
+        name: 'OLD ${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}}'
+        needs:
+            - make-old-output
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                tests: ${{ fromJSON(needs.make-old-output.outputs.all_tests) || fromJSON('["dummy"]') }}
+        steps:
+            - name: Report full path of test
+              run: echo ${{matrix.tests.path}}
