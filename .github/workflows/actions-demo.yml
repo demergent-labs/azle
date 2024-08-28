@@ -36,7 +36,7 @@ jobs:
             - name: Generate tests
               id: gen_tests
               run: |
-                  version="$(./.github/scripts/generate_tests.sh | base64 -d)"
+                  version=$(./.github/scripts/generate_tests.sh | base64 -d)
                   echo "all_tests=${version}" >> "$GITHUB_OUTPUT"
     use-output:
         runs-on: ubuntu-latest
