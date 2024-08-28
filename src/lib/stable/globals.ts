@@ -116,4 +116,42 @@ if (globalThis._azleInsideCanister === true) {
         warn: log,
         info: log
     };
+
+    (globalThis as any).Buffer = createExperimentalWarningProxy('Buffer');
+}
+
+function createExperimentalWarningProxy(name: string): object {
+    return new Proxy(
+        {},
+        {
+            get(): any {
+                throw new Error(experimentalWarningMessage(name));
+            },
+            apply(): any {
+                throw new Error(experimentalWarningMessage(name));
+            },
+            construct(): any {
+                throw new Error(experimentalWarningMessage(name));
+            },
+            set(): any {
+                throw new Error(experimentalWarningMessage(name));
+            }
+        }
+    );
+}
+
+function experimentalWarningMessage(name: string): string {
+    return `Azle: experimental mode must be enabled to use global ${name}. You can enable experimental mode in your dfx.json file like this:
+{
+    "canisters": {
+        "canisterName": {
+            "type": "azle",
+            "main": "index.ts",
+            "custom": {
+                "experimental": true
+            }
+        }
+    }
+}
+`;
 }
