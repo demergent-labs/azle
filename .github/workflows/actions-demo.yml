@@ -111,12 +111,13 @@ jobs:
               run: echo ${{matrix.tests.path}}
     use-old-output:
         name: DUP ${{matrix.test.name}}
-        runs-on: ubuntu-latest
         needs:
             - make-old-output
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
+                os: [ubuntu-latest]
                 test: ${{ toJSON(needs.make-old-output.outputs.all_tests) }}
         steps:
-            - name: Does this need a name?
+            - name: Report full path of test
               run: echo '${{ toJSON(matrix.test.path) }}'
