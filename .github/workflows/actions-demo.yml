@@ -10,9 +10,11 @@ jobs:
             - uses: actions/checkout@v4
             - name: Generate Tests
               id: get_all_tests
-              run: |
-                  all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
-                  echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
+              run: all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
+            - name: Debug Tests
+              run: echo "${all_tests}"
+            - name: Send to output
+              run: echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
     make-old-output:
         name: Generate Tests Old Way
         runs-on: ubuntu-latest
@@ -22,9 +24,11 @@ jobs:
             - uses: actions/checkout@v4
             - name: Generate Tests
               id: get_all_tests
-              run: |
-                  all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
-                  echo "::set-output name=all_tests::${all_tests}"
+              run: all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
+            - name: Debug Tests
+              run: echo "${all_tests}"
+            - name: Send to output
+              run: echo "::set-output name=all_tests::${all_tests}"
     run-test-new:
         name: 'NEW ${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}}'
         needs:
