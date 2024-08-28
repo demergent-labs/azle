@@ -30,9 +30,9 @@ jobs:
             all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
         steps:
             - uses: actions/checkout@v4
-            - id: get_all_tests
-              name: Generate Tests
-              run: echo "::set-output name=all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)"
+            - name: Generate Tests
+              id: get_all_tests
+              run: echo "all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)" >> "$GITHUB_OUTPUT"
 
     determine-should-run-tests:
         name: Determine If Tests Should Run
@@ -46,11 +46,18 @@ jobs:
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
                   COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-                  if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
-                  then
-                      echo "::set-output name=should_run_tests::false"
+
+                  IS_RELEASE_CANDIDATE="${{ contains(github.head_ref, 'release--') }}"
+
+                  IS_AUTOMATED_RELEASE="false"
+                  if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
+                      IS_AUTOMATED_RELEASE="true"
+                  fi
+
+                  if [[ "$IS_RELEASE_CANDIDATE" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
+                      echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
                   else
-                      echo "::set-output name=should_run_tests::true"
+                      echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
                   fi
 
     release-candidate-deploy:
