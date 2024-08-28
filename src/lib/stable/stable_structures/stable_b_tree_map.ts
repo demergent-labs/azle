@@ -16,7 +16,7 @@ export function StableBTreeMap<Key = any, Value = any>(
 
     if (
         globalThis._azleIc !== undefined &&
-        globalThis._azleWasmtimeCandidEnvironment !== true
+        globalThis._azleNodeWasmEnvironment !== true
     ) {
         globalThis._azleIc.stableBTreeMapInit(memoryId);
     }

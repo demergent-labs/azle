@@ -34,6 +34,8 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleMethodMeta: MethodMeta;
     // eslint-disable-next-line no-var
+    var _azleNodeWasmEnvironment: boolean;
+    // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
     // eslint-disable-next-line no-var
     var _azleRejectIds: { [key: string]: (err: any) => void };
@@ -41,8 +43,6 @@ declare global {
     var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
     // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [key: string]: () => void };
-    // eslint-disable-next-line no-var
-    var _azleWasmtimeCandidEnvironment: boolean;
 }
 
 globalThis._azleInsideCanister =

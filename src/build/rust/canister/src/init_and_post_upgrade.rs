@@ -104,7 +104,7 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         context.get_global().set("process", process.into());
 
         context.get_global().set(
-            "_azleWasmtimeCandidEnvironment",
+            "_azleNodeWasmEnvironment",
             wasmedge_quickjs::JsValue::Bool(false),
         );
 

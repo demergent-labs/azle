@@ -25,8 +25,7 @@ function getPrelude(main: string): string {
 
 export function handleClassApiCanister(): string {
     return /*TS*/ `
-        // TODO _azleWasmtimeCandidEnvironment we run in a node wasm environment not wasmtime
-        if (globalThis._azleWasmtimeCandidEnvironment === false) {
+        if (globalThis._azleNodeWasmEnvironment === false) {
             const canisterClassInstance = new Canister();
             globalThis._azleCanisterClassInstance = canisterClassInstance;
         }

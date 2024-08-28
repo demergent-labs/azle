@@ -26,7 +26,7 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
 
         runtime.run_with_context(|context| {
             context.get_global().set(
-                "_azleWasmtimeCandidEnvironment",
+                "_azleNodeWasmEnvironment",
                 wasmedge_quickjs::JsValue::Bool(true),
             );
 
