@@ -61,9 +61,6 @@ jobs:
                   else
                       echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
                   fi
-            - id: make_sure_im_not_crazy
-              name: Crazy Check
-              run: |
                   echo "Hello from crazy check"
                   if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
                       echo "1 I'm not going to see this since I'm not doing a release"
