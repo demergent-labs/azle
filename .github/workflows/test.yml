@@ -46,8 +46,15 @@ jobs:
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
                   COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-                  if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
-                  then
+
+                  IS_RELEASE_CANDIDATE="${{ contains(github.head_ref, 'release--') }}"
+
+                  IS_AUTOMATED_RELEASE="false"
+                  if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
+                      IS_AUTOMATED_RELEASE="true"
+                  fi
+
+                  if [[ "$IS_RELEASE_CANDIDATE" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
                       echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
                   else
                       echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
