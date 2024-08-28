@@ -33,8 +33,7 @@ jobs:
             - name: Generate Tests
               id: get_all_tests
               run: |
-                  all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
-                  echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
+                  echo "all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)" >> "$GITHUB_OUTPUT"
             - uses: actions/checkout@v4
 
     determine-should-run-tests:
