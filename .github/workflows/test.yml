@@ -32,8 +32,7 @@ jobs:
                   ALL_TESTS=$(./scripts/test.sh | base64 -d)
                   echo "all_tests=$ALL_TESTS" >> $GITHUB_OUTPUT
             - name: Print the captured output
-              run: |
-                  echo "${{ steps.get_all_tests.outputs.all_tests }}" | tail
+              run: echo "${{ steps.get_all_tests.outputs.all_tests }}"
     debug-generate-tests:
         name: ${{matrix.tests.name}}
         needs: generate-tests
