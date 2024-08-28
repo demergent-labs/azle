@@ -22,22 +22,15 @@ jobs:
             output_1: ${{ steps.gen_output.outputs.output_1 }}
             output_2: ${{ steps.gen_output.outputs.output_2 }}
             output_3: ${{ steps.gen_output.outputs.output_3 }}
-            all_tests: ${{ steps.gen_tests.outputs.all_tests }}
         strategy:
             matrix:
                 version: [1, 2, 3]
         steps:
-            - uses: actions/checkout@v4
             - name: Generate output
               id: gen_output
               run: |
                   version="${{ matrix.version }}"
                   echo "output_${version}=${version}" >> "$GITHUB_OUTPUT"
-            - name: Generate tests
-              id: gen_tests
-              run: |
-                  version=$(./.github/scripts/generate_tests.sh | base64 -d)
-                  echo "all_tests=${version}" >> "$GITHUB_OUTPUT"
     use-output:
         runs-on: ubuntu-latest
         needs: [make-output]
@@ -49,13 +42,40 @@ jobs:
             #   "output_3": "3"
             # }
             - run: echo '${{ toJSON(needs.make-output.outputs) }}'
-            - run: echo '${{ toJSON(needs.make-output.outputs.all_tests) }}'
-    use-output-again:
+    make-new-output:
         runs-on: ubuntu-latest
-        needs: [make-output]
+        outputs:
+            all_tests: ${{ steps.gen_tests.outputs.all_tests }}
+        steps:
+            - uses: actions/checkout@v4
+            - name: Generate tests
+              id: gen_tests
+              run: |
+                  all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
+                  echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
+    make-old-output:
+        runs-on: ubuntu-latest
+        outputs:
+            all_tests: ${{ steps.gen_tests.outputs.all_tests }}
+        steps:
+            - uses: actions/checkout@v4
+            - name: Generate tests
+              id: gen_tests
+              run: echo "::set-output name=all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)"
+    use-new-output:
+        runs-on: ubuntu-latest
+        needs: [make-new-output]
         strategy:
             matrix:
-                version: ${{ toJSON(needs.make-output.outputs.all_tests) }}
+                version: ${{ toJSON(needs.make-new-output.outputs.all_tests) }}
         steps:
-            - run: echo '${{ toJSON(needs.make-output.outputs) }}'
-            - run: echo '${{ toJSON(needs.make-output.outputs.all_tests) }}'
+            - run: echo '${{ toJSON(needs.make-new-output.outputs) }}'
+            - run: echo '${{ toJSON(needs.make-new-output.outputs.all_tests) }}'
+    use-old-output:
+        runs-on: ubuntu-latest
+        needs: [make-old-output]
+        strategy:
+            matrix:
+                version: ${{ toJSON(needs.make-old-output.outputs.all_tests) }}
+        steps:
+            - run: echo '${{ toJSON(needs.make-old-output.outputs.all_tests) }}'
