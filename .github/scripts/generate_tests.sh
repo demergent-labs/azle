@@ -68,7 +68,10 @@ generate_json() {
     fi
 
     # Construct JSON object
-    echo "{\"path\":\"$dir\",\"name\":\"$name\",\"type\":\"$type\""
+    echo "{"
+    echo "\"path\":\"$dir\","
+    echo "\"name\":\"$name\","
+    echo "\"type\":\"$type\""
     [[ -n "$syntax" ]] && echo ",\"syntax\":\"$syntax\""
     [[ -n "$api" ]] && echo ",\"api\":\"$api\""
     echo "}"
