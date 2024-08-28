@@ -32,7 +32,7 @@ jobs:
             - uses: actions/checkout@v4
             - id: get_all_tests
               name: generateTests
-              run: echo "::set-output name=all_tests::$(./.github/scripts/generate-test.sh | base64 -d)"
+              run: echo "::set-output name=all_tests::$(./.github/scripts/generate_test.sh | base64 -d)"
     determine-should-run-tests:
         name: Determine Should Run Tests
         runs-on: ubuntu-latest
@@ -87,7 +87,7 @@ jobs:
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
             - if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
               name: Publish Release
-              run: ./.github/scripts/publish-github-action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
+              run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
     run-test:
         name: ${{matrix.tests.name}} / ${{matrix.tests.type}} / ${{matrix.tests.syntax}} / ${{matrix.tests.api}} / ${{matrix.azle_source}}
         needs:
