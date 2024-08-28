@@ -73,6 +73,7 @@ jobs:
               id: get_all_tests
               run: echo "::set-output name=all_tests::$(./.github/scripts/generate_tests.sh | base64 -d)"
     use-new-output:
+        name: ${{matrix.version.name}}
         runs-on: ubuntu-latest
         needs: [make-new-output]
         strategy:
@@ -81,6 +82,7 @@ jobs:
         steps:
             - run: echo '${{ toJSON(matrix.version) }}'
     use-old-output:
+        name: ${{matrix.version.name}}
         runs-on: ubuntu-latest
         needs: [make-old-output]
         strategy:
