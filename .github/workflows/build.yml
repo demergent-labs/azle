@@ -28,7 +28,7 @@ jobs:
 
     determine-is-manual-release:
         if: ${{ contains(github.head_ref, 'release--') }}
-        name: Determine if tests should run
+        name: Determine if this job is for a manual release
         runs-on: ubuntu-latest
         outputs:
             is_manual_release: ${{ steps.determine_is_manual_release.outputs.is_manual_release }}
