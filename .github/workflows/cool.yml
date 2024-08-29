@@ -1,9 +1,11 @@
 name: Release Branch Workflow
 
 on:
-    pull_request: # Runs on pull requests to any branch
+    pull_request:
+        # Sequence of patterns matched against refs/heads
         branches:
-            - release--*
+            - 'releases/**'
+            - 'release--*'
 
 jobs:
     build:
