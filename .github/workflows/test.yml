@@ -13,6 +13,7 @@ on:
     pull_request: # Runs on pull requests to any branch
 env:
     IS_RELEASE_CANDIDATE: ${{ contains(github.head_ref, 'release--') }}
+    IS_FEATURE: ${{ !contains(github.head_ref, 'release--') }}
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
@@ -25,6 +26,20 @@ jobs:
             - name: Generate Tests
               id: get_all_tests
               uses: ./.github/actions/generate_tests
+              with:
+                  directories: |
+                      ./examples
+                      ./tests
+                  exclude_dirs: ${{ env.IS_FEATURE == 'true' && format('
+                      ./examples/basic_bitcoin
+                      ./examples/bitcoin_psbt
+                      ./examples/ckbtc
+                      ./tests/end_to_end/http_server/ethers_base
+                      ./tests/end_to_end/http_server/http_outcall_fetch
+                      ./tests/end_to_end/http_server/ic_evm_rpc
+                      ./tests/property/candid_rpc/class_api/stable_b_tree_map
+                      ./tests/property/candid_rpc/functional_api/stable_b_tree_map
+                      ') || '' }}
 
     determine-should-run-tests:
         name: Determine If Tests Should Run

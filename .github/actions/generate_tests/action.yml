@@ -1,5 +1,13 @@
 name: Generate Tests
 description: Generates a list of directories of npm projects with a tests script
+inputs:
+    directories:
+        description: List of directories to search for npm projects with tests.
+        required: true
+    exclude_dirs:
+        description: List of directories to exclude from the search.
+        required: false
+        default: ''
 outputs:
     all_tests:
         description: All of the tests found by this action
@@ -8,8 +16,14 @@ runs:
     using: composite
     steps:
         - uses: actions/checkout@v4
+
         - name: Generate Tests
           id: get_all_tests
-          # Automatically find all azle tests
-          run: echo "all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)" >> "$GITHUB_OUTPUT"
+          run: |
+              # Export the input variables to make them available to the script
+              export INPUT_DIRECTORIES="${{ inputs.directories }}"
+              export INPUT_EXCLUDE_DIRS="${{ inputs.exclude_dirs }}"
+              # Run the script
+              all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
+              echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
           shell: bash
