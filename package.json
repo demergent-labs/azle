@@ -6,6 +6,7 @@
         "typecheck": "tsc --noEmit",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --ext .js,.ts --cache --fix; else eslint . --ext .js,.ts --cache; fi",
         "prepare": "./install_wasmedge_quickjs.sh && husky install",
+        "install": "cd dfx_extension && ./install.sh",
         "test": "test/test.sh"
     },
     "type": "module",

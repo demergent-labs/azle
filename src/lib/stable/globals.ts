@@ -117,7 +117,9 @@ if (globalThis._azleInsideCanister === true) {
         info: log
     };
 
-    (globalThis as any).Buffer = createExperimentalWarningProxy('Buffer');
+    if (globalThis._azleExperimental === false) {
+        (globalThis as any).Buffer = createExperimentalWarningProxy('Buffer');
+    }
 }
 
 function createExperimentalWarningProxy(name: string): object {
