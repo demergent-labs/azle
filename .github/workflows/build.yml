@@ -2,7 +2,7 @@ name: Build
 on:
     pull_request:
         branches:
-            - release--*
+            - 'release--*'
 env:
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
