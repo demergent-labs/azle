@@ -1,9 +1,10 @@
 name: Release Branch Workflow
 
 on:
-    pull_request:
+    push:
         branches:
             - release--bdemann.test.release
+    pull_request: # Runs on pull requests to any branch
 
 jobs:
     build:
