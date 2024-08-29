@@ -3,6 +3,8 @@
 # These tests are currently written in TypeScript and are intended to be run in a Node.js environment.
 # This GitHub Action takes care of deploying to npm and GitHub.
 
+# TODO give every step a name
+
 name: Tests
 on:
     push:
@@ -20,11 +22,9 @@ jobs:
         outputs:
             all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
         steps:
-            - uses: actions/checkout@v4
             - name: Generate Tests
               id: get_all_tests
-              # Automatically find all azle tests
-              run: echo "all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)" >> "$GITHUB_OUTPUT"
+              uses: ./.github/actions/generate_tests
 
     determine-should-run-tests:
         name: Determine If Tests Should Run
@@ -39,8 +39,6 @@ jobs:
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
                   COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-
-                  IS_RELEASE_CANDIDATE="${{ contains(github.head_ref, 'release--') }}"
 
                   IS_AUTOMATED_RELEASE="false"
                   if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
@@ -132,7 +130,7 @@ jobs:
 
             - uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: ${{ env.NODE_VERSION }}
 
             - name: Run Pre-Test Azle Setup
               run: |

@@ -1,0 +1,15 @@
+name: Generate Tests
+description: Generates a list of directories of npm projects with a tests script
+outputs:
+    all_tests:
+        description: All of the tests found by this action
+        value: ${{ steps.get_all_tests.outputs.all_tests }}
+runs:
+    using: composite
+    steps:
+        - uses: actions/checkout@v4
+        - name: Generate Tests
+          id: get_all_tests
+          # Automatically find all azle tests
+          run: echo "all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)" >> "$GITHUB_OUTPUT"
+          shell: bash
