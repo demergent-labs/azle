@@ -10,16 +10,16 @@ env:
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
-    get-all-test-dirs:
+    get-tests:
         if: ${{ contains(github.head_ref, 'release--') }}
-        name: Get all test dirs
+        name: Get tests
         runs-on: ubuntu-latest
         outputs:
-            all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
+            tests: ${{ steps.get_tests.outputs.tests }}
         steps:
             - uses: actions/checkout@v4
             - name: Get all test dirs
-              id: get_all_tests
+              id: get_tests
               uses: ./.github/actions/generate_tests
               with:
                   directories: |
@@ -56,7 +56,7 @@ jobs:
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
         if: ${{ !needs.determine-is-manual-release.outputs.is_manual_release }}
         needs:
-            - get-all-test-dirs
+            - get-tests
             - determine-is-manual-release
         runs-on: ubuntu-latest
         env:
@@ -67,16 +67,19 @@ jobs:
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+
             - uses: actions/setup-node@v4
               with:
                   node-version: ${{ env.NODE_VERSION }}
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
             - name: Install dfx
               run: |
                   DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
             # TODO we should use some Action-specific bot account
             - name: Configure git for publishing release
               run: |
@@ -85,5 +88,6 @@ jobs:
                   git config --global commit.gpgsign true
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+
             - name: Publish release
-              run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-all-test-dirs.outputs.all_tests).*.path }}
+              run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-tests.outputs.tests).*.path }}
