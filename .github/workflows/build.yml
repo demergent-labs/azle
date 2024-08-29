@@ -10,7 +10,8 @@ env:
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
-    generate-tests:
+    get-all-test-dirs:
+        if: ${{ contains(github.head_ref, 'release--') }}
         name: Get all test dirs
         runs-on: ubuntu-latest
         outputs:
@@ -26,15 +27,15 @@ jobs:
                       ./tests
                   exclude_dirs: ''
 
-    determine-should-run-tests:
+    determine-is-manual-release:
+        if: ${{ contains(github.head_ref, 'release--') }}
         name: Determine If Tests Should Run
         runs-on: ubuntu-latest
         outputs:
-            should_run_tests: ${{ steps.determine_should_run_tests.outputs.should_run_tests }}
+            is_manual_release: ${{ steps.determine_is_manual_release.outputs.is_manual_release }}
         steps:
             - uses: actions/checkout@v4
-            - id: determine_should_run_tests
-              # Determine if tests should run for this pr. If it's a manually submitted release candidate no tests will run.
+            - id: determine_is_manual_release
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
@@ -45,19 +46,19 @@ jobs:
                       IS_AUTOMATED_RELEASE="true"
                   fi
 
-                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
-                      echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
+                  if [[ "$IS_AUTOMATED_RELEASE" == "false" ]]; then
+                      echo "is_manual_release=false" >> "$GITHUB_OUTPUT"
                   else
-                      echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
+                      echo "is_manual_release=true" >> "$GITHUB_OUTPUT"
                   fi
 
     release-candidate-deploy:
         name: Deploy Release Candidate for Release Branches
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
-        if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
+        if: ${{ !needs.determine-is-manual-release.outputs.is_manual_release }}
         needs:
-            - generate-tests
-            - determine-should-run-tests
+            - get-all-test-dirs
+            - determine-is-manual-release
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
@@ -86,4 +87,4 @@ jobs:
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
             - name: Publish Release
-              run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
+              run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-all-test-dirs.outputs.all_tests) }}
