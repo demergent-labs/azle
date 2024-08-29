@@ -166,6 +166,12 @@ jobs:
               shell: bash -l {0}
 
             - name: Start dfx
+              if: ${{ !env.IS_RELEASE_CANDIDATE }}
+              working-directory: ${{ matrix.tests.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+
+            - name: Start dfx with artifical delay
+              if: ${{ env.IS_RELEASE_CANDIDATE }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
