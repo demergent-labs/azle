@@ -1,4 +1,4 @@
-name: Deploy release candidate
+name: Release
 on:
     push:
         branches:
@@ -40,7 +40,7 @@ jobs:
     release:
         name: Deploy release
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
-        if: ${{ !needs.determine-should-release.outputs.should_release }}
+        if: ${{ needs.determine-should-release.outputs.should_release == 'true' }}
         needs:
             - get-tests
             - determine-should-release
@@ -76,4 +76,7 @@ jobs:
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
             - name: Publish release
-              run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-tests.outputs.tests).*.path }}
+              run: |
+                  BRANCH_NAME="${{ github.head_ref }}"
+                  RELEASE_VERSION="${BRANCH_NAME:9}"
+                  ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-tests.outputs.tests.*.path) }}
