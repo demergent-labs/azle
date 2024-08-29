@@ -1,0 +1,89 @@
+name: Build
+on:
+    push:
+        branches:
+            - main
+    pull_request: # Runs on pull requests to any branch
+env:
+    IS_RELEASE_CANDIDATE: ${{ contains(github.head_ref, 'release--') }}
+    IS_FEATURE: ${{ !contains(github.head_ref, 'release--') }}
+    DFX_VERSION: 0.21.0
+    NODE_VERSION: 20
+jobs:
+    generate-tests:
+        name: Get all test dirs
+        runs-on: ubuntu-latest
+        outputs:
+            all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
+        steps:
+            - uses: actions/checkout@v4
+            - name: Get all test dirs
+              id: get_all_tests
+              uses: ./.github/actions/generate_tests
+              with:
+                  directories: |
+                      ./examples
+                      ./tests
+                  exclude_dirs: ''
+
+    determine-should-run-tests:
+        name: Determine If Tests Should Run
+        runs-on: ubuntu-latest
+        outputs:
+            should_run_tests: ${{ steps.determine_should_run_tests.outputs.should_run_tests }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: determine_should_run_tests
+              # Determine if tests should run for this pr. If it's a manually submitted release candidate no tests will run.
+              run: |
+                  BRANCH_NAME="${{ github.head_ref }}"
+                  RELEASE_VERSION="${BRANCH_NAME:9}"
+                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
+
+                  IS_AUTOMATED_RELEASE="false"
+                  if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
+                      IS_AUTOMATED_RELEASE="true"
+                  fi
+
+                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
+                      echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+    release-candidate-deploy:
+        name: Deploy Release Candidate for Release Branches
+        # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
+        if: ${{ !needs.determine-should-run-tests.outputs.should_run_tests }}
+        needs:
+            - generate-tests
+            - determine-should-run-tests
+        runs-on: ubuntu-latest
+        env:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.ref || github.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  registry-url: https://registry.npmjs.org
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+            - name: Install dfx
+              run: |
+                  DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+            # TODO we should use some Action-specific bot account
+            - name: Configure git for Publishing Release
+              run: |
+                  git config --global user.name 'Jordan Last'
+                  git config --global user.email 'jordan.michael.last@gmail.com'
+                  git config --global commit.gpgsign true
+                  echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+                  git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+            - name: Publish Release
+              run: ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.generate-tests.outputs.all_tests) }}
