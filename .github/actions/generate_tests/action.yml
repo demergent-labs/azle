@@ -1,29 +1,29 @@
-name: Generate Tests
+name: Generate tests
 description: Generates a list of directories of npm projects with an npm test script
 inputs:
     directories:
-        description: List of directories to search for npm projects with tests
+        description: List of directories to search for npm projects with an npm test script
         required: true
     exclude_dirs:
         description: List of directories to exclude from the search
         required: false
         default: ''
 outputs:
-    all_tests:
+    tests:
         description: All of the tests found by this action
-        value: ${{ steps.get_all_tests.outputs.all_tests }}
+        value: ${{ steps.get_tests.outputs.tests }}
 runs:
     using: composite
     steps:
         - uses: actions/checkout@v4
 
-        - name: Generate Tests
-          id: get_all_tests
+        - name: Generate tests
+          id: get_tests
           run: |
               # Export the input variables to make them available to the script
               export INPUT_DIRECTORIES="${{ inputs.directories }}"
               export INPUT_EXCLUDE_DIRS="${{ inputs.exclude_dirs }}"
               # Run the script
-              all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)
-              echo "all_tests=${all_tests}" >> "$GITHUB_OUTPUT"
+              tests=$(./.github/scripts/generate_tests.sh | base64 -d)
+              echo "tests=${tests}" >> "$GITHUB_OUTPUT"
           shell: bash
