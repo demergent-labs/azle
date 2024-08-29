@@ -4,7 +4,8 @@
             "type": "azle",
             "main": "src/index.ts",
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "candid_gen": "http"
             }
         }
     }

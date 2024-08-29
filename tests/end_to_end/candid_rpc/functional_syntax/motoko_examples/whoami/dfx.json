@@ -4,15 +4,14 @@
             "type": "azle",
             "main": "src/index.ts",
             "candid": "src/index.did",
-            "candid_gen": "automatic",
-            "env": ["AZLE_TEST_FETCH"],
-            "assets": [["src/index.did", "/candid/whoami.did"]],
             "declarations": {
                 "output": "test/dfx_generated/whoami",
                 "node_compatibility": true
             },
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "assets": [["src/index.did", "/candid/whoami.did"]],
+                "env": ["AZLE_TEST_FETCH"]
             }
         }
     }

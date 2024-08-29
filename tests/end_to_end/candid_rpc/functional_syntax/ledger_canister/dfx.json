@@ -3,15 +3,16 @@
         "ledger_canister": {
             "type": "azle",
             "main": "src/ledger_canister/index.ts",
-            "candid_gen": "automatic",
-            "env": ["ICP_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/icp_ledger/ledger.public.did", "src/ledger.did"]],
             "declarations": {
                 "output": "test/dfx_generated/ledger_canister",
                 "node_compatibility": true
             },
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "assets": [
+                    ["src/icp_ledger/ledger.public.did", "src/ledger.did"]
+                ],
+                "env": ["ICP_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"]
             }
         },
         "icp_ledger": {

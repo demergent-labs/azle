@@ -3,7 +3,6 @@
         "inspect_message": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/inspect_message",
                 "node_compatibility": true

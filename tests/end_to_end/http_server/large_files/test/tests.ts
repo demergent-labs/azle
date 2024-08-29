@@ -1,14 +1,14 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/dfx';
 import { hashFile } from 'azle/scripts/hash_file';
-import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
+import { createActor } from 'azle/src/build/experimental/commands/upload_assets/file_uploader/uploader_actor';
 import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { readdir, rm } from 'fs/promises';
 import { join } from 'path';
 
 import { Unit } from '../../../../../scripts/file_generator';
-import { AZLE_UPLOADER_IDENTITY_NAME } from '../../../../../src/compiler/uploader_identity';
+import { AZLE_UPLOADER_IDENTITY_NAME } from '../../../../../src/build/experimental/commands/upload_assets/uploader_identity';
 import { getAuthorizationTests } from './authorization_tests';
 import { generateFiles, getDfxConfigFileTests } from './auto_tests';
 import { generateTestFileOfSize } from './generate_test_files';

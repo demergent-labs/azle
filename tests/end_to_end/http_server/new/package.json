@@ -1,0 +1,12 @@
+{
+    "scripts": {
+        "test": "if [ \"$AZLE_TEST_RUN_ON_RELEASE\" = \"true\" ]; then tsx test/test.ts; else echo 'Skipping pretests'; fi"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "^0.19.2",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.1.5",
+        "tsx": "^4.15.7",
+        "typescript": "^5.2.2"
+    }
+}

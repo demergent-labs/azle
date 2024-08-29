@@ -3,9 +3,10 @@
         "backend": {
             "type": "azle",
             "main": "src/backend.ts",
-            "assets": [["src/assets", "assets"]],
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "candid_gen": "http",
+                "assets": [["src/assets", "assets"]]
             }
         }
     }

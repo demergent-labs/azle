@@ -3,13 +3,14 @@
         "backend": {
             "type": "azle",
             "main": "src/index.ts",
-            "assets": [
-                ["assets/auto", "assets"],
-                ["assets/permanent", "assets"],
-                ["assets/single_asset.txt", "assets/text/single.txt"]
-            ],
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "candid_gen": "http",
+                "assets": [
+                    ["assets/auto", "assets"],
+                    ["assets/permanent", "assets"],
+                    ["assets/single_asset.txt", "assets/text/single.txt"]
+                ]
             }
         }
     }

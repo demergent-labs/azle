@@ -3,31 +3,29 @@
         "func_types": {
             "type": "azle",
             "main": "canisters/func_types/index.ts",
-            "candid_gen": "automatic",
-            "env": ["NOTIFIERS_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [
-                ["canisters/notifiers/index.did", "candid/notifiers.did"]
-            ],
             "declarations": {
                 "output": "test/dfx_generated/func_types",
                 "node_compatibility": true
             },
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "assets": [
+                    ["canisters/notifiers/index.did", "candid/notifiers.did"]
+                ],
+                "env": ["NOTIFIERS_PRINCIPAL", "AZLE_TEST_FETCH"]
             }
         },
         "notifiers": {
             "type": "azle",
             "main": "canisters/notifiers/index.ts",
             "candid": "canisters/notifiers/index.did",
-            "candid_gen": "automatic",
-            "env": ["NOTIFIERS_PRINCIPAL"],
             "declarations": {
                 "output": "test/dfx_generated/notifiers",
                 "node_compatibility": true
             },
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "env": ["NOTIFIERS_PRINCIPAL"]
             }
         }
     }

@@ -3,9 +3,10 @@
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "assets": [["src/spam", "spam"]],
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "candid_gen": "http",
+                "assets": [["src/spam", "spam"]]
             }
         }
     }

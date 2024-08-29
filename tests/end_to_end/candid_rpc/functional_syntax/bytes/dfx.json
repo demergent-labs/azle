@@ -3,7 +3,6 @@
         "bytes_canister": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/bytes_canister",
                 "node_compatibility": true

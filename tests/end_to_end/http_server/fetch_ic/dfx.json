@@ -3,10 +3,11 @@
         "backend": {
             "type": "azle",
             "main": "src/backend/server.ts",
-            "assets": [["src/frontend/dist", "dist"]],
-            "build_assets": "npm run build",
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "candid_gen": "http",
+                "assets": [["src/frontend/dist", "dist"]],
+                "build_assets": "npm run build"
             }
         },
         "internet_identity": {

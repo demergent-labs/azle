@@ -7,12 +7,12 @@ export function inspectMessage<This, Args extends any[], Return>(
 ): void {
     const index = globalThis._azleCanisterMethodsIndex++;
 
-    globalThis._azleCanisterMethods.inspect_message = {
+    globalThis._azleMethodMeta.inspect_message = {
         name: context.name as string,
         index
     };
 
-    globalThis._azleCanisterMethods.callbacks[index.toString()] = (): void => {
+    globalThis._azleCallbacks[index.toString()] = (): void => {
         executeAndReplyWithCandidSerde(
             'inspectMessage',
             [],

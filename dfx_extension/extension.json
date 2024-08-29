@@ -9,7 +9,7 @@
     "canister_type": {
         "defaults": {
             "candid": ".azle/{{canister_name}}/{{canister_name}}.did",
-            "build": "npx azle {{canister_name}}",
+            "build": "npx azle compile {{canister_name}}",
             "post_install": "npx azle upload-assets {{canister_name}}",
             "wasm": ".azle/{{canister_name}}/{{canister_name}}.wasm",
             "gzip": true,

@@ -3,9 +3,10 @@
         "bitcoin_psbt": {
             "type": "azle",
             "main": "src/index.ts",
-            "env": ["BITCOIN_NETWORK"],
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "candid_gen": "http",
+                "env": ["BITCOIN_NETWORK"]
             }
         }
     },

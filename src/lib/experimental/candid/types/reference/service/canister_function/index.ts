@@ -6,6 +6,7 @@ if (globalThis._azleExperimental !== true) {
 
 import { IDL } from '@dfinity/candid';
 
+import { MethodMeta } from '../../../../../../../build/stable/utils/types';
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { ic } from '../../../../../ic';
 import { CandidType, Parent, toIdlTypeArray } from '../../../../index';
@@ -24,13 +25,7 @@ export type CanisterOptions = {
 
 type _AzleFunctionReturnType = {
     (principal: Principal): void;
-    init?: any;
-    post_upgrade?: any;
-    pre_upgrade?: any;
-    heartbeat?: any;
-    inspect_message?: any;
-    queries?: any[];
-    updates?: any[];
+    methodMeta?: MethodMeta;
     callbacks?: any;
     getSystemFunctionIdlTypes?: (parents: Parent[]) => IDL.FuncClass[];
     getIdlType?: (parents: Parent[]) => IDL.Type<any>;
@@ -60,17 +55,30 @@ export function createCanisterFunction(
     canisterOptions: CanisterOptions
 ): _AzleFunctionReturnType {
     let canister = createCanisterFunctionBase(canisterOptions);
-    canister.init = createSystemMethod('init', canisterOptions);
-    canister.heartbeat = createSystemMethod('heartbeat', canisterOptions);
-    canister.post_upgrade = createSystemMethod('postUpgrade', canisterOptions);
-    canister.pre_upgrade = createSystemMethod('preUpgrade', canisterOptions);
-    canister.inspect_message = createSystemMethod(
+
+    canister.methodMeta = {};
+    canister.methodMeta.init = createSystemMethod('init', canisterOptions);
+    canister.methodMeta.heartbeat = createSystemMethod(
+        'heartbeat',
+        canisterOptions
+    );
+    canister.methodMeta.post_upgrade = createSystemMethod(
+        'postUpgrade',
+        canisterOptions
+    );
+    canister.methodMeta.pre_upgrade = createSystemMethod(
+        'preUpgrade',
+        canisterOptions
+    );
+    canister.methodMeta.inspect_message = createSystemMethod(
         'inspectMessage',
         canisterOptions
     );
-    canister.queries = createQueryMethods(canisterOptions);
-    canister.updates = createUpdateMethods(canisterOptions);
+    canister.methodMeta.queries = createQueryMethods(canisterOptions);
+    canister.methodMeta.updates = createUpdateMethods(canisterOptions);
+
     canister.callbacks = createCallbacks(canisterOptions);
+
     canister.getIdlType = createGetIdlTypeFunction(canisterOptions);
     canister.getSystemFunctionIdlTypes =
         createGetSystemFunctionIdlTypeFunction(canisterOptions);

@@ -1,5 +1,5 @@
 import { generateIdentity, getCanisterId } from 'azle/dfx';
-import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
+import { createActor } from 'azle/src/build/experimental/commands/upload_assets/file_uploader/uploader_actor';
 import { expect, it, please, Test } from 'azle/test';
 import { v4 } from 'uuid';
 

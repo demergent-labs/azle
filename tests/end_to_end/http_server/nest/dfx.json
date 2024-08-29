@@ -3,9 +3,10 @@
         "api": {
             "type": "azle",
             "main": "src/main.ts",
-            "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"],
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "candid_gen": "http",
+                "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"]
             }
         }
     }

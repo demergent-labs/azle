@@ -3,7 +3,6 @@
         "pre_and_post_upgrade": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/pre_and_post_upgrade",
                 "node_compatibility": true

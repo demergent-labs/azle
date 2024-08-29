@@ -3,7 +3,6 @@
         "server": {
             "type": "azle",
             "main": "src/server.ts",
-            "candid_gen": "automatic",
             "custom": {
                 "experimental": true
             }

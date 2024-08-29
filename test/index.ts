@@ -6,7 +6,7 @@ import { describe, expect, test } from '@jest/globals';
 import { join } from 'path';
 
 import { getCanisterId } from '../dfx';
-import { execSyncPretty } from '../src/compiler/utils/exec_sync_pretty';
+import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
 
 export type Test = () => void;

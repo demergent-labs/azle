@@ -3,7 +3,6 @@
         "heartbeat_async": {
             "type": "azle",
             "main": "src/heartbeat_async/index.ts",
-            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_async",
                 "node_compatibility": true
@@ -12,7 +11,6 @@
         "heartbeat_sync": {
             "type": "azle",
             "main": "src/heartbeat_sync/index.ts",
-            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_sync",
                 "node_compatibility": true

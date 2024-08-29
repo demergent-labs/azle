@@ -3,24 +3,25 @@
         "backend": {
             "type": "azle",
             "main": "src/backend/server.ts",
-            "assets": [
-                ["src/frontend/dist", "dist"],
-                ["src/backend/media/audio.ogg", "media/audio.ogg"],
-                ["src/backend/media/video.ogv", "media/video.ogv"]
-            ],
-            "assets_large_commented_out": [
-                [
-                    "src/backend/media/jordan_video_streaming_demo.mp4",
-                    "media/jordan_video_streaming_demo.mp4"
-                ],
-                [
-                    "src/backend/media/popeye_the_sailor_meets_sindbad_the_sailor.mp4",
-                    "media/popeye_the_sailor_meets_sindbad_the_sailor.mp4"
-                ]
-            ],
-            "build_assets": "npm run build",
             "custom": {
-                "experimental": true
+                "experimental": true,
+                "candid_gen": "http",
+                "assets": [
+                    ["src/frontend/dist", "dist"],
+                    ["src/backend/media/audio.ogg", "media/audio.ogg"],
+                    ["src/backend/media/video.ogv", "media/video.ogv"]
+                ],
+                "assets_large_commented_out": [
+                    [
+                        "src/backend/media/jordan_video_streaming_demo.mp4",
+                        "media/jordan_video_streaming_demo.mp4"
+                    ],
+                    [
+                        "src/backend/media/popeye_the_sailor_meets_sindbad_the_sailor.mp4",
+                        "media/popeye_the_sailor_meets_sindbad_the_sailor.mp4"
+                    ]
+                ],
+                "build_assets": "npm run build"
             }
         }
     }

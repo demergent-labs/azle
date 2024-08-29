@@ -11,7 +11,7 @@ export function postUpgrade<This, Args extends any[], Return>(
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
 
-        globalThis._azleCanisterMethods.post_upgrade = {
+        globalThis._azleMethodMeta.post_upgrade = {
             name: context.name as string,
             index
         };
@@ -20,7 +20,7 @@ export function postUpgrade<This, Args extends any[], Return>(
             IDL.Func(paramIdlTypes, [], ['post_upgrade'])
         );
 
-        globalThis._azleCanisterMethods.callbacks[index.toString()] = (
+        globalThis._azleCallbacks[index.toString()] = (
             ...args: any[]
         ): void => {
             executeAndReplyWithCandidSerde(
