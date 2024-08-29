@@ -2,7 +2,6 @@ name: Release Branch Workflow
 
 on:
     pull_request:
-        # Sequence of patterns matched against refs/heads
         branches:
             - 'release/bdemann.tests.release'
 
