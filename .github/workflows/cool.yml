@@ -3,7 +3,7 @@ name: Release Branch Workflow
 on:
     push:
         branches:
-            - release--bdemann.test.release
+            - release--*
     pull_request: # Runs on pull requests to any branch
 
 jobs:
@@ -11,4 +11,4 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - run: echo "Hello world!"
+            - run: echo "Hello world! with wild cards"
