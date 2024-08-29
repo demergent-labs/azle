@@ -1,11 +1,11 @@
 name: Generate Tests
-description: Generates a list of directories of npm projects with a tests script
+description: Generates a list of directories of npm projects with an npm test script
 inputs:
     directories:
-        description: List of directories to search for npm projects with tests.
+        description: List of directories to search for npm projects with tests
         required: true
     exclude_dirs:
-        description: List of directories to exclude from the search.
+        description: List of directories to exclude from the search
         required: false
         default: ''
 outputs:
