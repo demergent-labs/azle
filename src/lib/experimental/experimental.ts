@@ -1,5 +1,9 @@
-export function experimentalMessage(importName: string): string {
-    return `Azle: experimental mode must be enabled to import from ${importName}. You can enable experimental mode in your dfx.json file like this:
+if (globalThis._azleExperimental !== true) {
+    throw new Error(experimentalMessage());
+}
+
+function experimentalMessage(): string {
+    return `Azle: experimental mode must be enabled to import from azle/experimental. You can enable experimental mode in your dfx.json file like this:
 {
     "canisters": {
         "canisterName": {

@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../../../src/lib/experimental/experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../src/lib/experimental/experimental';
 
 import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
 import { nat } from '../../../src/lib/experimental/candid/types/primitive/nats/nat';

@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../../../src/lib/experimental/experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../src/lib/experimental/experimental';
 
 // Some JS docs licensed under:
 //
@@ -11,7 +7,6 @@ if (globalThis._azleExperimental !== true) {
 // - https://github.com/dfinity/portal/blob/master/LICENSE
 //
 // Some documentation changed from original work.
-
 import {
     blob,
     Canister,

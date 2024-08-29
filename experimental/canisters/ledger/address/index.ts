@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../../../../src/lib/experimental/experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../../src/lib/experimental/experimental';
 
 import { Principal } from '@dfinity/principal';
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';

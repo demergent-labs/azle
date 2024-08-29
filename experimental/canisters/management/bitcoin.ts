@@ -1,11 +1,6 @@
-import { experimentalMessage } from '../../../src/lib/experimental/experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../src/lib/experimental/experimental';
 
 // TODO I am thinking we should use the same names as ic-btc-types
-
 import {
     blob,
     nat32,

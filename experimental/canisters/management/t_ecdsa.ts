@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../../../src/lib/experimental/experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../src/lib/experimental/experimental';
 
 import { blob } from '../../../src/lib/experimental/candid/types/constructed/blob';
 import { Opt } from '../../../src/lib/experimental/candid/types/constructed/opt';

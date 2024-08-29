@@ -10,7 +10,6 @@ export type Context = {
     esmExternals: string[];
     reloadedJsPath: string;
     wasmData: WasmData;
-    wasmedgeQuickJsPath: string;
 } & StableContext;
 
 export type WasmData = {

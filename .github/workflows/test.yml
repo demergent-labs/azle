@@ -378,9 +378,6 @@ jobs:
               run: npm link azle
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
-              run: npx azle install-dfx-extension
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              working-directory: ${{ matrix.example_directories }}
               run: dfx start --clean --background --host 127.0.0.1:8000
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
