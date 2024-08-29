@@ -10,5 +10,6 @@ export const EXPERIMENTAL_CANISTER_TEMPLATE_PATH = join(
 
 export const WASMEDGE_QUICKJS_PATH = join(
     AZLE_PACKAGE_PATH,
+    'node_modules',
     'wasmedge_quickjs'
 );
