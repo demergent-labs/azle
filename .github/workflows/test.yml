@@ -23,6 +23,7 @@ jobs:
         outputs:
             all_tests: ${{ steps.get_all_tests.outputs.all_tests }}
         steps:
+            - uses: actions/checkout@v4
             - name: Generate Tests
               id: get_all_tests
               uses: ./.github/actions/generate_tests
@@ -30,16 +31,17 @@ jobs:
                   directories: |
                       ./examples
                       ./tests
-                  exclude_dirs: ${{ env.IS_FEATURE == 'true' && format('
-                      ./examples/basic_bitcoin
-                      ./examples/bitcoin_psbt
-                      ./examples/ckbtc
-                      ./tests/end_to_end/http_server/ethers_base
-                      ./tests/end_to_end/http_server/http_outcall_fetch
-                      ./tests/end_to_end/http_server/ic_evm_rpc
-                      ./tests/property/candid_rpc/class_api/stable_b_tree_map
-                      ./tests/property/candid_rpc/functional_api/stable_b_tree_map
-                      ') || '' }}
+                  exclude_dirs: |
+                      ${{ env.IS_FEATURE == 'true' && format('
+                         ./examples/basic_bitcoin
+                         ./examples/bitcoin_psbt
+                         ./examples/ckbtc
+                         ./tests/end_to_end/http_server/ethers_base
+                         ./tests/end_to_end/http_server/http_outcall_fetch
+                         ./tests/end_to_end/http_server/ic_evm_rpc
+                         ./tests/property/candid_rpc/class_api/stable_b_tree_map
+                         ./tests/property/candid_rpc/functional_api/stable_b_tree_map
+                         ') || '' }}
 
     determine-should-run-tests:
         name: Determine If Tests Should Run
