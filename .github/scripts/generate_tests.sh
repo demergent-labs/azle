@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Inputs from action.yml
-BASE_DIR="."
 DIRECTORIES=($INPUT_DIRECTORIES)
 EXCLUDE_DIRS=($INPUT_EXCLUDE_DIRS)
 
