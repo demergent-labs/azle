@@ -60,7 +60,7 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-tests
-        if: ${{ needs.determine-should-run-tests.outputs.should_run_tests }}
+        if: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' }}
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}

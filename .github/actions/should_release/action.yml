@@ -23,5 +23,15 @@ runs:
                   SHOULD_RELEASE="true"
               fi
 
+              if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
+              then
+                echo "Expecting TRUE. Received: ${SHOULD_RELEASE}"
+              else
+                echo "Expecting FALSE. Received: ${SHOULD_RELEASE}"
+              fi
+
+              echo "This is the value of should release"
+              echo $SHOULD_RELEASE
+
               echo "should_release=${SHOULD_RELEASE}" >> "$GITHUB_OUTPUT"
           shell: bash
