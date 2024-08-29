@@ -75,7 +75,6 @@ generate_json() {
 all_directories=""
 for dir in "${DIRECTORIES[@]}"; do
     all_directories+=$(discover_directories "$dir")
-    all_directories+=$'\n'
 done
 
 # Initialize an empty variable to store the JSON result
