@@ -3,6 +3,8 @@
 # These tests are currently written in TypeScript and are intended to be run in a Node.js environment.
 # This GitHub Action takes care of deploying to npm and GitHub.
 
+# TODO give every step a name
+
 name: Tests
 on:
     push:
@@ -11,6 +13,7 @@ on:
     pull_request: # Runs on pull requests to any branch
 env:
     IS_RELEASE_CANDIDATE: ${{ contains(github.head_ref, 'release--') }}
+    IS_FEATURE: ${{ !contains(github.head_ref, 'release--') }}
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
@@ -23,8 +26,22 @@ jobs:
             - uses: actions/checkout@v4
             - name: Generate Tests
               id: get_all_tests
-              # Automatically find all azle tests
-              run: echo "all_tests=$(./.github/scripts/generate_tests.sh | base64 -d)" >> "$GITHUB_OUTPUT"
+              uses: ./.github/actions/generate_tests
+              with:
+                  directories: |
+                      ./examples
+                      ./tests
+                  exclude_dirs: |
+                      ${{ env.IS_FEATURE == 'true' && format('
+                         ./examples/basic_bitcoin
+                         ./examples/bitcoin_psbt
+                         ./examples/ckbtc
+                         ./tests/end_to_end/http_server/ethers_base
+                         ./tests/end_to_end/http_server/http_outcall_fetch
+                         ./tests/end_to_end/http_server/ic_evm_rpc
+                         ./tests/property/candid_rpc/class_api/stable_b_tree_map
+                         ./tests/property/candid_rpc/functional_api/stable_b_tree_map
+                         ') || '' }}
 
     determine-should-run-tests:
         name: Determine If Tests Should Run
@@ -39,8 +56,6 @@ jobs:
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
                   COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-
-                  IS_RELEASE_CANDIDATE="${{ contains(github.head_ref, 'release--') }}"
 
                   IS_AUTOMATED_RELEASE="false"
                   if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
@@ -132,7 +147,7 @@ jobs:
 
             - uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: ${{ env.NODE_VERSION }}
 
             - name: Run Pre-Test Azle Setup
               run: |
