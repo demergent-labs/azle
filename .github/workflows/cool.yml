@@ -1,7 +1,7 @@
 name: Release Branch Workflow
 
 on:
-    push:
+    pull_request:
         branches:
             - release--bdemann.test.release
 
