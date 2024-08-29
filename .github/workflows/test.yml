@@ -11,6 +11,8 @@ on:
     pull_request: # Runs on pull requests to any branch
 env:
     IS_RELEASE_CANDIDATE: ${{ contains(github.head_ref, 'release--') }}
+    DFX_VERSION: 0.21.0
+    NODE_VERSION: 20
 jobs:
     generate-tests:
         name: Generate Tests
@@ -69,13 +71,13 @@ jobs:
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
             - uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: ${{ env.NODE_VERSION }}
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
             - name: Install dfx
               run: |
-                  DFXVM_INIT_YES=true DFX_VERSION=0.21.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
             # TODO we should use some Action-specific bot account
             - name: Configure git for Publishing Release
@@ -136,7 +138,7 @@ jobs:
               run: |
 
                   # Install dfx
-                  DFXVM_INIT_YES=true DFX_VERSION=0.21.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
                   # MacOS-specific DNS configuration
