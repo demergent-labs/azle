@@ -1,10 +1,9 @@
 name: Release Branch Workflow
 
 on:
-    push:
+    pull_request: # Runs on pull requests to any branch
         branches:
             - release--*
-    pull_request: # Runs on pull requests to any branch
 
 jobs:
     build:
