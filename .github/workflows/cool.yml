@@ -1,0 +1,13 @@
+name: Release Branch Workflow
+
+on:
+    push:
+        branches:
+            - release--bdemann.test.release
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - run: echo "Hello world!"
