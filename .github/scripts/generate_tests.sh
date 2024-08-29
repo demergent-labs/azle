@@ -1,15 +1,9 @@
 #!/bin/bash
 
-# Base directories
+# Inputs from action.yml
 BASE_DIR="."
-EXAMPLES_DIR="$BASE_DIR/examples"
-TESTS_DIR="$BASE_DIR/tests"
-
-# Excluded directories
-EXCLUDE_DIRS=(
-    "$EXAMPLES_DIR/filter_example"
-    "$TESTS_DIR/end_to_end/candid_rpc/functional_syntax/filter_example"
-)
+DIRECTORIES=($INPUT_DIRECTORIES)
+EXCLUDE_DIRS=($INPUT_EXCLUDE_DIRS)
 
 # Function to discover test directories
 discover_directories() {
@@ -29,7 +23,7 @@ discover_directories() {
 is_excluded() {
     local dir=$1
     for exclude in "${EXCLUDE_DIRS[@]}"; do
-        if [[ "$dir" == *"$exclude" ]]; then
+        if [[ "$dir" == *"$exclude"* ]]; then
             return 0
         fi
     done
@@ -44,9 +38,9 @@ generate_json() {
     local syntax=""
     local api=""
 
-    if [[ "$dir" == "$EXAMPLES_DIR"* ]]; then
+    if [[ "$dir" == *"/examples/"* ]]; then
         type="ex"
-    elif [[ "$dir" == "$TESTS_DIR/property"* ]]; then
+    elif [[ "$dir" == *"/property/"* ]]; then
         type="prop"
         if [[ "$dir" == *"/candid_rpc/"* ]]; then
             syntax="crpc"
@@ -58,7 +52,7 @@ generate_json() {
         elif [[ "$dir" == *"/ic_api/"* ]]; then
             syntax="ic_api"
         fi
-    elif [[ "$dir" == "$TESTS_DIR/end_to_end"* ]]; then
+    elif [[ "$dir" == *"/end_to_end/"* ]]; then
         type="e2e"
         if [[ "$dir" == *"/http_server/"* ]]; then
             syntax="http"
@@ -77,10 +71,12 @@ generate_json() {
     echo "}"
 }
 
-# Discover directories in examples and tests, excluding specified directories
-all_directories=$(discover_directories "$EXAMPLES_DIR")
-all_directories+=$'\n'
-all_directories+=$(discover_directories "$TESTS_DIR")
+# Discover directories in the provided directories, excluding specified directories
+all_directories=""
+for dir in "${DIRECTORIES[@]}"; do
+    all_directories+=$(discover_directories "$dir")
+    all_directories+=$'\n'
+done
 
 # Initialize an empty variable to store the JSON result
 json_result="["
