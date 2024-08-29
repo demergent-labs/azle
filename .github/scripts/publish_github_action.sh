@@ -8,7 +8,7 @@ VERSION=$1
 
 directories_json_string_with_linebreaks=$2
 directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
-directories=$(echo "$directories_json_string" | jq -c -r '.[] | .path')
+directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 
 sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
 sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
