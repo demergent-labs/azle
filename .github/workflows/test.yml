@@ -48,27 +48,14 @@ jobs:
         name: Determine if tests should run
         runs-on: ubuntu-latest
         outputs:
-            should_run_tests: ${{ steps.determine_should_run_tests.outputs.should_run_tests }}
+            # If the branch should release then it shouldn't run tests.
+            should_run_tests: ${{ !steps.determine_should_run_tests.outputs.should_release }}
         steps:
             - uses: actions/checkout@v4
 
-            - id: determine_should_run_tests
-              # Determine if tests should run for this pr. If it's a manually submitted release candidate no tests will run.
-              run: |
-                  BRANCH_NAME="${{ github.head_ref }}"
-                  RELEASE_VERSION="${BRANCH_NAME:9}"
-                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-
-                  IS_AUTOMATED_RELEASE="false"
-                  if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
-                      IS_AUTOMATED_RELEASE="true"
-                  fi
-
-                  if [[ "${{env.IS_RELEASE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
-                      echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
-                  else
-                      echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
-                  fi
+            - name: Should release
+              id: determine_should_run_tests
+              uses: ./.github/actions/should_release
 
     run-test:
         # Tests can either run against the current code of Azle found in the repository, or the code deployed by the GitHub Action to npm.
@@ -152,7 +139,7 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
-            - name: Start dfx with artifical delay
+            - name: Start dfx with artifcial delay
               if: ${{ env.IS_RELEASE }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000

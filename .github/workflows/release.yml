@@ -27,7 +27,7 @@ jobs:
 
     determine-should-release:
         if: ${{ contains(github.head_ref, 'release--') }}
-        name: Determine if this job is for a manual release
+        name: Determine if this branch should release
         runs-on: ubuntu-latest
         outputs:
             should_release: ${{ steps.determine_should_release.outputs.should_release }}
@@ -35,17 +35,7 @@ jobs:
             - uses: actions/checkout@v4
 
             - id: determine_should_release
-              run: |
-                  BRANCH_NAME="${{ github.head_ref }}"
-                  RELEASE_VERSION="${BRANCH_NAME:9}"
-                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-
-                  SHOULD_RELEASE="false"
-                  if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
-                      SHOULD_RELEASE="true"
-                  fi
-
-                  echo "should_release=${SHOULD_RELEASE}" >> "$GITHUB_OUTPUT"
+              uses: ./.github/actions/should_release
 
     release:
         name: Deploy release
