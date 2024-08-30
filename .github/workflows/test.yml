@@ -17,14 +17,6 @@ env:
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
-    test-commit-message:
-        runs-on: ubuntu-latest
-        steps:
-            - run: |
-                  echo "perfered message"
-                  echo \"${{ github.event.head_commit.message }}\"
-                  echo "back up"
-                  $(git log -1 --pretty=format:"%s")
     get-tests:
         name: Get tests
         runs-on: ubuntu-latest
@@ -174,16 +166,8 @@ jobs:
                   RELEASE_PR_MERGE_MSG='Merge pull request'
                   RELEASE_REPO_MSG='demergent-labs/release--'
 
-                  IS_FEATURE_BRANCH_PR_PR=true
                   IS_RELEASE_PR=false
                   IS_MERGE_TO_MAIN_FROM_RELEASE=false
-
-                  # Check if it's a feature pull request
-                  if [[ $BRANCH_NAME != *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then
-                      IS_FEATURE_BRANCH_PR_PR=true
-                  else
-                      IS_FEATURE_BRANCH_PR_PR=false
-                  fi
 
                   # Check if it's a release candidate pull request
                   if [[ $BRANCH_NAME == *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then

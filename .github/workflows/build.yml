@@ -16,6 +16,7 @@ jobs:
             tests: ${{ steps.get_tests.outputs.tests }}
         steps:
             - uses: actions/checkout@v4
+
             - name: Get all test dirs
               id: get_tests
               uses: ./.github/actions/get_tests
@@ -32,6 +33,7 @@ jobs:
             should_release: ${{ steps.determine_should_release.outputs.should_release }}
         steps:
             - uses: actions/checkout@v4
+
             - id: determine_should_release
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
