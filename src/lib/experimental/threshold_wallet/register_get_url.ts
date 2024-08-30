@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../experimental';
 
 // TODO unfortunately this is highly unlikely to work in production because
 // TODO of the headers...we need a good transform
@@ -12,7 +8,6 @@ if (globalThis._azleExperimental !== true) {
 // TODO and then the response can say what was wrong, instead of an error
 // TODO what if the developer installs a different version of ethers?
 // TODO should we use a peer dependency?
-
 import { ethers } from 'ethers';
 
 export async function ethersGetUrl(

@@ -6,8 +6,8 @@
         "typecheck": "tsc --noEmit",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --ext .js,.ts --cache --fix; else eslint . --ext .js,.ts --cache; fi",
         "prepare": "husky install",
-        "test": "test/test.sh",
-        "install": "./install_script.sh"
+        "install": "cd dfx_extension && ./install.sh",
+        "test": "test/test.sh"
     },
     "type": "module",
     "bin": {
@@ -52,7 +52,8 @@
         "text-encoding": "0.7.0",
         "tsx": "^4.15.7",
         "typescript": "^5.2.2",
-        "uuid": "^9.0.1"
+        "uuid": "^9.0.1",
+        "wasmedge_quickjs": "github:demergent-labs/wasmedge-quickjs#3b3b0ee91248ccf9cd954ffafbac7e024648af92"
     },
     "devDependencies": {
         "@types/deep-equal": "^1.0.4",

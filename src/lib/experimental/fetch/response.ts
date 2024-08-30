@@ -1,12 +1,7 @@
-import { experimentalMessage } from '../experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../experimental';
 
 // TODO We currently do not have an implementation of ReadableStream
 // TODO thus our body is done with Uint8Array or Buffer
-
 import { AzleFetchHeaders } from './headers';
 
 // Using Response from wasmedge-quickjs doesn't seem ideal for the time being

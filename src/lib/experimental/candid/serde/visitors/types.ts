@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../../../experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../experimental';
 
 /*
  * The VisitorData gives us js_data which is the data that is about to be

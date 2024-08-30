@@ -8,20 +8,15 @@ import {
     handleClassApiCanister
 } from '../../../stable/commands/compile/javascript';
 import { AZLE_PACKAGE_PATH } from '../../../stable/utils/global_paths';
+import { WASMEDGE_QUICKJS_PATH } from '../../utils/global_paths';
 
 export async function compile(
     main: string,
-    wasmedgeQuickJsPath: string,
     esmAliases: Record<string, string>,
     esmExternals: string[]
 ): Promise<string> {
     const prelude = getPrelude(main);
-    const buildOptions = getBuildOptions(
-        prelude,
-        wasmedgeQuickJsPath,
-        esmAliases,
-        esmExternals
-    );
+    const buildOptions = getBuildOptions(prelude, esmAliases, esmExternals);
     const bundled = await bundle(buildOptions);
 
     return bundled
@@ -95,12 +90,11 @@ export function getPrelude(main: string): string {
 
 export function getBuildOptions(
     ts: string,
-    wasmedgeQuickJsPath: string,
     esmAliases: Record<string, string>,
     esmExternals: string[]
 ): BuildOptions {
     const finalWasmedgeQuickJsPath =
-        process.env.AZLE_WASMEDGE_QUICKJS_DIR ?? wasmedgeQuickJsPath;
+        process.env.AZLE_WASMEDGE_QUICKJS_PATH ?? WASMEDGE_QUICKJS_PATH;
 
     const externalImplemented = [
         '_node:fs',

@@ -2,12 +2,8 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { getCanisterId } from '../../../../../dfx';
-import { version } from '../../../../../package.json';
 import { getContext as getStableContext } from '../../../stable/commands/compile/get_context';
-import {
-    AZLE_PACKAGE_PATH,
-    GLOBAL_AZLE_CONFIG_DIR
-} from '../../../stable/utils/global_paths';
+import { AZLE_PACKAGE_PATH } from '../../../stable/utils/global_paths';
 import { CanisterConfig } from '../../../stable/utils/types';
 import { Context, WasmData } from '../../utils/types';
 import { getConsumer } from './open_value_sharing/consumer';
@@ -37,19 +33,12 @@ export async function getContext(
         managementDid
     };
 
-    const wasmedgeQuickJsName = `wasmedge-quickjs_${version}`;
-    const wasmedgeQuickJsPath = join(
-        GLOBAL_AZLE_CONFIG_DIR,
-        wasmedgeQuickJsName
-    );
-
     return {
         ...stableContext,
         canisterId,
         esmAliases,
         esmExternals,
         reloadedJsPath,
-        wasmData,
-        wasmedgeQuickJsPath
+        wasmData
     };
 }

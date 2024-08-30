@@ -1,8 +1,4 @@
-import { experimentalMessage } from '../experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../experimental';
 
 import { text } from '../candid/types/primitive/text';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

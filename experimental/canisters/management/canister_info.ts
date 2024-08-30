@@ -1,15 +1,10 @@
-import { experimentalMessage } from '../../../src/lib/experimental/experimental';
-
-if (globalThis._azleExperimental !== true) {
-    throw new Error(experimentalMessage('azle/experimental'));
-}
+import '../../../src/lib/experimental/experimental';
 
 // JS docs licensed under:
 //
 // - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
 //
 // Some documentation changed from original work.
-
 import { Opt } from '../../../src/lib/experimental/candid/types/constructed/opt';
 import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
 import { Variant } from '../../../src/lib/experimental/candid/types/constructed/variant';

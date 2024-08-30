@@ -27,18 +27,12 @@ export async function runCommand(
         main,
         reloadedJsPath,
         wasmBinaryPath,
-        wasmData,
-        wasmedgeQuickJsPath
+        wasmData
     } = await getContext(canisterName, canisterConfig);
 
     await createHiddenAzleDirectories(canisterPath);
 
-    const javaScript = await compileJavaScript(
-        main,
-        wasmedgeQuickJsPath,
-        esmAliases,
-        esmExternals
-    );
+    const javaScript = await compileJavaScript(main, esmAliases, esmExternals);
 
     const { candid, methodMeta } = await getCandidAndMethodMeta(
         canisterName,
@@ -74,7 +68,6 @@ export async function runCommand(
         reloadedJsPath,
         canisterId,
         main,
-        wasmedgeQuickJsPath,
         esmAliases,
         esmExternals,
         canisterName,
