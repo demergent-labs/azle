@@ -47,8 +47,8 @@ jobs:
 
                   echo "should_release=${SHOULD_RELEASE}" >> "$GITHUB_OUTPUT"
 
-    release-candidate-deploy:
-        name: Deploy release candidate for release branches
+    release:
+        name: Deploy release
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
         if: ${{ !needs.determine-should-release.outputs.should_release }}
         needs:
