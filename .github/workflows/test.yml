@@ -17,6 +17,14 @@ env:
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
+    test-commit-message:
+        runs-on: ubuntu-latest
+        steps:
+            - run: |
+                  echo "perfered message"
+                  echo \"${{ github.event.head_commit.message }}\"
+                  echo "back up"
+                  $(git log -1 --pretty=format:"%s")
     get-tests:
         name: Get tests
         runs-on: ubuntu-latest
