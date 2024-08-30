@@ -1,10 +1,10 @@
 # TODO I feel like the wording on this is a little clunky and/or ethereal.
 # TODO we have is release vs should release and I don't feel like it's clear what the answer is
 name: Should release
-description: Determines if the current workflow should spawn a something that Jordan can figure out the wording for
+description: Determines if the current pull request is for testing or for starting a release
 outputs:
     should_release:
-        description: Returns true if this branch needs should spawn a something that Jordan can figure out the wording for, otherwise false
+        description: Returns true if this branch should start a release, otherwise false
         value: ${{ steps.determine_should_release.outputs.should_release }}
 runs:
     using: composite
@@ -16,10 +16,10 @@ runs:
               BRANCH_NAME="${{ github.head_ref }}"
               RELEASE_VERSION="${BRANCH_NAME:9}"
               COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-              IS_RELEASE="${{ contains(github.head_ref, 'release--') }}"
+              IS_RELEASE_BRANCH_PR="${{ contains(github.head_ref, 'release--') }}"
 
               SHOULD_RELEASE="false"
-              if [[ $IS_RELEASE == "true" && "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
+              if [[ $IS_RELEASE_BRANCH_PR == "true" && "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
                   SHOULD_RELEASE="true"
               fi
 

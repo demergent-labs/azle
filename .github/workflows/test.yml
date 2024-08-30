@@ -10,7 +10,7 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 env:
-    IS_RELEASE: ${{ contains(github.head_ref, 'release--') }}
+    IS_RELEASE_BRANCH_PR: ${{ contains(github.head_ref, 'release--') }}
     IS_FEATURE_BRANCH_PR: ${{ !contains(github.head_ref, 'release--') }}
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
@@ -129,12 +129,12 @@ jobs:
               shell: bash -l {0}
 
             - name: Start dfx
-              if: ${{ !env.IS_RELEASE }}
+              if: ${{ env.IS_FEATURE_BRANCH_PR }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx with artifcial delay
-              if: ${{ env.IS_RELEASE }}
+              if: ${{ env.IS_RELEASE_BRANCH_PR }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
