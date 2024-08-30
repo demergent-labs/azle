@@ -5,8 +5,6 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 env:
-    IS_RELEASE_CANDIDATE: ${{ contains(github.head_ref, 'release--') }}
-    IS_FEATURE: ${{ !contains(github.head_ref, 'release--') }}
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
@@ -26,38 +24,34 @@ jobs:
                       ./examples
                       ./tests
 
-    determine-is-manual-release:
+    determine-should-release:
         if: ${{ contains(github.head_ref, 'release--') }}
         name: Determine if this job is for a manual release
         runs-on: ubuntu-latest
         outputs:
-            is_manual_release: ${{ steps.determine_is_manual_release.outputs.is_manual_release }}
+            should_release: ${{ steps.determine_should_release.outputs.should_release }}
         steps:
             - uses: actions/checkout@v4
-            - id: determine_is_manual_release
+            - id: determine_should_release
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
                   COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
 
-                  IS_AUTOMATED_RELEASE="false"
+                  SHOULD_RELEASE="false"
                   if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
-                      IS_AUTOMATED_RELEASE="true"
+                      SHOULD_RELEASE="true"
                   fi
 
-                  if [[ "$IS_AUTOMATED_RELEASE" == "false" ]]; then
-                      echo "is_manual_release=false" >> "$GITHUB_OUTPUT"
-                  else
-                      echo "is_manual_release=true" >> "$GITHUB_OUTPUT"
-                  fi
+                  echo "should_release=${SHOULD_RELEASE}" >> "$GITHUB_OUTPUT"
 
     release-candidate-deploy:
         name: Deploy release candidate for release branches
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
-        if: ${{ !needs.determine-is-manual-release.outputs.is_manual_release }}
+        if: ${{ !needs.determine-should-release.outputs.should_release }}
         needs:
             - get-tests
-            - determine-is-manual-release
+            - determine-should-release
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified

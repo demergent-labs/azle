@@ -12,8 +12,8 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 env:
-    IS_RELEASE_CANDIDATE: ${{ contains(github.head_ref, 'release--') }}
-    IS_FEATURE: ${{ !contains(github.head_ref, 'release--') }}
+    IS_RELEASE: ${{ contains(github.head_ref, 'release--') }}
+    IS_FEATURE_BRANCH_PR: ${{ !contains(github.head_ref, 'release--') }}
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
@@ -33,7 +33,7 @@ jobs:
                       ./examples
                       ./tests
                   exclude_dirs: |
-                      ${{ env.IS_FEATURE == 'true' && format('
+                      ${{ env.IS_FEATURE_BRANCH_PR == 'true' && format('
                          ./examples/basic_bitcoin
                          ./examples/bitcoin_psbt
                          ./examples/ckbtc
@@ -64,7 +64,7 @@ jobs:
                       IS_AUTOMATED_RELEASE="true"
                   fi
 
-                  if [[ "${{env.IS_RELEASE_CANDIDATE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
+                  if [[ "${{env.IS_RELEASE}}" == "true" && "$IS_AUTOMATED_RELEASE" == "false" ]]; then
                       echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
                   else
                       echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
@@ -148,12 +148,12 @@ jobs:
               shell: bash -l {0}
 
             - name: Start dfx
-              if: ${{ !env.IS_RELEASE_CANDIDATE }}
+              if: ${{ !env.IS_RELEASE }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx with artifical delay
-              if: ${{ env.IS_RELEASE_CANDIDATE }}
+              if: ${{ env.IS_RELEASE }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
@@ -166,15 +166,15 @@ jobs:
                   RELEASE_PR_MERGE_MSG='Merge pull request'
                   RELEASE_REPO_MSG='demergent-labs/release--'
 
-                  IS_FEATURE_PR=true
+                  IS_FEATURE_BRANCH_PR_PR=true
                   IS_RELEASE_PR=false
                   IS_MERGE_TO_MAIN_FROM_RELEASE=false
 
                   # Check if it's a feature pull request
                   if [[ $BRANCH_NAME != *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then
-                      IS_FEATURE_PR=true
+                      IS_FEATURE_BRANCH_PR_PR=true
                   else
-                      IS_FEATURE_PR=false
+                      IS_FEATURE_BRANCH_PR_PR=false
                   fi
 
                   # Check if it's a release candidate pull request
