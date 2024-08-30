@@ -79,4 +79,5 @@ jobs:
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
+                  echo $RELEASE_VERSION
                   ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-tests.outputs.tests).*.path }}
