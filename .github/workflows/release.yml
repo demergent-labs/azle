@@ -80,5 +80,5 @@ jobs:
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
                   echo $RELEASE_VERSION
-                  echo ${{toJson(needs.get-tests.outputs.tests)}}
-                  #   ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-tests.outputs.tests).*.path }}
+                  echo ${{toJson(needs.get-tests.outputs.tests.*.path)}}
+                  ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-tests.outputs.tests.*.path) }}
