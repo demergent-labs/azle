@@ -16,10 +16,10 @@ runs:
               BRANCH_NAME="${{ github.head_ref }}"
               RELEASE_VERSION="${BRANCH_NAME:9}"
               COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-              IS_RELEASE = ${{ contains(github.head_ref, 'release--') }}
+              IS_RELEASE="${{ contains(github.head_ref, 'release--') }}"
 
               SHOULD_RELEASE="false"
-              if [[ "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
+              if [[ $IS_RELEASE == "true" && "$COMMIT_MESSAGE" == "azle-bot automated release $RELEASE_VERSION" ]]; then
                   SHOULD_RELEASE="true"
               fi
 

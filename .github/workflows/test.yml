@@ -3,8 +3,6 @@
 # These tests are currently written in TypeScript and are intended to be run in a Node.js environment.
 # This GitHub Action takes care of deploying to npm and GitHub.
 
-# TODO give every step a name
-
 name: Tests
 on:
     push:
@@ -53,15 +51,10 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Should release
-              id: determine_should_run_tests
+            - id: determine_should_run_tests
               uses: ./.github/actions/should_release
 
     run-test:
-        # Tests can either run against the current code of Azle found in the repository, or the code deployed by the GitHub Action to npm.
-        # Feature branch pull requests (pull requests without release-- in the base branch name) will run all tests against the code found in the repository.
-        # Release branch pull requests (pull requests with release-- in the base branch name) will run all tests against the code found in the repository and the code deployed by the GitHub Action to npm.
-        # Pushes to main will run all tests against the code in the repository if the latest commit was not a merge of a release branch, and will run tests against the code in the repository and the code deployed by the GitHub Action to npm otherwise.
         name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
@@ -90,9 +83,10 @@ jobs:
                     - include_npm: true
                       azle_source: repo
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
-                tests: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' && fromJSON(needs.get-tests.outputs.tests) || fromJSON('["dummy"]') }}
+                tests: ${{ fromJSON(needs.get-tests.outputs.tests) }}
         steps:
             - name: Report full path of test
+              # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.tests.path}}
 
             - uses: actions/checkout@v4
@@ -101,7 +95,7 @@ jobs:
               with:
                   node-version: ${{ env.NODE_VERSION }}
 
-            - name: Run Pre-Test Azle Setup
+            - name: Run pre-test Azle setup
               run: |
 
                   # Install dfx
@@ -122,7 +116,7 @@ jobs:
                   npm run lint
               shell: bash -l {0}
 
-            - name: Run pre-test setup
+            - name: Run pre-test setup for ${{ matrix.tests.name }}
               run: |
                   npm install
 
@@ -184,7 +178,7 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
 
     # These final jobs are designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
-    check-basic-integration-test-success:
+    check-test-success:
         name: Check Azle tests succeeded
         needs: run-test
         runs-on: ubuntu-latest
@@ -192,7 +186,7 @@ jobs:
         steps:
             - run: exit 0
 
-    check-basic-integration-test-failure:
+    check-test-failure:
         name: Check Azle tests didn't fail
         needs: run-test
         runs-on: ubuntu-latest

@@ -82,8 +82,6 @@ json_result="["
 if [[ -n "$all_directories" ]]; then  # Check if all_directories is not an empty string
     while read -r dir; do
         if [[ -n "$dir" ]]; then  # Check if dir is not an empty string
-            echo "This is the dir" >&2
-            echo "$dir" >&2
             if ! is_excluded "$dir"; then
                 json_result+=$(generate_json "$dir")
                 json_result+=","
