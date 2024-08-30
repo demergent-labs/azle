@@ -30,6 +30,9 @@ runs:
                 echo "Expecting FALSE. Received: ${SHOULD_RELEASE}"
               fi
 
+              echo "$COMMIT_MESSAGE"
+              echo "azle-bot automated release $RELEASE_VERSION"
+
               echo "This is the value of should release"
               echo $SHOULD_RELEASE
 
