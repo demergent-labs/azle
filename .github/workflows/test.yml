@@ -52,6 +52,9 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - id: Cool
+              run: echo $(git log -1 --pretty=format:"%s")
+
             - id: determine_should_run_tests
               uses: ./.github/actions/should_release
 
