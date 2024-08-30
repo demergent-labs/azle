@@ -55,6 +55,9 @@ jobs:
             - id: Cool
               run: echo $(git log -1 --pretty=format:"%s")
 
+            - id: Boy
+              run: echo ${{ github.event.head_commit.message }}
+
             - id: determine_should_run_tests
               uses: ./.github/actions/should_release
 
