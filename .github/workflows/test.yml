@@ -135,7 +135,7 @@ jobs:
                   npm run lint
               shell: bash -l {0}
 
-            - name: Run Pre-Test Test Setup
+            - name: Run pre-test setup
               run: |
                   npm install
 
@@ -157,7 +157,7 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
-            - name: Run Test
+            - name: Run test
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
                   MAIN_BRANCH='refs/heads/main'
@@ -206,7 +206,7 @@ jobs:
 
     # These final jobs are designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
     check-basic-integration-test-success:
-        name: Check Azle Tests Succeeded
+        name: Check Azle tests succeeded
         needs: run-test
         runs-on: ubuntu-latest
         if: success()
@@ -214,7 +214,7 @@ jobs:
             - run: exit 0
 
     check-basic-integration-test-failure:
-        name: Check Azle Tests Didn't Fail
+        name: Check Azle tests didn't fail
         needs: run-test
         runs-on: ubuntu-latest
         if: failure()
