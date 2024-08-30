@@ -218,7 +218,7 @@ dependencies = [
  "anyhow",
  "candid",
  "candid_parser",
- "ic-cdk 0.12.1",
+ "ic-cdk 0.12.2",
  "ic-cdk-macros 0.8.4",
  "ic-cdk-timers",
  "ic-stable-structures",
@@ -684,9 +684,9 @@ checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
 
 [[package]]
 name = "ic-cdk"
-version = "0.12.1"
+version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f3d204af0b11c45715169c997858edb58fa8407d08f4fae78a6b415dd39a362"
+checksum = "0e908da565d9e304e83732500069ebb959e3d2cad80f894889ea37207112c7a0"
 dependencies = [
  "candid",
  "ic-cdk-macros 0.8.4",
@@ -743,7 +743,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8c43b9706fef3ad10c4192a14801d16bd9539068239f0f06f257857441364329"
 dependencies = [
  "futures",
- "ic-cdk 0.12.1",
+ "ic-cdk 0.12.2",
  "ic0",
  "serde",
  "serde_bytes",
@@ -1062,7 +1062,7 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "candid",
- "ic-cdk 0.12.1",
+ "ic-cdk 0.12.2",
  "ic-cdk-macros 0.8.4",
  "ic-cdk-timers",
  "ic-stable-structures",
