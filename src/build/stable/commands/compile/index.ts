@@ -1,5 +1,5 @@
 import { IOType } from 'child_process';
-import { writeFile } from 'fs/promises';
+import { outputFile } from 'fs-extra';
 import { join } from 'path';
 
 import { CanisterConfig } from '../../utils/types';
@@ -51,7 +51,7 @@ export async function writeGeneratedFiles(
     javaScript: string,
     wasmBinary: Uint8Array
 ): Promise<void> {
-    await writeFile(candidPath, candid);
-    await writeFile(join(canisterPath, 'main.js'), javaScript);
-    await writeFile(wasmBinaryPath, wasmBinary);
+    await outputFile(candidPath, candid);
+    await outputFile(join(canisterPath, 'main.js'), javaScript);
+    await outputFile(wasmBinaryPath, wasmBinary);
 }
