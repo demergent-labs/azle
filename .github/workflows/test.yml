@@ -48,7 +48,7 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             # If the branch should release then it shouldn't run tests.
-            should_run_tests: ${{ !steps.determine_should_run_tests.outputs.should_release }}
+            should_run_tests: ${{ steps.determine_should_run_tests.outputs.should_release == 'false' }}
         steps:
             - uses: actions/checkout@v4
 
