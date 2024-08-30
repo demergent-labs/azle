@@ -10,6 +10,7 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 env:
+    IS_MAIN_BRANCH: ${{ github.ref == 'refs/heads/main' }}
     IS_RELEASE_BRANCH_PR: ${{ contains(github.head_ref, 'release--') }}
     IS_FEATURE_BRANCH_PR: ${{ !contains(github.head_ref, 'release--') }}
     DFX_VERSION: 0.21.0
@@ -140,34 +141,11 @@ jobs:
 
             - name: Run test
               run: |
-                  BRANCH_NAME="${{ github.head_ref }}"
-                  MAIN_BRANCH='refs/heads/main'
-                  COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
-                  RELEASE_TAG='release--'
-                  RELEASE_PR_MERGE_MSG='Merge pull request'
-                  RELEASE_REPO_MSG='demergent-labs/release--'
+                  IS_MERGE_TO_MAIN_FROM_RELEASE=${{ env.IS_MAIN_BRANCH && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
 
-                  IS_RELEASE_PR=false
-                  IS_MERGE_TO_MAIN_FROM_RELEASE=false
-
-                  # Check if it's a release candidate pull request
-                  if [[ $BRANCH_NAME == *"$RELEASE_TAG"* && ${{ github.ref }} != "$MAIN_BRANCH" && !($COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"*) ]]; then
-                      IS_RELEASE_PR=true
-                  else
-                      IS_RELEASE_PR=false
-                  fi
-
-                  # Check if it's a merge from a release candidate into main
-                  if [[ ${{ github.ref }} == "$MAIN_BRANCH" && $COMMIT_MESSAGE == *"$RELEASE_PR_MERGE_MSG"* && $COMMIT_MESSAGE == *"$RELEASE_REPO_MSG"* ]]; then
-                      IS_MERGE_TO_MAIN_FROM_RELEASE=true
-                  else
-                      IS_MERGE_TO_MAIN_FROM_RELEASE=false
-                  fi
-
-                  # Determine the number of runs based on the conditions
-                  if [[ $IS_MERGE_TO_MAIN_FROM_RELEASE == true ]]; then
+                  if $IS_MERGE_TO_MAIN_FROM_RELEASE; then
                       RUNS=100
-                  elif [[ $IS_RELEASE_PR == true ]]; then
+                  elif ${{ env.IS_RELEASE_BRANCH_PR && !env.IS_MAIN_BRANCH }}; then
                       RUNS=10
                   else
                       RUNS=5
