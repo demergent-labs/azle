@@ -27,7 +27,7 @@ jobs:
 
             - name: Get tests
               id: get_tests
-              uses: ./.github/actions/generate_tests
+              uses: ./.github/actions/get_tests
               with:
                   directories: |
                       ./examples
