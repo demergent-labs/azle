@@ -30,12 +30,13 @@ export type Context = {
 };
 
 export type Command =
-    | 'new'
     | 'compile'
     | 'install-dfx-extension'
-    | 'clean'
+    | 'template'
     | 'upload-assets'
-    | '--version';
+    | '--version'
+    | 'clean'
+    | 'new';
 
 export type DfxJson = {
     canisters?: {
