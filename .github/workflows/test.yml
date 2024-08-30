@@ -52,11 +52,17 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - id: Cool
+            - name: Cool
               run: echo $(git log -1 --pretty=format:"%s")
 
-            - id: Boy
+            - name: Boy
               run: echo ${{ github.event.head_commit.message }}
+
+            - name: Town
+              run: echo $(git log -1 --no-merges --pretty=format:"%s")
+
+            - name: List recent commits
+              run: git log --oneline -5
 
             - id: determine_should_run_tests
               uses: ./.github/actions/should_release
