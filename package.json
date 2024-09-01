@@ -45,6 +45,7 @@
         "http-message-parser": "^0.0.34",
         "intl": "^1.2.5",
         "js-sha256": "0.9.0",
+        "jssha": "^3.3.1",
         "net": "^1.0.2",
         "pako": "^2.1.0",
         "reflect-metadata": "^0.2.2",
