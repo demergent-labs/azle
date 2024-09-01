@@ -133,21 +133,21 @@ async function handleTemplateCommand(ioType: IOType): Promise<void> {
 
 async function handleNewCommand(): Promise<void> {
     const experimental = process.argv.includes('--experimental');
+    const httpServer = process.argv.includes('--http-server');
 
     if (experimental === false) {
-        if (process.argv.includes('--http-server')) {
+        if (httpServer === true) {
             throw new Error(experimentalMessageCli('the --http-server option'));
         }
 
-        const templatePath = join(
-            AZLE_PACKAGE_PATH,
-            'examples',
-            'hello_world_candid_rpc'
-        );
+        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
 
         await runNewCommand(azleVersion, templatePath);
     } else {
-        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
+        const projectName =
+            httpServer === true ? 'hello_world_http_server' : 'hello_world';
+
+        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', projectName);
 
         await runNewCommand(azleVersion, templatePath);
     }

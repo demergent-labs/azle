@@ -1,27 +1,28 @@
+import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/test';
 
-export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.localhost:8000`;
+// @ts-ignore this path may not exist when these tests are imported into other test projects
+import { _SERVICE } from './dfx_generated/hello_world/hello_world.did';
 
+export function getTests(helloWorldCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
-        it('gets a simple hello world database', async () => {
-            const response = await fetch(`${origin}/db`);
-            const responseJson = await response.json();
+        it('gets original message', async () => {
+            const result = await helloWorldCanister.getMessage();
 
-            expect(responseJson).toEqual({ hello: '' });
+            expect(result).toBe('Hello world!');
         });
 
-        it('updates a simple hello world database', async () => {
-            const response = await fetch(`${origin}/db/update`, {
-                method: 'POST',
-                headers: [['Content-Type', 'application/json']],
-                body: JSON.stringify({
-                    hello: 'world'
-                })
-            });
-            const responseJson = await response.json();
+        it('sets a new message', async () => {
+            const result =
+                await helloWorldCanister.setMessage('Goodbye world!');
 
-            expect(responseJson).toEqual({ hello: 'world' });
+            expect(result).toBeUndefined();
+        });
+
+        it('gets persisted new message', async () => {
+            const result = await helloWorldCanister.getMessage();
+
+            expect(result).toBe('Goodbye world!');
         });
     };
 }
