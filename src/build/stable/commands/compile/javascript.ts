@@ -15,7 +15,7 @@ function getPrelude(main: string): string {
 
             import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
 
-            import Canister from './${main}';
+            import * as Canister from './${main}';
 
             ${handleClassApiCanister()}
         `;
@@ -24,7 +24,7 @@ function getPrelude(main: string): string {
 export function handleClassApiCanister(): string {
     return /*TS*/ `
         if (globalThis._azleNodeWasmEnvironment === false) {
-            const canisterClassInstance = new Canister();
+            const canisterClassInstance = new Canister.default();
             globalThis._azleCanisterClassInstance = canisterClassInstance;
         }
 
