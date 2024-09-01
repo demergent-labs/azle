@@ -10,8 +10,10 @@ Here's an example that copies the `src/frontend/dist` directory on the deploying
         "backend": {
             "type": "azle",
             "main": "src/backend/index.ts",
-            "assets": [["src/frontend/dist", "dist"]],
-            "build_assets": "npm run build"
+            "custom": {
+                "assets": [["src/frontend/dist", "dist"]],
+                "build_assets": "npm run build"
+            }
         }
     }
 }

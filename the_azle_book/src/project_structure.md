@@ -34,7 +34,9 @@ For a Candid RPC canister this would be the simplest corresponding `dfx.json` fi
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "candid_gen": "automatic"
+            "custom": {
+                "candid_gen": "automatic"
+            }
         }
     }
 }
@@ -56,7 +58,9 @@ The command-line tools `dfx` require a Candid file to deploy your canister. HTTP
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "candid_gen": "automatic"
+            "custom": {
+                "candid_gen": "automatic"
+            }
         }
     }
 }
@@ -73,7 +77,9 @@ If you would like to provide your own custom Candid file you can specify `"candi
             "type": "azle",
             "main": "src/api.ts",
             "candid": "src/api.did",
-            "candid_gen": "custom"
+            "custom": {
+                "candid_gen": "custom"
+            }
         }
     }
 }
@@ -93,7 +99,9 @@ Be aware that the environment variables that you specify in your `dfx.json` file
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "env": ["MY_ENVIRONMENT_VARIABLE"]
+            "custom": {
+                "env": ["MY_ENVIRONMENT_VARIABLE"]
+            }
         }
     }
 }
@@ -109,11 +117,13 @@ See [the Assets chapter](./assets.md) for more information:
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "assets": [
-                ["src/frontend/dist", "dist"],
-                ["src/backend/media/audio.ogg", "media/audio.ogg"],
-                ["src/backend/media/video.ogv", "media/video.ogv"]
-            ]
+            "custom": {
+                "assets": [
+                    ["src/frontend/dist", "dist"],
+                    ["src/backend/media/audio.ogg", "media/audio.ogg"],
+                    ["src/backend/media/video.ogv", "media/video.ogv"]
+                ]
+            }
         }
     }
 }
@@ -129,12 +139,14 @@ See [the Assets chapter](./assets.md) for more information:
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "assets": [
-                ["src/frontend/dist", "dist"],
-                ["src/backend/media/audio.ogg", "media/audio.ogg"],
-                ["src/backend/media/video.ogv", "media/video.ogv"]
-            ],
-            "build_assets": "npm run build"
+            "custom": {
+                "assets": [
+                    ["src/frontend/dist", "dist"],
+                    ["src/backend/media/audio.ogg", "media/audio.ogg"],
+                    ["src/backend/media/video.ogv", "media/video.ogv"]
+                ],
+                "build_assets": "npm run build"
+            }
         }
     }
 }
@@ -152,7 +164,9 @@ Sometimes the build process is overly eager to include packages that won't actua
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"]
+            "custom": {
+                "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"]
+            }
         }
     }
 }
@@ -170,8 +184,10 @@ This can be useful if you need to polyfill certain packages that might not exist
         "api": {
             "type": "azle",
             "main": "src/api.ts",
-            "esm_aliases": {
-                "crypto": "crypto-browserify"
+            "custom": {
+                "esm_aliases": {
+                    "crypto": "crypto-browserify"
+                }
             }
         }
     }
