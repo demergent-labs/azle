@@ -57,7 +57,7 @@ To create and deploy a simple sample application called `hello_world`:
 
 ```bash
 # create a new default project called hello_world
-npx azle new hello_world --http-server
+npx azle new hello_world --http-server --experimental
 cd hello_world
 ```
 
