@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises';
+import { outputFile } from 'fs-extra';
 import { join } from 'path';
 
 import { execSyncPretty } from './exec_sync_pretty';
@@ -16,7 +16,7 @@ export async function logGlobalDependencies(): Promise<void> {
         `\n` +
         `rustc version: ${rustVersion}`;
 
-    await writeFile(
+    await outputFile(
         join(AZLE_PACKAGE_PATH, 'global_dependencies'),
         globalDependencies
     );

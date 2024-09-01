@@ -1,9 +1,6 @@
 import { IOType } from 'child_process';
 
-import {
-    createHiddenAzleDirectories,
-    writeGeneratedFiles
-} from '../../../stable/commands/compile';
+import { writeGeneratedFiles } from '../../../stable/commands/compile';
 import { execSyncPretty } from '../../../stable/utils/exec_sync_pretty';
 import { CanisterConfig } from '../../../stable/utils/types';
 import { logSuccess } from '../../utils/log_success';
@@ -30,14 +27,10 @@ export async function runCommand(
         wasmData
     } = await getContext(canisterName, canisterConfig);
 
-    await createHiddenAzleDirectories(canisterPath);
-
     const javaScript = await compileJavaScript(main, esmAliases, esmExternals);
 
     const { candid, methodMeta } = await getCandidAndMethodMeta(
-        canisterName,
         canisterConfig.custom?.candid_gen,
-        canisterPath,
         candidPath,
         javaScript,
         ioType,
@@ -45,11 +38,9 @@ export async function runCommand(
     );
 
     const wasmBinary = await getWasmBinary(
-        canisterName,
         ioType,
         javaScript,
         wasmData,
-        canisterPath,
         methodMeta
     );
 

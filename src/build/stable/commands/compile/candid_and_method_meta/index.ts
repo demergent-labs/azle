@@ -6,9 +6,7 @@ import { getWasmBinary } from '../wasm_binary';
 import { execute } from './execute';
 
 export async function getCandidAndMethodMeta(
-    canisterName: string,
     candidGen: CandidGen | undefined,
-    canisterPath: string,
     candidPath: string,
     js: string,
     ioType: IOType,
@@ -22,11 +20,9 @@ export async function getCandidAndMethodMeta(
         return await handleAutomaticAndCustom(
             candidGen,
             candidPath,
-            canisterName,
             ioType,
             js,
-            wasmData,
-            canisterPath
+            wasmData
         );
     }
 
@@ -40,19 +36,11 @@ export async function getCandidAndMethodMeta(
 async function handleAutomaticAndCustom(
     candidGen: CandidGen | undefined,
     candidPath: string,
-    canisterName: string,
     ioType: IOType,
     js: string,
-    wasmData: WasmData,
-    canisterPath: string
+    wasmData: WasmData
 ): Promise<CandidAndMethodMeta> {
-    const wasmBinary = await getWasmBinary(
-        canisterName,
-        ioType,
-        js,
-        wasmData,
-        canisterPath
-    );
+    const wasmBinary = await getWasmBinary(ioType, js, wasmData);
 
     const { candid, methodMeta } = await execute(wasmBinary);
 

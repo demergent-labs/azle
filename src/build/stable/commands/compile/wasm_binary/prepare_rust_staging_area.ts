@@ -1,5 +1,6 @@
 import { existsSync } from 'fs';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, rm } from 'fs/promises';
+import { outputFile } from 'fs-extra';
 // @ts-ignore
 import { copy } from 'fs-extra/esm';
 import { join } from 'path';
@@ -10,9 +11,11 @@ import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 export async function prepareRustStagingArea(
     canisterPath: string
 ): Promise<void> {
+    await rm(canisterPath, { recursive: true, force: true });
+
     const workspaceCargoToml = generateWorkspaceCargoToml();
 
-    await writeFile(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
+    await outputFile(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
 
     await copy(
         join(AZLE_PACKAGE_PATH, 'Cargo.lock'),
