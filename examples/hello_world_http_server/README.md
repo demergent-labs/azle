@@ -57,7 +57,7 @@ To create and deploy a simple sample application called `hello_world`:
 
 ```bash
 # create a new default project called hello_world
-npx azle new hello_world
+npx azle new hello_world --http-server
 cd hello_world
 ```
 
@@ -81,4 +81,25 @@ In a separate terminal in the `hello_world` directory:
 ```bash
 # deploy your canister
 dfx deploy
+```
+
+If you would like your canister to autoreload on file changes:
+
+```bash
+AZLE_AUTORELOAD=true dfx deploy
+```
+
+View your frontend in a web browser at `http://[canisterId].localhost:8000`.
+
+To obtain your application's [canisterId]:
+
+```bash
+dfx canister id backend
+```
+
+Communicate with your canister using any HTTP client library, for example using `curl`:
+
+```bash
+curl http://[canisterId].localhost:8000/db
+curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].localhost:8000/db/update
 ```
