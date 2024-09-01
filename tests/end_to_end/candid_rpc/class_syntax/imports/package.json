@@ -5,7 +5,7 @@
     },
     "dependencies": {
         "azle": "0.23.0",
-        "js-sha256": "0.9.0"
+        "jssha": "^3.3.1"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
