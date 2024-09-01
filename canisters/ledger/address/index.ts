@@ -1,5 +1,5 @@
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
-import { sha224 } from 'js-sha256';
+import jsSHA from 'jssha';
 
 import { blob, Principal } from '../../../src/lib/experimental';
 import { Address } from '../index';
@@ -50,11 +50,15 @@ function addressFromPrincipal(
     const principalBytes = principal.toUint8Array();
     const subaccountBytes = getSubAccountArray(subaccount);
 
-    const hash = new Uint8Array(
-        sha224
-            .update([...prefixBytes, ...principalBytes, ...subaccountBytes])
-            .digest()
-    );
+    const hash = new jsSHA('SHA-224', 'UINT8ARRAY')
+        .update(
+            Uint8Array.from([
+                ...prefixBytes,
+                ...principalBytes,
+                ...subaccountBytes
+            ])
+        )
+        .getHash('UINT8ARRAY');
     const checksum = to32Bits(getCrc32(hash));
 
     return toHexString(new Uint8Array([...checksum, ...hash]));
