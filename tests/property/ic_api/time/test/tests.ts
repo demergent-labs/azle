@@ -124,7 +124,7 @@ async function getInspectMessageTime(actor: Actor): Promise<bigint> {
         const errorMessage: string = error.message;
 
         const inspectMessageTime = Number(
-            errorMessage.match(/.*with message: (.*)"/)?.[1]
+            errorMessage.match(/.*with message: (\d+)/)?.[1]
         );
 
         return BigInt(inspectMessageTime);
