@@ -1,4 +1,5 @@
 import { IOType } from 'child_process';
+import { rm } from 'fs/promises';
 import { outputFile } from 'fs-extra';
 import { join } from 'path';
 
@@ -15,6 +16,8 @@ export async function runCommand(
 ): Promise<void> {
     const { main, canisterPath, candidPath, wasmBinaryPath, wasmData } =
         getContext(canisterName, canisterConfig);
+
+    await rm(canisterPath, { recursive: true, force: true });
 
     const javaScript = await compileJavaScript(main);
 
