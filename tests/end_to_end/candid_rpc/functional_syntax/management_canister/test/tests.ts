@@ -205,7 +205,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             expect(canisterStatus.status).toStrictEqual({
                 running: null
             });
-            expect(canisterStatus.memory_size).toBe(654n);
+            expect(canisterStatus.memory_size).toBe(702n);
             expect(canisterStatus.cycles).toBeGreaterThanOrEqual(
                 800_000_000_000n
             );

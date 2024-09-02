@@ -147,4 +147,3 @@
             -   [clear timer](./reference/timers/clear_timer.md)
             -   [set timer](./reference/timers/set_timer.md)
             -   [set timer interval](./reference/timers/set_timer_interval.md)
-        -   [Wasm Binary Optimization](./reference/wasm_binary_optimization.md)

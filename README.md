@@ -41,7 +41,7 @@ cd hello_world
 You can create the hello_world HTTP Server example locally like this:
 
 ```bash
-npx azle new hello_world --http-server
+npx azle new hello_world --http-server --experimental
 cd hello_world
 
 # Now read the README.md

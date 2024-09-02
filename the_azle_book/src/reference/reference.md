@@ -10,4 +10,3 @@
 -   [Plugins](./plugins.md)
 -   [Stable Memory](./stable_memory/stable_memory.md)
 -   [Timers](./timers/timers.md)
--   [Wasm Binary Optimization](./wasm_binary_optimization.md)

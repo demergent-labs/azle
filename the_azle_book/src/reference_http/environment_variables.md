@@ -11,7 +11,6 @@
 -   [AZLE_TEST_FETCH](#azle_test_fetch)
 -   [AZLE_UPLOADER_IDENTITY_NAME]()
 -   [AZLE_VERBOSE](#azle_verbose)
--   [AZLE_WASMEDGE_QUICKJS_DIR](#azle_wasmedge_quickjs_dir)
 
 ## AZLE_AUTORELOAD
 
@@ -56,7 +55,3 @@ Change the name of the `dfx` identity added as a controller for uploading large 
 ## AZLE_VERBOSE
 
 Set this to `true` to enable more logging output during `dfx deploy`.
-
-## AZLE_WASMEDGE_QUICKJS_DIR
-
-Set this to the path that you would like Azle to use to find the `wasmedge-quickjs` directory. The default is `~/.config/azle/wasmedge-quickjs_[current Dockerfile hash]`.

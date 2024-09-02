@@ -10,17 +10,15 @@ Modify your `dfx.json` file with the `env` property to specify which environment
 {
     "canisters": {
         "canister1": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/canister1/index.ts",
-            "build": "npx azle canister1",
-            "candid": "src/canister1/index.did",
-            "wasm": ".azle/canister1/canister1.wasm",
-            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
             },
-            "env": ["CANISTER1_PRINCIPAL", "CANISTER2_PRINCIPAL"]
+            "custom": {
+                "env": ["CANISTER1_PRINCIPAL", "CANISTER2_PRINCIPAL"]
+            }
         }
     }
 }
