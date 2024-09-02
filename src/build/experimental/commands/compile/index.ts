@@ -1,4 +1,5 @@
 import { IOType } from 'child_process';
+import { rm } from 'fs/promises';
 
 import { writeGeneratedFiles } from '../../../stable/commands/compile';
 import { execSyncPretty } from '../../../stable/utils/exec_sync_pretty';
@@ -26,6 +27,8 @@ export async function runCommand(
         wasmBinaryPath,
         wasmData
     } = await getContext(canisterName, canisterConfig);
+
+    await rm(canisterPath, { recursive: true, force: true });
 
     const javaScript = await compileJavaScript(main, esmAliases, esmExternals);
 
