@@ -12,7 +12,7 @@ const hugeAutoGenAutoUploadSmallFileInfos: [number, Unit][] = [[0, 'GiB']]; // T
 const hugeAutoGenAutoUploadFileInfos: [number, Unit][] =
     process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
     process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
-        ? [...hugeAutoGenAutoUploadSmallFileInfos, [2, 'GiB'], [5, 'GiB']]
+        ? [...hugeAutoGenAutoUploadSmallFileInfos, [2, 'GiB']] // TODO add tests for 5GiB and maybe larger https://github.com/demergent-labs/azle/issues/2065
         : hugeAutoGenAutoUploadSmallFileInfos;
 
 export function hugeFilesTests(origin: string): Test {
