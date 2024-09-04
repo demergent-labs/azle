@@ -7,7 +7,7 @@
 !dfx/**
 !dfx_extension/**
 !examples/hello_world/**
-!examples/hello_world_candid_rpc/**
+!examples/hello_world_http_server/**
 !experimental/**
 !http_client/**
 !property_tests/arbitraries/**
