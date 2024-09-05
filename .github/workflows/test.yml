@@ -16,6 +16,55 @@ env:
     IS_RELEASE_BRANCH_PR: ${{ contains(github.head_ref, 'release--') }}
     IS_FEATURE_BRANCH_PR: ${{ !contains(github.head_ref, 'release--') }}
 jobs:
+    see-vars:
+        name: See vars
+        runs-on: ubuntu-latest
+        steps:
+            - run: |
+                  echo "CI: $CI"
+                  echo "ACTION: $GITHUB_ACTION"
+                  echo "ACTION_PATH: $GITHUB_ACTION_PATH"
+                  echo "ACTION_REPOSITORY: $GITHUB_ACTION_REPOSITORY"
+                  echo "ACTIONS: $GITHUB_ACTIONS"
+                  echo "ACTOR: $GITHUB_ACTOR"
+                  echo "ACTOR_ID: $GITHUB_ACTOR_ID"
+                  echo "API_URL: $GITHUB_API_URL"
+                  echo "BASE_REF: $GITHUB_BASE_REF"
+                  echo "ENV: $GITHUB_ENV"
+                  echo "EVENT_NAME: $GITHUB_EVENT_NAME"
+                  echo "EVENT_PATH: $GITHUB_EVENT_PATH"
+                  echo "GRAPHQL_URL: $GITHUB_GRAPHQL_URL"
+                  echo "HEAD_REF: $GITHUB_HEAD_REF"
+                  echo "JOB: $GITHUB_JOB"
+                  echo "OUTPUT: $GITHUB_OUTPUT"
+                  echo "PATH: $GITHUB_PATH"
+                  echo "REF: $GITHUB_REF"
+                  echo "REF_NAME: $GITHUB_REF_NAME"
+                  echo "REF_PROTECTED: $GITHUB_REF_PROTECTED"
+                  echo "REF_TYPE: $GITHUB_REF_TYPE"
+                  echo "REPOSITORY: $GITHUB_REPOSITORY"
+                  echo "REPSOITORY ID: $GITHUB_REPOSITORY_ID"
+                  echo "REPOSITORY_OWNER: $GITHUB_REPOSITORY_OWNER"
+                  echo "REPSOSITRY_OWNDER_ID: $GITHUB_REPOSITORY_OWNER_ID"
+                  echo "RETENTION_DAYS: $GITHUB_RETENTION_DAYS"
+                  echo "RUN_ATTEMPT: $GITHUB_RUN_ATTEMPT"
+                  echo "RUN_ID: $GITHUB_RUN_ID"
+                  echo "RUN_NUMBER: $GITHUB_RUN_NUMBER"
+                  echo "SERVER_URL: $GITHUB_SERVER_URL"
+                  echo "SHA: $GITHUB_SHA"
+                  echo "STEP_SUMMARY: $GITHUB_STEP_SUMMARY"
+                  echo "TRIGGERING_ACTOR: $GITHUB_TRIGGERING_ACTOR"
+                  echo "WORKFLOW: $GITHUB_WORKFLOW"
+                  echo "WORKFLOW_REF: $GITHUB_WORKFLOW_REF"
+                  echo "WORKFLOW_SHA: $GITHUB_WORKFLOW_SHA"
+                  echo "WORKSPACE: $GITHUB_WORKSPACE"
+                  echo "ARCH: $RUNNER_ARCH"
+                  echo "DEBUG: $RUNNER_DEBUG"
+                  echo "ENVIRONMENT: $RUNNER_ENVIRONMENT"
+                  echo "NAME: $RUNNER_NAME"
+                  echo "OS: $RUNNER_OS"
+                  echo "TEMP: $RUNNER_TEMP"
+                  echo "TOOL_CACHE: $RUNNER_TOOL_CACHE"
     get-tests:
         name: Get tests
         runs-on: ubuntu-latest
