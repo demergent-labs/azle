@@ -65,6 +65,36 @@ jobs:
                   echo "OS: $RUNNER_OS"
                   echo "TEMP: $RUNNER_TEMP"
                   echo "TOOL_CACHE: $RUNNER_TOOL_CACHE"
+
+                  # Show the repository's remote URL
+                  echo "Repository URL:"
+                  git remote get-url origin
+
+                  # Show the current branch name
+                  echo -e "\nCurrent Branch:"
+                  git branch --show-current
+
+                  # Show the latest commit hash and message
+                  echo -e "\nLatest Commit:"
+                  git log -1 --pretty=format:"%h - %s"
+
+                  # Show the date and author of the latest commit
+                  echo -e "\nCommit Details:"
+                  git log -1 --pretty=format:"Author: %an, Date: %ad"
+
+                  # Show the repository's status
+                  echo -e "\nRepository Status:"
+                  git status -s
+
+                  # Show unpushed commits (if any)
+                  echo -e "\nUnpushed Commits:"
+                  git log @{u}..HEAD --oneline || echo "No unpushed commits"
+
+                  # Show stashes (if any)
+                  echo -e "\nGit Stashes:"
+                  git stash list || echo "No stashes"
+
+                  echo -e "\nDone!"
     get-tests:
         name: Get tests
         runs-on: ubuntu-latest
