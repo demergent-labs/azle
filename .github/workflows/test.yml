@@ -74,6 +74,9 @@ jobs:
                   echo "TEMP: $RUNNER_TEMP"
                   echo "TOOL_CACHE: $RUNNER_TOOL_CACHE"
 
+                  echo "THIS MIGHT BE THE MOST IMPORTANT THING:"
+                  echo ${{ github.event.pull_request.head.ref }}
+
                   # Show the repository's remote URL
                   echo "Repository URL:"
                   git remote get-url origin
