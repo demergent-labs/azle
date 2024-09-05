@@ -20,6 +20,11 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 jobs:
+    changes:
+        name: Dummy Changes
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "I just want to have this here to make sure this release is a bit different"
     see-vars:
         name: See vars
         runs-on: ubuntu-latest
