@@ -33,7 +33,7 @@ export function manualTests(origin: string): Test {
                     'manually uploads files via azle command',
                     async () => {
                         execSync(
-                            `npx azle upload-assets backend ${join(
+                            `node_modules/.bin/azle upload-assets backend ${join(
                                 'assets',
                                 'manual',
                                 fileName

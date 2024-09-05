@@ -93,9 +93,6 @@ export function getBuildOptions(
     esmAliases: Record<string, string>,
     esmExternals: string[]
 ): BuildOptions {
-    const finalWasmedgeQuickJsPath =
-        process.env.AZLE_WASMEDGE_QUICKJS_PATH ?? WASMEDGE_QUICKJS_PATH;
-
     const externalImplemented = [
         '_node:fs',
         '_node:os',
@@ -134,25 +131,25 @@ export function getBuildOptions(
     return {
         ...stableBuildOptions,
         alias: {
-            internal: `${finalWasmedgeQuickJsPath}/modules/internal`,
-            util: `${finalWasmedgeQuickJsPath}/modules/util`,
-            fs: `${finalWasmedgeQuickJsPath}/modules/fs`,
-            fmt: `${finalWasmedgeQuickJsPath}/modules/fmt`,
-            assert: `${finalWasmedgeQuickJsPath}/modules/assert.js`,
-            buffer: `${finalWasmedgeQuickJsPath}/modules/buffer.js`,
-            path: `${finalWasmedgeQuickJsPath}/modules/path.js`,
-            stream: `${finalWasmedgeQuickJsPath}/modules/stream.js`,
-            process: `${finalWasmedgeQuickJsPath}/modules/process.js`,
-            url: `${finalWasmedgeQuickJsPath}/modules/url.js`,
-            events: `${finalWasmedgeQuickJsPath}/modules/events.js`,
-            string_decoder: `${finalWasmedgeQuickJsPath}/modules/string_decoder.js`,
-            punycode: `${finalWasmedgeQuickJsPath}/modules/punycode.js`,
-            querystring: `${finalWasmedgeQuickJsPath}/modules/querystring.js`,
-            whatwg_url: `${finalWasmedgeQuickJsPath}/modules/whatwg_url.js`,
-            encoding: `${finalWasmedgeQuickJsPath}/modules/encoding.js`,
-            http: `${finalWasmedgeQuickJsPath}/modules/http.js`,
-            os: `${finalWasmedgeQuickJsPath}/modules/os.js`,
-            // crypto: `${finalWasmedgeQuickJsPath}/modules/crypto.js`, // TODO waiting on wasi-crypto
+            internal: `${WASMEDGE_QUICKJS_PATH}/modules/internal`,
+            util: `${WASMEDGE_QUICKJS_PATH}/modules/util`,
+            fs: `${WASMEDGE_QUICKJS_PATH}/modules/fs`,
+            fmt: `${WASMEDGE_QUICKJS_PATH}/modules/fmt`,
+            assert: `${WASMEDGE_QUICKJS_PATH}/modules/assert.js`,
+            buffer: `${WASMEDGE_QUICKJS_PATH}/modules/buffer.js`,
+            path: `${WASMEDGE_QUICKJS_PATH}/modules/path.js`,
+            stream: `${WASMEDGE_QUICKJS_PATH}/modules/stream.js`,
+            process: `${WASMEDGE_QUICKJS_PATH}/modules/process.js`,
+            url: `${WASMEDGE_QUICKJS_PATH}/modules/url.js`,
+            events: `${WASMEDGE_QUICKJS_PATH}/modules/events.js`,
+            string_decoder: `${WASMEDGE_QUICKJS_PATH}/modules/string_decoder.js`,
+            punycode: `${WASMEDGE_QUICKJS_PATH}/modules/punycode.js`,
+            querystring: `${WASMEDGE_QUICKJS_PATH}/modules/querystring.js`,
+            whatwg_url: `${WASMEDGE_QUICKJS_PATH}/modules/whatwg_url.js`,
+            encoding: `${WASMEDGE_QUICKJS_PATH}/modules/encoding.js`,
+            http: `${WASMEDGE_QUICKJS_PATH}/modules/http.js`,
+            os: `${WASMEDGE_QUICKJS_PATH}/modules/os.js`,
+            // crypto: `${WASMEDGE_QUICKJS_PATH}/modules/crypto.js`, // TODO waiting on wasi-crypto
             crypto: 'crypto-browserify', // TODO we really want the wasmedge-quickjs version once wasi-crypto is working
             zlib: 'pako',
             'internal/deps/acorn/acorn/dist/acorn': join(

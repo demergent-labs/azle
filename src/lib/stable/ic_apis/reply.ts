@@ -30,7 +30,7 @@ export function reply<T>(input: ReplyInput<T>): void {
                 ? []
                 : [input.data];
 
-        // @ts-expect-error idl.d.ts specifies the wrong type for IDL.encode. It's actually a Uint8Array
+        // @ts-ignore IDL.encode types are defined incorrectly https://github.com/demergent-labs/azle/issues/2061
         return globalThis._azleIc.replyRaw(IDL.encode(idlType, data).buffer);
     }
 }

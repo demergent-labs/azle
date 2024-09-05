@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { IDL, query } from 'azle';
-import { sha224 } from 'js-sha256';
+import jsSHA from 'jssha';
 
 import { relativeImport } from './library';
 
@@ -12,7 +12,7 @@ export default class {
 
     @query([IDL.Text], IDL.Text)
     packageImport(message) {
-        return sha224.update(message).hex();
+        return new jsSHA('SHA-224', 'TEXT').update(message).getHash('HEX');
     }
 
     @query([], IDL.Int)

@@ -8,6 +8,7 @@ export async function manipulateWasmBinary<T extends Record<string, unknown>>(
     js: string,
     canisterTemplatePath: string,
     wasmData: T,
+    validate: boolean,
     methodMeta?: MethodMeta
 ): Promise<Uint8Array> {
     const module = await getModule(canisterTemplatePath);
@@ -47,8 +48,9 @@ export async function manipulateWasmBinary<T extends Record<string, unknown>>(
         encodedWasmData
     );
 
-    // TODO do we need to validate? It takes some extra time
-    // module.validate();
+    if (validate === true) {
+        module.validate();
+    }
 
     return module.emitBinary();
 }

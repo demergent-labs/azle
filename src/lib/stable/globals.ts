@@ -118,28 +118,24 @@ if (globalThis._azleInsideCanister === true) {
     };
 
     if (globalThis._azleExperimental === false) {
-        (globalThis as any).Buffer = createExperimentalWarningProxy('Buffer');
+        createGlobalExperimentalErrorProperty('fetch');
+        createGlobalExperimentalErrorProperty('Buffer');
+        createGlobalExperimentalErrorProperty('window');
+        createGlobalExperimentalErrorProperty('global');
+        createGlobalExperimentalErrorProperty('self');
+        createGlobalExperimentalErrorProperty('URL');
+        createGlobalExperimentalErrorProperty('WebAssembly');
+        createGlobalExperimentalErrorProperty('setTimeout');
+        createGlobalExperimentalErrorProperty('clearTimeout');
     }
 }
 
-function createExperimentalWarningProxy(name: string): object {
-    return new Proxy(
-        {},
-        {
-            get(): any {
-                throw new Error(experimentalWarningMessage(name));
-            },
-            apply(): any {
-                throw new Error(experimentalWarningMessage(name));
-            },
-            construct(): any {
-                throw new Error(experimentalWarningMessage(name));
-            },
-            set(): any {
-                throw new Error(experimentalWarningMessage(name));
-            }
+function createGlobalExperimentalErrorProperty(name: string): void {
+    Object.defineProperty(globalThis, name, {
+        get() {
+            throw new Error(experimentalWarningMessage(name));
         }
-    );
+    });
 }
 
 function experimentalWarningMessage(name: string): string {

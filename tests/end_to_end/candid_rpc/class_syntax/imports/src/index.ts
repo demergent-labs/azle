@@ -1,5 +1,5 @@
 import { IDL, query } from 'azle';
-import { sha224 } from 'js-sha256';
+import jsSHA from 'jssha';
 
 import { one, three, two } from './library';
 
@@ -21,7 +21,7 @@ export default class {
 
     @query([IDL.Text], IDL.Text)
     sha224Hash(message: string): string {
-        return sha224.update(message).hex();
+        return new jsSHA('SHA-224', 'TEXT').update(message).getHash('HEX');
     }
 
     @query([], IDL.Int)

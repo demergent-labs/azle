@@ -30,9 +30,6 @@
             "declarations": {
                 "output": "test/dfx_generated/wallet",
                 "node_compatibility": true
-            },
-            "custom": {
-                "experimental": true
             }
         }
     }

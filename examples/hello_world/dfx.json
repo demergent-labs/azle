@@ -1,12 +1,11 @@
 {
     "canisters": {
-        "backend": {
+        "hello_world": {
             "type": "azle",
-            "main": "src/backend/index.ts",
-            "custom": {
-                "experimental": true,
-                "assets": [["src/frontend/dist", "dist"]],
-                "build_assets": "npm run build"
+            "main": "src/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/hello_world",
+                "node_compatibility": true
             }
         }
     }

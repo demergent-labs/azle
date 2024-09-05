@@ -42,7 +42,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.21.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+DFX_VERSION=0.22.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -57,18 +57,13 @@ To create and deploy a simple sample application called `hello_world`:
 
 ```bash
 # create a new default project called hello_world
-npx azle new hello_world
+npx azle new hello_world --http-server --experimental
 cd hello_world
 ```
 
 ```bash
 # install all npm dependencies including azle
 npm install
-```
-
-```bash
-# install the azle dfx extension
-npx azle install-dfx-extension
 ```
 
 ```bash
@@ -81,4 +76,25 @@ In a separate terminal in the `hello_world` directory:
 ```bash
 # deploy your canister
 dfx deploy
+```
+
+If you would like your canister to autoreload on file changes:
+
+```bash
+AZLE_AUTORELOAD=true dfx deploy
+```
+
+View your frontend in a web browser at `http://[canisterId].localhost:8000`.
+
+To obtain your application's [canisterId]:
+
+```bash
+dfx canister id backend
+```
+
+Communicate with your canister using any HTTP client library, for example using `curl`:
+
+```bash
+curl http://[canisterId].localhost:8000/db
+curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].localhost:8000/db/update
 ```

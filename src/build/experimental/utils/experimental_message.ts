@@ -15,5 +15,5 @@ export function experimentalMessageDfxJson(description: string): string {
 }
 
 export function experimentalMessageCli(description: string): string {
-    return `Azle: Experimental mode must be enabled to use ${description}. You can enable experimental mode with the --experimental flag as the final argument`;
+    return `Azle: Experimental mode must be enabled to use ${description}. You can enable experimental mode with the --experimental flag`;
 }
