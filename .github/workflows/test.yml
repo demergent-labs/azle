@@ -20,6 +20,90 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 jobs:
+    see-vars:
+        name: See vars
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - run: |
+                  echo "CI: $CI"
+                  echo "ACTION: $GITHUB_ACTION"
+                  echo "ACTION_PATH: $GITHUB_ACTION_PATH"
+                  echo "ACTION_REPOSITORY: $GITHUB_ACTION_REPOSITORY"
+                  echo "ACTIONS: $GITHUB_ACTIONS"
+                  echo "ACTOR: $GITHUB_ACTOR"
+                  echo "ACTOR_ID: $GITHUB_ACTOR_ID"
+                  echo "API_URL: $GITHUB_API_URL"
+                  echo "BASE_REF: $GITHUB_BASE_REF"
+                  echo "ENV: $GITHUB_ENV"
+                  echo "EVENT_NAME: $GITHUB_EVENT_NAME"
+                  echo "EVENT_PATH: $GITHUB_EVENT_PATH"
+                  echo "GRAPHQL_URL: $GITHUB_GRAPHQL_URL"
+                  echo "HEAD_REF: $GITHUB_HEAD_REF"
+                  echo "JOB: $GITHUB_JOB"
+                  echo "OUTPUT: $GITHUB_OUTPUT"
+                  echo "PATH: $GITHUB_PATH"
+                  echo "REF: $GITHUB_REF"
+                  echo "REF_NAME: $GITHUB_REF_NAME"
+                  echo "REF_PROTECTED: $GITHUB_REF_PROTECTED"
+                  echo "REF_TYPE: $GITHUB_REF_TYPE"
+                  echo "REPOSITORY: $GITHUB_REPOSITORY"
+                  echo "REPSOITORY ID: $GITHUB_REPOSITORY_ID"
+                  echo "REPOSITORY_OWNER: $GITHUB_REPOSITORY_OWNER"
+                  echo "REPSOSITRY_OWNDER_ID: $GITHUB_REPOSITORY_OWNER_ID"
+                  echo "RETENTION_DAYS: $GITHUB_RETENTION_DAYS"
+                  echo "RUN_ATTEMPT: $GITHUB_RUN_ATTEMPT"
+                  echo "RUN_ID: $GITHUB_RUN_ID"
+                  echo "RUN_NUMBER: $GITHUB_RUN_NUMBER"
+                  echo "SERVER_URL: $GITHUB_SERVER_URL"
+                  echo "SHA: $GITHUB_SHA"
+                  echo "STEP_SUMMARY: $GITHUB_STEP_SUMMARY"
+                  echo "TRIGGERING_ACTOR: $GITHUB_TRIGGERING_ACTOR"
+                  echo "WORKFLOW: $GITHUB_WORKFLOW"
+                  echo "WORKFLOW_REF: $GITHUB_WORKFLOW_REF"
+                  echo "WORKFLOW_SHA: $GITHUB_WORKFLOW_SHA"
+                  echo "WORKSPACE: $GITHUB_WORKSPACE"
+                  echo "ARCH: $RUNNER_ARCH"
+                  echo "DEBUG: $RUNNER_DEBUG"
+                  echo "ENVIRONMENT: $RUNNER_ENVIRONMENT"
+                  echo "NAME: $RUNNER_NAME"
+                  echo "OS: $RUNNER_OS"
+                  echo "TEMP: $RUNNER_TEMP"
+                  echo "TOOL_CACHE: $RUNNER_TOOL_CACHE"
+
+                  # Show the repository's remote URL
+                  echo "Repository URL:"
+                  git remote get-url origin
+
+                  # Show the current branch name
+                  echo -e "\nCurrent Branch:"
+                  git branch --show-current
+
+                  # Show the latest commit hash and message
+                  echo -e "\nLatest Commit:"
+                  git log -1 --pretty=format:"%h - %s"
+
+                  # Show the date and author of the latest commit
+                  echo -e "\nCommit Details:"
+                  git log -1 --pretty=format:"Author: %an, Date: %ad"
+
+                  # Show the last few commits
+                  echo -e "\nLast 20 Commits:"
+                  git log --oneline --graph -n 20
+
+                  # Show the repository's status
+                  echo -e "\nRepository Status:"
+                  git status -s
+
+                  # Show unpushed commits (if any)
+                  echo -e "\nUnpushed Commits:"
+                  git log @{u}..HEAD --oneline || echo "No unpushed commits"
+
+                  # Show stashes (if any)
+                  echo -e "\nGit Stashes:"
+                  git stash list || echo "No stashes"
+
+                  echo -e "\nDone!"
     release-candidate-deploy:
         runs-on: ubuntu-latest
         env:
