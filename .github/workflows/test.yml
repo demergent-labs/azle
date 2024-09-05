@@ -20,6 +20,7 @@ jobs:
         name: See vars
         runs-on: ubuntu-latest
         steps:
+            - uses: actions/checkout@v4
             - run: |
                   echo "CI: $CI"
                   echo "ACTION: $GITHUB_ACTION"
