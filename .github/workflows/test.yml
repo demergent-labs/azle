@@ -25,6 +25,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+              # if: contains(github.head_ref, 'release--')
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
             - run: |
                   echo "CI: $CI"
                   echo "ACTION: $GITHUB_ACTION"
