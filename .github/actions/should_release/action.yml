@@ -10,6 +10,8 @@ runs:
     using: composite
     steps:
         - uses: actions/checkout@v4
+          with:
+              ref: ${{ github.event.pull_request.head.ref }} # This is necessary for this job to be able to get the correct commit message from `git log`
 
         - id: determine_should_release
           run: |
