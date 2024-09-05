@@ -83,6 +83,10 @@ jobs:
                   echo -e "\nCommit Details:"
                   git log -1 --pretty=format:"Author: %an, Date: %ad"
 
+                  # Show the last few commits
+                  echo -e "\nLast 20 Commits:"
+                  git log --oneline --graph -n 20
+
                   # Show the repository's status
                   echo -e "\nRepository Status:"
                   git status -s
