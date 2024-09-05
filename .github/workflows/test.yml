@@ -168,6 +168,7 @@ jobs:
                     echo "::set-output name=should_run_tests::true"
                   fi
             - id: double_check
+              name: Double Check
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
@@ -180,7 +181,7 @@ jobs:
                   then
                     echo "We have decided not to release and do the other thing with the automatic publish instead."
                   else
-                    echo "We have decided to release and run the tests"
+                    echo "We have decided to run the tests"
                   fi
     basic-integration-tests:
         needs: release-candidate-deploy
