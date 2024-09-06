@@ -8,8 +8,21 @@ env:
     DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
-    get-tests:
+    determine-should-release:
         if: ${{ contains(github.head_ref, 'release--') }}
+        name: Determine if this branch should release
+        runs-on: ubuntu-latest
+        outputs:
+            should_release: ${{ steps.determine_should_release.outputs.should_release }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: determine_should_release
+              uses: ./.github/actions/should_release
+
+    get-tests:
+        needs: determine-should-release
+        if: ${{ contains(github.head_ref, 'release--') && needs.determine-should-release.outputs.should_release }}
         name: Get tests
         runs-on: ubuntu-latest
         outputs:
@@ -24,18 +37,6 @@ jobs:
                   directories: |
                       ./examples
                       ./tests
-
-    determine-should-release:
-        if: ${{ contains(github.head_ref, 'release--') }}
-        name: Determine if this branch should release
-        runs-on: ubuntu-latest
-        outputs:
-            should_release: ${{ steps.determine_should_release.outputs.should_release }}
-        steps:
-            - uses: actions/checkout@v4
-
-            - id: determine_should_release
-              uses: ./.github/actions/should_release
 
     release:
         name: Deploy release
