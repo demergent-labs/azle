@@ -1,4 +1,4 @@
-#!/usr/bin/env -S tsx --abort-on-uncaught-exception
+#!/usr/bin/env -S ./node_modules/.bin/tsx --abort-on-uncaught-exception
 
 import { IOType } from 'child_process';
 import { join } from 'path';
