@@ -8,6 +8,10 @@ inputs:
         description: List of directories to exclude from the search
         required: false
         default: ''
+    node_version:
+        description: The version of Node.js to use
+        required: true
+        default: '20.x'
 outputs:
     tests:
         description: All of the tests found by this action
@@ -17,6 +21,10 @@ runs:
     steps:
         - uses: actions/checkout@v4
 
+        - uses: actions/setup-node@v4
+          with:
+              node-version: ${{ inputs.node_version }}
+
         - name: Get tests
           id: get_tests
           run: |
@@ -24,6 +32,6 @@ runs:
               export INPUT_DIRECTORIES="${{ inputs.directories }}"
               export INPUT_EXCLUDE_DIRS="${{ inputs.exclude_dirs }}"
               # Run the script
-              tests=$(./.github/scripts/get_tests.sh | base64 -d)
+              tests=$(./.github/actions/get_tests/get_tests.sh | base64 -d)
               echo "tests=${tests}" >> "$GITHUB_OUTPUT"
           shell: bash
