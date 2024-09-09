@@ -42,8 +42,14 @@ const AllRecursiveQueryMethodArb = fc.oneof(
     )
 );
 
+const arrayConstraints =
+    process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
+    process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
+        ? defaultArrayConstraints
+        : { ...defaultArrayConstraints, maxLength: 50 };
+
 const CanisterConfigArb = fc
-    .array(AllRecursiveQueryMethodArb, defaultArrayConstraints)
+    .array(AllRecursiveQueryMethodArb, arrayConstraints)
     .map((queryMethods): CanisterConfig => {
         return { queryMethods };
     });
