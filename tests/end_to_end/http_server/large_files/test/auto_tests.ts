@@ -10,7 +10,6 @@ const autoGenAutoUploadSmallFileInfos: [number, Unit][] = [
     // Edge Cases
     [0, 'B'],
     [1, 'B'],
-    [120 * 1024 * 1024 + 1, 'B'], // One more byte than can be processed in a single hash_file_by_parts call
     [2_000_000 + 1, 'B'], // One more byte that the message chunk size
 
     // General Cases
@@ -18,14 +17,21 @@ const autoGenAutoUploadSmallFileInfos: [number, Unit][] = [
     [10, 'KiB'],
     [100, 'KiB'],
     [1, 'MiB'],
-    [10, 'MiB'],
-    [100, 'MiB']
+    [10, 'MiB']
 ];
 
 const autoGenAutoUploadFileInfos: [number, Unit][] =
     process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
     process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
-        ? [...autoGenAutoUploadSmallFileInfos, [250, 'MiB'], [1, 'GiB']]
+        ? [
+              ...autoGenAutoUploadSmallFileInfos,
+              // General Cases
+              [100, 'MiB'],
+              [250, 'MiB'],
+              [1, 'GiB'],
+              // Edge Cases
+              [120 * 1024 * 1024 + 1, 'B'] // One more byte than can be processed in a single hash_file_by_parts call
+          ]
         : autoGenAutoUploadSmallFileInfos;
 
 const permanentFiles: string[] = [
