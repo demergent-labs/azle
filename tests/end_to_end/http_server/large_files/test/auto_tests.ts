@@ -10,14 +10,11 @@ const autoGenAutoUploadSmallFileInfos: [number, Unit][] = [
     // Edge Cases
     [0, 'B'],
     [1, 'B'],
-    [2_000_000 + 1, 'B'], // One more byte that the message chunk size
 
     // General Cases
     [1, 'KiB'],
     [10, 'KiB'],
-    [100, 'KiB'],
-    [1, 'MiB'],
-    [10, 'MiB']
+    [100, 'KiB']
 ];
 
 const autoGenAutoUploadFileInfos: [number, Unit][] =
@@ -26,10 +23,13 @@ const autoGenAutoUploadFileInfos: [number, Unit][] =
         ? [
               ...autoGenAutoUploadSmallFileInfos,
               // General Cases
+              [1, 'MiB'],
+              [10, 'MiB'],
               [100, 'MiB'],
               [250, 'MiB'],
               [1, 'GiB'],
               // Edge Cases
+              [2_000_000 + 1, 'B'], // One more byte that the message chunk size
               [120 * 1024 * 1024 + 1, 'B'] // One more byte than can be processed in a single hash_file_by_parts call
           ]
         : autoGenAutoUploadSmallFileInfos;

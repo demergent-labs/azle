@@ -28,8 +28,14 @@ const HeterogeneousUpdateMethodArb = UpdateMethodArb(
     CandidReturnTypeArb(context)
 );
 
+const arrayConstraints =
+    process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
+    process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
+        ? defaultArrayConstraints
+        : { ...defaultArrayConstraints, maxLength: 50 };
+
 const CanisterConfigArb = fc
-    .array(HeterogeneousUpdateMethodArb, defaultArrayConstraints)
+    .array(HeterogeneousUpdateMethodArb, arrayConstraints)
     .map((queryMethods): CanisterConfig => {
         return { queryMethods };
     });
