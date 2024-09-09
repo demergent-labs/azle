@@ -11,7 +11,7 @@ There are many Azle examples in the [tests directory](https://github.com/demerge
 -   [fetch_ic](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/fetch_ic)
 -   [file_protocol](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/file_protocol)
 -   [fs](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/fs)
--   [hello_world](https://github.com/demergent-labs/azle/tree/main/examples/hello_world)
+-   [hello_world_http_server](https://github.com/demergent-labs/azle/tree/main/examples/hello_world_http_server)
 -   [http_outcall_fetch](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/http_outcall_fetch)
 -   [hybrid_canister](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/hybrid_canister)
 -   [ic_evm_rpc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ic_evm_rpc)
