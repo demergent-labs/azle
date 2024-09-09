@@ -11,7 +11,7 @@
     },
     "type": "module",
     "bin": {
-        "azle": "./src/build/index.ts"
+        "azle": "./src/build/index.js"
     },
     "main": "./src/lib/stable/index.ts",
     "repository": {
