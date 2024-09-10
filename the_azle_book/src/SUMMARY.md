@@ -3,7 +3,7 @@
 -   [The Azle Book (Beta)](./the_azle_book.md)
 -   [Candid RPC or HTTP Server](./candid_rpc_or_http_server.md)
 -   [Candid RPC](./candid_rpc.md)
--   [HTTP Server](./http_server.md)
+-   [HTTP Server (Experimental)](./http_server.md)
     -   [Get Started](./get_started.md)
     -   [Examples](./rest_based_examples.md)
     -   [Deployment](./deployment.md)
@@ -147,4 +147,3 @@
             -   [clear timer](./reference/timers/clear_timer.md)
             -   [set timer](./reference/timers/set_timer.md)
             -   [set timer interval](./reference/timers/set_timer_interval.md)
-        -   [Wasm Binary Optimization](./reference/wasm_binary_optimization.md)

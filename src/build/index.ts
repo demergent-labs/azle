@@ -1,10 +1,9 @@
-#!/usr/bin/env -S tsx --abort-on-uncaught-exception
-
 import { IOType } from 'child_process';
 import { join } from 'path';
 
 import { version as azleVersion } from '../../package.json';
 import { runCommand as runExperimentalCompileCommand } from './experimental/commands/compile';
+import { runCommand as runExperimentalTemplateCommand } from './experimental/commands/template';
 import { runCommand as runUploadAssetsCommand } from './experimental/commands/upload_assets';
 import {
     experimentalMessageCli,
@@ -14,6 +13,7 @@ import { runCommand as runCleanCommand } from './stable/commands/clean';
 import { runCommand as runStableCompileCommand } from './stable/commands/compile';
 import { runCommand as runInstallDfxExtensionCommand } from './stable/commands/install_dfx_extension';
 import { runCommand as runNewCommand } from './stable/commands/new';
+import { runCommand as runStableTemplateCommand } from './stable/commands/template';
 import { runCommand as runVersionCommand } from './stable/commands/version';
 import { getCanisterConfig } from './stable/utils/get_canister_config';
 import { AZLE_PACKAGE_PATH } from './stable/utils/global_paths';
@@ -46,6 +46,12 @@ async function build(): Promise<void> {
 
     if (command === 'compile') {
         await handleCompileCommand(ioType);
+
+        return;
+    }
+
+    if (command === 'template') {
+        await handleTemplateCommand(ioType);
 
         return;
     }
@@ -113,23 +119,33 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
     }
 }
 
-async function handleNewCommand(): Promise<void> {
+async function handleTemplateCommand(ioType: IOType): Promise<void> {
     const experimental = process.argv.includes('--experimental');
 
     if (experimental === false) {
-        if (process.argv.includes('--http-server')) {
+        await runStableTemplateCommand(ioType);
+    } else {
+        await runExperimentalTemplateCommand(ioType);
+    }
+}
+
+async function handleNewCommand(): Promise<void> {
+    const experimental = process.argv.includes('--experimental');
+    const httpServer = process.argv.includes('--http-server');
+
+    if (experimental === false) {
+        if (httpServer === true) {
             throw new Error(experimentalMessageCli('the --http-server option'));
         }
 
-        const templatePath = join(
-            AZLE_PACKAGE_PATH,
-            'examples',
-            'hello_world_candid_rpc'
-        );
+        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
 
         await runNewCommand(azleVersion, templatePath);
     } else {
-        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
+        const projectName =
+            httpServer === true ? 'hello_world_http_server' : 'hello_world';
+
+        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', projectName);
 
         await runNewCommand(azleVersion, templatePath);
     }

@@ -1,6 +1,6 @@
 {
     "name": "azle",
-    "version": "0.23.0",
+    "version": "0.24.1",
     "homepage": "https://github.com/dfinity/dfx-extensions",
     "authors": "",
     "summary": "",
@@ -9,8 +9,8 @@
     "canister_type": {
         "defaults": {
             "candid": ".azle/{{canister_name}}/{{canister_name}}.did",
-            "build": "npx azle compile {{canister_name}}",
-            "post_install": "npx azle upload-assets {{canister_name}}",
+            "build": "node_modules/.bin/azle compile {{canister_name}}",
+            "post_install": "node_modules/.bin/azle upload-assets {{canister_name}}",
             "wasm": ".azle/{{canister_name}}/{{canister_name}}.wasm",
             "gzip": true,
             "metadata": [

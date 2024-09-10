@@ -190,7 +190,7 @@ Create the following in `azle_hello_world/dfx.json`:
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
-            "build": "npx azle azle_hello_world",
+            "build": "node_modules/.bin/azle compile azle_hello_world",
             "wasm": ".azle/azle_hello_world/azle_hello_world.wasm",
             "gzip": true
         }

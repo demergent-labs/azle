@@ -1,68 +1,76 @@
 // TODO we should pull the wallet out into its own repo
 
 import {
-    Canister,
-    ic,
-    nat,
-    nat64,
-    Opt,
+    caller,
+    IDL,
+    msgCyclesAccept,
+    msgCyclesAvailable,
     Principal,
     query,
-    Record,
-    text,
-    update,
-    Vec,
-    Void
-} from 'azle/experimental';
+    time,
+    update
+} from 'azle';
 
-let payments: Payment[] = [];
-
-let principalsWhitelist: string[] = [];
-
-const Payment = Record({
-    time: nat64,
-    amount: nat,
-    principal: Principal
+const Payment = IDL.Record({
+    time: IDL.Nat64,
+    amount: IDL.Nat,
+    principal: IDL.Principal
 });
-type Payment = typeof Payment.tsType;
+type Payment = {
+    time: bigint;
+    amount: bigint;
+    principal: Principal;
+};
 
-const ReceiveOptions = Record({
-    memo: Opt(text)
+const ReceiveOptions = IDL.Record({
+    memo: IDL.Opt(IDL.Text)
 });
 
-export default Canister({
-    add_to_whitelist: update([Principal], Void, (principal) => {
-        principalsWhitelist.push(principal.toText());
-    }),
-    remove_from_whitelist: update([Principal], Void, (principal) => {
-        principalsWhitelist = principalsWhitelist.filter(
+export default class {
+    payments: Payment[] = [];
+    principalsWhitelist: string[] = [];
+
+    @update([IDL.Principal])
+    add_to_whitelist(principal: Principal): void {
+        this.principalsWhitelist.push(principal.toText());
+    }
+
+    @update([IDL.Principal])
+    remove_from_whitelist(principal: Principal): void {
+        this.principalsWhitelist = this.principalsWhitelist.filter(
             (principalTextInList) => principalTextInList !== principal.toText()
         );
-    }),
-    get_whitelist: query([], Vec(text), () => {
-        return principalsWhitelist;
-    }),
-    get_all_payments: query([], Vec(Payment), () => {
-        return payments;
-    }),
-    wallet_receive: update([Opt(ReceiveOptions)], Void, (_receiveOptions) => {
-        console.info('wallet_receive');
-        console.info(`cycles available: ${ic.msgCyclesAvailable()}`);
+    }
 
-        const callerInWhitelist = principalsWhitelist.includes(
-            ic.caller().toText()
+    @query([], IDL.Vec(IDL.Text))
+    get_whitelist(): string[] {
+        return this.principalsWhitelist;
+    }
+
+    @query([], IDL.Vec(Payment))
+    get_all_payments(): Payment[] {
+        return this.payments;
+    }
+
+    @update([IDL.Opt(ReceiveOptions)])
+    wallet_receive(_receiveOptions: [{ memo: [string] | [] }] | []): void {
+        console.info('wallet_receive');
+        console.info(`cycles available: ${msgCyclesAvailable()}`);
+
+        const callerInWhitelist = this.principalsWhitelist.includes(
+            caller().toText()
         );
 
         if (callerInWhitelist) {
-            const cyclesAvailable = ic.msgCyclesAvailable();
+            const cyclesAvailable = msgCyclesAvailable();
 
-            ic.msgCyclesAccept(cyclesAvailable);
+            msgCyclesAccept(cyclesAvailable);
 
-            payments.push({
-                time: ic.time(),
+            this.payments.push({
+                time: time(),
                 amount: cyclesAvailable,
-                principal: ic.caller()
+                principal: caller()
             });
         }
-    })
-});
+    }
+}

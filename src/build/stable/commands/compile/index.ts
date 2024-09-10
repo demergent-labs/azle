@@ -1,5 +1,6 @@
 import { IOType } from 'child_process';
-import { mkdir, rm, writeFile } from 'fs/promises';
+import { rm } from 'fs/promises';
+import { outputFile } from 'fs-extra';
 import { join } from 'path';
 
 import { CanisterConfig } from '../../utils/types';
@@ -16,14 +17,12 @@ export async function runCommand(
     const { main, canisterPath, candidPath, wasmBinaryPath, wasmData } =
         getContext(canisterName, canisterConfig);
 
-    await createHiddenAzleDirectories(canisterPath);
+    await rm(canisterPath, { recursive: true, force: true });
 
     const javaScript = await compileJavaScript(main);
 
     const { candid, methodMeta } = await getCandidAndMethodMeta(
-        canisterName,
         canisterConfig.custom?.candid_gen,
-        canisterPath,
         candidPath,
         javaScript,
         ioType,
@@ -31,11 +30,9 @@ export async function runCommand(
     );
 
     const wasmBinary = await getWasmBinary(
-        canisterName,
         ioType,
         javaScript,
         wasmData,
-        canisterPath,
         methodMeta
     );
 
@@ -49,13 +46,6 @@ export async function runCommand(
     );
 }
 
-export async function createHiddenAzleDirectories(
-    canisterPath: string
-): Promise<void> {
-    await rm(canisterPath, { recursive: true, force: true });
-    await mkdir(canisterPath, { recursive: true });
-}
-
 export async function writeGeneratedFiles(
     canisterPath: string,
     candidPath: string,
@@ -64,7 +54,7 @@ export async function writeGeneratedFiles(
     javaScript: string,
     wasmBinary: Uint8Array
 ): Promise<void> {
-    await writeFile(candidPath, candid);
-    await writeFile(join(canisterPath, 'main.js'), javaScript);
-    await writeFile(wasmBinaryPath, wasmBinary);
+    await outputFile(candidPath, candid);
+    await outputFile(join(canisterPath, 'main.js'), javaScript);
+    await outputFile(wasmBinaryPath, wasmBinary);
 }

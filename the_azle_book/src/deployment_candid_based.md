@@ -145,6 +145,6 @@ If you run into an error during deployment, try the following:
 
 1. Ensure that you have followed the instructions correctly in [the installation chapter](./installation.md), especially noting [the build dependencies](./installation.md#build-dependencies)
 2. Start the whole deployment process from scratch by running the following commands: `dfx stop` or simply terminate `dfx` in your terminal, `dfx start --clean`, `npx azle clean`, `dfx deploy`
-3. Look for more error output by adding the `--verbose` flag to the `build` command in your `dfx.json` file like so: `"build": "npx azle build hello_world --verbose`
+3. Look for more error output by adding the `AZLE_VERBOSE=true` environment variable into the same process that runs `dfx deploy`
 4. Look for errors in each of the files in `~/.config/azle/rust/[rust_version]/logs`
 5. Reach out in [the Discord channel](https://discord.gg/5Hb6rM2QUM)
