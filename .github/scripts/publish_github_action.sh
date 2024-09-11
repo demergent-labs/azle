@@ -17,7 +17,6 @@ npm install
 
 # Build the binary templates
 npx azle template
-npx azle template --expirimental
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
