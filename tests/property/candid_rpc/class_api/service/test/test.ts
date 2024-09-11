@@ -1,4 +1,8 @@
-import { defaultArrayConstraints, runPropTests } from 'azle/test/property';
+import {
+    defaultArrayConstraints,
+    runPropTests,
+    shortArrayConstraints
+} from 'azle/test/property';
 import { ServiceArb } from 'azle/test/property/arbitraries/candid/reference/service_arb';
 import {
     CanisterArb,
@@ -29,11 +33,17 @@ const AllServicesQueryMethodArb = QueryMethodArb(
     ServiceArb(context)
 );
 
+const arrayConstraints =
+    process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
+    process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
+        ? {
+              ...defaultArrayConstraints,
+              maxLength: 30 // If the number of generated services is too large we will run out of space in the wasm custom section.
+          }
+        : shortArrayConstraints;
+
 const CanisterConfigArb = fc
-    .array(AllServicesQueryMethodArb, {
-        ...defaultArrayConstraints,
-        maxLength: 30 // If the number of generated services is too large we will run out of space in the wasm custom section.
-    })
+    .array(AllServicesQueryMethodArb, arrayConstraints)
     .map((queryMethods): CanisterConfig => {
         return { queryMethods };
     });
