@@ -15,6 +15,10 @@ sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.js
 # TODO we need to keep the dependencies.json file up-to-date as well
 npm install
 
+# Build the binary templates
+npx azle template
+npx azle template --expirimental
+
 if [[ "$VERSION" == *"-rc."* ]];
 then
     npm publish --tag next
