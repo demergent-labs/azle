@@ -9,6 +9,7 @@ export { canisterBalance } from './canister_balance';
 export { canisterVersion } from './canister_version';
 export { chunk } from './chunk';
 export { clearTimer } from './clear_timer';
+export { cyclesBurn } from './cycles_burn';
 export { dataCertificate } from './data_certificate';
 export { id } from './id';
 export { instructionCounter } from './instruction_counter';

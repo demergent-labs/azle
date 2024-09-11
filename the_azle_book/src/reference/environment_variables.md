@@ -17,6 +17,8 @@ Modify your `dfx.json` file with the `env` property to specify which environment
                 "node_compatibility": true
             },
             "custom": {
+                "experimental": true,
+                "candid_gen": "http",
                 "env": ["CANISTER1_PRINCIPAL", "CANISTER2_PRINCIPAL"]
             }
         }

@@ -13,14 +13,18 @@ hello_world/
     └── api.ts
 ```
 
-For an HTTP server canister this would be the simplest corresponding `dfx.json` file:
+For an HTTP Server canister this would be the simplest corresponding `dfx.json` file:
 
 ```json
 {
     "canisters": {
         "api": {
             "type": "azle",
-            "main": "src/api.ts"
+            "main": "src/api.ts",
+            "custom": {
+                "experimental": true,
+                "candid_gen": "http"
+            }
         }
     }
 }
@@ -33,10 +37,7 @@ For a Candid RPC canister this would be the simplest corresponding `dfx.json` fi
     "canisters": {
         "api": {
             "type": "azle",
-            "main": "src/api.ts",
-            "custom": {
-                "candid_gen": "automatic"
-            }
+            "main": "src/api.ts"
         }
     }
 }
@@ -50,7 +51,7 @@ The `dfx.json` file is the main ICP-specific configuration file for your caniste
 
 ### Automatic Candid File Generation
 
-The command-line tools `dfx` require a Candid file to deploy your canister. HTTP server canisters will automatically have their Candid files generated and stored in the `.azle` directory without any extra property in the `dfx.json` file. Candid RPC canisters must specify `"candid_gen": "automatic"` for their Candid files to be generated automatically in the `.azle` directory:
+The command-line tools `dfx` require a Candid file to deploy your canister. Candid RPC canisters will automatically have their Candid files generated and stored in the `.azle` directory without any extra property in the `dfx.json` file. HTTP Server canisters must specify `"candid_gen": "http"` for their Candid files to be generated automatically in the `.azle` directory:
 
 ```json
 {
@@ -59,7 +60,8 @@ The command-line tools `dfx` require a Candid file to deploy your canister. HTTP
             "type": "azle",
             "main": "src/api.ts",
             "custom": {
-                "candid_gen": "automatic"
+                "experimental": true,
+                "candid_gen": "http"
             }
         }
     }
@@ -68,7 +70,7 @@ The command-line tools `dfx` require a Candid file to deploy your canister. HTTP
 
 ### Custom Candid File
 
-If you would like to provide your own custom Candid file you can specify `"candid_gen": "custom"`:
+If you would like to provide your own custom Candid file you can specify `"candid": "[path to your candid file]"` and `"candid_gen": "custom"`:
 
 ```json
 {
@@ -78,6 +80,7 @@ If you would like to provide your own custom Candid file you can specify `"candi
             "main": "src/api.ts",
             "candid": "src/api.did",
             "custom": {
+                "experimental": true,
                 "candid_gen": "custom"
             }
         }
@@ -100,6 +103,8 @@ Be aware that the environment variables that you specify in your `dfx.json` file
             "type": "azle",
             "main": "src/api.ts",
             "custom": {
+                "experimental": true,
+                "candid_gen": "http",
                 "env": ["MY_ENVIRONMENT_VARIABLE"]
             }
         }
@@ -118,6 +123,8 @@ See [the Assets chapter](./assets.md) for more information:
             "type": "azle",
             "main": "src/api.ts",
             "custom": {
+                "experimental": true,
+                "candid_gen": "http",
                 "assets": [
                     ["src/frontend/dist", "dist"],
                     ["src/backend/media/audio.ogg", "media/audio.ogg"],
@@ -140,6 +147,8 @@ See [the Assets chapter](./assets.md) for more information:
             "type": "azle",
             "main": "src/api.ts",
             "custom": {
+                "experimental": true,
+                "candid_gen": "http",
                 "assets": [
                     ["src/frontend/dist", "dist"],
                     ["src/backend/media/audio.ogg", "media/audio.ogg"],
@@ -165,6 +174,8 @@ Sometimes the build process is overly eager to include packages that won't actua
             "type": "azle",
             "main": "src/api.ts",
             "custom": {
+                "experimental": true,
+                "candid_gen": "http",
                 "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"]
             }
         }
@@ -185,6 +196,8 @@ This can be useful if you need to polyfill certain packages that might not exist
             "type": "azle",
             "main": "src/api.ts",
             "custom": {
+                "experimental": true,
+                "candid_gen": "http",
                 "esm_aliases": {
                     "crypto": "crypto-browserify"
                 }
