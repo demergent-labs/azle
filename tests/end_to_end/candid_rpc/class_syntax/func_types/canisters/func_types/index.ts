@@ -55,12 +55,12 @@ const NullFunc = IDL.Func(
 );
 type NullFunc = Func;
 
-let stableStorage = StableBTreeMap<string, StableFunc>(0);
-
 export default class {
+    stableStorage = StableBTreeMap<string, StableFunc>(0);
+
     @init([])
     init(): void {
-        stableStorage.insert('stableFunc', [
+        this.stableStorage.insert('stableFunc', [
             Principal.from('aaaaa-aa'),
             'start_canister'
         ]);
@@ -68,7 +68,7 @@ export default class {
 
     @query([], StableFunc)
     getStableFunc(): StableFunc {
-        const stableFunc = stableStorage.get('stableFunc');
+        const stableFunc = this.stableStorage.get('stableFunc');
         if (stableFunc === null) {
             return [Principal.from('aaaaa-aa'), 'raw_rand'];
         }

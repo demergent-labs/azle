@@ -2,12 +2,12 @@ import { IDL, init, query } from 'azle';
 
 import { MyCanister } from './types';
 
-let myMessage = '';
-
 export default class {
+    myMessage = '';
+
     @init([IDL.Text])
     init(message: string): void {
-        myMessage = message;
+        this.myMessage = message;
     }
 
     @query([MyCanister], MyCanister)
@@ -17,6 +17,6 @@ export default class {
 
     @query([], IDL.Text)
     getMessage(): string {
-        return myMessage;
+        return this.myMessage;
     }
 }

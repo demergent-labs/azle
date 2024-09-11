@@ -19,25 +19,25 @@ type Superhero = {
 };
 
 /**
- * Application State
- */
-
-// The next available superhero identifier.
-let next: SuperheroId = 0;
-
-// The superhero data store.
-let superheroes: Map<SuperheroId, Superhero> = new Map();
-
-/**
  * High-Level API
  */
 export default class {
+    /**
+     * Application State
+     */
+
+    // The next available superhero identifier.
+    next: SuperheroId = 0;
+
+    // The superhero data store.
+    superheroes: Map<SuperheroId, Superhero> = new Map();
+
     // Create a superhero.
     @update([Superhero], SuperheroId)
     create(superhero: Superhero): SuperheroId {
-        let superheroId = next;
-        next += 1;
-        superheroes.set(superheroId, superhero);
+        let superheroId = this.next;
+        this.next += 1;
+        this.superheroes.set(superheroId, superhero);
 
         return superheroId;
     }
@@ -45,16 +45,16 @@ export default class {
     // Read a superhero.
     @query([SuperheroId], IDL.Opt(Superhero))
     read(superheroId: SuperheroId): [Superhero] | [] {
-        const superheroOrUndefined = superheroes.get(superheroId);
+        const superheroOrUndefined = this.superheroes.get(superheroId);
         return superheroOrUndefined ? [superheroOrUndefined] : [];
     }
 
     // Update a superhero.
     @update([SuperheroId, Superhero], IDL.Bool)
     update(superheroId: SuperheroId, superhero: Superhero): boolean {
-        let result = superheroes.get(superheroId);
+        let result = this.superheroes.get(superheroId);
         if (result) {
-            superheroes.set(superheroId, superhero);
+            this.superheroes.set(superheroId, superhero);
         }
 
         return !!result;
@@ -63,9 +63,9 @@ export default class {
     // Delete a superhero.
     @update([SuperheroId], IDL.Bool)
     deleteHero(superheroId: SuperheroId): boolean {
-        let result = superheroes.get(superheroId);
+        let result = this.superheroes.get(superheroId);
         if (result) {
-            superheroes.delete(superheroId);
+            this.superheroes.delete(superheroId);
         }
 
         return !!result;

@@ -1,27 +1,27 @@
 import { IDL, update } from 'azle';
 
-let cell: bigint = 0n;
-
 export default class {
+    cell: bigint = 0n;
+
     @update([IDL.Int], IDL.Int)
     add(n: bigint): bigint {
-        cell += n;
+        this.cell += n;
 
-        return cell;
+        return this.cell;
     }
 
     @update([IDL.Int], IDL.Int)
     sub(n: bigint): bigint {
-        cell -= n;
+        this.cell -= n;
 
-        return cell;
+        return this.cell;
     }
 
     @update([IDL.Int], IDL.Int)
     mul(n: bigint): bigint {
-        cell *= n;
+        this.cell *= n;
 
-        return cell;
+        return this.cell;
     }
 
     @update([IDL.Int], IDL.Opt(IDL.Int))
@@ -29,13 +29,13 @@ export default class {
         if (n === 0n) {
             return [];
         } else {
-            cell /= n;
-            return [cell];
+            this.cell /= n;
+            return [this.cell];
         }
     }
 
     @update([])
     clearall(): void {
-        cell = 0n;
+        this.cell = 0n;
     }
 }

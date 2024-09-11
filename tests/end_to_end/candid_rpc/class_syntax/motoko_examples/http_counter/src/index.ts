@@ -97,12 +97,12 @@ export type HttpResponse = {
     streaming_strategy: [StreamingStrategy] | [];
 };
 
-let stableStorage = StableBTreeMap<string, bigint>(0);
-
 export default class {
+    stableStorage = StableBTreeMap<string, bigint>(0);
+
     @init([])
     init(): void {
-        stableStorage.insert('counter', 0n);
+        this.stableStorage.insert('counter', 0n);
     }
 
     @query([HttpRequest], HttpResponse)
@@ -128,7 +128,7 @@ export default class {
                     };
                 }
 
-                const counter = stableStorage.get('counter');
+                const counter = this.stableStorage.get('counter');
 
                 if (counter === null) {
                     trap('counter does not exist');
@@ -185,16 +185,16 @@ export default class {
     @update([HttpRequest], HttpResponse)
     http_request_update(req: HttpRequest): HttpResponse {
         if (req.method === 'POST') {
-            const counterOpt = stableStorage.get('counter');
+            const counterOpt = this.stableStorage.get('counter');
             const counter =
                 counterOpt === null
                     ? trap('counter does not exist')
                     : counterOpt;
 
-            stableStorage.insert('counter', counter + 1n);
+            this.stableStorage.insert('counter', counter + 1n);
 
             if (req.headers.find(isGzip) === undefined) {
-                const counterOpt = stableStorage.get('counter');
+                const counterOpt = this.stableStorage.get('counter');
                 const counter =
                     counterOpt === null
                         ? trap('counter does not exist')
@@ -248,7 +248,7 @@ export default class {
                 };
             }
             case 'next': {
-                const counterOpt = stableStorage.get('counter');
+                const counterOpt = this.stableStorage.get('counter');
                 const counter =
                     counterOpt === null
                         ? trap('counter does not exist')

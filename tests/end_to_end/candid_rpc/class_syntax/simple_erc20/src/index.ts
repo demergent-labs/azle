@@ -14,14 +14,14 @@ type State = {
     totalSupply: bigint;
 };
 
-let state: State = {
-    accounts: {},
-    name: '',
-    ticker: '',
-    totalSupply: 0n
-};
-
 export default class {
+    state: State = {
+        accounts: {},
+        name: '',
+        ticker: '',
+        totalSupply: 0n
+    };
+
     @update([IDL.Text, IDL.Text, IDL.Text, IDL.Nat64], IDL.Bool)
     initializeSupply(
         name: string,
@@ -29,8 +29,8 @@ export default class {
         ticker: string,
         totalSupply: bigint
     ): boolean {
-        state = {
-            ...state,
+        this.state = {
+            ...this.state,
             accounts: {
                 [originalAddress]: {
                     address: originalAddress,
@@ -47,36 +47,36 @@ export default class {
 
     @update([IDL.Text, IDL.Text, IDL.Nat64], IDL.Bool)
     transfer(fromAddress: string, toAddress: string, amount: bigint): boolean {
-        if (state.accounts[toAddress] === undefined) {
-            state.accounts[toAddress] = {
+        if (this.state.accounts[toAddress] === undefined) {
+            this.state.accounts[toAddress] = {
                 address: toAddress,
                 balance: 0n
             };
         }
 
-        state.accounts[fromAddress].balance -= amount;
-        state.accounts[toAddress].balance += amount;
+        this.state.accounts[fromAddress].balance -= amount;
+        this.state.accounts[toAddress].balance += amount;
 
         return true;
     }
 
     @query([IDL.Text], IDL.Nat64)
     balance(address: string): bigint {
-        return state.accounts[address]?.balance ?? 0n;
+        return this.state.accounts[address]?.balance ?? 0n;
     }
 
     @query([], IDL.Text)
     ticker(): string {
-        return state.ticker;
+        return this.state.ticker;
     }
 
     @query([], IDL.Text)
     name(): string {
-        return state.name;
+        return this.state.name;
     }
 
     @query([], IDL.Nat64)
     totalSupply(): bigint {
-        return state.totalSupply;
+        return this.state.totalSupply;
     }
 }

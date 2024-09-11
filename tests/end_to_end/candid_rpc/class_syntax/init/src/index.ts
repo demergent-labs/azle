@@ -13,30 +13,30 @@ const Reaction = IDL.Variant({
 });
 type Reaction = { Fire: null } | { Wave: null };
 
-let user: [User] | [] = [];
-let reaction: [Reaction] | [] = [];
-let owner: [Principal] | [] = [];
-
 export default class {
+    user: [User] | [] = [];
+    reaction: [Reaction] | [] = [];
+    owner: [Principal] | [] = [];
+
     @init([User, Reaction, IDL.Principal])
     init(initUser: User, initReaction: Reaction, initOwner: Principal): void {
-        user = [initUser];
-        reaction = [initReaction];
-        owner = [initOwner];
+        this.user = [initUser];
+        this.reaction = [initReaction];
+        this.owner = [initOwner];
     }
 
     @query([], IDL.Opt(User))
     getUser(): [User] | [] {
-        return user;
+        return this.user;
     }
 
     @query([], IDL.Opt(Reaction))
     getReaction(): [Reaction] | [] {
-        return reaction;
+        return this.reaction;
     }
 
     @query([], IDL.Opt(IDL.Principal))
     getOwner(): [Principal] | [] {
-        return owner;
+        return this.owner;
     }
 }

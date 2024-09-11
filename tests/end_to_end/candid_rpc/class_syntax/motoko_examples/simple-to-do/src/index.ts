@@ -9,34 +9,34 @@ export type ToDo = {
     completed: boolean;
 };
 
-let todos: Map<bigint, ToDo> = new Map();
-let nextId: bigint = 0n;
-
 export default class {
+    todos: Map<bigint, ToDo> = new Map();
+    nextId: bigint = 0n;
+
     @query([], IDL.Vec(ToDo))
     getTodos(): ToDo[] {
-        return Array.from(todos.values());
+        return Array.from(this.todos.values());
     }
 
     // Returns the ID that was given to the ToDo item
     @update([IDL.Text], IDL.Nat)
     addTodo(description: string): bigint {
-        const id = nextId;
-        todos.set(id, {
+        const id = this.nextId;
+        this.todos.set(id, {
             description: description,
             completed: false
         });
-        nextId += 1n;
+        this.nextId += 1n;
 
         return id;
     }
 
     @update([IDL.Nat])
     completeTodo(id: bigint): void {
-        let todo = todos.get(id);
+        let todo = this.todos.get(id);
 
         if (todo !== undefined) {
-            todos.set(id, {
+            this.todos.set(id, {
                 description: todo.description,
                 completed: true
             });
@@ -46,7 +46,7 @@ export default class {
     @query([], IDL.Text)
     showTodos(): string {
         let output = '\n___TO-DOs___';
-        for (const todoEntry of [...todos]) {
+        for (const todoEntry of [...this.todos]) {
             output += `\n${todoEntry[1].description}`;
             if (todoEntry[1].completed) {
                 output += ' ✔';
@@ -65,6 +65,8 @@ export default class {
         // );
         // ```
         //  See: https://github.com/demergent-labs/azle/issues/574
-        todos = new Map([...todos].filter(([_key, value]) => !value.completed));
+        this.todos = new Map(
+            [...this.todos].filter(([_key, value]) => !value.completed)
+        );
     }
 }
