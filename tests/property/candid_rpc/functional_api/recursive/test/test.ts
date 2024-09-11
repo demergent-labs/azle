@@ -1,4 +1,8 @@
-import { defaultArrayConstraints, runPropTests } from 'azle/test/property';
+import {
+    defaultArrayConstraints,
+    runPropTests,
+    shortArrayConstraints
+} from 'azle/test/property';
 import { RecursiveArb } from 'azle/test/property/arbitraries/candid/recursive';
 import {
     CanisterArb,
@@ -46,7 +50,7 @@ const arrayConstraints =
     process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
     process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
         ? defaultArrayConstraints
-        : { ...defaultArrayConstraints, maxLength: 25 };
+        : shortArrayConstraints;
 
 const CanisterConfigArb = fc
     .array(AllRecursiveQueryMethodArb, arrayConstraints)

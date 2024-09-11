@@ -1,4 +1,8 @@
-import { defaultArrayConstraints, runPropTests } from 'azle/test/property';
+import {
+    defaultArrayConstraints,
+    runPropTests,
+    shortArrayConstraints
+} from 'azle/test/property';
 import { CandidReturnTypeArb } from 'azle/test/property/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMetaArb } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
 import {
@@ -32,7 +36,7 @@ const arrayConstraints =
     process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
     process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
         ? defaultArrayConstraints
-        : { ...defaultArrayConstraints, maxLength: 50 };
+        : shortArrayConstraints;
 
 const CanisterConfigArb = fc
     .array(HeterogeneousUpdateMethodArb, arrayConstraints)
