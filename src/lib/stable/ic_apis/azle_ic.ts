@@ -18,6 +18,7 @@ export type AzleIc = {
     canisterBalance: () => string;
     canisterVersion: () => string;
     clearTimer: (timerIdString: string) => void;
+    cyclesBurn: (amount: string) => string;
     dataCertificate: () => ArrayBuffer | undefined;
     id: () => string;
     instructionCounter: () => string;
