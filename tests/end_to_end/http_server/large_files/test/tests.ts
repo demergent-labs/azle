@@ -17,7 +17,7 @@ import { manualTests } from './manual_tests';
 
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
-    const runLongTests =
+    const describeLongTest =
         process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
         process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
             ? describe
@@ -54,7 +54,7 @@ export function getTests(canisterId: string): Test {
             getDfxConfigFileTests(origin)
         );
 
-        runLongTests('redeploy while only uploading modified files', () => {
+        describeLongTest('redeploy while only uploading modified files', () => {
             please(
                 'modify files and redeploy',
                 async () => {
@@ -94,11 +94,11 @@ export function getTests(canisterId: string): Test {
             );
         });
 
-        describe('manual upload tests', manualTests(origin));
+        describeLongTest('manual upload tests', manualTests(origin));
 
         // Run the huge file tests only once at the end so they don't slow down the rest of the test process
         // TODO CI CD isn't working with the 2GiB or bigger tests so we're just going to have this one for local tests.
-        runLongTests('huge files tests', hugeFilesTests(origin));
+        describeLongTest('huge files tests', hugeFilesTests(origin));
     };
 }
 
