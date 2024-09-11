@@ -13,7 +13,7 @@ const max =
     process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
     process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
         ? 200
-        : 100;
+        : 80;
 
 // Currently the instruction limit of 40_000_000_000 is hit at about 18_750_000 loops
 // So we are rounding up a bit and using 20_000_000 loops to ensure that the instruction limit is hit
