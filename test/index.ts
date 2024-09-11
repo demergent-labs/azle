@@ -74,6 +74,7 @@ export function please(
     );
 }
 please.skip = test.skip;
+please.only = test.only;
 
 export function it(
     name: string,

@@ -44,7 +44,7 @@ export function manualTests(origin: string): Test {
                                 'assets',
                                 'manual',
                                 fileName
-                            )} assets/test150MiB`,
+                            )} assets/${fileName}`,
                             {
                                 stdio: 'inherit'
                             }
