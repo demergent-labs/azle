@@ -8,6 +8,7 @@ mod candid_encode;
 mod canister_balance;
 mod canister_version;
 mod clear_timer;
+mod cycles_burn;
 mod data_certificate;
 mod id;
 mod instruction_counter;
@@ -108,6 +109,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "clearTimer",
         context
             .new_function::<clear_timer::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "cyclesBurn",
+        context
+            .new_function::<cycles_burn::NativeFunction>("")
             .into(),
     );
 
