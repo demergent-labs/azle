@@ -9,16 +9,15 @@ function isExcluded(dir, excludeDirs) {
 function generateJson(dir) {
     const name = basename(dir);
     const type = getType(dir);
-    const syntax = type === 'prop' || type === 'e2e' ? getSyntax(dir) : '';
-    const api = type === 'prop' ? getApi(dir) : '';
+    const syntax = getSyntax(dir);
+    const api = getApi(dir);
 
-    // Return an immutable object
     return {
         path: dir,
         name: name,
         type: type,
-        ...(syntax && { syntax }),
-        ...(api && { api })
+        ...(syntax != '' && { syntax }),
+        ...(api != '' && { api })
     };
 }
 // Helper functions to determine type, syntax, and API
