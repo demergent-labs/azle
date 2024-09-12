@@ -62,6 +62,12 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+            - name: Install curl (if necessary)
+              run: sudo apt-get install curl -y
+
+            - name: Install Rust from global_dependencies
+              run: ./install_rust.sh
+
             - name: Install dfx
               run: |
                   DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
