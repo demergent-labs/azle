@@ -8,6 +8,8 @@ export async function logGlobalDependencies(): Promise<void> {
     execSyncPretty('echo hello');
     execSyncPretty('echo world');
     execSyncPretty('echo thing | grep thing');
+    execSyncPretty('echo test');
+    execSyncPretty('cargo install --list');
     const wasiVersion = execSyncPretty('cargo install --list | grep wasi2ic');
     const nodeVersion = execSyncPretty('node --version');
     const rustVersion = execSyncPretty('rustc --version');
