@@ -9,7 +9,7 @@ env:
     NODE_VERSION: 20
 jobs:
     determine-should-release:
-        if: ${{ contains(github.head_ref, 'release--') }}
+        if: ${{ startsWith(github.head_ref, 'release--') }}
         name: Determine if this branch should release
         runs-on: ubuntu-latest
         outputs:
@@ -22,7 +22,7 @@ jobs:
 
     get-tests:
         needs: determine-should-release
-        if: ${{ contains(github.head_ref, 'release--') && needs.determine-should-release.outputs.should_release }}
+        if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should_release }}
         name: Get tests
         runs-on: ubuntu-latest
         outputs:

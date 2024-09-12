@@ -13,8 +13,8 @@ env:
     DFX_VERSION: 0.22.0
     NODE_VERSION: 20
     IS_MAIN_BRANCH: ${{ github.ref == 'refs/heads/main' }}
-    IS_RELEASE_BRANCH_PR: ${{ contains(github.head_ref, 'release--') }}
-    IS_FEATURE_BRANCH_PR: ${{ !contains(github.head_ref, 'release--') }}
+    IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
+    IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') }}
 jobs:
     determine-should-run-tests:
         name: Determine if tests should run
@@ -68,7 +68,7 @@ jobs:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
-            AZLE_TEST_RUN_ON_RELEASE: ${{ contains(github.head_ref, 'release--') }}
+            AZLE_TEST_RUN_ON_RELEASE: ${{ startsWith(github.head_ref, 'release--') }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
