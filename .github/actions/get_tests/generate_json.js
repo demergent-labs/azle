@@ -8,40 +8,40 @@ function isExcluded(dir, excludeDirs) {
 // Function to generate JSON object for each directory
 function generateJson(dir) {
     const name = basename(dir);
-    let type = '';
-    let syntax = '';
-    let api = '';
+    const type = getType(dir);
+    const syntax = type === 'prop' || type === 'e2e' ? getSyntax(dir) : '';
+    const api = type === 'prop' ? getApi(dir) : '';
 
-    if (dir.includes('/examples/')) {
-        type = 'ex';
-    } else if (dir.includes('/property/')) {
-        type = 'prop';
-        if (dir.includes('/candid_rpc/')) {
-            syntax = 'crpc';
-            if (dir.includes('/functional_api/')) {
-                api = 'functional';
-            } else if (dir.includes('/class_api/')) {
-                api = 'class';
-            }
-        } else if (dir.includes('/ic_api/')) {
-            syntax = 'ic_api';
-        }
-    } else if (dir.includes('/end_to_end/')) {
-        type = 'e2e';
-        if (dir.includes('/http_server/')) {
-            syntax = 'http';
-        } else if (dir.includes('/candid_rpc/')) {
-            syntax = 'crpc';
-        }
-    }
-
+    // Return an immutable object
     return {
         path: dir,
         name: name,
         type: type,
-        ...(syntax && { syntax: syntax }),
-        ...(api && { api: api })
+        ...(syntax && { syntax }),
+        ...(api && { api })
     };
+}
+// Helper functions to determine type, syntax, and API
+function getType(dir) {
+    if (dir.includes('/examples/')) return 'ex';
+    if (dir.includes('/end_to_end/')) return 'e2e';
+    if (dir.includes('/property/')) return 'prop';
+    return '';
+}
+
+function getSyntax(dir) {
+    if (dir.includes('/candid_rpc/')) return 'crpc';
+    if (dir.includes('/http_server/')) return 'http';
+    if (dir.includes('/ic_api/')) return 'ic_api';
+    return '';
+}
+
+function getApi(dir) {
+    const functionalPattern = /\/functional(?:_api|_syntax)?\//;
+    const classPattern = /\/class(?:_api|_syntax)?\//;
+    if (functionalPattern.test(dir)) return 'functional';
+    if (classPattern.test(dir)) return 'class';
+    return '';
 }
 
 // Get input from the command-line arguments
