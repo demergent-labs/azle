@@ -1,4 +1,4 @@
-name: Get test info objects
+name: Get test infos
 description:
     'Gets a list of test info objects for each npm projects with an npm test script
     The shape of the object is
@@ -23,7 +23,7 @@ inputs:
         default: '20.x'
 outputs:
     tests:
-        description: All of the tests info objects found by this action
+        description: All of the test info objects found by this action
         value: ${{ steps.get_tests.outputs.tests }}
 runs:
     using: composite
@@ -34,13 +34,13 @@ runs:
           with:
               node-version: ${{ inputs.node_version }}
 
-        - name: Get test info objects
-          id: get_test_info_objects
+        - name: Get test infos
+          id: get_test_infos
           run: |
               # Export the input variables to make them available to the script
               export INPUT_DIRECTORIES="${{ inputs.directories }}"
               export INPUT_EXCLUDE_DIRS="${{ inputs.exclude_dirs }}"
               # Run the script
-              testInfoObjects=$(./.github/actions/get_tests/get_test_info_objects.sh | base64 -d)
-              echo "testsInfoObjects=${testInfoObjects}" >> "$GITHUB_OUTPUT"
+              testInfos=$(./.github/actions/get_tests/get_test_info.sh | base64 -d)
+              echo "testsInfos=${testInfos}" >> "$GITHUB_OUTPUT"
           shell: bash

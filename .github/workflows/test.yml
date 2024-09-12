@@ -28,18 +28,18 @@ jobs:
             - id: determine-should-run-tests
               uses: ./.github/actions/should-release
 
-    get-test-info-objects:
-        name: Get test info objects
+    get-test-infos:
+        name: Get test infos
         needs: determine-should-run-tests
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ubuntu-latest
         outputs:
-            test-info-objects: ${{ steps.get-test-info-objects.outputs.test-info-objects }}
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
 
-            - name: Get test info objects
-              id: get-test-info-objects
+            - name: Get test infos
+              id: get-test-infos
               uses: ./.github/actions/get_tests
               with:
                   directories: |
@@ -61,7 +61,7 @@ jobs:
         name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
-            - get-test-info-objects
+            - get-test-infos
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ${{ matrix.os }}
         env:
@@ -86,7 +86,7 @@ jobs:
                     - include_npm: true
                       azle_source: repo
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
-                tests: ${{ fromJSON(needs.get-test-info-objects.outputs.test-info-objects) }}
+                tests: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
         steps:
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity

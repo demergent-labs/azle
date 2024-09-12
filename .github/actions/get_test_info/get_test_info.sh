@@ -30,7 +30,7 @@ sorted_directories=$(echo "$all_directories" | sort | tr '\n' ' ')  # Convert in
 exclude_dirs=$(IFS=, ; echo "${EXCLUDE_DIRS[*]}")  # Convert array to comma-separated
 
 # Call the JavaScript script with input directories and excluded directories
-json_result=$(node .github/actions/get_tests/generate_json.js "$sorted_directories" "$exclude_dirs")
+json_result=$(node .github/actions/get_test_infos/generate_json.js "$sorted_directories" "$exclude_dirs")
 
 # Format the result
 result="${json_result//'%'/'%25'}"
