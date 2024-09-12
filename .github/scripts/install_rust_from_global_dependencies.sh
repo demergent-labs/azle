@@ -35,4 +35,4 @@ rustc --version
 cargo --version
 
 # Confirm installation
-wasi2ic --version
+cargo install --list | grep wasi2ic
