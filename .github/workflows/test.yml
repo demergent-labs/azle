@@ -136,7 +136,7 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
-            - name: Start dfx with artifcial delay
+            - name: Start dfx with artificial delay
               if: ${{ env.IS_RELEASE_BRANCH_PR == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
@@ -144,13 +144,14 @@ jobs:
             - name: Run test
               run: |
                   IS_MERGE_TO_MAIN_FROM_RELEASE=${{ env.IS_MAIN_BRANCH == 'true' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                  IS_RELEASE_BRANCH_PR_BEFORE_MERGE_TO_MAIN=${{ env.IS_RELEASE_BRANCH_PR == 'true' && env.IS_MAIN_BRANCH == 'false' }}
 
+                  RUNS=5
                   if $IS_MERGE_TO_MAIN_FROM_RELEASE; then
                       RUNS=100
-                  elif ${{ env.IS_RELEASE_BRANCH_PR == 'true' && env.IS_MAIN_BRANCH == 'false' }}; then
+                  fi
+                  if $IS_RELEASE_BRANCH_PR_BEFORE_MERGE_TO_MAIN; then
                       RUNS=10
-                  else
-                      RUNS=5
                   fi
 
                   AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test

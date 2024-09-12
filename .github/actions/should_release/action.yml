@@ -1,5 +1,3 @@
-# TODO I feel like the wording on this is a little clunky and/or ethereal.
-# TODO we have is release vs should release and I don't feel like it's clear what the answer is
 name: Should release
 description: Determines if the current pull request is for testing or for starting a release
 outputs:
