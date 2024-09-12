@@ -3,6 +3,6 @@
         "test": "NODE_OPTIONS=\"--max-old-space-size=32768\" tsx test/test.ts"
     },
     "dependencies": {
-        "azle": "0.24.1"
+        "azle": "0.24.2-rc.2"
     }
 }
