@@ -4,7 +4,7 @@
 GLOBAL_DEPENDENCIES_FILE="$PWD/global_dependencies"
 
 # Extract the rustc version from the file
-RUST_VERSION=$(grep 'rustc version:' "$GLOBAL_DEPENDENCIES_FILE" | awk '{print $3}')
+RUST_VERSION=$(grep 'rustc version:' "$GLOBAL_DEPENDENCIES_FILE" | awk '{print $4}' | cut -d' ' -f1)
 
 if [[ -z "$RUST_VERSION" ]]; then
   echo "Rust version not found in $GLOBAL_DEPENDENCIES_FILE"
