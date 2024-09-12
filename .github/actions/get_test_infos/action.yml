@@ -41,6 +41,6 @@ runs:
               export INPUT_DIRECTORIES="${{ inputs.directories }}"
               export INPUT_EXCLUDE_DIRS="${{ inputs.exclude_dirs }}"
               # Run the script
-              testInfos=$(./.github/actions/get_test_infos/get_test_infos.sh | base64 -d)
-              echo "testsInfos=${testInfos}" >> "$GITHUB_OUTPUT"
+              test-infos=$(./.github/actions/get_test_infos/get_test_infos.sh | base64 -d)
+              echo "tests-infos=${testInfos}" >> "$GITHUB_OUTPUT"
           shell: bash
