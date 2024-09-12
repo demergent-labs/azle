@@ -19,7 +19,7 @@ source $HOME/.cargo/env
 # Extract the wasi2ic version and repository URL
 WASI2IC_LINE=$(grep 'wasi2ic version:' "$GLOBAL_DEPENDENCIES_FILE")
 WASI2IC_VERSION=$(echo "$WASI2IC_LINE" | awk -F' ' '{print $4}')
-WASI2IC_URL=$(echo "$WASI2IC_LINE" | grep -oP '(https://[^\s]+)')
+WASI2IC_URL=$(echo "$WASI2IC_LINE" | grep -oP '(?<=\().+?(?=\))')
 
 if [[ -z "$WASI2IC_VERSION" || -z "$WASI2IC_URL" ]]; then
   echo "wasi2ic version or URL not found in $GLOBAL_DEPENDENCIES_FILE"
