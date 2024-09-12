@@ -19,7 +19,7 @@ runs:
               IS_RELEASE_BRANCH_PR="${{ startsWith(github.head_ref, 'release--') }}"
 
               SHOULD_RELEASE="false"
-              if [[ $IS_RELEASE_BRANCH_PR == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]; then
+              if [[ $IS_RELEASE_BRANCH_PR == "true" && "$COMMIT_MESSAGE" == "release--$RELEASE_VERSION" ]]; then
                   SHOULD_RELEASE="true"
               fi
 
