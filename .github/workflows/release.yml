@@ -66,7 +66,7 @@ jobs:
               run: sudo apt-get install curl -y
 
             - name: Install Rust from global_dependencies
-              run: ./install_rust.sh
+              run: ./.github/scripts/install_rust.sh
 
             - name: Install dfx
               run: |
