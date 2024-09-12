@@ -17,31 +17,31 @@ type Entry = {
     value: bigint;
 };
 
-let stableStorage = StableBTreeMap<string, Entry[]>(0);
-
-let entries: {
-    [key: string]: bigint;
-} = {};
-
 export default class {
+    stableStorage = StableBTreeMap<string, Entry[]>(0);
+
+    entries: {
+        [key: string]: bigint;
+    } = {};
+
     @init([])
     init(): void {
         console.info('init');
 
-        stableStorage.insert('entries', []);
+        this.stableStorage.insert('entries', []);
     }
 
     @postUpgrade([])
     postUpgrade(): void {
         console.info('postUpgrade');
 
-        const stableEntries = stableStorage.get('entries');
+        const stableEntries = this.stableStorage.get('entries');
 
         if (stableEntries === null) {
             return;
         }
 
-        entries = stableEntries.reduce((result, entry) => {
+        this.entries = stableEntries.reduce((result, entry) => {
             return {
                 ...result,
                 [entry.key]: entry.value
@@ -53,9 +53,9 @@ export default class {
     preUpgrade(): void {
         console.info('preUpgrade');
 
-        stableStorage.insert(
+        this.stableStorage.insert(
             'entries',
-            Object.entries(entries).map((entry) => {
+            Object.entries(this.entries).map((entry) => {
                 return {
                     key: entry[0],
                     value: entry[1] + 1n
@@ -66,12 +66,12 @@ export default class {
 
     @update([Entry])
     setEntry(entry: Entry): void {
-        entries[entry.key] = entry.value;
+        this.entries[entry.key] = entry.value;
     }
 
     @query([], IDL.Vec(Entry))
     getEntries(): Entry[] {
-        return Object.entries(entries).map((entry) => {
+        return Object.entries(this.entries).map((entry) => {
             return {
                 key: entry[0],
                 value: entry[1]

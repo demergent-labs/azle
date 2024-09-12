@@ -8,28 +8,28 @@ import {
     update
 } from 'azle';
 
-let stableStorage = StableBTreeMap<string, bigint>(0);
-let redeployed = false;
-
 export default class {
+    stableStorage = StableBTreeMap<string, bigint>(0);
+    redeployed = false;
+
     @init([])
     init(): void {
-        stableStorage.insert('counter', 0n);
+        this.stableStorage.insert('counter', 0n);
     }
 
     @postUpgrade([])
     postUpgrade(): void {
-        redeployed = true;
+        this.redeployed = true;
     }
 
     @query([], IDL.Bool)
     getRedeployed(): boolean {
-        return redeployed;
+        return this.redeployed;
     }
 
     @update([], IDL.Nat)
     increment(): bigint {
-        let counter = stableStorage.get('counter');
+        let counter = this.stableStorage.get('counter');
 
         if (counter === null) {
             trap('counter not defined');
@@ -37,14 +37,14 @@ export default class {
 
         const incrementedCounter = counter + 1n;
 
-        stableStorage.insert('counter', incrementedCounter);
+        this.stableStorage.insert('counter', incrementedCounter);
 
         return incrementedCounter;
     }
 
     @query([], IDL.Nat)
     get(): bigint {
-        const counter = stableStorage.get('counter');
+        const counter = this.stableStorage.get('counter');
 
         if (counter === null) {
             trap('counter not defined');
@@ -55,9 +55,9 @@ export default class {
 
     @update([], IDL.Nat)
     reset(): bigint {
-        stableStorage.insert('counter', 0n);
+        this.stableStorage.insert('counter', 0n);
 
-        const counter = stableStorage.get('counter');
+        const counter = this.stableStorage.get('counter');
 
         if (counter === null) {
             trap('counter not defined');

@@ -8,8 +8,6 @@ type SmallRecord = {
     id: Principal;
 };
 
-let smallRecordMap = StableBTreeMap<string, SmallRecord>(0);
-
 const MediumRecord = IDL.Record({
     id: IDL.Text,
     username: IDL.Text,
@@ -22,8 +20,6 @@ type MediumRecord = {
     age: bigint;
     internetIdentity: Principal;
 };
-
-let mediumRecordMap = StableBTreeMap<string, MediumRecord>(1);
 
 const LargeRecord = IDL.Record({
     id: IDL.Text,
@@ -44,15 +40,17 @@ type LargeRecord = {
     mediumRecord: MediumRecord;
 };
 
-let largeRecordMap = StableBTreeMap<string, LargeRecord>(2);
-
 export default class {
+    smallRecordMap = StableBTreeMap<string, SmallRecord>(0);
+    mediumRecordMap = StableBTreeMap<string, MediumRecord>(1);
+    largeRecordMap = StableBTreeMap<string, LargeRecord>(2);
+
     @update([IDL.Nat32])
     insertSmallRecord(numToInsert: number): void {
         for (let i = 0; i < numToInsert; i++) {
             const id = v4();
 
-            smallRecordMap.insert(id, {
+            this.smallRecordMap.insert(id, {
                 id: Principal.fromText('aaaaa-aa')
             });
         }
@@ -60,17 +58,17 @@ export default class {
 
     @query([IDL.Nat32], IDL.Vec(IDL.Text))
     keysSmallRecord(numToReturn: number): string[] {
-        return smallRecordMap.keys(0, numToReturn);
+        return this.smallRecordMap.keys(0, numToReturn);
     }
 
     @query([IDL.Nat32], IDL.Vec(SmallRecord))
     valuesSmallRecord(numToReturn: number): SmallRecord[] {
-        return smallRecordMap.values(0, numToReturn);
+        return this.smallRecordMap.values(0, numToReturn);
     }
 
     @query([IDL.Nat32], IDL.Vec(IDL.Tuple(IDL.Text, SmallRecord)))
     itemsSmallRecord(numToReturn: number): [string, SmallRecord][] {
-        return smallRecordMap.items(0, numToReturn);
+        return this.smallRecordMap.items(0, numToReturn);
     }
 
     @update([IDL.Nat32])
@@ -78,7 +76,7 @@ export default class {
         for (let i = 0; i < numToInsert; i++) {
             const id = v4();
 
-            mediumRecordMap.insert(id, {
+            this.mediumRecordMap.insert(id, {
                 id,
                 username: `lastmjs${i}`,
                 age: BigInt(i),
@@ -89,17 +87,17 @@ export default class {
 
     @query([IDL.Nat32], IDL.Vec(IDL.Text))
     keysMediumRecord(numToReturn: number): string[] {
-        return mediumRecordMap.keys(0, numToReturn);
+        return this.mediumRecordMap.keys(0, numToReturn);
     }
 
     @query([IDL.Nat32], IDL.Vec(MediumRecord))
     valuesMediumRecord(numToReturn: number): MediumRecord[] {
-        return mediumRecordMap.values(0, numToReturn);
+        return this.mediumRecordMap.values(0, numToReturn);
     }
 
     @query([IDL.Nat32], IDL.Vec(IDL.Tuple(IDL.Text, MediumRecord)))
     itemsMediumRecord(numToReturn: number): [string, MediumRecord][] {
-        return mediumRecordMap.items(0, numToReturn);
+        return this.mediumRecordMap.items(0, numToReturn);
     }
 
     @update([IDL.Nat32])
@@ -107,7 +105,7 @@ export default class {
         for (let i = 0; i < numToInsert; i++) {
             const id = v4();
 
-            largeRecordMap.insert(id, {
+            this.largeRecordMap.insert(id, {
                 id,
                 username: `lastmjs${i}`,
                 age: BigInt(i),
@@ -126,16 +124,16 @@ export default class {
 
     @query([IDL.Nat32], IDL.Vec(IDL.Text))
     keysLargeRecord(numToReturn: number): string[] {
-        return largeRecordMap.keys(0, numToReturn);
+        return this.largeRecordMap.keys(0, numToReturn);
     }
 
     @query([IDL.Nat32], IDL.Vec(LargeRecord))
     valuesLargeRecord(numToReturn: number): LargeRecord[] {
-        return largeRecordMap.values(0, numToReturn);
+        return this.largeRecordMap.values(0, numToReturn);
     }
 
     @query([IDL.Nat32], IDL.Vec(IDL.Tuple(IDL.Text, LargeRecord)))
     itemsLargeRecord(numToReturn: number): [string, LargeRecord][] {
-        return largeRecordMap.items(0, numToReturn);
+        return this.largeRecordMap.items(0, numToReturn);
     }
 }

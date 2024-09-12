@@ -1,15 +1,15 @@
 import { IDL, query, update } from 'azle';
 
-let currentMessage: string = '';
-
 export default class {
+    currentMessage: string = '';
+
     @query([], IDL.Text)
     getCurrentMessage(): string {
-        return currentMessage;
+        return this.currentMessage;
     }
 
     @update([IDL.Text])
     simpleUpdate(message: string): void {
-        currentMessage = message;
+        this.currentMessage = message;
     }
 }

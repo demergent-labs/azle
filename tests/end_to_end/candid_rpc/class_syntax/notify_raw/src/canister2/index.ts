@@ -1,15 +1,15 @@
 import { IDL, query, update } from 'azle';
 
-let notified: boolean = false;
-
 export default class {
+    notified: boolean = false;
+
     @update([])
     receiveNotification(): void {
-        notified = true;
+        this.notified = true;
     }
 
     @query([], IDL.Bool)
     getNotified(): boolean {
-        return notified;
+        return this.notified;
     }
 }

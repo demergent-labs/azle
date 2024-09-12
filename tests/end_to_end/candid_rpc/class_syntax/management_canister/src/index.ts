@@ -29,16 +29,16 @@ type State = {
     createdCanisterId: Principal;
 };
 
-let state: State = {
-    createdCanisterId: Principal.fromText('aaaaa-aa')
-};
-
 export default class {
+    state: State = {
+        createdCanisterId: Principal.fromText('aaaaa-aa')
+    };
+
     @update([], CreateCanisterResult)
     async executeCreateCanister(): Promise<CreateCanisterResult> {
         const createCanisterResult = await createCanister();
 
-        state.createdCanisterId = createCanisterResult.canister_id;
+        this.state.createdCanisterId = createCanisterResult.canister_id;
 
         return createCanisterResult;
     }
@@ -298,7 +298,7 @@ export default class {
 
     @query([], IDL.Principal)
     getCreatedCanisterId(): Principal {
-        return state.createdCanisterId;
+        return this.state.createdCanisterId;
     }
 }
 

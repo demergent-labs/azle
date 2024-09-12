@@ -1,16 +1,16 @@
 import { IDL, postUpgrade, query, update } from 'azle';
 
-let redeployed = false;
-
 export default class {
+    redeployed = false;
+
     @postUpgrade([])
     postUpgrade(): void {
-        redeployed = true;
+        this.redeployed = true;
     }
 
     @query([], IDL.Bool)
     getRedeployed(): boolean {
-        return redeployed;
+        return this.redeployed;
     }
 
     @update([], IDL.Float64)

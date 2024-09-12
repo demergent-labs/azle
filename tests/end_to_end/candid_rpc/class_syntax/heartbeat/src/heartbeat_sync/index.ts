@@ -1,16 +1,16 @@
 import { heartbeat, IDL, query } from 'azle';
 
-let initialized = false;
-
 export default class {
+    initialized = false;
+
     @heartbeat
     heartbeat(): void {
-        initialized = true;
-        console.info('heartbeat initialized', initialized);
+        this.initialized = true;
+        console.info('heartbeat initialized', this.initialized);
     }
 
     @query([], IDL.Bool)
     getInitialized(): boolean {
-        return initialized;
+        return this.initialized;
     }
 }

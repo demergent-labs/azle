@@ -28,10 +28,10 @@ type Recording = {
     userId: Principal;
 };
 
-let users = StableBTreeMap<Principal, User>(0);
-let recordings = StableBTreeMap<Principal, Recording>(1);
-
 export default class {
+    users = StableBTreeMap<Principal, User>(0);
+    recordings = StableBTreeMap<Principal, Recording>(1);
+
     @update([IDL.Text], User)
     createUser(username: string): User {
         const id = generateId();
@@ -42,19 +42,19 @@ export default class {
             username
         };
 
-        users.insert(user.id, user);
+        this.users.insert(user.id, user);
 
         return user;
     }
 
     @query([], IDL.Vec(User))
     readUsers(): User[] {
-        return users.values();
+        return this.users.values();
     }
 
     @query([IDL.Principal], IDL.Opt(User))
     readUserById(id: Principal): [User] | [] {
-        const result = users.get(id);
+        const result = this.users.get(id);
         if (result === null) {
             return [];
         } else {
@@ -64,17 +64,17 @@ export default class {
 
     @update([IDL.Principal], User)
     deleteUser(id: Principal): User {
-        const user = users.get(id);
+        const user = this.users.get(id);
 
         if (user === null) {
             throw new Error(`User does not exist: ${id.toText()}`);
         }
 
         user.recordingIds.forEach((recordingId) => {
-            recordings.remove(recordingId);
+            this.recordings.remove(recordingId);
         });
 
-        users.remove(user.id);
+        this.users.remove(user.id);
 
         return user;
     }
@@ -85,7 +85,7 @@ export default class {
         name: string,
         userId: Principal
     ): Recording {
-        const user = users.get(userId);
+        const user = this.users.get(userId);
 
         if (user === null) {
             throw new Error(`User does not exist: ${userId.toText()}`);
@@ -100,26 +100,26 @@ export default class {
             userId
         };
 
-        recordings.insert(recording.id, recording);
+        this.recordings.insert(recording.id, recording);
 
         const updatedUser: User = {
             ...user,
             recordingIds: [...user.recordingIds, recording.id]
         };
 
-        users.insert(updatedUser.id, updatedUser);
+        this.users.insert(updatedUser.id, updatedUser);
 
         return recording;
     }
 
     @query([], IDL.Vec(Recording))
     readRecordings(): Recording[] {
-        return recordings.values();
+        return this.recordings.values();
     }
 
     @query([IDL.Principal], IDL.Opt(Recording))
     readRecordingById(id: Principal): [Recording] | [] {
-        const result = recordings.get(id);
+        const result = this.recordings.get(id);
         if (result === null) {
             return [];
         } else {
@@ -129,13 +129,13 @@ export default class {
 
     @update([IDL.Principal], Recording)
     deleteRecording(id: Principal): Recording {
-        const recording = recordings.get(id);
+        const recording = this.recordings.get(id);
 
         if (recording === null) {
             throw new Error(`Recording does not exist: ${id.toText()}`);
         }
 
-        const user = users.get(recording.userId);
+        const user = this.users.get(recording.userId);
 
         if (user === null) {
             throw new Error(
@@ -150,9 +150,9 @@ export default class {
             )
         };
 
-        users.insert(updatedUser.id, updatedUser);
+        this.users.insert(updatedUser.id, updatedUser);
 
-        recordings.remove(id);
+        this.recordings.remove(id);
 
         return recording;
     }

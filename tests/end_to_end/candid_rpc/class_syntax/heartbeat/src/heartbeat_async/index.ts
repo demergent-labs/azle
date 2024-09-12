@@ -1,19 +1,19 @@
 import { call, heartbeat, IDL, query } from 'azle';
 
-let initialized: Uint8Array = Uint8Array.from([]);
-
 export default class {
+    initialized: Uint8Array = Uint8Array.from([]);
+
     @heartbeat
     async heartbeat(): Promise<void> {
         const randomness = await getRandomness();
 
-        initialized = randomness;
+        this.initialized = randomness;
         console.info('heartbeat initialized', randomness.length);
     }
 
     @query([], IDL.Vec(IDL.Nat8))
     getInitialized(): Uint8Array {
-        return initialized;
+        return this.initialized;
     }
 }
 

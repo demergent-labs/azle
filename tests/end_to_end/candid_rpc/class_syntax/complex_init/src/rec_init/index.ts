@@ -11,18 +11,18 @@ Node.fill(
 
 type Node = { Leaf: null } | { Branch: Node };
 
-let tree: Node = { Leaf: null };
-
 export default class {
+    tree: Node = { Leaf: null };
+
     @init([Node])
     init(node: Node): void {
-        tree = node;
+        this.tree = node;
         return undefined;
     }
 
     @query([], IDL.Nat)
     countBranches(): bigint {
-        return countBranches(tree);
+        return countBranches(this.tree);
     }
 }
 
