@@ -24,7 +24,7 @@ inputs:
 outputs:
     tests:
         description: All of the test info objects found by this action
-        value: ${{ steps.get-test-infos.outputs.tests }}
+        value: ${{ steps.get-test-infos.outputs.test-infos }}
 runs:
     using: composite
     steps:
