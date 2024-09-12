@@ -1,9 +1,9 @@
 name: Should release
 description: Determines if the current pull request is for testing or for starting a release
 outputs:
-    should_release:
+    should-release:
         description: Returns true if this branch should start a release, otherwise false
-        value: ${{ steps.determine_should_release.outputs.should_release }}
+        value: ${{ steps.determine-should-release.outputs.should-release }}
 runs:
     using: composite
     steps:
@@ -11,7 +11,7 @@ runs:
           with:
               ref: ${{ github.event.pull_request.head.ref }} # This is necessary for this job to be able to get the correct commit message from `git log`
 
-        - id: determine_should_release
+        - id: determine-should-release
           run: |
               BRANCH_NAME="${{ github.head_ref }}"
               RELEASE_VERSION="${BRANCH_NAME:9}"
@@ -23,5 +23,5 @@ runs:
                   SHOULD_RELEASE="true"
               fi
 
-              echo "should_release=${SHOULD_RELEASE}" >> "$GITHUB_OUTPUT"
+              echo "should-release=${SHOULD_RELEASE}" >> "$GITHUB_OUTPUT"
           shell: bash

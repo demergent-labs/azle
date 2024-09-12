@@ -13,25 +13,25 @@ jobs:
         name: Determine if this branch should release
         runs-on: ubuntu-latest
         outputs:
-            should_release: ${{ steps.determine_should_release.outputs.should_release }}
+            should-release: ${{ steps.determine-should-release.outputs.should-release }}
         steps:
             - uses: actions/checkout@v4
 
-            - id: determine_should_release
+            - id: determine-should-release
               uses: ./.github/actions/should_release
 
     get-test-infos:
         needs: determine-should-release
-        if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should_release }}
+        if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
         name: Get test infos
         runs-on: ubuntu-latest
         outputs:
-            test-infos: ${{ steps.get_test_infos.outputs.tests }}
+            test-infos: ${{ steps.get-test-infos.outputs.tests }}
         steps:
             - uses: actions/checkout@v4
 
             - name: Get all test infos
-              id: get_test_infos
+              id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   directories: |
@@ -41,7 +41,7 @@ jobs:
     release:
         name: Deploy release
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
-        if: ${{ needs.determine-should-release.outputs.should_release == 'true' }}
+        if: ${{ needs.determine-should-release.outputs.should-release == 'true' }}
         needs:
             - determine-should-release
             - get-test-infos
@@ -65,7 +65,7 @@ jobs:
             - name: Install curl (if necessary)
               run: sudo apt-get install curl -y
 
-            - name: Install Rust from global_dependencies
+            - name: Install global dependencies
               run: ./.github/scripts/install_global_dependencies.sh
 
             - name: Install dfx

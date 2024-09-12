@@ -13,18 +13,18 @@ inputs:
     directories:
         description: List of directories to search for npm projects with an npm test script
         required: true
-    exclude_dirs:
+    exclude-dirs:
         description: List of directories to exclude from the search
         required: false
         default: ''
-    node_version:
+    node-version:
         description: The version of Node.js to use
         required: true
         default: '20.x'
 outputs:
     tests:
         description: All of the test info objects found by this action
-        value: ${{ steps.get_tests.outputs.tests }}
+        value: ${{ steps.get-test-infos.outputs.tests }}
 runs:
     using: composite
     steps:
@@ -32,15 +32,15 @@ runs:
 
         - uses: actions/setup-node@v4
           with:
-              node-version: ${{ inputs.node_version }}
+              node-version: ${{ inputs.node-version }}
 
         - name: Get test infos
-          id: get_test_infos
+          id: get-test-infos
           run: |
               # Export the input variables to make them available to the script
               export INPUT_DIRECTORIES="${{ inputs.directories }}"
               export INPUT_EXCLUDE_DIRS="${{ inputs.exclude_dirs }}"
               # Run the script
-              testInfos=$(./.github/actions/get_tests/get_test_info.sh | base64 -d)
+              testInfos=$(./.github/actions/get_tests/get_test_infos.sh | base64 -d)
               echo "testsInfos=${testInfos}" >> "$GITHUB_OUTPUT"
           shell: bash
