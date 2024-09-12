@@ -22,7 +22,7 @@ inputs:
         required: true
         default: '20.x'
 outputs:
-    tests:
+    test-infos:
         description: All of the test info objects found by this action
         value: ${{ steps.get-test-infos.outputs.test-infos }}
 runs:
