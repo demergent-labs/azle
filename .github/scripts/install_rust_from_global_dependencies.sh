@@ -28,11 +28,12 @@ if [[ -z "$WASI2IC_VERSION" || -z "$WASI2IC_URL" ]]; then
   exit 1
 fi
 
-# Install wasi2ic using cargo
+# Install wasi2ic
 echo "Installing wasi2ic version $WASI2IC_VERSION from $WASI2IC_URL"
 cargo install --git "$WASI2IC_URL"
 
 # Confirm installation
+echo "\nThe following global dependencies were installed"
 rustc --version
 cargo --version
 
