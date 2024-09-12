@@ -20,19 +20,19 @@ jobs:
             - id: determine_should_release
               uses: ./.github/actions/should_release
 
-    get-tests:
+    get-test-info-objects:
         needs: determine-should-release
         if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should_release }}
-        name: Get tests
+        name: Get test info objects
         runs-on: ubuntu-latest
         outputs:
-            tests: ${{ steps.get_tests.outputs.tests }}
+            test-info-objects: ${{ steps.get_test_info_objects.outputs.tests }}
         steps:
             - uses: actions/checkout@v4
 
-            - name: Get all test dirs
-              id: get_tests
-              uses: ./.github/actions/get_tests
+            - name: Get all test info objedts
+              id: get_test_info_objects
+              uses: ./.github/actions/get_test_info_objects
               with:
                   directories: |
                       ./examples
@@ -44,7 +44,7 @@ jobs:
         if: ${{ needs.determine-should-release.outputs.should_release == 'true' }}
         needs:
             - determine-should-release
-            - get-tests
+            - get-test-info-objects
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
@@ -86,4 +86,4 @@ jobs:
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
                   RELEASE_VERSION="${BRANCH_NAME:9}"
-                  ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-tests.outputs.tests) }}
+                  ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-test-info-objects.outputs.test-info-objects) }}

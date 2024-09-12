@@ -1,5 +1,14 @@
-name: Get tests
-description: Gets a list of directories of npm projects with an npm test script
+name: Get test info objects
+description:
+    'Gets a list of test info objects for each npm projects with an npm test script
+    The shape of the object is
+    {
+    path: string, // The path to the test
+    name: string, // The name of the test
+    type: string, // The type of test (e.g. ex (example), prop (property test), e2e, (end to end test) etc)
+    syntax: string, // The syntax of the tests (e.g. http_server or candid_rpc)
+    api: string, // The api used for the test (e.g. class or functional)
+    }'
 inputs:
     directories:
         description: List of directories to search for npm projects with an npm test script
@@ -14,7 +23,7 @@ inputs:
         default: '20.x'
 outputs:
     tests:
-        description: All of the tests found by this action
+        description: All of the tests info objects found by this action
         value: ${{ steps.get_tests.outputs.tests }}
 runs:
     using: composite
@@ -25,13 +34,13 @@ runs:
           with:
               node-version: ${{ inputs.node_version }}
 
-        - name: Get tests
-          id: get_tests
+        - name: Get test info objects
+          id: get_test_info_objects
           run: |
               # Export the input variables to make them available to the script
               export INPUT_DIRECTORIES="${{ inputs.directories }}"
               export INPUT_EXCLUDE_DIRS="${{ inputs.exclude_dirs }}"
               # Run the script
-              tests=$(./.github/actions/get_tests/get_tests.sh | base64 -d)
-              echo "tests=${tests}" >> "$GITHUB_OUTPUT"
+              testInfoObjects=$(./.github/actions/get_tests/get_test_info_objects.sh | base64 -d)
+              echo "testsInfoObjects=${testInfoObjects}" >> "$GITHUB_OUTPUT"
           shell: bash

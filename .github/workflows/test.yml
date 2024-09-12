@@ -21,25 +21,25 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             # If the branch should release then it shouldn't run tests.
-            should_run_tests: ${{ steps.determine_should_run_tests.outputs.should_release == 'false' }}
+            should-run-tests: ${{ steps.determine-should-run-tests.outputs.should_release == 'false' }}
         steps:
             - uses: actions/checkout@v4
 
-            - id: determine_should_run_tests
-              uses: ./.github/actions/should_release
+            - id: determine-should-run-tests
+              uses: ./.github/actions/should-release
 
-    get-tests:
-        name: Get tests
+    get-test-info-objects:
+        name: Get test info objects
         needs: determine-should-run-tests
-        if: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' }}
+        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ubuntu-latest
         outputs:
-            tests: ${{ steps.get_tests.outputs.tests }}
+            test-info-objects: ${{ steps.get-test-info-objects.outputs.test-info-objects }}
         steps:
             - uses: actions/checkout@v4
 
-            - name: Get tests
-              id: get_tests
+            - name: Get test info objects
+              id: get-test-info-objects
               uses: ./.github/actions/get_tests
               with:
                   directories: |
@@ -61,8 +61,8 @@ jobs:
         name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
-            - get-tests
-        if: ${{ needs.determine-should-run-tests.outputs.should_run_tests == 'true' }}
+            - get-test-info-objects
+        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
@@ -86,7 +86,7 @@ jobs:
                     - include_npm: true
                       azle_source: repo
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
-                tests: ${{ fromJSON(needs.get-tests.outputs.tests) }}
+                tests: ${{ fromJSON(needs.get-test-info-objects.outputs.test-info-objects) }}
         steps:
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
