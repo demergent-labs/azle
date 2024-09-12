@@ -16,6 +16,8 @@ echo "Installing Rust version $RUST_VERSION"
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain "$RUST_VERSION"
 source $HOME/.cargo/env
 
+rustup target add wasm32-wasi
+
 # Extract the wasi2ic version and repository URL
 WASI2IC_LINE=$(grep 'wasi2ic version:' "$GLOBAL_DEPENDENCIES_FILE")
 WASI2IC_VERSION=$(echo "$WASI2IC_LINE" | awk -F' ' '{print $4}')
@@ -34,5 +36,6 @@ cargo install --git "$WASI2IC_URL"
 rustc --version
 cargo --version
 
-# Confirm installation
+rustup target list --installed | grep wasm32-wasi
+
 cargo install --list | grep wasi2ic
