@@ -10,7 +10,7 @@ export function dirToTestInfo(dir) {
 }
 
 function getType(dir) {
-    if (dir.includes('/examples/')) return 'ex';
+    if (dir.includes('examples/')) return 'ex';
     if (dir.includes('/end_to_end/')) return 'e2e';
     if (dir.includes('/property/')) return 'prop';
     return '';
@@ -18,7 +18,7 @@ function getType(dir) {
 
 function generateDisplayPath(path) {
     const replacements = {
-        example: 'ex',
+        examples: 'ex',
         property: 'prop',
         end_to_end: 'e2e',
         functional_syntax: 'func',
