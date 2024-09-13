@@ -58,7 +58,7 @@ jobs:
                          ') || '' }}
 
     run-test:
-        name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
+        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
             - get-test-infos
