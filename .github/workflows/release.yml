@@ -82,6 +82,12 @@ jobs:
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
+            - name: Tests testInfos
+              run: |
+                  echo "These is the test infos"
+                  echo ${{toJson(needs.get-test-infos.outputs.test-infos)}}
+                  echo "end tests infos"
+
             - name: Publish release
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
