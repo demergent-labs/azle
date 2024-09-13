@@ -38,7 +38,7 @@ runs:
           run: |
               # Export the input variables to make them available to the script
               export INPUT_DIRECTORIES="${{ inputs.directories }}"
-              export INPUT_EXCLUDE_DIRS="${{ inputs.exclude_dirs }}"
+              export INPUT_EXCLUDE_DIRS="${{ inputs.exclude-dirs }}"
               # Run the script
               TEST_INFOS=$(./.github/actions/get_test_infos/get_test_infos.sh | base64 -d)
               echo "test-infos=${TEST_INFOS}" >> "$GITHUB_OUTPUT"
