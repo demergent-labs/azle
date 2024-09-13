@@ -2,9 +2,9 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 // Discover directories containing a package.json file with a test script
-export async function discoverTests(dir) {
+export async function discoverTestDirs(dirsToSearch) {
     const directories = [];
-    await findDirectories(dir, directories);
+    await findDirectories(dirsToSearch, directories);
     return directories;
 }
 

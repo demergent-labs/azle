@@ -2,12 +2,11 @@ name: Get test infos
 description:
     'Gets a list of test info objects for each npm project with an npm test script
     The shape of the object is
-    {
+    return {
     path: string, // The path to the test
     name: string, // The name of the test
     type: string, // The type of test (e.g. ex (example), prop (property test), e2e, (end to end test) etc)
-    methodology: string, // The methodology of the example (e.g. http_server or candid_rpc)
-    api: string, // The api used for the test (e.g. class or functional)
+    displayPath: string // An abbreviated version of the path for display purposes only
     }'
 inputs:
     directories:
