@@ -62,7 +62,7 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-            - name: Install curl (if necessary)
+            - name: Install curl
               run: sudo apt-get install curl -y
 
             - name: Install global dependencies

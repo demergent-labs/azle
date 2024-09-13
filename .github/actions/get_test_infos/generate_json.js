@@ -9,17 +9,18 @@ function isExcluded(dir, excludeDirs) {
 function generateJson(dir) {
     const name = basename(dir);
     const type = getType(dir);
-    const syntax = getSyntax(dir);
+    const methodology = getMethodology(dir);
     const api = getApi(dir);
 
     return {
         path: dir,
         name: name,
         type: type,
-        ...(syntax != '' && { syntax }),
+        ...(methodology != '' && { methodology }),
         ...(api != '' && { api })
     };
 }
+
 // Helper functions to determine type, syntax, and API
 function getType(dir) {
     if (dir.includes('/examples/')) return 'ex';
@@ -28,7 +29,7 @@ function getType(dir) {
     return '';
 }
 
-function getSyntax(dir) {
+function getMethodology(dir) {
     if (dir.includes('/candid_rpc/')) return 'crpc';
     if (dir.includes('/http_server/')) return 'http';
     if (dir.includes('/ic_api/')) return 'ic_api';

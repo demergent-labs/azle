@@ -58,7 +58,7 @@ jobs:
                          ') || '' }}
 
     run-test:
-        name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.syntax}} | ${{matrix.tests.api}} | ${{matrix.azle_source}}'
+        name: '${{matrix.tests.name}} | ${{matrix.tests.type}} | ${{matrix.tests.methodology}} | ${{matrix.tests.api}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
             - get-test-infos
@@ -131,12 +131,12 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               shell: bash -l {0}
 
-            - name: Start dfx
+            - name: Start dfx without artificial delay
               if: ${{ env.IS_FEATURE_BRANCH_PR == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
-            - name: Start dfx with artificial delay
+            - name: Start dfx
               if: ${{ env.IS_RELEASE_BRANCH_PR == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000

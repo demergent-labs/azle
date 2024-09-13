@@ -6,7 +6,7 @@ description:
     path: string, // The path to the test
     name: string, // The name of the test
     type: string, // The type of test (e.g. ex (example), prop (property test), e2e, (end to end test) etc)
-    syntax: string, // The syntax of the tests (e.g. http_server or candid_rpc)
+    methodology: string, // The methodology of the example (e.g. http_server or candid_rpc)
     api: string, // The api used for the test (e.g. class or functional)
     }'
 inputs:
