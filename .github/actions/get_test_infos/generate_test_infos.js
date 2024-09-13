@@ -41,7 +41,8 @@ function generateDisplayPath(path) {
         class_syntax: 'class',
         class_api: 'class',
         candid_rpc: 'crpc',
-        http_server: 'http'
+        http_server: 'http',
+        tests: 't'
     };
     // Split the path into directories
     const directories = path.split('/');
