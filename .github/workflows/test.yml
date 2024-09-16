@@ -10,8 +10,6 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 env:
-    DFX_VERSION: 0.22.0
-    NODE_VERSION: 20
     AZLE_IS_MAIN_BRANCH_PUSH: ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
     AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: ${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
     AZLE_IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
@@ -29,6 +27,19 @@ jobs:
 
             - id: determine-should-run-tests
               uses: ./.github/actions/should_release
+
+    get-node-version:
+        name: Get node version
+        runs-on: ubuntu-latest
+        outputs:
+            node-version: ${{ steps.get-node-version.outputs.node-version }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+            - id: report
+              run: echo ${{steps.get-node-version.outputs.node-version}}
 
     get-test-infos:
         name: Get test infos
@@ -112,6 +123,7 @@ jobs:
         name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
+            - get-node-version
             - get-test-infos
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ${{ matrix.os }}
@@ -146,13 +158,13 @@ jobs:
 
             - uses: actions/setup-node@v4
               with:
-                  node-version: ${{ env.NODE_VERSION }}
+                  node-version: ${{ needs.get-node-version.outputs.node-version }}
 
             - name: Run pre-test Azle setup
               run: |
 
                   # Install dfx
-                  DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  npx azle install-global-dependencies --dfx
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
                   # MacOS-specific DNS configuration
