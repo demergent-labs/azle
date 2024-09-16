@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Ensure that a version argument is passed
 if [ -z "$1" ]; then
     echo "Error: No WASI2IC version specified."
     echo "Usage: ./install_wasi2ic.sh <WASI2IC_VERSION_OR_URL>"
@@ -16,15 +15,13 @@ else
     WASI2IC_URL=""
 fi
 
-# Check if `wasi2ic` is installed
 if command -v wasi2ic &> /dev/null; then
-    INSTALLED_VERSION=$(wasi2ic --version | awk '{print $2}')
+    INSTALLED_VERSION=$(npx tsx src/build/stable/utils/versions/wasi2ic.ts 2>&1 | tr -d '[:space:]')
 
     echo "Installed wasi2ic version: $INSTALLED_VERSION"
     echo "Requested wasi2ic version: $WASI2IC_VERSION"
 
-    # If the installed version matches the requested version, skip installation
-    if [ -z "$WASI2IC_URL" ] && [ "$INSTALLED_VERSION" = "$WASI2IC_VERSION" ]; then
+    if [ "$INSTALLED_VERSION" = "$WASI2IC_VERSION" ]; then
         echo "wasi2ic $WASI2IC_VERSION is already installed. No installation needed."
         exit 0
     else

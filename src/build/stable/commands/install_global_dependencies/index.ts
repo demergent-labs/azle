@@ -102,7 +102,7 @@ If no options are provided, all dependencies will be installed.
 
 async function getGlobalDependencies(): Promise<Versions> {
     // Path to package.json
-    const packageJsonPath = join(process.cwd(), 'package.json');
+    const packageJsonPath = join(AZLE_PACKAGE_PATH, 'package.json');
 
     // Read the existing package.json file
     const packageJsonContent = await readFile(packageJsonPath, 'utf-8');
