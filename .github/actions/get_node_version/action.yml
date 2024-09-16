@@ -1,0 +1,16 @@
+name: Get node version
+description: Determines Azle's node version
+outputs:
+    node-version:
+        description: Returns the version of node Azle used for it's last template
+        value: ${{ steps.get-node-version.outputs.node-version }}
+runs:
+    using: composite
+    steps:
+        - uses: actions/checkout@v4
+
+        - id: get-node-version
+          run: |
+              NODE_VERSION=$(./.github/actions/get_node_version/get_node_version.sh)
+              echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
+          shell: bash
