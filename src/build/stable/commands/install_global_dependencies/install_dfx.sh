@@ -11,7 +11,7 @@ DFX_VERSION=$1
 
 # Check if dfx is installed and its version
 if command -v dfx &> /dev/null; then
-    INSTALLED_VERSION=$(dfx --version | cut -d ' ' -f 2)
+    INSTALLED_VERSION=$(npx tsx src/build/stable/utils/versions/dfx.ts 2>&1 | tr -d '[:space:]')
 
     echo "Installed dfx version: $INSTALLED_VERSION"
     echo "Requested dfx version: $DFX_VERSION"
