@@ -5,7 +5,6 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 env:
-    DFX_VERSION: 0.21.0
     NODE_VERSION: 20
 jobs:
     determine-should-release:
@@ -66,11 +65,8 @@ jobs:
               run: sudo apt-get install curl -y
 
             - name: Install global dependencies
-              run: ./.github/scripts/install_global_dependencies.sh
-
-            - name: Install dfx
               run: |
-                  DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  npx azle install-global-dependencies --rust --wasi2ic --dfx
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
             # TODO we should use some Action-specific bot account
