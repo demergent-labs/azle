@@ -33,7 +33,8 @@ sleep 30
 
 for directory in ${directories[@]}
 do
-    cd $directory
+    cd "$directory"
+    echo "updating $directory"
 
     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
     npm install
