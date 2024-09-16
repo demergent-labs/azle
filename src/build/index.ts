@@ -12,6 +12,7 @@ import {
 import { runCommand as runCleanCommand } from './stable/commands/clean';
 import { runCommand as runStableCompileCommand } from './stable/commands/compile';
 import { runCommand as runInstallDfxExtensionCommand } from './stable/commands/install_dfx_extension';
+import { runCommand as runInstallGlobalDependenciesCommand } from './stable/commands/install_global_dependencies';
 import { runCommand as runNewCommand } from './stable/commands/new';
 import { runCommand as runStableTemplateCommand } from './stable/commands/template';
 import { runCommand as runVersionCommand } from './stable/commands/version';
@@ -34,6 +35,12 @@ async function build(): Promise<void> {
 
     if (command === 'install-dfx-extension') {
         handleInstallDfxExtensionCommand(ioType);
+
+        return;
+    }
+
+    if (command === 'install-global-dependencies') {
+        handleInstallGlobalDependenciesCommand(ioType);
 
         return;
     }
@@ -127,6 +134,12 @@ async function handleTemplateCommand(ioType: IOType): Promise<void> {
     } else {
         await runExperimentalTemplateCommand(ioType);
     }
+}
+
+async function handleInstallGlobalDependenciesCommand(
+    ioType: IOType
+): Promise<void> {
+    await runInstallGlobalDependenciesCommand(ioType);
 }
 
 async function handleNewCommand(): Promise<void> {
