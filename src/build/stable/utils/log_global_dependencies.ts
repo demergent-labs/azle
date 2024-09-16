@@ -1,4 +1,4 @@
-import { outputFile } from 'fs-extra';
+import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { execSyncPretty } from './exec_sync_pretty';
@@ -10,16 +10,19 @@ export async function logGlobalDependencies(): Promise<void> {
     const rustVersion = await getRustVersion();
 
     const globalDependencies = {
-        dependencies: {
-            wasi2ic: wasiVersion,
-            node: nodeVersion,
-            rustc: rustVersion
-        }
+        wasi2ic: wasiVersion,
+        node: nodeVersion,
+        rustc: rustVersion
     };
 
-    await outputFile(
-        join(AZLE_PACKAGE_PATH, 'global_dependencies.json'),
-        JSON.stringify(globalDependencies, null, 4)
+    const packageJsonPath = join(AZLE_PACKAGE_PATH, 'package.json');
+
+    const packageJsonContent = await readFile(packageJsonPath, 'utf-8');
+    const packageJson = JSON.parse(packageJsonContent);
+
+    await writeFile(
+        packageJsonPath,
+        JSON.stringify({ ...packageJson, globalDependencies }, null, 4)
     );
 }
 

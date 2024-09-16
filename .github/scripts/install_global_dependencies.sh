@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# File path for the global dependencies
-GLOBAL_DEPENDENCIES_FILE="$PWD/global_dependencies.json"
+# File path for the package.json
+PACKAGE_JSON_FILE="$PWD/package.json"
 
 # Ensure jq is installed for JSON parsing
 if ! command -v jq &> /dev/null; then
@@ -9,11 +9,11 @@ if ! command -v jq &> /dev/null; then
   exit 1
 fi
 
-# Extract the rustc version from the JSON file
-RUST_VERSION=$(jq -r '.dependencies.rustc // empty' "$GLOBAL_DEPENDENCIES_FILE")
+# Extract the rustc version from the globalDependencies in package.json
+RUST_VERSION=$(jq -r '.globalDependencies.rustc // empty' "$PACKAGE_JSON_FILE")
 
 if [[ -z "$RUST_VERSION" ]]; then
-  echo "Rust version not found in $GLOBAL_DEPENDENCIES_FILE"
+  echo "Rust version not found in $PACKAGE_JSON_FILE"
   exit 1
 fi
 
@@ -24,8 +24,8 @@ source $HOME/.cargo/env
 
 rustup target add wasm32-wasi
 
-# Extract the wasi2ic version and repository URL
-WASI2IC_VERSION=$(jq -r '.dependencies.wasi2ic // empty' "$GLOBAL_DEPENDENCIES_FILE")
+# Extract the wasi2ic version and repository URL from globalDependencies in package.json
+WASI2IC_VERSION=$(jq -r '.globalDependencies.wasi2ic // empty' "$PACKAGE_JSON_FILE")
 
 # Determine if WASI2IC_VERSION is a URL (repo) or just a version number
 if [[ $WASI2IC_VERSION =~ ^https?:// ]]; then
@@ -35,7 +35,7 @@ else
 fi
 
 if [[ -z "$WASI2IC_VERSION" ]]; then
-  echo "wasi2ic version not found in $GLOBAL_DEPENDENCIES_FILE"
+  echo "wasi2ic version not found in $PACKAGE_JSON_FILE"
   exit 1
 fi
 
