@@ -9,7 +9,7 @@ directories=$(IFS=, ; echo "${DIRECTORIES[*]}")
 exclude_dirs=$(IFS=, ; echo "${EXCLUDE_DIRS[*]}")
 
 # Get test infos
-json_result=$(node .github/actions/get_test_infos/index.js "$directories" "$exclude_dirs")
+json_result=$(npx tsx .github/actions/get_test_infos/index.js "$directories" "$exclude_dirs")
 
 # Format the result
 result="${json_result//'%'/'%25'}"
