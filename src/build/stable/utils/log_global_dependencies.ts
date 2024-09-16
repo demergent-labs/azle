@@ -19,11 +19,10 @@ export async function logGlobalDependencies(): Promise<void> {
 
     await outputFile(
         join(AZLE_PACKAGE_PATH, 'global_dependencies.json'),
-        JSON.stringify(globalDependencies, null, 2) // Format JSON with 2 spaces indentation
+        JSON.stringify(globalDependencies, null, 4)
     );
 }
 
-// Function stubs for version info, to be filled in later
 async function getWasiVersion(): Promise<string> {
     return await getCargoVersion('wasi2ic');
 }
@@ -53,7 +52,7 @@ async function getRustVersion(): Promise<string> {
 async function getCargoVersion(packageName: string): Promise<string> {
     const cargoOutput = execSyncPretty('cargo install --list').toString();
 
-    // Regular expression to capture both cases: with and without a repository link
+    // Regular expression to capture both with and without a repository link
     const regex = new RegExp(
         `${packageName}\\s+v(\\d+\\.\\d+\\.\\d+)(?:\\s+\\((https?:\\/\\/.+?)\\))?`
     );
@@ -66,6 +65,6 @@ async function getCargoVersion(packageName: string): Promise<string> {
             return match[1]; // Return the version number if no link is found
         }
     } else {
-        return 'unknown';
+        throw new Error(`Could not parse ${packageName} version`);
     }
 }
