@@ -35,7 +35,7 @@ async function checkForTestScript(packageJsonPath: string): Promise<boolean> {
     try {
         const packageJson = await readFile(packageJsonPath, 'utf-8');
         const packageData = JSON.parse(packageJson);
-        return packageData.scripts?.tests !== undefined;
+        return packageData.scripts?.test !== undefined;
     } catch {
         // Return false if the file doesn't exist or there's a JSON error
         return false;
