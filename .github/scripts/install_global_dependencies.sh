@@ -10,7 +10,7 @@ if ! command -v jq &> /dev/null; then
 fi
 
 # Extract the rustc version from the globalDependencies in package.json
-RUST_VERSION=$(jq -r '.globalDependencies.rustc // empty' "$PACKAGE_JSON_FILE")
+RUST_VERSION=$(jq -r '.azle.globalDependencies.rustc // empty' "$PACKAGE_JSON_FILE")
 
 if [[ -z "$RUST_VERSION" ]]; then
   echo "Rust version not found in $PACKAGE_JSON_FILE"
@@ -25,7 +25,7 @@ source $HOME/.cargo/env
 rustup target add wasm32-wasi
 
 # Extract the wasi2ic version and repository URL from globalDependencies in package.json
-WASI2IC_VERSION=$(jq -r '.globalDependencies.wasi2ic // empty' "$PACKAGE_JSON_FILE")
+WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // empty' "$PACKAGE_JSON_FILE")
 
 # Determine if WASI2IC_VERSION is a URL (repo) or just a version number
 if [[ $WASI2IC_VERSION =~ ^https?:// ]]; then
