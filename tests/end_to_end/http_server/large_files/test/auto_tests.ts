@@ -18,9 +18,10 @@ const autoGenAutoUploadSmallFileInfos: [number, Unit][] = [
 ];
 
 const autoGenAutoUploadFileInfos: [number, Unit][] =
-    process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
-    process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
-        ? [
+    process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+        ? autoGenAutoUploadSmallFileInfos
+        : [
               ...autoGenAutoUploadSmallFileInfos,
               // General Cases
               [1, 'MiB'],
@@ -31,8 +32,7 @@ const autoGenAutoUploadFileInfos: [number, Unit][] =
               // Edge Cases
               [2_000_000 + 1, 'B'], // One more byte that the message chunk size
               [120 * 1024 * 1024 + 1, 'B'] // One more byte than can be processed in a single hash_file_by_parts call
-          ]
-        : autoGenAutoUploadSmallFileInfos;
+          ];
 
 const permanentFiles: string[] = [
     'photos/people/george-washington.tif',

@@ -34,13 +34,13 @@ const AllServicesQueryMethodArb = QueryMethodArb(
 );
 
 const arrayConstraints =
-    process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
-    process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
-        ? {
+    process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+        ? shortArrayConstraints
+        : {
               ...defaultArrayConstraints,
               maxLength: 30 // If the number of generated services is too large we will run out of space in the wasm custom section.
-          }
-        : shortArrayConstraints;
+          };
 
 const CanisterConfigArb = fc
     .array(AllServicesQueryMethodArb, arrayConstraints)
