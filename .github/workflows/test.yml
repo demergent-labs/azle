@@ -167,15 +167,15 @@ jobs:
                   DFXVM_INIT_YES=true DFX_VERSION=${{ steps.get-dfx-version.outputs.dfx-version }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
+                  # MacOS-specific DNS configuration
+                  if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+                      sudo networksetup -setdnsservers Ethernet 9.9.9.9
+                  fi
+
                   npm install
 
                   if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
                       npm link
-                  fi
-
-                  # MacOS-specific DNS configuration
-                  if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-                      sudo networksetup -setdnsservers Ethernet 9.9.9.9
                   fi
 
                   npm run lint
