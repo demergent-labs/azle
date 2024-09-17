@@ -22,8 +22,6 @@ const validFlags = {
     wasi2ic: { name: 'wasi2ic', script: 'install_wasi2ic.sh' }
 };
 
-// TODO don't forget, we do want a separate script to get all of these versions so that we can run it as an action. We want this because we are not the ones that install node for the github workflows
-
 export async function runCommand(ioType: IOType): Promise<void> {
     // TODO Hey Jordan, I was noticing that for all of the other commands the handling of flags happens before we get to this point.
     // TODO I am guessing that is because of flags like experimental that apply to all of the commands?
@@ -101,17 +99,13 @@ If no options are provided, all dependencies will be installed.
 }
 
 async function getGlobalDependencies(): Promise<Versions> {
-    // Path to package.json
     const packageJsonPath = join(AZLE_PACKAGE_PATH, 'package.json');
 
-    // Read the existing package.json file
-    const packageJsonContent = await readFile(packageJsonPath, 'utf-8');
-    const packageJson = JSON.parse(packageJsonContent);
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf-8'));
 
-    // Extract globalDependencies
-    const globalDependencies = packageJson.globalDependencies;
+    const globalDependencies = packageJson.azle.globalDependencies;
 
-    if (!globalDependencies) {
+    if (globalDependencies === undefined) {
         throw new Error('No globalDependencies found in package.json.');
     }
 
