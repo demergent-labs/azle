@@ -81,9 +81,20 @@ jobs:
             - name: Install curl
               run: sudo apt-get install curl -y
 
+            - id: get-dfx-version
+              # TODO Hey Jordan, This is here to demonstrate two different ways of doing get node version and get dfx version. I think we should unify them, but I wanted to have both to see which you prefered
+              uses: ./.github/actions/get_dfx_version
+
+            - name: Install dfx
+              run: |
+
+                  # Install dfx (Note: DFX must be installed before `npm install` because the azle instalation process required dfx)
+                  # TODO if you want we could explore using the install script... it's kind of overkill and we would still have to supply the version. Though if dfinity ever changed their install script again it would be only one place we would have to update. This would apply to the installation in the test.yml as well
+                  DFXVM_INIT_YES=true DFX_VERSION=${{ steps.get-dfx-version.outputs.dfx-version }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+
             - name: Install global dependencies
               run: |
-                  npx azle install-global-dependencies --rust --wasi2ic --dfx
+                  npx azle install-global-dependencies --rust --wasi2ic
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
             # TODO we should use some Action-specific bot account
