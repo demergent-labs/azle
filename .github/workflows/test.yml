@@ -1,333 +1,77 @@
-# TODO the next great simplification might be deploying multiple examples to one dfx replica instance: https://forum.dfinity.org/t/use-the-same-local-replica-for-multiple-projects/11900
-# TODO this might allow us to avoid spinning up so many jobs in the matrix
-
 # This GitHub Action flow works as follows:
-# The tests are currently simple example-based integration tests.
-# Each directory in the examples directory represents an example project and is intended to have tests that ensure the canisters contained in that example function properly.
+# Each directory in the examples and tests directory represents an example project and is intended to have tests that ensure the canisters contained in that example function properly.
 # These tests are currently written in TypeScript and are intended to be run in a Node.js environment.
 # This GitHub Action takes care of deploying to npm and GitHub.
-# Tests can either run against the current code of Azle found in the repository, or the code deployed by the GitHub Action to npm.
-# Feature branch pull requests (pull requests without release-- in the base branch name) will run all tests against the code found in the repository.
-# Release branch pull requests (pull requests with release-- in the base branch name) will run all tests against the code found in the repository and the code deployed by the GitHub Action to npm.
-# Pushes to main will run all tests against the code in the repository if the latest commit was not a merge of a release branch, and will run tests against the code in the repository and the code deployed by the GitHub Action to npm otherwise.
-# The basic-integration-tests matrix spins up one job per combination of example directory and code source (repo or npm).
-# The check-basic-integration-tests-success job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
 
-name: Azle Tests
+name: Tests
 on:
     push:
         branches:
             - main
     pull_request: # Runs on pull requests to any branch
+env:
+    DFX_VERSION: 0.22.0
+    NODE_VERSION: 20
+    IS_MAIN_BRANCH: ${{ github.ref == 'refs/heads/main' }}
+    IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
+    IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') }}
 jobs:
-    release-candidate-deploy:
+    determine-should-run-tests:
+        name: Determine if tests should run
         runs-on: ubuntu-latest
-        env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         outputs:
-            # These outputs are used to pass information along to the next job
-            should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }} # We only want the next job to run the tests once we have finished deploying to npm and GitHub
-            example_directories: ${{ steps.example_directories.outputs.example_directories }}
+            # If the branch should release then it shouldn't run tests.
+            should-run-tests: ${{ steps.determine-should-run-tests.outputs.should-release == 'false' }}
         steps:
             - uses: actions/checkout@v4
-              # if: contains(github.head_ref, 'release--')
+
+            - id: determine-should-run-tests
+              uses: ./.github/actions/should_release
+
+    get-test-infos:
+        name: Get test infos
+        needs: determine-should-run-tests
+        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Get test infos
+              id: get-test-infos
+              uses: ./.github/actions/get_test_infos
               with:
-                  ref: ${{ contains(github.head_ref, 'release--') && github.event.pull_request.head.ref || github.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-                  registry-url: https://registry.npmjs.org
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-            - if: contains(github.head_ref, 'release--')
-              name: Install dfx
-              run: |
-                  DFXVM_INIT_YES=true DFX_VERSION=0.22.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-            # TODO we should use some Action-specific bot account
-            - if: contains(github.head_ref, 'release--')
-              run: git config --global user.name 'Jordan Last'
-            - if: contains(github.head_ref, 'release--')
-              run: git config --global user.email 'jordan.michael.last@gmail.com'
-            - if: contains(github.head_ref, 'release--')
-              run: git config --global commit.gpgsign true
-            - if: contains(github.head_ref, 'release--')
-              run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
-            - if: contains(github.head_ref, 'release--')
-              run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-            - id: example_directories
-              # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
-              # TODO we want to be able to easily include and exclude examples though
-              # TODO we have a number of flaky tests and we have moved them to the top of the list here so we can keep a better eye on them until we have resolved their flakyness
-              run: |
-                  EXAMPLE_DIRECTORIES=$(cat << END
-                  [
-                    "tests/property/candid_rpc/class_api/service",
-                    "tests/property/candid_rpc/class_api/stable_b_tree_map",
-                    "tests/property/candid_rpc/functional_api/service",
-                    "tests/property/candid_rpc/functional_api/stable_b_tree_map",
-                    "tests/end_to_end/http_server/ethers_base",
-                    "tests/end_to_end/http_server/http_outcall_fetch",
-                    "tests/end_to_end/http_server/ic_evm_rpc",
-                    "examples/basic_bitcoin",
-                    "examples/bitcoin_psbt",
-                    "examples/ckbtc",
-                    "examples/hello_world",
-                    "examples/hello_world_http_server",
-                    "tests/property/candid_rpc/class_api/blob",
-                    "tests/property/candid_rpc/class_api/bool",
-                    "tests/property/candid_rpc/class_api/canister_methods/http_request",
-                    "tests/property/candid_rpc/class_api/canister_methods/http_request_update",
-                    "tests/property/candid_rpc/class_api/canister_methods/init",
-                    "tests/property/candid_rpc/class_api/canister_methods/inspect_message",
-                    "tests/property/candid_rpc/class_api/canister_methods/post_upgrade",
-                    "tests/property/candid_rpc/class_api/canister_methods/pre_upgrade",
-                    "tests/property/candid_rpc/class_api/canister_methods/query",
-                    "tests/property/candid_rpc/class_api/canister_methods/update",
-                    "tests/property/candid_rpc/class_api/float32",
-                    "tests/property/candid_rpc/class_api/float64",
-                    "tests/property/candid_rpc/class_api/func",
-                    "tests/property/candid_rpc/class_api/int",
-                    "tests/property/candid_rpc/class_api/int16",
-                    "tests/property/candid_rpc/class_api/int32",
-                    "tests/property/candid_rpc/class_api/int64",
-                    "tests/property/candid_rpc/class_api/int8",
-                    "tests/property/candid_rpc/class_api/nat",
-                    "tests/property/candid_rpc/class_api/nat16",
-                    "tests/property/candid_rpc/class_api/nat32",
-                    "tests/property/candid_rpc/class_api/nat64",
-                    "tests/property/candid_rpc/class_api/nat8",
-                    "tests/property/candid_rpc/class_api/null",
-                    "tests/property/candid_rpc/class_api/opt",
-                    "tests/property/candid_rpc/class_api/principal",
-                    "tests/property/candid_rpc/class_api/record",
-                    "tests/property/candid_rpc/class_api/recursive",
-                    "tests/property/candid_rpc/class_api/text",
-                    "tests/property/candid_rpc/class_api/tuple",
-                    "tests/property/candid_rpc/class_api/variant",
-                    "tests/property/candid_rpc/class_api/vec",
-                    "tests/property/candid_rpc/functional_api/blob",
-                    "tests/property/candid_rpc/functional_api/bool",
-                    "tests/property/candid_rpc/functional_api/canister_methods/http_request",
-                    "tests/property/candid_rpc/functional_api/canister_methods/http_request_update",
-                    "tests/property/candid_rpc/functional_api/canister_methods/init",
-                    "tests/property/candid_rpc/functional_api/canister_methods/inspect_message",
-                    "tests/property/candid_rpc/functional_api/canister_methods/post_upgrade",
-                    "tests/property/candid_rpc/functional_api/canister_methods/pre_upgrade",
-                    "tests/property/candid_rpc/functional_api/canister_methods/query",
-                    "tests/property/candid_rpc/functional_api/canister_methods/update",
-                    "tests/property/candid_rpc/functional_api/float32",
-                    "tests/property/candid_rpc/functional_api/float64",
-                    "tests/property/candid_rpc/functional_api/func",
-                    "tests/property/candid_rpc/functional_api/int",
-                    "tests/property/candid_rpc/functional_api/int16",
-                    "tests/property/candid_rpc/functional_api/int32",
-                    "tests/property/candid_rpc/functional_api/int64",
-                    "tests/property/candid_rpc/functional_api/int8",
-                    "tests/property/candid_rpc/functional_api/nat",
-                    "tests/property/candid_rpc/functional_api/nat16",
-                    "tests/property/candid_rpc/functional_api/nat32",
-                    "tests/property/candid_rpc/functional_api/nat64",
-                    "tests/property/candid_rpc/functional_api/nat8",
-                    "tests/property/candid_rpc/functional_api/null",
-                    "tests/property/candid_rpc/functional_api/opt",
-                    "tests/property/candid_rpc/functional_api/principal",
-                    "tests/property/candid_rpc/functional_api/record",
-                    "tests/property/candid_rpc/functional_api/recursive",
-                    "tests/property/candid_rpc/functional_api/text",
-                    "tests/property/candid_rpc/functional_api/tuple",
-                    "tests/property/candid_rpc/functional_api/variant",
-                    "tests/property/candid_rpc/functional_api/vec",
-                    "tests/end_to_end/candid_rpc/class_syntax/async_await",
-                    "tests/end_to_end/candid_rpc/class_syntax/audio_recorder",
-                    "tests/end_to_end/candid_rpc/class_syntax/bitcoin",
-                    "tests/end_to_end/candid_rpc/class_syntax/blob_array",
-                    "tests/end_to_end/candid_rpc/class_syntax/bytes",
-                    "tests/end_to_end/candid_rpc/class_syntax/call_raw",
-                    "tests/end_to_end/candid_rpc/class_syntax/candid_encoding",
-                    "tests/end_to_end/candid_rpc/class_syntax/candid_keywords",
-                    "tests/end_to_end/candid_rpc/class_syntax/canister",
-                    "tests/end_to_end/candid_rpc/class_syntax/complex_init",
-                    "tests/end_to_end/candid_rpc/class_syntax/complex_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/composite_queries",
-                    "tests/end_to_end/candid_rpc/class_syntax/counter",
-                    "tests/end_to_end/candid_rpc/class_syntax/cross_canister_calls",
-                    "tests/end_to_end/candid_rpc/class_syntax/cycles",
-                    "tests/end_to_end/candid_rpc/class_syntax/date",
-                    "tests/end_to_end/candid_rpc/class_syntax/ethereum_json_rpc",
-                    "tests/end_to_end/candid_rpc/class_syntax/func_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/heartbeat",
-                    "tests/end_to_end/candid_rpc/class_syntax/ic_api",
-                    "tests/end_to_end/candid_rpc/class_syntax/icrc",
-                    "tests/end_to_end/candid_rpc/class_syntax/imports",
-                    "tests/end_to_end/candid_rpc/class_syntax/init",
-                    "tests/end_to_end/candid_rpc/class_syntax/inspect_message",
-                    "tests/end_to_end/candid_rpc/class_syntax/key_value_store",
-                    "tests/end_to_end/candid_rpc/class_syntax/ledger_canister",
-                    "tests/end_to_end/candid_rpc/class_syntax/list_of_lists",
-                    "tests/end_to_end/candid_rpc/class_syntax/management_canister",
-                    "tests/end_to_end/candid_rpc/class_syntax/manual_reply",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/calc",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/counter",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/echo",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/factorial",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/hello",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/hello-world",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/http_counter",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/minimal-counter-dapp",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/persistent-storage",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/phone-book",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/quicksort",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/simple-to-do",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/superheroes",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/threshold_ecdsa",
-                    "tests/end_to_end/candid_rpc/class_syntax/motoko_examples/whoami",
-                    "tests/end_to_end/candid_rpc/class_syntax/new",
-                    "tests/end_to_end/candid_rpc/class_syntax/notify_raw",
-                    "tests/end_to_end/candid_rpc/class_syntax/null_example",
-                    "tests/end_to_end/candid_rpc/class_syntax/optional_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/outgoing_http_requests",
-                    "tests/end_to_end/candid_rpc/class_syntax/pre_and_post_upgrade",
-                    "tests/end_to_end/candid_rpc/class_syntax/primitive_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/principal",
-                    "tests/end_to_end/candid_rpc/class_syntax/query",
-                    "tests/end_to_end/candid_rpc/class_syntax/randomness",
-                    "tests/end_to_end/candid_rpc/class_syntax/recursion",
-                    "tests/end_to_end/candid_rpc/class_syntax/rejections",
-                    "tests/end_to_end/candid_rpc/class_syntax/simple_erc20",
-                    "tests/end_to_end/candid_rpc/class_syntax/simple_user_accounts",
-                    "tests/end_to_end/candid_rpc/class_syntax/stable_b_tree_map_instruction_threshold",
-                    "tests/end_to_end/candid_rpc/class_syntax/stable_structures",
-                    "tests/end_to_end/candid_rpc/class_syntax/timers",
-                    "tests/end_to_end/candid_rpc/class_syntax/tuple_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/update",
-                    "tests/end_to_end/candid_rpc/class_syntax/vanilla_js",
-                    "tests/end_to_end/candid_rpc/functional_syntax/async_await",
-                    "tests/end_to_end/candid_rpc/functional_syntax/audio_recorder",
-                    "tests/end_to_end/candid_rpc/functional_syntax/bitcoin",
-                    "tests/end_to_end/candid_rpc/functional_syntax/blob_array",
-                    "tests/end_to_end/candid_rpc/functional_syntax/bytes",
-                    "tests/end_to_end/candid_rpc/functional_syntax/call_raw",
-                    "tests/end_to_end/candid_rpc/functional_syntax/candid_encoding",
-                    "tests/end_to_end/candid_rpc/functional_syntax/candid_keywords",
-                    "tests/end_to_end/candid_rpc/functional_syntax/canister",
-                    "tests/end_to_end/candid_rpc/functional_syntax/ckbtc",
-                    "tests/end_to_end/candid_rpc/functional_syntax/complex_init",
-                    "tests/end_to_end/candid_rpc/functional_syntax/complex_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/composite_queries",
-                    "tests/end_to_end/candid_rpc/functional_syntax/counter",
-                    "tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls",
-                    "tests/end_to_end/candid_rpc/functional_syntax/cycles",
-                    "tests/end_to_end/candid_rpc/functional_syntax/date",
-                    "tests/end_to_end/candid_rpc/functional_syntax/ethereum_json_rpc",
-                    "tests/end_to_end/candid_rpc/functional_syntax/func_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/heartbeat",
-                    "tests/end_to_end/candid_rpc/functional_syntax/ic_api",
-                    "tests/end_to_end/candid_rpc/functional_syntax/icrc",
-                    "tests/end_to_end/candid_rpc/functional_syntax/imports",
-                    "tests/end_to_end/candid_rpc/functional_syntax/init",
-                    "tests/end_to_end/candid_rpc/functional_syntax/inspect_message",
-                    "tests/end_to_end/candid_rpc/functional_syntax/key_value_store",
-                    "tests/end_to_end/candid_rpc/functional_syntax/ledger_canister",
-                    "tests/end_to_end/candid_rpc/functional_syntax/list_of_lists",
-                    "tests/end_to_end/candid_rpc/functional_syntax/management_canister",
-                    "tests/end_to_end/candid_rpc/functional_syntax/manual_reply",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/calc",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/counter",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/echo",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/factorial",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/hello",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/hello-world",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/http_counter",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/minimal-counter-dapp",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/persistent-storage",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/phone-book",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/quicksort",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/simple-to-do",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/superheroes",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/threshold_ecdsa",
-                    "tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/whoami",
-                    "tests/end_to_end/candid_rpc/functional_syntax/notify_raw",
-                    "tests/end_to_end/candid_rpc/functional_syntax/null_example",
-                    "tests/end_to_end/candid_rpc/functional_syntax/optional_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/outgoing_http_requests",
-                    "tests/end_to_end/candid_rpc/functional_syntax/pre_and_post_upgrade",
-                    "tests/end_to_end/candid_rpc/functional_syntax/primitive_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/principal",
-                    "tests/end_to_end/candid_rpc/functional_syntax/query",
-                    "tests/end_to_end/candid_rpc/functional_syntax/randomness",
-                    "tests/end_to_end/candid_rpc/functional_syntax/recursion",
-                    "tests/end_to_end/candid_rpc/functional_syntax/rejections",
-                    "tests/end_to_end/candid_rpc/functional_syntax/robust_imports",
-                    "tests/end_to_end/candid_rpc/functional_syntax/simple_erc20",
-                    "tests/end_to_end/candid_rpc/functional_syntax/simple_user_accounts",
-                    "tests/end_to_end/candid_rpc/functional_syntax/stable_b_tree_map_instruction_threshold",
-                    "tests/end_to_end/candid_rpc/functional_syntax/stable_structures",
-                    "tests/end_to_end/candid_rpc/functional_syntax/timers",
-                    "tests/end_to_end/candid_rpc/functional_syntax/tuple_types",
-                    "tests/end_to_end/candid_rpc/functional_syntax/update",
-                    "tests/end_to_end/candid_rpc/functional_syntax/vanilla_js",
-                    "tests/end_to_end/http_server/apollo_server",
-                    "tests/end_to_end/http_server/audio_and_video",
-                    "tests/end_to_end/http_server/autoreload",
-                    "tests/end_to_end/http_server/bitcoinjs_lib",
-                    "tests/end_to_end/http_server/bitcore_lib",
-                    "tests/end_to_end/http_server/ethers",
-                    "tests/end_to_end/http_server/express",
-                    "tests/end_to_end/http_server/fetch_ic",
-                    "tests/end_to_end/http_server/file_protocol",
-                    "tests/end_to_end/http_server/fs",
-                    "tests/end_to_end/http_server/hybrid_canister",
-                    "tests/end_to_end/http_server/internet_identity",
-                    "tests/end_to_end/http_server/large_files",
-                    "tests/end_to_end/http_server/nest",
-                    "tests/end_to_end/http_server/new",
-                    "tests/end_to_end/http_server/open_value_sharing",
-                    "tests/end_to_end/http_server/sqlite",
-                    "tests/end_to_end/http_server/sqlite_drizzle",
-                    "tests/end_to_end/http_server/sqlite_typeorm",
-                    "tests/end_to_end/http_server/tfjs",
-                    "tests/end_to_end/http_server/web_assembly",
-                    "tests/property/ic_api/caller",
-                    "tests/property/ic_api/chunk",
-                    "tests/property/ic_api/cycles_burn",
-                    "tests/property/ic_api/id",
-                    "tests/property/ic_api/instruction_counter",
-                    "tests/property/ic_api/is_controller",
-                    "tests/property/ic_api/performance_counter",
-                    "tests/property/ic_api/time",
-                    "tests/property/ic_api/trap"
-                  ]
-                  END
-                  )
-                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
-                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
-                  EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
-                  echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
-            - id: should_run_tests
-              run: |
-                  BRANCH_NAME="${{ github.head_ref }}"
-                  RELEASE_VERSION="${BRANCH_NAME:9}"
-                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-                  if [[ "${{ contains(github.head_ref, 'release--') }}" == "true" && "$COMMIT_MESSAGE" != "azle-bot automated release $RELEASE_VERSION" ]]
-                  then
-                    ./publish-github-action.sh $RELEASE_VERSION ${{ toJSON(steps.example_directories.outputs.example_directories) }}
-                  else
-                    echo "::set-output name=should_run_tests::true"
-                  fi
-    basic-integration-tests:
-        needs: release-candidate-deploy
+                  directories: |
+                      ./examples
+                      ./tests
+                  exclude-dirs: |
+                      ${{ env.IS_FEATURE_BRANCH_PR == 'true' && format('
+                         examples/basic_bitcoin
+                         examples/bitcoin_psbt
+                         examples/ckbtc
+                         tests/end_to_end/http_server/ethers_base
+                         tests/end_to_end/http_server/http_outcall_fetch
+                         tests/end_to_end/http_server/ic_evm_rpc
+                         tests/property/candid_rpc/class_api/stable_b_tree_map
+                         tests/property/candid_rpc/functional_api/stable_b_tree_map
+                         ') || '' }}
+
+    run-test:
+        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
+        needs:
+            - determine-should-run-tests
+            - get-test-infos
+        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
-            AZLE_TEST_RUN_ON_RELEASE: ${{ contains(github.head_ref, 'release--') }}
+            AZLE_TEST_RUN_ON_RELEASE: ${{ startsWith(github.head_ref, 'release--') }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
-            matrix:
+            matrix: # spins up one job per combination of test and code source (repo or npm).
                 # os: [macos-latest]
                 os: [ubuntu-latest]
                 include_npm:
@@ -341,67 +85,91 @@ jobs:
                       azle_source: npm
                     - include_npm: true
                       azle_source: repo
-                # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
-                example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
+                # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
+                tests: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
         steps:
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              uses: actions/checkout@v4
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Install dfx
-              run: |
-                  DFXVM_INIT_YES=true DFX_VERSION=0.22.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'macos-latest' }}
-              shell: bash -l {0}
-              # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
-              run: |
-                  sudo networksetup -setdnsservers Ethernet 9.9.9.9
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              shell: bash -l {0} # TODO figure out why this is here and comment about it
-              run: npm install
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
-              shell: bash -l {0}
-              run: npm link
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              shell: bash -l {0}
-              run: npm run lint
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
-              run: npm install
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
-              run: npm link azle
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              working-directory: ${{ matrix.example_directories }}
-              run: dfx start --clean --background --host 127.0.0.1:8000
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
-              run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true npm test
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
-              run: AZLE_PROPTEST_NUM_RUNS=10 AZLE_PROPTEST_VERBOSE=true npm test
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
-              run: AZLE_PROPTEST_NUM_RUNS=100 AZLE_PROPTEST_VERBOSE=true npm test
+            - name: Report full path of test
+              # Just in case the path isn't obvious from the name, this will remove ambiguity
+              run: echo ${{matrix.tests.path}}
 
-    check-basic-integration-tests-success:
-        needs: basic-integration-tests
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+
+            - name: Run pre-test Azle setup
+              run: |
+
+                  # Install dfx
+                  DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
+                  # MacOS-specific DNS configuration
+                  if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+                      sudo networksetup -setdnsservers Ethernet 9.9.9.9
+                  fi
+
+                  npm install
+
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link
+                  fi
+
+                  npm run lint
+              shell: bash -l {0}
+
+            - name: Run pre-test setup for ${{ matrix.tests.name }}
+              run: |
+                  npm install
+
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link azle
+                  fi
+
+                  npx azle install-dfx-extension
+              working-directory: ${{ matrix.tests.path }}
+              shell: bash -l {0}
+
+            - name: Start dfx without artificial delay
+              if: ${{ env.IS_FEATURE_BRANCH_PR == 'true' }}
+              working-directory: ${{ matrix.tests.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+
+            - name: Start dfx
+              if: ${{ env.IS_RELEASE_BRANCH_PR == 'true' }}
+              working-directory: ${{ matrix.tests.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000
+
+            - name: Run test
+              run: |
+                  IS_MERGE_TO_MAIN_FROM_RELEASE=${{ env.IS_MAIN_BRANCH == 'true' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                  IS_RELEASE_BRANCH_PR_BEFORE_MERGE_TO_MAIN=${{ env.IS_RELEASE_BRANCH_PR == 'true' && env.IS_MAIN_BRANCH == 'false' }}
+
+                  RUNS=5
+                  if $IS_MERGE_TO_MAIN_FROM_RELEASE; then
+                      RUNS=100
+                  fi
+                  if $IS_RELEASE_BRANCH_PR_BEFORE_MERGE_TO_MAIN; then
+                      RUNS=10
+                  fi
+
+                  AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
+              shell: bash -l {0}
+              working-directory: ${{ matrix.tests.path }}
+
+    # These final jobs are designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
+    check-test-success:
+        name: Check Azle tests succeeded
+        needs: run-test
         runs-on: ubuntu-latest
         if: success()
         steps:
             - run: exit 0
 
-    check-basic-integration-tests-failure:
-        needs: basic-integration-tests
+    check-test-failure:
+        name: Check Azle tests didn't fail
+        needs: run-test
         runs-on: ubuntu-latest
         if: failure()
         steps:

@@ -76,5 +76,12 @@
     "lint-staged": {
         "*.{js,ts}": "eslint --cache --fix",
         "**/*": "prettier --write --ignore-unknown"
+    },
+    "azle": {
+        "globalDependencies": {
+            "wasi2ic": "https://github.com/wasm-forge/wasi2ic?rev=806c3558aad24224852a9582f018178402cb3679#806c3558",
+            "node": "20.11.0",
+            "rustc": "1.80.1"
+        }
     }
 }

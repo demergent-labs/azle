@@ -8,12 +8,16 @@ VERSION=$1
 
 directories_json_string_with_linebreaks=$2
 directories_json_string="${directories_json_string_with_linebreaks//$'\\n'/''}"
-directories=$(echo "$directories_json_string" | jq -c -r '.[]')
+directories=$(echo "$directories_json_string" | jq -c -r '.[] | .path')
 
 sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
 sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
 # TODO we need to keep the dependencies.json file up-to-date as well
 npm install
+
+# Build the binary templates
+npx azle template
+npx azle template --experimental
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
@@ -29,7 +33,8 @@ sleep 30
 
 for directory in ${directories[@]}
 do
-    cd $directory
+    cd "$directory"
+    echo "updating $directory"
 
     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
     npm install

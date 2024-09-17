@@ -1,0 +1,45 @@
+name: Get test infos
+description:
+    'Gets a list of test info objects for each npm project with an npm test script
+    The shape of the object is
+    {
+    path: string, // The path to the test
+    name: string, // The name of the test
+    type: string, // The type of test (e.g. ex (example), prop (property test), e2e, (end to end test) etc)
+    displayPath: string // An abbreviated version of the path for display purposes only
+    }'
+inputs:
+    directories:
+        description: List of directories to search for npm projects with an npm test script
+        required: true
+    exclude-dirs:
+        description: List of directories to exclude from the search
+        required: false
+        default: ''
+    node-version:
+        description: The version of Node.js to use
+        required: true
+        default: '20.x'
+outputs:
+    test-infos:
+        description: All of the test info objects found by this action
+        value: ${{ steps.get-test-infos.outputs.test-infos }}
+runs:
+    using: composite
+    steps:
+        - uses: actions/checkout@v4
+
+        - uses: actions/setup-node@v4
+          with:
+              node-version: ${{ inputs.node-version }}
+
+        - name: Get test infos
+          id: get-test-infos
+          run: |
+              # Export the input variables to make them available to the script
+              export INPUT_DIRECTORIES="${{ inputs.directories }}"
+              export INPUT_EXCLUDE_DIRS="${{ inputs.exclude-dirs }}"
+              # Run the script
+              TEST_INFOS=$(./.github/actions/get_test_infos/get_test_infos.sh | base64 -d)
+              echo "test-infos=${TEST_INFOS}" >> "$GITHUB_OUTPUT"
+          shell: bash
