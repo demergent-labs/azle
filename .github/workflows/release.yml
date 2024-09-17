@@ -33,7 +33,9 @@ jobs:
               run: echo ${{steps.get-node-version.outputs.node-version}}
 
     get-test-infos:
-        needs: determine-should-release
+        needs:
+            - determine-should-release
+            - get-node-version
         if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
         name: Get test infos
         runs-on: ubuntu-latest
@@ -46,6 +48,7 @@ jobs:
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
+                  node-version: ${{ needs.get-node-version.outputs.node-version }}
                   directories: |
                       ./examples
                       ./tests
