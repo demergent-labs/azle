@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Ensure that a version argument is passed
 if [ -z "$1" ]; then
     echo "Error: No Node.js version specified."
     echo "Usage: ./install_node.sh <NODE_VERSION>"

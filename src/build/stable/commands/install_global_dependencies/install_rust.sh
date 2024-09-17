@@ -8,7 +8,6 @@ fi
 
 RUST_VERSION=$1
 
-# Check if Rust is installed and its version
 if command -v rustc &> /dev/null; then
     INSTALLED_VERSION=$(npx tsx src/build/stable/utils/versions/rust.ts 2>&1 | tr -d '[:space:]')
 
