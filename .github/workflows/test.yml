@@ -45,34 +45,34 @@ jobs:
                   # Start with an empty EXCLUDE_DIRS
                   EXCLUDE_DIRS=""
 
-                  # Define the unstable tests
-                  UNSTABLE_TESTS="examples/basic_bitcoin
+                  UNSTABLE_TESTS="${{ format('
+                  examples/basic_bitcoin
                   examples/bitcoin_psbt
                   examples/ckbtc
                   tests/end_to_end/http_server/ethers_base
                   tests/end_to_end/http_server/http_outcall_fetch
                   tests/end_to_end/http_server/ic_evm_rpc
                   tests/property/candid_rpc/class_api/stable_b_tree_map
-                  tests/property/candid_rpc/functional_api/stable_b_tree_map"
+                  tests/property/candid_rpc/functional_api/stable_b_tree_map
+                  ') }}"
 
-                  # Define the slow tests
-                  SLOW_TESTS="tests/property/candid_rpc/class_api/service
+                  SLOW_TESTS="${{ format('
+                  tests/property/candid_rpc/class_api/service
                   tests/property/candid_rpc/functional_api/service
-                  tests/"
+                  ') }}"
 
                   # Append UNSTABLE_TESTS if it's a feature branch PR
                   if [[ "${{ env.IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
-                  EXCLUDE_DIRS="$EXCLUDE_DIRS
-                  $UNSTABLE_TESTS"
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS $UNSTABLE_TESTS"
                   fi
 
                   # Append SLOW_TESTS if it's a feature draft PR
                   if [[ "${{ env.IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
-                  EXCLUDE_DIRS="$EXCLUDE_DIRS
-                  $SLOW_TESTS"
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS $SLOW_TESTS"
                   fi
 
-                  # Save the exclude-dirs in the environment
+                  # Trim leading or trailing spaces and save the exclude-dirs in the environment
+                  EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
                   echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_ENV
 
             - name: Get test infos
