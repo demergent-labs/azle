@@ -39,9 +39,12 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Set exclude dirs (combine unstable and slow tests)
+            - name: Set exclude dirs
               id: set-exclude-dirs
               run: |
+                  # Start with an empty EXCLUDE_DIRS
+                  EXCLUDE_DIRS=""
+
                   # Define the unstable tests
                   UNSTABLE_TESTS="examples/basic_bitcoin
                   examples/bitcoin_psbt
@@ -57,18 +60,20 @@ jobs:
                   tests/property/candid_rpc/functional_api/service
                   tests/"
 
-                  # Determine the final list of excluded dirs based on the branch conditions
+                  # Append UNSTABLE_TESTS if it's a feature branch PR
+                  if [[ "${{ env.IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS
+                  $UNSTABLE_TESTS"
+                  fi
+
+                  # Append SLOW_TESTS if it's a feature draft PR
                   if [[ "${{ env.IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
-                  EXCLUDE_DIRS="$UNSTABLE_TESTS
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS
                   $SLOW_TESTS"
-                  elif [[ "${{ env.IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
-                  EXCLUDE_DIRS="$UNSTABLE_TESTS"
-                  else
-                  EXCLUDE_DIRS=""
                   fi
 
                   # Save the exclude-dirs in the environment
-                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
+                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_ENV
 
             - name: Get test infos
               id: get-test-infos
@@ -77,7 +82,7 @@ jobs:
                   directories: |
                       ./examples
                       ./tests
-                  exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
+                  exclude-dirs: ${{ env.exclude-dirs }}
 
     run-test:
         name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
