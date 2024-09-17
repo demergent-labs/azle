@@ -1,6 +1,6 @@
 import { basename } from 'path';
 
-type TestInfo = {
+export type TestInfo = {
     path: string;
     name: string;
     type: Type;

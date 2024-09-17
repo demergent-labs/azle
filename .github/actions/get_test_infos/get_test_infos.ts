@@ -1,7 +1,10 @@
 import { discoverTestDirs } from './discover_test_dirs.js';
-import { dirToTestInfo } from './dir_to_test_info.js';
+import { dirToTestInfo, TestInfo } from './dir_to_test_info.js';
 
-export async function getTestInfos(dirs: string[], excludeDirs: string[]) {
+export async function getTestInfos(
+    dirs: string[],
+    excludeDirs: string[]
+): Promise<TestInfo[]> {
     const allDirs = (
         await dirs.reduce(
             async (accPromise, dir) => {
@@ -20,6 +23,6 @@ export async function getTestInfos(dirs: string[], excludeDirs: string[]) {
     return testInfos;
 }
 
-function isExcluded(dir, excludeDirs) {
+function isExcluded(dir: string, excludeDirs: string[]): boolean {
     return excludeDirs.some((exclude) => dir.includes(exclude));
 }
