@@ -7,7 +7,7 @@ const [, , dirsArg, excludeDirsArg] = process.argv;
 const dirs = dirsArg.split(',').filter((path) => path !== '');
 const excludeDirs = excludeDirsArg.split(',').filter((path) => path !== '');
 
-async function main() {
+async function main(): Promise<void> {
     try {
         const result = await getTestInfos(dirs, excludeDirs);
         process.stdout.write(JSON.stringify(result));
