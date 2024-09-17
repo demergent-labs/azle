@@ -158,19 +158,21 @@ jobs:
             - name: Run pre-test Azle setup
               run: |
 
+                  npm install
+
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link
+                  fi
+
                   # Install dfx
-                  npx azle install-global-dependencies --dfx
+                  # Hey Jordan, can you help me figure out why this doesn't work? While we are at it, there is a weird error that happens when we npm install
+                  # npx azle install-global-dependencies --dfx
+                  node src/build/index.js install-global-dependencies --dfx
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
                   # MacOS-specific DNS configuration
                   if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
                       sudo networksetup -setdnsservers Ethernet 9.9.9.9
-                  fi
-
-                  npm install
-
-                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
-                      npm link
                   fi
 
                   npm run lint
