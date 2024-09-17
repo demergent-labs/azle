@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Ensure that a version argument is passed
 if [ -z "$1" ]; then
     echo "Error: No DFX version specified."
     echo "Usage: ./install_dfx.sh <DFX_VERSION>"
@@ -9,14 +8,12 @@ fi
 
 DFX_VERSION=$1
 
-# Check if dfx is installed and its version
 if command -v dfx &> /dev/null; then
     INSTALLED_VERSION=$(npx tsx src/build/stable/utils/versions/dfx.ts 2>&1 | tr -d '[:space:]')
 
     echo "Installed dfx version: $INSTALLED_VERSION"
     echo "Requested dfx version: $DFX_VERSION"
 
-    # If the installed version matches the requested version, skip installation
     if [ "$INSTALLED_VERSION" = "$DFX_VERSION" ]; then
         echo "dfx $DFX_VERSION is already installed. No installation needed."
         exit 0
