@@ -24,7 +24,7 @@ export async function discoverTestDirs(dirToSearch: string): Promise<string[]> {
                 ];
             }
 
-            return [];
+            return acc;
         },
         Promise.resolve([] as string[])
     );
