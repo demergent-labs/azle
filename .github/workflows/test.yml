@@ -15,6 +15,7 @@ env:
     IS_MAIN_BRANCH: ${{ github.ref == 'refs/heads/main' }}
     IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
     IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') }}
+    IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && github.event.pull_request.draft == true}}
 jobs:
     determine-should-run-tests:
         name: Determine if tests should run
@@ -38,6 +39,37 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Set exclude dirs (combine unstable and slow tests)
+              id: set-exclude-dirs
+              run: |
+                  # Define the unstable tests
+                  UNSTABLE_TESTS="examples/basic_bitcoin
+                  examples/bitcoin_psbt
+                  examples/ckbtc
+                  tests/end_to_end/http_server/ethers_base
+                  tests/end_to_end/http_server/http_outcall_fetch
+                  tests/end_to_end/http_server/ic_evm_rpc
+                  tests/property/candid_rpc/class_api/stable_b_tree_map
+                  tests/property/candid_rpc/functional_api/stable_b_tree_map"
+
+                  # Define the slow tests
+                  SLOW_TESTS="tests/property/candid_rpc/class_api/service
+                  tests/property/candid_rpc/functional_api/service
+                  tests/"
+
+                  # Determine the final list of excluded dirs based on the branch conditions
+                  if [[ "${{ env.IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
+                  EXCLUDE_DIRS="$UNSTABLE_TESTS
+                  $SLOW_TESTS"
+                  elif [[ "${{ env.IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
+                  EXCLUDE_DIRS="$UNSTABLE_TESTS"
+                  else
+                  EXCLUDE_DIRS=""
+                  fi
+
+                  # Save the exclude-dirs in the environment
+                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
+
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
@@ -45,17 +77,7 @@ jobs:
                   directories: |
                       ./examples
                       ./tests
-                  exclude-dirs: |
-                      ${{ env.IS_FEATURE_BRANCH_PR == 'true' && format('
-                         examples/basic_bitcoin
-                         examples/bitcoin_psbt
-                         examples/ckbtc
-                         tests/end_to_end/http_server/ethers_base
-                         tests/end_to_end/http_server/http_outcall_fetch
-                         tests/end_to_end/http_server/ic_evm_rpc
-                         tests/property/candid_rpc/class_api/stable_b_tree_map
-                         tests/property/candid_rpc/functional_api/stable_b_tree_map
-                         ') || '' }}
+                  exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
 
     run-test:
         name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
