@@ -156,20 +156,22 @@ jobs:
               with:
                   node-version: ${{ needs.get-node-version.outputs.node-version }}
 
+            - id: get-dfx-version
+              # TODO Hey Jordan, This is here to demonstrate two different ways of doing get node version and get dfx version. I think we should unify them, but I wanted to have both to see which you prefered
+              uses: ./.github/actions/get_dfx_version
+
             - name: Run pre-test Azle setup
               run: |
+
+                  # Install dfx (Note: DFX must be installed before `npm install` because the azle instalation process required dfx)
+                  DFXVM_INIT_YES=true DFX_VERSION=${{ steps.get-dfx-version.outputs.dfx-version }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
                   npm install
 
                   if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
                       npm link
                   fi
-
-                  # Install dfx
-                  # Hey Jordan, can you help me figure out why this doesn't work? While we are at it, there is a weird error that happens when we npm install
-                  # npx azle install-global-dependencies --dfx
-                  node src/build/index.js install-global-dependencies --dfx
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
                   # MacOS-specific DNS configuration
                   if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
