@@ -38,12 +38,12 @@ jobs:
 
             - id: get-node-version
               uses: ./.github/actions/get_node_version
-            - id: report
-              run: echo ${{steps.get-node-version.outputs.node-version}}
 
     get-test-infos:
         name: Get test infos
-        needs: determine-should-run-tests
+        needs:
+            - determine-should-run-tests
+            - get-node-version
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ubuntu-latest
         outputs:
@@ -114,6 +114,7 @@ jobs:
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
+                  node-version: ${{ needs.get-node-version.outputs.node-version }}
                   directories: |
                       ./examples
                       ./tests
