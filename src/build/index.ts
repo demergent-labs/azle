@@ -139,7 +139,22 @@ async function handleTemplateCommand(ioType: IOType): Promise<void> {
 async function handleInstallGlobalDependenciesCommand(
     ioType: IOType
 ): Promise<void> {
-    await runInstallGlobalDependenciesCommand(ioType);
+    const node = process.argv.includes('--node');
+    const dfx = process.argv.includes('--dfx');
+    const rustc = process.argv.includes('--rust');
+    const wasi2ic = process.argv.includes('--wasi2ic');
+
+    if (!node && !dfx && !rustc && !wasi2ic) {
+        await runInstallGlobalDependenciesCommand(
+            { dfx: true, node: true, rustc: true, wasi2ic: true },
+            ioType
+        );
+    } else {
+        await runInstallGlobalDependenciesCommand(
+            { dfx, node, rustc, wasi2ic },
+            ioType
+        );
+    }
 }
 
 async function handleNewCommand(): Promise<void> {
