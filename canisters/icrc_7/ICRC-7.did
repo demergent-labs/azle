@@ -1,0 +1,67 @@
+// Taken from: https://github.com/dfinity/ICRC/blob/946bd6518acb2aafd1828b93dfde9e47657fd758/ICRCs/ICRC-7/ICRC-7.did
+
+type Subaccount = blob;
+
+type Account = record { owner : principal; subaccount : opt Subaccount };
+
+// Generic value in accordance with ICRC-3
+type Value = variant { 
+    Blob : blob; 
+    Text : text; 
+    Nat : nat;
+    Int : int;
+    Array : vec Value; 
+    Map : vec record { text; Value }; 
+};
+
+type TransferArg = record {
+    from_subaccount: opt blob; // The subaccount to transfer the token from
+    to : Account;
+    token_id : nat;
+    memo : opt blob;
+    created_at_time : opt nat64;
+};
+
+type TransferResult = variant {
+    Ok : nat; // Transaction index for successful transfer
+    Err : TransferError;
+};
+
+type TransferError = variant {
+    NonExistingTokenId;
+    InvalidRecipient;
+    Unauthorized;
+    TooOld;
+    CreatedInFuture : record { ledger_time: nat64 };
+    Duplicate : record { duplicate_of : nat };
+    GenericError : record { error_code : nat; message : text };
+    GenericBatchError : record { error_code : nat; message : text };
+};
+
+service : {
+  icrc7_collection_metadata : () -> (vec record { text; Value } ) query;
+  icrc7_symbol : () -> (text) query;
+  icrc7_name : () -> (text) query;
+  icrc7_description : () -> (opt text) query;
+  icrc7_logo : () -> (opt text) query;
+  icrc7_total_supply : () -> (nat) query;
+  icrc7_supply_cap : () -> (opt nat) query;
+  icrc7_max_query_batch_size : () -> (opt nat) query;
+  icrc7_max_update_batch_size : () -> (opt nat) query;
+  icrc7_default_take_value : () -> (opt nat) query;
+  icrc7_max_take_value : () -> (opt nat) query;
+  icrc7_max_memo_size : () -> (opt nat) query;
+  icrc7_atomic_batch_transfers : () -> (opt bool) query;
+  icrc7_tx_window : () -> (opt nat) query;
+  icrc7_permitted_drift : () -> (opt nat) query;
+  icrc7_token_metadata : (token_ids : vec nat)
+      -> (vec opt vec record { text; Value }) query;
+  icrc7_owner_of : (token_ids : vec nat)
+      -> (vec opt Account) query;
+  icrc7_balance_of : (vec Account) -> (vec nat) query;
+  icrc7_tokens : (prev : opt nat, take : opt nat)
+      -> (vec nat) query;
+  icrc7_tokens_of : (account : Account, prev : opt nat, take : opt nat)
+      -> (vec nat) query;
+  icrc7_transfer : (vec TransferArg) -> (vec opt TransferResult);
+}

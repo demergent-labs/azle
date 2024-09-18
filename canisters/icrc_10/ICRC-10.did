@@ -1,0 +1,8 @@
+// Taken from: https://github.com/dfinity/ICRC/blob/946bd6518acb2aafd1828b93dfde9e47657fd758/ICRCs/ICRC-10/ICRC-10.did
+
+type SupportedStandard = record { name : text; url : text; };
+type SupportedStandardsResponse = vec SupportedStandard;
+
+service : {
+  icrc10_supported_standards : () -> (SupportedStandardsResponse) query;
+}
