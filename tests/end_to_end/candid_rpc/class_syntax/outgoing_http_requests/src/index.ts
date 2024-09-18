@@ -9,17 +9,20 @@ import {
     update
 } from 'azle';
 import {
-    HttpRequestArgs,
-    HttpResponse,
-    HttpTransformArgs
+    http_request_args,
+    http_request_result,
+    http_transform_args
 } from 'azle/canisters/management';
 
 export default class {
     @update([], IDL.Text)
     async xkcd(): Promise<string> {
-        const httpResponse = await call('aaaaa-aa', 'http_request', {
-            paramIdlTypes: [HttpRequestArgs],
-            returnIdlType: HttpResponse,
+        const httpResponse = await call<
+            [http_request_args],
+            http_request_result
+        >('aaaaa-aa', 'http_request', {
+            paramIdlTypes: [http_request_args],
+            returnIdlType: http_request_result,
             args: [
                 {
                     url: `https://xkcd.com/642/info.0.json`,
@@ -43,12 +46,12 @@ export default class {
             payment: 50_000_000n
         });
 
-        return new TextDecoder().decode(httpResponse.body);
+        return new TextDecoder().decode(Uint8Array.from(httpResponse.body));
     }
 
-    @update([], HttpResponse, { manual: true })
+    @update([], http_request_result, { manual: true })
     async xkcdRaw(): Promise<void> {
-        const httpResponse = await call(
+        const httpResponse = await call<undefined, Uint8Array>(
             Principal.fromText('aaaaa-aa'),
             'http_request',
             {
@@ -71,8 +74,8 @@ export default class {
         reply({ raw: httpResponse });
     }
 
-    @query([HttpTransformArgs], HttpResponse)
-    xkcdTransform(args: HttpTransformArgs): HttpResponse {
+    @query([http_transform_args], http_request_result)
+    xkcdTransform(args: http_transform_args): http_request_result {
         return {
             ...args.response,
             headers: []
