@@ -18,8 +18,7 @@ jobs:
               uses: ./.github/actions/should_release
 
     get-test-infos:
-        needs:
-            - determine-should-release
+        needs: determine-should-release
         if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
         name: Get test infos
         runs-on: ubuntu-latest

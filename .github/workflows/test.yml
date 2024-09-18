@@ -28,8 +28,7 @@ jobs:
 
     get-test-infos:
         name: Get test infos
-        needs:
-            - determine-should-run-tests
+        needs: determine-should-run-tests
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ubuntu-latest
         outputs:
