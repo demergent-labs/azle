@@ -175,12 +175,12 @@ jobs:
               shell: bash -l {0}
 
             - name: Start dfx without artificial delay
-              if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' }}
+              if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' || env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR}}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ env.AZLE_IS_RELEASE_BRANCH_PR == 'true' }}
+              if: ${{ env.AZLE_IS_RELEASE_BRANCH_PR == 'true' || env.AZLE_IS_MAIN_BRANCH_PUSH == 'true' || env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
