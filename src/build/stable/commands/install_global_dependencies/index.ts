@@ -5,28 +5,30 @@ import { join } from 'path';
 import { execSyncPretty } from '../../utils/exec_sync_pretty';
 import { AZLE_PACKAGE_PATH } from '../../utils/global_paths';
 
-type ValidFlag = 'node' | 'dfx' | 'rustc' | 'wasi2ic';
+type DependencyName = 'node' | 'dfx' | 'rustc' | 'wasi2ic';
 
 type Versions = {
-    [key in ValidFlag]: string;
+    [key in DependencyName]: string;
 };
 
 type Dependencies = {
-    [key in ValidFlag]: boolean;
+    [key in DependencyName]: boolean;
 };
 
 export async function runCommand(
-    dependencies: Dependencies,
+    dependenciesToInstall: Dependencies,
     ioType: IOType
 ): Promise<void> {
-    for (const key in dependencies) {
-        const dependency = key as ValidFlag;
-        if (dependencies[dependency]) installDependency(dependency, ioType);
+    for (const key in dependenciesToInstall) {
+        const dependency = key as DependencyName;
+        if (dependenciesToInstall[dependency] === true) {
+            installDependency(dependency, ioType);
+        }
     }
 }
 
 async function installDependency(
-    dependency: ValidFlag,
+    dependency: DependencyName,
     ioType: IOType
 ): Promise<void> {
     console.info(`Installing ${dependency}...`);
