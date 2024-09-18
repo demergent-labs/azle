@@ -18,6 +18,14 @@ env:
     AZLE_IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
     AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
 jobs:
+    log-stuff:
+        name: Log stuff
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo ${{ github.ref }}
+            - run: echo ${{ github.event.pull_request.draft }}
+            - run: echo ${{ github.head_ref }}
+            - run: echo ${{ !startsWith(github.head_ref, 'release--') }}
     determine-should-run-tests:
         name: Determine if tests should run
         runs-on: ubuntu-latest
