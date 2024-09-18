@@ -2,7 +2,7 @@ import { pathToFileURL } from 'url';
 
 import { execSyncPretty } from '../exec_sync_pretty';
 
-export function getNodeVersion(): string {
+export function getNodeVersionLocal(): string {
     const nodeOutput = execSyncPretty('node --version').toString().trim();
     const match = nodeOutput.match(/^v(\d+\.\d+\.\d+)/);
 
@@ -14,13 +14,7 @@ export function getNodeVersion(): string {
 }
 
 function main(): void {
-    try {
-        const version = getNodeVersion();
-        console.log(version);
-    } catch (error: any) {
-        console.error(error.message);
-        process.exit(1);
-    }
+    process.stdout.write(getNodeVersionLocal());
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
