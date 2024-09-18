@@ -9,10 +9,8 @@ runs:
     steps:
         - uses: actions/checkout@v4
 
-        - uses: actions/setup-node@v4
-
         - id: get-node-version
           run: |
-              NODE_VERSION=$(npx tsx ./.github/actions/get_node_version/index.ts)
+              NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
               echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
           shell: bash

@@ -104,15 +104,13 @@ jobs:
                   node-version: ${{ steps.get-node-version.outputs.node-version }}
 
             - id: get-dfx-version
-              run: |
-                  DFX_VERSION=$(npx tsx ./src/build/stable/utils/versions/dfx.ts)
-                  echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
+              uses: ./.github/actions/get_dfx_version
 
             - name: Run pre-test Azle setup
               run: |
 
-                  # Install dfx (Note: DFX must be installed before `npm install` because the azle instalation process required dfx)
-                  DFXVM_INIT_YES=true DFX_VERSION=${{ steps.get-dfx-version.outputs.dfx-version }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  # Install dfx (Note: DFX must be installed before `npm install` because the azle instalation process requires dfx)
+                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
                   # MacOS-specific DNS configuration

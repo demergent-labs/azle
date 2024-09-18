@@ -70,16 +70,12 @@ jobs:
               run: sudo apt-get install curl -y
 
             - id: get-dfx-version
-              run: |
-                  DFX_VERSION=$(npx tsx ./src/build/stable/utils/versions/dfx.ts)
-                  echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
+              uses: ./.github/actions/get_dfx_version
 
             - name: Install dfx
               run: |
-
-                  # Install dfx (Note: DFX must be installed before `npm install` because the azle instalation process required dfx)
-                  # TODO if you want we could explore using the install script... it's kind of overkill and we would still have to supply the version. Though if dfinity ever changed their install script again it would be only one place we would have to update. This would apply to the installation in the test.yml as well
-                  DFXVM_INIT_YES=true DFX_VERSION=${{ steps.get-dfx-version.outputs.dfx-version }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  # Install dfx (Note: DFX must be installed before `npx azle` because the azle instalation process requires dfx)
+                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
 
             - name: Install global dependencies
               run: |
