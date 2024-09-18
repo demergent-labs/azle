@@ -8,7 +8,7 @@ export default class {
         candidArgs: string,
         payment: bigint
     ): Promise<string> {
-        const result = await call(canisterId, method, {
+        const result = await call<undefined>(canisterId, method, {
             raw: candidEncode(candidArgs),
             payment
         });
