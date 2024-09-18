@@ -79,7 +79,7 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  npx azle install-global-dependencies --rust --wasi2ic
+                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
             # TODO we should use some Action-specific bot account
