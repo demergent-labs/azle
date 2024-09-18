@@ -15,8 +15,8 @@ env:
     AZLE_IS_MAIN_BRANCH_PUSH: ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
     AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: ${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
     AZLE_IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
-    AZLE_IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') && !github.ref == 'refs/heads/main' && github.event.pull_request.draft == false }}
-    AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && !github.ref == 'refs/heads/main' && github.event.pull_request.draft == true }}
+    AZLE_IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+    AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
 jobs:
     determine-should-run-tests:
         name: Determine if tests should run
