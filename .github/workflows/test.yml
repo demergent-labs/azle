@@ -71,7 +71,7 @@ jobs:
                   fi
 
                   # Exclude UNSTABLE_TESTS if it's a feature branch PR or a feature branch draft pr
-                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" || "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true"]]; then
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" || "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
                   EXCLUDE_DIRS="$EXCLUDE_DIRS $UNSTABLE_TESTS"
                   fi
 
