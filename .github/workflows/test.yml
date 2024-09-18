@@ -70,7 +70,17 @@ jobs:
                   ') }}"
 
                   SLOW_TESTS="${{ format('
-                  examples/ckbtc
+                  tests/end_to_end/candid_rpc/functional_syntax/ckbtc
+                  tests/end_to_end/candid_rpc/class_syntax/bitcoin
+                  tests/end_to_end/http_server/large_files
+                  tests/end_to_end/http_server/open_value_sharing
+                  tests/end_to_end/candid_rpc/class_syntax/stable_structures
+                  tests/end_to_end/candid_rpc/functional_syntax/bitcoin
+                  tests/end_to_end/candid_rpc/functional_syntax/composite_queries
+                  tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls
+                  tests/end_to_end/candid_rpc/functional_syntax/management_canister
+                  tests/end_to_end/candid_rpc/functional_syntax/stable_structures
+                  tests/end_to_end/http_server/autoreload
                   ') }}"
 
                   # Exclude RELEASE_TESTS if it's not a release pr
@@ -90,7 +100,7 @@ jobs:
 
                   # Trim leading or trailing spaces and save the exclude-dirs in the environment
                   EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
-                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_ENV
+                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
 
             - name: Get test infos
               id: get-test-infos
@@ -99,7 +109,7 @@ jobs:
                   directories: |
                       ./examples
                       ./tests
-                  exclude-dirs: ${{ env.exclude-dirs }}
+                  exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
 
     run-test:
         name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
