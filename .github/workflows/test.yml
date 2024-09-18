@@ -28,28 +28,19 @@ jobs:
             - id: determine-should-run-tests
               uses: ./.github/actions/should_release
 
-    get-node-version:
-        name: Get node version
-        runs-on: ubuntu-latest
-        outputs:
-            node-version: ${{ steps.get-node-version.outputs.node-version }}
-        steps:
-            - uses: actions/checkout@v4
-
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
     get-test-infos:
         name: Get test infos
         needs:
             - determine-should-run-tests
-            - get-node-version
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ubuntu-latest
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
+
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
 
             - name: Set exclude dirs
               id: set-exclude-dirs
@@ -109,7 +100,7 @@ jobs:
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ needs.get-node-version.outputs.node-version }}
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: |
                       ./examples
                       ./tests
@@ -119,7 +110,6 @@ jobs:
         name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
         needs:
             - determine-should-run-tests
-            - get-node-version
             - get-test-infos
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ${{ matrix.os }}
@@ -152,13 +142,17 @@ jobs:
 
             - uses: actions/checkout@v4
 
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
             - uses: actions/setup-node@v4
               with:
-                  node-version: ${{ needs.get-node-version.outputs.node-version }}
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
 
             - id: get-dfx-version
-              # TODO Hey Jordan, This is here to demonstrate two different ways of doing get node version and get dfx version. I think we should unify them, but I wanted to have both to see which you prefered
-              uses: ./.github/actions/get_dfx_version
+              run: |
+                  DFX_VERSION=$(npx tsx ./src/build/stable/utils/versions/dfx.ts)
+                  echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
 
             - name: Run pre-test Azle setup
               run: |

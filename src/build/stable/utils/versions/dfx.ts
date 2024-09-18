@@ -1,8 +1,9 @@
 import { pathToFileURL } from 'url';
 
 import { execSyncPretty } from '../exec_sync_pretty';
+import { getVersionFromPackageJson } from './get_version_from_package_json';
 
-export function getDfxVersion(): string {
+export function getDfxVersionLocal(): string {
     const dfxOutput = execSyncPretty('dfx --version').toString().trim();
 
     const match = dfxOutput.match(/dfx (\d+\.\d+\.\d+)/);
@@ -14,13 +15,17 @@ export function getDfxVersion(): string {
     }
 }
 
-function main(): void {
-    try {
-        const version = getDfxVersion();
-        console.log(version);
-    } catch (error: any) {
-        console.error(error.message);
-        process.exit(1);
+export async function getDfxVersionPackageJson(): Promise<string> {
+    return await getVersionFromPackageJson('dfx');
+}
+
+async function main(): Promise<void> {
+    const args = process.argv.slice(2);
+
+    if (args.includes('--local')) {
+        process.stdout.write(getDfxVersionLocal());
+    } else {
+        process.stdout.write(await getDfxVersionPackageJson());
     }
 }
 

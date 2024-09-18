@@ -2,15 +2,17 @@ name: Get node version
 description: Determines Azle's node version
 outputs:
     node-version:
-        description: Returns the version of node Azle used for it's last template
+        description: Returns the version of node that Azle will test against and use to generate its Wasm binary template
         value: ${{ steps.get-node-version.outputs.node-version }}
 runs:
     using: composite
     steps:
         - uses: actions/checkout@v4
 
+        - uses: actions/setup-node@v4
+
         - id: get-node-version
           run: |
-              NODE_VERSION=$(./.github/actions/get_node_version/get_node_version.sh)
+              NODE_VERSION=$(npx tsx ./.github/actions/get_node_version/index.ts)
               echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
           shell: bash

@@ -17,25 +17,9 @@ jobs:
             - id: determine-should-release
               uses: ./.github/actions/should_release
 
-    get-node-version:
-        needs: determine-should-release
-        if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
-        name: Get node version
-        runs-on: ubuntu-latest
-        outputs:
-            node-version: ${{ steps.get-node-version.outputs.node-version }}
-        steps:
-            - uses: actions/checkout@v4
-
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-            - id: report
-              run: echo ${{steps.get-node-version.outputs.node-version}}
-
     get-test-infos:
         needs:
             - determine-should-release
-            - get-node-version
         if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
         name: Get test infos
         runs-on: ubuntu-latest
@@ -44,11 +28,14 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
             - name: Get all test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ needs.get-node-version.outputs.node-version }}
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: |
                       ./examples
                       ./tests
@@ -60,7 +47,6 @@ jobs:
         needs:
             - determine-should-release
             - get-test-infos
-            - get-node-version
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
@@ -71,9 +57,12 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
             - uses: actions/setup-node@v4
               with:
-                  node-version: ${{ needs.get-node-version.outputs.node-version }}
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -82,8 +71,9 @@ jobs:
               run: sudo apt-get install curl -y
 
             - id: get-dfx-version
-              # TODO Hey Jordan, This is here to demonstrate two different ways of doing get node version and get dfx version. I think we should unify them, but I wanted to have both to see which you prefered
-              uses: ./.github/actions/get_dfx_version
+              run: |
+                  DFX_VERSION=$(npx tsx ./src/build/stable/utils/versions/dfx.ts)
+                  echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
 
             - name: Install dfx
               run: |

@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from './global_paths';
-import { getDfxVersion } from './versions/dfx';
+import { getDfxVersionLocal } from './versions/dfx';
 import { getNodeVersion } from './versions/node';
 import { getRustVersion } from './versions/rust';
 import { getWasiVersion } from './versions/wasi2ic';
@@ -11,7 +11,7 @@ export async function logGlobalDependencies(): Promise<void> {
     const wasiVersion = getWasiVersion();
     const nodeVersion = getNodeVersion();
     const rustVersion = getRustVersion();
-    const dfxVersion = getDfxVersion();
+    const dfxVersion = getDfxVersionLocal();
 
     const globalDependencies = {
         wasi2ic: wasiVersion,
