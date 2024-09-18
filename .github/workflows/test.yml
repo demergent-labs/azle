@@ -43,10 +43,12 @@ jobs:
             - name: Set exclude dirs
               id: set-exclude-dirs
               run: |
-                  # Start with an empty EXCLUDE_DIRS
                   EXCLUDE_DIRS=""
 
-                  ONLY_RELEASE_TESTS="new"
+                  RELEASE_TESTS="${{ format('
+                  tests/end_to_end/candid_rpc/class_syntax/new/
+                  tests/end_to_end/http_server/new/
+                  ') }}"
 
                   UNSTABLE_TESTS="${{ format('
                   examples/basic_bitcoin
@@ -60,17 +62,21 @@ jobs:
                   ') }}"
 
                   SLOW_TESTS="${{ format('
-                  tests/property/candid_rpc/class_api/service
-                  tests/property/candid_rpc/functional_api/service
+                  examples/ckbtc
                   ') }}"
 
-                  # Append UNSTABLE_TESTS if it's a feature branch PR
-                  if [[ "${{ env.IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
+                  # Exclude RELEASE_TESTS if it's not a release pr
+                  if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR}}" == "false" ]]; then
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS $RELEASE_TESTS"
+                  fi
+
+                  # Exclude UNSTABLE_TESTS if it's a feature branch PR or a feature branch draft pr
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" || "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true"]]; then
                   EXCLUDE_DIRS="$EXCLUDE_DIRS $UNSTABLE_TESTS"
                   fi
 
-                  # Append SLOW_TESTS if it's a feature draft PR
-                  if [[ "${{ env.IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
+                  # Exclude SLOW_TESTS if it's a feature draft PR
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
                   EXCLUDE_DIRS="$EXCLUDE_DIRS $SLOW_TESTS"
                   fi
 
@@ -98,7 +104,6 @@ jobs:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
-            AZLE_TEST_RUN_ON_RELEASE: ${{ startsWith(github.head_ref, 'release--') }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
@@ -162,12 +167,12 @@ jobs:
               shell: bash -l {0}
 
             - name: Start dfx without artificial delay
-              if: ${{ env.IS_FEATURE_BRANCH_PR == 'true' }}
+              if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ env.IS_RELEASE_BRANCH_PR == 'true' }}
+              if: ${{ env.AZLE_IS_RELEASE_BRANCH_PR == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 

@@ -47,10 +47,10 @@ const AllRecursiveQueryMethodArb = fc.oneof(
 );
 
 const arrayConstraints =
-    process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
-    process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
-        ? defaultArrayConstraints
-        : shortArrayConstraints;
+    process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+        ? shortArrayConstraints
+        : defaultArrayConstraints;
 
 const CanisterConfigArb = fc
     .array(AllRecursiveQueryMethodArb, arrayConstraints)

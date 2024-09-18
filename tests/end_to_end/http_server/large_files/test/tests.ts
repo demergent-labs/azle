@@ -18,10 +18,10 @@ import { manualTests } from './manual_tests';
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
     const describeLongTest =
-        process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
-        process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
-            ? describe
-            : describe.skip;
+        process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+        process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+            ? describe.skip
+            : describe;
 
     return () => {
         beforeAll(async () => {
