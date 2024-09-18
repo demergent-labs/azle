@@ -12,10 +12,11 @@ on:
 env:
     DFX_VERSION: 0.22.0
     NODE_VERSION: 20
-    IS_MAIN_BRANCH: ${{ github.ref == 'refs/heads/main' }}
-    IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
-    IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') }}
-    IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && github.event.pull_request.draft == true}}
+    AZLE_IS_MAIN_BRANCH_PUSH: ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+    AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: ${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+    AZLE_IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
+    AZLE_IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') && !github.ref == 'refs/heads/main' && github.event.pull_request.draft == false }}
+    AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && !github.ref == 'refs/heads/main' && github.event.pull_request.draft == true }}
 jobs:
     determine-should-run-tests:
         name: Determine if tests should run
@@ -44,6 +45,8 @@ jobs:
               run: |
                   # Start with an empty EXCLUDE_DIRS
                   EXCLUDE_DIRS=""
+
+                  ONLY_RELEASE_TESTS="new"
 
                   UNSTABLE_TESTS="${{ format('
                   examples/basic_bitcoin
@@ -170,15 +173,18 @@ jobs:
 
             - name: Run test
               run: |
-                  IS_MERGE_TO_MAIN_FROM_RELEASE=${{ env.IS_MAIN_BRANCH == 'true' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-                  IS_RELEASE_BRANCH_PR_BEFORE_MERGE_TO_MAIN=${{ env.IS_RELEASE_BRANCH_PR == 'true' && env.IS_MAIN_BRANCH == 'false' }}
-
-                  RUNS=5
-                  if $IS_MERGE_TO_MAIN_FROM_RELEASE; then
+                  RUNS=1
+                  if ${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}; then
                       RUNS=100
                   fi
-                  if $IS_RELEASE_BRANCH_PR_BEFORE_MERGE_TO_MAIN; then
+                  if ${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}; then
+                      RUNS=100
+                  fi
+                  if ${{ env.AZLE_IS_RELEASE_BRANCH_PR }}; then
                       RUNS=10
+                  fi
+                  if ${{ env.AZLE_IS_FEATURE_BRANCH_PR }}; then
+                      RUNS=5
                   fi
 
                   AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
