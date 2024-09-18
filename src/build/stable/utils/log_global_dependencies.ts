@@ -3,14 +3,14 @@ import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from './global_paths';
 import { getDfxVersionLocal } from './versions/dfx';
-import { getNodeVersion } from './versions/node';
-import { getRustVersion } from './versions/rust';
-import { getWasiVersion } from './versions/wasi2ic';
+import { getNodeVersionLocal } from './versions/node';
+import { getRustVersionLocal } from './versions/rust';
+import { getWasi2icVersionLocal } from './versions/wasi2ic';
 
 export async function logGlobalDependencies(): Promise<void> {
-    const wasiVersion = getWasiVersion();
-    const nodeVersion = getNodeVersion();
-    const rustVersion = getRustVersion();
+    const wasiVersion = getWasi2icVersionLocal();
+    const nodeVersion = getNodeVersionLocal();
+    const rustVersion = getRustVersionLocal();
     const dfxVersion = getDfxVersionLocal();
 
     const globalDependencies = {

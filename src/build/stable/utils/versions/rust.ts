@@ -2,7 +2,7 @@ import { pathToFileURL } from 'url';
 
 import { execSyncPretty } from '../exec_sync_pretty';
 
-export function getRustVersion(): string {
+export function getRustVersionLocal(): string {
     const rustcOutput = execSyncPretty('rustc --version').toString().trim();
     const match = rustcOutput.match(/^rustc\s+(\d+\.\d+\.\d+)/);
 
@@ -14,13 +14,7 @@ export function getRustVersion(): string {
 }
 
 function main(): void {
-    try {
-        const version = getRustVersion();
-        console.log(version);
-    } catch (error: any) {
-        console.error(error.message);
-        process.exit(1);
-    }
+    process.stdout.write(getRustVersionLocal());
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

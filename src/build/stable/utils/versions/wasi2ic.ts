@@ -2,7 +2,7 @@ import { pathToFileURL } from 'url';
 
 import { execSyncPretty } from '../exec_sync_pretty';
 
-export function getWasiVersion(): string {
+export function getWasi2icVersionLocal(): string {
     return getCargoVersion('wasi2ic');
 }
 
@@ -27,13 +27,7 @@ function getCargoVersion(packageName: string): string {
 }
 
 function main(): void {
-    try {
-        const version = getWasiVersion();
-        console.log(version);
-    } catch (error: any) {
-        console.error(error.message);
-        process.exit(1);
-    }
+    process.stdout.write(getWasi2icVersionLocal());
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
