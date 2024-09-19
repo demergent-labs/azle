@@ -2,7 +2,7 @@ name: Get dfx version
 description: Determines Azle's dfx version
 outputs:
     dfx-version:
-        description: Returns the version of dfx that Azle will test against and use to generate its Wasm binary template
+        description: Returns the version of dfx that Azle will test against and use to generate its Wasm binary templates
         value: ${{ steps.get-dfx-version.outputs.dfx-version }}
 runs:
     using: composite

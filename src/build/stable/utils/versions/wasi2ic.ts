@@ -1,8 +1,6 @@
-import { pathToFileURL } from 'url';
-
 import { execSyncPretty } from '../exec_sync_pretty';
 
-export function getWasi2icVersionLocal(): string {
+export function getLocalWasi2icVersion(): string {
     return getCargoVersion('wasi2ic');
 }
 
@@ -24,12 +22,4 @@ function getCargoVersion(packageName: string): string {
     } else {
         throw new Error(`Could not parse ${packageName} version`);
     }
-}
-
-function main(): void {
-    process.stdout.write(getWasi2icVersionLocal());
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-    main();
 }

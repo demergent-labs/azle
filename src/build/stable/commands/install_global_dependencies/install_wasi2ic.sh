@@ -15,22 +15,6 @@ else
     WASI2IC_URL=""
 fi
 
-if command -v wasi2ic &> /dev/null; then
-    INSTALLED_VERSION=$(npx tsx src/build/stable/utils/versions/wasi2ic.ts 2>&1 | tr -d '[:space:]')
-
-    echo "Installed wasi2ic version: $INSTALLED_VERSION"
-    echo "Requested wasi2ic version: $WASI2IC_VERSION"
-
-    if [ "$INSTALLED_VERSION" = "$WASI2IC_VERSION" ]; then
-        echo "wasi2ic $WASI2IC_VERSION is already installed. No installation needed."
-        exit 0
-    else
-        echo "Updating wasi2ic from version $INSTALLED_VERSION to $WASI2IC_VERSION"
-    fi
-else
-    echo "wasi2ic is not installed. Proceeding with installation."
-fi
-
 # Install or update wasi2ic
 if [[ -n "$WASI2IC_URL" ]]; then
     echo "Installing wasi2ic from repository $WASI2IC_URL"

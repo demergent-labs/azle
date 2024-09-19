@@ -2,7 +2,7 @@ name: Get node version
 description: Determines Azle's node version
 outputs:
     node-version:
-        description: Returns the version of node that Azle will test against and use to generate its Wasm binary template
+        description: Returns the version of node that Azle will test against and use to generate its Wasm binary templates
         value: ${{ steps.get-node-version.outputs.node-version }}
 runs:
     using: composite

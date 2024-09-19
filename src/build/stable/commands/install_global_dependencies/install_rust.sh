@@ -8,22 +8,6 @@ fi
 
 RUST_VERSION=$1
 
-if command -v rustc &> /dev/null; then
-    INSTALLED_VERSION=$(npx tsx src/build/stable/utils/versions/rust.ts 2>&1 | tr -d '[:space:]')
-
-    echo "Installed Rust version: $INSTALLED_VERSION"
-    echo "Requested Rust version: $RUST_VERSION"
-
-    if [ "$INSTALLED_VERSION" = "$RUST_VERSION" ]; then
-        echo "Rust $RUST_VERSION is already installed. No installation needed."
-        exit 0
-    else
-        echo "Updating Rust from version $INSTALLED_VERSION to $RUST_VERSION"
-    fi
-else
-    echo "Rust is not installed. Proceeding with installation of Rust $RUST_VERSION."
-fi
-
 # Install Rust
 echo "Installing Rust version $RUST_VERSION..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain "$RUST_VERSION"
