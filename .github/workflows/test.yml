@@ -74,18 +74,23 @@ jobs:
                   ') }}"
 
                   EXCLUDE_DIRS=""
+
                   if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
+
                   if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
+
                   if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
+
                   if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS"
                   fi
+
                   if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS $SLOW_TESTS"
                   fi
@@ -189,18 +194,23 @@ jobs:
             - name: Run test
               run: |
                   RUNS=1
+
                   if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
                       RUNS=100
                   fi
+
                   if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
                       RUNS=100
                   fi
+
                   if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
                       RUNS=10
                   fi
+
                   if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
                       RUNS=5
                   fi
+
                   if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
                       RUNS=1
                   fi
