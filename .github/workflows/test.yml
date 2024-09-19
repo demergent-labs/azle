@@ -169,16 +169,27 @@ jobs:
     # These final jobs are designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
     check-test-success:
         name: Check Azle tests succeeded
-        needs: run-test
+        needs:
+            - run-test
+            - check-test-failure
         runs-on: ubuntu-latest
-        if: success()
         steps:
-            - run: exit 0
+            - name: Check test result
+              run: |
+                  if [ "${{ job.status }}" == "success" ]; then
+                  exit 0
+                  else
+                  exit 1
 
+    # TODO if this works how I think it should then we can get rid of this tests completely
     check-test-failure:
         name: Check Azle tests didn't fail
         needs: run-test
         runs-on: ubuntu-latest
-        if: failure()
         steps:
-            - run: exit 1
+            - name: Check test result
+              run: |
+                  if [ "${{ job.status }}" != "failure" ]; then
+                  exit 1
+                  else
+                  exit 0
