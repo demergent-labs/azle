@@ -1,7 +1,6 @@
 import { call, IDL, Principal, query, update } from 'azle';
 import {
     AccountBalanceArgs,
-    Address,
     Archives,
     binaryAddressFromAddress,
     DecimalsResult,
@@ -15,12 +14,15 @@ import {
     TransferFee,
     TransferFeeArg,
     TransferResult
-} from 'azle/canisters/ledger';
+} from 'azle/canisters/icp';
 
 export default class {
-    @update([Address, IDL.Nat64, IDL.Nat64, IDL.Opt(IDL.Nat64)], TransferResult)
+    @update(
+        [IDL.Text, IDL.Nat64, IDL.Nat64, IDL.Opt(IDL.Nat64)],
+        TransferResult
+    )
     async executeTransfer(
-        to: Address,
+        to: string,
         amount: bigint,
         fee: bigint,
         createdAtTime: [bigint] | []
@@ -49,8 +51,8 @@ export default class {
         });
     }
 
-    @update([Address], Tokens)
-    async getAccountBalance(address: Address): Promise<Tokens> {
+    @update([IDL.Text], Tokens)
+    async getAccountBalance(address: string): Promise<Tokens> {
         return await call(getIcpCanisterPrincipal(), 'account_balance', {
             paramIdlTypes: [AccountBalanceArgs],
             returnIdlType: Tokens,
