@@ -53,9 +53,11 @@ export default Canister({
                             settings: {
                                 controllers: [],
                                 compute_allocation: [1n],
+                                log_visibility: [],
                                 memory_allocation: [3_000_000n],
                                 freezing_threshold: [2_000_000n],
-                                reserved_cycles_limit: []
+                                reserved_cycles_limit: [],
+                                wasm_memory_limit: []
                             },
                             sender_canister_version: []
                         }

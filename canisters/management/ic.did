@@ -1,4 +1,4 @@
-// Taken from: https://github.com/dfinity/interface-spec/blob/6e00887946b612a1169964fc75ee14f57c0ce65d/spec/_attachments/ic.did
+// Taken from: https://github.com/dfinity/interface-spec/blob/c28afe4269b14f102c78b69225b7c380b826cf0f/spec/_attachments/ic.did
 
 // Copyright 2021 DFINITY Foundation
 // 
@@ -17,12 +17,19 @@
 type canister_id = principal;
 type wasm_module = blob;
 
+type log_visibility = variant {
+    controllers;
+    public;
+};
+
 type canister_settings = record {
     controllers : opt vec principal;
     compute_allocation : opt nat;
     memory_allocation : opt nat;
     freezing_threshold : opt nat;
     reserved_cycles_limit : opt nat;
+    log_visibility : opt log_visibility;
+    wasm_memory_limit : opt nat;
 };
 
 type definite_canister_settings = record {
@@ -31,6 +38,8 @@ type definite_canister_settings = record {
     memory_allocation : nat;
     freezing_threshold : nat;
     reserved_cycles_limit : nat;
+    log_visibility : log_visibility;
+    wasm_memory_limit : nat;
 };
 
 type change_origin = variant {
@@ -83,17 +92,29 @@ type ecdsa_curve = variant {
     secp256k1;
 };
 
+type schnorr_algorithm = variant {
+    bip340secp256k1;
+    ed25519;
+};
+
 type satoshi = nat64;
 
+// TODO https://forum.dfinity.org/t/regtest-removed-from-management-canister-candid-file/35277
 type bitcoin_network = variant {
     mainnet;
     testnet;
-    regtest;
+    regtest; // TODO Added by Demergent Labs
 };
 
 type bitcoin_address = text;
 
-type block_hash = blob;
+type bitcoin_block_hash = blob;
+
+type bitcoin_block_header = blob;
+
+type millisatoshi_per_byte = nat64;
+
+type bitcoin_block_height = nat32;
 
 type outpoint = record {
     txid : blob;
@@ -115,30 +136,10 @@ type bitcoin_get_utxos_args = record {
     };
 };
 
-type bitcoin_get_utxos_query_args = record {
-    address : bitcoin_address;
-    network : bitcoin_network;
-    filter : opt variant {
-        min_confirmations : nat32;
-        page : blob;
-    };
-};
-
-type bitcoin_get_current_fee_percentiles_args = record {
-    network : bitcoin_network;
-};
-
 type bitcoin_get_utxos_result = record {
     utxos : vec utxo;
-    tip_block_hash : block_hash;
-    tip_height : nat32;
-    next_page : opt blob;
-};
-
-type bitcoin_get_utxos_query_result = record {
-    utxos : vec utxo;
-    tip_block_hash : block_hash;
-    tip_height : nat32;
+    tip_block_hash : bitcoin_block_hash;
+    tip_height : bitcoin_block_height;
     next_page : opt blob;
 };
 
@@ -148,22 +149,33 @@ type bitcoin_get_balance_args = record {
     min_confirmations : opt nat32;
 };
 
-type bitcoin_get_balance_query_args = record {
-    address : bitcoin_address;
+type bitcoin_get_balance_result = satoshi;
+
+type bitcoin_get_current_fee_percentiles_args = record {
     network : bitcoin_network;
-    min_confirmations : opt nat32;
 };
+
+type bitcoin_get_current_fee_percentiles_result = vec millisatoshi_per_byte;
 
 type bitcoin_send_transaction_args = record {
     transaction : blob;
     network : bitcoin_network;
 };
 
-type millisatoshi_per_byte = nat64;
+type bitcoin_get_block_headers_args = record {
+    start_height : bitcoin_block_height;
+    end_height : opt bitcoin_block_height;
+    network: bitcoin_network;
+};
+
+type bitcoin_get_block_headers_result = record {
+    tip_height : bitcoin_block_height;
+    block_headers : vec bitcoin_block_header;
+};
 
 type node_metrics = record {
     node_id : principal;
-    num_blocks_total : nat64;
+    num_blocks_proposed_total : nat64;
     num_block_failures_total : nat64;
 };
 
@@ -200,6 +212,10 @@ type canister_install_mode = variant {
     reinstall;
     upgrade : opt record {
         skip_pre_upgrade : opt bool;
+        wasm_memory_persistence : opt variant {
+            keep;
+            replace;
+        };
     };
 };
 
@@ -246,6 +262,12 @@ type canister_status_result = record {
     cycles : nat;
     reserved_cycles : nat;
     idle_cycles_burned_per_day : nat;
+    query_stats: record {
+        num_calls_total: nat;
+        num_instructions_total: nat;
+        request_payload_bytes_total: nat;
+        response_payload_bytes_total: nat;
+    };
 };
 
 type canister_info_args = record {
@@ -274,11 +296,17 @@ type http_request_args = record {
     method : variant { get; head; post };
     headers : vec http_header;
     body : opt blob;
-    transform : opt record {
-        function : func(record { response : http_request_result; context : blob }) -> (http_request_result) query;
-        context : blob;
-    };
+    transform : opt http_transform; // TODO added by Demergent Labs
 };
+
+// TODO added by Demergent Labs
+type http_transform = record {
+    function : func(http_transform_args) -> (http_request_result) query;
+    context : blob;
+};
+
+// TODO this was added by Demergent Labs for use in the transform method parameters, it would be nice to upstream this
+type http_transform_args = record { response : http_request_result; context : blob };
 
 type ecdsa_public_key_args = record {
     canister_id : opt canister_id;
@@ -298,6 +326,27 @@ type sign_with_ecdsa_args = record {
 };
 
 type sign_with_ecdsa_result = record {
+    signature : blob;
+};
+
+type schnorr_public_key_args = record {
+    canister_id : opt canister_id;
+    derivation_path : vec blob;
+    key_id : record { algorithm : schnorr_algorithm; name : text };
+};
+
+type schnorr_public_key_result = record {
+    public_key : blob;
+    chain_code : blob;
+};
+
+type sign_with_schnorr_args = record {
+    message : blob;
+    derivation_path : vec blob;
+    key_id : record { algorithm : schnorr_algorithm; name : text };
+};
+
+type sign_with_schnorr_result = record {
     signature : blob;
 };
 
@@ -333,11 +382,19 @@ type stored_chunks_result = vec chunk_hash;
 
 type upload_chunk_result = chunk_hash;
 
-type bitcoin_get_balance_result = satoshi;
+type fetch_canister_logs_args = record {
+    canister_id : canister_id;
+};
 
-type bitcoin_get_balance_query_result = satoshi;
+type canister_log_record = record {
+    idx: nat64;
+    timestamp_nanos: nat64;
+    content: blob;
+};
 
-type bitcoin_get_current_fee_percentiles_result = vec millisatoshi_per_byte;
+type fetch_canister_logs_result = record {
+    canister_log_records: vec canister_log_record;
+};
 
 service ic : {
     create_canister : (create_canister_args) -> (create_canister_result);
@@ -361,13 +418,16 @@ service ic : {
     ecdsa_public_key : (ecdsa_public_key_args) -> (ecdsa_public_key_result);
     sign_with_ecdsa : (sign_with_ecdsa_args) -> (sign_with_ecdsa_result);
 
+    // Threshold Schnorr signature
+    schnorr_public_key : (schnorr_public_key_args) -> (schnorr_public_key_result);
+    sign_with_schnorr : (sign_with_schnorr_args) -> (sign_with_schnorr_result);
+
     // bitcoin interface
     bitcoin_get_balance : (bitcoin_get_balance_args) -> (bitcoin_get_balance_result);
-    bitcoin_get_balance_query : (bitcoin_get_balance_query_args) -> (bitcoin_get_balance_query_result) query;
     bitcoin_get_utxos : (bitcoin_get_utxos_args) -> (bitcoin_get_utxos_result);
-    bitcoin_get_utxos_query : (bitcoin_get_utxos_query_args) -> (bitcoin_get_utxos_query_result) query;
     bitcoin_send_transaction : (bitcoin_send_transaction_args) -> ();
     bitcoin_get_current_fee_percentiles : (bitcoin_get_current_fee_percentiles_args) -> (bitcoin_get_current_fee_percentiles_result);
+    bitcoin_get_block_headers : (bitcoin_get_block_headers_args) -> (bitcoin_get_block_headers_result);
 
     // metrics interface
     node_metrics_history : (node_metrics_history_args) -> (node_metrics_history_result);
@@ -375,4 +435,7 @@ service ic : {
     // provisional interfaces for the pre-ledger world
     provisional_create_canister_with_cycles : (provisional_create_canister_with_cycles_args) -> (provisional_create_canister_with_cycles_result);
     provisional_top_up_canister : (provisional_top_up_canister_args) -> ();
+
+    // canister logging
+    fetch_canister_logs : (fetch_canister_logs_args) -> (fetch_canister_logs_result) query;
 };

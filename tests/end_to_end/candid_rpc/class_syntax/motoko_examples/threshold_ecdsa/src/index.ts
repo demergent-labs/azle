@@ -1,9 +1,9 @@
 import { call, caller, IDL, trap, update } from 'azle';
 import {
-    EcdsaPublicKeyArgs,
-    EcdsaPublicKeyResult,
-    SignWithEcdsaArgs,
-    SignWithEcdsaResult
+    ecdsa_public_key_args,
+    ecdsa_public_key_result,
+    sign_with_ecdsa_args,
+    sign_with_ecdsa_result
 } from 'azle/canisters/management';
 
 const PublicKey = IDL.Record({
@@ -24,8 +24,9 @@ export default class {
     @update([], PublicKey)
     async publicKey(): Promise<PublicKey> {
         const publicKeyResult = await getPublicKeyResult();
+
         return {
-            publicKey: publicKeyResult.public_key
+            publicKey: Uint8Array.from(publicKeyResult.public_key)
         };
     }
 
@@ -38,44 +39,52 @@ export default class {
         const signatureResult = await getSignatureResult(messageHash);
 
         return {
-            signature: signatureResult.signature
+            signature: Uint8Array.from(signatureResult.signature)
         };
     }
 }
 
-async function getPublicKeyResult(): Promise<EcdsaPublicKeyResult> {
-    return await call('aaaaa-aa', 'ecdsa_public_key', {
-        paramIdlTypes: [EcdsaPublicKeyArgs],
-        returnIdlType: EcdsaPublicKeyResult,
-        args: [
-            {
-                canister_id: [],
-                derivation_path: [caller().toUint8Array()],
-                key_id: {
-                    curve: { secp256k1: null },
-                    name: 'dfx_test_key'
+async function getPublicKeyResult(): Promise<ecdsa_public_key_result> {
+    return await call<[ecdsa_public_key_args], ecdsa_public_key_result>(
+        'aaaaa-aa',
+        'ecdsa_public_key',
+        {
+            paramIdlTypes: [ecdsa_public_key_args],
+            returnIdlType: ecdsa_public_key_result,
+            args: [
+                {
+                    canister_id: [],
+                    derivation_path: [caller().toUint8Array()],
+                    key_id: {
+                        curve: { secp256k1: null },
+                        name: 'dfx_test_key'
+                    }
                 }
-            }
-        ]
-    });
+            ]
+        }
+    );
 }
 
 async function getSignatureResult(
     messageHash: Uint8Array
-): Promise<SignWithEcdsaResult> {
-    return await call('aaaaa-aa', 'sign_with_ecdsa', {
-        paramIdlTypes: [SignWithEcdsaArgs],
-        returnIdlType: SignWithEcdsaResult,
-        args: [
-            {
-                message_hash: messageHash,
-                derivation_path: [caller().toUint8Array()],
-                key_id: {
-                    curve: { secp256k1: null },
-                    name: 'dfx_test_key'
+): Promise<sign_with_ecdsa_result> {
+    return await call<[sign_with_ecdsa_args], sign_with_ecdsa_result>(
+        'aaaaa-aa',
+        'sign_with_ecdsa',
+        {
+            paramIdlTypes: [sign_with_ecdsa_args],
+            returnIdlType: sign_with_ecdsa_result,
+            args: [
+                {
+                    message_hash: messageHash,
+                    derivation_path: [caller().toUint8Array()],
+                    key_id: {
+                        curve: { secp256k1: null },
+                        name: 'dfx_test_key'
+                    }
                 }
-            }
-        ],
-        payment: 10_000_000_000n
-    });
+            ],
+            payment: 10_000_000_000n
+        }
+    );
 }
