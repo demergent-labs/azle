@@ -43,8 +43,6 @@ jobs:
             - name: Set exclude dirs
               id: set-exclude-dirs
               run: |
-                  EXCLUDE_DIRS=""
-
                   RELEASE_TESTS="${{ format('
                   tests/end_to_end/candid_rpc/class_syntax/new/
                   tests/end_to_end/http_server/new/
@@ -75,19 +73,21 @@ jobs:
                   tests/end_to_end/http_server/autoreload
                   ') }}"
 
-                  # Exclude RELEASE_TESTS if it's not a release pr
-                  if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR}}" == "false" ]]; then
-                  EXCLUDE_DIRS="$EXCLUDE_DIRS $RELEASE_TESTS"
+                  EXCLUDE_DIRS=""
+                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
+                      EXCLUDE_DIRS=""
                   fi
-
-                  # Exclude UNSTABLE_TESTS if it's a feature branch PR or a feature branch draft pr
-                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" || "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
-                  EXCLUDE_DIRS="$EXCLUDE_DIRS $UNSTABLE_TESTS"
+                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
+                      EXCLUDE_DIRS=""
                   fi
-
-                  # Exclude SLOW_TESTS if it's a feature draft PR
+                  if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
+                      EXCLUDE_DIRS=""
+                  fi
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
+                      EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS"
+                  fi
                   if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
-                  EXCLUDE_DIRS="$EXCLUDE_DIRS $SLOW_TESTS"
+                      EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS $SLOW_TESTS"
                   fi
 
                   # Trim leading or trailing spaces and save the exclude-dirs in the environment
@@ -176,7 +176,7 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               shell: bash -l {0}
 
-            - name: Start dfx without artificial delay
+            - name: Start dfx with artificial delay 0
               if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' || env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
@@ -189,17 +189,20 @@ jobs:
             - name: Run test
               run: |
                   RUNS=1
-                  if ${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}; then
+                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
                       RUNS=100
                   fi
-                  if ${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}; then
+                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
                       RUNS=100
                   fi
-                  if ${{ env.AZLE_IS_RELEASE_BRANCH_PR }}; then
+                  if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
                       RUNS=10
                   fi
-                  if ${{ env.AZLE_IS_FEATURE_BRANCH_PR }}; then
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
                       RUNS=5
+                  fi
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
+                      RUNS=1
                   fi
 
                   AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
