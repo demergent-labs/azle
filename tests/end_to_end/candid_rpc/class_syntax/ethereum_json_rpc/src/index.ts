@@ -9,11 +9,9 @@ import {
     update
 } from 'azle';
 import {
-    FUNCS as managementCanister,
-    HttpRequestArgs,
-    HttpResponse,
-    HttpTransformArgs,
-    PRINCIPAL
+    http_request_args,
+    http_request_result,
+    http_transform_args
 } from 'azle/canisters/management';
 
 export default class {
@@ -48,8 +46,8 @@ export default class {
         return await getBlockByNumber(url, number);
     }
 
-    @query([HttpTransformArgs], HttpResponse)
-    ethTransform(args: HttpTransformArgs): HttpResponse {
+    @query([http_transform_args], http_request_result)
+    ethTransform(args: http_transform_args): http_request_result {
         return {
             ...args.response,
             headers: []
@@ -61,12 +59,12 @@ async function getBalance(
     url: string,
     ethereumAddress: string
 ): Promise<string> {
-    const httpResponse = await call(
-        PRINCIPAL,
-        managementCanister.http_request,
+    const httpResponse = await call<[http_request_args], http_request_result>(
+        Principal.fromText('aaaaa-aa'),
+        'http_request',
         {
-            paramIdlTypes: [HttpRequestArgs],
-            returnIdlType: HttpResponse,
+            paramIdlTypes: [http_request_args],
+            returnIdlType: http_request_result,
             args: [
                 {
                     url,
@@ -100,15 +98,15 @@ async function getBalance(
         }
     );
 
-    return new TextDecoder().decode(httpResponse.body.buffer);
+    return new TextDecoder().decode(Uint8Array.from(httpResponse.body));
 }
 async function getBlockByNumber(url: string, number: number): Promise<string> {
-    const httpResponse = await call(
-        PRINCIPAL,
-        managementCanister.http_request,
+    const httpResponse = await call<http_request_args[], http_request_result>(
+        Principal.fromText('aaaaa-aa'),
+        'http_request',
         {
-            paramIdlTypes: [HttpRequestArgs],
-            returnIdlType: HttpResponse,
+            paramIdlTypes: [http_request_args],
+            returnIdlType: http_request_result,
             args: [
                 {
                     url,
@@ -142,5 +140,5 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
         }
     );
 
-    return new TextDecoder().decode(httpResponse.body.buffer);
+    return new TextDecoder().decode(Uint8Array.from(httpResponse.body));
 }

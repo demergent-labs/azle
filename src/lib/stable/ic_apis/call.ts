@@ -2,17 +2,17 @@ import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid'; // TODO is uuid experimental?
 
-export async function call(
+export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,
     method: string,
     options?: {
         paramIdlTypes?: IDL.Type[];
         returnIdlType?: IDL.Type;
-        args?: any[];
-        payment?: bigint;
+        args?: Args;
+        payment?: bigint; // TODO this should be called cycles: https://github.com/demergent-labs/azle/issues/2104
         raw?: Uint8Array;
     }
-): Promise<any> {
+): Promise<Return> {
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         if (globalThis._azleIc === undefined) {
@@ -33,11 +33,11 @@ export async function call(
             result: ArrayBuffer
         ): void => {
             if (raw !== undefined) {
-                resolve(new Uint8Array(result));
+                resolve(new Uint8Array(result) as Return);
             } else {
                 const idlType =
                     returnTypeIdl === undefined ? [] : [returnTypeIdl];
-                resolve(IDL.decode(idlType, result)[0]);
+                resolve(IDL.decode(idlType, result)[0] as Return);
             }
 
             delete globalThis._azleResolveIds[globalResolveId];

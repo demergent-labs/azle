@@ -2,7 +2,7 @@ import '../experimental';
 
 import { inflate } from 'pako';
 
-import { HttpTransform } from '../../../../canisters/management';
+import { http_transform } from '../../../../canisters/management';
 import { ic } from '../ic';
 import { azleFetch, serialize } from '.';
 import { AzleFetchResponse } from './response';
@@ -133,7 +133,7 @@ function getHttpMethod(init?: RequestInit | undefined) {
     };
 }
 
-function getHttpTransform(): [] | [HttpTransform] {
+function getHttpTransform(): [] | [http_transform] {
     if (globalThis._azleOutgoingHttpOptionsTransformMethodName === undefined) {
         return [];
     }
