@@ -12,9 +12,11 @@ on:
 env:
     DFX_VERSION: 0.22.0
     NODE_VERSION: 20
-    IS_MAIN_BRANCH: ${{ github.ref == 'refs/heads/main' }}
-    IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
-    IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') }}
+    AZLE_IS_MAIN_BRANCH_PUSH: ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+    AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: ${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+    AZLE_IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
+    AZLE_IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+    AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
 jobs:
     determine-should-run-tests:
         name: Determine if tests should run
@@ -38,6 +40,65 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Set exclude dirs
+              id: set-exclude-dirs
+              run: |
+                  RELEASE_TESTS="${{ format('
+                  tests/end_to_end/candid_rpc/class_syntax/new/
+                  tests/end_to_end/http_server/new/
+                  ') }}"
+
+                  UNSTABLE_TESTS="${{ format('
+                  examples/basic_bitcoin
+                  examples/bitcoin_psbt
+                  examples/ckbtc
+                  tests/end_to_end/http_server/ethers_base
+                  tests/end_to_end/http_server/http_outcall_fetch
+                  tests/end_to_end/http_server/ic_evm_rpc
+                  tests/property/candid_rpc/class_api/stable_b_tree_map
+                  tests/property/candid_rpc/functional_api/stable_b_tree_map
+                  ') }}"
+
+                  SLOW_TESTS="${{ format('
+                  tests/end_to_end/candid_rpc/functional_syntax/ckbtc
+                  tests/end_to_end/candid_rpc/class_syntax/bitcoin
+                  tests/end_to_end/http_server/large_files
+                  tests/end_to_end/http_server/open_value_sharing
+                  tests/end_to_end/candid_rpc/class_syntax/stable_structures
+                  tests/end_to_end/candid_rpc/functional_syntax/bitcoin
+                  tests/end_to_end/candid_rpc/functional_syntax/composite_queries
+                  tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls
+                  tests/end_to_end/candid_rpc/functional_syntax/management_canister
+                  tests/end_to_end/candid_rpc/functional_syntax/stable_structures
+                  tests/end_to_end/http_server/autoreload
+                  ') }}"
+
+                  EXCLUDE_DIRS=""
+
+                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
+                      EXCLUDE_DIRS=""
+                  fi
+
+                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
+                      EXCLUDE_DIRS=""
+                  fi
+
+                  if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
+                      EXCLUDE_DIRS=""
+                  fi
+
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
+                      EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS"
+                  fi
+
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
+                      EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS $SLOW_TESTS"
+                  fi
+
+                  # Trim leading or trailing spaces and save the exclude-dirs in the environment
+                  EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
+                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
+
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
@@ -45,17 +106,7 @@ jobs:
                   directories: |
                       ./examples
                       ./tests
-                  exclude-dirs: |
-                      ${{ env.IS_FEATURE_BRANCH_PR == 'true' && format('
-                         examples/basic_bitcoin
-                         examples/bitcoin_psbt
-                         examples/ckbtc
-                         tests/end_to_end/http_server/ethers_base
-                         tests/end_to_end/http_server/http_outcall_fetch
-                         tests/end_to_end/http_server/ic_evm_rpc
-                         tests/property/candid_rpc/class_api/stable_b_tree_map
-                         tests/property/candid_rpc/functional_api/stable_b_tree_map
-                         ') || '' }}
+                  exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
 
     run-test:
         name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
@@ -68,7 +119,6 @@ jobs:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
-            AZLE_TEST_RUN_ON_RELEASE: ${{ startsWith(github.head_ref, 'release--') }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
@@ -131,27 +181,38 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               shell: bash -l {0}
 
-            - name: Start dfx without artificial delay
-              if: ${{ env.IS_FEATURE_BRANCH_PR == 'true' }}
+            - name: Start dfx with artificial delay 0
+              if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' || env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ env.IS_RELEASE_BRANCH_PR == 'true' }}
+              if: ${{ env.AZLE_IS_RELEASE_BRANCH_PR == 'true' || env.AZLE_IS_MAIN_BRANCH_PUSH == 'true' || env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
             - name: Run test
               run: |
-                  IS_MERGE_TO_MAIN_FROM_RELEASE=${{ env.IS_MAIN_BRANCH == 'true' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-                  IS_RELEASE_BRANCH_PR_BEFORE_MERGE_TO_MAIN=${{ env.IS_RELEASE_BRANCH_PR == 'true' && env.IS_MAIN_BRANCH == 'false' }}
+                  RUNS=1
 
-                  RUNS=5
-                  if $IS_MERGE_TO_MAIN_FROM_RELEASE; then
+                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
                       RUNS=100
                   fi
-                  if $IS_RELEASE_BRANCH_PR_BEFORE_MERGE_TO_MAIN; then
+
+                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
+                      RUNS=100
+                  fi
+
+                  if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
                       RUNS=10
+                  fi
+
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
+                      RUNS=5
+                  fi
+
+                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
+                      RUNS=1
                   fi
 
                   AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test

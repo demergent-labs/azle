@@ -1,4 +1,8 @@
-import { defaultArrayConstraints, runPropTests } from 'azle/test/property';
+import {
+    defaultArrayConstraints,
+    runPropTests,
+    shortArrayConstraints
+} from 'azle/test/property';
 import { CandidReturnTypeArb } from 'azle/test/property/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMetaArb } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
 import {
@@ -28,8 +32,14 @@ const HeterogeneousUpdateMethodArb = UpdateMethodArb(
     CandidReturnTypeArb(context)
 );
 
+const arrayConstraints =
+    process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+        ? shortArrayConstraints
+        : defaultArrayConstraints;
+
 const CanisterConfigArb = fc
-    .array(HeterogeneousUpdateMethodArb, defaultArrayConstraints)
+    .array(HeterogeneousUpdateMethodArb, arrayConstraints)
     .map((queryMethods): CanisterConfig => {
         return { queryMethods };
     });

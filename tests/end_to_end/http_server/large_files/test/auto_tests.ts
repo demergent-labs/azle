@@ -10,23 +10,29 @@ const autoGenAutoUploadSmallFileInfos: [number, Unit][] = [
     // Edge Cases
     [0, 'B'],
     [1, 'B'],
-    [120 * 1024 * 1024 + 1, 'B'], // One more byte than can be processed in a single hash_file_by_parts call
-    [2_000_000 + 1, 'B'], // One more byte that the message chunk size
 
     // General Cases
     [1, 'KiB'],
     [10, 'KiB'],
-    [100, 'KiB'],
-    [1, 'MiB'],
-    [10, 'MiB'],
-    [100, 'MiB']
+    [100, 'KiB']
 ];
 
 const autoGenAutoUploadFileInfos: [number, Unit][] =
-    process.env.AZLE_TEST_RUN_ON_RELEASE === 'true' ||
-    process.env.AZLE_TEST_RUN_ON_LOCAL === 'true'
-        ? [...autoGenAutoUploadSmallFileInfos, [250, 'MiB'], [1, 'GiB']]
-        : autoGenAutoUploadSmallFileInfos;
+    process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+        ? autoGenAutoUploadSmallFileInfos
+        : [
+              ...autoGenAutoUploadSmallFileInfos,
+              // General Cases
+              [1, 'MiB'],
+              [10, 'MiB'],
+              [100, 'MiB'],
+              [250, 'MiB'],
+              [1, 'GiB'],
+              // Edge Cases
+              [2_000_000 + 1, 'B'], // One more byte that the message chunk size
+              [120 * 1024 * 1024 + 1, 'B'] // One more byte than can be processed in a single hash_file_by_parts call
+          ];
 
 const permanentFiles: string[] = [
     'photos/people/george-washington.tif',

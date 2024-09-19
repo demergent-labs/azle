@@ -17,6 +17,11 @@ import { manualTests } from './manual_tests';
 
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
+    const describeLongTest =
+        process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+        process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+            ? describe.skip
+            : describe;
 
     return () => {
         beforeAll(async () => {
@@ -49,47 +54,51 @@ export function getTests(canisterId: string): Test {
             getDfxConfigFileTests(origin)
         );
 
-        please(
-            'modify files and redeploy',
-            async () => {
-                await generateTestFileOfSize(1, 'KiB');
-                await generateTestFileOfSize(10, 'KiB');
-                await generateTestFileOfSize(100, 'KiB');
-                execSync(`dfx deploy --upgrade-unchanged`, {
-                    stdio: 'inherit'
-                });
-            },
-            15 * 60 * 1_000
-        );
-
-        describe(
-            'verify files specified in dfx.json exist after redeploy',
-            getDfxConfigFileTests(origin)
-        );
-
-        please(
-            'redeploy with no upload',
-            async () => {
-                execSync(
-                    `AZLE_DISABLE_AUTO_FILE_UPLOAD=true dfx deploy --upgrade-unchanged`,
-                    {
+        describeLongTest('redeploy while only uploading modified files', () => {
+            please(
+                'modify files and redeploy',
+                async () => {
+                    await generateTestFileOfSize(1, 'KiB');
+                    await generateTestFileOfSize(10, 'KiB');
+                    await generateTestFileOfSize(100, 'KiB');
+                    execSync(`dfx deploy --upgrade-unchanged`, {
                         stdio: 'inherit'
-                    }
-                );
-            },
-            1 * 60 * 1_000
-        );
+                    });
+                },
+                15 * 60 * 1_000
+            );
 
-        describe(
-            'verify files specified in dfx.json exist after redeploy even with file uploading disabled',
-            getDfxConfigFileTests(origin)
-        );
+            describe(
+                'verify files specified in dfx.json exist after redeploy',
+                getDfxConfigFileTests(origin)
+            );
+        });
 
-        describe('manual upload tests', manualTests(origin));
+        describe('redeploy with no upload', () => {
+            please(
+                'redeploy with no upload',
+                async () => {
+                    execSync(
+                        `AZLE_DISABLE_AUTO_FILE_UPLOAD=true dfx deploy --upgrade-unchanged`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+                },
+                1 * 60 * 1_000
+            );
+
+            describe(
+                'verify files specified in dfx.json exist after redeploy even with file uploading disabled',
+                getDfxConfigFileTests(origin)
+            );
+        });
+
+        describeLongTest('manual upload tests', manualTests(origin));
 
         // Run the huge file tests only once at the end so they don't slow down the rest of the test process
         // TODO CI CD isn't working with the 2GiB or bigger tests so we're just going to have this one for local tests.
-        describe('huge files tests', hugeFilesTests(origin));
+        describeLongTest('huge files tests', hugeFilesTests(origin));
     };
 }
 

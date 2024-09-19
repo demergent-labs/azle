@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "test": "if [ \"$AZLE_TEST_RUN_ON_RELEASE\" = \"true\" ]; then tsx test/test.ts; else echo 'Skipping pretests'; fi"
+        "test": "tsx test/test.ts"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",

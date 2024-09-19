@@ -1,4 +1,8 @@
-import { defaultArrayConstraints, runPropTests } from 'azle/test/property';
+import {
+    defaultArrayConstraints,
+    runPropTests,
+    shortArrayConstraints
+} from 'azle/test/property';
 import { RecursiveArb } from 'azle/test/property/arbitraries/candid/recursive';
 import {
     CanisterArb,
@@ -42,8 +46,14 @@ const AllRecursiveQueryMethodArb = fc.oneof(
     )
 );
 
+const arrayConstraints =
+    process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+        ? shortArrayConstraints
+        : defaultArrayConstraints;
+
 const CanisterConfigArb = fc
-    .array(AllRecursiveQueryMethodArb, defaultArrayConstraints)
+    .array(AllRecursiveQueryMethodArb, arrayConstraints)
     .map((queryMethods): CanisterConfig => {
         return { queryMethods };
     });

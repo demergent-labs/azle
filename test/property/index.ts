@@ -128,6 +128,11 @@ export const defaultArrayConstraints = {
     maxLength: 100
 };
 
+export const shortArrayConstraints = {
+    minLength: 5,
+    maxLength: 20
+};
+
 export function deepEqual(a: any, b: any): boolean {
     const result = libraryDeepEqual(a, b);
 
