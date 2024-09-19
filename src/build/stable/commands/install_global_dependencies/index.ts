@@ -5,7 +5,7 @@ import { join } from 'path';
 import { execSyncPretty } from '../../utils/exec_sync_pretty';
 import { AZLE_PACKAGE_PATH } from '../../utils/global_paths';
 
-type DependencyName = 'node' | 'dfx' | 'rustc' | 'wasi2ic';
+type DependencyName = 'node' | 'dfx' | 'rust' | 'wasi2ic';
 
 type Versions = {
     [key in DependencyName]: string;

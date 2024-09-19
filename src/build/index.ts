@@ -141,17 +141,17 @@ async function handleInstallGlobalDependenciesCommand(
 ): Promise<void> {
     const node = process.argv.includes('--node');
     const dfx = process.argv.includes('--dfx');
-    const rustc = process.argv.includes('--rust');
+    const rust = process.argv.includes('--rust');
     const wasi2ic = process.argv.includes('--wasi2ic');
 
-    if (!node && !dfx && !rustc && !wasi2ic) {
+    if (!node && !dfx && !rust && !wasi2ic) {
         await runInstallGlobalDependenciesCommand(
-            { dfx: true, node: true, rustc: true, wasi2ic: true },
+            { dfx: true, node: true, rust: true, wasi2ic: true },
             ioType
         );
     } else {
         await runInstallGlobalDependenciesCommand(
-            { dfx, node, rustc, wasi2ic },
+            { dfx, node, rust, wasi2ic },
             ioType
         );
     }

@@ -16,7 +16,7 @@ export async function logGlobalDependencies(): Promise<void> {
     const globalDependencies = {
         wasi2ic: wasiVersion,
         node: nodeVersion,
-        rustc: rustVersion,
+        rust: rustVersion,
         dfx: dfxVersion
     };
 
