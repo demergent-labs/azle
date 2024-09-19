@@ -2,7 +2,7 @@ import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid'; // TODO is uuid experimental?
 
-export async function call<Args extends any[] | undefined, Return>(
+export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,
     method: string,
     options?: {
