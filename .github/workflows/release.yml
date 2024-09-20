@@ -79,13 +79,17 @@ jobs:
             - name: Install curl
               run: sudo apt-get install curl -y
 
-            - name: Install global dependencies
-              run: ./.github/scripts/install_global_dependencies.sh
-
             - name: Install dfx
               run: |
                   DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
+            - run: npm install
+
+            - name: Install global dependencies
+              run: |
+                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
+
             # TODO we should use some Action-specific bot account
             - name: Configure git for publishing release
               run: |
