@@ -84,9 +84,6 @@ jobs:
             - name: Install curl
               run: sudo apt-get install curl -y
 
-            - id: get-dfx-version
-              uses: ./.github/actions/get_dfx_version
-
             - name: Install dfx
               run: |
                   # Install dfx (Note: DFX must be installed before `npx azle` because the azle instalation process requires dfx)
