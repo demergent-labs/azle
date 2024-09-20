@@ -4,7 +4,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.24.1"
+        "azle": "0.24.2-rc.26"
     },
     "devDependencies": {
         "jest": "^29.7.0",
