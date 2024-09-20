@@ -6,6 +6,7 @@ on:
     pull_request: # Runs on pull requests to any branch
 env:
     DFX_VERSION: 0.21.0
+    NODE_VERSION: 20
 jobs:
     determine-should-release:
         if: ${{ startsWith(github.head_ref, 'release--') }}
@@ -29,9 +30,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
             - name: Set exclude dirs
               id: set-exclude-dirs
               run: |
@@ -49,7 +47,7 @@ jobs:
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+                  node-version: ${{ env.NODE_VERSION }}
                   directories: |
                       ./examples
                   exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
@@ -71,12 +69,9 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
             - uses: actions/setup-node@v4
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+                  node-version: ${{ env.NODE_VERSION }}
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -86,8 +81,6 @@ jobs:
 
             - name: Install dfx
               run: |
-                  # Install dfx (Note: DFX must be installed before `npx azle` because the azle instalation process requires dfx)
-                  # src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ env.DFX_VERSION }}
                   DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
