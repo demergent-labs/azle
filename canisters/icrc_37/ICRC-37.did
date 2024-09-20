@@ -1,0 +1,152 @@
+// Taken from: https://github.com/dfinity/ICRC/blob/946bd6518acb2aafd1828b93dfde9e47657fd758/ICRCs/ICRC-37/ICRC-37.did
+
+type Subaccount = blob;
+
+type Account = record { owner : principal; subaccount : opt Subaccount };
+
+type ApprovalInfo = record {
+    spender : Account;             // Approval is given to an ICRC Account
+    from_subaccount : opt blob;    // The subaccount the token can be transferred out from with the approval
+    expires_at : opt nat64;
+    memo : opt blob;
+    created_at_time : nat64; 
+};
+
+type ApproveTokenArg = record {
+    token_id : nat;
+    approval_info : ApprovalInfo;
+};
+
+type ApproveTokenResult = variant {
+    Ok : nat; // Transaction index for successful approval
+    Err : ApproveTokenError;
+};
+
+type ApproveTokenError = variant {
+    InvalidSpender;
+    Unauthorized;
+    NonExistingTokenId;
+    TooOld;
+    CreatedInFuture : record { ledger_time: nat64 };
+    GenericError : record { error_code : nat; message : text };
+    GenericBatchError : record { error_code : nat; message : text };
+};
+
+type ApproveCollectionArg = record {
+    approval_info : ApprovalInfo;
+};
+
+type ApproveCollectionResult = variant {
+    Ok : nat; // Transaction index for successful approval
+    Err : ApproveCollectionError;
+};
+
+type ApproveCollectionError = variant {
+    InvalidSpender;
+    TooOld;
+    CreatedInFuture : record { ledger_time: nat64 };
+    GenericError : record { error_code : nat; message : text };
+    GenericBatchError : record { error_code : nat; message : text };
+};
+
+type RevokeTokenApprovalArg = record {
+    spender : opt Account;      // null revokes matching approvals for all spenders
+    from_subaccount : opt blob; // null refers to the default subaccount
+    token_id : nat;
+    memo : opt blob;
+    created_at_time : opt nat64;
+};
+
+type RevokeTokenApprovalResponse = variant {
+    Ok : nat; // Transaction index for successful approval revocation
+    Err : RevokeTokenApprovalError;
+};
+
+type RevokeTokenApprovalError = variant {
+    ApprovalDoesNotExist;
+    Unauthorized;
+    NonExistingTokenId;
+    TooOld;
+    CreatedInFuture : record { ledger_time: nat64 };
+    GenericError : record { error_code : nat; message : text };
+    GenericBatchError : record { error_code : nat; message : text };
+};
+
+type RevokeCollectionApprovalArg = record {
+    spender : opt Account;      // null revokes approvals for all spenders that match the remaining parameters
+    from_subaccount : opt blob; // null refers to the default subaccount
+    memo : opt blob;
+    created_at_time : opt nat64;
+};
+
+type RevokeCollectionApprovalResult = variant {
+    Ok : nat; // Transaction index for successful approval revocation
+    Err : RevokeCollectionApprovalError;
+};
+
+type RevokeCollectionApprovalError = variant {
+    ApprovalDoesNotExist;
+    TooOld;
+    CreatedInFuture : record { ledger_time: nat64 };
+    GenericError : record { error_code : nat; message : text };
+    GenericBatchError : record { error_code : nat; message : text };
+};
+
+type IsApprovedArg = record {
+    spender : Account;
+    from_subaccount : opt blob;
+    token_id : nat;
+};
+
+type TokenApproval = record {
+    token_id : nat;
+    approval_info : ApprovalInfo;
+};
+
+type CollectionApproval = ApprovalInfo;
+
+type TransferFromArg = record {
+    spender_subaccount: opt blob; // The subaccount of the caller (used to identify the spender)
+    from : Account;
+    to : Account;
+    token_id : nat;
+    memo : opt blob;
+    created_at_time : opt nat64;
+};
+
+type TransferFromResult = variant {
+    Ok : nat; // Transaction index for successful transfer
+    Err : TransferFromError;
+};
+
+type TransferFromError = variant {
+    InvalidRecipient;
+    Unauthorized;
+    NonExistingTokenId;
+    TooOld;
+    CreatedInFuture : record { ledger_time: nat64 };
+    Duplicate : record { duplicate_of : nat };
+    GenericError : record { error_code : nat; message : text };
+    GenericBatchError : record { error_code : nat; message : text };
+};
+
+service : {
+  icrc37_max_approvals_per_token_or_collection : () -> (opt nat) query;
+  icrc37_max_revoke_approvals : () -> (opt nat) query;
+  icrc37_approve_tokens : (vec ApproveTokenArg)
+      -> (vec opt ApproveTokenResult);
+  icrc37_approve_collection : (vec ApproveCollectionArg)
+      -> (vec opt ApproveCollectionError);
+  icrc37_revoke_token_approvals: (vec RevokeTokenApprovalArg)
+      -> (vec opt RevokeTokenApprovalResponse);
+  icrc37_revoke_collection_approvals: (vec RevokeCollectionApprovalArg)
+      -> (vec opt RevokeCollectionApprovalResult);
+  icrc37_is_approved : (vec IsApprovedArg)
+      -> (vec bool) query;
+  icrc37_get_token_approvals : (token_id : nat, prev : opt TokenApproval, take : opt nat)
+      -> (vec TokenApproval) query;
+  icrc37_get_collection_approvals : (owner : Account, prev : opt CollectionApproval, take : opt nat)
+      -> (vec CollectionApproval) query;
+  icrc37_transfer_from : (vec TransferFromArg)
+      -> (vec opt TransferFromResult);
+}

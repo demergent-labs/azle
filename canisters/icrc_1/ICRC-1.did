@@ -1,0 +1,63 @@
+// Taken from: https://github.com/dfinity/ICRC-1/blob/effeeaa89d8dd75ce3b2215b9c36eed98dafb7a8/standards/ICRC-1/ICRC-1.did
+
+// Number of nanoseconds since the UNIX epoch in UTC timezone.
+type Timestamp = nat64;
+
+// Number of nanoseconds between two [Timestamp]s.
+type Duration = nat64;
+
+type Subaccount = blob;
+
+type Account = record {
+    owner : principal;
+    subaccount : opt Subaccount;
+};
+
+type TransferArgs = record {
+    from_subaccount : opt Subaccount;
+    to : Account;
+    amount : nat;
+    fee : opt nat;
+    memo : opt blob;
+    created_at_time : opt Timestamp;
+};
+
+// TODO added by Demergent Labs, would be nice to upstream or automate
+type TransferResult = variant { Ok : nat; Err : TransferError };
+
+type TransferError = variant {
+    BadFee : record { expected_fee : nat };
+    BadBurn : record { min_burn_amount : nat };
+    InsufficientFunds : record { balance : nat };
+    TooOld;
+    CreatedInFuture: record { ledger_time : Timestamp };
+    Duplicate : record { duplicate_of : nat };
+    TemporarilyUnavailable;
+    GenericError : record { error_code : nat; message : text };
+};
+
+type Value = variant {
+    Nat : nat;
+    Int : int;
+    Text : text;
+    Blob : blob;
+};
+
+// TODO added by Demergent Labs, would be nice to upstream or automate
+type Metadatum = record { text; Value; };
+
+// TODO added by Demergent Labs, would be nice to upstream or automate
+type SupportedStandard = record { name : text; url : text };
+
+service : {
+    icrc1_metadata : () -> (vec Metadatum) query;
+    icrc1_name : () -> (text) query;
+    icrc1_symbol : () -> (text) query;
+    icrc1_decimals : () -> (nat8) query;
+    icrc1_fee : () -> (nat) query;
+    icrc1_total_supply : () -> (nat) query;
+    icrc1_minting_account : () -> (opt Account) query;
+    icrc1_balance_of : (Account) -> (nat) query;
+    icrc1_transfer : (TransferArgs) -> (TransferResult);
+    icrc1_supported_standards : () -> (vec SupportedStandard) query;
+}
