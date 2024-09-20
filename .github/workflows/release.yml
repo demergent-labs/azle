@@ -5,7 +5,7 @@ on:
             - main
     pull_request: # Runs on pull requests to any branch
 env:
-    DFX_VERSION: 0.21.0
+    DFX_VERSION: 0.22.0
     NODE_VERSION: 20
 jobs:
     determine-should-release:
