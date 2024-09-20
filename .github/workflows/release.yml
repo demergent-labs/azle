@@ -4,6 +4,9 @@ on:
         branches:
             - main
     pull_request: # Runs on pull requests to any branch
+env:
+    DFX_VERSION: 0.21.0
+    NODE_VERSION: 20
 jobs:
     determine-should-release:
         if: ${{ startsWith(github.head_ref, 'release--') }}
@@ -13,10 +16,8 @@ jobs:
             should-release: ${{ steps.determine-should-release.outputs.should-release }}
         steps:
             - uses: actions/checkout@v4
-
             - id: determine-should-release
               uses: ./.github/actions/should_release
-
     get-test-infos:
         needs: determine-should-release
         if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
@@ -27,17 +28,13 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
             - name: Get all test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: |
                       ./examples
-
+                      ./tests
     release:
         name: Deploy release
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
@@ -55,12 +52,9 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
             - uses: actions/setup-node@v4
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+                  node-version: ${{ env.NODE_VERSION }}
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -68,18 +62,13 @@ jobs:
             - name: Install curl
               run: sudo apt-get install curl -y
 
-            - id: get-dfx-version
-              uses: ./.github/actions/get_dfx_version
-
-            - name: Install dfx
-              run: |
-                  # Install dfx (Note: DFX must be installed before `npx azle` because the azle instalation process requires dfx)
-                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-
             - name: Install global dependencies
               run: ./.github/scripts/install_global_dependencies.sh
 
+            - name: Install dfx
+              run: |
+                  DFXVM_INIT_YES=true DFX_VERSION=${{ env.DFX_VERSION }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
             # TODO we should use some Action-specific bot account
             - name: Configure git for publishing release
               run: |
@@ -88,7 +77,6 @@ jobs:
                   git config --global commit.gpgsign true
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-
             - name: Publish release
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
