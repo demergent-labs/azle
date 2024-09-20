@@ -85,7 +85,8 @@ jobs:
             - name: Install dfx
               run: |
                   # Install dfx (Note: DFX must be installed before `npx azle` because the azle instalation process requires dfx)
-                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
+                  # src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
+                  DFXVM_INIT_YES=true DFX_VERSION=${{ steps.get-dfx-version.outputs.dfx-version }} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
             - run: npm install
