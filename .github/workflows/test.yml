@@ -49,6 +49,12 @@ jobs:
                   tests/end_to_end/http_server/new/
                   ') }}"
 
+                  TEST_TESTS="${{ format('
+                  examples/basic_bitcoin
+                  examples/bitcoin_psbt
+                  examples/ckbtc
+                  ') }}"
+
                   UNSTABLE_TESTS="${{ format('
                   examples/basic_bitcoin
                   examples/bitcoin_psbt
@@ -85,7 +91,7 @@ jobs:
                   fi
 
                   if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
-                      EXCLUDE_DIRS=""
+                      EXCLUDE_DIRS="$TEST_TESTS"
                   fi
 
                   if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
@@ -107,7 +113,6 @@ jobs:
                   node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: |
                       ./examples
-                      ./tests
                   exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
 
     run-test:
