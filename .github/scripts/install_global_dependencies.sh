@@ -10,7 +10,7 @@ if ! command -v jq &> /dev/null; then
 fi
 
 # Extract the rustc version from the globalDependencies in package.json
-RUST_VERSION=$(jq -r '.azle.globalDependencies.rustc // empty' "$PACKAGE_JSON_FILE")
+RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // empty' "$PACKAGE_JSON_FILE")
 
 if [[ -z "$RUST_VERSION" ]]; then
   echo "Rust version not found in $PACKAGE_JSON_FILE"
