@@ -42,5 +42,8 @@ export function query<This, Args extends any[], Return>(
                 options?.manual ?? false
             );
         };
+
+        // TODO only do this if benchmark mode is enabled
+        globalThis._azleCanisterMethodNames[index.toString()] = name;
     };
 }
