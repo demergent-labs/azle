@@ -43,11 +43,14 @@ jobs:
                   EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
                   echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
 
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ env.NODE_VERSION }}
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: |
                       ./examples
                   exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
