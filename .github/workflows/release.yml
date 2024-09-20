@@ -18,6 +18,7 @@ jobs:
             - uses: actions/checkout@v4
             - id: determine-should-release
               uses: ./.github/actions/should_release
+
     get-test-infos:
         needs: determine-should-release
         if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
@@ -28,13 +29,28 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Get all test infos
+            - name: Set exclude dirs
+              id: set-exclude-dirs
+              run: |
+                  EXCLUDE_DIRS="${{ format('
+                  examples/basic_bitcoin
+                  examples/bitcoin_psbt
+                  examples/ckbtc
+                  ') }}"
+
+                  # Trim leading or trailing spaces and save the exclude-dirs in the environment
+                  EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
+                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
+
+            - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
+                  node-version: ${{ env.NODE_VERSION }}
                   directories: |
                       ./examples
-                      ./tests
+                  exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
+
     release:
         name: Deploy release
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
