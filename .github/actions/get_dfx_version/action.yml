@@ -7,8 +7,6 @@ outputs:
 runs:
     using: composite
     steps:
-        - uses: actions/checkout@v4
-
         - id: get-dfx-version
           run: |
               DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
