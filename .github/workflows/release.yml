@@ -30,12 +30,27 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Get all test infos
+            - name: Set exclude dirs
+              id: set-exclude-dirs
+              run: |
+                  EXCLUDE_DIRS="${{ format('
+                  examples/basic_bitcoin
+                  examples/bitcoin_psbt
+                  examples/ckbtc
+                  ') }}"
+
+                  # Trim leading or trailing spaces and save the exclude-dirs in the environment
+                  EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
+                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
+
+            - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
+                  node-version: ${{ env.NODE_VERSION }}
                   directories: |
                       ./examples
+                  exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
 
     release:
         name: Deploy release
