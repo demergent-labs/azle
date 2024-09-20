@@ -6,7 +6,6 @@ on:
     pull_request: # Runs on pull requests to any branch
 env:
     DFX_VERSION: 0.21.0
-    NODE_VERSION: 20
 jobs:
     determine-should-release:
         if: ${{ startsWith(github.head_ref, 'release--') }}
@@ -72,9 +71,12 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
             - uses: actions/setup-node@v4
               with:
-                  node-version: ${{ env.NODE_VERSION }}
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
