@@ -1,0 +1,27 @@
+## Prerequisite
+
+This action assumes that the repository has been checked out before calling the action, typically using `actions/checkout@v4`. If you haven't checked out the code in a previous step, make sure to do so to avoid errors.
+
+Example usage:
+
+```yaml
+steps:
+    - uses: actions/checkout@v4
+
+    - id: get-dfx-version
+      uses: ./.github/actions/get_dfx_version
+```
+
+## Output
+
+The output of this action contains the dfx version that Azle uses. It can be obtained as follows:
+
+```yaml
+steps:
+    - uses: actions/checkout@v4
+
+    - id: get-dfx-version
+      uses: ./.github/actions/get_dfx_version
+
+    - run: echo ${{ steps.get-dfx-version.outputs.dfx-version }}
+```

@@ -1,0 +1,27 @@
+## Prerequisite
+
+This action assumes that the repository has been checked out before calling the action, typically using `actions/checkout@v4`. If you haven't checked out the code in a previous step, make sure to do so to avoid errors.
+
+Example usage:
+
+```yaml
+steps:
+    - uses: actions/checkout@v4
+
+    - id: get-node-version
+      uses: ./.github/actions/get_node_version
+```
+
+## Output
+
+The output of this action contains the Node.js version that Azle uses. It can be obtained as follows:
+
+```yaml
+steps:
+    - uses: actions/checkout@v4
+
+    - id: get-node-version
+      uses: ./.github/actions/get_node_version
+
+    - run: echo ${{ steps.get-node-version.outputs.node-version }}
+```
