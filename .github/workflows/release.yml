@@ -37,7 +37,6 @@ jobs:
                   node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: |
                       ./examples
-                      ./tests
 
     release:
         name: Deploy release
