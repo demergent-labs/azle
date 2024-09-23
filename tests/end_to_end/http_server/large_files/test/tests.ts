@@ -37,15 +37,11 @@ export function getTests(canisterId: string): Test {
 
         // Now that the files are generated locally, deploy the canister (which will upload the files to the canister)
         // This initial deploy is here instead of in pretest so that we can time how long the deploy takes
-        please(
-            'deploy the canister',
-            () => {
-                execSync(`dfx deploy`, {
-                    stdio: 'inherit'
-                });
-            },
-            15 * 60 * 1_000
-        );
+        please('deploy the canister', () => {
+            execSync(`dfx deploy`, {
+                stdio: 'inherit'
+            });
+        });
 
         describe('authorization tests', getAuthorizationTests());
 
@@ -55,18 +51,14 @@ export function getTests(canisterId: string): Test {
         );
 
         describeLongTest('redeploy while only uploading modified files', () => {
-            please(
-                'modify files and redeploy',
-                async () => {
-                    await generateTestFileOfSize(1, 'KiB');
-                    await generateTestFileOfSize(10, 'KiB');
-                    await generateTestFileOfSize(100, 'KiB');
-                    execSync(`dfx deploy --upgrade-unchanged`, {
-                        stdio: 'inherit'
-                    });
-                },
-                15 * 60 * 1_000
-            );
+            please('modify files and redeploy', async () => {
+                await generateTestFileOfSize(1, 'KiB');
+                await generateTestFileOfSize(10, 'KiB');
+                await generateTestFileOfSize(100, 'KiB');
+                execSync(`dfx deploy --upgrade-unchanged`, {
+                    stdio: 'inherit'
+                });
+            });
 
             describe(
                 'verify files specified in dfx.json exist after redeploy',
@@ -75,18 +67,14 @@ export function getTests(canisterId: string): Test {
         });
 
         describe('redeploy with no upload', () => {
-            please(
-                'redeploy with no upload',
-                async () => {
-                    execSync(
-                        `AZLE_DISABLE_AUTO_FILE_UPLOAD=true dfx deploy --upgrade-unchanged`,
-                        {
-                            stdio: 'inherit'
-                        }
-                    );
-                },
-                1 * 60 * 1_000
-            );
+            please('redeploy with no upload', async () => {
+                execSync(
+                    `AZLE_DISABLE_AUTO_FILE_UPLOAD=true dfx deploy --upgrade-unchanged`,
+                    {
+                        stdio: 'inherit'
+                    }
+                );
+            });
 
             describe(
                 'verify files specified in dfx.json exist after redeploy even with file uploading disabled',
