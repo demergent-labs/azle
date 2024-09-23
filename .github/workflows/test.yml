@@ -59,6 +59,7 @@ jobs:
                   tests/property/candid_rpc/class_api/stable_b_tree_map
                   tests/property/candid_rpc/functional_api/stable_b_tree_map
                   tests/property/ic_api/performance_counter
+                  tests/property/ic_api/instruction_counter
                   ') }}"
 
                   SLOW_TESTS="${{ format('
