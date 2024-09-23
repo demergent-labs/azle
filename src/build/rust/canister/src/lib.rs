@@ -4,7 +4,6 @@
 // TODO and src/build/experimental/commands/compile/rust respectively
 
 use std::cell::RefCell;
-use std::collections::BTreeMap;
 
 // TODO it's weird to use the :: here...but we have a local module with the same name
 // TODO did I do this correctl?
@@ -18,6 +17,7 @@ use ic_stable_structures::{
 
 #[cfg(feature = "experimental")]
 mod autoreload;
+mod benchmarking;
 mod candid;
 mod chunk;
 mod execute_method_js;
@@ -34,16 +34,9 @@ mod web_assembly;
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 
-#[derive(CandidType, Debug, Clone)]
-pub struct BenchmarkEntry {
-    pub method_name: String,
-    pub instructions: u64,
-}
-
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-    pub static BENCHMARKS: RefCell<BTreeMap<u64, BenchmarkEntry>> = RefCell::new(BTreeMap::new());
 }
 
 const EXPERIMENTAL: bool = cfg!(feature = "experimental");
@@ -109,8 +102,8 @@ pub fn _azle_get_file_hash(path: String) -> Option<String> {
 }
 
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
-pub fn _azle_get_benchmarks() -> Vec<(u64, BenchmarkEntry)> {
-    BENCHMARKS.with(|benchmarks| {
+pub fn _azle_get_benchmarks() -> Vec<(u64, benchmarking::BenchmarkEntry)> {
+    benchmarking::BENCHMARKS.with(|benchmarks| {
         benchmarks
             .borrow()
             .iter()
