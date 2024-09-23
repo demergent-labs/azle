@@ -2,11 +2,7 @@
 // better using the latest Wasm and did that I know of
 
 import { call, caller, id, IDL, Principal, update } from 'azle';
-import {
-    Account,
-    TransferArgs,
-    TransferResult
-} from 'azle/canisters/icrc/icrc_1';
+import { Account, TransferArgs, TransferResult } from 'azle/canisters/icrc_1';
 
 import {
     GetBtcAddressArgs,
