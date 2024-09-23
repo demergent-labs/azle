@@ -1,5 +1,3 @@
-## Prerequisite
-
 > [!IMPORTANT]
 > This action performs a checkout using `actions/checkout@v4`, specifically
 > checking out the `github.event.pull_request.head.ref`. If your workflow
