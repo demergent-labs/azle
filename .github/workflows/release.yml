@@ -74,7 +74,7 @@ jobs:
 
             - name: Install dfx
               run: |
-                  # Install dfx (Note: DFX must be installed before `npx azle` because the azle installation process requires dfx)
+                  # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
                   src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
