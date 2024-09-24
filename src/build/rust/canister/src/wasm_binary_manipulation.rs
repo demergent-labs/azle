@@ -3,10 +3,11 @@ use open_value_sharing::Consumer;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct WasmData {
     #[serde(rename = "envVars")]
     pub env_vars: Vec<(String, String)>,
+    pub benchmarks: bool,
     #[cfg(feature = "experimental")]
     pub consumer: Consumer,
     #[cfg(feature = "experimental")]

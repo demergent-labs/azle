@@ -160,24 +160,20 @@ function processEnvVars(): {
     shouldRunTypeChecks: boolean;
     shouldRunBenchmarks: boolean;
 } {
-    const isTestsEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_TESTS === 'true';
-    const isTypeChecksEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_TYPE_CHECKS === 'true';
-    const isBenchmarksEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_BENCHMARKS === 'true';
+    const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
+    const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
+    const runBenchmarks = process.env.AZLE_RUN_BENCHMARKS ?? 'true';
 
-    const areNoVarsSet =
-        !isTestsEnvVarSet && !isTypeChecksEnvVarSet && !isBenchmarksEnvVarSet;
-
-    const shouldRunTests = isTestsEnvVarSet || areNoVarsSet;
-    const shouldRunTypeChecks = isTypeChecksEnvVarSet || areNoVarsSet;
-    const shouldRunBenchmarks = isBenchmarksEnvVarSet || areNoVarsSet;
+    const hasOnly = [runTests, runTypeChecks, runBenchmarks].includes('only');
 
     return {
-        shouldRunTests,
-        shouldRunTypeChecks,
-        shouldRunBenchmarks
+        shouldRunTests: hasOnly ? runTests === 'only' : runTests !== 'false',
+        shouldRunTypeChecks: hasOnly
+            ? runTypeChecks === 'only'
+            : runTypeChecks !== 'false',
+        shouldRunBenchmarks: hasOnly
+            ? runBenchmarks === 'only'
+            : runBenchmarks !== 'false'
     };
 }
 

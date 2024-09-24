@@ -4,6 +4,7 @@ use wasmedge_quickjs::AsObject;
 use crate::{
     execute_method_js, ic, run_event_loop, wasm_binary_manipulation::get_js_code,
     wasm_binary_manipulation::get_wasm_data, EXPERIMENTAL, MEMORY_MANAGER_REF_CELL, RUNTIME,
+    WASM_DATA,
 };
 
 #[cfg(feature = "experimental")]
@@ -53,6 +54,10 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
     }));
 
     let wasm_data = get_wasm_data();
+
+    WASM_DATA.with(|wasm_data_ref| {
+        *wasm_data_ref.borrow_mut() = Some(wasm_data.clone());
+    });
 
     let env_vars: Vec<(&str, &str)> = wasm_data
         .env_vars

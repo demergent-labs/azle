@@ -30,7 +30,8 @@ export async function getContext(
     const wasmData: WasmData = {
         ...stableContext.wasmData,
         consumer,
-        managementDid
+        managementDid,
+        benchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
     };
 
     return {

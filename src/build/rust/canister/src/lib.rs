@@ -5,9 +5,6 @@
 
 use std::cell::RefCell;
 
-// TODO it's weird to use the :: here...but we have a local module with the same name
-// TODO did I do this correctl?
-use ::candid::CandidType;
 #[allow(unused)]
 use guards::guard_against_non_controllers;
 use ic_stable_structures::{
@@ -37,6 +34,7 @@ type Memory = VirtualMemory<DefaultMemoryImpl>;
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+    static WASM_DATA: RefCell<Option<wasm_binary_manipulation::WasmData>> = RefCell::new(None);
 }
 
 const EXPERIMENTAL: bool = cfg!(feature = "experimental");

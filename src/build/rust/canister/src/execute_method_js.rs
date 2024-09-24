@@ -1,4 +1,4 @@
-use crate::{benchmarking::record_benchmark, run_event_loop, RUNTIME};
+use crate::{benchmarking::record_benchmark, run_event_loop, RUNTIME, WASM_DATA};
 use wasmedge_quickjs::AsObject;
 
 #[no_mangle]
@@ -36,7 +36,9 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
                 _ => run_event_loop(context),
             };
 
-            record_benchmark(context, &function_name);
+            if WASM_DATA.with(|wasm_data_ref| wasm_data_ref.borrow().as_ref().unwrap().benchmarks) {
+                record_benchmark(context, &function_name);
+            }
         });
     });
 }
