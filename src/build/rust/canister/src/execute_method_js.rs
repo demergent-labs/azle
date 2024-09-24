@@ -36,7 +36,9 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
                 _ => run_event_loop(context),
             };
 
-            if WASM_DATA.with(|wasm_data_ref| wasm_data_ref.borrow().as_ref().unwrap().benchmarks) {
+            if WASM_DATA
+                .with(|wasm_data_ref| wasm_data_ref.borrow().as_ref().unwrap().record_benchmarks)
+            {
                 record_benchmark(context, &function_name);
             }
         });

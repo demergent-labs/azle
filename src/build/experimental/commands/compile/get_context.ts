@@ -31,7 +31,7 @@ export async function getContext(
         ...stableContext.wasmData,
         consumer,
         managementDid,
-        benchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
+        recordBenchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
     };
 
     return {

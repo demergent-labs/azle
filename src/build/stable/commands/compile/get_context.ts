@@ -27,7 +27,7 @@ export function getContext(
     const envVars = getEnvVars(canisterConfig);
     const wasmData: WasmData = {
         envVars,
-        benchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
+        recordBenchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
     };
 
     return {

@@ -15,5 +15,4 @@ export type Context = {
 export type WasmData = {
     consumer: Consumer;
     managementDid: string;
-    benchmarks: boolean;
 } & StableWasmData;

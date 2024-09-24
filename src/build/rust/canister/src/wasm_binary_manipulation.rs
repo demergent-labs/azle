@@ -7,7 +7,8 @@ use serde::{Deserialize, Serialize};
 pub struct WasmData {
     #[serde(rename = "envVars")]
     pub env_vars: Vec<(String, String)>,
-    pub benchmarks: bool,
+    #[serde(rename = "recordBenchmarks")]
+    pub record_benchmarks: bool,
     #[cfg(feature = "experimental")]
     pub consumer: Consumer,
     #[cfg(feature = "experimental")]

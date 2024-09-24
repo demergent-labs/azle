@@ -99,10 +99,8 @@ export function runTests(tests: Test, cwd: string = process.cwd()): void {
 
                 await writeFile(
                     'benchmarks.json',
-                    JSON.stringify(updatedBenchmarksJson, null, 4)
+                    `${JSON.stringify(updatedBenchmarksJson, null, 4)}\n`
                 );
-
-                console.log(currentBenchmarks);
             });
         });
     }
