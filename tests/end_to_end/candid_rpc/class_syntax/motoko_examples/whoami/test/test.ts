@@ -7,6 +7,7 @@ import {
 
 import { createActor } from './dfx_generated/whoami';
 
+const canisterName = 'whoami';
 const whoamiCanister = createActor(canisterId, {
     agentOptions: {
         host: 'http://127.0.0.1:8000',
@@ -14,4 +15,4 @@ const whoamiCanister = createActor(canisterId, {
     }
 });
 
-runTests(getTests(whoamiCanister, 'whoami'));
+runTests(getTests(whoamiCanister), canisterName);

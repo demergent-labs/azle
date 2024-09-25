@@ -22,7 +22,11 @@ type Benchmark = {
     };
 };
 
-export function runTests(tests: Test, cwd: string = process.cwd()): void {
+export function runTests(
+    tests: Test,
+    canisterName: string | undefined = undefined,
+    cwd: string = process.cwd()
+): void {
     const { shouldRunTests, shouldRunTypeChecks, shouldRunBenchmarks } =
         processEnvVars();
 
@@ -52,10 +56,10 @@ export function runTests(tests: Test, cwd: string = process.cwd()): void {
         });
     }
 
-    if (shouldRunBenchmarks) {
+    if (shouldRunBenchmarks && canisterName !== undefined) {
         describe(`benchmarks`, () => {
             it('runs benchmarks', async () => {
-                const canisterId = getCanisterId('async_await');
+                const canisterId = getCanisterId(canisterName);
                 const result = execSyncPretty(
                     `dfx canister call ${canisterId} _azle_get_benchmarks --output json`,
                     'pipe'

@@ -5,6 +5,8 @@ import { getTests } from 'heartbeat_end_to_end_test_functional_syntax/test/tests
 import { createActor as createActorHeartbeatAsync } from './dfx_generated/heartbeat_async';
 import { createActor as createActorHeartbeatSync } from './dfx_generated/heartbeat_sync';
 
+const canisterName = 'heartbeat';
+
 const heartbeatAsyncCanister = createActorHeartbeatAsync(
     getCanisterId('heartbeat_async'),
     {
@@ -23,4 +25,4 @@ const heartbeatSyncCanister = createActorHeartbeatSync(
     }
 );
 
-runTests(getTests(heartbeatAsyncCanister, heartbeatSyncCanister));
+runTests(getTests(heartbeatAsyncCanister, heartbeatSyncCanister), canisterName);

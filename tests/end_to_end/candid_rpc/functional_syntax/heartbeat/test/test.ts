@@ -5,8 +5,9 @@ import { createActor as createActorHeartbeatAsync } from './dfx_generated/heartb
 import { createActor as createActorHeartbeatSync } from './dfx_generated/heartbeat_sync';
 import { getTests } from './tests';
 
+const heartbeatAsyncName = 'heartbeat_async';
 const heartbeatAsyncCanister = createActorHeartbeatAsync(
-    getCanisterId('heartbeat_async'),
+    getCanisterId(heartbeatAsyncName),
     {
         agentOptions: {
             host: 'http://127.0.0.1:8000'
@@ -14,8 +15,9 @@ const heartbeatAsyncCanister = createActorHeartbeatAsync(
     }
 );
 
+const heartbeatSyncName = 'heartbeat_sync';
 const heartbeatSyncCanister = createActorHeartbeatSync(
-    getCanisterId('heartbeat_sync'),
+    getCanisterId(heartbeatSyncName),
     {
         agentOptions: {
             host: 'http://127.0.0.1:8000'
@@ -23,4 +25,7 @@ const heartbeatSyncCanister = createActorHeartbeatSync(
     }
 );
 
-runTests(getTests(heartbeatAsyncCanister, heartbeatSyncCanister));
+runTests(
+    getTests(heartbeatAsyncCanister, heartbeatSyncCanister),
+    heartbeatAsyncName
+);

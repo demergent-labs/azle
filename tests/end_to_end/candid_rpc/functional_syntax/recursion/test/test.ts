@@ -8,14 +8,16 @@ import { createActor } from './dfx_generated/recursion';
 import { createActor as createRecursiveActor } from './dfx_generated/recursive_canister';
 import { getRecursiveCanisterTests, getTests } from './tests';
 
-const recursionCanister = createActor(getCanisterId('recursion'), {
+const recursionName = 'recursion';
+const recursionCanister = createActor(getCanisterId(recursionName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
+const recursiveCanisterName = 'recursive_canister';
 const recursiveCanister = createRecursiveActor(
-    getCanisterId('recursive_canister'),
+    getCanisterId(recursiveCanisterName),
     {
         agentOptions: {
             host: 'http://127.0.0.1:8000'
@@ -29,4 +31,4 @@ runTests(() => {
         'recursive canister tests',
         getRecursiveCanisterTests(recursiveCanister)
     );
-});
+}, recursionName);
