@@ -43,7 +43,7 @@ async function getBytesToHash(
 }
 
 function hashChunkWith(data: Buffer, previousHash?: Buffer): Buffer {
-    const h = createHash('sha256');
+    let h = createHash('sha256');
     h.update(data);
     if (previousHash !== undefined) {
         h.update(previousHash);
