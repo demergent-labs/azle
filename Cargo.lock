@@ -1569,13 +1569,11 @@ dependencies = [
  "ic-cdk-timers",
  "ic-stable-structures",
  "ic-wasi-polyfill",
- "open_value_sharing",
  "serde",
  "serde_json",
  "sha2",
  "slotmap",
  "wasmedge_quickjs",
- "wasmi",
 ]
 
 [[package]]

@@ -1,17 +1,9 @@
-#[cfg(feature = "experimental")]
-use open_value_sharing::Consumer;
-
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WasmData {
     #[serde(rename = "envVars")]
     pub env_vars: Vec<(String, String)>,
-    #[cfg(feature = "experimental")]
-    pub consumer: Consumer,
-    #[cfg(feature = "experimental")]
-    #[serde(rename = "managementDid")]
-    pub management_did: String,
 }
 
 #[inline(never)]

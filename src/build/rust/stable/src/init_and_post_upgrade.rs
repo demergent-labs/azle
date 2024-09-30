@@ -3,11 +3,8 @@ use wasmedge_quickjs::AsObject;
 
 use crate::{
     execute_method_js, ic, run_event_loop, wasm_binary_manipulation::get_js_code,
-    wasm_binary_manipulation::get_wasm_data, EXPERIMENTAL, MEMORY_MANAGER_REF_CELL, RUNTIME,
+    wasm_binary_manipulation::get_wasm_data, MEMORY_MANAGER_REF_CELL, RUNTIME,
 };
-
-#[cfg(feature = "experimental")]
-use crate::{upload_file, web_assembly};
 
 #[inline(never)]
 #[no_mangle]
@@ -18,9 +15,6 @@ pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
     format!("prevent init and post_upgrade optimization");
 
     initialize(true, function_index, pass_arg_data);
-
-    #[cfg(feature = "experimental")]
-    upload_file::init_hashes().unwrap();
 }
 
 #[inline(never)]
@@ -64,9 +58,6 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
         MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
     ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
-    #[cfg(feature = "experimental")]
-    std::fs::write("/candid/icp/management.did", &wasm_data.management_did).unwrap();
-
     let js = get_js_code();
 
     initialize_js(
@@ -75,11 +66,6 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
         function_index,
         pass_arg_data,
     );
-
-    #[cfg(feature = "experimental")]
-    ic_cdk::spawn(async move {
-        open_value_sharing::init(&wasm_data.consumer).await;
-    });
 }
 
 pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
@@ -87,9 +73,6 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
 
     rt.run_with_context(|context| {
         ic::register(context);
-
-        #[cfg(feature = "experimental")]
-        web_assembly::register(context);
 
         let mut env = context.new_object();
 
@@ -110,7 +93,7 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
 
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
-        context.eval_global_str(format!("globalThis._azleExperimental = {EXPERIMENTAL};"));
+        context.eval_global_str("globalThis._azleExperimental = false;".to_string());
         context.eval_module_str(js.to_string(), "azle_main");
 
         run_event_loop(context);
