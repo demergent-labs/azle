@@ -12,37 +12,45 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
-        // TODO fix this so that it has a better name
-        it('should deploy and check all canister id methods', async () => {
+        it('gets the canister version from the canister', async () => {
             await fc.assert(
                 fc.asyncProperty(
                     fc.nat({
                         max: 10
                     }),
                     async (nat) => {
-                        let expectedVer = 1n; // Canister starts at 0 when it's created but the deploy in pretest should increment it to be at 1 by the time it gets here
+                        const startingVer = 1n; // Canister starts at 0 when it's created but the deploy in pretest should increment it to be at 1 by the time it gets here
 
                         const actor = await getCanisterActor<Actor>('canister');
 
-                        await checkInitVersion(actor, expectedVer);
+                        await checkInitVersion(actor, startingVer);
                         await checkUpgradeVersion(actor, []);
-                        await checkInspectVersion(actor, expectedVer);
-                        expectedVer += 1n; // Increment after state change
-                        await checkQueryAndUpdateVersion(actor, expectedVer);
-                        expectedVer += 1n; // Increment after state change
+                        await checkInspectVersion(actor, startingVer);
+                        await checkQueryAndUpdateVersion(
+                            actor,
+                            startingVer + 1n
+                        );
 
-                        for (let i = 1n; i < nat; i++) {
-                            execSync(`dfx deploy canister --upgrade-unchanged`);
-                            expectedVer += 1n; // Increment after deploy
+                        await Array(nat).reduce(
+                            async (accPromise) => {
+                                const previousVer = await accPromise;
 
-                            await checkUpgradeVersion(actor, [expectedVer]);
+                                execSync(
+                                    `dfx deploy canister --upgrade-unchanged`
+                                );
+                                const expectedVer = previousVer + 1n; // Increment after deploy
 
-                            await checkQueryAndUpdateVersion(
-                                actor,
-                                expectedVer
-                            );
-                            expectedVer += 1n; // Increment after state change
-                        }
+                                await checkUpgradeVersion(actor, [expectedVer]);
+
+                                await checkQueryAndUpdateVersion(
+                                    actor,
+                                    expectedVer
+                                );
+
+                                return expectedVer + 1n; // Increment after state change
+                            },
+                            Promise.resolve(startingVer + 2n)
+                        );
                     }
                 ),
                 defaultPropTestParams
