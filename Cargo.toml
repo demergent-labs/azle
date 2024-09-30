@@ -1,2 +1,6 @@
 [workspace]
-members = ["src/build/rust/canister", "src/build/rust/open_value_sharing"]
+members = [
+    "src/build/rust/canister",
+    "src/build/rust/open_value_sharing",
+    "src/build/rust/stable",
+]

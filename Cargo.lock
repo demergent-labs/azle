@@ -1558,6 +1558,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
 
 [[package]]
+name = "stable"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "candid",
+ "candid_parser",
+ "ic-cdk 0.12.2",
+ "ic-cdk-macros 0.8.4",
+ "ic-cdk-timers",
+ "ic-stable-structures",
+ "ic-wasi-polyfill",
+ "open_value_sharing",
+ "serde",
+ "serde_json",
+ "sha2",
+ "slotmap",
+ "wasmedge_quickjs",
+ "wasmi",
+]
+
+[[package]]
 name = "stable-fs"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

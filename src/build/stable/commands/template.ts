@@ -12,14 +12,7 @@ export async function runCommand(ioType: IOType): Promise<void> {
     await logGlobalDependencies();
 
     compile(
-        join(
-            AZLE_PACKAGE_PATH,
-            'src',
-            'build',
-            'rust',
-            'canister',
-            'Cargo.toml'
-        ),
+        join(AZLE_PACKAGE_PATH, 'src', 'build', 'rust', 'stable', 'Cargo.toml'),
         STABLE_STATIC_CANISTER_TEMPLATE_PATH,
         ioType
     );
