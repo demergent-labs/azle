@@ -33,8 +33,7 @@ export function getTests(): Test {
 
                         for (let i = 1n; i < nat; i++) {
                             execSync(`dfx deploy canister --upgrade-unchanged`);
-                            expectedVer += 2n; // Increment after deploy
-                            // TODO what are the odds that it increments twice because it deploys **and** it changes the state in preupgrade?
+                            expectedVer += 1n; // Increment after deploy
 
                             await checkUpgradeVersion(actor, [expectedVer]);
 
