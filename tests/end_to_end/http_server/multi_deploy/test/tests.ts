@@ -3,7 +3,6 @@ import { createHash } from 'crypto';
 import { readFile } from 'fs/promises';
 
 import { execSyncPretty } from '../../../../../src/build/stable/utils/exec_sync_pretty';
-import { _SERVICE } from './dfx_generated/canister/canister.did';
 
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -21,21 +20,23 @@ export function getTests(canisterId: string): Test {
 
         it("doesn't call post upgrade if there is a redeploy with no change", async () => {
             const originalFileHash = await getFileHash();
-            expect(getThing(`${origin}/get-init-called`)).toBe(true);
-            expect(getThing(`${origin}/get-azle-init-called`)).toBe(true);
+            expect(await getThing(`${origin}/get-init-called`)).toBe(true);
+            expect(await getThing(`${origin}/get-azle-init-called`)).toBe(true);
             for (let i = 0; i < 1; i++) {
                 execSyncPretty(`dfx deploy canister`);
                 const updatedHash = await getFileHash();
                 expect(originalFileHash).toEqual(updatedHash);
 
-                expect(getThing(`${origin}/get-init-called`)).toBe(true);
-                expect(getThing(`${origin}/get-azle-init-called`)).toBe(true);
-                expect(getThing(`${origin}/get-post-upgrade-called`)).toBe(
-                    true
+                expect(await getThing(`${origin}/get-init-called`)).toBe(false);
+                expect(await getThing(`${origin}/get-azle-init-called`)).toBe(
+                    false
                 );
-                expect(getThing(`${origin}/get-azle-post-upgrade-called`)).toBe(
-                    true
-                );
+                expect(
+                    await getThing(`${origin}/get-post-upgrade-called`)
+                ).toBe(true);
+                expect(
+                    await getThing(`${origin}/get-azle-post-upgrade-called`)
+                ).toBe(true);
             }
         });
 
@@ -43,14 +44,16 @@ export function getTests(canisterId: string): Test {
             for (let i = 0; i < 1; i++) {
                 execSyncPretty(`dfx deploy canister --upgrade-unchanged`);
 
-                expect(getThing(`${origin}/get-init-called`)).toBe(true);
-                expect(getThing(`${origin}/get-azle-init-called`)).toBe(true);
-                expect(getThing(`${origin}/get-post-upgrade-called`)).toBe(
-                    true
+                expect(await getThing(`${origin}/get-init-called`)).toBe(false);
+                expect(await getThing(`${origin}/get-azle-init-called`)).toBe(
+                    false
                 );
-                expect(getThing(`${origin}/get-azle-post-upgrade-called`)).toBe(
-                    true
-                );
+                expect(
+                    await getThing(`${origin}/get-post-upgrade-called`)
+                ).toBe(true);
+                expect(
+                    await getThing(`${origin}/get-azle-post-upgrade-called`)
+                ).toBe(true);
             }
         });
     };

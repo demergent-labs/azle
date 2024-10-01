@@ -13,6 +13,7 @@ export default Server(serverCallback, {
     postUpgrade: postUpgrade([], () => {
         console.info('Post Upgrade was called');
         postUpgradeCalled = true;
+        initCalled = false;
     })
 });
 
@@ -25,7 +26,7 @@ function serverCallback() {
         res.send(initCalled);
     });
 
-    app.post('/get-post-upgrade-called', (_req, res) => {
+    app.get('/get-post-upgrade-called', (_req, res) => {
         res.send(postUpgradeCalled);
     });
 
@@ -33,7 +34,7 @@ function serverCallback() {
         res.send(globalThis._azleInitCalled);
     });
 
-    app.post('/get-azle-post-upgrade-called', (_req, res) => {
+    app.get('/get-azle-post-upgrade-called', (_req, res) => {
         res.send(globalThis._azlePostUpgradeCalled);
     });
 
