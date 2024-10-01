@@ -2,13 +2,12 @@ import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import jsSHA from 'jssha';
 
 import { blob, Principal } from '../../../src/lib/experimental';
-import { Address } from '../index';
 
 // TODO we need to review these heavily
 export function hexAddressFromPrincipal(
     principal: Principal,
     subaccount: number
-): Address {
+): string {
     return addressFromPrincipal(principal, subaccount);
 }
 
@@ -22,7 +21,7 @@ export function binaryAddressFromPrincipal(
     );
 }
 
-export function binaryAddressFromAddress(address: Address): blob {
+export function binaryAddressFromAddress(address: string): blob {
     return Uint8Array.from(
         address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? []
     );
@@ -43,7 +42,7 @@ export function binaryAddressFromAddress(address: Address): blob {
 function addressFromPrincipal(
     principal: Principal,
     subaccount: number
-): Address {
+): string {
     const prefixBytes = new Uint8Array([
         10, 97, 99, 99, 111, 117, 110, 116, 45, 105, 100
     ]); // \0xAaccount-id

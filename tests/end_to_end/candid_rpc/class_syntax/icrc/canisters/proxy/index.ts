@@ -1,17 +1,19 @@
 import { call, IDL, query, trap, update } from 'azle';
 import {
     Account,
+    TransferArgs,
+    TransferResult,
+    Value
+} from 'azle/canisters/icrc_1';
+import {
     AllowanceArgs,
     AllowanceResult,
     ApproveArgs,
     ApproveResult,
     SupportedStandard,
-    TransferArgs,
     TransferFromArgs,
-    TransferFromResult,
-    TransferResult,
-    Value
-} from 'azle/canisters/icrc';
+    TransferFromResult
+} from 'azle/canisters/icrc_2';
 
 export default class {
     @query([], IDL.Vec(IDL.Tuple(IDL.Text, Value)), { composite: true })

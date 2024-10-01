@@ -1,0 +1,14 @@
+name: Get node version
+description: Determines Azle's node version
+outputs:
+    node-version:
+        description: Returns the version of node that Azle will test against and use to generate its Wasm binary templates
+        value: ${{ steps.get-node-version.outputs.node-version }}
+runs:
+    using: composite
+    steps:
+        - id: get-node-version
+          run: |
+              NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
+              echo "node-version=${NODE_VERSION}" >> "$GITHUB_OUTPUT"
+          shell: bash

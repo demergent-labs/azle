@@ -9,6 +9,9 @@ description:
     displayPath: string // An abbreviated version of the path for display purposes only
     }'
 inputs:
+    node-version:
+        description: The version of Node.js to use
+        required: true
     directories:
         description: List of directories to search for npm projects with an npm test script
         required: true
@@ -16,10 +19,6 @@ inputs:
         description: List of directories to exclude from the search
         required: false
         default: ''
-    node-version:
-        description: The version of Node.js to use
-        required: true
-        default: '20.x'
 outputs:
     test-infos:
         description: All of the test info objects found by this action
@@ -27,8 +26,6 @@ outputs:
 runs:
     using: composite
     steps:
-        - uses: actions/checkout@v4
-
         - uses: actions/setup-node@v4
           with:
               node-version: ${{ inputs.node-version }}
