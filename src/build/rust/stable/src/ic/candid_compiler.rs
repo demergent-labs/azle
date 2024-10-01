@@ -1,19 +1,11 @@
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Context, Ctx, Function};
+use std::path::Path;
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let candid_path = if let JsValue::String(js_string) = argv.get(0).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(context.clone(), move |candid_path: String| {
+        let (env, actor) = candid_parser::pretty_check_file(Path::new(&candid_path)).unwrap();
 
-        let (env, actor) =
-            candid_parser::pretty_check_file(std::path::Path::new(&candid_path)).unwrap();
-
-        let result = candid_parser::bindings::javascript::compile(&env, &actor);
-
-        context.new_string(&result).into()
-    }
+        candid_parser::bindings::javascript::compile(&env, &actor)
+    })
+    .unwrap()
 }

@@ -1,13 +1,17 @@
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Context, Ctx, Function, IntoJs, TypedArray};
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(context: &mut Context, _this_val: JsValue, _argv: &[JsValue]) -> JsValue {
-        match ic_cdk::api::data_certificate() {
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(
+        context.clone(),
+        move || match ic_cdk::api::data_certificate() {
             Some(data_certificate_vec_u8) => {
-                context.new_array_buffer(&data_certificate_vec_u8).into()
+                TypedArray::<u8>::new(context.clone(), data_certificate_vec_u8)
+                    .unwrap()
+                    .into_js(&context)
+                    .unwrap()
             }
-            None => JsValue::UnDefined,
-        }
-    }
+            None => rquickjs::Undefined.into_js(&context).unwrap(),
+        },
+    )
+    .unwrap()
 }

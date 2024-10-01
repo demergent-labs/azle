@@ -1,18 +1,11 @@
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Context, Ctx, Function};
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(_context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let timer_id_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(context.clone(), |timer_id_string: String| {
         let timer_id_u64: u64 = timer_id_string.parse().unwrap();
         let timer_id = ic_cdk_timers::TimerId::from(slotmap::KeyData::from_ffi(timer_id_u64));
 
         ic_cdk_timers::clear_timer(timer_id);
-
-        JsValue::UnDefined
-    }
+    })
+    .unwrap()
 }

@@ -1,10 +1,8 @@
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Context, Ctx, Function};
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(_context: &mut Context, _this_val: JsValue, _argv: &[JsValue]) -> JsValue {
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(context.clone(), || {
         ic_cdk::api::call::accept_message();
-
-        JsValue::UnDefined
-    }
+    })
+    .unwrap()
 }

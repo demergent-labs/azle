@@ -1,19 +1,19 @@
-// mod accept_message;
-// mod arg_data_raw;
+mod accept_message;
+mod arg_data_raw;
 // mod call_raw;
-// mod caller;
-// mod candid_compiler;
-// mod candid_decode;
-// mod candid_encode;
-// mod canister_balance;
-// mod canister_version;
-// mod clear_timer;
-// mod cycles_burn;
-// mod data_certificate;
-// mod id;
-// mod instruction_counter;
-// mod is_controller;
-// mod method_name;
+mod caller;
+mod candid_compiler;
+mod candid_decode;
+mod candid_encode;
+mod canister_balance;
+mod canister_version;
+mod clear_timer;
+mod cycles_burn;
+mod data_certificate;
+mod id;
+mod instruction_counter;
+mod is_controller;
+mod method_name;
 // mod msg_cycles_accept;
 // mod msg_cycles_available;
 // mod msg_cycles_refunded;
@@ -40,282 +40,85 @@ mod reply_raw;
 // mod time;
 // mod trap;
 
-// use wasmedge_quickjs::AsObject;
-
 #[allow(unused)]
 pub fn register(context: rquickjs::Ctx) {
     let ic = rquickjs::Object::new(context.clone()).unwrap();
 
-    ic.set("replyRaw", reply_raw::get_function(context.clone()));
-    ic.set("print", print::get_function(context.clone()));
+    ic.set(
+        "acceptMessage",
+        accept_message::get_function(context.clone()),
+    )
+    .unwrap();
+    ic.set("argDataRaw", arg_data_raw::get_function(context.clone()))
+        .unwrap();
+    // ic.set("callRaw", call_raw::get_function(context.clone())).unwrap();
+    ic.set("caller", caller::get_function(context.clone()))
+        .unwrap();
+    ic.set(
+        "candidCompiler",
+        candid_compiler::get_function(context.clone()),
+    )
+    .unwrap();
+    ic.set("candidDecode", candid_decode::get_function(context.clone()))
+        .unwrap();
+    ic.set("candidEncode", candid_encode::get_function(context.clone()))
+        .unwrap();
+    ic.set(
+        "canisterBalance",
+        canister_balance::get_function(context.clone()),
+    )
+    .unwrap();
+    ic.set(
+        "canisterVersion",
+        canister_version::get_function(context.clone()),
+    )
+    .unwrap();
+    ic.set("clearTimer", clear_timer::get_function(context.clone()))
+        .unwrap();
+    ic.set("cyclesBurn", cycles_burn::get_function(context.clone()))
+        .unwrap();
+    ic.set(
+        "dataCertificate",
+        data_certificate::get_function(context.clone()),
+    )
+    .unwrap();
+    ic.set("id", id::get_function(context.clone())).unwrap();
+    ic.set(
+        "instructionCounter",
+        instruction_counter::get_function(context.clone()),
+    )
+    .unwrap();
+    ic.set("isController", is_controller::get_function(context.clone()))
+        .unwrap();
+    ic.set("methodName", method_name::get_function(context.clone()))
+        .unwrap();
+    // ic.set("msgCyclesAccept", msg_cycles_accept::get_function(context.clone())).unwrap();
+    // ic.set("msgCyclesAvailable", msg_cycles_available::get_function(context.clone())).unwrap();
+    // ic.set("msgCyclesRefunded", msg_cycles_refunded::get_function(context.clone())).unwrap();
+    // ic.set("notifyRaw", notify_raw::get_function(context.clone())).unwrap();
+    // ic.set("performanceCounter", performance_counter::get_function(context.clone())).unwrap();
+    ic.set("print", print::get_function(context.clone()))
+        .unwrap();
+    // ic.set("reject", reject::get_function(context.clone())).unwrap();
+    // ic.set("rejectCode", reject_code::get_function(context.clone())).unwrap();
+    // ic.set("rejectMessage", reject_message::get_function(context.clone())).unwrap();
+    ic.set("replyRaw", reply_raw::get_function(context.clone()))
+        .unwrap();
+    // ic.set("setCertifiedData", set_certified_data::get_function(context.clone())).unwrap();
+    // ic.set("setTimer", set_timer::get_function(context.clone())).unwrap();
+    // ic.set("setTimerInterval", set_timer_interval::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapContainsKey", stable_b_tree_map_contains_key::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapGet", stable_b_tree_map_get::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapInit", stable_b_tree_map_init::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapInsert", stable_b_tree_map_insert::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapIsEmpty", stable_b_tree_map_is_empty::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapItems", stable_b_tree_map_items::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapKeys", stable_b_tree_map_keys::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapLen", stable_b_tree_map_len::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapRemove", stable_b_tree_map_remove::get_function(context.clone())).unwrap();
+    // ic.set("stableBTreeMapValues", stable_b_tree_map_values::get_function(context.clone())).unwrap();
+    // ic.set("time", time::get_function(context.clone())).unwrap();
+    // ic.set("trap", trap::get_function(context.clone())).unwrap();
 
-    context.clone().globals().set("_azleIc", ic);
-
-    // ic.set(
-    //     "acceptMessage",
-    //     context
-    //         .new_function::<accept_message::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "argDataRaw",
-    //     context
-    //         .new_function::<arg_data_raw::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "callRaw",
-    //     context.new_function::<call_raw::NativeFunction>("").into(),
-    // );
-
-    // ic.set(
-    //     "caller",
-    //     context.new_function::<caller::NativeFunction>("").into(),
-    // );
-
-    // ic.set(
-    //     "candidCompiler",
-    //     context
-    //         .new_function::<candid_compiler::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "candidDecode",
-    //     context
-    //         .new_function::<candid_decode::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "candidEncode",
-    //     context
-    //         .new_function::<candid_encode::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "canisterBalance",
-    //     context
-    //         .new_function::<canister_balance::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "canisterVersion",
-    //     context
-    //         .new_function::<canister_version::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "clearTimer",
-    //     context
-    //         .new_function::<clear_timer::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "cyclesBurn",
-    //     context
-    //         .new_function::<cycles_burn::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "dataCertificate",
-    //     context
-    //         .new_function::<data_certificate::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set("id", context.new_function::<id::NativeFunction>("").into());
-
-    // ic.set(
-    //     "instructionCounter",
-    //     context
-    //         .new_function::<instruction_counter::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "isController",
-    //     context
-    //         .new_function::<is_controller::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "methodName",
-    //     context
-    //         .new_function::<method_name::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "msgCyclesAccept",
-    //     context
-    //         .new_function::<msg_cycles_accept::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "msgCyclesAvailable",
-    //     context
-    //         .new_function::<msg_cycles_available::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "msgCyclesRefunded",
-    //     context
-    //         .new_function::<msg_cycles_refunded::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "notifyRaw",
-    //     context
-    //         .new_function::<notify_raw::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "performanceCounter",
-    //     context
-    //         .new_function::<performance_counter::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "print",
-    //     context.new_function::<print::NativeFunction>("").into(),
-    // );
-
-    // ic.set(
-    //     "reject",
-    //     context.new_function::<reject::NativeFunction>("").into(),
-    // );
-
-    // ic.set(
-    //     "rejectCode",
-    //     context
-    //         .new_function::<reject_code::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "rejectMessage",
-    //     context
-    //         .new_function::<reject_message::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "replyRaw",
-    //     context.new_function::<reply_raw::NativeFunction>("").into(),
-    // );
-
-    // ic.set(
-    //     "setCertifiedData",
-    //     context
-    //         .new_function::<set_certified_data::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "setTimer",
-    //     context.new_function::<set_timer::NativeFunction>("").into(),
-    // );
-
-    // ic.set(
-    //     "setTimerInterval",
-    //     context
-    //         .new_function::<set_timer_interval::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapContainsKey",
-    //     context
-    //         .new_function::<stable_b_tree_map_contains_key::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapGet",
-    //     context
-    //         .new_function::<stable_b_tree_map_get::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapInit",
-    //     context
-    //         .new_function::<stable_b_tree_map_init::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapInsert",
-    //     context
-    //         .new_function::<stable_b_tree_map_insert::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapIsEmpty",
-    //     context
-    //         .new_function::<stable_b_tree_map_is_empty::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapItems",
-    //     context
-    //         .new_function::<stable_b_tree_map_items::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapKeys",
-    //     context
-    //         .new_function::<stable_b_tree_map_keys::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapLen",
-    //     context
-    //         .new_function::<stable_b_tree_map_len::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapRemove",
-    //     context
-    //         .new_function::<stable_b_tree_map_remove::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "stableBTreeMapValues",
-    //     context
-    //         .new_function::<stable_b_tree_map_values::NativeFunction>("")
-    //         .into(),
-    // );
-
-    // ic.set(
-    //     "time",
-    //     context.new_function::<time::NativeFunction>("").into(),
-    // );
-
-    // ic.set(
-    //     "trap",
-    //     context.new_function::<trap::NativeFunction>("").into(),
-    // );
-
-    // context.get_global().set("_azleIc", ic.into());
+    context.clone().globals().set("_azleIc", ic).unwrap();
 }

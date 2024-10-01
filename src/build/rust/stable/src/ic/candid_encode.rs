@@ -1,17 +1,11 @@
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Context, Ctx, Function, TypedArray, Value};
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let candid_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
-
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(context.clone(), move |candid_string: String| {
         let candid_args = candid_parser::parse_idl_args(&candid_string).unwrap();
         let candid_encoded = candid_args.to_bytes().unwrap();
 
-        context.new_array_buffer(&candid_encoded).into()
-    }
+        TypedArray::<u8>::new(context.clone(), candid_encoded)
+    })
+    .unwrap()
 }
