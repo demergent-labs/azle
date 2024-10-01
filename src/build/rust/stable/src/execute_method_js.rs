@@ -1,6 +1,6 @@
 use wasmedge_quickjs::AsObject;
 
-use crate::CONTEXT;
+use crate::{run_event_loop, CONTEXT};
 
 #[no_mangle]
 #[allow(unused)]

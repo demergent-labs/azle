@@ -1,9 +1,9 @@
 use ic_stable_structures::memory_manager::MemoryId;
 
 use crate::{
-    ic,
+    ic, run_event_loop,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
-    CONTEXT, MEMORY_MANAGER_REF_CELL, RUNTIME,
+    CONTEXT, MEMORY_MANAGER_REF_CELL,
 };
 
 #[inline(never)]
