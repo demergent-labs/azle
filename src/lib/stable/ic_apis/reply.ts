@@ -31,6 +31,6 @@ export function reply<T>(input: ReplyInput<T>): void {
                 : [input.data];
 
         // @ts-ignore IDL.encode types are defined incorrectly https://github.com/demergent-labs/azle/issues/2061
-        return globalThis._azleIc.replyRaw(IDL.encode(idlType, data).buffer);
+        return globalThis._azleIc.replyRaw(IDL.encode(idlType, data));
     }
 }

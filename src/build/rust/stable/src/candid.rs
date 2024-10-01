@@ -1,6 +1,8 @@
 use wasmedge_quickjs::AsObject;
 
-use crate::{ic, run_event_loop, wasm_binary_manipulation::get_js_code, RUNTIME};
+use crate::{wasm_binary_manipulation::get_js_code, CONTEXT, RUNTIME};
+
+// TODO we might not need any of these panic hooks
 
 // Heavily inspired by https://stackoverflow.com/a/47676844
 #[no_mangle]
@@ -21,53 +23,56 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
         ic_cdk::println!("{}", message);
     }));
 
-    RUNTIME.with(|_| {
-        let mut runtime = wasmedge_quickjs::Runtime::new();
+    let runtime = rquickjs::Runtime::new().unwrap();
+    let context = rquickjs::Context::full(&runtime).unwrap();
 
-        runtime.run_with_context(|context| {
-            context.get_global().set(
-                "_azleNodeWasmEnvironment",
-                wasmedge_quickjs::JsValue::Bool(true),
-            );
+    context.with(|context| {
+        context
+            .clone()
+            .globals()
+            .set("_azleNodeWasmEnvironment", true)
+            .unwrap();
 
-            ic::register(context);
+        // TODO is this appropriate?
+        // TODO I don't think we actually need to hook this up
+        // TODO And it's probably better not to
+        // TODO let's look into doing this well
+        // TODO maybe we can just set a property on _azleIc to determine what should be done
+        // TODO like mocking
+        context
+            .clone()
+            .globals()
+            .set("_azleIc", rquickjs::Object::new(context.clone()).unwrap())
+            .unwrap();
 
-            let js = get_js_code();
+        context
+            .clone()
+            .globals()
+            .set("exports", rquickjs::Object::new(context.clone()).unwrap())
+            .unwrap();
 
-            // TODO what do we do if there is an error in here?
-            context.eval_global_str("globalThis.exports = {};".to_string());
-            context.eval_global_str("globalThis._azleExperimental = false;".to_string());
-            context.eval_module_str(std::str::from_utf8(&js).unwrap().to_string(), "azle_main");
+        context
+            .clone()
+            .globals()
+            .set("_azleExperimental", false)
+            .unwrap();
 
-            run_event_loop(context);
+        let js = get_js_code();
 
-            let global = context.get_global();
+        // TODO is there a better name for this main module?
+        rquickjs::Module::evaluate(context.clone(), "azle_main", js);
 
-            let get_candid_and_method_meta = global
-                .get("_azleGetCandidAndMethodMeta")
-                .to_function()
-                .unwrap();
+        run_event_loop(context);
 
-            let candid_and_method_meta = get_candid_and_method_meta.call(&[]);
+        let get_candid_and_method_meta: rquickjs::Function = context
+            .globals()
+            .get("_azleGetCandidAndMethodMeta")
+            .unwrap();
 
-            // TODO error handling is mostly done in JS right now
-            // TODO we would really like wasmedge-quickjs to add
-            // TODO good error info to JsException and move error handling
-            // TODO out of our own code
-            match &candid_and_method_meta {
-                wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                    js_exception.dump_error();
-                    panic!("TODO needs error info");
-                }
-                _ => run_event_loop(context),
-            };
+        let candid_and_method_meta: String = get_candid_and_method_meta.call(()).unwrap();
 
-            let candid_and_method_meta_string =
-                candid_and_method_meta.to_string().unwrap().to_string();
+        let c_string = std::ffi::CString::new(candid_and_method_meta).unwrap();
 
-            let c_string = std::ffi::CString::new(candid_and_method_meta_string).unwrap();
-
-            c_string.into_raw()
-        })
+        c_string.into_raw()
     })
 }

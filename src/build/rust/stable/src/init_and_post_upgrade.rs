@@ -1,9 +1,9 @@
 use ic_stable_structures::memory_manager::MemoryId;
-use wasmedge_quickjs::AsObject;
 
 use crate::{
-    execute_method_js, ic, run_event_loop, wasm_binary_manipulation::get_js_code,
-    wasm_binary_manipulation::get_wasm_data, MEMORY_MANAGER_REF_CELL, RUNTIME,
+    ic,
+    wasm_binary_manipulation::{get_js_code, get_wasm_data},
+    CONTEXT, MEMORY_MANAGER_REF_CELL, RUNTIME,
 };
 
 #[inline(never)]
@@ -56,7 +56,7 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
 
     let polyfill_memory =
         MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
-    ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
+    ic_wasi_polyfill::init_with_memory(&[], &[], polyfill_memory);
 
     let js = get_js_code();
 
@@ -68,72 +68,76 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
     );
 }
 
+// TODO do we need all these clonse?
+// TODO do not forget to deal with the event loop everywhere
 pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
-    let mut rt = wasmedge_quickjs::Runtime::new();
+    let rt = rquickjs::Runtime::new().unwrap();
+    let ctx = rquickjs::Context::full(&rt).unwrap(); // TODO rename to context
 
-    rt.run_with_context(|context| {
-        ic::register(context);
+    ctx.with(|ctx| {
+        ic::register(ctx.clone());
 
-        let mut env = context.new_object();
+        let mut env = rquickjs::Object::new(ctx.clone()).unwrap();
 
         for (key, value) in std::env::vars() {
-            env.set(&key, context.new_string(&value).into());
+            env.set(key, value).unwrap();
         }
 
-        let mut process = context.new_object();
+        ctx.clone()
+            .globals()
+            .set("_azleNodeWasmEnvironment", false)
+            .unwrap();
 
-        process.set("env", env.into());
+        let mut process = rquickjs::Object::new(ctx.clone()).unwrap();
 
-        context.get_global().set("process", process.into());
+        process.set("env", env).unwrap();
 
-        context.get_global().set(
-            "_azleNodeWasmEnvironment",
-            wasmedge_quickjs::JsValue::Bool(false),
-        );
+        ctx.clone().globals().set("process", process).unwrap();
 
-        // TODO what do we do if there is an error in here?
-        context.eval_global_str("globalThis.exports = {};".to_string());
-        context.eval_global_str("globalThis._azleExperimental = false;".to_string());
-        context.eval_module_str(js.to_string(), "azle_main");
+        ctx.clone()
+            .globals()
+            .set("_azleNodeWasmEnvironment", false)
+            .unwrap();
 
-        run_event_loop(context);
+        ctx.clone()
+            .globals()
+            .set("exports", rquickjs::Object::new(ctx.clone()).unwrap())
+            .unwrap();
 
-        // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
+        ctx.clone()
+            .globals()
+            .set("_azleExperimental", false)
+            .unwrap();
 
-        // match &temp {
-        //     wasmedge_quickjs::JsValue::Exception(js_exception) => {
-        //         js_exception.dump_error();
-        //         panic!("we had an error");
-        //     },
-        //     _ => {}
-        // };
+        // TODO is there a better name for this main module?
+        rquickjs::Module::evaluate(ctx.clone(), "azle_main", js);
 
-        // ic_cdk::println!("temp: {:#?}", temp);
+        run_event_loop(ctx.clone());
     });
 
-    RUNTIME.with(|runtime| {
-        let mut runtime = runtime.borrow_mut();
-        *runtime = Some(rt);
+    CONTEXT.with(|context| {
+        *context.borrow_mut() = Some(ctx);
     });
 
-    if function_index != -1 {
-        execute_method_js::execute_method_js(function_index, pass_arg_data);
-    }
+    // TODO implement this
+    // if function_index != -1 {
+    //     execute_method_js::execute_method_js(function_index, pass_arg_data);
+    // }
 
     // _azleInitCalled and _azlePostUpgradeCalled refer to Azle's own init/post_upgrade methods being called
     // these variables do not indicate if the developer's own init/post_upgrade methods were called
-    RUNTIME.with(|runtime| {
-        let mut runtime = runtime.borrow_mut();
-        let runtime = runtime.as_mut().unwrap();
+    // CONTEXT.with(|context| {
+    //     let context = context.borrow();
+    //     let context = context.as_ref().unwrap();
 
-        runtime.run_with_context(|context| {
-            let assignment = if init {
-                "globalThis._azleInitCalled = true;"
-            } else {
-                "globalThis._azlePostUpgradeCalled = true;"
-            };
+    //     context.with(|ctx| {
+    //         let assignment = if init {
+    //             "globalThis._azleInitCalled = true;"
+    //         } else {
+    //             "globalThis._azlePostUpgradeCalled = true;"
+    //         };
 
-            context.eval_global_str(assignment.to_string());
-        });
-    });
+    //         ctx.eval::<(), _>(assignment).unwrap();
+    //     });
+    // });
 }

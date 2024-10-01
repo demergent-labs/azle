@@ -5,8 +5,7 @@
 
 use std::cell::RefCell;
 
-#[allow(unused)]
-use guards::guard_against_non_controllers;
+// #[allow(unused)]
 use ic_stable_structures::{
     memory_manager::{MemoryManager, VirtualMemory},
     DefaultMemoryImpl,
@@ -25,18 +24,15 @@ mod wasm_binary_manipulation;
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 
 thread_local! {
-    static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
+    static CONTEXT: RefCell<Option<rquickjs::Context>> = RefCell::new(None);
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }
 
-pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
-    context.promise_loop_poll();
-
+pub fn run_event_loop(context: rquickjs::Ctx) {
     loop {
-        let num_tasks = context.event_loop().unwrap().run_tick_task();
-        context.promise_loop_poll();
+        let result = context.execute_pending_job();
 
-        if num_tasks == 0 {
+        if result == false {
             break;
         }
     }
