@@ -18,7 +18,7 @@ export function getTests(): Test {
                     fc.nat({
                         max: 10
                     }),
-                    async (nat) => {
+                    async (timesToDeploy) => {
                         const startingVer = 1n; // Canister starts at 0 when it's created but the deploy in pretest should increment it to be at 1 by the time it gets here
 
                         const actor = await getCanisterActor<Actor>('canister');
@@ -31,26 +31,18 @@ export function getTests(): Test {
                             startingVer + 1n
                         );
 
-                        await Array(nat).reduce(
-                            async (accPromise) => {
-                                const previousVer = await accPromise;
-
-                                execSync(
-                                    `dfx deploy canister --upgrade-unchanged`
-                                );
-                                const expectedVer = previousVer + 1n; // Increment after deploy
-
-                                await checkUpgradeVersion(actor, [expectedVer]);
-
-                                await checkQueryAndUpdateVersion(
-                                    actor,
-                                    expectedVer
-                                );
-
-                                return expectedVer + 1n; // Increment after state change
-                            },
-                            Promise.resolve(startingVer + 2n)
+                        const versionsAtDeploy = Array.from(
+                            { length: timesToDeploy },
+                            (_, index) => BigInt(index * 2) + startingVer
                         );
+
+                        for (const version of versionsAtDeploy) {
+                            execSync(`dfx deploy canister --upgrade-unchanged`);
+
+                            await checkUpgradeVersion(actor, [version]);
+
+                            await checkQueryAndUpdateVersion(actor, version);
+                        }
                     }
                 ),
                 defaultPropTestParams
@@ -104,6 +96,10 @@ async function checkQueryAndUpdateVersion(
 
     expect(await actor.getUpdateCanisterVersion()).toBeGreaterThanOrEqual(
         expectedVersion
+    );
+
+    expect(await actor.getQueryCanisterVersion()).toBeGreaterThanOrEqual(
+        expectedVersion + 1n
     );
 }
 
