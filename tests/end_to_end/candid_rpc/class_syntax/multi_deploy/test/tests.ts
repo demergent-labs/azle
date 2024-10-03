@@ -18,8 +18,10 @@ export function getTests(multiDeployCanister: ActorSubclass<_SERVICE>): Test {
             const originalDidHash = await getFileHash(
                 '.azle/multi_deploy/multi_deploy.did'
             );
+
             for (let i = 0; i < 10; i++) {
                 execSyncPretty(`dfx build multi_deploy`);
+
                 const updatedWasmHash = await getFileHash(
                     '.azle/multi_deploy/multi_deploy.wasm'
                 );
@@ -40,15 +42,18 @@ export function getTests(multiDeployCanister: ActorSubclass<_SERVICE>): Test {
             const originalFileHash = await getFileHash(
                 '.azle/multi_deploy/multi_deploy.wasm'
             );
+
             expect(await multiDeployCanister.getInitCalled()).toBe(true);
             expect(await multiDeployCanister.getAzleInitCalled()).toBe(true);
+
             for (let i = 0; i < 2; i++) {
                 execSyncPretty(`dfx deploy multi_deploy`);
+
                 const updatedHash = await getFileHash(
                     '.azle/multi_deploy/multi_deploy.wasm'
                 );
-                expect(originalFileHash).toEqual(updatedHash);
 
+                expect(originalFileHash).toEqual(updatedHash);
                 expect(await multiDeployCanister.getInitCalled()).toBe(true);
                 expect(await multiDeployCanister.getAzleInitCalled()).toBe(
                     true
