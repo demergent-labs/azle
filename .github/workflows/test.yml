@@ -53,7 +53,7 @@ jobs:
                   examples/basic_bitcoin
                   examples/bitcoin_psbt
                   examples/ckbtc
-                  tests/end_to_end/candid_rpc/class_syntax/multi-deploy
+                  tests/end_to_end/candid_rpc/class_syntax/multi_deploy
                   tests/end_to_end/http_server/ethers_base
                   tests/end_to_end/http_server/http_outcall_fetch
                   tests/end_to_end/http_server/ic_evm_rpc
