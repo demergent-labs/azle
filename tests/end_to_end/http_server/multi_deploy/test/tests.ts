@@ -11,7 +11,7 @@ export function getTests(canisterId: string): Test {
         it('has the same binary between builds', async () => {
             const originalFileHash = await getFileHash();
             for (let i = 0; i < 10; i++) {
-                execSyncPretty(`dfx build canister`);
+                execSyncPretty(`dfx build multi_deploy`);
                 const updatedHash = await getFileHash();
 
                 expect(originalFileHash).toEqual(updatedHash);
@@ -23,7 +23,7 @@ export function getTests(canisterId: string): Test {
             expect(await getThing(`${origin}/get-init-called`)).toBe(true);
             expect(await getThing(`${origin}/get-azle-init-called`)).toBe(true);
             for (let i = 0; i < 1; i++) {
-                execSyncPretty(`dfx deploy canister`);
+                execSyncPretty(`dfx deploy multi_deploy`);
                 const updatedHash = await getFileHash();
                 expect(originalFileHash).toEqual(updatedHash);
 
@@ -42,7 +42,7 @@ export function getTests(canisterId: string): Test {
 
         it('does call post upgrade if there is a redeploy with no change', async () => {
             for (let i = 0; i < 1; i++) {
-                execSyncPretty(`dfx deploy canister --upgrade-unchanged`);
+                execSyncPretty(`dfx deploy multi_deploy --upgrade-unchanged`);
 
                 expect(await getThing(`${origin}/get-init-called`)).toBe(false);
                 expect(await getThing(`${origin}/get-azle-init-called`)).toBe(
@@ -66,7 +66,7 @@ async function getThing(path: string): Promise<boolean> {
 }
 
 async function getFileHash(): Promise<Buffer> {
-    const fileData = await readFile('.azle/canister/canister.wasm');
+    const fileData = await readFile('.azle/multi_deploy/multi_deploy.wasm');
     const h = createHash('sha256');
     h.update(fileData);
     return h.digest();

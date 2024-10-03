@@ -1,6 +1,6 @@
 {
     "canisters": {
-        "canister": {
+        "multi_deploy": {
             "type": "azle",
             "main": "src/index.ts",
             "custom": {

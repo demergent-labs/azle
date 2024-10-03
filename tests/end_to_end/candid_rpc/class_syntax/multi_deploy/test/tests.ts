@@ -4,30 +4,30 @@ import { createHash } from 'crypto';
 import { readFile } from 'fs/promises';
 
 import { execSyncPretty } from '../../../../../../src/build/stable/utils/exec_sync_pretty';
-import { _SERVICE } from './dfx_generated/canister/canister.did';
+import { _SERVICE } from './dfx_generated/multi_deploy/multi_deploy.did';
 
-export function getTests(canister: ActorSubclass<_SERVICE>): Test {
+export function getTests(multiDeployCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('has the same binary between builds', async () => {
             const originalWasmHash = await getFileHash(
-                '.azle/canister/canister.wasm'
+                '.azle/multi_deploy/multi_deploy.wasm'
             );
             const originalMainHash = await getFileHash(
-                '.azle/canister/main.js'
+                '.azle/multi_deploy/main.js'
             );
             const originalDidHash = await getFileHash(
-                '.azle/canister/canister.did'
+                '.azle/multi_deploy/multi_deploy.did'
             );
             for (let i = 0; i < 10; i++) {
-                execSyncPretty(`dfx build canister`);
+                execSyncPretty(`dfx build multi_deploy`);
                 const updatedWasmHash = await getFileHash(
-                    '.azle/canister/canister.wasm'
+                    '.azle/multi_deploy/multi_deploy.wasm'
                 );
                 const updatedMainHash = await getFileHash(
-                    '.azle/canister/main.js'
+                    '.azle/multi_deploy/main.js'
                 );
                 const updatedDidHash = await getFileHash(
-                    '.azle/canister/canister.did'
+                    '.azle/multi_deploy/multi_deploy.did'
                 );
 
                 expect(originalWasmHash).toBe(updatedWasmHash);
@@ -38,32 +38,44 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
 
         it("doesn't call post upgrade when deploy is skipped from unchanged binary", async () => {
             const originalFileHash = await getFileHash(
-                '.azle/canister/canister.wasm'
+                '.azle/multi_deploy/multi_deploy.wasm'
             );
-            expect(await canister.getInitCalled()).toBe(true);
-            expect(await canister.getAzleInitCalled()).toBe(true);
+            expect(await multiDeployCanister.getInitCalled()).toBe(true);
+            expect(await multiDeployCanister.getAzleInitCalled()).toBe(true);
             for (let i = 0; i < 2; i++) {
-                execSyncPretty(`dfx deploy canister`);
+                execSyncPretty(`dfx deploy multi_deploy`);
                 const updatedHash = await getFileHash(
-                    '.azle/canister/canister.wasm'
+                    '.azle/multi_deploy/multi_deploy.wasm'
                 );
                 expect(originalFileHash).toEqual(updatedHash);
 
-                expect(await canister.getInitCalled()).toBe(true);
-                expect(await canister.getAzleInitCalled()).toBe(true);
-                expect(await canister.getPostUpgradeCalled()).toBe(false);
-                expect(await canister.getAzlePostUpgradeCalled()).toBe(false);
+                expect(await multiDeployCanister.getInitCalled()).toBe(true);
+                expect(await multiDeployCanister.getAzleInitCalled()).toBe(
+                    true
+                );
+                expect(await multiDeployCanister.getPostUpgradeCalled()).toBe(
+                    false
+                );
+                expect(
+                    await multiDeployCanister.getAzlePostUpgradeCalled()
+                ).toBe(false);
             }
         });
 
         it('does call post upgrade when deploy is forced', async () => {
             for (let i = 0; i < 2; i++) {
-                execSyncPretty(`dfx deploy canister --upgrade-unchanged`);
+                execSyncPretty(`dfx deploy multi_deploy --upgrade-unchanged`);
 
-                expect(await canister.getInitCalled()).toBe(false);
-                expect(await canister.getAzleInitCalled()).toBe(false);
-                expect(await canister.getPostUpgradeCalled()).toBe(true);
-                expect(await canister.getAzlePostUpgradeCalled()).toBe(true);
+                expect(await multiDeployCanister.getInitCalled()).toBe(false);
+                expect(await multiDeployCanister.getAzleInitCalled()).toBe(
+                    false
+                );
+                expect(await multiDeployCanister.getPostUpgradeCalled()).toBe(
+                    true
+                );
+                expect(
+                    await multiDeployCanister.getAzlePostUpgradeCalled()
+                ).toBe(true);
             }
         });
     };
