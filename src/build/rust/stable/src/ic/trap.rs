@@ -1,14 +1,8 @@
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Ctx, Function};
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(_context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let message = if let JsValue::String(js_string) = argv.get(0).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
-
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(context, |message: String| {
         ic_cdk::api::trap(&message);
-    }
+    })
+    .unwrap()
 }

@@ -1,54 +1,42 @@
 use std::convert::TryInto;
 
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Ctx, Function};
 
 use crate::stable_b_tree_map::STABLE_B_TREE_MAPS;
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let memory_id_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
-        let memory_id: u8 = memory_id_string.parse().unwrap();
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(
+        context,
+        |memory_id: String, start_index: String, length: String| {
+            let memory_id: u8 = memory_id.parse().unwrap();
+            let start_index: usize = start_index.parse().unwrap();
 
-        let start_index_string = if let JsValue::String(js_string) = argv.get(1).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
-        let start_index: usize = start_index_string.parse().unwrap();
+            let keys: Vec<Vec<u8>> = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
+                let stable_b_tree_maps = stable_b_tree_maps.borrow();
+                let stable_b_tree_map = &stable_b_tree_maps[&memory_id];
 
-        let length_string = if let JsValue::String(js_string) = argv.get(2).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
+                stable_b_tree_map
+                    .iter()
+                    .skip(start_index)
+                    .take(if length == "NOT_SET" {
+                        stable_b_tree_map.len().try_into().unwrap()
+                    } else {
+                        length.parse().unwrap()
+                    })
+                    .map(|(key, _)| key.bytes)
+                    .collect()
+            });
 
-        let keys: Vec<Vec<u8>> = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
-            let stable_b_tree_maps = stable_b_tree_maps.borrow();
-            let stable_b_tree_map = &stable_b_tree_maps[&memory_id];
+            let js_array = context.new_array().unwrap();
 
-            stable_b_tree_map
-                .iter()
-                .skip(start_index)
-                .take(if length_string == "NOT_SET" {
-                    stable_b_tree_map.len().try_into().unwrap()
-                } else {
-                    length_string.parse().unwrap()
-                })
-                .map(|(key, _)| key.bytes)
-                .collect()
-        });
+            for (index, item) in keys.iter().enumerate() {
+                js_array
+                    .set(index, context.new_array_buffer(item).unwrap())
+                    .unwrap();
+            }
 
-        let mut js_array = context.new_array();
-
-        for (index, item) in keys.iter().enumerate() {
-            js_array.put(index, context.new_array_buffer(item).into());
-        }
-
-        js_array.into()
-    }
+            js_array
+        },
+    )
+    .unwrap()
 }

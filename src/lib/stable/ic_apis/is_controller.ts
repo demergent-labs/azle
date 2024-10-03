@@ -6,5 +6,5 @@ export function isController(principal: Principal): boolean {
         return false;
     }
 
-    return globalThis._azleIc.isController(principal.toUint8Array().buffer);
+    return globalThis._azleIc.isController(principal.toUint8Array());
 }

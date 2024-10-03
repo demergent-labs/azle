@@ -1,8 +1,7 @@
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Ctx, Function};
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(context: &mut Context, _this_val: JsValue, _argv: &[JsValue]) -> JsValue {
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(context, || {
         let reject_code = ic_cdk::api::call::reject_code();
 
         let reject_code_number = match reject_code {
@@ -15,6 +14,7 @@ impl JsFn for NativeFunction {
             ic_cdk::api::call::RejectionCode::Unknown => 6,
         };
 
-        context.new_string(&reject_code_number.to_string()).into()
-    }
+        reject_code_number.to_string()
+    })
+    .unwrap()
 }

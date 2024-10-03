@@ -1,17 +1,11 @@
 use ic_stable_structures::{memory_manager::MemoryId, StableBTreeMap};
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use rquickjs::{Ctx, Function};
 
 use crate::stable_b_tree_map::STABLE_B_TREE_MAPS;
 use crate::MEMORY_MANAGER_REF_CELL;
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(_context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let memory_id_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(context, |memory_id_string: String| {
         let memory_id: u8 = memory_id_string.parse().unwrap();
 
         STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
@@ -23,7 +17,6 @@ impl JsFn for NativeFunction {
                 ),
             );
         });
-
-        JsValue::UnDefined
-    }
+    })
+    .unwrap()
 }

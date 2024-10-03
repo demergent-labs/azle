@@ -25,5 +25,5 @@ export function setCertifiedData(data: Uint8Array): void {
         return undefined;
     }
 
-    return globalThis._azleIc.setCertifiedData(data.buffer);
+    return globalThis._azleIc.setCertifiedData(data);
 }
