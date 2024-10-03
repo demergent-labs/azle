@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/dfx';
-import { hashFile } from 'azle/scripts/hash_file';
+import { hashFileByParts } from 'azle/scripts/hash_file';
 import { createActor } from 'azle/src/build/experimental/commands/upload_assets/file_uploader/uploader_actor';
 import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
@@ -117,7 +117,9 @@ export function verifyUpload(
             const localPath = join('assets', srcPath);
             const canisterPath = join('assets', destPath);
 
-            const expectedHash = (await hashFile(localPath)).toString('hex');
+            const expectedHash = (await hashFileByParts(localPath)).toString(
+                'hex'
+            );
 
             const response = await fetch(
                 `${origin}/exists?path=${canisterPath}`

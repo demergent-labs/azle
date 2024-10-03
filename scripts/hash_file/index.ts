@@ -1,13 +1,9 @@
 import { createHash } from 'crypto';
 import { FileReadResult, open } from 'fs/promises';
 
-export async function hashFile(path: string): Promise<Buffer> {
-    return await hashFileByParts(path, 0);
-}
-
-async function hashFileByParts(
+export async function hashFileByParts(
     path: string,
-    position: number,
+    position: number = 0,
     previousHash?: Buffer
 ): Promise<Buffer> {
     const { buffer, bytesRead } = await getBytesToHash(path, position);

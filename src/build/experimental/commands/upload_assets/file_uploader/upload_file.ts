@@ -1,6 +1,6 @@
 import { open, stat } from 'fs/promises';
 
-import { hashFile } from '../../../../../../scripts/hash_file';
+import { hashFileByParts } from '../../../../../../scripts/hash_file';
 import { Dest, Src } from '.';
 import { bytesToHumanReadable } from './bytes_to_human_readable';
 import { UploaderActor } from './uploader_actor';
@@ -80,7 +80,7 @@ async function shouldBeUploaded(
     destPath: string,
     actor: UploaderActor
 ): Promise<boolean> {
-    const localHash = (await hashFile(srcPath)).toString('hex');
+    const localHash = (await hashFileByParts(srcPath)).toString('hex');
     const canisterHashOption = await actor._azle_get_file_hash(destPath);
     if (canisterHashOption.length === 0) {
         return true;
