@@ -1,0 +1,96 @@
+name: Run tests
+description: Run tests
+inputs:
+    tests:
+        description: Tests
+        required: true
+    os:
+        description: os
+        required: true
+        default: 'ubuntu-latest'
+    azle_source:
+        description: Azle Source
+        required: true
+runs:
+    using: composite
+    steps:
+        - name: Report full path of test
+          # Just in case the path isn't obvious from the name, this will remove ambiguity
+          run: echo ${{inputs.tests.path}}
+          shell: bash -l {0}
+
+        - id: get-dfx-version
+          uses: ./.github/actions/get_dfx_version
+
+        - name: Run pre-test Azle setup
+          run: |
+
+              # Install dfx (Note: DFX must be installed before `npm install` because the azle installation process requires dfx)
+              src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
+              echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
+              # MacOS-specific DNS configuration
+              if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+                  sudo networksetup -setdnsservers Ethernet 9.9.9.9
+              fi
+
+              npm install
+
+              if [[ "${{ inputs.azle_source }}" == "repo" ]]; then
+                  npm link
+              fi
+
+              npm run lint
+          shell: bash -l {0}
+
+        - name: Run pre-test setup for ${{ inputs.tests.name }}
+          run: |
+              npm install
+
+              if [[ "${{ inputs.azle_source }}" == "repo" ]]; then
+                  npm link azle
+              fi
+
+              npx azle install-dfx-extension
+          working-directory: ${{ inputs.tests.path }}
+          shell: bash -l {0}
+
+        - name: Start dfx with artificial delay 0
+          if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' || env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR == 'true' }}
+          working-directory: ${{ inputs.tests.path }}
+          run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+          shell: bash
+
+        - name: Start dfx
+          if: ${{ env.AZLE_IS_RELEASE_BRANCH_PR == 'true' || env.AZLE_IS_MAIN_BRANCH_PUSH == 'true' || env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH == 'true' }}
+          working-directory: ${{ inputs.tests.path }}
+          run: dfx start --clean --background --host 127.0.0.1:8000
+          shell: bash -l {0}
+
+        - name: Run test
+          run: |
+              RUNS=1
+
+              if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
+                  RUNS=100
+              fi
+
+              if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
+                  RUNS=100
+              fi
+
+              if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
+                  RUNS=10
+              fi
+
+              if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
+                  RUNS=5
+              fi
+
+              if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
+                  RUNS=1
+              fi
+
+              AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
+          shell: bash -l {0}
+          working-directory: ${{ inputs.tests.path }}
