@@ -40,7 +40,6 @@ export function getTests(): Test {
                             execSync(`dfx deploy canister --upgrade-unchanged`);
 
                             await checkUpgradeVersion(actor, [version]);
-
                             await checkQueryAndUpdateVersion(actor, version);
                         }
                     }
@@ -56,6 +55,7 @@ async function checkInitVersion(
     expectedVer: bigint
 ): Promise<void> {
     const initCanisterVersion = await actor.getInitCanisterVersion();
+
     expect(initCanisterVersion[0]).toBeGreaterThanOrEqual(expectedVer);
 }
 
@@ -93,11 +93,9 @@ async function checkQueryAndUpdateVersion(
     expect(await actor.getQueryCanisterVersion()).toBeGreaterThanOrEqual(
         expectedVersion
     );
-
     expect(await actor.getUpdateCanisterVersion()).toBeGreaterThanOrEqual(
         expectedVersion
     );
-
     expect(await actor.getQueryCanisterVersion()).toBeGreaterThanOrEqual(
         expectedVersion + 1n
     );
@@ -110,6 +108,7 @@ async function checkInspectVersion(
     await actor.setInspectMessageCanisterVersion();
     const inspectMessageCanisterVersion =
         await actor.getInspectMessageCanisterVersion();
+
     expect(inspectMessageCanisterVersion[0]).toBeGreaterThanOrEqual(
         expectedVersion
     );
