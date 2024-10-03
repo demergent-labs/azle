@@ -56,6 +56,7 @@ async function checkInitVersion(
 ): Promise<void> {
     const initCanisterVersion = await actor.getInitCanisterVersion();
 
+    expect(initCanisterVersion).toHaveLength(1);
     expect(initCanisterVersion[0]).toBeGreaterThanOrEqual(expectedVer);
 }
 
