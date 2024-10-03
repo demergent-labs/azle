@@ -38,8 +38,8 @@ jobs:
               id: set-exclude-dirs
               run: |
                   RELEASE_TESTS="${{ format('
-                  tests/end_to_end/candid_rpc/class_syntax/new/
-                  tests/end_to_end/http_server/new/
+                  tests/end_to_end/candid_rpc/class_syntax/new
+                  tests/end_to_end/http_server/new
                   ') }}"
 
                   UNSTABLE_TESTS="${{ format('
@@ -100,6 +100,7 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-excluded-tests
+            - get-example-infos
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ubuntu-latest
         outputs:
@@ -120,7 +121,7 @@ jobs:
                   exclude-dirs: ${{ needs.get-excluded-tests.outputs.excluded-tests }}
 
     get-example-infos:
-        name: Get test infos
+        name: Get Example infos
         needs:
             - determine-should-run-tests
             - get-excluded-tests
