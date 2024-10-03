@@ -100,7 +100,6 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-excluded-tests
-            - get-example-infos
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ubuntu-latest
         outputs:
