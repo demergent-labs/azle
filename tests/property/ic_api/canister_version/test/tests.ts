@@ -19,6 +19,19 @@ export function getTests(): Test {
                         max: 10
                     }),
                     async (timesToDeploy) => {
+                        // Stop and delete the canister before every run
+                        execSync(`dfx canister stop canister || true`, {
+                            stdio: 'inherit'
+                        });
+
+                        execSync(`dfx canister delete canister || true`, {
+                            stdio: 'inherit'
+                        });
+
+                        execSync(`dfx deploy canister`, {
+                            stdio: 'inherit'
+                        });
+
                         const startingVer = 1n; // Canister starts at 0 when it's created but the deploy in pretest should increment it to be at 1 by the time it gets here
 
                         const actor = await getCanisterActor<Actor>('canister');
