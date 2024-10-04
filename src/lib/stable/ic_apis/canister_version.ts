@@ -8,5 +8,5 @@ export function canisterVersion(): bigint {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.canisterVersion());
+    return globalThis._azleIc.canisterVersion();
 }

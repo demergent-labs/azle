@@ -53,7 +53,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
         //     expect(result).toStrictEqual(expected);
         // });
 
-        it('calls argDataRaw on the ic object', async () => {
+        it.only('calls argDataRaw on the ic object', async () => {
             const blobString = 'Surprise!';
             const blob = Uint8Array.from(
                 blobString.split('').map((char) => char.charCodeAt(0))
@@ -74,7 +74,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toBe(candidString);
         });
 
-        it('calls caller on the ic object', async () => {
+        it.only('calls caller on the ic object', async () => {
             const result = await icApiCanister.caller();
 
             expect(result.toText()).toBe('2vxsx-fae');

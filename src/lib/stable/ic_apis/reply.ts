@@ -22,7 +22,7 @@ export function reply<T>(input: ReplyInput<T>): void {
     }
 
     if ('raw' in input) {
-        return globalThis._azleIc.replyRaw(input.raw.buffer);
+        return globalThis._azleIc.replyRaw(input.raw);
     } else {
         const idlType = input.idlType === undefined ? [] : [input.idlType];
         const data =

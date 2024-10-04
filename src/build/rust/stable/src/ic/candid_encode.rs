@@ -1,4 +1,4 @@
-use rquickjs::{Context, Ctx, Function, TypedArray, Value};
+use rquickjs::{Ctx, Function, TypedArray};
 
 pub fn get_function(context: Ctx) -> Function {
     Function::new(context.clone(), move |candid_string: String| {

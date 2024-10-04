@@ -9,7 +9,5 @@ export function id(): Principal {
         return Principal.fromHex('04');
     }
 
-    // TODO consider bytes instead of string, just like with caller
-    const idString = globalThis._azleIc.id();
-    return Principal.fromText(idString);
+    return Principal.fromUint8Array(globalThis._azleIc.id());
 }

@@ -7,5 +7,5 @@ export function time(): bigint {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.time());
+    return globalThis._azleIc.time();
 }

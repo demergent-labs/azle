@@ -8,8 +8,5 @@ export function msgCyclesRefunded(): bigint {
         return 0n;
     }
 
-    const msgCyclesRefundedAmountString =
-        globalThis._azleIc.msgCyclesRefunded();
-
-    return BigInt(msgCyclesRefundedAmountString);
+    return BigInt(globalThis._azleIc.msgCyclesRefunded());
 }

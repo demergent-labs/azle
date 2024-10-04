@@ -1,9 +1,7 @@
-use std::convert::TryInto;
-
-use rquickjs::{Context, Ctx, Function, Value};
+use rquickjs::{Ctx, Function};
 
 pub fn get_function(context: Ctx) -> rquickjs::Function {
-    Function::new(context.clone(), |bytes: rquickjs::TypedArray<u8>| {
+    Function::new(context, |bytes: rquickjs::TypedArray<u8>| {
         ic_cdk::api::call::reply_raw(bytes.as_ref());
     })
     .unwrap()

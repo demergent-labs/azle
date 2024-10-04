@@ -12,7 +12,5 @@ export function performanceCounter(counterType: number): bigint {
         return 0n;
     }
 
-    return BigInt(
-        globalThis._azleIc.performanceCounter(counterType.toString())
-    );
+    return globalThis._azleIc.performanceCounter(counterType);
 }

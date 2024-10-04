@@ -20,15 +20,15 @@ export function setTimerInterval(
     const timerCallbackId = `_interval_timer_${v4()}`;
 
     const timerId = globalThis._azleIc.setTimerInterval(
-        interval.toString(),
+        interval,
         timerCallbackId
     );
 
-    globalThis._azleIcTimers[timerId] = timerCallbackId;
+    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
 
     // We don't delete this even if the callback throws because
     // it still needs to be here for the next tick
     globalThis._azleTimerCallbacks[timerCallbackId] = callback;
 
-    return BigInt(timerId);
+    return timerId;
 }

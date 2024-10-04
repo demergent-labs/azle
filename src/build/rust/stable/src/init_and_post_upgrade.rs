@@ -1,6 +1,7 @@
 use ic_stable_structures::memory_manager::MemoryId;
 
 use crate::{
+    execute_method_js::execute_method_js,
     ic, run_event_loop,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
     CONTEXT, MEMORY_MANAGER_REF_CELL,
@@ -56,7 +57,7 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
 
     let polyfill_memory =
         MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
-    ic_wasi_polyfill::init_with_memory(&[], &[], polyfill_memory);
+    ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
     let js = get_js_code();
 
@@ -77,7 +78,7 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
     ctx.with(|ctx| {
         ic::register(ctx.clone());
 
-        let mut env = rquickjs::Object::new(ctx.clone()).unwrap();
+        let env = rquickjs::Object::new(ctx.clone()).unwrap();
 
         for (key, value) in std::env::vars() {
             env.set(key, value).unwrap();
@@ -88,7 +89,7 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
             .set("_azleNodeWasmEnvironment", false)
             .unwrap();
 
-        let mut process = rquickjs::Object::new(ctx.clone()).unwrap();
+        let process = rquickjs::Object::new(ctx.clone()).unwrap();
 
         process.set("env", env).unwrap();
 
@@ -110,7 +111,8 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
             .unwrap();
 
         // TODO is there a better name for this main module?
-        rquickjs::Module::evaluate(ctx.clone(), "azle_main", js);
+        // TODO this returns a promise...make sure we handle it appropriately
+        rquickjs::Module::evaluate(ctx.clone(), "azle_main", js).unwrap();
 
         run_event_loop(ctx.clone());
     });
@@ -120,9 +122,9 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
     });
 
     // TODO implement this
-    // if function_index != -1 {
-    //     execute_method_js::execute_method_js(function_index, pass_arg_data);
-    // }
+    if function_index != -1 {
+        execute_method_js(function_index, pass_arg_data);
+    }
 
     // _azleInitCalled and _azlePostUpgradeCalled refer to Azle's own init/post_upgrade methods being called
     // these variables do not indicate if the developer's own init/post_upgrade methods were called

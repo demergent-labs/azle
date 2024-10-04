@@ -59,12 +59,11 @@ export async function call<Args extends any[] | undefined, Return = any>(
             typeof canisterId === 'string'
                 ? Principal.fromText(canisterId)
                 : canisterId;
-        const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
+        const canisterIdBytes = canisterIdPrincipal.toUint8Array();
         const argsRawBuffer =
             raw === undefined
-                ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
-                : raw.buffer;
-        const paymentString = payment.toString();
+                ? new Uint8Array(IDL.encode(paramIdlTypes, args))
+                : raw;
 
         // TODO consider finally, what if deletion goes wrong
         try {
@@ -73,7 +72,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
                 canisterIdBytes,
                 method,
                 argsRawBuffer,
-                paymentString
+                payment
             );
         } catch (error) {
             delete globalThis._azleResolveIds[globalResolveId];

@@ -31,7 +31,7 @@ export function rejectCode(): RejectionCode {
         return { Unknown: null };
     }
 
-    const rejectCodeNumber = Number(globalThis._azleIc.rejectCode());
+    const rejectCodeNumber = globalThis._azleIc.rejectCode();
 
     switch (rejectCodeNumber) {
         case 0:

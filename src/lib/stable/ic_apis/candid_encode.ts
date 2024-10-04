@@ -4,7 +4,9 @@
  * @returns the candid value as bytes
  */
 export function candidEncode(candidString: string): Uint8Array {
-    return new Uint8Array(
-        globalThis._azleIc ? globalThis._azleIc.candidEncode(candidString) : []
-    );
+    if (globalThis._azleIc === undefined) {
+        return new Uint8Array();
+    }
+
+    return globalThis._azleIc.candidEncode(candidString);
 }

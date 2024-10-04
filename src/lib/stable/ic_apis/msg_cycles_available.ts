@@ -8,8 +8,5 @@ export function msgCyclesAvailable(): bigint {
         return 0n;
     }
 
-    const msgCyclesAvailableAmountString =
-        globalThis._azleIc.msgCyclesAvailable();
-
-    return BigInt(msgCyclesAvailableAmountString);
+    return BigInt(globalThis._azleIc.msgCyclesAvailable());
 }

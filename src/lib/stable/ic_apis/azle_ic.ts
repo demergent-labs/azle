@@ -3,45 +3,45 @@
  * we expose to the users. This is the interface for the rust functions.
  */
 export type AzleIc = {
-    argDataRaw: () => ArrayBuffer;
+    argDataRaw: () => Uint8Array;
     callRaw: (
         promiseId: string,
-        canisterIdBytes: ArrayBuffer,
+        canisterIdBytes: Uint8Array,
         method: string,
-        argsRaw: ArrayBuffer,
-        paymentString: string
+        argsRaw: Uint8Array,
+        payment: bigint
     ) => void;
-    caller: () => ArrayBuffer;
+    caller: () => Uint8Array;
     candidCompiler: (candidPath: string) => string;
-    candidDecode: (candidBytes: ArrayBuffer) => string;
-    candidEncode: (candidString: string) => ArrayBuffer;
+    candidDecode: (candidBytes: Uint8Array) => string;
+    candidEncode: (candidString: string) => Uint8Array;
     canisterBalance: () => string;
-    canisterVersion: () => string;
-    clearTimer: (timerIdString: string) => void;
-    cyclesBurn: (amount: string) => string;
-    dataCertificate: () => ArrayBuffer | undefined;
-    id: () => string;
-    instructionCounter: () => string;
-    isController: (principalBytes: ArrayBuffer) => boolean;
+    canisterVersion: () => bigint;
+    clearTimer: (timerId: bigint) => void;
+    cyclesBurn: (amountString: string) => string;
+    dataCertificate: () => Uint8Array | undefined;
+    id: () => Uint8Array;
+    instructionCounter: () => bigint;
+    isController: (principalBytes: Uint8Array) => boolean;
     msgCyclesAccept: (maxAmountString: string) => string;
     msgCyclesAvailable: () => string;
     msgCyclesRefunded: () => string;
     notifyRaw: (
-        canisterIdBytes: ArrayBuffer,
+        canisterIdBytes: Uint8Array,
         method: string,
-        argsRawBuffer: ArrayBuffer,
-        paymentString: string
+        argsRawBuffer: Uint8Array,
+        payment: bigint
     ) => void;
-    performanceCounter: (counterType: string) => string;
-    rejectCode: () => string;
-    replyRaw: (bytes: ArrayBuffer) => void;
-    setCertifiedData: (dataBytes: ArrayBuffer) => void;
-    setTimer: (delayString: string, timerCallbackId: string) => string;
+    performanceCounter: (counterType: number) => bigint;
+    rejectCode: () => number;
+    replyRaw: (bytes: Uint8Array) => void;
+    setCertifiedData: (dataBytes: Uint8Array) => void;
+    setTimer: (delayString: bigint, timerCallbackId: string) => bigint;
     setTimerInterval: (
-        intervalString: string,
+        intervalString: bigint,
         timerCallbackId: string
-    ) => string;
-    time: () => string;
+    ) => bigint;
+    time: () => bigint;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
     // assuming that their types are the same as the types declared by our
@@ -59,39 +59,37 @@ export type AzleIc = {
     notify: () => never;
     reply: () => never;
     // Stable B Tree Map Functions
-    stableBTreeMapInit: (memoryId: string) => void;
+    stableBTreeMapInit: (memoryId: number) => void;
     stableBTreeMapContainsKey: (
-        memoryId: string,
-        encodedKey: ArrayBuffer
+        memoryId: number,
+        encodedKey: Uint8Array
     ) => boolean;
     stableBTreeMapGet: (
-        memoryId: string,
-        encodedKey: ArrayBuffer
-    ) => ArrayBuffer | undefined;
+        memoryId: number,
+        encodedKey: Uint8Array
+    ) => Uint8Array | undefined;
     stableBTreeMapInsert: (
-        memoryId: string,
-        encodedKey: ArrayBuffer,
-        encodedValue: ArrayBuffer
-    ) => ArrayBuffer | undefined;
-    stableBTreeMapIsEmpty: (memoryId: string) => boolean;
+        memoryId: number,
+        encodedKey: Uint8Array,
+        encodedValue: Uint8Array
+    ) => Uint8Array | undefined;
+    stableBTreeMapIsEmpty: (memoryId: number) => boolean;
+    // TODO should these indexes and lengths be bigints for future proofing?
     stableBTreeMapItems: (
-        memoryId: string,
-        startIndex: string,
-        length: string
-    ) => [ArrayBuffer, ArrayBuffer][];
+        memoryId: number,
+        startIndex: number,
+        length: number
+    ) => [Uint8Array, Uint8Array][];
     stableBTreeMapKeys: (
-        memoryId: string,
-        startIndex: string,
-        length: string
-    ) => ArrayBuffer[];
-    stableBTreeMapLen: (memoryId: string) => string;
-    stableBTreeMapRemove(
-        memoryId: string,
-        encodedKey: ArrayBuffer
-    ): ArrayBuffer;
+        memoryId: number,
+        startIndex: number,
+        length: number
+    ) => Uint8Array[];
+    stableBTreeMapLen: (memoryId: number) => bigint;
+    stableBTreeMapRemove(memoryId: number, encodedKey: Uint8Array): Uint8Array;
     stableBTreeMapValues: (
-        memoryId: string,
-        startIndex: string,
-        length: string
-    ) => ArrayBuffer[];
+        memoryId: number,
+        startIndex: number,
+        length: number
+    ) => Uint8Array[];
 };

@@ -1,7 +1,7 @@
-use rquickjs::{Context, Ctx, Function, Value};
+use rquickjs::{Ctx, Function};
 
 pub fn get_function(context: Ctx) -> rquickjs::Function {
-    Function::new(context.clone(), |message: String| {
+    Function::new(context, |message: String| {
         ic_cdk::print(message);
     })
     .unwrap()

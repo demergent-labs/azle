@@ -1,6 +1,4 @@
-use wasmedge_quickjs::AsObject;
-
-use crate::{run_event_loop, wasm_binary_manipulation::get_js_code, CONTEXT};
+use crate::{run_event_loop, wasm_binary_manipulation::get_js_code};
 
 // TODO we might not need any of these panic hooks
 
@@ -60,7 +58,8 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
         let js = get_js_code();
 
         // TODO is there a better name for this main module?
-        rquickjs::Module::evaluate(context.clone(), "azle_main", js);
+        // TODO this returns a promise...make sure we handle it appropriately
+        rquickjs::Module::evaluate(context.clone(), "azle_main", js).unwrap();
 
         run_event_loop(context.clone());
 

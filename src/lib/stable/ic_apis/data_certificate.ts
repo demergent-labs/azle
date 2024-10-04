@@ -4,12 +4,10 @@
  * `None`.
  * @returns the data certificate or None
  */
-export function dataCertificate(): [Uint8Array] | [] {
+export function dataCertificate(): Uint8Array | undefined {
     if (globalThis._azleIc === undefined) {
-        return [];
+        return undefined;
     }
 
-    const rawRustValue = globalThis._azleIc.dataCertificate();
-
-    return rawRustValue === undefined ? [] : [new Uint8Array(rawRustValue)];
+    return globalThis._azleIc.dataCertificate();
 }

@@ -8,6 +8,8 @@ import { v4 } from 'uuid';
 
 import { azleFetch } from './fetch';
 
+// TODO experimental will need its own AzleIc type
+
 declare global {
     // eslint-disable-next-line no-var
     var _azleWebAssembly: any;

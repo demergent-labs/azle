@@ -32,17 +32,16 @@ export function notify(
         typeof canisterId === 'string'
             ? Principal.fromText(canisterId)
             : canisterId;
-    const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
+    const canisterIdBytes = canisterIdPrincipal.toUint8Array();
     const argsRawBuffer =
         raw === undefined
-            ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
-            : raw.buffer;
-    const paymentString = payment.toString();
+            ? new Uint8Array(IDL.encode(paramIdlTypes, args))
+            : raw;
 
     return globalThis._azleIc.notifyRaw(
         canisterIdBytes,
         method,
         argsRawBuffer,
-        paymentString
+        payment
     );
 }

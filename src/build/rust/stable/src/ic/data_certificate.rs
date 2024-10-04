@@ -1,4 +1,4 @@
-use rquickjs::{Context, Ctx, Function, IntoJs, TypedArray};
+use rquickjs::{Ctx, Function, IntoJs, TypedArray};
 
 pub fn get_function(context: Ctx) -> Function {
     Function::new(

@@ -19,12 +19,9 @@ export function setTimer(
 
     const timerCallbackId = `_timer_${v4()}`;
 
-    const timerId = globalThis._azleIc.setTimer(
-        delay.toString(),
-        timerCallbackId
-    );
+    const timerId = globalThis._azleIc.setTimer(delay, timerCallbackId);
 
-    globalThis._azleIcTimers[timerId] = timerCallbackId;
+    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
 
     globalThis._azleTimerCallbacks[timerCallbackId] = (): void => {
         try {
@@ -35,5 +32,5 @@ export function setTimer(
         }
     };
 
-    return BigInt(timerId);
+    return timerId;
 }

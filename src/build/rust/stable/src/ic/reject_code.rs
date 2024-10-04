@@ -14,7 +14,7 @@ pub fn get_function(context: Ctx) -> Function {
             ic_cdk::api::call::RejectionCode::Unknown => 6,
         };
 
-        reject_code_number.to_string()
+        reject_code_number
     })
     .unwrap()
 }

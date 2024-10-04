@@ -11,5 +11,5 @@ export function instructionCounter(): bigint {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.instructionCounter());
+    return globalThis._azleIc.instructionCounter();
 }

@@ -6,5 +6,9 @@ import { inspectMessage } from '../canister_methods/inspect_message'; // Used fo
  * {@link inspectMessage} context will cause the canister to trap.
  */
 export function acceptMessage(): void {
-    return globalThis._azleIc ? globalThis._azleIc.acceptMessage() : undefined;
+    if (globalThis._azleIc === undefined) {
+        return undefined;
+    }
+
+    globalThis._azleIc.acceptMessage();
 }

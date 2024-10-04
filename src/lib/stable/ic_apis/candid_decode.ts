@@ -8,5 +8,5 @@ export function candidDecode(candidEncoded: Uint8Array): string {
         return '';
     }
 
-    return globalThis._azleIc.candidDecode(candidEncoded.buffer);
+    return globalThis._azleIc.candidDecode(candidEncoded);
 }

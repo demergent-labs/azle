@@ -3,7 +3,9 @@
  * @returns the argument data
  */
 export function argDataRaw(): Uint8Array {
-    return new Uint8Array(
-        globalThis._azleIc ? globalThis._azleIc.argDataRaw() : []
-    );
+    if (globalThis._azleIc === undefined) {
+        return new Uint8Array();
+    }
+
+    return globalThis._azleIc.argDataRaw();
 }

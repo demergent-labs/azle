@@ -3,5 +3,9 @@
  * @returns the current canister method
  */
 export function methodName(): string {
-    return globalThis._azleIc ? globalThis._azleIc.methodName() : '';
+    if (globalThis._azleIc === undefined) {
+        return '';
+    }
+
+    return globalThis._azleIc.methodName();
 }
