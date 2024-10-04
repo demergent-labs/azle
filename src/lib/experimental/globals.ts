@@ -7,12 +7,13 @@ import { URL } from 'url';
 import { v4 } from 'uuid';
 
 import { azleFetch } from './fetch';
+import { AzleIcExperimental } from './ic/azle_ic_experimental';
 
 // TODO experimental will need its own AzleIc type
 
 declare global {
     // eslint-disable-next-line no-var
-    var _azleWebAssembly: any;
+    var _azleIcExperimental: AzleIcExperimental;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
     // eslint-disable-next-line no-var
@@ -23,10 +24,15 @@ declare global {
     var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
+    // eslint-disable-next-line no-var
+    var _azleWebAssembly: any;
 }
 
 globalThis._azleInsideCanister =
-    globalThis._azleIc === undefined ? false : true;
+    globalThis._azleIcExperimental === undefined &&
+    globalThis._azleIcStable === undefined
+        ? false
+        : true;
 
 if (globalThis._azleInsideCanister === true) {
     // Even though these are set in stable/globals

@@ -2,14 +2,14 @@
  * The interface for our rust methods it slightly different than the interface
  * we expose to the users. This is the interface for the rust functions.
  */
-export type AzleIc = {
+export type AzleIcStable = {
     argDataRaw: () => Uint8Array;
     callRaw: (
         promiseId: string,
         canisterIdBytes: Uint8Array,
         method: string,
         argsRaw: Uint8Array,
-        payment: bigint
+        paymentString: string
     ) => void;
     caller: () => Uint8Array;
     candidCompiler: (candidPath: string) => string;
@@ -30,7 +30,7 @@ export type AzleIc = {
         canisterIdBytes: Uint8Array,
         method: string,
         argsRawBuffer: Uint8Array,
-        payment: bigint
+        paymentString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
     rejectCode: () => number;

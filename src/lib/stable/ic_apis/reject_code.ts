@@ -27,11 +27,11 @@ type RejectionCode =
  * @returns the rejection code
  */
 export function rejectCode(): RejectionCode {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return { Unknown: null };
     }
 
-    const rejectCodeNumber = globalThis._azleIc.rejectCode();
+    const rejectCodeNumber = globalThis._azleIcStable.rejectCode();
 
     switch (rejectCodeNumber) {
         case 0:

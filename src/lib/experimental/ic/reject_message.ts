@@ -14,5 +14,9 @@ import { ic } from '../ic'; // Used for links in comments
  * @returns the rejection message
  */
 export function rejectMessage(): text {
-    return globalThis._azleIc ? globalThis._azleIc.rejectMessage() : '';
+    if (globalThis._azleIcExperimental === undefined) {
+        return '';
+    }
+
+    return globalThis._azleIcExperimental.rejectMessage();
 }

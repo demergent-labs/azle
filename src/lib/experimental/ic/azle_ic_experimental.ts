@@ -1,10 +1,8 @@
-// TODO we need to use this instead of the stable AzleIc
-
 /**
  * The interface for our rust methods it slightly different than the interface
  * we expose to the users. This is the interface for the rust functions.
  */
-export type AzleIc = {
+export type AzleIcExperimental = {
     argDataRaw: () => ArrayBuffer;
     callRaw: (
         promiseId: string,

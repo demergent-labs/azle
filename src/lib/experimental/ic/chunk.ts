@@ -3,7 +3,7 @@ import '../experimental';
 import { ic } from './';
 
 export async function chunk(): Promise<void> {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return undefined;
     }
 

@@ -9,7 +9,11 @@ import { text } from '../candid/types/primitive/text';
  * @returns the candid value as bytes
  */
 export function candidEncode(candidString: text): blob {
+    if (globalThis._azleIcExperimental === undefined) {
+        return new Uint8Array();
+    }
+
     return new Uint8Array(
-        globalThis._azleIc ? globalThis._azleIc.candidEncode(candidString) : []
+        globalThis._azleIcExperimental.candidEncode(candidString)
     );
 }

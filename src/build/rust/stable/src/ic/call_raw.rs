@@ -1,123 +1,94 @@
-use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
+// TODO let's simplify this and make it more declarative
+// TODO let's declaratize access to the javascript runtime
 
-use crate::{run_event_loop, RUNTIME};
+use crate::{run_event_loop, CONTEXT};
+use rquickjs::{Ctx, Exception, Function, IntoJs, TypedArray};
 
-pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(_context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let promise_id = if let JsValue::String(js_string) = argv.get(0).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
+pub fn get_function(context: Ctx) -> Function {
+    Function::new(
+        context.clone(),
+        move |promise_id: String,
+              canister_id_bytes: TypedArray<u8>,
+              method: String,
+              args_raw: TypedArray<u8>,
+              payment_string: String| {
+            let canister_id = candid::Principal::from_slice(canister_id_bytes.as_ref());
+            let args_raw = args_raw.as_bytes().unwrap().to_vec();
+            let payment: u128 = payment_string.parse().unwrap();
 
-        let canister_id_bytes = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(1).unwrap()
-        {
-            js_array_buffer.to_vec()
-        } else {
-            panic!("conversion from JsValue to JsArrayBuffer failed")
-        };
-        let canister_id = candid::Principal::from_slice(&canister_id_bytes);
+            ic_cdk::spawn(async move {
+                let call_result =
+                    ic_cdk::api::call::call_raw128(canister_id, &method, args_raw, payment).await;
 
-        let method = if let JsValue::String(js_string) = argv.get(2).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
+                CONTEXT.with(|context| {
+                    let context = context.borrow();
+                    let context = context.as_ref().unwrap();
 
-        let args_raw = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(3).unwrap() {
-            js_array_buffer.to_vec()
-        } else {
-            panic!("conversion from JsValue to JsArrayBuffer failed")
-        };
+                    context.with(|ctx| {
+                        let global = ctx.globals();
 
-        let payment_string = if let JsValue::String(js_string) = argv.get(4).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
-        let payment: u128 = payment_string.parse().unwrap();
+                        let (should_resolve, js_value) = match &call_result {
+                            Ok(candid_bytes) => {
+                                ic_cdk::println!("successful");
 
-        ic_cdk::spawn(async move {
-            let call_result =
-                ic_cdk::api::call::call_raw128(canister_id, &method, &args_raw, payment).await;
+                                let candid_bytes_js_value =
+                                    TypedArray::<u8>::new(ctx.clone(), candid_bytes.clone())
+                                        .into_js(&ctx)
+                                        .unwrap();
+                                (true, candid_bytes_js_value)
+                            }
+                            Err(err) => {
+                                let err_js_value = Exception::from_message(
+                                    ctx.clone(),
+                                    &format!(
+                                        "Rejection code {}, {}",
+                                        (err.0 as i32).to_string(),
+                                        err.1
+                                    ),
+                                )
+                                .into_js(&ctx)
+                                .unwrap();
 
-            RUNTIME.with(|runtime| {
-                let mut runtime = runtime.borrow_mut();
-                let runtime = runtime.as_mut().unwrap();
+                                (false, err_js_value)
+                            }
+                        };
 
-                runtime.run_with_context(|context| {
-                    let global = context.get_global();
+                        ic_cdk::println!("0");
 
-                    let (should_resolve, js_value) = match &call_result {
-                        Ok(candid_bytes) => {
-                            let candid_bytes_js_value: JsValue =
-                                context.new_array_buffer(candid_bytes).into();
+                        let resolve_or_reject = if should_resolve {
+                            global
+                                .get::<_, rquickjs::Object>("_azleResolveIds")
+                                .unwrap()
+                        } else {
+                            global.get::<_, rquickjs::Object>("_azleRejectIds").unwrap()
+                        };
 
-                            (true, candid_bytes_js_value)
-                        }
-                        Err(err) => {
-                            let err_js_value: JsValue = context
-                                .new_error(&format!(
-                                    "Rejection code {rejection_code}, {error_message}",
-                                    rejection_code = (err.0 as i32).to_string(),
-                                    error_message = err.1
-                                ))
-                                .into();
+                        ic_cdk::println!("1");
 
-                            (false, err_js_value)
-                        }
-                    };
+                        let function_name = if should_resolve {
+                            format!("_resolve_{promise_id}")
+                        } else {
+                            format!("_reject_{promise_id}")
+                        };
 
-                    if should_resolve {
-                        let resolve = global
-                            .get("_azleResolveIds")
-                            .to_obj()
-                            .unwrap()
-                            .get(format!("_resolve_{promise_id}").as_str())
-                            .to_function()
+                        ic_cdk::println!("2");
+
+                        let callback: rquickjs::Function =
+                            resolve_or_reject.get(function_name).unwrap();
+
+                        ic_cdk::println!("3");
+
+                        callback
+                            .call::<_, rquickjs::Undefined>((js_value,))
                             .unwrap();
 
-                        let result = resolve.call(&[js_value.clone()]);
-
-                        // TODO error handling is mostly done in JS right now
-                        // TODO we would really like wasmedge-quickjs to add
-                        // TODO good error info to JsException and move error handling
-                        // TODO out of our own code
-                        match &result {
-                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                                js_exception.dump_error();
-                                panic!("TODO needs error info");
-                            }
-                            _ => run_event_loop(context),
-                        };
-                    } else {
-                        let reject = global
-                            .get("_azleRejectIds")
-                            .to_obj()
-                            .unwrap()
-                            .get(format!("_reject_{promise_id}").as_str())
-                            .to_function()
-                            .unwrap();
-
-                        let result = reject.call(&[js_value.clone()]);
-
-                        // TODO error handling is mostly done in JS right now
-                        // TODO we would really like wasmedge-quickjs to add
-                        // TODO good error info to JsException and move error handling
-                        // TODO out of our own code
-                        match &result {
-                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                                js_exception.dump_error();
-                                panic!("TODO needs error info");
-                            }
-                            _ => run_event_loop(context),
-                        };
-                    }
+                        run_event_loop(ctx.clone());
+                    });
                 });
             });
-        });
 
-        JsValue::UnDefined
-    }
+            rquickjs::Undefined
+        },
+    )
+    .unwrap()
 }

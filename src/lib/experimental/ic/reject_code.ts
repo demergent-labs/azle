@@ -8,11 +8,13 @@ import { RejectionCode } from '../system_types';
  * @returns the rejection code
  */
 export function rejectCode(): RejectionCode {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return { Unknown: null };
     }
 
-    const rejectCodeNumber = Number(globalThis._azleIc.rejectCode());
+    const rejectCodeNumber = Number(
+        globalThis._azleIcExperimental.rejectCode()
+    );
 
     switch (rejectCodeNumber) {
         case 0:

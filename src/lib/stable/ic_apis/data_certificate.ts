@@ -5,9 +5,9 @@
  * @returns the data certificate or None
  */
 export function dataCertificate(): Uint8Array | undefined {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return undefined;
     }
 
-    return globalThis._azleIc.dataCertificate();
+    return globalThis._azleIcStable.dataCertificate();
 }

@@ -7,9 +7,9 @@
  * @returns the number of instructions
  */
 export function instructionCounter(): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return 0n;
     }
 
-    return globalThis._azleIc.instructionCounter();
+    return globalThis._azleIcStable.instructionCounter();
 }

@@ -5,9 +5,9 @@ import { Principal } from '@dfinity/principal';
  * @returns the principal of the caller of the current call
  */
 export function caller(): Principal {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return Principal.fromHex('04');
     }
 
-    return Principal.fromUint8Array(globalThis._azleIc.caller());
+    return Principal.fromUint8Array(globalThis._azleIcStable.caller());
 }

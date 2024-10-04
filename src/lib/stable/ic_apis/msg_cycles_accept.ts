@@ -4,9 +4,9 @@
  * @returns the actual amount moved
  */
 export function msgCyclesAccept(maxAmountString: string): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.msgCyclesAccept(maxAmountString));
+    return BigInt(globalThis._azleIcStable.msgCyclesAccept(maxAmountString));
 }

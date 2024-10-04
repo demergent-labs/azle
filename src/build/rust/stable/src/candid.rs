@@ -40,7 +40,10 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
         context
             .clone()
             .globals()
-            .set("_azleIc", rquickjs::Object::new(context.clone()).unwrap())
+            .set(
+                "_azleIcStable",
+                rquickjs::Object::new(context.clone()).unwrap(),
+            )
             .unwrap();
 
         context

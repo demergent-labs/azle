@@ -26,9 +26,9 @@ import { Void } from '../candid/types/primitive/void';
  * @returns
  */
 export function setCertifiedData(data: blob): Void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return undefined;
     }
 
-    return globalThis._azleIc.setCertifiedData(data.buffer);
+    return globalThis._azleIcExperimental.setCertifiedData(data.buffer);
 }

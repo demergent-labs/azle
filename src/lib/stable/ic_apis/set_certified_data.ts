@@ -21,9 +21,9 @@
  * @returns
  */
 export function setCertifiedData(data: Uint8Array): void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return undefined;
     }
 
-    return globalThis._azleIc.setCertifiedData(data);
+    return globalThis._azleIcStable.setCertifiedData(data);
 }

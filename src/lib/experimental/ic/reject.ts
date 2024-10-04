@@ -8,5 +8,9 @@ import { Void } from '../candid/types/primitive/void';
  * @param message the rejection message
  */
 export function reject(message: text): Void {
-    return globalThis._azleIc ? globalThis._azleIc.reject(message) : undefined;
+    if (globalThis._azleIcExperimental === undefined) {
+        return undefined;
+    }
+
+    globalThis._azleIcExperimental.reject(message);
 }

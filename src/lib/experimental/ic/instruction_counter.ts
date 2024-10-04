@@ -11,9 +11,9 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the number of instructions
  */
 export function instructionCounter(): nat64 {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.instructionCounter());
+    return BigInt(globalThis._azleIcExperimental.instructionCounter());
 }

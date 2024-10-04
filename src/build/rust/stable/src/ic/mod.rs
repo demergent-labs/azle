@@ -1,6 +1,6 @@
 mod accept_message;
 mod arg_data_raw;
-// mod call_raw;
+mod call_raw;
 mod caller;
 mod candid_compiler;
 mod candid_decode;
@@ -53,7 +53,8 @@ pub fn register(context: rquickjs::Ctx) {
     ic.set("argDataRaw", arg_data_raw::get_function(context.clone()))
         .unwrap();
 
-    // ic.set("callRaw", call_raw::get_function(context.clone())).unwrap();
+    ic.set("callRaw", call_raw::get_function(context.clone()))
+        .unwrap();
 
     ic.set("caller", caller::get_function(context.clone()))
         .unwrap();
@@ -231,5 +232,5 @@ pub fn register(context: rquickjs::Ctx) {
 
     ic.set("trap", trap::get_function(context.clone())).unwrap();
 
-    context.clone().globals().set("_azleIc", ic).unwrap();
+    context.clone().globals().set("_azleIcStable", ic).unwrap();
 }

@@ -4,9 +4,9 @@
  * @returns the Candid string
  */
 export function candidDecode(candidEncoded: Uint8Array): string {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return '';
     }
 
-    return globalThis._azleIc.candidDecode(candidEncoded);
+    return globalThis._azleIcStable.candidDecode(candidEncoded);
 }

@@ -3,11 +3,11 @@
  * @param id The ID of the timer to be cancelled.
  */
 export function clearTimer(timerId: bigint): void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return undefined;
     }
 
-    globalThis._azleIc.clearTimer(timerId);
+    globalThis._azleIcStable.clearTimer(timerId);
 
     const timerCallbackId = globalThis._azleIcTimers[timerId.toString()];
 

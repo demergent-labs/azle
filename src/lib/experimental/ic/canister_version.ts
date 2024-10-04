@@ -8,9 +8,9 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the version number
  */
 export function canisterVersion(): nat64 {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.canisterVersion());
+    return BigInt(globalThis._azleIcExperimental.canisterVersion());
 }

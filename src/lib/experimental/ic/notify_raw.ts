@@ -20,7 +20,7 @@ export function notifyRaw(
     argsRaw: blob,
     payment: nat
 ): Void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return undefined;
     }
 
@@ -28,7 +28,7 @@ export function notifyRaw(
     const argsRawBuffer = argsRaw.buffer;
     const paymentString = payment.toString();
 
-    return globalThis._azleIc.notifyRaw(
+    return globalThis._azleIcExperimental.notifyRaw(
         canisterIdBytes,
         method,
         argsRawBuffer,

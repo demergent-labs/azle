@@ -7,5 +7,9 @@ import { Void } from '../candid/types/primitive/void';
  * @param args the message to print
  */
 export function print(...args: any): Void {
-    return globalThis._azleIc ? globalThis._azleIc.print(...args) : undefined;
+    if (globalThis._azleIcExperimental === undefined) {
+        return undefined;
+    }
+
+    globalThis._azleIcExperimental.print(...args);
 }

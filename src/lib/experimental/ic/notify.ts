@@ -41,7 +41,7 @@ export function notify<T extends (...args: any[]) => any>(
         cycles?: nat;
     }
 ): Void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return undefined;
     }
 

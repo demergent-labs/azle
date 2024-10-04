@@ -3,9 +3,9 @@
  * @param args the message to print
  */
 export function print(...args: any): void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return;
     }
 
-    return globalThis._azleIc.print(...args);
+    return globalThis._azleIcStable.print(...args);
 }

@@ -7,11 +7,11 @@ import { Principal } from '../candid/types/reference/principal';
  * @returns the canister id
  */
 export function id(): Principal {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return Principal.fromHex('04');
     }
 
     // TODO consider bytes instead of string, just like with caller
-    const idString = globalThis._azleIc.id();
+    const idString = globalThis._azleIcExperimental.id();
     return Principal.fromText(idString);
 }

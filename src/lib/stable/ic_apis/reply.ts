@@ -17,12 +17,12 @@ type ReplyInput<T> =
  * uncaught `TypeError`.
  */
 export function reply<T>(input: ReplyInput<T>): void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return undefined;
     }
 
     if ('raw' in input) {
-        return globalThis._azleIc.replyRaw(input.raw);
+        return globalThis._azleIcStable.replyRaw(input.raw);
     } else {
         const idlType = input.idlType === undefined ? [] : [input.idlType];
         const data =
@@ -31,6 +31,6 @@ export function reply<T>(input: ReplyInput<T>): void {
                 : [input.data];
 
         // @ts-ignore IDL.encode types are defined incorrectly https://github.com/demergent-labs/azle/issues/2061
-        return globalThis._azleIc.replyRaw(IDL.encode(idlType, data));
+        return globalThis._azleIcStable.replyRaw(IDL.encode(idlType, data));
     }
 }

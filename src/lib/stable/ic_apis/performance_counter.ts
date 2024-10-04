@@ -8,9 +8,9 @@
  * @returns the performance counter metric
  */
 export function performanceCounter(counterType: number): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return 0n;
     }
 
-    return globalThis._azleIc.performanceCounter(counterType);
+    return globalThis._azleIcStable.performanceCounter(counterType);
 }
