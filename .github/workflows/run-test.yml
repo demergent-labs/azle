@@ -1,0 +1,129 @@
+name: Run Test
+
+on:
+    workflow_call:
+        inputs:
+            test_infos:
+                required: true
+                type: string
+            include_npm:
+                required: true
+                type: boolean
+            os:
+                required: true
+                type: string
+            conditions:
+                required: true
+                type: string
+        secrets:
+            ETHEREUM_URL:
+                required: true
+
+jobs:
+    run-test:
+        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}} | ${{matrix.os}}'
+        runs-on: ${{ matrix.os }}
+        env:
+            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
+            AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
+            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
+        strategy:
+            fail-fast: false
+            matrix:
+                os: ${{ fromJSON(inputs.os) }}
+                include_npm:
+                    - ${{ inputs.include_npm }}
+                azle_source:
+                    - npm
+                    - repo
+                exclude:
+                    - include_npm: false
+                      azle_source: npm
+                    - include_npm: true
+                      azle_source: repo
+                tests: ${{ fromJSON(inputs.test_infos) }}
+        steps:
+            - name: Set condition variables
+              run: |
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_main_branch_push)" >> $GITHUB_ENV
+                  echo "AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_main_branch_merge_from_release_push)" >> $GITHUB_ENV
+                  echo "AZLE_IS_RELEASE_BRANCH_PR=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_release_branch_pr)" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_PR=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_feature_branch_pr)" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_feature_branch_draft_pr)" >> $GITHUB_ENV
+
+            - name: Report full path of test
+              run: echo ${{matrix.tests.path}}
+
+            - uses: actions/checkout@v4
+
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+
+            - id: get-dfx-version
+              uses: ./.github/actions/get_dfx_version
+
+            - name: Run pre-test Azle setup
+              run: |
+                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
+                  if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+                      sudo networksetup -setdnsservers Ethernet 9.9.9.9
+                  fi
+
+                  npm install
+
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link
+                  fi
+
+                  npm run lint
+              shell: bash -l {0}
+
+            - name: Run pre-test setup for ${{ matrix.tests.name }}
+              run: |
+                  npm install
+
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link azle
+                  fi
+
+                  npx azle install-dfx-extension
+              working-directory: ${{ matrix.tests.path }}
+              shell: bash -l {0}
+
+            - name: Start dfx with artificial delay 0
+              working-directory: ${{ matrix.tests.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+
+            - name: Run test
+              run: |
+                  RUNS=1
+
+                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH" == "true" ]]; then
+                      RUNS=100
+                  fi
+
+                  if [[ "$AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH" == "true" ]]; then
+                      RUNS=100
+                  fi
+
+                  if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
+                      RUNS=10
+                  fi
+
+                  if [[ "$AZLE_IS_FEATURE_BRANCH_PR" == "true" ]]; then
+                      RUNS=5
+                  fi
+
+                  if [[ "$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
+                      RUNS=1
+                  fi
+
+                  AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
+              shell: bash -l {0}
+              working-directory: ${{ matrix.tests.path }}
