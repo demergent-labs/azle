@@ -45,20 +45,14 @@ jobs:
             - id: determine-should-run-tests
               uses: ./.github/actions/should_release
 
-    get-test-infos:
-        name: Get test infos
+    set-exclude-dirs:
+        name: Set exclude directories
         needs:
-            - determine-should-run-tests
             - set-run-conditions
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         runs-on: ubuntu-latest
         outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+            exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
         steps:
-            - uses: actions/checkout@v4
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
             - name: Set exclude dirs
               id: set-exclude-dirs
               run: |
@@ -122,25 +116,72 @@ jobs:
                   EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
                   echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
 
+    get-example-test-infos:
+        name: Get example test infos
+        needs:
+            - determine-should-run-tests
+            - set-exclude-dirs
+        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   node-version: ${{ steps.get-node-version.outputs.node-version }}
-                  directories: |
-                      ./examples
-                      ./tests
-                  exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
+                  directories: ./examples
+                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
-    run-test:
+    get-test-test-infos:
+        name: Get test test infos
         needs:
             - determine-should-run-tests
-            - get-test-infos
+            - set-exclude-dirs
+        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+            - name: Get test infos
+              id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+                  directories: ./tests
+                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
+
+    run-example-tests:
+        needs:
+            - determine-should-run-tests
+            - get-example-test-infos
             - set-run-conditions
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         uses: ./.github/workflows/run-test.yml
         with:
-            test_infos: ${{ needs.get-test-infos.outputs.test-infos }}
+            test_infos: ${{ needs.get-example-test-infos.outputs.test-infos }}
+            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
+            os: '["ubuntu-latest"]'
+            conditions: ${{ needs.set-run-conditions.outputs.conditions }}
+        secrets:
+            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
+
+    run-test-tests:
+        needs:
+            - determine-should-run-tests
+            - get-test-test-infos
+            - set-run-conditions
+        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
+        uses: ./.github/workflows/run-test.yml
+        with:
+            test_infos: ${{ needs.get-test-test-infos.outputs.test-infos }}
             include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
             os: '["ubuntu-latest"]'
             conditions: ${{ needs.set-run-conditions.outputs.conditions }}
@@ -150,7 +191,7 @@ jobs:
     # These final jobs are designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
     check-test-success:
         name: Check Azle tests succeeded
-        needs: run-test
+        needs: [run-example-tests, run-test-tests]
         runs-on: ubuntu-latest
         if: success()
         steps:
@@ -158,7 +199,7 @@ jobs:
 
     check-test-failure:
         name: Check Azle tests didn't fail
-        needs: run-test
+        needs: [run-example-tests, run-test-tests]
         runs-on: ubuntu-latest
         if: failure()
         steps:
