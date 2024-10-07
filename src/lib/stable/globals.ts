@@ -45,9 +45,13 @@ declare global {
     var _azleTimerCallbacks: { [key: string]: () => void };
 }
 
+// The as any is needed because of a TypeError that I suspect
+// would require us importing AzleIcExperimental to set in the declare global above
+// but we do not want to mix experimental code into stable code, so we
+// are using as any for now
 globalThis._azleInsideCanister =
     globalThis._azleIcStable === undefined &&
-    globalThis._azleIcExperimental === undefined
+    (globalThis as any)._azleIcExperimental === undefined
         ? false
         : true;
 
