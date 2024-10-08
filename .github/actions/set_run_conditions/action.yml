@@ -9,18 +9,25 @@ runs:
     steps:
         - id: set-conditions
           run: |
-              CONDITIONS=$(jq -n \
-              --arg is_main_branch_push "${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}" \
-              --arg is_main_branch_merge_from_release_push "${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}" \
-              --arg is_release_branch_pr "${{ startsWith(github.head_ref, 'release--') }}" \
-              --arg is_feature_branch_pr "${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}" \
-              --arg is_feature_branch_draft_pr "${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}" \
-              '{
-                is_main_branch_push: $is_main_branch_push,
-                is_main_branch_merge_from_release_push: $is_main_branch_merge_from_release_push,
-                is_release_branch_pr: $is_release_branch_pr,
-                is_feature_branch_pr: $is_feature_branch_pr,
-                is_feature_branch_draft_pr: $is_feature_branch_draft_pr
-              }')
+              # Define conditions using shell variables
+              IS_MAIN_PUSH=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+              IS_MAIN_MERGE_RELEASE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+              IS_RELEASE_PR=${{ startsWith(github.head_ref, 'release--') }}
+              IS_FEATURE_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+              IS_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+
+              # Create JSON object
+              CONDITIONS=$(cat <<EOF
+              {
+                "is_main_branch_push": $IS_MAIN_PUSH,
+                "is_main_branch_merge_from_release_push": $IS_MAIN_MERGE_RELEASE,
+                "is_release_branch_pr": $IS_RELEASE_PR,
+                "is_feature_branch_pr": $IS_FEATURE_PR,
+                "is_feature_branch_draft_pr": $IS_DRAFT_PR
+              }
+              EOF
+              )
+
+              # Set output
               echo "conditions=$(echo $CONDITIONS | base64 -w 0)" >> $GITHUB_OUTPUT
           shell: bash
