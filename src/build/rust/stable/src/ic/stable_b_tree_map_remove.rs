@@ -1,12 +1,13 @@
-use rquickjs::{Ctx, Function};
+use rquickjs::{Ctx, Function, IntoJs, TypedArray};
 
 use crate::stable_b_tree_map::{AzleStableBTreeMapKey, STABLE_B_TREE_MAPS};
 
-pub fn get_function(context: Ctx) -> Function {
+pub fn get_function(ctx: Ctx) -> Function {
     Function::new(
-        context,
-        |context: Ctx, memory_id_string: String, key: Vec<u8>| {
-            let memory_id: u8 = memory_id_string.parse().unwrap();
+        ctx.clone(),
+        move |memory_id: u8, key_typed_array: TypedArray<u8>| {
+            let key_slice: &[u8] = key_typed_array.as_ref();
+            let key: Vec<u8> = key_slice.to_vec();
 
             let value_option = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
                 let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
@@ -18,8 +19,11 @@ pub fn get_function(context: Ctx) -> Function {
             });
 
             match value_option {
-                Some(value) => context.new_array_buffer(&value.bytes).unwrap(),
-                None => rquickjs::Value::Undefined,
+                Some(value) => TypedArray::<u8>::new(ctx.clone(), value.bytes.as_slice())
+                    .unwrap()
+                    .into_js(&ctx)
+                    .unwrap(),
+                None => rquickjs::Undefined.into_js(&ctx).unwrap(),
             }
         },
     )

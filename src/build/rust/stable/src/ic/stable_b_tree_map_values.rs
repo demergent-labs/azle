@@ -1,41 +1,38 @@
 use std::convert::TryInto;
 
-use rquickjs::{Ctx, Function};
+use rquickjs::{Array, Ctx, Function, TypedArray};
 
 use crate::stable_b_tree_map::STABLE_B_TREE_MAPS;
 
-pub fn get_function(context: Ctx) -> Function {
+pub fn get_function(ctx: Ctx) -> Function {
     Function::new(
-        context,
-        |context: Ctx, memory_id: String, start_index: String, length: String| {
-            let memory_id: u8 = memory_id.parse().unwrap();
-            let start_index: usize = start_index.parse().unwrap();
-
+        ctx.clone(),
+        move |memory_id: u8, start_index: u64, length: i64| {
             let values: Vec<Vec<u8>> = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
                 let stable_b_tree_maps = stable_b_tree_maps.borrow();
                 let stable_b_tree_map = &stable_b_tree_maps[&memory_id];
 
                 stable_b_tree_map
                     .iter()
-                    .skip(start_index)
-                    .take(if length == "NOT_SET" {
+                    .skip(start_index.try_into().unwrap())
+                    .take(if length == -1 {
                         stable_b_tree_map.len().try_into().unwrap()
                     } else {
-                        length.parse().unwrap()
+                        length.try_into().unwrap()
                     })
                     .map(|(_, value)| value.bytes)
                     .collect()
             });
 
-            let js_array = context.new_array().unwrap();
+            let js_array = Array::new(ctx.clone()).unwrap();
 
             for (index, item) in values.iter().enumerate() {
                 js_array
-                    .set(index, context.new_array_buffer(item).unwrap())
+                    .set(index, TypedArray::<u8>::new(ctx.clone(), item.as_slice()))
                     .unwrap();
             }
 
-            Ok(js_array)
+            js_array
         },
     )
     .unwrap()

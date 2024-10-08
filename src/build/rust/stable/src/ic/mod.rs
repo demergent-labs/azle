@@ -27,16 +27,16 @@ mod reply_raw;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
-// mod stable_b_tree_map_contains_key;
-// mod stable_b_tree_map_get;
-// mod stable_b_tree_map_init;
-// mod stable_b_tree_map_insert;
-// mod stable_b_tree_map_is_empty;
-// mod stable_b_tree_map_items;
-// mod stable_b_tree_map_keys;
-// mod stable_b_tree_map_len;
-// mod stable_b_tree_map_remove;
-// mod stable_b_tree_map_values;
+mod stable_b_tree_map_contains_key;
+mod stable_b_tree_map_get;
+mod stable_b_tree_map_init;
+mod stable_b_tree_map_insert;
+mod stable_b_tree_map_is_empty;
+mod stable_b_tree_map_items;
+mod stable_b_tree_map_keys;
+mod stable_b_tree_map_len;
+mod stable_b_tree_map_remove;
+mod stable_b_tree_map_values;
 mod time;
 mod trap;
 
@@ -169,65 +169,65 @@ pub fn register(context: rquickjs::Ctx) {
     )
     .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapContainsKey",
-    //     stable_b_tree_map_contains_key::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapContainsKey",
+        stable_b_tree_map_contains_key::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapGet",
-    //     stable_b_tree_map_get::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapGet",
+        stable_b_tree_map_get::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapInit",
-    //     stable_b_tree_map_init::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapInit",
+        stable_b_tree_map_init::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapInsert",
-    //     stable_b_tree_map_insert::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapInsert",
+        stable_b_tree_map_insert::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapIsEmpty",
-    //     stable_b_tree_map_is_empty::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapIsEmpty",
+        stable_b_tree_map_is_empty::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapItems",
-    //     stable_b_tree_map_items::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapItems",
+        stable_b_tree_map_items::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapKeys",
-    //     stable_b_tree_map_keys::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapKeys",
+        stable_b_tree_map_keys::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapLen",
-    //     stable_b_tree_map_len::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapLen",
+        stable_b_tree_map_len::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapRemove",
-    //     stable_b_tree_map_remove::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapRemove",
+        stable_b_tree_map_remove::get_function(context.clone()),
+    )
+    .unwrap();
 
-    // ic.set(
-    //     "stableBTreeMapValues",
-    //     stable_b_tree_map_values::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapValues",
+        stable_b_tree_map_values::get_function(context.clone()),
+    )
+    .unwrap();
 
     ic.set("time", time::get_function(context.clone())).unwrap();
 

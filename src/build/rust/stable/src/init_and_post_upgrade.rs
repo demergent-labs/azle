@@ -80,6 +80,11 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
     });
 
     quickjs_with_ctx(|ctx| {
+        ctx.clone()
+            .globals()
+            .set("_azleNodeWasmEnvironment", false)
+            .unwrap();
+
         ic::register(ctx.clone());
 
         let env = rquickjs::Object::new(ctx.clone()).unwrap();
@@ -88,21 +93,11 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
             env.set(key, value).unwrap();
         }
 
-        ctx.clone()
-            .globals()
-            .set("_azleNodeWasmEnvironment", false)
-            .unwrap();
-
         let process = rquickjs::Object::new(ctx.clone()).unwrap();
 
         process.set("env", env).unwrap();
 
         ctx.clone().globals().set("process", process).unwrap();
-
-        ctx.clone()
-            .globals()
-            .set("_azleNodeWasmEnvironment", false)
-            .unwrap();
 
         ctx.clone()
             .globals()
@@ -121,6 +116,7 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         run_event_loop(ctx.clone());
     });
 
+    // TODO is it possible to just put this all in the same quickjs_with_ctx?
     if function_index != -1 {
         execute_method_js(function_index, pass_arg_data);
     }
