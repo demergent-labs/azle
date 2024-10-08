@@ -93,7 +93,13 @@ export default class {
     // None.
     @query([], IDL.Opt(IDL.Vec(IDL.Nat8)))
     dataCertificate(): [Uint8Array] | [] {
-        return dataCertificate();
+        const result = dataCertificate();
+
+        if (result === undefined) {
+            return [];
+        }
+
+        return [result];
     }
 
     // When called from a query call, returns the data certificate
@@ -101,7 +107,13 @@ export default class {
     // None.
     @update([], IDL.Opt(IDL.Vec(IDL.Nat8)))
     dataCertificateNull(): [Uint8Array] | [] {
-        return dataCertificate();
+        const result = dataCertificate();
+
+        if (result === undefined) {
+            return [];
+        }
+
+        return [result];
     }
 
     // returns this canister's id
