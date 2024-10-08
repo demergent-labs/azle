@@ -17,7 +17,7 @@ env:
     AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
 jobs:
     determine-should-run-tests:
-        name: Determine if tests should run
+        name: Determine if tests should run and make sure concurency is up
         runs-on: ubuntu-latest
         outputs:
             # If the branch should release then it shouldn't run tests.
