@@ -104,8 +104,7 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - name: Get test infos
-              id: get-test-infos
+            - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   directories: ./examples
@@ -122,8 +121,7 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - name: Get test infos
-              id: get-test-infos
+            - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   directories: ./tests/end_to_end/candid_rpc/class_syntax
@@ -140,8 +138,7 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - name: Get test infos
-              id: get-test-infos
+            - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   directories: ./tests/end_to_end/candid_rpc/functional_syntax
@@ -158,8 +155,7 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - name: Get test infos
-              id: get-test-infos
+            - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   directories: ./tests/end_to_end/http_server
@@ -176,8 +172,7 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - name: Get test infos
-              id: get-test-infos
+            - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   directories: ./tests/property/candid_rpc/class_api
@@ -194,8 +189,7 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - name: Get test infos
-              id: get-test-infos
+            - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   directories: ./tests/property/candid_rpc/functional_api
@@ -212,8 +206,7 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - name: Get test infos
-              id: get-test-infos
+            - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
                   directories: ./tests/property/ic_api
