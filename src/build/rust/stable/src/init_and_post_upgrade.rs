@@ -121,25 +121,19 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         run_event_loop(ctx.clone());
     });
 
-    // TODO implement this
     if function_index != -1 {
         execute_method_js(function_index, pass_arg_data);
     }
 
     // _azleInitCalled and _azlePostUpgradeCalled refer to Azle's own init/post_upgrade methods being called
     // these variables do not indicate if the developer's own init/post_upgrade methods were called
-    // CONTEXT.with(|context| {
-    //     let context = context.borrow();
-    //     let context = context.as_ref().unwrap();
+    quickjs_with_ctx(|ctx| {
+        let assignment = if init {
+            "globalThis._azleInitCalled = true;"
+        } else {
+            "globalThis._azlePostUpgradeCalled = true;"
+        };
 
-    //     context.with(|ctx| {
-    //         let assignment = if init {
-    //             "globalThis._azleInitCalled = true;"
-    //         } else {
-    //             "globalThis._azlePostUpgradeCalled = true;"
-    //         };
-
-    //         ctx.eval::<(), _>(assignment).unwrap();
-    //     });
-    // });
+        ctx.eval::<(), _>(assignment).unwrap();
+    });
 }

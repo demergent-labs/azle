@@ -17,7 +17,7 @@ mod method_name;
 mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
-// mod notify_raw;
+mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
@@ -127,7 +127,8 @@ pub fn register(context: rquickjs::Ctx) {
     )
     .unwrap();
 
-    // ic.set("notifyRaw", notify_raw::get_function(context.clone())).unwrap();
+    ic.set("notifyRaw", notify_raw::get_function(context.clone()))
+        .unwrap();
 
     ic.set(
         "performanceCounter",
