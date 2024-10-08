@@ -7,7 +7,7 @@ export function clearTimer(timerId: bigint): void {
         return undefined;
     }
 
-    globalThis._azleIcStable.clearTimer(timerId);
+    globalThis._azleIcStable.clearTimer(timerId.toString());
 
     const timerCallbackId = globalThis._azleIcTimers[timerId.toString()];
 

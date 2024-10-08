@@ -19,7 +19,10 @@ export function setTimer(
 
     const timerCallbackId = `_timer_${v4()}`;
 
-    const timerId = globalThis._azleIcStable.setTimer(delay, timerCallbackId);
+    const timerId = globalThis._azleIcStable.setTimer(
+        delay.toString(),
+        timerCallbackId
+    );
 
     globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
 

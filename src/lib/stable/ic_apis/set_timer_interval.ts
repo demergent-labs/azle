@@ -20,7 +20,7 @@ export function setTimerInterval(
     const timerCallbackId = `_interval_timer_${v4()}`;
 
     const timerId = globalThis._azleIcStable.setTimerInterval(
-        interval,
+        interval.toString(),
         timerCallbackId
     );
 

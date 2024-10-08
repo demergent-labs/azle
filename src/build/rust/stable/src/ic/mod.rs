@@ -25,8 +25,8 @@ mod reject_code;
 mod reject_message;
 mod reply_raw;
 mod set_certified_data;
-// mod set_timer;
-// mod set_timer_interval;
+mod set_timer;
+mod set_timer_interval;
 // mod stable_b_tree_map_contains_key;
 // mod stable_b_tree_map_get;
 // mod stable_b_tree_map_init;
@@ -160,14 +160,14 @@ pub fn register(context: rquickjs::Ctx) {
     )
     .unwrap();
 
-    // ic.set("setTimer", set_timer::get_function(context.clone()))
-    //     .unwrap();
+    ic.set("setTimer", set_timer::get_function(context.clone()))
+        .unwrap();
 
-    // ic.set(
-    //     "setTimerInterval",
-    //     set_timer_interval::get_function(context.clone()),
-    // )
-    // .unwrap();
+    ic.set(
+        "setTimerInterval",
+        set_timer_interval::get_function(context.clone()),
+    )
+    .unwrap();
 
     // ic.set(
     //     "stableBTreeMapContainsKey",

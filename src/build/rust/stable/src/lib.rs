@@ -23,6 +23,8 @@ mod wasm_binary_manipulation;
 
 pub use quickjs_with_ctx::quickjs_with_ctx;
 
+const MODULE_NAME: &str = "main";
+
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 
