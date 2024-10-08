@@ -15,9 +15,11 @@ jobs:
         name: Determine if tests should run
         runs-on: ubuntu-latest
         outputs:
+            # If the branch should release then it shouldn't run tests.
             should-run-tests: ${{ steps.determine-should-run-tests.outputs.should-release == 'false' }}
         steps:
             - uses: actions/checkout@v4
+
             - id: determine-should-run-tests
               uses: ./.github/actions/should_release
 
@@ -95,6 +97,7 @@ jobs:
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS $SLOW_TESTS"
                   fi
 
+                  # Trim leading or trailing spaces and save the exclude-dirs in the environment
                   EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
                   echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
 
@@ -140,7 +143,7 @@ jobs:
 
     check-test-success:
         name: Check Azle tests succeeded
-        needs: [run-tests]
+        needs: run-tests
         runs-on: ubuntu-latest
         if: success()
         steps:
@@ -148,7 +151,7 @@ jobs:
 
     check-test-failure:
         name: Check Azle tests didn't fail
-        needs: [run-tests]
+        needs: run-tests
         runs-on: ubuntu-latest
         if: failure()
         steps:

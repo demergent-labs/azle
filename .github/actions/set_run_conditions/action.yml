@@ -1,4 +1,4 @@
-name: 'Set Run Conditions'
+name: 'Set run conditions'
 description: 'Sets the run conditions based on the current GitHub context'
 outputs:
     conditions:

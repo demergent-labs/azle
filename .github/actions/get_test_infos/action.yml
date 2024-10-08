@@ -1,5 +1,13 @@
 name: 'Get Test Infos'
-description: 'Gets a list of test info objects for each npm project with an npm test script'
+description:
+    'Gets a list of test info objects for each npm project with an npm test script
+    The shape of the object is
+    {
+    path: string, // The path to the test
+    name: string, // The name of the test
+    type: string, // The type of test (e.g. ex (example), prop (property test), e2e, (end to end test) etc)
+    displayPath: string // An abbreviated version of the path for display purposes only
+    }'
 inputs:
     directories:
         description: 'List of directories to search for npm projects with an npm test script'
