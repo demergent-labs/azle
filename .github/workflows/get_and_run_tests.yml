@@ -1,0 +1,44 @@
+name: Get and Run Tests
+
+on:
+    workflow_call:
+        inputs:
+            directories:
+                required: true
+                type: string
+            exclude-dirs:
+                required: false
+                type: string
+                default: ''
+            include_npm:
+                required: true
+                type: boolean
+            os:
+                required: true
+                type: string
+        secrets:
+            ETHEREUM_URL:
+                required: true
+
+jobs:
+    get-test-infos:
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: ${{ inputs.directories }}
+                  exclude-dirs: ${{ inputs.exclude-dirs }}
+
+    run-tests:
+        needs: get-test-infos
+        uses: ./.github/workflows/run-test.yml
+        with:
+            test_infos: ${{ needs.get-test-infos.outputs.test-infos }}
+            include_npm: ${{ inputs.include_npm }}
+            os: ${{ inputs.os }}
+        secrets:
+            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}

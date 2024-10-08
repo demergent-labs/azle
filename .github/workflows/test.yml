@@ -124,16 +124,14 @@ jobs:
                           directories: './tests/property/candid_rpc/functional_api'
                       }
                     - { name: 'IC API', directories: './tests/property/ic_api' }
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: ./.github/actions/get_and_run_tests
-              with:
-                  directories: ${{ matrix.test_group.directories }}
-                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-                  include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-                  os: '["ubuntu-latest"]'
-                  ethereum_url: ${{ secrets.ETHEREUM_URL }}
+        uses: ./.github/workflows/get_and_run_tests.yml
+        with:
+            directories: ${{ matrix.test_group.directories }}
+            exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
+            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
+            os: '["ubuntu-latest"]'
+        secrets:
+            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 
     check-test-success:
         name: Check Azle tests succeeded
