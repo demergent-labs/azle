@@ -137,10 +137,6 @@ jobs:
         with:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-            os: '["ubuntu-latest"]'
-        secrets:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 
     check-test-success:
         name: Check Azle tests succeeded
