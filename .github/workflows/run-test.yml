@@ -46,6 +46,19 @@ jobs:
                   echo "AZLE_IS_FEATURE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_pr)" >> $GITHUB_ENV
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_draft_pr)" >> $GITHUB_ENV
 
+            - id: check-conditions
+              run: |
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH: ${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}"
+                  echo "AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: ${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}"
+                  echo "AZLE_IS_RELEASE_BRANCH_PR: ${{ env.AZLE_IS_RELEASE_BRANCH_PR }}"
+                  echo "AZLE_IS_FEATURE_BRANCH_PR: ${{ env.AZLE_IS_FEATURE_BRANCH_PR }}"
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}"
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH: $AZLE_IS_MAIN_BRANCH_PUSH"
+                  echo "AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: $AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH"
+                  echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
+                  echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.tests.path}}
