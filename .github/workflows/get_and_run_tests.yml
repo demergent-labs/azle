@@ -22,7 +22,7 @@ on:
 
 jobs:
     get-test-infos:
-        name: 'Get Test Infos'
+        name: 'Get test infos'
         runs-on: ubuntu-latest
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}

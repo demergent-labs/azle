@@ -35,6 +35,11 @@ jobs:
             - id: set-exclude-dirs
               run: |
                   CONDITIONS=$(echo "${{ steps.set-conditions.outputs.conditions }}" | base64 -d)
+                  IS_MAIN_BRANCH_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_push)
+                  IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_merge_from_release_push)
+                  IS_RELEASE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_release_branch_pr)
+                  IS_FEATURE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_pr)
+                  IS_FEATURE_BRANCH_DRAFT_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_draft_pr)
 
                   RELEASE_TESTS="${{ format('
                   tests/end_to_end/candid_rpc/class_syntax/new
@@ -70,23 +75,23 @@ jobs:
 
                   EXCLUDE_DIRS=""
 
-                  if [[ "$(echo $CONDITIONS | jq -r .is_main_branch_push)" == "true" ]]; then
+                  if [[ "$IS_MAIN_BRANCH_PUSH" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "$(echo $CONDITIONS | jq -r .is_main_branch_merge_from_release_push)" == "true" ]]; then
+                  if [[ "$IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "$(echo $CONDITIONS | jq -r .is_release_branch_pr)" == "true" ]]; then
+                  if [[ "$IS_RELEASE_BRANCH_PR" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "$(echo $CONDITIONS | jq -r .is_feature_branch_pr)" == "true" ]]; then
+                  if [[ "$IS_FEATURE_BRANCH_PR" == "true" ]]; then
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS"
                   fi
 
-                  if [[ "$(echo $CONDITIONS | jq -r .is_feature_branch_draft_pr)" == "true" ]]; then
+                  if [[ "$IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS $SLOW_TESTS"
                   fi
 

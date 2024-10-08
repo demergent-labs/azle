@@ -43,7 +43,7 @@ jobs:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/set_run_conditions
               id: set-conditions
-            - name: Set condition variables
+            - name: Set condition environment variables
               run: |
                   CONDITIONS=$(echo "${{ steps.set-conditions.outputs.conditions }}" | base64 -d)
                   echo "AZLE_IS_MAIN_BRANCH_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_push)" >> $GITHUB_ENV
@@ -124,6 +124,8 @@ jobs:
                   if [[ "$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
                       RUNS=1
                   fi
+
+                  echo "Running tests $RUNS times"
 
                   AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
               shell: bash -l {0}
