@@ -1,4 +1,4 @@
-name: 'Get Test Infos'
+name: 'Get test infos'
 description:
     'Gets a list of test info objects for each npm project with an npm test script
     The shape of the object is
