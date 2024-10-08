@@ -9,15 +9,15 @@ on:
 
 jobs:
     run-test:
-        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}} | ${{matrix.os}}'
+        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
         strategy:
-            fail-fast: false
-            matrix:
+            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
+            matrix: # spins up one job per combination of test and code source (repo or npm).
                 # os: [macos-latest]
                 os: [ubuntu-latest]
                 include_npm:
@@ -31,6 +31,7 @@ jobs:
                       azle_source: npm
                     - include_npm: true
                       azle_source: repo
+                # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
                 tests: ${{ fromJSON(inputs.test_infos) }}
         steps:
             - uses: actions/checkout@v4
@@ -46,6 +47,7 @@ jobs:
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_draft_pr)" >> $GITHUB_ENV
 
             - name: Report full path of test
+              # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.tests.path}}
 
             - uses: actions/checkout@v4
@@ -62,9 +64,12 @@ jobs:
 
             - name: Run pre-test Azle setup
               run: |
+
+                  # Install dfx (Note: DFX must be installed before `npm install` because the azle installation process requires dfx)
                   src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
+                  # MacOS-specific DNS configuration
                   if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
                       sudo networksetup -setdnsservers Ethernet 9.9.9.9
                   fi
@@ -91,8 +96,14 @@ jobs:
               shell: bash -l {0}
 
             - name: Start dfx with artificial delay 0
+              if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' || env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+
+            - name: Start dfx
+              if: ${{ env.AZLE_IS_RELEASE_BRANCH_PR == 'true' || env.AZLE_IS_MAIN_BRANCH_PUSH == 'true' || env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH == 'true' }}
+              working-directory: ${{ matrix.tests.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000
 
             - name: Run test
               run: |
