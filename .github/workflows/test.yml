@@ -93,228 +93,51 @@ jobs:
                   EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
                   echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
 
-    get-example-test-infos:
-        name: Get example test infos
+    run-tests:
         needs:
             - determine-should-run-tests
             - set-exclude-dirs
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
+        strategy:
+            fail-fast: false
+            matrix:
+                test_group:
+                    - { name: 'Examples', directories: './examples' }
+                    - {
+                          name: 'Class Syntax',
+                          directories: './tests/end_to_end/candid_rpc/class_syntax'
+                      }
+                    - {
+                          name: 'Functional Syntax',
+                          directories: './tests/end_to_end/candid_rpc/functional_syntax'
+                      }
+                    - {
+                          name: 'HTTP Server',
+                          directories: './tests/end_to_end/http_server'
+                      }
+                    - {
+                          name: 'Class API',
+                          directories: './tests/property/candid_rpc/class_api'
+                      }
+                    - {
+                          name: 'Functional API',
+                          directories: './tests/property/candid_rpc/functional_api'
+                      }
+                    - { name: 'IC API', directories: './tests/property/ic_api' }
         runs-on: ubuntu-latest
-        outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - id: get-test-infos
-              uses: ./.github/actions/get_test_infos
+            - uses: ./.github/actions/get_and_run_tests
               with:
-                  directories: ./examples
+                  directories: ${{ matrix.test_group.directories }}
                   exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-
-    get-test-infos-class-syntax:
-        name: Get test infos for class syntax
-        needs:
-            - determine-should-run-tests
-            - set-exclude-dirs
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        runs-on: ubuntu-latest
-        outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
-        steps:
-            - uses: actions/checkout@v4
-            - id: get-test-infos
-              uses: ./.github/actions/get_test_infos
-              with:
-                  directories: ./tests/end_to_end/candid_rpc/class_syntax
-                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-
-    get-test-infos-functional-syntax:
-        name: Get test infos for functional syntax
-        needs:
-            - determine-should-run-tests
-            - set-exclude-dirs
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        runs-on: ubuntu-latest
-        outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
-        steps:
-            - uses: actions/checkout@v4
-            - id: get-test-infos
-              uses: ./.github/actions/get_test_infos
-              with:
-                  directories: ./tests/end_to_end/candid_rpc/functional_syntax
-                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-
-    get-test-infos-http-server:
-        name: Get test infos for http server
-        needs:
-            - determine-should-run-tests
-            - set-exclude-dirs
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        runs-on: ubuntu-latest
-        outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
-        steps:
-            - uses: actions/checkout@v4
-            - id: get-test-infos
-              uses: ./.github/actions/get_test_infos
-              with:
-                  directories: ./tests/end_to_end/http_server
-                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-
-    get-test-infos-class-api:
-        name: Get test infos for class API
-        needs:
-            - determine-should-run-tests
-            - set-exclude-dirs
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        runs-on: ubuntu-latest
-        outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
-        steps:
-            - uses: actions/checkout@v4
-            - id: get-test-infos
-              uses: ./.github/actions/get_test_infos
-              with:
-                  directories: ./tests/property/candid_rpc/class_api
-                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-
-    get-test-infos-functional-api:
-        name: Get test infos for functional API
-        needs:
-            - determine-should-run-tests
-            - set-exclude-dirs
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        runs-on: ubuntu-latest
-        outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
-        steps:
-            - uses: actions/checkout@v4
-            - id: get-test-infos
-              uses: ./.github/actions/get_test_infos
-              with:
-                  directories: ./tests/property/candid_rpc/functional_api
-                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-
-    get-test-infos-ic-api:
-        name: Get test infos for IC API
-        needs:
-            - determine-should-run-tests
-            - set-exclude-dirs
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        runs-on: ubuntu-latest
-        outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
-        steps:
-            - uses: actions/checkout@v4
-            - id: get-test-infos
-              uses: ./.github/actions/get_test_infos
-              with:
-                  directories: ./tests/property/ic_api
-                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-
-    run-example-tests:
-        needs:
-            - determine-should-run-tests
-            - get-example-test-infos
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        uses: ./.github/workflows/run-test.yml
-        with:
-            test_infos: ${{ needs.get-example-test-infos.outputs.test-infos }}
-            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-            os: '["ubuntu-latest"]'
-        secrets:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-
-    run-class-syntax-tests:
-        needs:
-            - determine-should-run-tests
-            - get-test-infos-class-syntax
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        uses: ./.github/workflows/run-test.yml
-        with:
-            test_infos: ${{ needs.get-test-infos-class-syntax.outputs.test-infos }}
-            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-            os: '["ubuntu-latest"]'
-        secrets:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-
-    run-functional-syntax-tests:
-        needs:
-            - determine-should-run-tests
-            - get-test-infos-functional-syntax
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        uses: ./.github/workflows/run-test.yml
-        with:
-            test_infos: ${{ needs.get-test-infos-functional-syntax.outputs.test-infos }}
-            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-            os: '["ubuntu-latest"]'
-        secrets:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-
-    run-http-server-tests:
-        needs:
-            - determine-should-run-tests
-            - get-test-infos-http-server
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        uses: ./.github/workflows/run-test.yml
-        with:
-            test_infos: ${{ needs.get-test-infos-http-server.outputs.test-infos }}
-            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-            os: '["ubuntu-latest"]'
-        secrets:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-
-    run-class-api-tests:
-        needs:
-            - determine-should-run-tests
-            - get-test-infos-class-api
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        uses: ./.github/workflows/run-test.yml
-        with:
-            test_infos: ${{ needs.get-test-infos-class-api.outputs.test-infos }}
-            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-            os: '["ubuntu-latest"]'
-        secrets:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-
-    run-functional-api-tests:
-        needs:
-            - determine-should-run-tests
-            - get-test-infos-functional-api
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        uses: ./.github/workflows/run-test.yml
-        with:
-            test_infos: ${{ needs.get-test-infos-functional-api.outputs.test-infos }}
-            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-            os: '["ubuntu-latest"]'
-        secrets:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-
-    run-ic-api-tests:
-        needs:
-            - determine-should-run-tests
-            - get-test-infos-ic-api
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        uses: ./.github/workflows/run-test.yml
-        with:
-            test_infos: ${{ needs.get-test-infos-ic-api.outputs.test-infos }}
-            include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-            os: '["ubuntu-latest"]'
-        secrets:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
+                  include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
+                  os: '["ubuntu-latest"]'
+                  ethereum_url: ${{ secrets.ETHEREUM_URL }}
 
     check-test-success:
         name: Check Azle tests succeeded
-        needs:
-            [
-                run-example-tests,
-                run-class-syntax-tests,
-                run-functional-syntax-tests,
-                run-http-server-tests,
-                run-class-api-tests,
-                run-functional-api-tests,
-                run-ic-api-tests
-            ]
+        needs: [run-tests]
         runs-on: ubuntu-latest
         if: success()
         steps:
@@ -322,16 +145,7 @@ jobs:
 
     check-test-failure:
         name: Check Azle tests didn't fail
-        needs:
-            [
-                run-example-tests,
-                run-class-syntax-tests,
-                run-functional-syntax-tests,
-                run-http-server-tests,
-                run-class-api-tests,
-                run-functional-api-tests,
-                run-ic-api-tests
-            ]
+        needs: [run-tests]
         runs-on: ubuntu-latest
         if: failure()
         steps:

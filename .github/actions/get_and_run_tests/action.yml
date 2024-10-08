@@ -1,0 +1,35 @@
+name: 'Get and Run Tests'
+description: 'Gets test infos for a specific directory and runs the tests'
+inputs:
+    directories:
+        description: 'Directories to search for tests'
+        required: true
+    exclude-dirs:
+        description: 'Directories to exclude from the search'
+        required: false
+        default: ''
+    include_npm:
+        description: 'Whether to include npm tests'
+        required: true
+    os:
+        description: 'Operating systems to run tests on'
+        required: true
+    ethereum_url:
+        description: 'Ethereum URL for tests'
+        required: true
+runs:
+    using: 'composite'
+    steps:
+        - id: get-test-infos
+          uses: ./.github/actions/get_test_infos
+          with:
+              directories: ${{ inputs.directories }}
+              exclude-dirs: ${{ inputs.exclude-dirs }}
+
+        - name: Run tests
+          uses: ./.github/workflows/run-test.yml
+          with:
+              test_infos: ${{ steps.get-test-infos.outputs.test-infos }}
+              include_npm: ${{ inputs.include_npm }}
+              os: ${{ inputs.os }}
+              ethereum_url: ${{ inputs.ethereum_url }}
