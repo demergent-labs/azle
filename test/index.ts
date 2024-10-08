@@ -24,7 +24,7 @@ type Benchmark = {
 
 export function runTests(
     tests: Test,
-    canisterName: string | undefined = undefined,
+    canisterNames: string | string[] | undefined = undefined,
     cwd: string = process.cwd()
 ): void {
     const { shouldRunTests, shouldRunTypeChecks, shouldRunBenchmarks } =
@@ -56,55 +56,63 @@ export function runTests(
         });
     }
 
-    if (shouldRunBenchmarks && canisterName !== undefined) {
-        describe(`benchmarks`, () => {
-            it('runs benchmarks', async () => {
-                const canisterId = getCanisterId(canisterName);
-                const result = execSyncPretty(
-                    `dfx canister call ${canisterId} _azle_get_benchmarks --output json`,
-                    'pipe'
-                );
-                const currentBenchmarks: Benchmark[] = JSON.parse(
-                    result.toString()
-                );
+    if (shouldRunBenchmarks && canisterNames !== undefined) {
+        const canisterNamesArray = Array.isArray(canisterNames)
+            ? canisterNames
+            : [canisterNames];
 
-                const benchmarksJson = await getBenchmarksJson();
-                const previousBenchmarks = benchmarksJson.previous.benchmarks;
+        canisterNamesArray.forEach((canisterName) => {
+            describe(`benchmarks for ${canisterName}`, () => {
+                it('runs benchmarks', async () => {
+                    const canisterId = getCanisterId(canisterName);
+                    const result = execSyncPretty(
+                        `dfx canister call ${canisterId} _azle_get_benchmarks --output json`,
+                        'pipe'
+                    );
+                    const currentBenchmarks: Benchmark[] = JSON.parse(
+                        result.toString()
+                    );
 
-                const currentBenchmarksTable = createBenchmarksTable(
-                    currentBenchmarks,
-                    previousBenchmarks
-                );
+                    const benchmarksJson = await getBenchmarksJson();
+                    const previousBenchmarks =
+                        benchmarksJson.previous.benchmarks;
 
-                const previousBenchmarksTable = createBenchmarksTable(
-                    previousBenchmarks,
-                    []
-                );
+                    const currentBenchmarksTable = createBenchmarksTable(
+                        currentBenchmarks,
+                        previousBenchmarks
+                    );
 
-                await writeFile(
-                    `benchmarks.md`,
-                    `## Current benchmarks Azle version: ${version}\n${currentBenchmarksTable}\n\n## Baseline benchmarks Azle version: ${benchmarksJson.previous.version}\n${previousBenchmarksTable}`
-                );
+                    const previousBenchmarksTable = createBenchmarksTable(
+                        previousBenchmarks,
+                        []
+                    );
 
-                const updatedBenchmarksJson: BenchmarksJson = {
-                    current: {
-                        version,
-                        benchmarks: currentBenchmarks
-                    },
-                    previous: {
-                        version: benchmarksJson.previous.version,
-                        benchmarks:
-                            benchmarksJson.previous.benchmarks.length === 0 &&
-                            benchmarksJson.previous.version === version
-                                ? currentBenchmarks
-                                : benchmarksJson.previous.benchmarks
-                    }
-                };
+                    await writeFile(
+                        `benchmarks_${canisterName}.md`,
+                        `## Current benchmarks Azle version: ${version}\n${currentBenchmarksTable}\n\n## Baseline benchmarks Azle version: ${benchmarksJson.previous.version}\n${previousBenchmarksTable}`
+                    );
 
-                await writeFile(
-                    'benchmarks.json',
-                    `${JSON.stringify(updatedBenchmarksJson, null, 4)}\n`
-                );
+                    const updatedBenchmarksJson: BenchmarksJson = {
+                        current: {
+                            version,
+                            benchmarks: currentBenchmarks
+                        },
+                        previous: {
+                            version: benchmarksJson.previous.version,
+                            benchmarks:
+                                benchmarksJson.previous.benchmarks.length ===
+                                    0 &&
+                                benchmarksJson.previous.version === version
+                                    ? currentBenchmarks
+                                    : benchmarksJson.previous.benchmarks
+                        }
+                    };
+
+                    await writeFile(
+                        `benchmarks_${canisterName}.json`,
+                        `${JSON.stringify(updatedBenchmarksJson, null, 4)}\n`
+                    );
+                });
             });
         });
     }
