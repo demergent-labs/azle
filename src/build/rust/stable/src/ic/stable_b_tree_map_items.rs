@@ -1,6 +1,6 @@
 use std::convert::TryInto;
 
-use rquickjs::{Array, Ctx, Function, TypedArray};
+use rquickjs::{Array, Ctx, FromIteratorJs, Function};
 
 use crate::stable_b_tree_map::STABLE_B_TREE_MAPS;
 
@@ -24,22 +24,7 @@ pub fn get_function(ctx: Ctx) -> Function {
                     .collect()
             });
 
-            let js_array = Array::new(ctx.clone()).unwrap();
-
-            for (index, item) in items.iter().enumerate() {
-                let tuple = Array::new(ctx.clone()).unwrap();
-
-                tuple
-                    .set(0, TypedArray::<u8>::new(ctx.clone(), item[0].as_slice()))
-                    .unwrap();
-                tuple
-                    .set(1, TypedArray::<u8>::new(ctx.clone(), item[1].as_slice()))
-                    .unwrap();
-
-                js_array.set(index, tuple).unwrap();
-            }
-
-            js_array
+            Array::from_iter_js(&ctx, items.into_iter())
         },
     )
     .unwrap()
