@@ -11,30 +11,6 @@ on:
     pull_request: # Runs on pull requests to any branch
 
 jobs:
-    set-run-conditions:
-        name: Set run conditions
-        runs-on: ubuntu-latest
-        outputs:
-            conditions: ${{ steps.set-conditions.outputs.conditions }}
-        steps:
-            - id: set-conditions
-              run: |
-                  CONDITIONS=$(jq -n \
-                  --arg is_main_branch_push "${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}" \
-                  --arg is_main_branch_merge_from_release_push "${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}" \
-                  --arg is_release_branch_pr "${{ startsWith(github.head_ref, 'release--') }}" \
-                  --arg is_feature_branch_pr "${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}" \
-                  --arg is_feature_branch_draft_pr "${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}" \
-                  '{
-                    is_main_branch_push: $is_main_branch_push,
-                    is_main_branch_merge_from_release_push: $is_main_branch_merge_from_release_push,
-                    is_release_branch_pr: $is_release_branch_pr,
-                    is_feature_branch_pr: $is_feature_branch_pr,
-                    is_feature_branch_draft_pr: $is_feature_branch_draft_pr
-                  }')
-                  echo "conditions=$(echo $CONDITIONS | base64 -w 0)" >> $GITHUB_OUTPUT
-            - run: echo ${{ steps.set-conditions.outputs.conditions }}
-
     determine-should-run-tests:
         name: Determine if tests should run
         runs-on: ubuntu-latest
@@ -47,17 +23,18 @@ jobs:
 
     set-exclude-dirs:
         name: Set exclude directories
-        needs:
-            - set-run-conditions
         runs-on: ubuntu-latest
         outputs:
             exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
         steps:
+            - uses: actions/checkout@v4
+            - uses: ./.github/actions/set_run_conditions
+              id: set-conditions
             - name: Set exclude dirs
               id: set-exclude-dirs
               run: |
                   # Decode the base64 encoded conditions
-                  CONDITIONS=$(echo "${{ needs.set-run-conditions.outputs.conditions }}" | base64 -d)
+                  CONDITIONS=$(echo "${{ steps.set-conditions.outputs.conditions }}" | base64 -d)
 
                   RELEASE_TESTS="${{ format('
                   tests/end_to_end/candid_rpc/class_syntax/new
@@ -267,14 +244,12 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-example-test-infos
-            - set-run-conditions
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         uses: ./.github/workflows/run-test.yml
         with:
             test_infos: ${{ needs.get-example-test-infos.outputs.test-infos }}
             include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
             os: '["ubuntu-latest"]'
-            conditions: ${{ needs.set-run-conditions.outputs.conditions }}
         secrets:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 
@@ -282,14 +257,12 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-test-infos-class-syntax
-            - set-run-conditions
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         uses: ./.github/workflows/run-test.yml
         with:
             test_infos: ${{ needs.get-test-infos-class-syntax.outputs.test-infos }}
             include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
             os: '["ubuntu-latest"]'
-            conditions: ${{ needs.set-run-conditions.outputs.conditions }}
         secrets:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 
@@ -297,14 +270,12 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-test-infos-functional-syntax
-            - set-run-conditions
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         uses: ./.github/workflows/run-test.yml
         with:
             test_infos: ${{ needs.get-test-infos-functional-syntax.outputs.test-infos }}
             include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
             os: '["ubuntu-latest"]'
-            conditions: ${{ needs.set-run-conditions.outputs.conditions }}
         secrets:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 
@@ -312,14 +283,12 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-test-infos-http-server
-            - set-run-conditions
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         uses: ./.github/workflows/run-test.yml
         with:
             test_infos: ${{ needs.get-test-infos-http-server.outputs.test-infos }}
             include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
             os: '["ubuntu-latest"]'
-            conditions: ${{ needs.set-run-conditions.outputs.conditions }}
         secrets:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 
@@ -327,14 +296,12 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-test-infos-class-api
-            - set-run-conditions
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         uses: ./.github/workflows/run-test.yml
         with:
             test_infos: ${{ needs.get-test-infos-class-api.outputs.test-infos }}
             include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
             os: '["ubuntu-latest"]'
-            conditions: ${{ needs.set-run-conditions.outputs.conditions }}
         secrets:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 
@@ -342,14 +309,12 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-test-infos-functional-api
-            - set-run-conditions
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         uses: ./.github/workflows/run-test.yml
         with:
             test_infos: ${{ needs.get-test-infos-functional-api.outputs.test-infos }}
             include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
             os: '["ubuntu-latest"]'
-            conditions: ${{ needs.set-run-conditions.outputs.conditions }}
         secrets:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 
@@ -357,14 +322,12 @@ jobs:
         needs:
             - determine-should-run-tests
             - get-test-infos-ic-api
-            - set-run-conditions
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
         uses: ./.github/workflows/run-test.yml
         with:
             test_infos: ${{ needs.get-test-infos-ic-api.outputs.test-infos }}
             include_npm: ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
             os: '["ubuntu-latest"]'
-            conditions: ${{ needs.set-run-conditions.outputs.conditions }}
         secrets:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
 

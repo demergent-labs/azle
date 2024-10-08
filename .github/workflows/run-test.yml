@@ -12,9 +12,6 @@ on:
             os:
                 required: true
                 type: string
-            conditions:
-                required: true
-                type: string
         secrets:
             ETHEREUM_URL:
                 required: true
@@ -43,13 +40,17 @@ jobs:
                       azle_source: repo
                 tests: ${{ fromJSON(inputs.test_infos) }}
         steps:
+            - uses: actions/checkout@v4
+            - uses: ./.github/actions/set_run_conditions
+              id: set-conditions
             - name: Set condition variables
               run: |
-                  echo "AZLE_IS_MAIN_BRANCH_PUSH=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_main_branch_push)" >> $GITHUB_ENV
-                  echo "AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_main_branch_merge_from_release_push)" >> $GITHUB_ENV
-                  echo "AZLE_IS_RELEASE_BRANCH_PR=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_release_branch_pr)" >> $GITHUB_ENV
-                  echo "AZLE_IS_FEATURE_BRANCH_PR=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_feature_branch_pr)" >> $GITHUB_ENV
-                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=$(echo "${{ inputs.conditions }}" | base64 -d | jq -r .is_feature_branch_draft_pr)" >> $GITHUB_ENV
+                  CONDITIONS=$(echo "${{ steps.set-conditions.outputs.conditions }}" | base64 -d)
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_push)" >> $GITHUB_ENV
+                  echo "AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_merge_from_release_push)" >> $GITHUB_ENV
+                  echo "AZLE_IS_RELEASE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_release_branch_pr)" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_pr)" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_draft_pr)" >> $GITHUB_ENV
 
             - name: Report full path of test
               run: echo ${{matrix.tests.path}}
