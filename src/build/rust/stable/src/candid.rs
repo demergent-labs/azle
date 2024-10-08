@@ -1,4 +1,6 @@
-use crate::{run_event_loop, wasm_binary_manipulation::get_js_code};
+use crate::{
+    quickjs_with_ctx, run_event_loop, wasm_binary_manipulation::get_js_code, CONTEXT_REF_CELL,
+};
 
 // TODO we might not need any of these panic hooks
 
@@ -24,9 +26,12 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
     let runtime = rquickjs::Runtime::new().unwrap();
     let context = rquickjs::Context::full(&runtime).unwrap();
 
-    context.with(|context| {
-        context
-            .clone()
+    CONTEXT_REF_CELL.with(|context_ref_cell| {
+        *context_ref_cell.borrow_mut() = Some(context);
+    });
+
+    quickjs_with_ctx(|ctx| {
+        ctx.clone()
             .globals()
             .set("_azleNodeWasmEnvironment", true)
             .unwrap();
@@ -37,23 +42,17 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
         // TODO let's look into doing this well
         // TODO maybe we can just set a property on _azleIc to determine what should be done
         // TODO like mocking
-        context
-            .clone()
+        ctx.clone()
             .globals()
-            .set(
-                "_azleIcStable",
-                rquickjs::Object::new(context.clone()).unwrap(),
-            )
+            .set("_azleIcStable", rquickjs::Object::new(ctx.clone()).unwrap())
             .unwrap();
 
-        context
-            .clone()
+        ctx.clone()
             .globals()
-            .set("exports", rquickjs::Object::new(context.clone()).unwrap())
+            .set("exports", rquickjs::Object::new(ctx.clone()).unwrap())
             .unwrap();
 
-        context
-            .clone()
+        ctx.clone()
             .globals()
             .set("_azleExperimental", false)
             .unwrap();
@@ -62,14 +61,12 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
 
         // TODO is there a better name for this main module?
         // TODO this returns a promise...make sure we handle it appropriately
-        rquickjs::Module::evaluate(context.clone(), "azle_main", js).unwrap();
+        rquickjs::Module::evaluate(ctx.clone(), "azle_main", js).unwrap();
 
-        run_event_loop(context.clone());
+        run_event_loop(ctx.clone());
 
-        let get_candid_and_method_meta: rquickjs::Function = context
-            .globals()
-            .get("_azleGetCandidAndMethodMeta")
-            .unwrap();
+        let get_candid_and_method_meta: rquickjs::Function =
+            ctx.globals().get("_azleGetCandidAndMethodMeta").unwrap();
 
         let candid_and_method_meta: String = get_candid_and_method_meta.call(()).unwrap();
 

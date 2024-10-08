@@ -1,4 +1,4 @@
-use crate::{run_event_loop, CONTEXT};
+use crate::{quickjs_with_ctx, run_event_loop};
 use rquickjs::{Ctx, Exception, Function, IntoJs, TypedArray};
 
 pub fn get_function(ctx: Ctx) -> Function {
@@ -27,17 +27,6 @@ pub fn get_function(ctx: Ctx) -> Function {
         },
     )
     .unwrap()
-}
-
-fn quickjs_with_ctx<F>(f: F)
-where
-    F: FnOnce(Ctx) + 'static,
-{
-    CONTEXT.with(|context| {
-        let context = context.borrow();
-        let context = context.as_ref().unwrap();
-        context.with(f);
-    });
 }
 
 fn resolve_or_reject<'a>(

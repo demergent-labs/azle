@@ -17,14 +17,17 @@ mod execute_method_js;
 mod guards;
 mod ic;
 mod init_and_post_upgrade;
+mod quickjs_with_ctx;
 mod stable_b_tree_map;
 mod wasm_binary_manipulation;
+
+pub use quickjs_with_ctx::quickjs_with_ctx;
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 
 thread_local! {
-    static CONTEXT: RefCell<Option<rquickjs::Context>> = RefCell::new(None);
+    static CONTEXT_REF_CELL: RefCell<Option<rquickjs::Context>> = RefCell::new(None);
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }
 
@@ -38,6 +41,5 @@ pub fn run_event_loop(context: rquickjs::Ctx) {
     }
 }
 
-// TODO will this work for queries as well?
 #[ic_cdk_macros::update]
 pub fn _azle_chunk() {}

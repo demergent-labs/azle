@@ -2,9 +2,9 @@ use ic_stable_structures::memory_manager::MemoryId;
 
 use crate::{
     execute_method_js::execute_method_js,
-    ic, run_event_loop,
+    ic, quickjs_with_ctx, run_event_loop,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
-    CONTEXT, MEMORY_MANAGER_REF_CELL,
+    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL,
 };
 
 #[inline(never)]
@@ -72,10 +72,14 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
 // TODO do we need all these clonse?
 // TODO do not forget to deal with the event loop everywhere
 pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
-    let rt = rquickjs::Runtime::new().unwrap();
-    let ctx = rquickjs::Context::full(&rt).unwrap(); // TODO rename to context
+    let runtime = rquickjs::Runtime::new().unwrap();
+    let context = rquickjs::Context::full(&runtime).unwrap();
 
-    ctx.with(|ctx| {
+    CONTEXT_REF_CELL.with(|context_ref_cell| {
+        *context_ref_cell.borrow_mut() = Some(context);
+    });
+
+    quickjs_with_ctx(|ctx| {
         ic::register(ctx.clone());
 
         let env = rquickjs::Object::new(ctx.clone()).unwrap();
@@ -115,10 +119,6 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         rquickjs::Module::evaluate(ctx.clone(), "azle_main", js).unwrap();
 
         run_event_loop(ctx.clone());
-    });
-
-    CONTEXT.with(|context| {
-        *context.borrow_mut() = Some(ctx);
     });
 
     // TODO implement this
