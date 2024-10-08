@@ -22,6 +22,7 @@ on:
 
 jobs:
     get-test-infos:
+        name: 'Get Test Infos'
         runs-on: ubuntu-latest
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
@@ -34,6 +35,7 @@ jobs:
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
     run-tests:
+        name: 'Run'
         needs: get-test-infos
         uses: ./.github/workflows/run-test.yml
         with:

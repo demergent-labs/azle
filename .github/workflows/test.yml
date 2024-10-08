@@ -28,12 +28,12 @@ jobs:
             exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
         steps:
             - uses: actions/checkout@v4
-            - uses: ./.github/actions/set_run_conditions
-              id: set-conditions
-            - name: Set exclude dirs
-              id: set-exclude-dirs
+
+            - id: set-conditions
+              uses: ./.github/actions/set_run_conditions
+
+            - id: set-exclude-dirs
               run: |
-                  # Decode the base64 encoded conditions
                   CONDITIONS=$(echo "${{ steps.set-conditions.outputs.conditions }}" | base64 -d)
 
                   RELEASE_TESTS="${{ format('
@@ -94,6 +94,7 @@ jobs:
                   echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
 
     run-tests:
+        name: ${{ matrix.test_group.name }}
         needs:
             - determine-should-run-tests
             - set-exclude-dirs
@@ -104,26 +105,29 @@ jobs:
                 test_group:
                     - { name: 'Examples', directories: './examples' }
                     - {
-                          name: 'Class Syntax',
+                          name: 'E2E Class',
                           directories: './tests/end_to_end/candid_rpc/class_syntax'
                       }
                     - {
-                          name: 'Functional Syntax',
+                          name: 'E2E Functional',
                           directories: './tests/end_to_end/candid_rpc/functional_syntax'
                       }
                     - {
-                          name: 'HTTP Server',
+                          name: 'E2E HTTP Server',
                           directories: './tests/end_to_end/http_server'
                       }
                     - {
-                          name: 'Class API',
+                          name: 'Property Class',
                           directories: './tests/property/candid_rpc/class_api'
                       }
                     - {
-                          name: 'Functional API',
+                          name: 'Property Functional',
                           directories: './tests/property/candid_rpc/functional_api'
                       }
-                    - { name: 'IC API', directories: './tests/property/ic_api' }
+                    - {
+                          name: 'Property IC API',
+                          directories: './tests/property/ic_api'
+                      }
         uses: ./.github/workflows/get_and_run_tests.yml
         with:
             directories: ${{ matrix.test_group.directories }}
