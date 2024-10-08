@@ -104,13 +104,10 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: ./examples
                   exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
@@ -125,13 +122,10 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: ./tests/end_to_end/candid_rpc/class_syntax
                   exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
@@ -146,13 +140,10 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: ./tests/end_to_end/candid_rpc/functional_syntax
                   exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
@@ -167,13 +158,10 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: ./tests/end_to_end/http_server
                   exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
@@ -188,13 +176,10 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: ./tests/property/candid_rpc/class_api
                   exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
@@ -209,13 +194,10 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: ./tests/property/candid_rpc/functional_api
                   exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
@@ -230,13 +212,10 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
             - name: Get test infos
               id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   directories: ./tests/property/ic_api
                   exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
