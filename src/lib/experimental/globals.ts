@@ -1,4 +1,5 @@
 import './experimental';
+import '../stable/globals'; // We import this for to remove type errors having to do with the stable and experimental globals
 
 import { Buffer } from 'buffer';
 import * as process from 'process';
@@ -8,8 +9,6 @@ import { v4 } from 'uuid';
 
 import { azleFetch } from './fetch';
 import { AzleIcExperimental } from './ic/azle_ic_experimental';
-
-// TODO experimental will need its own AzleIc type
 
 declare global {
     // eslint-disable-next-line no-var
