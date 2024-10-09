@@ -41,8 +41,10 @@ jobs:
                 tests: ${{ fromJSON(inputs.test_infos) }}
         steps:
             - uses: actions/checkout@v4
+
             - uses: ./.github/actions/set_run_conditions
               id: set-conditions
+
             - name: Set condition environment variables
               run: |
                   CONDITIONS=$(echo "${{ steps.set-conditions.outputs.conditions }}" | base64 -d)
@@ -63,8 +65,6 @@ jobs:
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.tests.path}}
-
-            - uses: actions/checkout@v4
 
             - id: get-node-version
               uses: ./.github/actions/get_node_version
