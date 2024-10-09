@@ -1,5 +1,5 @@
 use crate::{
-    quickjs_with_ctx, run_event_loop, wasm_binary_manipulation::get_js_code, CONTEXT_REF_CELL,
+    ic, quickjs_with_ctx, run_event_loop, wasm_binary_manipulation::get_js_code, CONTEXT_REF_CELL,
     MODULE_NAME,
 };
 
@@ -37,16 +37,7 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
             .set("_azleNodeWasmEnvironment", true)
             .unwrap();
 
-        // TODO is this appropriate?
-        // TODO I don't think we actually need to hook this up
-        // TODO And it's probably better not to
-        // TODO let's look into doing this well
-        // TODO maybe we can just set a property on _azleIc to determine what should be done
-        // TODO like mocking
-        ctx.clone()
-            .globals()
-            .set("_azleIcStable", rquickjs::Object::new(ctx.clone()).unwrap())
-            .unwrap();
+        ic::register(ctx.clone());
 
         ctx.clone()
             .globals()
