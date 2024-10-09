@@ -4,9 +4,9 @@
  * @param message the rejection message
  */
 export function trap(message: string): never {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         throw new Error();
     }
 
-    return globalThis._azleIc.trap(message);
+    return globalThis._azleIcStable.trap(message);
 }

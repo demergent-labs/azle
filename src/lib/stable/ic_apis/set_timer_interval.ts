@@ -13,22 +13,22 @@ export function setTimerInterval(
     interval: bigint,
     callback: () => void | Promise<void>
 ): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return 0n;
     }
 
     const timerCallbackId = `_interval_timer_${v4()}`;
 
-    const timerId = globalThis._azleIc.setTimerInterval(
+    const timerId = globalThis._azleIcStable.setTimerInterval(
         interval.toString(),
         timerCallbackId
     );
 
-    globalThis._azleIcTimers[timerId] = timerCallbackId;
+    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
 
     // We don't delete this even if the callback throws because
     // it still needs to be here for the next tick
     globalThis._azleTimerCallbacks[timerCallbackId] = callback;
 
-    return BigInt(timerId);
+    return timerId;
 }

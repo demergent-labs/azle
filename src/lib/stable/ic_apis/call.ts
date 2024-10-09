@@ -15,7 +15,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
 ): Promise<Return> {
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
-        if (globalThis._azleIc === undefined) {
+        if (globalThis._azleIcStable === undefined) {
             return undefined;
         }
 
@@ -30,10 +30,10 @@ export async function call<Args extends any[] | undefined, Return = any>(
         // TODO for example, we can keep the time with these
         // TODO if they are over a certain amount old we can delete them
         globalThis._azleResolveIds[globalResolveId] = (
-            result: ArrayBuffer
+            result: Uint8Array
         ): void => {
             if (raw !== undefined) {
-                resolve(new Uint8Array(result) as Return);
+                resolve(result as Return);
             } else {
                 const idlType =
                     returnTypeIdl === undefined ? [] : [returnTypeIdl];
@@ -59,20 +59,20 @@ export async function call<Args extends any[] | undefined, Return = any>(
             typeof canisterId === 'string'
                 ? Principal.fromText(canisterId)
                 : canisterId;
-        const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
-        const argsRawBuffer =
+        const canisterIdBytes = canisterIdPrincipal.toUint8Array();
+        const argsRaw =
             raw === undefined
-                ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
-                : raw.buffer;
+                ? new Uint8Array(IDL.encode(paramIdlTypes, args))
+                : raw;
         const paymentString = payment.toString();
 
         // TODO consider finally, what if deletion goes wrong
         try {
-            globalThis._azleIc.callRaw(
+            globalThis._azleIcStable.callRaw(
                 promiseId,
                 canisterIdBytes,
                 method,
-                argsRawBuffer,
+                argsRaw,
                 paymentString
             );
         } catch (error) {

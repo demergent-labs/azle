@@ -19,7 +19,7 @@ export function notify(
         raw?: Uint8Array;
     }
 ): void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return undefined;
     }
 
@@ -32,17 +32,17 @@ export function notify(
         typeof canisterId === 'string'
             ? Principal.fromText(canisterId)
             : canisterId;
-    const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
-    const argsRawBuffer =
+    const canisterIdBytes = canisterIdPrincipal.toUint8Array();
+    const argsRaw =
         raw === undefined
-            ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
-            : raw.buffer;
+            ? new Uint8Array(IDL.encode(paramIdlTypes, args))
+            : raw;
     const paymentString = payment.toString();
 
-    return globalThis._azleIc.notifyRaw(
+    return globalThis._azleIcStable.notifyRaw(
         canisterIdBytes,
         method,
-        argsRawBuffer,
+        argsRaw,
         paymentString
     );
 }

@@ -7,5 +7,9 @@ import { text } from '../candid/types/primitive/text';
  * @returns the current canister method
  */
 export function methodName(): text {
-    return globalThis._azleIc ? globalThis._azleIc.methodName() : '';
+    if (globalThis._azleIcExperimental === undefined) {
+        return '';
+    }
+
+    return globalThis._azleIcExperimental.methodName();
 }

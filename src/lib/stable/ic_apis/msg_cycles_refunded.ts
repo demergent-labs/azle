@@ -4,12 +4,9 @@
  * @returns the amount of cycles
  */
 export function msgCyclesRefunded(): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcStable === undefined) {
         return 0n;
     }
 
-    const msgCyclesRefundedAmountString =
-        globalThis._azleIc.msgCyclesRefunded();
-
-    return BigInt(msgCyclesRefundedAmountString);
+    return BigInt(globalThis._azleIcStable.msgCyclesRefunded());
 }
