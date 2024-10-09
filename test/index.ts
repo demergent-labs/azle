@@ -95,7 +95,17 @@ export function runTests(
                     const updatedBenchmarksJson: BenchmarksJson = {
                         current: {
                             version,
-                            benchmarks: currentBenchmarks
+                            benchmarks: currentBenchmarks.map((benchmark) => ({
+                                ...benchmark,
+                                cycles: calculateCycles(
+                                    parseInt(benchmark[1]['1_832_883_877'])
+                                ),
+                                usd: calculateUSD(
+                                    calculateCycles(
+                                        parseInt(benchmark[1]['1_832_883_877'])
+                                    )
+                                )
+                            }))
                         },
                         previous: {
                             version: benchmarksJson.previous.version,
@@ -103,7 +113,23 @@ export function runTests(
                                 benchmarksJson.previous.benchmarks.length ===
                                     0 &&
                                 benchmarksJson.previous.version === version
-                                    ? currentBenchmarks
+                                    ? currentBenchmarks.map((benchmark) => ({
+                                          ...benchmark,
+                                          cycles: calculateCycles(
+                                              parseInt(
+                                                  benchmark[1]['1_832_883_877']
+                                              )
+                                          ),
+                                          usd: calculateUSD(
+                                              calculateCycles(
+                                                  parseInt(
+                                                      benchmark[1][
+                                                          '1_832_883_877'
+                                                      ]
+                                                  )
+                                              )
+                                          )
+                                      }))
                                     : benchmarksJson.previous.benchmarks
                         }
                     };
@@ -239,6 +265,18 @@ async function getBenchmarksJson(): Promise<BenchmarksJson> {
     return JSON.parse(await readFile(filePath, 'utf-8'));
 }
 
+function calculateCycles(instructions: number): number {
+    const baseFee = 590_000;
+    const perInstructionFee = 0.4;
+    return Math.round(baseFee + perInstructionFee * instructions);
+}
+
+function calculateUSD(cycles: number): number {
+    const cyclesPerXDR = 1_000_000_000_000; // 1 trillion cycles = 1 XDR
+    const usdPerXDR = 1.33661; // As of December 18, 2023
+    return (cycles / cyclesPerXDR) * usdPerXDR;
+}
+
 function createBenchmarksTable(
     benchmarks: Benchmark[],
     previousBenchmarks: Benchmark[]
@@ -250,8 +288,8 @@ function createBenchmarksTable(
     const hasChanges = previousBenchmarks.length > 0;
 
     const tableHeader = hasChanges
-        ? '| Execution | Method Name | Instructions | Change |\n|-----------|-------------|------------|-------|\n'
-        : '| Execution | Method Name | Instructions |\n|-----------|-------------|------------|\n';
+        ? '| Execution | Method Name | Instructions | Cycles | USD | Change |\n|-----------|-------------|------------|--------|-----|-------|\n'
+        : '| Execution | Method Name | Instructions | Cycles | USD |\n|-----------|-------------|------------|--------|-----|\n';
 
     const calculateChange = (current: string, previous: string): string => {
         const diff = parseInt(current) - parseInt(previous);
@@ -263,12 +301,13 @@ function createBenchmarksTable(
         .map((benchmark: Benchmark, index: number) => {
             const executionNumber = index;
             const methodName = benchmark[1]['2_374_371_241'];
-            const instructions = benchmark[1]['1_832_883_877'];
+            const instructions = parseInt(benchmark[1]['1_832_883_877']);
+            const cycles = calculateCycles(instructions);
+            const usd = calculateUSD(cycles);
             const previousBenchmark = previousBenchmarks[index];
 
-            const baseRow = `| ${executionNumber} | ${methodName} | ${instructions.replace(
-                /\B(?=(\d{3})+(?!\d))/g,
-                '_'
+            const baseRow = `| ${executionNumber} | ${methodName} | ${instructions.toLocaleString()} | ${cycles.toLocaleString()} | $${usd.toFixed(
+                10
             )}`;
 
             if (!hasChanges) {
@@ -277,14 +316,26 @@ function createBenchmarksTable(
 
             const change = previousBenchmark
                 ? calculateChange(
-                      instructions,
+                      instructions.toString(),
                       previousBenchmark[1]['1_832_883_877']
-                  ).replace(/\B(?=(\d{3})+(?!\d))/g, '_')
+                  )
                 : '';
 
             return `${baseRow} | ${change} |`;
         })
         .join('\n');
 
-    return tableHeader + tableRows;
+    const note = `
+\n\n---
+
+**Note on calculations:**
+- Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions)
+- Base fee: 590,000 cycles
+- Per instruction fee: 0.4 cycles
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.336610 (as of December 18, 2023)
+
+For the most up-to-date fee information, please refer to the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
+`;
+
+    return tableHeader + tableRows + note;
 }
