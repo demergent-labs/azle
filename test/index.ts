@@ -95,17 +95,7 @@ export function runTests(
                     const updatedBenchmarksJson: BenchmarksJson = {
                         current: {
                             version,
-                            benchmarks: currentBenchmarks.map((benchmark) => ({
-                                ...benchmark,
-                                cycles: calculateCycles(
-                                    parseInt(benchmark[1]['1_832_883_877'])
-                                ),
-                                usd: calculateUSD(
-                                    calculateCycles(
-                                        parseInt(benchmark[1]['1_832_883_877'])
-                                    )
-                                )
-                            }))
+                            benchmarks: currentBenchmarks
                         },
                         previous: {
                             version: benchmarksJson.previous.version,
@@ -113,23 +103,7 @@ export function runTests(
                                 benchmarksJson.previous.benchmarks.length ===
                                     0 &&
                                 benchmarksJson.previous.version === version
-                                    ? currentBenchmarks.map((benchmark) => ({
-                                          ...benchmark,
-                                          cycles: calculateCycles(
-                                              parseInt(
-                                                  benchmark[1]['1_832_883_877']
-                                              )
-                                          ),
-                                          usd: calculateUSD(
-                                              calculateCycles(
-                                                  parseInt(
-                                                      benchmark[1][
-                                                          '1_832_883_877'
-                                                      ]
-                                                  )
-                                              )
-                                          )
-                                      }))
+                                    ? currentBenchmarks
                                     : benchmarksJson.previous.benchmarks
                         }
                     };
