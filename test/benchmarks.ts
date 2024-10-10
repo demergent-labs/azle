@@ -120,49 +120,87 @@ function createBenchmarksTable(
     }
 
     const hasChanges = previousBenchmarks.length > 0;
+    const tableHeader = createTableHeader(hasChanges);
+    const tableRows = createTableRows(
+        benchmarks,
+        previousBenchmarks,
+        hasChanges
+    );
+    const note = createNote();
 
-    const tableHeader = hasChanges
-        ? '| Execution | Method Name | Instructions | Cycles | USD | Change |\n|-----------|-------------|------------|--------|-----|-------|\n'
-        : '| Execution | Method Name | Instructions | Cycles | USD |\n|-----------|-------------|------------|--------|-----|\n';
+    return `${tableHeader}${tableRows}${note}`;
+}
 
-    const tableRows = benchmarks
-        .map((benchmark: Benchmark, index: number) => {
-            const executionNumber = index;
-            const methodName = benchmark[1]['2_374_371_241'];
-            const instructions = parseInt(benchmark[1]['1_832_883_877']);
-            const cycles = calculateCycles(instructions);
-            const usd = calculateUSD(cycles);
-            const previousBenchmark = previousBenchmarks[index];
+function createTableHeader(hasChanges: boolean): string {
+    const baseHeader =
+        '| Execution | Method Name | Instructions | Cycles | USD |';
+    const changeHeader = hasChanges ? ' Change |' : '';
+    const separator =
+        '\n|-----------|-------------|------------|--------|-----|';
+    const changeSeparator = hasChanges ? '-------|' : '';
 
-            const baseRow = `| ${executionNumber} | ${methodName} | ${instructions.toLocaleString()} | ${cycles.toLocaleString()} | $${usd.toFixed(
-                10
-            )}`;
+    return `${baseHeader}${changeHeader}${separator}${changeSeparator}\n`;
+}
 
-            if (!hasChanges) {
-                return `${baseRow} |`;
-            }
-
-            const change = previousBenchmark
-                ? calculateChange(
-                      instructions.toString(),
-                      previousBenchmark[1]['1_832_883_877']
-                  )
-                : '';
-
-            return `${baseRow} | ${change} |`;
-        })
+function createTableRows(
+    benchmarks: Benchmark[],
+    previousBenchmarks: Benchmark[],
+    hasChanges: boolean
+): string {
+    return benchmarks
+        .map((benchmark, index) =>
+            createTableRow(
+                benchmark,
+                index,
+                previousBenchmarks[index],
+                hasChanges
+            )
+        )
         .join('\n');
+}
 
-    const note =
-        '\n\n---\n\n' +
-        '**Note on calculations:**\n' +
-        '- Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions)\n' +
-        '- Base fee: 590,000 cycles\n' +
-        '- Per instruction fee: 0.4 cycles\n' +
-        '- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.336610 (as of December 18, 2023)\n\n' +
-        'For the most up-to-date fee information, please refer to the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).';
+function createTableRow(
+    benchmark: Benchmark,
+    index: number,
+    previousBenchmark: Benchmark | undefined,
+    hasChanges: boolean
+): string {
+    const executionNumber = index;
+    const methodName = benchmark[1]['2_374_371_241'];
+    const instructions = parseInt(benchmark[1]['1_832_883_877']);
+    const cycles = calculateCycles(instructions);
+    const usd = calculateUSD(cycles);
 
-    return tableHeader + tableRows + note;
+    const baseRow = `| ${executionNumber} | ${methodName} | ${instructions.toLocaleString()} | ${cycles.toLocaleString()} | $${usd.toFixed(
+        10
+    )}`;
+
+    if (!hasChanges) {
+        return `${baseRow} |`;
+    }
+
+    const change = previousBenchmark
+        ? calculateChange(
+              instructions.toString(),
+              previousBenchmark[1]['1_832_883_877']
+          )
+        : '';
+
+    return `${baseRow} | ${change} |`;
+}
+
+function createNote(): string {
+    return `
+
+---
+
+**Note on calculations:**
+- Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions)
+- Base fee: 590,000 cycles
+- Per instruction fee: 0.4 cycles
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.336610 (as of December 18, 2023)
+
+For the most up-to-date fee information, please refer to the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).`;
 }
 
 function calculateCycles(instructions: number): number {
