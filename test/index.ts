@@ -172,18 +172,16 @@ function processEnvVars(): {
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
-    const runBenchmarks = process.env.AZLE_RUN_BENCHMARKS ?? 'true';
+    const runBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
 
-    const hasOnly = [runTests, runTypeChecks, runBenchmarks].includes('only');
+    const hasOnly = [runTests, runTypeChecks].includes('only');
 
     return {
         shouldRunTests: hasOnly ? runTests === 'only' : runTests !== 'false',
         shouldRunTypeChecks: hasOnly
             ? runTypeChecks === 'only'
             : runTypeChecks !== 'false',
-        shouldRunBenchmarks: hasOnly
-            ? runBenchmarks === 'only'
-            : runBenchmarks !== 'false'
+        shouldRunBenchmarks: runBenchmarks === 'true'
     };
 }
 

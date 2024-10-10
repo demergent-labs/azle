@@ -31,7 +31,10 @@ export async function getContext(
         ...stableContext.wasmData,
         consumer,
         managementDid,
-        recordBenchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
+        recordBenchmarks:
+            process.env.npm_lifecycle_event === 'pretest'
+                ? process.env.AZLE_RECORD_BENCHMARKS !== 'false'
+                : process.env.AZLE_RECORD_BENCHMARKS === 'true'
     };
 
     return {
