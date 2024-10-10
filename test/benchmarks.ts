@@ -56,14 +56,11 @@ async function writeBenchmarkMarkdown(
         current: createBenchmarksTable(currentBenchmarks, previousBenchmarks),
         previous: createBenchmarksTable(previousBenchmarks, [])
     };
-
-    const markdownContent = `
-        ## Current benchmarks Azle version: ${version}
-        ${benchmarkTables.current}
-
-        ## Baseline benchmarks Azle version: ${benchmarksJson.previous.version}
-        ${benchmarkTables.previous}
-    `;
+    const markdownContent =
+        `## Current benchmarks Azle version: ${version}\n` +
+        `${benchmarkTables.current}\n\n` +
+        `## Baseline benchmarks Azle version: ${benchmarksJson.previous.version}\n` +
+        `${benchmarkTables.previous}\n`;
 
     await writeFile(`benchmarks_${canisterName}.md`, markdownContent);
 }
@@ -174,17 +171,14 @@ function createBenchmarksTable(
         })
         .join('\n');
 
-    const note = `
-\n\n---
-
-**Note on calculations:**
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions)
-- Base fee: 590,000 cycles
-- Per instruction fee: 0.4 cycles
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.336610 (as of December 18, 2023)
-
-For the most up-to-date fee information, please refer to the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).
-`;
+    const note =
+        '\n\n---\n\n' +
+        '**Note on calculations:**\n' +
+        '- Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions)\n' +
+        '- Base fee: 590,000 cycles\n' +
+        '- Per instruction fee: 0.4 cycles\n' +
+        '- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.336610 (as of December 18, 2023)\n\n' +
+        'For the most up-to-date fee information, please refer to the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).';
 
     return tableHeader + tableRows + note;
 }
