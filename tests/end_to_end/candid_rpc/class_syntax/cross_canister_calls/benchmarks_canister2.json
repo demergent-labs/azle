@@ -2,39 +2,39 @@
     "current": {
         "version": "0.25.0",
         "benchmarks": [
-            {
-                "0": "1728597151370207041",
-                "1": {
-                    "1_832_883_877": "2156919",
-                    "2_374_371_241": "transfer"
+            [
+                { "__bigint__": "1728601443050628034" },
+                {
+                    "instructions": { "__bigint__": "2156919" },
+                    "method_name": "transfer"
                 }
-            },
-            {
-                "0": "1728597165734354218",
-                "1": {
-                    "1_832_883_877": "1384872",
-                    "2_374_371_241": "receiveNotification"
+            ],
+            [
+                { "__bigint__": "1728601457378798481" },
+                {
+                    "instructions": { "__bigint__": "1384872" },
+                    "method_name": "receiveNotification"
                 }
-            }
+            ]
         ]
     },
     "previous": {
         "version": "0.25.0",
         "benchmarks": [
-            {
-                "0": "1728597151370207041",
-                "1": {
-                    "1_832_883_877": "2156919",
-                    "2_374_371_241": "transfer"
+            [
+                { "__bigint__": "1728601443050628034" },
+                {
+                    "instructions": { "__bigint__": "2156919" },
+                    "method_name": "transfer"
                 }
-            },
-            {
-                "0": "1728597165734354218",
-                "1": {
-                    "1_832_883_877": "1384872",
-                    "2_374_371_241": "receiveNotification"
+            ],
+            [
+                { "__bigint__": "1728601457378798481" },
+                {
+                    "instructions": { "__bigint__": "1384872" },
+                    "method_name": "receiveNotification"
                 }
-            }
+            ]
         ]
     }
 }
