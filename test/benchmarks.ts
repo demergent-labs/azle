@@ -111,18 +111,6 @@ async function getBenchmarksJson(): Promise<BenchmarksJson> {
     }
 }
 
-function calculateCycles(instructions: number): number {
-    const baseFee = 590_000;
-    const perInstructionFee = 0.4;
-    return Math.round(baseFee + perInstructionFee * instructions);
-}
-
-function calculateUSD(cycles: number): number {
-    const cyclesPerXDR = 1_000_000_000_000; // 1 trillion cycles = 1 XDR
-    const usdPerXDR = 1.33661; // As of December 18, 2023
-    return (cycles / cyclesPerXDR) * usdPerXDR;
-}
-
 function createBenchmarksTable(
     benchmarks: Benchmark[],
     previousBenchmarks: Benchmark[]
@@ -136,12 +124,6 @@ function createBenchmarksTable(
     const tableHeader = hasChanges
         ? '| Execution | Method Name | Instructions | Cycles | USD | Change |\n|-----------|-------------|------------|--------|-----|-------|\n'
         : '| Execution | Method Name | Instructions | Cycles | USD |\n|-----------|-------------|------------|--------|-----|\n';
-
-    const calculateChange = (current: string, previous: string): string => {
-        const diff = parseInt(current) - parseInt(previous);
-        const color = diff < 0 ? 'green' : 'red';
-        return `<font color="${color}">${diff > 0 ? '+' : ''}${diff}</font>`;
-    };
 
     const tableRows = benchmarks
         .map((benchmark: Benchmark, index: number) => {
@@ -183,5 +165,20 @@ function createBenchmarksTable(
     return tableHeader + tableRows + note;
 }
 
-// You'll need to import or define these functions:
-// getCanisterId, existsSync
+function calculateCycles(instructions: number): number {
+    const baseFee = 590_000;
+    const perInstructionFee = 0.4;
+    return Math.round(baseFee + perInstructionFee * instructions);
+}
+
+function calculateUSD(cycles: number): number {
+    const cyclesPerXDR = 1_000_000_000_000; // 1 trillion cycles = 1 XDR
+    const usdPerXDR = 1.33661; // As of December 18, 2023
+    return (cycles / cyclesPerXDR) * usdPerXDR;
+}
+
+function calculateChange(current: string, previous: string): string {
+    const diff = parseInt(current) - parseInt(previous);
+    const color = diff < 0 ? 'green' : 'red';
+    return `<font color="${color}">${diff > 0 ? '+' : ''}${diff}</font>`;
+}
