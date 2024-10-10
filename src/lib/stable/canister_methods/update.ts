@@ -36,7 +36,8 @@ export function update<This, Args extends any[], Return>(
             );
         };
 
-        // TODO only do this if benchmark mode is enabled
-        globalThis._azleCanisterMethodNames[index.toString()] = name;
+        if (globalThis._azleRecordBenchmarks) {
+            globalThis._azleCanisterMethodNames[index.toString()] = name;
+        }
     };
 }

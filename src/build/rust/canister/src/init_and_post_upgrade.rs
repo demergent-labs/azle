@@ -116,6 +116,11 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
         context.eval_global_str(format!("globalThis._azleExperimental = {EXPERIMENTAL};"));
+        let record_benchmarks = WASM_DATA
+            .with(|wasm_data_ref| wasm_data_ref.borrow().as_ref().unwrap().record_benchmarks);
+        context.eval_global_str(format!(
+            "globalThis._azleRecordBenchmarks = {record_benchmarks};"
+        ));
         context.eval_module_str(js.to_string(), "azle_main");
 
         run_event_loop(context);
