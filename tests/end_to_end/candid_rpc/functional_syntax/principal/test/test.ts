@@ -4,10 +4,11 @@ import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/principal';
 import { getTests } from './tests';
 
-const principalCanister = createActor(getCanisterId('principal'), {
+const canisterName = 'principal';
+const principalCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(principalCanister));
+runTests(getTests(principalCanister), canisterName);

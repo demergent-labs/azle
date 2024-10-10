@@ -5,10 +5,11 @@ import { getTests } from 'minimal-counter-dapp_end_to_end_test_functional_syntax
 // @ts-ignore
 import { createActor } from '../src/declarations/minimal_dapp';
 
-const counterCanister = createActor(getCanisterId('minimal_dapp'), {
+const canisterName = 'minimal_dapp';
+const counterCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(counterCanister));
+runTests(getTests(counterCanister), canisterName);

@@ -4,13 +4,11 @@ import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/outgoing_http_requests';
 import { getTests } from './tests';
 
-const outgoingHttpRequestsCanister = createActor(
-    getCanisterId('outgoing_http_requests'),
-    {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const canisterName = 'outgoing_http_requests';
+const outgoingHttpRequestsCanister = createActor(getCanisterId(canisterName), {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
-runTests(getTests(outgoingHttpRequestsCanister));
+runTests(getTests(outgoingHttpRequestsCanister), canisterName);

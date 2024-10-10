@@ -20,6 +20,8 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleCanisterMethodsIndex: number;
     // eslint-disable-next-line no-var
+    var _azleCanisterMethodNames: { [key: string]: string };
+    // eslint-disable-next-line no-var
     var _azleExperimental: boolean;
     // eslint-disable-next-line no-var
     var _azleIc: AzleIc;
@@ -57,6 +59,8 @@ if (globalThis._azleInsideCanister === true) {
     globalThis._azleCanisterMethodsIndex = 0;
 
     globalThis._azleCanisterMethodIdlTypes = {};
+
+    globalThis._azleCanisterMethodNames = {};
 
     globalThis._azleInitAndPostUpgradeIdlTypes = [];
 

@@ -4,10 +4,11 @@ import { getTests } from 'blob_array_end_to_end_test_functional_syntax/test/test
 
 import { createActor } from './dfx_generated/blob_array';
 
-const blobCanister = createActor(getCanisterId('blob_array'), {
+const canisterName = 'blob_array';
+const blobCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(blobCanister));
+runTests(getTests(blobCanister), canisterName);

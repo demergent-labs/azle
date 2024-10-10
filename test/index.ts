@@ -8,10 +8,15 @@ import { join } from 'path';
 import { getCanisterId } from '../dfx';
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
+import { runBenchmarksForCanister } from './benchmarks';
 
 export type Test = () => void;
 
-export function runTests(tests: Test, cwd: string = process.cwd()): void {
+export function runTests(
+    tests: Test,
+    canisterNames: string | string[] | undefined = undefined,
+    cwd: string = process.cwd()
+): void {
     const { shouldRunTests, shouldRunTypeChecks, shouldRunBenchmarks } =
         processEnvVars();
 
@@ -41,8 +46,17 @@ export function runTests(tests: Test, cwd: string = process.cwd()): void {
         });
     }
 
-    if (shouldRunBenchmarks) {
-        describe(`benchmarks`, () => {});
+    if (shouldRunBenchmarks && canisterNames !== undefined) {
+        const canisterNamesArray = Array.isArray(canisterNames)
+            ? canisterNames
+            : [canisterNames];
+
+        canisterNamesArray.forEach((canisterName) => {
+            describe(`benchmarks for ${canisterName}`, () => {
+                it('runs benchmarks', () =>
+                    runBenchmarksForCanister(canisterName));
+            });
+        });
     }
 }
 
@@ -98,24 +112,18 @@ function processEnvVars(): {
     shouldRunTypeChecks: boolean;
     shouldRunBenchmarks: boolean;
 } {
-    const isTestsEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_TESTS === 'true';
-    const isTypeChecksEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_TYPE_CHECKS === 'true';
-    const isBenchmarksEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_BENCHMARKS === 'true';
+    const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
+    const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
+    const runBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
 
-    const areNoVarsSet =
-        !isTestsEnvVarSet && !isTypeChecksEnvVarSet && !isBenchmarksEnvVarSet;
-
-    const shouldRunTests = isTestsEnvVarSet || areNoVarsSet;
-    const shouldRunTypeChecks = isTypeChecksEnvVarSet || areNoVarsSet;
-    const shouldRunBenchmarks = isBenchmarksEnvVarSet || areNoVarsSet;
+    const hasOnly = [runTests, runTypeChecks].includes('only');
 
     return {
-        shouldRunTests,
-        shouldRunTypeChecks,
-        shouldRunBenchmarks
+        shouldRunTests: hasOnly ? runTests === 'only' : runTests !== 'false',
+        shouldRunTypeChecks: hasOnly
+            ? runTypeChecks === 'only'
+            : runTypeChecks !== 'false',
+        shouldRunBenchmarks: runBenchmarks === 'true'
     };
 }
 

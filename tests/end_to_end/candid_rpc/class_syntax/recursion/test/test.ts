@@ -11,14 +11,17 @@ import { createActor } from './dfx_generated/recursion';
 // @ts-ignore
 import { createActor as createRecursiveActor } from './dfx_generated/recursive_canister';
 
-const recursionCanister = createActor(getCanisterId('recursion'), {
+const canisterName = 'recursion';
+const recursiveCanisterName = 'recursive_canister';
+
+const recursionCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
 const recursiveCanister = createRecursiveActor(
-    getCanisterId('recursive_canister'),
+    getCanisterId(recursiveCanisterName),
     {
         agentOptions: {
             host: 'http://127.0.0.1:8000'
@@ -32,4 +35,4 @@ runTests(() => {
         'getRecursiveCanisterTests',
         getRecursiveCanisterTests(recursiveCanister)
     );
-});
+}, canisterName);
