@@ -45,8 +45,8 @@ jobs:
               id: set-exclude-dirs
               run: |
                   RELEASE_TESTS="${{ format('
-                  tests/end_to_end/candid_rpc/class_syntax/new/
-                  tests/end_to_end/http_server/new/
+                  tests/end_to_end/candid_rpc/class_syntax/new
+                  tests/end_to_end/http_server/new
                   ') }}"
 
                   UNSTABLE_TESTS="${{ format('
