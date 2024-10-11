@@ -1,0 +1,26 @@
+{
+    "current": {
+        "version": "0.25.0",
+        "benchmarks": [
+            [
+                { "__bigint__": "1728686703495576258" },
+                {
+                    "instructions": { "__bigint__": "908426" },
+                    "method_name": "receiveNotification"
+                }
+            ]
+        ]
+    },
+    "previous": {
+        "version": "0.25.0",
+        "benchmarks": [
+            [
+                { "__bigint__": "1728686703495576258" },
+                {
+                    "instructions": { "__bigint__": "908426" },
+                    "method_name": "receiveNotification"
+                }
+            ]
+        ]
+    }
+}
