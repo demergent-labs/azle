@@ -10,9 +10,10 @@ export function postUpgrade<This, Args extends any[], Return>(
         context: ClassMethodDecoratorContext
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
+        const name = context.name as string;
 
         globalThis._azleMethodMeta.post_upgrade = {
-            name: context.name as string,
+            name,
             index
         };
 
@@ -32,5 +33,9 @@ export function postUpgrade<This, Args extends any[], Return>(
                 false
             );
         };
+
+        if (globalThis._azleRecordBenchmarks) {
+            globalThis._azleCanisterMethodNames[index.toString()] = name;
+        }
     };
 }

@@ -5,7 +5,10 @@ export default class {
     inspectMessage(): void {
         console.info('inspectMessage called');
 
-        if (methodName() === 'accessible') {
+        if (
+            methodName() === 'accessible' ||
+            methodName() === '_azle_get_benchmarks'
+        ) {
             acceptMessage();
             return;
         }

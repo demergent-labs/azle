@@ -4,13 +4,11 @@ import { getTests } from 'outgoing_http_requests_end_to_end_test_functional_synt
 
 import { createActor } from './dfx_generated/outgoing_http_requests';
 
-const outgoingHttpRequestsCanister = createActor(
-    getCanisterId('outgoing_http_requests'),
-    {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const canisterName = 'outgoing_http_requests';
+const outgoingHttpRequestsCanister = createActor(getCanisterId(canisterName), {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
-runTests(getTests(outgoingHttpRequestsCanister));
+runTests(getTests(outgoingHttpRequestsCanister), canisterName);

@@ -14,6 +14,7 @@ use ic_stable_structures::{
 
 #[cfg(feature = "experimental")]
 mod autoreload;
+mod benchmarking;
 mod candid;
 mod chunk;
 mod execute_method_js;
@@ -33,6 +34,7 @@ type Memory = VirtualMemory<DefaultMemoryImpl>;
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+    static WASM_DATA: RefCell<Option<wasm_binary_manipulation::WasmData>> = RefCell::new(None);
 }
 
 const EXPERIMENTAL: bool = cfg!(feature = "experimental");
@@ -95,4 +97,15 @@ pub fn _azle_clear_file_and_info(path: String) {
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_file_hash(path: String) -> Option<String> {
     upload_file::get_file_hash(path)
+}
+
+#[ic_cdk_macros::query(guard = guard_against_non_controllers)]
+pub fn _azle_get_benchmarks() -> Vec<(u64, benchmarking::BenchmarkEntry)> {
+    benchmarking::BENCHMARKS.with(|benchmarks| {
+        benchmarks
+            .borrow()
+            .iter()
+            .map(|(k, v)| (*k, v.clone()))
+            .collect()
+    })
 }

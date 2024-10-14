@@ -22,6 +22,8 @@ export type Config = {
 
 const configs = [createConfig(0), createConfig(1)];
 
+const canisterName = 'wallet_backend';
+
 runTests(() => {
     let bitcoinDaemon: BitcoinDaemon;
 
@@ -37,7 +39,7 @@ runTests(() => {
         'run ckbtc tests while bitcoin daemon is running',
         getTests(configs)
     );
-});
+}, canisterName);
 
 async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     if (existsSync(`.bitcoin/regtest`)) {
@@ -67,7 +69,7 @@ async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
 }
 
 function createConfig(id: number): Config {
-    const walletBackendCanisterId = getCanisterId('wallet_backend');
+    const walletBackendCanisterId = getCanisterId(canisterName);
     const identity = createIdentity(id);
     const canister = createActor(walletBackendCanisterId, {
         agentOptions: {

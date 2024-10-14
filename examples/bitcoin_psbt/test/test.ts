@@ -9,7 +9,8 @@ import { getTests } from 'basic_bitcoin/test/tests';
 
 import { getP2wpkhAddress, P2WPKH_ADDRESS_FORM } from './tests';
 
-const canisterId = getCanisterId('bitcoin_psbt');
+const canisterName = 'bitcoin_psbt';
+const canisterId = getCanisterId(canisterName);
 
 let bitcoinDaemon: BitcoinDaemon;
 
@@ -26,4 +27,4 @@ runTests(() => {
         'runs bitcoin psbt tests while bitcoin daemon is running',
         getTests(canisterId, getP2wpkhAddress, P2WPKH_ADDRESS_FORM)
     );
-});
+}, canisterName);

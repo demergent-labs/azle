@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { CanisterConfig, Context, EnvVars } from '../../utils/types';
+import { CanisterConfig, Context, EnvVars, WasmData } from '../../utils/types';
 
 export function getContext(
     canisterName: string,
@@ -25,8 +25,13 @@ export function getContext(
     const wasmBinaryPath = join(canisterPath, `${canisterName}.wasm`);
 
     const envVars = getEnvVars(canisterConfig);
-    const wasmData = {
-        envVars
+    const wasmData: WasmData = {
+        envVars,
+        recordBenchmarks:
+            process.env.npm_lifecycle_event === 'pretest' ||
+            process.env.npm_lifecycle_event === 'test'
+                ? process.env.AZLE_RECORD_BENCHMARKS !== 'false'
+                : process.env.AZLE_RECORD_BENCHMARKS === 'true'
     };
 
     return {

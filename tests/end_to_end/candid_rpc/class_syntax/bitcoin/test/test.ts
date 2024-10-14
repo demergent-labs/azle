@@ -6,7 +6,8 @@ import { getTests } from 'bitcoin_end_to_end_test_functional_syntax/test/tests';
 import { createActor } from './dfx_generated/bitcoin';
 import { BitcoinDaemon, startBitcoinDaemon } from './setup';
 
-const bitcoinCanister = createActor(getCanisterId('bitcoin'), {
+const canisterName = 'bitcoin';
+const bitcoinCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
@@ -27,4 +28,4 @@ runTests(() => {
         'runs bitcoin tests while bitcoin daemon is running',
         getTests(bitcoinCanister)
     );
-});
+}, canisterName);

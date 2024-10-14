@@ -13,7 +13,8 @@ import { createActor } from '../wallet/frontend/dfx_generated/wallet_backend';
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from '../wallet/frontend/dfx_generated/wallet_backend/wallet_backend.did';
 
-let configs = [createConfig(0), createConfig(1)];
+const canisterName = 'wallet_backend';
+const configs = [createConfig(0), createConfig(1)];
 
 type BitcoinDaemon = ChildProcessWithoutNullStreams;
 
@@ -32,7 +33,7 @@ runTests(() => {
         'run ckbtc tests while bitcoin daemon is running',
         getTests(configs)
     );
-});
+}, canisterName);
 
 async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     if (existsSync(`.bitcoin/regtest`)) {
@@ -62,7 +63,7 @@ async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
 }
 
 function createConfig(id: number): Config {
-    const walletBackendCanisterId = getCanisterId('wallet_backend');
+    const walletBackendCanisterId = getCanisterId(canisterName);
     const identity: any = createIdentity(id);
     const canister = createActor(walletBackendCanisterId, {
         agentOptions: {

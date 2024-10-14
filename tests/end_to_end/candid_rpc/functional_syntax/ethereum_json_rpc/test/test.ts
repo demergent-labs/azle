@@ -12,13 +12,11 @@ if (process.env.ETHEREUM_URL === undefined) {
     );
 }
 
-const ethereumJsonRpcCanister = createActor(
-    getCanisterId('ethereum_json_rpc'),
-    {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+const canisterName = 'ethereum_json_rpc';
+const ethereumJsonRpcCanister = createActor(getCanisterId(canisterName), {
+    agentOptions: {
+        host: 'http://127.0.0.1:8000'
     }
-);
+});
 
-runTests(getTests(ethereumJsonRpcCanister));
+runTests(getTests(ethereumJsonRpcCanister), canisterName);

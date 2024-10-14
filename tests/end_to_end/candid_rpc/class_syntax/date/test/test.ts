@@ -4,10 +4,11 @@ import { getTests } from 'date_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/date';
 
-const dateCanister = createActor(getCanisterId('date'), {
+const canisterName = 'date';
+const dateCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(dateCanister));
+runTests(getTests(dateCanister), canisterName);
