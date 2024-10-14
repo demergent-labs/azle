@@ -39,10 +39,70 @@ jobs:
                       ./examples
                       ./tests
 
-    release:
+    release2:
         name: Deploy release
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
         if: ${{ needs.determine-should-release.outputs.should-release == 'true' }}
+        needs:
+            - determine-should-release
+            - get-test-infos
+        runs-on: ubuntu-latest
+        env:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.ref || github.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+                  registry-url: https://registry.npmjs.org
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Install curl
+              run: sudo apt-get install curl -y
+
+            - id: get-dfx-version
+              uses: ./.github/actions/get_dfx_version
+
+            - name: Install dfx
+              run: |
+                  # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
+                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
+            - run: npm install
+
+            - name: Install global dependencies
+              run: |
+                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
+
+            # TODO we should use some Action-specific bot account
+            - name: Configure git for publishing release
+              run: |
+                  git config --global user.name 'Jordan Last'
+                  git config --global user.email 'jordan.michael.last@gmail.com'
+                  git config --global commit.gpgsign true
+                  echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+                  git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+
+            - name: Publish release
+              run: |
+                  BRANCH_NAME="${{ github.head_ref }}"
+                  RELEASE_VERSION="${BRANCH_NAME:9}"
+                  ./.github/scripts/publish_github_action.sh $RELEASE_VERSION ${{ toJSON(needs.get-test-infos.outputs.test-infos) }}
+
+    release:
+        if: ${{ false }}
+        name: Deploy release
+        # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
         needs:
             - determine-should-release
             - get-test-infos
