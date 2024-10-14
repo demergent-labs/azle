@@ -1,0 +1,169 @@
+name: Parallel Release
+on:
+    workflow_call:
+        secrets:
+            GPG_SIGNING_KEY:
+                required: true
+            GH_TOKEN:
+                required: true
+
+jobs:
+    prepare-release:
+        name: Prepare Release
+        runs-on: ubuntu-latest
+        env:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        outputs:
+            release-version: ${{ steps.get-version.outputs.release-version }}
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.ref || github.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+
+            - id: get-version
+              run: |
+                  BRANCH_NAME="${{ github.event.pull_request.head.ref || github.ref_name }}"
+                  RELEASE_VERSION="${BRANCH_NAME:9}"
+                  echo "release-version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+                  registry-url: https://registry.npmjs.org
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Install curl
+              run: sudo apt-get install curl -y
+
+            - id: get-dfx-version
+              uses: ./.github/actions/get_dfx_version
+
+            - name: Install dfx
+              run: |
+                  # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
+                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
+            - run: npm install
+
+            - name: Install global dependencies
+              run: |
+                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
+
+            # TODO we should use some Action-specific bot account
+            - name: Configure git for publishing release
+              run: |
+                  git config --global user.name 'Jordan Last'
+                  git config --global user.email 'jordan.michael.last@gmail.com'
+                  git config --global commit.gpgsign true
+                  echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+                  git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+                  git -k
+
+            - name: Update version and build templates
+              run: |
+                  VERSION=${{ steps.get-version.outputs.release-version }}
+                  sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
+                  sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
+                  npm install
+                  npx azle template
+                  npx azle template --experimental
+
+            - name: Publish to npm
+              run: |
+                  if [[ "${{ steps.get-version.outputs.release-version }}" == *"-rc."* ]]; then
+                    npm publish --tag next
+                  else
+                    npm publish
+                  fi
+
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: |
+                      ./examples
+                      ./tests
+
+    update-dependencies:
+        needs: prepare-release
+        name: Update ${{ matrix.test.name }}
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                test: ${{ fromJson(needs.prepare-release.outputs.test-infos) }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+
+            - name: Update dependencies
+              run: |
+                  cd ${{ matrix.test.path }}
+                  sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ needs.prepare-release.outputs.release-version }}\3/" package.json
+                  npm install
+                  rm -rf node_modules
+
+            - name: Commit and push changes
+              run: |
+                  git config --global user.name 'Jordan Last'
+                  git config --global user.email 'jordan.michael.last@gmail.com'
+                  git checkout -b "update-${{ matrix.test.name }}"
+                  git add --all
+                  git commit -m "Update dependencies for ${{ matrix.test.name }}"
+                  git push origin "update-${{ matrix.test.name }}"
+
+    finalize-release:
+        needs: [prepare-release, update-dependencies]
+        name: Finalize Release
+        runs-on: ubuntu-latest
+        env:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+                  ref: ${{ github.ref_name }}
+
+            - name: Merge update branches
+              run: |
+                  git config --global user.name 'Jordan Last'
+                  git config --global user.email 'jordan.michael.last@gmail.com'
+                  git config --global commit.gpgsign true
+                  echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+                  git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+
+                  for branch in $(git branch -r | grep 'origin/update-' | sed 's/origin\///'); do
+                    git merge --no-ff "$branch" -m "Merge $branch"
+                  done
+
+                  git push origin ${{ github.ref_name }}
+
+            - name: Create release
+              run: |
+                  VERSION=${{ needs.prepare-release.outputs.release-version }}
+                  git tag $VERSION
+                  git push origin $VERSION
+
+                  if [[ "$VERSION" == *"-rc."* ]]; then
+                    gh release create "$VERSION" -t "$VERSION" --prerelease
+                  else
+                    gh release create "$VERSION" -t "$VERSION"
+                  fi
