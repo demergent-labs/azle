@@ -15,4 +15,4 @@ const whoamiCanister = createActor(canisterId, {
     }
 });
 
-runTests(getTests(whoamiCanister), canisterName);
+runTests(getTests(whoamiCanister, canisterName), canisterName);
