@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 
-use ::candid::CandidType;
+use candid::CandidType;
 use wasmedge_quickjs::{AsObject, Context};
 
 #[derive(CandidType, Debug, Clone)]
@@ -22,10 +22,8 @@ pub fn record_benchmark(context: &mut Context, function_name: &str) {
     let method_names = global.get("_azleCanisterMethodNames");
     let method_name = method_names
         .get(function_name)
-        .unwrap()
-        .to_string()
-        .unwrap()
-        .to_string();
+        .and_then(|v| Some(v.to_string()?.to_string()))
+        .unwrap_or_else(|| function_name.to_string());
 
     BENCHMARKS.with(|benchmarks| {
         benchmarks.borrow_mut().insert(
