@@ -5,9 +5,10 @@ export function preUpgrade<This, Args extends any[], Return>(
     context: ClassMethodDecoratorContext
 ): void {
     const index = globalThis._azleCanisterMethodsIndex++;
+    const name = context.name as string;
 
     globalThis._azleMethodMeta.pre_upgrade = {
-        name: context.name as string,
+        name,
         index
     };
 
@@ -21,4 +22,8 @@ export function preUpgrade<This, Args extends any[], Return>(
             false
         );
     };
+
+    if (globalThis._azleRecordBenchmarks) {
+        globalThis._azleCanisterMethodNames[index.toString()] = name;
+    }
 }
