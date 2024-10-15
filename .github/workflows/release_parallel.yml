@@ -129,11 +129,14 @@ jobs:
                   npm install
                   rm -rf node_modules
 
+            # TODO we should use some Action-specific bot account
             - name: Commit and push changes
               run: |
                   git config --global user.name 'Jordan Last'
                   git config --global user.email 'jordan.michael.last@gmail.com'
-                  git checkout -b "update-${{ matrix.test.name }}"
+                  git config --global commit.gpgsign true
+                  echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+                  git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
                   git add --all
                   git commit -m "Update dependencies for ${{ matrix.test.name }}"
                   git push origin "update-${{ matrix.test.name }}"
