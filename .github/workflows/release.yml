@@ -40,9 +40,10 @@ jobs:
                       ./tests
 
     release:
-        if: ${{ false }}
         name: Deploy release
         # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
+        if: ${{ needs.determine-should-release.outputs.should-release == 'true' }}
+
         needs:
             - determine-should-release
             - get-test-infos
