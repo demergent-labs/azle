@@ -113,6 +113,15 @@ jobs:
               with:
                   node-version: ${{ steps.get-node-version.outputs.node-version }}
 
+            - id: get-dfx-version
+              uses: ./.github/actions/get_dfx_version
+
+            - name: Install dfx
+              run: |
+                  # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
+                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
             - name: Update dependencies
               run: |
                   cd ${{ matrix.test.path }}
