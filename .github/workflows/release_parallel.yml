@@ -6,6 +6,8 @@ on:
                 required: true
             GH_TOKEN:
                 required: true
+            NPM_TOKEN:
+                required: true
 
 jobs:
     prepare-release:

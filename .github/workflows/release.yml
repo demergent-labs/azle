@@ -39,21 +39,6 @@ jobs:
                       ./examples
                       ./tests
 
-    release3:
-        if: ${{ needs.determine-should-release.outputs.should-release == 'true' }}
-        name: Deploy release
-        # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
-        needs:
-            - determine-should-release
-            - get-test-infos
-
-        uses: ./.github/workflows/sub-release.yml
-        secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-            test_infos: ${{ needs.get-test-infos.outputs.test-infos }}
-
     release:
         if: ${{ false }}
         name: Deploy release
@@ -66,3 +51,4 @@ jobs:
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
