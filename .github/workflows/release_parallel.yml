@@ -143,7 +143,11 @@ jobs:
                   BRANCH_NAME="update-${{ needs.prepare-release.outputs.release-version }}-$(echo '${{ matrix.test.displayPath }}' | sed 's/\//-/g')"
                   git switch -c "$BRANCH_NAME"
                   git add --all
-                  git commit -m "Update dependencies for ${{ matrix.test.displayPath }}"
+                  if ! git diff --cached --quiet; then
+                    git commit -m "Update dependencies for ${{ matrix.test.displayPath }}"
+                  else
+                    echo "No changes to commit. Skipping commit and push."
+                  fi
                   git push origin "$BRANCH_NAME"
 
     finalize-release:
