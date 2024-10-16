@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "multi_deploy": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/multi_deploy",
+                "node_compatibility": true
+            }
+        }
+    }
+}
