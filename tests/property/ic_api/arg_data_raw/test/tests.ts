@@ -1,5 +1,3 @@
-import {} from '@dfinity/agent';
-import {} from '@dfinity/candid';
 import {
     defaultPropTestParams,
     expect,
@@ -14,7 +12,7 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
-        it('gets the canister version from the canister', async () => {
+        it('gets the init arg data raw from the canister', async () => {
             await fc.assert(
                 fc.asyncProperty(
                     // TODO once we figure out how to escape single quotes in candid strings
@@ -35,10 +33,6 @@ export function getTests(): Test {
                                 stdio: 'inherit'
                             }
                         );
-
-                        const escapeArgData = (data: string): string => {
-                            return data.replace(/[\\"]/g, '\\$&');
-                        };
 
                         const initArgDataCandidString = `("${escapeArgData(
                             initArgData
@@ -108,4 +102,8 @@ export function getTests(): Test {
             );
         });
     };
+}
+
+function escapeArgData(data: string): string {
+    return data.replace(/[\\"]/g, '\\$&');
 }
