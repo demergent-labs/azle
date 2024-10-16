@@ -10,7 +10,6 @@ import {
 } from 'azle';
 
 // TODO set can be called from reply and reject callbacks
-// TODO set should trap if the data is greater than 32 bytes
 
 let afterFirstPostUpgrade = false;
 
@@ -64,7 +63,7 @@ export default class {
     }
 
     @query([])
-    getDataCertificateInQuery(): void {
+    setDataCertificateInQuery(): void {
         try {
             setCertifiedData(new Uint8Array([3]));
         } catch (error) {
