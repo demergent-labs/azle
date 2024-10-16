@@ -8,7 +8,7 @@ on:
     push:
         branches:
             - main
-    pull_request: # Runs on pull requests to any branch
+    pull_request:
 
 jobs:
     determine-should-run-tests:

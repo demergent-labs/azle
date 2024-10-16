@@ -165,6 +165,8 @@ jobs:
                   fetch-depth: 0 # Fetch all history for all branches and tags
 
             - name: Merge update branches
+              env:
+                  PAT: ${{ secrets.WORKFLOW_PAT }}
               run: |
                   git config --global user.name 'Jordan Last'
                   git config --global user.email 'jordan.michael.last@gmail.com'
@@ -194,20 +196,12 @@ jobs:
                     echo "Deleted remote branch: $branch"
                   done
 
-                  # Push changes
+                  # Push changes using PAT
                   echo "Pushing changes to $CURRENT_BRANCH"
-                  git push origin $CURRENT_BRANCH || {
+                  git push https://$PAT@github.com/${{ github.repository }}.git HEAD:$CURRENT_BRANCH || {
                     echo "Failed to push changes"
                     exit 1
                   }
-
-            - name: Trigger tests
-              run: |
-                  # Update a file to trigger the tests
-                  echo "Release ${{ needs.prepare-release.outputs.release-version }} - $(date)" >> RELEASE.md
-                  git add RELEASE.md
-                  git commit -m "Trigger tests for release ${{ needs.prepare-release.outputs.release-version }}"
-                  git push origin $CURRENT_BRANCH
 
             - name: Create release
               run: |
