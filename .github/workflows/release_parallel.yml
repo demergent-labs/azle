@@ -188,6 +188,10 @@ jobs:
                       git merge --abort
                       continue
                     }
+
+                    # Delete the remote branch after successful merge
+                    git push origin --delete "$branch"
+                    echo "Deleted remote branch: $branch"
                   done
 
                   # Push changes
@@ -196,6 +200,14 @@ jobs:
                     echo "Failed to push changes"
                     exit 1
                   }
+
+            - name: Trigger tests
+              run: |
+                  # Update a file to trigger the tests
+                  echo "Release ${{ needs.prepare-release.outputs.release-version }} - $(date)" >> RELEASE.md
+                  git add RELEASE.md
+                  git commit -m "Trigger tests for release ${{ needs.prepare-release.outputs.release-version }}"
+                  git push origin $CURRENT_BRANCH
 
             - name: Create release
               run: |
