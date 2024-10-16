@@ -1,12 +1,43 @@
-import { dataCertificate, IDL, query, setCertifiedData, update } from 'azle';
+import {
+    dataCertificate,
+    IDL,
+    init,
+    postUpgrade,
+    preUpgrade,
+    query,
+    setCertifiedData,
+    update
+} from 'azle';
 
-// TODO an easy update would be to have a pre and post upgrade that takes a boolean and based on that boolean it will either set the data or not
-// TODO set can be called from pre, post, init, and upgrade, also reply and reject callbacks
-// TODO we could also tests that it traps when it should
-// TODO     for example set should trap if the data is greater than 32 bytes
-// TODO     set should trap if it's called from a query
-// TODO we could also tests that getCertificate returns None if called outside of a query
+// TODO set can be called from reply and reject callbacks
+// TODO set should trap if the data is greater than 32 bytes
+
+let afterFirstPostUpgrade = false;
+
 export default class {
+    @init([IDL.Bool])
+    init(setData: boolean): void {
+        if (setData) {
+            setCertifiedData(new Uint8Array([0])); // Set initial data
+        }
+    }
+
+    @preUpgrade
+    preUpgrade(): void {
+        // The idea is that the third deploy will always have certified data set from preUpgrade so to test it we need to deploy 3 times
+        if (afterFirstPostUpgrade) {
+            setCertifiedData(new Uint8Array([1]));
+        }
+    }
+
+    @postUpgrade([IDL.Bool])
+    postUpgrade(setData: boolean): void {
+        if (setData) {
+            setCertifiedData(new Uint8Array([2])); // Set post-upgrade data
+        }
+        afterFirstPostUpgrade = true;
+    }
+
     @update([IDL.Vec(IDL.Nat8)])
     setData(data: Uint8Array): void {
         setCertifiedData(data);
@@ -19,5 +50,29 @@ export default class {
             return [];
         }
         return [certificate];
+    }
+
+    @update([], IDL.Opt(IDL.Vec(IDL.Nat8)))
+    getDataCertificateInUpdate(): void {
+        const certificate = dataCertificate();
+        if (certificate === undefined) {
+            return;
+        }
+        throw new Error(
+            'dataCertificate should have been undefined in update method'
+        );
+    }
+
+    @query([])
+    getDataCertificateInQuery(): void {
+        try {
+            setCertifiedData(new Uint8Array([3]));
+        } catch (error) {
+            // Expected to throw an error
+            return;
+        }
+        throw new Error(
+            'setCertifiedData should have thrown an error in query method'
+        );
     }
 }
