@@ -140,6 +140,66 @@ export function getTests(): Test {
                 defaultPropTestParams
             );
         });
+
+        it('always returns empty array when trying to get data certificate in update method', async () => {
+            await fc.assert(
+                fc.asyncProperty(
+                    fc.uint8Array({ minLength: 1, maxLength: 32 }),
+                    async (arbitraryData) => {
+                        const actor = await getCanisterActor<Actor>('canister');
+                        uninstallCanister();
+                        deployCanister();
+
+                        await expect(
+                            actor.getDataCertificateInUpdate()
+                        ).resolves.toEqual([]);
+
+                        await actor.setData(arbitraryData);
+
+                        await expect(
+                            actor.getDataCertificateInUpdate()
+                        ).resolves.toEqual([]);
+                    }
+                ),
+                defaultPropTestParams
+            );
+        });
+
+        it('throws error when trying to set certified data in query method', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            uninstallCanister();
+            deployCanister();
+
+            await expect(
+                actor.setDataCertificateInQuery()
+            ).resolves.not.toThrow();
+        });
+
+        it('handles undefined data certificate', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            uninstallCanister();
+            deployCanister();
+
+            // Check that getCertificate returns an empty array when no data is set
+            const emptyCertificate = await actor.getCertificate();
+            expect(emptyCertificate).toEqual([]);
+        });
+
+        it('throws error when trying to set certified data longer than 32 bytes', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            uninstallCanister();
+            deployCanister();
+
+            // Generate data longer than 32 bytes
+            const longData = new Uint8Array(33).fill(1);
+
+            // Attempt to set the long data and expect it to throw
+            await expect(actor.setData(longData)).rejects.toThrow();
+
+            // Verify that the certificate is still empty
+            const certificate = await actor.getCertificate();
+            expect(certificate).toEqual([]);
+        });
     };
 }
 
