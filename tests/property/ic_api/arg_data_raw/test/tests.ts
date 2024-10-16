@@ -17,10 +17,12 @@ export function getTests(): Test {
         it('gets the canister version from the canister', async () => {
             await fc.assert(
                 fc.asyncProperty(
-                    fc.string(),
-                    fc.string(),
-                    fc.string(),
-                    fc.string(),
+                    // TODO once we figure out how to escape single quotes in candid strings
+                    // we can use fc.string() instead of fc.string().filter((s) => !s.includes("'"))
+                    fc.string().filter((s) => !s.includes("'")),
+                    fc.string().filter((s) => !s.includes("'")),
+                    fc.string().filter((s) => !s.includes("'")),
+                    fc.string().filter((s) => !s.includes("'")),
                     async (
                         initArgData,
                         postUpgradeArgData,
