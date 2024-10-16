@@ -20,7 +20,6 @@ steps:
     - id: get-test-infos
       uses: ./.github/actions/get_test_infos
       with:
-          node-version: '20.x'
           directories: './tests ./examples'
           exclude-dirs: 'tests/exclude_this_directory examples/exclude_this exclude_all_with_this_dir_in_path'
 
