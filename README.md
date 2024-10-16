@@ -17,6 +17,8 @@
 
 TypeScript and JavaScript CDK for the [Internet Computer](https://internetcomputer.org/).
 
+Trigger a run with a hack
+
 ## Disclaimer
 
 Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
