@@ -15,27 +15,17 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                         arbitraryString
                     )}")`;
 
-                    // Encode the Candid string
-                    const encodedBytes =
-                        await canister.candidEncodeQuery(candidString);
-
-                    // Verify UTF-8 encoding
-                    const textEncoder = new TextEncoder();
-                    const encodedUtf8 = textEncoder.encode(arbitraryString);
-                    expect(encodedBytes.slice(8)).toEqual(encodedUtf8);
-
-                    // Decode the encoded bytes
-                    const decodedString =
-                        await canister.candidDecodeQuery(encodedBytes);
-
-                    // Verify UTF-8 decoding
-                    const textDecoder = new TextDecoder('utf-8');
-                    const decodedUtf8 = textDecoder.decode(encodedUtf8);
-                    expect(decodedString).toBe(
-                        `("${escapeCandidString(decodedUtf8)}")`
+                    const encodedBytes = await checkCandidEncoding(
+                        canister,
+                        arbitraryString,
+                        candidString
                     );
 
-                    // The decoded string should match the original Candid string
+                    const decodedString = await checkCandidDecoding(
+                        canister,
+                        encodedBytes
+                    );
+
                     expect(decodedString).toBe(candidString);
                 }),
                 defaultPropTestParams
@@ -52,7 +42,6 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                         max: 126
                     }),
                     async (arbitraryBytes) => {
-                        // Prepend the DIDL header
                         const didlHeader = new Uint8Array([
                             68, 73, 68, 76, 0, 1, 113
                         ]);
@@ -62,27 +51,17 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                             ...arbitraryBytes
                         ]);
 
-                        // Decode the Candid bytes
-                        const decodedString =
-                            await canister.candidDecodeQuery(candidBytes);
-
-                        // Verify UTF-8 decoding
-                        const textDecoder = new TextDecoder('utf-8');
-                        const decodedUtf8 = textDecoder.decode(arbitraryBytes);
-                        expect(decodedString).toBe(
-                            `("${escapeCandidString(decodedUtf8)}")`
+                        const decodedString = await checkCandidDecoding(
+                            canister,
+                            candidBytes
                         );
 
-                        // Encode the decoded string
-                        const encodedBytes =
-                            await canister.candidEncodeQuery(decodedString);
+                        const encodedBytes = await checkCandidEncoding(
+                            canister,
+                            arbitraryBytes,
+                            decodedString
+                        );
 
-                        // Verify UTF-8 encoding
-                        const textEncoder = new TextEncoder();
-                        const encodedUtf8 = textEncoder.encode(decodedUtf8);
-                        expect(encodedBytes.slice(8)).toEqual(encodedUtf8);
-
-                        // The encoded bytes should match the original Candid bytes
                         expect(encodedBytes).toEqual(candidBytes);
                     }
                 ),
@@ -92,8 +71,6 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
 
         // TODO candidCompilerQuery is not yet implemented
         it.skip('should compile Candid correctly', async () => {
-            // This is a stub test for candidCompiler
-            // You may want to replace this with a more meaningful test later
             const candidPath = 'path/to/candid/file.did';
             const compiledCandid =
                 await canister.candidCompilerQuery(candidPath);
@@ -106,4 +83,28 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
 
 function escapeCandidString(data: string): string {
     return data.replace(/[\\"']/g, '\\$&');
+}
+
+async function checkCandidDecoding(
+    canister: ActorSubclass<_SERVICE>,
+    encodedBytes: Uint8Array
+): Promise<string> {
+    const decodedString = await canister.candidDecodeQuery(encodedBytes);
+    const textDecoder = new TextDecoder('utf-8');
+    const decodedUtf8 = textDecoder.decode(encodedBytes.slice(8));
+    expect(decodedString).toBe(`("${escapeCandidString(decodedUtf8)}")`);
+    return decodedString;
+}
+
+async function checkCandidEncoding(
+    canister: ActorSubclass<_SERVICE>,
+    rawData: string | Uint8Array,
+    candidString: string
+): Promise<Uint8Array> {
+    const encodedBytes = await canister.candidEncodeQuery(candidString);
+    const textEncoder = new TextEncoder();
+    const expectedEncodedData =
+        typeof rawData === 'string' ? textEncoder.encode(rawData) : rawData;
+    expect(encodedBytes.slice(8)).toEqual(expectedEncodedData);
+    return new Uint8Array(encodedBytes);
 }
