@@ -11,9 +11,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
         it('should encode and decode Candid strings correctly, with UTF-8 verification', async () => {
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (arbitraryString) => {
-                    const candidString = `("${escapeCandidString(
-                        arbitraryString
-                    )}")`;
+                    const candidString = toCandidString(arbitraryString);
 
                     const encodedBytes = await checkCandidEncoding(
                         canister,
@@ -42,14 +40,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                         max: 126
                     }),
                     async (arbitraryBytes) => {
-                        const didlHeader = new Uint8Array([
-                            68, 73, 68, 76, 0, 1, 113
-                        ]);
-                        const candidBytes = new Uint8Array([
-                            ...didlHeader,
-                            arbitraryBytes.length,
-                            ...arbitraryBytes
-                        ]);
+                        const candidBytes = toCandidBytes(arbitraryBytes);
 
                         const decodedString = await checkCandidDecoding(
                             canister,
@@ -81,10 +72,6 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
     };
 }
 
-function escapeCandidString(data: string): string {
-    return data.replace(/[\\"']/g, '\\$&');
-}
-
 async function checkCandidDecoding(
     canister: ActorSubclass<_SERVICE>,
     encodedBytes: Uint8Array
@@ -92,7 +79,7 @@ async function checkCandidDecoding(
     const decodedString = await canister.candidDecodeQuery(encodedBytes);
     const textDecoder = new TextDecoder('utf-8');
     const decodedUtf8 = textDecoder.decode(encodedBytes.slice(8));
-    expect(decodedString).toBe(`("${escapeCandidString(decodedUtf8)}")`);
+    expect(decodedString).toBe(toCandidString(decodedUtf8));
     return decodedString;
 }
 
@@ -107,4 +94,17 @@ async function checkCandidEncoding(
         typeof rawData === 'string' ? textEncoder.encode(rawData) : rawData;
     expect(encodedBytes.slice(8)).toEqual(expectedEncodedData);
     return new Uint8Array(encodedBytes);
+}
+
+function toCandidBytes(data: Uint8Array): Uint8Array {
+    const didlHeader = new Uint8Array([68, 73, 68, 76, 0, 1, 113]);
+    return new Uint8Array([...didlHeader, data.length, ...data]);
+}
+
+function toCandidString(data: string): string {
+    return `("${escapeCandidString(data)}")`;
+}
+
+function escapeCandidString(data: string): string {
+    return data.replace(/[\\"']/g, '\\$&');
 }
