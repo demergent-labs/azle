@@ -104,7 +104,6 @@ export function getTests(): Test {
     };
 }
 
-// TODO make sure this is a standalone function
 function escapeArgData(data: string): string {
     return data.replace(/[\\"]/g, '\\$&');
 }
