@@ -6,8 +6,6 @@ import { CyclesResult } from '../src/types';
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/intermediary/intermediary.did';
 
-const TOLERANCE = 0n; // Tolerance for "close to" comparisons
-
 export function getTests(intermediaryCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('should handle sendAllCycles correctly', async () => {
@@ -63,39 +61,23 @@ function validateCyclesResult(
     amount: bigint,
     mode: 'all' | 'half' | 'none'
 ): void {
-    expect(isCloseTo(result.initialAvailable, amount)).toBe(true);
+    expect(result.initialAvailable).toBe(amount);
 
-    switch (mode) {
-        case 'all':
-            expect(isCloseTo(result.accepted, result.initialAvailable)).toBe(
-                true
-            );
-            break;
-        case 'half':
-            expect(
-                isCloseTo(result.accepted, result.initialAvailable / 2n)
-            ).toBe(true);
-            break;
-        case 'none':
-            expect(isCloseTo(result.accepted, 0n)).toBe(true);
-            break;
+    if (mode === 'all') {
+        expect(result.accepted).toBe(result.initialAvailable);
+    }
+    if (mode === 'half') {
+        expect(result.accepted).toBe(result.initialAvailable / 2n);
+    }
+    if (mode === 'none') {
+        expect(result.accepted).toBe(0n);
     }
 
-    expect(
-        isCloseTo(
-            result.finalAvailable,
-            result.initialAvailable - result.accepted
-        )
-    ).toBe(true);
-    expect(isCloseTo(result.cyclesRefunded, result.finalAvailable)).toBe(true);
-    expect(
-        isCloseTo(
-            result.endingCanisterBalance - result.startingCanisterBalance,
-            result.accepted
-        )
-    ).toBe(true);
-}
-
-function isCloseTo(a: bigint, b: bigint): boolean {
-    return (a > b ? a - b : b - a) <= TOLERANCE;
+    expect(result.finalAvailable).toBe(
+        result.initialAvailable - result.accepted
+    );
+    expect(result.cyclesRefunded).toBe(result.finalAvailable);
+    expect(result.endingCanisterBalance - result.startingCanisterBalance).toBe(
+        result.accepted
+    );
 }
