@@ -1,9 +1,9 @@
-# inspect_message, accept_message, and method_name Tests
+# clear_timer, set_timer, and set_timer_interval Tests
 
 ## Current Status
 
-We have decided that the `inspect_message`, `accept_message`, and `method_name` functions are sufficiently tested in the following location:
-tests/end_to_end/candid_rpc/class_syntax/inspect_message/
+We have decided that the `clear_timer`, `set_timer`, and `set_timer_interval` functions are sufficiently tested in the following location:
+tests/end_to_end/candid_rpc/class_syntax/timers/
 
 These existing tests provide adequate coverage for the current release candidate. They ensure that all the APIs are called correctly and function as expected.
 
