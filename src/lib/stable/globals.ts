@@ -54,7 +54,7 @@ declare global {
 // are using as any for now
 globalThis._azleInsideCanister =
     globalThis._azleIcStable === undefined &&
-    (globalThis as any)._azleIcExperimental === undefined
+    globalThis._azleIcExperimental === undefined
         ? false
         : true;
 
