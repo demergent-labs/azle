@@ -17,13 +17,7 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
 
             let callbacks = global.get("_azleCallbacks");
 
-            ic_cdk::println!("callbacks: {:?}", callbacks);
-
-            ic_cdk::println!("function_name: {:?}", function_name);
-
             let method_callback = callbacks.get(function_name).unwrap();
-
-            ic_cdk::println!("method_callback: {:?}", method_callback);
 
             let candid_args = if pass_arg_data {
                 ic_cdk::api::call::arg_data_raw()
