@@ -25,7 +25,7 @@ const heartbeatSyncCanister = createActorHeartbeatSync(
     }
 );
 
-runTests(
-    getTests(heartbeatAsyncCanister, heartbeatSyncCanister),
-    heartbeatAsyncName
-);
+runTests(getTests(heartbeatAsyncCanister, heartbeatSyncCanister), [
+    heartbeatAsyncName,
+    heartbeatSyncName
+]);

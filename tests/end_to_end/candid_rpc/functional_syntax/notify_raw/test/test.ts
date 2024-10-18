@@ -19,4 +19,4 @@ const canister2 = createActorCanister2(getCanisterId(canister2Name), {
     }
 });
 
-runTests(getTests(canister1, canister2), canister1Name);
+runTests(getTests(canister1, canister2), [canister1Name, canister2Name]);
