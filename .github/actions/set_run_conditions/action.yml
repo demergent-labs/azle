@@ -1,0 +1,33 @@
+name: 'Set run conditions'
+description: 'Sets the run conditions based on the current GitHub context'
+outputs:
+    conditions:
+        description: 'JSON string of run conditions'
+        value: ${{ steps.set-conditions.outputs.conditions }}
+runs:
+    using: 'composite'
+    steps:
+        - id: set-conditions
+          run: |
+              # Define conditions using shell variables
+              IS_MAIN_PUSH=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+              IS_MAIN_MERGE_RELEASE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+              IS_RELEASE_PR=${{ startsWith(github.head_ref, 'release--') }}
+              IS_FEATURE_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+              IS_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+
+              # Create JSON object
+              CONDITIONS=$(cat <<EOF
+              {
+                "is_main_branch_push": $IS_MAIN_PUSH,
+                "is_main_branch_merge_from_release_push": $IS_MAIN_MERGE_RELEASE,
+                "is_release_branch_pr": $IS_RELEASE_PR,
+                "is_feature_branch_pr": $IS_FEATURE_PR,
+                "is_feature_branch_draft_pr": $IS_DRAFT_PR
+              }
+              EOF
+              )
+
+              # Set output
+              echo "conditions=$(echo $CONDITIONS | base64 -w 0)" >> $GITHUB_OUTPUT
+          shell: bash
