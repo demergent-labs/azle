@@ -4,7 +4,7 @@
         "test": "ETHEREUM_URL=https://rpc.ankr.com/eth jest"
     },
     "dependencies": {
-        "azle": "0.24.1"
+        "azle": "0.24.2-rc.48"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
