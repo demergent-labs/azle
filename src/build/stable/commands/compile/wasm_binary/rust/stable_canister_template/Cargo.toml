@@ -1,0 +1,20 @@
+[package]
+name = "stable_canister_template"
+version = "0.0.0"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid = "0.10.2"
+candid_parser = "0.1.2"
+ic-cdk = "0.12.2"
+ic-cdk-macros = "0.8.4"
+ic-cdk-timers = "0.6.0"
+ic-stable-structures = "0.6.5"
+ic-wasi-polyfill = "0.6.1"
+rquickjs = { version = "0.6.2", features = ["array-buffer"] }
+serde = "1.0.202"
+serde_json = "1.0.107"
+slotmap = "=1.0.6"

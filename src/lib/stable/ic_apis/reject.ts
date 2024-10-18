@@ -3,5 +3,17 @@
  * @param message the rejection message
  */
 export function reject(message: string): void {
-    return globalThis._azleIc ? globalThis._azleIc.reject(message) : undefined;
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
+        return;
+    }
+
+    if (globalThis._azleIcExperimental !== undefined) {
+        globalThis._azleIcExperimental.reject(message);
+        return;
+    }
+
+    globalThis._azleIcStable.reject(message);
 }

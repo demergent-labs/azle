@@ -312,5 +312,5 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         context.new_function::<trap::NativeFunction>("").into(),
     );
 
-    context.get_global().set("_azleIc", ic.into());
+    context.get_global().set("_azleIcExperimental", ic.into());
 }

@@ -8,9 +8,9 @@ import { text } from '../candid/types/primitive/text';
  * @returns the IDL string
  */
 export function candidCompiler(candidPath: text): string {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return '';
     }
 
-    return globalThis._azleIc.candidCompiler(candidPath);
+    return globalThis._azleIcExperimental.candidCompiler(candidPath);
 }

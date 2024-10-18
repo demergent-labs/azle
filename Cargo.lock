@@ -206,27 +206,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "canister"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "candid",
- "candid_parser",
- "ic-cdk 0.12.2",
- "ic-cdk-macros 0.8.4",
- "ic-cdk-timers",
- "ic-stable-structures",
- "ic-wasi-polyfill",
- "open_value_sharing",
- "serde",
- "serde_json",
- "sha2",
- "slotmap",
- "wasmedge_quickjs",
- "wasmi",
-]
-
-[[package]]
 name = "cc"
 version = "1.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -480,6 +459,27 @@ checksum = "534c5cf6194dfab3db3242765c03bbe257cf92f22b38f6bc0c58d59108a820ba"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "experimental_canister_template"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "candid",
+ "candid_parser",
+ "ic-cdk 0.12.2",
+ "ic-cdk-macros 0.8.4",
+ "ic-cdk-timers",
+ "ic-stable-structures",
+ "ic-wasi-polyfill",
+ "open_value_sharing",
+ "serde",
+ "serde_json",
+ "sha2",
+ "slotmap",
+ "wasmedge_quickjs",
+ "wasmi",
 ]
 
 [[package]]
@@ -1332,6 +1332,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "rquickjs"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9cbd33e0b668aea0ab238b9164523aca929096f9f40834700d71d91dd4888882"
+dependencies = [
+ "rquickjs-core",
+]
+
+[[package]]
+name = "rquickjs-core"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2e9129d69b7b8f7ee8ad1da5b12c7f4a8a8acd45f2e6dd9cb2ee1bc5a1f2fa3d"
+dependencies = [
+ "rquickjs-sys",
+]
+
+[[package]]
+name = "rquickjs-sys"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf6f2288d8e7fbb5130f62cf720451641e99d55f6fde9db86aa2914ecb553fd2"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1569,6 +1596,23 @@ dependencies = [
  "ic-stable-structures",
  "serde",
  "serde_bytes",
+]
+
+[[package]]
+name = "stable_canister_template"
+version = "0.0.0"
+dependencies = [
+ "candid",
+ "candid_parser",
+ "ic-cdk 0.12.2",
+ "ic-cdk-macros 0.8.4",
+ "ic-cdk-timers",
+ "ic-stable-structures",
+ "ic-wasi-polyfill",
+ "rquickjs",
+ "serde",
+ "serde_json",
+ "slotmap",
 ]
 
 [[package]]

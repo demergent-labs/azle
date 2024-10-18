@@ -16,6 +16,7 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
             let global = context.get_global();
 
             let callbacks = global.get("_azleCallbacks");
+
             let method_callback = callbacks.get(function_name).unwrap();
 
             let candid_args = if pass_arg_data {

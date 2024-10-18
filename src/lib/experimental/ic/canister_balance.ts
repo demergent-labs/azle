@@ -7,9 +7,9 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the number of cycles in the canister
  */
 export function canisterBalance(): nat64 {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.canisterBalance());
+    return BigInt(globalThis._azleIcExperimental.canisterBalance());
 }
