@@ -49,7 +49,7 @@ jobs:
                   SECRET_TEST: ${{secrets.SECRET_TEST}}
 
             - name: Use secret in a command (e.g., as a grep pattern)
-              run: echo "Secret matches $(echo 'test string' | grep -c $SECRET_TEST) times in 'test string'"
+              run: echo "Secret matches $(echo 'correcthorsebatterystaple' | grep -c $SECRET_TEST) times in 'correcthorsebatterystaple'"
               env:
                   SECRET_TEST: ${{secrets.SECRET_TEST}}
 
