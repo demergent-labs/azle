@@ -67,8 +67,6 @@ export function getPrelude(main: string): string {
                     systemFuncs: canister.getSystemFunctionIdlTypes()
                 });
 
-                console.log('canister.callbacks[0]', canister.callbacks['0']);
-
                 globalThis._azleCallbacks = canister.callbacks;
 
                 globalThis._azleGetCandidAndMethodMeta = () => {
