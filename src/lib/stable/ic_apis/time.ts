@@ -3,9 +3,16 @@
  * @returns the current timestamp
  */
 export function time(): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.time());
+    if (globalThis._azleIcExperimental !== undefined) {
+        return BigInt(globalThis._azleIcExperimental.time());
+    }
+
+    return globalThis._azleIcStable.time();
 }

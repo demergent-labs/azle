@@ -5,11 +5,16 @@ import { Principal } from '@dfinity/principal';
  * @returns the canister's id as a principal
  */
 export function id(): Principal {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return Principal.fromHex('04');
     }
 
-    // TODO consider bytes instead of string, just like with caller
-    const idString = globalThis._azleIc.id();
-    return Principal.fromText(idString);
+    if (globalThis._azleIcExperimental !== undefined) {
+        return Principal.fromText(globalThis._azleIcExperimental.id());
+    }
+
+    return Principal.fromUint8Array(globalThis._azleIcStable.id());
 }

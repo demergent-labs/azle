@@ -9,9 +9,9 @@ import { text } from '../candid/types/primitive/text';
  * @returns the Candid string
  */
 export function candidDecode(candidEncoded: blob): text {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return '';
     }
 
-    return globalThis._azleIc.candidDecode(candidEncoded.buffer);
+    return globalThis._azleIcExperimental.candidDecode(candidEncoded.buffer);
 }

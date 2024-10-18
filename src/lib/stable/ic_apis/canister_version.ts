@@ -4,9 +4,16 @@
  * @returns the version number
  */
 export function canisterVersion(): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return 0n;
     }
 
-    return BigInt(globalThis._azleIc.canisterVersion());
+    if (globalThis._azleIcExperimental !== undefined) {
+        return BigInt(globalThis._azleIcExperimental.canisterVersion());
+    }
+
+    return globalThis._azleIcStable.canisterVersion();
 }

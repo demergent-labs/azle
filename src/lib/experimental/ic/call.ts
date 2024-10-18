@@ -22,7 +22,7 @@ export function call<T extends (...args: any[]) => any>(
         cycles?: nat;
     }
 ): ReturnTypeOf<T> {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return undefined as any;
     }
 

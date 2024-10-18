@@ -23,13 +23,13 @@ export function callRaw(
     argsRaw: blob,
     payment: nat
 ): Promise<blob> {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return Promise.resolve(new Uint8Array());
     }
 
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
-        if (globalThis._azleIc === undefined) {
+        if (globalThis._azleIcExperimental === undefined) {
             return new Uint8Array();
         }
 
@@ -62,7 +62,7 @@ export function callRaw(
 
         // TODO consider finally, what if deletion goes wrong
         try {
-            globalThis._azleIc.callRaw(
+            globalThis._azleIcExperimental.callRaw(
                 promiseId,
                 canisterIdBytes,
                 method,

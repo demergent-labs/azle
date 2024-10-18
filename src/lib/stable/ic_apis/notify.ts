@@ -3,11 +3,10 @@ import { Principal } from '@dfinity/principal';
 
 /**
  * Performs a cross-canister call without awaiting the result
- * @param canisterId
- * @param method
- * @param argsRaw
- * @param payment
- * @returns
+ * @param canisterId The ID of the canister to notify
+ * @param method The method to call on the canister
+ * @param options Optional parameters for the call
+ * @returns void
  */
 export function notify(
     canisterId: Principal | string,
@@ -19,7 +18,10 @@ export function notify(
         raw?: Uint8Array;
     }
 ): void {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return undefined;
     }
 
@@ -32,17 +34,26 @@ export function notify(
         typeof canisterId === 'string'
             ? Principal.fromText(canisterId)
             : canisterId;
-    const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
-    const argsRawBuffer =
+    const canisterIdBytes = canisterIdPrincipal.toUint8Array();
+    const argsRaw =
         raw === undefined
-            ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
-            : raw.buffer;
+            ? new Uint8Array(IDL.encode(paramIdlTypes, args))
+            : raw;
     const paymentString = payment.toString();
 
-    return globalThis._azleIc.notifyRaw(
+    if (globalThis._azleIcExperimental !== undefined) {
+        return globalThis._azleIcExperimental.notifyRaw(
+            canisterIdBytes.buffer,
+            method,
+            argsRaw.buffer,
+            paymentString
+        );
+    }
+
+    return globalThis._azleIcStable.notifyRaw(
         canisterIdBytes,
         method,
-        argsRawBuffer,
+        argsRaw,
         paymentString
     );
 }
