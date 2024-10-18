@@ -1,6 +1,5 @@
 use crate::{
-    ic, quickjs_with_ctx, run_event_loop, wasm_binary_manipulation::get_js_code, CONTEXT_REF_CELL,
-    MODULE_NAME,
+    ic, quickjs_with_ctx, wasm_binary_manipulation::get_js_code, CONTEXT_REF_CELL, MODULE_NAME,
 };
 
 // TODO we might not need any of these panic hooks
@@ -54,8 +53,6 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
         // TODO is there a better name for this main module?
         // TODO this returns a promise...make sure we handle it appropriately
         rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, js).unwrap();
-
-        run_event_loop(ctx.clone());
 
         let get_candid_and_method_meta: rquickjs::Function =
             ctx.globals().get("_azleGetCandidAndMethodMeta").unwrap();

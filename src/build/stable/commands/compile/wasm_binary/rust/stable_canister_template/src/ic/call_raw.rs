@@ -1,4 +1,4 @@
-use crate::{quickjs_with_ctx, run_event_loop};
+use crate::quickjs_with_ctx;
 use rquickjs::{Ctx, Exception, Function, IntoJs, TypedArray};
 
 pub fn get_function(ctx: Ctx) -> Function {
@@ -19,7 +19,6 @@ pub fn get_function(ctx: Ctx) -> Function {
 
                 quickjs_with_ctx(move |ctx| {
                     resolve_or_reject(ctx.clone(), &call_result, &promise_id);
-                    run_event_loop(ctx.clone());
                 });
             });
 

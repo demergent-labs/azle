@@ -33,15 +33,5 @@ thread_local! {
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }
 
-pub fn run_event_loop(context: rquickjs::Ctx) {
-    loop {
-        let result = context.execute_pending_job();
-
-        if result == false {
-            break;
-        }
-    }
-}
-
 #[ic_cdk_macros::update]
 pub fn _azle_chunk() {}

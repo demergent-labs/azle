@@ -1,7 +1,7 @@
 use rquickjs::{Ctx, Function};
 use slotmap::Key;
 
-use crate::{quickjs_with_ctx, run_event_loop};
+use crate::quickjs_with_ctx;
 
 pub fn get_function(ctx: Ctx) -> Function {
     Function::new(ctx, |delay: String, callback_id: String| {
@@ -21,8 +21,6 @@ pub fn get_function(ctx: Ctx) -> Function {
                 if result.is_exception() {
                     panic!("Timer callback threw an exception");
                 }
-
-                run_event_loop(ctx.clone());
             });
         };
 

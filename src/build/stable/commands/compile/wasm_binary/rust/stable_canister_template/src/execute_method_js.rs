@@ -1,4 +1,4 @@
-use crate::{quickjs_with_ctx, run_event_loop};
+use crate::quickjs_with_ctx;
 
 #[no_mangle]
 #[allow(unused)]
@@ -20,7 +20,5 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
         method_callback
             .call::<_, rquickjs::Undefined>((candid_args,))
             .unwrap();
-
-        run_event_loop(ctx.clone());
     });
 }

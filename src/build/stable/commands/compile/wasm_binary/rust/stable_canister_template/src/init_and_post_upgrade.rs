@@ -2,7 +2,7 @@ use ic_stable_structures::memory_manager::MemoryId;
 
 use crate::{
     execute_method_js::execute_method_js,
-    ic, quickjs_with_ctx, run_event_loop,
+    ic, quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME,
 };
@@ -112,8 +112,6 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         // TODO is there a better name for this main module?
         // TODO this returns a promise...make sure we handle it appropriately
         rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, js).unwrap();
-
-        run_event_loop(ctx.clone());
     });
 
     // TODO is it possible to just put this all in the same quickjs_with_ctx?
