@@ -1,5 +1,5 @@
 import './experimental';
-import '../stable/globals'; // We import this for to remove type errors having to do with the stable and experimental globals
+import '../stable/globals'; // We import this to remove type errors having to do with the stable and experimental globals
 
 import { Buffer } from 'buffer';
 import * as process from 'process';
