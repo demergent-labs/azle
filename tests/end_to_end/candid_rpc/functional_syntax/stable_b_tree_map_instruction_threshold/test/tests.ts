@@ -8,7 +8,7 @@ export function getTests(
     stableBTreeMapInstructionThresholdCanister: ActorSubclass<_SERVICE>
 ): Test {
     return () => {
-        it.only('test SmallRecord', async () => {
+        it('test SmallRecord', async () => {
             await stableBTreeMapInstructionThresholdCanister.insertSmallRecord(
                 10_000
             );
