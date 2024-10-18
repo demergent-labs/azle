@@ -25,7 +25,7 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
             - id: get-version
               run: |
@@ -109,7 +109,7 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
             - id: get-node-version
               uses: ./.github/actions/get_node_version
@@ -200,7 +200,7 @@ jobs:
 
                   # Push changes using PAT
                   echo "Pushing changes to $CURRENT_BRANCH"
-                  git push https://$PAT@github.com/${{ github.repository }}.git HEAD:$CURRENT_BRANCH || {
+                  git push origin HEAD:$CURRENT_BRANCH || {
                     echo "Failed to push changes"
                     exit 1
                   }
