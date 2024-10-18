@@ -120,7 +120,7 @@ export function StableBTreeMap<Key = any, Value = any>(
             const encodedItems = globalThis._azleIcStable.stableBTreeMapItems(
                 memoryId,
                 startIndex ?? 0,
-                length ?? -1 // TODO fix this in the Rust
+                length ?? -1
             );
 
             // TODO too much copying
