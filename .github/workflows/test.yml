@@ -20,9 +20,16 @@ jobs:
     do-test:
         runs-on: ubuntu-latest
         steps:
-            - run: echo ${{secrets.SECRET_TEST}}
-            - run: echo $SECRET_TEST
-            - run: echo ${{env.SECRET_TEST}}
+            - uses: actions/checkout@v4
+
+            - name: Make script executable
+              run: chmod +x .github/print_secret.sh
+
+            - name: Print secret
+              run: .github/print_secret.sh "$SECRET_TEST"
+              env:
+                  SECRET_TEST: ${{secrets.SECRET_TEST}}
+
     determine-should-run-tests:
         name: Determine if tests should run
         runs-on: ubuntu-latest
