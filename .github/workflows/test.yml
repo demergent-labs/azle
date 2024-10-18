@@ -27,8 +27,18 @@ jobs:
               env:
                   SECRET_TEST: ${{secrets.SECRET_TEST}}
 
-            - name: Print first 5 characters of secret
-              run: echo "First 5 characters of secret are '${SECRET_TEST:0:29}'"
+            - name: Print first 10 characters of secret
+              run: echo "First 10 characters of secret are '${SECRET_TEST:0:10}'"
+              env:
+                  SECRET_TEST: ${{secrets.SECRET_TEST}}
+
+            - name: Print second 10 characters of secret
+              run: echo "Second 10 characters of secret are '${SECRET_TEST:10:20}'"
+              env:
+                  SECRET_TEST: ${{secrets.SECRET_TEST}}
+
+            - name: Print third 10 characters of secret
+              run: echo "Third 10 characters of secret are '${SECRET_TEST:20:30}'"
               env:
                   SECRET_TEST: ${{secrets.SECRET_TEST}}
 
