@@ -15,7 +15,14 @@ env:
     AZLE_IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
     AZLE_IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
     AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+    SECRET_TEST: ${{secrets.SECRET_TEST}}
 jobs:
+    do-test:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo ${{secrets.SECRET_TEST}}
+            - run: echo $SECRET_TEST
+            - run: echo ${{env.SECRET_TEST}}
     determine-should-run-tests:
         name: Determine if tests should run
         runs-on: ubuntu-latest
