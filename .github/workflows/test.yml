@@ -22,11 +22,18 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Make script executable
-              run: chmod +x .github/print_secret.sh
+            - name: Check secret length
+              run: echo "Secret length is $(echo $SECRET_TEST | wc -c)"
+              env:
+                  SECRET_TEST: ${{secrets.SECRET_TEST}}
 
-            - name: Print secret
-              run: .github/print_secret.sh "$SECRET_TEST"
+            - name: Print first character of secret
+              run: echo "First character of secret is ${SECRET_TEST:0:1}"
+              env:
+                  SECRET_TEST: ${{secrets.SECRET_TEST}}
+
+            - name: Use secret in a command (e.g., as a grep pattern)
+              run: echo "Secret matches $(echo 'test string' | grep -c $SECRET_TEST) times in 'test string'"
               env:
                   SECRET_TEST: ${{secrets.SECRET_TEST}}
 
