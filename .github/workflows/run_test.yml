@@ -6,10 +6,14 @@ on:
             test_infos:
                 required: true
                 type: string
+            run_experimental:
+                required: false
+                type: boolean
+                default: false
 
 jobs:
     run-test:
-        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
+        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}} ${{ matrix.experimental_flag }}'
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
@@ -32,6 +36,8 @@ jobs:
                 azle_source:
                     - npm
                     - repo
+                experimental_flag:
+                    - ${{ inputs.run_experimental && 'AZLE_EXPERIMENTAL=true' || '' }}
                 exclude:
                     - include_npm: false
                       azle_source: npm
@@ -145,6 +151,6 @@ jobs:
 
                   echo "Running tests $RUNS times"
 
-                  AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
+                  ${{ matrix.experimental_flag }} AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}

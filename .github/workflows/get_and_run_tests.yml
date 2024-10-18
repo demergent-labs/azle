@@ -10,6 +10,10 @@ on:
                 required: false
                 type: string
                 default: ''
+            run_experimental:
+                required: false
+                type: boolean
+                default: false
 
 jobs:
     get-test-infos:
@@ -31,3 +35,4 @@ jobs:
         uses: ./.github/workflows/run_test.yml
         with:
             test_infos: ${{ needs.get-test-infos.outputs.test-infos }}
+            run_experimental: ${{ inputs.run_experimental }}
