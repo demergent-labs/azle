@@ -122,7 +122,9 @@ async function handleUploadAssetsCommand(): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
-    const experimental = canisterConfig?.custom?.experimental === true;
+    const experimental =
+        canisterConfig?.custom?.experimental === true ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
 
     if (experimental === false) {
         if (canisterConfig.custom?.assets !== undefined) {
@@ -139,7 +141,9 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
-    const experimental = canisterConfig?.custom?.experimental === true;
+    const experimental =
+        canisterConfig?.custom?.experimental === true ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
 
     if (experimental === false) {
         checkForExperimentalDfxJsonFields(canisterConfig);
@@ -155,7 +159,9 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
 }
 
 async function handleTemplateCommand(ioType: IOType): Promise<void> {
-    const experimental = process.argv.includes('--experimental');
+    const experimental =
+        process.argv.includes('--experimental') ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
 
     if (experimental === false) {
         await runStableTemplateCommand(ioType);
@@ -183,7 +189,9 @@ async function handleInstallGlobalDependenciesCommand(): Promise<void> {
 }
 
 async function handleNewCommand(): Promise<void> {
-    const experimental = process.argv.includes('--experimental');
+    const experimental =
+        process.argv.includes('--experimental') ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
     const httpServer = process.argv.includes('--http-server');
 
     if (experimental === false) {
