@@ -1,5 +1,5 @@
 [package]
-name = "stable"
+name = "stable_canister_template"
 version = "0.0.0"
 edition = "2018"
 

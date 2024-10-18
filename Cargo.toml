@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "src/build/rust/canister",
-    "src/build/rust/open_value_sharing",
-    "src/build/rust/stable",
+    "src/build/experimental/commands/compile/wasm_binary/rust/experimental_canister_template",
+    "src/build/experimental/commands/compile/wasm_binary/rust/open_value_sharing",
+    "src/build/stable/commands/compile/wasm_binary/rust/stable_canister_template",
 ]

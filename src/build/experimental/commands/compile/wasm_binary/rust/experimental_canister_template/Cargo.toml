@@ -1,5 +1,5 @@
 [package]
-name = "canister"
+name = "experimental_canister_template"
 version = "0.0.0"
 edition = "2018"
 

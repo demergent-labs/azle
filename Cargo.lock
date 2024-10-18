@@ -206,27 +206,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "canister"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "candid",
- "candid_parser",
- "ic-cdk 0.12.2",
- "ic-cdk-macros 0.8.4",
- "ic-cdk-timers",
- "ic-stable-structures",
- "ic-wasi-polyfill",
- "open_value_sharing",
- "serde",
- "serde_json",
- "sha2",
- "slotmap",
- "wasmedge_quickjs",
- "wasmi",
-]
-
-[[package]]
 name = "cc"
 version = "1.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -480,6 +459,27 @@ checksum = "534c5cf6194dfab3db3242765c03bbe257cf92f22b38f6bc0c58d59108a820ba"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "experimental_canister_template"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "candid",
+ "candid_parser",
+ "ic-cdk 0.12.2",
+ "ic-cdk-macros 0.8.4",
+ "ic-cdk-timers",
+ "ic-stable-structures",
+ "ic-wasi-polyfill",
+ "open_value_sharing",
+ "serde",
+ "serde_json",
+ "sha2",
+ "slotmap",
+ "wasmedge_quickjs",
+ "wasmi",
 ]
 
 [[package]]
@@ -1585,7 +1585,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
 
 [[package]]
-name = "stable"
+name = "stable-fs"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b71df5a7c491a41b2f9cb96dd444c93d5e515061f96f6dbcba91f578a5326a83"
+dependencies = [
+ "bitflags",
+ "ciborium",
+ "ic-cdk 0.16.0",
+ "ic-stable-structures",
+ "serde",
+ "serde_bytes",
+]
+
+[[package]]
+name = "stable_canister_template"
 version = "0.0.0"
 dependencies = [
  "candid",
@@ -1599,20 +1613,6 @@ dependencies = [
  "serde",
  "serde_json",
  "slotmap",
-]
-
-[[package]]
-name = "stable-fs"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b71df5a7c491a41b2f9cb96dd444c93d5e515061f96f6dbcba91f578a5326a83"
-dependencies = [
- "bitflags",
- "ciborium",
- "ic-cdk 0.16.0",
- "ic-stable-structures",
- "serde",
- "serde_bytes",
 ]
 
 [[package]]
