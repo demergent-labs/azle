@@ -100,6 +100,7 @@ if (globalThis._azleInsideCanister === true) {
 
     globalThis._azleInitCalled = false;
     globalThis._azlePostUpgradeCalled = false;
+    globalThis._azleRecordBenchmarks = false;
 
     const log = (...args: any[]): void => {
         const jsonStringifiedArgs = args

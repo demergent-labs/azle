@@ -11,7 +11,7 @@ pub struct BenchmarkEntry {
 }
 
 thread_local! {
-    pub static BENCHMARKS: RefCell<BTreeMap<u64, BenchmarkEntry>> = RefCell::new(BTreeMap::new());
+    pub static BENCHMARKS_REF_CELL: RefCell<BTreeMap<u64, BenchmarkEntry>> = RefCell::new(BTreeMap::new());
 }
 
 pub fn record_benchmark(context: &mut Context, function_name: &str) {
@@ -25,7 +25,7 @@ pub fn record_benchmark(context: &mut Context, function_name: &str) {
         .and_then(|v| Some(v.to_string()?.to_string()))
         .unwrap_or_else(|| function_name.to_string());
 
-    BENCHMARKS.with(|benchmarks| {
+    BENCHMARKS_REF_CELL.with(|benchmarks| {
         benchmarks.borrow_mut().insert(
             timestamp,
             BenchmarkEntry {
