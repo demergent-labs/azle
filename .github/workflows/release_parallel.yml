@@ -8,6 +8,8 @@ on:
                 required: true
             NPM_TOKEN:
                 required: true
+            LASTMJS_GITHUB_TOKEN:
+                required: true
 
 jobs:
     prepare-release:
@@ -23,7 +25,7 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
             - id: get-version
               run: |
@@ -107,7 +109,7 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
             - id: get-node-version
               uses: ./.github/actions/get_node_version
@@ -161,12 +163,12 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
                   fetch-depth: 0 # Fetch all history for all branches and tags
 
             - name: Merge update branches
               env:
-                  PAT: ${{ secrets.WORKFLOW_PAT }}
+                  PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
               run: |
                   git config --global user.name 'Jordan Last'
                   git config --global user.email 'jordan.michael.last@gmail.com'
