@@ -1588,7 +1588,6 @@ checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
 name = "stable"
 version = "0.0.0"
 dependencies = [
- "anyhow",
  "candid",
  "candid_parser",
  "ic-cdk 0.12.2",
@@ -1599,9 +1598,7 @@ dependencies = [
  "rquickjs",
  "serde",
  "serde_json",
- "sha2",
  "slotmap",
- "wasmedge_quickjs",
 ]
 
 [[package]]
