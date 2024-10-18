@@ -200,7 +200,7 @@ jobs:
 
                   # Push changes using PAT
                   echo "Pushing changes to $CURRENT_BRANCH"
-                  git push https://$PAT@github.com/${{ github.repository }}.git HEAD:$CURRENT_BRANCH || {
+                  git push origin HEAD:$CURRENT_BRANCH || {
                     echo "Failed to push changes"
                     exit 1
                   }
