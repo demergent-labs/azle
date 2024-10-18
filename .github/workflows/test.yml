@@ -3,7 +3,8 @@
 # These tests are currently written in TypeScript and are intended to be run in a Node.js environment.
 # This GitHub Action takes care of deploying to npm and GitHub.
 
-name: Tests
+name: Test
+
 on:
     push:
         branches:
@@ -36,13 +37,6 @@ jobs:
 
             - id: set-exclude-dirs
               run: |
-                  CONDITIONS=$(echo "${{ steps.set-conditions.outputs.conditions }}" | base64 -d)
-                  IS_MAIN_BRANCH_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_push)
-                  IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_merge_from_release_push)
-                  IS_RELEASE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_release_branch_pr)
-                  IS_FEATURE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_pr)
-                  IS_FEATURE_BRANCH_DRAFT_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_draft_pr)
-
                   RELEASE_TESTS="${{ format('
                   tests/end_to_end/candid_rpc/class_syntax/new
                   tests/end_to_end/http_server/new
@@ -74,6 +68,12 @@ jobs:
                   tests/end_to_end/candid_rpc/functional_syntax/stable_structures
                   tests/end_to_end/http_server/autoreload
                   ') }}"
+
+                  IS_MAIN_BRANCH_PUSH="${{ steps.set-conditions.outputs.is_main_branch_push }}"
+                  IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH="${{ steps.set-conditions.outputs.is_main_branch_merge_from_release_push }}"
+                  IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr }}"
+                  IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr }}"
+                  IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}"
 
                   EXCLUDE_DIRS=""
 
