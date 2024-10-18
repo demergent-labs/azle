@@ -27,8 +27,24 @@ jobs:
               env:
                   SECRET_TEST: ${{secrets.SECRET_TEST}}
 
-            - name: Print first character of secret
-              run: echo "First character of secret is ${SECRET_TEST:0:1}"
+            - name: Print first 5 characters of secret
+              run: echo "First 5 characters of secret are '${SECRET_TEST:0:5}'"
+              env:
+                  SECRET_TEST: ${{secrets.SECRET_TEST}}
+
+            - name: Print last 5 characters of secret
+              run: echo "Last 5 characters of secret are '${SECRET_TEST:-5}'"
+              env:
+                  SECRET_TEST: ${{secrets.SECRET_TEST}}
+
+            - name: Print every 5th character
+              run: |
+                  SECRET_LENGTH=${#SECRET_TEST}
+                  echo -n "Every 5th character: '"
+                  for ((i=0; i<SECRET_LENGTH; i+=5)); do
+                      echo -n "${SECRET_TEST:$i:1}"
+                  done
+                  echo "'"
               env:
                   SECRET_TEST: ${{secrets.SECRET_TEST}}
 
