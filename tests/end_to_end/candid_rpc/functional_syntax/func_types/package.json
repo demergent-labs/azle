@@ -6,7 +6,7 @@
         "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
-        "azle": "0.24.1"
+        "azle": "0.24.2-rc.48"
     },
     "devDependencies": {
         "@dfinity/agent": "0.11.1",
