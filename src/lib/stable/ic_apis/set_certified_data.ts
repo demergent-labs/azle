@@ -18,12 +18,20 @@
  * - called from an illegal context (e.g. from a {@link $query} call)
  *
  * @param data the data to be set
- * @returns
+ * @returns void
  */
 export function setCertifiedData(data: Uint8Array): void {
-    if (globalThis._azleIcStable === undefined) {
-        return undefined;
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
+        return;
     }
 
-    return globalThis._azleIcStable.setCertifiedData(data);
+    if (globalThis._azleIcExperimental !== undefined) {
+        globalThis._azleIcExperimental.setCertifiedData(data.buffer);
+        return;
+    }
+
+    globalThis._azleIcStable.setCertifiedData(data);
 }

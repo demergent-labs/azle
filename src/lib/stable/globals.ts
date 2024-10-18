@@ -2,6 +2,7 @@ import { IDL } from '@dfinity/candid';
 import { TextDecoder, TextEncoder } from 'text-encoding';
 
 import { MethodMeta } from '../../build/stable/utils/types';
+import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { print } from './ic_apis';
 import { AzleIcStable } from './ic_apis/azle_ic_stable';
@@ -21,6 +22,8 @@ declare global {
     var _azleCanisterMethodsIndex: number;
     // eslint-disable-next-line no-var
     var _azleExperimental: boolean;
+    // eslint-disable-next-line no-var
+    var _azleIcExperimental: AzleIcExperimental;
     // eslint-disable-next-line no-var
     var _azleIcStable: AzleIcStable;
     // eslint-disable-next-line no-var

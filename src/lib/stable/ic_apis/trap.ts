@@ -4,8 +4,15 @@
  * @param message the rejection message
  */
 export function trap(message: string): never {
-    if (globalThis._azleIcStable === undefined) {
-        throw new Error();
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
+        throw new Error('IC API not available');
+    }
+
+    if (globalThis._azleIcExperimental !== undefined) {
+        return globalThis._azleIcExperimental.trap(message);
     }
 
     return globalThis._azleIcStable.trap(message);

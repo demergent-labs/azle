@@ -14,7 +14,10 @@ import { id } from './id';
  * - heartbeats ([T](https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-imports))
  */
 export async function chunk(): Promise<void> {
-    if (globalThis._azleIcStable === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return undefined;
     }
 

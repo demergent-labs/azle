@@ -8,11 +8,8 @@ import { URL } from 'url';
 import { v4 } from 'uuid';
 
 import { azleFetch } from './fetch';
-import { AzleIcExperimental } from './ic/azle_ic_experimental';
 
 declare global {
-    // eslint-disable-next-line no-var
-    var _azleIcExperimental: AzleIcExperimental;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
     // eslint-disable-next-line no-var

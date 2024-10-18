@@ -1,54 +1,44 @@
 type RejectionCode =
-    | {
-          NoError: null;
-      }
-    | {
-          SysFatal: null;
-      }
-    | {
-          SysTransient: null;
-      }
-    | {
-          DestinationInvalid: null;
-      }
-    | {
-          CanisterReject: null;
-      }
-    | {
-          CanisterError: null;
-      }
-    | {
-          Unknown: null;
-      };
+    | { NoError: null }
+    | { SysFatal: null }
+    | { SysTransient: null }
+    | { DestinationInvalid: null }
+    | { CanisterReject: null }
+    | { CanisterError: null }
+    | { Unknown: null };
 
 /**
- * Returns the rejection code from the most recently executed cross-canister
- * call
+ * Returns the rejection code from the most recently executed cross-canister call
  * @returns the rejection code
  */
 export function rejectCode(): RejectionCode {
-    if (globalThis._azleIcStable === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return { Unknown: null };
     }
 
-    const rejectCodeNumber = globalThis._azleIcStable.rejectCode();
+    const rejectCodeNumber =
+        globalThis._azleIcExperimental !== undefined
+            ? Number(globalThis._azleIcExperimental.rejectCode())
+            : globalThis._azleIcStable.rejectCode();
 
-    switch (rejectCodeNumber) {
-        case 0:
-            return { NoError: null };
-        case 1:
-            return { SysFatal: null };
-        case 2:
-            return { SysTransient: null };
-        case 3:
-            return { DestinationInvalid: null };
-        case 4:
-            return { CanisterReject: null };
-        case 5:
-            return { CanisterError: null };
-        case 6:
-            return { Unknown: null };
-        default:
-            throw Error(`Unknown rejection code: ${rejectCodeNumber}`);
+    const rejectCodeMap: { [key: number]: RejectionCode } = {
+        0: { NoError: null },
+        1: { SysFatal: null },
+        2: { SysTransient: null },
+        3: { DestinationInvalid: null },
+        4: { CanisterReject: null },
+        5: { CanisterError: null },
+        6: { Unknown: null }
+    };
+
+    const result = rejectCodeMap[rejectCodeNumber];
+
+    if (result === undefined) {
+        throw new Error(`Unknown rejection code: ${rejectCodeNumber}`);
     }
+
+    return result;
 }

@@ -15,7 +15,10 @@ export async function call<Args extends any[] | undefined, Return = any>(
 ): Promise<Return> {
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
-        if (globalThis._azleIcStable === undefined) {
+        if (
+            globalThis._azleIcStable === undefined &&
+            globalThis._azleIcExperimental === undefined
+        ) {
             return undefined;
         }
 
@@ -68,13 +71,23 @@ export async function call<Args extends any[] | undefined, Return = any>(
 
         // TODO consider finally, what if deletion goes wrong
         try {
-            globalThis._azleIcStable.callRaw(
-                promiseId,
-                canisterIdBytes,
-                method,
-                argsRaw,
-                paymentString
-            );
+            if (globalThis._azleIcExperimental !== undefined) {
+                globalThis._azleIcExperimental.callRaw(
+                    promiseId,
+                    canisterIdBytes.buffer,
+                    method,
+                    argsRaw.buffer,
+                    paymentString
+                );
+            } else {
+                globalThis._azleIcStable.callRaw(
+                    promiseId,
+                    canisterIdBytes,
+                    method,
+                    argsRaw,
+                    paymentString
+                );
+            }
         } catch (error) {
             delete globalThis._azleResolveIds[globalResolveId];
             delete globalThis._azleRejectIds[globalRejectId];

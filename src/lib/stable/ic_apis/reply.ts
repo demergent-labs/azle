@@ -17,12 +17,17 @@ type ReplyInput<T> =
  * uncaught `TypeError`.
  */
 export function reply<T>(input: ReplyInput<T>): void {
-    if (globalThis._azleIcStable === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return undefined;
     }
 
     if ('raw' in input) {
-        return globalThis._azleIcStable.replyRaw(input.raw);
+        return globalThis._azleIcExperimental !== undefined
+            ? globalThis._azleIcExperimental.replyRaw(input.raw.buffer)
+            : globalThis._azleIcStable.replyRaw(input.raw);
     } else {
         const idlType = input.idlType === undefined ? [] : [input.idlType];
         const data =
@@ -30,7 +35,12 @@ export function reply<T>(input: ReplyInput<T>): void {
                 ? []
                 : [input.data];
 
-        // @ts-ignore IDL.encode types are defined incorrectly https://github.com/demergent-labs/azle/issues/2061
-        return globalThis._azleIcStable.replyRaw(IDL.encode(idlType, data));
+        return globalThis._azleIcExperimental !== undefined
+            ? globalThis._azleIcExperimental.replyRaw(
+                  // @ts-ignore IDL.encode types are defined incorrectly https://github.com/demergent-labs/azle/issues/2061
+                  IDL.encode(idlType, data).buffer
+              )
+            : // @ts-ignore IDL.encode types are defined incorrectly https://github.com/demergent-labs/azle/issues/2061
+              globalThis._azleIcStable.replyRaw(IDL.encode(idlType, data));
     }
 }

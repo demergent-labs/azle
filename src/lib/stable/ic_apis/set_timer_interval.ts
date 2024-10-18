@@ -13,16 +13,27 @@ export function setTimerInterval(
     interval: bigint,
     callback: () => void | Promise<void>
 ): bigint {
-    if (globalThis._azleIcStable === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return 0n;
     }
 
     const timerCallbackId = `_interval_timer_${v4()}`;
 
-    const timerId = globalThis._azleIcStable.setTimerInterval(
-        interval.toString(),
-        timerCallbackId
-    );
+    const timerId =
+        globalThis._azleIcExperimental !== undefined
+            ? BigInt(
+                  globalThis._azleIcExperimental.setTimerInterval(
+                      interval.toString(),
+                      timerCallbackId
+                  )
+              )
+            : globalThis._azleIcStable.setTimerInterval(
+                  interval.toString(),
+                  timerCallbackId
+              );
 
     globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
 

@@ -3,11 +3,10 @@ import { Principal } from '@dfinity/principal';
 
 /**
  * Performs a cross-canister call without awaiting the result
- * @param canisterId
- * @param method
- * @param argsRaw
- * @param payment
- * @returns
+ * @param canisterId The ID of the canister to notify
+ * @param method The method to call on the canister
+ * @param options Optional parameters for the call
+ * @returns void
  */
 export function notify(
     canisterId: Principal | string,
@@ -19,7 +18,10 @@ export function notify(
         raw?: Uint8Array;
     }
 ): void {
-    if (globalThis._azleIcStable === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return undefined;
     }
 
@@ -38,6 +40,15 @@ export function notify(
             ? new Uint8Array(IDL.encode(paramIdlTypes, args))
             : raw;
     const paymentString = payment.toString();
+
+    if (globalThis._azleIcExperimental !== undefined) {
+        return globalThis._azleIcExperimental.notifyRaw(
+            canisterIdBytes.buffer,
+            method,
+            argsRaw.buffer,
+            paymentString
+        );
+    }
 
     return globalThis._azleIcStable.notifyRaw(
         canisterIdBytes,

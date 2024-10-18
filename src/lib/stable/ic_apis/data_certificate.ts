@@ -5,8 +5,21 @@
  * @returns the data certificate or None
  */
 export function dataCertificate(): Uint8Array | undefined {
-    if (globalThis._azleIcStable === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return undefined;
+    }
+
+    if (globalThis._azleIcExperimental !== undefined) {
+        const result = globalThis._azleIcExperimental.dataCertificate();
+
+        if (result === undefined) {
+            return undefined;
+        }
+
+        return new Uint8Array(result);
     }
 
     return globalThis._azleIcStable.dataCertificate();
