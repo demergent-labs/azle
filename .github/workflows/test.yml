@@ -107,7 +107,6 @@ jobs:
             - determine-should-run-tests
             - set-exclude-dirs
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
@@ -137,20 +136,10 @@ jobs:
                           name: 'Property IC API',
                           directories: './tests/property/ic_api'
                       }
-        steps:
-            - uses: actions/checkout@v4
-
-            - name: Get test infos
-              id: get-test-infos
-              uses: ./.github/actions/get_test_infos
-              with:
-                  directories: ${{ matrix.test_group.directories }}
-                  exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
-
-            - name: Run tests
-              uses: ./.github/workflows/run_test.yml
-              with:
-                  test_infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        uses: ./.github/workflows/get_and_run_tests.yml
+        with:
+            directories: ${{ matrix.test_group.directories }}
+            exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
     check-test-success:
         name: Check Azle tests succeeded
