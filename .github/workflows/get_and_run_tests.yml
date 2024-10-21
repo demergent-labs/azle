@@ -1,4 +1,4 @@
-name: Get and Run Tests
+name: Prepare and Run Tests
 
 on:
     workflow_call:
@@ -12,11 +12,12 @@ on:
                 default: ''
 
 jobs:
-    get-test-infos:
-        name: 'Get test infos'
+    prepare-test-environment:
+        name: 'Prepare Test Environment'
         runs-on: ubuntu-latest
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+            include_npm: ${{ steps.set-include-npm.outputs.include_npm }}
         steps:
             - uses: actions/checkout@v4
             - id: get-test-infos
@@ -24,10 +25,22 @@ jobs:
               with:
                   directories: ${{ inputs.directories }}
                   exclude-dirs: ${{ inputs.exclude-dirs }}
+            - uses: ./.github/actions/set_run_conditions
+              id: set-conditions
+            - id: set-include-npm
+              run: |
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push }}" == "true" || \
+                        "${{ steps.set-conditions.outputs.is_main_branch_merge_from_release_push }}" == "true" || \
+                        "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
+                    echo "include_npm=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "include_npm=false" >> $GITHUB_OUTPUT
+                  fi
 
     run-tests:
         name: 'Run'
-        needs: get-test-infos
+        needs: prepare-test-environment
         uses: ./.github/workflows/run_test.yml
         with:
-            test_infos: ${{ needs.get-test-infos.outputs.test-infos }}
+            test_infos: ${{ needs.prepare-test-environment.outputs.test-infos }}
+            include_npm: ${{ needs.prepare-test-environment.outputs.include_npm }}
