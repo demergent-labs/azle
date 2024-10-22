@@ -69,31 +69,31 @@ jobs:
                   tests/end_to_end/http_server/autoreload
                   ') }}"
 
-                  IS_MAIN_BRANCH_PUSH="${{ steps.set-conditions.outputs.is_main_branch_push }}"
-                  IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}"
-                  IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr }}"
-                  IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr }}"
-                  IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}"
+                  AZLE_IS_MAIN_BRANCH_PUSH="${{ steps.set-conditions.outputs.is_main_branch_push }}"
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}"
+                  AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr }}"
+                  AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr }}"
+                  AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}"
 
                   EXCLUDE_DIRS=""
 
-                  if [[ "$IS_MAIN_BRANCH_PUSH" == "true" ]]; then
+                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "$IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
+                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "$IS_RELEASE_BRANCH_PR" == "true" ]]; then
+                  if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "$IS_FEATURE_BRANCH_PR" == "true" ]]; then
+                  if [[ "$AZLE_IS_FEATURE_BRANCH_PR" == "true" ]]; then
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS"
                   fi
 
-                  if [[ "$IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
+                  if [[ "$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS $SLOW_TESTS"
                   fi
 
