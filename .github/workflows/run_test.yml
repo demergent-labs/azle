@@ -6,6 +6,9 @@ on:
             test_infos:
                 required: true
                 type: string
+            include_npm:
+                required: true
+                type: boolean
 
 jobs:
     run-test:
@@ -16,7 +19,7 @@ jobs:
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
             AZLE_IS_MAIN_BRANCH_PUSH: ''
-            AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: ''
+            AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ''
             AZLE_IS_RELEASE_BRANCH_PR: ''
             AZLE_IS_FEATURE_BRANCH_PR: ''
             AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ''
@@ -24,20 +27,10 @@ jobs:
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
-                # os: [macos-latest]
+                # os: [macos-latest, ubuntu-latest]
                 os: [ubuntu-latest]
-                include_npm:
-                    # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
-                    - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
                 azle_source:
-                    - npm
-                    - repo
-                exclude:
-                    - include_npm: false
-                      azle_source: npm
-                    - include_npm: true
-                      azle_source: repo
-                # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
+                    - ${{ inputs.include_npm == 'true' && 'npm' || 'repo' }}
                 tests: ${{ fromJSON(inputs.test_infos) }}
         steps:
             - uses: actions/checkout@v4
@@ -47,17 +40,16 @@ jobs:
 
             - name: Set condition environment variables
               run: |
-                  CONDITIONS=$(echo "${{ steps.set-conditions.outputs.conditions }}" | base64 -d)
-                  echo "AZLE_IS_MAIN_BRANCH_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_push)" >> $GITHUB_ENV
-                  echo "AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH=$(echo $CONDITIONS | jq -r .is_main_branch_merge_from_release_push)" >> $GITHUB_ENV
-                  echo "AZLE_IS_RELEASE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_release_branch_pr)" >> $GITHUB_ENV
-                  echo "AZLE_IS_FEATURE_BRANCH_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_pr)" >> $GITHUB_ENV
-                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=$(echo $CONDITIONS | jq -r .is_feature_branch_draft_pr)" >> $GITHUB_ENV
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH=${{ steps.set-conditions.outputs.is_main_branch_push }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_RELEASE_BRANCH_PR=${{ steps.set-conditions.outputs.is_release_branch_pr }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_PR=${{ steps.set-conditions.outputs.is_feature_branch_pr }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" >> $GITHUB_ENV
 
             - id: check-conditions
               run: |
                   echo "AZLE_IS_MAIN_BRANCH_PUSH: $AZLE_IS_MAIN_BRANCH_PUSH"
-                  echo "AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: $AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH"
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
                   echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
@@ -110,12 +102,12 @@ jobs:
               shell: bash -l {0}
 
             - name: Start dfx with artificial delay 0
-              if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' || env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR == 'true' }}
+              if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ env.AZLE_IS_RELEASE_BRANCH_PR == 'true' || env.AZLE_IS_MAIN_BRANCH_PUSH == 'true' || env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH == 'true' }}
+              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
@@ -123,23 +115,23 @@ jobs:
               run: |
                   RUNS=1
 
-                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH" == "true" ]]; then
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push }}" == "true" ]]; then
                       RUNS=100
                   fi
 
-                  if [[ "$AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH" == "true" ]]; then
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" ]]; then
                       RUNS=100
                   fi
 
-                  if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
+                  if [[ "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
                       RUNS=10
                   fi
 
-                  if [[ "$AZLE_IS_FEATURE_BRANCH_PR" == "true" ]]; then
+                  if [[ "${{ steps.set-conditions.outputs.is_feature_branch_pr }}" == "true" ]]; then
                       RUNS=5
                   fi
 
-                  if [[ "$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
+                  if [[ "${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" == "true" ]]; then
                       RUNS=1
                   fi
 
