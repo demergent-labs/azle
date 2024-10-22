@@ -33,25 +33,20 @@ export async function runBenchmarksForCanisters(
         const actor = await createActor(canisterId, 'default');
         const currentBenchmarks = await actor._azle_get_benchmarks();
 
-        if (!allBenchmarks[canisterName]) {
+        if (allBenchmarks[canisterName] === undefined) {
             allBenchmarks[canisterName] = {
-                current: { version, benchmarks: [] },
-                previous: { version, benchmarks: [] }
+                previous: { version, benchmarks: [] },
+                current: { version, benchmarks: currentBenchmarks }
             };
         }
+
+        allBenchmarks[canisterName].previous =
+            allBenchmarks[canisterName].current;
 
         allBenchmarks[canisterName].current = {
             version,
             benchmarks: currentBenchmarks
         };
-
-        if (
-            allBenchmarks[canisterName].previous.benchmarks.length === 0 &&
-            allBenchmarks[canisterName].previous.version === version
-        ) {
-            allBenchmarks[canisterName].previous =
-                allBenchmarks[canisterName].current;
-        }
     }
 
     await writeBenchmarksMarkdown(canisterNames, allBenchmarks);

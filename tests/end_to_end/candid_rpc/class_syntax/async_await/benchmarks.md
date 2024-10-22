@@ -2,12 +2,12 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Execution | Method Name                  | Instructions | Cycles    | USD           | Change                           |
-| --------- | ---------------------------- | ------------ | --------- | ------------- | -------------------------------- |
-| 0         | getRandomnessDirectly        | 1,402,595    | 1,151,038 | $0.0000015385 | <font color="green">-430</font>  |
-| 1         | getRandomnessIndirectly      | 1,332,776    | 1,123,110 | $0.0000015012 | <font color="red">+1189</font>   |
-| 2         | getRandomnessSuperIndirectly | 1,373,339    | 1,139,335 | $0.0000015228 | <font color="green">-1668</font> |
-| 3         | returnPromiseVoid            | 1,319,156    | 1,117,662 | $0.0000014939 | <font color="red">+6527</font>   |
+| Execution | Method Name                  | Instructions | Cycles    | USD           | Change                         |
+| --------- | ---------------------------- | ------------ | --------- | ------------- | ------------------------------ |
+| 0         | getRandomnessDirectly        | 1,402,526    | 1,151,010 | $0.0000015385 | <font color="green">-69</font> |
+| 1         | getRandomnessIndirectly      | 1,332,834    | 1,123,133 | $0.0000015012 | <font color="red">+58</font>   |
+| 2         | getRandomnessSuperIndirectly | 1,373,304    | 1,139,321 | $0.0000015228 | <font color="green">-35</font> |
+| 3         | returnPromiseVoid            | 1,319,087    | 1,117,634 | $0.0000014938 | <font color="green">-69</font> |
 
 ---
 
@@ -22,12 +22,12 @@ For the most up-to-date fee information, please refer to the [official documenta
 
 ## Baseline benchmarks Azle version: 0.25.0
 
-| Execution | Method Name | Instructions | Cycles    | USD           |
-| --------- | ----------- | ------------ | --------- | ------------- |
-| 0         | 0           | 1,403,025    | 1,151,210 | $0.0000015387 |
-| 1         | 1           | 1,331,587    | 1,122,634 | $0.0000015005 |
-| 2         | 2           | 1,375,007    | 1,140,002 | $0.0000015237 |
-| 3         | 3           | 1,312,629    | 1,115,051 | $0.0000014904 |
+| Execution | Method Name                  | Instructions | Cycles    | USD           |
+| --------- | ---------------------------- | ------------ | --------- | ------------- |
+| 0         | getRandomnessDirectly        | 1,402,595    | 1,151,038 | $0.0000015385 |
+| 1         | getRandomnessIndirectly      | 1,332,776    | 1,123,110 | $0.0000015012 |
+| 2         | getRandomnessSuperIndirectly | 1,373,339    | 1,139,335 | $0.0000015228 |
+| 3         | returnPromiseVoid            | 1,319,156    | 1,117,662 | $0.0000014939 |
 
 ---
 
