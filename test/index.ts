@@ -17,7 +17,7 @@ export function runTests(
     canisterNames: string | string[] | undefined = undefined,
     cwd: string = process.cwd()
 ): void {
-    const { shouldRunTests, shouldRunTypeChecks, shouldRunBenchmarks } =
+    const { shouldRunTests, shouldRunTypeChecks, shouldRecordBenchmarks } =
         processEnvVars();
 
     if (shouldRunTests) {
@@ -46,7 +46,7 @@ export function runTests(
         });
     }
 
-    if (shouldRunBenchmarks && canisterNames !== undefined) {
+    if (shouldRecordBenchmarks && canisterNames !== undefined) {
         const canisterNamesArray = Array.isArray(canisterNames)
             ? canisterNames
             : [canisterNames];
@@ -108,11 +108,11 @@ it.skip = test.skip;
 function processEnvVars(): {
     shouldRunTests: boolean;
     shouldRunTypeChecks: boolean;
-    shouldRunBenchmarks: boolean;
+    shouldRecordBenchmarks: boolean;
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
-    const runBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
+    const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
 
     const hasOnly = [runTests, runTypeChecks].includes('only');
 
@@ -121,7 +121,7 @@ function processEnvVars(): {
         shouldRunTypeChecks: hasOnly
             ? runTypeChecks === 'only'
             : runTypeChecks !== 'false',
-        shouldRunBenchmarks: runBenchmarks === 'true'
+        shouldRecordBenchmarks: recordBenchmarks === 'true'
     };
 }
 
