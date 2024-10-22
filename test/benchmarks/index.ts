@@ -138,10 +138,10 @@ function createBenchmarksTable(
 
 function createTableHeader(hasChanges: boolean): string {
     const baseHeader =
-        '| Execution | Method Name | Instructions | Cycles | USD |';
+        '| Execution | Method Name | Instructions | Cycles | USD | USD/Thousand Calls |';
     const changeHeader = hasChanges ? ' Change |' : '';
     const separator =
-        '\n|-----------|-------------|------------|--------|-----|';
+        '\n|-----------|-------------|------------|--------|-----|--------------|';
     const changeSeparator = hasChanges ? '-------|' : '';
 
     return `${baseHeader}${changeHeader}${separator}${changeSeparator}\n`;
@@ -175,10 +175,11 @@ function createTableRow(
     const instructions = currentBenchmark[1].instructions;
     const cycles = calculateCycles(instructions);
     const usd = calculateUSD(cycles);
+    const usdPerThousand = (usd * 1_000).toFixed(4);
 
     const baseRow = `| ${executionNumber} | ${methodName} | ${instructions.toLocaleString()} | ${cycles.toLocaleString()} | $${usd.toFixed(
         10
-    )}`;
+    )} | $${usdPerThousand}`;
 
     if (!hasChanges) {
         return `${baseRow} |`;
