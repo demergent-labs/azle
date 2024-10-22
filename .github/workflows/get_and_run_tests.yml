@@ -43,4 +43,4 @@ jobs:
         uses: ./.github/workflows/run_test.yml
         with:
             test_infos: ${{ needs.prepare-test-environment.outputs.test-infos }}
-            include_npm: ${{ needs.prepare-test-environment.outputs.include_npm }}
+            include_npm: ${{ needs.prepare-test-environment.outputs.include_npm == 'true' }}
