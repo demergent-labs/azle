@@ -105,26 +105,6 @@ export function it(
 it.only = test.only;
 it.skip = test.skip;
 
-function processEnvVars(): {
-    shouldRunTests: boolean;
-    shouldRunTypeChecks: boolean;
-    shouldRecordBenchmarks: boolean;
-} {
-    const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
-    const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
-    const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
-
-    const hasOnly = [runTests, runTypeChecks].includes('only');
-
-    return {
-        shouldRunTests: hasOnly ? runTests === 'only' : runTests !== 'false',
-        shouldRunTypeChecks: hasOnly
-            ? runTypeChecks === 'only'
-            : runTypeChecks !== 'false',
-        shouldRecordBenchmarks: recordBenchmarks === 'true'
-    };
-}
-
 export const defaultPropTestParams = {
     numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
     endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
@@ -143,4 +123,26 @@ export async function getCanisterActor<T>(
     });
 
     return actor;
+}
+
+function processEnvVars(): {
+    shouldRunTests: boolean;
+    shouldRunTypeChecks: boolean;
+    shouldRecordBenchmarks: boolean;
+} {
+    const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
+    const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
+    const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
+
+    const hasOnly = [runTests, runTypeChecks].includes('only');
+
+    return {
+        shouldRunTests: shouldRun(runTests, hasOnly),
+        shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly),
+        shouldRecordBenchmarks: recordBenchmarks === 'true'
+    };
+}
+
+function shouldRun(envVar: string, hasOnly: boolean): boolean {
+    return hasOnly ? envVar === 'only' : envVar !== 'false';
 }

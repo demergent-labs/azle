@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'fs/promises';
 
-import { getCanisterId } from '../../dfx';
+import { getCanisterId, whoami } from '../../dfx';
 // @ts-ignore We would have to add "resolveJsonModule": true to every test tsconfig.json file
 import { version } from '../../package.json';
 import { jsonParse, jsonStringify } from '../../src/lib/stable';
@@ -41,7 +41,7 @@ async function updateBenchmarksForCanisters(
     return canisterNames.reduce(async (accPromise, canisterName) => {
         const acc = await accPromise;
         const canisterId = getCanisterId(canisterName);
-        const actor = await createActor(canisterId, 'default');
+        const actor = await createActor(canisterId, whoami());
         const currentBenchmarks = await actor._azle_get_benchmarks();
 
         return {
