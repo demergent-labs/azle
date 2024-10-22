@@ -8,7 +8,7 @@ import { createActor } from './actor';
 
 type Benchmark = [bigint, { method_name: string; instructions: bigint }];
 
-type BenchmarksJson = {
+type CanisterBenchmark = {
     current: {
         version: string;
         benchmarks: Benchmark[];
@@ -19,64 +19,76 @@ type BenchmarksJson = {
     };
 };
 
-export async function runBenchmarksForCanister(
-    canisterName: string
+type BenchmarksJson = {
+    [canisterName: string]: CanisterBenchmark;
+};
+
+export async function runBenchmarksForCanisters(
+    canisterNames: string[]
 ): Promise<void> {
-    const canisterId = getCanisterId(canisterName);
-    const actor = await createActor(canisterId, 'default'); // TODO do we need to make an identity for benchmarks just like we do for the uploader?
-    const currentBenchmarks = await actor._azle_get_benchmarks();
+    const allBenchmarks = await getBenchmarksJson();
 
-    const benchmarksJson = await getBenchmarksJson();
+    for (const canisterName of canisterNames) {
+        const canisterId = getCanisterId(canisterName);
+        const actor = await createActor(canisterId, 'default');
+        const currentBenchmarks = await actor._azle_get_benchmarks();
 
-    await writeBenchmarkMarkdown(
-        canisterName,
-        currentBenchmarks,
-        benchmarksJson
-    );
-    await writeBenchmarkJson(canisterName, currentBenchmarks, benchmarksJson);
-}
-
-async function writeBenchmarkMarkdown(
-    canisterName: string,
-    currentBenchmarks: Benchmark[],
-    benchmarksJson: BenchmarksJson
-): Promise<void> {
-    const previousBenchmarks = benchmarksJson.previous.benchmarks;
-
-    const benchmarkTables = {
-        current: createBenchmarksTable(currentBenchmarks, previousBenchmarks),
-        previous: createBenchmarksTable(previousBenchmarks, [])
-    };
-    const markdownContent =
-        `## Current benchmarks Azle version: ${version}\n` +
-        `${benchmarkTables.current}\n\n` +
-        `## Baseline benchmarks Azle version: ${benchmarksJson.previous.version}\n` +
-        `${benchmarkTables.previous}\n`;
-
-    await writeFile(`benchmarks_${canisterName}.md`, markdownContent);
-}
-
-async function writeBenchmarkJson(
-    canisterName: string,
-    currentBenchmarks: Benchmark[],
-    benchmarksJson: BenchmarksJson
-): Promise<void> {
-    const updatedBenchmarksJson: BenchmarksJson = {
-        current: { version, benchmarks: currentBenchmarks },
-        previous: {
-            version: benchmarksJson.previous.version,
-            benchmarks:
-                benchmarksJson.previous.benchmarks.length === 0 &&
-                benchmarksJson.previous.version === version
-                    ? currentBenchmarks
-                    : benchmarksJson.previous.benchmarks
+        if (!allBenchmarks[canisterName]) {
+            allBenchmarks[canisterName] = {
+                current: { version, benchmarks: [] },
+                previous: { version, benchmarks: [] }
+            };
         }
-    };
 
-    await writeFile(
-        `benchmarks_${canisterName}.json`,
-        `${jsonStringify(updatedBenchmarksJson)}\n`
-    );
+        allBenchmarks[canisterName].current = {
+            version,
+            benchmarks: currentBenchmarks
+        };
+
+        if (
+            allBenchmarks[canisterName].previous.benchmarks.length === 0 &&
+            allBenchmarks[canisterName].previous.version === version
+        ) {
+            allBenchmarks[canisterName].previous =
+                allBenchmarks[canisterName].current;
+        }
+    }
+
+    await writeBenchmarksMarkdown(canisterNames, allBenchmarks);
+    await writeBenchmarksJson(allBenchmarks);
+}
+
+async function writeBenchmarksMarkdown(
+    canisterNames: string[],
+    allBenchmarks: BenchmarksJson
+): Promise<void> {
+    let markdownContent = '';
+
+    for (const canisterName of canisterNames) {
+        const { current, previous } = allBenchmarks[canisterName];
+        const benchmarkTables = {
+            current: createBenchmarksTable(
+                current.benchmarks,
+                previous.benchmarks
+            ),
+            previous: createBenchmarksTable(previous.benchmarks, [])
+        };
+
+        markdownContent +=
+            `# Benchmarks for ${canisterName}\n\n` +
+            `## Current benchmarks Azle version: ${current.version}\n` +
+            `${benchmarkTables.current}\n\n` +
+            `## Baseline benchmarks Azle version: ${previous.version}\n` +
+            `${benchmarkTables.previous}\n\n`;
+    }
+
+    await writeFile(`benchmarks.md`, markdownContent);
+}
+
+async function writeBenchmarksJson(
+    allBenchmarks: BenchmarksJson
+): Promise<void> {
+    await writeFile(`benchmarks.json`, `${jsonStringify(allBenchmarks)}\n`);
 }
 
 async function getBenchmarksJson(): Promise<BenchmarksJson> {
@@ -87,16 +99,7 @@ async function getBenchmarksJson(): Promise<BenchmarksJson> {
         return jsonParse(fileContent);
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-            return {
-                current: {
-                    version,
-                    benchmarks: []
-                },
-                previous: {
-                    version,
-                    benchmarks: []
-                }
-            };
+            return {};
         }
         throw error; // Re-throw if it's a different error
     }

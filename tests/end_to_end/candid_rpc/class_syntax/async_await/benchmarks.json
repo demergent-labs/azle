@@ -1,0 +1,70 @@
+{
+    "async_await": {
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                [
+                    { "__bigint__": "1729628410235193487" },
+                    {
+                        "instructions": { "__bigint__": "1402595" },
+                        "method_name": "getRandomnessDirectly"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729628412252854835" },
+                    {
+                        "instructions": { "__bigint__": "1332776" },
+                        "method_name": "getRandomnessIndirectly"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729628414411278404" },
+                    {
+                        "instructions": { "__bigint__": "1373339" },
+                        "method_name": "getRandomnessSuperIndirectly"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729628416336853766" },
+                    {
+                        "instructions": { "__bigint__": "1319156" },
+                        "method_name": "returnPromiseVoid"
+                    }
+                ]
+            ]
+        },
+        "previous": {
+            "version": "0.25.0",
+            "benchmarks": [
+                [
+                    { "__bigint__": "1729627801650432495" },
+                    {
+                        "instructions": { "__bigint__": "1403025" },
+                        "method_name": "0"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729627803566180197" },
+                    {
+                        "instructions": { "__bigint__": "1331587" },
+                        "method_name": "1"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729627805611809862" },
+                    {
+                        "instructions": { "__bigint__": "1375007" },
+                        "method_name": "2"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729627807812781328" },
+                    {
+                        "instructions": { "__bigint__": "1312629" },
+                        "method_name": "3"
+                    }
+                ]
+            ]
+        }
+    }
+}

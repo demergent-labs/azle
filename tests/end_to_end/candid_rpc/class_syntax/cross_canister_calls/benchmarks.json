@@ -1,0 +1,123 @@
+{
+    "canister1": {
+        "current": { "version": "0.25.0", "benchmarks": [] },
+        "previous": {
+            "version": "0.25.0",
+            "benchmarks": [
+                [
+                    { "__bigint__": "1729612609259180983" },
+                    {
+                        "instructions": { "__bigint__": "2295649" },
+                        "method_name": "1"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612611496064190" },
+                    {
+                        "instructions": { "__bigint__": "3635548" },
+                        "method_name": "2"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612613449559327" },
+                    {
+                        "instructions": { "__bigint__": "2217855" },
+                        "method_name": "1"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612615659422995" },
+                    {
+                        "instructions": { "__bigint__": "3616570" },
+                        "method_name": "2"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612617664696251" },
+                    {
+                        "instructions": { "__bigint__": "1650431" },
+                        "method_name": "3"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612619907630099" },
+                    {
+                        "instructions": { "__bigint__": "3563895" },
+                        "method_name": "0"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612621937089094" },
+                    {
+                        "instructions": { "__bigint__": "2209388" },
+                        "method_name": "1"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612624068933830" },
+                    {
+                        "instructions": { "__bigint__": "3611711" },
+                        "method_name": "2"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612626111334072" },
+                    {
+                        "instructions": { "__bigint__": "2209377" },
+                        "method_name": "1"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612628072750386" },
+                    {
+                        "instructions": { "__bigint__": "3608226" },
+                        "method_name": "2"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612630203996570" },
+                    {
+                        "instructions": { "__bigint__": "1650308" },
+                        "method_name": "3"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612632328141787" },
+                    {
+                        "instructions": { "__bigint__": "1618944" },
+                        "method_name": "4"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612634435817551" },
+                    {
+                        "instructions": { "__bigint__": "2648631" },
+                        "method_name": "5"
+                    }
+                ]
+            ]
+        }
+    },
+    "canister2": {
+        "current": { "version": "0.25.0", "benchmarks": [] },
+        "previous": {
+            "version": "0.25.0",
+            "benchmarks": [
+                [
+                    { "__bigint__": "1729612619907630099" },
+                    {
+                        "instructions": { "__bigint__": "2171301" },
+                        "method_name": "0"
+                    }
+                ],
+                [
+                    { "__bigint__": "1729612634435817551" },
+                    {
+                        "instructions": { "__bigint__": "1383650" },
+                        "method_name": "5"
+                    }
+                ]
+            ]
+        }
+    }
+}

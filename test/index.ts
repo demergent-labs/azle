@@ -8,7 +8,7 @@ import { join } from 'path';
 import { getCanisterId } from '../dfx';
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
-import { runBenchmarksForCanister } from './benchmarks';
+import { runBenchmarksForCanisters } from './benchmarks';
 
 export type Test = () => void;
 
@@ -51,11 +51,9 @@ export function runTests(
             ? canisterNames
             : [canisterNames];
 
-        canisterNamesArray.forEach((canisterName) => {
-            describe(`benchmarks for ${canisterName}`, () => {
-                it('runs benchmarks', () =>
-                    runBenchmarksForCanister(canisterName));
-            });
+        describe(`benchmarks`, () => {
+            it('runs benchmarks for all canisters', () =>
+                runBenchmarksForCanisters(canisterNamesArray));
         });
     }
 }
