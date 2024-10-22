@@ -70,7 +70,7 @@ jobs:
                   ') }}"
 
                   IS_MAIN_BRANCH_PUSH="${{ steps.set-conditions.outputs.is_main_branch_push }}"
-                  IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH="${{ steps.set-conditions.outputs.is_main_branch_merge_from_release_push }}"
+                  IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}"
                   IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr }}"
                   IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr }}"
                   IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}"
@@ -81,7 +81,7 @@ jobs:
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "$IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH" == "true" ]]; then
+                  if [[ "$IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 

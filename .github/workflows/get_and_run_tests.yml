@@ -30,7 +30,7 @@ jobs:
             - id: set-include-npm
               run: |
                   if [[ "${{ steps.set-conditions.outputs.is_main_branch_push }}" == "true" || \
-                        "${{ steps.set-conditions.outputs.is_main_branch_merge_from_release_push }}" == "true" || \
+                        "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" || \
                         "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
                     echo "include_npm=true" >> $GITHUB_OUTPUT
                   else

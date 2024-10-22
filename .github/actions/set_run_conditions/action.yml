@@ -4,9 +4,9 @@ outputs:
     is_main_branch_push:
         description: 'True if this is a push to the main branch (excluding merges from release branches)'
         value: ${{ steps.set-conditions.outputs.is_main_branch_push }}
-    is_main_branch_merge_from_release_push:
+    is_main_branch_push_from_release_merge:
         description: 'True if this is a push to the main branch from a release branch merge'
-        value: ${{ steps.set-conditions.outputs.is_main_branch_merge_from_release_push }}
+        value: ${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}
     is_release_branch_pr:
         description: 'True if this is a pull request from a release branch'
         value: ${{ steps.set-conditions.outputs.is_release_branch_pr }}
@@ -23,14 +23,14 @@ runs:
           run: |
               # Define conditions using shell variables
               IS_MAIN_PUSH=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-              IS_MAIN_MERGE_RELEASE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+              IS_MAIN_PUSH_RELEASE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
               IS_RELEASE_PR=${{ startsWith(github.head_ref, 'release--') }}
               IS_FEATURE_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
               IS_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
 
               # Set individual outputs
               echo "is_main_branch_push=$IS_MAIN_PUSH" >> $GITHUB_OUTPUT
-              echo "is_main_branch_merge_from_release_push=$IS_MAIN_MERGE_RELEASE" >> $GITHUB_OUTPUT
+              echo "is_main_branch_push_from_release_merge=$IS_MAIN_PUSH_RELEASE" >> $GITHUB_OUTPUT
               echo "is_release_branch_pr=$IS_RELEASE_PR" >> $GITHUB_OUTPUT
               echo "is_feature_branch_pr=$IS_FEATURE_PR" >> $GITHUB_OUTPUT
               echo "is_feature_branch_draft_pr=$IS_DRAFT_PR" >> $GITHUB_OUTPUT
