@@ -92,6 +92,8 @@ async function writeBenchmarksMarkdown(
             `${benchmarkTables.previous}\n\n`;
     }
 
+    markdownContent += createNote();
+
     await writeFile(`benchmarks.md`, markdownContent);
 }
 
@@ -130,9 +132,8 @@ function createBenchmarksTable(
         previousBenchmarks,
         hasChanges
     );
-    const note = createNote();
 
-    return `${tableHeader}${tableRows}${note}`;
+    return `${tableHeader}${tableRows}`;
 }
 
 function createTableHeader(hasChanges: boolean): string {
