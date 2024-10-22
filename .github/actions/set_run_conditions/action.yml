@@ -22,16 +22,16 @@ runs:
         - id: set-conditions
           run: |
               # Define conditions using shell variables
-              IS_MAIN_PUSH=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-              IS_MAIN_PUSH_RELEASE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-              IS_RELEASE_PR=${{ startsWith(github.head_ref, 'release--') }}
-              IS_FEATURE_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
-              IS_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+              AZLE_IS_MAIN_BRANCH_PUSH=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+              AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+              AZLE_IS_RELEASE_PR=${{ startsWith(github.head_ref, 'release--') }}
+              AZLE_IS_FEATURE_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+              AZLE_IS_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
 
               # Set individual outputs
-              echo "is_main_branch_push=$IS_MAIN_PUSH" >> $GITHUB_OUTPUT
-              echo "is_main_branch_push_from_release_merge=$IS_MAIN_PUSH_RELEASE" >> $GITHUB_OUTPUT
-              echo "is_release_branch_pr=$IS_RELEASE_PR" >> $GITHUB_OUTPUT
-              echo "is_feature_branch_pr=$IS_FEATURE_PR" >> $GITHUB_OUTPUT
-              echo "is_feature_branch_draft_pr=$IS_DRAFT_PR" >> $GITHUB_OUTPUT
+              echo "is_main_branch_push=$AZLE_IS_MAIN_BRANCH_PUSH" >> $GITHUB_OUTPUT
+              echo "is_main_branch_push_from_release_merge=$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" >> $GITHUB_OUTPUT
+              echo "is_release_branch_pr=$AZLE_IS_RELEASE_PR" >> $GITHUB_OUTPUT
+              echo "is_feature_branch_pr=$AZLE_IS_FEATURE_PR" >> $GITHUB_OUTPUT
+              echo "is_feature_branch_draft_pr=$AZLE_IS_DRAFT_PR" >> $GITHUB_OUTPUT
           shell: bash
