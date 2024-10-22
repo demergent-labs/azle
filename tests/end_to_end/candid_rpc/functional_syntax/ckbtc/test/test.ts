@@ -20,9 +20,9 @@ export type Config = {
     caller: string;
 };
 
-const configs = [createConfig(0), createConfig(1)];
-
 const canisterName = 'wallet_backend';
+
+const configs = [createConfig(0), createConfig(1)];
 
 runTests(() => {
     let bitcoinDaemon: BitcoinDaemon;
