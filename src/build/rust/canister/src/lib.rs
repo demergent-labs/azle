@@ -34,7 +34,7 @@ type Memory = VirtualMemory<DefaultMemoryImpl>;
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-    static WASM_DATA: RefCell<Option<wasm_binary_manipulation::WasmData>> = RefCell::new(None);
+    static WASM_DATA_REF_CELL: RefCell<Option<wasm_binary_manipulation::WasmData>> = RefCell::new(None);
 }
 
 const EXPERIMENTAL: bool = cfg!(feature = "experimental");

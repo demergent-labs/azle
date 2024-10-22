@@ -4,7 +4,7 @@ use wasmedge_quickjs::AsObject;
 use crate::{
     execute_method_js, ic, run_event_loop, wasm_binary_manipulation::get_js_code,
     wasm_binary_manipulation::get_wasm_data, EXPERIMENTAL, MEMORY_MANAGER_REF_CELL, RUNTIME,
-    WASM_DATA,
+    WASM_DATA_REF_CELL,
 };
 
 #[cfg(feature = "experimental")]
@@ -55,7 +55,7 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
 
     let wasm_data = get_wasm_data();
 
-    WASM_DATA.with(|wasm_data_ref| {
+    WASM_DATA_REF_CELL.with(|wasm_data_ref| {
         *wasm_data_ref.borrow_mut() = Some(wasm_data.clone());
     });
 
@@ -116,7 +116,7 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
         context.eval_global_str(format!("globalThis._azleExperimental = {EXPERIMENTAL};"));
-        let record_benchmarks = WASM_DATA
+        let record_benchmarks = WASM_DATA_REF_CELL
             .with(|wasm_data_ref| wasm_data_ref.borrow().as_ref().unwrap().record_benchmarks);
         context.eval_global_str(format!(
             "globalThis._azleRecordBenchmarks = {record_benchmarks};"
