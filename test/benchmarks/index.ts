@@ -28,29 +28,32 @@ export async function runBenchmarksForCanisters(
 ): Promise<void> {
     const allBenchmarks = await getBenchmarksJson();
 
-    for (const canisterName of canisterNames) {
-        const canisterId = getCanisterId(canisterName);
-        const actor = await createActor(canisterId, 'default');
-        const currentBenchmarks = await actor._azle_get_benchmarks();
+    const updatedBenchmarks = await canisterNames.reduce(
+        async (accPromise, canisterName) => {
+            const acc = await accPromise;
+            const canisterId = getCanisterId(canisterName);
+            const actor = await createActor(canisterId, 'default');
+            const currentBenchmarks = await actor._azle_get_benchmarks();
 
-        if (allBenchmarks[canisterName] === undefined) {
-            allBenchmarks[canisterName] = {
-                previous: { version, benchmarks: [] },
-                current: { version, benchmarks: currentBenchmarks }
+            return {
+                ...acc,
+                [canisterName]: {
+                    previous: acc[canisterName]?.current || {
+                        version,
+                        benchmarks: []
+                    },
+                    current: {
+                        version,
+                        benchmarks: currentBenchmarks
+                    }
+                }
             };
-        }
+        },
+        Promise.resolve(allBenchmarks)
+    );
 
-        allBenchmarks[canisterName].previous =
-            allBenchmarks[canisterName].current;
-
-        allBenchmarks[canisterName].current = {
-            version,
-            benchmarks: currentBenchmarks
-        };
-    }
-
-    await writeBenchmarksMarkdown(canisterNames, allBenchmarks);
-    await writeBenchmarksJson(allBenchmarks);
+    await writeBenchmarksMarkdown(canisterNames, updatedBenchmarks);
+    await writeBenchmarksJson(updatedBenchmarks);
 }
 
 async function writeBenchmarksMarkdown(

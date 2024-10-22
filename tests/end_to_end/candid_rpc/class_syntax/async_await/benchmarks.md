@@ -4,10 +4,10 @@
 
 | Execution | Method Name                  | Instructions | Cycles    | USD           | Change                         |
 | --------- | ---------------------------- | ------------ | --------- | ------------- | ------------------------------ |
-| 0         | getRandomnessDirectly        | 1,402,526    | 1,151,010 | $0.0000015385 | <font color="green">-69</font> |
-| 1         | getRandomnessIndirectly      | 1,332,834    | 1,123,133 | $0.0000015012 | <font color="red">+58</font>   |
-| 2         | getRandomnessSuperIndirectly | 1,373,304    | 1,139,321 | $0.0000015228 | <font color="green">-35</font> |
-| 3         | returnPromiseVoid            | 1,319,087    | 1,117,634 | $0.0000014938 | <font color="green">-69</font> |
+| 0         | getRandomnessDirectly        | 1,402,514    | 1,151,005 | $0.0000015384 | <font color="green">-12</font> |
+| 1         | getRandomnessIndirectly      | 1,332,811    | 1,123,124 | $0.0000015012 | <font color="green">-23</font> |
+| 2         | getRandomnessSuperIndirectly | 1,373,339    | 1,139,335 | $0.0000015228 | <font color="red">+35</font>   |
+| 3         | returnPromiseVoid            | 1,319,110    | 1,117,644 | $0.0000014939 | <font color="red">+23</font>   |
 
 ---
 
@@ -24,10 +24,10 @@ For the most up-to-date fee information, please refer to the [official documenta
 
 | Execution | Method Name                  | Instructions | Cycles    | USD           |
 | --------- | ---------------------------- | ------------ | --------- | ------------- |
-| 0         | getRandomnessDirectly        | 1,402,595    | 1,151,038 | $0.0000015385 |
-| 1         | getRandomnessIndirectly      | 1,332,776    | 1,123,110 | $0.0000015012 |
-| 2         | getRandomnessSuperIndirectly | 1,373,339    | 1,139,335 | $0.0000015228 |
-| 3         | returnPromiseVoid            | 1,319,156    | 1,117,662 | $0.0000014939 |
+| 0         | getRandomnessDirectly        | 1,402,526    | 1,151,010 | $0.0000015385 |
+| 1         | getRandomnessIndirectly      | 1,332,834    | 1,123,133 | $0.0000015012 |
+| 2         | getRandomnessSuperIndirectly | 1,373,304    | 1,139,321 | $0.0000015228 |
+| 3         | returnPromiseVoid            | 1,319,087    | 1,117,634 | $0.0000014938 |
 
 ---
 

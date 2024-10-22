@@ -1,6 +1,6 @@
 {
     "async_await": {
-        "current": {
+        "previous": {
             "version": "0.25.0",
             "benchmarks": [
                 [
@@ -33,34 +33,34 @@
                 ]
             ]
         },
-        "previous": {
+        "current": {
             "version": "0.25.0",
             "benchmarks": [
                 [
-                    { "__bigint__": "1729628410235193487" },
+                    { "__bigint__": "1729629089099693879" },
                     {
-                        "instructions": { "__bigint__": "1402595" },
+                        "instructions": { "__bigint__": "1402514" },
                         "method_name": "getRandomnessDirectly"
                     }
                 ],
                 [
-                    { "__bigint__": "1729628412252854835" },
+                    { "__bigint__": "1729629091258911879" },
                     {
-                        "instructions": { "__bigint__": "1332776" },
+                        "instructions": { "__bigint__": "1332811" },
                         "method_name": "getRandomnessIndirectly"
                     }
                 ],
                 [
-                    { "__bigint__": "1729628414411278404" },
+                    { "__bigint__": "1729629093185268231" },
                     {
                         "instructions": { "__bigint__": "1373339" },
                         "method_name": "getRandomnessSuperIndirectly"
                     }
                 ],
                 [
-                    { "__bigint__": "1729628416336853766" },
+                    { "__bigint__": "1729629095261989035" },
                     {
-                        "instructions": { "__bigint__": "1319156" },
+                        "instructions": { "__bigint__": "1319110" },
                         "method_name": "returnPromiseVoid"
                     }
                 ]
