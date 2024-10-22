@@ -26,44 +26,56 @@ type BenchmarksJson = {
 export async function runBenchmarksForCanisters(
     canisterNames: string[]
 ): Promise<void> {
-    const allBenchmarks = await getBenchmarksJson();
-
-    const updatedBenchmarks = await canisterNames.reduce(
-        async (accPromise, canisterName) => {
-            const acc = await accPromise;
-            const canisterId = getCanisterId(canisterName);
-            const actor = await createActor(canisterId, 'default');
-            const currentBenchmarks = await actor._azle_get_benchmarks();
-
-            return {
-                ...acc,
-                [canisterName]: {
-                    previous: acc[canisterName]?.current || {
-                        version,
-                        benchmarks: []
-                    },
-                    current: {
-                        version,
-                        benchmarks: currentBenchmarks
-                    }
-                }
-            };
-        },
-        Promise.resolve(allBenchmarks)
+    const existingBenchmarks = await getBenchmarksJson();
+    const updatedBenchmarks = await updateBenchmarksForCanisters(
+        canisterNames,
+        existingBenchmarks
     );
+    await writeBenchmarkResults(canisterNames, updatedBenchmarks);
+}
 
+async function updateBenchmarksForCanisters(
+    canisterNames: string[],
+    existingBenchmarks: BenchmarksJson
+): Promise<BenchmarksJson> {
+    return canisterNames.reduce(async (accPromise, canisterName) => {
+        const acc = await accPromise;
+        const canisterId = getCanisterId(canisterName);
+        const actor = await createActor(canisterId, 'default');
+        const currentBenchmarks = await actor._azle_get_benchmarks();
+
+        return {
+            ...acc,
+            [canisterName]: {
+                previous: acc[canisterName]?.current || {
+                    version,
+                    benchmarks: []
+                },
+                current: {
+                    version,
+                    benchmarks: currentBenchmarks
+                }
+            }
+        };
+    }, Promise.resolve(existingBenchmarks));
+}
+
+async function writeBenchmarkResults(
+    canisterNames: string[],
+    updatedBenchmarks: BenchmarksJson
+): Promise<void> {
     await writeBenchmarksMarkdown(canisterNames, updatedBenchmarks);
     await writeBenchmarksJson(updatedBenchmarks);
 }
 
 async function writeBenchmarksMarkdown(
     canisterNames: string[],
-    allBenchmarks: BenchmarksJson
+    updatedBenchmarks: BenchmarksJson
 ): Promise<void> {
     let markdownContent = '';
 
     for (const canisterName of canisterNames) {
-        const { current, previous } = allBenchmarks[canisterName];
+        const { current, previous } = updatedBenchmarks[canisterName];
         const benchmarkTables = {
             current: createBenchmarksTable(
                 current.benchmarks,
@@ -84,9 +96,9 @@ async function writeBenchmarksMarkdown(
 }
 
 async function writeBenchmarksJson(
-    allBenchmarks: BenchmarksJson
+    updatedBenchmarks: BenchmarksJson
 ): Promise<void> {
-    await writeFile(`benchmarks.json`, `${jsonStringify(allBenchmarks)}\n`);
+    await writeFile(`benchmarks.json`, `${jsonStringify(updatedBenchmarks)}\n`);
 }
 
 async function getBenchmarksJson(): Promise<BenchmarksJson> {
@@ -104,17 +116,17 @@ async function getBenchmarksJson(): Promise<BenchmarksJson> {
 }
 
 function createBenchmarksTable(
-    benchmarks: Benchmark[],
+    currentBenchmarks: Benchmark[],
     previousBenchmarks: Benchmark[]
 ): string {
-    if (benchmarks.length === 0) {
+    if (currentBenchmarks.length === 0) {
         return '';
     }
 
     const hasChanges = previousBenchmarks.length > 0;
     const tableHeader = createTableHeader(hasChanges);
     const tableRows = createTableRows(
-        benchmarks,
+        currentBenchmarks,
         previousBenchmarks,
         hasChanges
     );
@@ -135,14 +147,14 @@ function createTableHeader(hasChanges: boolean): string {
 }
 
 function createTableRows(
-    benchmarks: Benchmark[],
+    currentBenchmarks: Benchmark[],
     previousBenchmarks: Benchmark[],
     hasChanges: boolean
 ): string {
-    return benchmarks
-        .map((benchmark, index) =>
+    return currentBenchmarks
+        .map((currentBenchmark, index) =>
             createTableRow(
-                benchmark,
+                currentBenchmark,
                 index,
                 previousBenchmarks[index],
                 hasChanges
@@ -152,14 +164,14 @@ function createTableRows(
 }
 
 function createTableRow(
-    benchmark: Benchmark,
+    currentBenchmark: Benchmark,
     index: number,
     previousBenchmark: Benchmark | undefined,
     hasChanges: boolean
 ): string {
     const executionNumber = index;
-    const methodName = benchmark[1].method_name;
-    const instructions = benchmark[1].instructions;
+    const methodName = currentBenchmark[1].method_name;
+    const instructions = currentBenchmark[1].instructions;
     const cycles = calculateCycles(instructions);
     const usd = calculateUSD(cycles);
 
