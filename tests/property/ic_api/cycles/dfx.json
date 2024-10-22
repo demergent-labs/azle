@@ -1,0 +1,23 @@
+{
+    "canisters": {
+        "cycles": {
+            "type": "azle",
+            "main": "src/cycles/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/cycles",
+                "node_compatibility": true
+            }
+        },
+        "intermediary": {
+            "type": "azle",
+            "main": "src/intermediary/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/intermediary",
+                "node_compatibility": true
+            },
+            "custom": {
+                "env": ["CYCLES_PRINCIPAL"]
+            }
+        }
+    }
+}
