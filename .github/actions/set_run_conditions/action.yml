@@ -33,5 +33,5 @@ runs:
               echo "is_main_branch_push_from_release_merge=$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" >> $GITHUB_OUTPUT
               echo "is_release_branch_pr=$AZLE_IS_RELEASE_PR" >> $GITHUB_OUTPUT
               echo "is_feature_branch_pr=$AZLE_IS_FEATURE_PR" >> $GITHUB_OUTPUT
-              echo "is_feature_branch_draft_pr=$AZLE_IS_DRAFT_PR" >> $GITHUB_OUTPUT
+              echo "is_feature_branch_draft_pr=$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" >> $GITHUB_OUTPUT
           shell: bash
