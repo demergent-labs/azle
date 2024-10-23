@@ -94,7 +94,7 @@ jobs:
                       ./examples
                       ./tests
 
-    update-tests-for-release:
+    update-test-files-for-release-commit:
         needs: prepare-release
         name: Update ${{ matrix.test.name }}
         runs-on: ubuntu-latest
