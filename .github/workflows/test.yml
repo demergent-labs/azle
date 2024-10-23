@@ -3,18 +3,14 @@
 # These tests are currently written in TypeScript and are intended to be run in a Node.js environment.
 # This GitHub Action takes care of deploying to npm and GitHub.
 
-name: Tests
+name: Test
+
 on:
     push:
         branches:
             - main
     pull_request: # Runs on pull requests to any branch
-env:
-    AZLE_IS_MAIN_BRANCH_PUSH: ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-    AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH: ${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-    AZLE_IS_RELEASE_BRANCH_PR: ${{ startsWith(github.head_ref, 'release--') }}
-    AZLE_IS_FEATURE_BRANCH_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
-    AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+
 jobs:
     determine-should-run-tests:
         name: Determine if tests should run
@@ -28,21 +24,18 @@ jobs:
             - id: determine-should-run-tests
               uses: ./.github/actions/should_release
 
-    get-test-infos:
-        name: Get test infos
-        needs: determine-should-run-tests
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
+    set-exclude-dirs:
+        name: Set exclude directories
         runs-on: ubuntu-latest
         outputs:
-            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+            exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
         steps:
             - uses: actions/checkout@v4
 
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
+            - id: set-conditions
+              uses: ./.github/actions/set_run_conditions
 
-            - name: Set exclude dirs
-              id: set-exclude-dirs
+            - id: set-exclude-dirs
               run: |
                   RELEASE_TESTS="${{ format('
                   tests/end_to_end/candid_rpc/class_syntax/new
@@ -76,25 +69,31 @@ jobs:
                   tests/end_to_end/http_server/autoreload
                   ') }}"
 
+                  AZLE_IS_MAIN_BRANCH_PUSH="${{ steps.set-conditions.outputs.is_main_branch_push }}"
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}"
+                  AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr }}"
+                  AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr }}"
+                  AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}"
+
                   EXCLUDE_DIRS=""
 
-                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
+                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
+                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
+                  if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
                       EXCLUDE_DIRS=""
                   fi
 
-                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
+                  if [[ "$AZLE_IS_FEATURE_BRANCH_PR" == "true" ]]; then
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS"
                   fi
 
-                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
+                  if [[ "$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
                       EXCLUDE_DIRS="$RELEASE_TESTS $UNSTABLE_TESTS $SLOW_TESTS"
                   fi
 
@@ -102,137 +101,49 @@ jobs:
                   EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
                   echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
 
-            - name: Get test infos
-              id: get-test-infos
-              uses: ./.github/actions/get_test_infos
-              with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
-                  directories: |
-                      ./examples
-                      ./tests
-                  exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
-
-    run-test:
-        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
+    run-tests:
+        name: ${{ matrix.test_group.name }}
         needs:
             - determine-should-run-tests
-            - get-test-infos
+            - set-exclude-dirs
         if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
-        runs-on: ${{ matrix.os }}
-        env:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-            AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
-            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
         strategy:
-            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
-            matrix: # spins up one job per combination of test and code source (repo or npm).
-                # os: [macos-latest]
-                os: [ubuntu-latest]
-                include_npm:
-                    # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
-                    - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
-                azle_source:
-                    - npm
-                    - repo
-                exclude:
-                    - include_npm: false
-                      azle_source: npm
-                    - include_npm: true
-                      azle_source: repo
-                # If should_run_tests is false, we still want the steps of this job to execute so that check-run-test-success will run. We do this by creating an array with one dummy element
-                tests: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
-        steps:
-            - name: Report full path of test
-              # Just in case the path isn't obvious from the name, this will remove ambiguity
-              run: echo ${{matrix.tests.path}}
+            fail-fast: false
+            matrix:
+                test_group:
+                    - { name: 'Examples', directories: './examples' }
+                    - {
+                          name: 'E2E Class',
+                          directories: './tests/end_to_end/candid_rpc/class_syntax'
+                      }
+                    - {
+                          name: 'E2E Functional',
+                          directories: './tests/end_to_end/candid_rpc/functional_syntax'
+                      }
+                    - {
+                          name: 'E2E HTTP Server',
+                          directories: './tests/end_to_end/http_server'
+                      }
+                    - {
+                          name: 'Property Class',
+                          directories: './tests/property/candid_rpc/class_api'
+                      }
+                    - {
+                          name: 'Property Functional',
+                          directories: './tests/property/candid_rpc/functional_api'
+                      }
+                    - {
+                          name: 'Property IC API',
+                          directories: './tests/property/ic_api'
+                      }
+        uses: ./.github/workflows/get_and_run_tests.yml
+        with:
+            directories: ${{ matrix.test_group.directories }}
+            exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
 
-            - uses: actions/checkout@v4
-
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
-
-            - id: get-dfx-version
-              uses: ./.github/actions/get_dfx_version
-
-            - name: Run pre-test Azle setup
-              run: |
-
-                  # Install dfx (Note: DFX must be installed before `npm install` because the azle installation process requires dfx)
-                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-
-                  # MacOS-specific DNS configuration
-                  if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-                      sudo networksetup -setdnsservers Ethernet 9.9.9.9
-                  fi
-
-                  npm install
-
-                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
-                      npm link
-                  fi
-
-                  npm run lint
-              shell: bash -l {0}
-
-            - name: Run pre-test setup for ${{ matrix.tests.name }}
-              run: |
-                  npm install
-
-                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
-                      npm link azle
-                  fi
-
-                  npx azle install-dfx-extension
-              working-directory: ${{ matrix.tests.path }}
-              shell: bash -l {0}
-
-            - name: Start dfx with artificial delay 0
-              if: ${{ env.AZLE_IS_FEATURE_BRANCH_PR == 'true' || env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR == 'true' }}
-              working-directory: ${{ matrix.tests.path }}
-              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
-
-            - name: Start dfx
-              if: ${{ env.AZLE_IS_RELEASE_BRANCH_PR == 'true' || env.AZLE_IS_MAIN_BRANCH_PUSH == 'true' || env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH == 'true' }}
-              working-directory: ${{ matrix.tests.path }}
-              run: dfx start --clean --background --host 127.0.0.1:8000
-
-            - name: Run test
-              run: |
-                  RUNS=1
-
-                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_PUSH }}" == "true" ]]; then
-                      RUNS=100
-                  fi
-
-                  if [[ "${{ env.AZLE_IS_MAIN_BRANCH_MERGE_FROM_RELEASE_PUSH }}" == "true" ]]; then
-                      RUNS=100
-                  fi
-
-                  if [[ "${{ env.AZLE_IS_RELEASE_BRANCH_PR }}" == "true" ]]; then
-                      RUNS=10
-                  fi
-
-                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_PR }}" == "true" ]]; then
-                      RUNS=5
-                  fi
-
-                  if [[ "${{ env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR }}" == "true" ]]; then
-                      RUNS=1
-                  fi
-
-                  AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
-              shell: bash -l {0}
-              working-directory: ${{ matrix.tests.path }}
-
-    # These final jobs are designed to ensure that all jobs spun up from the matrix in the run-test have succeeded
     check-test-success:
         name: Check Azle tests succeeded
-        needs: run-test
+        needs: run-tests
         runs-on: ubuntu-latest
         if: success()
         steps:
@@ -240,7 +151,7 @@ jobs:
 
     check-test-failure:
         name: Check Azle tests didn't fail
-        needs: run-test
+        needs: run-tests
         runs-on: ubuntu-latest
         if: failure()
         steps:
