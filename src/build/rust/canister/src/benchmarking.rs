@@ -15,8 +15,7 @@ thread_local! {
     pub static BENCHMARKS_REF_CELL: RefCell<Vec<BenchmarkEntry>> = RefCell::new(Vec::new());
 }
 
-pub fn record_benchmark(context: &mut Context, function_name: &str) {
-    let instructions = ic_cdk::api::performance_counter(1);
+pub fn record_benchmark(context: &mut Context, function_name: &str, instructions: u64) {
     let timestamp = ic_cdk::api::time();
 
     let global = context.get_global();

@@ -39,7 +39,8 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
             if WASM_DATA_REF_CELL
                 .with(|wasm_data_ref| wasm_data_ref.borrow().as_ref().unwrap().record_benchmarks)
             {
-                record_benchmark(context, &function_name);
+                let instructions = ic_cdk::api::performance_counter(1);
+                record_benchmark(context, &function_name, instructions);
             }
         });
     });

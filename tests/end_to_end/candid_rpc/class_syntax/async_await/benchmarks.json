@@ -4,31 +4,6 @@
             "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1406209" },
-                    "method_name": "getRandomnessDirectly",
-                    "timestamp": { "__bigint__": "1729710053378802071" }
-                },
-                {
-                    "instructions": { "__bigint__": "1333065" },
-                    "method_name": "getRandomnessIndirectly",
-                    "timestamp": { "__bigint__": "1729710055439460452" }
-                },
-                {
-                    "instructions": { "__bigint__": "1375032" },
-                    "method_name": "getRandomnessSuperIndirectly",
-                    "timestamp": { "__bigint__": "1729710057639981912" }
-                },
-                {
-                    "instructions": { "__bigint__": "1315045" },
-                    "method_name": "returnPromiseVoid",
-                    "timestamp": { "__bigint__": "1729710059496268871" }
-                }
-            ]
-        },
-        "current": {
-            "version": "0.25.0",
-            "benchmarks": [
-                {
                     "instructions": { "__bigint__": "1406105" },
                     "method_name": "getRandomnessDirectly",
                     "timestamp": { "__bigint__": "1729710104022358579" }
@@ -47,6 +22,31 @@
                     "instructions": { "__bigint__": "1315034" },
                     "method_name": "returnPromiseVoid",
                     "timestamp": { "__bigint__": "1729710110384465689" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1406064" },
+                    "method_name": "getRandomnessDirectly",
+                    "timestamp": { "__bigint__": "1729711998283199209" }
+                },
+                {
+                    "instructions": { "__bigint__": "1333024" },
+                    "method_name": "getRandomnessIndirectly",
+                    "timestamp": { "__bigint__": "1729712000184144111" }
+                },
+                {
+                    "instructions": { "__bigint__": "1374898" },
+                    "method_name": "getRandomnessSuperIndirectly",
+                    "timestamp": { "__bigint__": "1729712002403948475" }
+                },
+                {
+                    "instructions": { "__bigint__": "1315016" },
+                    "method_name": "returnPromiseVoid",
+                    "timestamp": { "__bigint__": "1729712004250304685" }
                 }
             ]
         }
