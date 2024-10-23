@@ -2,21 +2,21 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Execution | Method Name                  | Instructions | Cycles    | USD           | USD/Thousand Calls | Change                         |
-| --------- | ---------------------------- | ------------ | --------- | ------------- | ------------------ | ------------------------------ |
-| 0         | getRandomnessDirectly        | 1,402,514    | 1,151,005 | $0.0000015384 | $0.0015            | <font color="red">0</font>     |
-| 1         | getRandomnessIndirectly      | 1,332,834    | 1,123,133 | $0.0000015012 | $0.0015            | <font color="red">+23</font>   |
-| 2         | getRandomnessSuperIndirectly | 1,373,362    | 1,139,344 | $0.0000015229 | $0.0015            | <font color="red">+23</font>   |
-| 3         | returnPromiseVoid            | 1,319,052    | 1,117,620 | $0.0000014938 | $0.0015            | <font color="green">-58</font> |
+| Execution | Method Name                  | Instructions | Cycles    | USD           | USD/Thousand Calls | Change                          |
+| --------- | ---------------------------- | ------------ | --------- | ------------- | ------------------ | ------------------------------- |
+| 0         | getRandomnessDirectly        | 1,406,105    | 1,152,442 | $0.0000015404 | $0.0015            | <font color="green">-104</font> |
+| 1         | getRandomnessIndirectly      | 1,333,065    | 1,123,226 | $0.0000015013 | $0.0015            | <font color="red">0</font>      |
+| 2         | getRandomnessSuperIndirectly | 1,375,020    | 1,140,008 | $0.0000015237 | $0.0015            | <font color="green">-12</font>  |
+| 3         | returnPromiseVoid            | 1,315,034    | 1,116,013 | $0.0000014917 | $0.0015            | <font color="green">-11</font>  |
 
 ## Baseline benchmarks Azle version: 0.25.0
 
 | Execution | Method Name                  | Instructions | Cycles    | USD           | USD/Thousand Calls |
 | --------- | ---------------------------- | ------------ | --------- | ------------- | ------------------ |
-| 0         | getRandomnessDirectly        | 1,402,514    | 1,151,005 | $0.0000015384 | $0.0015            |
-| 1         | getRandomnessIndirectly      | 1,332,811    | 1,123,124 | $0.0000015012 | $0.0015            |
-| 2         | getRandomnessSuperIndirectly | 1,373,339    | 1,139,335 | $0.0000015228 | $0.0015            |
-| 3         | returnPromiseVoid            | 1,319,110    | 1,117,644 | $0.0000014939 | $0.0015            |
+| 0         | getRandomnessDirectly        | 1,406,209    | 1,152,483 | $0.0000015404 | $0.0015            |
+| 1         | getRandomnessIndirectly      | 1,333,065    | 1,123,226 | $0.0000015013 | $0.0015            |
+| 2         | getRandomnessSuperIndirectly | 1,375,032    | 1,140,012 | $0.0000015238 | $0.0015            |
+| 3         | returnPromiseVoid            | 1,315,045    | 1,116,018 | $0.0000014917 | $0.0015            |
 
 ---
 

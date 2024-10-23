@@ -12,13 +12,14 @@ export async function createActor(
         ({ IDL }) => {
             const BenchmarkEntry = IDL.Record({
                 method_name: IDL.Text,
-                instructions: IDL.Nat64
+                instructions: IDL.Nat64,
+                timestamp: IDL.Nat64
             });
 
             return IDL.Service({
                 _azle_get_benchmarks: IDL.Func(
                     [],
-                    [IDL.Vec(IDL.Tuple(IDL.Nat64, BenchmarkEntry))],
+                    [IDL.Vec(BenchmarkEntry)],
                     ['query']
                 )
             });
@@ -33,12 +34,10 @@ export async function createActor(
 export interface _SERVICE {
     _azle_get_benchmarks: ActorMethod<
         [],
-        [
-            bigint,
-            {
-                method_name: string;
-                instructions: bigint;
-            }
-        ][]
+        {
+            method_name: string;
+            instructions: bigint;
+            timestamp: bigint;
+        }[]
     >;
 }

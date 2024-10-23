@@ -100,12 +100,6 @@ pub fn _azle_get_file_hash(path: String) -> Option<String> {
 }
 
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
-pub fn _azle_get_benchmarks() -> Vec<(u64, benchmarking::BenchmarkEntry)> {
-    benchmarking::BENCHMARKS_REF_CELL.with(|benchmarks| {
-        benchmarks
-            .borrow()
-            .iter()
-            .map(|(k, v)| (*k, v.clone()))
-            .collect()
-    })
+pub fn _azle_get_benchmarks() -> Vec<benchmarking::BenchmarkEntry> {
+    benchmarking::BENCHMARKS_REF_CELL.with(|benchmarks| benchmarks.borrow().clone())
 }

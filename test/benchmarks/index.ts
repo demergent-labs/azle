@@ -6,7 +6,11 @@ import { version } from '../../package.json';
 import { jsonParse, jsonStringify } from '../../src/lib/stable';
 import { createActor } from './actor';
 
-type Benchmark = [bigint, { method_name: string; instructions: bigint }];
+type Benchmark = {
+    method_name: string;
+    instructions: bigint;
+    timestamp: bigint;
+};
 
 type CanisterBenchmark = {
     current: {
@@ -171,8 +175,8 @@ function createTableRow(
     hasChanges: boolean
 ): string {
     const executionNumber = index;
-    const methodName = currentBenchmark[1].method_name;
-    const instructions = currentBenchmark[1].instructions;
+    const methodName = currentBenchmark.method_name;
+    const instructions = currentBenchmark.instructions;
     const cycles = calculateCycles(instructions);
     const usd = calculateUSD(cycles);
     const usdPerThousand = (usd * 1_000).toFixed(4);
@@ -186,7 +190,7 @@ function createTableRow(
     }
 
     const change = previousBenchmark
-        ? calculateChange(instructions, previousBenchmark[1].instructions)
+        ? calculateChange(instructions, previousBenchmark.instructions)
         : '';
 
     return `${baseRow} | ${change} |`;

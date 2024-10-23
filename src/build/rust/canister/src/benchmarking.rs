@@ -8,10 +8,11 @@ use wasmedge_quickjs::{AsObject, Context};
 pub struct BenchmarkEntry {
     pub method_name: String,
     pub instructions: u64,
+    pub timestamp: u64,
 }
 
 thread_local! {
-    pub static BENCHMARKS_REF_CELL: RefCell<BTreeMap<u64, BenchmarkEntry>> = RefCell::new(BTreeMap::new());
+    pub static BENCHMARKS_REF_CELL: RefCell<Vec<BenchmarkEntry>> = RefCell::new(Vec::new());
 }
 
 pub fn record_benchmark(context: &mut Context, function_name: &str) {
@@ -26,12 +27,10 @@ pub fn record_benchmark(context: &mut Context, function_name: &str) {
         .unwrap_or_else(|| function_name.to_string());
 
     BENCHMARKS_REF_CELL.with(|benchmarks| {
-        benchmarks.borrow_mut().insert(
+        benchmarks.borrow_mut().push(BenchmarkEntry {
+            method_name,
+            instructions,
             timestamp,
-            BenchmarkEntry {
-                method_name,
-                instructions,
-            },
-        );
+        });
     });
 }
