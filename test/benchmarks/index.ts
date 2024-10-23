@@ -142,7 +142,7 @@ function createBenchmarksTable(
 
 function createTableHeader(hasChanges: boolean): string {
     const baseHeader =
-        '| Execution | Method Name | Instructions | Cycles | USD | USD/Thousand Calls |';
+        '| Id | Method Name | Instructions | Cycles | USD | USD/Thousand Calls |';
     const changeHeader = hasChanges ? ' Change |' : '';
     const separator =
         '\n|-----------|-------------|------------|--------|-----|--------------|';
@@ -181,7 +181,9 @@ function createTableRow(
     const usd = calculateUSD(cycles);
     const usdPerThousand = (usd * 1_000).toFixed(4);
 
-    const baseRow = `| ${executionNumber} | ${methodName} | ${instructions.toLocaleString()} | ${cycles.toLocaleString()} | $${usd.toFixed(
+    const baseRow = `| ${executionNumber} | ${methodName} | ${formatWithUnderscores(
+        instructions
+    )} | ${formatWithUnderscores(cycles)} | $${usd.toFixed(
         10
     )} | $${usdPerThousand}`;
 
@@ -205,9 +207,10 @@ function createNote(): string {
 - Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions)
 - Base fee: 590,000 cycles
 - Per instruction fee: 0.4 cycles
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.336610 (as of December 18, 2023)
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.3279204 (as of October 23, 2024)
 
-For the most up-to-date fee information, please refer to the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).`;
+For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).`;
 }
 
 function calculateCycles(instructions: bigint): bigint {
@@ -226,4 +229,8 @@ function calculateChange(current: bigint, previous: bigint): string {
     const diff = current - previous;
     const color = diff < 0 ? 'green' : 'red';
     return `<font color="${color}">${diff > 0 ? '+' : ''}${diff}</font>`;
+}
+
+function formatWithUnderscores(value: bigint | number): string {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '_');
 }
