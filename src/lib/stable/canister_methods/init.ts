@@ -11,6 +11,7 @@ export function init<This, Args extends any[], Return>(
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
         const name = context.name as string;
+        const indexString = index.toString();
 
         globalThis._azleMethodMeta.init = {
             name,
@@ -21,9 +22,7 @@ export function init<This, Args extends any[], Return>(
             IDL.Func(paramIdlTypes, [], ['init'])
         );
 
-        globalThis._azleCallbacks[index.toString()] = (
-            ...args: any[]
-        ): void => {
+        globalThis._azleCallbacks[indexString] = (...args: any[]): void => {
             executeAndReplyWithCandidSerde(
                 'init',
                 args,
@@ -34,8 +33,8 @@ export function init<This, Args extends any[], Return>(
             );
         };
 
-        if (globalThis._azleRecordBenchmarks) {
-            globalThis._azleCanisterMethodNames[index.toString()] = name;
+        if (globalThis._azleRecordBenchmarks === true) {
+            globalThis._azleCanisterMethodNames[indexString] = name;
         }
     };
 }
