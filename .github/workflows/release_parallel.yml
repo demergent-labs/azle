@@ -76,8 +76,8 @@ jobs:
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
                   npm install
-                  npx azle template
-                  npx azle template --experimental
+                  AZLE_VERBOSE=true npx azle template
+                  AZLE_VERBOSE=true npx azle template --experimental
 
             - name: Publish to npm
               run: |
@@ -94,7 +94,7 @@ jobs:
                       ./examples
                       ./tests
 
-    update-dependencies:
+    update-tests-for-release:
         needs: prepare-release
         name: Update ${{ matrix.test.name }}
         runs-on: ubuntu-latest
@@ -127,7 +127,7 @@ jobs:
                   src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
-            - name: Update dependencies
+            - name: Update azle version
               run: |
                   cd ${{ matrix.test.path }}
                   sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ needs.prepare-release.outputs.release-version }}\3/" package.json
