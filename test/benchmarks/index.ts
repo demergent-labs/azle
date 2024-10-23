@@ -204,10 +204,11 @@ function createNote(): string {
 ---
 
 **Note on calculations:**
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions)
+- Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions) + (additional_fee_per_billion * floor(number_of_instructions / 1_billion))
 - Base fee: 590,000 cycles
 - Per instruction fee: 0.4 cycles
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.3279204 (as of October 23, 2024)
+- Additional fee: 400,000,000 cycles per billion instructions
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.33661 (as of December 18, 2023)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
 For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).`;
@@ -216,7 +217,13 @@ For the most current fee information, please check the [official documentation](
 function calculateCycles(instructions: bigint): bigint {
     const baseFee = 590_000n;
     const perInstructionFee = 4n; // Multiplied by 10 to avoid fractional bigint
-    return baseFee + (perInstructionFee * instructions) / 10n;
+    const additionalFeePerBillion = 400_000_000n;
+
+    const instructionFee = (perInstructionFee * instructions) / 10n;
+    const additionalFee =
+        (instructions / 1_000_000_000n) * additionalFeePerBillion;
+
+    return baseFee + instructionFee + additionalFee;
 }
 
 function calculateUSD(cycles: bigint): number {
