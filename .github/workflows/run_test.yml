@@ -38,14 +38,6 @@ jobs:
             - uses: ./.github/actions/set_run_conditions
               id: set-conditions
 
-            - name: Debug - Print action outputs
-              run: |
-                  echo "is_main_branch_push: ${{ steps.set-conditions.outputs.is_main_branch_push }}"
-                  echo "is_main_branch_push_from_release_merge: ${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}"
-                  echo "is_release_branch_pr: ${{ steps.set-conditions.outputs.is_release_branch_pr }}"
-                  echo "is_feature_branch_pr: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}"
-                  echo "is_feature_branch_draft_pr: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}"
-
             - name: Set condition environment variables
               run: |
                   echo "AZLE_IS_MAIN_BRANCH_PUSH=${{ steps.set-conditions.outputs.is_main_branch_push }}" >> $GITHUB_ENV
@@ -54,7 +46,7 @@ jobs:
                   echo "AZLE_IS_FEATURE_BRANCH_PR=${{ steps.set-conditions.outputs.is_feature_branch_pr }}" >> $GITHUB_ENV
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" >> $GITHUB_ENV
 
-            - name: Debug - Print environment variables
+            - name: Print environment variables
               run: |
                   echo "AZLE_IS_MAIN_BRANCH_PUSH: $AZLE_IS_MAIN_BRANCH_PUSH"
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"

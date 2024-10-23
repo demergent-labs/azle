@@ -28,18 +28,6 @@ runs:
               AZLE_IS_FEATURE_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
               AZLE_IS_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
 
-              # Debug information
-              echo "Debug: github.ref = ${{ github.ref }}"
-              echo "Debug: github.head_ref = ${{ github.head_ref }}"
-              echo "Debug: github.event.pull_request.draft = ${{ github.event.pull_request.draft }}"
-              echo "Debug: github.event.head_commit.message = ${{ github.event.head_commit.message }}"
-
-              echo "Debug: AZLE_IS_MAIN_BRANCH_PUSH = $AZLE_IS_MAIN_BRANCH_PUSH"
-              echo "Debug: AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE = $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
-              echo "Debug: AZLE_IS_RELEASE_PR = $AZLE_IS_RELEASE_PR"
-              echo "Debug: AZLE_IS_FEATURE_PR = $AZLE_IS_FEATURE_PR"
-              echo "Debug: AZLE_IS_DRAFT_PR = $AZLE_IS_DRAFT_PR"
-
               # Set individual outputs
               echo "is_main_branch_push=$AZLE_IS_MAIN_BRANCH_PUSH" >> $GITHUB_OUTPUT
               echo "is_main_branch_push_from_release_merge=$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" >> $GITHUB_OUTPUT

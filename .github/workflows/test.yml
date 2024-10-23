@@ -156,19 +156,3 @@ jobs:
         if: failure()
         steps:
             - run: exit 1
-
-    some-job:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-
-            - uses: ./.github/actions/set_run_conditions
-              id: set-conditions
-
-            - name: Debug - Print action outputs
-              run: |
-                  echo "is_main_branch_push: ${{ steps.set-conditions.outputs.is_main_branch_push }}"
-                  echo "is_main_branch_push_from_release_merge: ${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}"
-                  echo "is_release_branch_pr: ${{ steps.set-conditions.outputs.is_release_branch_pr }}"
-                  echo "is_feature_branch_pr: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}"
-                  echo "is_feature_branch_draft_pr: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}"
