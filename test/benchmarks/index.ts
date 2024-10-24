@@ -48,13 +48,18 @@ async function updateBenchmarksForCanisters(
         const actor = await createActor(canisterId, whoami());
         const currentBenchmarks = await actor._azle_get_benchmarks();
 
+        const previousCurrentVersion = acc[canisterName]?.current.version;
+        const shouldUpdatePrevious = previousCurrentVersion !== version;
+
         return {
             ...acc,
             [canisterName]: {
-                previous: acc[canisterName]?.current ?? {
-                    version,
-                    benchmarks: []
-                },
+                previous: shouldUpdatePrevious
+                    ? acc[canisterName]?.current ?? {
+                          version,
+                          benchmarks: []
+                      }
+                    : acc[canisterName]?.previous,
                 current: {
                     version,
                     benchmarks: currentBenchmarks
