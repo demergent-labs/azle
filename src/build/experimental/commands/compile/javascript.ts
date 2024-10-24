@@ -63,22 +63,21 @@ export function getPrelude(main: string): string {
                 if (globalThis._azleRecordBenchmarks === true) {
                     const methodMeta = canister.methodMeta;
 
-                    const azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
+                    globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
                         if (value === undefined) {
                             return acc;
                         }
 
                         if (key === 'queries' || key === 'updates') {
-                            value.forEach(method => {
+                            const queriesOrUpdates = value.reduce((innerAcc, method) => {
                                 const indexString = method.index.toString();
-                                acc = { ...acc, [indexString]: method.name };
-                            });
+                                return { ...innerAcc, [indexString]: method.name };
+                            }, {});
+                            return { ...acc, ...queriesOrUpdates };
                         } else {
                             const indexString = value.index.toString();
-                            acc = { ...acc, [indexString]: value.name };
+                            return { ...acc, [indexString]: value.name };
                         }
-
-                        return acc;
                     }, {});
                 }
 

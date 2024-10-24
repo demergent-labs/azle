@@ -250,7 +250,6 @@ function formatWithUnderscores(
     decimalPlaces?: number
 ): string {
     const [integerPart, decimalPart] = value.toString().split('.');
-    console.log(`integerPart: ${integerPart}, decimalPart: ${decimalPart}`);
     const formattedIntegerPart = integerPart.replace(
         /\B(?=(\d{3})+(?!\d))/g,
         '_'

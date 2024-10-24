@@ -2,25 +2,25 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                             |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | init                | 8_135_586_611 | 6_454_824_644 | $0.0085827867 | $8582.7867        | <font color="green">-678663</font> |
-| 1   | http_request_update | 53_785_299    | 22_104_119    | $0.0000293912 | $29.3912          | <font color="green">-13428</font>  |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
+| 0   | init                | 8_136_382_605 | 6_455_143_042 | $0.0085832100 | $8_583.21         | <font color="red">+117_331</font> |
+| 1   | http_request_update | 53_846_830    | 22_128_732    | $0.0000294239 | $29.42            | <font color="red">+48_103</font>  |
 
 ## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                | 8_136_265_274 | 6_455_096_109 | $0.0085831476 | $8583.1476        |
-| 1   | http_request_update | 53_798_727    | 22_109_490    | $0.0000293983 | $29.3983          |
-| 2   | http_request_update | 47_468_265    | 19_577_306    | $0.0000260314 | $26.0314          |
-| 3   | http_request_update | 47_474_297    | 19_579_718    | $0.0000260346 | $26.0346          |
+| 0   | init                | 8_136_265_274 | 6_455_096_109 | $0.0085831476 | $8_583.14         |
+| 1   | http_request_update | 53_798_727    | 22_109_490    | $0.0000293983 | $29.39            |
+| 2   | http_request_update | 47_468_265    | 19_577_306    | $0.0000260314 | $26.03            |
+| 3   | http_request_update | 47_474_297    | 19_579_718    | $0.0000260346 | $26.03            |
 
 ---
 
 **Note on calculations:**
 
--   Cycles are calculated using the formula: base*fee + (per_instruction_fee * number*of_instructions) + (additional_fee_per_billion * floor(number_of_instructions / 1_billion))
+-   Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_billion))
 -   Base fee: 590_000 cycles
 -   Per instruction fee: 0.4 cycles
 -   Additional fee: 400_000_000 cycles per billion instructions
