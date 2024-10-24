@@ -4,6 +4,8 @@ on:
         secrets:
             GPG_SIGNING_KEY:
                 required: true
+            GH_TOKEN:
+                required: true
             NPM_TOKEN:
                 required: true
             LASTMJS_GITHUB_TOKEN:
@@ -15,6 +17,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         outputs:
             release-version: ${{ steps.get-version.outputs.release-version }}
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
@@ -97,6 +100,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         strategy:
             fail-fast: false
             matrix:
@@ -155,6 +159,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
             - uses: actions/checkout@v4
               with:
