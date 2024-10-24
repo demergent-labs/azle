@@ -4,7 +4,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.24.1",
+        "azle": "0.24.2-rc.54",
         "encode-utf8": "2.0.0"
     },
     "devDependencies": {
