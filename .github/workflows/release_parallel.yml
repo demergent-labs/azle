@@ -178,6 +178,8 @@ jobs:
 
                   CURRENT_BRANCH=$(git branch --show-current)
 
+                  git fetch --all
+
                   # Get all update branches
                   for branch in $(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///'); do
                     echo "Squash merging branch: $branch"
