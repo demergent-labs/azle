@@ -76,8 +76,9 @@ jobs:
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
                   npm install
-                  AZLE_VERBOSE=true npx azle template
-                  AZLE_VERBOSE=true npx azle template --experimental
+                  ## TODO bring these back after we are done testing
+                  #   AZLE_VERBOSE=true npx azle template
+                  #   AZLE_VERBOSE=true npx azle template --experimental
 
             - name: Publish to npm
               run: |
@@ -166,7 +167,7 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
-            - name: Squash merge update branches
+            - name: Cherry-pick changes from update branches
               env:
                   PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
               run: |
@@ -179,19 +180,17 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
 
                   git fetch --all
-
-                  # Get all update branches
+                  # Get all update branches and cherry-pick their changes
                   for branch in $(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///'); do
-                    echo "Squash merging branch: $branch"
+                    echo "Cherry-picking changes from branch: $branch"
                     git fetch origin $branch:$branch
 
-                    # Merge with squash
-                    git merge --squash "$branch" || {
-                      echo "Failed to merge $branch"
-                      git merge --abort
+                    # Get the commit from the branch and cherry-pick it
+                    git cherry-pick $branch || {
+                      echo "Failed to cherry-pick from $branch"
+                      git cherry-pick --abort
                       exit 1
                     }
-                    git commit -m "Squashed changes from $branch" || true
 
                     # Delete the remote branch
                     git push origin --delete "$branch"
