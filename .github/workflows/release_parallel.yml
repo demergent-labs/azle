@@ -186,12 +186,12 @@ jobs:
                     echo "Cherry-picking changes from branch: $branch"
                     git fetch origin $branch:$branch
 
-                    # Get the commit from the branch and cherry-pick it
-                    git cherry-pick $branch || {
-                      echo "Failed to cherry-pick from $branch"
-                      git cherry-pick --abort
+                    git merge --squash "$branch" || {
+                      echo "Failed to merge $branch"
+                      git merge --abort
                       exit 1
                     }
+                    git commit -m "Squashed changes from $branch" || true
 
                     # Delete the remote branch
                     git push origin --delete "$branch"
