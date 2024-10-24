@@ -18,6 +18,8 @@ function getPrelude(main: string): string {
             import * as Canister from './${main}';
 
             ${handleClassApiCanister()}
+
+            ${handleBenchmarking()}
         `;
 }
 
@@ -106,4 +108,29 @@ function experimentalMessage(importName: string): string {
     }
 }
 `;
+}
+
+function handleBenchmarking(): string {
+    return /*TS*/ `
+        if (globalThis._azleRecordBenchmarks === true) {
+            const methodMeta = globalThis._azleMethodMeta;
+
+            globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
+                if (value === undefined) {
+                    return acc;
+                }
+
+                if (key === 'queries' || key === 'updates') {
+                    const queriesOrUpdates = value.reduce((innerAcc, method) => {
+                        const indexString = method.index.toString();
+                        return { ...innerAcc, [indexString]: method.name };
+                    }, {});
+                    return { ...acc, ...queriesOrUpdates };
+                } else {
+                    const indexString = value.index.toString();
+                    return { ...acc, [indexString]: value.name };
+                }
+            }, {});
+        }
+    `;
 }

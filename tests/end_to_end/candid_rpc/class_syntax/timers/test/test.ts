@@ -4,10 +4,11 @@ import { getTests } from 'timers_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/timers';
 
-const timersCanister = createActor(getCanisterId('timers'), {
+const canisterName = 'timers';
+const timersCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(timersCanister));
+runTests(getTests(timersCanister), canisterName);

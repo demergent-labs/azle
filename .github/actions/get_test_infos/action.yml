@@ -1,4 +1,4 @@
-name: Get test infos
+name: 'Get test infos'
 description:
     'Gets a list of test info objects for each npm project with an npm test script
     The shape of the object is
@@ -9,26 +9,26 @@ description:
     displayPath: string // An abbreviated version of the path for display purposes only
     }'
 inputs:
-    node-version:
-        description: The version of Node.js to use
-        required: true
     directories:
-        description: List of directories to search for npm projects with an npm test script
+        description: 'List of directories to search for npm projects with an npm test script'
         required: true
     exclude-dirs:
-        description: List of directories to exclude from the search
+        description: 'List of directories to exclude from the search'
         required: false
         default: ''
 outputs:
     test-infos:
-        description: All of the test info objects found by this action
+        description: 'All of the test info objects found by this action'
         value: ${{ steps.get-test-infos.outputs.test-infos }}
 runs:
     using: composite
     steps:
+        - id: get-node-version
+          uses: ./.github/actions/get_node_version
+
         - uses: actions/setup-node@v4
           with:
-              node-version: ${{ inputs.node-version }}
+              node-version: ${{ steps.get-node-version.outputs.node-version }}
 
         - name: Get test infos
           id: get-test-infos

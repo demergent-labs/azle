@@ -5,10 +5,11 @@ import { runTests } from 'azle/test';
 import { createActor } from '../src/declarations/minimal_dapp';
 import { getTests } from './tests';
 
-const counterCanister = createActor(getCanisterId('minimal_dapp'), {
+const canisterName = 'minimal_dapp';
+const counterCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(counterCanister));
+runTests(getTests(counterCanister), canisterName);

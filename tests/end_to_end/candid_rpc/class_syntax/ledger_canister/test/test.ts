@@ -7,10 +7,11 @@ import { getTests } from 'ledger_canister_end_to_end_test_functional_syntax/test
 
 import { createActor } from '../test/dfx_generated/ledger_canister';
 
-const ledgerCanister = createActor(getCanisterId('ledger_canister'), {
+const canisterName = 'ledger_canister';
+const ledgerCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(ledgerCanister));
+runTests(getTests(ledgerCanister), canisterName);

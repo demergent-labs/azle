@@ -21,6 +21,8 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleCanisterMethodsIndex: number;
     // eslint-disable-next-line no-var
+    var _azleCanisterMethodNames: { [key: string]: string };
+    // eslint-disable-next-line no-var
     var _azleExperimental: boolean;
     // eslint-disable-next-line no-var
     var _azleIcExperimental: AzleIcExperimental;
@@ -40,6 +42,8 @@ declare global {
     var _azleNodeWasmEnvironment: boolean;
     // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
+    // eslint-disable-next-line no-var
+    var _azleRecordBenchmarks: boolean;
     // eslint-disable-next-line no-var
     var _azleRejectIds: { [key: string]: (err: any) => void };
     // eslint-disable-next-line no-var
@@ -67,6 +71,8 @@ if (globalThis._azleInsideCanister === true) {
     globalThis._azleCanisterMethodsIndex = 0;
 
     globalThis._azleCanisterMethodIdlTypes = {};
+
+    globalThis._azleCanisterMethodNames = {};
 
     globalThis._azleInitAndPostUpgradeIdlTypes = [];
 

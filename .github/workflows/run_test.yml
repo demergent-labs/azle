@@ -1,0 +1,142 @@
+name: Run Test
+
+on:
+    workflow_call:
+        inputs:
+            test_infos:
+                required: true
+                type: string
+            include_npm:
+                required: true
+                type: boolean
+
+jobs:
+    run-test:
+        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
+        runs-on: ${{ matrix.os }}
+        env:
+            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
+            AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
+            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
+            AZLE_IS_MAIN_BRANCH_PUSH: ''
+            AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ''
+            AZLE_IS_RELEASE_BRANCH_PR: ''
+            AZLE_IS_FEATURE_BRANCH_PR: ''
+            AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ''
+
+        strategy:
+            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
+            matrix: # spins up one job per combination of test and code source (repo or npm).
+                # os: [macos-latest, ubuntu-latest]
+                os: [ubuntu-latest]
+                azle_source:
+                    - ${{ inputs.include_npm == 'true' && 'npm' || 'repo' }}
+                tests: ${{ fromJSON(inputs.test_infos) }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: ./.github/actions/set_run_conditions
+              id: set-conditions
+
+            - name: Set condition environment variables
+              run: |
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH=${{ steps.set-conditions.outputs.is_main_branch_push }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_RELEASE_BRANCH_PR=${{ steps.set-conditions.outputs.is_release_branch_pr }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_PR=${{ steps.set-conditions.outputs.is_feature_branch_pr }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" >> $GITHUB_ENV
+
+            - name: Print environment variables
+              run: |
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH: $AZLE_IS_MAIN_BRANCH_PUSH"
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
+                  echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
+                  echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+
+            - name: Report full path of test
+              # Just in case the path isn't obvious from the name, this will remove ambiguity
+              run: echo ${{matrix.tests.path}}
+
+            - id: get-node-version
+              uses: ./.github/actions/get_node_version
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+
+            - id: get-dfx-version
+              uses: ./.github/actions/get_dfx_version
+
+            - name: Run pre-test Azle setup
+              run: |
+
+                  # Install dfx (Note: DFX must be installed before `npm install` because the azle installation process requires dfx)
+                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
+                  # MacOS-specific DNS configuration
+                  if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+                      sudo networksetup -setdnsservers Ethernet 9.9.9.9
+                  fi
+
+                  npm install
+
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link
+                  fi
+
+                  npm run lint
+              shell: bash -l {0}
+
+            - name: Run pre-test setup for ${{ matrix.tests.name }}
+              run: |
+                  npm install
+
+                  if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                      npm link azle
+                  fi
+
+                  npx azle install-dfx-extension
+              working-directory: ${{ matrix.tests.path }}
+              shell: bash -l {0}
+
+            - name: Start dfx with artificial delay 0
+              if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
+              working-directory: ${{ matrix.tests.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+
+            - name: Start dfx
+              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
+              working-directory: ${{ matrix.tests.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000
+
+            - name: Run test
+              run: |
+                  RUNS=1
+
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push }}" == "true" ]]; then
+                      RUNS=100
+                  fi
+
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" ]]; then
+                      RUNS=100
+                  fi
+
+                  if [[ "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
+                      RUNS=10
+                  fi
+
+                  if [[ "${{ steps.set-conditions.outputs.is_feature_branch_pr }}" == "true" ]]; then
+                      RUNS=5
+                  fi
+
+                  if [[ "${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" == "true" ]]; then
+                      RUNS=1
+                  fi
+
+                  echo "Running tests $RUNS times"
+
+                  AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
+              shell: bash -l {0}
+              working-directory: ${{ matrix.tests.path }}
