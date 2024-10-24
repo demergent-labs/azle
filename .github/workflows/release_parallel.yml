@@ -167,7 +167,7 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
-            - name: Cherry-pick changes from update branches
+            - name: Cherry-pick and squash changes
               env:
                   PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
               run: |
@@ -178,6 +178,7 @@ jobs:
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
                   CURRENT_BRANCH=$(git branch --show-current)
+                  BASE_COMMIT=$(git rev-parse HEAD)
 
                   git fetch --all
                   # Get all update branches and cherry-pick their changes
@@ -196,7 +197,10 @@ jobs:
                     git push origin --delete "$branch"
                   done
 
-                  # Push the changes
+                  # Squash all cherry-picked commits into one
+                  git reset --soft $BASE_COMMIT
+                  git commit -am "Update all dependencies for release ${{ needs.prepare-release.outputs.release-version }}"
+
                   git push origin HEAD:$CURRENT_BRANCH
 
             - name: Create release
