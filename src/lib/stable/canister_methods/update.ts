@@ -33,9 +33,5 @@ export function update<This, Args extends any[], Return>(
                 options?.manual ?? false
             );
         };
-
-        if (globalThis._azleRecordBenchmarks === true) {
-            globalThis._azleCanisterMethodNames[indexString] = name;
-        }
     };
 }

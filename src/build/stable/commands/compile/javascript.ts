@@ -18,6 +18,8 @@ function getPrelude(main: string): string {
             import * as Canister from './${main}';
 
             ${handleClassApiCanister()}
+
+            ${handleBenchmarking()}
         `;
 }
 
@@ -106,4 +108,28 @@ function experimentalMessage(importName: string): string {
     }
 }
 `;
+}
+
+function handleBenchmarking(): string {
+    return /*TS*/ `
+        const methodMeta = globalThis._azleMethodMeta;
+
+        if (globalThis._azleRecordBenchmarks === true) {
+            for (const [key, value] of Object.entries(methodMeta)) {
+                if (value === undefined) {
+                            continue;
+                        }
+
+                if (key === 'queries' || key === 'updates') {
+                    for (const method of value) {
+                        const indexString = method.index.toString();
+                        globalThis._azleCanisterMethodNames[indexString] = method.name;
+                    }
+                } else {
+                    const indexString = value.index.toString();
+                    globalThis._azleCanisterMethodNames[indexString] = value.name;
+                }
+            }
+        }
+    `;
 }

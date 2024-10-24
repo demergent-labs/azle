@@ -23,8 +23,4 @@ export function preUpgrade<This, Args extends any[], Return>(
             false
         );
     };
-
-    if (globalThis._azleRecordBenchmarks === true) {
-        globalThis._azleCanisterMethodNames[indexString] = name;
-    }
 }
