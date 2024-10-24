@@ -177,7 +177,7 @@ jobs:
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
                   # Determine the current branch name
-                  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+                  CURRENT_BRANCH=$(git branch --show-current)
                   echo "Current branch: $CURRENT_BRANCH"
 
                   # List and merge update branches
