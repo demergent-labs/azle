@@ -125,6 +125,7 @@ jobs:
 
             - name: Update azle version
               run: |
+                  npm install
                   cd ${{ matrix.test.path }}
                   sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ needs.prepare-release.outputs.release-version }}\3/" package.json
                   npm install
