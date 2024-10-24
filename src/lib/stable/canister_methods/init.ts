@@ -20,10 +20,10 @@ export function init<This, Args extends any[], Return>(
             IDL.Func(paramIdlTypes, [], ['init'])
         );
 
-        globalThis._azleCallbacks[index.toString()] = (
+        globalThis._azleCallbacks[index.toString()] = async (
             ...args: any[]
-        ): void => {
-            executeAndReplyWithCandidSerde(
+        ): Promise<void> => {
+            await executeAndReplyWithCandidSerde(
                 'init',
                 args,
                 originalMethod.bind(globalThis._azleCanisterClassInstance),

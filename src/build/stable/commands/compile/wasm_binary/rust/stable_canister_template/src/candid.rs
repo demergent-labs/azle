@@ -1,66 +1,74 @@
+use std::error::Error;
+
 use crate::{
-    ic, quickjs_with_ctx, wasm_binary_manipulation::get_js_code, CONTEXT_REF_CELL, MODULE_NAME,
+    error::{handle_promise_error, quickjs_call_with_error_handling},
+    ic, quickjs_with_ctx,
+    wasm_binary_manipulation::get_js_code,
+    CONTEXT_REF_CELL, MODULE_NAME,
 };
 
-// TODO we might not need any of these panic hooks
+type CCharPtr = *mut std::os::raw::c_char;
 
-// Heavily inspired by https://stackoverflow.com/a/47676844
 #[no_mangle]
-pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
-    std::panic::set_hook(Box::new(|panic_info| {
-        let msg = match panic_info.payload().downcast_ref::<&str>() {
-            Some(s) => *s,
-            None => "Unknown panic message",
-        };
-        let location = if let Some(location) = panic_info.location() {
-            format!(" at {}:{}", location.file(), location.line())
-        } else {
-            " (unknown location)".to_string()
-        };
+pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
+    match initialize_and_get_candid() {
+        Ok(c_char_ptr) => c_char_ptr,
+        Err(error) => {
+            ic_cdk::trap(&format!("Azle CandidAndMethodMetaError: {}", error));
+        }
+    }
+}
 
-        let message = &format!("Panic occurred: {}{}", msg, location);
-
-        ic_cdk::println!("{}", message);
-    }));
-
-    let runtime = rquickjs::Runtime::new().unwrap();
-    let context = rquickjs::Context::full(&runtime).unwrap();
+fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
+    let runtime = rquickjs::Runtime::new()?;
+    let context = rquickjs::Context::full(&runtime)?;
 
     CONTEXT_REF_CELL.with(|context_ref_cell| {
         *context_ref_cell.borrow_mut() = Some(context);
     });
 
-    quickjs_with_ctx(|ctx| {
+    quickjs_with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
         ctx.clone()
             .globals()
-            .set("_azleNodeWasmEnvironment", true)
-            .unwrap();
-
-        ic::register(ctx.clone());
+            .set("_azleNodeWasmEnvironment", true)?;
 
         ctx.clone()
             .globals()
-            .set("exports", rquickjs::Object::new(ctx.clone()).unwrap())
-            .unwrap();
+            .set("exports", rquickjs::Object::new(ctx.clone())?)?;
 
-        ctx.clone()
-            .globals()
-            .set("_azleExperimental", false)
-            .unwrap();
+        ctx.clone().globals().set("_azleExperimental", false)?;
+
+        ic::register(ctx.clone())?;
 
         let js = get_js_code();
 
-        // TODO is there a better name for this main module?
-        // TODO this returns a promise...make sure we handle it appropriately
-        rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, js).unwrap();
+        let promise =
+            rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, std::str::from_utf8(&js)?)?;
 
-        let get_candid_and_method_meta: rquickjs::Function =
-            ctx.globals().get("_azleGetCandidAndMethodMeta").unwrap();
+        handle_promise_error(ctx.clone(), promise)?;
 
-        let candid_and_method_meta: String = get_candid_and_method_meta.call(()).unwrap();
+        let get_candid_and_method_meta: rquickjs::Function = ctx
+            .clone()
+            .globals()
+            .get("_azleGetCandidAndMethodMeta")
+            .map_err(|e| {
+                format!(
+                    "Failed to get globalThis._azleGetCandidAndMethodMeta: {}",
+                    e
+                )
+            })?;
 
-        let c_string = std::ffi::CString::new(candid_and_method_meta).unwrap();
+        let candid_and_method_meta_js_value =
+            quickjs_call_with_error_handling(ctx.clone(), get_candid_and_method_meta, ())?;
 
-        c_string.into_raw()
+        let candid_and_method_meta: String = candid_and_method_meta_js_value
+            .as_string()
+            .ok_or("Failed to convert candidAndMethodMeta JS value to string")?
+            .to_string()?;
+
+        let c_string = std::ffi::CString::new(candid_and_method_meta)?;
+        let c_char_ptr = c_string.into_raw();
+
+        Ok(c_char_ptr)
     })
 }

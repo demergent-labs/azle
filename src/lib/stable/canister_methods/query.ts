@@ -30,10 +30,10 @@ export function query<This, Args extends any[], Return>(
             ['query']
         );
 
-        globalThis._azleCallbacks[index.toString()] = (
+        globalThis._azleCallbacks[index.toString()] = async (
             ...args: any[]
-        ): void => {
-            executeAndReplyWithCandidSerde(
+        ): Promise<void> => {
+            await executeAndReplyWithCandidSerde(
                 'query',
                 args,
                 originalMethod.bind(globalThis._azleCanisterClassInstance),

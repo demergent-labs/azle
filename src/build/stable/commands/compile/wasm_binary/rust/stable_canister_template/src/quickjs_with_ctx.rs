@@ -1,30 +1,32 @@
-use crate::CONTEXT_REF_CELL;
+use std::error::Error;
+
 use rquickjs::Ctx;
 
-pub fn quickjs_with_ctx<F, R>(callback: F) -> R
+use crate::CONTEXT_REF_CELL;
+
+// TODO should we get rid of the result when calling the callback?
+// TODO I am not sure we need to do that
+pub fn quickjs_with_ctx<F, R>(callback: F) -> Result<R, Box<dyn Error>>
 where
-    F: FnOnce(Ctx) -> R,
+    F: FnOnce(Ctx) -> Result<R, Box<dyn Error>>,
 {
     CONTEXT_REF_CELL.with(|context_ref_cell| {
         let context_ref = context_ref_cell.borrow();
-        let context = context_ref.as_ref().unwrap();
+        let context = context_ref
+            .as_ref()
+            .ok_or("QuickJS context not initialized")?;
 
         context.with(|ctx| {
-            let result = callback(ctx.clone());
+            let result = callback(ctx.clone())
+                .map_err(|e| format!("QuickJS callback execution failed: {}", e))?;
 
             run_event_loop(ctx);
 
-            result
+            Ok(result)
         })
     })
 }
 
-fn run_event_loop(ctx: rquickjs::Ctx) {
-    loop {
-        let result = ctx.execute_pending_job();
-
-        if result == false {
-            break;
-        }
-    }
+pub fn run_event_loop(ctx: Ctx) {
+    while ctx.execute_pending_job() {}
 }

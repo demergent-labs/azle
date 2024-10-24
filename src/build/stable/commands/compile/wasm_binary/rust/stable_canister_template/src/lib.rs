@@ -1,11 +1,5 @@
-// TODO the plan is to integrate rquickjs for stable
-// TODO and at that time create two crates
-// TODO we should place each crate at src/build/stable/commands/compile/rust
-// TODO and src/build/experimental/commands/compile/rust respectively
-
 use std::cell::RefCell;
 
-// #[allow(unused)]
 use ic_stable_structures::{
     memory_manager::{MemoryManager, VirtualMemory},
     DefaultMemoryImpl,
@@ -13,6 +7,7 @@ use ic_stable_structures::{
 
 mod candid;
 mod chunk;
+mod error;
 mod execute_method_js;
 mod guards;
 mod ic;
@@ -23,7 +18,9 @@ mod wasm_binary_manipulation;
 
 pub use quickjs_with_ctx::quickjs_with_ctx;
 
-const MODULE_NAME: &str = "main";
+// TODO dynamically get the canister name
+// TODO send it in through the Wasm meta data
+const MODULE_NAME: &str = ".azle/[canister_name]/main.js";
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;

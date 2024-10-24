@@ -21,6 +21,8 @@ pub fn get_function(ctx: Ctx) -> Function {
                 if result.is_exception() {
                     panic!("Timer interval callback threw an exception");
                 }
+
+                Ok(())
             });
         };
 

@@ -30,6 +30,7 @@ export async function execute(
                     len
                 );
                 const message = new TextDecoder('utf8').decode(memory);
+
                 console.info(message);
             },
             global_timer_set: (): void => {},
@@ -63,7 +64,18 @@ export async function execute(
             stable64_size: (): void => {},
             stable64_write: (): void => {},
             time: (): bigint => 0n,
-            trap: (): void => {}
+            trap: (ptr: number, len: number): void => {
+                const memory = new Uint8Array(
+                    (wasmInstance.exports.memory as any).buffer,
+                    ptr,
+                    len
+                );
+                const message = new TextDecoder('utf8').decode(memory);
+
+                console.error(message);
+
+                process.exit(1);
+            }
         }
         // env: {
         //     azle_log(ptr: number, len: number) {

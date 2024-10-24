@@ -23,10 +23,10 @@ export function update<This, Args extends any[], Return>(
             returnIdlType === undefined ? [] : [returnIdlType]
         );
 
-        globalThis._azleCallbacks[index.toString()] = (
+        globalThis._azleCallbacks[index.toString()] = async (
             ...args: any[]
-        ): void => {
-            executeAndReplyWithCandidSerde(
+        ): Promise<void> => {
+            await executeAndReplyWithCandidSerde(
                 'update',
                 args,
                 originalMethod.bind(globalThis._azleCanisterClassInstance),

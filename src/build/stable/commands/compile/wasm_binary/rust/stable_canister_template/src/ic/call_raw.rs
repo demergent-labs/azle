@@ -19,6 +19,8 @@ pub fn get_function(ctx: Ctx) -> Function {
 
                 quickjs_with_ctx(move |ctx| {
                     resolve_or_reject(ctx.clone(), &call_result, &promise_id);
+
+                    Ok(())
                 });
             });
 

@@ -12,8 +12,8 @@ export function inspectMessage<This, Args extends any[], Return>(
         index
     };
 
-    globalThis._azleCallbacks[index.toString()] = (): void => {
-        executeAndReplyWithCandidSerde(
+    globalThis._azleCallbacks[index.toString()] = async (): Promise<void> => {
+        await executeAndReplyWithCandidSerde(
             'inspectMessage',
             [],
             originalMethod.bind(globalThis._azleCanisterClassInstance),

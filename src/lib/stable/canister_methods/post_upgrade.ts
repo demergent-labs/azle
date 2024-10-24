@@ -20,10 +20,10 @@ export function postUpgrade<This, Args extends any[], Return>(
             IDL.Func(paramIdlTypes, [], ['post_upgrade'])
         );
 
-        globalThis._azleCallbacks[index.toString()] = (
+        globalThis._azleCallbacks[index.toString()] = async (
             ...args: any[]
-        ): void => {
-            executeAndReplyWithCandidSerde(
+        ): Promise<void> => {
+            await executeAndReplyWithCandidSerde(
                 'postUpgrade',
                 args,
                 originalMethod.bind(globalThis._azleCanisterClassInstance),
