@@ -186,6 +186,7 @@ jobs:
                     }
 
                     # Delete the remote branch after successful merge
+                    # TODO --delete branch1 branch2 branch3 etc
                     git push origin --delete "$branch"
                     echo "Deleted remote branch: $branch"
                   done
