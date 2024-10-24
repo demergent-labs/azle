@@ -6,7 +6,7 @@ import { version } from '../../package.json';
 import { jsonParse, jsonStringify } from '../../src/lib/stable';
 import { createActor } from './actor';
 
-type Benchmark = {
+type BenchmarkEntry = {
     method_name: string;
     instructions: bigint;
     timestamp: bigint;
@@ -15,11 +15,11 @@ type Benchmark = {
 type CanisterBenchmark = {
     current: {
         version: string;
-        benchmarks: Benchmark[];
+        benchmarks: BenchmarkEntry[];
     };
     previous: {
         version: string;
-        benchmarks: Benchmark[];
+        benchmarks: BenchmarkEntry[];
     };
 };
 
@@ -51,7 +51,7 @@ async function updateBenchmarksForCanisters(
         return {
             ...acc,
             [canisterName]: {
-                previous: acc[canisterName]?.current || {
+                previous: acc[canisterName]?.current ?? {
                     version,
                     benchmarks: []
                 },
@@ -122,11 +122,11 @@ async function getBenchmarksJson(): Promise<BenchmarksJson> {
 }
 
 function createBenchmarksTable(
-    currentBenchmarks: Benchmark[],
-    previousBenchmarks: Benchmark[]
+    currentBenchmarks: BenchmarkEntry[],
+    previousBenchmarks: BenchmarkEntry[]
 ): string {
     if (currentBenchmarks.length === 0) {
-        return '';
+        return 'No benchmarks reported';
     }
 
     const hasChanges = previousBenchmarks.length > 0;
@@ -152,8 +152,8 @@ function createTableHeader(hasChanges: boolean): string {
 }
 
 function createTableRows(
-    currentBenchmarks: Benchmark[],
-    previousBenchmarks: Benchmark[],
+    currentBenchmarks: BenchmarkEntry[],
+    previousBenchmarks: BenchmarkEntry[],
     hasChanges: boolean
 ): string {
     return currentBenchmarks
@@ -169,9 +169,9 @@ function createTableRows(
 }
 
 function createTableRow(
-    currentBenchmark: Benchmark,
+    currentBenchmark: BenchmarkEntry,
     index: number,
-    previousBenchmark: Benchmark | undefined,
+    previousBenchmark: BenchmarkEntry | undefined,
     hasChanges: boolean
 ): string {
     const executionNumber = index;
