@@ -22,7 +22,7 @@
 
 **Note on calculations:**
 
--   Cycles are calculated using the formula: base_fee + (per_instruction_fee _ number_of_instructions) + (additional_fee_per_billion _ floor(number_of_instructions / 1_billion))
+-   Cycles are calculated using the formula: base*fee + (per_instruction_fee * number*of_instructions) + (additional_fee_per_billion * floor(number_of_instructions / 1_billion))
 -   Base fee: 590,000 cycles
 -   Per instruction fee: 0.4 cycles
 -   Additional fee: 400,000,000 cycles per billion instructions

@@ -126,11 +126,11 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         context.eval_global_str(format!(
             "globalThis._azleRecordBenchmarks = {record_benchmarks};"
         ));
-        context.eval_module_str(js.to_string(), "azle_main");
+        context.eval_module_str(js.to_string(), "main");
 
         run_event_loop(context);
 
-        // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
+        // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "main");
 
         // match &temp {
         //     wasmedge_quickjs::JsValue::Exception(js_exception) => {

@@ -9,9 +9,9 @@ import { text } from '../candid/types/primitive/text';
  * @param message the rejection message
  */
 export function trap(message: text): empty {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         throw new Error();
     }
 
-    return globalThis._azleIc.trap(message);
+    return globalThis._azleIcExperimental.trap(message);
 }

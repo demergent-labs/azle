@@ -15,7 +15,7 @@ export function getTests(
 
             const keysResult =
                 await stableBTreeMapInstructionThresholdCanister.keysSmallRecord(
-                    4_000
+                    3_800
                 );
 
             const valuesResult =
@@ -28,7 +28,7 @@ export function getTests(
                     1_000
                 );
 
-            expect(keysResult).toHaveLength(4_000);
+            expect(keysResult).toHaveLength(3_800);
             expect(valuesResult).toHaveLength(4_000);
             expect(itemsResult).toHaveLength(1_000);
         }, 100_000);

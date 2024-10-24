@@ -16,8 +16,12 @@ export async function runCommand(ioType: IOType): Promise<void> {
             AZLE_PACKAGE_PATH,
             'src',
             'build',
+            'stable',
+            'commands',
+            'compile',
+            'wasm_binary',
             'rust',
-            'canister',
+            'stable_canister_template',
             'Cargo.toml'
         ),
         STABLE_STATIC_CANISTER_TEMPLATE_PATH,
