@@ -5,7 +5,7 @@
     "scripts": {
         "typecheck": "tsc --noEmit",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --ext .js,.ts --cache --fix; else eslint . --ext .js,.ts --cache; fi",
-        "prepare": "[ -f .git/hooks ] && husky install || true",
+        "prepare": "husky install",
         "install": "cd dfx_extension && ./install.sh",
         "test": "test/test.sh"
     },
