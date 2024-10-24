@@ -176,12 +176,14 @@ jobs:
                   echo "Current branch: $CURRENT_BRANCH"
 
                   # Fetch all branches
+                  # TODO do we need this if we have fetch-depth: 0?
                   git fetch --all
 
                   # List and merge update branches
                   for branch in $(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///'); do
                     echo "Merging branch: $branch"
                     git fetch origin $branch:$branch
+                    # TODO do we need this if we have fetch-depth: 0?
                     git merge --no-ff "$branch" -m "Merge $branch" || {
                       echo "Failed to merge $branch"
                       git merge --abort
@@ -189,6 +191,7 @@ jobs:
                     }
 
                     # Delete the remote branch after successful merge
+                    # TODO --delete branch1 branch2 branch3 etc
                     git push origin --delete "$branch"
                     echo "Deleted remote branch: $branch"
                   done

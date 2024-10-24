@@ -19,6 +19,8 @@ jobs:
 
     get-test-infos:
         needs: determine-should-release
+        # TODO can we simplify this?
+        # TODO make a master workflow that determines which workflow to run and when. And then all other workflows must be called and not run automatically
         if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
         name: Get test infos
         runs-on: ubuntu-latest
