@@ -6,13 +6,15 @@ export function inspectMessage<This, Args extends any[], Return>(
     context: ClassMethodDecoratorContext
 ): void {
     const index = globalThis._azleCanisterMethodsIndex++;
+    const name = context.name as string;
+    const indexString = index.toString();
 
     globalThis._azleMethodMeta.inspect_message = {
-        name: context.name as string,
+        name,
         index
     };
 
-    globalThis._azleCallbacks[index.toString()] = (): void => {
+    globalThis._azleCallbacks[indexString] = (): void => {
         executeAndReplyWithCandidSerde(
             'inspectMessage',
             [],

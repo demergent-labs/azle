@@ -7,14 +7,16 @@ import { getTests } from 'cycles_end_to_end_test_functional_syntax/test/tests';
 import { createActor as createCyclesActor } from './dfx_generated/cycles';
 import { createActor as createIntermediaryActor } from './dfx_generated/intermediary';
 
-const cyclesCanister = createCyclesActor(getCanisterId('cycles'), {
+const cyclesCanisterName = 'cycles';
+const cyclesCanister = createCyclesActor(getCanisterId(cyclesCanisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
+const intermediaryCanisterName = 'intermediary';
 const intermediaryCanister = createIntermediaryActor(
-    getCanisterId('intermediary'),
+    getCanisterId(intermediaryCanisterName),
     {
         agentOptions: {
             host: 'http://127.0.0.1:8000'
@@ -22,4 +24,7 @@ const intermediaryCanister = createIntermediaryActor(
     }
 );
 
-runTests(getTests(cyclesCanister, intermediaryCanister));
+runTests(getTests(cyclesCanister, intermediaryCanister), [
+    cyclesCanisterName,
+    intermediaryCanisterName
+]);

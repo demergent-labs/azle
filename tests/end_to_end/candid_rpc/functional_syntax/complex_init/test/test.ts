@@ -6,13 +6,18 @@ import { createActor as createComplexActor } from './dfx_generated/complex_init'
 import { createActor as createRecActor } from './dfx_generated/rec_init';
 import { getRecTests, getTests } from './tests';
 
-const complexInitCanister = createComplexActor(getCanisterId('complex_init'), {
-    agentOptions: {
-        host: 'http://127.0.0.1:8000'
+const complexInitCanisterName = 'complex_init';
+const complexInitCanister = createComplexActor(
+    getCanisterId(complexInitCanisterName),
+    {
+        agentOptions: {
+            host: 'http://127.0.0.1:8000'
+        }
     }
-});
+);
 
-const recInitCanister = createRecActor(getCanisterId('rec_init'), {
+const recInitCanisterName = 'rec_init';
+const recInitCanister = createRecActor(getCanisterId(recInitCanisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
@@ -21,4 +26,4 @@ const recInitCanister = createRecActor(getCanisterId('rec_init'), {
 runTests(() => {
     describe('complex init canister', getTests(complexInitCanister));
     describe('rec init canister', getRecTests(recInitCanister));
-});
+}, [complexInitCanisterName, recInitCanisterName]);

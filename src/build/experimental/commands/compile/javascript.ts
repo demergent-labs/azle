@@ -60,6 +60,26 @@ export function getPrelude(main: string): string {
             // behave in all async situations
             setTimeout(() => {
                 const canister = Canister.default !== undefined ? Canister.default() : Server(() => globalThis._azleNodeServer)();
+                if (globalThis._azleRecordBenchmarks === true) {
+                    const methodMeta = canister.methodMeta;
+
+                    globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
+                        if (value === undefined) {
+                            return acc;
+                        }
+
+                        if (key === 'queries' || key === 'updates') {
+                            const queriesOrUpdates = value.reduce((innerAcc, method) => {
+                                const indexString = method.index.toString();
+                                return { ...innerAcc, [indexString]: method.name };
+                            }, {});
+                            return { ...acc, ...queriesOrUpdates };
+                        } else {
+                            const indexString = value.index.toString();
+                            return { ...acc, [indexString]: value.name };
+                        }
+                    }, {});
+                }
 
                 const candid = canister.getIdlType([]).accept(new DidVisitor(), {
                     ...getDefaultVisitorData(),
