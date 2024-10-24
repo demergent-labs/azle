@@ -101,5 +101,6 @@ pub fn _azle_get_file_hash(path: String) -> Option<String> {
 
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_benchmarks() -> Vec<benchmarking::BenchmarkEntry> {
-    benchmarking::BENCHMARKS_REF_CELL.with(|benchmarks| benchmarks.borrow().clone())
+    benchmarking::BENCHMARKS_REF_CELL
+        .with(|benchmarks_ref_cell| benchmarks_ref_cell.borrow().clone())
 }

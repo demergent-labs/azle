@@ -36,9 +36,13 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
                 _ => run_event_loop(context),
             };
 
-            if WASM_DATA_REF_CELL
-                .with(|wasm_data_ref| wasm_data_ref.borrow().as_ref().unwrap().record_benchmarks)
-            {
+            if WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
+                wasm_data_ref_cell
+                    .borrow()
+                    .as_ref()
+                    .unwrap()
+                    .record_benchmarks
+            }) {
                 let instructions = ic_cdk::api::performance_counter(1);
                 record_benchmark(context, &function_name, instructions);
             }

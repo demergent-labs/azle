@@ -25,8 +25,9 @@ pub fn record_benchmark(context: &mut Context, function_name: &str, instructions
         .and_then(|v| Some(v.to_string()?.to_string()))
         .unwrap_or_else(|| function_name.to_string());
 
-    BENCHMARKS_REF_CELL.with(|benchmarks| {
-        benchmarks.borrow_mut().push(BenchmarkEntry {
+    BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| {
+        let mut benchmarks = benchmarks_ref_cell.borrow_mut();
+        benchmarks.push(BenchmarkEntry {
             method_name,
             instructions,
             timestamp,
