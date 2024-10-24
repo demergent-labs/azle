@@ -60,24 +60,26 @@ export function getPrelude(main: string): string {
             // behave in all async situations
             setTimeout(() => {
                 const canister = Canister.default !== undefined ? Canister.default() : Server(() => globalThis._azleNodeServer)();
-                const methodMeta = canister.methodMeta;
-
                 if (globalThis._azleRecordBenchmarks === true) {
-                    for (const [key, value] of Object.entries(methodMeta)) {
+                    const methodMeta = canister.methodMeta;
+
+                    const azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
                         if (value === undefined) {
-                            continue;
+                            return acc;
                         }
 
                         if (key === 'queries' || key === 'updates') {
-                            for (const method of value) {
+                            value.forEach(method => {
                                 const indexString = method.index.toString();
-                                globalThis._azleCanisterMethodNames[indexString] = method.name;
-                            }
+                                acc = { ...acc, [indexString]: method.name };
+                            });
                         } else {
                             const indexString = value.index.toString();
-                            globalThis._azleCanisterMethodNames[indexString] = value.name;
+                            acc = { ...acc, [indexString]: value.name };
                         }
-                    }
+
+                        return acc;
+                    }, {});
                 }
 
                 const candid = canister.getIdlType([]).accept(new DidVisitor(), {

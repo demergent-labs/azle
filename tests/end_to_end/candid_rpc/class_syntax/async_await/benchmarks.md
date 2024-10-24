@@ -2,21 +2,21 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls | Change                         |
-| --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------ |
-| 0   | getRandomnessDirectly        | 1_409_294    | 1_153_717 | $0.0000015341 | $1.5341           | <font color="red">+46</font>   |
-| 1   | getRandomnessIndirectly      | 1_326_030    | 1_120_412 | $0.0000014898 | $1.4898           | <font color="green">-46</font> |
-| 2   | getRandomnessSuperIndirectly | 1_368_486    | 1_137_394 | $0.0000015124 | $1.5124           | <font color="green">-58</font> |
-| 3   | returnPromiseVoid            | 1_313_110    | 1_115_244 | $0.0000014829 | $1.4829           | <font color="green">-6</font>  |
+| Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | getRandomnessDirectly        | 1_405_445    | 1_152_178 | $0.0000015320 | $1.53             | <font color="green">-3_803</font> |
+| 1   | getRandomnessIndirectly      | 1_334_058    | 1_123_623 | $0.0000014940 | $1.49             | <font color="red">+7_982</font>   |
+| 2   | getRandomnessSuperIndirectly | 1_376_268    | 1_140_507 | $0.0000015165 | $1.51             | <font color="red">+7_724</font>   |
+| 3   | returnPromiseVoid            | 1_321_885    | 1_118_754 | $0.0000014876 | $1.48             | <font color="red">+8_769</font>   |
 
 ## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | getRandomnessDirectly        | 1_409_248    | 1_153_699 | $0.0000015340 | $1.5340           |
-| 1   | getRandomnessIndirectly      | 1_326_076    | 1_120_430 | $0.0000014898 | $1.4898           |
-| 2   | getRandomnessSuperIndirectly | 1_368_544    | 1_137_417 | $0.0000015124 | $1.5124           |
-| 3   | returnPromiseVoid            | 1_313_116    | 1_115_246 | $0.0000014829 | $1.4829           |
+| 0   | getRandomnessDirectly        | 1_409_248    | 1_153_699 | $0.0000015340 | $1.53             |
+| 1   | getRandomnessIndirectly      | 1_326_076    | 1_120_430 | $0.0000014898 | $1.48             |
+| 2   | getRandomnessSuperIndirectly | 1_368_544    | 1_137_417 | $0.0000015124 | $1.51             |
+| 3   | returnPromiseVoid            | 1_313_116    | 1_115_246 | $0.0000014829 | $1.48             |
 
 ---
 

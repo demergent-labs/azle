@@ -184,13 +184,13 @@ function createTableRow(
     const instructions = currentBenchmark.instructions;
     const cycles = calculateCycles(instructions);
     const usd = calculateUSD(cycles);
-    const usdPerMillion = (usd * 1_000_000).toFixed(4);
+    const usdPerMillion = usd * 1_000_000;
 
     const baseRow = `| ${executionNumber} | ${methodName} | ${formatWithUnderscores(
         instructions
     )} | ${formatWithUnderscores(cycles)} | $${usd.toFixed(
         10
-    )} | $${usdPerMillion}`;
+    )} | $${formatWithUnderscores(usdPerMillion, 2)}`;
 
     if (!hasChanges) {
         return `${baseRow} |`;
@@ -240,9 +240,27 @@ function calculateUSD(cycles: bigint): number {
 function calculateChange(current: bigint, previous: bigint): string {
     const diff = current - previous;
     const color = diff < 0 ? 'green' : 'red';
-    return `<font color="${color}">${diff > 0 ? '+' : ''}${diff}</font>`;
+    return `<font color="${color}">${
+        diff > 0 ? '+' : ''
+    }${formatWithUnderscores(diff)}</font>`;
 }
 
-function formatWithUnderscores(value: bigint | number): string {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '_');
+function formatWithUnderscores(
+    value: bigint | number,
+    decimalPlaces?: number
+): string {
+    const [integerPart, decimalPart] = value.toString().split('.');
+    console.log(`integerPart: ${integerPart}, decimalPart: ${decimalPart}`);
+    const formattedIntegerPart = integerPart.replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        '_'
+    );
+    if (decimalPart !== undefined && decimalPlaces !== undefined) {
+        const truncatedDecimalPart = decimalPart.slice(0, decimalPlaces);
+        return `${formattedIntegerPart}.${truncatedDecimalPart}`;
+    }
+    if (decimalPart !== undefined) {
+        return `${formattedIntegerPart}.${decimalPart}`;
+    }
+    return formattedIntegerPart;
 }
