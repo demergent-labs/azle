@@ -139,7 +139,7 @@ function processEnvVars(): {
     return {
         shouldRunTests: shouldRun(runTests, hasOnly),
         shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly),
-        shouldRecordBenchmarks: recordBenchmarks === 'true'
+        shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly
     };
 }
 
