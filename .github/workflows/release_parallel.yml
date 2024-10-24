@@ -166,7 +166,7 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
-            - name: Merge update branches
+            - name: Squash merge update branches
               env:
                   PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
               run: |
@@ -176,31 +176,27 @@ jobs:
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
-                  # Determine the current branch name
                   CURRENT_BRANCH=$(git branch --show-current)
-                  echo "Current branch: $CURRENT_BRANCH"
 
-                  # List and merge update branches
+                  # Get all update branches
                   for branch in $(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///'); do
-                    echo "Merging branch: $branch"
+                    echo "Squash merging branch: $branch"
                     git fetch origin $branch:$branch
-                    git merge --no-ff "$branch" -m "Merge $branch" || {
+
+                    # Merge with squash
+                    git merge --squash "$branch" || {
                       echo "Failed to merge $branch"
                       git merge --abort
-                      continue
+                      exit 1
                     }
+                    git commit -m "Squashed changes from $branch" || true
 
-                    # Delete the remote branch after successful merge
+                    # Delete the remote branch
                     git push origin --delete "$branch"
-                    echo "Deleted remote branch: $branch"
                   done
 
-                  # Push changes using PAT
-                  echo "Pushing changes to $CURRENT_BRANCH"
-                  git push origin HEAD:$CURRENT_BRANCH || {
-                    echo "Failed to push changes"
-                    exit 1
-                  }
+                  # Push the changes
+                  git push origin HEAD:$CURRENT_BRANCH
 
             - name: Create release
               run: |
