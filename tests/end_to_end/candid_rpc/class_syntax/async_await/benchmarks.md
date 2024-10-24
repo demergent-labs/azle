@@ -2,27 +2,27 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
-| --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | getRandomnessDirectly        | 1_409_225    | 1_153_690 | $0.0000015340 | $1.5340           | <font color="green">-3904</font> |
-| 1   | getRandomnessIndirectly      | 1_326_053    | 1_120_421 | $0.0000014898 | $1.4898           | <font color="green">-402</font>  |
-| 2   | getRandomnessSuperIndirectly | 1_368_544    | 1_137_417 | $0.0000015124 | $1.5124           | <font color="green">-366</font>  |
-| 3   | returnPromiseVoid            | 1_313_024    | 1_115_209 | $0.0000014829 | $1.4829           | <font color="green">-873</font>  |
+| Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls | Change                       |
+| --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------- |
+| 0   | getRandomnessDirectly        | 1_409_248    | 1_153_699 | $0.0000015340 | $1.5340           | <font color="red">+35</font> |
+| 1   | getRandomnessIndirectly      | 1_326_076    | 1_120_430 | $0.0000014898 | $1.4898           | <font color="red">+23</font> |
+| 2   | getRandomnessSuperIndirectly | 1_368_544    | 1_137_417 | $0.0000015124 | $1.5124           | <font color="red">+46</font> |
+| 3   | returnPromiseVoid            | 1_313_116    | 1_115_246 | $0.0000014829 | $1.4829           | <font color="red">+46</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | getRandomnessDirectly        | 1_413_129    | 1_155_251 | $0.0000015361 | $1.5361           |
-| 1   | getRandomnessIndirectly      | 1_326_455    | 1_120_582 | $0.0000014900 | $1.4900           |
-| 2   | getRandomnessSuperIndirectly | 1_368_910    | 1_137_564 | $0.0000015126 | $1.5126           |
-| 3   | returnPromiseVoid            | 1_313_897    | 1_115_558 | $0.0000014833 | $1.4833           |
+| 0   | getRandomnessDirectly        | 1_409_213    | 1_153_685 | $0.0000015340 | $1.5340           |
+| 1   | getRandomnessIndirectly      | 1_326_053    | 1_120_421 | $0.0000014898 | $1.4898           |
+| 2   | getRandomnessSuperIndirectly | 1_368_498    | 1_137_399 | $0.0000015124 | $1.5124           |
+| 3   | returnPromiseVoid            | 1_313_070    | 1_115_228 | $0.0000014829 | $1.4829           |
 
 ---
 
 **Note on calculations:**
 
--   Cycles are calculated using the formula: base*fee + (per_instruction_fee * number*of_instructions) + (additional_fee_per_billion * floor(number_of_instructions / 1_billion))
+-   Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_billion))
 -   Base fee: 590_000 cycles
 -   Per instruction fee: 0.4 cycles
 -   Additional fee: 400_000_000 cycles per billion instructions

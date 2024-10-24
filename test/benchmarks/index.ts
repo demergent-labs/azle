@@ -76,27 +76,27 @@ async function writeBenchmarksMarkdown(
     canisterNames: string[],
     updatedBenchmarks: BenchmarksJson
 ): Promise<void> {
-    let markdownContent = '';
+    const markdownContent =
+        canisterNames
+            .map((canisterName) => {
+                const { current, previous } = updatedBenchmarks[canisterName];
+                const benchmarkTables = {
+                    current: createBenchmarksTable(
+                        current.benchmarks,
+                        previous.benchmarks
+                    ),
+                    previous: createBenchmarksTable(previous.benchmarks, [])
+                };
 
-    for (const canisterName of canisterNames) {
-        const { current, previous } = updatedBenchmarks[canisterName];
-        const benchmarkTables = {
-            current: createBenchmarksTable(
-                current.benchmarks,
-                previous.benchmarks
-            ),
-            previous: createBenchmarksTable(previous.benchmarks, [])
-        };
-
-        markdownContent +=
-            `# Benchmarks for ${canisterName}\n\n` +
-            `## Current benchmarks Azle version: ${current.version}\n` +
-            `${benchmarkTables.current}\n\n` +
-            `## Baseline benchmarks Azle version: ${previous.version}\n` +
-            `${benchmarkTables.previous}\n\n`;
-    }
-
-    markdownContent += createNote();
+                return (
+                    `# Benchmarks for ${canisterName}\n\n` +
+                    `## Current benchmarks Azle version: ${current.version}\n` +
+                    `${benchmarkTables.current}\n\n` +
+                    `## Baseline benchmarks Azle version: ${previous.version}\n` +
+                    `${benchmarkTables.previous}\n\n`
+                );
+            })
+            .join('') + createNote();
 
     await writeFile(`benchmarks.md`, markdownContent);
 }
@@ -204,7 +204,7 @@ function createNote(): string {
 ---
 
 **Note on calculations:**
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee * number_of_instructions) + (additional_fee_per_billion * floor(number_of_instructions / 1_billion))
+- Cycles are calculated using the formula: base_fee + (per_instruction_fee \\* number_of_instructions) + (additional_fee_per_billion \\* floor(number_of_instructions / 1_billion))
 - Base fee: 590_000 cycles
 - Per instruction fee: 0.4 cycles
 - Additional fee: 400_000_000 cycles per billion instructions
