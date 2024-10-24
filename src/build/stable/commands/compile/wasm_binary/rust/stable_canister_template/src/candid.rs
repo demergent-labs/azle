@@ -1,39 +1,25 @@
-use crate::{
-    ic, quickjs_with_ctx, wasm_binary_manipulation::get_js_code, CONTEXT_REF_CELL, MODULE_NAME,
-};
 use std::error::Error;
 
+use crate::{
+    error::{handle_promise_error, quickjs_call_with_error_handling},
+    ic, quickjs_with_ctx,
+    wasm_binary_manipulation::get_js_code,
+    CONTEXT_REF_CELL, MODULE_NAME,
+};
+
+type CCharPtr = *mut std::os::raw::c_char;
+
 #[no_mangle]
-pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
-    std::panic::set_hook(Box::new(|panic_info| {
-        let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
-            *s
-        } else if let Some(s) = panic_info.payload().downcast_ref::<String>() {
-            s.as_str()
-        } else {
-            "Unknown panic message"
-        };
-
-        let location = if let Some(location) = panic_info.location() {
-            format!(" at {}:{}", location.file(), location.line())
-        } else {
-            " (unknown location)".to_string()
-        };
-
-        let message = &format!("Panic occurred: {}{}", msg, location);
-
-        ic_cdk::println!("{}", message);
-    }));
-
+pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
     match initialize_and_get_candid() {
-        Ok(c_string) => c_string,
-        Err(e) => {
-            ic_cdk::trap(&format!("Error during candid initialization: {}", e));
+        Ok(c_char_ptr) => c_char_ptr,
+        Err(error) => {
+            ic_cdk::trap(&format!("Azle CandidAndMethodMetaError: {}", error));
         }
     }
 }
 
-fn initialize_and_get_candid() -> Result<*mut std::os::raw::c_char, Box<dyn Error>> {
+fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
     let runtime = rquickjs::Runtime::new()?;
     let context = rquickjs::Context::full(&runtime)?;
 
@@ -41,12 +27,10 @@ fn initialize_and_get_candid() -> Result<*mut std::os::raw::c_char, Box<dyn Erro
         *context_ref_cell.borrow_mut() = Some(context);
     });
 
-    quickjs_with_ctx(|ctx| -> Result<*mut std::os::raw::c_char, Box<dyn Error>> {
+    quickjs_with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
         ctx.clone()
             .globals()
             .set("_azleNodeWasmEnvironment", true)?;
-
-        ic::register(ctx.clone())?;
 
         ctx.clone()
             .globals()
@@ -54,17 +38,37 @@ fn initialize_and_get_candid() -> Result<*mut std::os::raw::c_char, Box<dyn Erro
 
         ctx.clone().globals().set("_azleExperimental", false)?;
 
-        let js = get_js_code()?;
+        ic::register(ctx.clone())?;
 
-        rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, std::str::from_utf8(&js)?)?;
+        let js = get_js_code();
 
-        let get_candid_and_method_meta: rquickjs::Function =
-            ctx.globals().get("_azleGetCandidAndMethodMeta")?;
+        let promise =
+            rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, std::str::from_utf8(&js)?)?;
 
-        let candid_and_method_meta: String = get_candid_and_method_meta.call(())?;
+        handle_promise_error(ctx.clone(), promise)?;
+
+        let get_candid_and_method_meta: rquickjs::Function = ctx
+            .clone()
+            .globals()
+            .get("_azleGetCandidAndMethodMeta")
+            .map_err(|e| {
+                format!(
+                    "Failed to get globalThis._azleGetCandidAndMethodMeta: {}",
+                    e
+                )
+            })?;
+
+        let candid_and_method_meta_js_value =
+            quickjs_call_with_error_handling(ctx.clone(), get_candid_and_method_meta, ())?;
+
+        let candid_and_method_meta: String = candid_and_method_meta_js_value
+            .as_string()
+            .ok_or("Failed to convert candidAndMethodMeta JS value to string")?
+            .to_string()?;
 
         let c_string = std::ffi::CString::new(candid_and_method_meta)?;
+        let c_char_ptr = c_string.into_raw();
 
-        Ok(c_string.into_raw())
+        Ok(c_char_ptr)
     })
 }

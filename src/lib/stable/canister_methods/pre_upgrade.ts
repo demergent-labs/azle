@@ -11,8 +11,8 @@ export function preUpgrade<This, Args extends any[], Return>(
         index
     };
 
-    globalThis._azleCallbacks[index.toString()] = (): void => {
-        executeAndReplyWithCandidSerde(
+    globalThis._azleCallbacks[index.toString()] = async (): Promise<void> => {
+        await executeAndReplyWithCandidSerde(
             'preUpgrade',
             [],
             originalMethod.bind(globalThis._azleCanisterClassInstance),

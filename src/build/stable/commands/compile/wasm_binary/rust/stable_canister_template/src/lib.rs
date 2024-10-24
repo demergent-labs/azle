@@ -5,9 +5,9 @@ use ic_stable_structures::{
     DefaultMemoryImpl,
 };
 
-mod azle_error;
 mod candid;
 mod chunk;
+mod error;
 mod execute_method_js;
 mod guards;
 mod ic;
@@ -16,10 +16,11 @@ mod quickjs_with_ctx;
 mod stable_b_tree_map;
 mod wasm_binary_manipulation;
 
-pub use azle_error::AzleError;
 pub use quickjs_with_ctx::quickjs_with_ctx;
 
-const MODULE_NAME: &str = "main";
+// TODO dynamically get the canister name
+// TODO send it in through the Wasm meta data
+const MODULE_NAME: &str = ".azle/[canister_name]/main.js";
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;

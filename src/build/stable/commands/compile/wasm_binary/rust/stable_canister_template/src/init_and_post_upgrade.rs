@@ -4,7 +4,7 @@ use crate::{
     execute_method_js::execute_method_js,
     ic, quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
-    AzleError, CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME,
+    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME,
 };
 
 #[inline(never)]
@@ -16,9 +16,7 @@ pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
     format!("prevent init and post_upgrade optimization");
 
     if let Err(e) = initialize(true, function_index, pass_arg_data) {
-        let azle_error = AzleError::Init(e);
-
-        ic_cdk::trap(&azle_error.to_string());
+        ic_cdk::trap(&format!("Azle InitError: {}", e));
     }
 }
 
@@ -70,7 +68,7 @@ fn initialize(
 
     ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
-    let js = get_js_code()?;
+    let js = get_js_code();
 
     initialize_js(
         std::str::from_utf8(&js)?,

@@ -1,7 +1,6 @@
 import { IDL, JsonValue } from '@dfinity/candid';
 
-import { handleUncaughtError } from './error';
-import { reply, trap } from './ic_apis';
+import { reply } from './ic_apis';
 
 type CanisterMethodMode =
     | 'query'
@@ -20,13 +19,9 @@ export async function executeAndReplyWithCandidSerde(
     returnIdlType: IDL.Type | undefined,
     manual: boolean
 ): Promise<void> {
-    try {
-        const decodedArgs = decodeArgs(mode, args, paramIdlTypes);
-        const unencodedResult = await getUnencodedResult(decodedArgs, callback);
-        encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
-    } catch (error: any) {
-        trap(error.toString());
-    }
+    const decodedArgs = decodeArgs(mode, args, paramIdlTypes);
+    const unencodedResult = await getUnencodedResult(decodedArgs, callback);
+    encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }
 
 function decodeArgs(
@@ -50,11 +45,7 @@ async function getUnencodedResult(
     args: JsonValue[],
     callback: (...args: any) => any
 ): Promise<any> {
-    try {
-        return await callback(...args);
-    } catch (error) {
-        handleUncaughtError(error);
-    }
+    return await callback(...args);
 }
 
 function encodeResultAndReply(
