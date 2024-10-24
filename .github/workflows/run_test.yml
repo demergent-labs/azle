@@ -46,7 +46,7 @@ jobs:
                   echo "AZLE_IS_FEATURE_BRANCH_PR=${{ steps.set-conditions.outputs.is_feature_branch_pr }}" >> $GITHUB_ENV
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" >> $GITHUB_ENV
 
-            - id: check-conditions
+            - name: Print environment variables
               run: |
                   echo "AZLE_IS_MAIN_BRANCH_PUSH: $AZLE_IS_MAIN_BRANCH_PUSH"
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"

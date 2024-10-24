@@ -4,10 +4,11 @@ import { getTests } from 'rejections_end_to_end_test_functional_syntax/test/test
 
 import { createActor } from './dfx_generated/rejections';
 
-const rejectionsCanister = createActor(getCanisterId('rejections'), {
+const canisterName = 'rejections';
+const rejectionsCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(rejectionsCanister));
+runTests(getTests(rejectionsCanister), canisterName);

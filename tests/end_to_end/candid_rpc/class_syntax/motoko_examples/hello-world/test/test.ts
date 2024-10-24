@@ -5,10 +5,11 @@ import { getTests } from 'hello-world_end_to_end_test_functional_syntax/test/tes
 // @ts-ignore
 import { createActor } from './dfx_generated/hello_world';
 
-const helloWorldCanister = createActor(getCanisterId('hello_world'), {
+const canisterName = 'hello_world';
+const helloWorldCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(helloWorldCanister));
+runTests(getTests(helloWorldCanister), canisterName);
