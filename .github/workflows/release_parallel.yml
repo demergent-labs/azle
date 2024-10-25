@@ -218,6 +218,7 @@ jobs:
 
                   echo "Found ${#BRANCH_ARRAY[@]} branches to fetch"
                   FETCH_REFS=$(printf "refs/remotes/origin/%s:refs/heads/%s " "${BRANCH_ARRAY[@]}" "${BRANCH_ARRAY[@]}")
+                  echo "FETCH_REFS: $FETCH_REFS"
                   git fetch origin $FETCH_REFS
 
             - name: Squash changes
