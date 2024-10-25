@@ -175,9 +175,7 @@ jobs:
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
                   fetch-depth: 0
 
-            - name: Cherry-pick and squash changes
-              env:
-                  PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+            - name: Configure git
               run: |
                   git config --global user.name 'Jordan Last'
                   git config --global user.email 'jordan.michael.last@gmail.com'
@@ -185,10 +183,13 @@ jobs:
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
+            - name: Squash changes
+              env:
+                  PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+              run: |
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
-                  # Get all update branches and cherry-pick their changes
                   for branch in $(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///'); do
                     echo "Cherry-picking changes from branch: $branch"
                     git fetch origin $branch:$branch
@@ -204,7 +205,6 @@ jobs:
                     git push origin --delete "$branch"
                   done
 
-                  # Squash all cherry-picked commits into one
                   git reset --soft $BASE_COMMIT
                   git commit -am "Update all dependencies for release ${{ needs.prepare-release.outputs.release-version }}"
 
