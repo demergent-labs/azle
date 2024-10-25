@@ -176,7 +176,6 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
-                  git fetch --all
                   # Get all update branches and cherry-pick their changes
                   for branch in $(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///'); do
                     echo "Cherry-picking changes from branch: $branch"
