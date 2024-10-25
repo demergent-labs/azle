@@ -1,0 +1,40 @@
+{
+    "calc": {
+        "previous": { "version": "0.24.2-rc.60", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.60",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1273301" },
+                    "method_name": "add",
+                    "timestamp": { "__bigint__": "1729873578279419046" }
+                },
+                {
+                    "instructions": { "__bigint__": "1225794" },
+                    "method_name": "sub",
+                    "timestamp": { "__bigint__": "1729873580428002796" }
+                },
+                {
+                    "instructions": { "__bigint__": "1225324" },
+                    "method_name": "mul",
+                    "timestamp": { "__bigint__": "1729873582452105155" }
+                },
+                {
+                    "instructions": { "__bigint__": "1557928" },
+                    "method_name": "div",
+                    "timestamp": { "__bigint__": "1729873584547175210" }
+                },
+                {
+                    "instructions": { "__bigint__": "875182" },
+                    "method_name": "clearall",
+                    "timestamp": { "__bigint__": "1729873586491582597" }
+                },
+                {
+                    "instructions": { "__bigint__": "1224359" },
+                    "method_name": "add",
+                    "timestamp": { "__bigint__": "1729873588677717286" }
+                }
+            ]
+        }
+    }
+}

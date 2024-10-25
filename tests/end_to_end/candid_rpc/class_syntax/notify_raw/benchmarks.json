@@ -1,7 +1,6 @@
 {
     "canister1": {
-        "previous": { "version": "0.25.0", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0",
             "benchmarks": [
                 {
@@ -10,17 +9,36 @@
                     "timestamp": { "__bigint__": "1729714463172455556" }
                 }
             ]
+        },
+        "current": {
+            "version": "0.24.2-rc.60",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1605764" },
+                    "method_name": "sendNotification",
+                    "timestamp": { "__bigint__": "1729873586619186734" }
+                }
+            ]
         }
     },
     "canister2": {
-        "previous": { "version": "0.25.0", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "907281" },
                     "method_name": "receiveNotification",
                     "timestamp": { "__bigint__": "1729714463172455556" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.24.2-rc.60",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "907971" },
+                    "method_name": "receiveNotification",
+                    "timestamp": { "__bigint__": "1729873586619186734" }
                 }
             ]
         }

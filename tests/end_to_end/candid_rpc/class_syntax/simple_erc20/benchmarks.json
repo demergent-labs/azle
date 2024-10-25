@@ -1,0 +1,20 @@
+{
+    "simple_erc20": {
+        "previous": { "version": "0.24.2-rc.60", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.60",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "2086856" },
+                    "method_name": "initializeSupply",
+                    "timestamp": { "__bigint__": "1729873578236588106" }
+                },
+                {
+                    "instructions": { "__bigint__": "1715568" },
+                    "method_name": "transfer",
+                    "timestamp": { "__bigint__": "1729873580308501329" }
+                }
+            ]
+        }
+    }
+}

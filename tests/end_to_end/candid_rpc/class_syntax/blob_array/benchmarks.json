@@ -1,6 +1,6 @@
 {
     "blob_array": {
         "previous": { "version": "0.25.0", "benchmarks": [] },
-        "current": { "version": "0.25.0", "benchmarks": [] }
+        "current": { "version": "0.24.2-rc.60", "benchmarks": [] }
     }
 }
