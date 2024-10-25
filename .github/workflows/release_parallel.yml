@@ -220,11 +220,12 @@ jobs:
                   # Build fetch refs with proper formatting
                   FETCH_REFS=""
                   for branch in "${BRANCH_ARRAY[@]}"; do
-                    FETCH_REFS+="refs/remotes/origin/${branch}:refs/heads/${branch} "
+                    # Each refspec should be "refs/remotes/origin/branch:refs/heads/branch"
+                    FETCH_REFS+=" refs/remotes/origin/${branch}:refs/heads/${branch}"
                   done
 
                   echo "FETCH_REFS: $FETCH_REFS"
-                  git fetch origin $FETCH_REFS
+                  git fetch origin ${FETCH_REFS}
 
             - name: Squash changes
               env:
