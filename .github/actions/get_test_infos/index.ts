@@ -9,6 +9,7 @@ const excludeDirs = excludeDirsArg.split(',').filter((path) => path !== '');
 
 async function main(): Promise<void> {
     try {
+        console.log('excludeDirs', excludeDirs);
         const result = await getTestInfos(dirs, excludeDirs);
         process.stdout.write(JSON.stringify(result));
     } catch (error) {
