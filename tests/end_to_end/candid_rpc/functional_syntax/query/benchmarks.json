@@ -1,0 +1,6 @@
+{
+    "query": {
+        "previous": { "version": "0.24.2-rc.61", "benchmarks": [] },
+        "current": { "version": "0.24.2-rc.61", "benchmarks": [] }
+    }
+}

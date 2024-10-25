@@ -1,0 +1,40 @@
+{
+    "simple_to_do": {
+        "previous": { "version": "0.24.2-rc.61", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.61",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1931995" },
+                    "method_name": "addTodo",
+                    "timestamp": { "__bigint__": "1729879626915568796" }
+                },
+                {
+                    "instructions": { "__bigint__": "1684386" },
+                    "method_name": "addTodo",
+                    "timestamp": { "__bigint__": "1729879629238117192" }
+                },
+                {
+                    "instructions": { "__bigint__": "991484" },
+                    "method_name": "completeTodo",
+                    "timestamp": { "__bigint__": "1729879631130246398" }
+                },
+                {
+                    "instructions": { "__bigint__": "901701" },
+                    "method_name": "clearCompleted",
+                    "timestamp": { "__bigint__": "1729879633315596302" }
+                },
+                {
+                    "instructions": { "__bigint__": "988519" },
+                    "method_name": "completeTodo",
+                    "timestamp": { "__bigint__": "1729879635272311138" }
+                },
+                {
+                    "instructions": { "__bigint__": "886530" },
+                    "method_name": "clearCompleted",
+                    "timestamp": { "__bigint__": "1729879637444591238" }
+                }
+            ]
+        }
+    }
+}

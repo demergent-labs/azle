@@ -1,0 +1,20 @@
+{
+    "call_raw": {
+        "previous": { "version": "0.24.2-rc.61", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.61",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1470068" },
+                    "method_name": "executeCallRaw",
+                    "timestamp": { "__bigint__": "1729879631424275910" }
+                },
+                {
+                    "instructions": { "__bigint__": "1977899" },
+                    "method_name": "executeCallRaw",
+                    "timestamp": { "__bigint__": "1729879633476929513" }
+                }
+            ]
+        }
+    }
+}

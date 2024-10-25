@@ -1,0 +1,15 @@
+{
+    "inspect_message": {
+        "previous": { "version": "0.24.2-rc.61", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.61",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1081247" },
+                    "method_name": "accessible",
+                    "timestamp": { "__bigint__": "1729879645460548010" }
+                }
+            ]
+        }
+    }
+}

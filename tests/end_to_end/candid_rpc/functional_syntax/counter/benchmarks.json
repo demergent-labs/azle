@@ -1,0 +1,25 @@
+{
+    "counter": {
+        "previous": { "version": "0.24.2-rc.61", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.61",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1485942" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1729879635832981492" }
+                },
+                {
+                    "instructions": { "__bigint__": "1464134" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1729879637975681807" }
+                },
+                {
+                    "instructions": { "__bigint__": "1463909" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1729879639979363498" }
+                }
+            ]
+        }
+    }
+}

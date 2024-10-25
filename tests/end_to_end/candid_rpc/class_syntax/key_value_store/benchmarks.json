@@ -1,0 +1,20 @@
+{
+    "key_value_store": {
+        "previous": { "version": "0.24.2-rc.61", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.61",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1402174" },
+                    "method_name": "set",
+                    "timestamp": { "__bigint__": "1729879646976226725" }
+                },
+                {
+                    "instructions": { "__bigint__": "1349771" },
+                    "method_name": "set",
+                    "timestamp": { "__bigint__": "1729879649121317488" }
+                }
+            ]
+        }
+    }
+}

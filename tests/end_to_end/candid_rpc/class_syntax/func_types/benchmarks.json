@@ -1,0 +1,20 @@
+{
+    "func_types": {
+        "previous": { "version": "0.24.2-rc.61", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.61",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1041989796" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1729879648382887329" }
+                },
+                {
+                    "instructions": { "__bigint__": "1661182" },
+                    "method_name": "getNotifierFromNotifiersCanister",
+                    "timestamp": { "__bigint__": "1729879659703777033" }
+                }
+            ]
+        }
+    }
+}
