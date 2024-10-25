@@ -85,7 +85,8 @@ jobs:
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  directories: ${{ format('{0} {1}', './examples', './tests') }}
+                  directories: |
+                      ./examples
                   exclude_dirs: |
                       ${{ format('
                          examples/basic_bitcoin
