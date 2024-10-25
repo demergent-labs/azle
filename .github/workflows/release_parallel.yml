@@ -191,10 +191,32 @@ jobs:
                   echo "$BRANCHES" >> $GITHUB_OUTPUT
                   echo "EOF" >> $GITHUB_OUTPUT
 
+            - name: Display collected branches
+              run: |
+                  echo "Collected branches:"
+                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                    echo "  - $branch"
+                  done
+                  echo "End of branch list"
+
             - name: Fetch branches
               run: |
                   echo "Fetching all branches..."
-                  readarray -t BRANCH_ARRAY <<< "${{ steps.collect-branches.outputs.branches }}"
+                  # Check if we have any branches to fetch
+                  if [ -z "${{ steps.collect-branches.outputs.branches }}" ]; then
+                    echo "No branches to fetch"
+                    exit 0
+                  fi
+
+                  # Convert to array, filtering out empty lines
+                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep .)
+
+                  if [ ${#BRANCH_ARRAY[@]} -eq 0 ]; then
+                    echo "No valid branches found"
+                    exit 0
+                  fi
+
+                  echo "Found ${#BRANCH_ARRAY[@]} branches to fetch"
                   FETCH_REFS=$(printf "refs/remotes/origin/%s:refs/heads/%s " "${BRANCH_ARRAY[@]}" "${BRANCH_ARRAY[@]}")
                   git fetch origin $FETCH_REFS
 
