@@ -1,0 +1,20 @@
+{
+    "outgoing_http_requests": {
+        "previous": { "version": "0.24.2-rc.70", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.70",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "24930682" },
+                    "method_name": "xkcd",
+                    "timestamp": { "__bigint__": "1729890583558237173" }
+                },
+                {
+                    "instructions": { "__bigint__": "1960600" },
+                    "method_name": "xkcdRaw",
+                    "timestamp": { "__bigint__": "1729890585756553869" }
+                }
+            ]
+        }
+    }
+}

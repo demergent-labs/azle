@@ -1,0 +1,25 @@
+{
+    "timers": {
+        "previous": { "version": "0.24.2-rc.70", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.70",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "10138039" },
+                    "method_name": "setTimers",
+                    "timestamp": { "__bigint__": "1729890582032790399" }
+                },
+                {
+                    "instructions": { "__bigint__": "1178037" },
+                    "method_name": "clearTimer",
+                    "timestamp": { "__bigint__": "1729890596006541535" }
+                },
+                {
+                    "instructions": { "__bigint__": "1177618" },
+                    "method_name": "clearTimer",
+                    "timestamp": { "__bigint__": "1729890596006541535" }
+                }
+            ]
+        }
+    }
+}

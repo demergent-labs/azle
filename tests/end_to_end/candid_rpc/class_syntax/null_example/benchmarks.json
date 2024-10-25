@@ -1,0 +1,25 @@
+{
+    "null_example": {
+        "previous": { "version": "0.24.2-rc.70", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.70",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5665559" },
+                    "method_name": "setPartiallyNullRecord",
+                    "timestamp": { "__bigint__": "1729890580539103124" }
+                },
+                {
+                    "instructions": { "__bigint__": "4137505" },
+                    "method_name": "setSmallNullRecord",
+                    "timestamp": { "__bigint__": "1729890582661300607" }
+                },
+                {
+                    "instructions": { "__bigint__": "5389540" },
+                    "method_name": "setLargeNullRecord",
+                    "timestamp": { "__bigint__": "1729890584844381380" }
+                }
+            ]
+        }
+    }
+}

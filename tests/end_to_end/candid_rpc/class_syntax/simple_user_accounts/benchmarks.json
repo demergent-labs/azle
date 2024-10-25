@@ -1,0 +1,15 @@
+{
+    "simple_user_accounts": {
+        "previous": { "version": "0.24.2-rc.70", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.70",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "3477568" },
+                    "method_name": "createUser",
+                    "timestamp": { "__bigint__": "1729890580500698317" }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "update": {
+        "previous": { "version": "0.24.2-rc.70", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.70",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1314061" },
+                    "method_name": "simpleUpdate",
+                    "timestamp": { "__bigint__": "1729890582268778280" }
+                }
+            ]
+        }
+    }
+}

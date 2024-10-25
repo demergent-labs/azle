@@ -1,0 +1,15 @@
+{
+    "whoami": {
+        "previous": { "version": "0.24.2-rc.70", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.70",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1027348631" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1729890585212267976" }
+                }
+            ]
+        }
+    }
+}
