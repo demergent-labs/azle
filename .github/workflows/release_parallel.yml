@@ -122,7 +122,15 @@ jobs:
                   cd ${{ matrix.test.path }}
                   sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ needs.prepare-release.outputs.release-version }}\3/" package.json
                   npm install
-                  rm -rf node_modules
+
+            - name: Start dfx with artificial delay 0
+              working-directory: ${{ matrix.test.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+
+            - name: Run npm test (continue on error)
+              working-directory: ${{ matrix.test.path }}
+              continue-on-error: true
+              run: npm test
 
             # TODO we should use some Action-specific bot account
             - name: Commit and push changes
