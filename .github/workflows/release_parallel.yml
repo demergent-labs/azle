@@ -183,6 +183,14 @@ jobs:
                   echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
                   git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
+            - name: Collect branches
+              id: collect-branches
+              run: |
+                  BRANCHES=$(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///')
+                  echo "branches<<EOF" >> $GITHUB_OUTPUT
+                  echo "$BRANCHES" >> $GITHUB_OUTPUT
+                  echo "EOF" >> $GITHUB_OUTPUT
+
             - name: Squash changes
               env:
                   PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
@@ -190,7 +198,7 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
-                  for branch in $(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///'); do
+                  while IFS= read -r branch; do
                     echo "Cherry-picking changes from branch: $branch"
                     git fetch origin $branch:$branch
 
@@ -200,15 +208,25 @@ jobs:
                       exit 1
                     }
                     git commit -m "Squashed changes from $branch" || true
-
-                    # Delete the remote branch
-                    git push origin --delete "$branch"
-                  done
+                  done <<< "${{ steps.collect-branches.outputs.branches }}"
 
                   git reset --soft $BASE_COMMIT
                   git commit -am "Update all dependencies for release ${{ needs.prepare-release.outputs.release-version }}"
 
                   git push origin HEAD:$CURRENT_BRANCH
+
+            - name: Delete branches
+              run: |
+                  # Convert newline-separated string to array
+                  IFS=$'\n' read -r -d '' -a BRANCHES_TO_DELETE <<< "${{ steps.collect-branches.outputs.branches }}"
+
+                  # Delete branches in batches of 100
+                  BATCH_SIZE=100
+                  for ((i = 0; i < ${#BRANCHES_TO_DELETE[@]}; i += BATCH_SIZE)); do
+                    BATCH=("${BRANCHES_TO_DELETE[@]:i:BATCH_SIZE}")
+                    echo "Deleting batch of branches: ${BATCH[*]}"
+                    git push origin --delete ${BATCH[@]} || echo "Failed to delete some branches in batch, continuing..."
+                  done
 
             - name: Create release
               run: |
