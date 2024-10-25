@@ -65,16 +65,11 @@ jobs:
               with:
                   node-version: ${{ steps.get-node-version.outputs.node-version }}
 
-            - id: get-dfx-version
-              uses: ./.github/actions/get_dfx_version
+            - id: setup-dfx
+              uses: ./.github/actions/setup_dfx
 
             - name: Run pre-test Azle setup
               run: |
-
-                  # Install dfx (Note: DFX must be installed before `npm install` because the azle installation process requires dfx)
-                  src/build/stable/commands/install_global_dependencies/install_dfx.sh ${{ steps.get-dfx-version.outputs.dfx-version }}
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-
                   # MacOS-specific DNS configuration
                   if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
                       sudo networksetup -setdnsservers Ethernet 9.9.9.9

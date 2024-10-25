@@ -1,0 +1,27 @@
+name: Setup dfx
+description: 'Sets up dfx by detecting version from package.json and installing it. (Note: DFX must be installed before `npm install` because the azle installation process requires dfx)'
+inputs:
+    dfx-version:
+        description: 'The version of dfx to install (optional - will read from package.json if not provided)'
+        required: false
+outputs:
+    dfx-version:
+        description: 'The version of dfx that was installed'
+        value: ${{ steps.get-dfx-version.outputs.dfx-version }}
+runs:
+    using: composite
+    steps:
+        - id: get-dfx-version
+          if: inputs.dfx-version == ''
+          run: |
+              DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
+              echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
+          shell: bash
+
+        - name: Install dfx
+          run: |
+              VERSION="${{ inputs.dfx-version || steps.get-dfx-version.outputs.dfx-version }}"
+              # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
+              src/build/stable/commands/install_global_dependencies/install_dfx.sh $VERSION
+              echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+          shell: bash
