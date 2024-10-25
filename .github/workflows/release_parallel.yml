@@ -208,8 +208,8 @@ jobs:
                     exit 0
                   fi
 
-                  # Convert to array, filtering out empty lines
-                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep .)
+                  # Convert to array, filtering out empty lines and trimming whitespace
+                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep . | xargs)
 
                   if [ ${#BRANCH_ARRAY[@]} -eq 0 ]; then
                     echo "No valid branches found"
@@ -217,7 +217,12 @@ jobs:
                   fi
 
                   echo "Found ${#BRANCH_ARRAY[@]} branches to fetch"
-                  FETCH_REFS=$(printf "refs/remotes/origin/%s:refs/heads/%s " "${BRANCH_ARRAY[@]}" "${BRANCH_ARRAY[@]}")
+                  # Build fetch refs with proper formatting
+                  FETCH_REFS=""
+                  for branch in "${BRANCH_ARRAY[@]}"; do
+                    FETCH_REFS+="refs/remotes/origin/${branch}:refs/heads/${branch} "
+                  done
+
                   echo "FETCH_REFS: $FETCH_REFS"
                   git fetch origin $FETCH_REFS
 
