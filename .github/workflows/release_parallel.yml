@@ -252,16 +252,30 @@ jobs:
 
             - name: Delete branches
               run: |
-                  # Convert newline-separated string to array
-                  IFS=$'\n' read -r -d '' -a BRANCHES_TO_DELETE <<< "${{ steps.collect-branches.outputs.branches }}"
+                  echo "Deleting all branches..."
+                  # Check if we have any branches to fetch
+                  if [ -z "${{ steps.collect-branches.outputs.branches }}" ]; then
+                    echo "No branches to delete"
+                    exit 0
+                  fi
 
-                  # Delete branches in batches of 100
-                  BATCH_SIZE=100
-                  for ((i = 0; i < ${#BRANCHES_TO_DELETE[@]}; i += BATCH_SIZE)); do
-                    BATCH=("${BRANCHES_TO_DELETE[@]:i:BATCH_SIZE}")
-                    echo "Deleting batch of branches: ${BATCH[*]}"
-                    git push origin --delete ${BATCH[@]} || echo "Failed to delete some branches in batch, continuing..."
+                  # Convert to array, filtering out empty lines and trimming whitespace
+                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep .)
+
+                  if [ ${#BRANCH_ARRAY[@]} -eq 0 ]; then
+                    echo "No valid branches found"
+                    exit 0
+                  fi
+
+                  echo "Found ${#BRANCH_ARRAY[@]} branches to delete"
+                  # Build fetch refs with proper formatting
+                  BRANCHES_TO_DELETE=""
+                  for branch in "${BRANCH_ARRAY[@]}"; do
+                    BRANCHES_TO_DELETE+=" ${branch}"
                   done
+
+                  echo "BRANCHES_TO_DELETE: $BRANCHES_TO_DELETE"
+                  git push origin --delete ${BRANCHES_TO_DELETE}
 
             - name: Create release
               run: |
