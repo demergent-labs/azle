@@ -191,6 +191,13 @@ jobs:
                   echo "$BRANCHES" >> $GITHUB_OUTPUT
                   echo "EOF" >> $GITHUB_OUTPUT
 
+            - name: Fetch branches
+              run: |
+                  echo "Fetching all branches..."
+                  readarray -t BRANCH_ARRAY <<< "${{ steps.collect-branches.outputs.branches }}"
+                  FETCH_REFS=$(printf "refs/remotes/origin/%s:refs/heads/%s " "${BRANCH_ARRAY[@]}" "${BRANCH_ARRAY[@]}")
+                  git fetch origin $FETCH_REFS
+
             - name: Squash changes
               env:
                   PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
@@ -198,10 +205,9 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
+                  # Process branches
                   while IFS= read -r branch; do
-                    echo "Cherry-picking changes from branch: $branch"
-                    git fetch origin $branch:$branch
-
+                    echo "Merging changes from branch: $branch"
                     git merge --squash "$branch" || {
                       echo "Failed to merge $branch"
                       git merge --abort
