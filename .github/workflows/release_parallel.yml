@@ -122,7 +122,6 @@ jobs:
                   cd ${{ matrix.test.path }}
                   sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ needs.prepare-release.outputs.release-version }}\3/" package.json
                   npm install
-                  rm -rf node_modules
 
             - name: Run npm test (continue on error)
               working-directory: ${{ matrix.test.path }}
