@@ -252,16 +252,30 @@ jobs:
 
             - name: Delete branches
               run: |
+                  echo "Starting branch deletion process..."
+                  echo "Raw branches input:"
+                  echo "${{ steps.collect-branches.outputs.branches }}"
+
                   # Convert newline-separated string to array
                   IFS=$'\n' read -r -d '' -a BRANCHES_TO_DELETE <<< "${{ steps.collect-branches.outputs.branches }}"
+
+                  echo "Number of branches to delete: ${#BRANCHES_TO_DELETE[@]}"
+                  echo "All branches to delete:"
+                  printf '%s\n' "${BRANCHES_TO_DELETE[@]}"
 
                   # Delete branches in batches of 100
                   BATCH_SIZE=100
                   for ((i = 0; i < ${#BRANCHES_TO_DELETE[@]}; i += BATCH_SIZE)); do
                     BATCH=("${BRANCHES_TO_DELETE[@]:i:BATCH_SIZE}")
+                    echo "Processing batch starting at index $i"
+                    echo "Batch size: ${#BATCH[@]}"
+                    echo "Batch contents:"
+                    printf '%s\n' "${BATCH[@]}"
                     echo "Deleting batch of branches: ${BATCH[*]}"
                     git push origin --delete ${BATCH[@]} || echo "Failed to delete some branches in batch, continuing..."
                   done
+
+                  echo "Branch deletion process complete"
 
             - name: Create release
               run: |
