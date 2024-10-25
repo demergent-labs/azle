@@ -221,7 +221,7 @@ jobs:
                   FETCH_REFS=""
                   for branch in "${BRANCH_ARRAY[@]}"; do
                     # Each refspec should be "refs/remotes/origin/branch:refs/heads/branch"
-                    FETCH_REFS+=" refs/remotes/origin/${branch}:refs/heads/${branch}"
+                    FETCH_REFS+=" ${branch}:${branch}"
                   done
 
                   echo "FETCH_REFS: $FETCH_REFS"
