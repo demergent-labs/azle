@@ -8,11 +8,16 @@ import { join } from 'path';
 import { getCanisterId } from '../dfx';
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
+import { runBenchmarksForCanisters } from './benchmarks';
 
 export type Test = () => void;
 
-export function runTests(tests: Test, cwd: string = process.cwd()): void {
-    const { shouldRunTests, shouldRunTypeChecks, shouldRunBenchmarks } =
+export function runTests(
+    tests: Test,
+    canisterNames: string | string[] | undefined = undefined,
+    cwd: string = process.cwd()
+): void {
+    const { shouldRunTests, shouldRunTypeChecks, shouldRecordBenchmarks } =
         processEnvVars();
 
     if (shouldRunTests) {
@@ -41,8 +46,15 @@ export function runTests(tests: Test, cwd: string = process.cwd()): void {
         });
     }
 
-    if (shouldRunBenchmarks) {
-        describe(`benchmarks`, () => {});
+    if (shouldRecordBenchmarks && canisterNames !== undefined) {
+        const canisterNamesArray = Array.isArray(canisterNames)
+            ? canisterNames
+            : [canisterNames];
+
+        describe(`benchmarks`, () => {
+            it('runs benchmarks for all canisters', () =>
+                runBenchmarksForCanisters(canisterNamesArray));
+        });
     }
 }
 
@@ -93,32 +105,6 @@ export function it(
 it.only = test.only;
 it.skip = test.skip;
 
-function processEnvVars(): {
-    shouldRunTests: boolean;
-    shouldRunTypeChecks: boolean;
-    shouldRunBenchmarks: boolean;
-} {
-    const isTestsEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_TESTS === 'true';
-    const isTypeChecksEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_TYPE_CHECKS === 'true';
-    const isBenchmarksEnvVarSet =
-        process.env.AZLE_INTEGRATION_TEST_RUN_BENCHMARKS === 'true';
-
-    const areNoVarsSet =
-        !isTestsEnvVarSet && !isTypeChecksEnvVarSet && !isBenchmarksEnvVarSet;
-
-    const shouldRunTests = isTestsEnvVarSet || areNoVarsSet;
-    const shouldRunTypeChecks = isTypeChecksEnvVarSet || areNoVarsSet;
-    const shouldRunBenchmarks = isBenchmarksEnvVarSet || areNoVarsSet;
-
-    return {
-        shouldRunTests,
-        shouldRunTypeChecks,
-        shouldRunBenchmarks
-    };
-}
-
 export const defaultPropTestParams = {
     numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
     endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
@@ -137,4 +123,26 @@ export async function getCanisterActor<T>(
     });
 
     return actor;
+}
+
+function processEnvVars(): {
+    shouldRunTests: boolean;
+    shouldRunTypeChecks: boolean;
+    shouldRecordBenchmarks: boolean;
+} {
+    const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
+    const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
+    const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
+
+    const hasOnly = [runTests, runTypeChecks].includes('only');
+
+    return {
+        shouldRunTests: shouldRun(runTests, hasOnly),
+        shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly),
+        shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly
+    };
+}
+
+function shouldRun(envVar: string, hasOnly: boolean): boolean {
+    return hasOnly ? envVar === 'only' : envVar !== 'false';
 }

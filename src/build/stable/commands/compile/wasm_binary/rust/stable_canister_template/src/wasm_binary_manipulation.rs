@@ -2,10 +2,12 @@ use std::error::Error;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct WasmData {
     #[serde(rename = "envVars")]
     pub env_vars: Vec<(String, String)>,
+    #[serde(rename = "recordBenchmarks")]
+    pub record_benchmarks: bool,
 }
 
 #[inline(never)]

@@ -4,10 +4,11 @@ import { getTests } from 'manual_reply_end_to_end_test_functional_syntax/test/te
 
 import { createActor } from './dfx_generated/manual_reply';
 
-const manualReplyCanister = createActor(getCanisterId('manual_reply'), {
+const canisterName = 'manual_reply';
+const manualReplyCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(manualReplyCanister));
+runTests(getTests(manualReplyCanister), canisterName);

@@ -5,13 +5,15 @@ export function preUpgrade<This, Args extends any[], Return>(
     context: ClassMethodDecoratorContext
 ): void {
     const index = globalThis._azleCanisterMethodsIndex++;
+    const name = context.name as string;
+    const indexString = index.toString();
 
     globalThis._azleMethodMeta.pre_upgrade = {
-        name: context.name as string,
+        name,
         index
     };
 
-    globalThis._azleCallbacks[index.toString()] = async (): Promise<void> => {
+    globalThis._azleCallbacks[indexString] = async (): Promise<void> => {
         await executeAndReplyWithCandidSerde(
             'preUpgrade',
             [],

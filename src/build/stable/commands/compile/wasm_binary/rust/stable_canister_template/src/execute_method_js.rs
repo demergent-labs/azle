@@ -1,4 +1,7 @@
-use crate::{error::handle_promise_error, quickjs_with_ctx};
+use crate::{
+    benchmarking::record_benchmark, error::handle_promise_error, quickjs_with_ctx,
+    WASM_DATA_REF_CELL,
+};
 
 #[no_mangle]
 #[allow(unused)]
@@ -34,5 +37,16 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
 
     if let Err(e) = quickjs_result {
         ic_cdk::trap(&format!("Azle CanisterMethodError: {}", e));
+    }
+
+    if WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
+        wasm_data_ref_cell
+            .borrow()
+            .as_ref()
+            .unwrap()
+            .record_benchmarks
+    }) {
+        let instructions = ic_cdk::api::performance_counter(1);
+        record_benchmark(&function_name, instructions);
     }
 }
