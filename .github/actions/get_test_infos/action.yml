@@ -41,3 +41,9 @@ runs:
               TEST_INFOS=$(./.github/actions/get_test_infos/get_test_infos.sh | base64 -d)
               echo "test-infos=${TEST_INFOS}" >> "$GITHUB_OUTPUT"
           shell: bash
+
+        - name: Echo test infos for troubleshooting
+          run: |
+              echo "Test Infos Output:"
+              echo "${{ steps.get-test-infos.outputs.test-infos }}"
+          shell: bash
