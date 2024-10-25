@@ -30,7 +30,7 @@ jobs:
                 # os: [macos-latest, ubuntu-latest]
                 os: [ubuntu-latest]
                 azle_source:
-                    - ${{ inputs.include_npm == 'true' && 'npm' || 'repo' }}
+                    - ${{ inputs.include_npm == true && 'npm' || 'repo' }}
                 tests: ${{ fromJSON(inputs.test_infos) }}
         steps:
             - uses: actions/checkout@v4
