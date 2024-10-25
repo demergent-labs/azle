@@ -170,7 +170,6 @@ jobs:
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
-                  fetch-depth: 0
 
             - name: Cherry-pick and squash changes
               env:
@@ -184,6 +183,8 @@ jobs:
 
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
+
+                  git fetch --all
 
                   # Get all update branches and cherry-pick their changes
                   for branch in $(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///'); do
