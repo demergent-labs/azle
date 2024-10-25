@@ -4,7 +4,7 @@ use crate::{
     execute_method_js::execute_method_js,
     ic, quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
-    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME,
+    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME, WASM_DATA_REF_CELL,
 };
 
 #[inline(never)]
@@ -25,29 +25,11 @@ pub extern "C" fn post_upgrade(function_index: i32, pass_arg_data: i32) {
 }
 
 fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
-    std::panic::set_hook(Box::new(|panic_info| {
-        let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
-            *s
-        } else if let Some(s) = panic_info.payload().downcast_ref::<String>() {
-            s.as_str()
-        } else {
-            "Unknown panic message"
-        };
-
-        let location = if let Some(location) = panic_info.location() {
-            format!(" at {}:{}", location.file(), location.line())
-        } else {
-            " (unknown location)".to_string()
-        };
-
-        let message = &format!("Panic occurred: {}{}", msg, location);
-
-        ic_cdk::println!("{}", message);
-
-        ic_cdk::trap(message);
-    }));
-
     let wasm_data = get_wasm_data();
+
+    WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
+        *wasm_data_ref_cell.borrow_mut() = Some(wasm_data.clone());
+    });
 
     let env_vars: Vec<(&str, &str)> = wasm_data
         .env_vars

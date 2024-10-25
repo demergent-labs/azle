@@ -1,5 +1,4 @@
 use std::cell::RefCell;
-use std::collections::BTreeMap;
 
 use candid::CandidType;
 use wasmedge_quickjs::{AsObject, Context};

@@ -32,6 +32,7 @@ export async function getContext(
         consumer,
         managementDid,
         recordBenchmarks:
+            process.env.npm_lifecycle_event === 'pre_tests' ||
             process.env.npm_lifecycle_event === 'pretest' ||
             process.env.npm_lifecycle_event === 'test'
                 ? process.env.AZLE_RECORD_BENCHMARKS !== 'false'
