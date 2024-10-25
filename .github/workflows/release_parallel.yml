@@ -186,10 +186,46 @@ jobs:
             - name: Collect branches
               id: collect-branches
               run: |
-                  BRANCHES=$(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///')
+                  BRANCHES=$(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs -n1)
                   echo "branches<<EOF" >> $GITHUB_OUTPUT
                   echo "$BRANCHES" >> $GITHUB_OUTPUT
                   echo "EOF" >> $GITHUB_OUTPUT
+
+            - name: Display collected branches
+              run: |
+                  echo "Collected branches:"
+                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                    echo "  - $branch"
+                  done
+                  echo "End of branch list"
+
+            - name: Fetch branches
+              run: |
+                  echo "Fetching all branches..."
+                  # Check if we have any branches to fetch
+                  if [ -z "${{ steps.collect-branches.outputs.branches }}" ]; then
+                    echo "No branches to fetch"
+                    exit 0
+                  fi
+
+                  # Convert to array, filtering out empty lines and trimming whitespace
+                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep .)
+
+                  if [ ${#BRANCH_ARRAY[@]} -eq 0 ]; then
+                    echo "No valid branches found"
+                    exit 0
+                  fi
+
+                  echo "Found ${#BRANCH_ARRAY[@]} branches to fetch"
+                  # Build fetch refs with proper formatting
+                  FETCH_REFS=""
+                  for branch in "${BRANCH_ARRAY[@]}"; do
+                    # Each refspec should be "refs/remotes/origin/branch:refs/heads/branch"
+                    FETCH_REFS+=" ${branch}:${branch}"
+                  done
+
+                  echo "FETCH_REFS: $FETCH_REFS"
+                  git fetch origin ${FETCH_REFS}
 
             - name: Squash changes
               env:
@@ -198,10 +234,9 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
+                  # Process branches
                   while IFS= read -r branch; do
-                    echo "Cherry-picking changes from branch: $branch"
-                    git fetch origin $branch:$branch
-
+                    echo "Merging changes from branch: $branch"
                     git merge --squash "$branch" || {
                       echo "Failed to merge $branch"
                       git merge --abort
