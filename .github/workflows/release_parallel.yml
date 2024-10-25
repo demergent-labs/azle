@@ -170,6 +170,7 @@ jobs:
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  fetch-depth: 0
 
             - name: Cherry-pick and squash changes
               env:
