@@ -124,6 +124,11 @@ jobs:
                   npm install
                   rm -rf node_modules
 
+            - name: Run npm test (continue on error)
+              working-directory: ${{ matrix.test.path }}
+              continue-on-error: true
+              run: npm test
+
             # TODO we should use some Action-specific bot account
             - name: Commit and push changes
               run: |
