@@ -186,7 +186,7 @@ jobs:
             - name: Collect branches
               id: collect-branches
               run: |
-                  BRANCHES=$(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///')
+                  BRANCHES=$(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs -n1)
                   echo "branches<<EOF" >> $GITHUB_OUTPUT
                   echo "$BRANCHES" >> $GITHUB_OUTPUT
                   echo "EOF" >> $GITHUB_OUTPUT
@@ -209,7 +209,7 @@ jobs:
                   fi
 
                   # Convert to array, filtering out empty lines and trimming whitespace
-                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep . | xargs)
+                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep .)
 
                   if [ ${#BRANCH_ARRAY[@]} -eq 0 ]; then
                     echo "No valid branches found"
