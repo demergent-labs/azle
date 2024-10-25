@@ -4,26 +4,10 @@
 # This GitHub Action takes care of deploying to npm and GitHub.
 
 name: Test
-
 on:
-    push:
-        branches:
-            - main
-    pull_request:
+    workflow_call:
 
 jobs:
-    determine-should-run-tests:
-        name: Determine if tests should run
-        runs-on: ubuntu-latest
-        outputs:
-            # If the branch should release then it shouldn't run tests.
-            should-run-tests: ${{ steps.determine-should-run-tests.outputs.should-release == 'false' }}
-        steps:
-            - uses: actions/checkout@v4
-
-            - id: determine-should-run-tests
-              uses: ./.github/actions/should_release
-
     set-exclude-dirs:
         name: Set exclude directories
         runs-on: ubuntu-latest
@@ -103,10 +87,7 @@ jobs:
 
     run-tests:
         name: ${{ matrix.test_group.name }}
-        needs:
-            - determine-should-run-tests
-            - set-exclude-dirs
-        if: ${{ needs.determine-should-run-tests.outputs.should-run-tests == 'true' }}
+        needs: set-exclude-dirs
         strategy:
             fail-fast: false
             matrix:

@@ -1,25 +1,18 @@
 name: Release
 on:
-    push:
-        branches:
-            - main
-    pull_request: # Runs on pull requests to any branch
+    workflow_call:
+        secrets:
+            GPG_SIGNING_KEY:
+                required: true
+            GH_TOKEN:
+                required: true
+            NPM_TOKEN:
+                required: true
+            LASTMJS_GITHUB_TOKEN:
+                required: true
+
 jobs:
-    determine-should-release:
-        if: ${{ startsWith(github.head_ref, 'release--') }}
-        name: Determine if this branch should release
-        runs-on: ubuntu-latest
-        outputs:
-            should-release: ${{ steps.determine-should-release.outputs.should-release }}
-        steps:
-            - uses: actions/checkout@v4
-
-            - id: determine-should-release
-              uses: ./.github/actions/should_release
-
     get-test-infos:
-        needs: determine-should-release
-        if: ${{ startsWith(github.head_ref, 'release--') && needs.determine-should-release.outputs.should-release }}
         name: Get test infos
         runs-on: ubuntu-latest
         outputs:
@@ -41,16 +34,11 @@ jobs:
 
     release:
         name: Deploy release
-        # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
-        if: ${{ needs.determine-should-release.outputs.should-release == 'true' }}
-
         needs:
-            - determine-should-release
             - get-test-infos
-
         uses: ./.github/workflows/release_parallel.yml
         secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
             NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}

@@ -1,0 +1,33 @@
+name: Main Workflow
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    determine-workflow:
+        name: Determine workflow path
+        runs-on: ubuntu-latest
+        outputs:
+            should-release: ${{ steps.determine-should-release.outputs.should-release }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: determine-should-release
+              uses: ./.github/actions/should_release
+
+    release:
+        needs: determine-workflow
+        if: ${{ needs.determine-workflow.outputs.should-release == 'true' }}
+        uses: ./.github/workflows/release.yml
+        secrets:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+
+    test:
+        needs: determine-workflow
+        if: ${{ needs.determine-workflow.outputs.should-release == 'false' }}
+        uses: ./.github/workflows/test.yml
