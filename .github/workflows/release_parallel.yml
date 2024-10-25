@@ -87,15 +87,6 @@ jobs:
               with:
                   directories: |
                       ./examples
-                      ./tests
-                  exclude-dirs: |
-                      ${{ format('
-                         examples/basic_bitcoin
-                         examples/bitcoin_psbt
-                         examples/ckbtc
-                         tests/end_to_end/http_server
-                         tests/property
-                         ') }}
 
     update-test-files-for-release-commit:
         needs: prepare-release
