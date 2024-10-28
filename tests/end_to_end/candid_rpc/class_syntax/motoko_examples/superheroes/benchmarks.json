@@ -1,0 +1,40 @@
+{
+    "superheroes": {
+        "previous": { "version": "0.24.2-rc.88", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.88",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "3584681" },
+                    "method_name": "create",
+                    "timestamp": { "__bigint__": "1730155537225266385" }
+                },
+                {
+                    "instructions": { "__bigint__": "4571881" },
+                    "method_name": "create",
+                    "timestamp": { "__bigint__": "1730155539199875296" }
+                },
+                {
+                    "instructions": { "__bigint__": "4888547" },
+                    "method_name": "update",
+                    "timestamp": { "__bigint__": "1730155541166475027" }
+                },
+                {
+                    "instructions": { "__bigint__": "3460345" },
+                    "method_name": "update",
+                    "timestamp": { "__bigint__": "1730155543452020594" }
+                },
+                {
+                    "instructions": { "__bigint__": "1188837" },
+                    "method_name": "deleteHero",
+                    "timestamp": { "__bigint__": "1730155545293162099" }
+                },
+                {
+                    "instructions": { "__bigint__": "1177583" },
+                    "method_name": "deleteHero",
+                    "timestamp": { "__bigint__": "1730155547363671546" }
+                }
+            ]
+        }
+    }
+}
