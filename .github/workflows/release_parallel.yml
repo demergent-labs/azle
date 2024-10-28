@@ -175,20 +175,14 @@ jobs:
                   PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
               run: |
                   CURRENT_BRANCH=$(git branch --show-current)
-                  BASE_COMMIT=$(git rev-parse HEAD)
 
-                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
-                    echo "Merging changes from branch: $branch"
-                    git merge --squash "$branch" || {
-                      echo "Failed to merge $branch"
-                      git merge --abort
-                      exit 1
-                    }
-                    git commit -m "Squashed changes from $branch" || true
-                  done
+                  # Create the pull command with multiple branches
+                  BRANCHES_LIST="${{ steps.collect-branches.outputs.branches }}"
+                  echo "Pulling changes from branches: $BRANCHES_LIST"
+                  git pull origin $BRANCHES_LIST
 
-                  git reset --soft $BASE_COMMIT
-                  git commit -am "Update all dependencies for release ${{ needs.prepare-release.outputs.release-version }}"
+                  # Create a merge commit with a descriptive message
+                  git commit -m "Merge all dependency updates for release ${{ needs.prepare-release.outputs.release-version }}"
 
                   git push origin HEAD:$CURRENT_BRANCH
 
