@@ -81,6 +81,7 @@ jobs:
                     npm publish
                   fi
 
+            # TODO the list of excluded dirs will be different for release than it will be for benchmark. Which might be fine. But keep in mind that the tests won't run on examples that haven't had their azle version updated if we are running a release. If we aren't running a release then it might not matter. But if we are running a release I'm not sure we will be able to exclude anythign.
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
@@ -221,6 +222,8 @@ jobs:
                   echo "Fetching all branches..."
                   BRANCHES_TO_FETCH=""
                   echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                    echo "Current branch: $branch"
+                    echo "BRANCHES_TO_FETCH so far: $BRANCHES_TO_FETCH"
                     BRANCHES_TO_FETCH+=" ${branch}:${branch}"
                   done
 
