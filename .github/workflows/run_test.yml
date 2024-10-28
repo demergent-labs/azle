@@ -58,7 +58,7 @@ jobs:
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.tests.path}}
 
-            - uses: ./.github/actions/setup-node
+            - uses: ./.github/actions/setup_node
 
             - uses: ./.github/actions/setup_dfx
 

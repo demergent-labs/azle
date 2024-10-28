@@ -33,9 +33,7 @@ jobs:
                   RELEASE_VERSION="${BRANCH_NAME:9}"
                   echo "release-version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
 
-            - uses: ./.github/actions/setup-node
-              with:
-                  registry-url: https://registry.npmjs.org
+            - uses: ./.github/actions/setup_node
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -92,7 +90,7 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
-            - uses: ./.github/actions/setup-node
+            - uses: ./.github/actions/setup_node
 
             - uses: ./.github/actions/setup_dfx
 
