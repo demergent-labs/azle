@@ -1,10 +1,6 @@
 name: 'Setup Node.js'
 description: 'Sets up Node.js environment and gets Node version from package.json'
 inputs:
-    working-directory:
-        description: 'Directory containing package.json'
-        required: false
-        default: '.'
     registry-url:
         description: 'Optional registry URL'
         required: false
@@ -12,12 +8,6 @@ inputs:
         description: 'File containing the version Spec'
         required: false
         default: 'package.json'
-    cache:
-        description: 'Used to specify a package manager for caching'
-        required: false
-    cache-dependency-path:
-        description: 'Path to package-lock.json file'
-        required: false
 outputs:
     node-version:
         description: 'The Node.js version from package.json'
@@ -37,5 +27,3 @@ runs:
               registry-url: ${{ inputs.registry-url }}
               node-version: ${{ steps.get-version.outputs.version }}
               node-version-file: ${{ inputs.node-version-file }}
-              cache: ${{ inputs.cache }}
-              cache-dependency-path: ${{ inputs.cache-dependency-path }}
