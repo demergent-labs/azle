@@ -1,0 +1,43 @@
+{
+    "cycles": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1530766" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1730136708790341124" }
+                },
+                {
+                    "instructions": { "__bigint__": "1515721" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1730136710909609575" }
+                },
+                {
+                    "instructions": { "__bigint__": "1517086" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1730136712933018245" }
+                }
+            ]
+        }
+    },
+    "intermediary": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1734151" },
+                    "method_name": "sendCycles",
+                    "timestamp": { "__bigint__": "1730136710909609575" }
+                },
+                {
+                    "instructions": { "__bigint__": "1997534" },
+                    "method_name": "sendCyclesNotify",
+                    "timestamp": { "__bigint__": "1730136712933018245" }
+                }
+            ]
+        }
+    }
+}

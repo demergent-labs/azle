@@ -1,0 +1,45 @@
+{
+    "ethereum_json_rpc": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1122797598" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730136694970227414" }
+                },
+                {
+                    "instructions": { "__bigint__": "27926905" },
+                    "method_name": "ethGetBalance",
+                    "timestamp": { "__bigint__": "1730136701331782913" }
+                },
+                {
+                    "instructions": { "__bigint__": "27906791" },
+                    "method_name": "ethGetBalance",
+                    "timestamp": { "__bigint__": "1730136703347091931" }
+                },
+                {
+                    "instructions": { "__bigint__": "27908894" },
+                    "method_name": "ethGetBalance",
+                    "timestamp": { "__bigint__": "1730136705370165850" }
+                },
+                {
+                    "instructions": { "__bigint__": "26807083" },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": { "__bigint__": "1730136707466157520" }
+                },
+                {
+                    "instructions": { "__bigint__": "26798501" },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": { "__bigint__": "1730136709463676524" }
+                },
+                {
+                    "instructions": { "__bigint__": "26805085" },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": { "__bigint__": "1730136711585255140" }
+                }
+            ]
+        }
+    }
+}

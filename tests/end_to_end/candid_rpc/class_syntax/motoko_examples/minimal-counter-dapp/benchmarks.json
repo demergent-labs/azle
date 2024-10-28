@@ -1,0 +1,30 @@
+{
+    "minimal_dapp": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1149425" },
+                    "method_name": "count",
+                    "timestamp": { "__bigint__": "1730136708399582690" }
+                },
+                {
+                    "instructions": { "__bigint__": "1097188" },
+                    "method_name": "count",
+                    "timestamp": { "__bigint__": "1730136710421984363" }
+                },
+                {
+                    "instructions": { "__bigint__": "1095549" },
+                    "method_name": "reset",
+                    "timestamp": { "__bigint__": "1730136712601639506" }
+                },
+                {
+                    "instructions": { "__bigint__": "1102925" },
+                    "method_name": "count",
+                    "timestamp": { "__bigint__": "1730136714543583287" }
+                }
+            ]
+        }
+    }
+}

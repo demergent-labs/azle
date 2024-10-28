@@ -1,0 +1,28 @@
+{
+    "complex_init": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "3441988564" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730136677289326585" }
+                }
+            ]
+        }
+    },
+    "rec_init": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "3445493294" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730136688850991174" }
+                }
+            ]
+        }
+    }
+}

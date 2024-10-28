@@ -1,0 +1,28 @@
+{
+    "canister1": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1646459" },
+                    "method_name": "sendNotification",
+                    "timestamp": { "__bigint__": "1730136690728330825" }
+                }
+            ]
+        }
+    },
+    "canister2": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "870138" },
+                    "method_name": "receiveNotification",
+                    "timestamp": { "__bigint__": "1730136690728330825" }
+                }
+            ]
+        }
+    }
+}

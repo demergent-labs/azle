@@ -1,0 +1,25 @@
+{
+    "stable_b_tree_map_instruction_threshold": {
+        "previous": { "version": "0.24.2-rc.85", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.85",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "17354104986" },
+                    "method_name": "insertSmallRecord",
+                    "timestamp": { "__bigint__": "1730136705245757876" }
+                },
+                {
+                    "instructions": { "__bigint__": "15820926827" },
+                    "method_name": "insertMediumRecord",
+                    "timestamp": { "__bigint__": "1730136712855915774" }
+                },
+                {
+                    "instructions": { "__bigint__": "18222081461" },
+                    "method_name": "insertLargeRecord",
+                    "timestamp": { "__bigint__": "1730136719882194092" }
+                }
+            ]
+        }
+    }
+}
