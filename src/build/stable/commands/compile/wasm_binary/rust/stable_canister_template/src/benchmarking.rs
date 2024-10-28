@@ -19,10 +19,15 @@ pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Bo
     quickjs_with_ctx(|ctx| {
         let timestamp = ic_cdk::api::time();
 
-        let method_names: rquickjs::Object =
-            ctx.clone().globals().get("_azleCanisterMethodNames")?;
+        let method_names: rquickjs::Object = ctx
+            .clone()
+            .globals()
+            .get("_azleCanisterMethodNames")
+            .map_err(|e| format!("Failed to get globalThis._azleCanisterMethodNames: {e}"))?;
 
-        let method_name: String = method_names.get(function_name)?;
+        let method_name: String = method_names.get(function_name).map_err(|e| {
+            format!("Failed to get globalThis._azleCanisterMethodNames[{function_name}]: {e}")
+        })?;
 
         BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| {
             let mut benchmarks = benchmarks_ref_cell.borrow_mut();

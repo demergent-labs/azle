@@ -1,6 +1,7 @@
 use ic_stable_structures::memory_manager::MemoryId;
 
 use crate::{
+    error::handle_promise_error,
     execute_method_js::execute_method_js,
     ic, quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
@@ -62,7 +63,6 @@ fn initialize(
     Ok(())
 }
 
-// TODO do we need all these clonse?
 pub fn initialize_js(
     js: &str,
     init: bool,
@@ -77,12 +77,6 @@ pub fn initialize_js(
     });
 
     quickjs_with_ctx(|ctx| -> Result<(), Box<dyn std::error::Error>> {
-        ctx.clone()
-            .globals()
-            .set("_azleNodeWasmEnvironment", false)?;
-
-        ic::register(ctx.clone())?;
-
         let env = rquickjs::Object::new(ctx.clone())?;
 
         for (key, value) in std::env::vars() {
@@ -97,34 +91,38 @@ pub fn initialize_js(
 
         ctx.clone()
             .globals()
+            .set("_azleNodeWasmEnvironment", false)?;
+
+        ctx.clone()
+            .globals()
             .set("exports", rquickjs::Object::new(ctx.clone())?)?;
 
         ctx.clone().globals().set("_azleExperimental", false)?;
 
-        // TODO is there a better name for this main module?
-        // TODO this returns a promise...make sure we handle it appropriately
-        rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, js)?;
+        if init {
+            ctx.clone().globals().set("_azleInitCalled", true)?;
+            ctx.clone().globals().set("_azlePostUpgradeCalled", false)?;
+        } else {
+            ctx.clone().globals().set("_azleInitCalled", false)?;
+            ctx.clone().globals().set("_azlePostUpgradeCalled", true)?;
+        }
+
+        ic::register(ctx.clone())?;
+
+        let promise = rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, js)?;
+
+        handle_promise_error(ctx.clone(), promise)?;
 
         Ok(())
     })?;
 
-    // TODO is it possible to just put this all in the same quickjs_with_ctx?
+    execute_developer_init_or_post_upgrade(function_index, pass_arg_data);
+
+    Ok(())
+}
+
+fn execute_developer_init_or_post_upgrade(function_index: i32, pass_arg_data: i32) {
     if function_index != -1 {
         execute_method_js(function_index, pass_arg_data);
     }
-
-    // _azleInitCalled and _azlePostUpgradeCalled refer to Azle's own init/post_upgrade methods being called
-    // these variables do not indicate if the developer's own init/post_upgrade methods were called
-    quickjs_with_ctx(|ctx| -> Result<(), Box<dyn std::error::Error>> {
-        let assignment = if init {
-            "globalThis._azleInitCalled = true;"
-        } else {
-            "globalThis._azlePostUpgradeCalled = true;"
-        };
-
-        ctx.eval::<(), _>(assignment)?;
-        Ok(())
-    })?;
-
-    Ok(())
 }

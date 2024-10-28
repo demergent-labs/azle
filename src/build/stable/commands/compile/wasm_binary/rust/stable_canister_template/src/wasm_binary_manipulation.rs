@@ -64,6 +64,7 @@ pub fn get_wasm_data() -> Result<WasmData, Box<dyn Error>> {
             e
         )
     })?;
+
     let wasm_data: WasmData = serde_json::from_str(wasm_data_str).map_err(|e| {
         format!(
             "WasmData conversion failed while converting String to WasmData struct: {}",

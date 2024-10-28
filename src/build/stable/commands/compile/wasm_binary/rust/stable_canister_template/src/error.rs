@@ -1,8 +1,8 @@
+use std::error::Error;
+
 use rquickjs::function::IntoArgs;
 
 use crate::quickjs_with_ctx::run_event_loop;
-
-use std::error::Error;
 
 pub fn quickjs_call_with_error_handling<'a>(
     ctx: rquickjs::Ctx<'a>,
@@ -14,6 +14,7 @@ pub fn quickjs_call_with_error_handling<'a>(
         Err(_) => trap_on_last_exception(ctx.clone())?,
     };
 
+    // TODO we run the event loop here and also in handle_promise_error, is that a problem?
     run_event_loop(ctx.clone());
 
     if result.is_promise() {
@@ -46,7 +47,7 @@ pub fn handle_promise_error(
 
     match promise.state() {
         rquickjs::promise::PromiseState::Rejected => {
-            promise.result::<rquickjs::Value>(); // TODO is this strictly necessary?
+            promise.result::<rquickjs::Value>();
             trap_on_last_exception(ctx.clone())?;
         }
         _ => {}

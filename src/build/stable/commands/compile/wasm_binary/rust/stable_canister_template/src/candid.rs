@@ -14,7 +14,7 @@ pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
     match initialize_and_get_candid() {
         Ok(c_char_ptr) => c_char_ptr,
         Err(error) => {
-            ic_cdk::trap(&format!("Azle CandidAndMethodMetaError: {}", error));
+            ic_cdk::trap(&format!("Azle CandidAndMethodMetaError: {error}"));
         }
     }
 }
@@ -51,12 +51,7 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
             .clone()
             .globals()
             .get("_azleGetCandidAndMethodMeta")
-            .map_err(|e| {
-                format!(
-                    "Failed to get globalThis._azleGetCandidAndMethodMeta: {}",
-                    e
-                )
-            })?;
+            .map_err(|e| format!("Failed to get globalThis._azleGetCandidAndMethodMeta: {e}"))?;
 
         let candid_and_method_meta_js_value =
             quickjs_call_with_error_handling(ctx.clone(), get_candid_and_method_meta, ())?;

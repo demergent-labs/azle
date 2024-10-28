@@ -4,8 +4,6 @@ use rquickjs::Ctx;
 
 use crate::CONTEXT_REF_CELL;
 
-// TODO should we get rid of the result when calling the callback?
-// TODO I am not sure we need to do that
 pub fn quickjs_with_ctx<F, R>(callback: F) -> Result<R, Box<dyn Error>>
 where
     F: FnOnce(Ctx) -> Result<R, Box<dyn Error>>,
@@ -18,7 +16,7 @@ where
 
         context.with(|ctx| {
             let result = callback(ctx.clone())
-                .map_err(|e| format!("QuickJS callback execution failed: {}", e))?;
+                .map_err(|e| format!("QuickJS callback execution failed: {e}"))?;
 
             run_event_loop(ctx);
 
