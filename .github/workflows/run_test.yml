@@ -60,8 +60,7 @@ jobs:
 
             - uses: ./.github/actions/setup-node
 
-            - id: setup-dfx
-              uses: ./.github/actions/setup_dfx
+            - uses: ./.github/actions/setup_dfx
 
             - name: Run pre-test Azle setup
               run: |
@@ -101,7 +100,8 @@ jobs:
               working-directory: ${{ matrix.tests.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
-            - name: Run test
+            - name: Calculate number of test runs
+              id: calc-runs
               run: |
                   RUNS=1
 
@@ -126,7 +126,10 @@ jobs:
                   fi
 
                   echo "Running tests $RUNS times"
+                  echo "runs=$RUNS" >> $GITHUB_OUTPUT
+              shell: bash -l {0}
 
-                  AZLE_PROPTEST_NUM_RUNS=$RUNS AZLE_PROPTEST_VERBOSE=true npm test
+            - name: Run tests
+              run: AZLE_PROPTEST_NUM_RUNS=${{ steps.calc-runs.outputs.runs }} AZLE_PROPTEST_VERBOSE=true npm test
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}

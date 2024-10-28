@@ -39,8 +39,7 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-            - name: Setup dfx
-              uses: ./.github/actions/setup_dfx
+            - uses: ./.github/actions/setup_dfx
 
             - run: npm install
 
@@ -75,36 +74,10 @@ jobs:
                   directories: |
                       ./examples
                       ./tests
-                  exclude-dirs: |
-                      ${{ format('
-                        tests/end_to_end/candid_rpc/class_syntax/new
-                        tests/end_to_end/http_server/new
-                        examples/basic_bitcoin
-                        examples/bitcoin_psbt
-                        examples/ckbtc
-                        tests/end_to_end/http_server/ethers_base
-                        tests/end_to_end/http_server/http_outcall_fetch
-                        tests/end_to_end/http_server/ic_evm_rpc
-                        tests/property/candid_rpc/class_api/stable_b_tree_map
-                        tests/property/candid_rpc/functional_api/stable_b_tree_map
-                        tests/property/ic_api/performance_counter
-                        tests/property/ic_api/instruction_counter
-                        tests/end_to_end/candid_rpc/functional_syntax/ckbtc
-                        tests/end_to_end/candid_rpc/class_syntax/bitcoin
-                        tests/end_to_end/http_server/large_files
-                        tests/end_to_end/http_server/open_value_sharing
-                        tests/end_to_end/candid_rpc/class_syntax/stable_structures
-                        tests/end_to_end/candid_rpc/functional_syntax/bitcoin
-                        tests/end_to_end/candid_rpc/functional_syntax/composite_queries
-                        tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls
-                        tests/end_to_end/candid_rpc/functional_syntax/management_canister
-                        tests/end_to_end/candid_rpc/functional_syntax/stable_structures
-                        tests/end_to_end/http_server/autoreload
-                      ') }}
 
     update-test-files-for-release-commit:
         needs: prepare-release
-        name: Update ${{ matrix.test.name }}
+        name: Update ${{ matrix.test.name }} files for release commit
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
@@ -187,15 +160,14 @@ jobs:
             - name: Display collected branches
               run: |
                   echo "Collected branches:"
-                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                  while read branch; do
                     echo "  - $branch"
-                  done
+                  done < <(echo "${{ steps.collect-branches.outputs.branches }}")
                   echo "End of branch list"
 
             - name: Fetch branches
               run: |
                   echo "Fetching all branches..."
-                  # Use process substitution instead of pipe to avoid subshell
                   BRANCHES_TO_FETCH=""
                   while read branch; do
                     BRANCHES_TO_FETCH+=" ${branch}:${branch}"
