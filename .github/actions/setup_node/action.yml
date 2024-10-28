@@ -17,3 +17,5 @@ runs:
               echo "version=$VERSION" >> $GITHUB_OUTPUT
 
         - uses: actions/setup-node@v4
+          with:
+              registry-url: https://registry.npmjs.org
