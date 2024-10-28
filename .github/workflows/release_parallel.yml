@@ -219,10 +219,11 @@ jobs:
             - name: Fetch branches
               run: |
                   echo "Fetching all branches..."
+                  # Use process substitution instead of pipe to avoid subshell
                   BRANCHES_TO_FETCH=""
-                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                  while read branch; do
                     BRANCHES_TO_FETCH+=" ${branch}:${branch}"
-                  done
+                  done < <(echo "${{ steps.collect-branches.outputs.branches }}")
 
                   echo "BRANCHES_TO_FETCH: $BRANCHES_TO_FETCH"
                   git fetch origin ${BRANCHES_TO_FETCH}
@@ -234,7 +235,7 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
-                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                  while read branch; do
                     echo "Merging changes from branch: $branch"
                     git merge --squash "$branch" || {
                       echo "Failed to merge $branch"
@@ -242,7 +243,7 @@ jobs:
                       exit 1
                     }
                     git commit -m "Squashed changes from $branch" || true
-                  done
+                  done < <(echo "${{ steps.collect-branches.outputs.branches }}")
 
                   git reset --soft $BASE_COMMIT
                   git commit -am "Update all dependencies for release ${{ needs.prepare-release.outputs.release-version }}"
@@ -253,9 +254,9 @@ jobs:
               run: |
                   echo "Starting branch deletion process..."
                   BRANCHES_TO_DELETE=""
-                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                  while read branch; do
                     BRANCHES_TO_DELETE+=" ${branch}"
-                  done
+                  done < <(echo "${{ steps.collect-branches.outputs.branches }}")
 
                   echo "BRANCHES_TO_DELETE: $BRANCHES_TO_DELETE"
                   git push origin --delete ${BRANCHES_TO_DELETE}
