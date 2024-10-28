@@ -21,6 +21,5 @@ runs:
         - uses: actions/setup-node@v4
           with:
               node-version: ${{ steps.get-version.outputs.version }}
-              registry-url: 'https://registry.npmjs.org'
           env:
               NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
