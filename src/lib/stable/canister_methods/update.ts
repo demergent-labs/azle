@@ -37,7 +37,7 @@ export function update<This, Args extends any[], Return>(
                     options?.manual ?? false
                 );
             } catch (error: any) {
-                trap(error.toString());
+                trap(`Uncaught Error: ${error.toString()}`);
             }
         };
     };

@@ -25,7 +25,7 @@ export function preUpgrade<This, Args extends any[], Return>(
                 false
             );
         } catch (error: any) {
-            trap(error.toString());
+            trap(`Uncaught Error: ${error.toString()}`);
         }
     };
 }
