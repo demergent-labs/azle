@@ -58,12 +58,7 @@ jobs:
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.tests.path}}
 
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
+            - uses: ./.github/actions/setup-node
 
             - id: setup-dfx
               uses: ./.github/actions/setup_dfx

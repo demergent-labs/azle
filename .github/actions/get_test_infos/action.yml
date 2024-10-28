@@ -23,12 +23,7 @@ outputs:
 runs:
     using: composite
     steps:
-        - id: get-node-version
-          uses: ./.github/actions/get_node_version
-
-        - uses: actions/setup-node@v4
-          with:
-              node-version: ${{ steps.get-node-version.outputs.node-version }}
+        - uses: ./.github/actions/setup-node
 
         - name: Get test infos
           id: get-test-infos

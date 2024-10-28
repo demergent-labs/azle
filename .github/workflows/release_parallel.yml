@@ -33,12 +33,8 @@ jobs:
                   RELEASE_VERSION="${BRANCH_NAME:9}"
                   echo "release-version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
 
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
-
-            - uses: actions/setup-node@v4
+            - uses: ./.github/actions/setup-node
               with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -123,15 +119,9 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
-            - id: get-node-version
-              uses: ./.github/actions/get_node_version
+            - uses: ./.github/actions/setup-node
 
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ steps.get-node-version.outputs.node-version }}
-
-            - name: Setup dfx
-              uses: ./.github/actions/setup_dfx
+            - uses: ./.github/actions/setup_dfx
 
             - name: Update azle version
               run: |

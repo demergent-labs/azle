@@ -1,0 +1,43 @@
+name: 'Setup Node.js'
+description: 'Sets up Node.js environment and gets Node version from package.json'
+inputs:
+    working-directory:
+        description: 'Directory containing package.json'
+        required: false
+        default: '.'
+    registry-url:
+        description: 'Optional registry URL'
+        required: false
+    node-version-file:
+        description: 'File containing the version Spec'
+        required: false
+        default: 'package.json'
+    cache:
+        description: 'Used to specify a package manager for caching'
+        required: false
+    cache-dependency-path:
+        description: 'Path to package-lock.json file'
+        required: false
+
+outputs:
+    node-version:
+        description: 'The Node.js version from package.json'
+        value: ${{ steps.get-version.outputs.version }}
+
+runs:
+    using: 'composite'
+    steps:
+        - id: get-version
+          shell: bash
+          working-directory: ${{ inputs.working-directory }}
+          run: |
+              VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
+              echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+        - uses: actions/setup-node@v4
+          with:
+              node-version: ${{ steps.get-version.outputs.version }}
+              registry-url: ${{ inputs.registry-url }}
+              node-version-file: ${{ inputs.node-version-file }}
+              cache: ${{ inputs.cache }}
+              cache-dependency-path: ${{ inputs.cache-dependency-path }}
