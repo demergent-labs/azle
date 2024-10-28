@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
+import { trap } from '../ic_apis';
 
 export function postUpgrade<This, Args extends any[], Return>(
     paramIdlTypes: IDL.Type[]
@@ -25,14 +26,18 @@ export function postUpgrade<This, Args extends any[], Return>(
         globalThis._azleCallbacks[indexString] = async (
             ...args: any[]
         ): Promise<void> => {
-            await executeAndReplyWithCandidSerde(
-                'postUpgrade',
-                args,
-                originalMethod.bind(globalThis._azleCanisterClassInstance),
-                paramIdlTypes,
-                undefined,
-                false
-            );
+            try {
+                await executeAndReplyWithCandidSerde(
+                    'postUpgrade',
+                    args,
+                    originalMethod.bind(globalThis._azleCanisterClassInstance),
+                    paramIdlTypes,
+                    undefined,
+                    false
+                );
+            } catch (error: any) {
+                trap(error.toString());
+            }
         };
     };
 }

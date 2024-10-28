@@ -1,4 +1,4 @@
-use crate::quickjs_with_ctx;
+use crate::{error::quickjs_call_with_error_handling, quickjs_with_ctx};
 use rquickjs::{Ctx, Exception, Function, IntoJs, TypedArray};
 
 pub fn get_function(ctx: Ctx) -> Function {
@@ -21,7 +21,8 @@ pub fn get_function(ctx: Ctx) -> Function {
                     resolve_or_reject(ctx.clone(), &call_result, &promise_id);
 
                     Ok(())
-                });
+                })
+                .unwrap();
             });
 
             rquickjs::Undefined
@@ -38,9 +39,7 @@ fn resolve_or_reject<'a>(
     let (should_resolve, js_value) = prepare_js_value(ctx.clone(), &call_result);
     let callback = get_callback(ctx.clone(), &promise_id, should_resolve);
 
-    callback
-        .call::<_, rquickjs::Undefined>((js_value,))
-        .unwrap();
+    quickjs_call_with_error_handling(ctx.clone(), callback, (js_value,)).unwrap();
 }
 
 fn prepare_js_value<'a>(

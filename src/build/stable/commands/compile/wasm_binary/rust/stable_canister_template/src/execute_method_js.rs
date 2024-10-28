@@ -1,5 +1,5 @@
 use crate::{
-    benchmarking::record_benchmark, error::handle_promise_error, quickjs_with_ctx,
+    benchmarking::record_benchmark, error::quickjs_call_with_error_handling, quickjs_with_ctx,
     WASM_DATA_REF_CELL,
 };
 
@@ -26,11 +26,7 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
             vec![]
         };
 
-        let promise: rquickjs::Promise = method_callback
-            .call((candid_args,))
-            .map_err(|e| format!("Failed to execute method callback: {}", e))?;
-
-        handle_promise_error(ctx.clone(), promise)?;
+        quickjs_call_with_error_handling(ctx.clone(), method_callback, (candid_args,))?;
 
         Ok(())
     });

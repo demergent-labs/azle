@@ -1,4 +1,5 @@
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
+import { trap } from '../ic_apis';
 
 export function heartbeat<This, Args extends any[], Return>(
     originalMethod: (this: This, ...args: Args) => Return,
@@ -14,13 +15,17 @@ export function heartbeat<This, Args extends any[], Return>(
     };
 
     globalThis._azleCallbacks[indexString] = async (): Promise<void> => {
-        await executeAndReplyWithCandidSerde(
-            'heartbeat',
-            [],
-            originalMethod.bind(globalThis._azleCanisterClassInstance),
-            [],
-            undefined,
-            false
-        );
+        try {
+            await executeAndReplyWithCandidSerde(
+                'heartbeat',
+                [],
+                originalMethod.bind(globalThis._azleCanisterClassInstance),
+                [],
+                undefined,
+                false
+            );
+        } catch (error: any) {
+            trap(error.toString());
+        }
     };
 }
