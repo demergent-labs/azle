@@ -263,7 +263,7 @@ jobs:
                   echo "Found ${#BRANCHES[@]} branches to delete"
                   DELETE_REFS=""
                   for branch in "${BRANCHES[@]}"; do
-                    DELETE_REFS+=" ${branch}:${branch}"
+                    DELETE_REFS+=" ${branch}"
                   done
 
                   echo "DELETE_REFS: $DELETE_REFS"
