@@ -5,10 +5,12 @@ import { agent, consumerActor } from './consumer_actor';
 import { createActor as createWalletActor } from './dfx_generated/wallet';
 import { getTests } from './tests';
 
-const walletActor = createWalletActor(getCanisterId('wallet'), {
+const canisterName = 'backend';
+const canisterId = getCanisterId(canisterName);
+const walletActor = createWalletActor(canisterId, {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(consumerActor, walletActor, agent));
+runTests(getTests(consumerActor, walletActor, agent), canisterName);
