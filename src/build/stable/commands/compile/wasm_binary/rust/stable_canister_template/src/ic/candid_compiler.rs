@@ -1,11 +1,12 @@
-use rquickjs::{Ctx, Function};
 use std::path::Path;
 
-pub fn get_function(context: Ctx) -> Function {
-    Function::new(context, |candid_path: String| {
-        let (env, actor) = candid_parser::pretty_check_file(Path::new(&candid_path)).unwrap();
+use candid_parser::{bindings::javascript::compile, pretty_check_file};
+use rquickjs::{Ctx, Function, Result};
 
-        candid_parser::bindings::javascript::compile(&env, &actor)
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx, |candid_path: String| {
+        let (env, actor) = pretty_check_file(Path::new(&candid_path)).unwrap();
+
+        compile(&env, &actor)
     })
-    .unwrap()
 }
