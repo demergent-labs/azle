@@ -4,6 +4,9 @@ inputs:
     node-auth-token:
         description: 'NPM authentication token'
         required: false
+    registry-url:
+        description: 'NPM registry URL'
+        required: false
 outputs:
     node-version:
         description: 'The Node.js version from package.json'
@@ -20,6 +23,7 @@ runs:
 
         - uses: actions/setup-node@v4
           with:
+              registry-url: ${{ inputs.registry-url }}
               node-version: ${{ steps.get-version.outputs.version }}
           env:
               NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}

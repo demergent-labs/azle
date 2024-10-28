@@ -35,6 +35,7 @@ jobs:
 
             - uses: ./.github/actions/setup_node
               with:
+                  registry-url: https://registry.npmjs.org
                   node-auth-token: ${{ secrets.NPM_TOKEN }}
 
             - uses: ./.github/actions/setup_dfx
