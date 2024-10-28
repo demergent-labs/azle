@@ -252,30 +252,30 @@ jobs:
 
             - name: Delete branches
               run: |
-                  echo "Starting branch deletion process..."
-                  echo "Raw branches input:"
-                  echo "${{ steps.collect-branches.outputs.branches }}"
+                  echo "Fetching all branches..."
+                  # Check if we have any branches to fetch
+                  if [ -z "${{ steps.collect-branches.outputs.branches }}" ]; then
+                    echo "No branches to fetch"
+                    exit 0
+                  fi
 
-                  # Convert newline-separated string to array
-                  IFS=$'\n' read -r -d '' -a BRANCHES_TO_DELETE <<< "${{ steps.collect-branches.outputs.branches }}"
+                  # Convert to array, filtering out empty lines and trimming whitespace
+                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep .)
 
-                  echo "Number of branches to delete: ${#BRANCHES_TO_DELETE[@]}"
-                  echo "All branches to delete:"
-                  printf '%s\n' "${BRANCHES_TO_DELETE[@]}"
+                  if [ ${#BRANCH_ARRAY[@]} -eq 0 ]; then
+                    echo "No valid branches found"
+                    exit 0
+                  fi
 
-                  # Delete branches in batches of 100
-                  BATCH_SIZE=100
-                  for ((i = 0; i < ${#BRANCHES_TO_DELETE[@]}; i += BATCH_SIZE)); do
-                    BATCH=("${BRANCHES_TO_DELETE[@]:i:BATCH_SIZE}")
-                    echo "Processing batch starting at index $i"
-                    echo "Batch size: ${#BATCH[@]}"
-                    echo "Batch contents:"
-                    printf '%s\n' "${BATCH[@]}"
-                    echo "Deleting batch of branches: ${BATCH[*]}"
-                    git push origin --delete ${BATCH[@]} || echo "Failed to delete some branches in batch, continuing..."
+                  echo "Found ${#BRANCH_ARRAY[@]} branches to fetch"
+                  # Build fetch refs with proper formatting
+                  BRANCHES_TO_DELETE=""
+                  for branch in "${BRANCH_ARRAY[@]}"; do
+                    BRANCHES_TO_DELETE+=" ${branch}"
                   done
 
-                  echo "Branch deletion process complete"
+                  echo "BRANCHES_TO_DELETE: $BRANCHES_TO_DELETE"
+                  git push origin --delete ${BRANCHES_TO_DELETE}
 
             - name: Create release
               run: |
