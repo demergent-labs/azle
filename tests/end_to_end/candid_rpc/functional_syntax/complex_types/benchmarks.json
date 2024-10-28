@@ -1,0 +1,30 @@
+{
+    "complex_types": {
+        "previous": { "version": "0.24.2-rc.87", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.87",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "80730471" },
+                    "method_name": "createUser",
+                    "timestamp": { "__bigint__": "1730140078645916738" }
+                },
+                {
+                    "instructions": { "__bigint__": "164278690" },
+                    "method_name": "createThread",
+                    "timestamp": { "__bigint__": "1730140080850782722" }
+                },
+                {
+                    "instructions": { "__bigint__": "86670724" },
+                    "method_name": "createPost",
+                    "timestamp": { "__bigint__": "1730140082764418821" }
+                },
+                {
+                    "instructions": { "__bigint__": "172916099" },
+                    "method_name": "createReaction",
+                    "timestamp": { "__bigint__": "1730140085061463364" }
+                }
+            ]
+        }
+    }
+}

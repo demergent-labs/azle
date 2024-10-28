@@ -1,0 +1,85 @@
+{
+    "ledger_canister": {
+        "previous": { "version": "0.24.2-rc.87", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.87",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "4881667" },
+                    "method_name": "getAccountBalance",
+                    "timestamp": { "__bigint__": "1730140095836824590" }
+                },
+                {
+                    "instructions": { "__bigint__": "2120830" },
+                    "method_name": "getTransferFee",
+                    "timestamp": { "__bigint__": "1730140097911881509" }
+                },
+                {
+                    "instructions": { "__bigint__": "13456246" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730140100151858865" }
+                },
+                {
+                    "instructions": { "__bigint__": "13449695" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730140102046627447" }
+                },
+                {
+                    "instructions": { "__bigint__": "5738080" },
+                    "method_name": "getBlocks",
+                    "timestamp": { "__bigint__": "1730140104251425271" }
+                },
+                {
+                    "instructions": { "__bigint__": "1617754" },
+                    "method_name": "getSymbol",
+                    "timestamp": { "__bigint__": "1730140106150813183" }
+                },
+                {
+                    "instructions": { "__bigint__": "1620033" },
+                    "method_name": "getName",
+                    "timestamp": { "__bigint__": "1730140108334154759" }
+                },
+                {
+                    "instructions": { "__bigint__": "1617476" },
+                    "method_name": "getDecimals",
+                    "timestamp": { "__bigint__": "1730140110281483281" }
+                },
+                {
+                    "instructions": { "__bigint__": "1617180" },
+                    "method_name": "getArchives",
+                    "timestamp": { "__bigint__": "1730140112418633828" }
+                },
+                {
+                    "instructions": { "__bigint__": "13461008" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730140114419491509" }
+                },
+                {
+                    "instructions": { "__bigint__": "4796586" },
+                    "method_name": "getAccountBalance",
+                    "timestamp": { "__bigint__": "1730140116523500871" }
+                },
+                {
+                    "instructions": { "__bigint__": "13447170" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730140120175954299" }
+                },
+                {
+                    "instructions": { "__bigint__": "13471734" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730140122191690601" }
+                },
+                {
+                    "instructions": { "__bigint__": "14279233" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730140125301032450" }
+                },
+                {
+                    "instructions": { "__bigint__": "14276592" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730140127379420719" }
+                }
+            ]
+        }
+    }
+}

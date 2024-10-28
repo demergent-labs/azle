@@ -1,0 +1,15 @@
+{
+    "pre_and_post_upgrade": {
+        "previous": { "version": "0.24.2-rc.87", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.87",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "3455067454" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730140071976004981" }
+                }
+            ]
+        }
+    }
+}
