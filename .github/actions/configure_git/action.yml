@@ -1,0 +1,18 @@
+name: Configure Git
+description: 'Configures git with user info and GPG signing'
+inputs:
+    gpg_signing_key:
+        description: 'The GPG signing key to use for signing commits'
+        required: true
+runs:
+    using: composite
+    steps:
+        - name: Configure git
+          run: |
+              # TODO we should use some Action-specific bot account
+              git config --global user.name 'Jordan Last'
+              git config --global user.email 'jordan.michael.last@gmail.com'
+              git config --global commit.gpgsign true
+              echo -n "${{ inputs.gpg_signing_key }}" | base64 --decode | gpg --import
+              git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+          shell: bash
