@@ -198,7 +198,9 @@ jobs:
             - name: Display collected branches
               run: |
                   echo "Collected branches:"
-                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                  # Convert comma-separated string back to array and display each branch
+                  IFS=',' read -ra BRANCHES <<< "${{ steps.collect-branches.outputs.branches }}"
+                  for branch in "${BRANCHES[@]}"; do
                     echo "  - $branch"
                   done
                   echo "End of branch list"
