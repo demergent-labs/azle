@@ -189,18 +189,18 @@ jobs:
                   # Create array of branches
                   readarray -t BRANCH_ARRAY < <(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs -n1)
 
-                  # Convert array to string with specific delimiter (e.g., comma)
-                  BRANCHES=$(IFS=,; echo "${BRANCH_ARRAY[*]}")
-
-                  echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
+                  # Output array count
                   echo "count=${#BRANCH_ARRAY[@]}" >> $GITHUB_OUTPUT
+
+                  # Output array elements as multiline value
+                  echo "branches<<EOF" >> $GITHUB_OUTPUT
+                  printf '%s\n' "${BRANCH_ARRAY[@]}" >> $GITHUB_OUTPUT
+                  echo "EOF" >> $GITHUB_OUTPUT
 
             - name: Display collected branches
               run: |
                   echo "Collected branches:"
-                  # Convert comma-separated string back to array and display each branch
-                  IFS=',' read -ra BRANCHES <<< "${{ steps.collect-branches.outputs.branches }}"
-                  for branch in "${BRANCHES[@]}"; do
+                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
                     echo "  - $branch"
                   done
                   echo "End of branch list"
@@ -213,17 +213,13 @@ jobs:
                     exit 0
                   fi
 
-                  # Convert comma-separated string back to array
-                  IFS=',' read -ra BRANCHES <<< "${{ steps.collect-branches.outputs.branches }}"
-
-                  echo "Found ${#BRANCHES[@]} branches to fetch"
-                  FETCH_REFS=""
-                  for branch in "${BRANCHES[@]}"; do
-                    FETCH_REFS+=" ${branch}:${branch}"
+                  BRANCHES_TO_FETCH=""
+                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                    BRANCHES_TO_FETCH+=" ${branch}:${branch}"
                   done
 
-                  echo "FETCH_REFS: $FETCH_REFS"
-                  git fetch origin ${FETCH_REFS}
+                  echo "BRANCHES_TO_FETCH: $BRANCHES_TO_FETCH"
+                  git fetch origin ${BRANCHES_TO_FETCH}
 
             - name: Squash changes
               env:
@@ -232,11 +228,7 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
-                  # Convert comma-separated string back to array
-                  IFS=',' read -ra BRANCHES <<< "${{ steps.collect-branches.outputs.branches }}"
-
-                  # Process branches
-                  for branch in "${BRANCHES[@]}"; do
+                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
                     echo "Merging changes from branch: $branch"
                     git merge --squash "$branch" || {
                       echo "Failed to merge $branch"
@@ -259,17 +251,13 @@ jobs:
                     exit 0
                   fi
 
-                  # Convert comma-separated string back to array
-                  IFS=',' read -ra BRANCHES <<< "${{ steps.collect-branches.outputs.branches }}"
-
-                  echo "Found ${#BRANCHES[@]} branches to delete"
-                  DELETE_REFS=""
-                  for branch in "${BRANCHES[@]}"; do
-                    DELETE_REFS+=" ${branch}"
+                  BRANCHES_TO_DELETE=""
+                  echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
+                    BRANCHES_TO_DELETE+=" ${branch}"
                   done
 
-                  echo "DELETE_REFS: $DELETE_REFS"
-                  git push origin --delete ${DELETE_REFS}
+                  echo "BRANCHES_TO_DELETE: $BRANCHES_TO_DELETE"
+                  git push origin --delete ${BRANCHES_TO_DELETE}
 
             - name: Create release
               run: |
