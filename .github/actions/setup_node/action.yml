@@ -11,7 +11,6 @@ runs:
     steps:
         - id: get-version
           shell: bash
-          working-directory: ${{ inputs.working-directory }}
           run: |
               VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
               echo "version=$VERSION" >> $GITHUB_OUTPUT
