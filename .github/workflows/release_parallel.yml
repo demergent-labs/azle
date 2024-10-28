@@ -174,20 +174,13 @@ jobs:
                   PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
               run: |
                   CURRENT_BRANCH=$(git branch --show-current)
-                  BASE_COMMIT=$(git rev-parse HEAD)
 
                   for branch in ${{ steps.collect-branches.outputs.branches }}; do
-                    echo "Merging changes from branch: $branch"
-                    git merge --squash "$branch" || {
-                      echo "Failed to merge $branch"
-                      git merge --abort
-                      exit 1
-                    }
-                    git commit -m "Squashed changes from $branch" || true
+                    git merge --squash $branch
                   done
 
-                  git reset --soft $BASE_COMMIT
-                  git commit -am "Update all dependencies for release ${{ needs.prepare-release.outputs.release-version }}"
+                  # Create a merge commit with a descriptive message
+                  git commit -am "Update test files for all tests and examples ${{ needs.prepare-release.outputs.release-version }}"
 
                   git push origin HEAD:$CURRENT_BRANCH
 
