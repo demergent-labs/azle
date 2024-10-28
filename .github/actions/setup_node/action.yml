@@ -1,5 +1,9 @@
 name: 'Setup Node.js'
 description: 'Sets up Node.js environment and gets Node version from package.json'
+inputs:
+    node-auth-token:
+        description: 'NPM authentication token'
+        required: false
 outputs:
     node-version:
         description: 'The Node.js version from package.json'
@@ -17,3 +21,6 @@ runs:
         - uses: actions/setup-node@v4
           with:
               node-version: ${{ steps.get-version.outputs.version }}
+              registry-url: 'https://registry.npmjs.org'
+          env:
+              NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
