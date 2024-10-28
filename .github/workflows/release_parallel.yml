@@ -70,9 +70,8 @@ jobs:
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
                   npm install
-                  ## TODO bring these back after we are done testing
-                  #   AZLE_VERBOSE=true npx azle template
-                  #   AZLE_VERBOSE=true npx azle template --experimental
+                  AZLE_VERBOSE=true npx azle template
+                  AZLE_VERBOSE=true npx azle template --experimental
 
             - name: Publish to npm
               run: |
@@ -90,15 +89,30 @@ jobs:
                       ./tests
                   exclude-dirs: |
                       ${{ format('
-                         examples/basic_bitcoin
-                         examples/bitcoin_psbt
-                         examples/ckbtc
-                         tests/end_to_end/http_server
-                         tests/end_to_end/candid_rpc
-                         tests/property
-                         tests/end_to_end/candid_rpc/class_syntax/bitcoin
-                         tests/end_to_end/candid_rpc/class_syntax/stable_structures
-                         ') }}
+                        tests/end_to_end/candid_rpc/class_syntax/new
+                        tests/end_to_end/http_server/new
+                        examples/basic_bitcoin
+                        examples/bitcoin_psbt
+                        examples/ckbtc
+                        tests/end_to_end/http_server/ethers_base
+                        tests/end_to_end/http_server/http_outcall_fetch
+                        tests/end_to_end/http_server/ic_evm_rpc
+                        tests/property/candid_rpc/class_api/stable_b_tree_map
+                        tests/property/candid_rpc/functional_api/stable_b_tree_map
+                        tests/property/ic_api/performance_counter
+                        tests/property/ic_api/instruction_counter
+                        tests/end_to_end/candid_rpc/functional_syntax/ckbtc
+                        tests/end_to_end/candid_rpc/class_syntax/bitcoin
+                        tests/end_to_end/http_server/large_files
+                        tests/end_to_end/http_server/open_value_sharing
+                        tests/end_to_end/candid_rpc/class_syntax/stable_structures
+                        tests/end_to_end/candid_rpc/functional_syntax/bitcoin
+                        tests/end_to_end/candid_rpc/functional_syntax/composite_queries
+                        tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls
+                        tests/end_to_end/candid_rpc/functional_syntax/management_canister
+                        tests/end_to_end/candid_rpc/functional_syntax/stable_structures
+                        tests/end_to_end/http_server/autoreload
+                      ') }}
 
     update-test-files-for-release-commit:
         needs: prepare-release
@@ -189,9 +203,6 @@ jobs:
                   # Create array of branches
                   readarray -t BRANCH_ARRAY < <(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs -n1)
 
-                  # Output array count
-                  echo "count=${#BRANCH_ARRAY[@]}" >> $GITHUB_OUTPUT
-
                   # Output array elements as multiline value
                   echo "branches<<EOF" >> $GITHUB_OUTPUT
                   printf '%s\n' "${BRANCH_ARRAY[@]}" >> $GITHUB_OUTPUT
@@ -208,11 +219,6 @@ jobs:
             - name: Fetch branches
               run: |
                   echo "Fetching all branches..."
-                  if [ "${{ steps.collect-branches.outputs.count }}" -eq 0 ]; then
-                    echo "No branches to fetch"
-                    exit 0
-                  fi
-
                   BRANCHES_TO_FETCH=""
                   echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
                     BRANCHES_TO_FETCH+=" ${branch}:${branch}"
@@ -246,11 +252,6 @@ jobs:
             - name: Delete branches
               run: |
                   echo "Starting branch deletion process..."
-                  if [ "${{ steps.collect-branches.outputs.count }}" -eq 0 ]; then
-                    echo "No branches to delete"
-                    exit 0
-                  fi
-
                   BRANCHES_TO_DELETE=""
                   echo "${{ steps.collect-branches.outputs.branches }}" | while read branch; do
                     BRANCHES_TO_DELETE+=" ${branch}"
