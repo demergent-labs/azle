@@ -34,8 +34,6 @@ jobs:
                   echo "release-version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
 
             - uses: ./.github/actions/setup_node
-              with:
-                  registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
