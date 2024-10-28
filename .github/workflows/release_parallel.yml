@@ -186,10 +186,14 @@ jobs:
             - name: Collect branches
               id: collect-branches
               run: |
-                  BRANCHES=$(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs -n1)
-                  echo "branches<<EOF" >> $GITHUB_OUTPUT
-                  echo "$BRANCHES" >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
+                  # Create array of branches
+                  readarray -t BRANCH_ARRAY < <(git branch -r | grep "origin/update-${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs -n1)
+
+                  # Convert array to string with specific delimiter (e.g., comma)
+                  BRANCHES=$(IFS=,; echo "${BRANCH_ARRAY[*]}")
+
+                  echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
+                  echo "count=${#BRANCH_ARRAY[@]}" >> $GITHUB_OUTPUT
 
             - name: Display collected branches
               run: |
@@ -202,25 +206,17 @@ jobs:
             - name: Fetch branches
               run: |
                   echo "Fetching all branches..."
-                  # Check if we have any branches to fetch
-                  if [ -z "${{ steps.collect-branches.outputs.branches }}" ]; then
+                  if [ "${{ steps.collect-branches.outputs.count }}" -eq 0 ]; then
                     echo "No branches to fetch"
                     exit 0
                   fi
 
-                  # Convert to array, filtering out empty lines and trimming whitespace
-                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep .)
+                  # Convert comma-separated string back to array
+                  IFS=',' read -ra BRANCHES <<< "${{ steps.collect-branches.outputs.branches }}"
 
-                  if [ ${#BRANCH_ARRAY[@]} -eq 0 ]; then
-                    echo "No valid branches found"
-                    exit 0
-                  fi
-
-                  echo "Found ${#BRANCH_ARRAY[@]} branches to fetch"
-                  # Build fetch refs with proper formatting
+                  echo "Found ${#BRANCHES[@]} branches to fetch"
                   FETCH_REFS=""
-                  for branch in "${BRANCH_ARRAY[@]}"; do
-                    # Each refspec should be "refs/remotes/origin/branch:refs/heads/branch"
+                  for branch in "${BRANCHES[@]}"; do
                     FETCH_REFS+=" ${branch}:${branch}"
                   done
 
@@ -234,8 +230,11 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
+                  # Convert comma-separated string back to array
+                  IFS=',' read -ra BRANCHES <<< "${{ steps.collect-branches.outputs.branches }}"
+
                   # Process branches
-                  while IFS= read -r branch; do
+                  for branch in "${BRANCHES[@]}"; do
                     echo "Merging changes from branch: $branch"
                     git merge --squash "$branch" || {
                       echo "Failed to merge $branch"
@@ -243,7 +242,7 @@ jobs:
                       exit 1
                     }
                     git commit -m "Squashed changes from $branch" || true
-                  done <<< "${{ steps.collect-branches.outputs.branches }}"
+                  done
 
                   git reset --soft $BASE_COMMIT
                   git commit -am "Update all dependencies for release ${{ needs.prepare-release.outputs.release-version }}"
@@ -252,30 +251,23 @@ jobs:
 
             - name: Delete branches
               run: |
-                  echo "Deleting all branches..."
-                  # Check if we have any branches to fetch
-                  if [ -z "${{ steps.collect-branches.outputs.branches }}" ]; then
+                  echo "Starting branch deletion process..."
+                  if [ "${{ steps.collect-branches.outputs.count }}" -eq 0 ]; then
                     echo "No branches to delete"
                     exit 0
                   fi
 
-                  # Convert to array, filtering out empty lines and trimming whitespace
-                  readarray -t BRANCH_ARRAY < <(echo "${{ steps.collect-branches.outputs.branches }}" | grep .)
+                  # Convert comma-separated string back to array
+                  IFS=',' read -ra BRANCHES <<< "${{ steps.collect-branches.outputs.branches }}"
 
-                  if [ ${#BRANCH_ARRAY[@]} -eq 0 ]; then
-                    echo "No valid branches found"
-                    exit 0
-                  fi
-
-                  echo "Found ${#BRANCH_ARRAY[@]} branches to delete"
-                  # Build fetch refs with proper formatting
-                  BRANCHES_TO_DELETE=""
-                  for branch in "${BRANCH_ARRAY[@]}"; do
-                    BRANCHES_TO_DELETE+=" ${branch}"
+                  echo "Found ${#BRANCHES[@]} branches to delete"
+                  DELETE_REFS=""
+                  for branch in "${BRANCHES[@]}"; do
+                    DELETE_REFS+=" ${branch}"
                   done
 
-                  echo "BRANCHES_TO_DELETE: $BRANCHES_TO_DELETE"
-                  git push origin --delete ${BRANCHES_TO_DELETE}
+                  echo "DELETE_REFS: $DELETE_REFS"
+                  git push origin --delete ${DELETE_REFS}
 
             - name: Create release
               run: |
