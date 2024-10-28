@@ -1,6 +1,5 @@
 name: 'Setup Node.js'
 description: 'Sets up Node.js environment and gets Node version from package.json'
-
 outputs:
     node-version:
         description: 'The Node.js version from package.json'
@@ -11,9 +10,10 @@ runs:
     steps:
         - id: get-version
           shell: bash
-          working-directory: ${{ inputs.working-directory }}
           run: |
               VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
               echo "version=$VERSION" >> $GITHUB_OUTPUT
 
         - uses: actions/setup-node@v4
+          with:
+              node-version: ${{ steps.get-version.outputs.version }}
