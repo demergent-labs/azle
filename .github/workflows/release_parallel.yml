@@ -149,32 +149,26 @@ jobs:
             - name: Collect branches
               id: collect-branches
               run: |
-                  # Create array of branches
-                  readarray -t BRANCH_ARRAY < <(git branch -r | grep "origin/update--${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs -n1)
-
-                  # Output array elements as multiline value
-                  echo "branches<<EOF" >> $GITHUB_OUTPUT
-                  printf '%s\n' "${BRANCH_ARRAY[@]}" >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
+                  # Get branches and convert to space-separated list
+                  BRANCHES=$(git branch -r | grep "origin/update--${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs)
+                  echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
 
             - name: Display collected branches
               run: |
                   echo "Collected branches:"
-                  while read branch; do
+                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
                     echo "  - $branch"
-                  done < <(echo "${{ steps.collect-branches.outputs.branches }}")
+                  done
                   echo "End of branch list"
 
             - name: Fetch branches
               run: |
                   echo "Fetching all branches..."
                   BRANCHES_TO_FETCH=""
-                  while read branch; do
-                    BRANCHES_TO_FETCH+=" ${branch}:${branch}"
-                  done < <(echo "${{ steps.collect-branches.outputs.branches }}")
-
-                  echo "BRANCHES_TO_FETCH: $BRANCHES_TO_FETCH"
-                  git fetch origin ${BRANCHES_TO_FETCH}
+                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
+                    BRANCHES_TO_FETCH+=" $branch:$branch"
+                  done
+                  git fetch origin $BRANCHES_TO_FETCH
 
             - name: Squash changes
               env:
@@ -183,7 +177,7 @@ jobs:
                   CURRENT_BRANCH=$(git branch --show-current)
                   BASE_COMMIT=$(git rev-parse HEAD)
 
-                  while read branch; do
+                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
                     echo "Merging changes from branch: $branch"
                     git merge --squash "$branch" || {
                       echo "Failed to merge $branch"
@@ -191,7 +185,7 @@ jobs:
                       exit 1
                     }
                     git commit -m "Squashed changes from $branch" || true
-                  done < <(echo "${{ steps.collect-branches.outputs.branches }}")
+                  done
 
                   git reset --soft $BASE_COMMIT
                   git commit -am "Update all dependencies for release ${{ needs.prepare-release.outputs.release-version }}"
@@ -201,13 +195,7 @@ jobs:
             - name: Delete branches
               run: |
                   echo "Starting branch deletion process..."
-                  BRANCHES_TO_DELETE=""
-                  while read branch; do
-                    BRANCHES_TO_DELETE+=" ${branch}"
-                  done < <(echo "${{ steps.collect-branches.outputs.branches }}")
-
-                  echo "BRANCHES_TO_DELETE: $BRANCHES_TO_DELETE"
-                  git push origin --delete ${BRANCHES_TO_DELETE}
+                  git push origin --delete ${{ steps.collect-branches.outputs.branches }}
 
             - name: Create release
               run: |
