@@ -252,10 +252,10 @@ jobs:
 
             - name: Delete branches
               run: |
-                  echo "Fetching all branches..."
+                  echo "Deleting all branches..."
                   # Check if we have any branches to fetch
                   if [ -z "${{ steps.collect-branches.outputs.branches }}" ]; then
-                    echo "No branches to fetch"
+                    echo "No branches to delete"
                     exit 0
                   fi
 
@@ -267,7 +267,7 @@ jobs:
                     exit 0
                   fi
 
-                  echo "Found ${#BRANCH_ARRAY[@]} branches to fetch"
+                  echo "Found ${#BRANCH_ARRAY[@]} branches to delete"
                   # Build fetch refs with proper formatting
                   BRANCHES_TO_DELETE=""
                   for branch in "${BRANCH_ARRAY[@]}"; do
