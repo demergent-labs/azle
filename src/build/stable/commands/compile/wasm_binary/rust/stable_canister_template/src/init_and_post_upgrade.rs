@@ -107,6 +107,16 @@ pub fn initialize_js(
             ctx.clone().globals().set("_azlePostUpgradeCalled", true)?;
         }
 
+        let record_benchmarks = WASM_DATA_REF_CELL
+            .with(|wasm_data_ref_cell| wasm_data_ref_cell.borrow().clone())
+            .as_ref()
+            .ok_or("could not convert wasm_data_ref_cell to ref")?
+            .record_benchmarks;
+
+        ctx.clone()
+            .globals()
+            .set("_azleRecordBenchmarks", record_benchmarks)?;
+
         ic::register(ctx.clone())?;
 
         let promise = rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, js)?;
