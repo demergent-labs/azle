@@ -80,7 +80,7 @@ jobs:
             - name: Run npm test (continue on error)
               working-directory: ${{ matrix.test.path }}
               continue-on-error: true
-              run: npm test
+              run: AZLE_RECORD_BENCHMARKS=true npm test
 
             - name: Print benchmark.md contents (after test)
               working-directory: ${{ matrix.test.path }}
