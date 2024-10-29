@@ -1,8 +1,7 @@
-use rquickjs::{Ctx, Function};
+use rquickjs::{Ctx, Function, Result};
 
-pub fn get_function(context: Ctx) -> rquickjs::Function {
-    Function::new(context, |message: String| {
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx, |message: String| {
         ic_cdk::print(message);
     })
-    .unwrap()
 }

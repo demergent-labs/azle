@@ -1,10 +1,10 @@
-use rquickjs::{Ctx, Function};
+use ic_cdk::api::call::msg_cycles_accept128;
+use rquickjs::{Ctx, Function, Result};
 
-pub fn get_function(context: Ctx) -> Function {
-    Function::new(context, |max_amount_string: String| {
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx, |max_amount_string: String| {
         let max_amount: u128 = max_amount_string.parse().unwrap();
 
-        ic_cdk::api::call::msg_cycles_accept128(max_amount).to_string()
+        msg_cycles_accept128(max_amount).to_string()
     })
-    .unwrap()
 }
