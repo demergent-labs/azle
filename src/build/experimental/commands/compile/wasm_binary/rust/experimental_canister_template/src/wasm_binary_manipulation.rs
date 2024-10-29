@@ -4,13 +4,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct WasmData {
+    pub consumer: Consumer,
     #[serde(rename = "envVars")]
     pub env_vars: Vec<(String, String)>,
-    #[serde(rename = "recordBenchmarks")]
-    pub record_benchmarks: bool,
-    pub consumer: Consumer,
+    #[serde(rename = "mainJsPath")]
+    pub main_js_path: String,
     #[serde(rename = "managementDid")]
     pub management_did: String,
+    #[serde(rename = "recordBenchmarks")]
+    pub record_benchmarks: bool,
 }
 
 #[inline(never)]

@@ -4,8 +4,8 @@ use crate::{
     error::handle_promise_error,
     execute_method_js::execute_method_js,
     ic, quickjs_with_ctx,
-    wasm_binary_manipulation::{get_js_code, get_wasm_data},
-    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME, WASM_DATA_REF_CELL,
+    wasm_binary_manipulation::{get_js_code, get_wasm_data, WasmData},
+    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
 };
 
 #[inline(never)]
@@ -54,6 +54,7 @@ fn initialize(
     let js = get_js_code();
 
     initialize_js(
+        &wasm_data,
         std::str::from_utf8(&js)?,
         init,
         function_index,
@@ -64,6 +65,7 @@ fn initialize(
 }
 
 pub fn initialize_js(
+    wasm_data: &WasmData,
     js: &str,
     init: bool,
     function_index: i32,
@@ -107,19 +109,13 @@ pub fn initialize_js(
             ctx.clone().globals().set("_azlePostUpgradeCalled", true)?;
         }
 
-        let record_benchmarks = WASM_DATA_REF_CELL
-            .with(|wasm_data_ref_cell| wasm_data_ref_cell.borrow().clone())
-            .as_ref()
-            .ok_or("could not convert wasm_data_ref_cell to ref")?
-            .record_benchmarks;
-
         ctx.clone()
             .globals()
-            .set("_azleRecordBenchmarks", record_benchmarks)?;
+            .set("_azleRecordBenchmarks", wasm_data.record_benchmarks)?;
 
         ic::register(ctx.clone())?;
 
-        let promise = rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, js)?;
+        let promise = rquickjs::Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
 
         handle_promise_error(ctx.clone(), promise)?;
 

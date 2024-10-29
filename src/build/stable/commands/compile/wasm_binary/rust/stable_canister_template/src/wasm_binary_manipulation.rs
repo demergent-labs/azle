@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 pub struct WasmData {
     #[serde(rename = "envVars")]
     pub env_vars: Vec<(String, String)>,
+    #[serde(rename = "mainJsPath")]
+    pub main_js_path: String,
     #[serde(rename = "recordBenchmarks")]
     pub record_benchmarks: bool,
 }

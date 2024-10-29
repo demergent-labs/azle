@@ -2,8 +2,10 @@ use ic_stable_structures::memory_manager::MemoryId;
 use wasmedge_quickjs::AsObject;
 
 use crate::{
-    execute_method_js, ic, run_event_loop, wasm_binary_manipulation::get_js_code,
-    wasm_binary_manipulation::get_wasm_data, MEMORY_MANAGER_REF_CELL, RUNTIME, WASM_DATA_REF_CELL,
+    execute_method_js, ic, run_event_loop,
+    wasm_binary_manipulation::get_wasm_data,
+    wasm_binary_manipulation::{get_js_code, WasmData},
+    MEMORY_MANAGER_REF_CELL, RUNTIME, WASM_DATA_REF_CELL,
 };
 
 use crate::{upload_file, web_assembly};
@@ -71,6 +73,7 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
     let js = get_js_code();
 
     initialize_js(
+        &wasm_data,
         std::str::from_utf8(&js).unwrap(),
         init,
         function_index,
@@ -82,7 +85,13 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
     });
 }
 
-pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
+pub fn initialize_js(
+    wasm_data: &WasmData,
+    js: &str,
+    init: bool,
+    function_index: i32,
+    pass_arg_data: i32,
+) {
     let mut rt = wasmedge_quickjs::Runtime::new();
 
     rt.run_with_context(|context| {
@@ -110,17 +119,11 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
         context.eval_global_str(format!("globalThis._azleExperimental = true;"));
-        let record_benchmarks = WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
-            wasm_data_ref_cell
-                .borrow()
-                .as_ref()
-                .unwrap()
-                .record_benchmarks
-        });
         context.eval_global_str(format!(
-            "globalThis._azleRecordBenchmarks = {record_benchmarks};"
+            "globalThis._azleRecordBenchmarks = {};",
+            wasm_data.record_benchmarks
         ));
-        context.eval_module_str(js.to_string(), "main");
+        context.eval_module_str(js.to_string(), &wasm_data.main_js_path);
 
         run_event_loop(context);
 

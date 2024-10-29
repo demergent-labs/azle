@@ -20,10 +20,6 @@ mod wasm_binary_manipulation;
 use guards::guard_against_non_controllers;
 pub use quickjs_with_ctx::quickjs_with_ctx;
 
-// TODO dynamically get the canister name
-// TODO send it in through the Wasm meta data
-const MODULE_NAME: &str = ".azle/[canister_name]/main.js";
-
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 

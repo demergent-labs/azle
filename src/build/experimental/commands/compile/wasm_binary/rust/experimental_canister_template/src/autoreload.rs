@@ -1,6 +1,6 @@
 use std::{cell::RefCell, collections::BTreeMap};
 
-use crate::init_and_post_upgrade::initialize_js;
+use crate::{init_and_post_upgrade::initialize_js, WASM_DATA_REF_CELL};
 
 thread_local! {
     static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
@@ -35,8 +35,11 @@ pub fn reload_js(
             reloaded_js_mut.values().flat_map(|v| v.clone()).collect();
 
         if reloaded_js_complete_bytes.len() as u64 == total_len {
+            let wasm_data = WASM_DATA_REF_CELL
+                .with(|wasm_data_ref_cell| wasm_data_ref_cell.borrow().as_ref().unwrap().clone());
+
             let js_string = String::from_utf8_lossy(&reloaded_js_complete_bytes);
-            initialize_js(&js_string, false, function_index, 1); // TODO should the last arg be 0?
+            initialize_js(&wasm_data, &js_string, false, function_index, 1); // TODO should the last arg be 0?
             ic_cdk::println!("Azle: Reloaded canister JavaScript");
         }
     });

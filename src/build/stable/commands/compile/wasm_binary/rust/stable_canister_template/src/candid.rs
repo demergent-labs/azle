@@ -3,8 +3,8 @@ use std::error::Error;
 use crate::{
     error::{handle_promise_error, quickjs_call_with_error_handling},
     ic, quickjs_with_ctx,
-    wasm_binary_manipulation::get_js_code,
-    CONTEXT_REF_CELL, MODULE_NAME,
+    wasm_binary_manipulation::{get_js_code, get_wasm_data},
+    CONTEXT_REF_CELL,
 };
 
 type CCharPtr = *mut std::os::raw::c_char;
@@ -40,10 +40,14 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
 
         ic::register(ctx.clone())?;
 
+        let wasm_data = get_wasm_data()?;
         let js = get_js_code();
 
-        let promise =
-            rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, std::str::from_utf8(&js)?)?;
+        let promise = rquickjs::Module::evaluate(
+            ctx.clone(),
+            wasm_data.main_js_path,
+            std::str::from_utf8(&js)?,
+        )?;
 
         handle_promise_error(ctx.clone(), promise)?;
 

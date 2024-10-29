@@ -1,0 +1,6 @@
+{
+    "async_await": {
+        "previous": { "version": "0.25.0-dev", "benchmarks": [] },
+        "current": { "version": "0.25.0-dev", "benchmarks": [] }
+    }
+}
