@@ -23,6 +23,10 @@ runs:
               # Create and switch to new branch
               git switch -c "${{ inputs.branch-name }}"
 
+              # Show status of working directory
+              echo "Current git status:"
+              git status
+
               # Add and commit changes if there are any
               git add --all
               if ! git diff --cached --quiet; then

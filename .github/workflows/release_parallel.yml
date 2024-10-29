@@ -46,10 +46,6 @@ jobs:
               run: |
                   AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
 
-            - uses: ./.github/actions/configure_git
-              with:
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
-
             - name: Update version and build templates
               run: |
                   VERSION=${{ steps.get-version.outputs.release-version }}
