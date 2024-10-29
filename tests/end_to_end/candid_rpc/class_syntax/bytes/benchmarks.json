@@ -1,0 +1,35 @@
+{
+    "bytes_canister": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.92",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1924677" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730166957673232846" }
+                },
+                {
+                    "instructions": { "__bigint__": "2554628" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730166959791360731" }
+                },
+                {
+                    "instructions": { "__bigint__": "9459529" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730166961996271291" }
+                },
+                {
+                    "instructions": { "__bigint__": "77857689" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730166965494715358" }
+                },
+                {
+                    "instructions": { "__bigint__": "153853512" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730166973712562075" }
+                }
+            ]
+        }
+    }
+}

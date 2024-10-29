@@ -1,0 +1,20 @@
+{
+    "threshold_ecdsa": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.92",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8892456" },
+                    "method_name": "publicKey",
+                    "timestamp": { "__bigint__": "1730166949171822929" }
+                },
+                {
+                    "instructions": { "__bigint__": "8981660" },
+                    "method_name": "sign",
+                    "timestamp": { "__bigint__": "1730166951216948630" }
+                }
+            ]
+        }
+    }
+}

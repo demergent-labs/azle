@@ -1,0 +1,15 @@
+{
+    "persistent_storage": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.92",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1024793732" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730166966346503276" }
+                }
+            ]
+        }
+    }
+}

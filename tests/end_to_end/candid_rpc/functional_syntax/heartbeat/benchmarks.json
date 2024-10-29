@@ -1,0 +1,10 @@
+{
+    "heartbeat_async": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": { "version": "0.24.2-rc.92", "benchmarks": [] }
+    },
+    "heartbeat_sync": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": { "version": "0.24.2-rc.92", "benchmarks": [] }
+    }
+}

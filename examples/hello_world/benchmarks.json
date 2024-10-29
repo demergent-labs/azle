@@ -1,0 +1,15 @@
+{
+    "hello_world": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.92",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1296925" },
+                    "method_name": "setMessage",
+                    "timestamp": { "__bigint__": "1730166922402156623" }
+                }
+            ]
+        }
+    }
+}

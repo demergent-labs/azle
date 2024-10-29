@@ -1,0 +1,80 @@
+{
+    "manual_reply": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.92",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "680738" },
+                    "method_name": "manualUpdate",
+                    "timestamp": { "__bigint__": "1730166948285342729" }
+                },
+                {
+                    "instructions": { "__bigint__": "1586035" },
+                    "method_name": "manualUpdate",
+                    "timestamp": { "__bigint__": "1730166950373708458" }
+                },
+                {
+                    "instructions": { "__bigint__": "1493859" },
+                    "method_name": "updateBlob",
+                    "timestamp": { "__bigint__": "1730166952281422008" }
+                },
+                {
+                    "instructions": { "__bigint__": "1026141" },
+                    "method_name": "updateFloat32",
+                    "timestamp": { "__bigint__": "1730166954472389083" }
+                },
+                {
+                    "instructions": { "__bigint__": "1129130" },
+                    "method_name": "updateInt8",
+                    "timestamp": { "__bigint__": "1730166956374422121" }
+                },
+                {
+                    "instructions": { "__bigint__": "1534644" },
+                    "method_name": "updateNat",
+                    "timestamp": { "__bigint__": "1730166958627024511" }
+                },
+                {
+                    "instructions": { "__bigint__": "1016058" },
+                    "method_name": "updateNull",
+                    "timestamp": { "__bigint__": "1730166960530858199" }
+                },
+                {
+                    "instructions": { "__bigint__": "870119" },
+                    "method_name": "updateVoid",
+                    "timestamp": { "__bigint__": "1730166962714021508" }
+                },
+                {
+                    "instructions": { "__bigint__": "13291661" },
+                    "method_name": "updateRecord",
+                    "timestamp": { "__bigint__": "1730166964615034088" }
+                },
+                {
+                    "instructions": { "__bigint__": "1015670" },
+                    "method_name": "updateReserved",
+                    "timestamp": { "__bigint__": "1730166966847358228" }
+                },
+                {
+                    "instructions": { "__bigint__": "1278820" },
+                    "method_name": "updateString",
+                    "timestamp": { "__bigint__": "1730166968742913706" }
+                },
+                {
+                    "instructions": { "__bigint__": "3493354" },
+                    "method_name": "updateVariant",
+                    "timestamp": { "__bigint__": "1730166970938968166" }
+                },
+                {
+                    "instructions": { "__bigint__": "1028974" },
+                    "method_name": "updateFloat32",
+                    "timestamp": { "__bigint__": "1730166972860402303" }
+                },
+                {
+                    "instructions": { "__bigint__": "487879" },
+                    "method_name": "replyRaw",
+                    "timestamp": { "__bigint__": "1730166975141680292" }
+                }
+            ]
+        }
+    }
+}

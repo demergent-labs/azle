@@ -1,0 +1,25 @@
+{
+    "canister": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.92",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "6245391" },
+                    "method_name": "canisterNestedReturnType",
+                    "timestamp": { "__bigint__": "1730166968222114361" }
+                },
+                {
+                    "instructions": { "__bigint__": "6740898" },
+                    "method_name": "canisterList",
+                    "timestamp": { "__bigint__": "1730166970155264349" }
+                },
+                {
+                    "instructions": { "__bigint__": "2526450" },
+                    "method_name": "canisterCrossCanisterCall",
+                    "timestamp": { "__bigint__": "1730166972281194795" }
+                }
+            ]
+        }
+    }
+}

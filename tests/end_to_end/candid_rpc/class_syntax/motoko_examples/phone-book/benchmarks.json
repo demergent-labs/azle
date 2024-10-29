@@ -1,0 +1,15 @@
+{
+    "phone_book": {
+        "previous": { "version": "0.24.2-rc.92", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.92",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "2935637" },
+                    "method_name": "insert",
+                    "timestamp": { "__bigint__": "1730166952474234046" }
+                }
+            ]
+        }
+    }
+}
