@@ -23,9 +23,6 @@ runs:
               # Create and switch to new branch
               git switch -c "${{ inputs.branch-name }}"
 
-              echo "Current git log:"
-              git log --oneline -n 20
-
               # Show status of working directory
               echo "Current git status:"
               git status
@@ -38,6 +35,3 @@ runs:
               else
                 echo "No changes to commit. Skipping commit and push."
               fi
-
-              echo "Current git log after commit and push:"
-              git log --oneline -n 20

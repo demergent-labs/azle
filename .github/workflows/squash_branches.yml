@@ -1,4 +1,4 @@
-name: Finalize Changes
+name: Squash Branches
 on:
     workflow_call:
         inputs:
@@ -17,8 +17,8 @@ on:
                 required: true
 
 jobs:
-    finalize:
-        name: Finalize Changes
+    squash:
+        name: Squash Branches
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}

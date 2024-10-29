@@ -113,7 +113,7 @@ jobs:
 
     finalize-release:
         needs: [prepare-release, update-test-files-for-release-commit]
-        uses: ./.github/workflows/finalize_changes.yml
+        uses: ./.github/workflows/squash_branches.yml
         with:
             branch-prefix: 'update--${{ needs.prepare-release.outputs.release-version }}-'
             commit-message: 'Update test files for all tests and examples ${{ needs.prepare-release.outputs.release-version }}'

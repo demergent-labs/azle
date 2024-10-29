@@ -106,7 +106,7 @@ jobs:
 
     finalize-benchmark:
         needs: [run-benchmarks, create-branch-prefix]
-        uses: ./.github/workflows/finalize_changes.yml
+        uses: ./.github/workflows/squash_branches.yml
         with:
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'run benchmarks'
