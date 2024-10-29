@@ -17,8 +17,8 @@ checking out a specific branch.
 steps:
     - uses: actions/checkout@v4
 
-    - id: get-node-version
-      uses: ./.github/actions/get_node_version
+    - id: setup-node
+      uses: ./.github/actions/setup_node
 
-    - run: echo "${{ steps.get-node-version.outputs.node-version }}"
+    - run: echo "${{ steps.setup-node.outputs.version }}"
 ```
