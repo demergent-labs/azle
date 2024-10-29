@@ -107,7 +107,7 @@ jobs:
 
             - uses: ./.github/actions/commit_and_push
               with:
-                  branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
+                  branch-name: release--${{ needs.prepare-release.outputs.release-version }}
                   commit-message: 'Update dependencies for ${{ matrix.test.displayPath }}'
                   gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
 
@@ -145,3 +145,21 @@ jobs:
                   else
                     gh release create "$VERSION" -t "$VERSION"
                   fi
+
+    create-pr:
+        needs: [prepare-release, finalize-release]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.ref }}
+
+            - name: Create Pull Request
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  gh pr create \
+                    --base ${{ github.ref_name }} \
+                    --head release--${{ needs.prepare-release.outputs.release-version }} \
+                    --title "Release ${{ needs.prepare-release.outputs.release-version }}" \
+                    --body "Automated PR for release ${{ needs.prepare-release.outputs.release-version }}"
