@@ -1,6 +1,6 @@
 {
     "name": "azle",
-    "version": "0.25.0",
+    "version": "0.25.0-dev",
     "description": "TypeScript and JavaScript CDK for the Internet Computer",
     "scripts": {
         "typecheck": "tsc --noEmit",
@@ -11,7 +11,7 @@
     },
     "type": "module",
     "bin": {
-        "azle": "./src/build/index.js"
+        "azle": "./src/build/index.ts"
     },
     "main": "./src/lib/stable/index.ts",
     "repository": {
