@@ -1,102 +1,38 @@
 name: Benchmark
-
 on:
-    push:
-        branches:
-            - main
-    pull_request:
+    workflow_dispatch:
+        inputs:
+            exclude-slow-benchmarks:
+                description: 'Exclude slow benchmarks'
+                required: true
+                type: boolean
+                default: false
+            exclude-unstable-benchmarks:
+                description: 'Exclude unstable benchmarks'
+                required: true
+                type: boolean
+                default: false
+            exclude-release-benchmarks:
+                description: 'Exclude release benchmarks'
+                required: true
+                type: boolean
+                default: false
 
 jobs:
-    determine-should-run-benchmarks:
-        name: Determine if benchmarks should run
+    get-exclude-dirs:
+        name: Get exclude directories
         runs-on: ubuntu-latest
         outputs:
-            # If the branch should release then it shouldn't run benchmarks.
-            should-run-benchmarks: ${{ steps.determine-should-run-benchmarks.outputs.should-release == 'false' }}
+            exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
         steps:
             - uses: actions/checkout@v4
 
-            - id: determine-should-run-benchmarks
-              uses: ./.github/actions/should_release
-
-    set-exclude-dirs:
-        name: Set exclude directories
-        runs-on: ubuntu-latest
-        outputs:
-            exclude-dirs: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
-        steps:
-            - uses: actions/checkout@v4
-
-            - id: set-conditions
-              uses: ./.github/actions/set_run_conditions
-
-            - id: set-exclude-dirs
-              run: |
-                  RELEASE_BENCHMARKS="${{ format('
-                  tests/end_to_end/candid_rpc/class_syntax/new
-                  tests/end_to_end/http_server/new
-                  tests/end_to_end/candid_rpc/class_syntax/audio_recorder
-                  tests/end_to_end/candid_rpc/class_syntax/complex_init
-                  ') }}"
-
-                  UNSTABLE_BENCHMARKS="${{ format('
-                  examples/basic_bitcoin
-                  examples/bitcoin_psbt
-                  examples/ckbtc
-                  tests/end_to_end/http_server/ethers_base
-                  tests/end_to_end/http_server/http_outcall_fetch
-                  tests/end_to_end/http_server/ic_evm_rpc
-                  tests/property/candid_rpc/class_api/stable_b_tree_map
-                  tests/property/candid_rpc/functional_api/stable_b_tree_map
-                  tests/property/ic_api/performance_counter
-                  tests/property/ic_api/instruction_counter
-                  ') }}"
-
-                  SLOW_BENCHMARKS="${{ format('
-                  tests/end_to_end/candid_rpc/functional_syntax/ckbtc
-                  tests/end_to_end/candid_rpc/class_syntax/bitcoin
-                  tests/end_to_end/http_server/large_files
-                  tests/end_to_end/http_server/open_value_sharing
-                  tests/end_to_end/candid_rpc/class_syntax/stable_structures
-                  tests/end_to_end/candid_rpc/functional_syntax/bitcoin
-                  tests/end_to_end/candid_rpc/functional_syntax/composite_queries
-                  tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls
-                  tests/end_to_end/candid_rpc/functional_syntax/management_canister
-                  tests/end_to_end/candid_rpc/functional_syntax/stable_structures
-                  tests/end_to_end/http_server/autoreload
-                  ') }}"
-
-                  AZLE_IS_MAIN_BRANCH_PUSH="${{ steps.set-conditions.outputs.is_main_branch_push }}"
-                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}"
-                  AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr }}"
-                  AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr }}"
-                  AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}"
-
-                  EXCLUDE_DIRS=""
-
-                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH" == "true" ]]; then
-                      EXCLUDE_DIRS=""
-                  fi
-
-                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
-                      EXCLUDE_DIRS=""
-                  fi
-
-                  if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
-                      EXCLUDE_DIRS=""
-                  fi
-
-                  if [[ "$AZLE_IS_FEATURE_BRANCH_PR" == "true" ]]; then
-                      EXCLUDE_DIRS="$RELEASE_BENCHMARKS $UNSTABLE_BENCHMARKS"
-                  fi
-
-                  if [[ "$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
-                      EXCLUDE_DIRS="$RELEASE_BENCHMARKS $UNSTABLE_BENCHMARKS $SLOW_BENCHMARKS"
-                  fi
-
-                  # Trim leading or trailing spaces and save the exclude-dirs in the environment
-                  EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
-                  echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
+            - id: get-exclude-dirs
+              uses: ./.github/actions/get_exclude_dirs
+              with:
+                  exclude-slow: ${{ github.event.inputs.exclude-slow-benchmarks == true }}
+                  exclude-unstable: ${{ github.event.inputs.exclude-unstable-benchmarks == true }}
+                  exclude-release-only: ${{ github.event.inputs.exclude-release-benchmarks == true }}
 
     create-branch-prefix:
         name: Create Branch Prefix
@@ -114,10 +50,8 @@ jobs:
     run-benchmarks:
         name: ${{ matrix.benchmark_group.name }}
         needs:
-            - determine-should-run-benchmarks
-            - set-exclude-dirs
+            - get-exclude-dirs
             - create-branch-prefix
-        if: ${{ needs.determine-should-run-benchmarks.outputs.should-run-benchmarks == 'true' }}
         strategy:
             fail-fast: false
             matrix:
@@ -154,7 +88,7 @@ jobs:
             LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
         with:
             directories: ${{ matrix.benchmark_group.directories }}
-            exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
+            exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
 
     finalize-benchmark:
