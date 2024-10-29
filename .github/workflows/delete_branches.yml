@@ -3,7 +3,7 @@ on:
     workflow_dispatch:
         inputs:
             branch-prefix:
-                description: 'Branch prefix to match (e.g., "deps/" or "feature/")'
+                description: 'Branch prefix to match (e.g., "update--0.24.2-rc.89-" or "benchmark--0.25.0-")'
                 required: true
                 type: string
             dry-run:
@@ -45,7 +45,7 @@ jobs:
                   echo "Branch deletion complete"
 
             - name: Dry run message
-              if: ${{ inputs.dry-run }}
+              if: ${{ inputs.dry-run == true }}
               run: |
                   echo "DRY RUN - No branches were deleted"
                   echo "The above branches would have been deleted if this wasn't a dry run"
