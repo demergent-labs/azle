@@ -204,7 +204,7 @@ jobs:
                   # Create the pull command with multiple branches
                   BRANCHES_LIST="${{ steps.collect-branches.outputs.branches }}"
                   echo "Pulling changes from branches: $BRANCHES_LIST"
-                  git pull origin $BRANCHES_LIST
+                  git pull --rebase origin $BRANCHES_LIST
 
                   # Create a merge commit with a descriptive message
                   git commit -m "Merge all dependency updates for release ${{ needs.prepare-release.outputs.release-version }}"
