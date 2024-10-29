@@ -1,0 +1,30 @@
+{
+    "proxy": {
+        "previous": { "version": "0.24.2-rc.93", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.93",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "14806033" },
+                    "method_name": "icrc1_transfer",
+                    "timestamp": { "__bigint__": "1730177372317948067" }
+                },
+                {
+                    "instructions": { "__bigint__": "18208675" },
+                    "method_name": "icrc2_approve",
+                    "timestamp": { "__bigint__": "1730177374355842570" }
+                },
+                {
+                    "instructions": { "__bigint__": "17236328" },
+                    "method_name": "icrc2_transfer_from",
+                    "timestamp": { "__bigint__": "1730177376407519434" }
+                },
+                {
+                    "instructions": { "__bigint__": "10026701" },
+                    "method_name": "icrc2_allowance",
+                    "timestamp": { "__bigint__": "1730177378461207143" }
+                }
+            ]
+        }
+    }
+}

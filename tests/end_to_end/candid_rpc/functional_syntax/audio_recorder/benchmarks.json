@@ -1,0 +1,35 @@
+{
+    "audio_recorder": {
+        "previous": { "version": "0.24.2-rc.93", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.93",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "14152427" },
+                    "method_name": "createUser",
+                    "timestamp": { "__bigint__": "1730177357096698663" }
+                },
+                {
+                    "instructions": { "__bigint__": "34629157" },
+                    "method_name": "createRecording",
+                    "timestamp": { "__bigint__": "1730177359233608750" }
+                },
+                {
+                    "instructions": { "__bigint__": "48509915" },
+                    "method_name": "deleteRecording",
+                    "timestamp": { "__bigint__": "1730177361475537948" }
+                },
+                {
+                    "instructions": { "__bigint__": "34430284" },
+                    "method_name": "createRecording",
+                    "timestamp": { "__bigint__": "1730177363449264401" }
+                },
+                {
+                    "instructions": { "__bigint__": "34136556" },
+                    "method_name": "deleteUser",
+                    "timestamp": { "__bigint__": "1730177365561102582" }
+                }
+            ]
+        }
+    }
+}

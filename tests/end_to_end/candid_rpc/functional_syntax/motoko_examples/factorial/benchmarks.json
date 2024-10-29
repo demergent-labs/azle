@@ -1,0 +1,35 @@
+{
+    "factorial": {
+        "previous": { "version": "0.24.2-rc.93", "benchmarks": [] },
+        "current": {
+            "version": "0.24.2-rc.93",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1260371" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730177357168833984" }
+                },
+                {
+                    "instructions": { "__bigint__": "1258412" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730177359445832834" }
+                },
+                {
+                    "instructions": { "__bigint__": "1724041" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730177361337490820" }
+                },
+                {
+                    "instructions": { "__bigint__": "2973529" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730177363561273449" }
+                },
+                {
+                    "instructions": { "__bigint__": "5494020" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730177365458950075" }
+                }
+            ]
+        }
+    }
+}
