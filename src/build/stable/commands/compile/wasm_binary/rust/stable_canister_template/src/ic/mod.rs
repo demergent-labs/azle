@@ -1,3 +1,5 @@
+use rquickjs::{Ctx, String};
+
 mod accept_message;
 mod arg_data_raw;
 mod call_raw;
@@ -198,4 +200,14 @@ pub fn register(context: rquickjs::Ctx) -> rquickjs::Result<()> {
     context.clone().globals().set("_azleIcStable", ic)?;
 
     Ok(())
+}
+
+pub fn throw_error<E: std::fmt::Display>(ctx: Ctx, error: E) -> rquickjs::Error {
+    match String::from_str(ctx.clone(), &error.to_string()) {
+        Ok(error_string) => {
+            let error_value = error_string.into();
+            ctx.clone().throw(error_value)
+        }
+        Err(e) => e,
+    }
 }
