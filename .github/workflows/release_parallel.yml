@@ -129,67 +129,28 @@ jobs:
 
     finalize-release:
         needs: [prepare-release, update-test-files-for-release-commit]
-        name: Finalize Release
-        runs-on: ubuntu-latest
-        env:
+        uses: ./.github/workflows/finalize_changes.yml
+        with:
+            branch-prefix: 'update--${{ needs.prepare-release.outputs.release-version }}-'
+            commit-message: 'Update test files for all tests and examples ${{ needs.prepare-release.outputs.release-version }}'
+        secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
+            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+
+    create-release:
+        needs: [prepare-release, finalize-release]
+        name: Create Release
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref || github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
-                  fetch-depth: 0
-
-            - uses: ./.github/actions/configure_git
-              with:
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
-
-            - name: Collect branches
-              id: collect-branches
-              run: |
-                  # Get branches and convert to space-separated list
-                  BRANCHES=$(git branch -r | grep "origin/update--${{ needs.prepare-release.outputs.release-version }}-" | sed 's/origin\///' | xargs)
-                  echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
-
-            - name: Display collected branches
-              run: |
-                  echo "Collected branches:"
-                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
-                    echo "  - $branch"
-                  done
-                  echo "End of branch list"
-
-            - name: Fetch branches
-              run: |
-                  echo "Fetching all branches..."
-                  BRANCHES_TO_FETCH=""
-                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
-                    BRANCHES_TO_FETCH+=" $branch:$branch"
-                  done
-                  git fetch origin $BRANCHES_TO_FETCH
-
-            - name: Squash changes
-              env:
-                  PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
-              run: |
-                  CURRENT_BRANCH=$(git branch --show-current)
-
-                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
-                    git merge --squash $branch
-                  done
-
-                  # Create a merge commit with a descriptive message
-                  git commit -am "Update test files for all tests and examples ${{ needs.prepare-release.outputs.release-version }}"
-
-                  git push origin HEAD:$CURRENT_BRANCH
-
-            - name: Delete branches
-              run: |
-                  echo "Starting branch deletion process..."
-                  git push origin --delete ${{ steps.collect-branches.outputs.branches }}
 
             - name: Create release
+              env:
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
               run: |
                   VERSION=${{ needs.prepare-release.outputs.release-version }}
                   git tag $VERSION

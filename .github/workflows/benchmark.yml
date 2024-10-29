@@ -96,11 +96,25 @@ jobs:
                   EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
                   echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT
 
+    get-version:
+        name: Get Azle Version
+        runs-on: ubuntu-latest
+        outputs:
+            azle-version: ${{ steps.get-version.outputs.azle-version }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: get-version
+              run: |
+                  VERSION=$(jq -r '.version' package.json)
+                  echo "azle-version=$VERSION" >> $GITHUB_OUTPUT
+
     run-benchmarks:
         name: ${{ matrix.benchmark_group.name }}
         needs:
             - determine-should-run-benchmarks
             - set-exclude-dirs
+            - get-version
         if: ${{ needs.determine-should-run-benchmarks.outputs.should-run-benchmarks == 'true' }}
         strategy:
             fail-fast: false
@@ -139,3 +153,15 @@ jobs:
         with:
             directories: ${{ matrix.benchmark_group.directories }}
             exclude-dirs: ${{ needs.set-exclude-dirs.outputs.exclude-dirs }}
+            azle-version: ${{ needs.get-version.outputs.azle-version }}
+
+    finalize-benchmark:
+        needs: [run-benchmarks, get-version]
+        uses: ./.github/workflows/finalize_changes.yml
+        with:
+            branch-prefix: 'benchmark--${{ needs.get-version.outputs.azle-version }}-'
+            commit-message: 'Update all dependencies for benchmark ${{ needs.get-version.outputs.azle-version }}'
+        secrets:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
