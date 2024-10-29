@@ -162,7 +162,7 @@ jobs:
         uses: ./.github/workflows/finalize_changes.yml
         with:
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
-            commit-message: 'Update all dependencies for benchmark'
+            commit-message: 'run benchmarks'
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
