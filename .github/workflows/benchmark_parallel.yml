@@ -92,8 +92,15 @@ jobs:
                     echo "benchmark.md does not exist after test"
                   fi
 
+            - name: Create branch name
+              id: create-branch-name
+              run: |
+                  SAFE_PATH=$(echo '${{ matrix.test.displayPath }}' | sed 's/\//-/g')
+                  echo "branch-name=${{ inputs.branch-prefix }}${SAFE_PATH}" >> $GITHUB_OUTPUT
+              shell: bash
+
             - uses: ./.github/actions/commit_and_push
               with:
-                  branch-name: "${{ inputs.branch-prefix }}$(echo '${{ matrix.test.displayPath }}' | sed 's/\//-/g')"
+                  branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
                   gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
