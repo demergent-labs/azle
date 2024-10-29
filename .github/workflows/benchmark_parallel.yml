@@ -60,8 +60,10 @@ jobs:
             - name: Install dependencies
               run: |
                   npm install
+                  npm link
                   cd ${{ matrix.test.path }}
                   npm install
+                  npm link azle
 
             - name: Start dfx with artificial delay 0
               working-directory: ${{ matrix.test.path }}
