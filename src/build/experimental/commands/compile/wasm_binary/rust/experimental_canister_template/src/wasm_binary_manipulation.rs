@@ -1,4 +1,3 @@
-#[cfg(feature = "experimental")]
 use open_value_sharing::Consumer;
 
 use serde::{Deserialize, Serialize};
@@ -9,9 +8,7 @@ pub struct WasmData {
     pub env_vars: Vec<(String, String)>,
     #[serde(rename = "recordBenchmarks")]
     pub record_benchmarks: bool,
-    #[cfg(feature = "experimental")]
     pub consumer: Consumer,
-    #[cfg(feature = "experimental")]
     #[serde(rename = "managementDid")]
     pub management_did: String,
 }
