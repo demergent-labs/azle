@@ -9,7 +9,7 @@ on:
                 required: false
                 type: string
                 default: ''
-            azle-version:
+            branch-prefix:
                 required: true
                 type: string
 
@@ -25,11 +25,7 @@ jobs:
     prepare-benchmark:
         name: Prepare Benchmark
         runs-on: ubuntu-latest
-        env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         outputs:
-            azle-version: ${{ inputs.azle-version }}
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
@@ -71,23 +67,33 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
+            - name: Print benchmark.md contents (before test)
+              working-directory: ${{ matrix.test.path }}
+              run: |
+                  if [ -f benchmark.md ]; then
+                    echo "Contents of benchmark.md before test:"
+                    cat benchmark.md
+                  else
+                    echo "benchmark.md does not exist before test"
+                  fi
+
             - name: Run npm test (continue on error)
               working-directory: ${{ matrix.test.path }}
               continue-on-error: true
               run: npm test
 
-            - uses: ./.github/actions/configure_git
-              with:
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
-
-            - name: Commit and push changes
+            - name: Print benchmark.md contents (after test)
+              working-directory: ${{ matrix.test.path }}
               run: |
-                  BRANCH_NAME="benchmark--${{ needs.prepare-benchmark.outputs.azle-version }}-$(echo '${{ matrix.test.displayPath }}' | sed 's/\//-/g')"
-                  git switch -c "$BRANCH_NAME"
-                  git add --all
-                  if ! git diff --cached --quiet; then
-                    git commit -m "Run benchmarks for ${{ matrix.test.displayPath }}"
+                  if [ -f benchmark.md ]; then
+                    echo "Contents of benchmark.md after test:"
+                    cat benchmark.md
                   else
-                    echo "No changes to commit. Skipping commit and push."
+                    echo "benchmark.md does not exist after test"
                   fi
-                  git push origin "$BRANCH_NAME"
+
+            - uses: ./.github/actions/commit_and_push
+              with:
+                  branch-name: "${{ inputs.branch-prefix }}$(echo '${{ matrix.test.displayPath }}' | sed 's/\//-/g')"
+                  commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
+                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
