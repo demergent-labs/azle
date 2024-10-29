@@ -9,7 +9,7 @@ export function execSyncPretty(
         return execSync(command, { stdio });
     } catch (error) {
         if (hint !== undefined) {
-            throw `${hint}: ${error}`;
+            throw new Error(`${hint}: ${error}`);
         } else {
             throw error;
         }

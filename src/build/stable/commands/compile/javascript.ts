@@ -50,7 +50,9 @@ export async function bundle(buildOptions: BuildOptions): Promise<string> {
     const buildResult = await build(buildOptions);
 
     if (buildResult.outputFiles === undefined) {
-        throw `Build process failed to produce JavaScript output files`;
+        throw new Error(
+            `Build process failed to produce JavaScript output files`
+        );
     }
 
     const bundleArray = buildResult.outputFiles[0].contents;

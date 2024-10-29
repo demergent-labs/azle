@@ -30,7 +30,7 @@ export async function getCandidAndMethodMeta(
         handleHttp();
     }
 
-    throw `dfx.json: "candid_gen": "${candidGen}" is not supported`;
+    throw new Error(`dfx.json: "candid_gen": "${candidGen}" is not supported`);
 }
 
 async function handleAutomaticAndCustom(
@@ -54,5 +54,7 @@ async function handleAutomaticAndCustom(
 }
 
 function handleHttp(): never {
-    throw `dfx.json: "candid_gen": "http" is only available in experimental mode`;
+    throw new Error(
+        `dfx.json: "candid_gen": "http" is only available in experimental mode`
+    );
 }

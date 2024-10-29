@@ -8,6 +8,6 @@ export function getLocalDfxVersion(): string {
     if (match !== null && match.length > 1 && typeof match[1] === 'string') {
         return match[1]; // Return the version number
     } else {
-        throw 'Could not parse the dfx version';
+        throw new Error(`Could not parse the dfx version`);
     }
 }

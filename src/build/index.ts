@@ -22,13 +22,41 @@ import { getCanisterConfig } from './stable/utils/get_canister_config';
 import { AZLE_PACKAGE_PATH } from './stable/utils/global_paths';
 import { CanisterConfig, Command } from './stable/utils/types';
 
+process.on('uncaughtException', (error: Error) => {
+    const prefix = 'Azle BuildError';
+
+    const message =
+        process.env.AZLE_VERBOSE === 'true'
+            ? `${prefix}: ${error.stack}`
+            : `${prefix}: ${error}`;
+
+    console.error(message);
+
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason: any) => {
+    const prefix = 'Azle BuildError';
+
+    const message =
+        process.env.AZLE_VERBOSE === 'true' && reason instanceof Error
+            ? `${prefix}: ${reason.stack}`
+            : `${prefix}: ${reason}`;
+
+    console.error(message);
+
+    process.exit(1);
+});
+
 build();
 
 async function build(): Promise<void> {
     const command = process.argv[2] as Command | undefined;
 
     if (command === undefined) {
-        throw `No command found when running azle. Running azle should start like this: azle [commandName]`;
+        throw new Error(
+            `No command found when running azle. Running azle should start like this: azle [commandName]`
+        );
     }
 
     const ioType = process.env.AZLE_VERBOSE === 'true' ? 'inherit' : 'pipe';
@@ -81,7 +109,9 @@ async function build(): Promise<void> {
         return;
     }
 
-    throw `Invalid command found when running azle. Running azle ${command} is not valid`;
+    throw new Error(
+        `Invalid command found when running azle. Running azle ${command} is not valid`
+    );
 }
 
 function handleInstallDfxExtensionCommand(ioType: IOType): void {
@@ -96,7 +126,9 @@ async function handleUploadAssetsCommand(): Promise<void> {
 
     if (experimental === false) {
         if (canisterConfig.custom?.assets !== undefined) {
-            throw experimentalMessageDfxJson('the upload-assets command');
+            throw new Error(
+                experimentalMessageDfxJson('the upload-assets command')
+            );
         }
     } else {
         await runUploadAssetsCommand();
@@ -156,7 +188,7 @@ async function handleNewCommand(): Promise<void> {
 
     if (experimental === false) {
         if (httpServer === true) {
-            throw experimentalMessageCli('the --http-server option');
+            throw new Error(experimentalMessageCli('the --http-server option'));
         }
 
         const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
@@ -176,51 +208,48 @@ function checkForExperimentalDfxJsonFields(
     canisterConfig: CanisterConfig
 ): void {
     if (canisterConfig.custom?.assets !== undefined) {
-        throw experimentalMessageDfxJson(
-            'the assets field in your dfx.json file'
+        throw new Error(
+            experimentalMessageDfxJson('the assets field in your dfx.json file')
         );
     }
 
     if (canisterConfig.custom?.build_assets !== undefined) {
-        throw experimentalMessageDfxJson(
-            'the build_assets field in your dfx.json file'
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the build_assets field in your dfx.json file'
+            )
         );
     }
 
     if (canisterConfig.custom?.candid_gen === 'http') {
-        throw experimentalMessageDfxJson(
-            'the "candid_gen": "http" field in your dfx.json file'
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the "candid_gen": "http" field in your dfx.json file'
+            )
         );
     }
 
     if (canisterConfig.custom?.esm_aliases !== undefined) {
-        throw experimentalMessageDfxJson(
-            'the esm_aliases field in your dfx.json file'
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the esm_aliases field in your dfx.json file'
+            )
         );
     }
 
     if (canisterConfig.custom?.esm_externals !== undefined) {
-        throw experimentalMessageDfxJson(
-            'the esm_externals field in your dfx.json file'
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the esm_externals field in your dfx.json file'
+            )
         );
     }
 
     if (canisterConfig.custom?.openValueSharing !== undefined) {
-        throw experimentalMessageDfxJson(
-            'the openValueSharing field in your dfx.json file'
+        throw new Error(
+            experimentalMessageDfxJson(
+                'the openValueSharing field in your dfx.json file'
+            )
         );
     }
 }
-
-// TODO do we want stack traces?
-// TODO maybe when verbose is set only?
-// TODO stack traces with verbose sounds pretty good
-process.on('uncaughtException', (error: Error) => {
-    console.error(`Azle BuildError: ${error}`);
-    process.exit(1);
-});
-
-process.on('unhandledRejection', (reason: any) => {
-    console.error(`Azle BuildError: ${reason}`);
-    process.exit(1);
-});
