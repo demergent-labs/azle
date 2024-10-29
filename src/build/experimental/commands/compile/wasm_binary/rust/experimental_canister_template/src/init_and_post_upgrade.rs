@@ -157,9 +157,9 @@ pub fn initialize_js(
 
         runtime.run_with_context(|context| {
             let assignment = if init {
-                "globalThis._azleInitCalled = true;"
+                "globalThis._azleInitCalled = true;\nglobalThis._azlePostUpgradeCalled = false;"
             } else {
-                "globalThis._azlePostUpgradeCalled = true;"
+                "globalThis._azleInitCalled = false;\nglobalThis._azlePostUpgradeCalled = true;"
             };
 
             context.eval_global_str(assignment.to_string());
