@@ -9,9 +9,7 @@ export function getContext(
     const main = canisterConfig?.main;
 
     if (main === undefined) {
-        throw new Error(
-            `Your dfx.json canister configuration object must have a "main" property pointing to your canister's entrypoint .ts or .js file`
-        );
+        throw `Your dfx.json canister configuration object must have a "main" property pointing to your canister's entrypoint .ts or .js file`;
     }
 
     const canisterPath = join('.azle', canisterName);
@@ -19,7 +17,7 @@ export function getContext(
     const candidPath = process.env.CANISTER_CANDID_PATH;
 
     if (candidPath === undefined) {
-        throw new Error(`Azle: CANISTER_CANDID_PATH is not defined`);
+        throw `CANISTER_CANDID_PATH is not defined`;
     }
 
     const wasmBinaryPath = join(canisterPath, `${canisterName}.wasm`);
@@ -53,9 +51,7 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
             const envVarValue = process.env[envVarName];
 
             if (envVarValue === undefined) {
-                throw new Error(
-                    `Environment variable ${envVarName} must be undefined`
-                );
+                throw `Environment variable ${envVarName} must be undefined`;
             }
 
             return [envVarName, envVarValue];

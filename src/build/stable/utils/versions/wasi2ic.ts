@@ -20,6 +20,6 @@ function getCargoVersion(packageName: string): string {
             return match[1]; // Return the version number if no link is found
         }
     } else {
-        throw new Error(`Could not parse ${packageName} version`);
+        throw `Could not parse ${packageName} version`;
     }
 }

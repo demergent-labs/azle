@@ -7,6 +7,6 @@ export function getLocalRustVersion(): string {
     if (match !== null && match.length > 1 && typeof match[1] === 'string') {
         return match[1]; // Returns the version number
     } else {
-        throw new Error('Could not parse rustc version');
+        throw 'Could not parse rustc version';
     }
 }

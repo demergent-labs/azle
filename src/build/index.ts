@@ -26,9 +26,7 @@ async function build(): Promise<void> {
     const command = process.argv[2] as Command | undefined;
 
     if (command === undefined) {
-        throw new Error(
-            `Azle: No command found when running azle. Running azle should start like this: azle [commandName]`
-        );
+        throw `No command found when running azle. Running azle should start like this: azle [commandName]`;
     }
 
     const ioType = process.env.AZLE_VERBOSE === 'true' ? 'inherit' : 'pipe';
@@ -40,7 +38,7 @@ async function build(): Promise<void> {
     }
 
     if (command === 'install-global-dependencies') {
-        handleInstallGlobalDependenciesCommand(ioType);
+        handleInstallGlobalDependenciesCommand();
 
         return;
     }
@@ -81,9 +79,7 @@ async function build(): Promise<void> {
         return;
     }
 
-    throw new Error(
-        `Azle: Invalid command found when running azle. Running azle ${command} is not valid`
-    );
+    throw `Invalid command found when running azle. Running azle ${command} is not valid`;
 }
 
 function handleInstallDfxExtensionCommand(ioType: IOType): void {
@@ -98,9 +94,7 @@ async function handleUploadAssetsCommand(): Promise<void> {
 
     if (experimental === false) {
         if (canisterConfig.custom?.assets !== undefined) {
-            throw new Error(
-                experimentalMessageDfxJson('the upload-assets command')
-            );
+            throw experimentalMessageDfxJson('the upload-assets command');
         }
     } else {
         await runUploadAssetsCommand();
@@ -136,24 +130,21 @@ async function handleTemplateCommand(ioType: IOType): Promise<void> {
     }
 }
 
-async function handleInstallGlobalDependenciesCommand(
-    ioType: IOType
-): Promise<void> {
+async function handleInstallGlobalDependenciesCommand(): Promise<void> {
     const node = process.argv.includes('--node');
     const dfx = process.argv.includes('--dfx');
     const rust = process.argv.includes('--rust');
     const wasi2ic = process.argv.includes('--wasi2ic');
 
     if (!node && !dfx && !rust && !wasi2ic) {
-        await runInstallGlobalDependenciesCommand(
-            { dfx: true, node: true, rust: true, wasi2ic: true },
-            ioType
-        );
+        await runInstallGlobalDependenciesCommand({
+            dfx: true,
+            node: true,
+            rust: true,
+            wasi2ic: true
+        });
     } else {
-        await runInstallGlobalDependenciesCommand(
-            { dfx, node, rust, wasi2ic },
-            ioType
-        );
+        await runInstallGlobalDependenciesCommand({ dfx, node, rust, wasi2ic });
     }
 }
 
@@ -163,7 +154,7 @@ async function handleNewCommand(): Promise<void> {
 
     if (experimental === false) {
         if (httpServer === true) {
-            throw new Error(experimentalMessageCli('the --http-server option'));
+            throw experimentalMessageCli('the --http-server option');
         }
 
         const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
@@ -183,48 +174,51 @@ function checkForExperimentalDfxJsonFields(
     canisterConfig: CanisterConfig
 ): void {
     if (canisterConfig.custom?.assets !== undefined) {
-        throw new Error(
-            experimentalMessageDfxJson('the assets field in your dfx.json file')
+        throw experimentalMessageDfxJson(
+            'the assets field in your dfx.json file'
         );
     }
 
     if (canisterConfig.custom?.build_assets !== undefined) {
-        throw new Error(
-            experimentalMessageDfxJson(
-                'the build_assets field in your dfx.json file'
-            )
+        throw experimentalMessageDfxJson(
+            'the build_assets field in your dfx.json file'
         );
     }
 
     if (canisterConfig.custom?.candid_gen === 'http') {
-        throw new Error(
-            experimentalMessageDfxJson(
-                'the "candid_gen": "http" field in your dfx.json file'
-            )
+        throw experimentalMessageDfxJson(
+            'the "candid_gen": "http" field in your dfx.json file'
         );
     }
 
     if (canisterConfig.custom?.esm_aliases !== undefined) {
-        throw new Error(
-            experimentalMessageDfxJson(
-                'the esm_aliases field in your dfx.json file'
-            )
+        throw experimentalMessageDfxJson(
+            'the esm_aliases field in your dfx.json file'
         );
     }
 
     if (canisterConfig.custom?.esm_externals !== undefined) {
-        throw new Error(
-            experimentalMessageDfxJson(
-                'the esm_externals field in your dfx.json file'
-            )
+        throw experimentalMessageDfxJson(
+            'the esm_externals field in your dfx.json file'
         );
     }
 
     if (canisterConfig.custom?.openValueSharing !== undefined) {
-        throw new Error(
-            experimentalMessageDfxJson(
-                'the openValueSharing field in your dfx.json file'
-            )
+        throw experimentalMessageDfxJson(
+            'the openValueSharing field in your dfx.json file'
         );
     }
 }
+
+// TODO do we want stack traces?
+// TODO maybe when verbose is set only?
+// TODO stack traces with verbose sounds pretty good
+process.on('uncaughtException', (error: Error) => {
+    console.error(`Azle BuildError: ${error}`);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason: any) => {
+    console.error(`Azle BuildError: ${reason}`);
+    process.exit(1);
+});
