@@ -17,8 +17,8 @@ checking out a specific branch.
 steps:
     - uses: actions/checkout@v4
 
-    - id: get-dfx-version
-      uses: ./.github/actions/get_dfx_version
+    - id: setup-dfx
+      uses: ./.github/actions/setup_dfx
 
-    - run: echo ${{ steps.get-dfx-version.outputs.dfx-version }}
+    - run: echo ${{ steps.setup-dfx.outputs.dfx-version }}
 ```
