@@ -1,4 +1,4 @@
-import { trap } from './ic/trap';
+import { trap } from './ic_apis/trap';
 
 export function handleUncaughtError(rawError: any): never {
     if (rawError instanceof Error) {
