@@ -115,6 +115,7 @@ jobs:
         needs: [prepare-release, update-test-files-for-release-commit]
         uses: ./.github/workflows/squash_branches.yml
         with:
+            base-branch: release--${{ needs.prepare-release.outputs.release-version }}
             branch-prefix: 'update--${{ needs.prepare-release.outputs.release-version }}-'
             commit-message: 'Update test files for all tests and examples ${{ needs.prepare-release.outputs.release-version }}'
         secrets:
@@ -159,7 +160,7 @@ jobs:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   gh pr create \
-                    --base ${{ github.ref_name }} \
+                    --base main \
                     --head release--${{ needs.prepare-release.outputs.release-version }} \
                     --title "Release ${{ needs.prepare-release.outputs.release-version }}" \
                     --body "Automated PR for release ${{ needs.prepare-release.outputs.release-version }}"

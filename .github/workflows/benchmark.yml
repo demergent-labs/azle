@@ -122,7 +122,7 @@ jobs:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   gh pr create \
-                    --base ${{ github.ref_name }} \
+                    --base main \
                     --head ${{ needs.create-branch-prefix.outputs.base-branch }} \
                     --title "Benchmark Results for ${{ needs.create-branch-prefix.outputs.base-branch }}" \
                     --body "Automated PR for benchmark results"
