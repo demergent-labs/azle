@@ -35,7 +35,7 @@ function decodeArgs(
         mode === 'query' ||
         mode === 'update'
     ) {
-        return IDL.decode(paramIdlTypes, args[0]);
+        return idlDecode(paramIdlTypes, args[0]);
     } else {
         return [];
     }
@@ -59,4 +59,26 @@ function encodeResultAndReply(
     }
 
     reply({ data: unencodedResult, idlType: returnIdlType });
+}
+
+export function idlEncode(
+    argTypes: Array<IDL.Type<any>>,
+    args: any[]
+): Uint8Array {
+    try {
+        return new Uint8Array(IDL.encode(argTypes, args));
+    } catch (error) {
+        throw new Error(`Failed to encode Candid arguments: ${error}`);
+    }
+}
+
+export function idlDecode(
+    retTypes: IDL.Type[],
+    bytes: ArrayBuffer
+): JsonValue[] {
+    try {
+        return IDL.decode(retTypes, bytes);
+    } catch (error) {
+        throw new Error(`Failed to decode Candid bytes: ${error}`);
+    }
 }

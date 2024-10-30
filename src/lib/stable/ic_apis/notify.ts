@@ -1,6 +1,8 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 
+import { idlEncode } from '../execute_with_candid_serde';
+
 /**
  * Performs a cross-canister call without awaiting the result
  * @param canisterId The ID of the canister to notify
@@ -35,10 +37,7 @@ export function notify(
             ? Principal.fromText(canisterId)
             : canisterId;
     const canisterIdBytes = canisterIdPrincipal.toUint8Array();
-    const argsRaw =
-        raw === undefined
-            ? new Uint8Array(IDL.encode(paramIdlTypes, args))
-            : raw;
+    const argsRaw = raw === undefined ? idlEncode(paramIdlTypes, args) : raw;
     const paymentString = payment.toString();
 
     if (globalThis._azleIcExperimental !== undefined) {
