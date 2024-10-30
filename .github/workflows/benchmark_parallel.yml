@@ -76,10 +76,10 @@ jobs:
 
             - name: Create branch name
               id: create-branch-name
-              run: |
-                  SAFE_PATH=$(echo '${{ matrix.test.displayPath }}' | sed 's/\//-/g')
-                  echo "branch-name=${{ inputs.branch-prefix }}${SAFE_PATH}" >> $GITHUB_OUTPUT
-              shell: bash
+              uses: ./.github/actions/create_branch_name
+              with:
+                  prefix: ${{ inputs.branch-prefix }}
+                  path: ${{ matrix.test.displayPath }}
 
             - uses: ./.github/actions/commit_and_push
               with:

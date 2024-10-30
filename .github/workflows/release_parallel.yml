@@ -100,10 +100,10 @@ jobs:
 
             - name: Create branch name
               id: create-branch-name
-              run: |
-                  SAFE_PATH=$(echo '${{ matrix.test.displayPath }}' | sed 's/\//-/g')
-                  echo "branch-name=update--${{ needs.prepare-release.outputs.release-version }}-${SAFE_PATH}" >> $GITHUB_OUTPUT
-              shell: bash
+              uses: ./.github/actions/create_branch_name
+              with:
+                  prefix: 'update--${{ needs.prepare-release.outputs.release-version }}-'
+                  path: ${{ matrix.test.displayPath }}
 
             - uses: ./.github/actions/commit_and_push
               with:
