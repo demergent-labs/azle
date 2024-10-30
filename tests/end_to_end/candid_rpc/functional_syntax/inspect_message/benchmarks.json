@@ -1,0 +1,15 @@
+{
+    "inspect_message": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1054509" },
+                    "method_name": "accessible",
+                    "timestamp": { "__bigint__": "1730326462738667991" }
+                }
+            ]
+        }
+    }
+}
