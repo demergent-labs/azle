@@ -16,9 +16,6 @@ jobs:
             release-version: ${{ inputs.release-version }}
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
-            - name: Print branch name
-              run: echo "${{ github.ref }}"
-
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.ref }}
