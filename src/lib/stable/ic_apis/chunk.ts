@@ -21,5 +21,5 @@ export async function chunk(): Promise<void> {
         return undefined;
     }
 
-    await call(id(), '_azle_chunk', { raw: candidEncode('()'), payment: 0n });
+    await call(id(), '_azle_chunk', { raw: candidEncode('()'), cycles: 0n });
 }

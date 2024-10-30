@@ -14,7 +14,7 @@ export function notify(
     options?: {
         paramIdlTypes?: IDL.Type[];
         args?: any[];
-        payment?: bigint;
+        cycles?: bigint;
         raw?: Uint8Array;
     }
 ): void {
@@ -27,7 +27,7 @@ export function notify(
 
     const paramIdlTypes = options?.paramIdlTypes ?? [];
     const args = options?.args ?? [];
-    const payment = options?.payment ?? 0n;
+    const cycles = options?.cycles ?? 0n;
     const raw = options?.raw;
 
     const canisterIdPrincipal =
@@ -39,14 +39,14 @@ export function notify(
         raw === undefined
             ? new Uint8Array(IDL.encode(paramIdlTypes, args))
             : raw;
-    const paymentString = payment.toString();
+    const cyclesString = cycles.toString();
 
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.notifyRaw(
             canisterIdBytes.buffer,
             method,
             argsRaw.buffer,
-            paymentString
+            cyclesString
         );
     }
 
@@ -54,6 +54,6 @@ export function notify(
         canisterIdBytes,
         method,
         argsRaw,
-        paymentString
+        cyclesString
     );
 }

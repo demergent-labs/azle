@@ -29,7 +29,7 @@ export default class {
                     network: { regtest: null }
                 }
             ],
-            payment: BITCOIN_API_CYCLE_COST
+            cycles: BITCOIN_API_CYCLE_COST
         });
     }
 
@@ -46,7 +46,7 @@ export default class {
                     network: { regtest: null }
                 }
             ],
-            payment: BITCOIN_API_CYCLE_COST
+            cycles: BITCOIN_API_CYCLE_COST
         });
     }
 
@@ -65,7 +65,7 @@ export default class {
                         network: { regtest: null }
                     }
                 ],
-                payment: BITCOIN_API_CYCLE_COST
+                cycles: BITCOIN_API_CYCLE_COST
             }
         );
     }
@@ -88,7 +88,7 @@ export default class {
                         network: { regtest: null }
                     }
                 ],
-                payment: transactionFee
+                cycles: transactionFee
             }
         );
 

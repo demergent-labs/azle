@@ -84,7 +84,7 @@ async function getSignatureResult(
                     }
                 }
             ],
-            payment: 10_000_000_000n
+            cycles: 10_000_000_000n
         }
     );
 }

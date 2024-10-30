@@ -94,7 +94,7 @@ async function getBalance(
                     ]
                 }
             ],
-            payment: 50_000_000n
+            cycles: 50_000_000n
         }
     );
 
@@ -136,7 +136,7 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
                     ]
                 }
             ],
-            payment: 50_000_000n
+            cycles: 50_000_000n
         }
     );
 

@@ -6,14 +6,14 @@ export default class {
     async sendCycles(): Promise<bigint> {
         return await call(getCyclesPrincipal(), 'receiveCycles', {
             returnIdlType: IDL.Nat64,
-            payment: 1_000_000n
+            cycles: 1_000_000n
         });
     }
 
     @update([])
     sendCyclesNotify(): void {
         return notify(getCyclesPrincipal(), 'receiveCycles', {
-            payment: 1_000_000n
+            cycles: 1_000_000n
         });
     }
 
