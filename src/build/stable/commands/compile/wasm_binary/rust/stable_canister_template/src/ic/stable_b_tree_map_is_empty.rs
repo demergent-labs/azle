@@ -13,7 +13,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                 .get(&memory_id)
                 .ok_or(throw_error(
                     ctx.clone(),
-                    &format!("could not find StableBTreeMap {memory_id}"),
+                    &format!("Could not find StableBTreeMap {memory_id}"),
                 ))?
                 .is_empty())
         })
