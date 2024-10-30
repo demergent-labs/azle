@@ -23,6 +23,8 @@ runs:
               RELEASE_ONLY_EXCLUSIONS="${{ format('
               tests/end_to_end/candid_rpc/class_syntax/new
               tests/end_to_end/http_server/new
+              tests/end_to_end/candid_rpc/class_syntax/audio_recorder
+              tests/end_to_end/candid_rpc/class_syntax/complex_init
               ') }}"
 
               UNSTABLE_EXCLUSIONS="${{ format('
