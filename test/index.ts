@@ -132,7 +132,7 @@ function processEnvVars(): {
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
-    const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
+    const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
 
     const hasOnly = [runTests, runTypeChecks].includes('only');
 
