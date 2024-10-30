@@ -5,7 +5,7 @@ import { agent, consumerActor } from './consumer_actor';
 import { createActor as createWalletActor } from './dfx_generated/wallet';
 import { getTests } from './tests';
 
-const canisterName = 'backend';
+const canisterName = 'wallet';
 const canisterId = getCanisterId(canisterName);
 const walletActor = createWalletActor(canisterId, {
     agentOptions: {
