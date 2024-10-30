@@ -2,4 +2,6 @@ import { runTests } from 'azle/test';
 
 import { getTests } from './tests';
 
-runTests(getTests('backend'));
+const canisterName = 'backend';
+
+runTests(getTests(canisterName), canisterName);

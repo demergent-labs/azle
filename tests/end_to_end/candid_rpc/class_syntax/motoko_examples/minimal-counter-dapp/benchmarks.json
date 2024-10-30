@@ -1,0 +1,30 @@
+{
+    "minimal_dapp": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1143272" },
+                    "method_name": "count",
+                    "timestamp": { "__bigint__": "1730326459449832289" }
+                },
+                {
+                    "instructions": { "__bigint__": "1090875" },
+                    "method_name": "count",
+                    "timestamp": { "__bigint__": "1730326461681407374" }
+                },
+                {
+                    "instructions": { "__bigint__": "1090108" },
+                    "method_name": "reset",
+                    "timestamp": { "__bigint__": "1730326463801428693" }
+                },
+                {
+                    "instructions": { "__bigint__": "1096590" },
+                    "method_name": "count",
+                    "timestamp": { "__bigint__": "1730326465764136582" }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "cycles": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1522184" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1730326453469001522" }
+                },
+                {
+                    "instructions": { "__bigint__": "1515199" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1730326455715529568" }
+                },
+                {
+                    "instructions": { "__bigint__": "1516303" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1730326457828369518" }
+                }
+            ]
+        }
+    },
+    "intermediary": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1731011" },
+                    "method_name": "sendCycles",
+                    "timestamp": { "__bigint__": "1730326455715529568" }
+                },
+                {
+                    "instructions": { "__bigint__": "1990804" },
+                    "method_name": "sendCyclesNotify",
+                    "timestamp": { "__bigint__": "1730326457828369518" }
+                }
+            ]
+        }
+    }
+}

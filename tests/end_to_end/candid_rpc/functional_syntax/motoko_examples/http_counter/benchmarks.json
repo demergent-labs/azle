@@ -1,0 +1,30 @@
+{
+    "http_counter": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5388631992" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326459085024879" }
+                },
+                {
+                    "instructions": { "__bigint__": "36614685" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326467253821495" }
+                },
+                {
+                    "instructions": { "__bigint__": "36574574" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326467830904878" }
+                },
+                {
+                    "instructions": { "__bigint__": "36778623" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326468418857423" }
+                }
+            ]
+        }
+    }
+}
