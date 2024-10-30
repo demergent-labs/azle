@@ -86,23 +86,16 @@ jobs:
                           name: 'Property Class',
                           directories: './tests/property/candid_rpc/class_api'
                       }
-                    - {
-                          name: 'Property Functional',
-                          directories: './tests/property/candid_rpc/functional_api'
-                      }
-                    - {
-                          name: 'Property IC API',
-                          directories: './tests/property/ic_api'
-                      }
         uses: ./.github/workflows/benchmark_parallel.yml
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
         with:
+            base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
+            branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             directories: ${{ matrix.benchmark_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
-            branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
 
     squash-branches:
         needs: [run-benchmarks, create-branch-prefix]
