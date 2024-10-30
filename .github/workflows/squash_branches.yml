@@ -2,6 +2,9 @@ name: Squash Branches
 on:
     workflow_call:
         inputs:
+            base-branch:
+                required: true
+                type: string
             branch-prefix:
                 required: true
                 type: string
