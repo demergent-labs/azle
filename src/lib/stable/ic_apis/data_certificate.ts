@@ -4,12 +4,23 @@
  * `None`.
  * @returns the data certificate or None
  */
-export function dataCertificate(): [Uint8Array] | [] {
-    if (globalThis._azleIc === undefined) {
-        return [];
+export function dataCertificate(): Uint8Array | undefined {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
+        return undefined;
     }
 
-    const rawRustValue = globalThis._azleIc.dataCertificate();
+    if (globalThis._azleIcExperimental !== undefined) {
+        const result = globalThis._azleIcExperimental.dataCertificate();
 
-    return rawRustValue === undefined ? [] : [new Uint8Array(rawRustValue)];
+        if (result === undefined) {
+            return undefined;
+        }
+
+        return new Uint8Array(result);
+    }
+
+    return globalThis._azleIcStable.dataCertificate();
 }

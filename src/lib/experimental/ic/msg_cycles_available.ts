@@ -8,12 +8,12 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the amount of cycles
  */
 export function msgCyclesAvailable(): nat64 {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return 0n;
     }
 
     const msgCyclesAvailableAmountString =
-        globalThis._azleIc.msgCyclesAvailable();
+        globalThis._azleIcExperimental.msgCyclesAvailable();
 
     return BigInt(msgCyclesAvailableAmountString);
 }

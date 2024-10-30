@@ -5,10 +5,18 @@ import { Principal } from '@dfinity/principal';
  * @returns the principal of the caller of the current call
  */
 export function caller(): Principal {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return Principal.fromHex('04');
     }
 
-    const callerBytes = globalThis._azleIc.caller();
-    return Principal.fromUint8Array(new Uint8Array(callerBytes));
+    if (globalThis._azleIcExperimental !== undefined) {
+        return Principal.fromUint8Array(
+            new Uint8Array(globalThis._azleIcExperimental.caller())
+        );
+    }
+
+    return Principal.fromUint8Array(globalThis._azleIcStable.caller());
 }

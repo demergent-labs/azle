@@ -1,9 +1,9 @@
 import '../experimental';
 
-import { handleUncaughtError } from '../../stable/error';
 import { CandidType } from '../candid/candid_type';
 import { decode } from '../candid/serde/decode';
 import { encode } from '../candid/serde/encode';
+import { handleUncaughtError } from '../error';
 import { ic } from '../ic';
 import { CanisterMethodInfo } from './types/canister_method_info';
 

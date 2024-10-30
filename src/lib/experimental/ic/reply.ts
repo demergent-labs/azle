@@ -33,14 +33,16 @@ type ReplyInput =
  * ```
  */
 export function reply(input: ReplyInput): Void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return undefined;
     }
 
     if ('raw' in input) {
-        return globalThis._azleIc.replyRaw(input.raw.buffer);
+        return globalThis._azleIcExperimental.replyRaw(input.raw.buffer);
     } else {
         const { candidType: type, data } = input;
-        return globalThis._azleIc.replyRaw(encode(type, data).buffer);
+        return globalThis._azleIcExperimental.replyRaw(
+            encode(type, data).buffer
+        );
     }
 }

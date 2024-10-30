@@ -4,13 +4,20 @@
  * @returns the actual amount moved
  */
 export function msgCyclesAccept(maxAmount: bigint): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return 0n;
     }
 
-    const msgCyclesAcceptAmountMovedString = globalThis._azleIc.msgCyclesAccept(
-        maxAmount.toString()
-    );
+    if (globalThis._azleIcExperimental !== undefined) {
+        return BigInt(
+            globalThis._azleIcExperimental.msgCyclesAccept(maxAmount.toString())
+        );
+    }
 
-    return BigInt(msgCyclesAcceptAmountMovedString);
+    return BigInt(
+        globalThis._azleIcStable.msgCyclesAccept(maxAmount.toString())
+    );
 }
