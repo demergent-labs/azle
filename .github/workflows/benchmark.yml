@@ -12,7 +12,7 @@ on:
                 required: true
                 type: boolean
                 default: false
-            exclude-release-benchmarks:
+            exclude-release-only-benchmarks:
                 description: 'Exclude release benchmarks'
                 required: true
                 type: boolean
@@ -30,9 +30,9 @@ jobs:
             - id: get-exclude-dirs
               uses: ./.github/actions/get_exclude_dirs
               with:
-                  exclude-slow: ${{ github.event.inputs.exclude-slow-benchmarks == true }}
-                  exclude-unstable: ${{ github.event.inputs.exclude-unstable-benchmarks == true }}
-                  exclude-release-only: ${{ github.event.inputs.exclude-release-benchmarks == true }}
+                  exclude-slow: ${{ github.event.inputs.exclude-slow-benchmarks }}
+                  exclude-unstable: ${{ github.event.inputs.exclude-unstable-benchmarks }}
+                  exclude-release-only: ${{ github.event.inputs.exclude-release-only-benchmarks }}
 
     create-branch-prefix:
         name: Create Branch and Branch Prefix
@@ -104,7 +104,7 @@ jobs:
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
 
-    finalize-benchmark:
+    squash-branches:
         needs: [run-benchmarks, create-branch-prefix]
         uses: ./.github/workflows/squash_branches.yml
         with:
@@ -116,7 +116,7 @@ jobs:
             LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
     create-pr:
-        needs: [finalize-benchmark, create-branch-prefix]
+        needs: [squash-branches, create-branch-prefix]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4

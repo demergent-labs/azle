@@ -26,7 +26,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ github.event.pull_request.head.ref || github.ref }}
+                  ref: ${{ github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
                   fetch-depth: 0
 

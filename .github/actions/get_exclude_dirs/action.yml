@@ -8,7 +8,7 @@ inputs:
         description: 'Whether to exclude unstable benchmarks'
         required: true
     exclude-release-only:
-        description: 'Whether to exclude release benchmarks only'
+        description: 'Whether to exclude release only benchmarks'
         required: true
 outputs:
     exclude-dirs:

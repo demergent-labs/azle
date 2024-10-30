@@ -50,7 +50,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ github.event.pull_request.head.ref || github.ref }}
+                  ref: ${{ github.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
             - uses: ./.github/actions/setup_node
@@ -69,30 +69,10 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
-            - name: Print benchmark.md contents (before test)
-              working-directory: ${{ matrix.test.path }}
-              run: |
-                  if [ -f benchmark.md ]; then
-                    echo "Contents of benchmark.md before test:"
-                    cat benchmark.md
-                  else
-                    echo "benchmark.md does not exist before test"
-                  fi
-
             - name: Run npm test (continue on error)
               working-directory: ${{ matrix.test.path }}
               continue-on-error: true
               run: AZLE_RECORD_BENCHMARKS=true npm test
-
-            - name: Print benchmark.md contents (after test)
-              working-directory: ${{ matrix.test.path }}
-              run: |
-                  if [ -f benchmark.md ]; then
-                    echo "Contents of benchmark.md after test:"
-                    cat benchmark.md
-                  else
-                    echo "benchmark.md does not exist after test"
-                  fi
 
             - name: Create branch name
               id: create-branch-name
