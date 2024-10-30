@@ -1,0 +1,35 @@
+{
+    "factorial": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1239149" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326447037060958" }
+                },
+                {
+                    "instructions": { "__bigint__": "1215149" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326449206579550" }
+                },
+                {
+                    "instructions": { "__bigint__": "1670365" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326451176300927" }
+                },
+                {
+                    "instructions": { "__bigint__": "2911899" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326453250471321" }
+                },
+                {
+                    "instructions": { "__bigint__": "5448635" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326455411351745" }
+                }
+            ]
+        }
+    }
+}

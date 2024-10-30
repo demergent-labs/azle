@@ -1,0 +1,21 @@
+name: Create Branch Name
+description: 'Creates a branch name by combining a prefix with a path, converting slashes to hyphens'
+inputs:
+    prefix:
+        description: 'Prefix for the branch name'
+        required: true
+    path:
+        description: 'Path to convert into branch name'
+        required: true
+outputs:
+    branch-name:
+        description: 'The generated branch name'
+        value: ${{ steps.create-branch-name.outputs.branch-name }}
+runs:
+    using: composite
+    steps:
+        - id: create-branch-name
+          shell: bash
+          run: |
+              SAFE_PATH=$(echo '${{ inputs.path }}' | sed 's/\//-/g')
+              echo "branch-name=${{ inputs.prefix }}${SAFE_PATH}" >> $GITHUB_OUTPUT

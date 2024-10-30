@@ -1,34 +1,163 @@
-name: Release
+name: Parallel Release
 on:
-    push:
-        branches:
-            - main
-    pull_request:
+    workflow_dispatch:
+        inputs:
+            release-version:
+                required: true
 
 jobs:
-    determine-should-release:
-        if: ${{ startsWith(github.head_ref, 'release--') }}
-        name: Determine if this branch should release
+    prepare-release:
+        name: Prepare Release
         runs-on: ubuntu-latest
+        env:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         outputs:
-            should-release: ${{ steps.determine-should-release.outputs.should-release }}
+            release-version: ${{ inputs.release-version }}
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
-            - id: determine-should-release
-              uses: ./.github/actions/should_release
+            - uses: ./.github/actions/setup_node
+              with:
+                  registry-url: https://registry.npmjs.org
+                  node-auth-token: ${{ secrets.NPM_TOKEN }}
 
-    release:
-        name: Deploy release
-        # Only run this job if it's a release branch. This job will run instead of run-tests and will automatically publish another commit which will be tested
-        if: ${{ needs.determine-should-release.outputs.should-release == 'true' }}
+            - uses: ./.github/actions/setup_dfx
 
-        needs:
-            - determine-should-release
+            - run: npm install
 
-        uses: ./.github/workflows/release_parallel.yml
+            - name: Install global dependencies
+              run: |
+                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
+
+            - name: Update version and build templates
+              run: |
+                  VERSION=${{ inputs.release-version }}
+                  sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
+                  sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
+                  npm install
+                  AZLE_VERBOSE=true npx azle template
+                  AZLE_VERBOSE=true npx azle template --experimental
+
+            - name: Publish to npm
+              run: |
+                  if [[ "${{ inputs.release-version }}" == *"-rc."* ]]; then
+                    npm publish --tag next
+                  else
+                    npm publish
+                  fi
+
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: |
+                      ./examples
+                      ./tests
+
+    update-test-files-for-release-commit:
+        needs: prepare-release
+        name: Update ${{ matrix.test.name }} files for release commit
+        runs-on: ubuntu-latest
+        env:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        strategy:
+            fail-fast: false
+            matrix:
+                test: ${{ fromJson(needs.prepare-release.outputs.test-infos) }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - name: Update azle version
+              run: |
+                  npm install
+                  cd ${{ matrix.test.path }}
+                  sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ needs.prepare-release.outputs.release-version }}\3/" package.json
+                  npm install
+
+            - name: Start dfx with artificial delay 0
+              working-directory: ${{ matrix.test.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+
+            - name: Run npm test (continue on error)
+              working-directory: ${{ matrix.test.path }}
+              continue-on-error: true
+              run: npm test
+
+            - name: Create branch name
+              id: create-branch-name
+              uses: ./.github/actions/create_branch_name
+              with:
+                  prefix: 'update--${{ needs.prepare-release.outputs.release-version }}-'
+                  path: ${{ matrix.test.displayPath }}
+
+            - uses: ./.github/actions/commit_and_push
+              with:
+                  branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
+                  commit-message: 'Update test files for ${{ matrix.test.displayPath }}'
+                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+
+    squash-branches:
+        needs: [prepare-release, update-test-files-for-release-commit]
+        uses: ./.github/workflows/squash_branches.yml
+        with:
+            base-branch: release--${{ needs.prepare-release.outputs.release-version }}
+            branch-prefix: 'update--${{ needs.prepare-release.outputs.release-version }}-'
+            commit-message: 'Update test files for all tests and examples ${{ needs.prepare-release.outputs.release-version }}'
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+
+    create-release:
+        needs: [prepare-release, squash-branches]
+        name: Create Release
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+
+            - name: Create release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  VERSION=${{ needs.prepare-release.outputs.release-version }}
+                  git tag $VERSION
+                  git push origin $VERSION
+
+                  if [[ "$VERSION" == *"-rc."* ]]; then
+                    gh release create "$VERSION" -t "$VERSION" --prerelease
+                  else
+                    gh release create "$VERSION" -t "$VERSION"
+                  fi
+
+    create-pr:
+        needs: [prepare-release, squash-branches]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.ref }}
+
+            - name: Create Pull Request
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  gh pr create \
+                    --base main \
+                    --head release--${{ needs.prepare-release.outputs.release-version }} \
+                    --title "Release ${{ needs.prepare-release.outputs.release-version }}" \
+                    --body "Automated PR for release ${{ needs.prepare-release.outputs.release-version }}"
