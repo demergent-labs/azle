@@ -2,6 +2,9 @@ name: Squash Branches
 on:
     workflow_call:
         inputs:
+            base-branch:
+                required: true
+                type: string
             branch-prefix:
                 required: true
                 type: string
@@ -26,7 +29,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ github.ref }}
+                  ref: ${{ inputs.base-branch }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
                   fetch-depth: 0
 

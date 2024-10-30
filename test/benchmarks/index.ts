@@ -56,7 +56,7 @@ async function updateBenchmarksForCanisters(
             [canisterName]: {
                 previous: shouldUpdatePrevious
                     ? acc[canisterName]?.current ?? {
-                          version,
+                          version: 'No previous benchmarks',
                           benchmarks: []
                       }
                     : acc[canisterName]?.previous,

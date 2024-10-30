@@ -1,0 +1,40 @@
+{
+    "calc": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1276291" },
+                    "method_name": "add",
+                    "timestamp": { "__bigint__": "1730326461726909138" }
+                },
+                {
+                    "instructions": { "__bigint__": "1254903" },
+                    "method_name": "sub",
+                    "timestamp": { "__bigint__": "1730326463607155575" }
+                },
+                {
+                    "instructions": { "__bigint__": "1253156" },
+                    "method_name": "mul",
+                    "timestamp": { "__bigint__": "1730326465793180556" }
+                },
+                {
+                    "instructions": { "__bigint__": "1617163" },
+                    "method_name": "div",
+                    "timestamp": { "__bigint__": "1730326467717312617" }
+                },
+                {
+                    "instructions": { "__bigint__": "850175" },
+                    "method_name": "clearall",
+                    "timestamp": { "__bigint__": "1730326469913850763" }
+                },
+                {
+                    "instructions": { "__bigint__": "1250619" },
+                    "method_name": "add",
+                    "timestamp": { "__bigint__": "1730326471918738884" }
+                }
+            ]
+        }
+    }
+}

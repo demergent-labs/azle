@@ -2,6 +2,12 @@ name: Parallel Benchmark
 on:
     workflow_call:
         inputs:
+            base-branch:
+                required: true
+                type: string
+            branch-prefix:
+                required: true
+                type: string
             directories:
                 required: true
                 type: string
@@ -9,9 +15,6 @@ on:
                 required: false
                 type: string
                 default: ''
-            branch-prefix:
-                required: true
-                type: string
 
         secrets:
             GPG_SIGNING_KEY:
@@ -29,6 +32,8 @@ jobs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
             - uses: actions/checkout@v4
+              with:
+                  ref: ${{ inputs.base-branch }}
 
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
@@ -50,7 +55,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ github.ref }}
+                  ref: ${{ inputs.base-branch }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
             - uses: ./.github/actions/setup_node

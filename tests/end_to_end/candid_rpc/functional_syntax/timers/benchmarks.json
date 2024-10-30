@@ -1,0 +1,25 @@
+{
+    "timers": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "16662690" },
+                    "method_name": "setTimers",
+                    "timestamp": { "__bigint__": "1730326509547804905" }
+                },
+                {
+                    "instructions": { "__bigint__": "1183071" },
+                    "method_name": "clearTimer",
+                    "timestamp": { "__bigint__": "1730326523626896324" }
+                },
+                {
+                    "instructions": { "__bigint__": "1183226" },
+                    "method_name": "clearTimer",
+                    "timestamp": { "__bigint__": "1730326523626896324" }
+                }
+            ]
+        }
+    }
+}

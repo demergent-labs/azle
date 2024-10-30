@@ -1,0 +1,35 @@
+{
+    "bytes_canister": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1970302" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730326472648611089" }
+                },
+                {
+                    "instructions": { "__bigint__": "2646082" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730326474780844052" }
+                },
+                {
+                    "instructions": { "__bigint__": "9729760" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730326477020653692" }
+                },
+                {
+                    "instructions": { "__bigint__": "79926932" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730326480461128740" }
+                },
+                {
+                    "instructions": { "__bigint__": "157922525" },
+                    "method_name": "getBytes",
+                    "timestamp": { "__bigint__": "1730326489509478926" }
+                }
+            ]
+        }
+    }
+}
