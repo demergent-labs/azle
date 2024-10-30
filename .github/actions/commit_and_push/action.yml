@@ -1,0 +1,33 @@
+name: Commit and Push Changes
+description: 'Configures git, commits changes, and pushes to a new branch'
+inputs:
+    branch-name:
+        description: 'Name of the branch to create'
+        required: true
+    commit-message:
+        description: 'Commit message'
+        required: true
+    gpg_signing_key:
+        description: 'The GPG signing key to use for signing commits'
+        required: true
+runs:
+    using: composite
+    steps:
+        - uses: ./.github/actions/configure_git
+          with:
+              gpg_signing_key: ${{ inputs.gpg_signing_key }}
+
+        - name: Commit and push changes
+          shell: bash
+          run: |
+              # Create and switch to new branch
+              git switch -c "${{ inputs.branch-name }}"
+
+              # Show status of working directory
+              echo "Current git status:"
+              git status
+
+              # Add and commit changes if there are any
+              git add --all
+              git commit -m "${{ inputs.commit-message }}"
+              git push origin "${{ inputs.branch-name }}"

@@ -1,0 +1,71 @@
+name: Get Exclude Directories
+description: 'Gets a list of directories to exclude based on input parameters'
+inputs:
+    exclude-slow:
+        description: 'Whether to exclude slow benchmarks'
+        required: true
+    exclude-unstable:
+        description: 'Whether to exclude unstable benchmarks'
+        required: true
+    exclude-release-only:
+        description: 'Whether to exclude release only benchmarks'
+        required: true
+outputs:
+    exclude-dirs:
+        description: 'Space-separated list of directories to exclude'
+        value: ${{ steps.set-exclude-dirs.outputs.exclude-dirs }}
+runs:
+    using: composite
+    steps:
+        - id: set-exclude-dirs
+          shell: bash
+          run: |
+              RELEASE_ONLY_EXCLUSIONS="${{ format('
+              tests/end_to_end/candid_rpc/class_syntax/new
+              tests/end_to_end/http_server/new
+              ') }}"
+
+              UNSTABLE_EXCLUSIONS="${{ format('
+              examples/basic_bitcoin
+              examples/bitcoin_psbt
+              examples/ckbtc
+              tests/end_to_end/http_server/ethers_base
+              tests/end_to_end/http_server/http_outcall_fetch
+              tests/end_to_end/http_server/ic_evm_rpc
+              tests/property/candid_rpc/class_api/stable_b_tree_map
+              tests/property/candid_rpc/functional_api/stable_b_tree_map
+              tests/property/ic_api/performance_counter
+              tests/property/ic_api/instruction_counter
+              ') }}"
+
+              SLOW_EXCLUSIONS="${{ format('
+              tests/end_to_end/candid_rpc/functional_syntax/ckbtc
+              tests/end_to_end/candid_rpc/class_syntax/bitcoin
+              tests/end_to_end/http_server/large_files
+              tests/end_to_end/http_server/open_value_sharing
+              tests/end_to_end/candid_rpc/class_syntax/stable_structures
+              tests/end_to_end/candid_rpc/functional_syntax/bitcoin
+              tests/end_to_end/candid_rpc/functional_syntax/composite_queries
+              tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls
+              tests/end_to_end/candid_rpc/functional_syntax/management_canister
+              tests/end_to_end/candid_rpc/functional_syntax/stable_structures
+              tests/end_to_end/http_server/autoreload
+              ') }}"
+
+              EXCLUDE_DIRS=""
+
+              if [[ "${{ inputs.exclude-release-only }}" == "true" ]]; then
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS $RELEASE_ONLY_EXCLUSIONS"
+              fi
+
+              if [[ "${{ inputs.exclude-unstable }}" == "true" ]]; then
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS $UNSTABLE_EXCLUSIONS"
+              fi
+
+              if [[ "${{ inputs.exclude-slow }}" == "true" ]]; then
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS $SLOW_EXCLUSIONS"
+              fi
+
+              # Trim leading or trailing spaces and save the exclude-dirs in the environment
+              EXCLUDE_DIRS=$(echo $EXCLUDE_DIRS | xargs)
+              echo "exclude-dirs=$EXCLUDE_DIRS" >> $GITHUB_OUTPUT

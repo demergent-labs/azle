@@ -1,0 +1,79 @@
+name: Squash Branches
+on:
+    workflow_call:
+        inputs:
+            branch-prefix:
+                required: true
+                type: string
+            commit-message:
+                required: true
+                type: string
+        secrets:
+            GPG_SIGNING_KEY:
+                required: true
+            GH_TOKEN:
+                required: true
+            LASTMJS_GITHUB_TOKEN:
+                required: true
+
+jobs:
+    squash:
+        name: Squash Branches
+        runs-on: ubuntu-latest
+        env:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  fetch-depth: 0
+
+            - uses: ./.github/actions/configure_git
+              with:
+                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+
+            - name: Collect branches
+              id: collect-branches
+              run: |
+                  # Get branches and convert to space-separated list
+                  BRANCHES=$(git branch -r | grep "origin/${{ inputs.branch-prefix }}" | sed 's/origin\///' | xargs)
+                  echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
+
+            - name: Display collected branches
+              run: |
+                  echo "Collected branches:"
+                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
+                    echo "  - $branch"
+                  done
+                  echo "End of branch list"
+
+            - name: Fetch branches
+              run: |
+                  echo "Fetching all branches..."
+                  BRANCHES_TO_FETCH=""
+                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
+                    BRANCHES_TO_FETCH+=" $branch:$branch"
+                  done
+                  git fetch origin $BRANCHES_TO_FETCH
+
+            - name: Squash changes
+              env:
+                  PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+              run: |
+                  CURRENT_BRANCH=$(git branch --show-current)
+
+                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
+                    git merge --squash $branch
+                  done
+
+                  # Create a merge commit with a descriptive message
+                  git commit -am "${{ inputs.commit-message }}"
+
+                  git push origin HEAD:$CURRENT_BRANCH
+
+            - name: Delete branches
+              run: |
+                  echo "Starting branch deletion process..."
+                  git push origin --delete ${{ steps.collect-branches.outputs.branches }}
