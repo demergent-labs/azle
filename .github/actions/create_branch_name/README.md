@@ -5,7 +5,7 @@ steps:
     - id: create-branch-name
       uses: ./.github/actions/create_branch_name
       with:
-          prefix: 'update--'
+          prefix: 'update--0.24.2-rc.89-'
           path: 'examples/hello_world'
 ```
 
