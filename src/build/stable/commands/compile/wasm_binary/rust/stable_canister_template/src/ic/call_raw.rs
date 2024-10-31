@@ -3,7 +3,7 @@ use std::error::Error;
 use candid::Principal;
 use ic_cdk::{
     api::call::{call_raw128, RejectionCode},
-    spawn,
+    spawn, trap,
 };
 use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
@@ -42,7 +42,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 });
 
                 if let Err(e) = result {
-                    ic_cdk::trap(&format!("Azle CallRawError: {e}"));
+                    trap(&format!("Azle CallRawError: {e}"));
                 }
             });
 

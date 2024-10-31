@@ -1,11 +1,13 @@
 use std::{cell::RefCell, collections::BTreeMap};
 
 use ic_stable_structures::{storable::Bound, StableBTreeMap, Storable};
+use rquickjs::{Ctx, Result};
 
-use crate::Memory;
+use crate::{ic::throw_error, Memory};
 
 #[allow(unused)]
-type AzleStableBTreeMap = StableBTreeMap<AzleStableBTreeMapKey, AzleStableBTreeMapValue, Memory>;
+pub type AzleStableBTreeMap =
+    StableBTreeMap<AzleStableBTreeMapKey, AzleStableBTreeMapValue, Memory>;
 
 thread_local! {
     pub static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
@@ -47,4 +49,36 @@ impl Storable for AzleStableBTreeMapValue {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+pub fn with_stable_b_tree_map<F, R>(ctx: Ctx, memory_id: u8, f: F) -> Result<R>
+where
+    F: FnOnce(&AzleStableBTreeMap) -> R,
+{
+    STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
+        let stable_b_tree_maps = stable_b_tree_maps.borrow();
+
+        let stable_b_tree_map = stable_b_tree_maps.get(&memory_id).ok_or(throw_error(
+            ctx,
+            &format!("Could not find StableBTreeMap with memory id {memory_id}"),
+        ))?;
+
+        Ok(f(stable_b_tree_map))
+    })
+}
+
+pub fn with_stable_b_tree_map_mut<F, R>(ctx: Ctx, memory_id: u8, f: F) -> Result<R>
+where
+    F: FnOnce(&mut AzleStableBTreeMap) -> R,
+{
+    STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
+        let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
+
+        let stable_b_tree_map = stable_b_tree_maps.get_mut(&memory_id).ok_or(throw_error(
+            ctx,
+            &format!("Could not find StableBTreeMap with memory id {memory_id}"),
+        ))?;
+
+        Ok(f(stable_b_tree_map))
+    })
 }
