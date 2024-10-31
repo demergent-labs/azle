@@ -1,4 +1,4 @@
-use std::{cell::RefCell, collections::BTreeMap};
+use std::{borrow::Cow, cell::RefCell, collections::BTreeMap};
 
 use ic_stable_structures::{storable::Bound, StableBTreeMap, Storable};
 use rquickjs::{Ctx, Result};
@@ -19,11 +19,11 @@ pub struct AzleStableBTreeMapKey {
 }
 
 impl Storable for AzleStableBTreeMapKey {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-        std::borrow::Cow::Borrowed(&self.bytes)
+    fn to_bytes(&self) -> Cow<[u8]> {
+        Cow::Borrowed(&self.bytes)
     }
 
-    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
         AzleStableBTreeMapKey {
             bytes: bytes.to_vec(),
         }
@@ -38,11 +38,11 @@ pub struct AzleStableBTreeMapValue {
 }
 
 impl Storable for AzleStableBTreeMapValue {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-        std::borrow::Cow::Borrowed(&self.bytes)
+    fn to_bytes(&self) -> Cow<[u8]> {
+        Cow::Borrowed(&self.bytes)
     }
 
-    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
         AzleStableBTreeMapValue {
             bytes: bytes.to_vec(),
         }
