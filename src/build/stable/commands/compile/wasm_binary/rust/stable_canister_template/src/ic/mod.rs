@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use rquickjs::{Ctx, Error, Result, String};
+use rquickjs::{Ctx, Error, Object, Result, String};
 
 mod accept_message;
 mod arg_data_raw;
@@ -46,7 +46,7 @@ mod trap;
 
 #[allow(unused)]
 pub fn register(ctx: Ctx) -> Result<()> {
-    let ic = rquickjs::Object::new(ctx.clone())?;
+    let ic = Object::new(ctx.clone())?;
 
     ic.set("acceptMessage", accept_message::get_function(ctx.clone()))?;
 

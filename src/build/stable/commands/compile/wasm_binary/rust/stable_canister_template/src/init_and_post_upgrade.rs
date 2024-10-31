@@ -1,4 +1,4 @@
-use std::{error::Error, str};
+use std::{env, error::Error, str};
 
 use ic_cdk::trap;
 use ic_stable_structures::memory_manager::MemoryId;
@@ -8,7 +8,8 @@ use rquickjs::{Context, Module, Object, Runtime};
 use crate::{
     error::handle_promise_error,
     execute_method_js::execute_method_js,
-    ic, quickjs_with_ctx,
+    ic::register,
+    quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME, WASM_DATA_REF_CELL,
 };
@@ -77,7 +78,7 @@ pub fn initialize_js(
 
         let env = Object::new(ctx.clone())?;
 
-        for (key, value) in std::env::vars() {
+        for (key, value) in env::vars() {
             env.set(key, value)?;
         }
 
@@ -109,7 +110,7 @@ pub fn initialize_js(
 
         globals.set("_azleRecordBenchmarks", record_benchmarks)?;
 
-        ic::register(ctx.clone())?;
+        register(ctx.clone())?;
 
         let promise = Module::evaluate(ctx.clone(), MODULE_NAME, js)?;
 

@@ -5,7 +5,8 @@ use rquickjs::{Context, Function, Module, Object, Runtime};
 
 use crate::{
     error::{handle_promise_error, quickjs_call_with_error_handling},
-    ic, quickjs_with_ctx,
+    ic::register,
+    quickjs_with_ctx,
     wasm_binary_manipulation::get_js_code,
     CONTEXT_REF_CELL, MODULE_NAME,
 };
@@ -39,7 +40,7 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
 
         globals.set("_azleExperimental", false)?;
 
-        ic::register(ctx.clone())?;
+        register(ctx.clone())?;
 
         let js = get_js_code();
 
