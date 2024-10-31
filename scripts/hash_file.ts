@@ -3,11 +3,7 @@ import { readFile } from 'fs/promises';
 
 async function getFileHash(path: string): Promise<string> {
     const fileData = await readFile(path);
-    let h = createHash('sha256');
-    h.update(fileData);
-    const result = h.digest('hex');
-    console.log(result);
-    return result;
+    return createHash('sha256').update(fileData).digest('hex');
 }
 
-getFileHash(process.argv[2]);
+getFileHash(process.argv[2]).then(console.info);
