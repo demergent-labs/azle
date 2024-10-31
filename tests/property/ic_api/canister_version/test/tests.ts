@@ -32,7 +32,7 @@ export function getTests(): Test {
                             stdio: 'inherit'
                         });
 
-                        const startingVer = 1n; // Canister starts at 0 when it's created but the deploy in pretest should increment it to be at 1 by the time it gets here
+                        const startingVer = 1n; // Canister starts at 0 when it's created but the deploy in above will increment it to be at 1 by the time it gets here
 
                         const actor = await getCanisterActor<Actor>('canister');
 
@@ -52,7 +52,9 @@ export function getTests(): Test {
                         for (const version of versionsAtDeploy) {
                             execSync(`dfx deploy canister --upgrade-unchanged`);
 
+                            await checkInitVersion(actor, startingVer);
                             await checkUpgradeVersion(actor, [version]);
+                            await checkInspectVersion(actor, version);
                             await checkQueryAndUpdateVersion(actor, version);
                         }
                     }
