@@ -13,11 +13,13 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the performance counter metric
  */
 export function performanceCounter(counterType: nat32): nat64 {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return 0n;
     }
 
     return BigInt(
-        globalThis._azleIc.performanceCounter(counterType.toString())
+        globalThis._azleIcExperimental.performanceCounter(
+            counterType.toString()
+        )
     );
 }

@@ -4,10 +4,11 @@ import { runTests } from 'azle/test';
 import { createActor } from '../src/declarations';
 import { getTests } from './tests';
 
-const superheroesCanister = createActor(getCanisterId('superheroes'), {
+const canisterName = 'superheroes';
+const superheroesCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(superheroesCanister));
+runTests(getTests(superheroesCanister), canisterName);

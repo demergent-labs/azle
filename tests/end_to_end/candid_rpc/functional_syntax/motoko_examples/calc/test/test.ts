@@ -5,10 +5,11 @@ import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/calc';
 import { getTests } from './tests';
 
-const calcCanister = createActor(getCanisterId('calc'), {
+const canisterName = 'calc';
+const calcCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(calcCanister));
+runTests(getTests(calcCanister), canisterName);

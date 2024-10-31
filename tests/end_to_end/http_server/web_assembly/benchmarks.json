@@ -1,0 +1,15 @@
+{
+    "web_assembly": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8198292206" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326431729406181" }
+                }
+            ]
+        }
+    }
+}

@@ -13,7 +13,7 @@ export function compile(
     );
 
     execSyncPretty(
-        `wasi2ic target/wasm32-wasi/release/canister.wasm ${wasmDest}`,
+        `wasi2ic target/wasm32-wasi/release/experimental_canister_template.wasm ${wasmDest}`,
         ioType
     );
 }

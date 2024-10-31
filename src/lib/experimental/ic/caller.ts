@@ -7,10 +7,10 @@ import { Principal } from '../candid/types/reference/principal';
  * @returns the caller of the current call
  */
 export function caller(): Principal {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return Principal.fromHex('04');
     }
 
-    const callerBytes = globalThis._azleIc.caller();
+    const callerBytes = globalThis._azleIcExperimental.caller();
     return Principal.fromUint8Array(new Uint8Array(callerBytes));
 }

@@ -1,0 +1,175 @@
+{
+    "server": {
+        "previous": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8135030419" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1729789868878859263" }
+                },
+                {
+                    "instructions": { "__bigint__": "44761508" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1729789892635759837" }
+                },
+                {
+                    "instructions": { "__bigint__": "1426413" },
+                    "method_name": "candidUpdate",
+                    "timestamp": { "__bigint__": "1729789893385184586" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8135229603" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326465686949432" }
+                },
+                {
+                    "instructions": { "__bigint__": "44783575" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326502677601771" }
+                },
+                {
+                    "instructions": { "__bigint__": "1427065" },
+                    "method_name": "candidUpdate",
+                    "timestamp": { "__bigint__": "1730326503247894219" }
+                }
+            ]
+        }
+    },
+    "server_init_and_post_upgrade": {
+        "previous": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8147052903" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1729789902463575022" }
+                },
+                {
+                    "instructions": { "__bigint__": "45136919" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1729789905073235499" }
+                },
+                {
+                    "instructions": { "__bigint__": "1799989" },
+                    "method_name": "candidUpdate",
+                    "timestamp": { "__bigint__": "1729789905526650107" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8146812651" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730326513912579479" }
+                },
+                {
+                    "instructions": { "__bigint__": "45104076" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326518022415597" }
+                },
+                {
+                    "instructions": { "__bigint__": "1793482" },
+                    "method_name": "candidUpdate",
+                    "timestamp": { "__bigint__": "1730326518639034396" }
+                }
+            ]
+        }
+    },
+    "canister": {
+        "previous": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8136155991" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1729789860205240195" }
+                },
+                {
+                    "instructions": { "__bigint__": "44775155" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1729789876782008351" }
+                },
+                {
+                    "instructions": { "__bigint__": "44708712" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1729789877547662292" }
+                },
+                {
+                    "instructions": { "__bigint__": "1453654" },
+                    "method_name": "candidUpdate",
+                    "timestamp": { "__bigint__": "1729789877956665999" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8136193902" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326449946764546" }
+                },
+                {
+                    "instructions": { "__bigint__": "44801752" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326481306612355" }
+                },
+                {
+                    "instructions": { "__bigint__": "1453516" },
+                    "method_name": "candidUpdate",
+                    "timestamp": { "__bigint__": "1730326481915913641" }
+                }
+            ]
+        }
+    },
+    "canister_init_and_post_upgrade": {
+        "previous": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8147479160" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1729789887476275002" }
+                },
+                {
+                    "instructions": { "__bigint__": "45174549" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1729789890193389348" }
+                },
+                {
+                    "instructions": { "__bigint__": "1814907" },
+                    "method_name": "candidUpdate",
+                    "timestamp": { "__bigint__": "1729789890646429484" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8147477834" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730326492904505399" }
+                },
+                {
+                    "instructions": { "__bigint__": "45142367" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326499762716781" }
+                },
+                {
+                    "instructions": { "__bigint__": "1821611" },
+                    "method_name": "candidUpdate",
+                    "timestamp": { "__bigint__": "1730326500634584140" }
+                }
+            ]
+        }
+    }
+}

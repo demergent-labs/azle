@@ -22,13 +22,13 @@ export function StableBTreeMap<Key = any, Value = any>(
     keySerializable: Serializable = stableJson,
     valueSerializable: Serializable = stableJson
 ): StableBTreeMap<Key, Value> {
-    const memoryId = memoryIdNumber.toString();
+    const memoryId = memoryIdNumber;
 
     if (
-        globalThis._azleIc !== undefined &&
+        globalThis._azleIcStable !== undefined &&
         globalThis._azleNodeWasmEnvironment !== true
     ) {
-        globalThis._azleIc.stableBTreeMapInit(memoryId);
+        globalThis._azleIcStable.stableBTreeMapInit(memoryId);
     }
 
     isSerializable(keySerializable);
@@ -41,13 +41,13 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns `true` if the key exists in the map, `false` otherwise.
          */
         containsKey(key: Key): boolean {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            const encodedKey = keySerializable.toBytes(key).buffer;
+            const encodedKey = keySerializable.toBytes(key);
 
-            return globalThis._azleIc.stableBTreeMapContainsKey(
+            return globalThis._azleIcStable.stableBTreeMapContainsKey(
                 memoryId,
                 encodedKey
             );
@@ -58,13 +58,13 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns the value associated with the given key, if it exists.
          */
         get(key: Key): Value | null {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            const encodedKey = keySerializable.toBytes(key).buffer;
+            const encodedKey = keySerializable.toBytes(key);
 
-            const encodedResult = globalThis._azleIc.stableBTreeMapGet(
+            const encodedResult = globalThis._azleIcStable.stableBTreeMapGet(
                 memoryId,
                 encodedKey
             );
@@ -84,14 +84,14 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns the previous value of the key, if present.
          */
         insert(key: Key, value: Value): Value | null {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            const encodedKey = keySerializable.toBytes(key).buffer;
-            const encodedValue = valueSerializable.toBytes(value).buffer;
+            const encodedKey = keySerializable.toBytes(key);
+            const encodedValue = valueSerializable.toBytes(value);
 
-            const encodedResult = globalThis._azleIc.stableBTreeMapInsert(
+            const encodedResult = globalThis._azleIcStable.stableBTreeMapInsert(
                 memoryId,
                 encodedKey,
                 encodedValue
@@ -110,11 +110,11 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns `true` if the map contains no elements, `false` otherwise.
          */
         isEmpty(): boolean {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            return globalThis._azleIc.stableBTreeMapIsEmpty(memoryId);
+            return globalThis._azleIcStable.stableBTreeMapIsEmpty(memoryId);
         },
         /**
          * Retrieves the items in the map in sorted order.
@@ -123,14 +123,14 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns tuples representing key/value pairs.
          */
         items(startIndex?: number, length?: number): [Key, Value][] {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            const encodedItems = globalThis._azleIc.stableBTreeMapItems(
+            const encodedItems = globalThis._azleIcStable.stableBTreeMapItems(
                 memoryId,
-                startIndex?.toString() ?? '0',
-                length?.toString() ?? 'NOT_SET'
+                startIndex ?? 0,
+                length ?? -1
             );
 
             // TODO too much copying
@@ -148,14 +148,14 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns they keys in the map.
          */
         keys(startIndex?: number, length?: number): Key[] {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            const encodedKeys = globalThis._azleIc.stableBTreeMapKeys(
+            const encodedKeys = globalThis._azleIcStable.stableBTreeMapKeys(
                 memoryId,
-                startIndex?.toString() ?? '0',
-                length?.toString() ?? 'NOT_SET'
+                startIndex ?? 0,
+                length ?? -1
             );
 
             // TODO too much copying
@@ -168,11 +168,11 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns the number of elements in the map.
          */
         len(): bigint {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            return BigInt(globalThis._azleIc.stableBTreeMapLen(memoryId));
+            return BigInt(globalThis._azleIcStable.stableBTreeMapLen(memoryId));
         },
         /**
          * Removes a key from the map.
@@ -180,13 +180,13 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns the previous value at the key if it exists, `null` otherwise.
          */
         remove(key: Key): Value | null {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            const encodedKey = keySerializable.toBytes(key).buffer;
+            const encodedKey = keySerializable.toBytes(key);
 
-            const encodedValue = globalThis._azleIc.stableBTreeMapRemove(
+            const encodedValue = globalThis._azleIcStable.stableBTreeMapRemove(
                 memoryId,
                 encodedKey
             );
@@ -206,14 +206,14 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @returns the values in the map.
          */
         values(startIndex?: number, length?: number): Value[] {
-            if (globalThis._azleIc === undefined) {
+            if (globalThis._azleIcStable === undefined) {
                 return undefined as any;
             }
 
-            const encodedValues = globalThis._azleIc.stableBTreeMapValues(
+            const encodedValues = globalThis._azleIcStable.stableBTreeMapValues(
                 memoryId,
-                startIndex?.toString() ?? '0',
-                length?.toString() ?? 'NOT_SET'
+                startIndex ?? 0,
+                length ?? -1
             );
 
             // TODO too much copying

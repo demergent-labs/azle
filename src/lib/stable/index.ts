@@ -8,6 +8,7 @@ export { query } from './canister_methods/query';
 export { update } from './canister_methods/update';
 export * from './did_file';
 export * from './ic_apis';
+export * from './json';
 export * from './stable_structures/stable_b_tree_map';
 export * from './stable_structures/stable_json';
 export * from '@dfinity/candid';

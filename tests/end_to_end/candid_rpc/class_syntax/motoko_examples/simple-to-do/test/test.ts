@@ -5,10 +5,11 @@ import { getTests } from 'simple-to-do_end_to_end_test_functional_syntax/test/te
 // @ts-ignore
 import { createActor } from './dfx_generated/simple_to_do';
 
-const todoCanister = createActor(getCanisterId('simple_to_do'), {
+const canisterName = 'simple_to_do';
+const todoCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(todoCanister));
+runTests(getTests(todoCanister), canisterName);

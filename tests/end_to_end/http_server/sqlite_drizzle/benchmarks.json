@@ -1,0 +1,35 @@
+{
+    "sqlite_drizzle": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "13187501172" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730326486637629075" }
+                },
+                {
+                    "instructions": { "__bigint__": "153509380" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326495985267556" }
+                },
+                {
+                    "instructions": { "__bigint__": "80898176" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326496534307966" }
+                },
+                {
+                    "instructions": { "__bigint__": "170591348" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326497111869024" }
+                },
+                {
+                    "instructions": { "__bigint__": "77659692" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326498071481548" }
+                }
+            ]
+        }
+    }
+}

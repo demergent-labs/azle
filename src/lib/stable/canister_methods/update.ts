@@ -15,7 +15,7 @@ export function update<This, Args extends any[], Return>(
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
         const name = context.name as string;
-
+        const indexString = index.toString();
         globalThis._azleMethodMeta.updates?.push({ name, index });
 
         globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
@@ -23,9 +23,7 @@ export function update<This, Args extends any[], Return>(
             returnIdlType === undefined ? [] : [returnIdlType]
         );
 
-        globalThis._azleCallbacks[index.toString()] = (
-            ...args: any[]
-        ): void => {
+        globalThis._azleCallbacks[indexString] = (...args: any[]): void => {
             executeAndReplyWithCandidSerde(
                 'update',
                 args,

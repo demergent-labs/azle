@@ -3,6 +3,7 @@ import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/whoami';
 import { callingIdentity, canisterId, getTests } from './tests';
 
+const canisterName = 'whoami';
 const whoamiCanister = createActor(canisterId, {
     agentOptions: {
         host: 'http://127.0.0.1:8000',
@@ -10,4 +11,4 @@ const whoamiCanister = createActor(canisterId, {
     }
 });
 
-runTests(getTests(whoamiCanister, 'whoami'));
+runTests(getTests(whoamiCanister, canisterName), canisterName);

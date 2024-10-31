@@ -17,6 +17,7 @@ export function query<This, Args extends any[], Return>(
         const index = globalThis._azleCanisterMethodsIndex++;
         const name = context.name as string;
         const composite = options?.composite ?? false;
+        const indexString = index.toString();
 
         globalThis._azleMethodMeta.queries?.push({
             name,
@@ -30,9 +31,7 @@ export function query<This, Args extends any[], Return>(
             ['query']
         );
 
-        globalThis._azleCallbacks[index.toString()] = (
-            ...args: any[]
-        ): void => {
+        globalThis._azleCallbacks[indexString] = (...args: any[]): void => {
             executeAndReplyWithCandidSerde(
                 'query',
                 args,
