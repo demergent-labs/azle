@@ -84,9 +84,6 @@ async function verifyHashesMatch(
 ): Promise<void> {
     const updatedHashes = await getFileHashes();
 
-    console.log(execSyncPretty(`dfx canister info multi_deploy`).toString());
-    console.log(updatedHashes);
-
     expect(originalHashes).toEqual(updatedHashes);
 }
 
