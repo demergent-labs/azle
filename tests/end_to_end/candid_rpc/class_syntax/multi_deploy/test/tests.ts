@@ -19,47 +19,24 @@ export function getTests(multiDeployCanister: ActorSubclass<_SERVICE>): Test {
 
         it("doesn't call post upgrade if additional deploy steps are skipped because the binary is unchanged", async () => {
             const originalHashes = await getFileHashes();
-
-            expect(await multiDeployCanister.getInitCalled()).toBe(true);
-            expect(await multiDeployCanister.getAzleInitCalled()).toBe(true);
-            expect(await multiDeployCanister.getPostUpgradeCalled()).toBe(
-                false
-            );
-            expect(await multiDeployCanister.getAzlePostUpgradeCalled()).toBe(
-                false
-            );
+            await verifyCalledFunction(multiDeployCanister, 'init');
 
             for (let i = 0; i < 2; i++) {
                 execSyncPretty(`dfx deploy multi_deploy`);
                 await verifyHashesMatch(originalHashes);
-
-                expect(await multiDeployCanister.getInitCalled()).toBe(true);
-                expect(await multiDeployCanister.getAzleInitCalled()).toBe(
-                    true
-                );
-                expect(await multiDeployCanister.getPostUpgradeCalled()).toBe(
-                    false
-                );
-                expect(
-                    await multiDeployCanister.getAzlePostUpgradeCalled()
-                ).toBe(false);
+                await verifyCalledFunction(multiDeployCanister, 'init');
+                await verifyModuleHashesMatch();
             }
         });
 
         it('does call post upgrade if additional deploy steps are forced', async () => {
+            const originalHashes = await getFileHashes();
+
             for (let i = 0; i < 2; i++) {
                 execSyncPretty(`dfx deploy multi_deploy --upgrade-unchanged`);
-
-                expect(await multiDeployCanister.getInitCalled()).toBe(false);
-                expect(await multiDeployCanister.getAzleInitCalled()).toBe(
-                    false
-                );
-                expect(await multiDeployCanister.getPostUpgradeCalled()).toBe(
-                    true
-                );
-                expect(
-                    await multiDeployCanister.getAzlePostUpgradeCalled()
-                ).toBe(true);
+                await verifyHashesMatch(originalHashes);
+                await verifyCalledFunction(multiDeployCanister, 'postUpgrade');
+                await verifyModuleHashesMatch();
             }
         });
     };
@@ -67,21 +44,39 @@ export function getTests(multiDeployCanister: ActorSubclass<_SERVICE>): Test {
 
 async function getFileHash(path: string): Promise<string> {
     const fileData = await readFile(path);
-    let h = createHash('sha256');
-    h.update(fileData);
-    return h.digest('hex');
+    return createHash('sha256').update(fileData).digest('hex');
 }
 
 async function getFileHashes(): Promise<{
     wasmHash: string;
     mainHash: string;
     didHash: string;
+    dfxWasmHash: string;
 }> {
     return {
         wasmHash: await getFileHash('.azle/multi_deploy/multi_deploy.wasm'),
         mainHash: await getFileHash('.azle/multi_deploy/main.js'),
-        didHash: await getFileHash('.azle/multi_deploy/multi_deploy.did')
+        didHash: await getFileHash('.azle/multi_deploy/multi_deploy.did'),
+        dfxWasmHash: await getFileHash(
+            '.dfx/local/canisters/multi_deploy/multi_deploy.wasm.gz'
+        )
     };
+}
+
+async function verifyModuleHashesMatch(): Promise<void> {
+    const localHash = await getFileHash(
+        '.dfx/local/canisters/multi_deploy/multi_deploy.wasm.gz'
+    );
+    const canisterInfo = execSyncPretty(
+        `dfx canister info multi_deploy`
+    ).toString();
+    const moduleHash = canisterInfo.match(/Module hash: (0x[a-f0-9]+)/)?.[1];
+
+    if (!moduleHash) {
+        throw new Error('Could not find module hash in canister info');
+    }
+
+    expect(localHash).toBe(moduleHash.slice(2)); // Remove '0x' prefix to match localHash format
 }
 
 async function verifyHashesMatch(
@@ -89,5 +84,21 @@ async function verifyHashesMatch(
 ): Promise<void> {
     const updatedHashes = await getFileHashes();
 
+    console.log(execSyncPretty(`dfx canister info multi_deploy`).toString());
+    console.log(updatedHashes);
+
     expect(originalHashes).toEqual(updatedHashes);
+}
+
+async function verifyCalledFunction(
+    canister: ActorSubclass<_SERVICE>,
+    expectedCalledFunction: 'init' | 'postUpgrade'
+): Promise<void> {
+    const expectInit = expectedCalledFunction === 'init';
+    const expectPostUpgrade = expectedCalledFunction === 'postUpgrade';
+
+    expect(await canister.getInitCalled()).toBe(expectInit);
+    expect(await canister.getAzleInitCalled()).toBe(expectInit);
+    expect(await canister.getPostUpgradeCalled()).toBe(expectPostUpgrade);
+    expect(await canister.getAzlePostUpgradeCalled()).toBe(expectPostUpgrade);
 }

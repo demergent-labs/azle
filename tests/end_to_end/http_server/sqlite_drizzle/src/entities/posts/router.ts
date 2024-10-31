@@ -101,8 +101,6 @@ export function getRouter(): Router {
     return router;
 }
 
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function updateHandler(
     req: Request<
         any,
@@ -110,7 +108,7 @@ async function updateHandler(
         { id: number; user_id?: number; title?: string; body?: string }
     >,
     res: Response
-) {
+): Promise<void> {
     const { id, user_id, title, body } = req.body;
 
     const post = await updatePost(drizzleDb, {
