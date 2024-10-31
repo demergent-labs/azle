@@ -31,11 +31,13 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
     });
 
     quickjs_with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
-        ctx.globals().set("_azleNodeWasmEnvironment", true)?;
+        let globals = ctx.globals();
 
-        ctx.globals().set("exports", Object::new(ctx.clone())?)?;
+        globals.set("_azleNodeWasmEnvironment", true)?;
 
-        ctx.globals().set("_azleExperimental", false)?;
+        globals.set("exports", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleExperimental", false)?;
 
         ic::register(ctx.clone())?;
 

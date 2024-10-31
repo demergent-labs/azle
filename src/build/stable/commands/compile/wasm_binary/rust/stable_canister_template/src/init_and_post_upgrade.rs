@@ -73,6 +73,8 @@ pub fn initialize_js(
     });
 
     quickjs_with_ctx(|ctx| -> Result<(), Box<dyn Error>> {
+        let globals = ctx.globals();
+
         let env = Object::new(ctx.clone())?;
 
         for (key, value) in std::env::vars() {
@@ -83,24 +85,20 @@ pub fn initialize_js(
 
         process.set("env", env)?;
 
-        ctx.clone().globals().set("process", process)?;
+        globals.set("process", process)?;
 
-        ctx.clone()
-            .globals()
-            .set("_azleNodeWasmEnvironment", false)?;
+        globals.set("_azleNodeWasmEnvironment", false)?;
 
-        ctx.clone()
-            .globals()
-            .set("exports", Object::new(ctx.clone())?)?;
+        globals.set("exports", Object::new(ctx.clone())?)?;
 
-        ctx.clone().globals().set("_azleExperimental", false)?;
+        globals.set("_azleExperimental", false)?;
 
         if init {
-            ctx.clone().globals().set("_azleInitCalled", true)?;
-            ctx.clone().globals().set("_azlePostUpgradeCalled", false)?;
+            globals.set("_azleInitCalled", true)?;
+            globals.set("_azlePostUpgradeCalled", false)?;
         } else {
-            ctx.clone().globals().set("_azleInitCalled", false)?;
-            ctx.clone().globals().set("_azlePostUpgradeCalled", true)?;
+            globals.set("_azleInitCalled", false)?;
+            globals.set("_azlePostUpgradeCalled", true)?;
         }
 
         let record_benchmarks = WASM_DATA_REF_CELL
@@ -109,9 +107,7 @@ pub fn initialize_js(
             .ok_or("could not convert wasm_data_ref_cell to ref")?
             .record_benchmarks;
 
-        ctx.clone()
-            .globals()
-            .set("_azleRecordBenchmarks", record_benchmarks)?;
+        globals.set("_azleRecordBenchmarks", record_benchmarks)?;
 
         ic::register(ctx.clone())?;
 

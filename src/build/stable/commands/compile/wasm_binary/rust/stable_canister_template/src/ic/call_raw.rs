@@ -102,12 +102,12 @@ fn get_resolve_or_reject_global_object(
     ctx: Ctx,
     should_resolve: bool,
 ) -> Result<Object, Box<dyn Error>> {
-    let global = ctx.globals();
+    let globals = ctx.globals();
 
     if should_resolve {
-        Ok(global.get("_azleResolveIds")?)
+        Ok(globals.get("_azleResolveIds")?)
     } else {
-        Ok(global.get("_azleRejectIds")?)
+        Ok(globals.get("_azleRejectIds")?)
     }
 }
 
