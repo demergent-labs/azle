@@ -1,7 +1,6 @@
 {
     "key_value_store": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -13,6 +12,21 @@
                     "instructions": { "__bigint__": "1385879" },
                     "method_name": "set",
                     "timestamp": { "__bigint__": "1730326469150017927" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1419001" },
+                    "method_name": "set",
+                    "timestamp": { "__bigint__": "1730482849233040008" }
+                },
+                {
+                    "instructions": { "__bigint__": "1386382" },
+                    "method_name": "set",
+                    "timestamp": { "__bigint__": "1730482851117383684" }
                 }
             ]
         }

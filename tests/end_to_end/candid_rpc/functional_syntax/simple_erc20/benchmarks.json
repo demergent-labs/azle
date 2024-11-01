@@ -1,7 +1,6 @@
 {
     "simple_erc20": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -13,6 +12,21 @@
                     "instructions": { "__bigint__": "1806970" },
                     "method_name": "transfer",
                     "timestamp": { "__bigint__": "1730326471906158789" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "2180949" },
+                    "method_name": "initializeSupply",
+                    "timestamp": { "__bigint__": "1730482852085111852" }
+                },
+                {
+                    "instructions": { "__bigint__": "1801014" },
+                    "method_name": "transfer",
+                    "timestamp": { "__bigint__": "1730482854250541755" }
                 }
             ]
         }

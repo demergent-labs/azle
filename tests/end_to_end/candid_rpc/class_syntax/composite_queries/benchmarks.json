@@ -1,13 +1,22 @@
 {
     "canister1": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "1722673" },
                     "method_name": "simpleUpdate",
                     "timestamp": { "__bigint__": "1730326462528248114" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1702641" },
+                    "method_name": "simpleUpdate",
+                    "timestamp": { "__bigint__": "1730482865206388890" }
                 }
             ]
         }

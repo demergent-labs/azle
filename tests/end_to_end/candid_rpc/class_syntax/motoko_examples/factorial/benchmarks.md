@@ -1,6 +1,16 @@
 # Benchmarks for factorial
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | fac         | 1_271_188    | 1_098_475 | $0.0000014606 | $1.46             | <font color="red">+32_039</font> |
+| 1   | fac         | 1_263_989    | 1_095_595 | $0.0000014568 | $1.45             | <font color="red">+48_840</font> |
+| 2   | fac         | 1_732_356    | 1_282_942 | $0.0000017059 | $1.70             | <font color="red">+61_991</font> |
+| 3   | fac         | 2_983_666    | 1_783_466 | $0.0000023714 | $2.37             | <font color="red">+71_767</font> |
+| 4   | fac         | 5_525_643    | 2_800_257 | $0.0000037234 | $3.72             | <font color="red">+77_008</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
@@ -9,10 +19,6 @@
 | 2   | fac         | 1_670_365    | 1_258_146 | $0.0000016729 | $1.67             |
 | 3   | fac         | 2_911_899    | 1_754_759 | $0.0000023333 | $2.33             |
 | 4   | fac         | 5_448_635    | 2_769_454 | $0.0000036825 | $3.68             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

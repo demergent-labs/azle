@@ -1,6 +1,17 @@
 # Benchmarks for simple_to_do
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | addTodo        | 1_922_248    | 1_358_899 | $0.0000018069 | $1.80             | <font color="green">-1_486</font> |
+| 1   | addTodo        | 1_678_606    | 1_261_442 | $0.0000016773 | $1.67             | <font color="red">+75</font>      |
+| 2   | completeTodo   | 989_059      | 985_623   | $0.0000013106 | $1.31             | <font color="green">-543</font>   |
+| 3   | clearCompleted | 898_417      | 949_366   | $0.0000012623 | $1.26             | <font color="red">+4_078</font>   |
+| 4   | completeTodo   | 985_274      | 984_109   | $0.0000013085 | $1.30             | <font color="red">+2_277</font>   |
+| 5   | clearCompleted | 882_112      | 942_844   | $0.0000012537 | $1.25             | <font color="red">+739</font>     |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |
@@ -10,10 +21,6 @@
 | 3   | clearCompleted | 894_339      | 947_735   | $0.0000012602 | $1.26             |
 | 4   | completeTodo   | 982_997      | 983_198   | $0.0000013073 | $1.30             |
 | 5   | clearCompleted | 881_373      | 942_549   | $0.0000012533 | $1.25             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

@@ -1,6 +1,18 @@
 # Benchmarks for ethereum_json_rpc
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | init                | 5_473_588_724 | 4_190_025_489 | $0.0055713512 | $5_571.35         | <font color="red">+3_780_723</font> |
+| 1   | ethGetBalance       | 170_663_659   | 68_855_463    | $0.0000915550 | $91.55            | <font color="red">+181_123</font>   |
+| 2   | ethGetBalance       | 170_574_381   | 68_819_752    | $0.0000915076 | $91.50            | <font color="red">+131_986</font>   |
+| 3   | ethGetBalance       | 170_533_048   | 68_803_219    | $0.0000914856 | $91.48            | <font color="red">+82_868</font>    |
+| 4   | ethGetBlockByNumber | 169_527_532   | 68_401_012    | $0.0000909508 | $90.95            | <font color="red">+127_637</font>   |
+| 5   | ethGetBlockByNumber | 169_494_470   | 68_387_788    | $0.0000909332 | $90.93            | <font color="red">+31_827</font>    |
+| 6   | ethGetBlockByNumber | 169_513_486   | 68_395_394    | $0.0000909433 | $90.94            | <font color="red">+101_600</font>   |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -11,10 +23,6 @@
 | 4   | ethGetBlockByNumber | 169_399_895   | 68_349_958    | $0.0000908829 | $90.88            |
 | 5   | ethGetBlockByNumber | 169_462_643   | 68_375_057    | $0.0000909163 | $90.91            |
 | 6   | ethGetBlockByNumber | 169_411_886   | 68_354_754    | $0.0000908893 | $90.88            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

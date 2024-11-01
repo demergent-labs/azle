@@ -1,7 +1,6 @@
 {
     "ledger_canister": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -78,6 +77,86 @@
                     "instructions": { "__bigint__": "14295438" },
                     "method_name": "executeTransfer",
                     "timestamp": { "__bigint__": "1730326487042664014" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "4945746" },
+                    "method_name": "getAccountBalance",
+                    "timestamp": { "__bigint__": "1730482846546156609" }
+                },
+                {
+                    "instructions": { "__bigint__": "2111171" },
+                    "method_name": "getTransferFee",
+                    "timestamp": { "__bigint__": "1730482848688038324" }
+                },
+                {
+                    "instructions": { "__bigint__": "13351944" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730482850904013382" }
+                },
+                {
+                    "instructions": { "__bigint__": "13355934" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730482852843357917" }
+                },
+                {
+                    "instructions": { "__bigint__": "5751011" },
+                    "method_name": "getBlocks",
+                    "timestamp": { "__bigint__": "1730482855074034078" }
+                },
+                {
+                    "instructions": { "__bigint__": "1621216" },
+                    "method_name": "getSymbol",
+                    "timestamp": { "__bigint__": "1730482857011649778" }
+                },
+                {
+                    "instructions": { "__bigint__": "1627262" },
+                    "method_name": "getName",
+                    "timestamp": { "__bigint__": "1730482858992139147" }
+                },
+                {
+                    "instructions": { "__bigint__": "1626139" },
+                    "method_name": "getDecimals",
+                    "timestamp": { "__bigint__": "1730482861261491858" }
+                },
+                {
+                    "instructions": { "__bigint__": "1626379" },
+                    "method_name": "getArchives",
+                    "timestamp": { "__bigint__": "1730482863142623436" }
+                },
+                {
+                    "instructions": { "__bigint__": "13352320" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730482865239154112" }
+                },
+                {
+                    "instructions": { "__bigint__": "4904206" },
+                    "method_name": "getAccountBalance",
+                    "timestamp": { "__bigint__": "1730482867425110394" }
+                },
+                {
+                    "instructions": { "__bigint__": "13315694" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730482870818852226" }
+                },
+                {
+                    "instructions": { "__bigint__": "13332762" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730482872852918952" }
+                },
+                {
+                    "instructions": { "__bigint__": "14129111" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730482875993073765" }
+                },
+                {
+                    "instructions": { "__bigint__": "14108178" },
+                    "method_name": "executeTransfer",
+                    "timestamp": { "__bigint__": "1730482877991229634" }
                 }
             ]
         }

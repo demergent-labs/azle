@@ -1,13 +1,22 @@
 {
     "simple_user_accounts": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "3939857" },
                     "method_name": "createUser",
                     "timestamp": { "__bigint__": "1730326468872106239" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "3943113" },
+                    "method_name": "createUser",
+                    "timestamp": { "__bigint__": "1730482852283222815" }
                 }
             ]
         }

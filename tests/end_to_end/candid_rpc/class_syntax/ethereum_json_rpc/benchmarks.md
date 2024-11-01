@@ -1,6 +1,18 @@
 # Benchmarks for ethereum_json_rpc
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                |
+| --- | ------------------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init                | 1_444_930_445 | 978_562_178 | $0.0013011648 | $1_301.16         | <font color="red">+321_999_886</font> |
+| 1   | ethGetBalance       | 26_931_700    | 11_362_680  | $0.0000151086 | $15.10            | <font color="green">-1_003_064</font> |
+| 2   | ethGetBalance       | 26_871_426    | 11_338_570  | $0.0000150766 | $15.07            | <font color="green">-1_020_811</font> |
+| 3   | ethGetBalance       | 26_593_213    | 11_227_285  | $0.0000149286 | $14.92            | <font color="green">-1_298_367</font> |
+| 4   | ethGetBlockByNumber | 25_350_284    | 10_730_113  | $0.0000142675 | $14.26            | <font color="green">-1_506_641</font> |
+| 5   | ethGetBlockByNumber | 25_341_595    | 10_726_638  | $0.0000142629 | $14.26            | <font color="green">-1_481_884</font> |
+| 6   | ethGetBlockByNumber | 25_336_579    | 10_724_631  | $0.0000142602 | $14.26            | <font color="green">-1_492_503</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ----------- | ------------- | ----------------- |
@@ -11,10 +23,6 @@
 | 4   | ethGetBlockByNumber | 26_856_925    | 11_332_770  | $0.0000150688 | $15.06            |
 | 5   | ethGetBlockByNumber | 26_823_479    | 11_319_391  | $0.0000150511 | $15.05            |
 | 6   | ethGetBlockByNumber | 26_829_082    | 11_321_632  | $0.0000150540 | $15.05            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

@@ -1,16 +1,20 @@
 # Benchmarks for timers
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | setTimers   | 16_635_007   | 7_244_002 | $0.0000096321 | $9.63             | <font color="green">-27_683</font> |
+| 1   | clearTimer  | 1_181_773    | 1_062_709 | $0.0000014131 | $1.41             | <font color="green">-1_298</font>  |
+| 2   | clearTimer  | 1_180_765    | 1_062_306 | $0.0000014125 | $1.41             | <font color="green">-2_461</font>  |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
 | 0   | setTimers   | 16_662_690   | 7_255_076 | $0.0000096469 | $9.64             |
 | 1   | clearTimer  | 1_183_071    | 1_063_228 | $0.0000014137 | $1.41             |
 | 2   | clearTimer  | 1_183_226    | 1_063_290 | $0.0000014138 | $1.41             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

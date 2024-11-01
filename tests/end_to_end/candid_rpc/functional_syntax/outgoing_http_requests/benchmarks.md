@@ -1,15 +1,18 @@
 # Benchmarks for outgoing_http_requests
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
+| 0   | xkcd        | 168_239_527  | 67_885_810 | $0.0000902657 | $90.26            | <font color="red">+208_533</font> |
+| 1   | xkcdRaw     | 2_125_868    | 1_440_347  | $0.0000019152 | $1.91             | <font color="green">-6_644</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
 | 0   | xkcd        | 168_030_994  | 67_802_397 | $0.0000901548 | $90.15            |
 | 1   | xkcdRaw     | 2_132_512    | 1_443_004  | $0.0000019187 | $1.91             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

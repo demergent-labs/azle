@@ -1,7 +1,6 @@
 {
     "outgoing_http_requests": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -13,6 +12,21 @@
                     "instructions": { "__bigint__": "1987971" },
                     "method_name": "xkcdRaw",
                     "timestamp": { "__bigint__": "1730326453152490442" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "23713991" },
+                    "method_name": "xkcd",
+                    "timestamp": { "__bigint__": "1730482844304773450" }
+                },
+                {
+                    "instructions": { "__bigint__": "1414956" },
+                    "method_name": "xkcdRaw",
+                    "timestamp": { "__bigint__": "1730482846583269150" }
                 }
             ]
         }

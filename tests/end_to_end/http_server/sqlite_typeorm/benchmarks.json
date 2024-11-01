@@ -1,7 +1,6 @@
 {
     "sqlite_typeorm": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -28,6 +27,36 @@
                     "instructions": { "__bigint__": "66933539" },
                     "method_name": "http_request_update",
                     "timestamp": { "__bigint__": "1730326495744293333" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "14084761257" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730482869976563937" }
+                },
+                {
+                    "instructions": { "__bigint__": "102453336" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730482879678502660" }
+                },
+                {
+                    "instructions": { "__bigint__": "141906953" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730482880221727797" }
+                },
+                {
+                    "instructions": { "__bigint__": "143093370" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730482880563499915" }
+                },
+                {
+                    "instructions": { "__bigint__": "66921841" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730482881430537543" }
                 }
             ]
         }

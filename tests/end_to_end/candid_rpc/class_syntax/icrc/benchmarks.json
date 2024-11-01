@@ -1,7 +1,6 @@
 {
     "proxy": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -23,6 +22,31 @@
                     "instructions": { "__bigint__": "10026189" },
                     "method_name": "icrc2_allowance",
                     "timestamp": { "__bigint__": "1730326460340443097" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "14809530" },
+                    "method_name": "icrc1_transfer",
+                    "timestamp": { "__bigint__": "1730482843772684661" }
+                },
+                {
+                    "instructions": { "__bigint__": "18266531" },
+                    "method_name": "icrc2_approve",
+                    "timestamp": { "__bigint__": "1730482846018636529" }
+                },
+                {
+                    "instructions": { "__bigint__": "17056127" },
+                    "method_name": "icrc2_transfer_from",
+                    "timestamp": { "__bigint__": "1730482848012641151" }
+                },
+                {
+                    "instructions": { "__bigint__": "9870115" },
+                    "method_name": "icrc2_allowance",
+                    "timestamp": { "__bigint__": "1730482850024013046" }
                 }
             ]
         }

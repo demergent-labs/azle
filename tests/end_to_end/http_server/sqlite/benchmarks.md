@@ -1,6 +1,16 @@
 # Benchmarks for sqlite
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name         | Instructions   | Cycles        | USD           | USD/Million Calls | Change                              |
+| --- | ------------------- | -------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade         | 12_562_007_931 | 9_825_393_172 | $0.0130645305 | $13_064.53        | <font color="red">+3_353_583</font> |
+| 1   | http_request_update | 148_407_713    | 59_953_085    | $0.0000797178 | $79.71            | <font color="green">-66_175</font>  |
+| 2   | http_request_update | 75_585_661     | 30_824_264    | $0.0000409861 | $40.98            | <font color="green">-97_957</font>  |
+| 3   | http_request_update | 150_324_156    | 60_719_662    | $0.0000807371 | $80.73            | <font color="red">+5_731_874</font> |
+| 4   | http_request_update | 83_734_581     | 34_083_832    | $0.0000453202 | $45.32            | <font color="green">-13_044</font>  |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name         | Instructions   | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | -------------- | ------------- | ------------- | ----------------- |
@@ -9,10 +19,6 @@
 | 2   | http_request_update | 75_683_618     | 30_863_447    | $0.0000410382 | $41.03            |
 | 3   | http_request_update | 144_592_282    | 58_426_912    | $0.0000776885 | $77.68            |
 | 4   | http_request_update | 83_747_625     | 34_089_050    | $0.0000453272 | $45.32            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

@@ -1,7 +1,6 @@
 {
     "bitcore_lib": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -28,6 +27,36 @@
                     "instructions": { "__bigint__": "12484255890" },
                     "method_name": "http_request_update",
                     "timestamp": { "__bigint__": "1730326447656622617" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "10828474791" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730482818060655593" }
+                },
+                {
+                    "instructions": { "__bigint__": "1107797771" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730482828705576831" }
+                },
+                {
+                    "instructions": { "__bigint__": "6745712710" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730482829491592316" }
+                },
+                {
+                    "instructions": { "__bigint__": "18643153073" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730482831345285909" }
+                },
+                {
+                    "instructions": { "__bigint__": "17588951500" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730482835765148203" }
                 }
             ]
         }

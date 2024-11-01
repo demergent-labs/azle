@@ -1,6 +1,167 @@
 # Benchmarks for heartbeat_async
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | heartbeat   | 139_774_839  | 56_499_935 | $0.0000751263 | $75.12            | <font color="red">+25_509</font>    |
+| 1   | heartbeat   | 139_768_467  | 56_497_386 | $0.0000751229 | $75.12            | <font color="green">-40_795</font>  |
+| 2   | heartbeat   | 139_861_380  | 56_534_552 | $0.0000751723 | $75.17            | <font color="red">+58_661</font>    |
+| 3   | heartbeat   | 139_848_854  | 56_529_541 | $0.0000751656 | $75.16            | <font color="red">+218_668</font>   |
+| 4   | heartbeat   | 139_826_873  | 56_520_749 | $0.0000751539 | $75.15            | <font color="green">-27_791</font>  |
+| 5   | heartbeat   | 139_554_100  | 56_411_640 | $0.0000750089 | $75.00            | <font color="green">-118_401</font> |
+| 6   | heartbeat   | 139_776_076  | 56_500_430 | $0.0000751269 | $75.12            | <font color="red">+36_461</font>    |
+| 7   | heartbeat   | 139_762_056  | 56_494_822 | $0.0000751195 | $75.11            | <font color="red">+3_667</font>     |
+| 8   | heartbeat   | 139_841_847  | 56_526_738 | $0.0000751619 | $75.16            | <font color="green">-86_302</font>  |
+| 9   | heartbeat   | 139_706_102  | 56_472_440 | $0.0000750897 | $75.08            | <font color="green">-59_374</font>  |
+| 10  | heartbeat   | 139_816_491  | 56_516_596 | $0.0000751484 | $75.14            | <font color="green">-55_295</font>  |
+| 11  | heartbeat   | 139_806_615  | 56_512_646 | $0.0000751432 | $75.14            | <font color="red">+120_276</font>   |
+| 12  | heartbeat   | 139_898_166  | 56_549_266 | $0.0000751919 | $75.19            | <font color="green">-109_185</font> |
+| 13  | heartbeat   | 139_836_551  | 56_524_620 | $0.0000751591 | $75.15            | <font color="red">+139_639</font>   |
+| 14  | heartbeat   | 139_882_847  | 56_543_138 | $0.0000751837 | $75.18            | <font color="green">-3_459</font>   |
+| 15  | heartbeat   | 139_766_077  | 56_496_430 | $0.0000751216 | $75.12            | <font color="green">-15_421</font>  |
+| 16  | heartbeat   | 139_865_203  | 56_536_081 | $0.0000751743 | $75.17            | <font color="red">+35_563</font>    |
+| 17  | heartbeat   | 139_821_691  | 56_518_676 | $0.0000751512 | $75.15            | <font color="green">-61_498</font>  |
+| 18  | heartbeat   | 139_862_829  | 56_535_131 | $0.0000751731 | $75.17            | <font color="green">-75_996</font>  |
+| 19  | heartbeat   | 139_813_311  | 56_515_324 | $0.0000751467 | $75.14            | <font color="green">-2_900</font>   |
+| 20  | heartbeat   | 139_857_455  | 56_532_982 | $0.0000751702 | $75.17            | <font color="green">-24_855</font>  |
+| 21  | heartbeat   | 139_861_776  | 56_534_710 | $0.0000751725 | $75.17            | <font color="red">+3_162</font>     |
+| 22  | heartbeat   | 139_883_984  | 56_543_593 | $0.0000751843 | $75.18            | <font color="red">+54_599</font>    |
+| 23  | heartbeat   | 139_817_364  | 56_516_945 | $0.0000751489 | $75.14            | <font color="green">-53_176</font>  |
+| 24  | heartbeat   | 139_898_231  | 56_549_292 | $0.0000751919 | $75.19            | <font color="red">+35_554</font>    |
+| 25  | heartbeat   | 139_881_492  | 56_542_596 | $0.0000751830 | $75.18            | <font color="red">+60_286</font>    |
+| 26  | heartbeat   | 139_770_065  | 56_498_026 | $0.0000751237 | $75.12            | <font color="green">-146_841</font> |
+| 27  | heartbeat   | 139_781_909  | 56_502_763 | $0.0000751300 | $75.13            | <font color="green">-7_074</font>   |
+| 28  | heartbeat   | 139_882_130  | 56_542_852 | $0.0000751833 | $75.18            | <font color="green">-14_469</font>  |
+| 29  | heartbeat   | 139_806_624  | 56_512_649 | $0.0000751432 | $75.14            | <font color="green">-134_569</font> |
+| 30  | heartbeat   | 139_888_950  | 56_545_580 | $0.0000751870 | $75.18            | <font color="red">+65_394</font>    |
+| 31  | heartbeat   | 139_850_666  | 56_530_266 | $0.0000751666 | $75.16            | <font color="green">-2_262</font>   |
+| 32  | heartbeat   | 139_800_213  | 56_510_085 | $0.0000751398 | $75.13            | <font color="green">-75_940</font>  |
+| 33  | heartbeat   | 139_815_678  | 56_516_271 | $0.0000751480 | $75.14            | <font color="red">+55_554</font>    |
+| 34  | heartbeat   | 139_739_739  | 56_485_895 | $0.0000751076 | $75.10            | <font color="green">-57_016</font>  |
+| 35  | heartbeat   | 139_935_456  | 56_564_182 | $0.0000752117 | $75.21            | <font color="red">+179_870</font>   |
+| 36  | heartbeat   | 139_725_607  | 56_480_242 | $0.0000751001 | $75.10            | <font color="green">-154_049</font> |
+| 37  | heartbeat   | 140_037_957  | 56_605_182 | $0.0000752662 | $75.26            | <font color="red">+217_510</font>   |
+| 38  | heartbeat   | 139_680_598  | 56_462_239 | $0.0000750761 | $75.07            | <font color="green">-118_432</font> |
+| 39  | heartbeat   | 139_795_816  | 56_508_326 | $0.0000751374 | $75.13            | <font color="green">-186_670</font> |
+| 40  | heartbeat   | 139_915_423  | 56_556_169 | $0.0000752010 | $75.20            | <font color="red">+128_402</font>   |
+| 41  | heartbeat   | 139_857_120  | 56_532_848 | $0.0000751700 | $75.17            | <font color="red">+165_844</font>   |
+| 42  | heartbeat   | 139_794_502  | 56_507_800 | $0.0000751367 | $75.13            | <font color="green">-69_372</font>  |
+| 43  | heartbeat   | 139_980_687  | 56_582_274 | $0.0000752358 | $75.23            | <font color="red">+103_940</font>   |
+| 44  | heartbeat   | 139_880_853  | 56_542_341 | $0.0000751827 | $75.18            | <font color="red">+7_509</font>     |
+| 45  | heartbeat   | 139_849_446  | 56_529_778 | $0.0000751659 | $75.16            | <font color="green">-20_039</font>  |
+| 46  | heartbeat   | 139_897_278  | 56_548_911 | $0.0000751914 | $75.19            | <font color="red">+93_984</font>    |
+| 47  | heartbeat   | 139_942_960  | 56_567_184 | $0.0000752157 | $75.21            | <font color="red">+69_141</font>    |
+| 48  | heartbeat   | 139_930_616  | 56_562_246 | $0.0000752091 | $75.20            | <font color="red">+119_784</font>   |
+| 49  | heartbeat   | 140_076_406  | 56_620_562 | $0.0000752867 | $75.28            | <font color="red">+259_396</font>   |
+| 50  | heartbeat   | 139_826_372  | 56_520_548 | $0.0000751537 | $75.15            | <font color="green">-129_394</font> |
+| 51  | heartbeat   | 139_910_764  | 56_554_305 | $0.0000751986 | $75.19            | <font color="red">+186_145</font>   |
+| 52  | heartbeat   | 139_808_145  | 56_513_258 | $0.0000751440 | $75.14            | <font color="green">-60_248</font>  |
+| 53  | heartbeat   | 139_907_144  | 56_552_857 | $0.0000751966 | $75.19            | <font color="red">+18_926</font>    |
+| 54  | heartbeat   | 139_793_340  | 56_507_336 | $0.0000751361 | $75.13            | <font color="green">-124_539</font> |
+| 55  | heartbeat   | 139_984_933  | 56_583_973 | $0.0000752380 | $75.23            | <font color="red">+128_860</font>   |
+| 56  | heartbeat   | 139_916_064  | 56_556_425 | $0.0000752014 | $75.20            | <font color="green">-18_540</font>  |
+| 57  | heartbeat   | 140_011_744  | 56_594_697 | $0.0000752523 | $75.25            | <font color="red">+214_662</font>   |
+| 58  | heartbeat   | 139_926_887  | 56_560_754 | $0.0000752071 | $75.20            | <font color="red">+8_797</font>     |
+| 59  | heartbeat   | 139_893_791  | 56_547_516 | $0.0000751895 | $75.18            | <font color="red">+66_541</font>    |
+| 60  | heartbeat   | 139_868_222  | 56_537_288 | $0.0000751759 | $75.17            | <font color="red">+75_365</font>    |
+| 61  | heartbeat   | 139_956_904  | 56_572_761 | $0.0000752231 | $75.22            | <font color="red">+91_103</font>    |
+| 62  | heartbeat   | 139_849_770  | 56_529_908 | $0.0000751661 | $75.16            | <font color="green">-18_443</font>  |
+| 63  | heartbeat   | 139_892_296  | 56_546_918 | $0.0000751887 | $75.18            | <font color="green">-77_177</font>  |
+| 64  | heartbeat   | 139_824_578  | 56_519_831 | $0.0000751527 | $75.15            | <font color="green">-88_753</font>  |
+| 65  | heartbeat   | 139_925_926  | 56_560_370 | $0.0000752066 | $75.20            | <font color="green">-28_660</font>  |
+| 66  | heartbeat   | 139_826_724  | 56_520_689 | $0.0000751539 | $75.15            | <font color="green">-54_770</font>  |
+| 67  | heartbeat   | 139_982_631  | 56_583_052 | $0.0000752368 | $75.23            | <font color="red">+48_148</font>    |
+| 68  | heartbeat   | 139_896_147  | 56_548_458 | $0.0000751908 | $75.19            | <font color="red">+54_032</font>    |
+| 69  | heartbeat   | 140_050_442  | 56_610_176 | $0.0000752729 | $75.27            | <font color="red">+105_892</font>   |
+| 70  | heartbeat   | 139_852_744  | 56_531_097 | $0.0000751677 | $75.16            | <font color="green">-36_902</font>  |
+| 71  | heartbeat   | 139_936_748  | 56_564_699 | $0.0000752124 | $75.21            | <font color="green">-74_115</font>  |
+| 72  | heartbeat   | 139_857_774  | 56_533_109 | $0.0000751704 | $75.17            | <font color="red">+97_328</font>    |
+| 73  | heartbeat   | 139_885_097  | 56_544_038 | $0.0000751849 | $75.18            | <font color="green">-171_469</font> |
+| 74  | heartbeat   | 139_983_289  | 56_583_315 | $0.0000752371 | $75.23            | <font color="red">+114_031</font>   |
+| 75  | heartbeat   | 139_974_732  | 56_579_892 | $0.0000752326 | $75.23            | <font color="green">-53_901</font>  |
+| 76  | heartbeat   | 139_891_920  | 56_546_768 | $0.0000751885 | $75.18            | <font color="green">-84_725</font>  |
+| 77  | heartbeat   | 140_078_772  | 56_621_508 | $0.0000752879 | $75.28            | <font color="red">+148_117</font>   |
+| 78  | heartbeat   | 139_765_324  | 56_496_129 | $0.0000751212 | $75.12            | <font color="green">-114_018</font> |
+| 79  | heartbeat   | 139_919_755  | 56_557_902 | $0.0000752033 | $75.20            | <font color="green">-32_198</font>  |
+| 80  | heartbeat   | 139_754_161  | 56_491_664 | $0.0000751153 | $75.11            | <font color="green">-166_058</font> |
+| 81  | heartbeat   | 140_008_031  | 56_593_212 | $0.0000752503 | $75.25            | <font color="red">+72_178</font>    |
+| 82  | heartbeat   | 139_913_015  | 56_555_206 | $0.0000751998 | $75.19            | <font color="green">-79_611</font>  |
+| 83  | heartbeat   | 139_970_699  | 56_578_279 | $0.0000752304 | $75.23            | <font color="red">+25_669</font>    |
+| 84  | heartbeat   | 139_870_436  | 56_538_174 | $0.0000751771 | $75.17            | <font color="green">-10_064</font>  |
+| 85  | heartbeat   | 139_966_543  | 56_576_617 | $0.0000752282 | $75.22            | <font color="green">-7_484</font>   |
+| 86  | heartbeat   | 139_799_893  | 56_509_957 | $0.0000751396 | $75.13            | <font color="green">-121_169</font> |
+| 87  | heartbeat   | 140_116_794  | 56_636_717 | $0.0000753081 | $75.30            | <font color="red">+43_426</font>    |
+| 88  | heartbeat   | 139_760_999  | 56_494_399 | $0.0000751189 | $75.11            | <font color="green">-167_313</font> |
+| 89  | heartbeat   | 139_971_008  | 56_578_403 | $0.0000752306 | $75.23            | <font color="red">+28_137</font>    |
+| 90  | heartbeat   | 139_955_215  | 56_572_086 | $0.0000752222 | $75.22            | <font color="red">+37_109</font>    |
+| 91  | heartbeat   | 140_038_008  | 56_605_203 | $0.0000752662 | $75.26            | <font color="green">-36_142</font>  |
+| 92  | heartbeat   | 139_889_528  | 56_545_811 | $0.0000751873 | $75.18            | <font color="red">+80_340</font>    |
+| 93  | heartbeat   | 140_028_199  | 56_601_279 | $0.0000752610 | $75.26            | <font color="green">-199_996</font> |
+| 94  | heartbeat   | 139_999_817  | 56_589_926 | $0.0000752459 | $75.24            | <font color="red">+145_723</font>   |
+| 95  | heartbeat   | 140_036_493  | 56_604_597 | $0.0000752654 | $75.26            | <font color="green">-27_748</font>  |
+| 96  | heartbeat   | 139_903_033  | 56_551_213 | $0.0000751945 | $75.19            | <font color="red">+159_340</font>   |
+| 97  | heartbeat   | 140_029_411  | 56_601_764 | $0.0000752617 | $75.26            | <font color="red">+37_347</font>    |
+| 98  | heartbeat   | 139_987_064  | 56_584_825 | $0.0000752391 | $75.23            | <font color="red">+172_702</font>   |
+| 99  | heartbeat   | 140_134_778  | 56_643_911 | $0.0000753177 | $75.31            | <font color="red">+106_619</font>   |
+| 100 | heartbeat   | 140_124_756  | 56_639_902 | $0.0000753124 | $75.31            | <font color="green">-64_351</font>  |
+| 101 | heartbeat   | 140_179_526  | 56_661_810 | $0.0000753415 | $75.34            | <font color="green">-30_812</font>  |
+| 102 | heartbeat   | 140_236_258  | 56_684_503 | $0.0000753717 | $75.37            | <font color="red">+43_263</font>    |
+| 103 | heartbeat   | 140_263_862  | 56_695_544 | $0.0000753864 | $75.38            | <font color="red">+160_910</font>   |
+| 104 | heartbeat   | 140_388_601  | 56_745_440 | $0.0000754527 | $75.45            | <font color="red">+37_064</font>    |
+| 105 | heartbeat   | 140_199_100  | 56_669_640 | $0.0000753519 | $75.35            | <font color="red">+177_264</font>   |
+| 106 | heartbeat   | 140_268_859  | 56_697_543 | $0.0000753890 | $75.38            | <font color="green">-54_710</font>  |
+| 107 | heartbeat   | 140_131_702  | 56_642_680 | $0.0000753161 | $75.31            | <font color="red">+47_835</font>    |
+| 108 | heartbeat   | 140_181_720  | 56_662_688 | $0.0000753427 | $75.34            | <font color="green">-74_156</font>  |
+| 109 | heartbeat   | 140_256_644  | 56_692_657 | $0.0000753825 | $75.38            | <font color="red">+121_010</font>   |
+| 110 | heartbeat   | 140_267_754  | 56_697_101 | $0.0000753884 | $75.38            | <font color="red">+45_468</font>    |
+| 111 | heartbeat   | 140_134_169  | 56_643_667 | $0.0000753174 | $75.31            | <font color="green">-16_334</font>  |
+| 112 | heartbeat   | 140_237_062  | 56_684_824 | $0.0000753721 | $75.37            | <font color="red">+29_427</font>    |
+| 113 | heartbeat   | 140_259_882  | 56_693_952 | $0.0000753842 | $75.38            | <font color="red">+76_511</font>    |
+| 114 | heartbeat   | 140_239_865  | 56_685_946 | $0.0000753736 | $75.37            | <font color="red">+49_312</font>    |
+| 115 | heartbeat   | 140_281_682  | 56_702_672 | $0.0000753958 | $75.39            | <font color="red">+225_370</font>   |
+| 116 | heartbeat   | 140_205_313  | 56_672_125 | $0.0000753552 | $75.35            | <font color="green">-77_855</font>  |
+| 117 | heartbeat   | 140_174_219  | 56_659_687 | $0.0000753387 | $75.33            | <font color="green">-875</font>     |
+| 118 | heartbeat   | 140_216_000  | 56_676_400 | $0.0000753609 | $75.36            | <font color="green">-140_402</font> |
+| 119 | heartbeat   | 140_156_198  | 56_652_479 | $0.0000753291 | $75.32            | <font color="green">-28_192</font>  |
+| 120 | heartbeat   | 140_329_959  | 56_721_983 | $0.0000754215 | $75.42            | <font color="red">+114_883</font>   |
+| 121 | heartbeat   | 140_261_307  | 56_694_522 | $0.0000753850 | $75.38            | <font color="red">+210_516</font>   |
+| 122 | heartbeat   | 140_178_905  | 56_661_562 | $0.0000753412 | $75.34            | <font color="green">-66_701</font>  |
+| 123 | heartbeat   | 140_106_400  | 56_632_560 | $0.0000753026 | $75.30            | <font color="green">-43_593</font>  |
+| 124 | heartbeat   | 140_162_048  | 56_654_819 | $0.0000753322 | $75.33            | <font color="green">-108_702</font> |
+| 125 | heartbeat   | 140_152_742  | 56_651_096 | $0.0000753273 | $75.32            | <font color="red">+69_599</font>    |
+| 126 | heartbeat   | 140_211_181  | 56_674_472 | $0.0000753583 | $75.35            | <font color="green">-64_848</font>  |
+| 127 | heartbeat   | 140_139_747  | 56_645_898 | $0.0000753204 | $75.32            | <font color="green">-6_269</font>   |
+| 128 | heartbeat   | 140_279_662  | 56_701_864 | $0.0000753948 | $75.39            | <font color="red">+52_687</font>    |
+| 129 | heartbeat   | 140_263_037  | 56_695_214 | $0.0000753859 | $75.38            | <font color="red">+52_816</font>    |
+| 130 | heartbeat   | 140_353_051  | 56_731_220 | $0.0000754338 | $75.43            | <font color="red">+179_916</font>   |
+| 131 | heartbeat   | 140_150_072  | 56_650_028 | $0.0000753258 | $75.32            | <font color="red">+100_597</font>   |
+| 132 | heartbeat   | 140_214_329  | 56_675_731 | $0.0000753600 | $75.36            | <font color="red">+80_567</font>    |
+| 133 | heartbeat   | 140_017_549  | 56_597_019 | $0.0000752554 | $75.25            | <font color="green">-137_313</font> |
+| 134 | heartbeat   | 140_155_117  | 56_652_046 | $0.0000753285 | $75.32            | <font color="red">+51_773</font>    |
+| 135 | heartbeat   | 140_243_280  | 56_687_312 | $0.0000753754 | $75.37            | <font color="red">+20_639</font>    |
+| 136 | heartbeat   | 140_157_714  | 56_653_085 | $0.0000753299 | $75.32            | <font color="red">+7_671</font>     |
+| 137 | heartbeat   | 140_155_068  | 56_652_027 | $0.0000753285 | $75.32            | <font color="red">+64_468</font>    |
+| 138 | heartbeat   | 140_050_562  | 56_610_224 | $0.0000752729 | $75.27            | <font color="green">-133_995</font> |
+| 139 | heartbeat   | 140_193_243  | 56_667_297 | $0.0000753488 | $75.34            | <font color="red">+171_638</font>   |
+| 140 | heartbeat   | 140_129_114  | 56_641_645 | $0.0000753147 | $75.31            | <font color="green">-18_368</font>  |
+| 141 | heartbeat   | 140_315_963  | 56_716_385 | $0.0000754141 | $75.41            | <font color="red">+249_133</font>   |
+| 142 | heartbeat   | 140_088_833  | 56_625_533 | $0.0000752933 | $75.29            | <font color="green">-51_015</font>  |
+| 143 | heartbeat   | 140_116_118  | 56_636_447 | $0.0000753078 | $75.30            | <font color="red">+21_095</font>    |
+| 144 | heartbeat   | 140_074_409  | 56_619_763 | $0.0000752856 | $75.28            | <font color="red">+15_278</font>    |
+| 145 | heartbeat   | 140_152_800  | 56_651_120 | $0.0000753273 | $75.32            | <font color="red">+164_803</font>   |
+| 146 | heartbeat   | 140_161_055  | 56_654_422 | $0.0000753317 | $75.33            | <font color="red">+157_257</font>   |
+| 147 | heartbeat   | 140_256_069  | 56_692_427 | $0.0000753822 | $75.38            | <font color="red">+284_015</font>   |
+| 148 | heartbeat   | 140_083_705  | 56_623_482 | $0.0000752905 | $75.29            | <font color="red">+72_104</font>    |
+| 149 | heartbeat   | 140_144_262  | 56_647_704 | $0.0000753228 | $75.32            | <font color="green">-166_953</font> |
+| 150 | heartbeat   | 140_214_512  | 56_675_804 | $0.0000753601 | $75.36            | <font color="red">+140_133</font>   |
+| 151 | heartbeat   | 140_219_423  | 56_677_769 | $0.0000753627 | $75.36            | <font color="red">+53_438</font>    |
+| 152 | heartbeat   | 140_121_320  | 56_638_528 | $0.0000753106 | $75.31            | <font color="red">+95_352</font>    |
+| 153 | heartbeat   | 140_105_915  | 56_632_366 | $0.0000753024 | $75.30            |                                     |
+| 154 | heartbeat   | 140_019_123  | 56_597_649 | $0.0000752562 | $75.25            |                                     |
+| 155 | heartbeat   | 140_200_233  | 56_670_093 | $0.0000753525 | $75.35            |                                     |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
@@ -158,13 +319,196 @@
 | 151 | heartbeat   | 140_165_985  | 56_656_394 | $0.0000753343 | $75.33            |
 | 152 | heartbeat   | 140_025_968  | 56_600_387 | $0.0000752598 | $75.25            |
 
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
-
 # Benchmarks for heartbeat_sync
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                          |
+| --- | ----------- | ------------ | ------- | ------------- | ----------------- | ------------------------------- |
+| 0   | heartbeat   | 92_550       | 627_020 | $0.0000008337 | $0.83             | <font color="red">+1_072</font> |
+| 1   | heartbeat   | 84_667       | 623_866 | $0.0000008295 | $0.82             | <font color="red">+1_057</font> |
+| 2   | heartbeat   | 84_667       | 623_866 | $0.0000008295 | $0.82             | <font color="red">+1_055</font> |
+| 3   | heartbeat   | 84_667       | 623_866 | $0.0000008295 | $0.82             | <font color="red">+1_067</font> |
+| 4   | heartbeat   | 84_676       | 623_870 | $0.0000008295 | $0.82             | <font color="red">+1_065</font> |
+| 5   | heartbeat   | 84_666       | 623_866 | $0.0000008295 | $0.82             | <font color="red">+974</font>   |
+| 6   | heartbeat   | 84_763       | 623_905 | $0.0000008296 | $0.82             | <font color="red">+943</font>   |
+| 7   | heartbeat   | 84_848       | 623_939 | $0.0000008296 | $0.82             | <font color="red">+949</font>   |
+| 8   | heartbeat   | 85_197       | 624_078 | $0.0000008298 | $0.82             | <font color="red">+1_239</font> |
+| 9   | heartbeat   | 84_890       | 623_956 | $0.0000008297 | $0.82             | <font color="red">+952</font>   |
+| 10  | heartbeat   | 84_880       | 623_952 | $0.0000008297 | $0.82             | <font color="red">+1_120</font> |
+| 11  | heartbeat   | 84_949       | 623_979 | $0.0000008297 | $0.82             | <font color="red">+1_048</font> |
+| 12  | heartbeat   | 84_720       | 623_888 | $0.0000008296 | $0.82             | <font color="red">+747</font>   |
+| 13  | heartbeat   | 84_998       | 623_999 | $0.0000008297 | $0.82             | <font color="red">+1_096</font> |
+| 14  | heartbeat   | 84_622       | 623_848 | $0.0000008295 | $0.82             | <font color="red">+649</font>   |
+| 15  | heartbeat   | 84_560       | 623_824 | $0.0000008295 | $0.82             | <font color="red">+667</font>   |
+| 16  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+872</font>   |
+| 17  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 18  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 19  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 20  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 21  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 22  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 23  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 24  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 25  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 26  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 27  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 28  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 29  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 30  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 31  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 32  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 33  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 34  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 35  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 36  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 37  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 38  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+903</font>   |
+| 39  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_364</font> |
+| 40  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+894</font>   |
+| 41  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_346</font> |
+| 42  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+764</font>   |
+| 43  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_310</font> |
+| 44  | heartbeat   | 84_625       | 623_850 | $0.0000008295 | $0.82             | <font color="red">+766</font>   |
+| 45  | heartbeat   | 84_839       | 623_935 | $0.0000008296 | $0.82             | <font color="red">+1_088</font> |
+| 46  | heartbeat   | 84_643       | 623_857 | $0.0000008295 | $0.82             | <font color="red">+716</font>   |
+| 47  | heartbeat   | 84_857       | 623_942 | $0.0000008296 | $0.82             | <font color="red">+1_201</font> |
+| 48  | heartbeat   | 84_865       | 623_946 | $0.0000008296 | $0.82             | <font color="red">+1_012</font> |
+| 49  | heartbeat   | 85_117       | 624_046 | $0.0000008298 | $0.82             | <font color="red">+1_455</font> |
+| 50  | heartbeat   | 85_019       | 624_007 | $0.0000008297 | $0.82             | <font color="red">+1_398</font> |
+| 51  | heartbeat   | 85_195       | 624_078 | $0.0000008298 | $0.82             | <font color="red">+1_622</font> |
+| 52  | heartbeat   | 84_767       | 623_906 | $0.0000008296 | $0.82             | <font color="red">+1_140</font> |
+| 53  | heartbeat   | 84_652       | 623_860 | $0.0000008295 | $0.82             | <font color="red">+635</font>   |
+| 54  | heartbeat   | 84_849       | 623_939 | $0.0000008296 | $0.82             | <font color="red">+996</font>   |
+| 55  | heartbeat   | 84_658       | 623_863 | $0.0000008295 | $0.82             | <font color="red">+996</font>   |
+| 56  | heartbeat   | 84_617       | 623_846 | $0.0000008295 | $0.82             | <font color="red">+996</font>   |
+| 57  | heartbeat   | 84_569       | 623_827 | $0.0000008295 | $0.82             | <font color="red">+996</font>   |
+| 58  | heartbeat   | 84_632       | 623_852 | $0.0000008295 | $0.82             | <font color="red">+1_005</font> |
+| 59  | heartbeat   | 85_041       | 624_016 | $0.0000008297 | $0.82             | <font color="red">+1_024</font> |
+| 60  | heartbeat   | 84_877       | 623_950 | $0.0000008296 | $0.82             | <font color="red">+1_024</font> |
+| 61  | heartbeat   | 85_072       | 624_028 | $0.0000008298 | $0.82             | <font color="red">+1_410</font> |
+| 62  | heartbeat   | 84_700       | 623_880 | $0.0000008296 | $0.82             | <font color="red">+1_079</font> |
+| 63  | heartbeat   | 84_648       | 623_859 | $0.0000008295 | $0.82             | <font color="red">+1_075</font> |
+| 64  | heartbeat   | 84_986       | 623_994 | $0.0000008297 | $0.82             | <font color="red">+1_359</font> |
+| 65  | heartbeat   | 85_410       | 624_164 | $0.0000008299 | $0.82             | <font color="red">+1_393</font> |
+| 66  | heartbeat   | 85_065       | 624_026 | $0.0000008297 | $0.82             | <font color="red">+1_212</font> |
+| 67  | heartbeat   | 85_158       | 624_063 | $0.0000008298 | $0.82             | <font color="red">+1_487</font> |
+| 68  | heartbeat   | 84_574       | 623_829 | $0.0000008295 | $0.82             | <font color="red">+925</font>   |
+| 69  | heartbeat   | 85_080       | 624_032 | $0.0000008298 | $0.82             | <font color="red">+1_479</font> |
+| 70  | heartbeat   | 85_125       | 624_050 | $0.0000008298 | $0.82             | <font color="red">+1_084</font> |
+| 71  | heartbeat   | 85_223       | 624_089 | $0.0000008298 | $0.82             | <font color="red">+1_207</font> |
+| 72  | heartbeat   | 84_804       | 623_921 | $0.0000008296 | $0.82             | <font color="red">+872</font>   |
+| 73  | heartbeat   | 84_941       | 623_976 | $0.0000008297 | $0.82             | <font color="red">+935</font>   |
+| 74  | heartbeat   | 85_147       | 624_058 | $0.0000008298 | $0.82             | <font color="red">+1_251</font> |
+| 75  | heartbeat   | 85_467       | 624_186 | $0.0000008300 | $0.82             | <font color="red">+1_398</font> |
+| 76  | heartbeat   | 84_853       | 623_941 | $0.0000008296 | $0.82             | <font color="red">+710</font>   |
+| 77  | heartbeat   | 85_021       | 624_008 | $0.0000008297 | $0.82             | <font color="red">+1_462</font> |
+| 78  | heartbeat   | 85_748       | 624_299 | $0.0000008301 | $0.83             | <font color="red">+1_683</font> |
+| 79  | heartbeat   | 84_735       | 623_894 | $0.0000008296 | $0.82             | <font color="red">+625</font>   |
+| 80  | heartbeat   | 85_222       | 624_088 | $0.0000008298 | $0.82             | <font color="red">+826</font>   |
+| 81  | heartbeat   | 85_182       | 624_072 | $0.0000008298 | $0.82             | <font color="red">+1_392</font> |
+| 82  | heartbeat   | 84_995       | 623_998 | $0.0000008297 | $0.82             | <font color="red">+1_068</font> |
+| 83  | heartbeat   | 84_865       | 623_946 | $0.0000008296 | $0.82             | <font color="red">+517</font>   |
+| 84  | heartbeat   | 84_934       | 623_973 | $0.0000008297 | $0.82             | <font color="red">+569</font>   |
+| 85  | heartbeat   | 85_766       | 624_306 | $0.0000008301 | $0.83             | <font color="red">+1_769</font> |
+| 86  | heartbeat   | 85_243       | 624_097 | $0.0000008298 | $0.82             | <font color="red">+560</font>   |
+| 87  | heartbeat   | 85_293       | 624_117 | $0.0000008299 | $0.82             | <font color="red">+1_143</font> |
+| 88  | heartbeat   | 85_233       | 624_093 | $0.0000008298 | $0.82             | <font color="red">+1_252</font> |
+| 89  | heartbeat   | 85_331       | 624_132 | $0.0000008299 | $0.82             | <font color="red">+1_314</font> |
+| 90  | heartbeat   | 84_524       | 623_809 | $0.0000008295 | $0.82             | <font color="red">+487</font>   |
+| 91  | heartbeat   | 85_841       | 624_336 | $0.0000008302 | $0.83             | <font color="red">+1_681</font> |
+| 92  | heartbeat   | 85_517       | 624_206 | $0.0000008300 | $0.82             | <font color="red">+777</font>   |
+| 93  | heartbeat   | 85_915       | 624_366 | $0.0000008302 | $0.83             | <font color="red">+1_183</font> |
+| 94  | heartbeat   | 85_046       | 624_018 | $0.0000008297 | $0.82             | <font color="red">+223</font>   |
+| 95  | heartbeat   | 86_087       | 624_434 | $0.0000008303 | $0.83             | <font color="red">+1_522</font> |
+| 96  | heartbeat   | 84_699       | 623_879 | $0.0000008296 | $0.82             | <font color="red">+551</font>   |
+| 97  | heartbeat   | 85_637       | 624_254 | $0.0000008301 | $0.83             | <font color="red">+1_619</font> |
+| 98  | heartbeat   | 85_594       | 624_237 | $0.0000008300 | $0.83             | <font color="red">+1_220</font> |
+| 99  | heartbeat   | 85_699       | 624_279 | $0.0000008301 | $0.83             | <font color="red">+1_972</font> |
+| 100 | heartbeat   | 84_902       | 623_960 | $0.0000008297 | $0.82             | <font color="green">-18</font>  |
+| 101 | heartbeat   | 85_141       | 624_056 | $0.0000008298 | $0.82             | <font color="red">+954</font>   |
+| 102 | heartbeat   | 84_806       | 623_922 | $0.0000008296 | $0.82             | <font color="red">+736</font>   |
+| 103 | heartbeat   | 85_389       | 624_155 | $0.0000008299 | $0.82             | <font color="red">+855</font>   |
+| 104 | heartbeat   | 85_750       | 624_300 | $0.0000008301 | $0.83             | <font color="red">+1_418</font> |
+| 105 | heartbeat   | 85_069       | 624_027 | $0.0000008297 | $0.82             | <font color="red">+943</font>   |
+| 106 | heartbeat   | 85_094       | 624_037 | $0.0000008298 | $0.82             | <font color="red">+875</font>   |
+| 107 | heartbeat   | 84_729       | 623_891 | $0.0000008296 | $0.82             | <font color="red">+342</font>   |
+| 108 | heartbeat   | 86_141       | 624_456 | $0.0000008303 | $0.83             | <font color="red">+1_615</font> |
+| 109 | heartbeat   | 85_203       | 624_081 | $0.0000008298 | $0.82             | <font color="red">+519</font>   |
+| 110 | heartbeat   | 85_753       | 624_301 | $0.0000008301 | $0.83             | <font color="red">+1_476</font> |
+| 111 | heartbeat   | 85_413       | 624_165 | $0.0000008299 | $0.82             | <font color="red">+1_404</font> |
+| 112 | heartbeat   | 86_236       | 624_494 | $0.0000008304 | $0.83             | <font color="red">+2_528</font> |
+| 113 | heartbeat   | 85_163       | 624_065 | $0.0000008298 | $0.82             | <font color="red">+217</font>   |
+| 114 | heartbeat   | 85_530       | 624_212 | $0.0000008300 | $0.82             | <font color="red">+1_144</font> |
+| 115 | heartbeat   | 85_775       | 624_310 | $0.0000008301 | $0.83             | <font color="red">+715</font>   |
+| 116 | heartbeat   | 85_803       | 624_321 | $0.0000008301 | $0.83             | <font color="red">+841</font>   |
+| 117 | heartbeat   | 86_112       | 624_444 | $0.0000008303 | $0.83             | <font color="red">+1_682</font> |
+| 118 | heartbeat   | 85_472       | 624_188 | $0.0000008300 | $0.82             | <font color="red">+583</font>   |
+| 119 | heartbeat   | 85_150       | 624_060 | $0.0000008298 | $0.82             | <font color="red">+305</font>   |
+| 120 | heartbeat   | 85_648       | 624_259 | $0.0000008301 | $0.83             | <font color="red">+333</font>   |
+| 121 | heartbeat   | 86_270       | 624_508 | $0.0000008304 | $0.83             | <font color="red">+1_724</font> |
+| 122 | heartbeat   | 85_664       | 624_265 | $0.0000008301 | $0.83             | <font color="red">+881</font>   |
+| 123 | heartbeat   | 85_562       | 624_224 | $0.0000008300 | $0.83             | <font color="red">+1_019</font> |
+| 124 | heartbeat   | 85_750       | 624_300 | $0.0000008301 | $0.83             | <font color="red">+1_131</font> |
+| 125 | heartbeat   | 85_844       | 624_337 | $0.0000008302 | $0.83             | <font color="red">+1_784</font> |
+| 126 | heartbeat   | 84_924       | 623_969 | $0.0000008297 | $0.82             | <font color="red">+82</font>    |
+| 127 | heartbeat   | 85_977       | 624_390 | $0.0000008302 | $0.83             | <font color="red">+1_159</font> |
+| 128 | heartbeat   | 85_471       | 624_188 | $0.0000008300 | $0.82             | <font color="red">+450</font>   |
+| 129 | heartbeat   | 86_252       | 624_500 | $0.0000008304 | $0.83             | <font color="red">+1_492</font> |
+| 130 | heartbeat   | 84_951       | 623_980 | $0.0000008297 | $0.82             | <font color="red">+699</font>   |
+| 131 | heartbeat   | 85_088       | 624_035 | $0.0000008298 | $0.82             | <font color="red">+420</font>   |
+| 132 | heartbeat   | 86_189       | 624_475 | $0.0000008303 | $0.83             | <font color="red">+1_666</font> |
+| 133 | heartbeat   | 86_150       | 624_460 | $0.0000008303 | $0.83             | <font color="red">+2_375</font> |
+| 134 | heartbeat   | 85_404       | 624_161 | $0.0000008299 | $0.82             | <font color="red">+1_398</font> |
+| 135 | heartbeat   | 86_013       | 624_405 | $0.0000008303 | $0.83             | <font color="red">+1_782</font> |
+| 136 | heartbeat   | 85_512       | 624_204 | $0.0000008300 | $0.82             | <font color="red">+293</font>   |
+| 137 | heartbeat   | 86_261       | 624_504 | $0.0000008304 | $0.83             | <font color="red">+1_501</font> |
+| 138 | heartbeat   | 85_435       | 624_174 | $0.0000008299 | $0.82             | <font color="red">+1_183</font> |
+| 139 | heartbeat   | 86_335       | 624_534 | $0.0000008304 | $0.83             | <font color="red">+1_667</font> |
+| 140 | heartbeat   | 85_803       | 624_321 | $0.0000008301 | $0.83             | <font color="red">+1_280</font> |
+| 141 | heartbeat   | 86_112       | 624_444 | $0.0000008303 | $0.83             | <font color="red">+2_337</font> |
+| 142 | heartbeat   | 85_472       | 624_188 | $0.0000008300 | $0.82             | <font color="red">+1_466</font> |
+| 143 | heartbeat   | 85_150       | 624_060 | $0.0000008298 | $0.82             | <font color="red">+919</font>   |
+| 144 | heartbeat   | 85_648       | 624_259 | $0.0000008301 | $0.83             | <font color="red">+429</font>   |
+| 145 | heartbeat   | 86_245       | 624_498 | $0.0000008304 | $0.83             | <font color="red">+1_485</font> |
+| 146 | heartbeat   | 85_664       | 624_265 | $0.0000008301 | $0.83             | <font color="red">+1_412</font> |
+| 147 | heartbeat   | 85_572       | 624_228 | $0.0000008300 | $0.83             | <font color="red">+904</font>   |
+| 148 | heartbeat   | 85_760       | 624_304 | $0.0000008301 | $0.83             | <font color="red">+1_237</font> |
+| 149 | heartbeat   | 85_854       | 624_341 | $0.0000008302 | $0.83             | <font color="red">+2_079</font> |
+| 150 | heartbeat   | 84_934       | 623_973 | $0.0000008297 | $0.82             | <font color="red">+928</font>   |
+| 151 | heartbeat   | 85_987       | 624_394 | $0.0000008302 | $0.83             | <font color="red">+1_756</font> |
+| 152 | heartbeat   | 85_481       | 624_192 | $0.0000008300 | $0.82             | <font color="red">+262</font>   |
+| 153 | heartbeat   | 86_272       | 624_508 | $0.0000008304 | $0.83             | <font color="red">+1_512</font> |
+| 154 | heartbeat   | 84_965       | 623_986 | $0.0000008297 | $0.82             | <font color="red">+713</font>   |
+| 155 | heartbeat   | 85_088       | 624_035 | $0.0000008298 | $0.82             | <font color="red">+420</font>   |
+| 156 | heartbeat   | 85_729       | 624_291 | $0.0000008301 | $0.83             | <font color="red">+1_206</font> |
+| 157 | heartbeat   | 85_652       | 624_260 | $0.0000008301 | $0.83             | <font color="red">+1_877</font> |
+| 158 | heartbeat   | 85_367       | 624_146 | $0.0000008299 | $0.82             | <font color="red">+1_361</font> |
+| 159 | heartbeat   | 86_470       | 624_588 | $0.0000008305 | $0.83             | <font color="red">+2_239</font> |
+| 160 | heartbeat   | 85_394       | 624_157 | $0.0000008299 | $0.82             | <font color="red">+165</font>   |
+| 161 | heartbeat   | 86_331       | 624_532 | $0.0000008304 | $0.83             | <font color="red">+1_561</font> |
+| 162 | heartbeat   | 84_919       | 623_967 | $0.0000008297 | $0.82             | <font color="red">+657</font>   |
+| 163 | heartbeat   | 85_435       | 624_174 | $0.0000008299 | $0.82             | <font color="red">+757</font>   |
+| 164 | heartbeat   | 85_949       | 624_379 | $0.0000008302 | $0.83             | <font color="red">+1_412</font> |
+| 165 | heartbeat   | 85_873       | 624_349 | $0.0000008302 | $0.83             | <font color="red">+2_098</font> |
+| 166 | heartbeat   | 85_652       | 624_260 | $0.0000008301 | $0.83             | <font color="red">+1_646</font> |
+| 167 | heartbeat   | 85_180       | 624_072 | $0.0000008298 | $0.82             | <font color="red">+949</font>   |
+| 168 | heartbeat   | 85_245       | 624_098 | $0.0000008298 | $0.82             | <font color="green">-44</font>  |
+| 169 | heartbeat   | 86_087       | 624_434 | $0.0000008303 | $0.83             | <font color="red">+1_540</font> |
+| 170 | heartbeat   | 86_315       | 624_526 | $0.0000008304 | $0.83             | <font color="red">+2_134</font> |
+| 171 | heartbeat   | 85_816       | 624_326 | $0.0000008301 | $0.83             | <font color="red">+1_786</font> |
+| 172 | heartbeat   | 85_262       | 624_104 | $0.0000008299 | $0.82             |                                 |
+| 173 | heartbeat   | 86_110       | 624_444 | $0.0000008303 | $0.83             |                                 |
+| 174 | heartbeat   | 85_370       | 624_148 | $0.0000008299 | $0.82             |                                 |
+| 175 | heartbeat   | 85_525       | 624_210 | $0.0000008300 | $0.82             |                                 |
+| 176 | heartbeat   | 86_628       | 624_651 | $0.0000008306 | $0.83             |                                 |
+| 177 | heartbeat   | 85_225       | 624_090 | $0.0000008298 | $0.82             |                                 |
+| 178 | heartbeat   | 86_350       | 624_540 | $0.0000008304 | $0.83             |                                 |
+| 179 | heartbeat   | 86_240       | 624_496 | $0.0000008304 | $0.83             |                                 |
+| 180 | heartbeat   | 86_027       | 624_410 | $0.0000008303 | $0.83             |                                 |
+| 181 | heartbeat   | 84_941       | 623_976 | $0.0000008297 | $0.82             |                                 |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ------- | ------------- | ----------------- |
@@ -340,10 +684,6 @@ No benchmarks reported
 | 169 | heartbeat   | 84_547       | 623_818 | $0.0000008295 | $0.82             |
 | 170 | heartbeat   | 84_181       | 623_672 | $0.0000008293 | $0.82             |
 | 171 | heartbeat   | 84_030       | 623_612 | $0.0000008292 | $0.82             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

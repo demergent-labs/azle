@@ -1,13 +1,22 @@
 {
     "phone_book": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "3414930" },
                     "method_name": "insert",
                     "timestamp": { "__bigint__": "1730326466198048265" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "3414074" },
+                    "method_name": "insert",
+                    "timestamp": { "__bigint__": "1730482858674226196" }
                 }
             ]
         }

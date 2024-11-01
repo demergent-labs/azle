@@ -1,6 +1,26 @@
 # Benchmarks for ledger_canister
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
+| --- | ----------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | getAccountBalance | 4_945_746    | 2_568_298 | $0.0000034150 | $3.41             | <font color="red">+66_754</font>    |
+| 1   | getTransferFee    | 2_111_171    | 1_434_468 | $0.0000019074 | $1.90             | <font color="green">-8_723</font>   |
+| 2   | executeTransfer   | 13_351_944   | 5_930_777 | $0.0000078860 | $7.88             | <font color="green">-133_750</font> |
+| 3   | executeTransfer   | 13_355_934   | 5_932_373 | $0.0000078881 | $7.88             | <font color="green">-107_867</font> |
+| 4   | getBlocks         | 5_751_011    | 2_890_404 | $0.0000038433 | $3.84             | <font color="red">+15_007</font>    |
+| 5   | getSymbol         | 1_621_216    | 1_238_486 | $0.0000016468 | $1.64             | <font color="red">+3_988</font>     |
+| 6   | getName           | 1_627_262    | 1_240_904 | $0.0000016500 | $1.64             | <font color="red">+8_058</font>     |
+| 7   | getDecimals       | 1_626_139    | 1_240_455 | $0.0000016494 | $1.64             | <font color="red">+9_540</font>     |
+| 8   | getArchives       | 1_626_379    | 1_240_551 | $0.0000016495 | $1.64             | <font color="red">+10_171</font>    |
+| 9   | executeTransfer   | 13_352_320   | 5_930_928 | $0.0000078862 | $7.88             | <font color="green">-108_547</font> |
+| 10  | getAccountBalance | 4_904_206    | 2_551_682 | $0.0000033929 | $3.39             | <font color="red">+116_469</font>   |
+| 11  | executeTransfer   | 13_315_694   | 5_916_277 | $0.0000078667 | $7.86             | <font color="green">-134_055</font> |
+| 12  | executeTransfer   | 13_332_762   | 5_923_104 | $0.0000078758 | $7.87             | <font color="green">-136_124</font> |
+| 13  | executeTransfer   | 14_129_111   | 6_241_644 | $0.0000082993 | $8.29             | <font color="green">-152_889</font> |
+| 14  | executeTransfer   | 14_108_178   | 6_233_271 | $0.0000082882 | $8.28             | <font color="green">-187_260</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- |
@@ -19,10 +39,6 @@
 | 12  | executeTransfer   | 13_468_886   | 5_977_554 | $0.0000079482 | $7.94             |
 | 13  | executeTransfer   | 14_282_000   | 6_302_800 | $0.0000083806 | $8.38             |
 | 14  | executeTransfer   | 14_295_438   | 6_308_175 | $0.0000083878 | $8.38             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

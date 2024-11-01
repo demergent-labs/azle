@@ -1,7 +1,6 @@
 {
     "ethereum_json_rpc": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -38,6 +37,46 @@
                     "instructions": { "__bigint__": "26829082" },
                     "method_name": "ethGetBlockByNumber",
                     "timestamp": { "__bigint__": "1730326455093545222" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1444930445" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730482831764987332" }
+                },
+                {
+                    "instructions": { "__bigint__": "26931700" },
+                    "method_name": "ethGetBalance",
+                    "timestamp": { "__bigint__": "1730482838446108813" }
+                },
+                {
+                    "instructions": { "__bigint__": "26871426" },
+                    "method_name": "ethGetBalance",
+                    "timestamp": { "__bigint__": "1730482840570192496" }
+                },
+                {
+                    "instructions": { "__bigint__": "26593213" },
+                    "method_name": "ethGetBalance",
+                    "timestamp": { "__bigint__": "1730482842764498185" }
+                },
+                {
+                    "instructions": { "__bigint__": "25350284" },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": { "__bigint__": "1730482844848566150" }
+                },
+                {
+                    "instructions": { "__bigint__": "25341595" },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": { "__bigint__": "1730482846752726357" }
+                },
+                {
+                    "instructions": { "__bigint__": "25336579" },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": { "__bigint__": "1730482848975415123" }
                 }
             ]
         }

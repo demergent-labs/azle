@@ -1,10 +1,10 @@
 # Benchmarks for blob_array
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 No benchmarks reported
 

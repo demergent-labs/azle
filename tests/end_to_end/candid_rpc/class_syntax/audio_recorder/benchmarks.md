@@ -1,6 +1,16 @@
 # Benchmarks for audio_recorder
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
+| --- | --------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | createUser      | 11_114_445   | 5_035_778  | $0.0000066959 | $6.69             | <font color="green">-96_513</font>  |
+| 1   | createRecording | 30_600_050   | 12_830_020 | $0.0000170597 | $17.05            | <font color="green">-270_555</font> |
+| 2   | deleteRecording | 42_869_932   | 17_737_972 | $0.0000235856 | $23.58            | <font color="green">-704_156</font> |
+| 3   | createRecording | 30_430_801   | 12_762_320 | $0.0000169697 | $16.96            | <font color="green">-238_133</font> |
+| 4   | deleteUser      | 29_336_232   | 12_324_492 | $0.0000163875 | $16.38            | <font color="green">-459_207</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | --------------- | ------------ | ---------- | ------------- | ----------------- |
@@ -9,10 +19,6 @@
 | 2   | deleteRecording | 43_574_088   | 18_019_635 | $0.0000239602 | $23.96            |
 | 3   | createRecording | 30_668_934   | 12_857_573 | $0.0000170963 | $17.09            |
 | 4   | deleteUser      | 29_795_439   | 12_508_175 | $0.0000166317 | $16.63            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

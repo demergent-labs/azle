@@ -1,15 +1,18 @@
 # Benchmarks for key_value_store
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | set         | 1_430_991    | 1_162_396 | $0.0000015456 | $1.54             | <font color="red">+27_116</font> |
+| 1   | set         | 1_386_326    | 1_144_530 | $0.0000015218 | $1.52             | <font color="red">+33_704</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
 | 0   | set         | 1_403_875    | 1_151_550 | $0.0000015312 | $1.53             |
 | 1   | set         | 1_352_622    | 1_131_048 | $0.0000015039 | $1.50             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

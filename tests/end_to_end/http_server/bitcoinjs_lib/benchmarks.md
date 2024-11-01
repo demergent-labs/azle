@@ -1,6 +1,21 @@
 # Benchmarks for bitcoinjs_lib
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init                | 49_591_865_875 | 39_437_336_350 | $0.0524386430 | $52_438.64        | <font color="red">+7_744_534</font>   |
+| 1   | http_request_update | 55_291_627     | 22_706_650     | $0.0000301924 | $30.19            | <font color="red">+31_463</font>      |
+| 2   | http_request_update | 940_462_727    | 376_775_090    | $0.0005009865 | $500.98           | <font color="green">-56_212</font>    |
+| 3   | http_request_update | 6_823_963_463  | 5_130_175_385  | $0.0068214403 | $6_821.44         | <font color="green">-1_521_208</font> |
+| 4   | http_request_update | 6_671_630_201  | 5_069_242_080  | $0.0067404191 | $6_740.41         | <font color="red">+718_040</font>     |
+| 5   | http_request_update | 12_390_654_423 | 9_756_851_769  | $0.0129733931 | $12_973.39        | <font color="red">+265_853</font>     |
+| 6   | http_request_update | 940_343_798    | 376_727_519    | $0.0005009233 | $500.92           | <font color="red">+16_212</font>      |
+| 7   | http_request_update | 3_341_886_984  | 2_537_344_793  | $0.0033738313 | $3_373.83         | <font color="red">+441_394</font>     |
+| 8   | http_request_update | 11_328_133_427 | 8_931_843_370  | $0.0118764042 | $11_876.40        | <font color="green">-365_163</font>   |
+| 9   | http_request_update | 11_335_128_474 | 8_934_641_389  | $0.0118801246 | $11_880.12        | <font color="red">+745_396</font>     |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls |
 | --- | ------------------- | -------------- | -------------- | ------------- | ----------------- |
@@ -14,10 +29,6 @@
 | 7   | http_request_update | 3_341_445_590  | 2_537_168_236  | $0.0033735965 | $3_373.59         |
 | 8   | http_request_update | 11_328_498_590 | 8_931_989_436  | $0.0118765984 | $11_876.59        |
 | 9   | http_request_update | 11_334_383_078 | 8_934_343_231  | $0.0118797282 | $11_879.72        |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

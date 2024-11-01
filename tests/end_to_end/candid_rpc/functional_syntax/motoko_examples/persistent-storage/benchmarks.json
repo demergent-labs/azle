@@ -1,13 +1,22 @@
 {
     "persistent_storage": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "5365081297" },
                     "method_name": "postUpgrade",
                     "timestamp": { "__bigint__": "1730326475402188032" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5368366066" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730482861991691486" }
                 }
             ]
         }
