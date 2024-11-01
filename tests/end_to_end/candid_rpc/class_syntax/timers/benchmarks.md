@@ -4,7 +4,7 @@
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | setTimers   | 10_061_696   | 4_614_678 | $0.0000061360 | $6.13             | <font color="green">-78_654</font> |
+| 0   | setTimers   | 10_061_620   | 4_614_648 | $0.0000061360 | $6.13             | <font color="green">-78_730</font> |
 | 1   | clearTimer  | 1_235_345    | 1_084_138 | $0.0000014415 | $1.44             | <font color="red">+55_140</font>   |
 | 2   | clearTimer  | 1_232_494    | 1_082_997 | $0.0000014400 | $1.44             | <font color="red">+52_748</font>   |
 

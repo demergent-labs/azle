@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name         | Instructions   | Cycles        | USD           | USD/Million Calls | Change                               |
-| --- | ------------------- | -------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
-| 0   | postUpgrade         | 12_562_061_357 | 9_825_414_542 | $0.0130645590 | $13_064.55        | <font color="red">+3_407_009</font>  |
-| 1   | http_request_update | 148_376_095    | 59_940_438    | $0.0000797010 | $79.70            | <font color="green">-97_793</font>   |
-| 2   | http_request_update | 75_593_815     | 30_827_526    | $0.0000409904 | $40.99            | <font color="green">-89_803</font>   |
-| 3   | http_request_update | 163_886_086    | 66_144_434    | $0.0000879503 | $87.95            | <font color="red">+19_293_804</font> |
-| 4   | http_request_update | 83_781_557     | 34_102_622    | $0.0000453452 | $45.34            | <font color="red">+33_932</font>     |
+| Id  | Method Name         | Instructions   | Cycles        | USD           | USD/Million Calls | Change                              |
+| --- | ------------------- | -------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade         | 12_562_044_436 | 9_825_407_774 | $0.0130645500 | $13_064.54        | <font color="red">+3_390_088</font> |
+| 1   | http_request_update | 148_535_868    | 60_004_347    | $0.0000797860 | $79.78            | <font color="red">+61_980</font>    |
+| 2   | http_request_update | 75_763_470     | 30_895_388    | $0.0000410807 | $41.08            | <font color="red">+79_852</font>    |
+| 3   | http_request_update | 144_768_056    | 58_497_222    | $0.0000777820 | $77.78            | <font color="red">+175_774</font>   |
+| 4   | http_request_update | 83_761_973     | 34_094_789    | $0.0000453348 | $45.33            | <font color="red">+14_348</font>    |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

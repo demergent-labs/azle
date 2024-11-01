@@ -26,17 +26,17 @@
                 {
                     "instructions": { "__bigint__": "1516934" },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730484659438266793" }
+                    "timestamp": { "__bigint__": "1730494496847077607" }
                 },
                 {
                     "instructions": { "__bigint__": "1519792" },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730484661369436272" }
+                    "timestamp": { "__bigint__": "1730494499020675082" }
                 },
                 {
                     "instructions": { "__bigint__": "1522381" },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730484663382139099" }
+                    "timestamp": { "__bigint__": "1730494501151781574" }
                 }
             ]
         }
@@ -61,14 +61,14 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1706711" },
+                    "instructions": { "__bigint__": "1706612" },
                     "method_name": "sendCycles",
-                    "timestamp": { "__bigint__": "1730484661369436272" }
+                    "timestamp": { "__bigint__": "1730494499020675082" }
                 },
                 {
                     "instructions": { "__bigint__": "2024283" },
                     "method_name": "sendCyclesNotify",
-                    "timestamp": { "__bigint__": "1730484663382139099" }
+                    "timestamp": { "__bigint__": "1730494501151781574" }
                 }
             ]
         }

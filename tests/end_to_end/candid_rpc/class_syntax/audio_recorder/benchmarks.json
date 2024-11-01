@@ -34,29 +34,29 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "11112042" },
+                    "instructions": { "__bigint__": "11110464" },
                     "method_name": "createUser",
-                    "timestamp": { "__bigint__": "1730484657355231307" }
+                    "timestamp": { "__bigint__": "1730494487750522972" }
                 },
                 {
-                    "instructions": { "__bigint__": "30590934" },
+                    "instructions": { "__bigint__": "30582658" },
                     "method_name": "createRecording",
-                    "timestamp": { "__bigint__": "1730484659501312799" }
+                    "timestamp": { "__bigint__": "1730494489905886320" }
                 },
                 {
-                    "instructions": { "__bigint__": "42858618" },
+                    "instructions": { "__bigint__": "42841576" },
                     "method_name": "deleteRecording",
-                    "timestamp": { "__bigint__": "1730484662038301922" }
+                    "timestamp": { "__bigint__": "1730494491985111412" }
                 },
                 {
-                    "instructions": { "__bigint__": "30419558" },
+                    "instructions": { "__bigint__": "30414440" },
                     "method_name": "createRecording",
-                    "timestamp": { "__bigint__": "1730484663843407122" }
+                    "timestamp": { "__bigint__": "1730494494256221566" }
                 },
                 {
-                    "instructions": { "__bigint__": "29329040" },
+                    "instructions": { "__bigint__": "29324850" },
                     "method_name": "deleteUser",
-                    "timestamp": { "__bigint__": "1730484665869369529" }
+                    "timestamp": { "__bigint__": "1730494496205673182" }
                 }
             ]
         }

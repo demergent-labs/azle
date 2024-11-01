@@ -6,7 +6,7 @@
 | --- | ------------------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
 | 0   | canisterNestedReturnType  | 6_118_718    | 3_037_487 | $0.0000040389 | $4.03             | <font color="green">-103_748</font> |
 | 1   | canisterList              | 6_772_931    | 3_299_172 | $0.0000043868 | $4.38             | <font color="red">+67_863</font>    |
-| 2   | canisterCrossCanisterCall | 2_599_017    | 1_629_606 | $0.0000021668 | $2.16             | <font color="red">+73_271</font>    |
+| 2   | canisterCrossCanisterCall | 2_599_040    | 1_629_616 | $0.0000021669 | $2.16             | <font color="red">+73_294</font>    |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

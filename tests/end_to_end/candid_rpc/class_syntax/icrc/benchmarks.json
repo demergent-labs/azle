@@ -29,24 +29,24 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "14809675" },
+                    "instructions": { "__bigint__": "14809652" },
                     "method_name": "icrc1_transfer",
-                    "timestamp": { "__bigint__": "1730484646842338901" }
+                    "timestamp": { "__bigint__": "1730494487798097966" }
                 },
                 {
-                    "instructions": { "__bigint__": "18266538" },
+                    "instructions": { "__bigint__": "18266508" },
                     "method_name": "icrc2_approve",
-                    "timestamp": { "__bigint__": "1730484648954940565" }
+                    "timestamp": { "__bigint__": "1730494490028983141" }
                 },
                 {
-                    "instructions": { "__bigint__": "17056173" },
+                    "instructions": { "__bigint__": "17056104" },
                     "method_name": "icrc2_transfer_from",
-                    "timestamp": { "__bigint__": "1730484650818708125" }
+                    "timestamp": { "__bigint__": "1730494492046418316" }
                 },
                 {
-                    "instructions": { "__bigint__": "9870138" },
+                    "instructions": { "__bigint__": "9870164" },
                     "method_name": "icrc2_allowance",
-                    "timestamp": { "__bigint__": "1730484653073539564" }
+                    "timestamp": { "__bigint__": "1730494493995763878" }
                 }
             ]
         }

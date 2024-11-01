@@ -14,9 +14,9 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "6229268" },
+                    "instructions": { "__bigint__": "6229298" },
                     "method_name": "testRecServiceCall",
-                    "timestamp": { "__bigint__": "1730484667478078055" }
+                    "timestamp": { "__bigint__": "1730494504533666831" }
                 }
             ]
         }
@@ -38,7 +38,7 @@
                 {
                     "instructions": { "__bigint__": "1337859120" },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484650810353837" }
+                    "timestamp": { "__bigint__": "1730494488298584482" }
                 }
             ]
         }

@@ -21,12 +21,12 @@
                 {
                     "instructions": { "__bigint__": "1360370814" },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484644760868548" }
+                    "timestamp": { "__bigint__": "1730494482190094404" }
                 },
                 {
-                    "instructions": { "__bigint__": "1656909" },
+                    "instructions": { "__bigint__": "1657008" },
                     "method_name": "getNotifierFromNotifiersCanister",
-                    "timestamp": { "__bigint__": "1730484657151616309" }
+                    "timestamp": { "__bigint__": "1730494493775597223" }
                 }
             ]
         }

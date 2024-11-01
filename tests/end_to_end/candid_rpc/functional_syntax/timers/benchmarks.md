@@ -4,9 +4,9 @@
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | setTimers   | 16_634_892   | 7_243_956 | $0.0000096321 | $9.63             | <font color="green">-27_798</font> |
-| 1   | clearTimer  | 1_181_083    | 1_062_433 | $0.0000014127 | $1.41             | <font color="green">-1_988</font>  |
-| 2   | clearTimer  | 1_180_442    | 1_062_176 | $0.0000014123 | $1.41             | <font color="green">-2_784</font>  |
+| 0   | setTimers   | 16_634_984   | 7_243_993 | $0.0000096321 | $9.63             | <font color="green">-27_706</font> |
+| 1   | clearTimer  | 1_184_928    | 1_063_971 | $0.0000014147 | $1.41             | <font color="red">+1_857</font>    |
+| 2   | clearTimer  | 1_183_601    | 1_063_440 | $0.0000014140 | $1.41             | <font color="red">+375</font>      |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

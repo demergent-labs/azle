@@ -26,17 +26,17 @@
                 {
                     "instructions": { "__bigint__": "6118718" },
                     "method_name": "canisterNestedReturnType",
-                    "timestamp": { "__bigint__": "1730484666434251308" }
+                    "timestamp": { "__bigint__": "1730494497377355541" }
                 },
                 {
                     "instructions": { "__bigint__": "6772931" },
                     "method_name": "canisterList",
-                    "timestamp": { "__bigint__": "1730484668426574198" }
+                    "timestamp": { "__bigint__": "1730494499385152716" }
                 },
                 {
-                    "instructions": { "__bigint__": "2599017" },
+                    "instructions": { "__bigint__": "2599040" },
                     "method_name": "canisterCrossCanisterCall",
-                    "timestamp": { "__bigint__": "1730484670402983952" }
+                    "timestamp": { "__bigint__": "1730494501597137914" }
                 }
             ]
         }

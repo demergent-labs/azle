@@ -4,10 +4,10 @@
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | icrc1_transfer      | 14_809_675   | 6_513_870 | $0.0000086613 | $8.66             | <font color="green">-23_273</font>  |
-| 1   | icrc2_approve       | 18_266_538   | 7_896_615 | $0.0000104999 | $10.49            | <font color="red">+66_759</font>    |
-| 2   | icrc2_transfer_from | 17_056_173   | 7_412_469 | $0.0000098561 | $9.85             | <font color="green">-200_354</font> |
-| 3   | icrc2_allowance     | 9_870_138    | 4_538_055 | $0.0000060341 | $6.03             | <font color="green">-156_051</font> |
+| 0   | icrc1_transfer      | 14_809_652   | 6_513_860 | $0.0000086613 | $8.66             | <font color="green">-23_296</font>  |
+| 1   | icrc2_approve       | 18_266_508   | 7_896_603 | $0.0000104999 | $10.49            | <font color="red">+66_729</font>    |
+| 2   | icrc2_transfer_from | 17_056_104   | 7_412_441 | $0.0000098561 | $9.85             | <font color="green">-200_423</font> |
+| 3   | icrc2_allowance     | 9_870_164    | 4_538_065 | $0.0000060341 | $6.03             | <font color="green">-156_025</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

@@ -19,14 +19,14 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "23714014" },
+                    "instructions": { "__bigint__": "23713945" },
                     "method_name": "xkcd",
-                    "timestamp": { "__bigint__": "1730484651698364145" }
+                    "timestamp": { "__bigint__": "1730494490052079389" }
                 },
                 {
-                    "instructions": { "__bigint__": "1414933" },
+                    "instructions": { "__bigint__": "1414956" },
                     "method_name": "xkcdRaw",
-                    "timestamp": { "__bigint__": "1730484654249133454" }
+                    "timestamp": { "__bigint__": "1730494492210654874" }
                 }
             ]
         }

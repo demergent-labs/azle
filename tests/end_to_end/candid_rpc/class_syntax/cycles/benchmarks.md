@@ -22,7 +22,7 @@
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | sendCycles       | 1_706_711    | 1_272_684 | $0.0000016922 | $1.69             | <font color="green">-24_300</font> |
+| 0   | sendCycles       | 1_706_612    | 1_272_644 | $0.0000016922 | $1.69             | <font color="green">-24_399</font> |
 | 1   | sendCyclesNotify | 2_024_283    | 1_399_713 | $0.0000018612 | $1.86             | <font color="red">+33_479</font>   |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation

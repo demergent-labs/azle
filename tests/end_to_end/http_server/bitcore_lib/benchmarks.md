@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                  |
-| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | init                | 10_828_474_791 | 8_331_979_916  | $0.0110787837 | $11_078.78        | <font color="red">+6_311_492</font>     |
-| 1   | http_request_update | 1_107_797_771  | 843_709_108    | $0.0011218547 | $1_121.85         | <font color="red">+72_388</font>        |
-| 2   | http_request_update | 11_598_330_886 | 9_039_922_354  | $0.0120201136 | $12_020.11        | <font color="red">+26_786_838</font>    |
-| 3   | http_request_update | 13_892_751_309 | 10_757_690_523 | $0.0143041784 | $14_304.17        | <font color="red">+63_779_524</font>    |
-| 4   | http_request_update | 17_576_327_808 | 13_831_121_123 | $0.0183908268 | $18_390.82        | <font color="red">+5_092_071_918</font> |
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                    |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ----------------------------------------- |
+| 0   | init                | 10_828_474_791 | 8_331_979_916  | $0.0110787837 | $11_078.78        | <font color="red">+6_311_492</font>       |
+| 1   | http_request_update | 1_107_797_771  | 843_709_108    | $0.0011218547 | $1_121.85         | <font color="red">+72_388</font>          |
+| 2   | http_request_update | 6_667_564_712  | 5_067_615_884  | $0.0067382568 | $6_738.25         | <font color="green">-4_903_979_336</font> |
+| 3   | http_request_update | 14_032_063_479 | 11_213_415_391 | $0.0149101420 | $14_910.14        | <font color="red">+203_091_694</font>     |
+| 4   | http_request_update | 17_222_854_886 | 13_689_731_954 | $0.0182028259 | $18_202.82        | <font color="red">+4_738_598_996</font>   |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

@@ -4,7 +4,7 @@
 
 | Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ------------------ | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | testRecServiceCall | 6_229_268    | 3_081_707 | $0.0000040977 | $4.09             | <font color="red">+51_913</font> |
+| 0   | testRecServiceCall | 6_229_298    | 3_081_719 | $0.0000040977 | $4.09             | <font color="red">+51_943</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
