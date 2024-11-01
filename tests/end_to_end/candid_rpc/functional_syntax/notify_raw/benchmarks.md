@@ -1,26 +1,30 @@
 # Benchmarks for canister1
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | sendNotification | 1_634_778    | 1_243_911 | $0.0000016540 | $1.65             | <font color="green">-2_429</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
 | 0   | sendNotification | 1_637_207    | 1_244_882 | $0.0000016553 | $1.65             |
 
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
-
 # Benchmarks for canister2
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls | Change                          |
+| --- | ------------------- | ------------ | ------- | ------------- | ----------------- | ------------------------------- |
+| 0   | receiveNotification | 866_190      | 936_476 | $0.0000012452 | $1.24             | <font color="red">+1_190</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls |
 | --- | ------------------- | ------------ | ------- | ------------- | ----------------- |
 | 0   | receiveNotification | 865_000      | 936_000 | $0.0000012446 | $1.24             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

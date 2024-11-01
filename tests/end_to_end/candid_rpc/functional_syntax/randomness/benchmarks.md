@@ -1,6 +1,17 @@
 # Benchmarks for randomness
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
+| --- | ------------ | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
+| 0   | postUpgrade  | 5_875_560_744 | 4_350_814_297 | $0.0057851472 | $5_785.14         | <font color="red">+599_706</font> |
+| 1   | randomNumber | 1_037_140     | 1_004_856     | $0.0000013361 | $1.33             | <font color="red">+3_421</font>   |
+| 2   | randomNumber | 1_022_596     | 999_038       | $0.0000013284 | $1.32             | <font color="red">+102</font>     |
+| 3   | randomNumber | 1_021_984     | 998_793       | $0.0000013281 | $1.32             | <font color="green">-603</font>   |
+| 4   | randomNumber | 1_020_631     | 998_252       | $0.0000013273 | $1.32             | <font color="green">-170</font>   |
+| 5   | randomNumber | 1_023_113     | 999_245       | $0.0000013287 | $1.32             | <font color="red">+917</font>     |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------ | ------------- | ------------- | ------------- | ----------------- |
@@ -10,10 +21,6 @@
 | 3   | randomNumber | 1_022_587     | 999_034       | $0.0000013284 | $1.32             |
 | 4   | randomNumber | 1_020_801     | 998_320       | $0.0000013274 | $1.32             |
 | 5   | randomNumber | 1_022_196     | 998_878       | $0.0000013282 | $1.32             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

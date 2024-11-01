@@ -1,7 +1,6 @@
 {
     "async_await": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -23,6 +22,31 @@
                     "instructions": { "__bigint__": "140125173" },
                     "method_name": "returnPromiseVoid",
                     "timestamp": { "__bigint__": "1730326502147362381" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "140161753" },
+                    "method_name": "getRandomnessDirectly",
+                    "timestamp": { "__bigint__": "1730484665820866992" }
+                },
+                {
+                    "instructions": { "__bigint__": "140170791" },
+                    "method_name": "getRandomnessIndirectly",
+                    "timestamp": { "__bigint__": "1730484667828941281" }
+                },
+                {
+                    "instructions": { "__bigint__": "140168252" },
+                    "method_name": "getRandomnessSuperIndirectly",
+                    "timestamp": { "__bigint__": "1730484669841452976" }
+                },
+                {
+                    "instructions": { "__bigint__": "140137414" },
+                    "method_name": "returnPromiseVoid",
+                    "timestamp": { "__bigint__": "1730484671896040157" }
                 }
             ]
         }

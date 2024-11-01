@@ -1,7 +1,6 @@
 {
     "randomness": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -33,6 +32,41 @@
                     "instructions": { "__bigint__": "1028861" },
                     "method_name": "randomNumber",
                     "timestamp": { "__bigint__": "1730326474468122746" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1336536174" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730484666433920012" }
+                },
+                {
+                    "instructions": { "__bigint__": "1063368" },
+                    "method_name": "randomNumber",
+                    "timestamp": { "__bigint__": "1730484670776418789" }
+                },
+                {
+                    "instructions": { "__bigint__": "1044209" },
+                    "method_name": "randomNumber",
+                    "timestamp": { "__bigint__": "1730484672928846202" }
+                },
+                {
+                    "instructions": { "__bigint__": "1042773" },
+                    "method_name": "randomNumber",
+                    "timestamp": { "__bigint__": "1730484674933871557" }
+                },
+                {
+                    "instructions": { "__bigint__": "1044729" },
+                    "method_name": "randomNumber",
+                    "timestamp": { "__bigint__": "1730484677056806777" }
+                },
+                {
+                    "instructions": { "__bigint__": "1044003" },
+                    "method_name": "randomNumber",
+                    "timestamp": { "__bigint__": "1730484679243180168" }
                 }
             ]
         }
