@@ -9,6 +9,7 @@ import {
     update
 } from 'azle/experimental';
 import express from 'express';
+import { Server as NodeServer } from 'http';
 
 let httpQueryText = '';
 let httpUpdateText = '';
@@ -47,9 +48,7 @@ export default Canister({
     })
 });
 
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function serverCallback() {
+function serverCallback(): NodeServer {
     const app = express();
 
     app.get('/http-query', (_req, res) => {

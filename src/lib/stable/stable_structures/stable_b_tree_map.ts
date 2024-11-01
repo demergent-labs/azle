@@ -5,13 +5,23 @@ export interface Serializable {
     fromBytes: (bytes: Uint8Array) => any;
 }
 
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export type StableBTreeMap<Key, Value> = {
+    containsKey(key: Key): boolean;
+    get(key: Key): Value | null;
+    insert(key: Key, value: Value): Value | null;
+    isEmpty(): boolean;
+    items(startIndex?: number, length?: number): [Key, Value][];
+    keys(startIndex?: number, length?: number): Key[];
+    len(): bigint;
+    remove(key: Key): Value | null;
+    values(startIndex?: number, length?: number): Value[];
+};
+
 export function StableBTreeMap<Key = any, Value = any>(
     memoryIdNumber: number,
     keySerializable: Serializable = stableJson,
     valueSerializable: Serializable = stableJson
-) {
+): StableBTreeMap<Key, Value> {
     const memoryId = memoryIdNumber;
 
     if (
