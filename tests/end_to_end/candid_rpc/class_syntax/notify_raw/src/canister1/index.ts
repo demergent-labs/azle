@@ -11,7 +11,7 @@ export default class {
             'receiveNotification',
             {
                 raw: Uint8Array.from(candidEncode('()')),
-                payment: 0n
+                cycles: 0n
             }
         );
     }

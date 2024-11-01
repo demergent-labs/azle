@@ -6,11 +6,11 @@ export default class {
         canisterId: Principal,
         method: string,
         candidArgs: string,
-        payment: bigint
+        cycles: bigint
     ): Promise<string> {
         const result = await call<undefined>(canisterId, method, {
             raw: candidEncode(candidArgs),
-            payment
+            cycles
         });
 
         return candidDecode(result);

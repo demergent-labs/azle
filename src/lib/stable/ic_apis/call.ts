@@ -11,7 +11,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
         paramIdlTypes?: IDL.Type[];
         returnIdlType?: IDL.Type;
         args?: Args;
-        payment?: bigint; // TODO this should be called cycles: https://github.com/demergent-labs/azle/issues/2104
+        cycles?: bigint;
         raw?: Uint8Array;
     }
 ): Promise<Return> {
@@ -58,7 +58,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
 
         const paramIdlTypes = options?.paramIdlTypes ?? [];
         const args = options?.args ?? [];
-        const payment = options?.payment ?? 0n;
+        const cycles = options?.cycles ?? 0n;
 
         const canisterIdPrincipal =
             typeof canisterId === 'string'
@@ -67,7 +67,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
         const canisterIdBytes = canisterIdPrincipal.toUint8Array();
         const argsRaw =
             raw === undefined ? idlEncode(paramIdlTypes, args) : raw;
-        const paymentString = payment.toString();
+        const cyclesString = cycles.toString();
 
         // TODO consider finally, what if deletion goes wrong
         try {
@@ -77,7 +77,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
                     canisterIdBytes.buffer,
                     method,
                     argsRaw.buffer,
-                    paymentString
+                    cyclesString
                 );
             } else {
                 globalThis._azleIcStable.callRaw(
@@ -85,7 +85,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
                     canisterIdBytes,
                     method,
                     argsRaw,
-                    paymentString
+                    cyclesString
                 );
             }
         } catch (error) {

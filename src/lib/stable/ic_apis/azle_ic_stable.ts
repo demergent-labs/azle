@@ -9,7 +9,7 @@ export type AzleIcStable = {
         canisterIdBytes: Uint8Array,
         method: string,
         argsRaw: Uint8Array,
-        paymentString: string
+        cyclesString: string
     ) => void;
     caller: () => Uint8Array;
     candidCompiler: (candidPath: string) => string;
@@ -30,7 +30,7 @@ export type AzleIcStable = {
         canisterIdBytes: Uint8Array,
         method: string,
         argsRawBuffer: Uint8Array,
-        paymentString: string
+        cyclesString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
     rejectCode: () => number;
