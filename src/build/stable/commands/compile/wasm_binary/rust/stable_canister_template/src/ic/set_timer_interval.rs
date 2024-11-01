@@ -1,5 +1,6 @@
 use core::time::Duration;
 
+use ic_cdk::trap;
 use ic_cdk_timers::{set_timer_interval, TimerId};
 use rquickjs::{Ctx, Function, Object, Result};
 use slotmap::Key;
@@ -34,7 +35,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                 });
 
                 if let Err(e) = result {
-                    ic_cdk::trap(&format!("Azle TimerIntervalError: {e}"));
+                    trap(&format!("Azle TimerIntervalError: {e}"));
                 }
             };
 

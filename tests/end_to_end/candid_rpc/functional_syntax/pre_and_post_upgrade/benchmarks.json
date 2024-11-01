@@ -1,0 +1,15 @@
+{
+    "pre_and_post_upgrade": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5369433219" },
+                    "method_name": "postUpgrade",
+                    "timestamp": { "__bigint__": "1730326479019801425" }
+                }
+            ]
+        }
+    }
+}

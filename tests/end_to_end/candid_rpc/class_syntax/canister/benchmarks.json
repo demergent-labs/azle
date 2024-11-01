@@ -1,0 +1,25 @@
+{
+    "canister": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "6222466" },
+                    "method_name": "canisterNestedReturnType",
+                    "timestamp": { "__bigint__": "1730326467782991450" }
+                },
+                {
+                    "instructions": { "__bigint__": "6705068" },
+                    "method_name": "canisterList",
+                    "timestamp": { "__bigint__": "1730326469951380666" }
+                },
+                {
+                    "instructions": { "__bigint__": "2525746" },
+                    "method_name": "canisterCrossCanisterCall",
+                    "timestamp": { "__bigint__": "1730326471896983015" }
+                }
+            ]
+        }
+    }
+}

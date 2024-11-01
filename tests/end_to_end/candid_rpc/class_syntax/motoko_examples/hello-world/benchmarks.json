@@ -1,0 +1,6 @@
+{
+    "hello_world": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": { "version": "0.25.0-pre-bifurcation", "benchmarks": [] }
+    }
+}

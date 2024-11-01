@@ -1,0 +1,93 @@
+name: Parallel Benchmark
+on:
+    workflow_call:
+        inputs:
+            base-branch:
+                required: true
+                type: string
+            branch-prefix:
+                required: true
+                type: string
+            directories:
+                required: true
+                type: string
+            exclude-dirs:
+                required: false
+                type: string
+                default: ''
+
+        secrets:
+            GPG_SIGNING_KEY:
+                required: true
+            GH_TOKEN:
+                required: true
+            LASTMJS_GITHUB_TOKEN:
+                required: true
+
+jobs:
+    prepare-benchmark:
+        name: Prepare Benchmark
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ inputs.base-branch }}
+
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: ${{ inputs.directories }}
+                  exclude-dirs: ${{ inputs.exclude-dirs }}
+
+    run-benchmarks:
+        needs: prepare-benchmark
+        name: Run benchmarks for ${{ matrix.test.name }}
+        runs-on: ubuntu-latest
+        env:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        strategy:
+            fail-fast: false
+            matrix:
+                test: ${{ fromJson(needs.prepare-benchmark.outputs.test-infos) }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ inputs.base-branch }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - name: Install dependencies
+              run: |
+                  npm install
+                  npm link
+                  cd ${{ matrix.test.path }}
+                  npm install
+                  npm link azle
+
+            - name: Start dfx with artificial delay 0
+              working-directory: ${{ matrix.test.path }}
+              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+
+            - name: Run npm test (continue on error)
+              working-directory: ${{ matrix.test.path }}
+              continue-on-error: true
+              run: AZLE_RECORD_BENCHMARKS=true npm test
+
+            - name: Create branch name
+              id: create-branch-name
+              uses: ./.github/actions/create_branch_name
+              with:
+                  prefix: ${{ inputs.branch-prefix }}
+                  path: ${{ matrix.test.displayPath }}
+
+            - uses: ./.github/actions/commit_and_push
+              with:
+                  branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
+                  commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
+                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}

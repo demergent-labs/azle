@@ -5,9 +5,9 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(ctx.clone(), move || -> Result<Value> {
         match data_certificate() {
             Some(data_certificate_vec_u8) => {
-                Ok(TypedArray::<u8>::new(ctx.clone(), data_certificate_vec_u8)?.into_js(&ctx)?)
+                TypedArray::<u8>::new(ctx.clone(), data_certificate_vec_u8)?.into_js(&ctx)
             }
-            None => Ok(Undefined.into_js(&ctx)?),
+            None => Undefined.into_js(&ctx),
         }
     })
 }
