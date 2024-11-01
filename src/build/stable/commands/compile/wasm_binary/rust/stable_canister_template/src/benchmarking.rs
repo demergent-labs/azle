@@ -1,6 +1,8 @@
 use std::{cell::RefCell, error::Error};
 
 use candid::CandidType;
+use ic_cdk::api::time;
+use rquickjs::Object;
 
 use crate::quickjs_with_ctx;
 
@@ -17,9 +19,9 @@ thread_local! {
 
 pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Box<dyn Error>> {
     quickjs_with_ctx(|ctx| {
-        let timestamp = ic_cdk::api::time();
+        let timestamp = time();
 
-        let method_names: rquickjs::Object = ctx
+        let method_names: Object = ctx
             .clone()
             .globals()
             .get("_azleCanisterMethodNames")

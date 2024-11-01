@@ -3,6 +3,7 @@ import { runTests } from 'azle/test';
 
 import { getTests } from './tests';
 
-const canisterId = getCanisterId('express');
+const canisterName = 'express';
+const canisterId = getCanisterId(canisterName);
 
-runTests(getTests(canisterId));
+runTests(getTests(canisterId), canisterName);
