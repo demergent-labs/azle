@@ -148,7 +148,7 @@ export default class {
                     sender_canister_version: []
                 }
             ],
-            payment: 100_000_000_000n
+            cycles: 100_000_000_000n
         });
 
         return true;
@@ -178,7 +178,7 @@ export default class {
                         sender_canister_version: []
                     }
                 ],
-                payment: 100_000_000_000n
+                cycles: 100_000_000_000n
             }
         );
 
@@ -285,7 +285,7 @@ export default class {
                     canister_id: canisterId
                 }
             ],
-            payment: 10_000_000n
+            cycles: 10_000_000n
         });
 
         return true;
@@ -355,7 +355,7 @@ async function createCanister(): Promise<create_canister_result> {
             paramIdlTypes: [create_canister_args],
             returnIdlType: create_canister_result,
             args: [{ settings: [], sender_canister_version: [] }],
-            payment: 50_000_000_000_000n
+            cycles: 50_000_000_000_000n
         }
     );
 }

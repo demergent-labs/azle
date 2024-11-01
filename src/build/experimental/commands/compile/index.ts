@@ -1,7 +1,8 @@
 import { IOType } from 'child_process';
 import { rm } from 'fs/promises';
+import { outputFile } from 'fs-extra';
+import { join } from 'path';
 
-import { writeGeneratedFiles } from '../../../stable/commands/compile';
 import { execSyncPretty } from '../../../stable/utils/exec_sync_pretty';
 import { CanisterConfig } from '../../../stable/utils/types';
 import { logSuccess } from '../../utils/log_success';
@@ -32,6 +33,8 @@ export async function runCommand(
 
     const javaScript = await compileJavaScript(main, esmAliases, esmExternals);
 
+    await outputFile(join(canisterPath, 'main.js'), javaScript);
+
     const { candid, methodMeta } = await getCandidAndMethodMeta(
         canisterConfig.custom?.candid_gen,
         candidPath,
@@ -40,6 +43,8 @@ export async function runCommand(
         wasmData
     );
 
+    await outputFile(candidPath, candid);
+
     const wasmBinary = await getWasmBinary(
         ioType,
         javaScript,
@@ -47,14 +52,7 @@ export async function runCommand(
         methodMeta
     );
 
-    await writeGeneratedFiles(
-        canisterPath,
-        candidPath,
-        wasmBinaryPath,
-        candid,
-        javaScript,
-        wasmBinary
-    );
+    await outputFile(wasmBinaryPath, wasmBinary);
 
     buildAssets(canisterConfig, ioType);
 

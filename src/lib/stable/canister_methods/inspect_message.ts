@@ -1,3 +1,4 @@
+import { handleUncaughtError } from '../error';
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
 
 // TODO explain here in a jsdoc that the dev can get the raw args using argDataRaw
@@ -14,14 +15,18 @@ export function inspectMessage<This, Args extends any[], Return>(
         index
     };
 
-    globalThis._azleCallbacks[indexString] = (): void => {
-        executeAndReplyWithCandidSerde(
-            'inspectMessage',
-            [],
-            originalMethod.bind(globalThis._azleCanisterClassInstance),
-            [],
-            undefined,
-            false
-        );
+    globalThis._azleCallbacks[indexString] = async (): Promise<void> => {
+        try {
+            await executeAndReplyWithCandidSerde(
+                'inspectMessage',
+                [],
+                originalMethod.bind(globalThis._azleCanisterClassInstance),
+                [],
+                undefined,
+                false
+            );
+        } catch (error: any) {
+            handleUncaughtError(error);
+        }
     };
 }

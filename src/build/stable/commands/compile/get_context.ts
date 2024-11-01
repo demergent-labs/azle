@@ -19,7 +19,7 @@ export function getContext(
     const candidPath = process.env.CANISTER_CANDID_PATH;
 
     if (candidPath === undefined) {
-        throw new Error(`Azle: CANISTER_CANDID_PATH is not defined`);
+        throw new Error(`CANISTER_CANDID_PATH is not defined`);
     }
 
     const wasmBinaryPath = join(canisterPath, `${canisterName}.wasm`);
@@ -27,12 +27,8 @@ export function getContext(
     const envVars = getEnvVars(canisterConfig);
     const wasmData: WasmData = {
         envVars,
-        recordBenchmarks:
-            process.env.npm_lifecycle_event === 'pre_tests' ||
-            process.env.npm_lifecycle_event === 'pretest' ||
-            process.env.npm_lifecycle_event === 'test'
-                ? process.env.AZLE_RECORD_BENCHMARKS !== 'false'
-                : process.env.AZLE_RECORD_BENCHMARKS === 'true'
+        mainJsPath: join(canisterPath, `main.js`),
+        recordBenchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
     };
 
     return {

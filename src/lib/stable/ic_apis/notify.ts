@@ -1,6 +1,8 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 
+import { idlEncode } from '../execute_with_candid_serde';
+
 /**
  * Performs a cross-canister call without awaiting the result
  * @param canisterId The ID of the canister to notify
@@ -14,7 +16,7 @@ export function notify(
     options?: {
         paramIdlTypes?: IDL.Type[];
         args?: any[];
-        payment?: bigint;
+        cycles?: bigint;
         raw?: Uint8Array;
     }
 ): void {
@@ -27,7 +29,7 @@ export function notify(
 
     const paramIdlTypes = options?.paramIdlTypes ?? [];
     const args = options?.args ?? [];
-    const payment = options?.payment ?? 0n;
+    const cycles = options?.cycles ?? 0n;
     const raw = options?.raw;
 
     const canisterIdPrincipal =
@@ -35,18 +37,15 @@ export function notify(
             ? Principal.fromText(canisterId)
             : canisterId;
     const canisterIdBytes = canisterIdPrincipal.toUint8Array();
-    const argsRaw =
-        raw === undefined
-            ? new Uint8Array(IDL.encode(paramIdlTypes, args))
-            : raw;
-    const paymentString = payment.toString();
+    const argsRaw = raw === undefined ? idlEncode(paramIdlTypes, args) : raw;
+    const cyclesString = cycles.toString();
 
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.notifyRaw(
             canisterIdBytes.buffer,
             method,
             argsRaw.buffer,
-            paymentString
+            cyclesString
         );
     }
 
@@ -54,6 +53,6 @@ export function notify(
         canisterIdBytes,
         method,
         argsRaw,
-        paymentString
+        cyclesString
     );
 }

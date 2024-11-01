@@ -1,5 +1,3 @@
-import { IOType } from 'child_process';
-
 import { azle } from '../../../../../package.json';
 import { execSyncPretty } from '../../utils/exec_sync_pretty';
 import { AZLE_PACKAGE_PATH } from '../../utils/global_paths';
@@ -11,23 +9,22 @@ type DependencyInstallInfo = {
 };
 
 export async function runCommand(
-    dependenciesToInstall: DependencyInstallInfo,
-    ioType: IOType
+    dependenciesToInstall: DependencyInstallInfo
 ): Promise<void> {
     for (const key in dependenciesToInstall) {
         const dependency = key as DependencyName;
         if (dependenciesToInstall[dependency] === true) {
-            installDependency(dependency, ioType);
+            installDependency(dependency);
         }
     }
 }
 
-function installDependency(dependency: DependencyName, ioType: IOType): void {
+function installDependency(dependency: DependencyName): void {
     console.info(`Installing ${dependency}...`);
     const version = azle.globalDependencies[dependency];
     const script = `install_${dependency}.sh`;
     execSyncPretty(
         `${AZLE_PACKAGE_PATH}/src/build/stable/commands/install_global_dependencies/${script} ${version}`,
-        ioType
+        'inherit'
     );
 }

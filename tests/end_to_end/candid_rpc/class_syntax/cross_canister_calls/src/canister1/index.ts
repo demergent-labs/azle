@@ -49,7 +49,7 @@ export default class {
         return notify(this.canister2Id, 'receiveNotification', {
             paramIdlTypes: [IDL.Text],
             args: ['This is the notification'],
-            payment: 10n
+            cycles: 10n
         });
     }
 }

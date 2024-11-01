@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { ActorSubclass } from '@dfinity/agent';
+import { ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { describe, expect, test } from '@jest/globals';
 import { join } from 'path';
 
@@ -116,10 +116,15 @@ export async function getCanisterActor<T>(
     const { createActor } = await import(
         join(process.cwd(), 'test', 'dfx_generated', canisterName)
     );
+
+    const agent = new HttpAgent({
+        host: 'http://127.0.0.1:8000'
+    });
+
+    await agent.fetchRootKey();
+
     const actor = createActor(getCanisterId(canisterName), {
-        agentOptions: {
-            host: 'http://127.0.0.1:8000'
-        }
+        agent
     });
 
     return actor;
@@ -132,7 +137,7 @@ function processEnvVars(): {
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
-    const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'true';
+    const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
 
     const hasOnly = [runTests, runTypeChecks].includes('only');
 

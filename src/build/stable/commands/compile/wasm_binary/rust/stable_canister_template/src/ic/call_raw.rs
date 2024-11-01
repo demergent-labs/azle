@@ -1,67 +1,88 @@
-use crate::quickjs_with_ctx;
-use rquickjs::{Ctx, Exception, Function, IntoJs, TypedArray};
+use std::error::Error;
 
-pub fn get_function(ctx: Ctx) -> Function {
+use candid::Principal;
+use ic_cdk::{
+    api::call::{call_raw128, RejectionCode},
+    spawn, trap,
+};
+use rquickjs::{
+    Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
+};
+
+use crate::{error::quickjs_call_with_error_handling, ic::throw_error, quickjs_with_ctx};
+
+pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
     Function::new(
-        ctx,
-        |promise_id: String,
-         canister_id_bytes: TypedArray<u8>,
-         method: String,
-         args_raw: TypedArray<u8>,
-         payment_string: String| {
-            let canister_id = candid::Principal::from_slice(canister_id_bytes.as_ref());
-            let args_raw = args_raw.as_bytes().unwrap().to_vec();
-            let payment: u128 = payment_string.parse().unwrap();
+        ctx.clone(),
+        move |promise_id: String,
+              canister_id_bytes: TypedArray<u8>,
+              method: String,
+              args_raw: TypedArray<u8>,
+              cycles_string: String|
+              -> QuickJsResult<()> {
+            let canister_id = Principal::from_slice(canister_id_bytes.as_ref());
+            let args_raw = args_raw
+                .as_bytes()
+                .ok_or(throw_error(
+                    ctx.clone(),
+                    "args_raw could not be converted into bytes",
+                ))?
+                .to_vec();
+            let payment: u128 = cycles_string
+                .parse()
+                .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            ic_cdk::spawn(async move {
-                let call_result =
-                    ic_cdk::api::call::call_raw128(canister_id, &method, args_raw, payment).await;
+            spawn(async move {
+                let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
-                quickjs_with_ctx(move |ctx| {
-                    resolve_or_reject(ctx.clone(), &call_result, &promise_id);
+                let result = quickjs_with_ctx(|ctx| {
+                    resolve_or_reject(ctx.clone(), &call_result, &promise_id)?;
+
+                    Ok(())
                 });
+
+                if let Err(e) = result {
+                    trap(&format!("Azle CallRawError: {e}"));
+                }
             });
 
-            rquickjs::Undefined
+            Ok(())
         },
     )
-    .unwrap()
 }
 
 fn resolve_or_reject<'a>(
     ctx: Ctx<'a>,
-    call_result: &Result<Vec<u8>, (ic_cdk::api::call::RejectionCode, String)>,
+    call_result: &Result<Vec<u8>, (RejectionCode, String)>,
     promise_id: &str,
-) {
-    let (should_resolve, js_value) = prepare_js_value(ctx.clone(), &call_result);
-    let callback = get_callback(ctx.clone(), &promise_id, should_resolve);
+) -> Result<(), Box<dyn Error>> {
+    let (should_resolve, js_value) = prepare_js_value(ctx.clone(), &call_result)?;
+    let callback = get_callback(ctx.clone(), &promise_id, should_resolve)?;
 
-    callback
-        .call::<_, rquickjs::Undefined>((js_value,))
-        .unwrap();
+    quickjs_call_with_error_handling(ctx.clone(), callback, (js_value,))?;
+
+    Ok(())
 }
 
 fn prepare_js_value<'a>(
     ctx: Ctx<'a>,
-    call_result: &Result<Vec<u8>, (ic_cdk::api::call::RejectionCode, String)>,
-) -> (bool, rquickjs::Value<'a>) {
+    call_result: &Result<Vec<u8>, (RejectionCode, String)>,
+) -> Result<(bool, Value<'a>), Box<dyn Error>> {
     match call_result {
         Ok(candid_bytes) => {
-            let candid_bytes_js_value = TypedArray::<u8>::new(ctx.clone(), candid_bytes.clone())
-                .into_js(&ctx)
-                .unwrap();
+            let candid_bytes_js_value =
+                TypedArray::<u8>::new(ctx.clone(), candid_bytes.clone()).into_js(&ctx)?;
 
-            (true, candid_bytes_js_value)
+            Ok((true, candid_bytes_js_value))
         }
         Err(err) => {
             let err_js_value = Exception::from_message(
                 ctx.clone(),
                 &format!("Rejection code {}, {}", (err.0 as i32).to_string(), err.1),
             )
-            .into_js(&ctx)
-            .unwrap();
+            .into_js(&ctx)?;
 
-            (false, err_js_value)
+            Ok((false, err_js_value))
         }
     }
 }
@@ -70,19 +91,23 @@ fn get_callback<'a>(
     ctx: Ctx<'a>,
     promise_id: &str,
     should_resolve: bool,
-) -> rquickjs::Function<'a> {
-    let global_object = get_resolve_or_reject_global_object(ctx.clone(), should_resolve);
+) -> Result<Function<'a>, Box<dyn Error>> {
+    let global_object = get_resolve_or_reject_global_object(ctx.clone(), should_resolve)?;
     let callback_name = get_resolve_or_reject_callback_name(&promise_id, should_resolve);
 
-    global_object.get(callback_name).unwrap()
+    Ok(global_object.get(callback_name)?)
 }
 
-fn get_resolve_or_reject_global_object(ctx: Ctx, should_resolve: bool) -> rquickjs::Object {
-    let global = ctx.globals();
+fn get_resolve_or_reject_global_object(
+    ctx: Ctx,
+    should_resolve: bool,
+) -> Result<Object, Box<dyn Error>> {
+    let globals = ctx.globals();
+
     if should_resolve {
-        global.get("_azleResolveIds").unwrap()
+        Ok(globals.get("_azleResolveIds")?)
     } else {
-        global.get("_azleRejectIds").unwrap()
+        Ok(globals.get("_azleRejectIds")?)
     }
 }
 

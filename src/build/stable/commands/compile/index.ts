@@ -21,6 +21,8 @@ export async function runCommand(
 
     const javaScript = await compileJavaScript(main);
 
+    await outputFile(join(canisterPath, 'main.js'), javaScript);
+
     const { candid, methodMeta } = await getCandidAndMethodMeta(
         canisterConfig.custom?.candid_gen,
         candidPath,
@@ -29,6 +31,8 @@ export async function runCommand(
         wasmData
     );
 
+    await outputFile(candidPath, candid);
+
     const wasmBinary = await getWasmBinary(
         ioType,
         javaScript,
@@ -36,25 +40,5 @@ export async function runCommand(
         methodMeta
     );
 
-    await writeGeneratedFiles(
-        canisterPath,
-        candidPath,
-        wasmBinaryPath,
-        candid,
-        javaScript,
-        wasmBinary
-    );
-}
-
-export async function writeGeneratedFiles(
-    canisterPath: string,
-    candidPath: string,
-    wasmBinaryPath: string,
-    candid: string,
-    javaScript: string,
-    wasmBinary: Uint8Array
-): Promise<void> {
-    await outputFile(candidPath, candid);
-    await outputFile(join(canisterPath, 'main.js'), javaScript);
     await outputFile(wasmBinaryPath, wasmBinary);
 }

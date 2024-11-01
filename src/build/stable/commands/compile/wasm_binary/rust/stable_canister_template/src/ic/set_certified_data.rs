@@ -1,8 +1,8 @@
-use rquickjs::{Ctx, Function};
+use ic_cdk::api::set_certified_data;
+use rquickjs::{Ctx, Function, Result, TypedArray};
 
-pub fn get_function(context: Ctx) -> Function {
-    Function::new(context, |bytes: rquickjs::TypedArray<u8>| {
-        ic_cdk::api::set_certified_data(bytes.as_ref());
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx, |bytes: TypedArray<u8>| {
+        set_certified_data(bytes.as_ref())
     })
-    .unwrap()
 }

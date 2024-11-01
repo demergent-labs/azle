@@ -1,3 +1,4 @@
+import { handleUncaughtError } from '../error';
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
 
 export function preUpgrade<This, Args extends any[], Return>(
@@ -13,14 +14,18 @@ export function preUpgrade<This, Args extends any[], Return>(
         index
     };
 
-    globalThis._azleCallbacks[indexString] = (): void => {
-        executeAndReplyWithCandidSerde(
-            'preUpgrade',
-            [],
-            originalMethod.bind(globalThis._azleCanisterClassInstance),
-            [],
-            undefined,
-            false
-        );
+    globalThis._azleCallbacks[indexString] = async (): Promise<void> => {
+        try {
+            await executeAndReplyWithCandidSerde(
+                'preUpgrade',
+                [],
+                originalMethod.bind(globalThis._azleCanisterClassInstance),
+                [],
+                undefined,
+                false
+            );
+        } catch (error: any) {
+            handleUncaughtError(error);
+        }
     };
 }

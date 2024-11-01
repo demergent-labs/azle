@@ -1,3 +1,7 @@
+use std::fmt::Display;
+
+use rquickjs::{Ctx, Error, Object, Result, String};
+
 mod accept_message;
 mod arg_data_raw;
 mod call_raw;
@@ -41,197 +45,162 @@ mod time;
 mod trap;
 
 #[allow(unused)]
-pub fn register(context: rquickjs::Ctx) {
-    let ic = rquickjs::Object::new(context.clone()).unwrap();
+pub fn register(ctx: Ctx) -> Result<()> {
+    let ic = Object::new(ctx.clone())?;
 
-    ic.set(
-        "acceptMessage",
-        accept_message::get_function(context.clone()),
-    )
-    .unwrap();
+    ic.set("acceptMessage", accept_message::get_function(ctx.clone()))?;
 
-    ic.set("argDataRaw", arg_data_raw::get_function(context.clone()))
-        .unwrap();
+    ic.set("argDataRaw", arg_data_raw::get_function(ctx.clone()))?;
 
-    ic.set("callRaw", call_raw::get_function(context.clone()))
-        .unwrap();
+    ic.set("callRaw", call_raw::get_function(ctx.clone()))?;
 
-    ic.set("caller", caller::get_function(context.clone()))
-        .unwrap();
+    ic.set("caller", caller::get_function(ctx.clone()))?;
 
-    ic.set(
-        "candidCompiler",
-        candid_compiler::get_function(context.clone()),
-    )
-    .unwrap();
+    ic.set("candidCompiler", candid_compiler::get_function(ctx.clone()))?;
 
-    ic.set("candidDecode", candid_decode::get_function(context.clone()))
-        .unwrap();
+    ic.set("candidDecode", candid_decode::get_function(ctx.clone()))?;
 
-    ic.set("candidEncode", candid_encode::get_function(context.clone()))
-        .unwrap();
+    ic.set("candidEncode", candid_encode::get_function(ctx.clone()))?;
 
     ic.set(
         "canisterBalance",
-        canister_balance::get_function(context.clone()),
-    )
-    .unwrap();
+        canister_balance::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "canisterVersion",
-        canister_version::get_function(context.clone()),
-    )
-    .unwrap();
+        canister_version::get_function(ctx.clone()),
+    )?;
 
-    ic.set("clearTimer", clear_timer::get_function(context.clone()))
-        .unwrap();
+    ic.set("clearTimer", clear_timer::get_function(ctx.clone()))?;
 
-    ic.set("cyclesBurn", cycles_burn::get_function(context.clone()))
-        .unwrap();
+    ic.set("cyclesBurn", cycles_burn::get_function(ctx.clone()))?;
 
     ic.set(
         "dataCertificate",
-        data_certificate::get_function(context.clone()),
-    )
-    .unwrap();
+        data_certificate::get_function(ctx.clone()),
+    )?;
 
-    ic.set("id", id::get_function(context.clone())).unwrap();
+    ic.set("id", id::get_function(ctx.clone()))?;
 
     ic.set(
         "instructionCounter",
-        instruction_counter::get_function(context.clone()),
-    )
-    .unwrap();
+        instruction_counter::get_function(ctx.clone()),
+    )?;
 
-    ic.set("isController", is_controller::get_function(context.clone()))
-        .unwrap();
+    ic.set("isController", is_controller::get_function(ctx.clone()))?;
 
-    ic.set("methodName", method_name::get_function(context.clone()))
-        .unwrap();
+    ic.set("methodName", method_name::get_function(ctx.clone()))?;
 
     ic.set(
         "msgCyclesAccept",
-        msg_cycles_accept::get_function(context.clone()),
-    )
-    .unwrap();
+        msg_cycles_accept::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "msgCyclesAvailable",
-        msg_cycles_available::get_function(context.clone()),
-    )
-    .unwrap();
+        msg_cycles_available::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "msgCyclesRefunded",
-        msg_cycles_refunded::get_function(context.clone()),
-    )
-    .unwrap();
+        msg_cycles_refunded::get_function(ctx.clone()),
+    )?;
 
-    ic.set("notifyRaw", notify_raw::get_function(context.clone()))
-        .unwrap();
+    ic.set("notifyRaw", notify_raw::get_function(ctx.clone()))?;
 
     ic.set(
         "performanceCounter",
-        performance_counter::get_function(context.clone()),
-    )
-    .unwrap();
+        performance_counter::get_function(ctx.clone()),
+    )?;
 
-    ic.set("print", print::get_function(context.clone()))
-        .unwrap();
+    ic.set("print", print::get_function(ctx.clone()))?;
 
-    ic.set("reject", reject::get_function(context.clone()))
-        .unwrap();
+    ic.set("reject", reject::get_function(ctx.clone()))?;
 
-    ic.set("rejectCode", reject_code::get_function(context.clone()))
-        .unwrap();
+    ic.set("rejectCode", reject_code::get_function(ctx.clone()))?;
 
-    ic.set(
-        "rejectMessage",
-        reject_message::get_function(context.clone()),
-    )
-    .unwrap();
+    ic.set("rejectMessage", reject_message::get_function(ctx.clone()))?;
 
-    ic.set("replyRaw", reply_raw::get_function(context.clone()))
-        .unwrap();
+    ic.set("replyRaw", reply_raw::get_function(ctx.clone()))?;
 
     ic.set(
         "setCertifiedData",
-        set_certified_data::get_function(context.clone()),
-    )
-    .unwrap();
+        set_certified_data::get_function(ctx.clone()),
+    )?;
 
-    ic.set("setTimer", set_timer::get_function(context.clone()))
-        .unwrap();
+    ic.set("setTimer", set_timer::get_function(ctx.clone()))?;
 
     ic.set(
         "setTimerInterval",
-        set_timer_interval::get_function(context.clone()),
-    )
-    .unwrap();
+        set_timer_interval::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapContainsKey",
-        stable_b_tree_map_contains_key::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_contains_key::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapGet",
-        stable_b_tree_map_get::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_get::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapInit",
-        stable_b_tree_map_init::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_init::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapInsert",
-        stable_b_tree_map_insert::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_insert::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapIsEmpty",
-        stable_b_tree_map_is_empty::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_is_empty::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapItems",
-        stable_b_tree_map_items::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_items::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapKeys",
-        stable_b_tree_map_keys::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_keys::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapLen",
-        stable_b_tree_map_len::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_len::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapRemove",
-        stable_b_tree_map_remove::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_remove::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "stableBTreeMapValues",
-        stable_b_tree_map_values::get_function(context.clone()),
-    )
-    .unwrap();
+        stable_b_tree_map_values::get_function(ctx.clone()),
+    )?;
 
-    ic.set("time", time::get_function(context.clone())).unwrap();
+    ic.set("time", time::get_function(ctx.clone()))?;
 
-    ic.set("trap", trap::get_function(context.clone())).unwrap();
+    ic.set("trap", trap::get_function(ctx.clone()))?;
 
-    context.clone().globals().set("_azleIcStable", ic).unwrap();
+    ctx.globals().set("_azleIcStable", ic)?;
+
+    Ok(())
+}
+
+pub fn throw_error<E: Display>(ctx: Ctx, error: E) -> Error {
+    match String::from_str(ctx.clone(), &error.to_string()) {
+        Ok(error_string) => {
+            let error_value = error_string.into();
+            ctx.clone().throw(error_value)
+        }
+        Err(e) => e,
+    }
 }

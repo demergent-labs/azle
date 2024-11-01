@@ -1,15 +1,11 @@
-use rquickjs::{Ctx, Function};
+use rquickjs::{Ctx, Function, Result};
 
-use crate::stable_b_tree_map::STABLE_B_TREE_MAPS;
+use crate::stable_b_tree_map::with_stable_b_tree_map;
 
-pub fn get_function(context: Ctx) -> Function {
-    Function::new(context, |memory_id: u8| {
-        let len = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
-            let stable_b_tree_maps = stable_b_tree_maps.borrow();
-            stable_b_tree_maps[&memory_id].len()
-        });
-
-        len.to_string()
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx.clone(), move |memory_id: u8| -> Result<u64> {
+        with_stable_b_tree_map(ctx.clone(), memory_id, |stable_b_tree_map| {
+            stable_b_tree_map.len()
+        })
     })
-    .unwrap()
 }
