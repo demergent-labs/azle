@@ -1,15 +1,18 @@
 # Benchmarks for threshold_ecdsa
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | publicKey   | 148_390_394  | 59_946_157 | $0.0000797086 | $79.70            | <font color="green">-32_704</font> |
+| 1   | sign        | 148_548_313  | 60_009_325 | $0.0000797926 | $79.79            | <font color="green">-12_120</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
 | 0   | publicKey   | 148_423_098  | 59_959_239 | $0.0000797260 | $79.72            |
 | 1   | sign        | 148_560_433  | 60_014_173 | $0.0000797990 | $79.79            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

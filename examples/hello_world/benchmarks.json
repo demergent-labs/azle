@@ -1,13 +1,22 @@
 {
     "hello_world": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "1300399" },
                     "method_name": "setMessage",
                     "timestamp": { "__bigint__": "1730326452954711925" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1338854" },
+                    "method_name": "setMessage",
+                    "timestamp": { "__bigint__": "1730484668265297949" }
                 }
             ]
         }
