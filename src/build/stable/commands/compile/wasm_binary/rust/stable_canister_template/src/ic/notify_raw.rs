@@ -27,7 +27,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             let notify_result = notify_raw(canister_id, &method, &args_raw, payment);
 
             match notify_result {
-                Ok(_) => Ok(Undefined.into_js(&ctx)?),
+                Ok(_) => Undefined.into_js(&ctx),
                 Err(err) => {
                     let err_string = format!(
                         "Rejection code {rejection_code}",

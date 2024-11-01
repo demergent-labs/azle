@@ -1,0 +1,35 @@
+{
+    "rejections": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1723912" },
+                    "method_name": "getRejectionCodeNoError",
+                    "timestamp": { "__bigint__": "1730326460218167743" }
+                },
+                {
+                    "instructions": { "__bigint__": "1644398" },
+                    "method_name": "getRejectionCodeDestinationInvalid",
+                    "timestamp": { "__bigint__": "1730326462314231336" }
+                },
+                {
+                    "instructions": { "__bigint__": "2061807" },
+                    "method_name": "getRejectionCodeCanisterReject",
+                    "timestamp": { "__bigint__": "1730326464539583003" }
+                },
+                {
+                    "instructions": { "__bigint__": "1648755" },
+                    "method_name": "getRejectionCodeCanisterError",
+                    "timestamp": { "__bigint__": "1730326466478156147" }
+                },
+                {
+                    "instructions": { "__bigint__": "2792722" },
+                    "method_name": "getRejectionMessage",
+                    "timestamp": { "__bigint__": "1730326468702985255" }
+                }
+            ]
+        }
+    }
+}

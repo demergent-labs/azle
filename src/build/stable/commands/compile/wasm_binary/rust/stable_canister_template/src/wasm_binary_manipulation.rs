@@ -1,6 +1,7 @@
-use std::error::Error;
+use std::{env, error::Error, str};
 
 use serde::{Deserialize, Serialize};
+use serde_json;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct WasmData {
@@ -14,14 +15,14 @@ pub struct WasmData {
 #[no_mangle]
 extern "C" fn init_js_passive_data(js_vec_location: i32) -> usize {
     // This is to prevent compiler optimizations that interfere with the Wasm binary manipulation
-    std::env::var("init_js_passive_data").map_or(0, |s| s.len()) + js_vec_location as usize
+    env::var("init_js_passive_data").map_or(0, |s| s.len()) + js_vec_location as usize
 }
 
 #[inline(never)]
 #[no_mangle]
 extern "C" fn js_passive_data_size() -> usize {
     // This is to prevent compiler optimizations that interfere with the Wasm binary manipulation
-    std::env::var("js_passive_data_size").map_or(0, |s| s.len())
+    env::var("js_passive_data_size").map_or(0, |s| s.len())
 }
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
@@ -39,15 +40,14 @@ pub fn get_js_code() -> Vec<u8> {
 #[no_mangle]
 extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: i32) -> usize {
     // This is to prevent compiler optimizations that interfere with the Wasm binary manipulation
-    std::env::var("init_wasm_data_passive_data").map_or(0, |s| s.len())
-        + wasm_data_vec_location as usize
+    env::var("init_wasm_data_passive_data").map_or(0, |s| s.len()) + wasm_data_vec_location as usize
 }
 
 #[inline(never)]
 #[no_mangle]
 extern "C" fn wasm_data_passive_data_size() -> usize {
     // This is to prevent compiler optimizations that interfere with the Wasm binary manipulation
-    std::env::var("wasm_data_passive_data_size").map_or(0, |s| s.len())
+    env::var("wasm_data_passive_data_size").map_or(0, |s| s.len())
 }
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
@@ -58,7 +58,7 @@ pub fn get_wasm_data() -> Result<WasmData, Box<dyn Error>> {
 
     init_wasm_data_passive_data(wasm_data_vec_location);
 
-    let wasm_data_str = std::str::from_utf8(&wasm_data_vec).map_err(|e| {
+    let wasm_data_str = str::from_utf8(&wasm_data_vec).map_err(|e| {
         format!(
             "WasmData conversion failed while converting Vec<u8> to String: {}",
             e
