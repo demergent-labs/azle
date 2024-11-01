@@ -6,4 +6,4 @@ async function getFileHash(path: string): Promise<string> {
     return createHash('sha256').update(fileData).digest('hex');
 }
 
-getFileHash(process.argv[2]).then(console.info);
+console.info(await getFileHash(process.argv[2]));
