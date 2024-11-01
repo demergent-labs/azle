@@ -1,10 +1,11 @@
-use rquickjs::{Ctx, Function, TypedArray};
+use candid::Principal;
+use ic_cdk::api::is_controller;
+use rquickjs::{Ctx, Function, Result, TypedArray};
 
-pub fn get_function(context: Ctx) -> Function {
-    Function::new(context, |principal_bytes: TypedArray<u8>| {
-        let principal = candid::Principal::from_slice(principal_bytes.as_ref());
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx, |principal_bytes: TypedArray<u8>| {
+        let principal = Principal::from_slice(principal_bytes.as_ref());
 
-        ic_cdk::api::is_controller(&principal)
+        is_controller(&principal)
     })
-    .unwrap()
 }

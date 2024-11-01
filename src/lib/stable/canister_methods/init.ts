@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
+import { trap } from '../ic_apis';
 
 export function init<This, Args extends any[], Return>(
     paramIdlTypes: IDL.Type[]
@@ -22,15 +23,21 @@ export function init<This, Args extends any[], Return>(
             IDL.Func(paramIdlTypes, [], ['init'])
         );
 
-        globalThis._azleCallbacks[indexString] = (...args: any[]): void => {
-            executeAndReplyWithCandidSerde(
-                'init',
-                args,
-                originalMethod.bind(globalThis._azleCanisterClassInstance),
-                paramIdlTypes,
-                undefined,
-                false
-            );
+        globalThis._azleCallbacks[indexString] = async (
+            ...args: any[]
+        ): Promise<void> => {
+            try {
+                await executeAndReplyWithCandidSerde(
+                    'init',
+                    args,
+                    originalMethod.bind(globalThis._azleCanisterClassInstance),
+                    paramIdlTypes,
+                    undefined,
+                    false
+                );
+            } catch (error: any) {
+                trap(`Uncaught Error: ${error.toString()}`);
+            }
         };
     };
 }

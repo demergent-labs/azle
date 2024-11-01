@@ -1,4 +1,5 @@
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
+import { trap } from '../ic_apis';
 
 export function preUpgrade<This, Args extends any[], Return>(
     originalMethod: (this: This, ...args: Args) => Return,
@@ -13,14 +14,18 @@ export function preUpgrade<This, Args extends any[], Return>(
         index
     };
 
-    globalThis._azleCallbacks[indexString] = (): void => {
-        executeAndReplyWithCandidSerde(
-            'preUpgrade',
-            [],
-            originalMethod.bind(globalThis._azleCanisterClassInstance),
-            [],
-            undefined,
-            false
-        );
+    globalThis._azleCallbacks[indexString] = async (): Promise<void> => {
+        try {
+            await executeAndReplyWithCandidSerde(
+                'preUpgrade',
+                [],
+                originalMethod.bind(globalThis._azleCanisterClassInstance),
+                [],
+                undefined,
+                false
+            );
+        } catch (error: any) {
+            trap(`Uncaught Error: ${error.toString()}`);
+        }
     };
 }

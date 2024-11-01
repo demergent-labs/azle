@@ -1,8 +1,8 @@
-use rquickjs::{Ctx, Function};
+use ic_cdk::api::performance_counter;
+use rquickjs::{Ctx, Function, Result};
 
-pub fn get_function(context: Ctx) -> Function {
-    Function::new(context, |counter_type: u32| {
-        ic_cdk::api::performance_counter(counter_type)
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx, |counter_type: u32| -> u64 {
+        performance_counter(counter_type)
     })
-    .unwrap()
 }

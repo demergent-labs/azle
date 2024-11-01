@@ -1,8 +1,15 @@
+use std::{env, error::Error, str};
+
+use ic_cdk::trap;
 use ic_stable_structures::memory_manager::MemoryId;
+use ic_wasi_polyfill::init_with_memory;
+use rquickjs::{Context, Module, Object, Runtime};
 
 use crate::{
+    error::handle_promise_error,
     execute_method_js::execute_method_js,
-    ic, quickjs_with_ctx,
+    ic::register,
+    quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME, WASM_DATA_REF_CELL,
 };
@@ -15,17 +22,21 @@ pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
     // This causes problems during Wasm binary manipulation
     format!("prevent init and post_upgrade optimization");
 
-    initialize(true, function_index, pass_arg_data);
+    if let Err(e) = initialize(true, function_index, pass_arg_data) {
+        trap(&format!("Azle InitError: {}", e));
+    }
 }
 
 #[inline(never)]
 #[no_mangle]
 pub extern "C" fn post_upgrade(function_index: i32, pass_arg_data: i32) {
-    initialize(false, function_index, pass_arg_data);
+    if let Err(e) = initialize(false, function_index, pass_arg_data) {
+        trap(&format!("Azle PostUpgradeError: {}", e));
+    }
 }
 
-fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
-    let wasm_data = get_wasm_data();
+fn initialize(init: bool, function_index: i32, pass_arg_data: i32) -> Result<(), Box<dyn Error>> {
+    let wasm_data = get_wasm_data()?;
 
     WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
         *wasm_data_ref_cell.borrow_mut() = Some(wasm_data.clone());
@@ -39,77 +50,82 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
 
     let polyfill_memory =
         MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
-    ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
+
+    init_with_memory(&[], &env_vars, polyfill_memory);
 
     let js = get_js_code();
 
-    initialize_js(
-        std::str::from_utf8(&js).unwrap(),
-        init,
-        function_index,
-        pass_arg_data,
-    );
+    initialize_js(str::from_utf8(&js)?, init, function_index, pass_arg_data)?;
+
+    Ok(())
 }
 
-// TODO do we need all these clonse?
-// TODO do not forget to deal with the event loop everywhere
-pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
-    let runtime = rquickjs::Runtime::new().unwrap();
-    let context = rquickjs::Context::full(&runtime).unwrap();
+pub fn initialize_js(
+    js: &str,
+    init: bool,
+    function_index: i32,
+    pass_arg_data: i32,
+) -> Result<(), Box<dyn Error>> {
+    let runtime = Runtime::new()?;
+    let context = Context::full(&runtime)?;
 
     CONTEXT_REF_CELL.with(|context_ref_cell| {
         *context_ref_cell.borrow_mut() = Some(context);
     });
 
-    quickjs_with_ctx(|ctx| {
-        ctx.clone()
-            .globals()
-            .set("_azleNodeWasmEnvironment", false)
-            .unwrap();
+    quickjs_with_ctx(|ctx| -> Result<(), Box<dyn Error>> {
+        let globals = ctx.globals();
 
-        ic::register(ctx.clone());
+        let env = Object::new(ctx.clone())?;
 
-        let env = rquickjs::Object::new(ctx.clone()).unwrap();
-
-        for (key, value) in std::env::vars() {
-            env.set(key, value).unwrap();
+        for (key, value) in env::vars() {
+            env.set(key, value)?;
         }
 
-        let process = rquickjs::Object::new(ctx.clone()).unwrap();
+        let process = Object::new(ctx.clone())?;
 
-        process.set("env", env).unwrap();
+        process.set("env", env)?;
 
-        ctx.clone().globals().set("process", process).unwrap();
+        globals.set("process", process)?;
 
-        ctx.clone()
-            .globals()
-            .set("exports", rquickjs::Object::new(ctx.clone()).unwrap())
-            .unwrap();
+        globals.set("_azleNodeWasmEnvironment", false)?;
 
-        ctx.clone()
-            .globals()
-            .set("_azleExperimental", false)
-            .unwrap();
+        globals.set("exports", Object::new(ctx.clone())?)?;
 
-        // TODO is there a better name for this main module?
-        // TODO this returns a promise...make sure we handle it appropriately
-        rquickjs::Module::evaluate(ctx.clone(), MODULE_NAME, js).unwrap();
-    });
+        globals.set("_azleExperimental", false)?;
 
-    // TODO is it possible to just put this all in the same quickjs_with_ctx?
+        if init {
+            globals.set("_azleInitCalled", true)?;
+            globals.set("_azlePostUpgradeCalled", false)?;
+        } else {
+            globals.set("_azleInitCalled", false)?;
+            globals.set("_azlePostUpgradeCalled", true)?;
+        }
+
+        let record_benchmarks = WASM_DATA_REF_CELL
+            .with(|wasm_data_ref_cell| wasm_data_ref_cell.borrow().clone())
+            .as_ref()
+            .ok_or("could not convert wasm_data_ref_cell to ref")?
+            .record_benchmarks;
+
+        globals.set("_azleRecordBenchmarks", record_benchmarks)?;
+
+        register(ctx.clone())?;
+
+        let promise = Module::evaluate(ctx.clone(), MODULE_NAME, js)?;
+
+        handle_promise_error(ctx.clone(), promise)?;
+
+        Ok(())
+    })?;
+
+    execute_developer_init_or_post_upgrade(function_index, pass_arg_data);
+
+    Ok(())
+}
+
+fn execute_developer_init_or_post_upgrade(function_index: i32, pass_arg_data: i32) {
     if function_index != -1 {
         execute_method_js(function_index, pass_arg_data);
     }
-
-    // _azleInitCalled and _azlePostUpgradeCalled refer to Azle's own init/post_upgrade methods being called
-    // these variables do not indicate if the developer's own init/post_upgrade methods were called
-    quickjs_with_ctx(|ctx| {
-        let assignment = if init {
-            "globalThis._azleInitCalled = true;"
-        } else {
-            "globalThis._azlePostUpgradeCalled = true;"
-        };
-
-        ctx.eval::<(), _>(assignment).unwrap();
-    });
 }

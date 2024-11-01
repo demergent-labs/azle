@@ -1,20 +1,18 @@
-use rquickjs::{Ctx, Function};
+use ic_cdk::api::call::{reject_code, RejectionCode};
+use rquickjs::{Ctx, Function, Result};
 
-pub fn get_function(context: Ctx) -> Function {
-    Function::new(context, || {
-        let reject_code = ic_cdk::api::call::reject_code();
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx, || {
+        let reject_code = reject_code();
 
-        let reject_code_number = match reject_code {
-            ic_cdk::api::call::RejectionCode::NoError => 0,
-            ic_cdk::api::call::RejectionCode::SysFatal => 1,
-            ic_cdk::api::call::RejectionCode::SysTransient => 2,
-            ic_cdk::api::call::RejectionCode::DestinationInvalid => 3,
-            ic_cdk::api::call::RejectionCode::CanisterReject => 4,
-            ic_cdk::api::call::RejectionCode::CanisterError => 5,
-            ic_cdk::api::call::RejectionCode::Unknown => 6,
-        };
-
-        reject_code_number
+        match reject_code {
+            RejectionCode::NoError => 0,
+            RejectionCode::SysFatal => 1,
+            RejectionCode::SysTransient => 2,
+            RejectionCode::DestinationInvalid => 3,
+            RejectionCode::CanisterReject => 4,
+            RejectionCode::CanisterError => 5,
+            RejectionCode::Unknown => 6,
+        }
     })
-    .unwrap()
 }
