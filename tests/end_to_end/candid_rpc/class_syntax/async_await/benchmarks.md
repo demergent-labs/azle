@@ -1,12 +1,22 @@
 # Benchmarks for async_await
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.0-pre-bifurcation
 
-No benchmarks reported
+| Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | getRandomnessDirectly        | 1_403_216    | 1_151_286 | $0.0000015308 | $1.53             | <font color="red">0</font>      |
+| 1   | getRandomnessIndirectly      | 1_331_300    | 1_122_520 | $0.0000014926 | $1.49             | <font color="green">-116</font> |
+| 2   | getRandomnessSuperIndirectly | 1_370_708    | 1_138_283 | $0.0000015135 | $1.51             | <font color="green">-69</font>  |
+| 3   | returnPromiseVoid            | 1_315_534    | 1_116_213 | $0.0000014842 | $1.48             | <font color="red">+35</font>    |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
-No benchmarks reported
+| Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | getRandomnessDirectly        | 1_403_216    | 1_151_286 | $0.0000015308 | $1.53             |
+| 1   | getRandomnessIndirectly      | 1_331_416    | 1_122_566 | $0.0000014926 | $1.49             |
+| 2   | getRandomnessSuperIndirectly | 1_370_777    | 1_138_310 | $0.0000015136 | $1.51             |
+| 3   | returnPromiseVoid            | 1_315_499    | 1_116_199 | $0.0000014842 | $1.48             |
 
 ---
 
