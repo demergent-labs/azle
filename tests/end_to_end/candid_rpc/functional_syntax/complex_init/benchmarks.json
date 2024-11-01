@@ -1,0 +1,28 @@
+{
+    "complex_init": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5352215311" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326461469386054" }
+                }
+            ]
+        }
+    },
+    "rec_init": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5357331916" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326472909915759" }
+                }
+            ]
+        }
+    }
+}

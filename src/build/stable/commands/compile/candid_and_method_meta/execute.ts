@@ -72,7 +72,7 @@ export async function execute(
                 );
                 const message = new TextDecoder('utf8').decode(memory);
 
-                throw message;
+                throw new Error(message);
             }
         }
         // env: {

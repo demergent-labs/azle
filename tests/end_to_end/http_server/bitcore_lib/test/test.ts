@@ -3,6 +3,7 @@ import { runTests } from 'azle/test';
 
 import { getTests } from './tests';
 
-const canisterId = getCanisterId('bitcore_lib');
+const canisterName = 'bitcore_lib';
+const canisterId = getCanisterId(canisterName);
 
-runTests(getTests(canisterId));
+runTests(getTests(canisterId), canisterName);

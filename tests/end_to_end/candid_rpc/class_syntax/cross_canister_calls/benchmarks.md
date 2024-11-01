@@ -1,20 +1,66 @@
 # Benchmarks for canister1
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.25.0-pre-bifurcation
 
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | balance          | 2_296_798    | 1_508_719 | $0.0000020061 | $2.00             | <font color="red">+773</font>     |
+| 1   | account          | 3_645_817    | 2_048_326 | $0.0000027236 | $2.72             | <font color="red">+10_528</font>  |
+| 2   | balance          | 2_221_549    | 1_478_619 | $0.0000019661 | $1.96             | <font color="red">+3_709</font>   |
+| 3   | account          | 3_623_034    | 2_039_213 | $0.0000027115 | $2.71             | <font color="red">+9_614</font>   |
+| 4   | accounts         | 1_660_445    | 1_254_178 | $0.0000016676 | $1.66             | <font color="red">+7_291</font>   |
+| 5   | transfer         | 3_569_310    | 2_017_724 | $0.0000026829 | $2.68             | <font color="red">+6_739</font>   |
+| 6   | balance          | 2_219_618    | 1_477_847 | $0.0000019650 | $1.96             | <font color="red">+5_704</font>   |
+| 7   | account          | 3_616_770    | 2_036_708 | $0.0000027081 | $2.70             | <font color="red">+11_542</font>  |
+| 8   | balance          | 2_211_512    | 1_474_604 | $0.0000019607 | $1.96             | <font color="red">+433</font>     |
+| 9   | account          | 3_616_588    | 2_036_635 | $0.0000027081 | $2.70             | <font color="red">+6_952</font>   |
+| 10  | accounts         | 1_651_895    | 1_250_758 | $0.0000016631 | $1.66             | <font color="red">+443</font>     |
+| 11  | trap             | 1_625_403    | 1_240_161 | $0.0000016490 | $1.64             | <font color="red">+2_842</font>   |
+| 12  | sendNotification | 2_648_051    | 1_649_220 | $0.0000021929 | $2.19             | <font color="green">-7_280</font> |
+
+## Baseline benchmarks Azle version: 0.25.0
+
+<<<<<<< HEAD
 No benchmarks reported
 
 ## Baseline benchmarks Azle version: 0.25.0
+
+=======
+| Id | Method Name | Instructions | Cycles | USD | USD/Million Calls |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
+| 0 | balance | 2_296_025 | 1_508_410 | $0.0000020057 | $2.00 |
+| 1 | account | 3_635_289 | 2_044_115 | $0.0000027180 | $2.71 |
+| 2 | balance | 2_217_840 | 1_477_136 | $0.0000019641 | $1.96 |
+| 3 | account | 3_613_420 | 2_035_368 | $0.0000027064 | $2.70 |
+| 4 | accounts | 1_653_154 | 1_251_261 | $0.0000016638 | $1.66 |
+| 5 | transfer | 3_562_571 | 2_015_028 | $0.0000026793 | $2.67 |
+| 6 | balance | 2_213_914 | 1_475_565 | $0.0000019620 | $1.96 |
+| 7 | account | 3_605_228 | 2_032_091 | $0.0000027020 | $2.70 |
+| 8 | balance | 2_211_079 | 1_474_431 | $0.0000019605 | $1.96 |
+| 9 | account | 3_609_636 | 2_033_854 | $0.0000027044 | $2.70 |
+| 10 | accounts | 1_651_452 | 1_250_580 | $0.0000016629 | $1.66 |
+| 11 | trap | 1_622_561 | 1_239_024 | $0.0000016475 | $1.64 |
+| 12 | sendNotification | 2_655_331 | 1_652_132 | $0.0000021968 | $2.19 |
+
+> > > > > > > b1592ee660f8960b25c7f11a791c3684f9eb7ba3
 
 No benchmarks reported
 
 # Benchmarks for canister2
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.25.0-pre-bifurcation
 
-No benchmarks reported
+| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ------------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | transfer            | 2_165_032    | 1_456_012 | $0.0000019360 | $1.93             | <font color="red">+7_652</font> |
+| 1   | receiveNotification | 1_387_431    | 1_144_972 | $0.0000015224 | $1.52             | <font color="red">+4_188</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0
+
+| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ------------------- | ------------ | --------- | ------------- | ----------------- |
+| 0   | transfer            | 2_157_380    | 1_452_952 | $0.0000019319 | $1.93             |
+| 1   | receiveNotification | 1_383_243    | 1_143_297 | $0.0000015202 | $1.52             |
 
 No benchmarks reported
 
