@@ -10,6 +10,10 @@ on:
                 required: false
                 type: string
                 default: ''
+            run_experimental:
+                required: false
+                type: boolean
+                default: false
 
 jobs:
     prepare-test-environment:
@@ -44,3 +48,4 @@ jobs:
         with:
             test_infos: ${{ needs.prepare-test-environment.outputs.test-infos }}
             include_npm: ${{ needs.prepare-test-environment.outputs.include_npm == 'true' }}
+            run_experimental: ${{ inputs.run_experimental }}
