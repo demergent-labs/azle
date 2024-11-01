@@ -22,10 +22,6 @@ mod quickjs_with_ctx;
 mod stable_b_tree_map;
 mod wasm_binary_manipulation;
 
-// TODO dynamically get the canister name
-// TODO send it in through the Wasm meta data
-const MODULE_NAME: &str = ".azle/[canister_name]/main.js";
-
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 

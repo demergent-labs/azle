@@ -1,6 +1,10 @@
 use wasmedge_quickjs::AsObject;
 
-use crate::{ic, run_event_loop, wasm_binary_manipulation::get_js_code, EXPERIMENTAL, RUNTIME};
+use crate::{
+    ic, run_event_loop,
+    wasm_binary_manipulation::{get_js_code, get_wasm_data},
+    RUNTIME,
+};
 
 // Heavily inspired by https://stackoverflow.com/a/47676844
 #[no_mangle]
@@ -32,12 +36,16 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
 
             ic::register(context);
 
+            let wasm_data = get_wasm_data();
             let js = get_js_code();
 
             // TODO what do we do if there is an error in here?
             context.eval_global_str("globalThis.exports = {};".to_string());
-            context.eval_global_str(format!("globalThis._azleExperimental = {EXPERIMENTAL};"));
-            context.eval_module_str(std::str::from_utf8(&js).unwrap().to_string(), "main");
+            context.eval_global_str(format!("globalThis._azleExperimental = true;"));
+            context.eval_module_str(
+                std::str::from_utf8(&js).unwrap().to_string(),
+                &wasm_data.main_js_path,
+            );
 
             run_event_loop(context);
 

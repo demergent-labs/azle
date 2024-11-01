@@ -8,7 +8,7 @@ export function compile(
     ioType: IOType
 ): void {
     execSyncPretty(
-        `CARGO_TARGET_DIR=target cargo build --target wasm32-wasi --manifest-path ${manifestPath} --release --features "experimental"`,
+        `CARGO_TARGET_DIR=target cargo build --target wasm32-wasi --manifest-path ${manifestPath} --release`,
         ioType
     );
 

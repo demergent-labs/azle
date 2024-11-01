@@ -2,12 +2,12 @@ use ic_stable_structures::memory_manager::MemoryId;
 use wasmedge_quickjs::AsObject;
 
 use crate::{
-    execute_method_js, ic, run_event_loop, wasm_binary_manipulation::get_js_code,
-    wasm_binary_manipulation::get_wasm_data, EXPERIMENTAL, MEMORY_MANAGER_REF_CELL, RUNTIME,
-    WASM_DATA_REF_CELL,
+    execute_method_js, ic, run_event_loop,
+    wasm_binary_manipulation::get_wasm_data,
+    wasm_binary_manipulation::{get_js_code, WasmData},
+    MEMORY_MANAGER_REF_CELL, RUNTIME, WASM_DATA_REF_CELL,
 };
 
-#[cfg(feature = "experimental")]
 use crate::{upload_file, web_assembly};
 
 #[inline(never)]
@@ -20,7 +20,6 @@ pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
 
     initialize(true, function_index, pass_arg_data);
 
-    #[cfg(feature = "experimental")]
     upload_file::init_hashes().unwrap();
 }
 
@@ -69,31 +68,35 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
         MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
     ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
-    #[cfg(feature = "experimental")]
     std::fs::write("/candid/icp/management.did", &wasm_data.management_did).unwrap();
 
     let js = get_js_code();
 
     initialize_js(
+        &wasm_data,
         std::str::from_utf8(&js).unwrap(),
         init,
         function_index,
         pass_arg_data,
     );
 
-    #[cfg(feature = "experimental")]
     ic_cdk::spawn(async move {
         open_value_sharing::init(&wasm_data.consumer).await;
     });
 }
 
-pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
+pub fn initialize_js(
+    wasm_data: &WasmData,
+    js: &str,
+    init: bool,
+    function_index: i32,
+    pass_arg_data: i32,
+) {
     let mut rt = wasmedge_quickjs::Runtime::new();
 
     rt.run_with_context(|context| {
         ic::register(context);
 
-        #[cfg(feature = "experimental")]
         web_assembly::register(context);
 
         let mut env = context.new_object();
@@ -115,18 +118,12 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
 
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
-        context.eval_global_str(format!("globalThis._azleExperimental = {EXPERIMENTAL};"));
-        let record_benchmarks = WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
-            wasm_data_ref_cell
-                .borrow()
-                .as_ref()
-                .unwrap()
-                .record_benchmarks
-        });
+        context.eval_global_str(format!("globalThis._azleExperimental = true;"));
         context.eval_global_str(format!(
-            "globalThis._azleRecordBenchmarks = {record_benchmarks};"
+            "globalThis._azleRecordBenchmarks = {};",
+            wasm_data.record_benchmarks
         ));
-        context.eval_module_str(js.to_string(), "main");
+        context.eval_module_str(js.to_string(), &wasm_data.main_js_path);
 
         run_event_loop(context);
 
@@ -160,9 +157,9 @@ pub fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i
 
         runtime.run_with_context(|context| {
             let assignment = if init {
-                "globalThis._azleInitCalled = true;"
+                "globalThis._azleInitCalled = true;\nglobalThis._azlePostUpgradeCalled = false;"
             } else {
-                "globalThis._azlePostUpgradeCalled = true;"
+                "globalThis._azleInitCalled = false;\nglobalThis._azlePostUpgradeCalled = true;"
             };
 
             context.eval_global_str(assignment.to_string());

@@ -10,8 +10,8 @@ use crate::{
     execute_method_js::execute_method_js,
     ic::register,
     quickjs_with_ctx,
-    wasm_binary_manipulation::{get_js_code, get_wasm_data},
-    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, MODULE_NAME, WASM_DATA_REF_CELL,
+    wasm_binary_manipulation::{get_js_code, get_wasm_data, WasmData},
+    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
 };
 
 #[inline(never)]
@@ -55,12 +55,19 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) -> Result<(),
 
     let js = get_js_code();
 
-    initialize_js(str::from_utf8(&js)?, init, function_index, pass_arg_data)?;
+    initialize_js(
+        &wasm_data,
+        str::from_utf8(&js)?,
+        init,
+        function_index,
+        pass_arg_data,
+    )?;
 
     Ok(())
 }
 
 pub fn initialize_js(
+    wasm_data: &WasmData,
     js: &str,
     init: bool,
     function_index: i32,
@@ -112,7 +119,7 @@ pub fn initialize_js(
 
         register(ctx.clone())?;
 
-        let promise = Module::evaluate(ctx.clone(), MODULE_NAME, js)?;
+        let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
 
         handle_promise_error(ctx.clone(), promise)?;
 

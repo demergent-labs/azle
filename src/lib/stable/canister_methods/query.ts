@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
+import { handleUncaughtError } from '../error';
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
-import { trap } from '../ic_apis';
 
 export function query<This, Args extends any[], Return>(
     paramIdlTypes: IDL.Type[],
@@ -45,7 +45,7 @@ export function query<This, Args extends any[], Return>(
                     options?.manual ?? false
                 );
             } catch (error: any) {
-                trap(`Uncaught Error: ${error.toString()}`);
+                handleUncaughtError(error);
             }
         };
     };

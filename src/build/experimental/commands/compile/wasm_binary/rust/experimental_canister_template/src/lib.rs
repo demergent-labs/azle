@@ -12,7 +12,6 @@ use ic_stable_structures::{
     DefaultMemoryImpl,
 };
 
-#[cfg(feature = "experimental")]
 mod autoreload;
 mod benchmarking;
 mod candid;
@@ -22,10 +21,8 @@ mod guards;
 mod ic;
 mod init_and_post_upgrade;
 mod stable_b_tree_map;
-#[cfg(feature = "experimental")]
 mod upload_file;
 mod wasm_binary_manipulation;
-#[cfg(feature = "experimental")]
 mod web_assembly;
 
 #[allow(unused)]
@@ -36,8 +33,6 @@ thread_local! {
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
     static WASM_DATA_REF_CELL: RefCell<Option<wasm_binary_manipulation::WasmData>> = RefCell::new(None);
 }
-
-const EXPERIMENTAL: bool = cfg!(feature = "experimental");
 
 pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
     context.promise_loop_poll();
@@ -56,7 +51,6 @@ pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
 #[ic_cdk_macros::update]
 pub fn _azle_chunk() {}
 
-#[cfg(feature = "experimental")]
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
 fn _azle_reload_js(
     timestamp: u64,
@@ -68,7 +62,6 @@ fn _azle_reload_js(
     autoreload::reload_js(timestamp, chunk_number, js_bytes, total_len, function_index);
 }
 
-#[cfg(feature = "experimental")]
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
 pub async fn _azle_upload_file_chunk(
     dest_path: String,
@@ -87,13 +80,11 @@ pub async fn _azle_upload_file_chunk(
     .await
 }
 
-#[cfg(feature = "experimental")]
 #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
 pub fn _azle_clear_file_and_info(path: String) {
     upload_file::reset_for_new_upload(&path, 0).unwrap()
 }
 
-#[cfg(feature = "experimental")]
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_file_hash(path: String) -> Option<String> {
     upload_file::get_file_hash(path)
