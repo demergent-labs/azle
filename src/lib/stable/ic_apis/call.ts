@@ -1,6 +1,8 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { v4 } from 'uuid'; // TODO is uuid experimental?
+import { v4 } from 'uuid';
+
+import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 
 export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,
@@ -40,7 +42,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
             } else {
                 const idlType =
                     returnTypeIdl === undefined ? [] : [returnTypeIdl];
-                resolve(IDL.decode(idlType, result)[0] as Return);
+                resolve(idlDecode(idlType, result)[0] as Return);
             }
 
             delete globalThis._azleResolveIds[globalResolveId];
@@ -64,9 +66,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
                 : canisterId;
         const canisterIdBytes = canisterIdPrincipal.toUint8Array();
         const argsRaw =
-            raw === undefined
-                ? new Uint8Array(IDL.encode(paramIdlTypes, args))
-                : raw;
+            raw === undefined ? idlEncode(paramIdlTypes, args) : raw;
         const paymentString = payment.toString();
 
         // TODO consider finally, what if deletion goes wrong

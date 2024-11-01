@@ -53,7 +53,7 @@ fn execute_method_js_with_result(
     let record_benchmarks = WASM_DATA_REF_CELL
         .with(|wasm_data_ref_cell| wasm_data_ref_cell.borrow().clone())
         .as_ref()
-        .ok_or("could not convert wasm_data_ref_cell to ref")?
+        .ok_or("Could not convert wasm_data_ref_cell to ref")?
         .record_benchmarks;
 
     if record_benchmarks {
