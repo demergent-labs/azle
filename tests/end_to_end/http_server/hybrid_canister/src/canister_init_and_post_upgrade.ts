@@ -10,6 +10,7 @@ import {
 } from 'azle/experimental';
 import express from 'express';
 import { Server as NodeServer } from 'http';
+
 let httpQueryText = '';
 let httpUpdateText = '';
 

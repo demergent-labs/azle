@@ -32,12 +32,12 @@ export function getTests(): Test {
                             stdio: 'inherit'
                         });
 
-                        const startingVer = 1n; // Canister starts at 0 when it's created but the deploy in above will increment it to be at 1 by the time it gets here
+                        const startingVer = 1n; // Canister version starts at 0 when it's created but the deploy above will increment it to be at 1 by the time it gets here
 
                         const actor = await getCanisterActor<Actor>('canister');
 
-                        await checkInitVersion(actor, [startingVer]);
-                        await checkUpgradeVersion(actor, []);
+                        await checkInitVersion(actor, startingVer);
+                        await checkUpgradeVersion(actor);
                         await checkInspectVersion(actor, startingVer);
                         await checkQueryAndUpdateVersion(
                             actor,
@@ -52,8 +52,8 @@ export function getTests(): Test {
                         for (const version of versionsAtDeploy) {
                             execSync(`dfx deploy canister --upgrade-unchanged`);
 
-                            await checkInitVersion(actor, []);
-                            await checkUpgradeVersion(actor, [version]);
+                            await checkInitVersion(actor);
+                            await checkUpgradeVersion(actor, version);
                             await checkInspectVersion(actor, version);
                             await checkQueryAndUpdateVersion(actor, version);
                         }
@@ -67,22 +67,22 @@ export function getTests(): Test {
 
 async function checkInitVersion(
     actor: Actor,
-    expectedVer: [bigint] | []
+    expectedVer?: bigint
 ): Promise<void> {
     const initCanisterVersion = await actor.getInitCanisterVersion();
 
-    if (expectedVer.length === 0) {
+    if (expectedVer === undefined) {
         expect(initCanisterVersion).toHaveLength(0);
     } else {
-        expect(initCanisterVersion[0]).toBeGreaterThanOrEqual(expectedVer[0]);
+        expect(initCanisterVersion[0]).toBeGreaterThanOrEqual(expectedVer);
     }
 }
 
 async function checkUpgradeVersion(
     actor: Actor,
-    expectedVersion: [bigint] | []
+    expectedVersion?: bigint
 ): Promise<void> {
-    if (expectedVersion.length === 0) {
+    if (expectedVersion === undefined) {
         const postUpgradeCanisterVersion =
             await actor.getPostUpgradeCanisterVersion();
         expect(postUpgradeCanisterVersion).toHaveLength(0);
@@ -95,12 +95,12 @@ async function checkUpgradeVersion(
             await actor.getPostUpgradeCanisterVersion();
         expect(
             postUpgradeCanisterVersionAfterUpgrade[0]
-        ).toBeGreaterThanOrEqual(expectedVersion[0]);
+        ).toBeGreaterThanOrEqual(expectedVersion);
 
         const preUpgradeCanisterVersionAfterUpgrade =
             await actor.getPreUpgradeCanisterVersion();
         expect(preUpgradeCanisterVersionAfterUpgrade[0]).toBeGreaterThanOrEqual(
-            expectedVersion[0]
+            expectedVersion
         );
     }
 }

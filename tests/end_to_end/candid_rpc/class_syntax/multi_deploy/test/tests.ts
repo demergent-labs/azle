@@ -21,7 +21,7 @@ export function getTests(multiDeployCanister: ActorSubclass<_SERVICE>): Test {
             const originalHashes = await getFileHashes();
             await verifyCalledFunction(multiDeployCanister, 'init');
 
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 5; i++) {
                 execSyncPretty(`dfx deploy multi_deploy`);
                 await verifyHashesMatch(originalHashes);
                 await verifyCalledFunction(multiDeployCanister, 'init');
@@ -32,7 +32,7 @@ export function getTests(multiDeployCanister: ActorSubclass<_SERVICE>): Test {
         it('does call post upgrade if additional deploy steps are forced', async () => {
             const originalHashes = await getFileHashes();
 
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 5; i++) {
                 execSyncPretty(`dfx deploy multi_deploy --upgrade-unchanged`);
                 await verifyHashesMatch(originalHashes);
                 await verifyCalledFunction(multiDeployCanister, 'postUpgrade');
