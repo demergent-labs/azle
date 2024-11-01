@@ -40,8 +40,18 @@ jobs:
                 test_group:
                     - { name: 'Examples', directories: './examples' }
                     - {
+                          name: 'Examples (Experimental)',
+                          directories: './examples',
+                          run_experimental: true
+                      }
+                    - {
                           name: 'E2E Class',
                           directories: './tests/end_to_end/candid_rpc/class_syntax'
+                      }
+                    - {
+                          name: 'E2E Class (Experimental)',
+                          directories: './tests/end_to_end/candid_rpc/class_syntax',
+                          run_experimental: true
                       }
                     - {
                           name: 'E2E Functional',
@@ -56,6 +66,11 @@ jobs:
                           directories: './tests/property/candid_rpc/class_api'
                       }
                     - {
+                          name: 'Property Class (Experimental)',
+                          directories: './tests/property/candid_rpc/class_api',
+                          run_experimental: true
+                      }
+                    - {
                           name: 'Property Functional',
                           directories: './tests/property/candid_rpc/functional_api'
                       }
@@ -64,22 +79,7 @@ jobs:
                           directories: './tests/property/ic_api'
                       }
                     - {
-                          name: 'Examples Experimental',
-                          directories: './examples',
-                          run_experimental: true
-                      }
-                    - {
-                          name: 'E2E Class Experimental',
-                          directories: './tests/end_to_end/candid_rpc/class_syntax',
-                          run_experimental: true
-                      }
-                    - {
-                          name: 'Property Class Experimental',
-                          directories: './tests/property/candid_rpc/class_api',
-                          run_experimental: true
-                      }
-                    - {
-                          name: 'Property IC API Experimental',
+                          name: 'Property IC API (Experimental)',
                           directories: './tests/property/ic_api',
                           run_experimental: true
                       }
