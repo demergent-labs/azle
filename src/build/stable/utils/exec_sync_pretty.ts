@@ -1,9 +1,17 @@
 import { execSync, IOType } from 'child_process';
 
-export function execSyncPretty(command: string, stdio?: IOType): Buffer {
+export function execSyncPretty(
+    command: string,
+    stdio?: IOType,
+    hint?: string
+): Buffer {
     try {
         return execSync(command, { stdio });
     } catch (error) {
-        throw new Error(`Azle build error`);
+        if (hint !== undefined) {
+            throw new Error(`${hint}: ${error}`);
+        } else {
+            throw error;
+        }
     }
 }

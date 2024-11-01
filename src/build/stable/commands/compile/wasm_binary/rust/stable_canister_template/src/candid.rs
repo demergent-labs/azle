@@ -18,7 +18,7 @@ pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
     match initialize_and_get_candid() {
         Ok(c_char_ptr) => c_char_ptr,
         Err(error) => {
-            trap(&format!("Azle CandidAndMethodMetaError: {error}"));
+            trap(&format!("Candid and MethodMeta generation failed: {error}"));
         }
     }
 }
