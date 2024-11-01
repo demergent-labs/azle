@@ -7,7 +7,7 @@ export default class {
     async sendAllCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call(getCyclesPrincipal(), 'receiveAllCycles', {
             returnIdlType: CyclesResultIDL,
-            payment: amount
+            cycles: amount
         });
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
@@ -16,7 +16,7 @@ export default class {
     async sendHalfCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call(getCyclesPrincipal(), 'receiveHalfCycles', {
             returnIdlType: CyclesResultIDL,
-            payment: amount
+            cycles: amount
         });
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
@@ -25,7 +25,7 @@ export default class {
     async sendNoCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call(getCyclesPrincipal(), 'receiveNoCycles', {
             returnIdlType: CyclesResultIDL,
-            payment: amount
+            cycles: amount
         });
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
@@ -38,7 +38,7 @@ export default class {
         );
         const result = await call(getCyclesPrincipal(), 'receiveCyclesManual', {
             returnIdlType: IDL.Nat64,
-            payment: amount
+            cycles: amount
         });
         return result;
     }
