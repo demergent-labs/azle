@@ -39,7 +39,7 @@ jobs:
     create-branch-prefix:
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
-            prefix: 'update'
+            prefix: 'release'
             version: ${{ inputs.release-version }}
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
