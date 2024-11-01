@@ -29,5 +29,10 @@ runs:
 
               # Add and commit changes if there are any
               git add --all
-              git commit -m "${{ inputs.commit-message }}"
-              git push origin "${{ inputs.branch-name }}"
+              if ! git diff --cached --quiet; then
+                git commit -m "${{ inputs.commit-message }}"
+                git push origin "${{ inputs.branch-name }}"
+              else
+                # Skip since the above commands exit with 1 if there are no changes to commit
+                echo "No changes to commit. Skipping commit and push."
+              fi
