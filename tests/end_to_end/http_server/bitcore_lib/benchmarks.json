@@ -1,0 +1,35 @@
+{
+    "bitcore_lib": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "10822163299" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326430206042745" }
+                },
+                {
+                    "instructions": { "__bigint__": "1107725383" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326439955038429" }
+                },
+                {
+                    "instructions": { "__bigint__": "11571544048" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326440752350146" }
+                },
+                {
+                    "instructions": { "__bigint__": "13828971785" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326444299907556" }
+                },
+                {
+                    "instructions": { "__bigint__": "12484255890" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1730326447656622617" }
+                }
+            ]
+        }
+    }
+}

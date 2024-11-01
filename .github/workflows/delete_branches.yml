@@ -1,0 +1,51 @@
+name: Delete Branches by Prefix
+on:
+    workflow_dispatch:
+        inputs:
+            branch-prefix:
+                description: 'Branch prefix to match (e.g., "update--0.24.2-rc.89-" or "benchmark--0.25.0-")'
+                required: true
+                type: string
+            dry-run:
+                description: 'Dry run (show branches that would be deleted without deleting)'
+                required: true
+                type: boolean
+                default: true
+
+jobs:
+    delete-branches:
+        name: 'Delete branches with prefix ${{ inputs.branch-prefix }} | Dry run: ${{ inputs.dry-run }}'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Collect branches
+              id: collect-branches
+              run: |
+                  # Get branches and convert to space-separated list
+                  BRANCHES=$(git branch -r | grep "origin/${{ inputs.branch-prefix }}" | sed 's/origin\///' | xargs)
+                  echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
+
+            - name: Display collected branches
+              run: |
+                  echo "Branches matching prefix '${{ inputs.branch-prefix }}':"
+                  for branch in ${{ steps.collect-branches.outputs.branches }}; do
+                    echo "  - $branch"
+                  done
+                  echo "End of branch list"
+
+            - name: Delete branches
+              if: ${{ inputs.dry-run == false && steps.collect-branches.outputs.branches != '' }}
+              run: |
+                  echo "Deleting branches..."
+                  git push origin --delete ${{ steps.collect-branches.outputs.branches }}
+                  echo "Branch deletion complete"
+
+            - name: Dry run message
+              if: ${{ inputs.dry-run == true }}
+              run: |
+                  echo "DRY RUN - No branches were deleted"
+                  echo "The above branches would have been deleted if this wasn't a dry run"

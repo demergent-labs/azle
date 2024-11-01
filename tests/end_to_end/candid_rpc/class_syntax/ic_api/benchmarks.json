@@ -1,0 +1,20 @@
+{
+    "ic_api": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1644758" },
+                    "method_name": "dataCertificateNull",
+                    "timestamp": { "__bigint__": "1730326528854545815" }
+                },
+                {
+                    "instructions": { "__bigint__": "1169624" },
+                    "method_name": "setCertifiedData",
+                    "timestamp": { "__bigint__": "1730326530984787247" }
+                }
+            ]
+        }
+    }
+}

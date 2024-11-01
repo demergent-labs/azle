@@ -1,0 +1,20 @@
+{
+    "key_value_store": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1403875" },
+                    "method_name": "set",
+                    "timestamp": { "__bigint__": "1730326446547376286" }
+                },
+                {
+                    "instructions": { "__bigint__": "1352622" },
+                    "method_name": "set",
+                    "timestamp": { "__bigint__": "1730326448801367024" }
+                }
+            ]
+        }
+    }
+}
