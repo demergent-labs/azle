@@ -58,6 +58,10 @@ jobs:
                   ref: ${{ inputs.base-branch }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
+            - name: Report full path of test
+              # Just in case the path isn't obvious from the name, this will remove ambiguity
+              run: echo ${{matrix.test.path}}
+
             - uses: ./.github/actions/setup_node
 
             - uses: ./.github/actions/setup_dfx
