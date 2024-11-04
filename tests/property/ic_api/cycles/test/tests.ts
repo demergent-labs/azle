@@ -7,7 +7,7 @@ import { _SERVICE } from './dfx_generated/intermediary/intermediary.did';
 
 export function getTests(): Test {
     return () => {
-        it('should handle sendAllCycles correctly', async () => {
+        it('should send all cycles from intermediary to cycles canister and receive none back', async () => {
             const intermediaryCanister =
                 await getCanisterActor<_SERVICE>('intermediary');
             await fc.assert(
@@ -20,7 +20,7 @@ export function getTests(): Test {
             );
         });
 
-        it('should handle sendVariableCycles correctly', async () => {
+        it('should send a portion of the cycles from intermediary to cycles canister and receive the rest back', async () => {
             const intermediaryCanister =
                 await getCanisterActor<_SERVICE>('intermediary');
             await fc.assert(
@@ -45,7 +45,7 @@ export function getTests(): Test {
             );
         });
 
-        it('should handle sendNoCycles correctly', async () => {
+        it('should receive all cycles back to the intermediary if none are received by the cycles canister', async () => {
             const intermediaryCanister =
                 await getCanisterActor<_SERVICE>('intermediary');
             await fc.assert(
@@ -54,6 +54,34 @@ export function getTests(): Test {
                         await intermediaryCanister.sendNoCycles(amount);
                     validateCyclesResult(result, amount, 'none');
                 }),
+                defaultPropTestParams
+            );
+        });
+
+        it('should send cycles in chunks from intermediary to cycles canister', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<_SERVICE>('intermediary');
+            await fc.assert(
+                fc.asyncProperty(
+                    fc.bigInt(0n, 10_000_000n),
+                    fc.bigInt(1n, 10n),
+                    async (amount, numChunks) => {
+                        const result =
+                            await intermediaryCanister.sendCyclesByChunk(
+                                amount,
+                                numChunks
+                            );
+                        const chunkSize =
+                            amount / (numChunks === 0n ? 1n : numChunks);
+                        const expectedAccepted = chunkSize * numChunks;
+                        validateCyclesResult(
+                            result,
+                            amount,
+                            'variable',
+                            expectedAccepted
+                        );
+                    }
+                ),
                 defaultPropTestParams
             );
         });

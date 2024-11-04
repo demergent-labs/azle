@@ -24,16 +24,31 @@ export default class {
         return acceptCycles(0n);
     }
 
-    // TODO Future work: Make sure it doesn't trap, or that it can be called multiple times
+    @update([IDL.Nat64], CyclesResult)
+    receiveCyclesByChunk(numChunks: bigint): CyclesResult {
+        return acceptCycles(undefined, numChunks);
+    }
 }
 
-function acceptCycles(receiveAmount?: bigint): CyclesResult {
+function acceptCycles(
+    receiveAmount?: bigint,
+    numChunks?: bigint
+): CyclesResult {
     const startingCanisterBalance = canisterBalance();
     const initialAvailable = msgCyclesAvailable();
-    const accepted = msgCyclesAccept(receiveAmount ?? initialAvailable);
+
+    const effectiveNumChunks = numChunks ?? 1n;
+    const chunkSize = receiveAmount ?? initialAvailable / effectiveNumChunks;
+    const accepted = acceptCyclesRecursive(
+        chunkSize,
+        receiveAmount ?? initialAvailable,
+        0n
+    );
+
     const finalAvailable = msgCyclesAvailable();
     const endingCanisterBalance = canisterBalance();
     const cyclesRefunded = 0n; // This will always be 0 in the cycles canister
+
     return {
         initialAvailable,
         accepted,
@@ -42,4 +57,25 @@ function acceptCycles(receiveAmount?: bigint): CyclesResult {
         endingCanisterBalance,
         cyclesRefunded
     };
+}
+
+function acceptCyclesRecursive(
+    chunkSize: bigint,
+    totalToAccept: bigint,
+    accumulatedCycles: bigint
+): bigint {
+    if (msgCyclesAvailable() < chunkSize) {
+        return accumulatedCycles;
+    }
+
+    if (accumulatedCycles >= totalToAccept) {
+        return accumulatedCycles;
+    }
+
+    const newlyAccepted = msgCyclesAccept(chunkSize);
+    return acceptCyclesRecursive(
+        chunkSize,
+        totalToAccept,
+        accumulatedCycles + newlyAccepted
+    );
 }

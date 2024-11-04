@@ -40,6 +40,24 @@ export default class {
         });
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
+
+    @update([IDL.Nat64, IDL.Nat64], CyclesResult)
+    async sendCyclesByChunk(
+        amount: bigint,
+        numChunks: bigint
+    ): Promise<CyclesResult> {
+        const result = await call(
+            this.cyclesPrincipal,
+            'receiveCyclesByChunk',
+            {
+                returnIdlType: CyclesResult,
+                cycles: amount,
+                paramIdlTypes: [IDL.Nat64],
+                args: [numChunks]
+            }
+        );
+        return { ...result, cyclesRefunded: msgCyclesRefunded() };
+    }
 }
 
 function getCyclesPrincipal(): string {
