@@ -67,7 +67,7 @@ function acceptCyclesRecursive(
     totalToAccept: bigint,
     accumulatedCycles: bigint
 ): bigint {
-    if (msgCyclesAvailable() < chunkSize) {
+    if (msgCyclesAvailable() <= 0n) {
         return accumulatedCycles;
     }
 
