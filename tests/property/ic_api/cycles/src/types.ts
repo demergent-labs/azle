@@ -9,7 +9,7 @@ export type CyclesResult = {
     cyclesRefunded: bigint;
 };
 
-export const CyclesResultIDL = IDL.Record({
+export const CyclesResult = IDL.Record({
     initialAvailable: IDL.Nat64,
     accepted: IDL.Nat64,
     finalAvailable: IDL.Nat64,

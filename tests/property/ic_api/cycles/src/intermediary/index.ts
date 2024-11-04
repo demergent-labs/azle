@@ -1,32 +1,41 @@
 import { call, IDL, msgCyclesRefunded, update } from 'azle';
 
-import { CyclesResult, CyclesResultIDL } from '../types';
+import { CyclesResult } from '../types';
 
 export default class {
     cyclesPrincipal = getCyclesPrincipal();
 
-    @update([IDL.Nat64], CyclesResultIDL)
+    @update([IDL.Nat64], CyclesResult)
     async sendAllCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call(this.cyclesPrincipal, 'receiveAllCycles', {
-            returnIdlType: CyclesResultIDL,
+            returnIdlType: CyclesResult,
             cycles: amount
         });
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
 
-    @update([IDL.Nat64], CyclesResultIDL)
-    async sendHalfCycles(amount: bigint): Promise<CyclesResult> {
-        const result = await call(this.cyclesPrincipal, 'receiveHalfCycles', {
-            returnIdlType: CyclesResultIDL,
-            cycles: amount
-        });
+    @update([IDL.Nat64, IDL.Nat64], CyclesResult)
+    async sendVariableCycles(
+        amountToSend: bigint,
+        amountToAccept: bigint
+    ): Promise<CyclesResult> {
+        const result = await call(
+            this.cyclesPrincipal,
+            'receiveVariableCycles',
+            {
+                returnIdlType: CyclesResult,
+                cycles: amountToSend,
+                paramIdlTypes: [IDL.Nat64],
+                args: [amountToAccept]
+            }
+        );
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
 
-    @update([IDL.Nat64], CyclesResultIDL)
+    @update([IDL.Nat64], CyclesResult)
     async sendNoCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call(this.cyclesPrincipal, 'receiveNoCycles', {
-            returnIdlType: CyclesResultIDL,
+            returnIdlType: CyclesResult,
             cycles: amount
         });
         return { ...result, cyclesRefunded: msgCyclesRefunded() };

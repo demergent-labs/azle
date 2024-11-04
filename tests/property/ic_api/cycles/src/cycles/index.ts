@@ -3,54 +3,34 @@ import {
     IDL,
     msgCyclesAccept,
     msgCyclesAvailable,
-    reply,
     update
 } from 'azle';
 
-import { CyclesResult, CyclesResultIDL } from '../types';
+import { CyclesResult } from '../types';
 
 export default class {
-    @update([], CyclesResultIDL)
+    @update([], CyclesResult)
     receiveAllCycles(): CyclesResult {
-        return acceptCycles((available) => available);
+        return acceptCycles();
     }
 
-    @update([], CyclesResultIDL)
-    receiveHalfCycles(): CyclesResult {
-        return acceptCycles((available) => available / 2n);
+    @update([IDL.Nat64], CyclesResult)
+    receiveVariableCycles(receiveAmount: bigint): CyclesResult {
+        return acceptCycles(receiveAmount);
     }
 
-    @update([], CyclesResultIDL)
+    @update([], CyclesResult)
     receiveNoCycles(): CyclesResult {
-        return acceptCycles(() => 0n);
+        return acceptCycles(0n);
     }
 
-    // TODO we could have fun playing with the constraints of msgCyclesAccept
-    // TODO like making sure it doesn't trap, or that it can be called multiple times
-    // TODO or what happens if it accepts more than is available, or it it tries to accept more than the max_amount
-
-    @update([], IDL.Nat64, { manual: true })
-    receiveCyclesManual(): void {
-        const msgCyclesAvailableResult = msgCyclesAvailable();
-        reply({ data: msgCyclesAvailableResult, idlType: IDL.Nat64 });
-        // const remainingCycles = msgCyclesAvailable();
-        // if (remainingCycles !== 0n) {
-        //     // TODO what will happen if we throw after we already replied?
-        //     // TODO we probably don't need to tests this as part of the property tests
-        //     // TODO but if we do should we do this same test but with reject?
-        //     throw new Error(
-        //         `msgCyclesAvailable() !== 0. Actual value: ${remainingCycles}. Initial msgCyclesAvailable result: ${msgCyclesAvailableResult}`
-        //     );
-        // }
-    }
+    // TODO Future work: Make sure it doesn't trap, or that it can be called multiple times
 }
 
-function acceptCycles(
-    getAcceptAmount: (available: bigint) => bigint
-): CyclesResult {
+function acceptCycles(receiveAmount?: bigint): CyclesResult {
     const startingCanisterBalance = canisterBalance();
     const initialAvailable = msgCyclesAvailable();
-    const accepted = msgCyclesAccept(getAcceptAmount(initialAvailable));
+    const accepted = msgCyclesAccept(receiveAmount ?? initialAvailable);
     const finalAvailable = msgCyclesAvailable();
     const endingCanisterBalance = canisterBalance();
     const cyclesRefunded = 0n; // This will always be 0 in the cycles canister

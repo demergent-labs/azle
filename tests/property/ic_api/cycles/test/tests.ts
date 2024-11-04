@@ -1,16 +1,17 @@
-import { ActorSubclass } from '@dfinity/agent';
+import { getCanisterActor } from 'azle/test';
 import { defaultPropTestParams, expect, it, Test } from 'azle/test';
 import fc from 'fast-check';
 
 import { CyclesResult } from '../src/types';
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/intermediary/intermediary.did';
 
-export function getTests(intermediaryCanister: ActorSubclass<_SERVICE>): Test {
+export function getTests(): Test {
     return () => {
         it('should handle sendAllCycles correctly', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<_SERVICE>('intermediary');
             await fc.assert(
-                fc.asyncProperty(fc.bigInt(1n, 10_000_000n), async (amount) => {
+                fc.asyncProperty(fc.bigInt(0n, 10_000_000n), async (amount) => {
                     const result =
                         await intermediaryCanister.sendAllCycles(amount);
                     validateCyclesResult(result, amount, 'all');
@@ -19,36 +20,39 @@ export function getTests(intermediaryCanister: ActorSubclass<_SERVICE>): Test {
             );
         });
 
-        it('should handle sendHalfCycles correctly', async () => {
+        it('should handle sendVariableCycles correctly', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<_SERVICE>('intermediary');
             await fc.assert(
-                fc.asyncProperty(fc.bigInt(1n, 10_000_000n), async (amount) => {
-                    const result =
-                        await intermediaryCanister.sendHalfCycles(amount);
-                    validateCyclesResult(result, amount, 'half');
-                }),
+                fc.asyncProperty(
+                    fc.bigInt(0n, 10_000_000n),
+                    fc.bigInt(0n, 10_000_000n),
+                    async (amountToSend, amountToAccept) => {
+                        const result =
+                            await intermediaryCanister.sendVariableCycles(
+                                amountToSend,
+                                amountToAccept
+                            );
+                        validateCyclesResult(
+                            result,
+                            amountToSend,
+                            'variable',
+                            amountToAccept
+                        );
+                    }
+                ),
                 defaultPropTestParams
             );
         });
 
         it('should handle sendNoCycles correctly', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<_SERVICE>('intermediary');
             await fc.assert(
-                fc.asyncProperty(fc.bigInt(1n, 10_000_000n), async (amount) => {
+                fc.asyncProperty(fc.bigInt(0n, 10_000_000n), async (amount) => {
                     const result =
                         await intermediaryCanister.sendNoCycles(amount);
                     validateCyclesResult(result, amount, 'none');
-                }),
-                defaultPropTestParams
-            );
-        });
-
-        it('should handle sendCyclesManual correctly', async () => {
-            await fc.assert(
-                fc.asyncProperty(fc.bigInt(1n, 10_000_000n), async (amount) => {
-                    const result =
-                        await intermediaryCanister.sendCyclesManual(amount);
-                    expect(typeof result).toBe('bigint');
-                    expect(result).toBeGreaterThanOrEqual(0n);
-                    expect(result).toBeLessThanOrEqual(amount);
                 }),
                 defaultPropTestParams
             );
@@ -58,16 +62,22 @@ export function getTests(intermediaryCanister: ActorSubclass<_SERVICE>): Test {
 
 function validateCyclesResult(
     result: CyclesResult,
-    amount: bigint,
-    mode: 'all' | 'half' | 'none'
+    amountToSend: bigint,
+    mode: 'all' | 'variable' | 'none',
+    amountToAccept?: bigint
 ): void {
-    expect(result.initialAvailable).toBe(amount);
+    expect(result.initialAvailable).toBe(amountToSend);
 
     if (mode === 'all') {
         expect(result.accepted).toBe(result.initialAvailable);
     }
-    if (mode === 'half') {
-        expect(result.accepted).toBe(result.initialAvailable / 2n);
+    if (mode === 'variable') {
+        if (amountToAccept === undefined) {
+            throw new Error('amountToAccept is required for variable mode');
+        }
+        const accepted =
+            amountToSend < amountToAccept ? amountToSend : amountToAccept;
+        expect(result.accepted).toBe(accepted);
     }
     if (mode === 'none') {
         expect(result.accepted).toBe(0n);
