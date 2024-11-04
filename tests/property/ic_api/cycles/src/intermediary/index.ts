@@ -1,11 +1,13 @@
-import { call, IDL, msgCyclesRefunded, trap, update } from 'azle';
+import { call, IDL, msgCyclesRefunded, update } from 'azle';
 
 import { CyclesResult, CyclesResultIDL } from '../types';
 
 export default class {
+    cyclesPrincipal = getCyclesPrincipal();
+
     @update([IDL.Nat64], CyclesResultIDL)
     async sendAllCycles(amount: bigint): Promise<CyclesResult> {
-        const result = await call(getCyclesPrincipal(), 'receiveAllCycles', {
+        const result = await call(this.cyclesPrincipal, 'receiveAllCycles', {
             returnIdlType: CyclesResultIDL,
             cycles: amount
         });
@@ -14,7 +16,7 @@ export default class {
 
     @update([IDL.Nat64], CyclesResultIDL)
     async sendHalfCycles(amount: bigint): Promise<CyclesResult> {
-        const result = await call(getCyclesPrincipal(), 'receiveHalfCycles', {
+        const result = await call(this.cyclesPrincipal, 'receiveHalfCycles', {
             returnIdlType: CyclesResultIDL,
             cycles: amount
         });
@@ -23,30 +25,17 @@ export default class {
 
     @update([IDL.Nat64], CyclesResultIDL)
     async sendNoCycles(amount: bigint): Promise<CyclesResult> {
-        const result = await call(getCyclesPrincipal(), 'receiveNoCycles', {
+        const result = await call(this.cyclesPrincipal, 'receiveNoCycles', {
             returnIdlType: CyclesResultIDL,
             cycles: amount
         });
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
-
-    @update([IDL.Nat64], IDL.Nat64)
-    async sendCyclesManual(amount: bigint): Promise<bigint> {
-        console.log(
-            'sendCyclesManual And its for sure this unquie one from 1:17',
-            amount
-        );
-        const result = await call(getCyclesPrincipal(), 'receiveCyclesManual', {
-            returnIdlType: IDL.Nat64,
-            cycles: amount
-        });
-        return result;
-    }
 }
 
 function getCyclesPrincipal(): string {
-    return (
-        process.env.CYCLES_PRINCIPAL ??
-        trap('process.env.CYCLES_PRINCIPAL is undefined')
-    );
+    if (process.env.CYCLES_PRINCIPAL !== undefined) {
+        return process.env.CYCLES_PRINCIPAL;
+    }
+    throw new Error('process.env.CYCLES_PRINCIPAL is undefined');
 }
