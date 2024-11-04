@@ -71,9 +71,17 @@ export function getTests(): Test {
                                 amount,
                                 numChunks
                             );
+
                         const chunkSize =
-                            amount / (numChunks === 0n ? 1n : numChunks);
-                        const expectedAccepted = chunkSize * numChunks;
+                            amount > 0n
+                                ? bigintMax(1n, amount / numChunks)
+                                : 0n;
+
+                        const expectedAccepted =
+                            amount > 0n
+                                ? bigintMin(amount, chunkSize * numChunks)
+                                : 0n;
+
                         validateCyclesResult(
                             result,
                             amount,
@@ -118,4 +126,12 @@ function validateCyclesResult(
     expect(result.endingCanisterBalance - result.startingCanisterBalance).toBe(
         result.accepted
     );
+}
+
+function bigintMax(a: bigint, b: bigint): bigint {
+    return a > b ? a : b;
+}
+
+function bigintMin(a: bigint, b: bigint): bigint {
+    return a < b ? a : b;
 }

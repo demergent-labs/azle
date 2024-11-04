@@ -38,12 +38,15 @@ function acceptCycles(
     const initialAvailable = msgCyclesAvailable();
 
     const effectiveNumChunks = numChunks ?? 1n;
-    const chunkSize = receiveAmount ?? initialAvailable / effectiveNumChunks;
-    const accepted = acceptCyclesRecursive(
-        chunkSize,
-        receiveAmount ?? initialAvailable,
-        0n
-    );
+
+    const requestedAmount = receiveAmount ?? initialAvailable;
+
+    const chunkSize =
+        requestedAmount > 0n
+            ? bigintMax(1n, requestedAmount / effectiveNumChunks)
+            : 0n;
+
+    const accepted = acceptCyclesRecursive(chunkSize, requestedAmount, 0n);
 
     const finalAvailable = msgCyclesAvailable();
     const endingCanisterBalance = canisterBalance();
@@ -78,4 +81,8 @@ function acceptCyclesRecursive(
         totalToAccept,
         accumulatedCycles + newlyAccepted
     );
+}
+
+function bigintMax(a: bigint, b: bigint): bigint {
+    return a > b ? a : b;
 }
