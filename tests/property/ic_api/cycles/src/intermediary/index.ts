@@ -23,10 +23,10 @@ export default class {
             this.cyclesPrincipal,
             'receiveVariableCycles',
             {
-                returnIdlType: CyclesResult,
-                cycles: amountToSend,
                 paramIdlTypes: [IDL.Nat64],
-                args: [amountToAccept]
+                returnIdlType: CyclesResult,
+                args: [amountToAccept],
+                cycles: amountToSend
             }
         );
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
@@ -50,10 +50,10 @@ export default class {
             this.cyclesPrincipal,
             'receiveCyclesByChunk',
             {
-                returnIdlType: CyclesResult,
-                cycles: amount,
                 paramIdlTypes: [IDL.Nat64],
-                args: [numChunks]
+                returnIdlType: CyclesResult,
+                args: [numChunks],
+                cycles: amount
             }
         );
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
