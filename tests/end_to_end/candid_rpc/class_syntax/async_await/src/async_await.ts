@@ -1,5 +1,3 @@
-// TODO remove this comment just to get tests to run
-
 import { call, IDL, update } from 'azle';
 
 export default class {
