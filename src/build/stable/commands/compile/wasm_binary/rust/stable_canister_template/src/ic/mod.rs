@@ -6,7 +6,6 @@ mod accept_message;
 mod arg_data_raw;
 mod call_raw;
 mod caller;
-mod candid_compiler;
 mod candid_decode;
 mod candid_encode;
 mod canister_balance;
