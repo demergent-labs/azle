@@ -1,6 +1,15 @@
 # Benchmarks for minimal_dapp
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | count       | 1_123_264    | 1_039_305 | $0.0000013819 | $1.38             | <font color="red">+1_216</font> |
+| 1   | count       | 1_092_863    | 1_027_145 | $0.0000013658 | $1.36             | <font color="red">+1_555</font> |
+| 2   | reset       | 1_093_187    | 1_027_274 | $0.0000013659 | $1.36             | <font color="red">+1_541</font> |
+| 3   | count       | 1_099_071    | 1_029_628 | $0.0000013691 | $1.36             | <font color="red">+824</font>   |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
@@ -8,10 +17,6 @@
 | 1   | count       | 1_091_308    | 1_026_523 | $0.0000013649 | $1.36             |
 | 2   | reset       | 1_091_646    | 1_026_658 | $0.0000013651 | $1.36             |
 | 3   | count       | 1_098_247    | 1_029_298 | $0.0000013686 | $1.36             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

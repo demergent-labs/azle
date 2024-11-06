@@ -1,6 +1,25 @@
 # Benchmarks for manual_reply
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | manualUpdate   | 668_805      | 857_522   | $0.0000011402 | $1.14             | <font color="green">-168</font>   |
+| 1   | manualUpdate   | 1_614_537    | 1_235_814 | $0.0000016432 | $1.64             | <font color="green">-2_539</font> |
+| 2   | updateBlob     | 1_485_596    | 1_184_238 | $0.0000015746 | $1.57             | <font color="red">+938</font>     |
+| 3   | updateFloat32  | 1_030_960    | 1_002_384 | $0.0000013328 | $1.33             | <font color="red">+139</font>     |
+| 4   | updateInt8     | 1_125_779    | 1_040_311 | $0.0000013833 | $1.38             | <font color="green">-1_733</font> |
+| 5   | updateNat      | 1_525_664    | 1_200_265 | $0.0000015960 | $1.59             | <font color="green">-1_978</font> |
+| 6   | updateNull     | 1_016_510    | 996_604   | $0.0000013252 | $1.32             | <font color="green">-1_373</font> |
+| 7   | updateVoid     | 854_602      | 931_840   | $0.0000012390 | $1.23             | <font color="red">+94</font>      |
+| 8   | updateRecord   | 16_901_044   | 7_350_417 | $0.0000097736 | $9.77             | <font color="red">+9_368</font>   |
+| 9   | updateReserved | 1_015_576    | 996_230   | $0.0000013247 | $1.32             | <font color="green">-1_420</font> |
+| 10  | updateString   | 1_275_716    | 1_100_286 | $0.0000014630 | $1.46             | <font color="red">+2_162</font>   |
+| 11  | updateVariant  | 4_383_484    | 2_343_393 | $0.0000031159 | $3.11             | <font color="red">+5_701</font>   |
+| 12  | updateFloat32  | 1_029_394    | 1_001_757 | $0.0000013320 | $1.33             | <font color="green">-2_303</font> |
+| 13  | replyRaw       | 456_194      | 772_477   | $0.0000010271 | $1.02             | <font color="red">+1_171</font>   |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |
@@ -18,10 +37,6 @@
 | 11  | updateVariant  | 4_377_783    | 2_341_113 | $0.0000031129 | $3.11             |
 | 12  | updateFloat32  | 1_031_697    | 1_002_678 | $0.0000013332 | $1.33             |
 | 13  | replyRaw       | 455_023      | 772_009   | $0.0000010265 | $1.02             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

@@ -1,16 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | incrementCount | 1_479_468    | 1_181_787 | $0.0000015714 | $1.57             | <font color="green">-2_167</font> |
+| 1   | incrementCount | 1_455_480    | 1_172_192 | $0.0000015586 | $1.55             | <font color="red">+468</font>     |
+| 2   | incrementCount | 1_459_299    | 1_173_719 | $0.0000015607 | $1.56             | <font color="red">+4_984</font>   |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |
 | 0   | incrementCount | 1_481_635    | 1_182_654 | $0.0000015725 | $1.57             |
 | 1   | incrementCount | 1_455_012    | 1_172_004 | $0.0000015584 | $1.55             |
 | 2   | incrementCount | 1_454_315    | 1_171_726 | $0.0000015580 | $1.55             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

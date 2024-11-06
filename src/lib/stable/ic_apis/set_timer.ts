@@ -24,11 +24,9 @@ export function setTimer(
 
     const timerId =
         globalThis._azleIcExperimental !== undefined
-            ? BigInt(
-                  globalThis._azleIcExperimental.setTimer(
-                      delay.toString(),
-                      timerCallbackId
-                  )
+            ? globalThis._azleIcExperimental.setTimer(
+                  delay.toString(),
+                  timerCallbackId
               )
             : globalThis._azleIcStable.setTimer(
                   delay.toString(),
@@ -46,5 +44,5 @@ export function setTimer(
         }
     };
 
-    return timerId;
+    return BigInt(timerId);
 }

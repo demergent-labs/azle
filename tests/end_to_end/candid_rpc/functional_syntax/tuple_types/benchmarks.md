@@ -1,10 +1,10 @@
 # Benchmarks for tuple_types
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: No previous benchmarks
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 No benchmarks reported
 

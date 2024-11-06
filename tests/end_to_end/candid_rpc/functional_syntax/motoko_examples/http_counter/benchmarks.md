@@ -1,6 +1,15 @@
 # Benchmarks for http_counter
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | init                | 5_391_013_087 | 4_156_995_234 | $0.0055274319 | $5_527.43         | <font color="red">+2_381_095</font> |
+| 1   | http_request_update | 36_640_425    | 15_246_170    | $0.0000202724 | $20.27            | <font color="red">+25_740</font>    |
+| 2   | http_request_update | 36_596_427    | 15_228_570    | $0.0000202490 | $20.24            | <font color="red">+21_853</font>    |
+| 3   | http_request_update | 36_850_774    | 15_330_309    | $0.0000203843 | $20.38            | <font color="red">+72_151</font>    |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -8,10 +17,6 @@
 | 1   | http_request_update | 36_614_685    | 15_235_874    | $0.0000202587 | $20.25            |
 | 2   | http_request_update | 36_574_574    | 15_219_829    | $0.0000202374 | $20.23            |
 | 3   | http_request_update | 36_778_623    | 15_301_449    | $0.0000203459 | $20.34            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 
