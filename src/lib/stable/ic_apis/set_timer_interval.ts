@@ -24,11 +24,9 @@ export function setTimerInterval(
 
     const timerId =
         globalThis._azleIcExperimental !== undefined
-            ? BigInt(
-                  globalThis._azleIcExperimental.setTimerInterval(
-                      interval.toString(),
-                      timerCallbackId
-                  )
+            ? globalThis._azleIcExperimental.setTimerInterval(
+                  interval.toString(),
+                  timerCallbackId
               )
             : globalThis._azleIcStable.setTimerInterval(
                   interval.toString(),
@@ -41,5 +39,5 @@ export function setTimerInterval(
     // it still needs to be here for the next tick
     globalThis._azleTimerCallbacks[timerCallbackId] = callback;
 
-    return timerId;
+    return BigInt(timerId);
 }

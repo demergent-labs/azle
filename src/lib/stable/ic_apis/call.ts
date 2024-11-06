@@ -35,10 +35,10 @@ export async function call<Args extends any[] | undefined, Return = any>(
         // TODO for example, we can keep the time with these
         // TODO if they are over a certain amount old we can delete them
         globalThis._azleResolveIds[globalResolveId] = (
-            result: Uint8Array
+            result: Uint8Array | ArrayBuffer
         ): void => {
             if (raw !== undefined) {
-                resolve(result as Return);
+                resolve(new Uint8Array(result) as Return);
             } else {
                 const idlType =
                     returnTypeIdl === undefined ? [] : [returnTypeIdl];

@@ -1,7 +1,6 @@
 {
     "func_types": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
@@ -13,6 +12,21 @@
                     "instructions": { "__bigint__": "1658417" },
                     "method_name": "getNotifierFromNotifiersCanister",
                     "timestamp": { "__bigint__": "1730326457048141578" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1360370814" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730484644760868548" }
+                },
+                {
+                    "instructions": { "__bigint__": "1656909" },
+                    "method_name": "getNotifierFromNotifiersCanister",
+                    "timestamp": { "__bigint__": "1730484657151616309" }
                 }
             ]
         }
