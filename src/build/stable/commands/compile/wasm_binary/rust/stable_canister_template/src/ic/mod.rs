@@ -56,8 +56,6 @@ pub fn register(ctx: Ctx) -> Result<()> {
 
     ic.set("caller", caller::get_function(ctx.clone()))?;
 
-    ic.set("candidCompiler", candid_compiler::get_function(ctx.clone()))?;
-
     ic.set("candidDecode", candid_decode::get_function(ctx.clone()))?;
 
     ic.set("candidEncode", candid_encode::get_function(ctx.clone()))?;

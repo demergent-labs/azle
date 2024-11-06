@@ -12,7 +12,6 @@ export type AzleIcStable = {
         cyclesString: string
     ) => void;
     caller: () => Uint8Array;
-    candidCompiler: (candidPath: string) => string;
     candidDecode: (candidBytes: Uint8Array) => string;
     candidEncode: (candidString: string) => Uint8Array;
     canisterBalance: () => string;

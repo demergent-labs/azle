@@ -1,17 +1,23 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { defaultPropTestParams, expect, it, Test } from 'azle/test';
+import {
+    defaultPropTestParams,
+    expect,
+    getCanisterActor,
+    it,
+    Test
+} from 'azle/test';
 import fc from 'fast-check';
 import { TextDecoder, TextEncoder } from 'util';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
-import { _SERVICE } from './dfx_generated/canister/canister.did';
+import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
-export function getTests(canister: ActorSubclass<_SERVICE>): Test {
+export function getTests(): Test {
     return () => {
         it('should encode and decode Candid strings correctly, with UTF-8 verification', async () => {
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (arbitraryString) => {
                     const candidString = toCandidString(arbitraryString);
+                    const canister = await getCanisterActor<Actor>('canister');
 
                     const encodedBytes = await checkCandidEncoding(
                         canister,
@@ -41,6 +47,8 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                     }),
                     async (arbitraryBytes) => {
                         const candidBytes = toCandidBytes(arbitraryBytes);
+                        const canister =
+                            await getCanisterActor<Actor>('canister');
 
                         const decodedString = await checkCandidDecoding(
                             canister,
@@ -59,21 +67,11 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 defaultPropTestParams
             );
         });
-
-        // TODO candidCompilerQuery is not yet implemented
-        it.skip('should compile Candid correctly', async () => {
-            const candidPath = 'path/to/candid/file.did';
-            const compiledCandid =
-                await canister.candidCompilerQuery(candidPath);
-
-            expect(typeof compiledCandid).toBe('string');
-            expect(compiledCandid.length).toBeGreaterThan(0);
-        });
     };
 }
 
 async function checkCandidDecoding(
-    canister: ActorSubclass<_SERVICE>,
+    canister: ActorSubclass<Actor>,
     encodedBytes: Uint8Array
 ): Promise<string> {
     const decodedString = await canister.candidDecodeQuery(encodedBytes);
@@ -84,7 +82,7 @@ async function checkCandidDecoding(
 }
 
 async function checkCandidEncoding(
-    canister: ActorSubclass<_SERVICE>,
+    canister: ActorSubclass<Actor>,
     rawData: string | Uint8Array,
     candidString: string
 ): Promise<Uint8Array> {
