@@ -100,7 +100,7 @@ jobs:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             run_experimental: ${{ matrix.test_group.run_experimental || false }}
-            fuzz: ${{ inputs.fuzz }}
+            fuzz: ${{ inputs.fuzz || false }}
 
     check-test-success:
         name: Check Azle tests succeeded
