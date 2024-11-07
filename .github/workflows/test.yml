@@ -11,7 +11,10 @@ on:
             - main
     pull_request:
         types:
+            - opened
+            - synchronize
             - ready_for_review
+            - reopened
     workflow_dispatch:
         inputs:
             fuzz:
