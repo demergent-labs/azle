@@ -62,6 +62,23 @@ jobs:
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.tests.path}}
 
+            - name: Install didc
+              run: |
+                  # Create .local/bin directory
+                  mkdir -p $HOME/.local/bin
+
+                  # Download and install didc
+                  echo "Installing didc..."
+                  DIDC_PATH="$HOME/.local/bin/didc"
+                  curl -L https://github.com/dfinity/candid/releases/latest/download/didc-linux64 -o "$DIDC_PATH"
+                  chmod +x "$DIDC_PATH"
+
+                  # Add to PATH
+                  echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+                  # Verify installation
+                  didc --version
+
             - uses: ./.github/actions/setup_node
 
             - uses: ./.github/actions/setup_dfx
