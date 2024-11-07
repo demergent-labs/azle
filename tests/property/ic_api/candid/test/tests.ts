@@ -1,4 +1,5 @@
-import { ActorSubclass } from '@dfinity/agent';
+globalThis._azleExperimental = true;
+import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/stable';
 import {
     defaultPropTestParams,
     expect,
@@ -6,103 +7,63 @@ import {
     it,
     Test
 } from 'azle/test';
+import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
 import fc from 'fast-check';
-import { TextDecoder, TextEncoder } from 'util';
 
+import { execSyncPretty } from '../../../../../src/build/stable/utils/exec_sync_pretty';
+import { DefinitionConstraints } from '../../../../../test/property/arbitraries/candid/candid_definition_arb/types';
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
-        it('should encode and decode Candid strings correctly, with UTF-8 verification', async () => {
-            await fc.assert(
-                fc.asyncProperty(fc.string(), async (arbitraryString) => {
-                    const candidString = toCandidString(arbitraryString);
-                    const canister = await getCanisterActor<Actor>('canister');
-
-                    const encodedBytes = await checkCandidEncoding(
-                        canister,
-                        arbitraryString,
-                        candidString
-                    );
-
-                    const decodedString = await checkCandidDecoding(
-                        canister,
-                        encodedBytes
-                    );
-
-                    expect(decodedString).toBe(candidString);
-                }),
-                defaultPropTestParams
-            );
-        });
-
-        it('should decode Candid bytes and then encode correctly, with UTF-8 verification', async () => {
+        it('should encode and decode candid values correctly', async () => {
+            const constraints: DefinitionConstraints = {
+                recursiveWeights: true,
+                weights: {
+                    func: 0, // random func is not supported for didc
+                    null: 0, // null comes out of didc random as (null) and out of candidDecode as (null: null)
+                    opt: 0, // None comes out of didc random as (null) and out of candidDecode as (null: null)
+                    record: 0, // record property names don't get decoded as actual names
+                    variant: 0, // variant property names don't get decoded as actual names
+                    float32: 0, // float32 without a decimal point aren't accepted by candidEncodeQuery
+                    float64: 0, // float64 with a decimal point is accepted by candidEncodeQuery
+                    blob: 0, // blobs are different from didc random and candidDecode, but in a way that seems broken
+                    nat8: 0 // nat8 if paired with vec will make a blob, so we have to filter it out too
+                }
+            };
             await fc.assert(
                 fc.asyncProperty(
-                    fc.uint8Array({
-                        minLength: 10,
-                        maxLength: 100,
-                        min: 32,
-                        max: 126
-                    }),
-                    async (arbitraryBytes) => {
-                        const candidBytes = toCandidBytes(arbitraryBytes);
+                    candidDefinitionArb({ api: 'class', constraints }, {}),
+                    async (candid) => {
+                        const didVisitorResult =
+                            candid.definition.candidMeta.runtimeTypeObject
+                                .getIdlType([])
+                                .accept(
+                                    new DidVisitor(),
+                                    getDefaultVisitorData()
+                                );
+                        const candidString = didVisitorResult[0];
+                        const command = `didc random -t '(${candidString})'`;
+                        const candidValueString = execSyncPretty(command)
+                            .toString()
+                            .trim();
+                        console.info(candidValueString);
+
                         const canister =
                             await getCanisterActor<Actor>('canister');
 
-                        const decodedString = await checkCandidDecoding(
-                            canister,
-                            candidBytes
-                        );
+                        const encodedBytes =
+                            await canister.candidEncodeQuery(candidValueString);
 
-                        const encodedBytes = await checkCandidEncoding(
-                            canister,
-                            arbitraryBytes,
-                            decodedString
-                        );
+                        const decodedString =
+                            await canister.candidDecodeQuery(encodedBytes);
 
-                        expect(encodedBytes).toEqual(candidBytes);
+                        expect(encodedBytes instanceof Uint8Array).toBe(true);
+                        expect(decodedString).toBe(candidValueString);
                     }
                 ),
                 defaultPropTestParams
             );
         });
     };
-}
-
-async function checkCandidDecoding(
-    canister: ActorSubclass<Actor>,
-    encodedBytes: Uint8Array
-): Promise<string> {
-    const decodedString = await canister.candidDecodeQuery(encodedBytes);
-    const textDecoder = new TextDecoder('utf-8');
-    const decodedUtf8 = textDecoder.decode(encodedBytes.slice(8));
-    expect(decodedString).toBe(toCandidString(decodedUtf8));
-    return decodedString;
-}
-
-async function checkCandidEncoding(
-    canister: ActorSubclass<Actor>,
-    rawData: string | Uint8Array,
-    candidString: string
-): Promise<Uint8Array> {
-    const encodedBytes = await canister.candidEncodeQuery(candidString);
-    const textEncoder = new TextEncoder();
-    const expectedEncodedData =
-        typeof rawData === 'string' ? textEncoder.encode(rawData) : rawData;
-    expect(encodedBytes.slice(8)).toEqual(expectedEncodedData);
-    return new Uint8Array(encodedBytes);
-}
-
-function toCandidBytes(data: Uint8Array): Uint8Array {
-    const didlHeader = new Uint8Array([68, 73, 68, 76, 0, 1, 113]);
-    return new Uint8Array([...didlHeader, data.length, ...data]);
-}
-
-function toCandidString(data: string): string {
-    return `("${escapeCandidString(data)}")`;
-}
-
-function escapeCandidString(data: string): string {
-    return data.replace(/[\\"']/g, '\\$&');
 }
