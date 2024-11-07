@@ -4,46 +4,16 @@ import {
     query,
     reject,
     rejectCode,
+    RejectionCode,
     rejectMessage,
     reply,
     trap,
     update
 } from 'azle';
 
-const RejectionCodeVariant = IDL.Variant({
-    NoError: IDL.Null,
-    SysFatal: IDL.Null,
-    SysTransient: IDL.Null,
-    DestinationInvalid: IDL.Null,
-    CanisterReject: IDL.Null,
-    CanisterError: IDL.Null,
-    Unknown: IDL.Null
-});
-
-type RejectionCodeVariant =
-    | {
-          NoError: null;
-      }
-    | {
-          SysFatal: null;
-      }
-    | {
-          SysTransient: null;
-      }
-    | {
-          DestinationInvalid: null;
-      }
-    | {
-          CanisterReject: null;
-      }
-    | {
-          CanisterError: null;
-      }
-    | {
-          Unknown: null;
-      };
-
 export default class {
+    rejectorPrincipal = getRejectorPrincipal();
+
     @query([IDL.Text], IDL.Text, { manual: true })
     alwaysReplyQuery(input: string): void {
         reply({ data: input, idlType: IDL.Text });
@@ -66,39 +36,36 @@ export default class {
     @update([IDL.Text], IDL.Text)
     async echoThroughReject(message: string): Promise<string> {
         try {
-            await call(getRejectorPrincipal(), 'echoReject', {
+            await call(this.rejectorPrincipal, 'echoReject', {
                 paramIdlTypes: [IDL.Text],
                 returnIdlType: IDL.Text,
                 args: [message]
             });
         } catch (error) {
-            console.log('echoThroughReject caught an error', error);
             return rejectMessage();
         }
         throw new Error('This should never be thrown');
     }
 
-    @update([], RejectionCodeVariant)
-    async getRejectCodeCanisterError(): Promise<RejectionCodeVariant> {
+    @update([], RejectionCode)
+    async getRejectCodeCanisterThrowError(): Promise<RejectionCode> {
         try {
-            await call(getRejectorPrincipal(), 'throwError', {
+            await call(this.rejectorPrincipal, 'throwError', {
                 returnIdlType: IDL.Text
             });
         } catch (error) {
-            console.log('getRejectCodeCanisterError caught an error', error);
             return rejectCode();
         }
         throw new Error('This should never be thrown');
     }
 
-    @update([], RejectionCodeVariant)
-    async getRejectCodeCanisterReject(): Promise<RejectionCodeVariant> {
+    @update([], RejectionCode)
+    async getRejectCodeCanisterReject(): Promise<RejectionCode> {
         try {
-            await call(getRejectorPrincipal(), 'rejectWithMessage', {
+            await call(this.rejectorPrincipal, 'rejectWithMessage', {
                 returnIdlType: IDL.Text
             });
         } catch (error) {
-            console.log('getRejectCodeCanisterReject caught an error', error);
             return rejectCode();
         }
         throw new Error('This should never be thrown');

@@ -1,13 +1,18 @@
-import { ActorSubclass } from '@dfinity/agent';
-import { defaultPropTestParams, expect, it, Test } from 'azle/test';
+import {
+    defaultPropTestParams,
+    expect,
+    getCanisterActor,
+    it,
+    Test
+} from 'azle/test';
 import fc from 'fast-check';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
-import { _SERVICE } from './dfx_generated/caller/caller.did';
+import { _SERVICE as Actor } from './dfx_generated/caller/caller.did';
 
-export function getTests(callerCanister: ActorSubclass<_SERVICE>): Test {
+export function getTests(): Test {
     return () => {
         it('should always reply with the input in alwaysReplyQuery', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (input) => {
                     const result = await callerCanister.alwaysReplyQuery(input);
@@ -18,6 +23,7 @@ export function getTests(callerCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('should always reject with the provided message in alwaysRejectQuery', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (message) => {
                     await expect(
@@ -29,6 +35,7 @@ export function getTests(callerCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('should reply with even numbers and reject odd numbers in evenOrRejectQuery', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
             await fc.assert(
                 fc.asyncProperty(fc.bigInt(), async (number) => {
                     if (number % 2n === 0n) {
@@ -46,6 +53,7 @@ export function getTests(callerCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('should echo the rejection message in echoThroughReject', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (message) => {
                     const result =
@@ -56,12 +64,15 @@ export function getTests(callerCanister: ActorSubclass<_SERVICE>): Test {
             );
         });
 
-        it('should return CanisterError for getRejectCodeCanisterError', async () => {
-            const result = await callerCanister.getRejectCodeCanisterError();
+        it('should return CanisterError for getRejectCodeCanisterThrowError', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
+            const result =
+                await callerCanister.getRejectCodeCanisterThrowError();
             expect(result).toEqual({ CanisterError: null });
         });
 
         it('should return CanisterReject for getRejectCodeCanisterReject', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
             const result = await callerCanister.getRejectCodeCanisterReject();
             expect(result).toEqual({ CanisterReject: null });
         });
