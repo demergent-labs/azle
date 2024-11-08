@@ -70,6 +70,12 @@ export default class {
         }
         throw new Error('This should never be thrown');
     }
+
+    @update([], RejectionCode)
+    async getRejectNoError(): Promise<RejectionCode> {
+        await call(this.rejectorPrincipal, 'noError');
+        return rejectCode();
+    }
 }
 
 function getRejectorPrincipal(): string {

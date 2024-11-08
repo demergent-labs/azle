@@ -76,6 +76,12 @@ export function getTests(): Test {
             const result = await callerCanister.getRejectCodeCanisterReject();
             expect(result).toEqual({ CanisterReject: null });
         });
+
+        it('should return CanisterNoError for getRejectCodeCanisterNoError', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
+            const result = await callerCanister.getRejectNoError();
+            expect(result).toEqual({ NoError: null });
+        });
     };
 }
 
