@@ -99,7 +99,7 @@ export function runTests(
                 const callDelay =
                     process.env.AZLE_FUZZ_CALL_DELAY ??
                     cuzzJson.callDelay?.toString() ??
-                    '.5';
+                    '.1'; // TODO let's think about the best default
 
                 for (const canisterName of canisterNames) {
                     console.log(`Starting cuzz for ${canisterName}`);
