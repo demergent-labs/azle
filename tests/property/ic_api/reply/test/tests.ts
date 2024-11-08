@@ -16,10 +16,10 @@ import { pretest } from './pretest';
 
 async function setupCanisters(): Promise<ActorSubclass<Actor>> {
     // Ensure directories exist
-    await mkdir(dirname('src/canister/index.ts'), { recursive: true });
+    await mkdir(dirname('src/index.ts'), { recursive: true });
 
     const canisterCode = generateCanister('IDL.Text');
-    await writeFile('src/canister/index.ts', canisterCode);
+    await writeFile('src/index.ts', canisterCode);
 
     pretest();
 
