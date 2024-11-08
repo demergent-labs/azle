@@ -96,21 +96,32 @@ export function runTests(
                 const canisterNames = Object.keys(dfxJson.canisters);
                 console.log('Canister names:', canisterNames);
 
+                const callDelay =
+                    process.env.AZLE_FUZZ_CALL_DELAY ??
+                    cuzzJson.callDelay?.toString() ??
+                    '.5';
+
                 for (const canisterName of canisterNames) {
                     console.log(`Starting cuzz for ${canisterName}`);
-                    spawn(
+                    const cuzzProcess = spawn(
                         'node_modules/.bin/cuzz',
                         [
                             '--canister-name',
                             canisterName,
                             '--skip-deploy',
                             '--call-delay',
-                            cuzzJson.callDelay?.toString() ?? '.5'
+                            callDelay
                         ],
                         {
                             stdio: 'inherit'
                         }
                     );
+
+                    cuzzProcess.on('exit', (code) => {
+                        if (code !== 0) {
+                            process.exit(code ?? 1);
+                        }
+                    });
                 }
             });
         });
