@@ -1,0 +1,23 @@
+{
+    "canisters": {
+        "caller": {
+            "type": "azle",
+            "main": "src/caller/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/caller",
+                "node_compatibility": true
+            },
+            "custom": {
+                "env": ["REJECTOR_PRINCIPAL"]
+            }
+        },
+        "rejector": {
+            "type": "azle",
+            "main": "src/rejector/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/rejector",
+                "node_compatibility": true
+            }
+        }
+    }
+}
