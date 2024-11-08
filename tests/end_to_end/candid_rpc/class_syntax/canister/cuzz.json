@@ -1,0 +1,7 @@
+{
+    "expectedErrors": [
+        "No route to canister",
+        "Management canister has no method",
+        "not found"
+    ]
+}

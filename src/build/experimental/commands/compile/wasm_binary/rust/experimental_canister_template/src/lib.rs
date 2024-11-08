@@ -3,7 +3,7 @@
 // TODO we should place each crate at src/build/stable/commands/compile/rust
 // TODO and src/build/experimental/commands/compile/rust respectively
 
-use std::cell::RefCell;
+use std::{cell::RefCell, convert::TryInto};
 
 #[allow(unused)]
 use guards::guard_against_non_controllers;
@@ -94,4 +94,9 @@ pub fn _azle_get_file_hash(path: String) -> Option<String> {
 pub fn _azle_get_benchmarks() -> Vec<benchmarking::BenchmarkEntry> {
     benchmarking::BENCHMARKS_REF_CELL
         .with(|benchmarks_ref_cell| benchmarks_ref_cell.borrow().clone())
+}
+
+#[ic_cdk_macros::query]
+pub fn _azle_memory_usage() -> u64 {
+    TryInto::<u64>::try_into(core::arch::wasm32::memory_size(0)).unwrap() * 65_536u64
 }

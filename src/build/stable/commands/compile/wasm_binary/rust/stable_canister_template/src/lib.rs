@@ -1,5 +1,4 @@
-use std::cell::RefCell;
-use std::convert::TryInto;
+use std::{cell::RefCell, convert::TryInto};
 
 use benchmarking::{BenchmarkEntry, BENCHMARKS_REF_CELL};
 use guards::guard_against_non_controllers;
