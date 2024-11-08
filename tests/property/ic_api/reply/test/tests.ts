@@ -1,3 +1,4 @@
+globalThis._azleExperimental = true;
 import { ActorSubclass } from '@dfinity/agent';
 import {
     defaultPropTestParams,
@@ -6,19 +7,36 @@ import {
     it,
     Test
 } from 'azle/test';
+import { CandidValueAndMetaArbGenerator } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';
 import fc from 'fast-check';
 import { mkdir, writeFile } from 'fs/promises';
 import { dirname } from 'path';
 
+import { candidDefinitionArb } from '../../../../../test/property/arbitraries/candid/candid_definition_arb';
+import {
+    CandidValueArb,
+    CandidValueConstraints
+} from '../../../../../test/property/arbitraries/candid/candid_values_arb';
+import { Context } from '../../../../../test/property/arbitraries/types';
 import { _SERVICE as Actor } from './dfx_generated/caller/caller.did';
 import { generateCanister } from './generate_canister';
 import { pretest } from './pretest';
 
-async function setupCanisters(): Promise<ActorSubclass<Actor>> {
+async function setupCanisters(
+    idlType: string,
+    tsType: string,
+    imports: string[],
+    variableAliasDeclarations: string[]
+): Promise<ActorSubclass<Actor>> {
     // Ensure directories exist
     await mkdir(dirname('src/index.ts'), { recursive: true });
 
-    const canisterCode = generateCanister('IDL.Text');
+    const canisterCode = generateCanister(
+        idlType,
+        tsType,
+        imports,
+        variableAliasDeclarations
+    );
     await writeFile('src/index.ts', canisterCode);
 
     pretest();
@@ -29,12 +47,38 @@ async function setupCanisters(): Promise<ActorSubclass<Actor>> {
 export function getTests(): Test {
     return () => {
         it('should always reply with the input in alwaysReplyQuery', async () => {
+            const context: Context<CandidValueConstraints> = {
+                constraints: {},
+                api: 'class'
+            };
             await fc.assert(
-                fc.asyncProperty(fc.string(), async (input) => {
-                    const canister = await setupCanisters();
-                    const result = await canister.alwaysReplyQuery(input);
-                    expect(result).toBe(input);
-                }),
+                fc.asyncProperty(
+                    CandidValueAndMetaArbGenerator(
+                        context,
+                        candidDefinitionArb(context, {}),
+                        CandidValueArb
+                    ),
+                    async (input) => {
+                        const {
+                            src: {
+                                typeAnnotation,
+                                imports,
+                                typeObject,
+                                variableAliasDeclarations
+                            },
+                            value: { agentArgumentValue }
+                        } = input;
+                        const canister = await setupCanisters(
+                            typeObject,
+                            typeAnnotation,
+                            Array.from(imports),
+                            variableAliasDeclarations
+                        );
+                        const result =
+                            await canister.alwaysReplyQuery(agentArgumentValue);
+                        expect(result).toEqual(agentArgumentValue);
+                    }
+                ),
                 defaultPropTestParams
             );
         });

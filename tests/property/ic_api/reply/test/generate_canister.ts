@@ -1,11 +1,20 @@
-export function generateCanister(replyIdl: string): string {
+export function generateCanister(
+    idlType: string,
+    tsType: string,
+    imports: string[],
+    variableAliasDeclarations: string[]
+): string {
     return /*ts*/ `
-import { IDL, query, reply } from 'azle';
+import { query, reply } from 'azle';
+${imports
+    .map((importDeclaration) => `import { ${importDeclaration} } from 'azle';`)
+    .join('\n')}
+${variableAliasDeclarations.join('\n')}
 
 export default class {
-    @query([${replyIdl}], ${replyIdl}, { manual: true })
-    alwaysReplyQuery(input: string): void {
-        reply({ data: input, idlType: ${replyIdl} });
+    @query([${idlType}], ${idlType}, { manual: true })
+    alwaysReplyQuery(input: ${tsType}): void {
+        reply({ data: input, idlType: ${idlType} });
     }
 }
     `;
