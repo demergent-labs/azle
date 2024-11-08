@@ -5,9 +5,11 @@ import {
     expect,
     getCanisterActor,
     it,
+    please,
     Test
 } from 'azle/test';
 import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
+import { execSync } from 'child_process';
 import fc from 'fast-check';
 
 import { execSyncPretty } from '../../../../../src/build/stable/utils/exec_sync_pretty';
@@ -16,6 +18,13 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
+        please('install didc', async () => {
+            execSync(
+                `cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 --force didc`,
+                { stdio: 'inherit' }
+            );
+        });
+
         it('should encode and decode candid values correctly', async () => {
             const constraints: DefinitionConstraints = {
                 recursiveWeights: true,
