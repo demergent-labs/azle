@@ -10,11 +10,12 @@ on:
         branches:
             - main
     pull_request:
-        types:
-            - opened
-            - synchronize
-            - ready_for_review
-            - reopened
+        # TODO seems to be breaking everything
+        # types:
+        #     - opened
+        #     - synchronize
+        #     - ready_for_review
+        #     - reopened
     workflow_dispatch:
         inputs:
             fuzz:

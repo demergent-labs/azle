@@ -3,6 +3,8 @@ dns.setDefaultResultOrder('ipv4first');
 
 import { ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { describe, expect, test } from '@jest/globals';
+import { spawn } from 'child_process';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { getCanisterId } from '../dfx';
@@ -17,8 +19,12 @@ export function runTests(
     canisterNames: string | string[] | undefined = undefined,
     cwd: string = process.cwd()
 ): void {
-    const { shouldRunTests, shouldRunTypeChecks, shouldRecordBenchmarks } =
-        processEnvVars();
+    const {
+        shouldRunTests,
+        shouldRunTypeChecks,
+        shouldRecordBenchmarks,
+        shouldFuzz
+    } = processEnvVars();
 
     if (shouldRunTests) {
         describe(`tests`, tests);
@@ -54,6 +60,53 @@ export function runTests(
         describe(`benchmarks`, () => {
             it('runs benchmarks for all canisters', () =>
                 runBenchmarksForCanisters(canisterNamesArray));
+        });
+    }
+
+    if (shouldFuzz && canisterNames !== undefined) {
+        // TODO right now we just test the first canister...that might be good enough for now?
+        // TODO because I feel that the first canister will generally call the other canisters
+        describe(`fuzz`, () => {
+            it('runs fuzz tests for all canisters', () => {
+                // execSyncPretty(`cuzz`, 'inherit');
+                const dfxFile = readFileSync(
+                    join(process.cwd(), 'dfx.json'),
+                    'utf-8'
+                );
+                console.log(dfxFile);
+
+                const cuzzFile = readFileSync(
+                    join(process.cwd(), 'cuzz.json'),
+                    'utf-8'
+                );
+
+                const cuzzJson = JSON.parse(cuzzFile);
+
+                const dfxJson = JSON.parse(dfxFile);
+
+                console.log(dfxJson);
+                console.log(cuzzJson.callDelay);
+
+                const canisterNames = Object.keys(dfxJson.canisters);
+                console.log('Canister names:', canisterNames);
+
+                for (const canisterName of canisterNames) {
+                    console.log(`Starting cuzz for ${canisterName}`);
+                    spawn(
+                        'node_modules/.bin/cuzz',
+                        [
+                            '--canister-name',
+                            canisterName,
+                            '--skip-deploy',
+                            '--call-delay',
+                            cuzzJson.callDelay?.toString() ?? '.5'
+                        ],
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+                }
+            });
         });
     }
 }
@@ -134,20 +187,35 @@ function processEnvVars(): {
     shouldRunTests: boolean;
     shouldRunTypeChecks: boolean;
     shouldRecordBenchmarks: boolean;
+    shouldFuzz: boolean;
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
     const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
+    const fuzz = process.env.AZLE_FUZZ ?? 'false';
 
-    const hasOnly = [runTests, runTypeChecks].includes('only');
+    const hasOnly = [runTests, runTypeChecks, fuzz].includes('only');
 
     return {
-        shouldRunTests: shouldRun(runTests, hasOnly),
-        shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly),
-        shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly
+        shouldRunTests: shouldRun(runTests, hasOnly, true),
+        shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly, true),
+        shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly,
+        shouldFuzz: shouldRun(fuzz, hasOnly, false)
     };
 }
 
-function shouldRun(envVar: string, hasOnly: boolean): boolean {
-    return hasOnly ? envVar === 'only' : envVar !== 'false';
+function shouldRun(
+    envVar: string,
+    hasOnly: boolean,
+    runByDefault: boolean
+): boolean {
+    if (hasOnly === true) {
+        return envVar === 'only';
+    }
+
+    if (runByDefault === true) {
+        return envVar !== 'false';
+    }
+
+    return envVar === 'true';
 }

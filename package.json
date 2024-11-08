@@ -11,7 +11,8 @@
     },
     "type": "module",
     "bin": {
-        "azle": "./src/build/index.ts"
+        "azle": "./src/build/index.ts",
+        "cuzz": "./node_modules/.bin/cuzz"
     },
     "main": "./src/lib/stable/index.ts",
     "repository": {
@@ -35,6 +36,7 @@
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
         "crypto-browserify": "^3.12.0",
+        "cuzz": "github:demergent-labs/cuzz#8da657a54729755a23dd0da82d0a418c40200346",
         "deep-is": "^0.1.4",
         "esbuild": "^0.23.0",
         "esbuild-plugin-tsc": "^0.4.0",

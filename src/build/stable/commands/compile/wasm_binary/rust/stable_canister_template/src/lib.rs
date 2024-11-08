@@ -1,4 +1,5 @@
 use std::cell::RefCell;
+use std::convert::TryInto;
 
 use benchmarking::{BenchmarkEntry, BENCHMARKS_REF_CELL};
 use guards::guard_against_non_controllers;
@@ -37,4 +38,9 @@ pub fn _azle_chunk() {}
 #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
     BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| benchmarks_ref_cell.borrow().clone())
+}
+
+#[ic_cdk_macros::query]
+pub fn _azle_memory_usage() -> u64 {
+    TryInto::<u64>::try_into(core::arch::wasm32::memory_size(0)).unwrap() * 65_536u64
 }
