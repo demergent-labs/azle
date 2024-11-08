@@ -63,6 +63,7 @@ export function runTests(
         });
     }
 
+    // TODO we should work on what the UI looks like if there are multiple of these things running
     if (shouldFuzz && canisterNames !== undefined) {
         // TODO right now we just test the first canister...that might be good enough for now?
         // TODO because I feel that the first canister will generally call the other canisters
@@ -75,12 +76,17 @@ export function runTests(
                 );
                 console.log(dfxFile);
 
-                const cuzzFile = readFileSync(
-                    join(process.cwd(), 'cuzz.json'),
-                    'utf-8'
-                );
-
-                const cuzzJson = JSON.parse(cuzzFile);
+                const cuzzJson = ((): any => {
+                    try {
+                        const cuzzFile = readFileSync(
+                            join(process.cwd(), 'cuzz.json'),
+                            'utf-8'
+                        );
+                        return JSON.parse(cuzzFile);
+                    } catch {
+                        return {};
+                    }
+                })();
 
                 const dfxJson = JSON.parse(dfxFile);
 
