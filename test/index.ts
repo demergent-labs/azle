@@ -102,20 +102,42 @@ export function runTests(
                     '.1'; // TODO let's think about the best default
 
                 for (const canisterName of canisterNames) {
-                    console.log(`Starting cuzz for ${canisterName}`);
-                    const cuzzProcess = spawn(
-                        'node_modules/.bin/cuzz',
-                        [
-                            '--canister-name',
-                            canisterName,
-                            '--skip-deploy',
-                            '--call-delay',
-                            callDelay
-                        ],
-                        {
-                            stdio: 'inherit'
-                        }
+                    execSyncPretty(
+                        `dfx ledger fabricate-cycles --canister ${canisterName} --cycles 1000000000000000000`,
+                        'inherit'
                     );
+
+                    // TODO spin out multiple actual GUI terminals if you can
+                    console.log(`Starting cuzz for ${canisterName}`);
+
+                    let cuzzProcess;
+
+                    if (process.env.AZLE_FUZZ_TERMINALS === 'true') {
+                        cuzzProcess = spawn(
+                            'gnome-terminal',
+                            [
+                                '--',
+                                'bash',
+                                '-c',
+                                `node_modules/.bin/cuzz --canister-name ${canisterName} --skip-deploy --call-delay ${callDelay} & exec bash`
+                            ],
+                            {
+                                stdio: 'inherit'
+                            }
+                        );
+                    } else {
+                        cuzzProcess = spawn(
+                            'node_modules/.bin/cuzz',
+                            [
+                                '--canister-name',
+                                canisterName,
+                                '--skip-deploy',
+                                '--call-delay',
+                                callDelay
+                            ],
+                            { stdio: 'inherit' }
+                        );
+                    }
 
                     cuzzProcess.on('exit', (code) => {
                         if (code !== 0) {

@@ -1,0 +1,7 @@
+{
+    "expectedErrors": [
+        "Canister violated contract: \\\"ic0_call_new\\\" cannot be executed in non replicated query mode",
+        "Composite query cannot be called in replicated mode",
+        "Canister has no query method 'updateQuery'"
+    ]
+}

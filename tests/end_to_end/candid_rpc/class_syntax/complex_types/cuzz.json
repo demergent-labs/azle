@@ -1,4 +1,5 @@
 {
+    "callDelay": ".25",
     "expectedErrors": [
         "Author not found",
         "Post not found",
