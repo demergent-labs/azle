@@ -61,16 +61,16 @@ export function getTests(): Test {
                     async (input) => {
                         const {
                             src: {
-                                typeAnnotation,
+                                typeAnnotation: tsType,
                                 imports,
-                                typeObject,
+                                typeObject: idlType,
                                 variableAliasDeclarations
                             },
                             value: { agentArgumentValue }
                         } = input;
                         const canister = await setupCanisters(
-                            typeObject,
-                            typeAnnotation,
+                            idlType,
+                            tsType,
                             Array.from(imports),
                             variableAliasDeclarations
                         );

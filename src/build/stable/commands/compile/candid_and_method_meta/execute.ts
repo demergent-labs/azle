@@ -65,7 +65,6 @@ export async function execute(
             stable64_write: (): void => {},
             time: (): bigint => 0n,
             trap: (ptr: number, len: number): void => {
-                console.log('WHAT IF IT WAS FROM HERE');
                 const memory = new Uint8Array(
                     (wasmInstance.exports.memory as any).buffer,
                     ptr,
