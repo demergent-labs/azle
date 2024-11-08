@@ -10,6 +10,18 @@ on:
         branches:
             - main
     pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+    workflow_dispatch:
+        inputs:
+            fuzz:
+                description: 'Run fuzz tests'
+                required: true
+                type: boolean
+                default: false
 
 jobs:
     get-exclude-dirs:
@@ -88,6 +100,7 @@ jobs:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             run_experimental: ${{ matrix.test_group.run_experimental || false }}
+            fuzz: ${{ inputs.fuzz || false }}
 
     check-test-success:
         name: Check Azle tests succeeded

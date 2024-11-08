@@ -14,6 +14,10 @@ on:
                 required: false
                 type: boolean
                 default: false
+            fuzz:
+                required: false
+                type: boolean
+                default: false
 
 jobs:
     prepare-test-environment:
@@ -49,3 +53,4 @@ jobs:
             test_infos: ${{ needs.prepare-test-environment.outputs.test-infos }}
             include_npm: ${{ needs.prepare-test-environment.outputs.include_npm == 'true' }}
             run_experimental: ${{ inputs.run_experimental }}
+            fuzz: ${{ inputs.fuzz }}
