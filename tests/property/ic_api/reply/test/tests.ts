@@ -18,7 +18,7 @@ import {
     CandidValueConstraints
 } from '../../../../../test/property/arbitraries/candid/candid_values_arb';
 import { Context } from '../../../../../test/property/arbitraries/types';
-import { _SERVICE as Actor } from './dfx_generated/caller/caller.did';
+import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 import { generateCanister } from './generate_canister';
 import { pretest } from './pretest';
 

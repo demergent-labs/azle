@@ -7,16 +7,16 @@ import {
 } from 'azle/test';
 import fc from 'fast-check';
 
-import { _SERVICE as Actor } from './dfx_generated/caller/caller.did';
+import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
         it('should always reject with the provided message in alwaysRejectQuery', async () => {
-            const callerCanister = await getCanisterActor<Actor>('caller');
+            const canister = await getCanisterActor<Actor>('canister');
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (message) => {
                     await expect(
-                        callerCanister.alwaysRejectQuery(message)
+                        canister.alwaysRejectQuery(message)
                     ).rejects.toThrow(escapeCandidString(message));
                 }),
                 defaultPropTestParams
@@ -24,16 +24,15 @@ export function getTests(): Test {
         });
 
         it('should reply with even numbers and reject odd numbers in evenOrRejectQuery', async () => {
-            const callerCanister = await getCanisterActor<Actor>('caller');
+            const canister = await getCanisterActor<Actor>('canister');
             await fc.assert(
                 fc.asyncProperty(fc.bigInt(), async (number) => {
                     if (number % 2n === 0n) {
-                        const result =
-                            await callerCanister.evenOrRejectQuery(number);
+                        const result = await canister.evenOrRejectQuery(number);
                         expect(result).toBe(number);
                     } else {
                         await expect(
-                            callerCanister.evenOrRejectQuery(number)
+                            canister.evenOrRejectQuery(number)
                         ).rejects.toThrow('Odd numbers are rejected');
                     }
                 }),
