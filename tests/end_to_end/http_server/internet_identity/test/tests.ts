@@ -29,12 +29,6 @@ export function getTests(canisterName: string): Test {
 
                     await iiPage.click('#registerButton');
 
-                    await iiPage.waitForSelector(
-                        '[data-action="construct-identity"]'
-                    );
-
-                    await iiPage.click('[data-action="construct-identity"]');
-
                     await iiPage.waitForSelector('#captchaInput');
 
                     await iiPage.type('#captchaInput', 'a');

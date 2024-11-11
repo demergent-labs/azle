@@ -1,0 +1,15 @@
+{
+    "backend": {
+        "previous": { "version": "0.25.0-dev", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8143867976" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1731365146901342941" }
+                }
+            ]
+        }
+    }
+}
