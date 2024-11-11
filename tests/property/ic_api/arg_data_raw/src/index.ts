@@ -14,7 +14,7 @@ export default class {
 
     @init([IDL.Text])
     init(arg: string): void {
-        console.log('init', arg);
+        console.info('init', arg);
         this.initArgDataRaw = argDataRaw();
     }
 
@@ -29,7 +29,7 @@ export default class {
 
     @postUpgrade([IDL.Text])
     postUpgrade(arg: string): void {
-        console.log('postUpgrade', arg);
+        console.info('postUpgrade', arg);
         this.postUpgradeArgDataRaw = argDataRaw();
     }
 
@@ -44,13 +44,13 @@ export default class {
 
     @query([IDL.Text], IDL.Vec(IDL.Nat8))
     getQueryArgDataRaw(arg: string): Uint8Array {
-        console.log('query', arg);
+        console.info('query', arg);
         return argDataRaw();
     }
 
     @update([IDL.Text], IDL.Vec(IDL.Nat8))
     getUpdateArgDataRaw(arg: string): Uint8Array {
-        console.log('update', arg);
+        console.info('update', arg);
         return argDataRaw();
     }
 
