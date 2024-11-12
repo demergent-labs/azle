@@ -34,7 +34,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
             spawn(async move {
                 let _scope_guard = scopeguard::guard((), |_| {
-                    quickjs_with_ctx(|ctx| {
+                    let result = quickjs_with_ctx(|ctx| {
                         let reject_id = format!("_reject_{}", promise_id);
                         let resolve_id = format!("_resolve_{}", promise_id);
 
@@ -47,6 +47,10 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
                         Ok(())
                     });
+
+                    if let Err(e) = result {
+                        trap(&format!("Azle PromiseCleanupError: {e}"));
+                    }
                 });
 
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
