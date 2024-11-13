@@ -1,4 +1,5 @@
 globalThis._azleExperimental = true;
+
 import { ActorSubclass } from '@dfinity/agent';
 import {
     DidVisitor,
@@ -67,9 +68,12 @@ export function getTests(): Test {
 
                         await testDeploy(actor, deployArgDef, 'postUpgrade');
 
-                        for (let i = 0; i < 10; i++) {
-                            console.info('Canister method iteration:', i);
+                        for (let i = 0; i < 100; i++) {
+                            console.info('Query method iteration:', i);
                             await testCanisterMethod(queryArgDef, 'Query');
+                        }
+                        for (let i = 0; i < 10; i++) {
+                            console.info('Update method iteration:', i);
                             await testCanisterMethod(updateArgDef, 'Update');
                         }
                     }
@@ -93,9 +97,9 @@ async function testDeploy(
 
     const argString = generateRandomCandidString(argData);
 
-    const deployCommand = `dfx deploy canister --argument '${argString}' ${
-        mode === 'postUpgrade' ? '--upgrade-unchanged' : ''
-    }`;
+    const deployCommand = `dfx deploy canister --argument '${escapeSingleQuotes(
+        argString
+    )}' ${mode === 'postUpgrade' ? '--upgrade-unchanged' : ''}`;
     execSync(deployCommand, { stdio: 'pipe' });
 
     const argDataRaw =
@@ -112,12 +116,14 @@ async function testCanisterMethod(
 ): Promise<Promise<void>> {
     const argString = generateRandomCandidString(argData);
     const command = `dfx canister call canister get${mode}ArgDataRaw '${argString}'`;
+    console.info(`command: ${command}`);
     const result = execSync(command, {
         stdio: 'pipe'
     });
     const candidEncodeCommand = `dfx canister call canister candidEncode '("${escapeArgData(
         argString
     )}")'`;
+    console.info(`candidEncodeCommand: ${candidEncodeCommand}`);
     const candidEncodeResult = execSync(candidEncodeCommand, {
         stdio: 'pipe'
     });
@@ -126,6 +132,10 @@ async function testCanisterMethod(
 
 function escapeArgData(data: string): string {
     return data.replace(/[\\"]/g, '\\$&');
+}
+
+function escapeSingleQuotes(data: string): string {
+    return data.replace(/'/g, "'\\''");
 }
 
 function getIdlType(candidDefinition: WithShapes<CandidDefinition>): string {
@@ -175,7 +185,7 @@ async function setupCanisters(
     await writeFile('src/index.ts', canisterCode);
 
     const initArgString = generateRandomCandidString(deployArgDefinition);
-    pretest(initArgString);
+    pretest(escapeSingleQuotes(initArgString));
 
     return await getCanisterActor<Actor>('canister');
 }

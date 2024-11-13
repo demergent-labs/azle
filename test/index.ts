@@ -112,13 +112,14 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
         endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
     };
 
-    const seed = process.env.AZLE_PROPTEST_SEED
-        ? Number(process.env.AZLE_PROPTEST_SEED)
-        : undefined;
+    const seed =
+        process.env.AZLE_PROPTEST_SEED !== undefined
+            ? Number(process.env.AZLE_PROPTEST_SEED)
+            : undefined;
 
     const path = process.env.AZLE_PROPTEST_PATH;
 
-    return seed ? { ...baseParams, seed, path } : baseParams;
+    return seed !== undefined ? { ...baseParams, seed, path } : baseParams;
 }
 
 export async function getCanisterActor<T>(

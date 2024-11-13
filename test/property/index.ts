@@ -32,15 +32,15 @@ export async function runPropTests(
         ? Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
         : 1;
 
-    const seed = process.env.AZLE_PROPTEST_SEED
-        ? Number(process.env.AZLE_PROPTEST_SEED)
-        : undefined;
+    const seed =
+        process.env.AZLE_PROPTEST_SEED !== undefined
+            ? Number(process.env.AZLE_PROPTEST_SEED)
+            : undefined;
 
     const path = process.env.AZLE_PROPTEST_PATH;
 
-    const executionParams = seed
-        ? { ...defaultParams, seed, path }
-        : defaultParams;
+    const executionParams =
+        seed !== undefined ? { ...defaultParams, seed, path } : defaultParams;
 
     try {
         for (let i = 0; i < numRuns; i++) {

@@ -27,8 +27,7 @@ export default class {
     postUpgradeArgDataRaw: Uint8Array | null = null;
 
     @init([${initIdlType}])
-    init(arg: ${initTsType}): void {
-        console.info('init', arg);
+    init(_arg: ${initTsType}): void {
         this.initArgDataRaw = argDataRaw();
     }
 
@@ -42,8 +41,7 @@ export default class {
     }
 
     @postUpgrade([${initIdlType}])
-    postUpgrade(arg: ${initTsType}): void {
-        console.info('postUpgrade', arg);
+    postUpgrade(_arg: ${initTsType}): void {
         this.postUpgradeArgDataRaw = argDataRaw();
     }
 
@@ -57,14 +55,12 @@ export default class {
     }
 
     @query([${queryIdlType}], IDL.Vec(IDL.Nat8))
-    getQueryArgDataRaw(arg: ${queryTsType}): Uint8Array {
-        console.info('query', arg);
+    getQueryArgDataRaw(_arg: ${queryTsType}): Uint8Array {
         return argDataRaw();
     }
 
     @update([${updateIdlType}], IDL.Vec(IDL.Nat8))
-    getUpdateArgDataRaw(arg: ${updateTsType}): Uint8Array {
-        console.info('update', arg);
+    getUpdateArgDataRaw(_arg: ${updateTsType}): Uint8Array {
         return argDataRaw();
     }
 
