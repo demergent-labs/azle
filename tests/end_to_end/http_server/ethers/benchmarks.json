@@ -1,0 +1,24 @@
+{
+    "ethers": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8135798587" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326438259173470" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8137053096" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730484663671907719" }
+                }
+            ]
+        }
+    }
+}

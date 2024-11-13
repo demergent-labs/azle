@@ -1,0 +1,64 @@
+{
+    "audio_recorder": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "11210958" },
+                    "method_name": "createUser",
+                    "timestamp": { "__bigint__": "1730326453422771537" }
+                },
+                {
+                    "instructions": { "__bigint__": "30870605" },
+                    "method_name": "createRecording",
+                    "timestamp": { "__bigint__": "1730326455601170106" }
+                },
+                {
+                    "instructions": { "__bigint__": "43574088" },
+                    "method_name": "deleteRecording",
+                    "timestamp": { "__bigint__": "1730326457536073233" }
+                },
+                {
+                    "instructions": { "__bigint__": "30668934" },
+                    "method_name": "createRecording",
+                    "timestamp": { "__bigint__": "1730326459743405791" }
+                },
+                {
+                    "instructions": { "__bigint__": "29795439" },
+                    "method_name": "deleteUser",
+                    "timestamp": { "__bigint__": "1730326461791915596" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "11112042" },
+                    "method_name": "createUser",
+                    "timestamp": { "__bigint__": "1730484657355231307" }
+                },
+                {
+                    "instructions": { "__bigint__": "30590934" },
+                    "method_name": "createRecording",
+                    "timestamp": { "__bigint__": "1730484659501312799" }
+                },
+                {
+                    "instructions": { "__bigint__": "42858618" },
+                    "method_name": "deleteRecording",
+                    "timestamp": { "__bigint__": "1730484662038301922" }
+                },
+                {
+                    "instructions": { "__bigint__": "30419558" },
+                    "method_name": "createRecording",
+                    "timestamp": { "__bigint__": "1730484663843407122" }
+                },
+                {
+                    "instructions": { "__bigint__": "29329040" },
+                    "method_name": "deleteUser",
+                    "timestamp": { "__bigint__": "1730484665869369529" }
+                }
+            ]
+        }
+    }
+}

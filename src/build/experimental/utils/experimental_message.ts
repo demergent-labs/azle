@@ -1,5 +1,5 @@
 export function experimentalMessageDfxJson(description: string): string {
-    return `Azle: Experimental mode must be enabled to use ${description}. You can enable experimental mode in your dfx.json file like this:
+    return `Experimental mode must be enabled to use ${description}. You can enable experimental mode in your dfx.json file like this:
 {
     "canisters": {
         "canisterName": {
@@ -15,5 +15,5 @@ export function experimentalMessageDfxJson(description: string): string {
 }
 
 export function experimentalMessageCli(description: string): string {
-    return `Azle: Experimental mode must be enabled to use ${description}. You can enable experimental mode with the --experimental flag`;
+    return `Experimental mode must be enabled to use ${description}. You can enable experimental mode with the --experimental flag`;
 }

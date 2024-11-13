@@ -1,0 +1,74 @@
+{
+    "simple_to_do": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1908472" },
+                    "method_name": "addTodo",
+                    "timestamp": { "__bigint__": "1730326446620210235" }
+                },
+                {
+                    "instructions": { "__bigint__": "1642955" },
+                    "method_name": "addTodo",
+                    "timestamp": { "__bigint__": "1730326448739707763" }
+                },
+                {
+                    "instructions": { "__bigint__": "977612" },
+                    "method_name": "completeTodo",
+                    "timestamp": { "__bigint__": "1730326450913840861" }
+                },
+                {
+                    "instructions": { "__bigint__": "915539" },
+                    "method_name": "clearCompleted",
+                    "timestamp": { "__bigint__": "1730326452874179432" }
+                },
+                {
+                    "instructions": { "__bigint__": "969805" },
+                    "method_name": "completeTodo",
+                    "timestamp": { "__bigint__": "1730326454953656648" }
+                },
+                {
+                    "instructions": { "__bigint__": "898144" },
+                    "method_name": "clearCompleted",
+                    "timestamp": { "__bigint__": "1730326457189917848" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1999748" },
+                    "method_name": "addTodo",
+                    "timestamp": { "__bigint__": "1730484648899811502" }
+                },
+                {
+                    "instructions": { "__bigint__": "1711863" },
+                    "method_name": "addTodo",
+                    "timestamp": { "__bigint__": "1730484651039719509" }
+                },
+                {
+                    "instructions": { "__bigint__": "1004972" },
+                    "method_name": "completeTodo",
+                    "timestamp": { "__bigint__": "1730484653242980803" }
+                },
+                {
+                    "instructions": { "__bigint__": "935033" },
+                    "method_name": "clearCompleted",
+                    "timestamp": { "__bigint__": "1730484655348324657" }
+                },
+                {
+                    "instructions": { "__bigint__": "999059" },
+                    "method_name": "completeTodo",
+                    "timestamp": { "__bigint__": "1730484657279647236" }
+                },
+                {
+                    "instructions": { "__bigint__": "921093" },
+                    "method_name": "clearCompleted",
+                    "timestamp": { "__bigint__": "1730484659512787252" }
+                }
+            ]
+        }
+    }
+}

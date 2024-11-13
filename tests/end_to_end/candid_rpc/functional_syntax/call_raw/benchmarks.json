@@ -1,0 +1,34 @@
+{
+    "call_raw": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1461529" },
+                    "method_name": "executeCallRaw",
+                    "timestamp": { "__bigint__": "1730326466976695957" }
+                },
+                {
+                    "instructions": { "__bigint__": "1969198" },
+                    "method_name": "executeCallRaw",
+                    "timestamp": { "__bigint__": "1730326468895244901" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1462696" },
+                    "method_name": "executeCallRaw",
+                    "timestamp": { "__bigint__": "1730484635245327741" }
+                },
+                {
+                    "instructions": { "__bigint__": "1966368" },
+                    "method_name": "executeCallRaw",
+                    "timestamp": { "__bigint__": "1730484637392335007" }
+                }
+            ]
+        }
+    }
+}

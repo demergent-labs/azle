@@ -1,3 +1,4 @@
+import { handleUncaughtError } from '../error';
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
 
 export function heartbeat<This, Args extends any[], Return>(
@@ -5,20 +6,26 @@ export function heartbeat<This, Args extends any[], Return>(
     context: ClassMethodDecoratorContext
 ): void {
     const index = globalThis._azleCanisterMethodsIndex++;
+    const name = context.name as string;
+    const indexString = index.toString();
 
     globalThis._azleMethodMeta.heartbeat = {
-        name: context.name as string,
+        name,
         index
     };
 
-    globalThis._azleCallbacks[index.toString()] = (): void => {
-        executeAndReplyWithCandidSerde(
-            'heartbeat',
-            [],
-            originalMethod.bind(globalThis._azleCanisterClassInstance),
-            [],
-            undefined,
-            false
-        );
+    globalThis._azleCallbacks[indexString] = async (): Promise<void> => {
+        try {
+            await executeAndReplyWithCandidSerde(
+                'heartbeat',
+                [],
+                originalMethod.bind(globalThis._azleCanisterClassInstance),
+                [],
+                undefined,
+                false
+            );
+        } catch (error: any) {
+            handleUncaughtError(error);
+        }
     };
 }

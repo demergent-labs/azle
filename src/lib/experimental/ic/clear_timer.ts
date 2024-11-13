@@ -7,11 +7,11 @@ import { Void } from '../candid/types/primitive/void';
  * @param id The ID of the timer to be cancelled.
  */
 export function clearTimer(timerId: bigint): Void {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return undefined;
     }
 
-    globalThis._azleIc.clearTimer(timerId.toString());
+    globalThis._azleIcExperimental.clearTimer(timerId.toString());
 
     const timerCallbackId = globalThis._azleIcTimers[timerId.toString()];
 

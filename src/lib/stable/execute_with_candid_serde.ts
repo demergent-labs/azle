@@ -1,7 +1,6 @@
 import { IDL, JsonValue } from '@dfinity/candid';
 
-import { handleUncaughtError } from './error';
-import { reply, trap } from './ic_apis';
+import { reply } from './ic_apis';
 
 type CanisterMethodMode =
     | 'query'
@@ -20,13 +19,9 @@ export async function executeAndReplyWithCandidSerde(
     returnIdlType: IDL.Type | undefined,
     manual: boolean
 ): Promise<void> {
-    try {
-        const decodedArgs = decodeArgs(mode, args, paramIdlTypes);
-        const unencodedResult = await getUnencodedResult(decodedArgs, callback);
-        encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
-    } catch (error: any) {
-        trap(error.toString());
-    }
+    const decodedArgs = decodeArgs(mode, args, paramIdlTypes);
+    const unencodedResult = await getUnencodedResult(decodedArgs, callback);
+    encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }
 
 function decodeArgs(
@@ -40,7 +35,7 @@ function decodeArgs(
         mode === 'query' ||
         mode === 'update'
     ) {
-        return IDL.decode(paramIdlTypes, args[0]);
+        return idlDecode(paramIdlTypes, args[0]);
     } else {
         return [];
     }
@@ -50,11 +45,7 @@ async function getUnencodedResult(
     args: JsonValue[],
     callback: (...args: any) => any
 ): Promise<any> {
-    try {
-        return await callback(...args);
-    } catch (error) {
-        handleUncaughtError(error);
-    }
+    return await callback(...args);
 }
 
 function encodeResultAndReply(
@@ -68,4 +59,30 @@ function encodeResultAndReply(
     }
 
     reply({ data: unencodedResult, idlType: returnIdlType });
+}
+
+export function idlEncode(
+    argTypes: Array<IDL.Type<any>>,
+    args: any[]
+): Uint8Array {
+    try {
+        // TODO IDL.encode has ArrayBuffer as the return type, but it actually returns a Uint8Array
+        // TODO we may need to remove the new Uint8Array in the future if they address the situation
+        // TODO we are not sure if they will make the final type and return value an ArrayBuffer
+        // TODO or a Uint8Array: https://github.com/demergent-labs/azle/issues/2061
+        return new Uint8Array(IDL.encode(argTypes, args));
+    } catch (error) {
+        throw new Error(`Failed to encode Candid arguments: ${error}`);
+    }
+}
+
+export function idlDecode(
+    retTypes: IDL.Type[],
+    bytes: ArrayBuffer
+): JsonValue[] {
+    try {
+        return IDL.decode(retTypes, bytes);
+    } catch (error) {
+        throw new Error(`Failed to decode Candid bytes: ${error}`);
+    }
 }

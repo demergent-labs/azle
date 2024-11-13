@@ -7,7 +7,9 @@ import { blob } from '../candid/types/constructed/blob';
  * @returns the argument data
  */
 export function argDataRaw(): blob {
-    return new Uint8Array(
-        globalThis._azleIc ? globalThis._azleIc.argDataRaw() : []
-    );
+    if (globalThis._azleIcExperimental === undefined) {
+        return new Uint8Array();
+    }
+
+    return new Uint8Array(globalThis._azleIcExperimental.argDataRaw());
 }

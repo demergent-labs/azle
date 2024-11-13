@@ -1,0 +1,44 @@
+{
+    "null_example": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5667459" },
+                    "method_name": "setPartiallyNullRecord",
+                    "timestamp": { "__bigint__": "1730326454610465995" }
+                },
+                {
+                    "instructions": { "__bigint__": "4137196" },
+                    "method_name": "setSmallNullRecord",
+                    "timestamp": { "__bigint__": "1730326456754591981" }
+                },
+                {
+                    "instructions": { "__bigint__": "5391048" },
+                    "method_name": "setLargeNullRecord",
+                    "timestamp": { "__bigint__": "1730326458866036389" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5662560" },
+                    "method_name": "setPartiallyNullRecord",
+                    "timestamp": { "__bigint__": "1730484652613811766" }
+                },
+                {
+                    "instructions": { "__bigint__": "4116912" },
+                    "method_name": "setSmallNullRecord",
+                    "timestamp": { "__bigint__": "1730484654795185642" }
+                },
+                {
+                    "instructions": { "__bigint__": "5354430" },
+                    "method_name": "setLargeNullRecord",
+                    "timestamp": { "__bigint__": "1730484656976160690" }
+                }
+            ]
+        }
+    }
+}

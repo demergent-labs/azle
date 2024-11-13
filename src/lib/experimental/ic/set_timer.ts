@@ -15,13 +15,13 @@ export function setTimer(
     delay: bigint,
     callback: () => void | Promise<void>
 ): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return 0n;
     }
 
     const timerCallbackId = `_timer_${v4()}`;
 
-    const timerId = globalThis._azleIc.setTimer(
+    const timerId = globalThis._azleIcExperimental.setTimer(
         delay.toString(),
         timerCallbackId
     );

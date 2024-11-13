@@ -2,9 +2,10 @@ import { IDL } from '@dfinity/candid';
 import { TextDecoder, TextEncoder } from 'text-encoding';
 
 import { MethodMeta } from '../../build/stable/utils/types';
+import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { print } from './ic_apis';
-import { AzleIc } from './ic_apis/azle_ic';
+import { AzleIcStable } from './ic_apis/azle_ic_stable';
 
 type Callbacks = {
     [key: string]: (...args: any) => any;
@@ -20,9 +21,13 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleCanisterMethodsIndex: number;
     // eslint-disable-next-line no-var
+    var _azleCanisterMethodNames: { [key: string]: string };
+    // eslint-disable-next-line no-var
     var _azleExperimental: boolean;
     // eslint-disable-next-line no-var
-    var _azleIc: AzleIc;
+    var _azleIcExperimental: AzleIcExperimental;
+    // eslint-disable-next-line no-var
+    var _azleIcStable: AzleIcStable;
     // eslint-disable-next-line no-var
     var _azleIcTimers: { [key: string]: string };
     // eslint-disable-next-line no-var
@@ -38,15 +43,20 @@ declare global {
     // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
     // eslint-disable-next-line no-var
+    var _azleRecordBenchmarks: boolean;
+    // eslint-disable-next-line no-var
     var _azleRejectIds: { [key: string]: (err: any) => void };
     // eslint-disable-next-line no-var
-    var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
+    var _azleResolveIds: { [key: string]: (buf: Uint8Array) => void };
     // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [key: string]: () => void };
 }
 
 globalThis._azleInsideCanister =
-    globalThis._azleIc === undefined ? false : true;
+    globalThis._azleIcStable === undefined &&
+    globalThis._azleIcExperimental === undefined
+        ? false
+        : true;
 
 // TODO do we need to disable setTimeout, setInterval, etc?
 // TODO do we need to disable any other wasmedge-quickjs globals
@@ -57,6 +67,8 @@ if (globalThis._azleInsideCanister === true) {
     globalThis._azleCanisterMethodsIndex = 0;
 
     globalThis._azleCanisterMethodIdlTypes = {};
+
+    globalThis._azleCanisterMethodNames = {};
 
     globalThis._azleInitAndPostUpgradeIdlTypes = [];
 
@@ -91,9 +103,6 @@ if (globalThis._azleInsideCanister === true) {
             return array;
         }) as any
     };
-
-    globalThis._azleInitCalled = false;
-    globalThis._azlePostUpgradeCalled = false;
 
     const log = (...args: any[]): void => {
         const jsonStringifiedArgs = args

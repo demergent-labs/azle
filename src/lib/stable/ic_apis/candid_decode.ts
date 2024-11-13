@@ -4,9 +4,18 @@
  * @returns the Candid string
  */
 export function candidDecode(candidEncoded: Uint8Array): string {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return '';
     }
 
-    return globalThis._azleIc.candidDecode(candidEncoded.buffer);
+    if (globalThis._azleIcExperimental !== undefined) {
+        return globalThis._azleIcExperimental.candidDecode(
+            candidEncoded.buffer
+        );
+    }
+
+    return globalThis._azleIcStable.candidDecode(candidEncoded);
 }

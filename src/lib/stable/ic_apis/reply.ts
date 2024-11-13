@@ -1,5 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
+import { idlEncode } from '../execute_with_candid_serde';
+
 type ReplyInput<T> =
     | {
           data: T;
@@ -17,12 +19,17 @@ type ReplyInput<T> =
  * uncaught `TypeError`.
  */
 export function reply<T>(input: ReplyInput<T>): void {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return undefined;
     }
 
     if ('raw' in input) {
-        return globalThis._azleIc.replyRaw(input.raw.buffer);
+        return globalThis._azleIcExperimental !== undefined
+            ? globalThis._azleIcExperimental.replyRaw(input.raw.buffer)
+            : globalThis._azleIcStable.replyRaw(input.raw);
     } else {
         const idlType = input.idlType === undefined ? [] : [input.idlType];
         const data =
@@ -30,7 +37,10 @@ export function reply<T>(input: ReplyInput<T>): void {
                 ? []
                 : [input.data];
 
-        // @ts-ignore IDL.encode types are defined incorrectly https://github.com/demergent-labs/azle/issues/2061
-        return globalThis._azleIc.replyRaw(IDL.encode(idlType, data).buffer);
+        return globalThis._azleIcExperimental !== undefined
+            ? globalThis._azleIcExperimental.replyRaw(
+                  idlEncode(idlType, data).buffer
+              )
+            : globalThis._azleIcStable.replyRaw(idlEncode(idlType, data));
     }
 }

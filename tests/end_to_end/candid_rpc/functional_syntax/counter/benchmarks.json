@@ -1,0 +1,44 @@
+{
+    "counter": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1481635" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1730326459956976086" }
+                },
+                {
+                    "instructions": { "__bigint__": "1455012" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1730326461821654011" }
+                },
+                {
+                    "instructions": { "__bigint__": "1454315" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1730326464008204140" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1479468" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1730484650167852369" }
+                },
+                {
+                    "instructions": { "__bigint__": "1455480" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1730484652045613063" }
+                },
+                {
+                    "instructions": { "__bigint__": "1459299" },
+                    "method_name": "incrementCount",
+                    "timestamp": { "__bigint__": "1730484654196653423" }
+                }
+            ]
+        }
+    }
+}

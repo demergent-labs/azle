@@ -8,11 +8,20 @@
  * @returns the performance counter metric
  */
 export function performanceCounter(counterType: number): bigint {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return 0n;
     }
 
-    return BigInt(
-        globalThis._azleIc.performanceCounter(counterType.toString())
-    );
+    if (globalThis._azleIcExperimental !== undefined) {
+        return BigInt(
+            globalThis._azleIcExperimental.performanceCounter(
+                counterType.toString()
+            )
+        );
+    }
+
+    return BigInt(globalThis._azleIcStable.performanceCounter(counterType));
 }

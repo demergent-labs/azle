@@ -1,6 +1,8 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { v4 } from 'uuid'; // TODO is uuid experimental?
+import { v4 } from 'uuid';
+
+import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 
 export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,
@@ -9,13 +11,16 @@ export async function call<Args extends any[] | undefined, Return = any>(
         paramIdlTypes?: IDL.Type[];
         returnIdlType?: IDL.Type;
         args?: Args;
-        payment?: bigint; // TODO this should be called cycles: https://github.com/demergent-labs/azle/issues/2104
+        cycles?: bigint;
         raw?: Uint8Array;
     }
 ): Promise<Return> {
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
-        if (globalThis._azleIc === undefined) {
+        if (
+            globalThis._azleIcStable === undefined &&
+            globalThis._azleIcExperimental === undefined
+        ) {
             return undefined;
         }
 
@@ -30,14 +35,14 @@ export async function call<Args extends any[] | undefined, Return = any>(
         // TODO for example, we can keep the time with these
         // TODO if they are over a certain amount old we can delete them
         globalThis._azleResolveIds[globalResolveId] = (
-            result: ArrayBuffer
+            result: Uint8Array | ArrayBuffer
         ): void => {
             if (raw !== undefined) {
                 resolve(new Uint8Array(result) as Return);
             } else {
                 const idlType =
                     returnTypeIdl === undefined ? [] : [returnTypeIdl];
-                resolve(IDL.decode(idlType, result)[0] as Return);
+                resolve(idlDecode(idlType, result)[0] as Return);
             }
 
             delete globalThis._azleResolveIds[globalResolveId];
@@ -53,28 +58,36 @@ export async function call<Args extends any[] | undefined, Return = any>(
 
         const paramIdlTypes = options?.paramIdlTypes ?? [];
         const args = options?.args ?? [];
-        const payment = options?.payment ?? 0n;
+        const cycles = options?.cycles ?? 0n;
 
         const canisterIdPrincipal =
             typeof canisterId === 'string'
                 ? Principal.fromText(canisterId)
                 : canisterId;
-        const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
-        const argsRawBuffer =
-            raw === undefined
-                ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
-                : raw.buffer;
-        const paymentString = payment.toString();
+        const canisterIdBytes = canisterIdPrincipal.toUint8Array();
+        const argsRaw =
+            raw === undefined ? idlEncode(paramIdlTypes, args) : raw;
+        const cyclesString = cycles.toString();
 
         // TODO consider finally, what if deletion goes wrong
         try {
-            globalThis._azleIc.callRaw(
-                promiseId,
-                canisterIdBytes,
-                method,
-                argsRawBuffer,
-                paymentString
-            );
+            if (globalThis._azleIcExperimental !== undefined) {
+                globalThis._azleIcExperimental.callRaw(
+                    promiseId,
+                    canisterIdBytes.buffer,
+                    method,
+                    argsRaw.buffer,
+                    cyclesString
+                );
+            } else {
+                globalThis._azleIcStable.callRaw(
+                    promiseId,
+                    canisterIdBytes,
+                    method,
+                    argsRaw,
+                    cyclesString
+                );
+            }
         } catch (error) {
             delete globalThis._azleResolveIds[globalResolveId];
             delete globalThis._azleRejectIds[globalRejectId];

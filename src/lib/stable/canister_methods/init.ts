@@ -1,5 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
+import { handleUncaughtError } from '../error';
 import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
 
 export function init<This, Args extends any[], Return>(
@@ -10,9 +11,11 @@ export function init<This, Args extends any[], Return>(
         context: ClassMethodDecoratorContext
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
+        const name = context.name as string;
+        const indexString = index.toString();
 
         globalThis._azleMethodMeta.init = {
-            name: context.name as string,
+            name,
             index
         };
 
@@ -20,17 +23,21 @@ export function init<This, Args extends any[], Return>(
             IDL.Func(paramIdlTypes, [], ['init'])
         );
 
-        globalThis._azleCallbacks[index.toString()] = (
+        globalThis._azleCallbacks[indexString] = async (
             ...args: any[]
-        ): void => {
-            executeAndReplyWithCandidSerde(
-                'init',
-                args,
-                originalMethod.bind(globalThis._azleCanisterClassInstance),
-                paramIdlTypes,
-                undefined,
-                false
-            );
+        ): Promise<void> => {
+            try {
+                await executeAndReplyWithCandidSerde(
+                    'init',
+                    args,
+                    originalMethod.bind(globalThis._azleCanisterClassInstance),
+                    paramIdlTypes,
+                    undefined,
+                    false
+                );
+            } catch (error: any) {
+                handleUncaughtError(error);
+            }
         };
     };
 }

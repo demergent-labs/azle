@@ -1,0 +1,24 @@
+{
+    "apollo_server": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "11876320268" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326435110932623" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "11885097106" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730484669671353773" }
+                }
+            ]
+        }
+    }
+}

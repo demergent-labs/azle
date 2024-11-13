@@ -1,13 +1,14 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 
+import { idlEncode } from '../execute_with_candid_serde';
+
 /**
  * Performs a cross-canister call without awaiting the result
- * @param canisterId
- * @param method
- * @param argsRaw
- * @param payment
- * @returns
+ * @param canisterId The ID of the canister to notify
+ * @param method The method to call on the canister
+ * @param options Optional parameters for the call
+ * @returns void
  */
 export function notify(
     canisterId: Principal | string,
@@ -15,34 +16,43 @@ export function notify(
     options?: {
         paramIdlTypes?: IDL.Type[];
         args?: any[];
-        payment?: bigint;
+        cycles?: bigint;
         raw?: Uint8Array;
     }
 ): void {
-    if (globalThis._azleIc === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return undefined;
     }
 
     const paramIdlTypes = options?.paramIdlTypes ?? [];
     const args = options?.args ?? [];
-    const payment = options?.payment ?? 0n;
+    const cycles = options?.cycles ?? 0n;
     const raw = options?.raw;
 
     const canisterIdPrincipal =
         typeof canisterId === 'string'
             ? Principal.fromText(canisterId)
             : canisterId;
-    const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
-    const argsRawBuffer =
-        raw === undefined
-            ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
-            : raw.buffer;
-    const paymentString = payment.toString();
+    const canisterIdBytes = canisterIdPrincipal.toUint8Array();
+    const argsRaw = raw === undefined ? idlEncode(paramIdlTypes, args) : raw;
+    const cyclesString = cycles.toString();
 
-    return globalThis._azleIc.notifyRaw(
+    if (globalThis._azleIcExperimental !== undefined) {
+        return globalThis._azleIcExperimental.notifyRaw(
+            canisterIdBytes.buffer,
+            method,
+            argsRaw.buffer,
+            cyclesString
+        );
+    }
+
+    return globalThis._azleIcStable.notifyRaw(
         canisterIdBytes,
         method,
-        argsRawBuffer,
-        paymentString
+        argsRaw,
+        cyclesString
     );
 }

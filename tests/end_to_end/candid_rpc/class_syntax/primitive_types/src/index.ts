@@ -214,6 +214,7 @@ export default class {
     getEmpty(): never {
         throw 'Anything you want';
     }
+
     // Note: It is impossible to call this function because it requires an argument
     // but there is no way to pass an "empty" value as an argument.
     @query([IDL.Empty], IDL.Empty)

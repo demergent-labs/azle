@@ -1,0 +1,34 @@
+{
+    "ic_api": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1644758" },
+                    "method_name": "dataCertificateNull",
+                    "timestamp": { "__bigint__": "1730326528854545815" }
+                },
+                {
+                    "instructions": { "__bigint__": "1169624" },
+                    "method_name": "setCertifiedData",
+                    "timestamp": { "__bigint__": "1730326530984787247" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1666952" },
+                    "method_name": "dataCertificateNull",
+                    "timestamp": { "__bigint__": "1730484724357378970" }
+                },
+                {
+                    "instructions": { "__bigint__": "1233860" },
+                    "method_name": "setCertifiedData",
+                    "timestamp": { "__bigint__": "1730484726557895087" }
+                }
+            ]
+        }
+    }
+}

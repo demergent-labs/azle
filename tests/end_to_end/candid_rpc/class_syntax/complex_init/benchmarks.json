@@ -1,0 +1,46 @@
+{
+    "complex_init": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1020600223" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326451065028604" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1337523744" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730484652937686072" }
+                }
+            ]
+        }
+    },
+    "rec_init": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1020561092" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326459986186788" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1337409820" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730484660965647458" }
+                }
+            ]
+        }
+    }
+}

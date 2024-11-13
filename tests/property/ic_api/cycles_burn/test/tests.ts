@@ -1,9 +1,14 @@
-import { getCanisterId } from 'azle/dfx';
 import { execSyncPretty } from 'azle/src/build/stable/utils/exec_sync_pretty';
-import { defaultPropTestParams, expect, it, Test } from 'azle/test';
+import {
+    defaultPropTestParams,
+    expect,
+    getCanisterActor,
+    it,
+    Test
+} from 'azle/test';
 import fc from 'fast-check';
 
-import { createActor } from './dfx_generated/canister';
+import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
@@ -19,11 +24,7 @@ export function getTests(): Test {
                             'inherit'
                         );
 
-                        const actor = createActor(getCanisterId('canister'), {
-                            agentOptions: {
-                                host: 'http://127.0.0.1:8000'
-                            }
-                        });
+                        const actor = await getCanisterActor<Actor>('canister');
 
                         const cycleBalanceBefore =
                             await actor.getCycleBalance();

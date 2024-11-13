@@ -9,8 +9,7 @@ export async function runCommand(
     templatePath: string
 ): Promise<void> {
     if (process.argv[3] === undefined) {
-        console.error('You must provide a name for your Azle project');
-        return;
+        throw new Error(`You must provide a name for your Azle project`);
     }
 
     const projectName = process.argv[3];

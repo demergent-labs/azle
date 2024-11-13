@@ -1,3 +1,5 @@
+#!/usr/bin/env -S npx tsx
+
 import { IOType } from 'child_process';
 import { join } from 'path';
 
@@ -20,6 +22,32 @@ import { getCanisterConfig } from './stable/utils/get_canister_config';
 import { AZLE_PACKAGE_PATH } from './stable/utils/global_paths';
 import { CanisterConfig, Command } from './stable/utils/types';
 
+process.on('uncaughtException', (error: Error) => {
+    const prefix = 'Azle BuildError';
+
+    const message =
+        process.env.AZLE_VERBOSE === 'true'
+            ? `${prefix}: ${error.stack}`
+            : `${prefix}: ${error}`;
+
+    console.error(message);
+
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason: any) => {
+    const prefix = 'Azle BuildError';
+
+    const message =
+        process.env.AZLE_VERBOSE === 'true' && reason instanceof Error
+            ? `${prefix}: ${reason.stack}`
+            : `${prefix}: ${reason}`;
+
+    console.error(message);
+
+    process.exit(1);
+});
+
 build();
 
 async function build(): Promise<void> {
@@ -27,7 +55,7 @@ async function build(): Promise<void> {
 
     if (command === undefined) {
         throw new Error(
-            `Azle: No command found when running azle. Running azle should start like this: azle [commandName]`
+            `No command found when running azle. Running azle should start like this: azle [commandName]`
         );
     }
 
@@ -40,7 +68,7 @@ async function build(): Promise<void> {
     }
 
     if (command === 'install-global-dependencies') {
-        handleInstallGlobalDependenciesCommand(ioType);
+        handleInstallGlobalDependenciesCommand();
 
         return;
     }
@@ -82,7 +110,7 @@ async function build(): Promise<void> {
     }
 
     throw new Error(
-        `Azle: Invalid command found when running azle. Running azle ${command} is not valid`
+        `Invalid command found when running azle. Running azle ${command} is not valid`
     );
 }
 
@@ -94,7 +122,9 @@ async function handleUploadAssetsCommand(): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
-    const experimental = canisterConfig?.custom?.experimental === true;
+    const experimental =
+        canisterConfig?.custom?.experimental === true ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
 
     if (experimental === false) {
         if (canisterConfig.custom?.assets !== undefined) {
@@ -111,7 +141,9 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
-    const experimental = canisterConfig?.custom?.experimental === true;
+    const experimental =
+        canisterConfig?.custom?.experimental === true ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
 
     if (experimental === false) {
         checkForExperimentalDfxJsonFields(canisterConfig);
@@ -127,7 +159,9 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
 }
 
 async function handleTemplateCommand(ioType: IOType): Promise<void> {
-    const experimental = process.argv.includes('--experimental');
+    const experimental =
+        process.argv.includes('--experimental') ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
 
     if (experimental === false) {
         await runStableTemplateCommand(ioType);
@@ -136,29 +170,28 @@ async function handleTemplateCommand(ioType: IOType): Promise<void> {
     }
 }
 
-async function handleInstallGlobalDependenciesCommand(
-    ioType: IOType
-): Promise<void> {
+async function handleInstallGlobalDependenciesCommand(): Promise<void> {
     const node = process.argv.includes('--node');
     const dfx = process.argv.includes('--dfx');
     const rust = process.argv.includes('--rust');
     const wasi2ic = process.argv.includes('--wasi2ic');
 
     if (!node && !dfx && !rust && !wasi2ic) {
-        await runInstallGlobalDependenciesCommand(
-            { dfx: true, node: true, rust: true, wasi2ic: true },
-            ioType
-        );
+        await runInstallGlobalDependenciesCommand({
+            dfx: true,
+            node: true,
+            rust: true,
+            wasi2ic: true
+        });
     } else {
-        await runInstallGlobalDependenciesCommand(
-            { dfx, node, rust, wasi2ic },
-            ioType
-        );
+        await runInstallGlobalDependenciesCommand({ dfx, node, rust, wasi2ic });
     }
 }
 
 async function handleNewCommand(): Promise<void> {
-    const experimental = process.argv.includes('--experimental');
+    const experimental =
+        process.argv.includes('--experimental') ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
     const httpServer = process.argv.includes('--http-server');
 
     if (experimental === false) {

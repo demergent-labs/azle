@@ -8,13 +8,12 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the actual amount moved
  */
 export function msgCyclesAccept(maxAmount: nat64): nat64 {
-    if (globalThis._azleIc === undefined) {
+    if (globalThis._azleIcExperimental === undefined) {
         return 0n;
     }
 
-    const msgCyclesAcceptAmountMovedString = globalThis._azleIc.msgCyclesAccept(
-        maxAmount.toString()
-    );
+    const msgCyclesAcceptAmountMovedString =
+        globalThis._azleIcExperimental.msgCyclesAccept(maxAmount.toString());
 
     return BigInt(msgCyclesAcceptAmountMovedString);
 }

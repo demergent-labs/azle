@@ -27,10 +27,10 @@ export async function logGlobalDependencies(): Promise<void> {
 
     await writeFile(
         packageJsonPath,
-        JSON.stringify(
+        `${JSON.stringify(
             { ...packageJson, azle: { globalDependencies } },
             null,
             4
-        )
+        )}\n`
     );
 }

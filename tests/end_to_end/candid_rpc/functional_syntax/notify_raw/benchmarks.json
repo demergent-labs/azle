@@ -1,0 +1,46 @@
+{
+    "canister1": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1637207" },
+                    "method_name": "sendNotification",
+                    "timestamp": { "__bigint__": "1730326476272130059" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1634778" },
+                    "method_name": "sendNotification",
+                    "timestamp": { "__bigint__": "1730484647196994939" }
+                }
+            ]
+        }
+    },
+    "canister2": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "865000" },
+                    "method_name": "receiveNotification",
+                    "timestamp": { "__bigint__": "1730326476272130059" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "866190" },
+                    "method_name": "receiveNotification",
+                    "timestamp": { "__bigint__": "1730484647196994939" }
+                }
+            ]
+        }
+    }
+}

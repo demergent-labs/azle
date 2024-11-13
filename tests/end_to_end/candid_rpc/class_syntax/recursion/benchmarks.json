@@ -1,0 +1,46 @@
+{
+    "recursion": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "6177355" },
+                    "method_name": "testRecServiceCall",
+                    "timestamp": { "__bigint__": "1730326463951438122" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "6229268" },
+                    "method_name": "testRecServiceCall",
+                    "timestamp": { "__bigint__": "1730484667478078055" }
+                }
+            ]
+        }
+    },
+    "recursive_canister": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1020180114" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730326448821974355" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1337859120" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1730484650810353837" }
+                }
+            ]
+        }
+    }
+}

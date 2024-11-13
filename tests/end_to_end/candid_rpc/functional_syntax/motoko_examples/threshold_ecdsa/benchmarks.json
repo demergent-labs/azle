@@ -1,0 +1,34 @@
+{
+    "threshold_ecdsa": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "148423098" },
+                    "method_name": "publicKey",
+                    "timestamp": { "__bigint__": "1730326491941121657" }
+                },
+                {
+                    "instructions": { "__bigint__": "148560433" },
+                    "method_name": "sign",
+                    "timestamp": { "__bigint__": "1730326494047613519" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "148390394" },
+                    "method_name": "publicKey",
+                    "timestamp": { "__bigint__": "1730484650532528298" }
+                },
+                {
+                    "instructions": { "__bigint__": "148548313" },
+                    "method_name": "sign",
+                    "timestamp": { "__bigint__": "1730484652506119596" }
+                }
+            ]
+        }
+    }
+}

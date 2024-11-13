@@ -4,10 +4,11 @@ import { getTests } from 'phone-book_end_to_end_test_functional_syntax/test/test
 
 import { createActor } from '../src/declarations/phone_book';
 
-const phoneBookCanister = createActor(getCanisterId('phone_book'), {
+const canisterName = 'phone_book';
+const phoneBookCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(phoneBookCanister));
+runTests(getTests(phoneBookCanister), canisterName);

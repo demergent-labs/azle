@@ -1,0 +1,64 @@
+{
+    "factorial": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1239149" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326447037060958" }
+                },
+                {
+                    "instructions": { "__bigint__": "1215149" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326449206579550" }
+                },
+                {
+                    "instructions": { "__bigint__": "1670365" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326451176300927" }
+                },
+                {
+                    "instructions": { "__bigint__": "2911899" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326453250471321" }
+                },
+                {
+                    "instructions": { "__bigint__": "5448635" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730326455411351745" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1271188" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730484650268579157" }
+                },
+                {
+                    "instructions": { "__bigint__": "1263989" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730484652424980809" }
+                },
+                {
+                    "instructions": { "__bigint__": "1732356" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730484654314024102" }
+                },
+                {
+                    "instructions": { "__bigint__": "2983666" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730484656470542026" }
+                },
+                {
+                    "instructions": { "__bigint__": "5525643" },
+                    "method_name": "fac",
+                    "timestamp": { "__bigint__": "1730484658571611898" }
+                }
+            ]
+        }
+    }
+}

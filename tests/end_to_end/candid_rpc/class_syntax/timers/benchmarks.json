@@ -1,0 +1,44 @@
+{
+    "timers": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "10140350" },
+                    "method_name": "setTimers",
+                    "timestamp": { "__bigint__": "1730326455962815509" }
+                },
+                {
+                    "instructions": { "__bigint__": "1180205" },
+                    "method_name": "clearTimer",
+                    "timestamp": { "__bigint__": "1730326470101314851" }
+                },
+                {
+                    "instructions": { "__bigint__": "1179746" },
+                    "method_name": "clearTimer",
+                    "timestamp": { "__bigint__": "1730326470101314851" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "10061696" },
+                    "method_name": "setTimers",
+                    "timestamp": { "__bigint__": "1730484652003116393" }
+                },
+                {
+                    "instructions": { "__bigint__": "1235345" },
+                    "method_name": "clearTimer",
+                    "timestamp": { "__bigint__": "1730484666016723534" }
+                },
+                {
+                    "instructions": { "__bigint__": "1232494" },
+                    "method_name": "clearTimer",
+                    "timestamp": { "__bigint__": "1730484666016723534" }
+                }
+            ]
+        }
+    }
+}

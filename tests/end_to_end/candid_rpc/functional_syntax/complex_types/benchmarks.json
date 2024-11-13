@@ -1,0 +1,54 @@
+{
+    "complex_types": {
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "80582078" },
+                    "method_name": "createUser",
+                    "timestamp": { "__bigint__": "1730326462415016628" }
+                },
+                {
+                    "instructions": { "__bigint__": "164270619" },
+                    "method_name": "createThread",
+                    "timestamp": { "__bigint__": "1730326464357281534" }
+                },
+                {
+                    "instructions": { "__bigint__": "86867411" },
+                    "method_name": "createPost",
+                    "timestamp": { "__bigint__": "1730326466470986692" }
+                },
+                {
+                    "instructions": { "__bigint__": "173117467" },
+                    "method_name": "createReaction",
+                    "timestamp": { "__bigint__": "1730326468575472228" }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "80696805" },
+                    "method_name": "createUser",
+                    "timestamp": { "__bigint__": "1730484618156807636" }
+                },
+                {
+                    "instructions": { "__bigint__": "164294482" },
+                    "method_name": "createThread",
+                    "timestamp": { "__bigint__": "1730484620267262087" }
+                },
+                {
+                    "instructions": { "__bigint__": "86849221" },
+                    "method_name": "createPost",
+                    "timestamp": { "__bigint__": "1730484622362274082" }
+                },
+                {
+                    "instructions": { "__bigint__": "173151893" },
+                    "method_name": "createReaction",
+                    "timestamp": { "__bigint__": "1730484624589967755" }
+                }
+            ]
+        }
+    }
+}

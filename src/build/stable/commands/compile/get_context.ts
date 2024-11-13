@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { CanisterConfig, Context, EnvVars } from '../../utils/types';
+import { CanisterConfig, Context, EnvVars, WasmData } from '../../utils/types';
 
 export function getContext(
     canisterName: string,
@@ -19,14 +19,16 @@ export function getContext(
     const candidPath = process.env.CANISTER_CANDID_PATH;
 
     if (candidPath === undefined) {
-        throw new Error(`Azle: CANISTER_CANDID_PATH is not defined`);
+        throw new Error(`CANISTER_CANDID_PATH is not defined`);
     }
 
     const wasmBinaryPath = join(canisterPath, `${canisterName}.wasm`);
 
     const envVars = getEnvVars(canisterConfig);
-    const wasmData = {
-        envVars
+    const wasmData: WasmData = {
+        envVars,
+        mainJsPath: join(canisterPath, `main.js`),
+        recordBenchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
     };
 
     return {
