@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-function pretest(): void {
+export function pretest(): void {
     execSync(`dfx canister uninstall-code canister || true`, {
         stdio: 'inherit'
     });
@@ -13,5 +13,3 @@ function pretest(): void {
         stdio: 'inherit'
     });
 }
-
-pretest();
