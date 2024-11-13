@@ -102,12 +102,14 @@ async function testDeploy(
     )}' ${mode === 'postUpgrade' ? '--upgrade-unchanged' : ''}`;
     execSync(deployCommand, { stdio: 'pipe' });
 
-    const argDataRaw =
-        mode === 'init'
-            ? await actor.getInitArgDataRaw()
-            : await actor.getPostUpgradeArgDataRaw();
-    const expectedArgDataRaw = await actor.candidEncode(argString);
-    expect(argDataRaw).toEqual([expectedArgDataRaw]);
+    const initArgDataRaw = await actor.getInitArgDataRaw();
+    const postUpgradeArgDataRaw = await actor.getPostUpgradeArgDataRaw();
+    const expectedInitArgDataRaw =
+        mode === 'init' ? [await actor.candidEncode(argString)] : [];
+    const expectedPostUpgradeArgDataRaw =
+        mode === 'postUpgrade' ? [await actor.candidEncode(argString)] : [];
+    expect(initArgDataRaw).toEqual(expectedInitArgDataRaw);
+    expect(postUpgradeArgDataRaw).toEqual(expectedPostUpgradeArgDataRaw);
 }
 
 async function testCanisterMethod(
@@ -115,13 +117,15 @@ async function testCanisterMethod(
     mode: 'Query' | 'Update'
 ): Promise<Promise<void>> {
     const argString = generateRandomCandidString(argData);
-    const command = `dfx canister call canister get${mode}ArgDataRaw '${argString}'`;
+    const command = `dfx canister call canister get${mode}ArgDataRaw '${escapeSingleQuotes(
+        argString
+    )}'`;
     console.info(`command: ${command}`);
     const result = execSync(command, {
         stdio: 'pipe'
     });
-    const candidEncodeCommand = `dfx canister call canister candidEncode '("${escapeArgData(
-        argString
+    const candidEncodeCommand = `dfx canister call canister candidEncode '("${escapeSingleQuotes(
+        escapeArgData(argString)
     )}")'`;
     console.info(`candidEncodeCommand: ${candidEncodeCommand}`);
     const candidEncodeResult = execSync(candidEncodeCommand, {
