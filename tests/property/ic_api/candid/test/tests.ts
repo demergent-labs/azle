@@ -1,4 +1,5 @@
 globalThis._azleExperimental = true;
+
 import { execSyncPretty } from 'azle/src/build/stable/utils/exec_sync_pretty';
 import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/stable';
 import {
@@ -26,6 +27,16 @@ export function getTests(): Test {
         });
 
         it('should encode and decode candid values correctly', async () => {
+            /* TODO: We aren't able to test the full range of candid values yet
+             * because we are limited by the random values that didc generates.
+             * As shown in the constraints below, several types need to be
+             * disabled for these tests to work.
+             *
+             * We could potentially extend our arbitraries to support these
+             * candid string formats, which would be straightforward but
+             * time-consuming to implement. This would also reduce our
+             * dependency on didc for testing.
+             */
             const constraints: DefinitionConstraints = {
                 recursiveWeights: true,
                 weights: {
