@@ -13,6 +13,10 @@ on:
                 required: false
                 type: boolean
                 default: false
+            fuzz:
+                required: false
+                type: boolean
+                default: false
 
 jobs:
     run-test:
@@ -141,3 +145,4 @@ jobs:
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.calc-runs.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true
                   AZLE_EXPERIMENTAL: ${{ inputs.run_experimental }}
+                  AZLE_FUZZ: ${{ inputs.fuzz }}
