@@ -39,7 +39,9 @@ function acceptCycles(
     const accepted =
         numChunks !== undefined
             ? acceptCyclesChunk(
-                  bigintMax(1n, receiveAmount / numChunks),
+                  receiveAmount / numChunks === 0n
+                      ? 1n
+                      : receiveAmount / numChunks,
                   receiveAmount,
                   0n
               )
@@ -77,8 +79,4 @@ function acceptCyclesChunk(
         totalToAccept,
         accumulatedCycles + newlyAccepted
     );
-}
-
-function bigintMax(a: bigint, b: bigint): bigint {
-    return a > b ? a : b;
 }
