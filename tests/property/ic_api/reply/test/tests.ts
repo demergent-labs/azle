@@ -7,17 +7,17 @@ import {
     it,
     Test
 } from 'azle/test';
+import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
 import { CandidValueAndMetaArbGenerator } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';
+import {
+    CandidValueArb,
+    CandidValueConstraints
+} from 'azle/test/property/arbitraries/candid/candid_values_arb';
+import { Context } from 'azle/test/property/arbitraries/types';
 import fc from 'fast-check';
 import { mkdir, writeFile } from 'fs/promises';
 import { dirname } from 'path';
 
-import { candidDefinitionArb } from '../../../../../test/property/arbitraries/candid/candid_definition_arb';
-import {
-    CandidValueArb,
-    CandidValueConstraints
-} from '../../../../../test/property/arbitraries/candid/candid_values_arb';
-import { Context } from '../../../../../test/property/arbitraries/types';
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 import { generateCanister } from './generate_canister';
 import { pretest } from './pretest';
