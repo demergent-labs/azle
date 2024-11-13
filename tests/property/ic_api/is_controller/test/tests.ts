@@ -26,7 +26,7 @@ export function getTests(): Test {
 
                     expect(isController).toStrictEqual(true);
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -59,7 +59,7 @@ export function getTests(): Test {
                         expect(isController).toStrictEqual(true);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -78,7 +78,7 @@ export function getTests(): Test {
                         expect(isController).toStrictEqual(false);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -94,7 +94,7 @@ export function getTests(): Test {
 
                     expect(isController).toStrictEqual(true);
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -127,7 +127,7 @@ export function getTests(): Test {
                         expect(isController).toStrictEqual(true);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -146,7 +146,7 @@ export function getTests(): Test {
                         expect(isController).toStrictEqual(false);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };

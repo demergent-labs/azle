@@ -35,7 +35,7 @@ export function getTests(): Test {
                         'Canister exceeded the limit of 40000000000 instructions for single message execution'
                     );
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -53,7 +53,7 @@ export function getTests(): Test {
                         updateCallInstructionLimit
                     );
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -95,7 +95,7 @@ export function getTests(): Test {
                         }
                     }
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };

@@ -74,7 +74,7 @@ export function getTests(): Test {
                         }
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };
