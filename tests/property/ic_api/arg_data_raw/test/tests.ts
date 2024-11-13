@@ -49,7 +49,7 @@ export function getTests(): Test {
                     float32: 0, // float32 without a decimal point aren't accepted by candidEncodeQuery
                     float64: 0, // float64 with a decimal point is accepted by candidEncodeQuery
                     blob: 0, // blobs are different from didc random and candidDecode, but in a way that seems broken
-                    nat8: 0 // nat8 if paired with vec will make a blob, so we have to filter it out too
+                    vec: 0 // if given an empty vec, candidEncode will give a byte array representing a vec of empty regardless of the original type of the vec, additionally if given a vec of nat8 that is the same as blob which is broken
                 }
             };
             await fc.assert(
