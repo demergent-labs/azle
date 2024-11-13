@@ -36,10 +36,14 @@ function acceptCycles(
 ): CyclesResult {
     const startingCanisterBalance = canisterBalance();
     const initialAvailable = msgCyclesAvailable();
-    const accepted = acceptCyclesStrategy(
-        receiveAmount ?? initialAvailable,
-        numChunks
-    );
+    const accepted =
+        numChunks !== undefined
+            ? acceptCyclesChunk(
+                  bigintMax(1n, receiveAmount / numChunks),
+                  receiveAmount,
+                  0n
+              )
+            : msgCyclesAccept(receiveAmount ?? initialAvailable);
     const finalAvailable = msgCyclesAvailable();
     const endingCanisterBalance = canisterBalance();
     const cyclesRefunded = 0n; // This will always be 0 in the cycles canister
@@ -52,17 +56,6 @@ function acceptCycles(
         endingCanisterBalance,
         cyclesRefunded
     };
-}
-
-function acceptCyclesStrategy(
-    receiveAmount: bigint,
-    numChunks?: bigint
-): bigint {
-    if (numChunks === undefined) {
-        return msgCyclesAccept(receiveAmount);
-    }
-    const chunkSize = bigintMax(1n, receiveAmount / numChunks);
-    return acceptCyclesChunk(chunkSize, receiveAmount, 0n);
 }
 
 function acceptCyclesChunk(
