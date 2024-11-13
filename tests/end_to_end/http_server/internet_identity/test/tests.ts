@@ -91,6 +91,6 @@ export function getTests(canisterName: string): Test {
             ).toBe(false);
 
             await browser.close();
-        }, 60_000);
+        });
     };
 }
