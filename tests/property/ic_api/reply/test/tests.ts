@@ -22,28 +22,6 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 import { generateCanister } from './generate_canister';
 import { pretest } from './pretest';
 
-async function setupCanisters(
-    idlType: string,
-    tsType: string,
-    imports: string[],
-    variableAliasDeclarations: string[]
-): Promise<ActorSubclass<Actor>> {
-    // Ensure directories exist
-    await mkdir(dirname('src/index.ts'), { recursive: true });
-
-    const canisterCode = generateCanister(
-        idlType,
-        tsType,
-        imports,
-        variableAliasDeclarations
-    );
-    await writeFile('src/index.ts', canisterCode);
-
-    pretest();
-
-    return await getCanisterActor<Actor>('canister');
-}
-
 export function getTests(): Test {
     return () => {
         it('should always reply with the input in alwaysReplyQuery', async () => {
@@ -83,4 +61,26 @@ export function getTests(): Test {
             );
         });
     };
+}
+
+async function setupCanisters(
+    idlType: string,
+    tsType: string,
+    imports: string[],
+    variableAliasDeclarations: string[]
+): Promise<ActorSubclass<Actor>> {
+    // Ensure directories exist
+    await mkdir(dirname('src/index.ts'), { recursive: true });
+
+    const canisterCode = generateCanister(
+        idlType,
+        tsType,
+        imports,
+        variableAliasDeclarations
+    );
+    await writeFile('src/index.ts', canisterCode);
+
+    pretest();
+
+    return await getCanisterActor<Actor>('canister');
 }
