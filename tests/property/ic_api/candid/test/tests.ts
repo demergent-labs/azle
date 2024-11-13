@@ -1,4 +1,5 @@
 globalThis._azleExperimental = true;
+import { execSyncPretty } from 'azle/src/build/stable/utils/exec_sync_pretty';
 import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/stable';
 import {
     defaultPropTestParams,
@@ -9,11 +10,10 @@ import {
     Test
 } from 'azle/test';
 import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
+import { DefinitionConstraints } from 'azle/test/property/arbitraries/candid/candid_definition_arb/types';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
-import { execSyncPretty } from '../../../../../src/build/stable/utils/exec_sync_pretty';
-import { DefinitionConstraints } from '../../../../../test/property/arbitraries/candid/candid_definition_arb/types';
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
