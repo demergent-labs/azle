@@ -1,4 +1,9 @@
+globalThis._azleExperimental = true;
 import { ActorSubclass } from '@dfinity/agent';
+import {
+    DidVisitor,
+    getDefaultVisitorData
+} from 'azle/src/lib/stable/did_file/visitor';
 import {
     defaultPropTestParams,
     expect,
@@ -7,7 +12,12 @@ import {
     please,
     Test
 } from 'azle/test';
-import { DefinitionConstraints } from 'azle/test/property/arbitraries/candid/candid_definition_arb/types';
+import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
+import {
+    CandidDefinition,
+    DefinitionConstraints,
+    WithShapes
+} from 'azle/test/property/arbitraries/candid/candid_definition_arb/types';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 import { mkdir, writeFile } from 'fs/promises';
@@ -19,7 +29,7 @@ import { pretest } from './pretest';
 
 export function getTests(): Test {
     return () => {
-        please('install didc', async () => {
+        please.skip('install didc', async () => {
             execSync(
                 `cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 --force didc`,
                 { stdio: 'inherit' }
@@ -41,108 +51,27 @@ export function getTests(): Test {
                     nat8: 0 // nat8 if paired with vec will make a blob, so we have to filter it out too
                 }
             };
-            console.log('constraints', constraints);
             await fc.assert(
                 fc.asyncProperty(
-                    // TODO once we figure out how to escape single quotes in candid strings
-                    // we can use fc.string() instead of fc.string().filter((s) => !s.includes("'"))
-                    fc.string().filter((s) => !s.includes("'")),
-                    fc.string().filter((s) => !s.includes("'")),
-                    fc.string().filter((s) => !s.includes("'")),
-                    fc.string().filter((s) => !s.includes("'")),
-                    async (
-                        initArgData,
-                        postUpgradeArgData,
-                        queryArgData,
-                        updateArgData
-                    ) => {
-                        const initIdlType = 'IDL.Text';
-                        const initTsType = 'string';
-                        const queryIdlType = 'IDL.Text';
-                        const queryTsType = 'string';
-                        const updateIdlType = 'IDL.Text';
-                        const updateTsType = 'string';
-                        const imports: string[] = ['IDL'];
-                        const variableAliasDeclarations: string[] = [];
-
+                    candidDefinitionArb({ api: 'class', constraints }, {}),
+                    candidDefinitionArb({ api: 'class', constraints }, {}),
+                    candidDefinitionArb({ api: 'class', constraints }, {}),
+                    async (deployArgDef, queryArgDef, updateArgDef) => {
                         const actor = await setupCanisters(
-                            initIdlType,
-                            initTsType,
-                            queryIdlType,
-                            queryTsType,
-                            updateIdlType,
-                            updateTsType,
-                            imports,
-                            variableAliasDeclarations
-                        );
-                        execSync(
-                            `dfx canister uninstall-code canister || true`,
-                            {
-                                stdio: 'inherit'
-                            }
+                            deployArgDef,
+                            queryArgDef,
+                            updateArgDef
                         );
 
-                        const initArgDataCandidString = `("${escapeArgData(
-                            initArgData
-                        )}")`;
+                        await testDeploy(actor, deployArgDef, 'init');
 
-                        execSync(
-                            `dfx deploy canister --argument '${initArgDataCandidString}'`,
-                            {
-                                stdio: 'inherit'
-                            }
-                        );
+                        await testDeploy(actor, deployArgDef, 'postUpgrade');
 
-                        const initArgDataRaw = await actor.getInitArgDataRaw();
-                        const expectedInitArgDataRaw = await actor.candidEncode(
-                            initArgDataCandidString
-                        );
-                        expect(initArgDataRaw).toEqual([
-                            expectedInitArgDataRaw
-                        ]);
-
-                        const queryArgDataCandidString = `("${escapeArgData(
-                            queryArgData
-                        )}")`;
-                        const queryArgDataRaw =
-                            await actor.getQueryArgDataRaw(queryArgData);
-                        const expectedQueryArgDataRaw =
-                            await actor.candidEncode(queryArgDataCandidString);
-                        expect(queryArgDataRaw).toEqual(
-                            expectedQueryArgDataRaw
-                        );
-
-                        const updateArgDataCandidString = `("${escapeArgData(
-                            updateArgData
-                        )}")`;
-                        const updateArgDataRaw =
-                            await actor.getUpdateArgDataRaw(updateArgData);
-                        const expectedUpdateArgDataRaw =
-                            await actor.candidEncode(updateArgDataCandidString);
-                        expect(updateArgDataRaw).toEqual(
-                            expectedUpdateArgDataRaw
-                        );
-
-                        const postUpgradeArgDataCandidString = `("${escapeArgData(
-                            postUpgradeArgData
-                        )}")`;
-
-                        execSync(
-                            `dfx deploy canister --argument '${postUpgradeArgDataCandidString}' --upgrade-unchanged`,
-                            {
-                                stdio: 'inherit'
-                            }
-                        );
-
-                        const postUpgradeArgDataRaw =
-                            await actor.getPostUpgradeArgDataRaw();
-                        const expectedPostUpgradeArgDataRaw =
-                            await actor.candidEncode(
-                                postUpgradeArgDataCandidString
-                            );
-                        expect(postUpgradeArgDataRaw).toEqual([
-                            expectedPostUpgradeArgDataRaw
-                        ]);
+                        for (let i = 0; i < 10; i++) {
+                            console.info('Canister method iteration:', i);
+                            await testCanisterMethod(queryArgDef, 'Query');
+                            await testCanisterMethod(updateArgDef, 'Update');
+                        }
                     }
                 ),
                 defaultPropTestParams
@@ -151,21 +80,85 @@ export function getTests(): Test {
     };
 }
 
+async function testDeploy(
+    actor: ActorSubclass<Actor>,
+    argData: WithShapes<CandidDefinition>,
+    mode: 'init' | 'postUpgrade'
+): Promise<Promise<void>> {
+    if (mode === 'init') {
+        execSync(`dfx canister uninstall-code canister || true`, {
+            stdio: 'inherit'
+        });
+    }
+
+    const argString = generateRandomCandidString(argData);
+
+    const deployCommand = `dfx deploy canister --argument '${argString}' ${
+        mode === 'postUpgrade' ? '--upgrade-unchanged' : ''
+    }`;
+    execSync(deployCommand, { stdio: 'pipe' });
+
+    const argDataRaw =
+        mode === 'init'
+            ? await actor.getInitArgDataRaw()
+            : await actor.getPostUpgradeArgDataRaw();
+    const expectedArgDataRaw = await actor.candidEncode(argString);
+    expect(argDataRaw).toEqual([expectedArgDataRaw]);
+}
+
+async function testCanisterMethod(
+    argData: WithShapes<CandidDefinition>,
+    mode: 'Query' | 'Update'
+): Promise<Promise<void>> {
+    const argString = generateRandomCandidString(argData);
+    const command = `dfx canister call canister get${mode}ArgDataRaw '${argString}'`;
+    const result = execSync(command, {
+        stdio: 'pipe'
+    });
+    const candidEncodeCommand = `dfx canister call canister candidEncode '("${escapeArgData(
+        argString
+    )}")'`;
+    const candidEncodeResult = execSync(candidEncodeCommand, {
+        stdio: 'pipe'
+    });
+    expect(result).toEqual(candidEncodeResult);
+}
+
 function escapeArgData(data: string): string {
     return data.replace(/[\\"]/g, '\\$&');
 }
 
+function getIdlType(candidDefinition: WithShapes<CandidDefinition>): string {
+    return candidDefinition.definition.candidMeta.typeObject;
+}
+
+function getTsType(candidDefinition: WithShapes<CandidDefinition>): string {
+    return candidDefinition.definition.candidMeta.typeAnnotation;
+}
+
 async function setupCanisters(
-    initIdlType: string,
-    initTsType: string,
-    queryIdlType: string,
-    queryTsType: string,
-    updateIdlType: string,
-    updateTsType: string,
-    imports: string[],
-    variableAliasDeclarations: string[]
+    deployArgDefinition: WithShapes<CandidDefinition>,
+    queryArgDefinition: WithShapes<CandidDefinition>,
+    updateArgDefinition: WithShapes<CandidDefinition>
 ): Promise<ActorSubclass<Actor>> {
-    console.log('setupCanisters');
+    const initIdlType = getIdlType(deployArgDefinition);
+    const initTsType = getTsType(deployArgDefinition);
+    const queryIdlType = getIdlType(queryArgDefinition);
+    const queryTsType = getTsType(queryArgDefinition);
+    const updateIdlType = getIdlType(updateArgDefinition);
+    const updateTsType = getTsType(updateArgDefinition);
+    const imports = Array.from(
+        new Set([
+            ...deployArgDefinition.definition.candidMeta.imports,
+            ...queryArgDefinition.definition.candidMeta.imports,
+            ...updateArgDefinition.definition.candidMeta.imports
+        ])
+    ).sort();
+    const variableAliasDeclarations = [
+        ...deployArgDefinition.definition.candidMeta.variableAliasDeclarations,
+        ...queryArgDefinition.definition.candidMeta.variableAliasDeclarations,
+        ...updateArgDefinition.definition.candidMeta.variableAliasDeclarations
+    ];
     // Ensure directories exist
     await mkdir(dirname('src/index.ts'), { recursive: true });
 
@@ -179,11 +172,28 @@ async function setupCanisters(
         imports,
         variableAliasDeclarations
     );
-    console.log('canisterCode', canisterCode);
     await writeFile('src/index.ts', canisterCode);
-    console.log('wrote canisterCode to src/index.ts');
 
-    pretest();
+    const initArgString = generateRandomCandidString(deployArgDefinition);
+    pretest(initArgString);
 
     return await getCanisterActor<Actor>('canister');
+}
+
+function generateRandomCandidString(
+    candidDefinition: WithShapes<CandidDefinition>
+): string {
+    const didVisitorResult =
+        candidDefinition.definition.candidMeta.runtimeTypeObject
+            .getIdlType([])
+            .accept(new DidVisitor(), getDefaultVisitorData());
+    const candidString = didVisitorResult[0];
+    const command = `didc random -t '(${candidString})'`;
+    console.info(`command: ${command}`);
+    const candidValueString = execSync(command)
+        .toString()
+        .replace(/\s/g, '')
+        .trim();
+    console.info(`candidValueString: ${candidValueString}`);
+    return candidValueString;
 }
