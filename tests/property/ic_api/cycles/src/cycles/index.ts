@@ -36,16 +36,17 @@ function acceptCycles(
 ): CyclesResult {
     const startingCanisterBalance = canisterBalance();
     const initialAvailable = msgCyclesAvailable();
+    const acceptAmount = receiveAmount ?? initialAvailable;
     const accepted =
         numChunks !== undefined
             ? acceptCyclesChunk(
-                  receiveAmount / numChunks === 0n
+                  acceptAmount / numChunks === 0n
                       ? 1n
-                      : receiveAmount / numChunks,
-                  receiveAmount,
+                      : acceptAmount / numChunks,
+                  acceptAmount,
                   0n
               )
-            : msgCyclesAccept(receiveAmount ?? initialAvailable);
+            : msgCyclesAccept(acceptAmount);
     const finalAvailable = msgCyclesAvailable();
     const endingCanisterBalance = canisterBalance();
     const cyclesRefunded = 0n; // This will always be 0 in the cycles canister
