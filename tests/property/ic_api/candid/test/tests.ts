@@ -18,7 +18,7 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
-        please('install didc', async () => {
+        please.skip('install didc', async () => {
             execSync(
                 `cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 --force didc`,
                 { stdio: 'inherit' }
@@ -35,6 +35,12 @@ export function getTests(): Test {
              * candid string formats, which would be straightforward but
              * time-consuming to implement. This would also reduce our
              * dependency on didc for testing.
+             */
+            /* TODO: once we get the arbs more robust, as per
+             * https://github.com/demergent-labs/azle/issues/2276, it would be
+             * good to do things in the reverse as well, that is to say, generate
+             * an arb and use it's bytes to decode, then encode that result, and
+             * make sure we get the bytes back.
              */
             const constraints: DefinitionConstraints = {
                 recursiveWeights: true,
