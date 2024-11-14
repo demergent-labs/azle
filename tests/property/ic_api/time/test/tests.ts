@@ -37,7 +37,7 @@ export function getTests(): Test {
                     expect(canisterTime0).toBeLessThan(testTimeAfter);
                     expect(canisterTime1).toBeLessThanOrEqual(testTimeAfter);
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -67,7 +67,7 @@ export function getTests(): Test {
                     expect(canisterTime0).toBeLessThan(testTimeAfter);
                     expect(canisterTime1).toBeLessThanOrEqual(testTimeAfter);
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -103,7 +103,7 @@ export function getTests(): Test {
                         testTimeAfter
                     );
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };

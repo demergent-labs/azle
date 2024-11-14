@@ -87,7 +87,7 @@ export function getTests(): Test {
                         expect(decodedString).toBe(candidValueString);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };

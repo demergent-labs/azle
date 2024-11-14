@@ -40,7 +40,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -84,7 +84,7 @@ export function getTests(): Test {
                         expect(instructions1).toBeLessThan(instructionsAfter1);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };

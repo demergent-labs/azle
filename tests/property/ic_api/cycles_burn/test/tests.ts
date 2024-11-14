@@ -39,7 +39,7 @@ export function getTests(): Test {
                         ).toBeLessThanOrEqual(250_000n);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };
