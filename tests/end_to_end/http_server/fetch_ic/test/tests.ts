@@ -14,31 +14,26 @@ export function getTests(canisterName: string): Test {
     let mainPage: Page;
 
     return () => {
-        please(
-            'prepare browser and pages',
-            async () => {
-                browser = await puppeteer.launch({
-                    headless:
-                        process.env.GITHUB_RUN_ID === undefined ? false : true
-                });
-                page = await browser.newPage();
+        please('prepare browser and pages', async () => {
+            browser = await puppeteer.launch({
+                headless: process.env.GITHUB_RUN_ID === undefined ? false : true
+            });
+            page = await browser.newPage();
 
-                page.on('console', (message) => {
-                    for (const arg of message.args()) {
-                        console.info(`Puppetteer log: ${arg}`);
-                    }
-                });
+            page.on('console', (message) => {
+                for (const arg of message.args()) {
+                    console.info(`Puppetteer log: ${arg}`);
+                }
+            });
 
-                await page.goto(origin);
+            await page.goto(origin);
 
-                await iiLogin(page);
+            await iiLogin(page);
 
-                const pages = await browser.pages();
+            const pages = await browser.pages();
 
-                mainPage = pages[1];
-            },
-            15_000
-        );
+            mainPage = pages[1];
+        });
 
         wait('for identity to be set', 5_000);
 
@@ -79,7 +74,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('supports a string body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyStringButton');
@@ -94,7 +89,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('supports an ArrayBuffer body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyArrayBufferButton');
@@ -109,7 +104,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('supports a blob body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyBlobButton');
@@ -124,7 +119,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('supports a DataView body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyDataViewButton');
@@ -139,7 +134,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('supports GET methods with URL query params in the client side fetch', async () => {
             await mainPage.click('>>> #urlQueryParamsGetButton');
@@ -151,7 +146,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('supports POST methods with URL query params in the client side fetch', async () => {
             await mainPage.click('>>> #urlQueryParamsPostButton');
@@ -166,7 +161,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('returns status 401 for unauthorized GET methods in the client side fetch', async () => {
             await mainPage.click('>>> #notAuthorizedGetButton');
@@ -178,7 +173,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('returns status 401 for unauthorized POST methods in the client side fetch', async () => {
             await mainPage.click('>>> #notAuthorizedPostButton');
@@ -193,7 +188,7 @@ export function getTests(canisterName: string): Test {
             );
 
             expect(success).toBe(true);
-        }, 10_000);
+        });
 
         it('supports HEAD methods in the client side fetch', async () => {
             await mainPage.click('>>> #headButton');
@@ -235,10 +230,6 @@ function iiLogin(page: Page): Promise<void> {
             await iiPage.waitForSelector('#registerButton');
 
             await iiPage.click('#registerButton');
-
-            await iiPage.waitForSelector('[data-action="construct-identity"]');
-
-            await iiPage.click('[data-action="construct-identity"]');
 
             await iiPage.waitForSelector('#captchaInput');
 
