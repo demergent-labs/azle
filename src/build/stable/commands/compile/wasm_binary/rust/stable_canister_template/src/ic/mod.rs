@@ -6,7 +6,6 @@ mod accept_message;
 mod arg_data_raw;
 mod call_raw;
 mod caller;
-mod candid_compiler;
 mod candid_decode;
 mod candid_encode;
 mod canister_balance;
@@ -55,8 +54,6 @@ pub fn register(ctx: Ctx) -> Result<()> {
     ic.set("callRaw", call_raw::get_function(ctx.clone()))?;
 
     ic.set("caller", caller::get_function(ctx.clone()))?;
-
-    ic.set("candidCompiler", candid_compiler::get_function(ctx.clone()))?;
 
     ic.set("candidDecode", candid_decode::get_function(ctx.clone()))?;
 

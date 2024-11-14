@@ -1,4 +1,3 @@
-import { execSyncPretty } from 'azle/src/build/stable/utils/exec_sync_pretty';
 import {
     defaultPropTestParams,
     expect,
@@ -6,6 +5,7 @@ import {
     it,
     Test
 } from 'azle/test';
+import { execSync } from 'child_process';
 import fc from 'fast-check';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
@@ -19,9 +19,9 @@ export function getTests(): Test {
                         max: 1_000_000_000_000_000n
                     }),
                     async (amount) => {
-                        execSyncPretty(
+                        execSync(
                             `dfx ledger fabricate-cycles --canister canister --cycles 1000000000000000`,
-                            'inherit'
+                            { stdio: 'inherit' }
                         );
 
                         const actor = await getCanisterActor<Actor>('canister');
