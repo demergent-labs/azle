@@ -1,6 +1,5 @@
 globalThis._azleExperimental = true;
 
-import { execSyncPretty } from 'azle/src/build/stable/utils/exec_sync_pretty';
 import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/stable';
 import {
     defaultPropTestParams,
@@ -64,7 +63,7 @@ export function getTests(): Test {
                                 );
                         const candidString = didVisitorResult[0];
                         const command = `didc random -t '(${candidString})'`;
-                        const candidValueString = execSyncPretty(command)
+                        const candidValueString = execSync(command)
                             .toString()
                             .trim();
                         console.info(candidValueString);
