@@ -9,6 +9,14 @@ on:
             include_npm:
                 required: true
                 type: boolean
+            run_experimental:
+                required: false
+                type: boolean
+                default: false
+            fuzz:
+                required: false
+                type: boolean
+                default: false
 
 jobs:
     run-test:
@@ -130,6 +138,11 @@ jobs:
               shell: bash -l {0}
 
             - name: Run tests
-              run: AZLE_PROPTEST_NUM_RUNS=${{ steps.calc-runs.outputs.runs }} AZLE_PROPTEST_VERBOSE=true npm test
+              run: npm test
               shell: bash -l {0}
               working-directory: ${{ matrix.tests.path }}
+              env:
+                  AZLE_PROPTEST_NUM_RUNS: ${{ steps.calc-runs.outputs.runs }}
+                  AZLE_PROPTEST_VERBOSE: true
+                  AZLE_EXPERIMENTAL: ${{ inputs.run_experimental }}
+                  AZLE_FUZZ: ${{ inputs.fuzz }}

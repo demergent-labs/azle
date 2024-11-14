@@ -1,10 +1,12 @@
-import { call, canisterBalance, IDL, notify, query, trap, update } from 'azle';
+import { call, canisterBalance, IDL, notify, query, update } from 'azle';
 
 export default class {
+    cyclesPrincipal = getCyclesPrincipal();
+
     // Reports the number of cycles returned from the Cycles canister
     @update([], IDL.Nat64)
     async sendCycles(): Promise<bigint> {
-        return await call(getCyclesPrincipal(), 'receiveCycles', {
+        return await call(this.cyclesPrincipal, 'receiveCycles', {
             returnIdlType: IDL.Nat64,
             cycles: 1_000_000n
         });
@@ -12,7 +14,7 @@ export default class {
 
     @update([])
     sendCyclesNotify(): void {
-        return notify(getCyclesPrincipal(), 'receiveCycles', {
+        return notify(this.cyclesPrincipal, 'receiveCycles', {
             cycles: 1_000_000n
         });
     }
@@ -24,8 +26,8 @@ export default class {
 }
 
 function getCyclesPrincipal(): string {
-    return (
-        process.env.CYCLES_PRINCIPAL ??
-        trap('process.env.CYCLES_PRINCIPAL is undefined')
-    );
+    if (process.env.CYCLES_PRINCIPAL !== undefined) {
+        return process.env.CYCLES_PRINCIPAL;
+    }
+    throw new Error('process.env.CYCLES_PRINCIPAL is undefined');
 }

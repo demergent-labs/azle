@@ -1,14 +1,16 @@
 # Benchmarks for ethers
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | init        | 8_137_053_096 | 6_455_411_238 | $0.0085835667 | $8_583.56         | <font color="red">+1_254_509</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
 | 0   | init        | 8_135_798_587 | 6_454_909_434 | $0.0085828994 | $8_582.89         |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

@@ -10,6 +10,18 @@ on:
         branches:
             - main
     pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+    workflow_dispatch:
+        inputs:
+            fuzz:
+                description: 'Run fuzz tests'
+                required: true
+                type: boolean
+                default: false
 
 jobs:
     get-exclude-dirs:
@@ -40,8 +52,18 @@ jobs:
                 test_group:
                     - { name: 'Examples', directories: './examples' }
                     - {
+                          name: 'Examples (Experimental)',
+                          directories: './examples',
+                          run_experimental: true
+                      }
+                    - {
                           name: 'E2E Class',
                           directories: './tests/end_to_end/candid_rpc/class_syntax'
+                      }
+                    - {
+                          name: 'E2E Class (Experimental)',
+                          directories: './tests/end_to_end/candid_rpc/class_syntax',
+                          run_experimental: true
                       }
                     - {
                           name: 'E2E Functional',
@@ -56,6 +78,11 @@ jobs:
                           directories: './tests/property/candid_rpc/class_api'
                       }
                     - {
+                          name: 'Property Class (Experimental)',
+                          directories: './tests/property/candid_rpc/class_api',
+                          run_experimental: true
+                      }
+                    - {
                           name: 'Property Functional',
                           directories: './tests/property/candid_rpc/functional_api'
                       }
@@ -63,10 +90,17 @@ jobs:
                           name: 'Property IC API',
                           directories: './tests/property/ic_api'
                       }
+                    - {
+                          name: 'Property IC API (Experimental)',
+                          directories: './tests/property/ic_api',
+                          run_experimental: true
+                      }
         uses: ./.github/workflows/get_and_run_tests.yml
         with:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
+            run_experimental: ${{ matrix.test_group.run_experimental || false }}
+            fuzz: ${{ inputs.fuzz || false }}
 
     check-test-success:
         name: Check Azle tests succeeded

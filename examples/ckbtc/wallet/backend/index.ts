@@ -12,9 +12,12 @@ import {
 // TODO I don't know if we need the minter or ckbtc or icrc canisters anymore?
 
 export default class {
+    ckBtcPrincipal = getCkBtcPrincipal();
+    minterPrincipal = getMinterPrincipal();
+
     @update([], IDL.Nat64)
     async getBalance(): Promise<bigint> {
-        return await call(getCkBtcPrincipal(), 'icrc1_balance_of', {
+        return await call(this.ckBtcPrincipal, 'icrc1_balance_of', {
             paramIdlTypes: [Account],
             returnIdlType: IDL.Nat,
             args: [
@@ -29,7 +32,7 @@ export default class {
     @update([], UpdateBalanceResult)
     async updateBalance(): Promise<UpdateBalanceResult> {
         const updateBalanceResult: UpdateBalanceResult = await call(
-            getMinterPrincipal(),
+            this.minterPrincipal,
             'update_balance',
             {
                 paramIdlTypes: [UpdateBalanceArgs],
@@ -50,7 +53,7 @@ export default class {
 
     @update([], IDL.Text)
     async getDepositAddress(): Promise<string> {
-        return await call(getMinterPrincipal(), 'get_btc_address', {
+        return await call(this.minterPrincipal, 'get_btc_address', {
             paramIdlTypes: [GetBtcAddressArgs],
             returnIdlType: IDL.Text,
             args: [
@@ -65,7 +68,7 @@ export default class {
     // TODO get rid of Result
     @update([IDL.Text, IDL.Nat], TransferResult)
     async transfer(to: string, amount: bigint): Promise<TransferResult> {
-        return await call(getCkBtcPrincipal(), 'icrc1_transfer', {
+        return await call(this.ckBtcPrincipal, 'icrc1_transfer', {
             paramIdlTypes: [TransferArgs],
             returnIdlType: TransferResult,
             args: [
@@ -99,7 +102,6 @@ function padPrincipalWithZeros(blob: Uint8Array): Uint8Array {
 
 function getCkBtcPrincipal(): string {
     if (process.env.CK_BTC_PRINCIPAL !== undefined) {
-        console.info(process.env.CK_BTC_PRINCIPAL);
         return process.env.CK_BTC_PRINCIPAL;
     }
 

@@ -15,5 +15,5 @@ export function canisterVersion(): bigint {
         return BigInt(globalThis._azleIcExperimental.canisterVersion());
     }
 
-    return globalThis._azleIcStable.canisterVersion();
+    return BigInt(globalThis._azleIcStable.canisterVersion());
 }

@@ -1,16 +1,20 @@
 # Benchmarks for stable_b_tree_map_instruction_threshold
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                 |
+| --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | -------------------------------------- |
+| 0   | insertSmallRecord  | 17_849_638_812 | 13_940_445_524 | $0.0185361922 | $18_536.19        | <font color="green">-45_295_805</font> |
+| 1   | insertMediumRecord | 16_064_491_905 | 12_826_386_762 | $0.0170548617 | $17_054.86        | <font color="green">-7_876_295</font>  |
+| 2   | insertLargeRecord  | 18_426_067_752 | 14_571_017_100 | $0.0193746443 | $19_374.64        | <font color="red">+3_553_067</font>    |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls |
 | --- | ------------------ | -------------- | -------------- | ------------- | ----------------- |
 | 0   | insertSmallRecord  | 17_894_934_617 | 13_958_563_846 | $0.0185602836 | $18_560.28        |
 | 1   | insertMediumRecord | 16_072_368_200 | 12_829_537_280 | $0.0170590508 | $17_059.05        |
 | 2   | insertLargeRecord  | 18_422_514_685 | 14_569_595_874 | $0.0193727545 | $19_372.75        |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 
