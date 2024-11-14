@@ -1,4 +1,5 @@
 globalThis._azleExperimental = true;
+
 import { ActorSubclass } from '@dfinity/agent';
 import {
     defaultPropTestParams,
@@ -52,9 +53,16 @@ export function getTests(): Test {
                             Array.from(imports),
                             variableAliasDeclarations
                         );
-                        const result =
+
+                        const queryResult =
                             await canister.alwaysReplyQuery(agentArgumentValue);
-                        expect(result).toEqual(agentArgumentValue);
+                        expect(queryResult).toEqual(agentArgumentValue);
+
+                        const updateResult =
+                            await canister.alwaysReplyUpdate(
+                                agentArgumentValue
+                            );
+                        expect(updateResult).toEqual(agentArgumentValue);
                     }
                 ),
                 defaultPropTestParams
