@@ -1,8 +1,13 @@
-import { IDL, query, reject, reply } from 'azle';
+import { IDL, query, reject, reply, update } from 'azle';
 
 export default class {
     @query([IDL.Text], IDL.Text, { manual: true })
     alwaysRejectQuery(message: string): void {
+        reject(message);
+    }
+
+    @update([IDL.Text], IDL.Text, { manual: true })
+    alwaysRejectUpdate(message: string): void {
         reject(message);
     }
 
