@@ -1,8 +1,7 @@
 import { expect, it, Test } from 'azle/test';
+import { execSync } from 'child_process';
 import { createHash } from 'crypto';
 import { readFile } from 'fs/promises';
-
-import { execSyncPretty } from '../../../../../src/build/stable/utils/exec_sync_pretty';
 
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -12,7 +11,7 @@ export function getTests(canisterId: string): Test {
             const originalHashes = await getFileHashes();
 
             for (let i = 0; i < 10; i++) {
-                execSyncPretty(`dfx build multi_deploy`);
+                execSync(`dfx build multi_deploy`);
                 await verifyHashesMatch(originalHashes);
             }
         });
@@ -22,7 +21,7 @@ export function getTests(canisterId: string): Test {
             await verifyCalledFunction(origin, 'init');
 
             for (let i = 0; i < 5; i++) {
-                execSyncPretty(`dfx deploy multi_deploy`);
+                execSync(`dfx deploy multi_deploy`);
                 await verifyHashesMatch(originalHashes);
                 await verifyCalledFunction(origin, 'init');
                 await verifyModuleHashesMatch();
@@ -33,7 +32,7 @@ export function getTests(canisterId: string): Test {
             const originalHashes = await getFileHashes();
 
             for (let i = 0; i < 5; i++) {
-                execSyncPretty(`dfx deploy multi_deploy --upgrade-unchanged`);
+                execSync(`dfx deploy multi_deploy --upgrade-unchanged`);
                 await verifyHashesMatch(originalHashes);
                 await verifyCalledFunction(origin, 'postUpgrade');
                 await verifyModuleHashesMatch();
@@ -72,9 +71,7 @@ async function verifyModuleHashesMatch(): Promise<void> {
     const localHash = await getFileHash(
         '.dfx/local/canisters/multi_deploy/multi_deploy.wasm.gz'
     );
-    const canisterInfo = execSyncPretty(
-        `dfx canister info multi_deploy`
-    ).toString();
+    const canisterInfo = execSync(`dfx canister info multi_deploy`).toString();
     const moduleHash = canisterInfo.match(/Module hash: (0x[a-f0-9]+)/)?.[1];
 
     if (!moduleHash) {
