@@ -16,7 +16,7 @@ export function getTests(): Test {
                         await intermediaryCanister.sendAllCycles(amount);
                     validateCyclesResult(result, amount, 'all');
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -41,7 +41,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -54,7 +54,7 @@ export function getTests(): Test {
                         await intermediaryCanister.sendNoCycles(amount);
                     validateCyclesResult(result, amount, 'none');
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -75,7 +75,7 @@ export function getTests(): Test {
                         validateCyclesResult(result, amount, 'all');
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };

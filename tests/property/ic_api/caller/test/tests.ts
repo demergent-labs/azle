@@ -97,7 +97,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -129,7 +129,7 @@ export function getTests(): Test {
                         );
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };
