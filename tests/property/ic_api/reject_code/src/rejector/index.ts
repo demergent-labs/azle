@@ -1,4 +1,4 @@
-import { IDL, query, reject, reply } from 'azle';
+import { IDL, query, reject } from 'azle';
 
 export default class {
     @query([], IDL.Text)
@@ -11,8 +11,6 @@ export default class {
         reject('Rejection with message');
     }
 
-    @query([], undefined, { manual: true })
-    noError(): void {
-        reply({ data: undefined });
-    }
+    @query([])
+    noError(): void {}
 }
