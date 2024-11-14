@@ -2,8 +2,10 @@
 
 ## Current Status
 
-We have decided that the `inspect_message`, `accept_message`, and `method_name` functions are sufficiently tested in the following location:
-tests/end_to_end/candid_rpc/class_syntax/inspect_message/
+We have decided that the `accept_message`, and `method_name` functions are sufficiently tested in the following locations:
+
+-   tests/end_to_end/candid_rpc/class_syntax/inspect_message/
+-   tests/property/candid_rpc/class_api/canister_methods/inspect_message/
 
 These existing tests provide adequate coverage for the current release candidate. They ensure that all the APIs are called correctly and function as expected.
 
