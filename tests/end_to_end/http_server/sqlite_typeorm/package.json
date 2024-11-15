@@ -9,5 +9,9 @@
         "sql.js": "1.8.0",
         "sqlite_example": "file:../sqlite",
         "typeorm": "^0.3.20"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.21",
+        "@types/sql.js": "^1.4.9"
     }
 }
