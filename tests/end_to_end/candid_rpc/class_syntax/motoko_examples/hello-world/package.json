@@ -7,6 +7,6 @@
         "azle": "0.24.1"
     },
     "devDependencies": {
-        "hello_world_end_to_end_test_functional_syntax": "file:../../../functional_syntax/motoko_examples/hello-world"
+        "hello-world_end_to_end_test_functional_syntax": "file:../../../functional_syntax/motoko_examples/hello-world"
     }
 }

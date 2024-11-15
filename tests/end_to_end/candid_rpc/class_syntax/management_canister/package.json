@@ -7,6 +7,6 @@
         "azle": "0.24.1"
     },
     "devDependencies": {
-        "management_end_to_end_test_functional_syntax": "file:../../functional_syntax/management"
+        "management_canister_end_to_end_test_functional_syntax": "file:../../functional_syntax/management_canister"
     }
 }
