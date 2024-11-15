@@ -6,5 +6,8 @@
     },
     "dependencies": {
         "azle": "0.24.1"
+    },
+    "devDependencies": {
+        "multi_deploy_end_to_end_test_functional_syntax": "file:../../../functional_syntax/multi_deploy"
     }
 }

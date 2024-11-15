@@ -9,5 +9,8 @@
     },
     "dependencies": {
         "azle": "0.24.1"
+    },
+    "devDependencies": {
+        "bitcoin_end_to_end_test_functional_syntax": "file:../../functional_syntax/bitcoin"
     }
 }

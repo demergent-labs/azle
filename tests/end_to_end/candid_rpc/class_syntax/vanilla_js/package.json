@@ -6,5 +6,8 @@
     "dependencies": {
         "azle": "0.24.1",
         "jssha": "^3.3.1"
+    },
+    "devDependencies": {
+        "vanilla_js_end_to_end_test_functional_syntax": "file:../../functional_syntax/vanilla_js"
     }
 }

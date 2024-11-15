@@ -6,5 +6,8 @@
     "dependencies": {
         "azle": "0.24.1",
         "text-encoding": "^0.7.0"
+    },
+    "devDependencies": {
+        "simple_user_accounts_end_to_end_test_functional_syntax": "file:../../functional_syntax/simple_user_accounts"
     }
 }
