@@ -19,7 +19,7 @@ export function getTests(): Test {
                         canister.alwaysRejectQuery(message)
                     ).rejects.toThrow(escapeCandidString(message));
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -36,7 +36,7 @@ export function getTests(): Test {
                         ).rejects.toThrow('Odd numbers are rejected');
                     }
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -48,7 +48,7 @@ export function getTests(): Test {
                         canister.alwaysRejectUpdate(message)
                     ).rejects.toThrow(escapeCandidString(message));
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -66,7 +66,7 @@ export function getTests(): Test {
                         ).rejects.toThrow('Odd numbers are rejected');
                     }
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };

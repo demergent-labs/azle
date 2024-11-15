@@ -65,7 +65,7 @@ export function getTests(): Test {
                         expect(updateResult).toEqual(agentArgumentValue);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };
