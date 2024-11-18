@@ -34,29 +34,29 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1251118" },
+                    "instructions": { "__bigint__": "1250400" },
                     "method_name": "fac",
-                    "timestamp": { "__bigint__": "1730484620898233725" }
+                    "timestamp": { "__bigint__": "1731959430347834719" }
                 },
                 {
-                    "instructions": { "__bigint__": "1248993" },
+                    "instructions": { "__bigint__": "1245612" },
                     "method_name": "fac",
-                    "timestamp": { "__bigint__": "1730484623011244664" }
+                    "timestamp": { "__bigint__": "1731959432639118520" }
                 },
                 {
-                    "instructions": { "__bigint__": "1716563" },
+                    "instructions": { "__bigint__": "1707042" },
                     "method_name": "fac",
-                    "timestamp": { "__bigint__": "1730484625152292259" }
+                    "timestamp": { "__bigint__": "1731959434529511401" }
                 },
                 {
-                    "instructions": { "__bigint__": "2962328" },
+                    "instructions": { "__bigint__": "2950707" },
                     "method_name": "fac",
-                    "timestamp": { "__bigint__": "1730484627330066989" }
+                    "timestamp": { "__bigint__": "1731959436744406532" }
                 },
                 {
-                    "instructions": { "__bigint__": "5503616" },
+                    "instructions": { "__bigint__": "5484595" },
                     "method_name": "fac",
-                    "timestamp": { "__bigint__": "1730484629226042346" }
+                    "timestamp": { "__bigint__": "1731959438642188423" }
                 }
             ]
         }

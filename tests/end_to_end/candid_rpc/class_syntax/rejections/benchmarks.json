@@ -34,29 +34,29 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1692976" },
+                    "instructions": { "__bigint__": "1687830" },
                     "method_name": "getRejectionCodeNoError",
-                    "timestamp": { "__bigint__": "1730484667491139373" }
+                    "timestamp": { "__bigint__": "1731959479082184799" }
                 },
                 {
-                    "instructions": { "__bigint__": "1637314" },
+                    "instructions": { "__bigint__": "1632916" },
                     "method_name": "getRejectionCodeDestinationInvalid",
-                    "timestamp": { "__bigint__": "1730484669652932668" }
+                    "timestamp": { "__bigint__": "1731959481290559062" }
                 },
                 {
-                    "instructions": { "__bigint__": "2058148" },
+                    "instructions": { "__bigint__": "2053057" },
                     "method_name": "getRejectionCodeCanisterReject",
-                    "timestamp": { "__bigint__": "1730484671886210755" }
+                    "timestamp": { "__bigint__": "1731959483250031366" }
                 },
                 {
-                    "instructions": { "__bigint__": "1642299" },
+                    "instructions": { "__bigint__": "1637753" },
                     "method_name": "getRejectionCodeCanisterError",
-                    "timestamp": { "__bigint__": "1730484673839014486" }
+                    "timestamp": { "__bigint__": "1731959485278954645" }
                 },
                 {
-                    "instructions": { "__bigint__": "2854468" },
+                    "instructions": { "__bigint__": "2849067" },
                     "method_name": "getRejectionMessage",
-                    "timestamp": { "__bigint__": "1730484675879193133" }
+                    "timestamp": { "__bigint__": "1731959487487554240" }
                 }
             ]
         }

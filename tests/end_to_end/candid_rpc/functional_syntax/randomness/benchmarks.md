@@ -4,12 +4,12 @@
 
 | Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
 | --- | ------------ | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
-| 0   | postUpgrade  | 5_875_560_744 | 4_350_814_297 | $0.0057851472 | $5_785.14         | <font color="red">+599_706</font> |
-| 1   | randomNumber | 1_037_140     | 1_004_856     | $0.0000013361 | $1.33             | <font color="red">+3_421</font>   |
-| 2   | randomNumber | 1_022_596     | 999_038       | $0.0000013284 | $1.32             | <font color="red">+102</font>     |
-| 3   | randomNumber | 1_021_984     | 998_793       | $0.0000013281 | $1.32             | <font color="green">-603</font>   |
-| 4   | randomNumber | 1_020_631     | 998_252       | $0.0000013273 | $1.32             | <font color="green">-170</font>   |
-| 5   | randomNumber | 1_023_113     | 999_245       | $0.0000013287 | $1.32             | <font color="red">+917</font>     |
+| 0   | postUpgrade  | 5_875_590_881 | 4_350_826_352 | $0.0057851633 | $5_785.16         | <font color="red">+629_843</font> |
+| 1   | randomNumber | 1_034_394     | 1_003_757     | $0.0000013347 | $1.33             | <font color="red">+675</font>     |
+| 2   | randomNumber | 1_019_867     | 997_946       | $0.0000013269 | $1.32             | <font color="green">-2_627</font> |
+| 3   | randomNumber | 1_021_060     | 998_424       | $0.0000013276 | $1.32             | <font color="green">-1_527</font> |
+| 4   | randomNumber | 1_021_432     | 998_572       | $0.0000013278 | $1.32             | <font color="red">+631</font>     |
+| 5   | randomNumber | 1_020_906     | 998_362       | $0.0000013275 | $1.32             | <font color="green">-1_290</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

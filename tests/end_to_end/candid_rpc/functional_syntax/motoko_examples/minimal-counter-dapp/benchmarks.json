@@ -29,24 +29,24 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1123264" },
+                    "instructions": { "__bigint__": "1125383" },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730484627521911385" }
+                    "timestamp": { "__bigint__": "1731959433050305846" }
                 },
                 {
-                    "instructions": { "__bigint__": "1092863" },
+                    "instructions": { "__bigint__": "1092571" },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730484629661897680" }
+                    "timestamp": { "__bigint__": "1731959435211929562" }
                 },
                 {
-                    "instructions": { "__bigint__": "1093187" },
+                    "instructions": { "__bigint__": "1093279" },
                     "method_name": "reset",
-                    "timestamp": { "__bigint__": "1730484631878679034" }
+                    "timestamp": { "__bigint__": "1731959437198872247" }
                 },
                 {
-                    "instructions": { "__bigint__": "1099071" },
+                    "instructions": { "__bigint__": "1100013" },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730484633770507838" }
+                    "timestamp": { "__bigint__": "1731959439343114559" }
                 }
             ]
         }
