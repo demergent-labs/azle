@@ -95,3 +95,4 @@ jobs:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
                   gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+                  create-branch: 'true'

@@ -36,9 +36,19 @@ jobs:
                   exclude-unstable: ${{ github.event.inputs.exclude-unstable-benchmarks }}
                   exclude-release-only: ${{ github.event.inputs.exclude-release-only-benchmarks }}
 
+    create-branch-prefix:
+        uses: ./.github/workflows/create_branch_prefix.yml
+        with:
+            prefix: 'update'
+            version: ${{ inputs.release-version }}
+        secrets:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+
     prepare-release:
         name: Prepare Release
-        needs: get-exclude-dirs
+        needs:
+            - get-exclude-dirs
+            - create-branch-prefix
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
@@ -49,7 +59,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ github.ref }}
+                  ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
             - uses: ./.github/actions/setup_node
@@ -74,6 +84,12 @@ jobs:
                   AZLE_VERBOSE=true npx azle template
                   AZLE_VERBOSE=true npx azle template --experimental
 
+            - uses: ./.github/actions/commit_and_push
+              with:
+                  branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
+                  commit-message: 'Prepare release ${{ inputs.release-version }}'
+                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+
             - name: Publish to npm
               run: |
                   if [[ "${{ inputs.release-version }}" == *"-rc."* ]]; then
@@ -91,7 +107,9 @@ jobs:
                   exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
 
     update-test-files-for-release-commit:
-        needs: prepare-release
+        needs:
+            - prepare-release
+            - create-branch-prefix
         name: Update ${{ matrix.test.name }} files for release commit
         runs-on: ubuntu-latest
         env:
@@ -104,7 +122,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ github.ref }}
+                  ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
             - uses: ./.github/actions/setup_node
@@ -115,7 +133,7 @@ jobs:
               run: |
                   npm install
                   cd ${{ matrix.test.path }}
-                  sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ needs.prepare-release.outputs.release-version }}\3/" package.json
+                  sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ inputs.release-version }}\3/" package.json
                   npm install
 
             - name: Start dfx with artificial delay 0
@@ -131,7 +149,7 @@ jobs:
               id: create-branch-name
               uses: ./.github/actions/create_branch_name
               with:
-                  prefix: 'update--${{ needs.prepare-release.outputs.release-version }}-'
+                  prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
                   path: ${{ matrix.test.displayPath }}
 
             - uses: ./.github/actions/commit_and_push
@@ -139,21 +157,27 @@ jobs:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Update test files for ${{ matrix.test.displayPath }}'
                   gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+                  create-branch: 'true'
 
     squash-branches:
-        needs: [prepare-release, update-test-files-for-release-commit]
+        needs:
+            - prepare-release
+            - update-test-files-for-release-commit
+            - create-branch-prefix
         uses: ./.github/workflows/squash_branches.yml
         with:
-            base-branch: release--${{ needs.prepare-release.outputs.release-version }}
-            branch-prefix: 'update--${{ needs.prepare-release.outputs.release-version }}-'
-            commit-message: 'Update test files for all tests and examples ${{ needs.prepare-release.outputs.release-version }}'
+            base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
+            branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
+            commit-message: 'Update test files for all tests and examples ${{ inputs.release-version }}'
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
     create-release:
-        needs: [prepare-release, squash-branches]
+        needs:
+            - prepare-release
+            - squash-branches
         name: Create Release
         runs-on: ubuntu-latest
         steps:
@@ -166,7 +190,7 @@ jobs:
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
-                  VERSION=${{ needs.prepare-release.outputs.release-version }}
+                  VERSION=${{ inputs.release-version }}
                   git tag $VERSION
                   git push origin $VERSION
 
@@ -177,7 +201,10 @@ jobs:
                   fi
 
     create-pr:
-        needs: [prepare-release, squash-branches]
+        needs:
+            - prepare-release
+            - squash-branches
+            - create-branch-prefix
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -190,6 +217,6 @@ jobs:
               run: |
                   gh pr create \
                     --base main \
-                    --head release--${{ needs.prepare-release.outputs.release-version }} \
-                    --title "Release ${{ needs.prepare-release.outputs.release-version }}" \
-                    --body "Automated PR for release ${{ needs.prepare-release.outputs.release-version }}"
+                    --head ${{ needs.create-branch-prefix.outputs.base-branch }} \
+                    --title "Release ${{ inputs.release-version }}" \
+                    --body "Automated PR for release ${{ inputs.release-version }}"

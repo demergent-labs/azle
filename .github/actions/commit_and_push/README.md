@@ -9,4 +9,5 @@ steps:
           gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
           branch-name: 'branch-name'
           commit-message: 'commit message'
+          create-branch: 'true'
 ```

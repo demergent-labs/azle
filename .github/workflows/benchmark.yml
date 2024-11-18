@@ -35,30 +35,12 @@ jobs:
                   exclude-release-only: ${{ github.event.inputs.exclude-release-only-benchmarks }}
 
     create-branch-prefix:
-        name: Create Branch and Branch Prefix
-        runs-on: ubuntu-latest
-        outputs:
-            branch-prefix: ${{ steps.create-prefix.outputs.branch-prefix }}
-            base-branch: ${{ steps.create-prefix.outputs.base-branch }}
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.ref }}
-
-            - id: create-prefix
-              run: |
-                  VERSION=$(jq -r '.version' package.json)
-                  echo "branch-prefix=benchmark--$VERSION-" >> $GITHUB_OUTPUT
-                  echo "base-branch=benchmark--$VERSION" >> $GITHUB_OUTPUT
-
-            - uses: ./.github/actions/configure_git
-              with:
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
-
-            - name: Create base branch
-              run: |
-                  git checkout -b ${{ steps.create-prefix.outputs.base-branch }}
-                  git push origin ${{ steps.create-prefix.outputs.base-branch }}
+        uses: ./.github/workflows/create_branch_prefix.yml
+        with:
+            prefix: 'benchmark'
+            version: VERSION=$(jq -r '.version' package.json)
+        secrets:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
     run-benchmarks:
         name: ${{ matrix.benchmark_group.name }}
