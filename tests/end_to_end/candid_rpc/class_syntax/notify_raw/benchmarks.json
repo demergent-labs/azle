@@ -14,9 +14,9 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1609604" },
+                    "instructions": { "__bigint__": "1609496" },
                     "method_name": "sendNotification",
-                    "timestamp": { "__bigint__": "1730484662485467041" }
+                    "timestamp": { "__bigint__": "1731967042500160357" }
                 }
             ]
         }
@@ -36,9 +36,9 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "923050" },
+                    "instructions": { "__bigint__": "922804" },
                     "method_name": "receiveNotification",
-                    "timestamp": { "__bigint__": "1730484662485467041" }
+                    "timestamp": { "__bigint__": "1731967042500160357" }
                 }
             ]
         }

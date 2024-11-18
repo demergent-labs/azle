@@ -29,24 +29,24 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "80696805" },
+                    "instructions": { "__bigint__": "80656839" },
                     "method_name": "createUser",
-                    "timestamp": { "__bigint__": "1730484618156807636" }
+                    "timestamp": { "__bigint__": "1731967005618931424" }
                 },
                 {
-                    "instructions": { "__bigint__": "164294482" },
+                    "instructions": { "__bigint__": "164215247" },
                     "method_name": "createThread",
-                    "timestamp": { "__bigint__": "1730484620267262087" }
+                    "timestamp": { "__bigint__": "1731967007678751314" }
                 },
                 {
-                    "instructions": { "__bigint__": "86849221" },
+                    "instructions": { "__bigint__": "86803849" },
                     "method_name": "createPost",
-                    "timestamp": { "__bigint__": "1730484622362274082" }
+                    "timestamp": { "__bigint__": "1731967009778118031" }
                 },
                 {
-                    "instructions": { "__bigint__": "173151893" },
+                    "instructions": { "__bigint__": "172962430" },
                     "method_name": "createReaction",
-                    "timestamp": { "__bigint__": "1730484624589967755" }
+                    "timestamp": { "__bigint__": "1731967011869654810" }
                 }
             ]
         }

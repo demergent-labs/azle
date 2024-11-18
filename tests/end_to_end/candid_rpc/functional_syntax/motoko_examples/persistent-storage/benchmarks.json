@@ -14,9 +14,9 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5368366066" },
+                    "instructions": { "__bigint__": "5368380202" },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484639617112775" }
+                    "timestamp": { "__bigint__": "1731967022269316871" }
                 }
             ]
         }

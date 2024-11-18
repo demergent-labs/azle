@@ -4,10 +4,10 @@
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init                | 5_391_013_087 | 4_156_995_234 | $0.0055274319 | $5_527.43         | <font color="red">+2_381_095</font> |
-| 1   | http_request_update | 36_640_425    | 15_246_170    | $0.0000202724 | $20.27            | <font color="red">+25_740</font>    |
-| 2   | http_request_update | 36_596_427    | 15_228_570    | $0.0000202490 | $20.24            | <font color="red">+21_853</font>    |
-| 3   | http_request_update | 36_850_774    | 15_330_309    | $0.0000203843 | $20.38            | <font color="red">+72_151</font>    |
+| 0   | init                | 5_390_993_933 | 4_156_987_573 | $0.0055274217 | $5_527.42         | <font color="red">+2_361_941</font> |
+| 1   | http_request_update | 36_612_174    | 15_234_869    | $0.0000202573 | $20.25            | <font color="green">-2_511</font>   |
+| 2   | http_request_update | 36_648_492    | 15_249_396    | $0.0000202767 | $20.27            | <font color="red">+73_918</font>    |
+| 3   | http_request_update | 36_856_347    | 15_332_538    | $0.0000203872 | $20.38            | <font color="red">+77_724</font>    |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

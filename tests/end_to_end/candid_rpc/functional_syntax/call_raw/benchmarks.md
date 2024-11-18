@@ -4,8 +4,8 @@
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | executeCallRaw | 1_462_696    | 1_175_078 | $0.0000015625 | $1.56             | <font color="red">+1_167</font>   |
-| 1   | executeCallRaw | 1_966_368    | 1_376_547 | $0.0000018304 | $1.83             | <font color="green">-2_830</font> |
+| 0   | executeCallRaw | 1_465_914    | 1_176_365 | $0.0000015642 | $1.56             | <font color="red">+4_385</font>   |
+| 1   | executeCallRaw | 1_964_580    | 1_375_832 | $0.0000018294 | $1.82             | <font color="green">-4_618</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

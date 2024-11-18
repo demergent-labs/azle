@@ -4,10 +4,10 @@
 
 | Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
 | --- | -------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | createUser     | 18_523_069   | 7_999_227  | $0.0000106363 | $10.63            | <font color="green">-404_303</font> |
-| 1   | createThread   | 19_462_062   | 8_374_824  | $0.0000111358 | $11.13            | <font color="green">-633_366</font> |
-| 2   | createPost     | 21_816_144   | 9_316_457  | $0.0000123878 | $12.38            | <font color="green">-648_532</font> |
-| 3   | createReaction | 24_761_621   | 10_494_648 | $0.0000139544 | $13.95            | <font color="green">-678_503</font> |
+| 0   | createUser     | 18_523_586   | 7_999_434  | $0.0000106366 | $10.63            | <font color="green">-403_786</font> |
+| 1   | createThread   | 19_462_636   | 8_375_054  | $0.0000111361 | $11.13            | <font color="green">-632_792</font> |
+| 2   | createPost     | 21_816_799   | 9_316_719  | $0.0000123882 | $12.38            | <font color="green">-647_877</font> |
+| 3   | createReaction | 24_762_597   | 10_495_038 | $0.0000139549 | $13.95            | <font color="green">-677_527</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
