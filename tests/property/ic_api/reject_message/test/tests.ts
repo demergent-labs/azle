@@ -19,7 +19,7 @@ export function getTests(): Test {
                         await callerCanister.echoThroughReject(message);
                     expect(result).toBe(message);
                 }),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
     };

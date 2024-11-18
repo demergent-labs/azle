@@ -73,5 +73,5 @@ export function getTests(): Test {
 }
 
 function escapeCandidString(data: string): string {
-    return data.replace(/[\\"']/g, '\\$&');
+    return data.replace(/[\\"]/g, '\\$&');
 }
