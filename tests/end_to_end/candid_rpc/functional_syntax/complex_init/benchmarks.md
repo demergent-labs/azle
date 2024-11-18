@@ -4,7 +4,7 @@
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 5_354_643_315 | 4_142_447_326 | $0.0055080879 | $5_508.08         | <font color="red">+2_428_004</font> |
+| 0   | init        | 5_354_632_968 | 4_142_443_187 | $0.0055080824 | $5_508.08         | <font color="red">+2_417_657</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
@@ -18,7 +18,7 @@
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
-| 0   | init        | 5_357_850_811 | 4_143_730_324 | $0.0055097939 | $5_509.79         | <font color="red">+518_895</font> |
+| 0   | init        | 5_357_821_146 | 4_143_718_458 | $0.0055097781 | $5_509.77         | <font color="red">+489_230</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

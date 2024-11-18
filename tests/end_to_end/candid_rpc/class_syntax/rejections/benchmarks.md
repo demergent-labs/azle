@@ -4,11 +4,11 @@
 
 | Id  | Method Name                        | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ---------------------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | getRejectionCodeNoError            | 1_692_976    | 1_267_190 | $0.0000016849 | $1.68             | <font color="green">-30_936</font> |
-| 1   | getRejectionCodeDestinationInvalid | 1_637_314    | 1_244_925 | $0.0000016553 | $1.65             | <font color="green">-7_084</font>  |
-| 2   | getRejectionCodeCanisterReject     | 2_058_148    | 1_413_259 | $0.0000018792 | $1.87             | <font color="green">-3_659</font>  |
-| 3   | getRejectionCodeCanisterError      | 1_642_299    | 1_246_919 | $0.0000016580 | $1.65             | <font color="green">-6_456</font>  |
-| 4   | getRejectionMessage                | 2_854_468    | 1_731_787 | $0.0000023027 | $2.30             | <font color="red">+61_746</font>   |
+| 0   | getRejectionCodeNoError            | 1_687_876    | 1_265_150 | $0.0000016822 | $1.68             | <font color="green">-36_036</font> |
+| 1   | getRejectionCodeDestinationInvalid | 1_632_946    | 1_243_178 | $0.0000016530 | $1.65             | <font color="green">-11_452</font> |
+| 2   | getRejectionCodeCanisterReject     | 2_053_133    | 1_411_253 | $0.0000018765 | $1.87             | <font color="green">-8_674</font>  |
+| 3   | getRejectionCodeCanisterError      | 1_637_677    | 1_245_070 | $0.0000016555 | $1.65             | <font color="green">-11_078</font> |
+| 4   | getRejectionMessage                | 2_849_074    | 1_729_629 | $0.0000022998 | $2.29             | <font color="red">+56_352</font>   |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

@@ -4,9 +4,9 @@
 
 | Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                |
 | --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | insertSmallRecord  | 18_015_030_956 | 14_406_602_382 | $0.0191560270 | $19_156.02        | <font color="red">+661_005_323</font> |
-| 1   | insertMediumRecord | 16_482_146_164 | 12_993_448_465 | $0.0172769986 | $17_276.99        | <font color="red">+662_166_127</font> |
-| 2   | insertLargeRecord  | 19_060_732_880 | 15_224_883_152 | $0.0202440704 | $20_244.07        | <font color="red">+834_524_947</font> |
+| 0   | insertSmallRecord  | 18_020_437_279 | 14_408_764_911 | $0.0191589024 | $19_158.90        | <font color="red">+666_411_646</font> |
+| 1   | insertMediumRecord | 16_486_255_062 | 12_995_092_024 | $0.0172791840 | $17_279.18        | <font color="red">+666_275_025</font> |
+| 2   | insertLargeRecord  | 19_062_272_346 | 15_225_498_938 | $0.0202448892 | $20_244.88        | <font color="red">+836_064_413</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

@@ -1,0 +1,50 @@
+{
+    "backend": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "8147326344" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1731970541330378620" }
+                },
+                {
+                    "instructions": { "__bigint__": "56012992" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1731970577008837318" }
+                },
+                {
+                    "instructions": { "__bigint__": "49523867" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1731970582029889892" }
+                },
+                {
+                    "instructions": { "__bigint__": "49803629" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1731970587043974840" }
+                },
+                {
+                    "instructions": { "__bigint__": "49580235" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1731970592162058997" }
+                },
+                {
+                    "instructions": { "__bigint__": "49815295" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1731970597201011312" }
+                },
+                {
+                    "instructions": { "__bigint__": "47506971" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1731970602634137208" }
+                },
+                {
+                    "instructions": { "__bigint__": "37945104" },
+                    "method_name": "http_request_update",
+                    "timestamp": { "__bigint__": "1731970608218613910" }
+                }
+            ]
+        }
+    }
+}

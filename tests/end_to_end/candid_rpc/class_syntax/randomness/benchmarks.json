@@ -39,34 +39,34 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1336536174" },
+                    "instructions": { "__bigint__": "1336540621" },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484666433920012" }
+                    "timestamp": { "__bigint__": "1731970548402450673" }
                 },
                 {
-                    "instructions": { "__bigint__": "1063368" },
+                    "instructions": { "__bigint__": "1063661" },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484670776418789" }
+                    "timestamp": { "__bigint__": "1731970553360769794" }
                 },
                 {
-                    "instructions": { "__bigint__": "1044209" },
+                    "instructions": { "__bigint__": "1044502" },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484672928846202" }
+                    "timestamp": { "__bigint__": "1731970555461467286" }
                 },
                 {
-                    "instructions": { "__bigint__": "1042773" },
+                    "instructions": { "__bigint__": "1043066" },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484674933871557" }
+                    "timestamp": { "__bigint__": "1731970557497291339" }
                 },
                 {
-                    "instructions": { "__bigint__": "1044729" },
+                    "instructions": { "__bigint__": "1045022" },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484677056806777" }
+                    "timestamp": { "__bigint__": "1731970559594747647" }
                 },
                 {
-                    "instructions": { "__bigint__": "1044003" },
+                    "instructions": { "__bigint__": "1044296" },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484679243180168" }
+                    "timestamp": { "__bigint__": "1731970561777865091" }
                 }
             ]
         }

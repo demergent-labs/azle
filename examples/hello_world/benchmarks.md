@@ -4,7 +4,7 @@
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | setMessage  | 1_338_854    | 1_125_541 | $0.0000014966 | $1.49             | <font color="red">+38_455</font> |
+| 0   | setMessage  | 1_339_036    | 1_125_614 | $0.0000014967 | $1.49             | <font color="red">+38_637</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

@@ -1,0 +1,20 @@
+{
+    "func_types": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5925293137" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1731970548272266645" }
+                },
+                {
+                    "instructions": { "__bigint__": "12168820" },
+                    "method_name": "getNotifierFromNotifiersCanister",
+                    "timestamp": { "__bigint__": "1731970568596958700" }
+                }
+            ]
+        }
+    }
+}

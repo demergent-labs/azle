@@ -14,9 +14,9 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "3943113" },
+                    "instructions": { "__bigint__": "3945034" },
                     "method_name": "createUser",
-                    "timestamp": { "__bigint__": "1730484637355602197" }
+                    "timestamp": { "__bigint__": "1731970514606846006" }
                 }
             ]
         }

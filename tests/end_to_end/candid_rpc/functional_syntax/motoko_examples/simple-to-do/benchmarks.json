@@ -39,34 +39,34 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1922248" },
+                    "instructions": { "__bigint__": "1920483" },
                     "method_name": "addTodo",
-                    "timestamp": { "__bigint__": "1730484630509117452" }
+                    "timestamp": { "__bigint__": "1731970507459259170" }
                 },
                 {
-                    "instructions": { "__bigint__": "1678606" },
+                    "instructions": { "__bigint__": "1676288" },
                     "method_name": "addTodo",
-                    "timestamp": { "__bigint__": "1730484632550575296" }
+                    "timestamp": { "__bigint__": "1731970509622783781" }
                 },
                 {
-                    "instructions": { "__bigint__": "989059" },
+                    "instructions": { "__bigint__": "987724" },
                     "method_name": "completeTodo",
-                    "timestamp": { "__bigint__": "1730484634660108708" }
+                    "timestamp": { "__bigint__": "1731970511807220968" }
                 },
                 {
-                    "instructions": { "__bigint__": "898417" },
+                    "instructions": { "__bigint__": "896983" },
                     "method_name": "clearCompleted",
-                    "timestamp": { "__bigint__": "1730484636824797615" }
+                    "timestamp": { "__bigint__": "1731970513744219366" }
                 },
                 {
-                    "instructions": { "__bigint__": "985274" },
+                    "instructions": { "__bigint__": "981885" },
                     "method_name": "completeTodo",
-                    "timestamp": { "__bigint__": "1730484638842905384" }
+                    "timestamp": { "__bigint__": "1731970515930085235" }
                 },
                 {
-                    "instructions": { "__bigint__": "882112" },
+                    "instructions": { "__bigint__": "880334" },
                     "method_name": "clearCompleted",
-                    "timestamp": { "__bigint__": "1730484640903487231" }
+                    "timestamp": { "__bigint__": "1731970517967729065" }
                 }
             ]
         }

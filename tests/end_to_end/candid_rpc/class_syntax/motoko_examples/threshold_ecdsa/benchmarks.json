@@ -19,14 +19,14 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8728678" },
+                    "instructions": { "__bigint__": "8721137" },
                     "method_name": "publicKey",
-                    "timestamp": { "__bigint__": "1730484650674844202" }
+                    "timestamp": { "__bigint__": "1731970528398581425" }
                 },
                 {
-                    "instructions": { "__bigint__": "8915339" },
+                    "instructions": { "__bigint__": "8906968" },
                     "method_name": "sign",
-                    "timestamp": { "__bigint__": "1730484652923372438" }
+                    "timestamp": { "__bigint__": "1731970530587729539" }
                 }
             ]
         }

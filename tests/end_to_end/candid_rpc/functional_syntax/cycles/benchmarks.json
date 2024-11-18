@@ -1,0 +1,48 @@
+{
+    "cycles": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "1138453" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1731970569811586049" }
+                },
+                {
+                    "instructions": { "__bigint__": "1221965" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1731970571986261794" }
+                },
+                {
+                    "instructions": { "__bigint__": "1223490" },
+                    "method_name": "receiveCycles",
+                    "timestamp": { "__bigint__": "1731970573853144155" }
+                }
+            ]
+        }
+    },
+    "intermediary": {
+        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": { "__bigint__": "5358687118" },
+                    "method_name": "init",
+                    "timestamp": { "__bigint__": "1731970552877151876" }
+                },
+                {
+                    "instructions": { "__bigint__": "11222655" },
+                    "method_name": "sendCycles",
+                    "timestamp": { "__bigint__": "1731970571986261794" }
+                },
+                {
+                    "instructions": { "__bigint__": "1416261" },
+                    "method_name": "sendCyclesNotify",
+                    "timestamp": { "__bigint__": "1731970573853144155" }
+                }
+            ]
+        }
+    }
+}
