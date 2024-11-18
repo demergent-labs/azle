@@ -38,7 +38,7 @@ jobs:
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
             prefix: 'benchmark'
-            version: VERSION=$(jq -r '.version' package.json)
+            version: $(jq -r '.version' package.json)
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
