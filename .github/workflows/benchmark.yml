@@ -92,7 +92,9 @@ jobs:
             LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
     create-pr:
-        needs: [squash-branches, create-branch-prefix]
+        needs:
+            - squash-branches
+            - create-branch-prefix
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
