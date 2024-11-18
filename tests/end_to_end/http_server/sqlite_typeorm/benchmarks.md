@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                               |
-| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ------------------------------------ |
-| 0   | postUpgrade         | 14_084_731_762 | 11_234_482_704 | $0.0149381546 | $14_938.15        | <font color="red">+10_516_909</font> |
-| 1   | http_request_update | 102_322_223    | 41_518_889     | $0.0000552064 | $55.20            | <font color="green">-69_319</font>   |
-| 2   | http_request_update | 141_856_929    | 57_332_771     | $0.0000762337 | $76.23            | <font color="green">-40_383</font>   |
-| 3   | http_request_update | 170_447_905    | 68_769_162     | $0.0000914403 | $91.44            | <font color="red">+12_518_402</font> |
-| 4   | http_request_update | 66_898_469     | 27_349_387     | $0.0000363657 | $36.36            | <font color="green">-35_070</font>   |
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                 |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | -------------------------------------- |
+| 0   | postUpgrade         | 14_084_726_297 | 11_234_480_518 | $0.0149381517 | $14_938.15        | <font color="red">+10_511_444</font>   |
+| 1   | http_request_update | 102_548_822    | 41_609_528     | $0.0000553269 | $55.32            | <font color="red">+157_280</font>      |
+| 2   | http_request_update | 141_961_511    | 57_374_604     | $0.0000762893 | $76.28            | <font color="red">+64_199</font>       |
+| 3   | http_request_update | 143_064_150    | 57_815_660     | $0.0000768757 | $76.87            | <font color="green">-14_865_353</font> |
+| 4   | http_request_update | 66_889_431     | 27_345_772     | $0.0000363609 | $36.36            | <font color="green">-44_108</font>     |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

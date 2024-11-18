@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | add         | 1_274_992    | 1_099_996 | $0.0000014626 | $1.46             | <font color="green">-1_299</font> |
-| 1   | sub         | 1_253_918    | 1_091_567 | $0.0000014514 | $1.45             | <font color="green">-985</font>   |
-| 2   | mul         | 1_252_202    | 1_090_880 | $0.0000014505 | $1.45             | <font color="green">-954</font>   |
-| 3   | div         | 1_614_082    | 1_235_632 | $0.0000016430 | $1.64             | <font color="green">-3_081</font> |
-| 4   | clearall    | 849_588      | 929_835   | $0.0000012364 | $1.23             | <font color="green">-587</font>   |
-| 5   | add         | 1_252_734    | 1_091_093 | $0.0000014508 | $1.45             | <font color="red">+2_115</font>   |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | add         | 1_278_418    | 1_101_367 | $0.0000014645 | $1.46             | <font color="red">+2_127</font> |
+| 1   | sub         | 1_256_554    | 1_092_621 | $0.0000014528 | $1.45             | <font color="red">+1_651</font> |
+| 2   | mul         | 1_253_587    | 1_091_434 | $0.0000014512 | $1.45             | <font color="red">+431</font>   |
+| 3   | div         | 1_617_896    | 1_237_158 | $0.0000016450 | $1.64             | <font color="red">+733</font>   |
+| 4   | clearall    | 852_305      | 930_922   | $0.0000012378 | $1.23             | <font color="red">+2_130</font> |
+| 5   | add         | 1_250_304    | 1_090_121 | $0.0000014495 | $1.44             | <font color="green">-315</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

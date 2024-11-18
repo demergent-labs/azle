@@ -4,8 +4,8 @@
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | publicKey   | 8_728_678    | 4_081_471 | $0.0000054270 | $5.42             | <font color="green">-148_141</font> |
-| 1   | sign        | 8_915_339    | 4_156_135 | $0.0000055263 | $5.52             | <font color="green">-45_915</font>  |
+| 0   | publicKey   | 8_721_015    | 4_078_406 | $0.0000054229 | $5.42             | <font color="green">-155_804</font> |
+| 1   | sign        | 8_906_961    | 4_152_784 | $0.0000055218 | $5.52             | <font color="green">-54_293</font>  |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

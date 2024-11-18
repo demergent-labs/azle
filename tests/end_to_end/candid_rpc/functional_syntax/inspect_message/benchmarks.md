@@ -4,7 +4,7 @@
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | accessible  | 1_058_689    | 1_013_475 | $0.0000013476 | $1.34             | <font color="red">+4_180</font> |
+| 0   | accessible  | 1_057_400    | 1_012_960 | $0.0000013469 | $1.34             | <font color="red">+2_891</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

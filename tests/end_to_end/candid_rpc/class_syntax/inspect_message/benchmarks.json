@@ -14,9 +14,9 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1087497" },
+                    "instructions": { "__bigint__": "1087533" },
                     "method_name": "accessible",
-                    "timestamp": { "__bigint__": "1730484649808291043" }
+                    "timestamp": { "__bigint__": "1731960365670846737" }
                 }
             ]
         }

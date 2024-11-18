@@ -14,9 +14,9 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5354643315" },
+                    "instructions": { "__bigint__": "5354632968" },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484631844738102" }
+                    "timestamp": { "__bigint__": "1731960375526280123" }
                 }
             ]
         }
@@ -36,9 +36,9 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5357850811" },
+                    "instructions": { "__bigint__": "5357821146" },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484643720128044" }
+                    "timestamp": { "__bigint__": "1731960388583631002" }
                 }
             ]
         }

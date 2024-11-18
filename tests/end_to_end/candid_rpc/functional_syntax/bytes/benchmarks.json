@@ -34,29 +34,29 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1973945" },
+                    "instructions": { "__bigint__": "1973588" },
                     "method_name": "getBytes",
-                    "timestamp": { "__bigint__": "1730484636424054850" }
+                    "timestamp": { "__bigint__": "1731960379833991164" }
                 },
                 {
-                    "instructions": { "__bigint__": "2645466" },
+                    "instructions": { "__bigint__": "2648929" },
                     "method_name": "getBytes",
-                    "timestamp": { "__bigint__": "1730484638594294148" }
+                    "timestamp": { "__bigint__": "1731960381953694587" }
                 },
                 {
-                    "instructions": { "__bigint__": "9731416" },
+                    "instructions": { "__bigint__": "9733546" },
                     "method_name": "getBytes",
-                    "timestamp": { "__bigint__": "1730484640817787246" }
+                    "timestamp": { "__bigint__": "1731960384158961762" }
                 },
                 {
-                    "instructions": { "__bigint__": "79931211" },
+                    "instructions": { "__bigint__": "79933800" },
                     "method_name": "getBytes",
-                    "timestamp": { "__bigint__": "1730484644027822737" }
+                    "timestamp": { "__bigint__": "1731960387610947824" }
                 },
                 {
-                    "instructions": { "__bigint__": "157924895" },
+                    "instructions": { "__bigint__": "157926157" },
                     "method_name": "getBytes",
-                    "timestamp": { "__bigint__": "1730484652175518205" }
+                    "timestamp": { "__bigint__": "1731960396822794086" }
                 }
             ]
         }

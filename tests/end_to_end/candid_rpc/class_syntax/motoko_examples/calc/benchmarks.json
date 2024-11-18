@@ -39,34 +39,34 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1291494" },
+                    "instructions": { "__bigint__": "1291708" },
                     "method_name": "add",
-                    "timestamp": { "__bigint__": "1730484642575516151" }
+                    "timestamp": { "__bigint__": "1731960366008100826" }
                 },
                 {
-                    "instructions": { "__bigint__": "1259983" },
+                    "instructions": { "__bigint__": "1260182" },
                     "method_name": "sub",
-                    "timestamp": { "__bigint__": "1730484644737645611" }
+                    "timestamp": { "__bigint__": "1731960368133461392" }
                 },
                 {
-                    "instructions": { "__bigint__": "1259344" },
+                    "instructions": { "__bigint__": "1259543" },
                     "method_name": "mul",
-                    "timestamp": { "__bigint__": "1730484646905998915" }
+                    "timestamp": { "__bigint__": "1731960370050086920" }
                 },
                 {
-                    "instructions": { "__bigint__": "1586795" },
+                    "instructions": { "__bigint__": "1587038" },
                     "method_name": "div",
-                    "timestamp": { "__bigint__": "1730484648818740336" }
+                    "timestamp": { "__bigint__": "1731960372257280435" }
                 },
                 {
-                    "instructions": { "__bigint__": "902205" },
+                    "instructions": { "__bigint__": "902316" },
                     "method_name": "clearall",
-                    "timestamp": { "__bigint__": "1730484650870892810" }
+                    "timestamp": { "__bigint__": "1731960374352399326" }
                 },
                 {
-                    "instructions": { "__bigint__": "1256317" },
+                    "instructions": { "__bigint__": "1256516" },
                     "method_name": "add",
-                    "timestamp": { "__bigint__": "1730484653045873107" }
+                    "timestamp": { "__bigint__": "1731960376290566514" }
                 }
             ]
         }

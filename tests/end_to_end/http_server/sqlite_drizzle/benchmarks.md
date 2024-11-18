@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                              |
-| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | postUpgrade         | 13_196_850_035 | 10_479_330_014 | $0.0139340507 | $13_934.05        | <font color="red">+9_348_863</font> |
-| 1   | http_request_update | 153_653_390    | 62_051_356     | $0.0000825078 | $82.50            | <font color="red">+144_010</font>   |
-| 2   | http_request_update | 81_064_554     | 33_015_821     | $0.0000439001 | $43.90            | <font color="red">+166_378</font>   |
-| 3   | http_request_update | 170_685_673    | 68_864_269     | $0.0000915668 | $91.56            | <font color="red">+94_325</font>    |
-| 4   | http_request_update | 77_716_254     | 31_676_501     | $0.0000421193 | $42.11            | <font color="red">+56_562</font>    |
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | postUpgrade         | 13_197_119_565 | 10_479_437_826 | $0.0139341941 | $13_934.19        | <font color="red">+9_618_393</font>   |
+| 1   | http_request_update | 180_963_953    | 72_975_581     | $0.0000970334 | $97.03            | <font color="red">+27_454_573</font>  |
+| 2   | http_request_update | 80_939_429     | 32_965_771     | $0.0000438336 | $43.83            | <font color="red">+41_253</font>      |
+| 3   | http_request_update | 169_563_336    | 68_415_334     | $0.0000909698 | $90.96            | <font color="green">-1_028_012</font> |
+| 4   | http_request_update | 77_622_580     | 31_639_032     | $0.0000420695 | $42.06            | <font color="green">-37_112</font>    |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
