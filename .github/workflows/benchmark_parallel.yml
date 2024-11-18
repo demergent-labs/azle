@@ -84,7 +84,7 @@ jobs:
             - name: Run npm test (continue on error)
               working-directory: ${{ matrix.test.path }}
               continue-on-error: true
-              run: AZLE_RECORD_BENCHMARKS=true npm test
+              run: AZLE_IDENTITY_STORAGE_MODE=plaintext AZLE_RECORD_BENCHMARKS=true npm test
 
             - name: Create branch name
               id: create-branch-name
