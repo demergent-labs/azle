@@ -17,7 +17,7 @@ export function getTests(): Test {
                 fc.asyncProperty(fc.string(), async (message) => {
                     await expect(
                         canister.alwaysRejectQuery(message)
-                    ).rejects.toThrow(escapeCandidString(message));
+                    ).rejects.toThrow(message);
                 }),
                 defaultPropTestParams()
             );
@@ -46,7 +46,7 @@ export function getTests(): Test {
                 fc.asyncProperty(fc.string(), async (message) => {
                     await expect(
                         canister.alwaysRejectUpdate(message)
-                    ).rejects.toThrow(escapeCandidString(message));
+                    ).rejects.toThrow(message);
                 }),
                 defaultPropTestParams()
             );
@@ -70,8 +70,4 @@ export function getTests(): Test {
             );
         });
     };
-}
-
-function escapeCandidString(data: string): string {
-    return data.replace(/[\\"]/g, '\\$&');
 }
