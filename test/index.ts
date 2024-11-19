@@ -4,6 +4,7 @@ dns.setDefaultResultOrder('ipv4first');
 import { ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { describe, expect, test } from '@jest/globals';
 import { spawn } from 'child_process';
+import * as fc from 'fast-check';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -197,10 +198,21 @@ export function it(
 it.only = test.only;
 it.skip = test.skip;
 
-export const defaultPropTestParams = {
-    numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
-    endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
-};
+export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
+    const baseParams = {
+        numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
+        endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
+    };
+
+    const seed =
+        process.env.AZLE_PROPTEST_SEED !== undefined
+            ? Number(process.env.AZLE_PROPTEST_SEED)
+            : undefined;
+
+    const path = process.env.AZLE_PROPTEST_PATH;
+
+    return seed !== undefined ? { ...baseParams, seed, path } : baseParams;
+}
 
 export async function getCanisterActor<T>(
     canisterName: string

@@ -17,6 +17,8 @@ import {
 } from 'azle/canisters/icp';
 
 export default class {
+    icpCanisterPrincipal = getIcpCanisterPrincipal();
+
     @update(
         [IDL.Text, IDL.Nat64, IDL.Nat64, IDL.Opt(IDL.Nat64)],
         TransferResult
@@ -31,7 +33,7 @@ export default class {
             createdAtTime.length === 0
                 ? []
                 : [{ timestamp_nanos: createdAtTime[0] }];
-        return await call(getIcpCanisterPrincipal(), 'transfer', {
+        return await call(this.icpCanisterPrincipal, 'transfer', {
             paramIdlTypes: [TransferArgs],
             returnIdlType: TransferResult,
             args: [
@@ -53,7 +55,7 @@ export default class {
 
     @update([IDL.Text], Tokens)
     async getAccountBalance(address: string): Promise<Tokens> {
-        return await call(getIcpCanisterPrincipal(), 'account_balance', {
+        return await call(this.icpCanisterPrincipal, 'account_balance', {
             paramIdlTypes: [AccountBalanceArgs],
             returnIdlType: Tokens,
             args: [
@@ -66,7 +68,7 @@ export default class {
 
     @update([], TransferFee)
     async getTransferFee(): Promise<TransferFee> {
-        return await call(getIcpCanisterPrincipal(), 'transfer_fee', {
+        return await call(this.icpCanisterPrincipal, 'transfer_fee', {
             paramIdlTypes: [TransferFeeArg],
             returnIdlType: TransferFee,
             args: [{}]
@@ -77,7 +79,7 @@ export default class {
     async getBlocks(
         getBlocksArgs: GetBlocksArgs
     ): Promise<QueryBlocksResponse> {
-        return await call(getIcpCanisterPrincipal(), 'query_blocks', {
+        return await call(this.icpCanisterPrincipal, 'query_blocks', {
             paramIdlTypes: [GetBlocksArgs],
             returnIdlType: QueryBlocksResponse,
             args: [getBlocksArgs]
@@ -86,7 +88,7 @@ export default class {
 
     @update([], IDL.Text)
     async getSymbol(): Promise<string> {
-        const symbolResult = await call(getIcpCanisterPrincipal(), 'symbol', {
+        const symbolResult = await call(this.icpCanisterPrincipal, 'symbol', {
             returnIdlType: SymbolResult
         });
 
@@ -95,7 +97,7 @@ export default class {
 
     @update([], IDL.Text)
     async getName(): Promise<string> {
-        const nameResult = await call(getIcpCanisterPrincipal(), 'name', {
+        const nameResult = await call(this.icpCanisterPrincipal, 'name', {
             returnIdlType: NameResult
         });
 
@@ -105,7 +107,7 @@ export default class {
     @update([], IDL.Nat32)
     async getDecimals(): Promise<number> {
         const decimalsResult = await call(
-            getIcpCanisterPrincipal(),
+            this.icpCanisterPrincipal,
             'decimals',
             { returnIdlType: DecimalsResult }
         );
@@ -115,7 +117,7 @@ export default class {
 
     @update([], Archives)
     async getArchives(): Promise<Archives> {
-        return await call(getIcpCanisterPrincipal(), 'archives', {
+        return await call(this.icpCanisterPrincipal, 'archives', {
             returnIdlType: Archives
         });
     }

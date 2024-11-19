@@ -12,7 +12,8 @@
     "type": "module",
     "bin": {
         "azle": "./src/build/index.ts",
-        "cuzz": "./node_modules/.bin/cuzz"
+        "cuzz": "./node_modules/.bin/cuzz",
+        "tsc": "./node_modules/.bin/tsc"
     },
     "main": "./src/lib/stable/index.ts",
     "repository": {
@@ -73,7 +74,8 @@
         "husky": "7.0.4",
         "jest": "^29.7.0",
         "lint-staged": "12.3.7",
-        "prettier": "^3.0.3"
+        "prettier": "^3.0.3",
+        "ts-jest": "^29.1.4"
     },
     "lint-staged": {
         "*.{js,ts}": "eslint --cache --fix",

@@ -2,7 +2,6 @@ export { acceptMessage } from './accept_message';
 export { argDataRaw } from './arg_data_raw';
 export { call } from './call';
 export { caller } from './caller';
-export { candidCompiler } from './candid_compiler';
 export { candidDecode } from './candid_decode';
 export { candidEncode } from './candid_encode';
 export { canisterBalance } from './canister_balance';
