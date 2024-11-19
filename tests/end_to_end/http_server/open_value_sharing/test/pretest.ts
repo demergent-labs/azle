@@ -5,7 +5,7 @@ function pretest(): void {
         stdio: 'inherit'
     });
 
-    execSync(`cp ../../../../.openvaluesharing.json node_modules/typescript`, {
+    execSync(`cp ../../../../.openvaluesharing.json node_modules/debug`, {
         stdio: 'inherit'
     });
 

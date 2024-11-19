@@ -292,7 +292,7 @@ function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): void {
     );
     expect(payment1).toStrictEqual(
         expect.objectContaining({
-            name: 'typescript',
+            name: 'debug',
             payment_mechanism: 'wallet_receive',
             amount: payment1CalculatedAmount,
             success: { Ok: null }
