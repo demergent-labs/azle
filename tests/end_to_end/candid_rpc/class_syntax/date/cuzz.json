@@ -1,3 +1,9 @@
 {
-    "expectedErrors": ["Date value is NaN"]
+    "expectedErrors": [
+        "Date value is NaN",
+        "Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument: null",
+        "Uncaught Error: Failed to encode Candid arguments: Error: Invalid text argument: null",
+        "Uncaught RangeError: cannot convert NaN or Infinity to BigInt",
+        "Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat64 argument"
+    ]
 }

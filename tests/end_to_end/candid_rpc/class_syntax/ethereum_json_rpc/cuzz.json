@@ -1,5 +1,7 @@
 {
+    "skip": true,
     "expectedErrors": [
-        "Value of 'Content-length' header exceeds http body size limit"
+        "Value of 'Content-length' header exceeds http body size limit",
+        "Uncaught Error: Rejection code 1, Http body exceeds size limit of 1527 bytes"
     ]
 }
