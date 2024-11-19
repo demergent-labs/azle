@@ -9,9 +9,11 @@ use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
 };
 
-use crate::{error::quickjs_call_with_error_handling, ic::throw_error, quickjs_with_ctx};
+use crate::{error::quickjs_call_with_error_handling, ic::throw_error};
 
 pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
+    let ctx_ptr = ctx.as_raw();
+
     Function::new(
         ctx.clone(),
         move |promise_id: String,
@@ -33,33 +35,30 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
             spawn(async move {
-                let _scope_guard = scopeguard::guard((), |_| {
-                    let result = quickjs_with_ctx(|ctx| {
-                        let reject_id = format!("_reject_{}", promise_id);
-                        let resolve_id = format!("_resolve_{}", promise_id);
+                let ctx = unsafe { Ctx::from_raw(ctx_ptr) };
 
-                        let reject_ids = ctx.globals().get::<_, Object>("_azleRejectIds").unwrap();
-                        let resolve_ids =
-                            ctx.globals().get::<_, Object>("_azleResolveIds").unwrap();
+                // My understanding of how this works
+                // scopeguard will execute its closure at the end of the scope
+                // After a successful or unsuccessful cross-canister call (await point)
+                // the closure will run, cleaning up the global promise callbacks
+                // Even during a trap, the IC will ensure that the closure runs in its own call
+                // thus allowing us to recover from a trap and persist that state
+                let _cleanup = scopeguard::guard((), |_| {
+                    let reject_id = format!("_reject_{}", &promise_id);
+                    let resolve_id = format!("_resolve_{}", &promise_id);
 
-                        reject_ids.remove(&reject_id).unwrap();
-                        resolve_ids.remove(&resolve_id).unwrap();
+                    let globals = ctx.clone().globals();
 
-                        Ok(())
-                    });
+                    let reject_ids = globals.get::<_, Object>("_azleRejectIds").unwrap();
+                    let resolve_ids = globals.get::<_, Object>("_azleResolveIds").unwrap();
 
-                    if let Err(e) = result {
-                        trap(&format!("Azle PromiseCleanupError: {e}"));
-                    }
+                    reject_ids.remove(&reject_id).unwrap();
+                    resolve_ids.remove(&resolve_id).unwrap();
                 });
 
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
-                let result = quickjs_with_ctx(|ctx| {
-                    resolve_or_reject(ctx.clone(), &call_result, &promise_id)?;
-
-                    Ok(())
-                });
+                let result = resolve_or_reject(ctx.clone(), &call_result, &promise_id);
 
                 if let Err(e) = result {
                     trap(&format!("Azle CallRawError: {e}"));
