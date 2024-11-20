@@ -5,7 +5,7 @@ on:
             prefix:
                 required: true
                 type: string
-                description: 'Prefix to use for branch names (e.g. benchmark, update)'
+                description: 'Prefix to use for branch names (e.g. benchmark, release)'
             version:
                 required: true
                 type: string

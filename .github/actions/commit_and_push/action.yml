@@ -5,7 +5,7 @@ inputs:
         description: 'Name of the branch to push to'
         required: true
     create-branch:
-        description: 'Whether to create a new branch'
+        description: 'Whether to create the branch specified by branch-name'
         required: false
         default: 'false'
     commit-message:

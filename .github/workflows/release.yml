@@ -4,18 +4,18 @@ on:
         inputs:
             release-version:
                 required: true
-            exclude-slow-benchmarks:
-                description: 'Exclude slow benchmarks'
+            exclude-slow-tests:
+                description: 'Exclude slow tests'
                 required: true
                 type: boolean
                 default: false
-            exclude-unstable-benchmarks:
-                description: 'Exclude unstable benchmarks'
+            exclude-unstable-tests:
+                description: 'Exclude unstable tests'
                 required: true
                 type: boolean
                 default: false
-            exclude-release-only-benchmarks:
-                description: 'Exclude release benchmarks'
+            exclude-release-only-tests:
+                description: 'Exclude release tests'
                 required: true
                 type: boolean
                 default: false
@@ -32,9 +32,9 @@ jobs:
             - id: get-exclude-dirs
               uses: ./.github/actions/get_exclude_dirs
               with:
-                  exclude-slow: ${{ github.event.inputs.exclude-slow-benchmarks }}
-                  exclude-unstable: ${{ github.event.inputs.exclude-unstable-benchmarks }}
-                  exclude-release-only: ${{ github.event.inputs.exclude-release-only-benchmarks }}
+                  exclude-slow: ${{ github.event.inputs.exclude-slow-tests }}
+                  exclude-unstable: ${{ github.event.inputs.exclude-unstable-tests }}
+                  exclude-release-only: ${{ github.event.inputs.exclude-release-only-tests }}
 
     create-branch-prefix:
         uses: ./.github/workflows/create_branch_prefix.yml
