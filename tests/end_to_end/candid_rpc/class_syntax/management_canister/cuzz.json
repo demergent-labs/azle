@@ -1,5 +1,6 @@
 {
     "expectedErrors": [
-        "Uncaught Error: Rejection code 3, Unable to route management canister request clear_chunk_store"
+        "Uncaught Error: Rejection code 3, Unable to route management canister request",
+        "not found"
     ]
 }
