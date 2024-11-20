@@ -45,9 +45,6 @@ jobs:
         needs: prepare-benchmark
         name: Run benchmarks for ${{ matrix.test.name }}
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                shell: bash
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

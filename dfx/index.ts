@@ -137,9 +137,6 @@ function determineStorageMode(): StorageMode | undefined {
             `AZLE_IDENTITY_STORAGE_MODE must be 'plaintext', 'keyring', 'password-protected'`
         );
     }
-    console.info(
-        `>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Using ${mode} storage mode`
-    );
     return mode;
 }
 
