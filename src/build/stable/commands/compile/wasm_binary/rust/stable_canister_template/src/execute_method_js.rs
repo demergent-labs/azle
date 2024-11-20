@@ -4,7 +4,7 @@ use ic_cdk::{
     api::{call::arg_data_raw, performance_counter},
     trap,
 };
-use rquickjs::{Function, Object};
+use rquickjs::{Function, Object, TypedArray};
 
 use crate::{
     benchmarking::record_benchmark, error::quickjs_call_with_error_handling, quickjs_with_ctx,
@@ -45,7 +45,9 @@ fn execute_method_js_with_result(
             vec![]
         };
 
-        quickjs_call_with_error_handling(ctx.clone(), method_callback, (candid_args,))?;
+        let candid_args_uint8_array = TypedArray::<u8>::new(ctx.clone(), candid_args)?;
+
+        quickjs_call_with_error_handling(ctx.clone(), method_callback, (candid_args_uint8_array,))?;
 
         Ok(())
     })?;
