@@ -7,8 +7,5 @@
     },
     "dependencies": {
         "azle": "0.24.1"
-    },
-    "devDependencies": {
-        "@dfinity/identity": "^0.19.2"
     }
 }
