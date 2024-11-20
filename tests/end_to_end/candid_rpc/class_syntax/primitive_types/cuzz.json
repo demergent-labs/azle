@@ -1,0 +1,6 @@
+{
+    "expectedErrors": [
+        "Uncaught: Anything you want",
+        "Error: Invalid empty argument: undefined"
+    ]
+}

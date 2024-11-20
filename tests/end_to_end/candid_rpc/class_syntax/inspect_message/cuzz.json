@@ -1,3 +1,6 @@
 {
-    "expectedErrors": ["Method \\\"alsoInaccessible\\\" not allowed"]
+    "expectedErrors": [
+        "Method \\\"alsoInaccessible\\\" not allowed",
+        "Method: inaccessible (update)"
+    ]
 }
