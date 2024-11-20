@@ -2,8 +2,12 @@ name: Commit and Push Changes
 description: 'Configures git, commits changes, and pushes to a new branch'
 inputs:
     branch-name:
-        description: 'Name of the branch to create'
+        description: 'Name of the branch to push to'
         required: true
+    create-branch:
+        description: 'Whether to create the branch specified by branch-name'
+        required: false
+        default: 'false'
     commit-message:
         description: 'Commit message'
         required: true
@@ -20,8 +24,12 @@ runs:
         - name: Commit and push changes
           shell: bash
           run: |
-              # Create and switch to new branch
-              git switch -c "${{ inputs.branch-name }}"
+              # Create new branch if requested
+              if [ "${{ inputs.create-branch }}" = "true" ]; then
+                  git switch -c "${{ inputs.branch-name }}"
+              else
+                  git switch "${{ inputs.branch-name }}"
+              fi
 
               # Show status of working directory
               echo "Current git status:"
