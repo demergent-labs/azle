@@ -20,7 +20,9 @@ export function getTests(): Test {
             const agent: any = await createAuthenticatedAgent(whoami());
             const agentPrincipalText = (await agent.getPrincipal()).toText();
 
-            const actor = await getCanisterActor<Actor>('canister', agent);
+            const actor = await getCanisterActor<Actor>('canister', {
+                agent
+            });
 
             const initCaller = await actor.getInitCaller();
 
@@ -37,7 +39,9 @@ export function getTests(): Test {
             const agent: any = await createAuthenticatedAgent(whoami());
             const agentPrincipalText = (await agent.getPrincipal()).toText();
 
-            const actor = await getCanisterActor<Actor>('canister', agent);
+            const actor = await getCanisterActor<Actor>('canister', {
+                agent
+            });
 
             const preUpgradeCaller = await actor.getPreUpgradeCaller();
 
@@ -48,7 +52,9 @@ export function getTests(): Test {
             const agent: any = await createAuthenticatedAgent(whoami());
             const agentPrincipalText = (await agent.getPrincipal()).toText();
 
-            const actor = await getCanisterActor<Actor>('canister', agent);
+            const actor = await getCanisterActor<Actor>('canister', {
+                agent
+            });
 
             const postUpgradeCaller = await actor.getPostUpgradeCaller();
 
@@ -80,8 +86,9 @@ export function getTests(): Test {
 
                         const actor = await getCanisterActor<Actor>(
                             'canister',
-                            undefined,
-                            identity
+                            {
+                                identity
+                            }
                         );
 
                         await actor.setInspectMessageCaller();
@@ -109,8 +116,9 @@ export function getTests(): Test {
 
                         const actor = await getCanisterActor<Actor>(
                             'canister',
-                            undefined,
-                            identity
+                            {
+                                identity
+                            }
                         );
 
                         const queryCaller = await actor.getQueryCaller();

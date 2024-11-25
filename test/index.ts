@@ -122,26 +122,28 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
     return seed !== undefined ? { ...baseParams, seed, path } : baseParams;
 }
 
+type GetCanisterActorOptions = {
+    identity?: Identity;
+    agent?: HttpAgent;
+};
+
 export async function getCanisterActor<T>(
     canisterName: string,
-    agent?: HttpAgent,
-    identity?: Identity
+    options: GetCanisterActorOptions = {}
 ): Promise<ActorSubclass<T>> {
     const { createActor } = await import(
         join(process.cwd(), 'test', 'dfx_generated', canisterName)
     );
 
-    if (agent === undefined) {
-        const agent = new HttpAgent({
+    const agent =
+        options.agent ??
+        new HttpAgent({
             host: 'http://127.0.0.1:8000',
-            identity
+            identity: options.identity
         });
 
+    if (options.agent === undefined) {
         await agent.fetchRootKey();
-
-        return createActor(getCanisterId(canisterName), {
-            agent
-        });
     }
 
     return createActor(getCanisterId(canisterName), {
