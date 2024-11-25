@@ -37,3 +37,5 @@ export const createActor = (canisterId, options = {}) => {
         ...options.actorOptions
     });
 };
+
+export const superheroes = canisterId ? createActor(canisterId) : undefined;

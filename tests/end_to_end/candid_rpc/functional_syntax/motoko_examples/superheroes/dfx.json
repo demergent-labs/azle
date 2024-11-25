@@ -5,7 +5,7 @@
             "main": "src/superheroes/index.ts",
             "declarations": {
                 "output": "src/declarations",
-                "node_compatibility": true
+                "node_compatibility": false
             },
             "custom": {
                 "experimental": true
