@@ -1,11 +1,18 @@
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
-import { createAuthenticatedAgent, getCanisterId, whoami } from 'azle/dfx';
-import { defaultPropTestParams, expect, it, please, Test } from 'azle/test';
+import { createAuthenticatedAgent, whoami } from 'azle/dfx';
+import {
+    defaultPropTestParams,
+    expect,
+    getCanisterActor,
+    it,
+    please,
+    Test
+} from 'azle/test';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
-import { createActor } from './dfx_generated/canister';
+import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
@@ -13,9 +20,7 @@ export function getTests(): Test {
             const agent: any = await createAuthenticatedAgent(whoami());
             const agentPrincipalText = (await agent.getPrincipal()).toText();
 
-            const actor = createActor(getCanisterId('canister'), {
-                agent
-            });
+            const actor = await getCanisterActor<Actor>('canister', agent);
 
             const initCaller = await actor.getInitCaller();
 
@@ -32,9 +37,7 @@ export function getTests(): Test {
             const agent: any = await createAuthenticatedAgent(whoami());
             const agentPrincipalText = (await agent.getPrincipal()).toText();
 
-            const actor = createActor(getCanisterId('canister'), {
-                agent
-            });
+            const actor = await getCanisterActor<Actor>('canister', agent);
 
             const preUpgradeCaller = await actor.getPreUpgradeCaller();
 
@@ -45,9 +48,7 @@ export function getTests(): Test {
             const agent: any = await createAuthenticatedAgent(whoami());
             const agentPrincipalText = (await agent.getPrincipal()).toText();
 
-            const actor = createActor(getCanisterId('canister'), {
-                agent
-            });
+            const actor = await getCanisterActor<Actor>('canister', agent);
 
             const postUpgradeCaller = await actor.getPostUpgradeCaller();
 
@@ -55,11 +56,7 @@ export function getTests(): Test {
         });
 
         it('should return the anonymous principal', async () => {
-            const actor = createActor(getCanisterId('canister'), {
-                agentOptions: {
-                    host: 'http://127.0.0.1:8000'
-                }
-            });
+            const actor = await getCanisterActor<Actor>('canister');
 
             const queryCaller = await actor.getQueryCaller();
             const updateCaller = await actor.getUpdateCaller();
@@ -81,12 +78,11 @@ export function getTests(): Test {
                             .getPrincipal()
                             .toText();
 
-                        const actor = createActor(getCanisterId('canister'), {
-                            agentOptions: {
-                                host: 'http://127.0.0.1:8000',
-                                identity
-                            }
-                        });
+                        const actor = await getCanisterActor<Actor>(
+                            'canister',
+                            undefined,
+                            identity
+                        );
 
                         await actor.setInspectMessageCaller();
                         const inspectMessageCaller =
@@ -111,12 +107,11 @@ export function getTests(): Test {
                             .getPrincipal()
                             .toText();
 
-                        const actor = createActor(getCanisterId('canister'), {
-                            agentOptions: {
-                                host: 'http://127.0.0.1:8000',
-                                identity
-                            }
-                        });
+                        const actor = await getCanisterActor<Actor>(
+                            'canister',
+                            undefined,
+                            identity
+                        );
 
                         const queryCaller = await actor.getQueryCaller();
                         const updateCaller = await actor.getUpdateCaller();

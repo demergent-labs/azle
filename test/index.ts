@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { ActorSubclass, HttpAgent } from '@dfinity/agent';
+import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
 import { describe, expect, test } from '@jest/globals';
 import * as fc from 'fast-check';
 import { join } from 'path';
@@ -123,23 +123,30 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
 }
 
 export async function getCanisterActor<T>(
-    canisterName: string
+    canisterName: string,
+    agent?: HttpAgent,
+    identity?: Identity
 ): Promise<ActorSubclass<T>> {
     const { createActor } = await import(
         join(process.cwd(), 'test', 'dfx_generated', canisterName)
     );
 
-    const agent = new HttpAgent({
-        host: 'http://127.0.0.1:8000'
-    });
+    if (agent === undefined) {
+        const agent = new HttpAgent({
+            host: 'http://127.0.0.1:8000',
+            identity
+        });
 
-    await agent.fetchRootKey();
+        await agent.fetchRootKey();
 
-    const actor = createActor(getCanisterId(canisterName), {
+        return createActor(getCanisterId(canisterName), {
+            agent
+        });
+    }
+
+    return createActor(getCanisterId(canisterName), {
         agent
     });
-
-    return actor;
 }
 
 function processEnvVars(): {
