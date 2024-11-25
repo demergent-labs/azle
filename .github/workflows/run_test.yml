@@ -17,6 +17,14 @@ on:
                 required: false
                 type: boolean
                 default: false
+            call-delay:
+                required: false
+                type: number
+                default: .1
+            timeout:
+                required: false
+                type: number
+                default: 300
 
 jobs:
     run-test:
@@ -138,7 +146,15 @@ jobs:
               shell: bash -l {0}
 
             - name: Run tests
-              run: npm test
+              run: |
+                  timeout ${{ inputs.timeout }}m npm test
+                  exit_code=$?
+                  if [ $exit_code -eq 124 ] || [ $exit_code -eq 142 ]; then
+                      # Exit code 124 is for timeout, 142 is for SIGALRM
+                      exit 0
+                  else
+                      exit $exit_code
+                  fi
               shell: bash -l {0}
               working-directory: ${{ matrix.test.path }}
               env:
@@ -146,3 +162,4 @@ jobs:
                   AZLE_PROPTEST_VERBOSE: true
                   AZLE_EXPERIMENTAL: ${{ inputs.run_experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
+                  AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}

@@ -1,0 +1,35 @@
+name: Fuzz
+
+on:
+    workflow_dispatch:
+        inputs:
+            call-delay:
+                description: 'Length of time (in seconds) to wait between canister method fuzz test calls'
+                required: false
+                type: number
+                default: .1
+            timeout:
+                description: 'Length of time (in minutes) after which the fuzz tests will automatically succeed'
+                required: false
+                type: number
+                default: '300'
+
+jobs:
+    run-tests:
+        name: ${{ matrix.test_group.name }}
+        strategy:
+            fail-fast: false
+            matrix:
+                test_group:
+                    - {
+                          name: 'E2E Class',
+                          directories: './tests/end_to_end/candid_rpc/class_syntax'
+                      }
+                    - {
+                          name: 'Property IC API',
+                          directories: './tests/property/ic_api'
+                      }
+        uses: ./.github/workflows/get_and_run_tests.yml
+        with:
+            directories: ${{ matrix.test_group.directories }}
+            fuzz: true
