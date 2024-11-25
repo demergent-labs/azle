@@ -12,7 +12,7 @@ on:
                 description: 'Length of time (in minutes) after which the fuzz tests will automatically succeed'
                 required: false
                 type: number
-                default: '300'
+                default: 300
 
 jobs:
     run-tests:
@@ -33,3 +33,5 @@ jobs:
         with:
             directories: ${{ matrix.test_group.directories }}
             fuzz: true
+            call-delay: ${{ inputs.call-delay }}
+            timeout: ${{ inputs.timeout }}
