@@ -1,0 +1,53 @@
+name: Fuzz
+
+on:
+    workflow_dispatch:
+        inputs:
+            call-delay:
+                description: 'Length of time (in seconds) to wait between canister fuzz test calls'
+                required: true
+                type: string # TODO can this be a number type?
+                default: '.1'
+            timeout:
+                description: 'Length of time (in minutes) after the which the fuzz tests will automatically succeed'
+                required: true
+                type: string # TODO can this be a number type?
+                default: '300'
+
+jobs:
+    run-tests:
+        name: ${{ matrix.test_group.name }}
+        needs:
+            - get-exclude-dirs
+        strategy:
+            fail-fast: false
+            matrix:
+                test_group:
+                    - {
+                          name: 'E2E Class',
+                          directories: './tests/end_to_end/candid_rpc/class_syntax'
+                      }
+                    - {
+                          name: 'Property IC API',
+                          directories: './tests/property/ic_api'
+                      }
+        uses: ./.github/workflows/get_and_run_tests.yml
+        with:
+            directories: ${{ matrix.test_group.directories }}
+            fuzz: true
+
+    check-test-success:
+        name: Check Azle tests succeeded
+        needs: run-tests
+        runs-on: ubuntu-latest
+        if: success()
+        steps:
+            - run: exit 0
+
+    check-test-failure:
+        name: Check Azle tests didn't fail
+        needs: run-tests
+        runs-on: ubuntu-latest
+        if: failure()
+        steps:
+            - run: exit 1
