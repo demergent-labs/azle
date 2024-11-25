@@ -4,12 +4,12 @@ on:
     workflow_dispatch:
         inputs:
             call-delay:
-                description: 'Length of time (in seconds) to wait between canister fuzz test calls'
+                description: 'Length of time (in seconds) to wait between canister method fuzz test calls'
                 required: false
                 type: number
                 default: .1
             timeout:
-                description: 'Length of time (in minutes) after the which the fuzz tests will automatically succeed'
+                description: 'Length of time (in minutes) after which the fuzz tests will automatically succeed'
                 required: false
                 type: number
                 default: '300'
@@ -33,19 +33,3 @@ jobs:
         with:
             directories: ${{ matrix.test_group.directories }}
             fuzz: true
-
-    check-test-success:
-        name: Check Azle tests succeeded
-        needs: run-tests
-        runs-on: ubuntu-latest
-        if: success()
-        steps:
-            - run: exit 0
-
-    check-test-failure:
-        name: Check Azle tests didn't fail
-        needs: run-tests
-        runs-on: ubuntu-latest
-        if: failure()
-        steps:
-            - run: exit 1
