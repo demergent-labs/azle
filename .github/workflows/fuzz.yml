@@ -17,8 +17,6 @@ on:
 jobs:
     run-tests:
         name: ${{ matrix.test_group.name }}
-        needs:
-            - get-exclude-dirs
         strategy:
             fail-fast: false
             matrix:
