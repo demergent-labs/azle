@@ -18,6 +18,14 @@ on:
                 required: false
                 type: boolean
                 default: false
+            call-delay:
+                required: false
+                type: number
+                default: .1
+            timeout:
+                required: false
+                type: number
+                default: 300
 
 jobs:
     prepare-test-environment:
@@ -53,3 +61,5 @@ jobs:
             include_npm: ${{ needs.prepare-test-environment.outputs.include_npm == 'true' }}
             run_experimental: ${{ inputs.run_experimental }}
             fuzz: ${{ inputs.fuzz }}
+            call-delay: ${{ inputs.call-delay }}
+            timeout: ${{ inputs.timeout }}
