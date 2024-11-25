@@ -19,12 +19,12 @@ on:
                 default: false
             call-delay:
                 required: false
-                type: string # TODO can this be a number type?
-                default: '.1'
+                type: number
+                default: .1
             timeout:
                 required: false
-                type: string # TODO can this be a number type?
-                default: '300'
+                type: number
+                default: 300
 
 jobs:
     run-test:
