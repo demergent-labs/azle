@@ -17,6 +17,14 @@ on:
                 required: false
                 type: boolean
                 default: false
+            call-delay:
+                required: false
+                type: string # TODO can this be a number type?
+                default: '.1'
+            timeout:
+                required: false
+                type: string # TODO can this be a number type?
+                default: '300'
 
 jobs:
     run-test:
@@ -139,7 +147,7 @@ jobs:
 
             - name: Run tests
               run: |
-                  timeout 30m npm test
+                  timeout ${{ inputs.timeout }}m npm test
                   exit_code=$?
                   if [ $exit_code -eq 124 ] || [ $exit_code -eq 142 ]; then
                       # Exit code 124 is for timeout, 142 is for SIGALRM
@@ -154,3 +162,4 @@ jobs:
                   AZLE_PROPTEST_VERBOSE: true
                   AZLE_EXPERIMENTAL: ${{ inputs.run_experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
+                  AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}

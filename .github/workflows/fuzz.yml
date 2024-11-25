@@ -5,12 +5,12 @@ on:
         inputs:
             call-delay:
                 description: 'Length of time (in seconds) to wait between canister fuzz test calls'
-                required: true
+                required: false
                 type: string # TODO can this be a number type?
                 default: '.1'
             timeout:
                 description: 'Length of time (in minutes) after the which the fuzz tests will automatically succeed'
-                required: true
+                required: false
                 type: string # TODO can this be a number type?
                 default: '300'
 
