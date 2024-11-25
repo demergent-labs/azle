@@ -64,10 +64,7 @@ export function runTests(
         });
     }
 
-    // TODO we should work on what the UI looks like if there are multiple of these things running
-    if (shouldFuzz && canisterNames !== undefined) {
-        // TODO right now we just test the first canister...that might be good enough for now?
-        // TODO because I feel that the first canister will generally call the other canisters
+    if (shouldFuzz === true) {
         describe(`fuzz`, () => {
             it('runs fuzz tests for all canisters', () => {
                 // execSyncPretty(`cuzz`, 'inherit');
