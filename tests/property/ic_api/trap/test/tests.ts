@@ -50,13 +50,13 @@ export function getTests(): Test {
                     }),
                     async (message) => {
                         const expectedErrorMessage = new RegExp(
-                            `Call was rejected:\\s*Request ID: [a-f0-9]{64}\\s*Reject code: 5\\s*Reject text: Error from Canister ${canisterId}: Canister called \`ic0.trap\` with message: `
+                            `Call failed:\\s*Canister: ${canisterId}\\s*Method: updateTrap \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0503"\\s*"Reject code": "5"\\s*"Reject message": "Error from Canister ${canisterId}: Canister called \`ic0.trap\` with message: `
                         );
                         await expect(actor.updateTrap(message)).rejects.toThrow(
                             expectedErrorMessage
                         );
                         await expect(actor.updateTrap(message)).rejects.toThrow(
-                            message
+                            message.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
                         );
                     }
                 ),
