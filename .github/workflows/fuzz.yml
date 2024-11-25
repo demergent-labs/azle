@@ -6,13 +6,13 @@ on:
             call-delay:
                 description: 'Length of time (in seconds) to wait between canister method fuzz test calls'
                 required: false
-                type: number
-                default: .1
+                type: string
+                default: '.1'
             timeout:
                 description: 'Length of time (in minutes) after which the fuzz tests will automatically succeed'
                 required: false
-                type: number
-                default: 300
+                type: string
+                default: '300'
 
 jobs:
     run-tests:

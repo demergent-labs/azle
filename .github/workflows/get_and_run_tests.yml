@@ -20,12 +20,12 @@ on:
                 default: false
             call-delay:
                 required: false
-                type: number
-                default: .1
+                type: string
+                default: '.1'
             timeout:
                 required: false
-                type: number
-                default: 300
+                type: string
+                default: '300'
 
 jobs:
     prepare-test-environment:
