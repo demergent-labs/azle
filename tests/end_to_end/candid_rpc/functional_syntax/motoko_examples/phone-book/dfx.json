@@ -2,7 +2,7 @@
     "canisters": {
         "phone_book": {
             "type": "azle",
-            "main": "src/phone_book/index.ts",
+            "main": "src/index.ts",
             "declarations": {
                 "output": "src/declarations/phone_book",
                 "node_compatibility": false
@@ -10,13 +10,6 @@
             "custom": {
                 "experimental": true
             }
-        },
-        "www": {
-            "type": "assets",
-            "frontend": {
-                "entrypoint": "src/www/public/index.html"
-            },
-            "source": ["src/www/assets", "dist/www/"]
         }
     }
 }
