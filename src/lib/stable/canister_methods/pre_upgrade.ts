@@ -18,7 +18,7 @@ export function preUpgrade<This, Args extends any[], Return>(
         try {
             await executeAndReplyWithCandidSerde(
                 'preUpgrade',
-                [],
+                new Uint8Array(),
                 originalMethod.bind(globalThis._azleCanisterClassInstance),
                 [],
                 undefined,
