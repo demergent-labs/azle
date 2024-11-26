@@ -107,6 +107,8 @@ async function setupCanister(
     return await getCanisterActor<Actor>('canister', uuid);
 }
 
+// Each iteration of the canister needs a unique import path to avoid caching.
+// Note: Query parameter cache busting is preferred but doesn't work with Jest.
 export async function getCanisterActor<T>(
     canisterName: string,
     uuid: string = ''
@@ -124,7 +126,9 @@ export async function getCanisterActor<T>(
         host: 'http://127.0.0.1:8000'
     });
 
-    await agent.fetchRootKey();
+    if (process.env.DFX_NETWORK !== 'ic') {
+        await agent.fetchRootKey();
+    }
 
     const actor = createActor(getCanisterId(canisterName), {
         agent
