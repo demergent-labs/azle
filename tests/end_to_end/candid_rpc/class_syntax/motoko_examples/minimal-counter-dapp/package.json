@@ -8,23 +8,12 @@
         "JavaScript"
     ],
     "scripts": {
-        "build": "webpack",
-        "prebuild": "npm run generate",
-        "start": "webpack serve --mode development --env development",
-        "prestart": "npm run generate",
-        "generate": "dfx generate minimal_dapp",
         "pretest": "tsx test/pretest.ts",
         "test": "jest"
     },
     "dependencies": {
         "azle": "0.24.1"
     },
-    "browserslist": [
-        "last 2 chrome version",
-        "last 2 firefox version",
-        "last 2 safari version",
-        "last 2 edge version"
-    ],
     "devDependencies": {
         "minimal-counter-dapp_end_to_end_test_functional_syntax": "file:../../../functional_syntax/motoko_examples/minimal-counter-dapp"
     }
