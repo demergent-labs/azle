@@ -5,7 +5,7 @@
             "main": "src/index.ts",
             "declarations": {
                 "output": "src/declarations/phone_book",
-                "node_compatibility": false
+                "node_compatibility": true
             },
             "custom": {
                 "experimental": true

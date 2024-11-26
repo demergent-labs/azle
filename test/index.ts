@@ -142,7 +142,7 @@ export async function getCanisterActor<T>(
             identity: options.identity
         });
 
-    if (options.agent === undefined) {
+    if (process.env.DFX_NETWORK !== 'ic') {
         await agent.fetchRootKey();
     }
 
