@@ -109,6 +109,7 @@ async function setupCanister(
 
 // Each iteration of the canister needs a unique import path to avoid caching.
 // Note: Query parameter cache busting is preferred but doesn't work with Jest.
+// TODO Once we can do cache busting we should remove this function and use getCanisterActor from azle/test.
 export async function getCanisterActor<T>(
     canisterName: string,
     uuid: string = ''
