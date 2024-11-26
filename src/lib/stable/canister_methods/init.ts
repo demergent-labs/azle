@@ -24,12 +24,12 @@ export function init<This, Args extends any[], Return>(
         );
 
         globalThis._azleCallbacks[indexString] = async (
-            arg: Uint8Array
+            args: Uint8Array
         ): Promise<void> => {
             try {
                 await executeAndReplyWithCandidSerde(
                     'init',
-                    arg,
+                    args,
                     originalMethod.bind(globalThis._azleCanisterClassInstance),
                     paramIdlTypes,
                     undefined,

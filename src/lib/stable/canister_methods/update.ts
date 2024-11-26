@@ -25,12 +25,12 @@ export function update<This, Args extends any[], Return>(
         );
 
         globalThis._azleCallbacks[indexString] = async (
-            arg: Uint8Array
+            args: Uint8Array
         ): Promise<void> => {
             try {
                 await executeAndReplyWithCandidSerde(
                     'update',
-                    arg,
+                    args,
                     originalMethod.bind(globalThis._azleCanisterClassInstance),
                     paramIdlTypes,
                     returnIdlType,
