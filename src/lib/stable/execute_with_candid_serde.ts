@@ -13,7 +13,7 @@ type CanisterMethodMode =
 
 export async function executeAndReplyWithCandidSerde(
     mode: CanisterMethodMode,
-    args: any[],
+    args: Uint8Array,
     callback: (...args: any) => any,
     paramIdlTypes: IDL.Type[],
     returnIdlType: IDL.Type | undefined,
@@ -26,7 +26,7 @@ export async function executeAndReplyWithCandidSerde(
 
 function decodeArgs(
     mode: CanisterMethodMode,
-    args: any[],
+    args: Uint8Array,
     paramIdlTypes: IDL.Type[]
 ): JsonValue[] {
     if (
@@ -35,7 +35,7 @@ function decodeArgs(
         mode === 'query' ||
         mode === 'update'
     ) {
-        return idlDecode(paramIdlTypes, args[0]);
+        return idlDecode(paramIdlTypes, args);
     } else {
         return [];
     }
@@ -78,7 +78,7 @@ export function idlEncode(
 
 export function idlDecode(
     retTypes: IDL.Type[],
-    bytes: ArrayBuffer
+    bytes: Uint8Array
 ): JsonValue[] {
     try {
         return IDL.decode(retTypes, bytes);

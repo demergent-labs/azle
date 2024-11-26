@@ -42,7 +42,9 @@ export async function call<Args extends any[] | undefined, Return = any>(
             } else {
                 const idlType =
                     returnTypeIdl === undefined ? [] : [returnTypeIdl];
-                resolve(idlDecode(idlType, result)[0] as Return);
+                resolve(
+                    idlDecode(idlType, new Uint8Array(result))[0] as Return
+                );
             }
 
             delete globalThis._azleResolveIds[globalResolveId];

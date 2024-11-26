@@ -19,7 +19,7 @@ export function inspectMessage<This, Args extends any[], Return>(
         try {
             await executeAndReplyWithCandidSerde(
                 'inspectMessage',
-                [],
+                new Uint8Array(),
                 originalMethod.bind(globalThis._azleCanisterClassInstance),
                 [],
                 undefined,

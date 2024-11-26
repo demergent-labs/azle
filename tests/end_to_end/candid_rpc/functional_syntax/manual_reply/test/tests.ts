@@ -1,4 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
+import { getCanisterId } from 'azle/dfx';
 import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
@@ -8,8 +9,9 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('manualUpdate when calling ic.reject', async () => {
             const rejectionMessage = 'reject';
+            const canisterId = getCanisterId('manual_reply');
             const expectedErrorMessage = new RegExp(
-                `Call was rejected:\\s*Request ID: [a-f0-9]{64}\\s*Reject code: 4\\s*Reject text: ${rejectionMessage}`
+                `Call failed:\\s*Canister: ${canisterId}\\s*Method: manualUpdate \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0406"\\s*"Reject code": "4"\\s*"Reject message": "${rejectionMessage}`
             );
             await expect(
                 manualReplyCanister.manualUpdate(rejectionMessage)
