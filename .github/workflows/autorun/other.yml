@@ -1,0 +1,25 @@
+name: Other
+
+on:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+    workflow_dispatch:
+        inputs:
+            other:
+                description: 'Run other stuff'
+                required: true
+                type: boolean
+                default: false
+
+jobs:
+    do-other-stuff:
+        name: Do other stuff
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - run: echo "Hello, world!"
