@@ -40,7 +40,7 @@ jobs:
               with:
                   exclude-slow: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
                   exclude-unstable: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
-                  exclude-release-only: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
+                  exclude-release-only: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push == 'true' }}
 
     run-tests:
         name: ${{ matrix.test_group.name }}
