@@ -1,4 +1,0 @@
-service: () -> {
-    insert: (text, record {desc:text; phone:text}) -> ();
-    lookup: (text) -> (opt record {desc:text; phone:text}) query;
-}

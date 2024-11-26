@@ -18,7 +18,7 @@ export function heartbeat<This, Args extends any[], Return>(
         try {
             await executeAndReplyWithCandidSerde(
                 'heartbeat',
-                [],
+                new Uint8Array(),
                 originalMethod.bind(globalThis._azleCanisterClassInstance),
                 [],
                 undefined,
