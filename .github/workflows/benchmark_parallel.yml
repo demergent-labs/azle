@@ -58,6 +58,10 @@ jobs:
                   ref: ${{ inputs.base-branch }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
 
+            - name: Report full path of test
+              # Just in case the path isn't obvious from the name, this will remove ambiguity
+              run: echo ${{matrix.test.path}}
+
             - uses: ./.github/actions/setup_node
 
             - uses: ./.github/actions/setup_dfx
@@ -77,7 +81,7 @@ jobs:
             - name: Run npm test (continue on error)
               working-directory: ${{ matrix.test.path }}
               continue-on-error: true
-              run: AZLE_RECORD_BENCHMARKS=true npm test
+              run: AZLE_IDENTITY_STORAGE_MODE=plaintext AZLE_RECORD_BENCHMARKS=true npm test
 
             - name: Create branch name
               id: create-branch-name
@@ -91,3 +95,4 @@ jobs:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
                   gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+                  create-branch: 'true'

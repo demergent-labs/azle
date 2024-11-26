@@ -17,10 +17,18 @@ on:
                 required: false
                 type: boolean
                 default: false
+            call-delay:
+                required: false
+                type: number
+                default: .1
+            timeout:
+                required: false
+                type: number
+                default: 300
 
 jobs:
     run-test:
-        name: '${{matrix.tests.name}} | ${{matrix.tests.displayPath}} | ${{matrix.azle_source}}'
+        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}}'
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
@@ -39,7 +47,7 @@ jobs:
                 os: [ubuntu-latest]
                 azle_source:
                     - ${{ inputs.include_npm == true && 'npm' || 'repo' }}
-                tests: ${{ fromJSON(inputs.test_infos) }}
+                test: ${{ fromJSON(inputs.test_infos) }}
         steps:
             - uses: actions/checkout@v4
 
@@ -64,7 +72,7 @@ jobs:
 
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
-              run: echo ${{matrix.tests.path}}
+              run: echo ${{matrix.test.path}}
 
             - uses: ./.github/actions/setup_node
 
@@ -86,7 +94,7 @@ jobs:
                   npm run lint
               shell: bash -l {0}
 
-            - name: Run pre-test setup for ${{ matrix.tests.name }}
+            - name: Run pre-test setup for ${{ matrix.test.name }}
               run: |
                   npm install
 
@@ -95,17 +103,17 @@ jobs:
                   fi
 
                   npx azle install-dfx-extension
-              working-directory: ${{ matrix.tests.path }}
+              working-directory: ${{ matrix.test.path }}
               shell: bash -l {0}
 
             - name: Start dfx with artificial delay 0
               if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
-              working-directory: ${{ matrix.tests.path }}
+              working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx
               if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
-              working-directory: ${{ matrix.tests.path }}
+              working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
             - name: Calculate number of test runs
@@ -138,11 +146,20 @@ jobs:
               shell: bash -l {0}
 
             - name: Run tests
-              run: npm test
+              run: |
+                  timeout ${{ inputs.timeout }}m npm test
+                  exit_code=$?
+                  if [ $exit_code -eq 124 ] || [ $exit_code -eq 142 ]; then
+                      # Exit code 124 is for timeout, 142 is for SIGALRM
+                      exit 0
+                  else
+                      exit $exit_code
+                  fi
               shell: bash -l {0}
-              working-directory: ${{ matrix.tests.path }}
+              working-directory: ${{ matrix.test.path }}
               env:
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.calc-runs.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true
                   AZLE_EXPERIMENTAL: ${{ inputs.run_experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
+                  AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}
