@@ -1,4 +1,11 @@
-type RejectionCode =
+// TODO this should be removed once https://github.com/demergent-labs/azle/issues/2271 is resolved
+import { TextDecoder, TextEncoder } from 'text-encoding';
+globalThis.TextDecoder = TextDecoder;
+globalThis.TextEncoder = TextEncoder;
+
+import { IDL } from '@dfinity/candid';
+
+export type RejectionCode =
     | { NoError: null }
     | { SysFatal: null }
     | { SysTransient: null }
@@ -6,6 +13,16 @@ type RejectionCode =
     | { CanisterReject: null }
     | { CanisterError: null }
     | { Unknown: null };
+
+export const RejectionCode = IDL.Variant({
+    NoError: IDL.Null,
+    SysFatal: IDL.Null,
+    SysTransient: IDL.Null,
+    DestinationInvalid: IDL.Null,
+    CanisterReject: IDL.Null,
+    CanisterError: IDL.Null,
+    Unknown: IDL.Null
+});
 
 /**
  * Returns the rejection code from the most recently executed cross-canister call

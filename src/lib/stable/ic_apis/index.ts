@@ -21,7 +21,7 @@ export { notify } from './notify';
 export { performanceCounter } from './performance_counter';
 export { print } from './print';
 export { reject } from './reject';
-export { rejectCode } from './reject_code';
+export { rejectCode, RejectionCode } from './reject_code';
 export { rejectMessage } from './reject_message';
 export { reply } from './reply';
 export { setCertifiedData } from './set_certified_data';
