@@ -1,0 +1,3 @@
+{
+    "expectedErrors": ["Canister trapped: heap out of bounds"]
+}

@@ -266,7 +266,7 @@ export default class {
                 };
             }
             default: {
-                return trap('unreachable');
+                return trap('should not happen');
             }
         }
     }

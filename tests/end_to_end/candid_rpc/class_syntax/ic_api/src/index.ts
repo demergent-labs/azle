@@ -10,7 +10,7 @@ import {
     isController,
     performanceCounter,
     Principal,
-    print as icPrint,
+    print,
     query,
     reject,
     setCertifiedData,
@@ -143,7 +143,7 @@ export default class {
     // prints a message through the local replica's output
     @query([IDL.Text], IDL.Bool)
     print(message: string): boolean {
-        icPrint(message);
+        print(message);
 
         return true;
     }

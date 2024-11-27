@@ -1,0 +1,3 @@
+{
+    "expectedErrors": ["Cannot parse header", "Candid parser error"]
+}

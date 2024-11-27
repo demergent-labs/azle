@@ -1,0 +1,3 @@
+{
+    "expectedErrors": ["User does not exist:", "Recording does not exist:"]
+}
