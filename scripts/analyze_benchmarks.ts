@@ -1,4 +1,4 @@
-import { lstatSync, readdirSync, readFileSync, statSync } from 'fs';
+import { readdir, readFile, stat } from 'fs/promises';
 import { join } from 'path';
 
 type BenchmarkEntry = {
@@ -31,46 +31,83 @@ type Statistics = {
     baselineWeightedEfficiencyScore: number;
 };
 
-function findBenchmarkFiles(dir: string): string[] {
+async function processDirectoryItem(
+    dir: string,
+    item: string
+): Promise<string[]> {
+    const fullPath = join(dir, item);
+
+    const statInfo = await stat(fullPath);
+    if (statInfo.isDirectory()) {
+        return findBenchmarkFiles(fullPath);
+    }
+    return item === 'benchmarks.json' ? [fullPath] : [];
+}
+
+async function findBenchmarkFiles(dir: string): Promise<string[]> {
     if (dir.includes('node_modules')) {
         return [];
     }
+    const items = await readdir(dir);
+    const itemResults = await Promise.all(
+        items.map((item) => processDirectoryItem(dir, item))
+    );
+    return itemResults.flat();
+}
 
-    function safeReadDir(directory: string): string[] {
-        try {
-            return readdirSync(directory);
-        } catch (error: any) {
-            console.warn(
-                `Warning: Could not read directory ${directory}:`,
-                error.message
-            );
-            return [];
-        }
-    }
+function calculateChange(prevValue: number, currValue: number): number {
+    return ((prevValue - currValue) / prevValue) * 100;
+}
 
-    function processItem(item: string): string[] {
-        const fullPath = join(dir, item);
+async function extractBenchmarkEntries(
+    file: string
+): Promise<Array<[string, BenchmarkEntry]>> {
+    const data: BenchmarksJson = JSON.parse(await readFile(file, 'utf-8'));
 
-        try {
-            if (lstatSync(fullPath).isSymbolicLink()) {
-                return [];
-            }
+    return Object.values(data).flatMap((canisterData) => {
+        const currentEntries = canisterData.current
+            ? canisterData.current.benchmarks.map(
+                  (benchmark) =>
+                      [canisterData.current!.version, benchmark] as [
+                          string,
+                          BenchmarkEntry
+                      ]
+              )
+            : [];
 
-            const stat = statSync(fullPath);
-            if (stat.isDirectory()) {
-                return findBenchmarkFiles(fullPath);
-            }
-            return item === 'benchmarks.json' ? [fullPath] : [];
-        } catch (error: any) {
-            console.warn(
-                `Warning: Could not access ${fullPath}:`,
-                error.message
-            );
-            return [];
-        }
-    }
+        const previousEntries = canisterData.previous.benchmarks.map(
+            (benchmark) =>
+                [canisterData.previous.version, benchmark] as [
+                    string,
+                    BenchmarkEntry
+                ]
+        );
 
-    return safeReadDir(dir).flatMap(processItem);
+        return [...currentEntries, ...previousEntries];
+    });
+}
+
+function groupEntriesByVersion(
+    entries: Array<[string, BenchmarkEntry]>
+): Record<string, BenchmarkEntry[]> {
+    return entries.reduce(
+        (acc, [version, entry]) => ({
+            ...acc,
+            [version]: [...(acc[version] ?? []), entry]
+        }),
+        {} as Record<string, BenchmarkEntry[]>
+    );
+}
+
+function calculateVersionStatistics(entries: BenchmarkEntry[]): Statistics {
+    const baseStats = calculateStatistics(
+        entries.map((entry) => Number(entry.instructions.__bigint__))
+    );
+    return {
+        ...baseStats,
+        baselineWeightedEfficiencyScore:
+            calculateBaselineWeightEfficiencyScores(baseStats)
+    };
 }
 
 function calculateStatistics(instructions: readonly number[]): Statistics {
@@ -124,10 +161,6 @@ function calculateVersionChanges(
     previous: Statistics,
     current: Statistics
 ): Record<string, number> {
-    function calculateChange(prevValue: number, currValue: number): number {
-        return ((prevValue - currValue) / prevValue) * 100;
-    }
-
     return {
         baselineWeightedEfficiencyScoreChange: calculateChange(
             previous.baselineWeightedEfficiencyScore,
@@ -139,71 +172,27 @@ function calculateVersionChanges(
     };
 }
 
-function analyzeAllBenchmarks(
+async function analyzeAllBenchmarks(
     rootDir: string = '.'
-): Record<string, Statistics> {
-    function extractBenchmarkEntries(
-        file: string
-    ): Array<[string, BenchmarkEntry]> {
-        const data: BenchmarksJson = JSON.parse(readFileSync(file, 'utf-8'));
+): Promise<Record<string, Statistics>> {
+    const benchmarkFiles = await findBenchmarkFiles(rootDir);
+    const versionEntriesArrays = await Promise.all(
+        benchmarkFiles.map(extractBenchmarkEntries)
+    );
+    const versionEntries = versionEntriesArrays.flat();
 
-        return Object.values(data).flatMap((canisterData) => {
-            const currentEntries = canisterData.current
-                ? canisterData.current.benchmarks.map(
-                      (benchmark) =>
-                          [canisterData.current!.version, benchmark] as [
-                              string,
-                              BenchmarkEntry
-                          ]
-                  )
-                : [];
-
-            const previousEntries = canisterData.previous.benchmarks.map(
-                (benchmark) =>
-                    [canisterData.previous.version, benchmark] as [
-                        string,
-                        BenchmarkEntry
-                    ]
-            );
-
-            return [...currentEntries, ...previousEntries];
-        });
-    }
-
-    function groupEntriesByVersion(
-        entries: Array<[string, BenchmarkEntry]>
-    ): Record<string, BenchmarkEntry[]> {
-        return entries.reduce(
-            (acc, [version, entry]) => ({
-                ...acc,
-                [version]: [...(acc[version] || []), entry]
-            }),
-            {} as Record<string, BenchmarkEntry[]>
-        );
-    }
-
-    function calculateVersionStatistics(entries: BenchmarkEntry[]): Statistics {
-        const baseStats = calculateStatistics(
-            entries.map((entry) => Number(entry.instructions.__bigint__))
-        );
-        return {
-            ...baseStats,
-            baselineWeightedEfficiencyScore:
-                calculateBaselineWeightEfficiencyScores(baseStats)
-        };
-    }
-
-    const benchmarkFiles = findBenchmarkFiles(rootDir);
-    const versionEntries = benchmarkFiles.flatMap(extractBenchmarkEntries);
     const entriesByVersion = groupEntriesByVersion(versionEntries);
-    const results = Object.entries(entriesByVersion).reduce(
+
+    return Object.entries(entriesByVersion).reduce(
         (acc, [version, entries]) => ({
             ...acc,
             [version]: calculateVersionStatistics(entries)
         }),
         {} as Record<string, Statistics>
     );
+}
 
+function compareChanges(results: Record<string, Statistics>): void {
     // Log comparison between versions
     const versions = Object.keys(results).sort();
     if (versions.length >= 2) {
@@ -218,15 +207,14 @@ function analyzeAllBenchmarks(
             console.log(`${key}:`, `${value.toFixed(2)}%`);
         });
     }
-
-    return results;
 }
 
-// Run the analysis and output results
-try {
+function main(): void {
     console.log('Analyzing benchmarks...');
-    const results = analyzeAllBenchmarks();
-    console.log(JSON.stringify(results, null, 2));
-} catch (error) {
-    console.error('Error analyzing benchmarks:', error);
+    analyzeAllBenchmarks().then((results) => {
+        compareChanges(results);
+        console.log(JSON.stringify(results, null, 2));
+    });
 }
+
+main();
