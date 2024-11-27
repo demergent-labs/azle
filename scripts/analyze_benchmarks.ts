@@ -28,10 +28,7 @@ type Statistics = {
     median: number;
     standardDeviation: number;
     min: number;
-    weightedScore: number;
-    percentileScore: number;
-    normalizedScore: number;
-    combinedScore: number;
+    baselineWeightedEfficiencyScore: number;
 };
 
 function findBenchmarkFiles(dir: string): string[] {
@@ -113,49 +110,18 @@ function calculateStatistics(instructions: number[]): Statistics {
         median,
         standardDeviation,
         min: sorted[0],
-        weightedScore: 0,
-        percentileScore: 0,
-        normalizedScore: 0,
-        combinedScore: 0
+        baselineWeightedEfficiencyScore: 0
     };
 }
 
-function calculateScores(stats: Statistics): {
-    weightedScore: number;
-    percentileScore: number;
-    normalizedScore: number;
-    combinedScore: number;
-} {
-    // Approach 1: Weighted Average Score
-    // Penalizes both high mean and high variance
-    const weightedScore =
-        stats.mean * (1 + stats.standardDeviation / stats.mean);
+function calculateBaselineWeightEfficiencyScores(stats: Statistics): number {
+    const minWeight = 0.5;
+    const medianWeight = 0.3;
+    const meanWeight = 0.2;
 
-    // Approach 2: Percentile-based Score
-    // Focuses on typical performance, less affected by outliers
-    const percentileScore = (stats.median * 2 + stats.mean) / 3;
+    const { min, median, mean } = stats;
 
-    // Approach 3: Normalized Score
-    // Balances central tendency and consistency
-    const coefficientOfVariation = stats.standardDeviation / stats.mean;
-    const normalizedScore = stats.median * (1 + coefficientOfVariation);
-
-    const alpha = 0.3;
-    // Validate alpha is between 0 and 1
-    if (alpha < 0 || alpha > 1) {
-        throw new Error('Alpha must be between 0 and 1');
-    }
-
-    // Calculate the combined score
-    const { median, min } = stats;
-    const combinedScore = alpha * median + (1 - alpha) * min;
-
-    return {
-        weightedScore,
-        percentileScore,
-        normalizedScore,
-        combinedScore
-    };
+    return minWeight * min + medianWeight * median + meanWeight * mean;
 }
 
 function analyzeAllBenchmarks(rootDir: string = '.'): {
@@ -210,12 +176,12 @@ function analyzeAllBenchmarks(rootDir: string = '.'): {
             const baseStats = calculateStatistics(
                 entries.map((entry) => Number(entry.instructions.__bigint__))
             );
-            const scores = calculateScores(baseStats);
+            const scores = calculateBaselineWeightEfficiencyScores(baseStats);
             return {
                 ...acc,
                 [version]: {
                     ...baseStats,
-                    ...scores
+                    baselineWeightedEfficiencyScore: scores
                 }
             };
         },
@@ -229,25 +195,10 @@ function analyzeAllBenchmarks(rootDir: string = '.'): {
         const previous = versions[versions.length - 2];
 
         const changes = {
-            weightedScoreChange:
-                ((results[previous].weightedScore -
-                    results[current].weightedScore) /
-                    results[previous].weightedScore) *
-                100,
-            percentileScoreChange:
-                ((results[previous].percentileScore -
-                    results[current].percentileScore) /
-                    results[previous].percentileScore) *
-                100,
-            normalizedScoreChange:
-                ((results[previous].normalizedScore -
-                    results[current].normalizedScore) /
-                    results[previous].normalizedScore) *
-                100,
-            combinedScoreChange:
-                ((results[previous].combinedScore -
-                    results[current].combinedScore) /
-                    results[previous].combinedScore) *
+            baselineWeightedEfficiencyScoreChange:
+                ((results[previous].baselineWeightedEfficiencyScore -
+                    results[current].baselineWeightedEfficiencyScore) /
+                    results[previous].baselineWeightedEfficiencyScore) *
                 100,
             averageScoreChange:
                 ((results[previous].mean - results[current].mean) /
@@ -265,20 +216,8 @@ function analyzeAllBenchmarks(rootDir: string = '.'): {
 
         console.log('\nPerformance changes from', previous, 'to', current);
         console.log(
-            'Weighted Score Change:',
-            `${changes.weightedScoreChange.toFixed(2)}%`
-        );
-        console.log(
-            'Percentile Score Change:',
-            `${changes.percentileScoreChange.toFixed(2)}%`
-        );
-        console.log(
-            'Normalized Score Change:',
-            `${changes.normalizedScoreChange.toFixed(2)}%`
-        );
-        console.log(
-            'Combined Score Change:',
-            `${changes.combinedScoreChange.toFixed(2)}%`
+            'Baseline Weighted Efficiency Score Change:',
+            `${changes.baselineWeightedEfficiencyScoreChange.toFixed(2)}%`
         );
         console.log(
             'Average Score Change:',
