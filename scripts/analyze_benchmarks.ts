@@ -31,12 +31,12 @@ type Statistics = {
     baselineWeightedEfficiencyScore: number;
 };
 
-const findBenchmarkFiles = (dir: string): string[] => {
+function findBenchmarkFiles(dir: string): string[] {
     if (dir.includes('node_modules')) {
         return [];
     }
 
-    const safeReadDir = (directory: string): string[] => {
+    function safeReadDir(directory: string): string[] {
         try {
             return readdirSync(directory);
         } catch (error: any) {
@@ -46,9 +46,9 @@ const findBenchmarkFiles = (dir: string): string[] => {
             );
             return [];
         }
-    };
+    }
 
-    const processItem = (item: string): string[] => {
+    function processItem(item: string): string[] {
         const fullPath = join(dir, item);
 
         try {
@@ -68,12 +68,12 @@ const findBenchmarkFiles = (dir: string): string[] => {
             );
             return [];
         }
-    };
+    }
 
     return safeReadDir(dir).flatMap(processItem);
-};
+}
 
-const calculateStatistics = (instructions: readonly number[]): Statistics => {
+function calculateStatistics(instructions: readonly number[]): Statistics {
     if (instructions.length === 0) {
         throw new Error('Cannot calculate statistics for empty array');
     }
@@ -102,11 +102,11 @@ const calculateStatistics = (instructions: readonly number[]): Statistics => {
         min: sorted[0],
         baselineWeightedEfficiencyScore: 0
     };
-};
+}
 
-const calculateBaselineWeightEfficiencyScores = (
+function calculateBaselineWeightEfficiencyScores(
     stats: Readonly<Statistics>
-): number => {
+): number {
     const weights = {
         min: 0.7,
         median: 0.3,
@@ -118,14 +118,15 @@ const calculateBaselineWeightEfficiencyScores = (
         weights.median * stats.median +
         weights.mean * stats.mean
     );
-};
+}
 
-const calculateVersionChanges = (
+function calculateVersionChanges(
     previous: Statistics,
     current: Statistics
-): Record<string, number> => {
-    const calculateChange = (prevValue: number, currValue: number): number =>
-        ((prevValue - currValue) / prevValue) * 100;
+): Record<string, number> {
+    function calculateChange(prevValue: number, currValue: number): number {
+        return ((prevValue - currValue) / prevValue) * 100;
+    }
 
     return {
         baselineWeightedEfficiencyScoreChange: calculateChange(
@@ -136,14 +137,14 @@ const calculateVersionChanges = (
         medianScoreChange: calculateChange(previous.median, current.median),
         minScoreChange: calculateChange(previous.min, current.min)
     };
-};
+}
 
-const analyzeAllBenchmarks = (
+function analyzeAllBenchmarks(
     rootDir: string = '.'
-): Record<string, Statistics> => {
-    const extractBenchmarkEntries = (
+): Record<string, Statistics> {
+    function extractBenchmarkEntries(
         file: string
-    ): Array<[string, BenchmarkEntry]> => {
+    ): Array<[string, BenchmarkEntry]> {
         const data: BenchmarksJson = JSON.parse(readFileSync(file, 'utf-8'));
 
         return Object.values(data).flatMap((canisterData) => {
@@ -167,22 +168,21 @@ const analyzeAllBenchmarks = (
 
             return [...currentEntries, ...previousEntries];
         });
-    };
+    }
 
-    const groupEntriesByVersion = (
+    function groupEntriesByVersion(
         entries: Array<[string, BenchmarkEntry]>
-    ): Record<string, BenchmarkEntry[]> =>
-        entries.reduce(
+    ): Record<string, BenchmarkEntry[]> {
+        return entries.reduce(
             (acc, [version, entry]) => ({
                 ...acc,
                 [version]: [...(acc[version] || []), entry]
             }),
             {} as Record<string, BenchmarkEntry[]>
         );
+    }
 
-    const calculateVersionStatistics = (
-        entries: BenchmarkEntry[]
-    ): Statistics => {
+    function calculateVersionStatistics(entries: BenchmarkEntry[]): Statistics {
         const baseStats = calculateStatistics(
             entries.map((entry) => Number(entry.instructions.__bigint__))
         );
@@ -191,7 +191,7 @@ const analyzeAllBenchmarks = (
             baselineWeightedEfficiencyScore:
                 calculateBaselineWeightEfficiencyScores(baseStats)
         };
-    };
+    }
 
     const benchmarkFiles = findBenchmarkFiles(rootDir);
     const versionEntries = benchmarkFiles.flatMap(extractBenchmarkEntries);
@@ -220,7 +220,7 @@ const analyzeAllBenchmarks = (
     }
 
     return results;
-};
+}
 
 // Run the analysis and output results
 try {
