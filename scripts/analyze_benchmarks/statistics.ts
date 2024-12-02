@@ -6,15 +6,31 @@ export type Statistics = {
     median: number;
     standardDeviation: number;
     min: number;
+    max: number;
     baselineWeightedEfficiencyScore: number;
 };
 
 export function calculateVersionStatistics(
     entries: BenchmarkEntry[]
-): Statistics {
-    return calculateStatistics(
-        entries.map((entry) => Number(entry.instructions.__bigint__))
+): [Statistics, Statistics] {
+    const instructions = entries.map((entry) =>
+        Number(entry.instructions.__bigint__)
     );
+
+    // Calculate raw statistics
+    const rawStats = calculateStatistics(instructions);
+
+    // Calculate 75th percentile
+    const sorted = [...instructions].sort((a, b) => a - b);
+    const p75Index = sorted.length * 0.95;
+
+    // Use slice to get values >= 75th percentile
+    const filteredInstructions = sorted.slice(0, p75Index);
+
+    // Calculate filtered statistics
+    const filteredStats = calculateStatistics(filteredInstructions);
+
+    return [rawStats, filteredStats];
 }
 
 function calculateStatistics(instructions: readonly number[]): Statistics {
@@ -44,6 +60,7 @@ function calculateStatistics(instructions: readonly number[]): Statistics {
         median,
         standardDeviation,
         min: sorted[0],
+        max: sorted[sorted.length - 1],
         baselineWeightedEfficiencyScore:
             calculateBaselineWeightEfficiencyScores({
                 count: instructions.length,
@@ -51,6 +68,7 @@ function calculateStatistics(instructions: readonly number[]): Statistics {
                 median,
                 standardDeviation,
                 min: sorted[0],
+                max: sorted[sorted.length - 1],
                 baselineWeightedEfficiencyScore: 0
             })
     };

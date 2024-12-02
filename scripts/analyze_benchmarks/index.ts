@@ -7,7 +7,7 @@ import { calculateVersionStatistics, Statistics } from './statistics';
 
 async function analyzeBenchmarksForVersion(
     targetVersion: string
-): Promise<Statistics> {
+): Promise<[Statistics, Statistics]> {
     const benchmarkFilePaths = await findBenchmarkFiles(AZLE_PACKAGE_PATH);
 
     const benchmarkEntriesByVersion =
@@ -21,7 +21,7 @@ function runBenchmarkAnalysis(specifiedVersion?: string): void {
     const versionToAnalyze = specifiedVersion ?? currentAzleVersion;
     console.log('Analyzing benchmarks...');
     analyzeBenchmarksForVersion(versionToAnalyze).then((statistics) =>
-        reportResults(statistics, versionToAnalyze)
+        reportResults(statistics[1], versionToAnalyze)
     );
 }
 

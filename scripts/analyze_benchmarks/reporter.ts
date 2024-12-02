@@ -49,16 +49,16 @@ function analyzeResults(stats: Statistics): string {
         // Ensure lower bound is never below the minimum observed value
         const lower = Math.max(stats.min, theoreticalLower);
         // Ensure upper bound is never below the lower bound
-        const upper = Math.max(lower, theoreticalUpper);
-
-        const expectedPercentage = (percentage * 100).toFixed(1);
+        const upper = Math.min(stats.max, theoreticalUpper);
 
         analysis +=
             `- Within ${range} standard deviation${range > 1 ? 's' : ''} ` +
             `(${formatNumber(Math.floor(lower))} to ${formatNumber(
                 Math.floor(upper)
             )} instructions), ` +
-            `approximately ${expectedPercentage}% of the methods fall in this range\n`;
+            `approximately ${formatNumber(
+                Math.floor(percentage * stats.count)
+            )} of the methods fall in this range\n`;
     });
 
     // Add efficiency analysis
@@ -85,6 +85,9 @@ function analyzeResults(stats: Statistics): string {
     analysis += `- The median instruction count is ${formatNumber(
         Math.floor(stats.median)
     )}\n`;
+    analysis += `- The range of instructions spans from ${formatNumber(
+        Math.floor(stats.min)
+    )} to ${formatNumber(Math.floor(stats.max))}\n`;
 
     return analysis;
 }
