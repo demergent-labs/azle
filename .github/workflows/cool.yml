@@ -8,6 +8,7 @@ on:
             - ready_for_review
             - reopened
             - labeled
+            - unlabeled
             - edited
 
 jobs:
