@@ -14,7 +14,7 @@ jobs:
         steps:
             - name: Do a test
               run: |
-                  gh pr view ${{ github.event.pull_request.number }} --json additions,assignees,author,autoMergeRequest,baseRefName,baseRefOid,body,changedFiles,files,fullDatabaseId,headRefName,headRefOid,headRepository,headRepositoryOwner,id,isCrossRepository,isDraft,labels,latestReviews,maintainerCanModify,mergeCommit,mergeStateStatus,mergeable,mergedAt,mergedBy,milestone,number,potentialMergeCommit,reviewDecision,reviewRequests,reviews,state,statusCheckRollup,title,updatedAt,url
+                  gh pr view ${{ github.event.pull_request.number }} --json additions,assignees,author,autoMergeRequest,baseRefName,body,changedFiles,files,fullDatabaseId,headRefName,headRefOid,headRepository,headRepositoryOwner,id,isCrossRepository,isDraft,labels,latestReviews,maintainerCanModify,mergeCommit,mergeStateStatus,mergeable,mergedAt,mergedBy,milestone,number,potentialMergeCommit,reviewDecision,reviewRequests,reviews,state,statusCheckRollup,title,updatedAt,url
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: Check if docs-reviewed label is applied
