@@ -5,6 +5,7 @@ import { AZLE_PACKAGE_PATH } from '../../src/build/stable/utils/global_paths';
 import { Statistics } from './statistics';
 
 const RESULTS_FILE = join(AZLE_PACKAGE_PATH, 'benchmark_stats.json');
+const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
 
 export async function reportResults(
     results: Statistics,
@@ -17,14 +18,103 @@ export async function reportResults(
     await writeFile(RESULTS_FILE, JSON.stringify(updatedResults, null, 2));
 
     const comparisonResults = compareChanges(updatedResults);
+    const analysis = analyzeResults(results);
 
-    const versionResults = Object.entries(results).reduce(
-        (acc, [key, value]) =>
-            `${acc}- ${camelToTitleCase(key)}: ${value.toFixed(0)}\n`,
-        `\`${version}\` results:\n`
+    const markdownContent = generateMarkdownReport(
+        version,
+        results,
+        comparisonResults,
+        analysis
     );
-    console.log(versionResults);
-    console.log(comparisonResults);
+    await writeFile(MARKDOWN_FILE, markdownContent);
+
+    // Still log to console for immediate feedback
+    console.log(`Report generated at ${MARKDOWN_FILE}`);
+}
+
+function analyzeResults(stats: Statistics): string {
+    const standardRanges = [
+        { range: 1, percentage: 0.6827 },
+        { range: 2, percentage: 0.9545 },
+        { range: 3, percentage: 0.9973 }
+    ];
+
+    let analysis = '## Statistical Analysis\n\n';
+
+    // Add distribution analysis
+    standardRanges.forEach(({ range, percentage }) => {
+        const theoreticalLower = stats.mean - range * stats.standardDeviation;
+        const theoreticalUpper = stats.mean + range * stats.standardDeviation;
+
+        // Ensure lower bound is never below the minimum observed value
+        const lower = Math.max(stats.min, theoreticalLower);
+        // Ensure upper bound is never below the lower bound
+        const upper = Math.max(lower, theoreticalUpper);
+
+        const expectedPercentage = (percentage * 100).toFixed(1);
+
+        analysis +=
+            `- Within ${range} standard deviation${range > 1 ? 's' : ''} ` +
+            `(${formatNumber(Math.floor(lower))} to ${formatNumber(
+                Math.floor(upper)
+            )} instructions), ` +
+            `approximately ${expectedPercentage}% of the methods fall in this range\n`;
+    });
+
+    // Add efficiency analysis
+    analysis += '\n### Efficiency Insights\n\n';
+    const efficiencyScore = stats.baselineWeightedEfficiencyScore;
+    let efficiencyAnalysis = '';
+
+    if (efficiencyScore < 100) {
+        efficiencyAnalysis =
+            'The codebase is performing better than the baseline';
+    } else if (efficiencyScore === 100) {
+        efficiencyAnalysis = 'The codebase is performing at baseline levels';
+    } else {
+        efficiencyAnalysis =
+            'The codebase is performing below baseline expectations';
+    }
+
+    analysis += `- ${efficiencyAnalysis} with an efficiency score of ${formatNumber(
+        Math.floor(efficiencyScore)
+    )}\n`;
+    analysis += `- The average instruction count is ${formatNumber(
+        Math.floor(stats.mean)
+    )}\n`;
+    analysis += `- The median instruction count is ${formatNumber(
+        Math.floor(stats.median)
+    )}\n`;
+
+    return analysis;
+}
+
+function generateMarkdownReport(
+    version: string,
+    results: Statistics,
+    comparisonResults: string,
+    analysis: string
+): string {
+    const timestamp = new Date().toISOString().split('T')[0];
+
+    return `# Benchmark Results (${timestamp})
+
+## Version Results (\`${version}\`)
+
+${Object.entries(results)
+    .map(
+        ([key, value]) =>
+            `- **${camelToTitleCase(key)}**: ${formatNumber(Math.floor(value))}`
+    )
+    .join('\n')}
+
+${comparisonResults}
+
+${analysis}
+
+---
+*Report generated automatically by Azle benchmark tools*
+`;
 }
 
 function compareChanges(results: Record<string, Statistics>): string {
@@ -77,4 +167,8 @@ function camelToTitleCase(camelCase: string): string {
         )
         .join(' ')
         .trim();
+}
+
+function formatNumber(num: number): string {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '_');
 }
