@@ -1,0 +1,18 @@
+{
+    "0.25.0-dev": {
+        "count": 1254,
+        "mean": 379520691.4322169,
+        "median": 1034429.5,
+        "standardDeviation": 2356491191.876872,
+        "min": 84524,
+        "baselineWeightedEfficiencyScore": 369495.64999999997
+    },
+    "0.25.0-pre-bifurcation": {
+        "count": 1311,
+        "mean": 689879985.884058,
+        "median": 1127512,
+        "standardDeviation": 2834180506.4537497,
+        "min": 83475,
+        "baselineWeightedEfficiencyScore": 396686.1
+    }
+}

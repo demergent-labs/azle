@@ -1,12 +1,34 @@
+import { readFile, writeFile } from 'fs/promises';
+import { join } from 'path';
+
+import { AZLE_PACKAGE_PATH } from '../../src/build/stable/utils/global_paths';
 import { Statistics } from './statistics';
 
-export function reportResults(results: Record<string, Statistics>): void {
-    compareChanges(results);
-    console.log(JSON.stringify(results, null, 2));
+const RESULTS_FILE = join(AZLE_PACKAGE_PATH, 'benchmark_stats.json');
+
+export async function reportResults(
+    results: Statistics,
+    version: string
+): Promise<void> {
+    const fileContent = await readFile(RESULTS_FILE, 'utf-8');
+    const allResults: Record<string, Statistics> = JSON.parse(fileContent);
+
+    const updatedResults = { ...allResults, [version]: results };
+    await writeFile(RESULTS_FILE, JSON.stringify(updatedResults, null, 2));
+
+    const comparisonResults = compareChanges(updatedResults);
+
+    const versionResults = Object.entries(results).reduce(
+        (acc, [key, value]) =>
+            `${acc}- ${camelToTitleCase(key)}: ${value.toFixed(0)}\n`,
+        `\`${version}\` results:\n`
+    );
+    console.log(versionResults);
+    console.log(comparisonResults);
 }
 
-function compareChanges(results: Record<string, Statistics>): void {
-    const versions = Object.keys(results).sort();
+function compareChanges(results: Record<string, Statistics>): string {
+    const versions = Object.keys(results);
     if (versions.length >= 2) {
         const [previous, current] = versions.slice(-2);
         const changes = calculateVersionChanges(
@@ -14,11 +36,15 @@ function compareChanges(results: Record<string, Statistics>): void {
             results[current]
         );
 
-        console.log('\nPerformance changes from', previous, 'to', current);
-        Object.entries(changes).forEach(([key, value]) => {
-            console.log(`${key}:`, `${value.toFixed(2)}%`);
-        });
+        return Object.entries(changes).reduce(
+            (acc, [key, value]) =>
+                `${acc}- ${camelToTitleCase(
+                    key.replace('Change', '')
+                )}: ${value.toFixed(2)}%\n`,
+            `\nPerformance changes from \`${previous}\` to \`${current}\`:\n`
+        );
     }
+    return '';
 }
 
 function calculateChange(prevValue: number, currValue: number): number {
@@ -38,4 +64,17 @@ function calculateVersionChanges(
         medianScoreChange: calculateChange(previous.median, current.median),
         minScoreChange: calculateChange(previous.min, current.min)
     };
+}
+
+function camelToTitleCase(camelCase: string): string {
+    // Split the camelCase string into words
+    const words = camelCase.replace(/([A-Z])/g, ' $1').split(' ');
+
+    // Capitalize first letter of each word and join
+    return words
+        .map(
+            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(' ')
+        .trim();
 }

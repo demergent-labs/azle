@@ -21,7 +21,18 @@ type BenchmarksJson = {
     [canisterName: string]: CanisterBenchmark;
 };
 
-export async function extractBenchmarkEntries(
+export async function extractBenchmarksEntriesFromFiles(
+    files: string[]
+): Promise<Record<string, BenchmarkEntry[]>> {
+    const versionEntriesArrays = await Promise.all(
+        files.map(extractBenchmarkEntries)
+    );
+    const versionEntries = versionEntriesArrays.flat();
+
+    return groupEntriesByVersion(versionEntries);
+}
+
+async function extractBenchmarkEntries(
     file: string
 ): Promise<Array<[string, BenchmarkEntry]>> {
     const data: BenchmarksJson = JSON.parse(await readFile(file, 'utf-8'));
@@ -49,7 +60,7 @@ export async function extractBenchmarkEntries(
     });
 }
 
-export function groupEntriesByVersion(
+function groupEntriesByVersion(
     entries: Array<[string, BenchmarkEntry]>
 ): Record<string, BenchmarkEntry[]> {
     return entries.reduce(
