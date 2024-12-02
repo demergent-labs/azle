@@ -1,31 +1,28 @@
-import { extractBenchmarkEntries, groupEntriesByVersion } from './extractor';
+import { version as currentAzleVersion } from '../../package.json';
+import { AZLE_PACKAGE_PATH } from '../../src/build/stable/utils/global_paths';
+import { extractBenchmarksEntriesFromFiles } from './extractor';
 import { findBenchmarkFiles } from './file_finder';
 import { reportResults } from './reporter';
 import { calculateVersionStatistics, Statistics } from './statistics';
 
-async function analyzeAllBenchmarks(
-    rootDir: string = '.'
-): Promise<Record<string, Statistics>> {
-    const benchmarkFiles = await findBenchmarkFiles(rootDir);
-    const versionEntriesArrays = await Promise.all(
-        benchmarkFiles.map(extractBenchmarkEntries)
-    );
-    const versionEntries = versionEntriesArrays.flat();
+async function analyzeBenchmarksForVersion(
+    targetVersion: string
+): Promise<Statistics> {
+    const benchmarkFilePaths = await findBenchmarkFiles(AZLE_PACKAGE_PATH);
 
-    const entriesByVersion = groupEntriesByVersion(versionEntries);
+    const benchmarkEntriesByVersion =
+        await extractBenchmarksEntriesFromFiles(benchmarkFilePaths);
+    const targetVersionEntries = benchmarkEntriesByVersion[targetVersion];
 
-    return Object.entries(entriesByVersion).reduce(
-        (acc, [version, entries]) => ({
-            ...acc,
-            [version]: calculateVersionStatistics(entries)
-        }),
-        {} as Record<string, Statistics>
-    );
+    return calculateVersionStatistics(targetVersionEntries);
 }
 
-function main(): void {
+function runBenchmarkAnalysis(specifiedVersion?: string): void {
+    const versionToAnalyze = specifiedVersion ?? currentAzleVersion;
     console.log('Analyzing benchmarks...');
-    analyzeAllBenchmarks().then(reportResults);
+    analyzeBenchmarksForVersion(versionToAnalyze).then((statistics) =>
+        reportResults(statistics, versionToAnalyze)
+    );
 }
 
-main();
+runBenchmarkAnalysis(process.argv[2]);
