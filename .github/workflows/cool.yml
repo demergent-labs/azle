@@ -1,0 +1,27 @@
+name: Docs Review Check
+
+on:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+
+jobs:
+    docs_review_check:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check if docs-reviewed label is applied
+              run: |
+                  if [[ "$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name')" != *"docs-reviewed"* ]]; then
+                    echo "Docs not reviewed yet."
+                    exit 1
+                  fi
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Do a test
+              run: |
+                  gh pr view ${{ github.event.pull_request.number }} --json
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
