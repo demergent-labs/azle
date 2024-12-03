@@ -10,7 +10,7 @@ on:
                 required: false
                 type: string
                 default: ''
-            run_experimental:
+            run-experimental:
                 required: false
                 type: boolean
                 default: false
@@ -18,7 +18,7 @@ on:
                 required: false
                 type: boolean
                 default: false
-            link_azle:
+            link-azle:
                 required: true
                 type: boolean
 
@@ -43,6 +43,6 @@ jobs:
         uses: ./.github/workflows/run_test.yml
         with:
             test_infos: ${{ needs.prepare-test-environment.outputs.test-infos }}
-            link_azle: ${{ inputs.link_azle }}
-            run_experimental: ${{ inputs.run_experimental }}
+            link-azle: ${{ inputs.link-azle }}
+            run-experimental: ${{ inputs.run-experimental }}
             fuzz: ${{ inputs.fuzz }}

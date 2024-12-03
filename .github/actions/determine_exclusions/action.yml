@@ -2,16 +2,16 @@ name: 'Determine Test Exclusions'
 description: 'Determines which tests should be excluded based on workflow trigger and conditions'
 
 inputs:
-    is_workflow_dispatch:
+    is-workflow-dispatch:
         description: 'Whether this is a workflow dispatch event'
         required: true
-    exclude_slow_input:
+    exclude-slow-dispatch-input-value:
         description: 'Workflow dispatch input for excluding slow tests'
         required: true
-    exclude_unstable_input:
+    exclude-unstable-dispatch-input-value:
         description: 'Workflow dispatch input for excluding unstable tests'
         required: true
-    exclude_release_only_input:
+    exclude-release-only-dispatch-input-value:
         description: 'Workflow dispatch input for excluding release-only tests'
         required: true
     is_feature_branch_draft_pr:
@@ -25,15 +25,15 @@ inputs:
         required: true
 
 outputs:
-    exclude_slow:
+    exclude-slow:
         description: 'Whether to exclude slow tests'
-        value: ${{ steps.determine.outputs.exclude_slow }}
-    exclude_unstable:
+        value: ${{ steps.determine.outputs.exclude-slow }}
+    exclude-unstable:
         description: 'Whether to exclude unstable tests'
-        value: ${{ steps.determine.outputs.exclude_unstable }}
-    exclude_release_only:
+        value: ${{ steps.determine.outputs.exclude-unstable }}
+    exclude-release-only:
         description: 'Whether to exclude release only tests'
-        value: ${{ steps.determine.outputs.exclude_release_only }}
+        value: ${{ steps.determine.outputs.exclude-release-only }}
 
 runs:
     using: 'composite'
@@ -41,16 +41,16 @@ runs:
         - id: determine
           shell: bash
           run: |
-              if [[ "${{ inputs.is_workflow_dispatch }}" == "true" ]]; then
-                echo "exclude_slow=${{ inputs.exclude_slow_input }}" >> $GITHUB_OUTPUT
-                echo "exclude_unstable=${{ inputs.exclude_unstable_input }}" >> $GITHUB_OUTPUT
-                echo "exclude_release_only=${{ inputs.exclude_release_only_input }}" >> $GITHUB_OUTPUT
+              if [[ "${{ inputs.is-workflow-dispatch }}" == "true" ]]; then
+                echo "exclude-slow=${{ inputs.exclude-slow-dispatch-input-value }}" >> $GITHUB_OUTPUT
+                echo "exclude-unstable=${{ inputs.exclude-unstable-dispatch-input-value }}" >> $GITHUB_OUTPUT
+                echo "exclude-release-only=${{ inputs.exclude-release-only-dispatch-input-value }}" >> $GITHUB_OUTPUT
               else
-                exclude_slow=${{ inputs.is_feature_branch_draft_pr }}
-                exclude_unstable=${{ inputs.is_feature_branch_draft_pr == 'true' || inputs.is_feature_branch_pr == 'true' }}
-                exclude_release_only=${{ inputs.is_feature_branch_draft_pr == 'true' || inputs.is_feature_branch_pr == 'true' || inputs.is_main_branch_push == 'true' }}
+                exclude-slow=${{ inputs.is_feature_branch_draft_pr }}
+                exclude-unstable=${{ inputs.is_feature_branch_draft_pr == 'true' || inputs.is_feature_branch_pr == 'true' }}
+                exclude-release-only=${{ inputs.is_feature_branch_draft_pr == 'true' || inputs.is_feature_branch_pr == 'true' || inputs.is_main_branch_push == 'true' }}
 
-                echo "exclude_slow=$exclude_slow" >> $GITHUB_OUTPUT
-                echo "exclude_unstable=$exclude_unstable" >> $GITHUB_OUTPUT
-                echo "exclude_release_only=$exclude_release_only" >> $GITHUB_OUTPUT
+                echo "exclude-slow=$exclude-slow" >> $GITHUB_OUTPUT
+                echo "exclude-unstable=$exclude-unstable" >> $GITHUB_OUTPUT
+                echo "exclude-release-only=$exclude-release-only" >> $GITHUB_OUTPUT
               fi

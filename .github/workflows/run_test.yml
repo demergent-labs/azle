@@ -6,10 +6,10 @@ on:
             test_infos:
                 required: true
                 type: string
-            link_azle:
+            link-azle:
                 required: true
                 type: boolean
-            run_experimental:
+            run-experimental:
                 required: false
                 type: boolean
                 default: false
@@ -46,7 +46,7 @@ jobs:
                 # os: [macos-latest, ubuntu-latest]
                 os: [ubuntu-latest]
                 azle_source:
-                    - ${{ inputs.link_azle == true && 'repo' || 'npm' }}
+                    - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(inputs.test_infos) }}
         steps:
             - uses: actions/checkout@v4
@@ -151,6 +151,6 @@ jobs:
               env:
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.calc-runs.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true
-                  AZLE_EXPERIMENTAL: ${{ inputs.run_experimental }}
+                  AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
                   AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}
