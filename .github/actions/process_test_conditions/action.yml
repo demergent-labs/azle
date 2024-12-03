@@ -64,9 +64,9 @@ runs:
                 echo "exclude-release-only=$EXCLUDE_RELEASE_ONLY" >> $GITHUB_OUTPUT
                   if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" || \
                         "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
-                    echo "include_npm=true" >> $GITHUB_OUTPUT
+                    echo "link-azle=true" >> $GITHUB_OUTPUT
                   else
-                    echo "include_npm=false" >> $GITHUB_OUTPUT
+                    echo "link-azle=false" >> $GITHUB_OUTPUT
                   fi
                 echo "fuzz=false" >> $GITHUB_OUTPUT
               fi
