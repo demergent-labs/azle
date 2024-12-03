@@ -141,8 +141,8 @@ jobs:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             run-experimental: ${{ matrix.test_group.run-experimental || false }}
-            fuzz: ${{ needs.process-conditions.outputs.fuzz }}
-            link-azle: ${{ needs.process-conditions.outputs.link-azle }}
+            fuzz: ${{ needs.process-conditions.outputs.fuzz == 'true' }}
+            link-azle: ${{ needs.process-conditions.outputs.link-azle == 'true' }}
 
     check-test-success:
         name: Check Azle tests succeeded
