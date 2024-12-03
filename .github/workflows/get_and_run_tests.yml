@@ -21,6 +21,7 @@ on:
             link-azle:
                 required: true
                 type: boolean
+                default: false
 
 jobs:
     prepare-test-environment:
