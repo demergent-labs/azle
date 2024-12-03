@@ -44,20 +44,20 @@ on:
                 default: true
 
 jobs:
-    process-conditions:
-        name: Process test conditions
+    workflow-config:
+        name: Determine workflow config
         runs-on: ubuntu-latest
         outputs:
-            exclude-slow: ${{ steps.process-conditions.outputs.exclude-slow }}
-            exclude-unstable: ${{ steps.process-conditions.outputs.exclude-unstable }}
-            exclude-release-only: ${{ steps.process-conditions.outputs.exclude-release-only }}
-            link-azle: ${{ steps.process-conditions.outputs.link-azle }}
-            fuzz: ${{ steps.process-conditions.outputs.fuzz }}
+            exclude-slow: ${{ steps.determine-workflow-config.outputs.exclude-slow }}
+            exclude-unstable: ${{ steps.determine-workflow-config.outputs.exclude-unstable }}
+            exclude-release-only: ${{ steps.determine-workflow-config.outputs.exclude-release-only }}
+            link-azle: ${{ steps.determine-workflow-config.outputs.link-azle }}
+            fuzz: ${{ steps.determine-workflow-config.outputs.fuzz }}
         steps:
             - uses: actions/checkout@v4
 
-            - id: process-conditions
-              uses: ./.github/actions/process_test_conditions
+            - id: determine-workflow-config
+              uses: ./.github/actions/determine_workflow_config
               with:
                   is-workflow-dispatch: ${{ github.event_name == 'workflow_dispatch' }}
                   exclude-slow-dispatch-input-value: ${{ inputs.exclude-slow-tests }}
@@ -68,7 +68,7 @@ jobs:
 
     get-exclude-dirs:
         name: Get exclude directories
-        needs: process-conditions
+        needs: workflow-config
         runs-on: ubuntu-latest
         outputs:
             exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
@@ -78,14 +78,14 @@ jobs:
             - id: get-exclude-dirs
               uses: ./.github/actions/get_exclude_dirs
               with:
-                  exclude-slow: ${{ needs.process-conditions.outputs.exclude-slow }}
-                  exclude-unstable: ${{ needs.process-conditions.outputs.exclude-unstable }}
-                  exclude-release-only: ${{ needs.process-conditions.outputs.exclude-release-only }}
+                  exclude-slow: ${{ needs.workflow-config.outputs.exclude-slow }}
+                  exclude-unstable: ${{ needs.workflow-config.outputs.exclude-unstable }}
+                  exclude-release-only: ${{ needs.workflow-config.outputs.exclude-release-only }}
 
     run-tests:
         name: ${{ matrix.test_group.name }}
         needs:
-            - process-conditions
+            - workflow-config
             - get-exclude-dirs
         strategy:
             fail-fast: false
@@ -140,9 +140,9 @@ jobs:
         with:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
-            link-azle: ${{ needs.process-conditions.outputs.link-azle == 'true' }}
+            link-azle: ${{ needs.workflow-config.outputs.link-azle == 'true' }}
             run-experimental: ${{ matrix.test_group.run-experimental || false }}
-            fuzz: ${{ needs.process-conditions.outputs.fuzz == 'true' }}
+            fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
 
     check-test-success:
         name: Check Azle tests succeeded
