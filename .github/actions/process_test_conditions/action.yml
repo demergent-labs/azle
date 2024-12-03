@@ -67,3 +67,14 @@ runs:
                   fi
                 echo "fuzz=false" >> $GITHUB_OUTPUT
               fi
+
+        - id: echo-outputs
+          shell: bash
+          run: |
+              echo "=== Test Conditions Outputs ==="
+              echo "exclude-slow: ${{ steps.process-conditions.outputs.exclude-slow }}"
+              echo "exclude-unstable: ${{ steps.process-conditions.outputs.exclude-unstable }}"
+              echo "exclude-release-only: ${{ steps.process-conditions.outputs.exclude-release-only }}"
+              echo "link-azle: ${{ steps.process-conditions.outputs.link-azle }}"
+              echo "fuzz: ${{ steps.process-conditions.outputs.fuzz }}"
+              echo "==========================="
