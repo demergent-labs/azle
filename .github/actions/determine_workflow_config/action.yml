@@ -1,5 +1,5 @@
-name: 'Process Test Conditions'
-description: 'Process all test-related conditions and inputs to determine final test configuration'
+name: 'Determine workflow config'
+description: 'Determines the workflow configuration based on the current GitHub context'
 
 inputs:
     is-workflow-dispatch:
@@ -25,27 +25,27 @@ inputs:
 outputs:
     exclude-slow:
         description: 'Whether to exclude slow tests'
-        value: ${{ steps.process-conditions.outputs.exclude-slow }}
+        value: ${{ steps.determine_workflow_config.outputs.exclude-slow }}
     exclude-unstable:
         description: 'Whether to exclude unstable tests'
-        value: ${{ steps.process-conditions.outputs.exclude-unstable }}
+        value: ${{ steps.determine_workflow_config.outputs.exclude-unstable }}
     exclude-release-only:
         description: 'Whether to exclude release-only tests'
-        value: ${{ steps.process-conditions.outputs.exclude-release-only }}
+        value: ${{ steps.determine_workflow_config.outputs.exclude-release-only }}
     link-azle:
         description: 'Whether to link to the development version of azle'
-        value: ${{ steps.process-conditions.outputs.link-azle }}
+        value: ${{ steps.determine_workflow_config.outputs.link-azle }}
     fuzz:
         description: 'Whether to run fuzz tests'
-        value: ${{ steps.process-conditions.outputs.fuzz }}
+        value: ${{ steps.determine_workflow_config.outputs.fuzz }}
 
 runs:
     using: 'composite'
     steps:
-        - id: set-conditions
+        - id: determine-workflow-context
           uses: ./.github/actions/determine_workflow_context
 
-        - id: process-conditions
+        - id: determine_workflow_config
           shell: bash
           run: |
               if [[ "${{ inputs.is-workflow-dispatch }}" == "true" ]]; then
@@ -55,15 +55,15 @@ runs:
                 echo "link-azle=${{ inputs.link-azle-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "fuzz=${{ inputs.fuzz-dispatch-input-value }}" >> $GITHUB_OUTPUT
               else
-                EXCLUDE_SLOW=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
-                EXCLUDE_UNSTABLE=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_pr == 'true' }}
-                EXCLUDE_RELEASE_ONLY=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push == 'true' }}
+                EXCLUDE_SLOW=${{ steps.determine-workflow-context.outputs.is_feature_branch_draft_pr == 'true' }}
+                EXCLUDE_UNSTABLE=${{ steps.determine-workflow-context.outputs.is_feature_branch_draft_pr == 'true' || steps.determine-workflow-context.outputs.is_feature_branch_pr == 'true' }}
+                EXCLUDE_RELEASE_ONLY=${{ steps.determine-workflow-context.outputs.is_feature_branch_draft_pr == 'true' || steps.determine-workflow-context.outputs.is_feature_branch_pr == 'true' || steps.determine-workflow-context.outputs.is_main_branch_push == 'true' }}
 
                 echo "exclude-slow=$EXCLUDE_SLOW" >> $GITHUB_OUTPUT
                 echo "exclude-unstable=$EXCLUDE_UNSTABLE" >> $GITHUB_OUTPUT
                 echo "exclude-release-only=$EXCLUDE_RELEASE_ONLY" >> $GITHUB_OUTPUT
-                if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" || \
-                      "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
+                if [[ "${{ steps.determine-workflow-context.outputs.is_main_branch_push_from_release_merge }}" == "true" || \
+                      "${{ steps.determine-workflow-context.outputs.is_release_branch_pr }}" == "true" ]]; then
                   echo "link-azle=false" >> $GITHUB_OUTPUT
                 else
                   echo "link-azle=true" >> $GITHUB_OUTPUT
@@ -75,9 +75,9 @@ runs:
           shell: bash
           run: |
               echo "=== Test Conditions Outputs ==="
-              echo "exclude-slow: ${{ steps.process-conditions.outputs.exclude-slow }}"
-              echo "exclude-unstable: ${{ steps.process-conditions.outputs.exclude-unstable }}"
-              echo "exclude-release-only: ${{ steps.process-conditions.outputs.exclude-release-only }}"
-              echo "link-azle: ${{ steps.process-conditions.outputs.link-azle }}"
-              echo "fuzz: ${{ steps.process-conditions.outputs.fuzz }}"
+              echo "exclude-slow: ${{ steps.determine_workflow_config.outputs.exclude-slow }}"
+              echo "exclude-unstable: ${{ steps.determine_workflow_config.outputs.exclude-unstable }}"
+              echo "exclude-release-only: ${{ steps.determine_workflow_config.outputs.exclude-release-only }}"
+              echo "link-azle: ${{ steps.determine_workflow_config.outputs.link-azle }}"
+              echo "fuzz: ${{ steps.determine_workflow_config.outputs.fuzz }}"
               echo "==========================="
