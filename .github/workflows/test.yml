@@ -48,10 +48,10 @@ jobs:
         name: Process test conditions
         runs-on: ubuntu-latest
         outputs:
-            exclude_slow: ${{ steps.process-conditions.outputs.exclude_slow }}
-            exclude_unstable: ${{ steps.process-conditions.outputs.exclude_unstable }}
-            exclude_release_only: ${{ steps.process-conditions.outputs.exclude_release_only }}
-            link_azle: ${{ steps.process-conditions.outputs.link_azle }}
+            exclude-slow: ${{ steps.process-conditions.outputs.exclude-slow }}
+            exclude-unstable: ${{ steps.process-conditions.outputs.exclude-unstable }}
+            exclude-release-only: ${{ steps.process-conditions.outputs.exclude-release-only }}
+            link-azle: ${{ steps.process-conditions.outputs.link-azle }}
             fuzz: ${{ steps.process-conditions.outputs.fuzz }}
         steps:
             - uses: actions/checkout@v4
@@ -59,12 +59,12 @@ jobs:
             - id: process-conditions
               uses: ./.github/actions/process_test_conditions
               with:
-                  is_workflow_dispatch: ${{ github.event_name == 'workflow_dispatch' }}
-                  exclude_slow_input: ${{ inputs.exclude-slow-tests }}
-                  exclude_unstable_input: ${{ inputs.exclude-unstable-tests }}
-                  exclude_release_only_input: ${{ inputs.exclude-release-only-tests }}
-                  link_azle_input: ${{ inputs.link-azle }}
-                  fuzz_input: ${{ inputs.fuzz }}
+                  is-workflow-dispatch: ${{ github.event_name == 'workflow_dispatch' }}
+                  exclude-slow-dispatch-input-value: ${{ inputs.exclude-slow-tests }}
+                  exclude-unstable-dispatch-input-value: ${{ inputs.exclude-unstable-tests }}
+                  exclude-release-only-dispatch-input-value: ${{ inputs.exclude-release-only-tests }}
+                  link-azle-dispatch-input-value: ${{ inputs.link-azle }}
+                  fuzz-dispatch-input-value: ${{ inputs.fuzz }}
 
     get-exclude-dirs:
         name: Get exclude directories
@@ -78,9 +78,9 @@ jobs:
             - id: get-exclude-dirs
               uses: ./.github/actions/get_exclude_dirs
               with:
-                  exclude-slow: ${{ needs.process-conditions.outputs.exclude_slow }}
-                  exclude-unstable: ${{ needs.process-conditions.outputs.exclude_unstable }}
-                  exclude-release-only: ${{ needs.process-conditions.outputs.exclude_release_only }}
+                  exclude-slow: ${{ needs.process-conditions.outputs.exclude-slow }}
+                  exclude-unstable: ${{ needs.process-conditions.outputs.exclude-unstable }}
+                  exclude-release-only: ${{ needs.process-conditions.outputs.exclude-release-only }}
 
     run-tests:
         name: ${{ matrix.test_group.name }}
@@ -95,7 +95,7 @@ jobs:
                     - {
                           name: 'Examples (Experimental)',
                           directories: './examples',
-                          run_experimental: true
+                          run-experimental: true
                       }
                     - {
                           name: 'E2E Class',
@@ -104,7 +104,7 @@ jobs:
                     - {
                           name: 'E2E Class (Experimental)',
                           directories: './tests/end_to_end/candid_rpc/class_syntax',
-                          run_experimental: true
+                          run-experimental: true
                       }
                     - {
                           name: 'E2E Functional',
@@ -121,7 +121,7 @@ jobs:
                     - {
                           name: 'Property Class (Experimental)',
                           directories: './tests/property/candid_rpc/class_api',
-                          run_experimental: true
+                          run-experimental: true
                       }
                     - {
                           name: 'Property Functional',
@@ -134,15 +134,15 @@ jobs:
                     - {
                           name: 'Property IC API (Experimental)',
                           directories: './tests/property/ic_api',
-                          run_experimental: true
+                          run-experimental: true
                       }
         uses: ./.github/workflows/get_and_run_tests.yml
         with:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
-            run_experimental: ${{ matrix.test_group.run_experimental || false }}
+            run-experimental: ${{ matrix.test_group.run-experimental || false }}
             fuzz: ${{ needs.process-conditions.outputs.fuzz }}
-            link_azle: ${{ needs.process-conditions.outputs.link_azle }}
+            link-azle: ${{ needs.process-conditions.outputs.link-azle }}
 
     check-test-success:
         name: Check Azle tests succeeded
