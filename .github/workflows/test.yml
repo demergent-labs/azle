@@ -33,7 +33,7 @@ on:
                 type: boolean
                 default: true
             exclude-release-only-tests:
-                description: 'Exclude release only tests'
+                description: 'Exclude release-only tests'
                 required: true
                 type: boolean
                 default: true

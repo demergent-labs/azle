@@ -32,6 +32,7 @@ on:
 
 jobs:
     get-test-infos:
+        name: Get test infos
         runs-on: ubuntu-latest
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
@@ -69,7 +70,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - uses: ./.github/actions/set_run_conditions
+            - uses: ./.github/actions/determine_workflow_context
               id: set-conditions
 
             - name: Set condition environment variables
