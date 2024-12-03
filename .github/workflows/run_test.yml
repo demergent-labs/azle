@@ -6,7 +6,7 @@ on:
             test_infos:
                 required: true
                 type: string
-            include_npm:
+            link_azle:
                 required: true
                 type: boolean
             run_experimental:
@@ -46,7 +46,7 @@ jobs:
                 # os: [macos-latest, ubuntu-latest]
                 os: [ubuntu-latest]
                 azle_source:
-                    - ${{ inputs.include_npm == true && 'npm' || 'repo' }}
+                    - ${{ inputs.link_azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(inputs.test_infos) }}
         steps:
             - uses: actions/checkout@v4
