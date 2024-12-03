@@ -18,6 +18,9 @@ inputs:
         description: 'Workflow dispatch input for running fuzz tests'
         required: false
         default: 'false'
+    link-azle-dispatch-input-value:
+        description: 'Workflow dispatch input for linking to the development version of azle'
+        required: true
 
 outputs:
     exclude-slow:
