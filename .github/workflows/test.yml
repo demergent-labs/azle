@@ -84,6 +84,7 @@ jobs:
 
     run-tests:
         name: ${{ matrix.test_group.name }}
+        runs-on: ubuntu-latest
         needs:
             - process-conditions
             - get-exclude-dirs
@@ -136,13 +137,21 @@ jobs:
                           directories: './tests/property/ic_api',
                           run-experimental: true
                       }
-        uses: ./.github/workflows/get_and_run_tests.yml
-        with:
-            directories: ${{ matrix.test_group.directories }}
-            exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
-            run-experimental: ${{ matrix.test_group.run-experimental || false }}
-            fuzz: ${{ needs.process-conditions.outputs.fuzz == 'true' }}
-            link-azle: ${{ needs.process-conditions.outputs.link-azle == 'true' }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: ${{ matrix.test_group.directories }}
+                  exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
+
+            - uses: ./.github/workflows/run_test.yml
+              with:
+                  test_infos: ${{ steps.get-test-infos.outputs.test-infos }}
+                  link-azle: ${{ needs.process-conditions.outputs.link-azle == 'true' }}
+                  run-experimental: ${{ matrix.test_group.run-experimental || false }}
+                  fuzz: ${{ needs.process-conditions.outputs.fuzz == 'true' }}
 
     check-test-success:
         name: Check Azle tests succeeded
