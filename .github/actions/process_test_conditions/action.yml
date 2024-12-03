@@ -43,7 +43,7 @@ runs:
     using: 'composite'
     steps:
         - id: set-conditions
-          uses: ./.github/actions/set_run_conditions
+          uses: ./.github/actions/determine_workflow_context
 
         - id: process-conditions
           shell: bash
