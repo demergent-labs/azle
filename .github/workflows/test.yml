@@ -37,40 +37,55 @@ on:
                 required: true
                 type: boolean
                 default: true
+            link-azle:
+                description: 'Link to development version of azle'
+                required: true
+                type: boolean
+                default: true
 
 jobs:
+    process-conditions:
+        name: Process test conditions
+        runs-on: ubuntu-latest
+        outputs:
+            exclude_slow: ${{ steps.process-conditions.outputs.exclude_slow }}
+            exclude_unstable: ${{ steps.process-conditions.outputs.exclude_unstable }}
+            exclude_release_only: ${{ steps.process-conditions.outputs.exclude_release_only }}
+            link_azle: ${{ steps.process-conditions.outputs.link_azle }}
+            fuzz: ${{ steps.process-conditions.outputs.fuzz }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: process-conditions
+              uses: ./.github/actions/process_test_conditions
+              with:
+                  is_workflow_dispatch: ${{ github.event_name == 'workflow_dispatch' }}
+                  exclude_slow_input: ${{ inputs.exclude-slow-tests }}
+                  exclude_unstable_input: ${{ inputs.exclude-unstable-tests }}
+                  exclude_release_only_input: ${{ inputs.exclude-release-only-tests }}
+                  link_azle_input: ${{ inputs.link-azle }}
+                  fuzz_input: ${{ inputs.fuzz }}
+
     get-exclude-dirs:
         name: Get exclude directories
+        needs: process-conditions
         runs-on: ubuntu-latest
         outputs:
             exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
         steps:
             - uses: actions/checkout@v4
 
-            - id: set-conditions
-              uses: ./.github/actions/set_run_conditions
-
-            - id: determine-exclusions
-              uses: ./.github/actions/determine_exclusions
-              with:
-                  is_workflow_dispatch: ${{ github.event_name == 'workflow_dispatch' }}
-                  exclude_slow_input: ${{ inputs.exclude-slow-tests }}
-                  exclude_unstable_input: ${{ inputs.exclude-unstable-tests }}
-                  exclude_release_only_input: ${{ inputs.exclude-release-only-tests }}
-                  is_feature_branch_draft_pr: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}
-                  is_feature_branch_pr: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}
-                  is_main_branch_push: ${{ steps.set-conditions.outputs.is_main_branch_push }}
-
             - id: get-exclude-dirs
               uses: ./.github/actions/get_exclude_dirs
               with:
-                  exclude-slow: ${{ steps.determine-exclusions.outputs.exclude_slow }}
-                  exclude-unstable: ${{ steps.determine-exclusions.outputs.exclude_unstable }}
-                  exclude-release-only: ${{ steps.determine-exclusions.outputs.exclude_release_only }}
+                  exclude-slow: ${{ needs.process-conditions.outputs.exclude_slow }}
+                  exclude-unstable: ${{ needs.process-conditions.outputs.exclude_unstable }}
+                  exclude-release-only: ${{ needs.process-conditions.outputs.exclude_release_only }}
 
     run-tests:
         name: ${{ matrix.test_group.name }}
         needs:
+            - process-conditions
             - get-exclude-dirs
         strategy:
             fail-fast: false
@@ -126,7 +141,8 @@ jobs:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             run_experimental: ${{ matrix.test_group.run_experimental || false }}
-            fuzz: ${{ inputs.fuzz || false }}
+            fuzz: ${{ needs.process-conditions.outputs.fuzz }}
+            link_azle: ${{ needs.process-conditions.outputs.link_azle }}
 
     check-test-success:
         name: Check Azle tests succeeded
