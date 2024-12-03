@@ -3,23 +3,23 @@ description: 'Determines the workflow context based on the current GitHub contex
 outputs:
     is_main_branch_push:
         description: 'True if this is a push to the main branch (excluding merges from release branches)'
-        value: ${{ steps.determine-workflow-context.outputs.is_main_branch_push }}
+        value: ${{ steps.workflow-context.outputs.is_main_branch_push }}
     is_main_branch_push_from_release_merge:
         description: 'True if this is a push to the main branch from a release branch merge'
-        value: ${{ steps.determine-workflow-context.outputs.is_main_branch_push_from_release_merge }}
+        value: ${{ steps.workflow-context.outputs.is_main_branch_push_from_release_merge }}
     is_release_branch_pr:
         description: 'True if this is a pull request from a release branch'
-        value: ${{ steps.determine-workflow-context.outputs.is_release_branch_pr }}
+        value: ${{ steps.workflow-context.outputs.is_release_branch_pr }}
     is_feature_branch_pr:
         description: 'True if this is a pull request from a feature branch (non-draft)'
-        value: ${{ steps.determine-workflow-context.outputs.is_feature_branch_pr }}
+        value: ${{ steps.workflow-context.outputs.is_feature_branch_pr }}
     is_feature_branch_draft_pr:
         description: 'True if this is a draft pull request from a feature branch'
-        value: ${{ steps.determine-workflow-context.outputs.is_feature_branch_draft_pr }}
+        value: ${{ steps.workflow-context.outputs.is_feature_branch_draft_pr }}
 runs:
     using: 'composite'
     steps:
-        - id: determine-workflow-context
+        - id: workflow-context
           run: |
               # Define conditions using shell variables
               AZLE_IS_MAIN_BRANCH_PUSH=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
