@@ -74,10 +74,9 @@ runs:
         - id: echo-outputs
           shell: bash
           run: |
-              echo "=== Test Conditions Outputs ==="
+              echo "Test Conditions Outputs:"
               echo "exclude-slow: ${{ steps.determine_workflow_config.outputs.exclude-slow }}"
               echo "exclude-unstable: ${{ steps.determine_workflow_config.outputs.exclude-unstable }}"
               echo "exclude-release-only: ${{ steps.determine_workflow_config.outputs.exclude-release-only }}"
               echo "link-azle: ${{ steps.determine_workflow_config.outputs.link-azle }}"
               echo "fuzz: ${{ steps.determine_workflow_config.outputs.fuzz }}"
-              echo "==========================="
