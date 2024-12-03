@@ -55,9 +55,9 @@ runs:
                 echo "link-azle=${{ inputs.link-azle-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "fuzz=${{ inputs.fuzz-dispatch-input-value }}" >> $GITHUB_OUTPUT
               else
-                EXCLUDE_SLOW=${{ inputs.is_feature_branch_draft_pr == 'true' }}
-                EXCLUDE_UNSTABLE=${{ inputs.is_feature_branch_draft_pr == 'true' || inputs.is_feature_branch_pr == 'true' }}
-                EXCLUDE_RELEASE_ONLY=${{ inputs.is_feature_branch_draft_pr == 'true' || inputs.is_feature_branch_pr == 'true' || inputs.is_main_branch_push == 'true' }}
+                EXCLUDE_SLOW=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
+                EXCLUDE_UNSTABLE=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_pr == 'true' }}
+                EXCLUDE_RELEASE_ONLY=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push == 'true' }}
 
                 echo "exclude-slow=$EXCLUDE_SLOW" >> $GITHUB_OUTPUT
                 echo "exclude-unstable=$EXCLUDE_UNSTABLE" >> $GITHUB_OUTPUT
