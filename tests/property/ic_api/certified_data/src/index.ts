@@ -9,49 +9,67 @@ import {
     update
 } from 'azle';
 
-// TODO set can be called from reply and reject callbacks
-
 let afterFirstPostUpgrade = false;
 
 export default class {
-    @init([IDL.Bool])
-    init(setData: boolean): void {
+    data: Uint8Array = new Uint8Array();
+
+    @init([IDL.Bool, IDL.Vec(IDL.Nat8)])
+    init(setData: boolean, data: Uint8Array): void {
         if (setData) {
-            setCertifiedData(new Uint8Array([0])); // Set initial data
+            this.data = data;
+            setCertifiedData(data);
         }
     }
 
     @preUpgrade
     preUpgrade(): void {
         // The idea is that the third deploy will always have certified data set from preUpgrade so to test it we need to deploy 3 times
+        // We could make it arbitrary but that seems like a lot of work just to test this one case
         if (afterFirstPostUpgrade) {
-            setCertifiedData(new Uint8Array([1]));
+            const preUpgradeData = new Uint8Array([
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+            ]);
+            this.data = preUpgradeData;
+            setCertifiedData(preUpgradeData);
         }
     }
 
-    @postUpgrade([IDL.Bool])
-    postUpgrade(setData: boolean): void {
+    @postUpgrade([IDL.Bool, IDL.Vec(IDL.Nat8)])
+    postUpgrade(setData: boolean, data: Uint8Array): void {
         if (setData) {
-            setCertifiedData(new Uint8Array([2])); // Set post-upgrade data
+            this.data = data;
+            setCertifiedData(data);
         }
         afterFirstPostUpgrade = true;
     }
 
     @update([IDL.Vec(IDL.Nat8)])
     setData(data: Uint8Array): void {
+        this.data = data;
         setCertifiedData(data);
     }
 
-    @query([], IDL.Opt(IDL.Vec(IDL.Nat8)))
-    getCertificate(): [Uint8Array] | [] {
+    @query(
+        [],
+        IDL.Record({
+            value: IDL.Vec(IDL.Nat8),
+            certificate: IDL.Opt(IDL.Vec(IDL.Nat8))
+        })
+    )
+    async getData(): Promise<{
+        value: Uint8Array;
+        certificate: [Uint8Array] | [];
+    }> {
         const certificate = dataCertificate();
-        if (certificate === undefined) {
-            return [];
-        }
-        return [certificate];
+        return {
+            value: this.data,
+            certificate: certificate ? [certificate] : []
+        };
     }
 
-    @update([], IDL.Opt(IDL.Vec(IDL.Nat8)))
+    @update([])
     getDataCertificateInUpdate(): void {
         const certificate = dataCertificate();
         if (certificate === undefined) {
