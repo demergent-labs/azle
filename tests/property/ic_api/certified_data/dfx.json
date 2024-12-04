@@ -3,7 +3,7 @@
         "canister": {
             "type": "azle",
             "main": "src/index.ts",
-            "init_arg": "(false)",
+            "init_arg": "(false, blob \"\")",
             "declarations": {
                 "output": "test/dfx_generated/canister",
                 "node_compatibility": true

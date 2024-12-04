@@ -70,7 +70,7 @@ async function testCertifiedVariableUpdate(
 
 async function verifyCertificate(
     certificateBytes: [] | [Uint8Array | number[]],
-    agent: any,
+    agent: HttpAgent,
     canisterPrincipal: Principal
 ): Promise<Certificate> {
     if (certificateBytes.length === 0) {
