@@ -38,7 +38,7 @@ export function getTests(): Test {
                         ]);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -65,7 +65,7 @@ export function getTests(): Test {
                         ]);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -98,7 +98,7 @@ export function getTests(): Test {
                         expect(updatedCertificate).toEqual([arbitraryData]);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -137,7 +137,7 @@ export function getTests(): Test {
                         expect(updatedCertificate).toEqual([arbitraryData]);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
@@ -161,7 +161,7 @@ export function getTests(): Test {
                         ).resolves.toEqual([]);
                     }
                 ),
-                defaultPropTestParams
+                defaultPropTestParams()
             );
         });
 
