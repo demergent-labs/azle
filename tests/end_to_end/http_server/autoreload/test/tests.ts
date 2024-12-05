@@ -51,7 +51,7 @@ export function getTests(canisterId: string): Test {
                 // chokidar seems to debounce if writes are too close together
                 await new Promise((resolve) => setTimeout(resolve, 100));
             }
-        }, 20_000);
+        });
 
         wait('for Azle to reload', 90_000);
 

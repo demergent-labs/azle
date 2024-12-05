@@ -23,7 +23,7 @@ export function getTests(async_await_canister: ActorSubclass<_SERVICE>): Test {
                 await async_await_canister.getRandomnessSuperIndirectly();
 
             expect(result).toHaveLength(96);
-        }, 10_000);
+        });
 
         it('is able to handle Promise<void>', async () => {
             const result = await async_await_canister.returnPromiseVoid();

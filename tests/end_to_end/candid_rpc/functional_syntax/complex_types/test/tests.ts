@@ -76,7 +76,7 @@ export function getTests(complexTypesCanister: ActorSubclass<_SERVICE>): Test {
             expect(thread).toStrictEqual(THREAD);
             expect(post).toStrictEqual(POST);
             expect(reaction).toStrictEqual(REACTION);
-        }, 100_000);
+        });
 
         it('recalls the stored complex values', async () => {
             const posts = await complexTypesCanister.getAllPosts(0);

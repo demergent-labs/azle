@@ -34,7 +34,7 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
             }
 
             expect(globalResults.size).toBe(5);
-        }, 20_000);
+        });
 
         please('dfx deploy', async () => {
             execSync('dfx deploy --upgrade-unchanged');
@@ -70,6 +70,6 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
             }
 
             expect(globalResults.size).toBe(10);
-        }, 20_000);
+        });
     };
 }

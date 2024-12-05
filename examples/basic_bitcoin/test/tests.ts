@@ -62,7 +62,7 @@ export function getTests(
             const balance = await getBalance(origin, address);
 
             expect(balance).toBe(0n);
-        }, 10_000);
+        });
 
         please(`mine ${FIRST_MINING_SESSION} blocks`, async () => {
             const address = await getAddress(origin);
@@ -78,7 +78,7 @@ export function getTests(
             expect(balance).toBe(
                 SINGLE_BLOCK_REWARD * BigInt(FIRST_MINING_SESSION)
             );
-        }, 10_000);
+        });
 
         it('gets the canister utxos from /get-utxos after mining rewards have been received', async () => {
             const address = await getAddress(origin);
@@ -94,7 +94,7 @@ export function getTests(
             expect(utxosResult.tip_height).toBe(FIRST_MINING_SESSION);
             expect(utxosResult.utxos.length).toBe(FIRST_MINING_SESSION);
             expect(checkUtxos(utxosResult.utxos)).toBe(true);
-        }, 10_000);
+        });
 
         it('gets an empty array from /get-current-fee-percentiles since no transactions have happened yet', async () => {
             const response = await fetch(
@@ -111,7 +111,7 @@ export function getTests(
             const balance = await getBalance(origin, TO_ADDRESS);
 
             expect(balance).toBe(0n);
-        }, 10_000);
+        });
 
         it(`sends ${FIRST_AMOUNT_SENT} from canister to ${TO_ADDRESS} with /send`, async () => {
             const body = jsonStringify({
@@ -127,7 +127,7 @@ export function getTests(
             context = { ...context, lastTxid };
 
             expect(lastTxid).toHaveLength(64);
-        }, 30_000);
+        });
 
         please('wait for transaction to appear in mempool', waitForMempool);
 
@@ -141,7 +141,7 @@ export function getTests(
 
             context = { ...context, toAddressPreviousBalance };
             expect(balance).toBe(FIRST_AMOUNT_SENT);
-        }, 10_000);
+        });
 
         it(`gets balance of canister after sending ${FIRST_AMOUNT_SENT}`, async () => {
             const address = await getAddress(origin);
@@ -162,7 +162,7 @@ export function getTests(
 
             context = { ...context, canisterPreviousBalance };
             expect(balance).toBe(expectedBalance);
-        }, 10_000);
+        });
 
         it(`gets an array of length ${FULL_FEE_PERCENTILE_LENGTH} from /get-current-fee-percentiles since transaction data now exists`, async () => {
             const response = await fetch(
@@ -197,7 +197,7 @@ export function getTests(
             context = { ...context, lastTxid };
 
             expect(lastTxid).toHaveLength(64);
-        }, 30_000);
+        });
 
         please('wait for transaction to appear in mempool', waitForMempool);
 
@@ -211,7 +211,7 @@ export function getTests(
                 context.toAddressPreviousBalance + SECOND_AMOUNT_SENT;
 
             expect(balance).toBe(expectedBalance);
-        }, 10_000);
+        });
 
         it(`gets balance of canister after sending an additional ${SECOND_AMOUNT_SENT}`, async () => {
             const address = await getAddress(origin);
@@ -228,7 +228,7 @@ export function getTests(
                 context.canisterPreviousBalance - SECOND_AMOUNT_SENT - fee;
 
             expect(balance).toBe(expectedBalance);
-        }, 10_000);
+        });
 
         it(`gets an array of length ${FULL_FEE_PERCENTILE_LENGTH} from /get-current-fee-percentiles since transaction data still exists`, async () => {
             const response = await fetch(
