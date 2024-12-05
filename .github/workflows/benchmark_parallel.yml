@@ -15,6 +15,9 @@ on:
                 required: false
                 type: string
                 default: ''
+            version:
+                required: true
+                type: string
 
         secrets:
             GPG_SIGNING_KEY:
@@ -80,9 +83,27 @@ jobs:
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Run npm test (continue on error)
+              id: record-benchmarks
               working-directory: ${{ matrix.test.path }}
               continue-on-error: true
               run: AZLE_IDENTITY_STORAGE_MODE=plaintext AZLE_RECORD_BENCHMARKS=true npm test
+
+            - name: Handle test failure
+              working-directory: ${{ matrix.test.path }}
+              if: steps.record-benchmarks.outcome == 'failure'
+              run: |
+                  echo "The benchmark test failed"
+                  if [ -f benchmarks.md ]; then
+                    # Create a temporary file with the failure message
+                    echo "⚠️ **WARNING: Benchmark process failed for version ${{ inputs.version }}**" > temp.md
+                    echo "" >> temp.md
+                    # Append the original content
+                    cat benchmarks.md >> temp.md
+                    # Replace the original file
+                    mv temp.md benchmarks.md
+                  else
+                    echo "⚠️ **WARNING: Benchmark process failed for version ${{ inputs.version }}**" > benchmarks.md
+                  fi
 
             - name: Create branch name
               id: create-branch-name
