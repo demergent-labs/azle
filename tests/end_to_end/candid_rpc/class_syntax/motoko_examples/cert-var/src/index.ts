@@ -18,8 +18,8 @@ export default class {
     }
 
     @update([IDL.Nat32])
-    async set(newValue: number): Promise<void> {
-        this.value = newValue;
+    async set(value: number): Promise<void> {
+        this.value = value;
         setCertifiedData(blobOfNat32(this.value));
     }
 
@@ -35,10 +35,10 @@ export default class {
         })
     )
     async get(): Promise<{ value: number; certificate: [Uint8Array] | [] }> {
-        const cert = dataCertificate();
+        const certificate = dataCertificate();
         return {
             value: this.value,
-            certificate: cert ? [cert] : []
+            certificate: certificate ? [certificate] : []
         };
     }
 }
