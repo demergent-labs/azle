@@ -10,7 +10,6 @@ import {
     update
 } from 'azle';
 
-let afterFirstPostUpgrade = false;
 const PRE_UPGRADE_DATA = new Uint8Array([
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
@@ -19,6 +18,7 @@ const PRE_UPGRADE_DATA = new Uint8Array([
 export default class {
     data: Uint8Array = new Uint8Array();
     stableStorage = StableBTreeMap<string, boolean>(0);
+    afterFirstPostUpgrade = false;
 
     @init([IDL.Bool, IDL.Vec(IDL.Nat8)])
     init(setData: boolean, data: Uint8Array): void {
@@ -32,7 +32,7 @@ export default class {
     preUpgrade(): void {
         // The idea is that the third deploy will always have certified data set from preUpgrade so to test it we need to deploy 3 times
         // We could make it arbitrary but that seems like a lot of work just to test this one case
-        if (afterFirstPostUpgrade) {
+        if (this.afterFirstPostUpgrade) {
             setCertifiedData(PRE_UPGRADE_DATA);
             this.stableStorage.insert('certifiedDataSetInPreUpgrade', true);
         }
@@ -40,10 +40,11 @@ export default class {
 
     @postUpgrade([IDL.Bool, IDL.Vec(IDL.Nat8)])
     postUpgrade(setData: boolean, data: Uint8Array): void {
-        const wasSetInPreUpgrade = this.stableStorage.get(
+        const certifiedDataSetInPreUpgrade = this.stableStorage.get(
             'certifiedDataSetInPreUpgrade'
         );
-        if (wasSetInPreUpgrade) {
+
+        if (certifiedDataSetInPreUpgrade) {
             this.data = PRE_UPGRADE_DATA;
         }
 
@@ -51,7 +52,8 @@ export default class {
             this.data = data;
             setCertifiedData(data);
         }
-        afterFirstPostUpgrade = true;
+
+        this.afterFirstPostUpgrade = true;
     }
 
     @update([IDL.Vec(IDL.Nat8)])

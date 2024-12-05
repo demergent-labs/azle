@@ -29,7 +29,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.uint8Array({ minLength: 1, maxLength: 32 }),
-                    async (arbitraryData) => {
+                    async (data) => {
                         const agent = await createAuthenticatedAgent(whoami());
                         const actor = await getCanisterActor<Actor>(
                             CANISTER_NAME,
@@ -38,10 +38,10 @@ export function getTests(): Test {
                             }
                         );
 
-                        await actor.setData(arbitraryData);
+                        await actor.setData(data);
 
                         await testCertifiedData(
-                            arbitraryData,
+                            data,
                             actor,
                             agent,
                             CANISTER_NAME
@@ -60,7 +60,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.uint8Array({ minLength: 1, maxLength: 32 }),
-                    async (arbitraryData) => {
+                    async (data) => {
                         const agent = await createAuthenticatedAgent(whoami());
                         const actor = await getCanisterActor<Actor>(
                             CANISTER_NAME,
@@ -80,11 +80,11 @@ export function getTests(): Test {
                         );
 
                         // Set the certified data
-                        await actor.setData(arbitraryData);
+                        await actor.setData(data);
 
                         // Check that getCertificate now returns the set data
                         await testCertifiedData(
-                            arbitraryData,
+                            data,
                             actor,
                             agent,
                             CANISTER_NAME
@@ -155,7 +155,6 @@ export function getTests(): Test {
                             initData
                         });
 
-                        // Check that getCertificate returns [0] after upgrade
                         await testCertifiedData(
                             initData,
                             actor,
@@ -173,6 +172,7 @@ export function getTests(): Test {
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
                 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
             ]);
+
             uninstallCanister();
             deployCanister();
 
@@ -180,16 +180,6 @@ export function getTests(): Test {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME, {
                 agent
             });
-            // Check that getCertificate returns an empty array initially
-            await testCertifiedData(
-                new Uint8Array(),
-                actor,
-                agent,
-                CANISTER_NAME
-            );
-
-            // Upgrade the canister
-            deployCanister({ force: true });
 
             // Check that getCertificate returns an empty array initially
             await testCertifiedData(
@@ -201,7 +191,16 @@ export function getTests(): Test {
 
             deployCanister({ force: true });
 
-            // Check that getCertificate returns [0] after upgrade
+            // Check that getCertificate returns an empty array after first upgrade
+            await testCertifiedData(
+                new Uint8Array(),
+                actor,
+                agent,
+                CANISTER_NAME
+            );
+
+            deployCanister({ force: true });
+
             await testCertifiedData(
                 preUpgradeBytes,
                 actor,
@@ -210,11 +209,11 @@ export function getTests(): Test {
             );
         });
 
-        it('always returns empty array when trying to get data certificate in update method', async () => {
+        it('always returns [] when trying to get data certificate in update method', async () => {
             await fc.assert(
                 fc.asyncProperty(
                     fc.uint8Array({ minLength: 1, maxLength: 32 }),
-                    async (arbitraryData) => {
+                    async (data) => {
                         const actor =
                             await getCanisterActor<Actor>(CANISTER_NAME);
 
@@ -222,7 +221,7 @@ export function getTests(): Test {
                             actor.getDataCertificateInUpdate()
                         ).resolves.toEqual([]);
 
-                        await actor.setData(arbitraryData);
+                        await actor.setData(data);
 
                         await expect(
                             actor.getDataCertificateInUpdate()
@@ -314,11 +313,14 @@ function deployCanister(options: DeployCanisterOptions = {}): void {
         force = false,
         initData = new Uint8Array()
     } = options;
+
     const initDataArgument = uint8ArrayToCandidString(initData);
     let command = `dfx deploy canister --argument '(${setData}, ${initDataArgument})'`;
+
     if (force) {
         command += ' --upgrade-unchanged';
     }
+
     execSync(command, { stdio: 'inherit' });
 }
 function uint8ArrayToCandidString(uint8Array: Uint8Array): string {
@@ -342,13 +344,13 @@ async function testCertifiedData(
     const value = new Uint8Array(result.value);
     expect(value).toEqual(expectedValue);
 
-    const cert = await verifyCertificate(
+    const certificate = await verifyCertificate(
         result.certificate,
         agent,
         canisterPrincipal
     );
-    verifyTimestamp(cert);
-    verifyCertifiedData(cert, canisterPrincipal, value);
+    verifyTimestamp(certificate);
+    verifyCertifiedData(certificate, canisterPrincipal, value);
 }
 
 async function verifyCertificate(
@@ -359,22 +361,21 @@ async function verifyCertificate(
     if (certificateBytes.length === 0) {
         throw new Error('No certificate found');
     }
+
     expect(certificateBytes.length).toBeGreaterThan(0);
 
     const certificate = new Uint8Array(certificateBytes[0]).buffer;
 
-    const cert = await Certificate.create({
+    return await Certificate.create({
         certificate,
         rootKey: agent.rootKey,
         canisterId: canisterPrincipal
     });
-
-    return cert;
 }
 
-function verifyTimestamp(cert: Certificate): void {
-    const certTime = findLookupValueOrThrow(cert, ['time']);
-    const decodedTime = lebDecode(new PipeArrayBuffer(certTime));
+function verifyTimestamp(certificate: Certificate): void {
+    const certificateTime = findLookupValueOrThrow(certificate, ['time']);
+    const decodedTime = lebDecode(new PipeArrayBuffer(certificateTime));
     const time = Number(decodedTime) / 1e9;
 
     const now = Date.now() / 1000;
@@ -387,13 +388,13 @@ function verifyTimestamp(cert: Certificate): void {
 // This function verifies the certified data in the certificate.
 // Consequently it also verifies the canister ID and the value.
 function verifyCertifiedData(
-    cert: Certificate,
-    cid: Principal,
+    certificate: Certificate,
+    canisterPrincipal: Principal,
     expectedValue: Uint8Array
 ): void {
-    const rawData = findLookupValueOrThrow(cert, [
+    const rawData = findLookupValueOrThrow(certificate, [
         'canister',
-        cid.toUint8Array(),
+        canisterPrincipal.toUint8Array(),
         'certified_data'
     ]);
 
@@ -409,5 +410,6 @@ function verifyCertifiedData(
         [IDL.Vec(IDL.Nat8)],
         candidEncodedRawData
     )[0];
+
     expect(expectedValue).toEqual(decodedData);
 }

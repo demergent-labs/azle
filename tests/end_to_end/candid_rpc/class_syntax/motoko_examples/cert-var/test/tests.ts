@@ -48,24 +48,25 @@ export function getTests(): Test {
 }
 
 async function testCertifiedVariableUpdate(
-    newVal: number,
+    newValue: number,
     certVarCanister: ActorSubclass<Actor>,
     agent: HttpAgent,
     canisterName: string
 ): Promise<void> {
     const canisterPrincipal = Principal.fromText(getCanisterId(canisterName));
 
-    await certVarCanister.set(newVal);
+    await certVarCanister.set(newValue);
 
     const result = await certVarCanister.get();
+    expect(result.value).toBe(newValue);
 
-    const cert = await verifyCertificate(
+    const certificate = await verifyCertificate(
         result.certificate,
         agent,
         canisterPrincipal
     );
-    verifyTimestamp(cert);
-    verifyCertifiedData(cert, canisterPrincipal, result.value);
+    verifyTimestamp(certificate);
+    verifyCertifiedData(certificate, canisterPrincipal, result.value);
 }
 
 async function verifyCertificate(
@@ -80,18 +81,16 @@ async function verifyCertificate(
 
     const certificate = new Uint8Array(certificateBytes[0]).buffer;
 
-    const cert = await Certificate.create({
+    return await Certificate.create({
         certificate,
         rootKey: agent.rootKey,
         canisterId: canisterPrincipal
     });
-
-    return cert;
 }
 
-function verifyTimestamp(cert: Certificate): void {
-    const certTime = findLookupValueOrThrow(cert, ['time']);
-    const decodedTime = lebDecode(new PipeArrayBuffer(certTime));
+function verifyTimestamp(certificate: Certificate): void {
+    const certificateTime = findLookupValueOrThrow(certificate, ['time']);
+    const decodedTime = lebDecode(new PipeArrayBuffer(certificateTime));
     const time = Number(decodedTime) / 1e9;
 
     const now = Date.now() / 1000;
@@ -101,16 +100,14 @@ function verifyTimestamp(cert: Certificate): void {
     // Timestamp difference seems legit (< 5 sec)
 }
 
-// This function verifies the certified data in the certificate.
-// Consequently it also verifies the canister ID and the value.
 function verifyCertifiedData(
-    cert: Certificate,
-    cid: Principal,
+    certificate: Certificate,
+    canisterPrincipal: Principal,
     expectedValue: number
 ): void {
-    const rawData = findLookupValueOrThrow(cert, [
+    const rawData = findLookupValueOrThrow(certificate, [
         'canister',
-        cid.toUint8Array(),
+        canisterPrincipal.toUint8Array(),
         'certified_data'
     ]);
 
@@ -126,18 +123,18 @@ function verifyCertifiedData(
 }
 
 function findLookupValueOrThrow(
-    cert: Certificate,
+    certificate: Certificate,
     path: (ArrayBuffer | string)[]
 ): ArrayBuffer {
-    const lookup = findLookupOrThrow(cert, path);
+    const lookup = findLookupOrThrow(certificate, path);
     return getValueAsArrayBufferOrThrow(lookup);
 }
 
 function findLookupOrThrow(
-    cert: Certificate,
+    certificate: Certificate,
     path: (ArrayBuffer | string)[]
 ): LookupResultFound {
-    const lookup = cert.lookup(path);
+    const lookup = certificate.lookup(path);
     if (lookup.status !== 'found') {
         throw new Error('No value found');
     }
