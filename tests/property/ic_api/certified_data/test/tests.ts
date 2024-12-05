@@ -99,11 +99,11 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.uint8Array({ minLength: 1, maxLength: 32 }),
-                    async (arbitraryData) => {
+                    async (initData) => {
                         uninstallCanister();
                         deployCanister({
                             setData: true,
-                            initData: arbitraryData
+                            initData
                         });
                         const agent = await createAuthenticatedAgent(whoami());
                         const actor = await getCanisterActor<Actor>(
@@ -115,7 +115,7 @@ export function getTests(): Test {
 
                         // Check that getCertificate returns [0] initially
                         await testCertifiedData(
-                            arbitraryData,
+                            initData,
                             actor,
                             agent,
                             CANISTER_NAME
@@ -130,29 +130,38 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.uint8Array({ minLength: 1, maxLength: 32 }),
-                    async (arbitraryData) => {
-                        const actor =
-                            await getCanisterActor<Actor>(CANISTER_NAME);
+                    async (initData) => {
                         uninstallCanister();
                         deployCanister();
+                        const agent = await createAuthenticatedAgent(whoami());
+                        const actor = await getCanisterActor<Actor>(
+                            CANISTER_NAME,
+                            {
+                                agent
+                            }
+                        );
 
                         // Check that getCertificate returns an empty array initially
-                        expect(await actor.getData()).toEqual([]);
+                        await testCertifiedData(
+                            new Uint8Array(),
+                            actor,
+                            agent,
+                            CANISTER_NAME
+                        );
 
-                        deployCanister({ setData: true, force: true });
+                        deployCanister({
+                            setData: true,
+                            force: true,
+                            initData
+                        });
 
                         // Check that getCertificate returns [0] after upgrade
-                        const upgradedCertificate = await actor.getData();
-                        expect(upgradedCertificate).toEqual([
-                            new Uint8Array([0])
-                        ]);
-
-                        // Set the certified data
-                        await actor.setData(arbitraryData);
-
-                        // Check that getCertificate now returns the set data
-                        const updatedCertificate = await actor.getData();
-                        expect(updatedCertificate).toEqual([arbitraryData]);
+                        await testCertifiedData(
+                            initData,
+                            actor,
+                            agent,
+                            CANISTER_NAME
+                        );
                     }
                 ),
                 defaultPropTestParams()
@@ -160,41 +169,44 @@ export function getTests(): Test {
         });
 
         it('sets certified data in preUpgrade', async () => {
-            await fc.assert(
-                fc.asyncProperty(
-                    fc.uint8Array({ minLength: 1, maxLength: 32 }),
-                    async (arbitraryData) => {
-                        const actor =
-                            await getCanisterActor<Actor>(CANISTER_NAME);
-                        uninstallCanister();
-                        deployCanister();
+            const preUpgradeBytes = new Uint8Array([
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+            ]);
+            uninstallCanister();
+            deployCanister();
 
-                        // Check that getCertificate returns an empty array initially
-                        expect(await actor.getData()).toEqual([]);
+            const agent = await createAuthenticatedAgent(whoami());
+            const actor = await getCanisterActor<Actor>(CANISTER_NAME, {
+                agent
+            });
+            // Check that getCertificate returns an empty array initially
+            await testCertifiedData(
+                new Uint8Array(),
+                actor,
+                agent,
+                CANISTER_NAME
+            );
 
-                        // Upgrade the canister
-                        deployCanister({ force: true });
+            // Upgrade the canister
+            deployCanister({ force: true });
 
-                        // Check that getCertificate returns an empty array initially
-                        expect(await actor.getData()).toEqual([]);
+            // Check that getCertificate returns an empty array initially
+            await testCertifiedData(
+                new Uint8Array(),
+                actor,
+                agent,
+                CANISTER_NAME
+            );
 
-                        deployCanister({ force: true });
+            deployCanister({ force: true });
 
-                        // Check that getCertificate returns [0] after upgrade
-                        const preUpgradeCertificate = await actor.getData();
-                        expect(preUpgradeCertificate).toEqual([
-                            new Uint8Array([0])
-                        ]);
-
-                        // Set the certified data
-                        await actor.setData(arbitraryData);
-
-                        // Check that getCertificate now returns the set data
-                        const updatedCertificate = await actor.getData();
-                        expect(updatedCertificate).toEqual([arbitraryData]);
-                    }
-                ),
-                defaultPropTestParams()
+            // Check that getCertificate returns [0] after upgrade
+            await testCertifiedData(
+                preUpgradeBytes,
+                actor,
+                agent,
+                CANISTER_NAME
             );
         });
 
@@ -205,8 +217,6 @@ export function getTests(): Test {
                     async (arbitraryData) => {
                         const actor =
                             await getCanisterActor<Actor>(CANISTER_NAME);
-                        uninstallCanister();
-                        deployCanister();
 
                         await expect(
                             actor.getDataCertificateInUpdate()
@@ -225,38 +235,69 @@ export function getTests(): Test {
 
         it('throws error when trying to set certified data in query method', async () => {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME);
-            uninstallCanister();
-            deployCanister();
+            const canisterId = getCanisterId(CANISTER_NAME);
 
-            await expect(
-                actor.setDataCertificateInQuery()
-            ).resolves.not.toThrow();
-        });
-
-        it('handles undefined data certificate', async () => {
-            const actor = await getCanisterActor<Actor>(CANISTER_NAME);
-            uninstallCanister();
-            deployCanister();
-
-            // Check that getCertificate returns an empty array when no data is set
-            const emptyCertificate = await actor.getData();
-            expect(emptyCertificate).toEqual([]);
+            const expectedErrorMessage = new RegExp(
+                `Call failed:\\s*Canister: ${canisterId}\\s*Method: setDataCertificateInQuery \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "IC0504: Error from Canister ${canisterId}:`
+            );
+            await expect(actor.setDataCertificateInQuery()).rejects.toThrow(
+                expectedErrorMessage
+            );
+            await expect(actor.setDataCertificateInQuery()).rejects.toThrow(
+                'Canister violated contract: "ic0_certified_data_set" cannot be executed in non replicated query mode'
+                    .replace(/\\/g, '\\\\')
+                    .replace(/"/g, '\\"')
+            );
         });
 
         it('throws error when trying to set certified data longer than 32 bytes', async () => {
-            const actor = await getCanisterActor<Actor>(CANISTER_NAME);
-            uninstallCanister();
-            deployCanister();
+            await fc.assert(
+                fc.asyncProperty(
+                    fc.uint8Array({ minLength: 0, maxLength: 32 }), // valid data
+                    fc.uint8Array({ minLength: 33, maxLength: 100 }), // invalid data
+                    async (validData, invalidData) => {
+                        const agent = await createAuthenticatedAgent(whoami());
+                        const canisterId = getCanisterId(CANISTER_NAME);
+                        const actor = await getCanisterActor<Actor>(
+                            CANISTER_NAME,
+                            {
+                                agent
+                            }
+                        );
 
-            // Generate data longer than 32 bytes
-            const longData = new Uint8Array(33).fill(1);
+                        // First verify we can set valid data
+                        await actor.setData(validData);
+                        await testCertifiedData(
+                            validData,
+                            actor,
+                            agent,
+                            CANISTER_NAME
+                        );
 
-            // Attempt to set the long data and expect it to throw
-            await expect(actor.setData(longData)).rejects.toThrow();
+                        // Then verify invalid data throws error
+                        const expectedErrorMessage = new RegExp(
+                            `Call failed:\\s*Canister: ${canisterId}\\s*Method: setData \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0504"\\s*"Reject code": "5"\\s*"Reject message": "Error from Canister ${canisterId}:`
+                        );
+                        await expect(
+                            actor.setData(invalidData)
+                        ).rejects.toThrow(expectedErrorMessage);
+                        await expect(
+                            actor.setData(invalidData)
+                        ).rejects.toThrow(
+                            'Canister violated contract: ic0_certified_data_set failed because the passed data must be no larger than 32 bytes'
+                        );
 
-            // Verify that the certificate is still empty
-            const certificate = await actor.getData();
-            expect(certificate).toEqual([]);
+                        // Verify the certificate still contains the valid data
+                        await testCertifiedData(
+                            validData,
+                            actor,
+                            agent,
+                            CANISTER_NAME
+                        );
+                    }
+                ),
+                defaultPropTestParams()
+            );
         });
     };
 }
@@ -357,15 +398,17 @@ function verifyCertifiedData(
         'certified_data'
     ]);
 
+    const lengthByte = String.fromCharCode(expectedValue.length);
+
+    const candidEncodedRawData = new Uint8Array([
+        ...new TextEncoder().encode('DIDL\x01\x6d\x7b\x01\x00'),
+        ...new TextEncoder().encode(lengthByte),
+        ...new Uint8Array(rawData)
+    ]);
+
     const decodedData = IDL.decode(
         [IDL.Vec(IDL.Nat8)],
-        new Uint8Array([
-            ...new TextEncoder().encode(
-                `DIDL\x01\x6d\x7b\x01\x00${expectedValue.length.toString(16)}`
-            ),
-            ...new Uint8Array(rawData)
-        ])
+        candidEncodedRawData
     )[0];
-
     expect(expectedValue).toEqual(decodedData);
 }
