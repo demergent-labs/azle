@@ -20,6 +20,32 @@ import { _SERVICE as Actor } from './dfx_generated/cert-var/cert-var.did';
 
 export function getTests(): Test {
     return () => {
+        it('verifies certified variable increments', async () => {
+            const canisterName = 'cert-var';
+            const agent = await createAuthenticatedAgent(whoami());
+            const certVarCanister = await getCanisterActor<Actor>(
+                canisterName,
+                {
+                    agent
+                }
+            );
+            await testCertifiedVariableUpdate(
+                0,
+                certVarCanister,
+                agent,
+                canisterName
+            );
+            for (let i = 1; i <= 5; i++) {
+                await certVarCanister.inc();
+                await testCertifiedVariableUpdate(
+                    i,
+                    certVarCanister,
+                    agent,
+                    canisterName
+                );
+            }
+        });
+
         it('verifies certified variable updates', async () => {
             const canisterName = 'cert-var';
             const agent = await createAuthenticatedAgent(whoami());
