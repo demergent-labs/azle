@@ -24,7 +24,7 @@ export function getTests(bitcoinCanister: ActorSubclass<_SERVICE>): Test {
             bitcoinDaemon = await startBitcoinDaemon();
             createBitcoinWallet(wallets);
             await mine101Blocks(wallets);
-        }, 60_000);
+        });
 
         afterAll(() => {
             bitcoinDaemon.kill();
