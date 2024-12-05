@@ -80,6 +80,7 @@ const azleKeywords = [
 ];
 
 const jsKeywords = [
+    'any',
     'await',
     'break',
     'case',
