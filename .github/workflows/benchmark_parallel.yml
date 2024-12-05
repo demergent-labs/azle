@@ -66,13 +66,14 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - name: Install dependencies
-              run: |
-                  npm install
-                  npm link
-                  cd ${{ matrix.test.path }}
-                  npm install
-                  npm link azle
+            - run: npm install
+            - run: npm link
+
+            - run: npm install
+              working-directory: ${{ matrix.test.path }}
+
+            - run: npm link azle
+              working-directory: ${{ matrix.test.path }}
 
             - name: Start dfx with artificial delay 0
               working-directory: ${{ matrix.test.path }}

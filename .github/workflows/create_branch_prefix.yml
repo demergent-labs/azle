@@ -45,6 +45,6 @@ jobs:
                   gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
 
             - name: Create base branch
-              run: |
-                  git checkout -b ${{ steps.create-prefix.outputs.base-branch }}
-                  git push origin ${{ steps.create-prefix.outputs.base-branch }}
+              run: git checkout -b ${{ steps.create-prefix.outputs.base-branch }}
+
+            - run: git push origin ${{ steps.create-prefix.outputs.base-branch }}
