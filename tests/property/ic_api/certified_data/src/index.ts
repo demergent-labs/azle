@@ -30,11 +30,9 @@ export default class {
 
     @preUpgrade
     preUpgrade(): void {
-        console.log('preUpgrade', afterFirstPostUpgrade);
         // The idea is that the third deploy will always have certified data set from preUpgrade so to test it we need to deploy 3 times
         // We could make it arbitrary but that seems like a lot of work just to test this one case
         if (afterFirstPostUpgrade) {
-            console.log('setting certified data to preUpgrade data');
             setCertifiedData(PRE_UPGRADE_DATA);
             this.stableStorage.insert('certifiedDataSetInPreUpgrade', true);
         }
@@ -46,7 +44,6 @@ export default class {
             'certifiedDataSetInPreUpgrade'
         );
         if (wasSetInPreUpgrade) {
-            console.log('certified data was set in preUpgrade');
             this.data = PRE_UPGRADE_DATA;
         }
 
