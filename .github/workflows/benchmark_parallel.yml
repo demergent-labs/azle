@@ -33,6 +33,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }}
                   ref: ${{ inputs.base-branch }}
 
             - id: get-test-infos

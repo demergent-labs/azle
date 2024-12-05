@@ -26,6 +26,8 @@ jobs:
             exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
         steps:
             - uses: actions/checkout@v4
+              with:
+                  token: ${{ github.token }}
 
             - id: get-exclude-dirs
               uses: ./.github/actions/get_exclude_dirs
