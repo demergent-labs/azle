@@ -87,6 +87,12 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies instructionCounter returns a bigint', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            const result = await actor.instructionCounterTypesAreCorrect();
+            expect(result).toBe(true);
+        });
     };
 }
 

@@ -14,6 +14,11 @@ export default class {
 
         return instructionCounter();
     }
+
+    @query([], IDL.Bool)
+    instructionCounterTypesAreCorrect(): boolean {
+        return typeof instructionCounter() === 'bigint';
+    }
 }
 
 function sum(loops: number): void {
