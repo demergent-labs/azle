@@ -52,4 +52,9 @@ export default class {
     updateTime(): bigint {
         return time();
     }
+
+    @query([], IDL.Bool)
+    timeTypesAreCorrect(): boolean {
+        return typeof time() === 'bigint';
+    }
 }

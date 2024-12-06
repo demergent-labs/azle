@@ -106,6 +106,12 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies time returns a bigint', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            const result = await actor.timeTypesAreCorrect();
+            expect(result).toBe(true);
+        });
     };
 }
 
