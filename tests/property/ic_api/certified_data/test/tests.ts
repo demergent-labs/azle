@@ -297,6 +297,29 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies that dataCertificate returns a Uint8Array in query', async () => {
+            const actor = await getCanisterActor<Actor>(CANISTER_NAME);
+            expect(await actor.getDataCertificateTypesAreCorrectInQuery()).toBe(
+                true
+            );
+        });
+
+        it('verifies that dataCertificate returns undefined in update', async () => {
+            const actor = await getCanisterActor<Actor>(CANISTER_NAME);
+            expect(
+                await actor.getDataCertificateTypesAreCorrectInUpdate()
+            ).toBe(true);
+        });
+
+        it('verifies that setCertifiedData returns undefined and takes a Uint8Array', async () => {
+            const actor = await getCanisterActor<Actor>(CANISTER_NAME);
+            expect(
+                await actor.verifyThatSetCertifiedDataTypesAreCorrect(
+                    new Uint8Array()
+                )
+            ).toBe(true);
+        });
     };
 }
 

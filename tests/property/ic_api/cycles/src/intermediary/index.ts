@@ -1,4 +1,11 @@
-import { call, IDL, msgCyclesRefunded, update } from 'azle';
+import {
+    call,
+    canisterBalance,
+    IDL,
+    msgCyclesRefunded,
+    query,
+    update
+} from 'azle';
 
 import { CyclesResult } from '../types';
 
@@ -57,6 +64,46 @@ export default class {
             }
         );
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
+    }
+
+    @query([], IDL.Bool)
+    canisterBalanceTypesAreCorrect(): boolean {
+        return typeof canisterBalance() === 'bigint';
+    }
+
+    @update([IDL.Nat64], IDL.Bool)
+    async msgCyclesAcceptTypesAreCorrect(amount: bigint): Promise<boolean> {
+        return await call(
+            this.cyclesPrincipal,
+            'msgCyclesAcceptTypesAreCorrect',
+            {
+                paramIdlTypes: [IDL.Nat64],
+                returnIdlType: IDL.Bool,
+                args: [amount]
+            }
+        );
+    }
+
+    @update([], IDL.Bool)
+    async msgCyclesAvailableTypesAreCorrect(): Promise<boolean> {
+        return await call(
+            this.cyclesPrincipal,
+            'msgCyclesAvailableTypesAreCorrect',
+            {
+                returnIdlType: IDL.Bool
+            }
+        );
+    }
+
+    @update([IDL.Nat64], IDL.Bool)
+    async msgCyclesRefundedTypesAreCorrect(amount: bigint): Promise<boolean> {
+        await call(this.cyclesPrincipal, 'msgCyclesAcceptTypesAreCorrect', {
+            paramIdlTypes: [IDL.Nat64],
+            returnIdlType: IDL.Bool,
+            args: [amount]
+        });
+        // NOTE: if there is no cross canister call, msgCyclesRefunded() cannot be called
+        return typeof msgCyclesRefunded() === 'bigint';
     }
 }
 

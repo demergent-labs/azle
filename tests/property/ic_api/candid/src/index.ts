@@ -10,4 +10,20 @@ export default class {
     candidEncodeQuery(candidString: string): Uint8Array {
         return candidEncode(candidString);
     }
+
+    @query([IDL.Vec(IDL.Nat8)], IDL.Bool)
+    candidDecodeTypesAreCorrect(candidBytes: Uint8Array): boolean {
+        return (
+            candidBytes instanceof Uint8Array &&
+            typeof candidDecode(candidBytes) === 'string'
+        );
+    }
+
+    @query([IDL.Text], IDL.Bool)
+    candidEncodeTypesAreCorrect(candidString: string): boolean {
+        return (
+            typeof candidString === 'string' &&
+            candidEncode(candidString) instanceof Uint8Array
+        );
+    }
 }

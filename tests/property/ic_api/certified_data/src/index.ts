@@ -93,4 +93,21 @@ export default class {
     setDataCertificateInQuery(): void {
         setCertifiedData(new Uint8Array([3]));
     }
+
+    @query([], IDL.Bool)
+    getDataCertificateTypesAreCorrectInQuery(): boolean {
+        return dataCertificate() instanceof Uint8Array;
+    }
+
+    @update([], IDL.Bool)
+    getDataCertificateTypesAreCorrectInUpdate(): boolean {
+        return dataCertificate() === undefined;
+    }
+
+    @update([IDL.Vec(IDL.Nat8)], IDL.Bool)
+    verifyThatSetCertifiedDataTypesAreCorrect(data: Uint8Array): boolean {
+        return (
+            data instanceof Uint8Array && setCertifiedData(data) === undefined
+        );
+    }
 }

@@ -135,5 +135,10 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies that caller returns a Principal', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.callerTypesAreCorrect()).toBe(true);
+        });
     };
 }

@@ -76,6 +76,10 @@ export function getTests(): Test {
                             console.info('Update method iteration:', i);
                             await testCanisterMethod(updateArgDef, 'Update');
                         }
+
+                        expect(await actor.argDataRawTypesAreCorrect()).toBe(
+                            true
+                        );
                     }
                 ),
                 defaultPropTestParams()

@@ -98,4 +98,9 @@ export default class {
     getUpdateCaller(): Principal {
         return caller();
     }
+
+    @query([], IDL.Bool)
+    callerTypesAreCorrect(): boolean {
+        return caller() instanceof Principal;
+    }
 }

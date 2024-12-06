@@ -106,4 +106,9 @@ export default class {
         this.meaninglessState = 1n;
         return version;
     }
+
+    @query([], IDL.Bool)
+    canisterVersionTypesAreCorrect(): boolean {
+        return typeof canisterVersion() === 'bigint';
+    }
 }

@@ -62,6 +62,11 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies that canisterVersion returns a bigint', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.canisterVersionTypesAreCorrect()).toBe(true);
+        });
     };
 }
 
