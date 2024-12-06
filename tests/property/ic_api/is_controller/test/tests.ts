@@ -149,5 +149,13 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies isController returns a boolean', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            const result = await actor.isControllerTypesAreCorrect(
+                Principal.fromText(whoamiPrincipal())
+            );
+            expect(result).toBe(true);
+        });
     };
 }

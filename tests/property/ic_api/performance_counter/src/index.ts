@@ -28,6 +28,14 @@ export default class {
 
         return performanceCounter(1);
     }
+
+    @query([], IDL.Bool)
+    performanceCounterTypesAreCorrect(): boolean {
+        return (
+            typeof performanceCounter(0) === 'bigint' &&
+            typeof performanceCounter(1) === 'bigint'
+        );
+    }
 }
 
 async function sum(loops: number, shouldChunk: boolean): Promise<void> {
