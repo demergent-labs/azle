@@ -97,4 +97,9 @@ export default class {
     getUpdateId(): Principal {
         return id();
     }
+
+    @query([], IDL.Bool)
+    idTypesAreCorrect(): boolean {
+        return id() instanceof Principal;
+    }
 }
