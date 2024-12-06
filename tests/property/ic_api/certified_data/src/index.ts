@@ -98,4 +98,21 @@ export default class {
             'setCertifiedData should have thrown an error in query method'
         );
     }
+
+    @query([], IDL.Bool)
+    getDataCertificateTypesAreCorrectInQuery(): boolean {
+        return dataCertificate() instanceof Uint8Array;
+    }
+
+    @update([], IDL.Bool)
+    getDataCertificateTypesAreCorrectInUpdate(): boolean {
+        return dataCertificate() === undefined;
+    }
+
+    @update([IDL.Vec(IDL.Nat8)], IDL.Bool)
+    verifyThatSetCertifiedDataTypesAreCorrect(data: Uint8Array): boolean {
+        return (
+            data instanceof Uint8Array && setCertifiedData(data) === undefined
+        );
+    }
 }

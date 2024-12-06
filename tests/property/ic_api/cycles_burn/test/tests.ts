@@ -42,5 +42,17 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies canisterBalance returns a bigint', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            const result = await actor.canisterBalanceTypesAreCorrect();
+            expect(result).toBe(true);
+        });
+
+        it('verifies updateCyclesBurn returns a bigint and accepts a bigint', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            const result = await actor.cyclesBurnTypesAreCorrect(0n);
+            expect(result).toBe(true);
+        });
     };
 }
