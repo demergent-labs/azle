@@ -90,5 +90,19 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies candidDecode returns a string and takes a Uint8Array', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(
+                await actor.candidDecodeTypesAreCorrect(
+                    new Uint8Array([68, 73, 68, 76, 0, 1, 113, 0])
+                )
+            ).toBe(true);
+        });
+
+        it('verifies candidEncode returns a Uint8Array and takes a string', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.candidEncodeTypesAreCorrect('("")')).toBe(true);
+        });
     };
 }

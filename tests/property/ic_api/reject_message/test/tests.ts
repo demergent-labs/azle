@@ -22,5 +22,12 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies rejectMessage returns a string', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
+            const result =
+                await callerCanister.rejectMessageTypesAreCorrect('');
+            expect(result).toBe(true);
+        });
     };
 }

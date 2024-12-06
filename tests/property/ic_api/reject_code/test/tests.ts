@@ -22,5 +22,11 @@ export function getTests(): Test {
             const result = await callerCanister.getRejectNoError();
             expect(result).toEqual({ NoError: null });
         });
+
+        it('verifies rejectCode returns a boolean', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
+            const result = await callerCanister.rejectCodeTypesAreCorrect();
+            expect(result).toBe(true);
+        });
     };
 }

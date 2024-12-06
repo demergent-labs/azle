@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "cert-var": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/cert-var",
+                "node_compatibility": true
+            }
+        }
+    }
+}

@@ -28,6 +28,19 @@ export default class {
     receiveCyclesByChunk(numChunks: bigint): CyclesResult {
         return acceptCycles(undefined, numChunks);
     }
+
+    @update([IDL.Nat64], IDL.Bool)
+    msgCyclesAcceptTypesAreCorrect(amount: bigint): boolean {
+        return (
+            typeof amount === 'bigint' &&
+            typeof msgCyclesAccept(amount) === 'bigint'
+        );
+    }
+
+    @update([], IDL.Bool)
+    msgCyclesAvailableTypesAreCorrect(): boolean {
+        return typeof msgCyclesAvailable() === 'bigint';
+    }
 }
 
 function acceptCycles(

@@ -78,6 +78,38 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('verifies canisterBalance returns a bigint', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<Actor>('intermediary');
+            const result =
+                await intermediaryCanister.canisterBalanceTypesAreCorrect();
+            expect(result).toBe(true);
+        });
+
+        it('verifies msgCyclesAccept returns a bigint and accepts a bigint', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<Actor>('intermediary');
+            const result =
+                await intermediaryCanister.msgCyclesAcceptTypesAreCorrect(0n);
+            expect(result).toBe(true);
+        });
+
+        it('verifies msgCyclesAvailable returns a bigint', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<Actor>('intermediary');
+            const result =
+                await intermediaryCanister.msgCyclesAvailableTypesAreCorrect();
+            expect(result).toBe(true);
+        });
+
+        it('verifies msgCyclesRefunded returns a bigint', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<Actor>('intermediary');
+            const result =
+                await intermediaryCanister.msgCyclesRefundedTypesAreCorrect(0n);
+            expect(result).toBe(true);
+        });
     };
 }
 

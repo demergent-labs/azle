@@ -68,6 +68,11 @@ export default class {
     candidEncode(arg: string): Uint8Array {
         return candidEncode(arg);
     }
+
+    @query([], IDL.Bool)
+    argDataRawTypesAreCorrect(): boolean {
+        return argDataRaw() instanceof Uint8Array;
+    }
 }
     `;
 }
