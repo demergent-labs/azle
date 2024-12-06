@@ -5,33 +5,88 @@ export default class {
 
     @update([], RejectionCode)
     async getRejectCodeCanisterThrowError(): Promise<RejectionCode> {
-        try {
-            await call(this.rejectorPrincipal, 'throwError', {
-                returnIdlType: IDL.Text
-            });
-        } catch (error) {
-            return rejectCode();
-        }
-        throw new Error('This should never be thrown');
+        return getThrowErrorRejectCode(this.rejectorPrincipal);
     }
 
     @update([], RejectionCode)
     async getRejectCodeCanisterReject(): Promise<RejectionCode> {
-        try {
-            await call(this.rejectorPrincipal, 'rejectWithMessage', {
-                returnIdlType: IDL.Text
-            });
-        } catch (error) {
-            return rejectCode();
-        }
-        throw new Error('This should never be thrown');
+        return getRejectWithMessageRejectCode(this.rejectorPrincipal);
     }
 
     @update([], RejectionCode)
     async getRejectNoError(): Promise<RejectionCode> {
-        await call(this.rejectorPrincipal, 'noError');
+        return getNoErrorRejectCode(this.rejectorPrincipal);
+    }
+
+    @update([], IDL.Bool)
+    async rejectCodeTypesAreCorrect(): Promise<boolean> {
+        const throwErrorRejectCode = await getThrowErrorRejectCode(
+            this.rejectorPrincipal
+        );
+        const rejectWithMessageRejectCode =
+            await getRejectWithMessageRejectCode(this.rejectorPrincipal);
+        const noErrorRejectCode = await getNoErrorRejectCode(
+            this.rejectorPrincipal
+        );
+        return (
+            checkIsValidRejectCode(throwErrorRejectCode) &&
+            checkIsValidRejectCode(rejectWithMessageRejectCode) &&
+            checkIsValidRejectCode(noErrorRejectCode)
+        );
+    }
+}
+
+async function getThrowErrorRejectCode(
+    rejectorPrincipal: string
+): Promise<RejectionCode> {
+    try {
+        await call(rejectorPrincipal, 'throwError', {
+            returnIdlType: IDL.Text
+        });
+    } catch (error) {
         return rejectCode();
     }
+    throw new Error('This should never be thrown');
+}
+
+async function getRejectWithMessageRejectCode(
+    rejectorPrincipal: string
+): Promise<RejectionCode> {
+    try {
+        await call(rejectorPrincipal, 'rejectWithMessage', {
+            returnIdlType: IDL.Text
+        });
+    } catch (error) {
+        return rejectCode();
+    }
+    throw new Error('This should never be thrown');
+}
+
+async function getNoErrorRejectCode(
+    rejectorPrincipal: string
+): Promise<RejectionCode> {
+    await call(rejectorPrincipal, 'noError');
+    return rejectCode();
+}
+
+function checkIsValidRejectCode(code: RejectionCode): boolean {
+    // Check if the returned value is an object with exactly one key
+    // that matches one of the expected RejectionCode variants
+    const validKeys = [
+        'NoError',
+        'SysFatal',
+        'SysTransient',
+        'DestinationInvalid',
+        'CanisterReject',
+        'CanisterError',
+        'Unknown'
+    ];
+    const keys = Object.keys(code);
+    return (
+        keys.length === 1 &&
+        validKeys.includes(keys[0]) &&
+        (code as any)[keys[0]] === null
+    );
 }
 
 function getRejectorPrincipal(): string {
