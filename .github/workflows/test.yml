@@ -22,6 +22,21 @@ on:
                 required: true
                 type: boolean
                 default: false
+            exclude-slow-tests:
+                description: 'Exclude slow tests'
+                required: true
+                type: boolean
+                default: true
+            exclude-unstable-tests:
+                description: 'Exclude unstable tests'
+                required: true
+                type: boolean
+                default: true
+            exclude-release-only-tests:
+                description: 'Exclude release only tests'
+                required: true
+                type: boolean
+                default: true
 
 jobs:
     get-exclude-dirs:
@@ -35,12 +50,23 @@ jobs:
             - id: set-conditions
               uses: ./.github/actions/set_run_conditions
 
+            - id: determine-exclusions
+              uses: ./.github/actions/determine_exclusions
+              with:
+                  is_workflow_dispatch: ${{ github.event_name == 'workflow_dispatch' }}
+                  exclude_slow_input: ${{ inputs.exclude-slow-tests }}
+                  exclude_unstable_input: ${{ inputs.exclude-unstable-tests }}
+                  exclude_release_only_input: ${{ inputs.exclude-release-only-tests }}
+                  is_feature_branch_draft_pr: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}
+                  is_feature_branch_pr: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}
+                  is_main_branch_push: ${{ steps.set-conditions.outputs.is_main_branch_push }}
+
             - id: get-exclude-dirs
               uses: ./.github/actions/get_exclude_dirs
               with:
-                  exclude-slow: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
-                  exclude-unstable: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
-                  exclude-release-only: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' }}
+                  exclude-slow: ${{ steps.determine-exclusions.outputs.exclude_slow }}
+                  exclude-unstable: ${{ steps.determine-exclusions.outputs.exclude_unstable }}
+                  exclude-release-only: ${{ steps.determine-exclusions.outputs.exclude_release_only }}
 
     run-tests:
         name: ${{ matrix.test_group.name }}
