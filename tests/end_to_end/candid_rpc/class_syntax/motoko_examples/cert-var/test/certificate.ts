@@ -21,10 +21,11 @@ function findLookupOrThrow(
 
 function getValueAsArrayBufferOrThrow(lookup: LookupResultFound): ArrayBuffer {
     const value = lookup.value;
-    if (ArrayBuffer.isView(value) === false) {
-        if (value instanceof ArrayBuffer === false) {
-            throw new Error('Value is not an ArrayBuffer');
-        }
+    if (
+        ArrayBuffer.isView(value) === false &&
+        value instanceof ArrayBuffer === false
+    ) {
+        throw new Error('Value is not an ArrayBuffer');
     }
     return value as ArrayBuffer;
 }
