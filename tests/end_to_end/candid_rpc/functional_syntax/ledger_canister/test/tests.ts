@@ -87,7 +87,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test {
                     amount: { e8s: 3_000_000n }
                 })
             });
-        }, 10_000);
+        });
 
         it('getSymbol', async () => {
             const result = await ledgerCanister.getSymbol();
