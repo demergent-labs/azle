@@ -42,6 +42,7 @@ export function getTests(factorialCanister: ActorSubclass<_SERVICE>): Test {
 
         // TODO: Fails with `Canister called \`ic0.trap\` with message: Panicked at 'TODO needs error info'`
         // https://forum.dfinity.org/t/error-while-trying-to-run-idl-encode-on-values-around-1-8x10-308-or-larger/32924
+        // TODO similar issue: https://github.com/dfinity/agent-js/issues/953
         it.skip('calculates 1000 factorial', async () => {
             const result = await factorialCanister.fac(1000n);
 

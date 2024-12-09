@@ -28,7 +28,7 @@ export function createThread(
 
 export function getAllThreads(joinDepth: number): Thread[] {
     return Object.values(state.threads).map((stateThread) =>
-        getThreadFromStateThread(stateThread, joinDepth)
+        getThreadFromStateThread(stateThread!, joinDepth)
     );
 }
 
@@ -37,6 +37,11 @@ export function getThreadFromStateThread(
     joinDepth: number
 ): Thread {
     const stateAuthor = state.users[stateThread.authorId];
+
+    if (stateAuthor === undefined) {
+        throw new Error('Author not found');
+    }
+
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 
     if (joinDepth === 0) {
@@ -49,7 +54,9 @@ export function getThreadFromStateThread(
     } else {
         const posts = stateThread.postIds
             .map((postId) => state.posts[postId])
-            .map((statePost) => getPostFromStatePost(statePost, joinDepth - 1));
+            .map((statePost) =>
+                getPostFromStatePost(statePost!, joinDepth - 1)
+            );
 
         return {
             id: stateThread.id,
@@ -62,6 +69,11 @@ export function getThreadFromStateThread(
 
 function getUpdatedStateAuthor(authorId: string, threadId: string): StateUser {
     const stateAuthor = state.users[authorId];
+
+    if (stateAuthor === undefined) {
+        throw new Error('Author not found');
+    }
+
     const updatedStateAuthor: StateUser = {
         ...stateAuthor,
         threadIds: [...stateAuthor.threadIds, threadId]

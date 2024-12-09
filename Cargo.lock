@@ -1610,6 +1610,7 @@ dependencies = [
  "ic-stable-structures",
  "ic-wasi-polyfill",
  "rquickjs",
+ "scopeguard",
  "serde",
  "serde_json",
  "slotmap",

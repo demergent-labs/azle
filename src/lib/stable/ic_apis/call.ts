@@ -31,9 +31,6 @@ export async function call<Args extends any[] | undefined, Return = any>(
         const returnTypeIdl = options?.returnIdlType;
         const raw = options?.raw;
 
-        // TODO perhaps we should be more robust
-        // TODO for example, we can keep the time with these
-        // TODO if they are over a certain amount old we can delete them
         globalThis._azleResolveIds[globalResolveId] = (
             result: Uint8Array | ArrayBuffer
         ): void => {
@@ -46,16 +43,10 @@ export async function call<Args extends any[] | undefined, Return = any>(
                     idlDecode(idlType, new Uint8Array(result))[0] as Return
                 );
             }
-
-            delete globalThis._azleResolveIds[globalResolveId];
-            delete globalThis._azleRejectIds[globalRejectId];
         };
 
         globalThis._azleRejectIds[globalRejectId] = (error: any): void => {
             reject(error);
-
-            delete globalThis._azleResolveIds[globalResolveId];
-            delete globalThis._azleRejectIds[globalRejectId];
         };
 
         const paramIdlTypes = options?.paramIdlTypes ?? [];
@@ -71,29 +62,22 @@ export async function call<Args extends any[] | undefined, Return = any>(
             raw === undefined ? idlEncode(paramIdlTypes, args) : raw;
         const cyclesString = cycles.toString();
 
-        // TODO consider finally, what if deletion goes wrong
-        try {
-            if (globalThis._azleIcExperimental !== undefined) {
-                globalThis._azleIcExperimental.callRaw(
-                    promiseId,
-                    canisterIdBytes.buffer,
-                    method,
-                    argsRaw.buffer,
-                    cyclesString
-                );
-            } else {
-                globalThis._azleIcStable.callRaw(
-                    promiseId,
-                    canisterIdBytes,
-                    method,
-                    argsRaw,
-                    cyclesString
-                );
-            }
-        } catch (error) {
-            delete globalThis._azleResolveIds[globalResolveId];
-            delete globalThis._azleRejectIds[globalRejectId];
-            throw error;
+        if (globalThis._azleIcExperimental !== undefined) {
+            globalThis._azleIcExperimental.callRaw(
+                promiseId,
+                canisterIdBytes.buffer,
+                method,
+                argsRaw.buffer,
+                cyclesString
+            );
+        } else {
+            globalThis._azleIcStable.callRaw(
+                promiseId,
+                canisterIdBytes,
+                method,
+                argsRaw,
+                cyclesString
+            );
         }
     });
 }

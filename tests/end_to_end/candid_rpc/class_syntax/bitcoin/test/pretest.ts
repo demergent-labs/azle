@@ -25,6 +25,13 @@ function pretest(): void {
         stdio: 'inherit'
     });
 
+    execSync(
+        `dfx ledger fabricate-cycles --canister bitcoin --cycles 1000000000000000000`,
+        {
+            stdio: 'inherit'
+        }
+    );
+
     execSync(`dfx generate`, {
         stdio: 'inherit'
     });

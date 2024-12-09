@@ -1,0 +1,3 @@
+{
+    "skip": "we do not want to make rapid amounts of outgoing HTTP requests to actual APIs"
+}
