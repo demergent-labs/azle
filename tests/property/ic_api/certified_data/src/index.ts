@@ -10,6 +10,16 @@ import {
     update
 } from 'azle';
 
+type CertifiedData = {
+    data: Uint8Array;
+    certificate: [Uint8Array] | [];
+};
+
+const CertifiedData = IDL.Record({
+    data: IDL.Vec(IDL.Nat8),
+    certificate: IDL.Opt(IDL.Vec(IDL.Nat8))
+});
+
 const PRE_UPGRADE_DATA = new Uint8Array([
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
@@ -44,16 +54,18 @@ export default class {
             'certifiedDataSetInPreUpgrade'
         );
 
+        this.afterFirstPostUpgrade = true;
+
         if (certifiedDataSetInPreUpgrade === true) {
             this.data = PRE_UPGRADE_DATA;
+            return;
         }
 
         if (setData === true) {
             this.data = data;
             setCertifiedData(data);
+            return;
         }
-
-        this.afterFirstPostUpgrade = true;
     }
 
     @update([IDL.Vec(IDL.Nat8)])
@@ -62,20 +74,11 @@ export default class {
         setCertifiedData(data);
     }
 
-    @query(
-        [],
-        IDL.Record({
-            value: IDL.Vec(IDL.Nat8),
-            certificate: IDL.Opt(IDL.Vec(IDL.Nat8))
-        })
-    )
-    async getData(): Promise<{
-        value: Uint8Array;
-        certificate: [Uint8Array] | [];
-    }> {
+    @query([], CertifiedData)
+    async getData(): Promise<CertifiedData> {
         const certificate = dataCertificate();
         return {
-            value: this.data,
+            data: this.data,
             certificate: certificate !== undefined ? [certificate] : []
         };
     }
@@ -88,14 +91,6 @@ export default class {
 
     @query([])
     setDataCertificateInQuery(): void {
-        try {
-            setCertifiedData(new Uint8Array([3]));
-        } catch (error) {
-            // Expected to throw an error
-            return;
-        }
-        throw new Error(
-            'setCertifiedData should have thrown an error in query method'
-        );
+        setCertifiedData(new Uint8Array([3]));
     }
 }

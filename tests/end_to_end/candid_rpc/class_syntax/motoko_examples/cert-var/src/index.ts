@@ -1,11 +1,14 @@
-import {
-    candidEncode,
-    dataCertificate,
-    IDL,
-    query,
-    setCertifiedData,
-    update
-} from 'azle';
+import { dataCertificate, IDL, query, setCertifiedData, update } from 'azle';
+
+type CertifiedValue = {
+    value: number;
+    certificate: [Uint8Array] | [];
+};
+
+const CertifiedValue = IDL.Record({
+    value: IDL.Vec(IDL.Nat8),
+    certificate: IDL.Opt(IDL.Vec(IDL.Nat8))
+});
 
 export default class {
     value: number = 0;
@@ -27,14 +30,8 @@ export default class {
     /// and, if available, an unforgeable certificate (from the system) about its authenticity.
     /// When called via update call or inter-canister call, no certificate is present (and not needed,
     /// as in these cases the system already certifies the response)
-    @query(
-        [],
-        IDL.Record({
-            value: IDL.Nat32,
-            certificate: IDL.Opt(IDL.Vec(IDL.Nat8))
-        })
-    )
-    async get(): Promise<{ value: number; certificate: [Uint8Array] | [] }> {
+    @query([], CertifiedValue)
+    async get(): Promise<CertifiedValue> {
         const certificate = dataCertificate();
         return {
             value: this.value,
@@ -44,5 +41,5 @@ export default class {
 }
 
 function blobOfNat32(n: number): Uint8Array {
-    return candidEncode(`(${n}:nat32)`).slice(-4);
+    return new Uint8Array(IDL.encode([IDL.Nat32], [n])).slice(-4);
 }

@@ -1,9 +1,4 @@
-import {
-    ActorSubclass,
-    Certificate,
-    HttpAgent,
-    LookupResultFound
-} from '@dfinity/agent';
+import { ActorSubclass, Certificate, HttpAgent } from '@dfinity/agent';
 import { IDL, lebDecode, PipeArrayBuffer } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { createAuthenticatedAgent, getCanisterId, whoami } from 'azle/dfx';
@@ -16,6 +11,7 @@ import {
 } from 'azle/test';
 import fc from 'fast-check';
 
+import { findLookupValueOrThrow } from './certificate';
 import { _SERVICE as Actor } from './dfx_generated/cert-var/cert-var.did';
 
 export function getTests(): Test {
@@ -29,20 +25,14 @@ export function getTests(): Test {
                     agent
                 }
             );
-            await testCertifiedVariableUpdate(
-                0,
-                certVarCanister,
-                agent,
-                canisterName
-            );
-            for (let i = 1; i <= 5; i++) {
-                await certVarCanister.inc();
+            for (let i = 0; i <= 5; i++) {
                 await testCertifiedVariableUpdate(
                     i,
                     certVarCanister,
                     agent,
                     canisterName
                 );
+                await certVarCanister.inc();
             }
         });
 
@@ -57,7 +47,7 @@ export function getTests(): Test {
             );
             await fc.assert(
                 fc.asyncProperty(
-                    fc.nat({ max: 4294967295 }), // max value for Nat32
+                    fc.nat({ max: 4_294_967_295 }), // max value for Nat32
                     async (arbitraryValue) => {
                         await testCertifiedVariableUpdate(
                             arbitraryValue,
@@ -86,7 +76,7 @@ async function testCertifiedVariableUpdate(
     const result = await certVarCanister.get();
     expect(result.value).toBe(newValue);
 
-    const certificate = await verifyCertificate(
+    const certificate = await createAndVerifyCertificate(
         result.certificate,
         agent,
         canisterPrincipal
@@ -95,7 +85,7 @@ async function testCertifiedVariableUpdate(
     verifyCertifiedData(certificate, canisterPrincipal, result.value);
 }
 
-async function verifyCertificate(
+async function createAndVerifyCertificate(
     certificateBytes: [] | [Uint8Array | number[]],
     agent: HttpAgent,
     canisterPrincipal: Principal
@@ -119,7 +109,7 @@ function verifyTimestamp(certificate: Certificate): void {
     const decodedTime = lebDecode(new PipeArrayBuffer(certificateTime));
     const time = Number(decodedTime) / 1e9;
 
-    const now = Date.now() / 1000;
+    const now = Date.now() / 1_000;
     const diff = Math.abs(time - now);
 
     expect(diff).toBeLessThan(5);
@@ -146,31 +136,4 @@ function verifyCertifiedData(
     )[0];
 
     expect(expectedValue).toBe(decodedData);
-}
-
-function findLookupValueOrThrow(
-    certificate: Certificate,
-    path: (ArrayBuffer | string)[]
-): ArrayBuffer {
-    const lookup = findLookupOrThrow(certificate, path);
-    return getValueAsArrayBufferOrThrow(lookup);
-}
-
-function findLookupOrThrow(
-    certificate: Certificate,
-    path: (ArrayBuffer | string)[]
-): LookupResultFound {
-    const lookup = certificate.lookup(path);
-    if (lookup.status !== 'found') {
-        throw new Error('No value found');
-    }
-    return lookup as LookupResultFound;
-}
-
-function getValueAsArrayBufferOrThrow(lookup: LookupResultFound): ArrayBuffer {
-    const value = lookup.value;
-    if (!ArrayBuffer.isView(value) && !(value instanceof ArrayBuffer)) {
-        throw new Error('Value is not an ArrayBuffer');
-    }
-    return value as ArrayBuffer;
 }
