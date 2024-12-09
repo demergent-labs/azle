@@ -1,14 +1,14 @@
 import { dataCertificate, IDL, query, setCertifiedData, update } from 'azle';
 
+const CertifiedValue = IDL.Record({
+    value: IDL.Nat32,
+    certificate: IDL.Opt(IDL.Vec(IDL.Nat8))
+});
+
 type CertifiedValue = {
     value: number;
     certificate: [Uint8Array] | [];
 };
-
-const CertifiedValue = IDL.Record({
-    value: IDL.Vec(IDL.Nat8),
-    certificate: IDL.Opt(IDL.Vec(IDL.Nat8))
-});
 
 export default class {
     value: number = 0;

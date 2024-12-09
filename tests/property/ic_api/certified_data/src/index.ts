@@ -10,15 +10,15 @@ import {
     update
 } from 'azle';
 
-type CertifiedData = {
-    data: Uint8Array;
-    certificate: [Uint8Array] | [];
-};
-
 const CertifiedData = IDL.Record({
     data: IDL.Vec(IDL.Nat8),
     certificate: IDL.Opt(IDL.Vec(IDL.Nat8))
 });
+
+type CertifiedData = {
+    data: Uint8Array;
+    certificate: [Uint8Array] | [];
+};
 
 const PRE_UPGRADE_DATA = new Uint8Array([
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
