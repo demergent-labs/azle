@@ -100,7 +100,7 @@ function generateVariableAliasDeclarations(
     const fieldVariableAliasDeclarations = fields.flatMap(
         (field) => field.candidMeta.variableAliasDeclarations
     );
-    if (useTypeDeclaration) {
+    if (useTypeDeclaration === true) {
         const type =
             api === 'functional'
                 ? []

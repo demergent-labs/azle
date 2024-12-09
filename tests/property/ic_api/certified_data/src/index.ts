@@ -22,7 +22,7 @@ export default class {
 
     @init([IDL.Bool, IDL.Vec(IDL.Nat8)])
     init(setData: boolean, data: Uint8Array): void {
-        if (setData) {
+        if (setData === true) {
             this.data = data;
             setCertifiedData(data);
         }
@@ -32,7 +32,7 @@ export default class {
     preUpgrade(): void {
         // The idea is that the third deploy will always have certified data set from preUpgrade so to test it we need to deploy 3 times
         // We could make it arbitrary but that seems like a lot of work just to test this one case
-        if (this.afterFirstPostUpgrade) {
+        if (this.afterFirstPostUpgrade === true) {
             setCertifiedData(PRE_UPGRADE_DATA);
             this.stableStorage.insert('certifiedDataSetInPreUpgrade', true);
         }
@@ -44,11 +44,11 @@ export default class {
             'certifiedDataSetInPreUpgrade'
         );
 
-        if (certifiedDataSetInPreUpgrade) {
+        if (certifiedDataSetInPreUpgrade === true) {
             this.data = PRE_UPGRADE_DATA;
         }
 
-        if (setData) {
+        if (setData === true) {
             this.data = data;
             setCertifiedData(data);
         }
@@ -76,14 +76,14 @@ export default class {
         const certificate = dataCertificate();
         return {
             value: this.data,
-            certificate: certificate ? [certificate] : []
+            certificate: certificate !== undefined ? [certificate] : []
         };
     }
 
     @update([], IDL.Opt(IDL.Vec(IDL.Nat8)))
     getDataCertificateInUpdate(): [Uint8Array] | [] {
         const certificate = dataCertificate();
-        return certificate ? [certificate] : [];
+        return certificate !== undefined ? [certificate] : [];
     }
 
     @query([])

@@ -201,7 +201,7 @@ function serviceCall(
     ) => {
         const encodedArgs = encode(paramCandidTypes, args);
 
-        if (notify) {
+        if (notify === true) {
             return (callFunction as NotifyRawFunction)(
                 canisterId,
                 methodName,

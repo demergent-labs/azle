@@ -317,7 +317,7 @@ function deployCanister(options: DeployCanisterOptions = {}): void {
     const initDataArgument = uint8ArrayToCandidString(initData);
     let command = `dfx deploy canister --argument '(${setData}, ${initDataArgument})'`;
 
-    if (force) {
+    if (force === true) {
         command += ' --upgrade-unchanged';
     }
 

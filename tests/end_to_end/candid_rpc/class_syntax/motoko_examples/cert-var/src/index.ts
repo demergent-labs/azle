@@ -38,7 +38,7 @@ export default class {
         const certificate = dataCertificate();
         return {
             value: this.value,
-            certificate: certificate ? [certificate] : []
+            certificate: certificate !== undefined ? [certificate] : []
         };
     }
 }

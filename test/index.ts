@@ -21,11 +21,11 @@ export function runTests(
     const { shouldRunTests, shouldRunTypeChecks, shouldRecordBenchmarks } =
         processEnvVars();
 
-    if (shouldRunTests) {
+    if (shouldRunTests === true) {
         describe(`tests`, tests);
     }
 
-    if (shouldRunTypeChecks) {
+    if (shouldRunTypeChecks === true) {
         describe(`type checks`, () => {
             it('checks types', () => {
                 try {
@@ -47,7 +47,7 @@ export function runTests(
         });
     }
 
-    if (shouldRecordBenchmarks && canisterNames !== undefined) {
+    if (shouldRecordBenchmarks === true && canisterNames !== undefined) {
         const canisterNamesArray = Array.isArray(canisterNames)
             ? canisterNames
             : [canisterNames];
@@ -170,5 +170,5 @@ function processEnvVars(): {
 }
 
 function shouldRun(envVar: string, hasOnly: boolean): boolean {
-    return hasOnly ? envVar === 'only' : envVar !== 'false';
+    return hasOnly === true ? envVar === 'only' : envVar !== 'false';
 }
