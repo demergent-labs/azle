@@ -49,7 +49,7 @@ export function getTests(canisterId: string): Test {
             const responseJson = jsonParse(await response.text());
 
             expect(responseJson).toBe(0n);
-        }, 10_000);
+        });
 
         it("gets the canister's balance using ethers and tECDSA", async () => {
             const response = await fetch(
@@ -61,7 +61,7 @@ export function getTests(canisterId: string): Test {
             const responseJson = jsonParse(await response.text());
 
             expect(responseJson).toBe(0n);
-        }, 10_000);
+        });
 
         it('transfers from the sepolia faucet wallet to the canister wallet using ethers and ethSendRawTransaction', async () => {
             const response = await fetch(
@@ -78,7 +78,7 @@ export function getTests(canisterId: string): Test {
             const responseText = await response.text();
 
             expect(responseText).toBe('transaction sent');
-        }, 20_000);
+        });
 
         wait('for block time', 60_000);
 
@@ -92,7 +92,7 @@ export function getTests(canisterId: string): Test {
             const responseJson = jsonParse(await response.text());
 
             expect(responseJson).toBe(100_000_000_000_000n);
-        }, 10_000);
+        });
 
         it("transfers from the canister to the caller's wallet using ethers and ethSendRawTransaction", async () => {
             const response = await fetch(`${origin}/transfer-from-canister`, {
@@ -106,7 +106,7 @@ export function getTests(canisterId: string): Test {
             const responseText = await response.text();
 
             expect(responseText).toBe('transaction sent');
-        }, 30_000);
+        });
 
         wait('for block time', 60_000);
 
@@ -120,7 +120,7 @@ export function getTests(canisterId: string): Test {
             const responseJson = jsonParse(await response.text());
 
             expect(responseJson).toBeLessThan(100_000_000_000_000n);
-        }, 10_000);
+        });
 
         it("gets the caller's balance after the transfer using ethers and ThresholdWallet", async () => {
             const response = await fetch(
@@ -132,6 +132,6 @@ export function getTests(canisterId: string): Test {
             const responseJson = jsonParse(await response.text());
 
             expect(responseJson).toBe(7n);
-        }, 10_000);
+        });
     };
 }
