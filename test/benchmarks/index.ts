@@ -111,7 +111,7 @@ async function writeBenchmarksJson(
 ): Promise<void> {
     await writeFile(
         `benchmarks.json`,
-        `${jsonStringify(updatedBenchmarks, undefined, 2)}\n`
+        `${jsonStringify(updatedBenchmarks, undefined, 4)}\n`
     );
 }
 
