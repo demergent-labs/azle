@@ -26,6 +26,14 @@ module.exports = {
     },
     plugins: ['@typescript-eslint', 'simple-import-sort'],
     rules: {
+        'no-restricted-syntax': [
+            'error',
+            {
+                selector: "IfStatement[test.type!='BinaryExpression']",
+                message:
+                    'Conditional expressions must use explicit comparisons (e.g., === or !==).'
+            }
+        ],
         'simple-import-sort/exports': 'error',
         'simple-import-sort/imports': 'error',
         'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
