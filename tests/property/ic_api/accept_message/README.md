@@ -1,8 +1,8 @@
-# inspect_message, accept_message, and method_name Tests
+# accept_message Tests
 
 ## Current Status
 
-We have decided that the `accept_message` function is sufficiently tested in the following locations:
+We have decided that the `accept_message` function is sufficiently tested for release candidate in the following locations:
 
 -   tests/end_to_end/candid_rpc/class_syntax/inspect_message/
 -   tests/property/candid_rpc/class_api/canister_methods/inspect_message/

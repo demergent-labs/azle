@@ -2,7 +2,7 @@
 
 ## Current Status
 
-We have decided that the `clear_timer`, `set_timer`, and `set_timer_interval` functions are sufficiently tested in the following location:
+We have decided that the `clear_timer`, `set_timer`, and `set_timer_interval` functions are sufficiently tested for release candidate in the following location:
 tests/end_to_end/candid_rpc/class_syntax/timers/
 
 These existing tests provide adequate coverage for the current release candidate. They ensure that all the APIs are called correctly and function as expected.
