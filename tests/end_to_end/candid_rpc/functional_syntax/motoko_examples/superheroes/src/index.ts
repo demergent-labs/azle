@@ -56,7 +56,7 @@ export default Canister({
     // Update a superhero.
     update: update([SuperheroId, Superhero], bool, (superheroId, superhero) => {
         let result = superheroes.get(superheroId);
-        if (result) {
+        if (result !== undefined) {
             superheroes.set(superheroId, superhero);
         }
 
@@ -65,7 +65,7 @@ export default Canister({
     // Delete a superhero.
     deleteHero: update([SuperheroId], bool, (superheroId) => {
         let result = superheroes.get(superheroId);
-        if (result) {
+        if (result !== undefined) {
             superheroes.delete(superheroId);
         }
 

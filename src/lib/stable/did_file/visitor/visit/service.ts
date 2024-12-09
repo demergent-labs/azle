@@ -58,7 +58,7 @@ function serviceToCandidString(
         postMethodCandidString
     );
 
-    if (isFirstService) {
+    if (isFirstService === true) {
         return [
             `service: ${canisterParamsString} -> {\n${funcStrings}\n}`,
             candidTypes

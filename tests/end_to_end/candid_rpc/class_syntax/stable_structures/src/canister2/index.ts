@@ -157,7 +157,7 @@ export default class {
     stableMap7Insert(key: null, value: null): [null] | [] {
         const hasOldValue = this.stableMap7.containsKey(key);
         const result = this.stableMap7.insert(key, value);
-        if (hasOldValue) {
+        if (hasOldValue === true) {
             return [result];
         } else {
             return [];
@@ -188,7 +188,7 @@ export default class {
     stableMap7Remove(key: null): [null] | [] {
         const hasOldValue = this.stableMap7.containsKey(key);
         const result = this.stableMap7.remove(key);
-        if (hasOldValue) {
+        if (hasOldValue === true) {
             return [result];
         } else {
             return [];
@@ -221,7 +221,7 @@ export default class {
     stableMap8Insert(key: boolean, value: null): [null] | [] {
         const hasOldValue = this.stableMap8.containsKey(key);
         const result = this.stableMap8.insert(key, value);
-        if (hasOldValue) {
+        if (hasOldValue === true) {
             return [result];
         } else {
             return [];
@@ -252,7 +252,7 @@ export default class {
     stableMap8Remove(key: boolean): [null] | [] {
         const hasOldValue = this.stableMap8.containsKey(key);
         const result = this.stableMap8.remove(key);
-        if (hasOldValue) {
+        if (hasOldValue === true) {
             return [result];
         } else {
             return [];

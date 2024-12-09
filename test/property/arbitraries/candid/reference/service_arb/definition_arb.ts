@@ -111,7 +111,7 @@ function generateVariableAliasDeclarations(
     const serviceMethodTypeAliasDecls = serviceMethods.flatMap(
         (serviceMethod) => serviceMethod.variableAliasDeclarations
     );
-    if (useTypeDeclaration) {
+    if (useTypeDeclaration === true) {
         const type = api === 'functional' ? [] : [`type ${name} = Principal`];
         return [
             ...serviceMethodTypeAliasDecls,

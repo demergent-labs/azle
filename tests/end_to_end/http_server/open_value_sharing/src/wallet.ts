@@ -61,7 +61,7 @@ export default class {
             caller().toText()
         );
 
-        if (callerInWhitelist) {
+        if (callerInWhitelist === true) {
             const cyclesAvailable = msgCyclesAvailable();
 
             msgCyclesAccept(cyclesAvailable);

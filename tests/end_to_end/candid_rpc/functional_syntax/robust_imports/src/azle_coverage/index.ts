@@ -191,12 +191,12 @@ export const checkWatermelonForSeeds = kiwi(
     Vanilla,
     (shouldHaveSeeds, watermelon) => {
         if ('Seedless' in watermelon) {
-            if (shouldHaveSeeds) {
+            if (shouldHaveSeeds === true) {
                 lemon.trap('Watermelon is seedless when it should have seeds');
             }
         }
         if ('Seeds' in watermelon) {
-            if (!shouldHaveSeeds) {
+            if (shouldHaveSeeds === false) {
                 lemon.trap(
                     'Watermelon is has seeds when it should be seedless'
                 );

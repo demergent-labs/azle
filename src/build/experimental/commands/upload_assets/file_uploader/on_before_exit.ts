@@ -6,7 +6,7 @@ export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor): void {
     let cleanUpComplete = false;
 
     process.on('beforeExit', async () => {
-        if (cleanUpComplete) {
+        if (cleanUpComplete === true) {
             // If any async behavior happens in 'beforeExit' then 'beforeExit'
             // will run again. This is need to prevent an infinite loop.
             // Once clean up is complete we are ready to exit
