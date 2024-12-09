@@ -72,36 +72,20 @@ export function wait(name: string, delay: number): void {
     );
 }
 
-export function please(
-    name: string,
-    fn: () => void | Promise<void>,
-    timeout?: number
-): void {
-    test(
-        `please ${name}`,
-        async () => {
-            console.info(`Preparing: ${name}`);
-            await fn();
-        },
-        timeout
-    );
+export function please(name: string, fn: () => void | Promise<void>): void {
+    test(`please ${name}`, async () => {
+        console.info(`Preparing: ${name}`);
+        await fn();
+    });
 }
 please.skip = test.skip;
 please.only = test.only;
 
-export function it(
-    name: string,
-    fn: () => void | Promise<void>,
-    timeout?: number
-): void {
-    test(
-        `it ${name}`,
-        async () => {
-            console.info(`Testing: ${name}`);
-            await fn();
-        },
-        timeout
-    );
+export function it(name: string, fn: () => void | Promise<void>): void {
+    test(`it ${name}`, async () => {
+        console.info(`Testing: ${name}`);
+        await fn();
+    });
 }
 it.only = test.only;
 it.skip = test.skip;

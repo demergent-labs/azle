@@ -56,7 +56,7 @@ export function getTests(canisterId: string): Test {
             const responseText = await response.text();
 
             expect(responseText).toHaveLength(88);
-        }, 10_000);
+        });
 
         it('verifies a well signed bitcoin message using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(`${origin}/verify-bitcoin-message`, {
@@ -65,7 +65,7 @@ export function getTests(canisterId: string): Test {
             const responseJson = await response.json();
 
             expect(responseJson).toBe(true);
-        }, 10_000);
+        });
 
         it('fails to verify a poorly signed bitcoin message using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(
@@ -77,6 +77,6 @@ export function getTests(canisterId: string): Test {
             const responseJson = await response.json();
 
             expect(responseJson).toBe(false);
-        }, 10_000);
+        });
     };
 }
