@@ -11,6 +11,7 @@ on:
 
 jobs:
     pr_tasks_check:
+        name: All PR checkboxes marked completed
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
