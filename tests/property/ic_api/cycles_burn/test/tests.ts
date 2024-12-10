@@ -43,15 +43,15 @@ export function getTests(): Test {
             );
         });
 
-        it('verifies canisterBalance returns a bigint', async () => {
+        it('asserts canisterBalance static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.canisterBalanceTypesAreCorrect();
+            const result = await actor.assertCanisterBalanceTypes();
             expect(result).toBe(true);
         });
 
-        it('verifies updateCyclesBurn returns a bigint and accepts a bigint', async () => {
+        it('asserts updateCyclesBurn static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.cyclesBurnTypesAreCorrect(0n);
+            const result = await actor.assertCyclesBurnTypes(0n);
             expect(result).toBe(true);
         });
     };

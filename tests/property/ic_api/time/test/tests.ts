@@ -107,9 +107,9 @@ export function getTests(): Test {
             );
         });
 
-        it('verifies time returns a bigint', async () => {
+        it('asserts time static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.timeTypesAreCorrect();
+            const result = await actor.assertTypes();
             expect(result).toBe(true);
         });
     };

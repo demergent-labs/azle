@@ -13,9 +13,9 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
-        it('verifies id returns a Principal', async () => {
+        it('asserts id static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.idTypesAreCorrect();
+            const result = await actor.assertTypes();
             expect(result).toBe(true);
         });
 

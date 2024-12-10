@@ -136,9 +136,9 @@ export function getTests(): Test {
             );
         });
 
-        it('verifies that caller returns a Principal', async () => {
+        it('asserts caller static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            expect(await actor.callerTypesAreCorrect()).toBe(true);
+            expect(await actor.assertTypes()).toBe(true);
         });
     };
 }

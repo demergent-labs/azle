@@ -1,4 +1,5 @@
 import { call, IDL, rejectCode, RejectionCode, trap, update } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     rejectorPrincipal = getRejectorPrincipal();
@@ -19,7 +20,10 @@ export default class {
     }
 
     @update([], IDL.Bool)
-    async rejectCodeTypesAreCorrect(): Promise<boolean> {
+    async assertTypes(): Promise<boolean> {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof rejectCode>, RejectionCode>
+        >;
         const throwErrorRejectCode = await getThrowErrorRejectCode(
             this.rejectorPrincipal
         );

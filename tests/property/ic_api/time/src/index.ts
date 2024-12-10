@@ -14,6 +14,7 @@ import {
     trap,
     update
 } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     // @init([])
@@ -54,7 +55,10 @@ export default class {
     }
 
     @query([], IDL.Bool)
-    timeTypesAreCorrect(): boolean {
+    assertTypes(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof time>, bigint>
+        >;
         return typeof time() === 'bigint';
     }
 }

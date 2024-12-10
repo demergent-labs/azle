@@ -79,35 +79,35 @@ export function getTests(): Test {
             );
         });
 
-        it('verifies canisterBalance returns a bigint', async () => {
+        it('asserts canisterBalance static and runtime types', async () => {
             const intermediaryCanister =
                 await getCanisterActor<Actor>('intermediary');
             const result =
-                await intermediaryCanister.canisterBalanceTypesAreCorrect();
+                await intermediaryCanister.assertCanisterBalanceTypes();
             expect(result).toBe(true);
         });
 
-        it('verifies msgCyclesAccept returns a bigint and accepts a bigint', async () => {
+        it('asserts msgCyclesAccept static and runtime types', async () => {
             const intermediaryCanister =
                 await getCanisterActor<Actor>('intermediary');
             const result =
-                await intermediaryCanister.msgCyclesAcceptTypesAreCorrect(0n);
+                await intermediaryCanister.assertMsgCyclesAcceptTypes(0n);
             expect(result).toBe(true);
         });
 
-        it('verifies msgCyclesAvailable returns a bigint', async () => {
+        it('asserts msgCyclesAvailable static and runtime types', async () => {
             const intermediaryCanister =
                 await getCanisterActor<Actor>('intermediary');
             const result =
-                await intermediaryCanister.msgCyclesAvailableTypesAreCorrect();
+                await intermediaryCanister.assertMsgCyclesAvailableTypes();
             expect(result).toBe(true);
         });
 
-        it('verifies msgCyclesRefunded returns a bigint', async () => {
+        it('asserts msgCyclesRefunded static and runtime types', async () => {
             const intermediaryCanister =
                 await getCanisterActor<Actor>('intermediary');
             const result =
-                await intermediaryCanister.msgCyclesRefundedTypesAreCorrect(0n);
+                await intermediaryCanister.assertMsgCyclesRefundedTypes(0n);
             expect(result).toBe(true);
         });
     };

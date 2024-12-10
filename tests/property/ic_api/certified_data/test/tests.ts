@@ -298,26 +298,24 @@ export function getTests(): Test {
             );
         });
 
-        it('verifies that dataCertificate returns a Uint8Array in query', async () => {
+        it('asserts dataCertificate static and runtime types in query', async () => {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME);
-            expect(await actor.getDataCertificateTypesAreCorrectInQuery()).toBe(
+            expect(await actor.assertGetDataCertificateTypesInQuery()).toBe(
                 true
             );
         });
 
         it('verifies that dataCertificate returns undefined in update', async () => {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME);
-            expect(
-                await actor.getDataCertificateTypesAreCorrectInUpdate()
-            ).toBe(true);
+            expect(await actor.assertGetDataCertificateTypesInUpdate()).toBe(
+                true
+            );
         });
 
         it('verifies that setCertifiedData returns undefined and takes a Uint8Array', async () => {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME);
             expect(
-                await actor.verifyThatSetCertifiedDataTypesAreCorrect(
-                    new Uint8Array()
-                )
+                await actor.assertSetCertifiedDataTypes(new Uint8Array())
             ).toBe(true);
         });
     };

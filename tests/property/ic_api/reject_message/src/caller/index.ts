@@ -1,4 +1,5 @@
 import { call, IDL, rejectMessage, trap, update } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     rejectorPrincipal = getRejectorPrincipal();
@@ -9,7 +10,10 @@ export default class {
     }
 
     @update([IDL.Text], IDL.Bool)
-    async rejectMessageTypesAreCorrect(message: string): Promise<boolean> {
+    async assertTypes(message: string): Promise<boolean> {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof rejectMessage>, string>
+        >;
         return (
             typeof (await getRejectMessage(this.rejectorPrincipal, message)) ===
             'string'

@@ -169,10 +169,12 @@ export function getTests(): Test {
             );
         });
 
-        it('verifies performanceCounter returns a bigint', async () => {
+        it('asserts performanceCounter static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.performanceCounterTypesAreCorrect();
-            expect(result).toBe(true);
+            const result0 = await actor.assertTypes(0);
+            const result1 = await actor.assertTypes(1);
+            expect(result0).toBe(true);
+            expect(result1).toBe(true);
         });
     };
 }

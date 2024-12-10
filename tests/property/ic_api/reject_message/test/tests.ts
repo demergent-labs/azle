@@ -23,10 +23,9 @@ export function getTests(): Test {
             );
         });
 
-        it('verifies rejectMessage returns a string', async () => {
+        it('asserts rejectMessage static and runtime types', async () => {
             const callerCanister = await getCanisterActor<Actor>('caller');
-            const result =
-                await callerCanister.rejectMessageTypesAreCorrect('');
+            const result = await callerCanister.assertTypes('');
             expect(result).toBe(true);
         });
     };

@@ -1,4 +1,5 @@
 import { IDL, instructionCounter, query, update } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     @query([IDL.Nat32], IDL.Nat64)
@@ -16,7 +17,10 @@ export default class {
     }
 
     @query([], IDL.Bool)
-    instructionCounterTypesAreCorrect(): boolean {
+    assertTypes(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof instructionCounter>, bigint>
+        >;
         return typeof instructionCounter() === 'bigint';
     }
 }

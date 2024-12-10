@@ -23,9 +23,9 @@ export function getTests(): Test {
             expect(result).toEqual({ NoError: null });
         });
 
-        it('verifies rejectCode returns a boolean', async () => {
+        it('asserts rejectCode static and runtime types', async () => {
             const callerCanister = await getCanisterActor<Actor>('caller');
-            const result = await callerCanister.rejectCodeTypesAreCorrect();
+            const result = await callerCanister.assertTypes();
             expect(result).toBe(true);
         });
     };
