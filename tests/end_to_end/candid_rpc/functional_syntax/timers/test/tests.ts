@@ -15,7 +15,7 @@ let timerIds = {
 
 export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
-        it('get initial timer values', async () => {
+        it('gets initial timer values', async () => {
             const result = await timersCanister.statusReport();
 
             const expectedResult = {
@@ -30,7 +30,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toStrictEqual(expectedResult);
         });
 
-        it('set timers', async () => {
+        it('sets timers', async () => {
             timerIds = await timersCanister.setTimers(10n, 5n);
 
             expect(true).toBe(true);
@@ -38,7 +38,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
 
         wait('for repeated timer to be called once', 7_000);
 
-        it('check that only the repeated timers were called', async () => {
+        it('checks that only the repeated timers were called', async () => {
             const result = await timersCanister.statusReport();
 
             const expectedResult = {
@@ -57,9 +57,9 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
             expect(result.repeatCrossCanister).toHaveLength(32);
         });
 
-        wait('finish waiting for single timers to be called', 5_000);
+        wait('for the single timer to finish', 5_000);
 
-        it('check that everything got called (and the repeated timers a second time)', async () => {
+        it('checks that everything got called (and the repeated timers ran a second time)', async () => {
             const result = await timersCanister.statusReport();
 
             const expectedResult = {
@@ -78,7 +78,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
             expect(result.repeatCrossCanister).toHaveLength(64);
         });
 
-        it('cancel the repeated timers', async () => {
+        it('cancels the repeated timers', async () => {
             expect(timerIds.repeat).not.toBeUndefined();
             expect(timerIds.repeatCrossCanister).not.toBeUndefined();
 
@@ -90,9 +90,9 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
             expect(true).toBe(true);
         });
 
-        wait('the repeating call interval', 7_000);
+        wait('for the repeating call interval', 7_000);
 
-        it('check that the repeating timers stopped', async () => {
+        it('checks that the repeating timers stopped', async () => {
             const result = await timersCanister.statusReport();
 
             const expectedResult = {
