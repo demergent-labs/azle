@@ -28,6 +28,18 @@ on:
                 required: true
 
 jobs:
+    log-version:
+        runs-on: ubuntu-latest
+        steps:
+            - run: |
+                  echo "Version: $(jq -r '.version' package.json)"
+
+    log-input-version:
+        runs-on: ubuntu-latest
+        steps:
+            - run: |
+                  echo "Version: ${{ inputs.version }}"
+
     prepare-benchmark:
         name: Prepare Benchmark
         runs-on: ubuntu-latest

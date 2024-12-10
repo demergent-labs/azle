@@ -42,6 +42,12 @@ jobs:
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
+    log-version:
+        runs-on: ubuntu-latest
+        steps:
+            - run: |
+                  echo "Version: $(jq -r '.version' package.json)"
+
     run-benchmarks:
         name: ${{ matrix.benchmark_group.name }}
         needs:
@@ -51,22 +57,9 @@ jobs:
             fail-fast: false
             matrix:
                 benchmark_group:
-                    - { name: 'Examples', directories: './examples' }
                     - {
                           name: 'E2E Class',
                           directories: './tests/end_to_end/candid_rpc/class_syntax'
-                      }
-                    - {
-                          name: 'E2E Functional',
-                          directories: './tests/end_to_end/candid_rpc/functional_syntax'
-                      }
-                    - {
-                          name: 'E2E HTTP Server',
-                          directories: './tests/end_to_end/http_server'
-                      }
-                    - {
-                          name: 'Property Class',
-                          directories: './tests/property/candid_rpc/class_api'
                       }
         uses: ./.github/workflows/benchmark_parallel.yml
         secrets:
