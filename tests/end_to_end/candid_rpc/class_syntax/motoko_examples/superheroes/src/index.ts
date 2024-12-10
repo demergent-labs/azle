@@ -53,7 +53,7 @@ export default class {
     @update([SuperheroId, Superhero], IDL.Bool)
     update(superheroId: SuperheroId, superhero: Superhero): boolean {
         let result = this.superheroes.get(superheroId);
-        if (result) {
+        if (result !== undefined) {
             this.superheroes.set(superheroId, superhero);
         }
 
@@ -64,7 +64,7 @@ export default class {
     @update([SuperheroId], IDL.Bool)
     deleteHero(superheroId: SuperheroId): boolean {
         let result = this.superheroes.get(superheroId);
-        if (result) {
+        if (result !== undefined) {
             this.superheroes.delete(superheroId);
         }
 

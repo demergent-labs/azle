@@ -94,7 +94,7 @@ function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     api: Api
 ): string[] {
-    if (useTypeDeclaration) {
+    if (useTypeDeclaration === true) {
         if (api === 'class') {
             return [
                 `const ${name} = ${toIDL(candidType)};`,
