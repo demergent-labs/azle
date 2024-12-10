@@ -15,8 +15,7 @@ export function getTests(): Test {
     return () => {
         it('asserts id static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.assertTypes();
-            expect(result).toBe(true);
+            expect(await actor.assertTypes()).toBe(true);
         });
 
         it('should deploy and check all canister id methods', async () => {

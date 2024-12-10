@@ -90,8 +90,7 @@ export function getTests(): Test {
 
         it('asserts instructionCounter static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.assertTypes();
-            expect(result).toBe(true);
+            expect(await actor.assertTypes()).toBe(true);
         });
     };
 }

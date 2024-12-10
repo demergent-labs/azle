@@ -45,14 +45,12 @@ export function getTests(): Test {
 
         it('asserts canisterBalance static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.assertCanisterBalanceTypes();
-            expect(result).toBe(true);
+            expect(await actor.assertCanisterBalanceTypes()).toBe(true);
         });
 
         it('asserts updateCyclesBurn static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.assertCyclesBurnTypes(0n);
-            expect(result).toBe(true);
+            expect(await actor.assertCyclesBurnTypes(0n)).toBe(true);
         });
     };
 }

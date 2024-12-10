@@ -25,8 +25,7 @@ export function getTests(): Test {
 
         it('asserts rejectMessage static and runtime types', async () => {
             const callerCanister = await getCanisterActor<Actor>('caller');
-            const result = await callerCanister.assertTypes('');
-            expect(result).toBe(true);
+            expect(await callerCanister.assertTypes('')).toBe(true);
         });
     };
 }
