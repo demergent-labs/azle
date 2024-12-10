@@ -4,34 +4,58 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1277852" },
+                    "instructions": {
+                        "__bigint__": "1277852"
+                    },
                     "method_name": "add",
-                    "timestamp": { "__bigint__": "1730326444930071653" }
+                    "timestamp": {
+                        "__bigint__": "1730326444930071653"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1233924" },
+                    "instructions": {
+                        "__bigint__": "1233924"
+                    },
                     "method_name": "sub",
-                    "timestamp": { "__bigint__": "1730326446840562491" }
+                    "timestamp": {
+                        "__bigint__": "1730326446840562491"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1233454" },
+                    "instructions": {
+                        "__bigint__": "1233454"
+                    },
                     "method_name": "mul",
-                    "timestamp": { "__bigint__": "1730326449008259954" }
+                    "timestamp": {
+                        "__bigint__": "1730326449008259954"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1566663" },
+                    "instructions": {
+                        "__bigint__": "1566663"
+                    },
                     "method_name": "div",
-                    "timestamp": { "__bigint__": "1730326450978599267" }
+                    "timestamp": {
+                        "__bigint__": "1730326450978599267"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "878625" },
+                    "instructions": {
+                        "__bigint__": "878625"
+                    },
                     "method_name": "clearall",
-                    "timestamp": { "__bigint__": "1730326453200718240" }
+                    "timestamp": {
+                        "__bigint__": "1730326453200718240"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1230326" },
+                    "instructions": {
+                        "__bigint__": "1230326"
+                    },
                     "method_name": "add",
-                    "timestamp": { "__bigint__": "1730326455198638771" }
+                    "timestamp": {
+                        "__bigint__": "1730326455198638771"
+                    }
                 }
             ]
         },
@@ -39,34 +63,58 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1291494" },
+                    "instructions": {
+                        "__bigint__": "1265682"
+                    },
                     "method_name": "add",
-                    "timestamp": { "__bigint__": "1730484642575516151" }
+                    "timestamp": {
+                        "__bigint__": "1733867559986264205"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1259983" },
+                    "instructions": {
+                        "__bigint__": "1245538"
+                    },
                     "method_name": "sub",
-                    "timestamp": { "__bigint__": "1730484644737645611" }
+                    "timestamp": {
+                        "__bigint__": "1733867560280502101"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1259344" },
+                    "instructions": {
+                        "__bigint__": "1244872"
+                    },
                     "method_name": "mul",
-                    "timestamp": { "__bigint__": "1730484646905998915" }
+                    "timestamp": {
+                        "__bigint__": "1733867560596559631"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1586795" },
+                    "instructions": {
+                        "__bigint__": "1571670"
+                    },
                     "method_name": "div",
-                    "timestamp": { "__bigint__": "1730484648818740336" }
+                    "timestamp": {
+                        "__bigint__": "1733867560894975751"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "902205" },
+                    "instructions": {
+                        "__bigint__": "889946"
+                    },
                     "method_name": "clearall",
-                    "timestamp": { "__bigint__": "1730484650870892810" }
+                    "timestamp": {
+                        "__bigint__": "1733867561016358409"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1256317" },
+                    "instructions": {
+                        "__bigint__": "1241596"
+                    },
                     "method_name": "add",
-                    "timestamp": { "__bigint__": "1730484653045873107" }
+                    "timestamp": {
+                        "__bigint__": "1733867561533928016"
+                    }
                 }
             ]
         }

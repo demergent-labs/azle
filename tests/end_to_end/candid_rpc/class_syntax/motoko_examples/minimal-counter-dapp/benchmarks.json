@@ -4,24 +4,40 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1143272" },
+                    "instructions": {
+                        "__bigint__": "1143272"
+                    },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730326459449832289" }
+                    "timestamp": {
+                        "__bigint__": "1730326459449832289"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1090875" },
+                    "instructions": {
+                        "__bigint__": "1090875"
+                    },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730326461681407374" }
+                    "timestamp": {
+                        "__bigint__": "1730326461681407374"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1090108" },
+                    "instructions": {
+                        "__bigint__": "1090108"
+                    },
                     "method_name": "reset",
-                    "timestamp": { "__bigint__": "1730326463801428693" }
+                    "timestamp": {
+                        "__bigint__": "1730326463801428693"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1096590" },
+                    "instructions": {
+                        "__bigint__": "1096590"
+                    },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730326465764136582" }
+                    "timestamp": {
+                        "__bigint__": "1730326465764136582"
+                    }
                 }
             ]
         },
@@ -29,24 +45,40 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1156181" },
+                    "instructions": {
+                        "__bigint__": "1147675"
+                    },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730484651566666414" }
+                    "timestamp": {
+                        "__bigint__": "1733867557759987161"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1116732" },
+                    "instructions": {
+                        "__bigint__": "1120255"
+                    },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730484653786491629" }
+                    "timestamp": {
+                        "__bigint__": "1733867558077746293"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1114393" },
+                    "instructions": {
+                        "__bigint__": "1118104"
+                    },
                     "method_name": "reset",
-                    "timestamp": { "__bigint__": "1730484655685806303" }
+                    "timestamp": {
+                        "__bigint__": "1733867558369039025"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1126021" },
+                    "instructions": {
+                        "__bigint__": "1125066"
+                    },
                     "method_name": "count",
-                    "timestamp": { "__bigint__": "1730484657972639316" }
+                    "timestamp": {
+                        "__bigint__": "1733867558481712066"
+                    }
                 }
             ]
         }

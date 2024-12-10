@@ -4,19 +4,31 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "17354025633" },
+                    "instructions": {
+                        "__bigint__": "17354025633"
+                    },
                     "method_name": "insertSmallRecord",
-                    "timestamp": { "__bigint__": "1730326449490724993" }
+                    "timestamp": {
+                        "__bigint__": "1730326449490724993"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "15819980037" },
+                    "instructions": {
+                        "__bigint__": "15819980037"
+                    },
                     "method_name": "insertMediumRecord",
-                    "timestamp": { "__bigint__": "1730326457096591903" }
+                    "timestamp": {
+                        "__bigint__": "1730326457096591903"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "18226207933" },
+                    "instructions": {
+                        "__bigint__": "18226207933"
+                    },
                     "method_name": "insertLargeRecord",
-                    "timestamp": { "__bigint__": "1730326464242192703" }
+                    "timestamp": {
+                        "__bigint__": "1730326464242192703"
+                    }
                 }
             ]
         },
@@ -24,19 +36,31 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "18015030956" },
+                    "instructions": {
+                        "__bigint__": "17998029938"
+                    },
                     "method_name": "insertSmallRecord",
-                    "timestamp": { "__bigint__": "1730484649974391626" }
+                    "timestamp": {
+                        "__bigint__": "1733867560887256400"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "16482146164" },
+                    "instructions": {
+                        "__bigint__": "16465290556"
+                    },
                     "method_name": "insertMediumRecord",
-                    "timestamp": { "__bigint__": "1730484660048568519" }
+                    "timestamp": {
+                        "__bigint__": "1733867568816213182"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "19060732880" },
+                    "instructions": {
+                        "__bigint__": "19044133336"
+                    },
                     "method_name": "insertLargeRecord",
-                    "timestamp": { "__bigint__": "1730484671425488791" }
+                    "timestamp": {
+                        "__bigint__": "1733867575733473679"
+                    }
                 }
             ]
         }

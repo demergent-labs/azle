@@ -1,6 +1,12 @@
 {
     "hello": {
-        "previous": { "version": "0.25.0-pre-bifurcation", "benchmarks": [] },
-        "current": { "version": "0.25.0-dev", "benchmarks": [] }
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": []
+        }
     }
 }
