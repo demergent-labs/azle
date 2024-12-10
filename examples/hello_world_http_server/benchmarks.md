@@ -1,20 +1,18 @@
 # Benchmarks for backend
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init                | 8_135_491_182 | 6_454_786_472 | $0.0085827359 | $8_582.73         | <font color="green">-774_092</font> |
-| 1   | http_request_update | 53_810_066    | 22_114_026    | $0.0000294044 | $29.40            | <font color="red">+11_339</font>    |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init                | 8_146_675_387 | 6_459_260_154 | $0.0085886844 | $8_588.68         | <font color="red">+11_184_205</font> |
+| 1   | http_request_update | 53_876_639    | 22_140_655    | $0.0000294398 | $29.43            | <font color="red">+66_573</font>     |
 
 ## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                | 8_136_265_274 | 6_455_096_109 | $0.0085831476 | $8_583.14         |
-| 1   | http_request_update | 53_798_727    | 22_109_490    | $0.0000293983 | $29.39            |
-| 2   | http_request_update | 47_468_265    | 19_577_306    | $0.0000260314 | $26.03            |
-| 3   | http_request_update | 47_474_297    | 19_579_718    | $0.0000260346 | $26.03            |
+| 0   | init                | 8_135_491_182 | 6_454_786_472 | $0.0085827359 | $8_582.73         |
+| 1   | http_request_update | 53_810_066    | 22_114_026    | $0.0000294044 | $29.40            |
 
 ---
 

@@ -4,11 +4,11 @@
 
 | Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
 | --- | --------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | createUser      | 14_173_179   | 6_259_271  | $0.0000083228 | $8.32             | <font color="red">+3_409</font>    |
-| 1   | createRecording | 34_580_914   | 14_422_365 | $0.0000191770 | $19.17            | <font color="green">-52_417</font> |
-| 2   | deleteRecording | 48_544_038   | 20_007_615 | $0.0000266035 | $26.60            | <font color="red">+33_540</font>   |
-| 3   | createRecording | 34_426_195   | 14_360_478 | $0.0000190947 | $19.09            | <font color="green">-498</font>    |
-| 4   | deleteUser      | 34_118_381   | 14_237_352 | $0.0000189310 | $18.93            | <font color="red">+304</font>      |
+| 0   | createUser      | 14_172_498   | 6_258_999  | $0.0000083224 | $8.32             | <font color="red">+2_728</font>    |
+| 1   | createRecording | 34_588_291   | 14_425_316 | $0.0000191809 | $19.18            | <font color="green">-45_040</font> |
+| 2   | deleteRecording | 48_598_961   | 20_029_584 | $0.0000266327 | $26.63            | <font color="red">+88_463</font>   |
+| 3   | createRecording | 34_418_942   | 14_357_576 | $0.0000190908 | $19.09            | <font color="green">-7_751</font>  |
+| 4   | deleteUser      | 34_091_356   | 14_226_542 | $0.0000189166 | $18.91            | <font color="green">-26_721</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

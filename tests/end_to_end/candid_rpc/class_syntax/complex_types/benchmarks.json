@@ -4,24 +4,40 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "18927372" },
+                    "instructions": {
+                        "__bigint__": "18927372"
+                    },
                     "method_name": "createUser",
-                    "timestamp": { "__bigint__": "1730326445145550678" }
+                    "timestamp": {
+                        "__bigint__": "1730326445145550678"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "20095428" },
+                    "instructions": {
+                        "__bigint__": "20095428"
+                    },
                     "method_name": "createThread",
-                    "timestamp": { "__bigint__": "1730326447103105956" }
+                    "timestamp": {
+                        "__bigint__": "1730326447103105956"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "22464676" },
+                    "instructions": {
+                        "__bigint__": "22464676"
+                    },
                     "method_name": "createPost",
-                    "timestamp": { "__bigint__": "1730326449266136285" }
+                    "timestamp": {
+                        "__bigint__": "1730326449266136285"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "25440124" },
+                    "instructions": {
+                        "__bigint__": "25440124"
+                    },
                     "method_name": "createReaction",
-                    "timestamp": { "__bigint__": "1730326451369137637" }
+                    "timestamp": {
+                        "__bigint__": "1730326451369137637"
+                    }
                 }
             ]
         },
@@ -29,24 +45,40 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "18523069" },
+                    "instructions": {
+                        "__bigint__": "18505735"
+                    },
                     "method_name": "createUser",
-                    "timestamp": { "__bigint__": "1730484645478634801" }
+                    "timestamp": {
+                        "__bigint__": "1733865085483212449"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "19462062" },
+                    "instructions": {
+                        "__bigint__": "19421886"
+                    },
                     "method_name": "createThread",
-                    "timestamp": { "__bigint__": "1730484647613162344" }
+                    "timestamp": {
+                        "__bigint__": "1733865085726894790"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "21816144" },
+                    "instructions": {
+                        "__bigint__": "21764852"
+                    },
                     "method_name": "createPost",
-                    "timestamp": { "__bigint__": "1730484649796922624" }
+                    "timestamp": {
+                        "__bigint__": "1733865086038176773"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "24761621" },
+                    "instructions": {
+                        "__bigint__": "24683772"
+                    },
                     "method_name": "createReaction",
-                    "timestamp": { "__bigint__": "1730484651944731396" }
+                    "timestamp": {
+                        "__bigint__": "1733865086329340905"
+                    }
                 }
             ]
         }

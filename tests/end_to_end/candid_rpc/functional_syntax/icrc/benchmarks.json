@@ -1,0 +1,58 @@
+{
+    "proxy": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5511520814"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1733865130467267478"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "96936328"
+                    },
+                    "method_name": "icrc1_transfer",
+                    "timestamp": {
+                        "__bigint__": "1733865141378064519"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104677760"
+                    },
+                    "method_name": "icrc2_approve",
+                    "timestamp": {
+                        "__bigint__": "1733865142016845256"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "102158245"
+                    },
+                    "method_name": "icrc2_transfer_from",
+                    "timestamp": {
+                        "__bigint__": "1733865142530286112"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "88499685"
+                    },
+                    "method_name": "icrc2_allowance",
+                    "timestamp": {
+                        "__bigint__": "1733865142850747452"
+                    }
+                }
+            ]
+        }
+    }
+}

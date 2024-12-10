@@ -4,9 +4,13 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8198292206" },
+                    "instructions": {
+                        "__bigint__": "8198292206"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326431729406181" }
+                    "timestamp": {
+                        "__bigint__": "1730326431729406181"
+                    }
                 }
             ]
         },
@@ -14,9 +18,13 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8203406473" },
+                    "instructions": {
+                        "__bigint__": "8212091495"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484662470212637" }
+                    "timestamp": {
+                        "__bigint__": "1733865084633732410"
+                    }
                 }
             ]
         }

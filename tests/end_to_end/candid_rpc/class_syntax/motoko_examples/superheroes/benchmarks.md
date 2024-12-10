@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | create      | 3_662_180    | 2_054_872 | $0.0000027323 | $2.73             | <font color="red">+76_937</font>  |
-| 1   | create      | 4_719_779    | 2_477_911 | $0.0000032948 | $3.29             | <font color="red">+143_991</font> |
-| 2   | update      | 5_072_985    | 2_619_194 | $0.0000034827 | $3.48             | <font color="red">+186_800</font> |
-| 3   | update      | 3_561_803    | 2_014_721 | $0.0000026789 | $2.67             | <font color="red">+103_110</font> |
-| 4   | deleteHero  | 1_221_842    | 1_078_736 | $0.0000014344 | $1.43             | <font color="red">+33_514</font>  |
-| 5   | deleteHero  | 1_207_029    | 1_072_811 | $0.0000014265 | $1.42             | <font color="red">+28_954</font>  |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | create      | 3_637_837    | 2_045_134 | $0.0000027194 | $2.71             | <font color="red">+52_594</font> |
+| 1   | create      | 4_644_515    | 2_447_806 | $0.0000032548 | $3.25             | <font color="red">+68_727</font> |
+| 2   | update      | 4_969_027    | 2_577_610 | $0.0000034274 | $3.42             | <font color="red">+82_842</font> |
+| 3   | update      | 3_529_807    | 2_001_922 | $0.0000026619 | $2.66             | <font color="red">+71_114</font> |
+| 4   | deleteHero  | 1_224_706    | 1_079_882 | $0.0000014359 | $1.43             | <font color="red">+36_378</font> |
+| 5   | deleteHero  | 1_208_509    | 1_073_403 | $0.0000014273 | $1.42             | <font color="red">+30_434</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

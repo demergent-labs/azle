@@ -4,34 +4,58 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5874961038" },
+                    "instructions": {
+                        "__bigint__": "5874961038"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730326480530931902" }
+                    "timestamp": {
+                        "__bigint__": "1730326480530931902"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1033719" },
+                    "instructions": {
+                        "__bigint__": "1033719"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730326483615725695" }
+                    "timestamp": {
+                        "__bigint__": "1730326483615725695"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1022494" },
+                    "instructions": {
+                        "__bigint__": "1022494"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730326485616877458" }
+                    "timestamp": {
+                        "__bigint__": "1730326485616877458"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1022587" },
+                    "instructions": {
+                        "__bigint__": "1022587"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730326487764493510" }
+                    "timestamp": {
+                        "__bigint__": "1730326487764493510"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1020801" },
+                    "instructions": {
+                        "__bigint__": "1020801"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730326489756116980" }
+                    "timestamp": {
+                        "__bigint__": "1730326489756116980"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1022196" },
+                    "instructions": {
+                        "__bigint__": "1022196"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730326491824052518" }
+                    "timestamp": {
+                        "__bigint__": "1730326491824052518"
+                    }
                 }
             ]
         },
@@ -39,34 +63,58 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5875560744" },
+                    "instructions": {
+                        "__bigint__": "5364421346"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484652660942875" }
+                    "timestamp": {
+                        "__bigint__": "1733865120022851739"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1037140" },
+                    "instructions": {
+                        "__bigint__": "1037129"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484657080847951" }
+                    "timestamp": {
+                        "__bigint__": "1733865126490160207"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1022596" },
+                    "instructions": {
+                        "__bigint__": "1025444"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484659054572063" }
+                    "timestamp": {
+                        "__bigint__": "1733865126898109821"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1021984" },
+                    "instructions": {
+                        "__bigint__": "1023174"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484661071346321" }
+                    "timestamp": {
+                        "__bigint__": "1733865127254424714"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1020631" },
+                    "instructions": {
+                        "__bigint__": "1025653"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484663167779558" }
+                    "timestamp": {
+                        "__bigint__": "1733865127523000379"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1023113" },
+                    "instructions": {
+                        "__bigint__": "1023877"
+                    },
                     "method_name": "randomNumber",
-                    "timestamp": { "__bigint__": "1730484665335847077" }
+                    "timestamp": {
+                        "__bigint__": "1733865127805001887"
+                    }
                 }
             ]
         }

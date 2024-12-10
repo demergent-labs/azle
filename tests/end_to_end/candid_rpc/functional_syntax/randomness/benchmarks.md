@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
-| --- | ------------ | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
-| 0   | postUpgrade  | 5_875_560_744 | 4_350_814_297 | $0.0057851472 | $5_785.14         | <font color="red">+599_706</font> |
-| 1   | randomNumber | 1_037_140     | 1_004_856     | $0.0000013361 | $1.33             | <font color="red">+3_421</font>   |
-| 2   | randomNumber | 1_022_596     | 999_038       | $0.0000013284 | $1.32             | <font color="red">+102</font>     |
-| 3   | randomNumber | 1_021_984     | 998_793       | $0.0000013281 | $1.32             | <font color="green">-603</font>   |
-| 4   | randomNumber | 1_020_631     | 998_252       | $0.0000013273 | $1.32             | <font color="green">-170</font>   |
-| 5   | randomNumber | 1_023_113     | 999_245       | $0.0000013287 | $1.32             | <font color="red">+917</font>     |
+| Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
+| --- | ------------ | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | postUpgrade  | 5_364_421_346 | 4_146_358_538 | $0.0055132886 | $5_513.28         | <font color="green">-510_539_692</font> |
+| 1   | randomNumber | 1_037_129     | 1_004_851     | $0.0000013361 | $1.33             | <font color="red">+3_410</font>         |
+| 2   | randomNumber | 1_025_444     | 1_000_177     | $0.0000013299 | $1.32             | <font color="red">+2_950</font>         |
+| 3   | randomNumber | 1_023_174     | 999_269       | $0.0000013287 | $1.32             | <font color="red">+587</font>           |
+| 4   | randomNumber | 1_025_653     | 1_000_261     | $0.0000013300 | $1.33             | <font color="red">+4_852</font>         |
+| 5   | randomNumber | 1_023_877     | 999_550       | $0.0000013291 | $1.32             | <font color="red">+1_681</font>         |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
