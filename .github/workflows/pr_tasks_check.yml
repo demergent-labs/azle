@@ -26,8 +26,8 @@ jobs:
 
                   # Check for unchecked tasks (- [ ])
                   if echo "$PR_BODY" | grep -q "\- \[ \]"; then
-                    echo "Error: Found unchecked tasks in the PR description. Please complete all tasks before merging."
-                    echo "Unchecked tasks:"
+                    echo "Error: Some PR checkboxes not marked completed"
+                    echo "The following checkboxes are not marked as completed:"
                     echo "$PR_BODY" | grep "\- \[ \]"
                     exit 1
                   fi
