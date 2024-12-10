@@ -4,7 +4,7 @@
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | createUser  | 3_943_113    | 2_167_245 | $0.0000028817 | $2.88             | <font color="red">+3_256</font> |
+| 0   | createUser  | 3_948_060    | 2_169_224 | $0.0000028844 | $2.88             | <font color="red">+8_203</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

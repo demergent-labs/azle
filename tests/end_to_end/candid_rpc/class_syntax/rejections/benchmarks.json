@@ -4,29 +4,49 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1723912" },
+                    "instructions": {
+                        "__bigint__": "1723912"
+                    },
                     "method_name": "getRejectionCodeNoError",
-                    "timestamp": { "__bigint__": "1730326460218167743" }
+                    "timestamp": {
+                        "__bigint__": "1730326460218167743"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1644398" },
+                    "instructions": {
+                        "__bigint__": "1644398"
+                    },
                     "method_name": "getRejectionCodeDestinationInvalid",
-                    "timestamp": { "__bigint__": "1730326462314231336" }
+                    "timestamp": {
+                        "__bigint__": "1730326462314231336"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "2061807" },
+                    "instructions": {
+                        "__bigint__": "2061807"
+                    },
                     "method_name": "getRejectionCodeCanisterReject",
-                    "timestamp": { "__bigint__": "1730326464539583003" }
+                    "timestamp": {
+                        "__bigint__": "1730326464539583003"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1648755" },
+                    "instructions": {
+                        "__bigint__": "1648755"
+                    },
                     "method_name": "getRejectionCodeCanisterError",
-                    "timestamp": { "__bigint__": "1730326466478156147" }
+                    "timestamp": {
+                        "__bigint__": "1730326466478156147"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "2792722" },
+                    "instructions": {
+                        "__bigint__": "2792722"
+                    },
                     "method_name": "getRejectionMessage",
-                    "timestamp": { "__bigint__": "1730326468702985255" }
+                    "timestamp": {
+                        "__bigint__": "1730326468702985255"
+                    }
                 }
             ]
         },
@@ -34,29 +54,49 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1692976" },
+                    "instructions": {
+                        "__bigint__": "1672584"
+                    },
                     "method_name": "getRejectionCodeNoError",
-                    "timestamp": { "__bigint__": "1730484667491139373" }
+                    "timestamp": {
+                        "__bigint__": "1733862387448771924"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1637314" },
+                    "instructions": {
+                        "__bigint__": "1617719"
+                    },
                     "method_name": "getRejectionCodeDestinationInvalid",
-                    "timestamp": { "__bigint__": "1730484669652932668" }
+                    "timestamp": {
+                        "__bigint__": "1733862387792210936"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "2058148" },
+                    "instructions": {
+                        "__bigint__": "2037181"
+                    },
                     "method_name": "getRejectionCodeCanisterReject",
-                    "timestamp": { "__bigint__": "1730484671886210755" }
+                    "timestamp": {
+                        "__bigint__": "1733862388188352394"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1642299" },
+                    "instructions": {
+                        "__bigint__": "1622636"
+                    },
                     "method_name": "getRejectionCodeCanisterError",
-                    "timestamp": { "__bigint__": "1730484673839014486" }
+                    "timestamp": {
+                        "__bigint__": "1733862388700069005"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "2854468" },
+                    "instructions": {
+                        "__bigint__": "2794270"
+                    },
                     "method_name": "getRejectionMessage",
-                    "timestamp": { "__bigint__": "1730484675879193133" }
+                    "timestamp": {
+                        "__bigint__": "1733862389009947453"
+                    }
                 }
             ]
         }

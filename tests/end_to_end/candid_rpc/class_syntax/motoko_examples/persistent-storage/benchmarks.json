@@ -4,9 +4,13 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1024942770" },
+                    "instructions": {
+                        "__bigint__": "1024942770"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730326458870537748" }
+                    "timestamp": {
+                        "__bigint__": "1730326458870537748"
+                    }
                 }
             ]
         },
@@ -14,9 +18,13 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1342974884" },
+                    "instructions": {
+                        "__bigint__": "1352960095"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484656675569978" }
+                    "timestamp": {
+                        "__bigint__": "1733862378470332800"
+                    }
                 }
             ]
         }

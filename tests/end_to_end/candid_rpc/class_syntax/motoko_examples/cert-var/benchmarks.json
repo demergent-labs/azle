@@ -1,0 +1,130 @@
+{
+    "cert-var": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1964613"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1733862365769171832"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2196133"
+                    },
+                    "method_name": "inc",
+                    "timestamp": {
+                        "__bigint__": "1733862366075655641"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1947663"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1733862366382243053"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2196132"
+                    },
+                    "method_name": "inc",
+                    "timestamp": {
+                        "__bigint__": "1733862366665279476"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1947663"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1733862366792365691"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2196132"
+                    },
+                    "method_name": "inc",
+                    "timestamp": {
+                        "__bigint__": "1733862367300009066"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1947688"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1733862367429443784"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2196132"
+                    },
+                    "method_name": "inc",
+                    "timestamp": {
+                        "__bigint__": "1733862367936944862"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1947663"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1733862368043223621"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2196133"
+                    },
+                    "method_name": "inc",
+                    "timestamp": {
+                        "__bigint__": "1733862368552043023"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1947663"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1733862368682645384"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2196132"
+                    },
+                    "method_name": "inc",
+                    "timestamp": {
+                        "__bigint__": "1733862369193327120"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1986852"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1733862369552185578"
+                    }
+                }
+            ]
+        }
+    }
+}

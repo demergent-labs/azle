@@ -2,9 +2,9 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | sendNotification | 1_609_604    | 1_233_841 | $0.0000016406 | $1.64             | <font color="red">+4_553</font> |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | sendNotification | 1_600_375    | 1_230_150 | $0.0000016357 | $1.63             | <font color="green">-4_676</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
@@ -16,9 +16,9 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls | Change                           |
-| --- | ------------------- | ------------ | ------- | ------------- | ----------------- | -------------------------------- |
-| 0   | receiveNotification | 923_050      | 959_220 | $0.0000012754 | $1.27             | <font color="red">+10_753</font> |
+| Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls | Change                            |
+| --- | ------------------- | ------------ | ------- | ------------- | ----------------- | --------------------------------- |
+| 0   | receiveNotification | 907_702      | 953_080 | $0.0000012673 | $1.26             | <font color="green">-4_595</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

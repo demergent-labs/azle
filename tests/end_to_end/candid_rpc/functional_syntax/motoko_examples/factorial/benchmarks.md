@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | fac         | 1_251_118    | 1_090_447 | $0.0000014499 | $1.44             | <font color="red">+2_261</font>    |
-| 1   | fac         | 1_248_993    | 1_089_597 | $0.0000014488 | $1.44             | <font color="red">+356</font>      |
-| 2   | fac         | 1_716_563    | 1_276_625 | $0.0000016975 | $1.69             | <font color="green">-818</font>    |
-| 3   | fac         | 2_962_328    | 1_774_931 | $0.0000023601 | $2.36             | <font color="red">+10_409</font>   |
-| 4   | fac         | 5_503_616    | 2_791_446 | $0.0000037117 | $3.71             | <font color="green">-16_990</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | fac         | 1_244_048    | 1_087_619 | $0.0000014462 | $1.44             | <font color="green">-4_809</font> |
+| 1   | fac         | 1_252_513    | 1_091_005 | $0.0000014507 | $1.45             | <font color="red">+3_876</font>   |
+| 2   | fac         | 1_714_479    | 1_275_791 | $0.0000016964 | $1.69             | <font color="green">-2_902</font> |
+| 3   | fac         | 2_968_425    | 1_777_370 | $0.0000023633 | $2.36             | <font color="red">+16_506</font>  |
+| 4   | fac         | 5_512_221    | 2_794_888 | $0.0000037163 | $3.71             | <font color="green">-8_385</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

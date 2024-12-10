@@ -1,0 +1,31 @@
+{
+    "api": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "14490815261"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1733862343143365354"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104515441"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1733862361512062989"
+                    }
+                }
+            ]
+        }
+    }
+}

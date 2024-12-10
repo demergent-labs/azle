@@ -2,9 +2,9 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | postUpgrade | 5_374_037_941 | 4_150_205_176 | $0.0055184033 | $5_518.40         | <font color="red">+4_604_722</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | postUpgrade | 5_384_540_764 | 4_154_406_305 | $0.0055239894 | $5_523.98         | <font color="red">+15_107_545</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

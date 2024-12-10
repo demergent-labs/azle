@@ -4,19 +4,31 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1522184" },
+                    "instructions": {
+                        "__bigint__": "1522184"
+                    },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730326453469001522" }
+                    "timestamp": {
+                        "__bigint__": "1730326453469001522"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1515199" },
+                    "instructions": {
+                        "__bigint__": "1515199"
+                    },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730326455715529568" }
+                    "timestamp": {
+                        "__bigint__": "1730326455715529568"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1516303" },
+                    "instructions": {
+                        "__bigint__": "1516303"
+                    },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730326457828369518" }
+                    "timestamp": {
+                        "__bigint__": "1730326457828369518"
+                    }
                 }
             ]
         },
@@ -24,19 +36,31 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1516934" },
+                    "instructions": {
+                        "__bigint__": "1520537"
+                    },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730484659438266793" }
+                    "timestamp": {
+                        "__bigint__": "1733862382346626988"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1519792" },
+                    "instructions": {
+                        "__bigint__": "1538538"
+                    },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730484661369436272" }
+                    "timestamp": {
+                        "__bigint__": "1733862382639401915"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1522381" },
+                    "instructions": {
+                        "__bigint__": "1538583"
+                    },
                     "method_name": "receiveCycles",
-                    "timestamp": { "__bigint__": "1730484663382139099" }
+                    "timestamp": {
+                        "__bigint__": "1733862383256102978"
+                    }
                 }
             ]
         }
@@ -46,14 +70,22 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1731011" },
+                    "instructions": {
+                        "__bigint__": "1731011"
+                    },
                     "method_name": "sendCycles",
-                    "timestamp": { "__bigint__": "1730326455715529568" }
+                    "timestamp": {
+                        "__bigint__": "1730326455715529568"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1990804" },
+                    "instructions": {
+                        "__bigint__": "1990804"
+                    },
                     "method_name": "sendCyclesNotify",
-                    "timestamp": { "__bigint__": "1730326457828369518" }
+                    "timestamp": {
+                        "__bigint__": "1730326457828369518"
+                    }
                 }
             ]
         },
@@ -61,14 +93,22 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1706711" },
+                    "instructions": {
+                        "__bigint__": "1680067"
+                    },
                     "method_name": "sendCycles",
-                    "timestamp": { "__bigint__": "1730484661369436272" }
+                    "timestamp": {
+                        "__bigint__": "1733862382639401915"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "2024283" },
+                    "instructions": {
+                        "__bigint__": "2016843"
+                    },
                     "method_name": "sendCyclesNotify",
-                    "timestamp": { "__bigint__": "1730484663382139099" }
+                    "timestamp": {
+                        "__bigint__": "1733862383256102978"
+                    }
                 }
             ]
         }

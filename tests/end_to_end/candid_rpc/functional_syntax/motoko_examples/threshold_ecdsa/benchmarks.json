@@ -4,14 +4,22 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "148423098" },
+                    "instructions": {
+                        "__bigint__": "148423098"
+                    },
                     "method_name": "publicKey",
-                    "timestamp": { "__bigint__": "1730326491941121657" }
+                    "timestamp": {
+                        "__bigint__": "1730326491941121657"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "148560433" },
+                    "instructions": {
+                        "__bigint__": "148560433"
+                    },
                     "method_name": "sign",
-                    "timestamp": { "__bigint__": "1730326494047613519" }
+                    "timestamp": {
+                        "__bigint__": "1730326494047613519"
+                    }
                 }
             ]
         },
@@ -19,14 +27,22 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "148390394" },
+                    "instructions": {
+                        "__bigint__": "148453485"
+                    },
                     "method_name": "publicKey",
-                    "timestamp": { "__bigint__": "1730484650532528298" }
+                    "timestamp": {
+                        "__bigint__": "1733862403952644705"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "148548313" },
+                    "instructions": {
+                        "__bigint__": "148643576"
+                    },
                     "method_name": "sign",
-                    "timestamp": { "__bigint__": "1730484652506119596" }
+                    "timestamp": {
+                        "__bigint__": "1733862404255979465"
+                    }
                 }
             ]
         }
