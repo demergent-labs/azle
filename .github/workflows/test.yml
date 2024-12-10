@@ -33,44 +33,59 @@ on:
                 type: boolean
                 default: true
             exclude-release-only-tests:
-                description: 'Exclude release only tests'
+                description: 'Exclude release-only tests'
+                required: true
+                type: boolean
+                default: true
+            link-azle:
+                description: 'Link to development version of azle'
                 required: true
                 type: boolean
                 default: true
 
 jobs:
+    workflow-config:
+        name: Determine workflow config
+        runs-on: ubuntu-latest
+        outputs:
+            exclude-slow: ${{ steps.determine-workflow-config.outputs.exclude-slow }}
+            exclude-unstable: ${{ steps.determine-workflow-config.outputs.exclude-unstable }}
+            exclude-release-only: ${{ steps.determine-workflow-config.outputs.exclude-release-only }}
+            link-azle: ${{ steps.determine-workflow-config.outputs.link-azle }}
+            fuzz: ${{ steps.determine-workflow-config.outputs.fuzz }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: determine-workflow-config
+              uses: ./.github/actions/determine_workflow_config
+              with:
+                  is-workflow-dispatch: ${{ github.event_name == 'workflow_dispatch' }}
+                  exclude-slow-dispatch-input-value: ${{ inputs.exclude-slow-tests }}
+                  exclude-unstable-dispatch-input-value: ${{ inputs.exclude-unstable-tests }}
+                  exclude-release-only-dispatch-input-value: ${{ inputs.exclude-release-only-tests }}
+                  link-azle-dispatch-input-value: ${{ inputs.link-azle }}
+                  fuzz-dispatch-input-value: ${{ inputs.fuzz }}
+
     get-exclude-dirs:
         name: Get exclude directories
+        needs: workflow-config
         runs-on: ubuntu-latest
         outputs:
             exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
         steps:
             - uses: actions/checkout@v4
 
-            - id: set-conditions
-              uses: ./.github/actions/set_run_conditions
-
-            - id: determine-exclusions
-              uses: ./.github/actions/determine_exclusions
-              with:
-                  is_workflow_dispatch: ${{ github.event_name == 'workflow_dispatch' }}
-                  exclude_slow_input: ${{ inputs.exclude-slow-tests }}
-                  exclude_unstable_input: ${{ inputs.exclude-unstable-tests }}
-                  exclude_release_only_input: ${{ inputs.exclude-release-only-tests }}
-                  is_feature_branch_draft_pr: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}
-                  is_feature_branch_pr: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}
-                  is_main_branch_push: ${{ steps.set-conditions.outputs.is_main_branch_push }}
-
             - id: get-exclude-dirs
               uses: ./.github/actions/get_exclude_dirs
               with:
-                  exclude-slow: ${{ steps.determine-exclusions.outputs.exclude_slow }}
-                  exclude-unstable: ${{ steps.determine-exclusions.outputs.exclude_unstable }}
-                  exclude-release-only: ${{ steps.determine-exclusions.outputs.exclude_release_only }}
+                  exclude-slow: ${{ needs.workflow-config.outputs.exclude-slow }}
+                  exclude-unstable: ${{ needs.workflow-config.outputs.exclude-unstable }}
+                  exclude-release-only: ${{ needs.workflow-config.outputs.exclude-release-only }}
 
     run-tests:
         name: ${{ matrix.test_group.name }}
         needs:
+            - workflow-config
             - get-exclude-dirs
         strategy:
             fail-fast: false
@@ -80,7 +95,7 @@ jobs:
                     - {
                           name: 'Examples (Experimental)',
                           directories: './examples',
-                          run_experimental: true
+                          run-experimental: true
                       }
                     - {
                           name: 'E2E Class',
@@ -89,7 +104,7 @@ jobs:
                     - {
                           name: 'E2E Class (Experimental)',
                           directories: './tests/end_to_end/candid_rpc/class_syntax',
-                          run_experimental: true
+                          run-experimental: true
                       }
                     - {
                           name: 'E2E Functional',
@@ -106,7 +121,7 @@ jobs:
                     - {
                           name: 'Property Class (Experimental)',
                           directories: './tests/property/candid_rpc/class_api',
-                          run_experimental: true
+                          run-experimental: true
                       }
                     - {
                           name: 'Property Functional',
@@ -119,14 +134,15 @@ jobs:
                     - {
                           name: 'Property IC API (Experimental)',
                           directories: './tests/property/ic_api',
-                          run_experimental: true
+                          run-experimental: true
                       }
-        uses: ./.github/workflows/get_and_run_tests.yml
+        uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
-            run_experimental: ${{ matrix.test_group.run_experimental || false }}
-            fuzz: ${{ inputs.fuzz || false }}
+            link-azle: ${{ needs.workflow-config.outputs.link-azle == 'true' }}
+            run-experimental: ${{ matrix.test_group.run-experimental || false }}
+            fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
 
     check-test-success:
         name: Check Azle tests succeeded
