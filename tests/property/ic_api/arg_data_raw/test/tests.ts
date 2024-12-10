@@ -76,12 +76,15 @@ export function getTests(): Test {
                             console.info('Update method iteration:', i);
                             await testCanisterMethod(updateArgDef, 'Update');
                         }
-
-                        expect(await actor.assertTypes()).toBe(true);
                     }
                 ),
                 defaultPropTestParams()
             );
+        });
+
+        it('asserts argDataRaw static and runtime types', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.assertTypes()).toBe(true);
         });
     };
 }

@@ -71,11 +71,6 @@ export default class {
     }
 
     @query([], IDL.Bool)
-    argDataRawTypesAreCorrect(): boolean {
-        return argDataRaw() instanceof Uint8Array;
-    }
-
-    @query([], IDL.Bool)
     assertTypes(): boolean {
         type _AssertReturnType = AssertType<
             NotAnyAndExact<ReturnType<typeof argDataRaw>, Uint8Array>
