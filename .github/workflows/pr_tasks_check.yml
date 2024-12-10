@@ -1,4 +1,4 @@
-name: PR Tasks Check
+name: PR Checkboxes
 
 on:
     pull_request:
