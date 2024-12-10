@@ -150,9 +150,9 @@ export function getTests(): Test {
             );
         });
 
-        it('verifies isController returns a boolean', async () => {
+        it('asserts isController static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
-            const result = await actor.isControllerTypesAreCorrect(
+            const result = await actor.assertTypes(
                 Principal.fromText(whoamiPrincipal())
             );
             expect(result).toBe(true);
