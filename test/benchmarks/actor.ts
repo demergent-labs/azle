@@ -2,6 +2,8 @@ import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 
 import { createAuthenticatedAgent } from '../../dfx';
 
+// ADD THIS COMMENT
+
 export async function createActor(
     canisterId: string,
     identityName: string
