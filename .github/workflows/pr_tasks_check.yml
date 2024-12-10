@@ -25,8 +25,9 @@ jobs:
                   PR_BODY=$(echo "$PR_DATA" | jq -r .body)
 
                   echo "Checking PR body for unchecked tasks..."
-                  echo "PR body: $PR_BODY"
+                  echo "PR body:\n $PR_BODY"
                   echo "$PR_BODY" | grep "\- \[ \]"
+                  echo "Done"
 
                   # Check for unchecked tasks (- [ ])
                   if echo "$PR_BODY" | grep -q "\- \[ \]"; then
