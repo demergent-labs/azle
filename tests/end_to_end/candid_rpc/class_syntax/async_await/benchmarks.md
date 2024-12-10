@@ -4,10 +4,10 @@
 
 | Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | getRandomnessDirectly        | 1_388_768    | 1_145_507 | $0.0000015231 | $1.52             | <font color="green">-14_448</font> |
-| 1   | getRandomnessIndirectly      | 1_338_727    | 1_125_490 | $0.0000014965 | $1.49             | <font color="red">+7_427</font>    |
-| 2   | getRandomnessSuperIndirectly | 1_372_516    | 1_139_006 | $0.0000015145 | $1.51             | <font color="red">+1_808</font>    |
-| 3   | returnPromiseVoid            | 1_326_092    | 1_120_436 | $0.0000014898 | $1.48             | <font color="red">+10_558</font>   |
+| 0   | getRandomnessDirectly        | 1_356_134    | 1_132_453 | $0.0000015058 | $1.50             | <font color="green">-47_082</font> |
+| 1   | getRandomnessIndirectly      | 1_320_152    | 1_118_060 | $0.0000014867 | $1.48             | <font color="green">-11_148</font> |
+| 2   | getRandomnessSuperIndirectly | 1_355_483    | 1_132_193 | $0.0000015054 | $1.50             | <font color="green">-15_225</font> |
+| 3   | returnPromiseVoid            | 1_307_074    | 1_112_829 | $0.0000014797 | $1.47             | <font color="green">-8_460</font>  |
 
 ## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 

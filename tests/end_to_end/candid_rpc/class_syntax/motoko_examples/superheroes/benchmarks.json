@@ -4,34 +4,58 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "3585243" },
+                    "instructions": {
+                        "__bigint__": "3585243"
+                    },
                     "method_name": "create",
-                    "timestamp": { "__bigint__": "1730326456333742201" }
+                    "timestamp": {
+                        "__bigint__": "1730326456333742201"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "4575788" },
+                    "instructions": {
+                        "__bigint__": "4575788"
+                    },
                     "method_name": "create",
-                    "timestamp": { "__bigint__": "1730326458515565147" }
+                    "timestamp": {
+                        "__bigint__": "1730326458515565147"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "4886185" },
+                    "instructions": {
+                        "__bigint__": "4886185"
+                    },
                     "method_name": "update",
-                    "timestamp": { "__bigint__": "1730326460421630068" }
+                    "timestamp": {
+                        "__bigint__": "1730326460421630068"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "3458693" },
+                    "instructions": {
+                        "__bigint__": "3458693"
+                    },
                     "method_name": "update",
-                    "timestamp": { "__bigint__": "1730326462622115332" }
+                    "timestamp": {
+                        "__bigint__": "1730326462622115332"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1188328" },
+                    "instructions": {
+                        "__bigint__": "1188328"
+                    },
                     "method_name": "deleteHero",
-                    "timestamp": { "__bigint__": "1730326464715240020" }
+                    "timestamp": {
+                        "__bigint__": "1730326464715240020"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1178075" },
+                    "instructions": {
+                        "__bigint__": "1178075"
+                    },
                     "method_name": "deleteHero",
-                    "timestamp": { "__bigint__": "1730326466763566082" }
+                    "timestamp": {
+                        "__bigint__": "1730326466763566082"
+                    }
                 }
             ]
         },
@@ -39,34 +63,58 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "3662180" },
+                    "instructions": {
+                        "__bigint__": "3637837"
+                    },
                     "method_name": "create",
-                    "timestamp": { "__bigint__": "1730484653215811966" }
+                    "timestamp": {
+                        "__bigint__": "1733866935929610670"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "4719779" },
+                    "instructions": {
+                        "__bigint__": "4644515"
+                    },
                     "method_name": "create",
-                    "timestamp": { "__bigint__": "1730484655103370165" }
+                    "timestamp": {
+                        "__bigint__": "1733866936216844935"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "5072985" },
+                    "instructions": {
+                        "__bigint__": "4969027"
+                    },
                     "method_name": "update",
-                    "timestamp": { "__bigint__": "1730484657304535528" }
+                    "timestamp": {
+                        "__bigint__": "1733866936555063499"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "3561803" },
+                    "instructions": {
+                        "__bigint__": "3529807"
+                    },
                     "method_name": "update",
-                    "timestamp": { "__bigint__": "1730484659403323740" }
+                    "timestamp": {
+                        "__bigint__": "1733866936843057888"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1221842" },
+                    "instructions": {
+                        "__bigint__": "1224706"
+                    },
                     "method_name": "deleteHero",
-                    "timestamp": { "__bigint__": "1730484661336662556" }
+                    "timestamp": {
+                        "__bigint__": "1733866936949978172"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1207029" },
+                    "instructions": {
+                        "__bigint__": "1208509"
+                    },
                     "method_name": "deleteHero",
-                    "timestamp": { "__bigint__": "1730484663572030338" }
+                    "timestamp": {
+                        "__bigint__": "1733866937467362898"
+                    }
                 }
             ]
         }

@@ -4,9 +4,13 @@
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "3506185" },
+                    "instructions": {
+                        "__bigint__": "3506185"
+                    },
                     "method_name": "createUser",
-                    "timestamp": { "__bigint__": "1730326457445559096" }
+                    "timestamp": {
+                        "__bigint__": "1730326457445559096"
+                    }
                 }
             ]
         },
@@ -14,9 +18,13 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "3442821" },
+                    "instructions": {
+                        "__bigint__": "3460780"
+                    },
                     "method_name": "createUser",
-                    "timestamp": { "__bigint__": "1730484657717545951" }
+                    "timestamp": {
+                        "__bigint__": "1733866941583873732"
+                    }
                 }
             ]
         }
