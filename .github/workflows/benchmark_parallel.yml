@@ -30,10 +30,16 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+            version: ${{ steps.get-version.outputs.version }}
         steps:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
+
+            - id: get-version
+              run: |
+                  VERSION="$(jq -r '.version' package.json)"
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
 
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
@@ -80,9 +86,27 @@ jobs:
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Run npm test (continue on error)
+              id: record-benchmarks
               working-directory: ${{ matrix.test.path }}
               continue-on-error: true
               run: AZLE_IDENTITY_STORAGE_MODE=plaintext AZLE_RECORD_BENCHMARKS=true npm test
+
+            - name: Handle test failure
+              working-directory: ${{ matrix.test.path }}
+              if: steps.record-benchmarks.outcome == 'failure'
+              run: |
+                  echo "The benchmark test failed"
+                  if [ -f benchmarks.md ]; then
+                    # Create a temporary file with the failure message
+                    echo "⚠️ **WARNING: Benchmark process failed for version ${{ needs.prepare-benchmark.outputs.version }}**" > temp.md
+                    echo "" >> temp.md
+                    # Append the original content
+                    cat benchmarks.md >> temp.md
+                    # Replace the original file
+                    mv temp.md benchmarks.md
+                  else
+                    echo "⚠️ **WARNING: Benchmark process failed for version ${{ needs.prepare-benchmark.outputs.version }}**" > benchmarks.md
+                  fi
 
             - name: Create branch name
               id: create-branch-name
