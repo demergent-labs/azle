@@ -18,7 +18,8 @@ export function update<
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
         ? GenericCallback
         : never,
-    methodArgs?: MethodArgs
+    methodArgs?: MethodArgs,
+    noop?: boolean
 ): CanisterMethodInfo<Params, Return> {
     const finalCallback =
         callback === undefined
@@ -40,6 +41,6 @@ export function update<
         paramCandidTypes: paramCandidTypes as unknown as CandidType[],
         returnCandidType,
         async: callback === undefined ? false : isAsync(callback),
-        index: globalThis._azleCanisterMethodsIndex++
+        index: noop === true ? 0 : globalThis._azleCanisterMethodsIndex++
     };
 }

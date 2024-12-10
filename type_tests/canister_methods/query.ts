@@ -48,5 +48,7 @@ query(
         >;
 
         return param2;
-    }
+    },
+    undefined,
+    true
 );

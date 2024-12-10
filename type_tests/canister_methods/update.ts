@@ -48,5 +48,7 @@ update(
         >;
 
         return param2;
-    }
+    },
+    undefined,
+    true
 );
