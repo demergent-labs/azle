@@ -10,7 +10,7 @@ on:
             - edited
 
 jobs:
-    docs_review_check:
+    pr_tasks_check:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
