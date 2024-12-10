@@ -25,9 +25,9 @@ jobs:
                   PR_BODY=$(echo "$PR_DATA" | jq -r .body)
 
                   # Check for unchecked tasks (- [ ])
-                  if echo "$PR_BODY" | grep -q "\- \[ \]"; then
+                  if echo "$PR_BODY" | grep -q "\s*-\s*\[ \]"; then
                     echo "Error: The following checkboxes are not marked as completed:"
-                    echo "$PR_BODY" | grep "\- \[ \]"
+                    echo "$PR_BODY" | grep "\s*-\s*\[ \]"
                     exit 1
                   fi
 
