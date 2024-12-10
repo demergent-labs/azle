@@ -26,10 +26,10 @@ query(
     [bool, nat, text, User, Reaction],
     text,
     (param0, param1, param2, param3, param4) => {
-        type Param0 = AssertType<NotAnyAndExact<typeof param0, boolean>>;
-        type Param1 = AssertType<NotAnyAndExact<typeof param1, bigint>>;
-        type Param2 = AssertType<NotAnyAndExact<typeof param2, string>>;
-        type Param3 = AssertType<
+        type _Param0 = AssertType<NotAnyAndExact<typeof param0, boolean>>;
+        type _Param1 = AssertType<NotAnyAndExact<typeof param1, bigint>>;
+        type _Param2 = AssertType<NotAnyAndExact<typeof param2, string>>;
+        type _Param3 = AssertType<
             NotAnyAndExact<
                 typeof param3,
                 {
@@ -37,7 +37,7 @@ query(
                 }
             >
         >;
-        type Param4 = AssertType<
+        type _Param4 = AssertType<
             NotAnyAndExact<
                 typeof param4,
                 RequireExactlyOne<{

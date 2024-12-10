@@ -9,13 +9,13 @@ import {
     RequireExactlyOne,
     text
 } from '../../../src/lib/experimental';
+import { TypeMapping } from '../../../src/lib/experimental/candid/type_mapping';
 import {
     AssertType,
     NotAnyAndExact,
     testCandidType,
     testSerializable
 } from '../../assert_type';
-import { TypeMapping } from '../../../src/lib/candid/type_mapping';
 
 testCandidType(Opt(float32));
 testSerializable(Opt(float32));

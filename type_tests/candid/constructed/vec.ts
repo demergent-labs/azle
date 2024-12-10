@@ -3,25 +3,25 @@
 
 import {
     float32,
-    int64,
-    int32,
-    int16,
     int8,
-    nat64,
-    nat32,
-    nat16,
+    int16,
+    int32,
+    int64,
     nat8,
-    Vec,
+    nat16,
+    nat32,
+    nat64,
     Record,
-    text
+    text,
+    Vec
 } from '../../../src/lib/experimental';
+import { TypeMapping } from '../../../src/lib/experimental/candid/type_mapping';
 import {
     AssertType,
     NotAnyAndExact,
     testCandidType,
     testSerializable
 } from '../../assert_type';
-import { TypeMapping } from '../../../src/lib/candid/type_mapping';
 
 // test float32
 
