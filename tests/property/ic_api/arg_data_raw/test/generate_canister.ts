@@ -21,6 +21,7 @@ ${imports
     .map((importDeclaration) => `import { ${importDeclaration} } from 'azle';`)
     .join('\n')}
 ${variableAliasDeclarations.join('\n')}
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     initArgDataRaw: Uint8Array | null = null;
@@ -71,6 +72,14 @@ export default class {
 
     @query([], IDL.Bool)
     argDataRawTypesAreCorrect(): boolean {
+        return argDataRaw() instanceof Uint8Array;
+    }
+
+    @query([], IDL.Bool)
+    assertTypes(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof argDataRaw>, Uint8Array>
+        >;
         return argDataRaw() instanceof Uint8Array;
     }
 }

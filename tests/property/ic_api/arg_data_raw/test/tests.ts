@@ -77,9 +77,7 @@ export function getTests(): Test {
                             await testCanisterMethod(updateArgDef, 'Update');
                         }
 
-                        expect(await actor.argDataRawTypesAreCorrect()).toBe(
-                            true
-                        );
+                        expect(await actor.assertTypes()).toBe(true);
                     }
                 ),
                 defaultPropTestParams()
