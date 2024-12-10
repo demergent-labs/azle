@@ -123,7 +123,7 @@ function generateVariableAliasDeclarations(
     innerType: CandidDefinition,
     api: Api
 ): string[] {
-    if (useTypeDeclaration) {
+    if (useTypeDeclaration === true) {
         const type =
             api === 'functional'
                 ? []

@@ -27,11 +27,11 @@ export function runTests(
         shouldFuzz
     } = processEnvVars();
 
-    if (shouldRunTests) {
+    if (shouldRunTests === true) {
         describe(`tests`, tests);
     }
 
-    if (shouldRunTypeChecks) {
+    if (shouldRunTypeChecks === true) {
         describe(`type checks`, () => {
             it('checks types', () => {
                 try {
@@ -53,7 +53,7 @@ export function runTests(
         });
     }
 
-    if (shouldRecordBenchmarks && canisterNames !== undefined) {
+    if (shouldRecordBenchmarks === true && canisterNames !== undefined) {
         const canisterNamesArray = Array.isArray(canisterNames)
             ? canisterNames
             : [canisterNames];
@@ -161,36 +161,20 @@ export function wait(name: string, delay: number): void {
     );
 }
 
-export function please(
-    name: string,
-    fn: () => void | Promise<void>,
-    timeout?: number
-): void {
-    test(
-        `please ${name}`,
-        async () => {
-            console.info(`Preparing: ${name}`);
-            await fn();
-        },
-        timeout
-    );
+export function please(name: string, fn: () => void | Promise<void>): void {
+    test(`please ${name}`, async () => {
+        console.info(`Preparing: ${name}`);
+        await fn();
+    });
 }
 please.skip = test.skip;
 please.only = test.only;
 
-export function it(
-    name: string,
-    fn: () => void | Promise<void>,
-    timeout?: number
-): void {
-    test(
-        `it ${name}`,
-        async () => {
-            console.info(`Testing: ${name}`);
-            await fn();
-        },
-        timeout
-    );
+export function it(name: string, fn: () => void | Promise<void>): void {
+    test(`it ${name}`, async () => {
+        console.info(`Testing: ${name}`);
+        await fn();
+    });
 }
 it.only = test.only;
 it.skip = test.skip;

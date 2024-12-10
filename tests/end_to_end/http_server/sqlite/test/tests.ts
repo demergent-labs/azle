@@ -48,7 +48,7 @@ export function getTests(canisterId: string): Test {
             expect(responseJson.Success).toBe(
                 `${USERS_BATCH_AMOUNT} users created`
             );
-        }, 10_000);
+        });
 
         it(`/posts/batch/${POSTS_BATCH_AMOUNT}`, async () => {
             const response = await fetch(
@@ -62,7 +62,7 @@ export function getTests(canisterId: string): Test {
             expect(responseJson.Success).toBe(
                 `${POSTS_BATCH_AMOUNT} posts created`
             );
-        }, 20_000);
+        });
 
         describe('user tests after batch create', usersTestsAfterBatch(origin));
 
@@ -122,7 +122,7 @@ export function getTests(canisterId: string): Test {
             const deleteUserResponseJson = await deleteUserResponse.json();
 
             expect(deleteUserResponseJson).toBe(createUserResponseJson.id);
-        }, 10_000);
+        });
 
         it('/posts delete', async () => {
             const createPostResponse = await fetch(`${origin}/posts`, {

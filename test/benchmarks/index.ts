@@ -109,7 +109,10 @@ async function writeBenchmarksMarkdown(
 async function writeBenchmarksJson(
     updatedBenchmarks: BenchmarksJson
 ): Promise<void> {
-    await writeFile(`benchmarks.json`, `${jsonStringify(updatedBenchmarks)}\n`);
+    await writeFile(
+        `benchmarks.json`,
+        `${jsonStringify(updatedBenchmarks, undefined, 4)}\n`
+    );
 }
 
 async function getBenchmarksJson(): Promise<BenchmarksJson> {

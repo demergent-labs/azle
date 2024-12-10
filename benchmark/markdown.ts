@@ -1661,7 +1661,7 @@ function format_number_to_rust(number: string | number | bigint): string {
         (number_is_negative === false && Number(number) < 1) ||
         (number_is_negative === true && Number(number) > -1);
 
-    if (number_is_decimal_less_than_one) {
+    if (number_is_decimal_less_than_one === true) {
         return number.toString();
     }
 

@@ -64,7 +64,7 @@ export async function runTests(
                 console.info('\x1b[31m', `${result.Err}`);
                 console.info('\x1b[0m');
 
-                if (exitProcess) {
+                if (exitProcess === true) {
                     process.exit(1);
                 } else {
                     return false;
@@ -78,7 +78,7 @@ export async function runTests(
                 }
                 console.info('\x1b[0m');
 
-                if (exitProcess) {
+                if (exitProcess === true) {
                     process.exit(1);
                 } else {
                     return false;
@@ -95,7 +95,7 @@ export async function runTests(
             );
             console.info('\x1b[0m');
 
-            if (exitProcess) {
+            if (exitProcess === true) {
                 process.exit(1);
             } else {
                 return false;
@@ -148,7 +148,7 @@ export function createSnakeCaseProxy<T extends object>(
                     : camelToSnakeCase(prop as string);
 
             if (typeof (obj as any)[snakeCaseProp] === 'function') {
-                if (async) {
+                if (async === true) {
                     return async (...args: any[]) => {
                         const new_args = args.map((value) => {
                             return convertKeysToSnakeCase(value);

@@ -29,7 +29,7 @@ export const stableMap7Methods = {
     stableMap7Insert: update([Null, Null], Opt(Null), (key, value) => {
         const hasOldValue = stableMap7.containsKey(key);
         const result = stableMap7.insert(key, value);
-        if (hasOldValue) {
+        if (hasOldValue === true) {
             return Some(result);
         } else {
             return None;
@@ -50,7 +50,7 @@ export const stableMap7Methods = {
     stableMap7Remove: update([Null], Opt(Null), (key) => {
         const hasOldValue = stableMap7.containsKey(key);
         const result = stableMap7.remove(key);
-        if (hasOldValue) {
+        if (hasOldValue === true) {
             return Some(result);
         } else {
             return None;

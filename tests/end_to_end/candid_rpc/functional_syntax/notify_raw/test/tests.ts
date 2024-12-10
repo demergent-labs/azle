@@ -23,7 +23,7 @@ export function getTests(
             await new Promise((resolve) => setTimeout(resolve, 5000));
 
             expect(true).toBe(true);
-        }, 10_000);
+        });
 
         it('check notification after', async () => {
             const result = await canister2.getNotified();

@@ -123,7 +123,7 @@ if (globalThis._azleInsideCanister === true) {
 
     RegExp.prototype.exec = function (string): RegExpExecArray | null {
         const match = originalExec.call(this, string);
-        if (match) {
+        if (match !== null) {
             RegExp.leftContext = (string ?? '').substring(0, match.index);
         }
         return match;
