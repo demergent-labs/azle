@@ -336,8 +336,8 @@ async function testCertifiedData(
     const canisterPrincipal = Principal.fromText(getCanisterId(canisterName));
 
     const result = await certVarCanister.getData();
-    const value = new Uint8Array(result.value);
-    expect(value).toEqual(expectedValue);
+    const data = new Uint8Array(result.data);
+    expect(data).toEqual(expectedValue);
 
     const certificate = await createAndVerifyCertificate(
         result.certificate,
@@ -345,7 +345,7 @@ async function testCertifiedData(
         canisterPrincipal
     );
     verifyTimestamp(certificate);
-    verifyCertifiedData(certificate, canisterPrincipal, value);
+    verifyCertifiedData(certificate, canisterPrincipal, data);
 }
 
 async function createAndVerifyCertificate(
