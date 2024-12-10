@@ -1,0 +1,36 @@
+name: PR Tasks Check
+
+on:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+            - edited
+
+jobs:
+    docs_review_check:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: All tasks completed
+              run: |
+                  # Get PR data including body and labels
+                  PR_DATA=$(gh pr view ${{ github.event.pull_request.number }} --json body)
+
+                  # Extract PR body
+                  PR_BODY=$(echo "$PR_DATA" | jq -r .body)
+
+                  # Check for unchecked tasks (- [ ])
+                  if echo "$PR_BODY" | grep -q "\- \[ \]"; then
+                    echo "Error: Found unchecked tasks in the PR description. Please complete all tasks before merging."
+                    echo "Unchecked tasks:"
+                    echo "$PR_BODY" | grep "\- \[ \]"
+                    exit 1
+                  fi
+
+                  echo "All tasks completed"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
