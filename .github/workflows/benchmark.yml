@@ -78,7 +78,6 @@ jobs:
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             directories: ${{ matrix.benchmark_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
-            version: $(jq -r '.version' package.json)
 
     squash-branches:
         needs: [run-benchmarks, create-branch-prefix]

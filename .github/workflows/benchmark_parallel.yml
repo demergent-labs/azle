@@ -15,9 +15,6 @@ on:
                 required: false
                 type: string
                 default: ''
-            version:
-                required: true
-                type: string
 
         secrets:
             GPG_SIGNING_KEY:
@@ -33,10 +30,16 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+            version: ${{ steps.get-version.outputs.version }}
         steps:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
+
+            - id: get-version
+              run: |
+                  VERSION="$(jq -r '.version' package.json)"
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
 
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
@@ -95,14 +98,14 @@ jobs:
                   echo "The benchmark test failed"
                   if [ -f benchmarks.md ]; then
                     # Create a temporary file with the failure message
-                    echo "⚠️ **WARNING: Benchmark process failed for version ${{ inputs.version }}**" > temp.md
+                    echo "⚠️ **WARNING: Benchmark process failed for version ${{ needs.prepare-benchmark.outputs.version }}**" > temp.md
                     echo "" >> temp.md
                     # Append the original content
                     cat benchmarks.md >> temp.md
                     # Replace the original file
                     mv temp.md benchmarks.md
                   else
-                    echo "⚠️ **WARNING: Benchmark process failed for version ${{ inputs.version }}**" > benchmarks.md
+                    echo "⚠️ **WARNING: Benchmark process failed for version ${{ needs.prepare-benchmark.outputs.version }}**" > benchmarks.md
                   fi
 
             - name: Create branch name
