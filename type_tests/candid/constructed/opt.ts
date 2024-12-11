@@ -20,10 +20,10 @@ import {
 testCandidType(Opt(float32));
 testSerializable(Opt(float32));
 
-const testTypeMapping = Opt(float32);
+const _testTypeMapping = Opt(float32);
 export type TestTypeMapping = AssertType<
     NotAnyAndExact<
-        TypeMapping<typeof testTypeMapping>,
+        TypeMapping<typeof _testTypeMapping>,
         RequireExactlyOne<{ Some: number; None: null }>
     >
 >;
@@ -31,10 +31,10 @@ export type TestTypeMapping = AssertType<
 testCandidType(Opt(Opt(float32)));
 testSerializable(Opt(Opt(float32)));
 
-const testTypeMappingDouble = Opt(Opt(float32));
+const _testTypeMappingDouble = Opt(Opt(float32));
 export type TestTypeMappingDouble = AssertType<
     NotAnyAndExact<
-        TypeMapping<typeof testTypeMappingDouble>,
+        TypeMapping<typeof _testTypeMappingDouble>,
         RequireExactlyOne<{
             Some: RequireExactlyOne<{ Some: number; None: null }>;
             None: null;
@@ -45,10 +45,10 @@ export type TestTypeMappingDouble = AssertType<
 testCandidType(Opt(Opt(Opt(float32))));
 testSerializable(Opt(Opt(Opt(float32))));
 
-const testTypeMappingTriple = Opt(Opt(Opt(float32)));
+const _testTypeMappingTriple = Opt(Opt(Opt(float32)));
 export type TestTypeMappingTriple = AssertType<
     NotAnyAndExact<
-        TypeMapping<typeof testTypeMappingTriple>,
+        TypeMapping<typeof _testTypeMappingTriple>,
         RequireExactlyOne<{
             Some: RequireExactlyOne<{
                 Some: RequireExactlyOne<{ Some: number; None: null }>;

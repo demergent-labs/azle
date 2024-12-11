@@ -7,43 +7,43 @@ import { AssertType, NotAnyAndExact } from '../assert_type';
 // TODO these tests just make sure that the basic methods are there
 // TODO we want to maybe test that the type arguments work correctly as well
 
-let mapText = StableBTreeMap<text, text>(0);
+let _mapText = StableBTreeMap<text, text>(0);
 
 export type TestContainsKey = AssertType<
-    NotAnyAndExact<typeof mapText.containsKey, (key: any) => boolean>
+    NotAnyAndExact<typeof _mapText.containsKey, (key: any) => boolean>
 >;
 
 export type TestGet = AssertType<
-    NotAnyAndExact<typeof mapText.get, (key: any) => any | null>
+    NotAnyAndExact<typeof _mapText.get, (key: any) => any | null>
 >;
 
 export type TestInsert = AssertType<
-    NotAnyAndExact<typeof mapText.insert, (key: any, value: any) => any | null>
+    NotAnyAndExact<typeof _mapText.insert, (key: any, value: any) => any | null>
 >;
 
 export type TestIsEmpty = AssertType<
-    NotAnyAndExact<typeof mapText.isEmpty, () => boolean>
+    NotAnyAndExact<typeof _mapText.isEmpty, () => boolean>
 >;
 
 export type TestItems = AssertType<
-    NotAnyAndExact<typeof mapText.items, () => [any, any][]>
+    NotAnyAndExact<typeof _mapText.items, () => [any, any][]>
 >;
 
 export type TestKeys = AssertType<
-    NotAnyAndExact<typeof mapText.keys, () => any[]>
+    NotAnyAndExact<typeof _mapText.keys, () => any[]>
 >;
 
 export type TestLen = AssertType<
-    NotAnyAndExact<typeof mapText.len, () => bigint>
+    NotAnyAndExact<typeof _mapText.len, () => bigint>
 >;
 
 export type TestRemove = AssertType<
-    NotAnyAndExact<typeof mapText.remove, (key: any) => any | null>
+    NotAnyAndExact<typeof _mapText.remove, (key: any) => any | null>
 >;
 
 export type TestValues = AssertType<
     NotAnyAndExact<
-        typeof mapText.values,
+        typeof _mapText.values,
         (startIndex?: number, length?: number) => any[]
     >
 >;
