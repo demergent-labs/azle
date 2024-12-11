@@ -32,11 +32,11 @@ export default class {
 
     @query([IDL.Nat32], IDL.Bool)
     assertTypes(index: number): boolean {
-        type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof performanceCounter>, bigint>
-        >;
         type _AssertParamType = AssertType<
             NotAnyAndExact<Parameters<typeof performanceCounter>[0], number>
+        >;
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof performanceCounter>, bigint>
         >;
         return (
             typeof index === 'number' &&

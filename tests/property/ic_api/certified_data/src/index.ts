@@ -96,7 +96,7 @@ export default class {
     }
 
     @query([], IDL.Bool)
-    assertGetDataCertificateTypesInQuery(): boolean {
+    assertDataCertificateTypesInQuery(): boolean {
         type _AssertReturnType = AssertType<
             NotAnyAndExact<
                 ReturnType<typeof dataCertificate>,
@@ -107,7 +107,7 @@ export default class {
     }
 
     @update([], IDL.Bool)
-    assertGetDataCertificateTypesInUpdate(): boolean {
+    assertDataCertificateTypesInUpdate(): boolean {
         type _AssertReturnType = AssertType<
             NotAnyAndExact<
                 ReturnType<typeof dataCertificate>,

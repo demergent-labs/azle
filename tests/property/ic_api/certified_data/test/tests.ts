@@ -300,19 +300,15 @@ export function getTests(): Test {
 
         it('asserts dataCertificate static and runtime types in query', async () => {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME);
-            expect(await actor.assertGetDataCertificateTypesInQuery()).toBe(
-                true
-            );
+            expect(await actor.assertDataCertificateTypesInQuery()).toBe(true);
         });
 
-        it('verifies that dataCertificate returns undefined in update', async () => {
+        it('asserts dataCertificate static and runtime types in update', async () => {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME);
-            expect(await actor.assertGetDataCertificateTypesInUpdate()).toBe(
-                true
-            );
+            expect(await actor.assertDataCertificateTypesInUpdate()).toBe(true);
         });
 
-        it('verifies that setCertifiedData returns undefined and takes a Uint8Array', async () => {
+        it('asserts setCertifiedData static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME);
             expect(
                 await actor.assertSetCertifiedDataTypes(new Uint8Array())

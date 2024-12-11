@@ -48,7 +48,7 @@ export function getTests(): Test {
             expect(await actor.assertCanisterBalanceTypes()).toBe(true);
         });
 
-        it('asserts updateCyclesBurn static and runtime types', async () => {
+        it('asserts cyclesBurn static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
             expect(await actor.assertCyclesBurnTypes(0n)).toBe(true);
         });
