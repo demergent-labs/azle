@@ -35,3 +35,4 @@ jobs:
             fuzz: true
             call-delay: ${{ inputs.call-delay }}
             timeout: ${{ inputs.timeout }}
+            link-azle: true
