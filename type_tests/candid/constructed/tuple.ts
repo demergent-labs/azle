@@ -17,11 +17,11 @@ import {
     nat32,
     nat64,
     Null,
+    Record,
     reserved,
     text,
     Tuple,
-    Void,
-    Record
+    Void
 } from '../../../src/lib/experimental';
 import { testCandidType, testSerializable } from '../../assert_type';
 

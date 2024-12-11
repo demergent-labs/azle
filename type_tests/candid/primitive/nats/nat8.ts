@@ -1,11 +1,11 @@
 import { nat8 } from '../../../../src/lib/experimental';
+import { TypeMapping } from '../../../../src/lib/experimental/candid/type_mapping';
 import {
     AssertType,
     NotAnyAndExact,
     testCandidType,
     testSerializable
 } from '../../../assert_type';
-import { TypeMapping } from '../../../../src/lib/candid/type_mapping';
 
 testCandidType(nat8);
 testSerializable(nat8);

@@ -1,11 +1,11 @@
 import { float32 } from '../../../../src/lib/experimental';
+import { TypeMapping } from '../../../../src/lib/experimental/candid/type_mapping';
 import {
     AssertType,
     NotAnyAndExact,
     testCandidType,
     testSerializable
 } from '../../../assert_type';
-import { TypeMapping } from '../../../../src/lib/candid/type_mapping';
 
 testCandidType(float32);
 testSerializable(float32);

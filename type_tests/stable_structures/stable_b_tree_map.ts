@@ -1,4 +1,4 @@
-import { Opt, StableBTreeMap, text } from '../../src/lib/experimental';
+import { StableBTreeMap, text } from '../../src/lib/experimental';
 import { AssertType, NotAnyAndExact } from '../assert_type';
 
 // TODO we would need to test all of the types for StableBTreeMap
@@ -14,11 +14,11 @@ export type TestContainsKey = AssertType<
 >;
 
 export type TestGet = AssertType<
-    NotAnyAndExact<typeof mapText.get, (key: any) => Opt<any>>
+    NotAnyAndExact<typeof mapText.get, (key: any) => any | null>
 >;
 
 export type TestInsert = AssertType<
-    NotAnyAndExact<typeof mapText.insert, (key: any, value: any) => Opt<any>>
+    NotAnyAndExact<typeof mapText.insert, (key: any, value: any) => any | null>
 >;
 
 export type TestIsEmpty = AssertType<
@@ -38,7 +38,7 @@ export type TestLen = AssertType<
 >;
 
 export type TestRemove = AssertType<
-    NotAnyAndExact<typeof mapText.remove, (key: any) => Opt<any>>
+    NotAnyAndExact<typeof mapText.remove, (key: any) => any | null>
 >;
 
 export type TestValues = AssertType<
