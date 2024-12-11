@@ -3,13 +3,17 @@ name: Run Test
 on:
     workflow_call:
         inputs:
-            test_infos:
+            directories:
                 required: true
                 type: string
-            include_npm:
+            exclude-dirs:
+                required: false
+                type: string
+                default: ''
+            link-azle:
                 required: true
                 type: boolean
-            run_experimental:
+            run-experimental:
                 required: false
                 type: boolean
                 default: false
@@ -27,8 +31,23 @@ on:
                 default: '300'
 
 jobs:
+    get-test-infos:
+        name: Get test infos
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: ${{ inputs.directories }}
+                  exclude-dirs: ${{ inputs.exclude-dirs }}
+
     run-test:
         name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}}'
+        needs: get-test-infos
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
@@ -46,12 +65,12 @@ jobs:
                 # os: [macos-latest, ubuntu-latest]
                 os: [ubuntu-latest]
                 azle_source:
-                    - ${{ inputs.include_npm == true && 'npm' || 'repo' }}
-                test: ${{ fromJSON(inputs.test_infos) }}
+                    - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
+                test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
         steps:
             - uses: actions/checkout@v4
 
-            - uses: ./.github/actions/set_run_conditions
+            - uses: ./.github/actions/determine_workflow_context
               id: set-conditions
 
             - name: Set condition environment variables
@@ -152,6 +171,6 @@ jobs:
               env:
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.calc-runs.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true
-                  AZLE_EXPERIMENTAL: ${{ inputs.run_experimental }}
+                  AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
                   AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}

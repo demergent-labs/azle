@@ -11,6 +11,7 @@ import {
     StableBTreeMap,
     update
 } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     initCanisterVersion: bigint | null = null;
@@ -105,5 +106,13 @@ export default class {
         const version = canisterVersion();
         this.meaninglessState = 1n;
         return version;
+    }
+
+    @query([], IDL.Bool)
+    assertTypes(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof canisterVersion>, bigint>
+        >;
+        return typeof canisterVersion() === 'bigint';
     }
 }

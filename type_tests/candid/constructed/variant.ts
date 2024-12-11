@@ -13,10 +13,10 @@ import {
     nat16,
     nat64,
     Null,
+    RequireExactlyOne,
     reserved,
     text,
-    Variant,
-    RequireExactlyOne
+    Variant
 } from '../../../src/lib/experimental';
 import { testCandidType, testSerializable } from '../../assert_type';
 

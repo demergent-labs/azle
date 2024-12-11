@@ -1,4 +1,5 @@
 import { chunk, IDL, performanceCounter, query, update } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     @query([IDL.Nat32], IDL.Nat64)
@@ -27,6 +28,20 @@ export default class {
         await sum(loops, true);
 
         return performanceCounter(1);
+    }
+
+    @query([IDL.Nat32], IDL.Bool)
+    assertTypes(index: number): boolean {
+        type _AssertParamType = AssertType<
+            NotAnyAndExact<Parameters<typeof performanceCounter>[0], number>
+        >;
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof performanceCounter>, bigint>
+        >;
+        return (
+            typeof index === 'number' &&
+            typeof performanceCounter(index) === 'bigint'
+        );
     }
 }
 

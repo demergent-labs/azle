@@ -2,13 +2,13 @@
 // TODO we aren't really testing the params and return type
 
 import { Func, Principal, Void } from '../../../src/lib/experimental';
+import { TypeMapping } from '../../../src/lib/experimental/candid/type_mapping';
 import {
     AssertType,
     NotAnyAndExact,
     testCandidType,
     testSerializable
 } from '../../assert_type';
-import { TypeMapping } from '../../../src/lib/candid/type_mapping';
 
 const TestFunc = Func([], Void, 'query');
 

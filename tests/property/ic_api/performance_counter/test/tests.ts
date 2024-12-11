@@ -168,6 +168,12 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('asserts performanceCounter static and runtime types', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.assertTypes(0)).toBe(true);
+            expect(await actor.assertTypes(1)).toBe(true);
+        });
     };
 }
 

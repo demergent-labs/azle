@@ -1,4 +1,12 @@
-import { call, IDL, msgCyclesRefunded, update } from 'azle';
+import {
+    call,
+    canisterBalance,
+    IDL,
+    msgCyclesRefunded,
+    query,
+    update
+} from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 import { CyclesResult } from '../types';
 
@@ -57,6 +65,48 @@ export default class {
             }
         );
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
+    }
+
+    @query([], IDL.Bool)
+    assertCanisterBalanceTypes(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof canisterBalance>, bigint>
+        >;
+        return typeof canisterBalance() === 'bigint';
+    }
+
+    @update([IDL.Nat64], IDL.Bool)
+    async assertMsgCyclesAcceptTypes(amount: bigint): Promise<boolean> {
+        return await call(this.cyclesPrincipal, 'assertMsgCyclesAcceptTypes', {
+            paramIdlTypes: [IDL.Nat64],
+            returnIdlType: IDL.Bool,
+            args: [amount]
+        });
+    }
+
+    @update([], IDL.Bool)
+    async assertMsgCyclesAvailableTypes(): Promise<boolean> {
+        return await call(
+            this.cyclesPrincipal,
+            'assertMsgCyclesAvailableTypes',
+            {
+                returnIdlType: IDL.Bool
+            }
+        );
+    }
+
+    @update([IDL.Nat64], IDL.Bool)
+    async assertMsgCyclesRefundedTypes(amount: bigint): Promise<boolean> {
+        await call(this.cyclesPrincipal, 'assertMsgCyclesAcceptTypes', {
+            paramIdlTypes: [IDL.Nat64],
+            returnIdlType: IDL.Bool,
+            args: [amount]
+        });
+        // NOTE: if there is no cross canister call, msgCyclesRefunded() cannot be called
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof msgCyclesRefunded>, bigint>
+        >;
+        return typeof msgCyclesRefunded() === 'bigint';
     }
 }
 

@@ -18,7 +18,8 @@ export function query<
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
         ? GenericCallback
         : never,
-    methodArgs?: MethodArgs
+    methodArgs?: MethodArgs,
+    noop?: boolean
 ): CanisterMethodInfo<Params, Return> {
     // TODO maybe the cross canister callback should be made here?
     const finalCallback =
@@ -41,6 +42,6 @@ export function query<
         paramCandidTypes: paramCandidTypes as unknown as CandidType[],
         returnCandidType,
         async: callback === undefined ? false : isAsync(callback),
-        index: globalThis._azleCanisterMethodsIndex++
+        index: noop === true ? 0 : globalThis._azleCanisterMethodsIndex++
     };
 }

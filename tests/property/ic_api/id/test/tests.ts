@@ -13,6 +13,11 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
+        it('asserts id static and runtime types', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.assertTypes()).toBe(true);
+        });
+
         it('should deploy and check all canister id methods', async () => {
             await fc.assert(
                 fc.asyncProperty(

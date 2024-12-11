@@ -1,2 +1,4 @@
-// This file is here to allow importing the type_tests directory in azle/src/lib/index.ts
-// For type checking purposes
+import './assert_type';
+import './candid';
+import './canister_methods';
+import './stable_structures';
