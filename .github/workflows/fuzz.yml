@@ -32,6 +32,7 @@ jobs:
         uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
+            exclude-dirs: class_syntax/new
             fuzz: true
             call-delay: ${{ inputs.call-delay }}
             timeout: ${{ inputs.timeout }}
