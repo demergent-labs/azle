@@ -16,22 +16,20 @@ export default tseslint.config(
 
     {
         ignores: [
-            '**/.dfx/**',
-            '**/target/**',
-            '**/experimental/**',
-            '**/node_modules/**',
-            '**/.azle/**',
-            '**/docs/**',
+            'docs/**',
             'the_azle_book/**',
-            '**/the_azle_book/**',
-            '**/run_time_errors/**',
-            '**/webpack.config.js',
+            'tests/property/candid_rpc/**/src/**',
+            '**/.azle/**',
+            '**/.dfx/**',
+            '**/declarations/**',
             '**/dfx_generate/**',
             '**/dfx_generated/**',
-            '**/declarations/**',
-            'tests/property/candid_rpc/**/src/**',
-            '**/dist/**',
-            '**/static_canister_template_licenses.yml'
+            '**/experimental/**',
+            '**/node_modules/**',
+            '**/run_time_errors/**',
+            '**/target/**',
+            '**/webpack.config.js',
+            '**/dist/**'
         ]
     },
 
