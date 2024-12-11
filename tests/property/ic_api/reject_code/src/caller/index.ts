@@ -33,9 +33,9 @@ export default class {
             this.rejectorPrincipal
         );
         return (
-            checkIsValidRejectCode(throwErrorRejectCode) &&
-            checkIsValidRejectCode(rejectWithMessageRejectCode) &&
-            checkIsValidRejectCode(noErrorRejectCode)
+            isRejectionCode(throwErrorRejectCode) &&
+            isRejectionCode(rejectWithMessageRejectCode) &&
+            isRejectionCode(noErrorRejectCode)
         );
     }
 }
@@ -73,24 +73,39 @@ async function getNoErrorRejectCode(
     return rejectCode();
 }
 
-function checkIsValidRejectCode(code: RejectionCode): boolean {
-    // Check if the returned value is an object with exactly one key
-    // that matches one of the expected RejectionCode variants
-    const validKeys = [
-        'NoError',
-        'SysFatal',
-        'SysTransient',
-        'DestinationInvalid',
-        'CanisterReject',
-        'CanisterError',
-        'Unknown'
-    ];
+/**
+ * Type guard that checks if a value is a valid RejectionCode.
+ * @param code The value to check
+ * @returns True if the value is a RejectionCode, false otherwise
+ */
+function isRejectionCode(code: unknown): code is RejectionCode {
+    // RejectionCode is a discriminated union type that can't be checked with typeof/instanceof.
+    // Instead, we verify that:
+    // 1. The value is a non-null object
+    // 2. It has exactly one key that matches a RejectionCode variant
+    // 3. The value for that key is null
+
+    const RejectionCodeMap = {
+        NoError: null,
+        SysFatal: null,
+        SysTransient: null,
+        DestinationInvalid: null,
+        CanisterReject: null,
+        CanisterError: null,
+        Unknown: null
+    } as const;
+
+    if (typeof code !== 'object' || code === null) {
+        return false;
+    }
+
     const keys = Object.keys(code);
-    return (
-        keys.length === 1 &&
-        validKeys.includes(keys[0]) &&
-        (code as any)[keys[0]] === null
-    );
+    if (keys.length !== 1) {
+        return false;
+    }
+
+    const [variant] = keys;
+    return variant in RejectionCodeMap && (code as any)[variant] === null;
 }
 
 function getRejectorPrincipal(): string {
