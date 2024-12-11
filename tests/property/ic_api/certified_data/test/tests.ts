@@ -297,6 +297,23 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('asserts dataCertificate static and runtime types in query', async () => {
+            const actor = await getCanisterActor<Actor>(CANISTER_NAME);
+            expect(await actor.assertDataCertificateTypesInQuery()).toBe(true);
+        });
+
+        it('asserts dataCertificate static and runtime types in update', async () => {
+            const actor = await getCanisterActor<Actor>(CANISTER_NAME);
+            expect(await actor.assertDataCertificateTypesInUpdate()).toBe(true);
+        });
+
+        it('asserts setCertifiedData static and runtime types', async () => {
+            const actor = await getCanisterActor<Actor>(CANISTER_NAME);
+            expect(
+                await actor.assertSetCertifiedDataTypes(new Uint8Array())
+            ).toBe(true);
+        });
     };
 }
 

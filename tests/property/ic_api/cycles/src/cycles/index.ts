@@ -5,6 +5,7 @@ import {
     msgCyclesAvailable,
     update
 } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 import { CyclesResult } from '../types';
 
@@ -27,6 +28,28 @@ export default class {
     @update([IDL.Nat64], CyclesResult)
     receiveCyclesByChunk(numChunks: bigint): CyclesResult {
         return acceptCycles(undefined, numChunks);
+    }
+
+    @update([IDL.Nat64], IDL.Bool)
+    assertMsgCyclesAcceptTypes(amount: bigint): boolean {
+        type _AssertParamType = AssertType<
+            NotAnyAndExact<Parameters<typeof msgCyclesAccept>[0], bigint>
+        >;
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof msgCyclesAccept>, bigint>
+        >;
+        return (
+            typeof amount === 'bigint' &&
+            typeof msgCyclesAccept(amount) === 'bigint'
+        );
+    }
+
+    @update([], IDL.Bool)
+    assertMsgCyclesAvailableTypes(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof msgCyclesAvailable>, bigint>
+        >;
+        return typeof msgCyclesAvailable() === 'bigint';
     }
 }
 

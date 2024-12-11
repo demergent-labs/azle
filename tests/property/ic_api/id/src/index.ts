@@ -12,6 +12,7 @@ import {
     StableBTreeMap,
     update
 } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     initId: Principal | null = null;
@@ -96,5 +97,13 @@ export default class {
     @update([], IDL.Principal)
     getUpdateId(): Principal {
         return id();
+    }
+
+    @query([], IDL.Bool)
+    assertTypes(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof id>, Principal>
+        >;
+        return id() instanceof Principal;
     }
 }

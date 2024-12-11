@@ -78,6 +78,38 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('asserts canisterBalance static and runtime types', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<Actor>('intermediary');
+            expect(
+                await intermediaryCanister.assertCanisterBalanceTypes()
+            ).toBe(true);
+        });
+
+        it('asserts msgCyclesAccept static and runtime types', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<Actor>('intermediary');
+            expect(
+                await intermediaryCanister.assertMsgCyclesAcceptTypes(0n)
+            ).toBe(true);
+        });
+
+        it('asserts msgCyclesAvailable static and runtime types', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<Actor>('intermediary');
+            expect(
+                await intermediaryCanister.assertMsgCyclesAvailableTypes()
+            ).toBe(true);
+        });
+
+        it('asserts msgCyclesRefunded static and runtime types', async () => {
+            const intermediaryCanister =
+                await getCanisterActor<Actor>('intermediary');
+            expect(
+                await intermediaryCanister.assertMsgCyclesRefundedTypes(0n)
+            ).toBe(true);
+        });
     };
 }
 

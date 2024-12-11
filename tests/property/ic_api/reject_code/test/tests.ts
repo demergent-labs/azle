@@ -22,5 +22,10 @@ export function getTests(): Test {
             const result = await callerCanister.getRejectNoError();
             expect(result).toEqual({ NoError: null });
         });
+
+        it('asserts rejectCode static and runtime types', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
+            expect(await callerCanister.assertTypes()).toBe(true);
+        });
     };
 }

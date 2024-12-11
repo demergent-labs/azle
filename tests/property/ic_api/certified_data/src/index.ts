@@ -9,6 +9,7 @@ import {
     StableBTreeMap,
     update
 } from 'azle';
+import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 const CertifiedData = IDL.Record({
     data: IDL.Vec(IDL.Nat8),
@@ -92,5 +93,40 @@ export default class {
     @query([])
     setDataCertificateInQuery(): void {
         setCertifiedData(new Uint8Array([3]));
+    }
+
+    @query([], IDL.Bool)
+    assertDataCertificateTypesInQuery(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<
+                ReturnType<typeof dataCertificate>,
+                Uint8Array | undefined
+            >
+        >;
+        return dataCertificate() instanceof Uint8Array;
+    }
+
+    @update([], IDL.Bool)
+    assertDataCertificateTypesInUpdate(): boolean {
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<
+                ReturnType<typeof dataCertificate>,
+                Uint8Array | undefined
+            >
+        >;
+        return dataCertificate() === undefined;
+    }
+
+    @update([IDL.Vec(IDL.Nat8)], IDL.Bool)
+    assertSetCertifiedDataTypes(data: Uint8Array): boolean {
+        type _AssertParamType = AssertType<
+            NotAnyAndExact<Parameters<typeof setCertifiedData>[0], Uint8Array>
+        >;
+        type _AssertReturnType = AssertType<
+            NotAnyAndExact<ReturnType<typeof setCertifiedData>, void>
+        >;
+        return (
+            data instanceof Uint8Array && setCertifiedData(data) === undefined
+        );
     }
 }

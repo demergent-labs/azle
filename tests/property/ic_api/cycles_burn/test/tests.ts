@@ -42,5 +42,10 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('asserts cyclesBurn static and runtime types', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.assertCyclesBurnTypes(0n)).toBe(true);
+        });
     };
 }

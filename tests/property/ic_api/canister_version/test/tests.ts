@@ -62,6 +62,11 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('asserts canisterVersion static and runtime types', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.assertTypes()).toBe(true);
+        });
     };
 }
 

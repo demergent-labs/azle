@@ -149,5 +149,12 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('asserts isController static and runtime types', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(
+                await actor.assertTypes(Principal.fromText(whoamiPrincipal()))
+            ).toBe(true);
+        });
     };
 }

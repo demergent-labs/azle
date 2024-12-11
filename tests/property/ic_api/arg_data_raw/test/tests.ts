@@ -81,6 +81,11 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('asserts argDataRaw static and runtime types', async () => {
+            const actor = await getCanisterActor<Actor>('canister');
+            expect(await actor.assertTypes()).toBe(true);
+        });
     };
 }
 

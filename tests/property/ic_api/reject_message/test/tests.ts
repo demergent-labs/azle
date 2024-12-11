@@ -22,5 +22,10 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        it('asserts rejectMessage static and runtime types', async () => {
+            const callerCanister = await getCanisterActor<Actor>('caller');
+            expect(await callerCanister.assertTypes('')).toBe(true);
+        });
     };
 }
