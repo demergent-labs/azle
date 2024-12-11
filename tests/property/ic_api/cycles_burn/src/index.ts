@@ -12,14 +12,6 @@ export default class {
         return cyclesBurn(amount);
     }
 
-    @query([], IDL.Bool)
-    assertCanisterBalanceTypes(): boolean {
-        type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof canisterBalance>, bigint>
-        >;
-        return typeof canisterBalance() === 'bigint';
-    }
-
     @update([IDL.Nat], IDL.Bool)
     assertCyclesBurnTypes(amount: bigint): boolean {
         type _AssertParamType = AssertType<
