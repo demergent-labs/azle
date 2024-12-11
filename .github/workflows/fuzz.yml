@@ -29,7 +29,7 @@ jobs:
                           name: 'Property IC API',
                           directories: './tests/property/ic_api'
                       }
-        uses: ./.github/workflows/run_tests.yml
+        uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
             fuzz: true
