@@ -57,6 +57,10 @@ function acceptCycles(
     receiveAmount?: bigint,
     numChunks?: bigint
 ): CyclesResult {
+    if (numChunks === 0n) {
+        throw new Error('numChunks cannot be 0');
+    }
+
     const startingCanisterBalance = canisterBalance();
     const initialAvailable = msgCyclesAvailable();
     const acceptAmount = receiveAmount ?? initialAvailable;

@@ -54,6 +54,13 @@ export default class {
             };
         }
 
+        if (this.state.accounts[fromAddress] === undefined) {
+            this.state.accounts[fromAddress] = {
+                address: fromAddress,
+                balance: 0n
+            };
+        }
+
         this.state.accounts[fromAddress].balance -= amount;
         this.state.accounts[toAddress].balance += amount;
 

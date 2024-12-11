@@ -1,0 +1,6 @@
+{
+    "expectedErrors": [
+        "is out of cycles",
+        "Uncaught Error: numChunks cannot be 0"
+    ]
+}

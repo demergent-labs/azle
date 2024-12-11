@@ -34,7 +34,7 @@ export function createReaction(
 
 export function getAllReactions(joinDepth: number): Reaction[] {
     return Object.values(state.reactions).map((stateReaction) =>
-        getReactionFromStateReaction(stateReaction, joinDepth)
+        getReactionFromStateReaction(stateReaction!, joinDepth)
     );
 }
 
@@ -43,9 +43,19 @@ export function getReactionFromStateReaction(
     joinDepth: number
 ): Reaction {
     const stateAuthor = state.users[stateReaction.authorId];
+
+    if (stateAuthor === undefined) {
+        throw new Error('Author not found');
+    }
+
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 
     const statePost = state.posts[stateReaction.postId];
+
+    if (statePost === undefined) {
+        throw new Error('Post not found');
+    }
+
     const post = getPostFromStatePost(statePost, joinDepth);
 
     return {
@@ -61,6 +71,11 @@ function getUpdatedStateAuthor(
     reactionId: string
 ): StateUser {
     const stateAuthor = state.users[authorId];
+
+    if (stateAuthor === undefined) {
+        throw new Error('Author not found');
+    }
+
     const updatedStateAuthor: StateUser = {
         ...stateAuthor,
         reactionIds: [...stateAuthor.reactionIds, reactionId]
@@ -71,6 +86,11 @@ function getUpdatedStateAuthor(
 
 function getUpdatedStatePost(postId: string, reactionId: string): StatePost {
     const statePost = state.posts[postId];
+
+    if (statePost === undefined) {
+        throw new Error('Post not found');
+    }
+
     const updatedStatePost: StatePost = {
         ...statePost,
         reactionIds: [...statePost.reactionIds, reactionId]

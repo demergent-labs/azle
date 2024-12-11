@@ -1,0 +1,10 @@
+{
+    "callDelay": ".25",
+    "expectedErrors": [
+        "Author not found",
+        "Post not found",
+        "Thread not found",
+        "cannot read property 'Symbol.iterator' of undefined",
+        "Canister trapped: heap out of bounds"
+    ]
+}
