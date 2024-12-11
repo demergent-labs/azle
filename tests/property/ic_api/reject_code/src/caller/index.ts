@@ -78,7 +78,7 @@ async function getNoErrorRejectCode(
  * @param code The value to check
  * @returns True if the value is a RejectionCode, false otherwise
  */
-function isRejectionCode(code: unknown): code is RejectionCode {
+function isRejectionCode(code: RejectionCode): boolean {
     // RejectionCode is a discriminated union type that can't be checked with typeof/instanceof.
     // Instead, we verify that:
     // 1. The value is a non-null object
@@ -93,19 +93,21 @@ function isRejectionCode(code: unknown): code is RejectionCode {
         CanisterReject: null,
         CanisterError: null,
         Unknown: null
-    } as const;
+    };
 
     if (typeof code !== 'object' || code === null) {
         return false;
     }
 
-    const keys = Object.keys(code);
+    const keys = Object.keys(code) as (keyof RejectionCode)[];
+
     if (keys.length !== 1) {
         return false;
     }
 
     const [variant] = keys;
-    return variant in RejectionCodeMap && (code as any)[variant] === null;
+
+    return variant in RejectionCodeMap && code[variant] === null;
 }
 
 function getRejectorPrincipal(): string {
