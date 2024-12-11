@@ -129,7 +129,9 @@ if (globalThis._azleInsideCanister === true) {
         return match;
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     global.Intl = require('intl');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('intl/locale-data/jsonp/en.js');
 }
 

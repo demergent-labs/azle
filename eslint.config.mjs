@@ -1,0 +1,83 @@
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import tseslintParser from '@typescript-eslint/parser';
+import prettier from 'eslint-config-prettier';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
+
+export default tseslint.config(
+    // Base ESLint configuration
+    eslint.configs.recommended,
+
+    // TypeScript ESLint recommended configuration
+    tseslint.configs.recommended,
+
+    // Prettier configuration
+    prettier,
+
+    {
+        ignores: [
+            '**/.dfx/**',
+            '**/target/**',
+            '**/experimental/**',
+            '**/node_modules/**',
+            '**/.azle/**',
+            '**/docs/**',
+            'the_azle_book/**',
+            '**/the_azle_book/**',
+            '**/run_time_errors/**',
+            '**/webpack.config.js',
+            '**/dfx_generate/**',
+            '**/dfx_generated/**',
+            '**/declarations/**',
+            'tests/property/candid_rpc/**/src/**',
+            '**/dist/**',
+            '**/static_canister_template_licenses.yml'
+        ]
+    },
+
+    {
+        files: ['**/*.{js,mjs,cjs,ts}'],
+        languageOptions: {
+            parser: tseslintParser,
+            parserOptions: {
+                ecmaVersion: 'latest',
+                sourceType: 'module'
+            }
+        },
+        plugins: {
+            'simple-import-sort': simpleImportSort
+        },
+        rules: {
+            'simple-import-sort/exports': 'error',
+            'simple-import-sort/imports': 'error',
+            'func-style': [
+                'error',
+                'declaration',
+                { allowArrowFunctions: true }
+            ],
+            'array-callback-return': 'error',
+            'no-template-curly-in-string': 'error',
+            'prefer-template': 'error',
+            'no-param-reassign': 'error',
+            '@typescript-eslint/prefer-for-of': 'error',
+            'prefer-arrow-callback': 'error',
+            'no-var': 'error',
+            '@typescript-eslint/explicit-function-return-type': ['error'],
+            eqeqeq: 'error',
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                // Ignore argument variables starting with _
+                {
+                    argsIgnorePattern: '^_',
+                    caughtErrorsIgnorePattern: '^_',
+                    destructuredArrayIgnorePattern: '^_',
+                    varsIgnorePattern: '^_'
+                }
+            ],
+            '@typescript-eslint/ban-ts-comment': 'off',
+            'prefer-const': 'off', // For azle let is used to indicate mutability not only re-assignability
+            'no-undef': 'off', // TS compiler handles this for us
+            '@typescript-eslint/no-explicit-any': 'off' // TODO https://github.com/demergent-labs/azle/issues/1737
+        }
+    }
+);

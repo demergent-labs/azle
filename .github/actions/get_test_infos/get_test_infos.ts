@@ -1,5 +1,5 @@
-import { discoverTestDirs } from './discover_test_dirs.js';
 import { dirToTestInfo, TestInfo } from './dir_to_test_info.js';
+import { discoverTestDirs } from './discover_test_dirs.js';
 
 export async function getTestInfos(
     dirs: string[],

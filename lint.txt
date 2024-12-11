@@ -1,0 +1,387 @@
+
+/home/bdemann/code/demergent_labs/azle/src/build/experimental/commands/compile/file_watcher/setup_file_watcher.ts
+  23:14  error  'error' is defined but never used  no-unused-vars
+  23:14  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/build/experimental/commands/upload_assets/file_uploader/incomplete_files.ts
+  11:17  error  '_' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/build/experimental/commands/upload_assets/file_uploader/on_before_exit.ts
+  29:17  error  '_' is assigned a value but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/build/experimental/utils/filter_async.ts
+  3:16  error  'element' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/build/stable/commands/install_global_dependencies/index.ts
+  8:6  error  'key' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/candid_type.ts
+  8:16  error  'parents' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/manual.ts
+  14:13  error  'Manual' is already defined    no-redeclare
+  14:20  error  'T' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/recursive.ts
+   9:9   error  'args' is defined but never used     no-unused-vars
+  12:19  error  'parents' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/serde/decode.ts
+  7:10  error  'AzleOpt' is defined but never used    no-unused-vars
+  7:19  error  'AzleTuple' is defined but never used  no-unused-vars
+  7:30  error  'AzleVec' is defined but never used    no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/serde/encode.ts
+  7:10  error  'AzleOpt' is defined but never used    no-unused-vars
+  7:19  error  'AzleTuple' is defined but never used  no-unused-vars
+  7:30  error  'AzleVec' is defined but never used    no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/constructed/blob.ts
+  28:13  error  'blob' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/constructed/opt.ts
+  31:17  error  'Opt' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/constructed/record.ts
+  16:10  error  'K' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/constructed/tuple.ts
+  46:13  error  'Tuple' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/constructed/variant.ts
+  13:10  error  'K' is defined but never used  no-unused-vars
+  21:17  error  'Variant' is already defined   no-redeclare
+  23:10  error  'K' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/constructed/vec.ts
+  38:17  error  'Vec' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/bool.ts
+  28:13  error  'bool' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/empty.ts
+  17:13  error  'empty' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/floats/float32.ts
+  28:13  error  'float32' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/floats/float64.ts
+  28:13  error  'float64' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/ints/int.ts
+  28:13  error  'int' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/ints/int16.ts
+  27:13  error  'int16' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/ints/int32.ts
+  27:13  error  'int32' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/ints/int64.ts
+  27:13  error  'int64' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/ints/int8.ts
+  28:13  error  'int8' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/nats/nat.ts
+  28:13  error  'nat' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/nats/nat16.ts
+  28:13  error  'nat16' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/nats/nat32.ts
+  27:13  error  'nat32' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/nats/nat64.ts
+  27:13  error  'nat64' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/nats/nat8.ts
+  28:13  error  'nat8' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/null.ts
+  28:13  error  'Null' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/reserved.ts
+  28:13  error  'reserved' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/text.ts
+  28:13  error  'text' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/primitive/void.ts
+  28:13  error  'Void' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/reference/func.ts
+  21:17  error  'Func' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/reference/principal.ts
+  23:23  error  '_parents' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/reference/service/canister_function/index.ts
+    9:10  error  '_AzleRecursiveFunction' is defined but never used  no-unused-vars
+   23:6   error  'principal' is defined but never used               no-unused-vars
+   26:34  error  'parents' is defined but never used                 no-unused-vars
+   27:19  error  'parents' is defined but never used                 no-unused-vars
+   40:5   error  'notify' is defined but never used                  no-unused-vars
+   41:5   error  'callFunction' is defined but never used            no-unused-vars
+   42:5   error  'cycles' is defined but never used                  no-unused-vars
+   43:5   error  'args' is defined but never used                    no-unused-vars
+   87:5   error  'parents' is defined but never used                 no-unused-vars
+   97:23  error  '_methodName' is defined but never used             no-unused-vars
+  143:24  error  'args' is defined but never used                    no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/reference/service/canister_function/query_update.ts
+  20:19  error  '_name' is defined but never used  no-unused-vars
+  34:19  error  '_name' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/reference/service/canister_function/system_methods.ts
+   6:10  error  '_AzleRecursiveFunction' is defined but never used  no-unused-vars
+  21:11  error  '_methodName' is defined but never used             no-unused-vars
+  39:28  error  '_methodName' is defined but never used             no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/candid/types/reference/service/index.ts
+  19:18  error  'args' is defined but never used               no-unused-vars
+  25:6   error  'principal' is defined but never used          no-unused-vars
+  29:6   error  'parentOrPrincipal' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/canister_methods/types/callback.ts
+  10:8  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/canister_methods/types/canister_method_info.ts
+   7:32  error  'T' is defined but never used     no-unused-vars
+   7:62  error  'K' is defined but never used     no-unused-vars
+  17:20  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/fetch/headers.ts
+  49:13  error  'value' is defined but never used    no-unused-vars
+  50:13  error  'key' is defined but never used      no-unused-vars
+  51:13  error  'headers' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/fetch/icp.ts
+  45:12  error  '_funcName' is assigned a value but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/ic/accept_message.ts
+  5:10  error  'inspectMessage' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/ic/azle_ic_experimental.ts
+   8:9   error  'promiseId' is defined but never used        no-unused-vars
+   9:9   error  'canisterIdBytes' is defined but never used  no-unused-vars
+  10:9   error  'method' is defined but never used           no-unused-vars
+  11:9   error  'argsRaw' is defined but never used          no-unused-vars
+  12:9   error  'paymentString' is defined but never used    no-unused-vars
+  15:22  error  'candidPath' is defined but never used       no-unused-vars
+  16:20  error  'candidBytes' is defined but never used      no-unused-vars
+  17:20  error  'candidString' is defined but never used     no-unused-vars
+  20:18  error  'timerIdString' is defined but never used    no-unused-vars
+  21:18  error  'amount' is defined but never used           no-unused-vars
+  25:20  error  'principalBytes' is defined but never used   no-unused-vars
+  26:23  error  'maxAmountString' is defined but never used  no-unused-vars
+  30:9   error  'canisterIdBytes' is defined but never used  no-unused-vars
+  31:9   error  'method' is defined but never used           no-unused-vars
+  32:9   error  'argsRawBuffer' is defined but never used    no-unused-vars
+  33:9   error  'paymentString' is defined but never used    no-unused-vars
+  35:26  error  'counterType' is defined but never used      no-unused-vars
+  37:16  error  'bytes' is defined but never used            no-unused-vars
+  38:24  error  'dataBytes' is defined but never used        no-unused-vars
+  39:16  error  'delayString' is defined but never used      no-unused-vars
+  39:37  error  'timerCallbackId' is defined but never used  no-unused-vars
+  41:9   error  'intervalString' is defined but never used   no-unused-vars
+  42:9   error  'timerCallbackId' is defined but never used  no-unused-vars
+  51:16  error  'args' is defined but never used             no-unused-vars
+  52:14  error  'message' is defined but never used          no-unused-vars
+  54:12  error  'message' is defined but never used          no-unused-vars
+  62:26  error  'memoryId' is defined but never used         no-unused-vars
+  64:9   error  'memoryId' is defined but never used         no-unused-vars
+  65:9   error  'encodedKey' is defined but never used       no-unused-vars
+  68:9   error  'memoryId' is defined but never used         no-unused-vars
+  69:9   error  'encodedKey' is defined but never used       no-unused-vars
+  72:9   error  'memoryId' is defined but never used         no-unused-vars
+  73:9   error  'encodedKey' is defined but never used       no-unused-vars
+  74:9   error  'encodedValue' is defined but never used     no-unused-vars
+  76:29  error  'memoryId' is defined but never used         no-unused-vars
+  78:9   error  'memoryId' is defined but never used         no-unused-vars
+  79:9   error  'startIndex' is defined but never used       no-unused-vars
+  80:9   error  'length' is defined but never used           no-unused-vars
+  83:9   error  'memoryId' is defined but never used         no-unused-vars
+  84:9   error  'startIndex' is defined but never used       no-unused-vars
+  85:9   error  'length' is defined but never used           no-unused-vars
+  87:25  error  'memoryId' is defined but never used         no-unused-vars
+  89:9   error  'memoryId' is defined but never used         no-unused-vars
+  90:9   error  'encodedKey' is defined but never used       no-unused-vars
+  93:9   error  'memoryId' is defined but never used         no-unused-vars
+  94:9   error  'startIndex' is defined but never used       no-unused-vars
+  95:9   error  'length' is defined but never used           no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/ic/call.ts
+  18:36  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/ic/notify.ts
+  37:38  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/ic/reject_message.ts
+  5:10  error  'ic' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/ic/types/args_type.ts
+  3:41  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/ic/types/return_type_of.ts
+  3:45  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/server.ts
+   34:14  error  'HeaderField' is already defined                    no-redeclare
+   43:13  error  'HttpRequest' is already defined                    no-redeclare
+   51:13  error  'HttpUpdateRequest' is already defined              no-redeclare
+   62:13  error  'StreamingCallbackHttpResponse' is already defined  no-redeclare
+   70:6   error  'Callback' is already defined                       no-redeclare
+   78:13  error  'CallbackStrategy' is already defined               no-redeclare
+   89:13  error  'StreamingStrategy' is already defined              no-redeclare
+  102:13  error  'HttpResponse' is already defined                   no-redeclare
+  266:13  error  '_data' is defined but never used                   no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/stable_structures/stable_b_tree_map.ts
+  4:15  error  'data' is defined but never used   no-unused-vars
+  5:17  error  'bytes' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/system_types/rejection_code.ts
+  18:13  error  'RejectionCode' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/system_types/result.ts
+  33:13  error    'Result' is already defined                                                                         no-redeclare
+  43:1   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-namespace')
+  44:18  error    'Result' is already defined                                                                         no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/experimental/threshold_wallet/wallet.ts
+  87:23  error  '_message' is defined but never used  no-unused-vars
+  93:9   error  '_domain' is defined but never used   no-unused-vars
+  94:9   error  '_types' is defined but never used    no-unused-vars
+  95:9   error  '_value' is defined but never used    no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/canister_methods/heartbeat.ts
+  5:22  error  'this' is defined but never used  no-unused-vars
+  5:37  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/canister_methods/init.ts
+  10:26  error  'this' is defined but never used  no-unused-vars
+  10:41  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/canister_methods/inspect_message.ts
+  6:22  error  'this' is defined but never used  no-unused-vars
+  6:37  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/canister_methods/post_upgrade.ts
+  10:26  error  'this' is defined but never used  no-unused-vars
+  10:41  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/canister_methods/pre_upgrade.ts
+  5:22  error  'this' is defined but never used  no-unused-vars
+  5:37  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/canister_methods/query.ts
+  15:26  error  'this' is defined but never used  no-unused-vars
+  15:41  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/canister_methods/update.ts
+  14:26  error  'this' is defined but never used  no-unused-vars
+  14:41  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/did_file/visitor/did_visitor.ts
+  40:9  error  '_data' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/did_file/visitor/extract_candid.ts
+   6:49  error  '_candidTypeDefs' is defined but never used  no-unused-vars
+  10:16  error  '_candid' is defined but never used          no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/did_file/visitor/visit/record.ts
+  12:39  error  '_key' is defined but never used    no-unused-vars
+  17:16  error  '_value' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/did_file/visitor/visit/service.ts
+  104:25  error  '_name' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/did_file/visitor/visit/variant.ts
+  12:39  error  '_key' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/execute_with_candid_serde.ts
+  17:19  error  'args' is defined but never used  no-unused-vars
+  46:19  error  'args' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/globals.ts
+  11:24  error  'args' is defined but never used  no-unused-vars
+  48:43  error  'err' is defined but never used   no-unused-vars
+  50:44  error  'buf' is defined but never used   no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/ic_apis/accept_message.ts
+  2:10  error  'inspectMessage' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/ic_apis/azle_ic_stable.ts
+   8:9   error  'promiseId' is defined but never used        no-unused-vars
+   9:9   error  'canisterIdBytes' is defined but never used  no-unused-vars
+  10:9   error  'method' is defined but never used           no-unused-vars
+  11:9   error  'argsRaw' is defined but never used          no-unused-vars
+  12:9   error  'cyclesString' is defined but never used     no-unused-vars
+  15:20  error  'candidBytes' is defined but never used      no-unused-vars
+  16:20  error  'candidString' is defined but never used     no-unused-vars
+  19:18  error  'timerId' is defined but never used          no-unused-vars
+  20:18  error  'amountString' is defined but never used     no-unused-vars
+  24:20  error  'principalBytes' is defined but never used   no-unused-vars
+  25:23  error  'maxAmountString' is defined but never used  no-unused-vars
+  29:9   error  'canisterIdBytes' is defined but never used  no-unused-vars
+  30:9   error  'method' is defined but never used           no-unused-vars
+  31:9   error  'argsRawBuffer' is defined but never used    no-unused-vars
+  32:9   error  'cyclesString' is defined but never used     no-unused-vars
+  34:26  error  'counterType' is defined but never used      no-unused-vars
+  36:16  error  'bytes' is defined but never used            no-unused-vars
+  37:24  error  'dataBytes' is defined but never used        no-unused-vars
+  38:16  error  'delay' is defined but never used            no-unused-vars
+  38:31  error  'timerCallbackId' is defined but never used  no-unused-vars
+  39:24  error  'interval' is defined but never used         no-unused-vars
+  39:42  error  'timerCallbackId' is defined but never used  no-unused-vars
+  47:16  error  'args' is defined but never used             no-unused-vars
+  48:14  error  'message' is defined but never used          no-unused-vars
+  50:12  error  'message' is defined but never used          no-unused-vars
+  58:26  error  'memoryId' is defined but never used         no-unused-vars
+  60:9   error  'memoryId' is defined but never used         no-unused-vars
+  61:9   error  'encodedKey' is defined but never used       no-unused-vars
+  64:9   error  'memoryId' is defined but never used         no-unused-vars
+  65:9   error  'encodedKey' is defined but never used       no-unused-vars
+  68:9   error  'memoryId' is defined but never used         no-unused-vars
+  69:9   error  'encodedKey' is defined but never used       no-unused-vars
+  70:9   error  'encodedValue' is defined but never used     no-unused-vars
+  72:29  error  'memoryId' is defined but never used         no-unused-vars
+  75:9   error  'memoryId' is defined but never used         no-unused-vars
+  76:9   error  'startIndex' is defined but never used       no-unused-vars
+  77:9   error  'length' is defined but never used           no-unused-vars
+  80:9   error  'memoryId' is defined but never used         no-unused-vars
+  81:9   error  'startIndex' is defined but never used       no-unused-vars
+  82:9   error  'length' is defined but never used           no-unused-vars
+  84:25  error  'memoryId' is defined but never used         no-unused-vars
+  85:26  error  'memoryId' is defined but never used         no-unused-vars
+  85:44  error  'encodedKey' is defined but never used       no-unused-vars
+  87:9   error  'memoryId' is defined but never used         no-unused-vars
+  88:9   error  'startIndex' is defined but never used       no-unused-vars
+  89:9   error  'length' is defined but never used           no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/ic_apis/reject_code.ts
+  17:14  error  'RejectionCode' is already defined  no-redeclare
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/ic_apis/reject_message.ts
+  2:10  error  'rejectCode' is defined but never used  no-unused-vars
+
+/home/bdemann/code/demergent_labs/azle/src/lib/stable/stable_structures/stable_b_tree_map.ts
+   4:15  error  'data' is defined but never used        no-unused-vars
+   5:17  error  'bytes' is defined but never used       no-unused-vars
+   9:17  error  'key' is defined but never used         no-unused-vars
+  10:9   error  'key' is defined but never used         no-unused-vars
+  11:12  error  'key' is defined but never used         no-unused-vars
+  11:22  error  'value' is defined but never used       no-unused-vars
+  13:11  error  'startIndex' is defined but never used  no-unused-vars
+  13:32  error  'length' is defined but never used      no-unused-vars
+  14:10  error  'startIndex' is defined but never used  no-unused-vars
+  14:31  error  'length' is defined but never used      no-unused-vars
+  16:12  error  'key' is defined but never used         no-unused-vars
+  17:12  error  'startIndex' is defined but never used  no-unused-vars
+  17:33  error  'length' is defined but never used      no-unused-vars
+  20:17  error  'StableBTreeMap' is already defined     no-redeclare
+
+✖ 233 problems (232 errors, 1 warning)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
