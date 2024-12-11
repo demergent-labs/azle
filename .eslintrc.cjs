@@ -9,6 +9,18 @@ module.exports = {
         'prettier'
     ],
     files: ['**/*.js', '**/*.ts'],
+    ignores: [
+        'docs/**',
+        'the_azle_book/**',
+        'run_time_errors/**',
+        '**/webpack.config.js',
+        'dfx_generate/**',
+        'dfx_generated/**',
+        'declarations/**',
+        'property_tests/tests/**/src/*',
+        'dist/**',
+        'static_canister_template_licenses.yml'
+    ],
     overrides: [
         {
             env: {
