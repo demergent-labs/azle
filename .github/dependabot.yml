@@ -1,0 +1,40 @@
+version: 2
+updates:
+    - package-ecosystem: 'npm'
+      directory: '/'
+      schedule:
+          interval: 'daily'
+      versioning-strategy: increase
+      commit-message:
+          prefix: 'deps'
+          prefix-development: 'deps(dev)'
+      groups:
+          eslint:
+              patterns:
+                  - 'eslint*'
+                  - '@typescript-eslint/*'
+          jest:
+              patterns:
+                  - 'jest*'
+                  - 'ts-jest'
+      ignore:
+          - dependency-name: 'binaryen'
+            update-types:
+                [
+                    'version-update:semver-major',
+                    'version-update:semver-minor',
+                    'version-update:semver-patch'
+                ]
+
+    - package-ecosystem: 'cargo'
+      directory: '/'
+      schedule:
+          interval: 'daily'
+      commit-message:
+          prefix: 'deps'
+      groups:
+          ic-dependencies:
+              patterns:
+                  - 'ic-cdk*'
+                  - 'ic-stable-structures'
+                  - 'ic-wasi-polyfill'
