@@ -3,7 +3,8 @@ import '../stable/globals'; // We import this to remove type errors having to do
 
 import { Buffer } from 'buffer';
 import * as process from 'process';
-import { TextDecoder, TextEncoder } from 'text-encoding';
+// @ts-expect-error
+import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 import { URL } from 'url';
 import { v4 } from 'uuid';
 
@@ -129,7 +130,9 @@ if (globalThis._azleInsideCanister === true) {
         return match;
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     global.Intl = require('intl');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('intl/locale-data/jsonp/en.js');
 }
 

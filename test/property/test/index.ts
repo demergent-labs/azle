@@ -1,7 +1,7 @@
 // TODO import deepEqual from 'deep-is' works for some
 // TODO import { deepEqual } from 'deep-is' works for others
 // TODO require seems to work for all of them
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const deepEqual = require('deep-is');
 
 import { jsonStringify } from '../../../src/lib/stable/json';

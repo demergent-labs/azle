@@ -13,7 +13,7 @@ export function getActor(parentDir: string, agent?: Agent): any {
     delete require.cache[resolvedPathIndex];
     delete require.cache[resolvedPathDid];
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { createActor } = require(`${parentDir}/dfx_generated/canister`);
 
     return createActor(getCanisterId('canister'), {

@@ -31,7 +31,7 @@ async function getRejectMessage(
             returnIdlType: IDL.Text,
             args: [message]
         });
-    } catch (error) {
+    } catch {
         return rejectMessage();
     }
     throw new Error('This should never be thrown');
