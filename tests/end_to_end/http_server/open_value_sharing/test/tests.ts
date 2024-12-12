@@ -316,7 +316,7 @@ function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): void {
     );
     expect(payment4).toStrictEqual(
         expect.objectContaining({
-            name: 'safer-buffer',
+            name: 'safe-buffer',
             payment_mechanism: 'wallet_receive',
             amount: payment4CalculatedAmount,
             success: { Ok: null }
