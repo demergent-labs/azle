@@ -1,5 +1,6 @@
 // TODO this should be removed once https://github.com/demergent-labs/azle/issues/2271 is resolved
-import { TextDecoder, TextEncoder } from 'text-encoding';
+// @ts-expect-error
+import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 globalThis.TextDecoder = TextDecoder;
 globalThis.TextEncoder = TextEncoder;
 

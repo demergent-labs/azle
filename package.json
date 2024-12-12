@@ -30,7 +30,7 @@
         "@dfinity/agent": "^2.1.3",
         "@dfinity/identity-secp256k1": "^2.1.3",
         "@sinonjs/text-encoding": "^0.7.3",
-        "binaryen": "^120.0.0",
+        "binaryen": "^116.0.0",
         "buffer": "^6.0.3",
         "chokidar": "^4.0.1",
         "class-transformer": "^0.5.1",
