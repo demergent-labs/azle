@@ -17,7 +17,9 @@ export function getTests(): Test {
                 fc.asyncProperty(fc.string(), async (message) => {
                     const result =
                         await callerCanister.echoThroughReject(message);
-                    expect(result).toBe(message);
+                    expect(result).toBe(
+                        `reject_message proptest message: ${message}`
+                    );
                 }),
                 defaultPropTestParams()
             );
