@@ -20,7 +20,7 @@ export function setupFileWatcher(
         // TODO does not result in a 0 exit code
         // TODO and look into removing the try catch?
         execSyncPretty(`pkill -f ./file_watcher_loader.js || true`);
-    } catch (error) {
+    } catch {
         // For some reason pkill throws even with || true
     }
 

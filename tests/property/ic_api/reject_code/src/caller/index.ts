@@ -47,7 +47,7 @@ async function getThrowErrorRejectCode(
         await call(rejectorPrincipal, 'throwError', {
             returnIdlType: IDL.Text
         });
-    } catch (error) {
+    } catch {
         return rejectCode();
     }
     throw new Error('This should never be thrown');
@@ -60,7 +60,7 @@ async function getRejectWithMessageRejectCode(
         await call(rejectorPrincipal, 'rejectWithMessage', {
             returnIdlType: IDL.Text
         });
-    } catch (error) {
+    } catch {
         return rejectCode();
     }
     throw new Error('This should never be thrown');

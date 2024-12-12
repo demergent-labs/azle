@@ -53,7 +53,7 @@ export default Canister({
             } else {
                 await ic.call(nonexistentCanister.method);
             }
-        } catch (error) {
+        } catch {
             // continue regardless of error
         }
 
@@ -71,7 +71,7 @@ export default Canister({
             } else {
                 await ic.call(someCanister.reject, { args: ['reject'] });
             }
-        } catch (error) {
+        } catch {
             // continue regardless of error
         }
 
@@ -88,7 +88,7 @@ export default Canister({
             } else {
                 await ic.call(someCanister.error);
             }
-        } catch (error) {
+        } catch {
             // continue regardless of error
         }
 
@@ -106,7 +106,7 @@ export default Canister({
             } else {
                 await ic.call(someCanister.reject, { args: [message] });
             }
-        } catch (error) {
+        } catch {
             // continue regardless of error
         }
 
