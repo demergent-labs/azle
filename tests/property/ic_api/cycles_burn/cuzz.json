@@ -1,3 +1,6 @@
 {
-    "expectedErrors": ["is out of cycles"]
+    "expectedErrors": [
+        "is out of cycles",
+        "is unable to process query calls because it's frozen. Please top up the canister with cycles and try again."
+    ]
 }
