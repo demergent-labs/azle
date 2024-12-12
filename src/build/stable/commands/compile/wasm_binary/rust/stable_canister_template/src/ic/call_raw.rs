@@ -57,16 +57,11 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 // Even during a trap, the IC will ensure that the closure runs in its own call
                 // thus allowing us to recover from a trap and persist that state
                 let _cleanup = scopeguard::guard((), |_| {
-                    let reject_id = format!("_reject_{}", &promise_id);
-                    let resolve_id = format!("_resolve_{}", &promise_id);
+                    let result = cleanup(ctx.clone(), &promise_id);
 
-                    let globals = ctx.clone().globals();
-
-                    let reject_ids = globals.get::<_, Object>("_azleRejectIds").unwrap();
-                    let resolve_ids = globals.get::<_, Object>("_azleResolveIds").unwrap();
-
-                    reject_ids.remove(&reject_id).unwrap();
-                    resolve_ids.remove(&resolve_id).unwrap();
+                    if let Err(e) = result {
+                        trap(&format!("Azle CallRawCleanupError: {e}"));
+                    }
                 });
 
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
@@ -81,6 +76,21 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
             Ok(())
         },
     )
+}
+
+fn cleanup(ctx: Ctx, promise_id: &str) -> Result<(), Box<dyn Error>> {
+    let reject_id = format!("_reject_{}", promise_id);
+    let resolve_id = format!("_resolve_{}", promise_id);
+
+    let globals = ctx.clone().globals();
+
+    let reject_ids = globals.get::<_, Object>("_azleRejectIds")?;
+    let resolve_ids = globals.get::<_, Object>("_azleResolveIds")?;
+
+    reject_ids.remove(&reject_id)?;
+    resolve_ids.remove(&resolve_id)?;
+
+    Ok(())
 }
 
 fn resolve_or_reject<'a>(
