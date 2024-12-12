@@ -17,7 +17,7 @@ export function OptArb(
 ): fc.Arbitrary<CandidValueAndMeta<Opt>> {
     const definitionContext = {
         ...context,
-        constraints: { depthLevel: DEFAULT_DEFINITION_MAX_DEPTH }
+        constraints: { depthLevel: DEFAULT_DEFINITION_MAX_DEPTH - 1 }
     };
     return CandidValueAndMetaArbGenerator(
         context,
