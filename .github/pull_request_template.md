@@ -1,5 +1,6 @@
--   [ ] Breaking changes enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
--   [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
--   [ ] Code has been declaratized
--   [ ] Error handling beautiful (no unwraps or expects etc)
--   [ ] Code tested thoroughly
+- [ ] Breaking changes enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
+- [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
+- [ ] Code has been declaratized
+- [ ] Error handling beautiful (no unwraps or expects etc)
+- [ ] Code tested thoroughly
+- [ ] All new functions have JSDoc/Rustdoc comments
