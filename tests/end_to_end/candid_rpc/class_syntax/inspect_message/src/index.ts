@@ -7,8 +7,7 @@ export default class {
 
         if (
             methodName() === 'accessible' ||
-            methodName() === '_azle_get_benchmarks' ||
-            methodName() === '_azle_memory_usage'
+            methodName() === '_azle_get_benchmarks'
         ) {
             acceptMessage();
             return;
