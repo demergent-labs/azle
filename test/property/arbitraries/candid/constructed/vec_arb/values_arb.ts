@@ -87,7 +87,11 @@ function determineVecConstraints(
     if (isEmptyInnerType(vecDefinition.innerType)) {
         return { maxLength: EMPTYISH_VEC_SIZE_LIMIT };
     }
-    return;
+
+    return {
+        size: 'max',
+        maxLength: 10
+    };
 }
 
 function generateEmptyVec(innerCandidType: CandidType): CandidValues<Vec> {
