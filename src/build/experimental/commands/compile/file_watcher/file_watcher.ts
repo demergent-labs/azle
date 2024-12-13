@@ -29,22 +29,21 @@ const postUpgradeIndex = Number(process.argv[8]);
 // TODO https://github.com/demergent-labs/azle/issues/1664
 const watcher = watch('.', {
     ignored: (path, stats) => {
-        // Always ignore these directories
         if (
-            path.includes('.dfx') ||
-            path.includes('.azle') ||
-            path.includes('node_modules') ||
-            path.includes('target')
+            path.includes('.dfx') === true ||
+            path.includes('.azle') === true ||
+            path.includes('node_modules') === true ||
+            path.includes('target') === true
         ) {
             return true;
         }
 
-        // If it's a file, only watch .ts and .js files
-        if (stats?.isFile()) {
-            return !path.endsWith('.ts') && !path.endsWith('.js');
+        if (stats?.isFile() === true) {
+            return (
+                path.endsWith('.ts') === false && path.endsWith('.js') === false
+            );
         }
 
-        // Don't ignore directories (except those explicitly ignored above)
         return false;
     }
 });
