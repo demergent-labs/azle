@@ -59,18 +59,31 @@ export function runTests(
     }
 }
 
-export function wait(name: string, delay: number): void {
-    test(
-        `wait ${name}`,
-        async () => {
-            console.info(`Waiting: ${delay} milliseconds ${name}`);
-            await new Promise((resolve) => {
-                setTimeout(resolve, delay);
-            });
-        },
-        delay + 1_000
-    );
+function createWaitTest(name: string, delay: number): () => Promise<void> {
+    return async () => {
+        console.info(`Waiting: ${delay} milliseconds ${name}`);
+        await new Promise((resolve) => {
+            setTimeout(resolve, delay);
+        });
+    };
 }
+
+function runWaitTest(
+    testFn: typeof test | typeof test.only | typeof test.skip,
+    name: string,
+    delay: number
+): void {
+    testFn(`wait ${name}`, createWaitTest(name, delay), delay + 1_000);
+}
+
+export function wait(name: string, delay: number): void {
+    runWaitTest(test, name, delay);
+}
+
+wait.skip = (name: string, delay: number): void =>
+    runWaitTest(test.skip, name, delay);
+wait.only = (name: string, delay: number): void =>
+    runWaitTest(test.only, name, delay);
 
 export function please(name: string, fn: () => void | Promise<void>): void {
     test(`please ${name}`, async () => {
