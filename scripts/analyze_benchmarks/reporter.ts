@@ -33,36 +33,8 @@ export async function reportResults(
 }
 
 function analyzeResults(stats: Statistics): string {
-    const standardRanges = [
-        { range: 1, percentage: 0.6827 },
-        { range: 2, percentage: 0.9545 },
-        { range: 3, percentage: 0.9973 }
-    ];
-
-    let analysis = '## Statistical Analysis\n\n';
-
-    // Add distribution analysis
-    standardRanges.forEach(({ range, percentage }) => {
-        const theoreticalLower = stats.mean - range * stats.standardDeviation;
-        const theoreticalUpper = stats.mean + range * stats.standardDeviation;
-
-        // Ensure lower bound is never below the minimum observed value
-        const lower = Math.max(stats.min, theoreticalLower);
-        // Ensure upper bound is never below the lower bound
-        const upper = Math.min(stats.max, theoreticalUpper);
-
-        analysis +=
-            `- Within ${range} standard deviation${range > 1 ? 's' : ''} ` +
-            `(${formatNumber(Math.floor(lower))} to ${formatNumber(
-                Math.floor(upper)
-            )} instructions), ` +
-            `approximately ${formatNumber(
-                Math.floor(percentage * stats.count)
-            )} of the methods fall in this range\n`;
-    });
-
     // Add efficiency analysis
-    analysis += '\n### Efficiency Insights\n\n';
+    let analysis = '\n### Efficiency Insights\n\n';
     const efficiencyScore = stats.baselineWeightedEfficiencyScore;
     let efficiencyAnalysis = '';
 
