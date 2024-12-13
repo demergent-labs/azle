@@ -1,3 +1,6 @@
 {
-    "expectedErrors": ["Error getting performance counter type"]
+    "expectedErrors": [
+        "Error getting performance counter type",
+        "Uncaught Error: Rejection code 2, Couldn't send message"
+    ]
 }

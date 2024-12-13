@@ -3,15 +3,14 @@ dns.setDefaultResultOrder('ipv4first');
 
 import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
 import { describe, expect, test } from '@jest/globals';
-import { spawn } from 'child_process';
 import * as fc from 'fast-check';
-import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { getCanisterId } from '../dfx';
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
 import { runBenchmarksForCanisters } from './benchmarks';
+import { runFuzzTests } from './fuzz';
 
 export type Test = () => void;
 
@@ -66,84 +65,7 @@ export function runTests(
 
     if (shouldFuzz === true) {
         describe(`fuzz`, () => {
-            it('runs fuzz tests for all canisters', () => {
-                // execSyncPretty(`cuzz`, 'inherit');
-                const dfxFile = readFileSync(
-                    join(process.cwd(), 'dfx.json'),
-                    'utf-8'
-                );
-                console.log(dfxFile);
-
-                const cuzzJson = ((): any => {
-                    try {
-                        const cuzzFile = readFileSync(
-                            join(process.cwd(), 'cuzz.json'),
-                            'utf-8'
-                        );
-                        return JSON.parse(cuzzFile);
-                    } catch {
-                        return {};
-                    }
-                })();
-
-                const dfxJson = JSON.parse(dfxFile);
-
-                console.log(dfxJson);
-                console.log(cuzzJson.callDelay);
-
-                const canisterNames = Object.keys(dfxJson.canisters);
-                console.log('Canister names:', canisterNames);
-
-                const callDelay =
-                    process.env.AZLE_FUZZ_CALL_DELAY ??
-                    cuzzJson.callDelay?.toString() ??
-                    '.1'; // TODO let's think about the best default
-
-                for (const canisterName of canisterNames) {
-                    execSyncPretty(
-                        `dfx ledger fabricate-cycles --canister ${canisterName} --cycles 1000000000000000000`,
-                        'inherit'
-                    );
-
-                    // TODO spin out multiple actual GUI terminals if you can
-                    console.log(`Starting cuzz for ${canisterName}`);
-
-                    let cuzzProcess;
-
-                    if (process.env.AZLE_FUZZ_TERMINALS === 'true') {
-                        cuzzProcess = spawn(
-                            'gnome-terminal',
-                            [
-                                '--',
-                                'bash',
-                                '-c',
-                                `node_modules/.bin/cuzz --canister-name ${canisterName} --skip-deploy --call-delay ${callDelay} & exec bash`
-                            ],
-                            {
-                                stdio: 'inherit'
-                            }
-                        );
-                    } else {
-                        cuzzProcess = spawn(
-                            'node_modules/.bin/cuzz',
-                            [
-                                '--canister-name',
-                                canisterName,
-                                '--skip-deploy',
-                                '--call-delay',
-                                callDelay
-                            ],
-                            { stdio: 'inherit' }
-                        );
-                    }
-
-                    cuzzProcess.on('exit', (code) => {
-                        if (code !== 0) {
-                            process.exit(code ?? 1);
-                        }
-                    });
-                }
-            });
+            it('runs fuzz tests for all canisters', runFuzzTests);
         });
     }
 }
