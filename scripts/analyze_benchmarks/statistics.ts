@@ -38,9 +38,21 @@ function calculateStatistics(instructions: readonly number[]): Statistics {
         throw new Error('Cannot calculate statistics for empty array');
     }
 
-    const sorted = [...instructions].sort((a, b) => a - b);
+    // Filter out instructions > 40 billion
+    const filteredInstructions = instructions.filter(
+        (val) => val <= 40_000_000_000
+    );
+
+    if (filteredInstructions.length === 0) {
+        throw new Error(
+            'No valid instructions after filtering (all values > 40 billion)'
+        );
+    }
+
+    const sorted = [...filteredInstructions].sort((a, b) => a - b);
     const mean =
-        instructions.reduce((acc, val) => acc + val, 0) / instructions.length;
+        filteredInstructions.reduce((acc, val) => acc + val, 0) /
+        filteredInstructions.length;
     const mid = Math.floor(sorted.length / 2);
 
     const median =
@@ -49,13 +61,13 @@ function calculateStatistics(instructions: readonly number[]): Statistics {
             : sorted[mid];
 
     const standardDeviation = Math.sqrt(
-        instructions
+        filteredInstructions
             .map((value) => Math.pow(value - mean, 2))
-            .reduce((acc, val) => acc + val, 0) / instructions.length
+            .reduce((acc, val) => acc + val, 0) / filteredInstructions.length
     );
 
     return {
-        count: instructions.length,
+        count: filteredInstructions.length,
         mean,
         median,
         standardDeviation,
@@ -63,7 +75,7 @@ function calculateStatistics(instructions: readonly number[]): Statistics {
         max: sorted[sorted.length - 1],
         baselineWeightedEfficiencyScore:
             calculateBaselineWeightEfficiencyScores({
-                count: instructions.length,
+                count: filteredInstructions.length,
                 mean,
                 median,
                 standardDeviation,
@@ -78,9 +90,9 @@ function calculateBaselineWeightEfficiencyScores(
     stats: Readonly<Statistics>
 ): number {
     const weights = {
-        min: 0.7,
+        min: 0.6,
         median: 0.3,
-        mean: 0.0
+        mean: 0.1
     } as const;
 
     return (
