@@ -185,7 +185,7 @@ export default Canister({
                     };
                 }
                 default: {
-                    return ic.trap('unreachable');
+                    return ic.trap('should not happen');
                 }
             }
         }

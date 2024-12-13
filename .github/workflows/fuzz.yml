@@ -6,12 +6,12 @@ on:
             call-delay:
                 description: 'Length of time (in seconds) to wait between canister method fuzz test calls'
                 required: false
-                type: number
-                default: .1
+                type: string
+                default: '.1'
             timeout:
                 description: 'Length of time (in minutes) after which the fuzz tests will automatically succeed'
                 required: false
-                type: number
+                type: string
                 default: '300'
 
 jobs:
@@ -29,7 +29,11 @@ jobs:
                           name: 'Property IC API',
                           directories: './tests/property/ic_api'
                       }
-        uses: ./.github/workflows/get_and_run_tests.yml
+        uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
+            exclude-dirs: class_syntax/new
             fuzz: true
+            call-delay: ${{ inputs.call-delay }}
+            timeout: ${{ inputs.timeout }}
+            link-azle: true

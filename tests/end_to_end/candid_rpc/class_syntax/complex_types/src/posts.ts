@@ -33,7 +33,7 @@ export function createPost(
 
 export function getAllPosts(joinDepth: number): Post[] {
     return Object.values(state.posts).map((statePost) =>
-        getPostFromStatePost(statePost, joinDepth)
+        getPostFromStatePost(statePost!, joinDepth)
     );
 }
 
@@ -42,9 +42,19 @@ export function getPostFromStatePost(
     joinDepth: number
 ): Post {
     const stateAuthor = state.users[statePost.authorId];
+
+    if (stateAuthor === undefined) {
+        throw new Error('Author not found');
+    }
+
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 
     const stateThread = state.threads[statePost.threadId];
+
+    if (stateThread === undefined) {
+        throw new Error('Thread not found');
+    }
+
     const thread = getThreadFromStateThread(stateThread, joinDepth);
 
     if (joinDepth === 0) {
@@ -59,7 +69,7 @@ export function getPostFromStatePost(
         const reactions = statePost.reactionIds
             .map((reactionId) => state.reactions[reactionId])
             .map((stateReaction) =>
-                getReactionFromStateReaction(stateReaction, joinDepth - 1)
+                getReactionFromStateReaction(stateReaction!, joinDepth - 1)
             );
 
         return {
@@ -74,6 +84,11 @@ export function getPostFromStatePost(
 
 function getUpdatedStateAuthor(authorId: string, postId: string): StateUser {
     const stateAuthor = state.users[authorId];
+
+    if (stateAuthor === undefined) {
+        throw new Error('Author not found');
+    }
+
     const updatedStateAuthor: StateUser = {
         ...stateAuthor,
         postIds: [...stateAuthor.postIds, postId]
@@ -84,6 +99,11 @@ function getUpdatedStateAuthor(authorId: string, postId: string): StateUser {
 
 function getUpdatedStateThread(threadId: string, postId: string): StateThread {
     const stateThread = state.threads[threadId];
+
+    if (stateThread === undefined) {
+        throw new Error('Thread not found');
+    }
+
     const updatedStateThread: StateThread = {
         ...stateThread,
         postIds: [...stateThread.postIds, postId]

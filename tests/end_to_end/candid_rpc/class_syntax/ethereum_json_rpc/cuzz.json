@@ -1,0 +1,7 @@
+{
+    "skip": "we do not want to make rapid amounts of outgoing HTTP requests to actual APIs",
+    "expectedErrors": [
+        "Value of 'Content-length' header exceeds http body size limit",
+        "Uncaught Error: Rejection code 1, Http body exceeds size limit of 1527 bytes"
+    ]
+}

@@ -23,12 +23,12 @@ on:
                 default: false
             call-delay:
                 required: false
-                type: number
-                default: .1
+                type: string
+                default: '.1'
             timeout:
                 required: false
-                type: number
-                default: 300
+                type: string
+                default: '300'
 
 jobs:
     get-test-infos:
@@ -167,6 +167,7 @@ jobs:
                       exit $exit_code
                   fi
               working-directory: ${{ matrix.test.path }}
+              shell: bash -l {0}
               env:
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.calc-runs.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true

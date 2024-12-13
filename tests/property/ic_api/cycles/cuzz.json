@@ -1,0 +1,6 @@
+{
+    "expectedErrors": [
+        "Uncaught Error: numChunks cannot be 0",
+        "Canister trapped: heap out of bounds"
+    ]
+}
