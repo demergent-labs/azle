@@ -71,17 +71,13 @@ export function runTests(
 }
 
 export function wait(name: string, delay: number): void {
-    test(
-        `wait ${name}`,
-        async () => {
-            console.info(`Waiting: ${delay} milliseconds ${name}`);
-            await new Promise((resolve) => {
-                setTimeout(resolve, delay);
-            });
-        },
-        delay + 1_000
-    );
+    runWait(test, name, delay);
 }
+
+wait.skip = (name: string, delay: number): void =>
+    runWait(test.skip, name, delay);
+wait.only = (name: string, delay: number): void =>
+    runWait(test.only, name, delay);
 
 export function please(name: string, fn: () => void | Promise<void>): void {
     test(`please ${name}`, async () => {
@@ -181,4 +177,21 @@ function shouldRun(
     }
 
     return envVar === 'true';
+}
+
+function runWait(
+    testFn: typeof test | typeof test.only | typeof test.skip,
+    name: string,
+    delay: number
+): void {
+    testFn(`wait ${name}`, createWait(name, delay), delay + 1_000);
+}
+
+function createWait(name: string, delay: number): () => Promise<void> {
+    return async () => {
+        console.info(`Waiting: ${delay} milliseconds ${name}`);
+        await new Promise((resolve) => {
+            setTimeout(resolve, delay);
+        });
+    };
 }

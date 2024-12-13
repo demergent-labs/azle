@@ -47,7 +47,7 @@ export default class {
     async getRejectionCodeDestinationInvalid(): Promise<RejectionCode> {
         try {
             await call('rkp4c-7iaaa-aaaaa-aaaca-cai', 'method');
-        } catch (error) {
+        } catch {
             // continue regardless of error
         }
 
@@ -61,7 +61,7 @@ export default class {
                 paramIdlTypes: [IDL.Text],
                 args: ['reject']
             });
-        } catch (error) {
+        } catch {
             // continue regardless of error
         }
 
@@ -72,7 +72,7 @@ export default class {
     async getRejectionCodeCanisterError(): Promise<RejectionCode> {
         try {
             await call(getSomeCanisterPrincipal(), 'error');
-        } catch (error) {
+        } catch {
             // continue regardless of error
         }
 
@@ -86,7 +86,7 @@ export default class {
                 paramIdlTypes: [IDL.Text],
                 args: [message]
             });
-        } catch (error) {
+        } catch {
             // continue regardless of error
         }
 

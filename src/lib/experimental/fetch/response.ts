@@ -40,6 +40,16 @@ export class AzleFetchResponse {
         return (this.body as unknown as Uint8Array | Buffer).buffer;
     }
 
+    async bytes(): Promise<Uint8Array> {
+        this.bodyUsed = true;
+
+        if (this.body === null) {
+            return new Uint8Array();
+        }
+
+        return new Uint8Array(this.body as unknown as Uint8Array | Buffer);
+    }
+
     async json(): Promise<string> {
         this.bodyUsed = true;
 

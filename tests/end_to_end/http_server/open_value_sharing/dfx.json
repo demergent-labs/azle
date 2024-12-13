@@ -17,7 +17,7 @@
                     "weights": {
                         "debug": 2,
                         "has-symbols": 0,
-                        "safer-buffer": 2,
+                        "safe-buffer": 2,
                         "hasown": 3
                     }
                 }

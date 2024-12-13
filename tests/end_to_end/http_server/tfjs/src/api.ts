@@ -9,10 +9,10 @@ async function init(): Promise<void> {
 
     tf.env().platform = {
         fetch,
-        now: () => Number(ic.time()), // TODO time probably off (look into nano vs milli)
-        encode: (text) => Buffer.from(text),
-        decode: (bytes) => Buffer.from(bytes).toString(),
-        isTypedArray: ((array: any) => {
+        now: (): number => Number(ic.time()), // TODO time probably off (look into nano vs milli)
+        encode: (text: string): Buffer => Buffer.from(text),
+        decode: (bytes: Uint8Array): string => Buffer.from(bytes).toString(),
+        isTypedArray: ((array: any): boolean => {
             return (array instanceof Float32Array ||
                 array instanceof Int32Array ||
                 array instanceof Uint8Array ||
