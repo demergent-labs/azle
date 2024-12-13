@@ -1,19 +1,20 @@
 {
     "0.25.0-dev": {
-        "count": 1191,
-        "mean": 23917158.525608733,
-        "median": 1018593,
-        "standardDeviation": 48806379.57471642,
+        "count": 1289,
+        "mean": 92258471.74941815,
+        "median": 1114393,
+        "standardDeviation": 530621254.60251206,
         "min": 84524,
-        "max": 168239538,
-        "baselineWeightedEfficiencyScore": 364744.69999999995
+        "max": 5594040442,
+        "baselineWeightedEfficiencyScore": 9610879.474941816
     },
     "0.25.0-pre-bifurcation": {
-        "count": 1311,
-        "mean": 689879985.884058,
-        "median": 1127512,
-        "standardDeviation": 2834180506.4537497,
+        "count": 1245,
+        "mean": 120719733.4875502,
+        "median": 1047702,
+        "standardDeviation": 731125022.9003621,
         "min": 83475,
-        "baselineWeightedEfficiencyScore": 396686.1
+        "max": 8135798587,
+        "baselineWeightedEfficiencyScore": 12436368.94875502
     }
 }

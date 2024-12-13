@@ -34,7 +34,7 @@ export async function reportResults(
 
 function analyzeResults(stats: Statistics): string {
     // Add efficiency analysis
-    let analysis = '\n### Efficiency Insights\n\n';
+    let analysis = '### Efficiency Insights\n\n';
     const efficiencyScore = stats.baselineWeightedEfficiencyScore;
     let efficiencyAnalysis = '';
 
