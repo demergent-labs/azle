@@ -9,9 +9,24 @@ use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
 };
 
-use crate::{error::quickjs_call_with_error_handling, ic::throw_error, quickjs_with_ctx};
+use crate::{error::quickjs_call_with_error_handling, ic::throw_error};
 
 pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
+    // We use a raw pointer here to deal with already borrowed issues
+    // using quickjs_with_ctx after a cross-canister call (await point)
+    // Sometimes the await point won't actually behave like a full await point
+    // because the cross-canister call returns an error where the callback
+    // is never queued and executed by the IC
+    // In this case the outer quickjs_with_ctx for the original call
+    // will still have borrowed something having to do with the ctx
+    // whereas in a full cross-canister call the outer quickjs_with_ctx
+    // will have completed.
+    // Using a raw pointer overcomes the issue, and I believe it is safe
+    // because we only ever have one Runtime, one Context, we never destroy them
+    // and we are in a single-threaded environment. We will of course
+    // engage in intense testing and review to ensure safety
+    let ctx_ptr = ctx.as_raw();
+
     Function::new(
         ctx.clone(),
         move |promise_id: String,
@@ -33,13 +48,25 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
             spawn(async move {
+                let ctx = unsafe { Ctx::from_raw(ctx_ptr) };
+
+                // My understanding of how this works
+                // scopeguard will execute its closure at the end of the scope
+                // After a successful or unsuccessful cross-canister call (await point)
+                // the closure will run, cleaning up the global promise callbacks
+                // Even during a trap, the IC will ensure that the closure runs in its own call
+                // thus allowing us to recover from a trap and persist that state
+                let _cleanup = scopeguard::guard((), |_| {
+                    let result = cleanup(ctx.clone(), &promise_id);
+
+                    if let Err(e) = result {
+                        trap(&format!("Azle CallRawCleanupError: {e}"));
+                    }
+                });
+
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
-                let result = quickjs_with_ctx(|ctx| {
-                    resolve_or_reject(ctx.clone(), &call_result, &promise_id)?;
-
-                    Ok(())
-                });
+                let result = resolve_or_reject(ctx.clone(), &call_result, &promise_id);
 
                 if let Err(e) = result {
                     trap(&format!("Azle CallRawError: {e}"));
@@ -49,6 +76,21 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
             Ok(())
         },
     )
+}
+
+fn cleanup(ctx: Ctx, promise_id: &str) -> Result<(), Box<dyn Error>> {
+    let reject_id = format!("_reject_{}", promise_id);
+    let resolve_id = format!("_resolve_{}", promise_id);
+
+    let globals = ctx.clone().globals();
+
+    let reject_ids = globals.get::<_, Object>("_azleRejectIds")?;
+    let resolve_ids = globals.get::<_, Object>("_azleResolveIds")?;
+
+    reject_ids.remove(&reject_id)?;
+    resolve_ids.remove(&resolve_id)?;
+
+    Ok(())
 }
 
 fn resolve_or_reject<'a>(

@@ -35,7 +35,7 @@ export default class {
     @inspectMessage
     inspectMessage(): void {
         if (methodName() === 'inspectMessageTime') {
-            trap(time().toString());
+            trap(`inspectMessageTime trap message: ${time()}`);
         } else {
             acceptMessage();
         }

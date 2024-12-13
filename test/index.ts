@@ -10,6 +10,7 @@ import { getCanisterId } from '../dfx';
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
 import { runBenchmarksForCanisters } from './benchmarks';
+import { runFuzzTests } from './fuzz';
 
 export type Test = () => void;
 
@@ -18,8 +19,12 @@ export function runTests(
     canisterNames: string | string[] | undefined = undefined,
     cwd: string = process.cwd()
 ): void {
-    const { shouldRunTests, shouldRunTypeChecks, shouldRecordBenchmarks } =
-        processEnvVars();
+    const {
+        shouldRunTests,
+        shouldRunTypeChecks,
+        shouldRecordBenchmarks,
+        shouldFuzz
+    } = processEnvVars();
 
     if (shouldRunTests === true) {
         describe(`tests`, tests);
@@ -55,6 +60,12 @@ export function runTests(
         describe(`benchmarks`, () => {
             it('runs benchmarks for all canisters', () =>
                 runBenchmarksForCanisters(canisterNamesArray));
+        });
+    }
+
+    if (shouldFuzz === true) {
+        describe(`fuzz`, () => {
+            it('runs fuzz tests for all canisters', runFuzzTests);
         });
     }
 }
@@ -135,22 +146,37 @@ function processEnvVars(): {
     shouldRunTests: boolean;
     shouldRunTypeChecks: boolean;
     shouldRecordBenchmarks: boolean;
+    shouldFuzz: boolean;
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
     const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
+    const fuzz = process.env.AZLE_FUZZ ?? 'false';
 
-    const hasOnly = [runTests, runTypeChecks].includes('only');
+    const hasOnly = [runTests, runTypeChecks, fuzz].includes('only');
 
     return {
-        shouldRunTests: shouldRun(runTests, hasOnly),
-        shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly),
-        shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly
+        shouldRunTests: shouldRun(runTests, hasOnly, true),
+        shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly, true),
+        shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly,
+        shouldFuzz: shouldRun(fuzz, hasOnly, false)
     };
 }
 
-function shouldRun(envVar: string, hasOnly: boolean): boolean {
-    return hasOnly === true ? envVar === 'only' : envVar !== 'false';
+function shouldRun(
+    envVar: string,
+    hasOnly: boolean,
+    runByDefault: boolean
+): boolean {
+    if (hasOnly === true) {
+        return envVar === 'only';
+    }
+
+    if (runByDefault === true) {
+        return envVar !== 'false';
+    }
+
+    return envVar === 'true';
 }
 
 function runWait(

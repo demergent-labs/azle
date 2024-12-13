@@ -15,7 +15,7 @@ export default class {
         if (methodName() === 'inspectMessageTrap') {
             const message = IDL.decode([IDL.Text], argDataRaw())[0] as string;
 
-            trap(message);
+            trap(`trap proptest message: ${message}`);
         } else {
             acceptMessage();
         }
@@ -26,11 +26,11 @@ export default class {
 
     @query([IDL.Text])
     queryTrap(message: string): void {
-        trap(message);
+        trap(`trap proptest message: ${message}`);
     }
 
     @update([IDL.Text])
     updateTrap(message: string): void {
-        trap(message);
+        trap(`trap proptest message: ${message}`);
     }
 }

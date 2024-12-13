@@ -1,0 +1,8 @@
+{
+    "expectedErrors": ["Anything you want"],
+    "maxLength": {
+        "text": 100,
+        "vec": 100,
+        "blob": 100
+    }
+}

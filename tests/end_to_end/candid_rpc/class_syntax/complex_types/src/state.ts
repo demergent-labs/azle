@@ -10,16 +10,16 @@ export let state: State = {
 
 export type State = {
     posts: {
-        [id: string]: StatePost;
+        [id: string]: StatePost | undefined;
     };
     reactions: {
-        [id: string]: StateReaction;
+        [id: string]: StateReaction | undefined;
     };
     threads: {
-        [id: string]: StateThread;
+        [id: string]: StateThread | undefined;
     };
     users: {
-        [id: string]: StateUser;
+        [id: string]: StateUser | undefined;
     };
 };
 

@@ -24,7 +24,7 @@ export function createUser(username: string, joinDepth: number): User {
 
 export function getAllUsers(joinDepth: number): User[] {
     return Object.values(state.users).map((stateUser) =>
-        getUserFromStateUser(stateUser, joinDepth)
+        getUserFromStateUser(stateUser!, joinDepth)
     );
 }
 
@@ -43,18 +43,20 @@ export function getUserFromStateUser(
     } else {
         const posts = stateUser.postIds
             .map((postId) => state.posts[postId])
-            .map((statePost) => getPostFromStatePost(statePost, joinDepth - 1));
+            .map((statePost) =>
+                getPostFromStatePost(statePost!, joinDepth - 1)
+            );
 
         const reactions = stateUser.reactionIds
             .map((reactionId) => state.reactions[reactionId])
             .map((stateReaction) =>
-                getReactionFromStateReaction(stateReaction, joinDepth - 1)
+                getReactionFromStateReaction(stateReaction!, joinDepth - 1)
             );
 
         const threads = stateUser.threadIds
             .map((threadId) => state.threads[threadId])
             .map((stateThread) =>
-                getThreadFromStateThread(stateThread, joinDepth - 1)
+                getThreadFromStateThread(stateThread!, joinDepth - 1)
             );
 
         return {
