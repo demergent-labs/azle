@@ -1,223 +1,750 @@
 {
     "autoreload": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8132851770" },
+                    "instructions": {
+                        "__bigint__": "8132851770"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730325543815405412" }
+                    "timestamp": {
+                        "__bigint__": "1730325543815405412"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9681094552" },
+                    "instructions": {
+                        "__bigint__": "9681094552"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325550463432337" }
+                    "timestamp": {
+                        "__bigint__": "1730325550463432337"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9827897657" },
+                    "instructions": {
+                        "__bigint__": "9827897657"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325560370255784" }
+                    "timestamp": {
+                        "__bigint__": "1730325560370255784"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9685537674" },
+                    "instructions": {
+                        "__bigint__": "9685537674"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325570304142292" }
+                    "timestamp": {
+                        "__bigint__": "1730325570304142292"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9835716684" },
+                    "instructions": {
+                        "__bigint__": "9835716684"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325571352843519" }
+                    "timestamp": {
+                        "__bigint__": "1730325571352843519"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9687535944" },
+                    "instructions": {
+                        "__bigint__": "9687535944"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325572668672255" }
+                    "timestamp": {
+                        "__bigint__": "1730325572668672255"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9837346452" },
+                    "instructions": {
+                        "__bigint__": "9837346452"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325574205133646" }
+                    "timestamp": {
+                        "__bigint__": "1730325574205133646"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9833011620" },
+                    "instructions": {
+                        "__bigint__": "9833011620"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325575690475768" }
+                    "timestamp": {
+                        "__bigint__": "1730325575690475768"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9832119134" },
+                    "instructions": {
+                        "__bigint__": "9832119134"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325577226472606" }
+                    "timestamp": {
+                        "__bigint__": "1730325577226472606"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9833079864" },
+                    "instructions": {
+                        "__bigint__": "9833079864"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325578694256206" }
+                    "timestamp": {
+                        "__bigint__": "1730325578694256206"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9694231832" },
+                    "instructions": {
+                        "__bigint__": "9694231832"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325580442298160" }
+                    "timestamp": {
+                        "__bigint__": "1730325580442298160"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9829212475" },
+                    "instructions": {
+                        "__bigint__": "9829212475"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325581887745251" }
+                    "timestamp": {
+                        "__bigint__": "1730325581887745251"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9840089258" },
+                    "instructions": {
+                        "__bigint__": "9840089258"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325583376501898" }
+                    "timestamp": {
+                        "__bigint__": "1730325583376501898"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9833125661" },
+                    "instructions": {
+                        "__bigint__": "9833125661"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325584613772636" }
+                    "timestamp": {
+                        "__bigint__": "1730325584613772636"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9837934944" },
+                    "instructions": {
+                        "__bigint__": "9837934944"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325585947109534" }
+                    "timestamp": {
+                        "__bigint__": "1730325585947109534"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9829008737" },
+                    "instructions": {
+                        "__bigint__": "9829008737"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325587441334333" }
+                    "timestamp": {
+                        "__bigint__": "1730325587441334333"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9837491954" },
+                    "instructions": {
+                        "__bigint__": "9837491954"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325588980464006" }
+                    "timestamp": {
+                        "__bigint__": "1730325588980464006"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9836444277" },
+                    "instructions": {
+                        "__bigint__": "9836444277"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325590289589627" }
+                    "timestamp": {
+                        "__bigint__": "1730325590289589627"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9832465841" },
+                    "instructions": {
+                        "__bigint__": "9832465841"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325591601387067" }
+                    "timestamp": {
+                        "__bigint__": "1730325591601387067"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9835291086" },
+                    "instructions": {
+                        "__bigint__": "9835291086"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325592966223722" }
+                    "timestamp": {
+                        "__bigint__": "1730325592966223722"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9836402269" },
+                    "instructions": {
+                        "__bigint__": "9836402269"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325594407524319" }
+                    "timestamp": {
+                        "__bigint__": "1730325594407524319"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9831114526" },
+                    "instructions": {
+                        "__bigint__": "9831114526"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325595774604109" }
+                    "timestamp": {
+                        "__bigint__": "1730325595774604109"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9831380628" },
+                    "instructions": {
+                        "__bigint__": "9831380628"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325597126768782" }
+                    "timestamp": {
+                        "__bigint__": "1730325597126768782"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9831338165" },
+                    "instructions": {
+                        "__bigint__": "9831338165"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325598519872946" }
+                    "timestamp": {
+                        "__bigint__": "1730325598519872946"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9831339243" },
+                    "instructions": {
+                        "__bigint__": "9831339243"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325600277033890" }
+                    "timestamp": {
+                        "__bigint__": "1730325600277033890"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9840076616" },
+                    "instructions": {
+                        "__bigint__": "9840076616"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325601190863530" }
+                    "timestamp": {
+                        "__bigint__": "1730325601190863530"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9691543278" },
+                    "instructions": {
+                        "__bigint__": "9691543278"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325602519914289" }
+                    "timestamp": {
+                        "__bigint__": "1730325602519914289"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9832544884" },
+                    "instructions": {
+                        "__bigint__": "9832544884"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325603442953879" }
+                    "timestamp": {
+                        "__bigint__": "1730325603442953879"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9836178035" },
+                    "instructions": {
+                        "__bigint__": "9836178035"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325604773613715" }
+                    "timestamp": {
+                        "__bigint__": "1730325604773613715"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9835858478" },
+                    "instructions": {
+                        "__bigint__": "9835858478"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325605900402359" }
+                    "timestamp": {
+                        "__bigint__": "1730325605900402359"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9839601808" },
+                    "instructions": {
+                        "__bigint__": "9839601808"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325607025655650" }
+                    "timestamp": {
+                        "__bigint__": "1730325607025655650"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9837316534" },
+                    "instructions": {
+                        "__bigint__": "9837316534"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325608159518077" }
+                    "timestamp": {
+                        "__bigint__": "1730325608159518077"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9691478505" },
+                    "instructions": {
+                        "__bigint__": "9691478505"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325609293007500" }
+                    "timestamp": {
+                        "__bigint__": "1730325609293007500"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9841254098" },
+                    "instructions": {
+                        "__bigint__": "9841254098"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325610421009035" }
+                    "timestamp": {
+                        "__bigint__": "1730325610421009035"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9691759736" },
+                    "instructions": {
+                        "__bigint__": "9691759736"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325611546893681" }
+                    "timestamp": {
+                        "__bigint__": "1730325611546893681"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9833179008" },
+                    "instructions": {
+                        "__bigint__": "9833179008"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325612468286620" }
+                    "timestamp": {
+                        "__bigint__": "1730325612468286620"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9839673808" },
+                    "instructions": {
+                        "__bigint__": "9839673808"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325613803331619" }
+                    "timestamp": {
+                        "__bigint__": "1730325613803331619"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9838772717" },
+                    "instructions": {
+                        "__bigint__": "9838772717"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325614938541132" }
+                    "timestamp": {
+                        "__bigint__": "1730325614938541132"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9841129308" },
+                    "instructions": {
+                        "__bigint__": "9841129308"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325616266924353" }
+                    "timestamp": {
+                        "__bigint__": "1730325616266924353"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9834490231" },
+                    "instructions": {
+                        "__bigint__": "9834490231"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325617192538747" }
+                    "timestamp": {
+                        "__bigint__": "1730325617192538747"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9699757205" },
+                    "instructions": {
+                        "__bigint__": "9699757205"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325618320175312" }
+                    "timestamp": {
+                        "__bigint__": "1730325618320175312"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9834078365" },
+                    "instructions": {
+                        "__bigint__": "9834078365"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325619446760795" }
+                    "timestamp": {
+                        "__bigint__": "1730325619446760795"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9836180885" },
+                    "instructions": {
+                        "__bigint__": "9836180885"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730325670258905583" }
+                    "timestamp": {
+                        "__bigint__": "1730325670258905583"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "8276079848"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1734130237362845815"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9837770065"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130242758919535"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9974159664"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130252966915738"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9972884754"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130262821099696"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9850917047"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130263649394026"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9974950991"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130264959099087"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9850656297"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130266466672419"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9976811232"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130267587591880"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9985149729"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130268931996500"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9847214001"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130270266575471"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9853854671"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130271625596899"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9976169901"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130272757236904"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9983463655"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130273893916818"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9977764096"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130275193214828"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9982335916"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130276360687211"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9976216387"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130277490959770"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9852651891"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130278408761038"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9977790090"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130279531753216"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9983389932"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130280455573275"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9979684890"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130281582046034"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9851800058"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130282709296702"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9844997228"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130283839920299"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9983376753"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130284768906960"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9975350785"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130285891898533"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9853091267"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130287016489146"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9984665821"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130288138915627"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9848783798"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130289262011908"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9849516124"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130290186515339"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9986821521"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130291311373522"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9978015171"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130292245858052"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9986571427"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130293379129357"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9847306316"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130294300927231"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9986479836"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130295638042691"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9847750557"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130296576157567"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9979221735"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130297700968211"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9850727959"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130298620631326"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9976878997"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130299760006647"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9983537463"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130300680951846"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9853900539"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734130362911514826"
+                    }
                 }
             ]
         }

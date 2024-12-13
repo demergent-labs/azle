@@ -1,73 +1,246 @@
 {
     "wallet": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-pre-bifurcation",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1419827" },
+                    "instructions": {
+                        "__bigint__": "1419827"
+                    },
                     "method_name": "add_to_whitelist",
-                    "timestamp": { "__bigint__": "1730325848423593234" }
+                    "timestamp": {
+                        "__bigint__": "1730325848423593234"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1713004" },
+                    "instructions": {
+                        "__bigint__": "1713004"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325885594995904" }
+                    "timestamp": {
+                        "__bigint__": "1730325885594995904"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1717042" },
+                    "instructions": {
+                        "__bigint__": "1717042"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325885594995904" }
+                    "timestamp": {
+                        "__bigint__": "1730325885594995904"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1723326" },
+                    "instructions": {
+                        "__bigint__": "1723326"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325885594995904" }
+                    "timestamp": {
+                        "__bigint__": "1730325885594995904"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1724189" },
+                    "instructions": {
+                        "__bigint__": "1724189"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325885594995904" }
+                    "timestamp": {
+                        "__bigint__": "1730325885594995904"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1726210" },
+                    "instructions": {
+                        "__bigint__": "1726210"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325885594995904" }
+                    "timestamp": {
+                        "__bigint__": "1730325885594995904"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1725792" },
+                    "instructions": {
+                        "__bigint__": "1725792"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325885594995904" }
+                    "timestamp": {
+                        "__bigint__": "1730325885594995904"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1724906" },
+                    "instructions": {
+                        "__bigint__": "1724906"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325945603812735" }
+                    "timestamp": {
+                        "__bigint__": "1730325945603812735"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1729261" },
+                    "instructions": {
+                        "__bigint__": "1729261"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325945603812735" }
+                    "timestamp": {
+                        "__bigint__": "1730325945603812735"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1726722" },
+                    "instructions": {
+                        "__bigint__": "1726722"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325945603812735" }
+                    "timestamp": {
+                        "__bigint__": "1730325945603812735"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1727569" },
+                    "instructions": {
+                        "__bigint__": "1727569"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325945603812735" }
+                    "timestamp": {
+                        "__bigint__": "1730325945603812735"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1724949" },
+                    "instructions": {
+                        "__bigint__": "1724949"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325945603812735" }
+                    "timestamp": {
+                        "__bigint__": "1730325945603812735"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1723396" },
+                    "instructions": {
+                        "__bigint__": "1723396"
+                    },
                     "method_name": "wallet_receive",
-                    "timestamp": { "__bigint__": "1730325945603812735" }
+                    "timestamp": {
+                        "__bigint__": "1730325945603812735"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1432369"
+                    },
+                    "method_name": "add_to_whitelist",
+                    "timestamp": {
+                        "__bigint__": "1734130555211621752"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1731616"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130599569900090"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1725599"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130599569900090"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1725223"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130599569900090"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1724358"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130599569900090"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1724062"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130599569900090"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1723514"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130599569900090"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1725090"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130659793373497"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1724583"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130659793373497"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1723719"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130659793373497"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1725189"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130659793373497"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1723719"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130659793373497"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1723613"
+                    },
+                    "method_name": "wallet_receive",
+                    "timestamp": {
+                        "__bigint__": "1734130659793373497"
+                    }
                 }
             ]
         }
