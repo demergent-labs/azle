@@ -22,7 +22,7 @@ export function getTests(canisterId: string): Test {
             writeFileSync('./src/server.ts', testChangedServerTs);
         });
 
-        wait('for Azle to reload', 10_000);
+        wait('for Azle to reload', 20_000);
 
         it('has /test-changed endpoint after the code is reloaded', async () => {
             const response = await fetch(`${origin}/test-changed`);

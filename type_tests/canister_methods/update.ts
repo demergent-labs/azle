@@ -25,7 +25,7 @@ const Reaction = Variant({
 update(
     [bool, nat, text, User, Reaction],
     text,
-    (param0, param1, param2, param3, param4) => {
+    (param0, param1, param2, param3, _param4) => {
         type _Param0 = AssertType<NotAnyAndExact<typeof param0, boolean>>;
         type _Param1 = AssertType<NotAnyAndExact<typeof param1, bigint>>;
         type _Param2 = AssertType<NotAnyAndExact<typeof param2, string>>;
@@ -39,7 +39,7 @@ update(
         >;
         type _Param4 = AssertType<
             NotAnyAndExact<
-                typeof param4,
+                typeof _param4,
                 RequireExactlyOne<{
                     Happy: null;
                     Sad: null;

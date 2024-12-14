@@ -20,12 +20,9 @@ function pretest(): void {
         }
     );
 
-    execSync(
-        `cp ../../../../.openvaluesharing.json node_modules/safer-buffer`,
-        {
-            stdio: 'inherit'
-        }
-    );
+    execSync(`cp ../../../../.openvaluesharing.json node_modules/safe-buffer`, {
+        stdio: 'inherit'
+    });
 
     execSync(`cp ../../../../.openvaluesharing.json node_modules/hasown`, {
         stdio: 'inherit'

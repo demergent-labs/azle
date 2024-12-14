@@ -27,8 +27,25 @@ const canisterName = process.argv[7];
 const postUpgradeIndex = Number(process.argv[8]);
 
 // TODO https://github.com/demergent-labs/azle/issues/1664
-const watcher = watch([`**/*.ts`, `**/*.js`], {
-    ignored: ['**/.dfx/**', '**/.azle/**', '**/node_modules/**', '**/target/**']
+const watcher = watch('.', {
+    ignored: (path, stats) => {
+        if (
+            path.includes('.dfx') === true ||
+            path.includes('.azle') === true ||
+            path.includes('node_modules') === true ||
+            path.includes('target') === true
+        ) {
+            return true;
+        }
+
+        if (stats?.isFile() === true) {
+            return (
+                path.endsWith('.ts') === false && path.endsWith('.js') === false
+            );
+        }
+
+        return false;
+    }
 });
 
 watcher.on('all', async (event, path) => {
@@ -41,7 +58,7 @@ watcher.on('all', async (event, path) => {
         console.info('path', path);
     }
 
-    if (event === 'change') {
+    if (event === 'change' || event === 'add') {
         try {
             await reloadJs(actor, reloadedJsPath, mainPath);
         } catch (error) {

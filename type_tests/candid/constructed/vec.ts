@@ -28,25 +28,25 @@ import {
 testCandidType(Vec(float32));
 testSerializable(Vec(float32));
 
-const testTypeMapping = Vec(float32);
+const _testTypeMapping = Vec(float32);
 export type TestTypeMapping = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMapping>, number[]>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMapping>, number[]>
 >;
 
 testCandidType(Vec(Vec(float32)));
 testSerializable(Vec(Vec(float32)));
 
-const testTypeMappingDouble = Vec(Vec(float32));
+const _testTypeMappingDouble = Vec(Vec(float32));
 export type TestTypeMappingDouble = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingDouble>, number[][]>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingDouble>, number[][]>
 >;
 
 testCandidType(Vec(Vec(Vec(float32))));
 testSerializable(Vec(Vec(Vec(float32))));
 
-const testTypeMappingTriple = Vec(Vec(Vec(float32)));
+const _testTypeMappingTriple = Vec(Vec(Vec(float32)));
 export type TestTypeMappingTriple = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingTriple>, number[][][]>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingTriple>, number[][][]>
 >;
 
 // test nat64
@@ -54,9 +54,9 @@ export type TestTypeMappingTriple = AssertType<
 testCandidType(Vec(nat64));
 testSerializable(Vec(nat64));
 
-const testTypeMappingNat64 = Vec(nat64);
+const _testTypeMappingNat64 = Vec(nat64);
 export type TestTypeMappingNat64 = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingNat64>, BigUint64Array>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingNat64>, BigUint64Array>
 >;
 
 // test nat32
@@ -64,9 +64,9 @@ export type TestTypeMappingNat64 = AssertType<
 testCandidType(Vec(nat32));
 testSerializable(Vec(nat32));
 
-const testTypeMappingNat32 = Vec(nat32);
+const _testTypeMappingNat32 = Vec(nat32);
 export type TestTypeMappingNat32 = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingNat32>, Uint32Array>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingNat32>, Uint32Array>
 >;
 
 // test nat16
@@ -74,9 +74,9 @@ export type TestTypeMappingNat32 = AssertType<
 testCandidType(Vec(nat16));
 testSerializable(Vec(nat16));
 
-const testTypeMappingNat16 = Vec(nat16);
+const _testTypeMappingNat16 = Vec(nat16);
 export type TestTypeMappingNat16 = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingNat16>, Uint16Array>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingNat16>, Uint16Array>
 >;
 
 // test nat8
@@ -84,9 +84,9 @@ export type TestTypeMappingNat16 = AssertType<
 testCandidType(Vec(nat8));
 testSerializable(Vec(nat8));
 
-const testTypeMappingNat8 = Vec(nat8);
+const _testTypeMappingNat8 = Vec(nat8);
 export type TestTypeMappingNat8 = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingNat8>, Uint8Array>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingNat8>, Uint8Array>
 >;
 
 // test int64
@@ -94,9 +94,9 @@ export type TestTypeMappingNat8 = AssertType<
 testCandidType(Vec(int64));
 testSerializable(Vec(int64));
 
-const testTypeMappingInt64 = Vec(int64);
+const _testTypeMappingInt64 = Vec(int64);
 export type TestTypeMappingInt64 = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingInt64>, BigInt64Array>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingInt64>, BigInt64Array>
 >;
 
 // test int32
@@ -104,9 +104,9 @@ export type TestTypeMappingInt64 = AssertType<
 testCandidType(Vec(int32));
 testSerializable(Vec(int32));
 
-const testTypeMappingInt32 = Vec(int32);
+const _testTypeMappingInt32 = Vec(int32);
 export type TestTypeMappingInt32 = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingInt32>, Int32Array>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingInt32>, Int32Array>
 >;
 
 // test int16
@@ -114,9 +114,9 @@ export type TestTypeMappingInt32 = AssertType<
 testCandidType(Vec(int16));
 testSerializable(Vec(int16));
 
-const testTypeMappingInt16 = Vec(int16);
+const _testTypeMappingInt16 = Vec(int16);
 export type TestTypeMappingInt16 = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingInt16>, Int16Array>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingInt16>, Int16Array>
 >;
 
 // test int8
@@ -124,9 +124,9 @@ export type TestTypeMappingInt16 = AssertType<
 testCandidType(Vec(int8));
 testSerializable(Vec(int8));
 
-const testTypeMappingInt8 = Vec(int8);
+const _testTypeMappingInt8 = Vec(int8);
 export type TestTypeMappingInt8 = AssertType<
-    NotAnyAndExact<TypeMapping<typeof testTypeMappingInt8>, Int8Array>
+    NotAnyAndExact<TypeMapping<typeof _testTypeMappingInt8>, Int8Array>
 >;
 
 // test Vec<T> type

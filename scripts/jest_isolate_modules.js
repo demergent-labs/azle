@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-
 import * as fs from 'fs';
 import * as path from 'path';
 

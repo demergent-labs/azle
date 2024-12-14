@@ -1,5 +1,6 @@
 import { IDL } from '@dfinity/candid';
-import { TextDecoder, TextEncoder } from 'text-encoding';
+// @ts-expect-error
+import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
 import { MethodMeta } from '../../build/stable/utils/types';
 import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
