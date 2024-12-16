@@ -106,16 +106,16 @@ jobs:
                       }
                     - {
                           name: 'Stable E2E CRPC',
-                          directories: './examples/stable/test/end_to_end/candid_rpc/class_syntax'
+                          directories: './examples/stable/test/end_to_end/candid_rpc'
                       }
                     - {
                           name: 'Stable E2E CRPC (Experimental)',
-                          directories: './examples/stable/test/end_to_end/candid_rpc/class_syntax',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
                           run-experimental: true
                       }
                     - {
                           name: 'Experimental E2E CRPC',
-                          directories: './examples/experimental/test/end_to_end/candid_rpc/functional_syntax'
+                          directories: './examples/experimental/test/end_to_end/candid_rpc'
                       }
                     - {
                           name: 'Experimental E2E HTTP Server',
@@ -123,16 +123,16 @@ jobs:
                       }
                     - {
                           name: 'Stable Property CRPC',
-                          directories: './examples/stable/test/property/candid_rpc/class_api'
+                          directories: './examples/stable/test/property/candid_rpc'
                       }
                     - {
                           name: 'Stable Property CRPC (Experimental)',
-                          directories: './examples/stable/test/property/candid_rpc/class_api',
+                          directories: './examples/stable/test/property/candid_rpc',
                           run-experimental: true
                       }
                     - {
                           name: 'Experimental Property CRPC',
-                          directories: './examples/experimental/test/property/candid_rpc/functional_api'
+                          directories: './examples/experimental/test/property/candid_rpc'
                       }
                     - {
                           name: 'Stable Property IC API',
