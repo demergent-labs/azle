@@ -7,6 +7,6 @@
         "azle": "0.24.1"
     },
     "devDependencies": {
-        "blob_array_end_to_end_test_functional_syntax": "file:../../functional_syntax/blob_array"
+        "blob_array_end_to_end_test_functional_syntax": "file:../../../../../experimental/test/end_to_end/candid_rpc/blob_array"
     }
 }

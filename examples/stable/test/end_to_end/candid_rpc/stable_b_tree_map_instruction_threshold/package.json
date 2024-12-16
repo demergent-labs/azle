@@ -8,6 +8,6 @@
         "uuid": "^9.0.1"
     },
     "devDependencies": {
-        "stable_b_tree_map_instruction_threshold_end_to_end_test_functional_syntax": "file:../../functional_syntax/stable_b_tree_map_instruction_threshold"
+        "stable_b_tree_map_instruction_threshold_end_to_end_test_functional_syntax": "file:../../../../../experimental/test/end_to_end/candid_rpc/stable_b_tree_map_instruction_threshold"
     }
 }

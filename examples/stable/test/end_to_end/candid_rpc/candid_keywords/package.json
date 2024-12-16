@@ -7,6 +7,6 @@
         "azle": "0.24.1"
     },
     "devDependencies": {
-        "candid_keywords_end_to_end_test_functional_syntax": "file:../../functional_syntax/candid_keywords"
+        "candid_keywords_end_to_end_test_functional_syntax": "file:../../../../../experimental/test/end_to_end/candid_rpc/candid_keywords"
     }
 }
