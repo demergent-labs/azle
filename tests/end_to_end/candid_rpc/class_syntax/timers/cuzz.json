@@ -1,6 +1,8 @@
 {
     "expectedErrors": ["field repeat -> Invalid int8 argument"],
-    "nat64": {
-        "max": 1000000000
+    "size": {
+        "nat64": {
+            "max": "1000000000"
+        }
     }
 }
