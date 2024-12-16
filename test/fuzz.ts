@@ -57,7 +57,8 @@ function fuzzTestCanister(canisterName: string, callDelay: string): void {
         canisterName,
         '--skip-deploy',
         '--call-delay',
-        callDelay
+        callDelay,
+        '--clear-console'
     ];
 
     const cuzzArgs =
