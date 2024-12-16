@@ -13,58 +13,141 @@ type BenchmarkIssue = {
     actualVersion?: string;
 };
 
+type BenchmarkEntry = {
+    previous?: { version: string };
+    current: { version: string };
+};
+
+type BenchmarkData = Record<string, BenchmarkEntry>;
+
+function validateEntry(
+    filePath: string,
+    entry: BenchmarkEntry,
+    expectedCurrentVersion: string,
+    expectedPreviousVersion: string
+): BenchmarkIssue[] {
+    if (entry.previous === undefined) {
+        return [
+            {
+                filePath,
+                type: 'missing_previous',
+                expectedVersion: expectedPreviousVersion
+            }
+        ];
+    }
+
+    return [
+        entry.previous.version !== expectedPreviousVersion && {
+            filePath,
+            type: 'wrong_previous_version',
+            expectedVersion: expectedPreviousVersion,
+            actualVersion: entry.previous.version
+        },
+        entry.current.version !== expectedCurrentVersion && {
+            filePath,
+            type: 'wrong_current_version',
+            expectedVersion: expectedCurrentVersion,
+            actualVersion: entry.current.version
+        }
+    ].filter(Boolean) as BenchmarkIssue[];
+}
+
+async function validateFile(
+    filePath: string,
+    expectedCurrentVersion: string,
+    expectedPreviousVersion: string
+): Promise<BenchmarkIssue[]> {
+    const content = await fs.readFile(filePath, 'utf-8');
+    const benchmarkData: BenchmarkData = JSON.parse(content);
+
+    return Object.values(benchmarkData).flatMap((entry) =>
+        validateEntry(
+            filePath,
+            entry,
+            expectedCurrentVersion,
+            expectedPreviousVersion
+        )
+    );
+}
+
 async function validateBenchmarkVersions(
     benchmarkFilePaths: string[],
     expectedCurrentVersion: string,
     expectedPreviousVersion: string
 ): Promise<BenchmarkIssue[]> {
-    const issues: BenchmarkIssue[] = [];
+    const allIssues = await Promise.all(
+        benchmarkFilePaths.map((filePath) =>
+            validateFile(
+                filePath,
+                expectedCurrentVersion,
+                expectedPreviousVersion
+            )
+        )
+    );
+    return allIssues.flat();
+}
 
-    for (const filePath of benchmarkFilePaths) {
-        try {
-            const content = await fs.readFile(filePath, 'utf-8');
-            const benchmarkData = JSON.parse(content);
+function groupIssuesByType(issues: BenchmarkIssue[]): {
+    missingPrevious: BenchmarkIssue[];
+    wrongPrevious: BenchmarkIssue[];
+    wrongCurrent: BenchmarkIssue[];
+} {
+    return {
+        missingPrevious: issues.filter(
+            (issue) => issue.type === 'missing_previous'
+        ),
+        wrongPrevious: issues.filter(
+            (issue) => issue.type === 'wrong_previous_version'
+        ),
+        wrongCurrent: issues.filter(
+            (issue) => issue.type === 'wrong_current_version'
+        )
+    };
+}
 
-            Object.values(benchmarkData).forEach((entry: any) => {
-                if (!entry.previous) {
-                    issues.push({
-                        filePath,
-                        type: 'missing_previous',
-                        expectedVersion: expectedPreviousVersion
-                    });
-                    return;
-                }
+function printIssues(
+    groupedIssues: ReturnType<typeof groupIssuesByType>,
+    currentVersion: string,
+    previousVersion: string
+): void {
+    const { missingPrevious, wrongPrevious, wrongCurrent } = groupedIssues;
 
-                if (entry.previous.version !== expectedPreviousVersion) {
-                    issues.push({
-                        filePath,
-                        type: 'wrong_previous_version',
-                        expectedVersion: expectedPreviousVersion,
-                        actualVersion: entry.previous.version
-                    });
-                }
-
-                if (entry.current.version !== expectedCurrentVersion) {
-                    issues.push({
-                        filePath,
-                        type: 'wrong_current_version',
-                        expectedVersion: expectedCurrentVersion,
-                        actualVersion: entry.current.version
-                    });
-                }
-            });
-        } catch (error) {
-            console.error(`Error reading/parsing file ${filePath}:`, error);
-        }
+    if (missingPrevious.length > 0) {
+        console.warn('\nFiles missing "previous" key:');
+        missingPrevious.forEach((issue) => {
+            console.warn(`- ${issue.filePath}`);
+        });
     }
 
-    return issues;
+    if (wrongPrevious.length > 0) {
+        console.warn(
+            `\nFiles with incorrect previous version (expected ${previousVersion}):`
+        );
+        wrongPrevious.forEach((issue) => {
+            console.warn(
+                `- ${issue.filePath} (found version: ${issue.actualVersion})`
+            );
+        });
+    }
+
+    if (wrongCurrent.length > 0) {
+        console.warn(
+            `\nFiles with incorrect current version (expected ${currentVersion}):`
+        );
+        wrongCurrent.forEach((issue) => {
+            console.warn(
+                `- ${issue.filePath} (found version: ${issue.actualVersion})`
+            );
+        });
+    }
+
+    console.warn('\n');
 }
 
 async function main(): Promise<void> {
     const [currentVersion, previousVersion] = process.argv.slice(2);
 
-    if (!currentVersion || !previousVersion) {
+    if (currentVersion === undefined || previousVersion === undefined) {
         console.error(
             'Usage: node validate_versions.js <current_version> <previous_version>'
         );
@@ -80,55 +163,11 @@ async function main(): Promise<void> {
 
     if (issues.length > 0) {
         console.warn('\nWarning: Issues found in benchmark files:');
-
-        // Group issues by type
-        const missingPrevious = issues.filter(
-            (issue) => issue.type === 'missing_previous'
-        );
-        const wrongPrevious = issues.filter(
-            (issue) => issue.type === 'wrong_previous_version'
-        );
-        const wrongCurrent = issues.filter(
-            (issue) => issue.type === 'wrong_current_version'
-        );
-
-        if (missingPrevious.length > 0) {
-            console.warn('\nFiles missing "previous" key:');
-            missingPrevious.forEach((issue) =>
-                console.warn(`- ${issue.filePath}`)
-            );
-        }
-
-        if (wrongPrevious.length > 0) {
-            console.warn(
-                `\nFiles with incorrect previous version (expected ${previousVersion}):`
-            );
-            wrongPrevious.forEach((issue) =>
-                console.warn(
-                    `- ${issue.filePath} (found version: ${issue.actualVersion})`
-                )
-            );
-        }
-
-        if (wrongCurrent.length > 0) {
-            console.warn(
-                `\nFiles with incorrect current version (expected ${currentVersion}):`
-            );
-            wrongCurrent.forEach((issue) =>
-                console.warn(
-                    `- ${issue.filePath} (found version: ${issue.actualVersion})`
-                )
-            );
-        }
-
-        console.warn('\n');
+        printIssues(groupIssuesByType(issues), currentVersion, previousVersion);
         process.exit(1);
     }
 
-    console.log('All benchmark versions are valid! ✨');
+    console.info('All benchmark versions are valid! ✨');
 }
 
-main().catch((error) => {
-    console.error('Error:', error);
-    process.exit(1);
-});
+main();

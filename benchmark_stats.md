@@ -1,28 +1,21 @@
-# Benchmark Results (2024-12-13)
+# Benchmark Results (2024-12-16)
 
 ## Version Results (`0.25.0-dev`)
 
--   **Count**: 1_289
--   **Mean**: 92_258_471
--   **Median**: 1_114_393
--   **Standard Deviation**: 530_621_254
--   **Min**: 84_524
--   **Max**: 5_594_040_442
--   **Baseline Weighted Efficiency Score**: 9_610_879
+- **Count**: 1_356
+- **Mean**: 618_168_541
+- **Median**: 1_332_409
+- **Standard Deviation**: 2_444_766_278
+- **Min**: 84_524
+- **Max**: 19_060_732_880
+- **Baseline Weighted Efficiency Score**: 62_267_291
 
 Performance changes from `0.25.0-dev` to `0.25.0-pre-bifurcation`:
 
--   Baseline Weighted Efficiency Score: -29.40%
--   Average Score: -30.85%
--   Median Score: 5.98%
--   Min Score: 1.24%
-
-### Efficiency Insights
-
--   The codebase is performing below baseline expectations with an efficiency score of 9_610_879
--   The average instruction count is 92_258_471
--   The median instruction count is 1_114_393
--   The range of instructions spans from 84_524 to 5_594_040_442
+- Baseline Weighted Efficiency Score: -5.42%
+- Average Score: -5.56%
+- Median Score: 15.58%
+- Min Score: 1.24%
 
 ---
 

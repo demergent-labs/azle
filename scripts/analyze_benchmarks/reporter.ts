@@ -15,60 +15,24 @@ export async function reportResults(
     const allResults: Record<string, Statistics> = JSON.parse(fileContent);
 
     const updatedResults = { ...allResults, [version]: results };
-    await writeFile(RESULTS_FILE, JSON.stringify(updatedResults, null, 2));
+    await writeFile(RESULTS_FILE, JSON.stringify(updatedResults, null, 4));
 
     const comparisonResults = compareChanges(updatedResults);
-    const analysis = analyzeResults(results);
 
     const markdownContent = generateMarkdownReport(
         version,
         results,
-        comparisonResults,
-        analysis
+        comparisonResults
     );
     await writeFile(MARKDOWN_FILE, markdownContent);
 
-    // Still log to console for immediate feedback
-    console.log(`Report generated at ${MARKDOWN_FILE}`);
-}
-
-function analyzeResults(stats: Statistics): string {
-    // Add efficiency analysis
-    let analysis = '### Efficiency Insights\n\n';
-    const efficiencyScore = stats.baselineWeightedEfficiencyScore;
-    let efficiencyAnalysis = '';
-
-    if (efficiencyScore < 100) {
-        efficiencyAnalysis =
-            'The codebase is performing better than the baseline';
-    } else if (efficiencyScore === 100) {
-        efficiencyAnalysis = 'The codebase is performing at baseline levels';
-    } else {
-        efficiencyAnalysis =
-            'The codebase is performing below baseline expectations';
-    }
-
-    analysis += `- ${efficiencyAnalysis} with an efficiency score of ${formatNumber(
-        Math.floor(efficiencyScore)
-    )}\n`;
-    analysis += `- The average instruction count is ${formatNumber(
-        Math.floor(stats.mean)
-    )}\n`;
-    analysis += `- The median instruction count is ${formatNumber(
-        Math.floor(stats.median)
-    )}\n`;
-    analysis += `- The range of instructions spans from ${formatNumber(
-        Math.floor(stats.min)
-    )} to ${formatNumber(Math.floor(stats.max))}\n`;
-
-    return analysis;
+    console.info(`Report generated at ${MARKDOWN_FILE}`);
 }
 
 function generateMarkdownReport(
     version: string,
     results: Statistics,
-    comparisonResults: string,
-    analysis: string
+    synthesis: string
 ): string {
     const timestamp = new Date().toISOString().split('T')[0];
 
@@ -83,9 +47,7 @@ ${Object.entries(results)
     )
     .join('\n')}
 
-${comparisonResults}
-
-${analysis}
+${synthesis}
 
 ---
 *Report generated automatically by Azle benchmark tools*

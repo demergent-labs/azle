@@ -12,28 +12,15 @@ export type Statistics = {
 
 export function calculateVersionStatistics(
     entries: BenchmarkEntry[]
-): [Statistics, Statistics] {
+): Statistics {
     const instructions = entries.map((entry) =>
         Number(entry.instructions.__bigint__)
     );
 
-    // Calculate raw statistics
-    const rawStats = calculateStatistics(instructions);
-
-    // Calculate 75th percentile
-    const sorted = [...instructions].sort((a, b) => a - b);
-    const p75Index = sorted.length * 0.95;
-
-    // Use slice to get values >= 75th percentile
-    const filteredInstructions = sorted.slice(0, p75Index);
-
-    // Calculate filtered statistics
-    const filteredStats = calculateStatistics(filteredInstructions);
-
-    return [rawStats, filteredStats];
+    return calculateStatistics(instructions);
 }
 
-function calculateStatistics(instructions: readonly number[]): Statistics {
+function calculateStatistics(instructions: number[]): Statistics {
     if (instructions.length === 0) {
         throw new Error('Cannot calculate statistics for empty array');
     }
@@ -53,8 +40,8 @@ function calculateStatistics(instructions: readonly number[]): Statistics {
     const mean =
         filteredInstructions.reduce((acc, val) => acc + val, 0) /
         filteredInstructions.length;
-    const mid = Math.floor(sorted.length / 2);
 
+    const mid = Math.floor(sorted.length / 2);
     const median =
         sorted.length % 2 === 0
             ? (sorted[mid - 1] + sorted[mid]) / 2
@@ -66,28 +53,27 @@ function calculateStatistics(instructions: readonly number[]): Statistics {
             .reduce((acc, val) => acc + val, 0) / filteredInstructions.length
     );
 
+    const count = filteredInstructions.length;
+    const min = sorted[0];
+    const max = sorted[sorted.length - 1];
+    const baselineWeightedEfficiencyScore =
+        calculateBaselineWeightEfficiencyScores(min, median, mean);
+
     return {
-        count: filteredInstructions.length,
+        count,
         mean,
         median,
         standardDeviation,
-        min: sorted[0],
-        max: sorted[sorted.length - 1],
-        baselineWeightedEfficiencyScore:
-            calculateBaselineWeightEfficiencyScores({
-                count: filteredInstructions.length,
-                mean,
-                median,
-                standardDeviation,
-                min: sorted[0],
-                max: sorted[sorted.length - 1],
-                baselineWeightedEfficiencyScore: 0
-            })
+        min,
+        max,
+        baselineWeightedEfficiencyScore
     };
 }
 
 function calculateBaselineWeightEfficiencyScores(
-    stats: Readonly<Statistics>
+    min: number,
+    median: number,
+    mean: number
 ): number {
     const weights = {
         min: 0.6,
@@ -95,9 +81,5 @@ function calculateBaselineWeightEfficiencyScores(
         mean: 0.1
     } as const;
 
-    return (
-        weights.min * stats.min +
-        weights.median * stats.median +
-        weights.mean * stats.mean
-    );
+    return weights.min * min + weights.median * median + weights.mean * mean;
 }
