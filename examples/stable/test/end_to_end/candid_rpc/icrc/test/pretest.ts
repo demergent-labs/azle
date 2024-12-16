@@ -4,7 +4,14 @@ import { join } from 'path';
 
 function pretest(icrcPath: string): void {
     linkAndInstallPatch(
-        join('examples', 'stable', 'test', 'end_to_end', 'candid_rpc', 'icrc')
+        join(
+            'examples',
+            'experimental',
+            'test',
+            'end_to_end',
+            'candid_rpc',
+            'icrc'
+        )
     );
 
     execSync(`dfx canister uninstall-code proxy || true`, {

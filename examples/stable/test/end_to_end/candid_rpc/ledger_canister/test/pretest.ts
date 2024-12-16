@@ -7,7 +7,7 @@ function pretest(icp_ledger_path: string): void {
     linkAndInstallPatch(
         join(
             'examples',
-            'stable',
+            'experimental',
             'test',
             'end_to_end',
             'candid_rpc',

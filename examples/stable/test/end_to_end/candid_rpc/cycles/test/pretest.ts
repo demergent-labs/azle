@@ -5,7 +5,14 @@ import { join } from 'path';
 
 function pretest(): void {
     linkAndInstallPatch(
-        join('examples', 'stable', 'test', 'end_to_end', 'candid_rpc', 'cycles')
+        join(
+            'examples',
+            'experimental',
+            'test',
+            'end_to_end',
+            'candid_rpc',
+            'cycles'
+        )
     );
 
     execSync(`dfx canister uninstall-code cycles || true`, {

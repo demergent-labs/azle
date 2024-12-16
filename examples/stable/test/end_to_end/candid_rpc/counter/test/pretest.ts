@@ -6,7 +6,7 @@ function pretest(): void {
     linkAndInstallPatch(
         join(
             'examples',
-            'stable',
+            'experimental',
             'test',
             'end_to_end',
             'candid_rpc',
