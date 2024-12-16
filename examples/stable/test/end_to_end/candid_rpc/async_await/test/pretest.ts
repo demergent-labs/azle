@@ -5,10 +5,11 @@ import { join } from 'path';
 function pretest(): void {
     linkAndInstallPatch(
         join(
-            'tests',
+            'examples',
+            'experimental',
+            'test',
             'end_to_end',
             'candid_rpc',
-            'functional_syntax',
             'async_await'
         )
     );

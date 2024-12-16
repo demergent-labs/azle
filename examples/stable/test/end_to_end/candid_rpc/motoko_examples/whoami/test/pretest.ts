@@ -10,10 +10,11 @@ export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 function pretest(): void {
     linkAndInstallPatch(
         join(
-            'tests',
+            'examples',
+            'stable',
+            'test',
             'end_to_end',
             'candid_rpc',
-            'functional_syntax',
             'motoko_examples',
             'whoami'
         )

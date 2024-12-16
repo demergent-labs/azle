@@ -6,10 +6,11 @@ import { join } from 'path';
 function pretest(icp_ledger_path: string): void {
     linkAndInstallPatch(
         join(
-            'tests',
+            'examples',
+            'stable',
+            'test',
             'end_to_end',
             'candid_rpc',
-            'functional_syntax',
             'ledger_canister'
         )
     );

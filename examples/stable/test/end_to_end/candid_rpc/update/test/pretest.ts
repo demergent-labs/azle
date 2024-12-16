@@ -4,7 +4,7 @@ import { join } from 'path';
 
 function pretest(): void {
     linkAndInstallPatch(
-        join('tests', 'end_to_end', 'candid_rpc', 'functional_syntax', 'update')
+        join('examples', 'stable', 'test', 'end_to_end', 'candid_rpc', 'update')
     );
 
     execSync(`dfx canister uninstall-code update || true`, {

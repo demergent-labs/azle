@@ -3,7 +3,16 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('tests', 'end_to_end', 'http_server', 'sqlite'));
+    linkAndInstallPatch(
+        join(
+            'examples',
+            'experimental',
+            'test',
+            'end_to_end',
+            'http_server',
+            'sqlite'
+        )
+    );
 
     execSync(`dfx canister uninstall-code sqlite_typeorm || true`, {
         stdio: 'inherit'

@@ -3,7 +3,9 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(join('examples', 'basic_bitcoin'));
+    linkAndInstallPatch(
+        join('examples', 'experimental', 'demo', 'basic_bitcoin')
+    );
 
     execSync(`dfx canister uninstall-code bitcoin_psbt || true`, {
         stdio: 'inherit'
