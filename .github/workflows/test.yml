@@ -91,11 +91,18 @@ jobs:
             fail-fast: false
             matrix:
                 test_group:
-                    - { name: 'Examples', directories: './examples' }
                     - {
-                          name: 'Examples (Experimental)',
-                          directories: './examples',
+                          name: 'Stable Demo Examples',
+                          directories: './examples/stable/demo'
+                      }
+                    - {
+                          name: 'Stable Demo Examples (Experimental)',
+                          directories: './examples/stable/demo',
                           run-experimental: true
+                      }
+                    - {
+                          name: 'Experimental Demo Examples',
+                          directories: './examples/experimental/demo'
                       }
                     - {
                           name: 'E2E Class',
