@@ -37,7 +37,7 @@
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
         "crypto-browserify": "^3.12.0",
-        "cuzz": "github:demergent-labs/cuzz#eb5b2512d5b32e3e5d53f78a9ad796e77bef4487",
+        "cuzz": "github:demergent-labs/cuzz#4b95d4062afc6219eb4f17c39ca27d87f7a72cbe",
         "deep-is": "^0.1.4",
         "esbuild": "^0.24.0",
         "esbuild-plugin-tsc": "^0.4.0",
