@@ -68,8 +68,14 @@ function generateVersionTable(
 ): string {
     return `## Version (\`${version}\`)
 
-| Metric | Value | Change |
-|--------|-------|--------|
+Benchmarks based on ${results.count} method executions.
+
+Baseline Weighted Efficiency Score: ${formatNumber(
+        results.baselineWeightedEfficiencyScore
+    )} (${formatChangeValue(comparisonResults.baselineWeightedEfficiencyScore)})
+
+| Metric | Number of Instructions | Change |
+|--------|------------------------|--------|
 ${generateTableRows(results, comparisonResults)}`;
 }
 
@@ -78,6 +84,10 @@ function generateTableRows(
     comparisonResults: Statistics
 ): string {
     return Object.entries(results)
+        .filter(
+            ([key]) =>
+                key !== 'baselineWeightedEfficiencyScore' && key !== 'count'
+        )
         .map(([key, value]) => {
             const change = comparisonResults[key as keyof Statistics];
             const metric = camelToTitleCase(key);
@@ -143,5 +153,7 @@ function capitalizeWord(word: string): string {
 }
 
 function formatNumber(num: number): string {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '_');
+    return Math.floor(num)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, '_');
 }
