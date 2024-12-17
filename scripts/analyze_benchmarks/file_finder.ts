@@ -2,9 +2,9 @@ import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
 
 /**
- * Recursively finds all benchmark.json files in a directory and its subdirectories
+ * Recursively finds all benchmarks.json files in a directory and its subdirectories
  * @param dir Directory path to search
- * @returns Array of full paths to benchmark.json files
+ * @returns Array of full paths to benchmarks.json files
  */
 export async function findBenchmarkFiles(dir: string): Promise<string[]> {
     if (dir.includes('node_modules')) {
