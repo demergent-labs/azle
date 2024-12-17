@@ -21,11 +21,12 @@ function generateVersionTables(
     return Object.entries(benchmarksJson).reduce(
         (acc, [version, stats], index) => {
             const comparison = compareChanges(benchmarksJson, index);
-            return (
-                acc +
-                (acc === '' ? '' : '\n\n') +
-                generateVersionTable(version, stats, comparison)
+            const versionTable = generateVersionTable(
+                version,
+                stats,
+                comparison
             );
+            return `${acc}${versionTable}\n\n`;
         },
         ''
     );
