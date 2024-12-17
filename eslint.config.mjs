@@ -12,7 +12,8 @@ export default tseslint.config(
         ignores: [
             'docs/**',
             'the_azle_book/**',
-            'tests/property/candid_rpc/**/src/**',
+            'examples/stable/test/property/candid_rpc/**/src/**',
+            'examples/experimental/test/property/candid_rpc/**/src/**',
             '**/.azle/**',
             '**/.dfx/**',
             '**/declarations/**',

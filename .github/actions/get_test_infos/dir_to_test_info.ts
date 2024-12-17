@@ -30,10 +30,8 @@ function generateDisplayPath(path: string): string {
         examples: 'ex',
         property: 'prop',
         end_to_end: 'e2e',
-        functional_syntax: 'func',
-        functional_api: 'func',
-        class_syntax: 'class',
-        class_api: 'class',
+        experimental: 'exp',
+        stable: 'stbl',
         candid_rpc: 'crpc',
         http_server: 'http',
         tests: 't'
