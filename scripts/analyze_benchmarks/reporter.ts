@@ -11,7 +11,7 @@ export type StableAndExperimentalStatistics = {
     experimental: Statistics;
 };
 
-const RESULTS_FILE = join(AZLE_PACKAGE_PATH, 'benchmark_stats.json');
+const RESULTS_FILE = join(AZLE_PACKAGE_PATH, 'benchmarks.json');
 const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
 
 /**

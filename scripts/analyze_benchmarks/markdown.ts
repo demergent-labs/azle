@@ -7,12 +7,12 @@ import { Statistics } from './statistics';
 
 export async function generateMarkdownReport(): Promise<string> {
     const benchmarksJson = await readBenchmarkJsonFile();
-    return `# Benchmark Results
+    return `# Benchmarks
 
 ${generateVersionTables(benchmarksJson)}
 
 ---
-*Report generated automatically by Azle benchmark tools*`;
+*Report generated automatically by Azle*`;
 }
 
 function generateVersionTables(
@@ -40,23 +40,23 @@ function generateVersionTable(
     return `## Version \`${version}\`
 
 <table>
-<tr>
-    <th></th>
-    <th colspan="2">Stable</th>
-    <th colspan="2">Experimental</th>
-</tr>
-${generateBWEScoresTableRows(results, comparisonResults)}
-${generateTableSpacer()}
-${generateCountTableRows(results, comparisonResults)}
-${generateTableSpacer()}
-${generateStatsTableRows(results, comparisonResults)}
+    <tr>
+        <th></th>
+        <th colspan="2">Stable</th>
+        <th colspan="2">Experimental</th>
+    </tr>
+    ${generateBWEScoresTableRows(results, comparisonResults)}
+    ${generateTableSpacer()}
+    ${generateCountTableRows(results, comparisonResults)}
+    ${generateTableSpacer()}
+    ${generateStatsTableRows(results, comparisonResults)}
 </table>`;
 }
 
 function generateTableSpacer(): string {
     return `<tr>
-<td colspan="5">&nbsp;</td>
-</tr>`;
+        <td colspan="5">&nbsp;</td>
+    </tr>`;
 }
 
 function generateCountTableRows(
@@ -64,19 +64,19 @@ function generateCountTableRows(
     comparisonResults: StableAndExperimentalStatistics
 ): string {
     return `<tr>
-    <th></th>
-    <th>Count</th>
-    <th></th>
-    <th>Count</th>
-    <th></th>
-</tr>
+        <th></th>
+        <th>Count</th>
+        <th></th>
+        <th>Count</th>
+        <th></th>
+    </tr>
     <tr>
-    <td>Method Executions</td>
-    <td>${results.stable.count}</td>
-    <td>${formatChangeValue(comparisonResults.stable.count)}</td>
-    <td>${results.experimental.count}</td>
-    <td>${formatChangeValue(comparisonResults.experimental.count)}</td>
-</tr>`;
+        <td>Method Executions</td>
+        <td>${results.stable.count}</td>
+        <td>${formatChangeValue(comparisonResults.stable.count)}</td>
+        <td>${results.experimental.count}</td>
+        <td>${formatChangeValue(comparisonResults.experimental.count)}</td>
+    </tr>`;
 }
 
 function generateBWEScoresTableRows(
@@ -84,18 +84,19 @@ function generateBWEScoresTableRows(
     comparisonResults: StableAndExperimentalStatistics
 ): string {
     return `<tr>
-    <th>Metric</th>
-    <th>Score</th>
-    <th>Change</th>
-    <th>Score</th>
-    <th>Change</th>
-</tr>
-    <td>Baseline Weighted Efficiency</td>
-    <td>${formatNumber(results.stable.baselineWeightedEfficiencyScore)}</td>
-    <td>${formatChangeValue(comparisonResults.stable.baselineWeightedEfficiencyScore)}</td>
-    <td>${formatNumber(results.experimental.baselineWeightedEfficiencyScore)}</td>
-    <td>${formatChangeValue(comparisonResults.experimental.baselineWeightedEfficiencyScore)}</td>
-</tr>`;
+        <th>Metric</th>
+        <th>Score</th>
+        <th>Change</th>
+        <th>Score</th>
+        <th>Change</th>
+    </tr>
+    <tr>
+        <td>Baseline Weighted Efficiency</td>
+        <td>${formatNumber(results.stable.baselineWeightedEfficiencyScore)}</td>
+        <td>${formatChangeValue(comparisonResults.stable.baselineWeightedEfficiencyScore)}</td>
+        <td>${formatNumber(results.experimental.baselineWeightedEfficiencyScore)}</td>
+        <td>${formatChangeValue(comparisonResults.experimental.baselineWeightedEfficiencyScore)}</td>
+    </tr>`;
 }
 
 function generateStatsTableRows(
@@ -103,38 +104,39 @@ function generateStatsTableRows(
     comparisonResults: StableAndExperimentalStatistics
 ): string {
     return `<tr>
-    <th></th>
-    <th>Number of Instructions</th>
-    <th></th>
-    <th>Number of Instructions</th>
-    <th></th>
-</tr>
-${Object.entries(results.stable)
-    .filter(
-        ([key]) => key !== 'count' && key !== 'baselineWeightedEfficiencyScore'
-    )
-    .map(([key, value]) => {
-        const statsKey = key as keyof Statistics;
-        const stableChange = comparisonResults.stable[statsKey];
-        const experimentalChange = comparisonResults.experimental[statsKey];
-        const metric = camelToTitleCase(key);
-        const stableFormattedValue = formatNumber(Math.floor(value));
-        const experimentalFormattedValue = formatNumber(
-            Math.floor(results.experimental[statsKey])
-        );
-        const stableFormattedChange = formatChangeValue(stableChange);
-        const experimentalFormattedChange =
-            formatChangeValue(experimentalChange);
+        <th></th>
+        <th>Number of Instructions</th>
+        <th></th>
+        <th>Number of Instructions</th>
+        <th></th>
+    </tr>
+    ${Object.entries(results.stable)
+        .filter(
+            ([key]) =>
+                key !== 'count' && key !== 'baselineWeightedEfficiencyScore'
+        )
+        .map(([key, value]) => {
+            const statsKey = key as keyof Statistics;
+            const stableChange = comparisonResults.stable[statsKey];
+            const experimentalChange = comparisonResults.experimental[statsKey];
+            const metric = camelToTitleCase(key);
+            const stableFormattedValue = formatNumber(Math.floor(value));
+            const experimentalFormattedValue = formatNumber(
+                Math.floor(results.experimental[statsKey])
+            );
+            const stableFormattedChange = formatChangeValue(stableChange);
+            const experimentalFormattedChange =
+                formatChangeValue(experimentalChange);
 
-        return `<tr>
-    <td>${metric}</td>
-    <td>${stableFormattedValue}</td>
-    <td>${stableFormattedChange}</td>
-    <td>${experimentalFormattedValue}</td>
-    <td>${experimentalFormattedChange}</td>
-</tr>`;
-    })
-    .join('\n')}
+            return `\t<tr>
+        <td>${metric}</td>
+        <td>${stableFormattedValue}</td>
+        <td>${stableFormattedChange}</td>
+        <td>${experimentalFormattedValue}</td>
+        <td>${experimentalFormattedChange}</td>
+    </tr>`;
+        })
+        .join('\n')}
 `;
 }
 
