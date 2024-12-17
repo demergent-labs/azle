@@ -32,7 +32,13 @@ jobs:
         uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
-            exclude-dirs: class_syntax/new class_syntax/ethereum_json_rpc class_syntax/motoko_examples/superheroes class_syntax/outgoing_http_requests class_syntax/recursion class_syntax/tuple_types
+            exclude-dirs: >-
+                stable/test/end_to_end/candid_rpc/new
+                stable/test/end_to_end/candid_rpc/ethereum_json_rpc
+                stable/test/end_to_end/candid_rpc/motoko_examples/superheroes
+                stable/test/end_to_end/candid_rpc/outgoing_http_requests
+                stable/test/end_to_end/candid_rpc/recursion
+                stable/test/end_to_end/candid_rpc/tuple_types
             fuzz: true
             call-delay: ${{ inputs.call-delay }}
             timeout: ${{ inputs.timeout }}
