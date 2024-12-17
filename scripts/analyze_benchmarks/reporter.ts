@@ -11,44 +11,54 @@ export async function reportResults(
     results: Statistics,
     version: string
 ): Promise<void> {
-    await updateJsonFile(results, version);
+    await updateBenchmarkJsonFile(results, version);
     await outputMarkdownFromJson();
-    console.info(`Report generated at ${MARKDOWN_FILE}`);
 }
 
-async function updateJsonFile(
-    results: Statistics,
+async function readBenchmarkJsonFile(): Promise<Record<string, Statistics>> {
+    const fileContent = await readFile(RESULTS_FILE, 'utf-8');
+    return JSON.parse(fileContent);
+}
+
+async function updateBenchmarkJsonFile(
+    newResults: Statistics,
     version: string
 ): Promise<void> {
-    const fileContent = await readFile(RESULTS_FILE, 'utf-8');
-    const allResults: Record<string, Statistics> = JSON.parse(fileContent);
-
-    const updatedResults = { ...allResults, [version]: results };
-    await writeFile(RESULTS_FILE, JSON.stringify(updatedResults, null, 4));
+    const previousResults = await readBenchmarkJsonFile();
+    const allResults = { ...previousResults, [version]: newResults };
+    await writeFile(RESULTS_FILE, JSON.stringify(allResults, null, 4));
 }
 
 async function outputMarkdownFromJson(): Promise<void> {
     const markdownContent = await generateMarkdownReport();
     await writeFile(MARKDOWN_FILE, markdownContent);
+    console.info(`Report generated at ${MARKDOWN_FILE}`);
 }
 
 async function generateMarkdownReport(): Promise<string> {
-    const fileContent = await readFile(RESULTS_FILE, 'utf-8');
-    const allResults: Record<string, Statistics> = JSON.parse(fileContent);
-
+    const benchmarksJson = await readBenchmarkJsonFile();
     return `# Benchmark Results
 
-${Object.entries(allResults).reduce((acc, [version, stats], index) => {
-    const comparison = compareChanges(allResults, index);
-    return (
-        acc +
-        (acc ? '\n\n' : '') +
-        generateVersionTable(version, stats, comparison)
-    );
-}, '')}
+${generateVersionTables(benchmarksJson)}
 
 ---
 *Report generated automatically by Azle benchmark tools*`;
+}
+
+function generateVersionTables(
+    benchmarksJson: Record<string, Statistics>
+): string {
+    return Object.entries(benchmarksJson).reduce(
+        (acc, [version, stats], index) => {
+            const comparison = compareChanges(benchmarksJson, index);
+            return (
+                acc +
+                (acc === '' ? '' : '\n\n') +
+                generateVersionTable(version, stats, comparison)
+            );
+        },
+        ''
+    );
 }
 
 function generateVersionTable(
@@ -60,20 +70,27 @@ function generateVersionTable(
 
 | Metric | Value | Change |
 |--------|-------|--------|
-${Object.entries(results)
-    .map(([key, value]) => {
-        const change = comparisonResults[key as keyof Statistics];
-        let changeText = `${change.toFixed(2)}%`;
-        if (change < 0) {
-            changeText = `<span style="color: green">${changeText}</span>`;
-        } else if (change > 0) {
-            changeText = `<span style="color: red">${changeText}</span>`;
-        }
-        return `| ${camelToTitleCase(key)} | ${formatNumber(
-            Math.floor(value)
-        )} | ${changeText} |`;
-    })
-    .join('\n')}`;
+${generateTableRows(results, comparisonResults)}`;
+}
+
+function generateTableRows(
+    results: Statistics,
+    comparisonResults: Statistics
+): string {
+    return Object.entries(results)
+        .map(([key, value]) => {
+            const change = comparisonResults[key as keyof Statistics];
+            const metric = camelToTitleCase(key);
+            const formattedValue = formatNumber(Math.floor(value));
+            const formattedChange = formatChangeValue(change);
+            return `| ${metric} | ${formattedValue} | ${formattedChange} |`;
+        })
+        .join('\n');
+}
+
+function formatChangeValue(change: number): string {
+    if (change === 0) return `${change.toFixed(2)}%`;
+    return `<span style="color: ${change < 0 ? 'green' : 'red'}">${change.toFixed(2)}%</span>`;
 }
 
 function compareChanges(
@@ -106,30 +123,23 @@ function calculateVersionChanges(
     previous: Statistics,
     current: Statistics
 ): Statistics {
-    const changes = {} as Statistics;
-
-    // Calculate changes for all properties in Statistics
-    for (const key in previous) {
-        changes[key as keyof Statistics] = calculateChange(
-            previous[key as keyof Statistics],
-            current[key as keyof Statistics]
+    return Object.keys(previous).reduce((changes, key) => {
+        const typedKey = key as keyof Statistics;
+        changes[typedKey] = calculateChange(
+            previous[typedKey],
+            current[typedKey]
         );
-    }
-
-    return changes;
+        return changes;
+    }, {} as Statistics);
 }
 
 function camelToTitleCase(camelCase: string): string {
-    // Split the camelCase string into words
     const words = camelCase.replace(/([A-Z])/g, ' $1').split(' ');
+    return words.map(capitalizeWord).join(' ').trim();
+}
 
-    // Capitalize first letter of each word and join
-    return words
-        .map(
-            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join(' ')
-        .trim();
+function capitalizeWord(word: string): string {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
 function formatNumber(num: number): string {
