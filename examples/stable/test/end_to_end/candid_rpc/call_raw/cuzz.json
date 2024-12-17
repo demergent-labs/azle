@@ -3,6 +3,7 @@
         "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unrecognized token",
         "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unrecognized EOF found at",
         "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unknown token",
-        "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unclosed string at"
+        "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unclosed string at",
+        "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unknown escape character"
     ]
 }
