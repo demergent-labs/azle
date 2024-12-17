@@ -38,5 +38,25 @@
             "max": 18422514685,
             "baselineWeightedEfficiencyScore": 118118515.90932944
         }
+    },
+    "0.25.0-dontmerge": {
+        "stable": {
+            "count": 662,
+            "mean": 103815074.27190332,
+            "median": 1023453,
+            "standardDeviation": 1210377100.3702557,
+            "min": 176350,
+            "max": 19038260341,
+            "baselineWeightedEfficiencyScore": 10794353.327190334
+        },
+        "experimental": {
+            "count": 721,
+            "mean": 647316118.7905687,
+            "median": 8929924,
+            "standardDeviation": 2428686807.2299223,
+            "min": 84568,
+            "max": 18470786343,
+            "baselineWeightedEfficiencyScore": 67461329.87905687
+        }
     }
 }
