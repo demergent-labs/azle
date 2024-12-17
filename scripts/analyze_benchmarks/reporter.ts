@@ -4,28 +4,38 @@ import { join } from 'path';
 import { AZLE_PACKAGE_PATH } from '../../src/build/stable/utils/global_paths';
 import { Statistics } from './statistics';
 
+type StableOrExperimental = 'stable' | 'experimental';
+
 const RESULTS_FILE = join(AZLE_PACKAGE_PATH, 'benchmark_stats.json');
 const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
 
 export async function reportResults(
-    results: Statistics,
+    results: [Statistics, Statistics],
     version: string
 ): Promise<void> {
     await updateBenchmarkJsonFile(results, version);
     await outputMarkdownFromJson();
 }
 
-async function readBenchmarkJsonFile(): Promise<Record<string, Statistics>> {
+async function readBenchmarkJsonFile(): Promise<
+    Record<string, Record<StableOrExperimental, Statistics>>
+> {
     const fileContent = await readFile(RESULTS_FILE, 'utf-8');
     return JSON.parse(fileContent);
 }
 
 async function updateBenchmarkJsonFile(
-    newResults: Statistics,
+    newResults: [Statistics, Statistics],
     version: string
 ): Promise<void> {
     const previousResults = await readBenchmarkJsonFile();
-    const allResults = { ...previousResults, [version]: newResults };
+    const allResults = {
+        ...previousResults,
+        [version]: {
+            stable: newResults[0],
+            experimental: newResults[1]
+        }
+    };
     await writeFile(RESULTS_FILE, JSON.stringify(allResults, null, 4));
 }
 
@@ -46,7 +56,7 @@ ${generateVersionTables(benchmarksJson)}
 }
 
 function generateVersionTables(
-    benchmarksJson: Record<string, Statistics>
+    benchmarksJson: Record<string, Record<StableOrExperimental, Statistics>>
 ): string {
     return Object.entries(benchmarksJson).reduce(
         (acc, [version, stats], index) => {
@@ -63,37 +73,57 @@ function generateVersionTables(
 
 function generateVersionTable(
     version: string,
-    results: Statistics,
-    comparisonResults: Statistics
+    results: Record<StableOrExperimental, Statistics>,
+    comparisonResults: Record<StableOrExperimental, Statistics>
 ): string {
-    return `## Version (\`${version}\`)
+    return `## Version \`${version}\`
 
-Benchmarks based on ${results.count} method executions.
+Stable Benchmarks based on ${results.stable.count} method executions.
 
-Baseline Weighted Efficiency Score: ${formatNumber(
-        results.baselineWeightedEfficiencyScore
-    )} (${formatChangeValue(comparisonResults.baselineWeightedEfficiencyScore)})
+Experimental Benchmarks based on ${results.experimental.count} method executions.
 
-| Metric | Number of Instructions | Change |
-|--------|------------------------|--------|
+Baseline Weighted Efficiency Score:
+
+- Stable: ${formatNumber(
+        results.stable.baselineWeightedEfficiencyScore
+    )} (${formatChangeValue(
+        comparisonResults.stable.baselineWeightedEfficiencyScore
+    )})
+
+- Experimental: ${formatNumber(
+        results.experimental.baselineWeightedEfficiencyScore
+    )} (${formatChangeValue(
+        comparisonResults.experimental.baselineWeightedEfficiencyScore
+    )})
+
+| Metric | Number of Instructions | Change | Experimental Number of Instructions | Experimental Change |
+|--------|------------------------|--------|-------------------------------------|---------------------|
 ${generateTableRows(results, comparisonResults)}`;
 }
 
 function generateTableRows(
-    results: Statistics,
-    comparisonResults: Statistics
+    results: Record<StableOrExperimental, Statistics>,
+    comparisonResults: Record<StableOrExperimental, Statistics>
 ): string {
-    return Object.entries(results)
+    return Object.entries(results.stable)
         .filter(
             ([key]) =>
                 key !== 'baselineWeightedEfficiencyScore' && key !== 'count'
         )
         .map(([key, value]) => {
-            const change = comparisonResults[key as keyof Statistics];
+            const statsKey = key as keyof Statistics;
+            const stableChange = comparisonResults.stable[statsKey];
+            const experimentalChange = comparisonResults.experimental[statsKey];
             const metric = camelToTitleCase(key);
-            const formattedValue = formatNumber(Math.floor(value));
-            const formattedChange = formatChangeValue(change);
-            return `| ${metric} | ${formattedValue} | ${formattedChange} |`;
+            const stableFormattedValue = formatNumber(Math.floor(value));
+            const experimentalFormattedValue = formatNumber(
+                Math.floor(results.experimental[statsKey])
+            );
+            const stableFormattedChange = formatChangeValue(stableChange);
+            const experimentalFormattedChange =
+                formatChangeValue(experimentalChange);
+
+            return `| ${metric} | ${stableFormattedValue} | ${stableFormattedChange} | ${experimentalFormattedValue} | ${experimentalFormattedChange} |`;
         })
         .join('\n');
 }
@@ -104,16 +134,31 @@ function formatChangeValue(change: number): string {
 }
 
 function compareChanges(
-    results: Record<string, Statistics>,
+    results: Record<string, Record<StableOrExperimental, Statistics>>,
     index: number
-): Statistics {
+): Record<StableOrExperimental, Statistics> {
     const versions = Object.keys(results);
     if (index + 1 < versions.length) {
         const previous = versions[index + 1];
         const current = versions[index];
-        return calculateVersionChanges(results[previous], results[current]);
+        const stable = calculateVersionChanges(
+            results[previous].stable,
+            results[current].stable
+        );
+        const experimental = calculateVersionChanges(
+            results[previous].experimental,
+            results[current].experimental
+        );
+        return { stable, experimental };
     }
     // Return a Statistics object with all values set to 0 if there's no previous version
+    return {
+        stable: createDefaultStatistics(),
+        experimental: createDefaultStatistics()
+    };
+}
+
+function createDefaultStatistics(): Statistics {
     return {
         baselineWeightedEfficiencyScore: 0,
         mean: 0,

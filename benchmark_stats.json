@@ -1,20 +1,42 @@
 {
     "0.25.0-dev": {
-        "count": 1356,
-        "mean": 618168541.4011799,
-        "median": 1332409.5,
-        "standardDeviation": 2444766278.7162514,
-        "min": 84524,
-        "max": 19060732880,
-        "baselineWeightedEfficiencyScore": 62267291.390117995
+        "stable": {
+            "count": 611,
+            "mean": 120237704.94599018,
+            "median": 1011216,
+            "standardDeviation": 1266731659.1596396,
+            "min": 163759,
+            "max": 19060732880,
+            "baselineWeightedEfficiencyScore": 12425390.694599018
+        },
+        "experimental": {
+            "count": 745,
+            "mean": 1026538663.6483221,
+            "median": 8922860,
+            "standardDeviation": 3031934484.2442517,
+            "min": 84524,
+            "max": 18426067752,
+            "baselineWeightedEfficiencyScore": 105381438.76483223
+        }
     },
     "0.25.0-pre-bifurcation": {
-        "count": 1310,
-        "mean": 652556137.521374,
-        "median": 1124780,
-        "standardDeviation": 2492467966.3263373,
-        "min": 83475,
-        "max": 18422514685,
-        "baselineWeightedEfficiencyScore": 65643132.7521374
+        "stable": {
+            "count": 624,
+            "mean": 101374357.53525642,
+            "median": 1040987,
+            "standardDeviation": 1192914154.3810272,
+            "min": 155606,
+            "max": 18226207933,
+            "baselineWeightedEfficiencyScore": 10543095.453525642
+        },
+        "experimental": {
+            "count": 686,
+            "mean": 1153922654.5932944,
+            "median": 8920551.5,
+            "standardDeviation": 3168782029.724511,
+            "min": 83475,
+            "max": 18422514685,
+            "baselineWeightedEfficiencyScore": 118118515.90932944
+        }
     }
 }
