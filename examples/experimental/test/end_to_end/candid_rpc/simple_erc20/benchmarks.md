@@ -1,28 +1,28 @@
 # Benchmarks for simple_erc20
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.0-dontmerge
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | initializeSupply | 2_180_949    | 1_462_379 | $0.0000019445 | $1.94             | <font color="red">+1_052</font>   |
-| 1   | transfer         | 1_801_014    | 1_310_405 | $0.0000017424 | $1.74             | <font color="green">-5_956</font> |
+| 0   | initializeSupply | 2_173_283    | 1_459_313 | $0.0000019404 | $1.94             | <font color="green">-7_666</font> |
+| 1   | transfer         | 1_805_812    | 1_312_324 | $0.0000017450 | $1.74             | <font color="red">+4_798</font>   |
 
-## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | initializeSupply | 2_179_897    | 1_461_958 | $0.0000019439 | $1.94             |
-| 1   | transfer         | 1_806_970    | 1_312_788 | $0.0000017456 | $1.74             |
+| 0   | initializeSupply | 2_180_949    | 1_462_379 | $0.0000019445 | $1.94             |
+| 1   | transfer         | 1_801_014    | 1_310_405 | $0.0000017424 | $1.74             |
 
 ---
 
 **Note on calculations:**
 
--   Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
--   base_fee: 590_000 cycles
--   per_instruction_fee: 0.4 cycles
--   additional_fee_per_billion: 400_000_000 cycles per billion instructions
--   USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
+- base_fee: 590_000 cycles
+- per_instruction_fee: 0.4 cycles
+- additional_fee_per_billion: 400_000_000 cycles per billion instructions
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
 For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).

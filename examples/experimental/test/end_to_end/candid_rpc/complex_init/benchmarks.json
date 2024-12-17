@@ -1,44 +1,60 @@
 {
     "complex_init": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5352215311" },
+                    "instructions": {
+                        "__bigint__": "5354643315"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326461469386054" }
+                    "timestamp": {
+                        "__bigint__": "1730484631844738102"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0-dontmerge",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5354643315" },
+                    "instructions": {
+                        "__bigint__": "5477737778"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484631844738102" }
+                    "timestamp": {
+                        "__bigint__": "1734478312562591596"
+                    }
                 }
             ]
         }
     },
     "rec_init": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5357331916" },
+                    "instructions": {
+                        "__bigint__": "5357850811"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326472909915759" }
+                    "timestamp": {
+                        "__bigint__": "1730484643720128044"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0-dontmerge",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "5357850811" },
+                    "instructions": {
+                        "__bigint__": "5477640287"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484643720128044" }
+                    "timestamp": {
+                        "__bigint__": "1734478326031169851"
+                    }
                 }
             ]
         }

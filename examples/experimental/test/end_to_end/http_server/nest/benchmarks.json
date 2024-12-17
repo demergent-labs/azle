@@ -1,172 +1,300 @@
 {
     "api": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "12614239316" },
+                    "instructions": {
+                        "__bigint__": "12616896746"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326436815948056" }
+                    "timestamp": {
+                        "__bigint__": "1730484659436243107"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45063153" },
+                    "instructions": {
+                        "__bigint__": "45091320"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326446574456370" }
+                    "timestamp": {
+                        "__bigint__": "1730484669638389709"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44938479" },
+                    "instructions": {
+                        "__bigint__": "44987753"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326447477955200" }
+                    "timestamp": {
+                        "__bigint__": "1730484669934552560"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45085266" },
+                    "instructions": {
+                        "__bigint__": "45114648"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326448433399946" }
+                    "timestamp": {
+                        "__bigint__": "1730484670533769239"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44073452" },
+                    "instructions": {
+                        "__bigint__": "44012852"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326449071359912" }
+                    "timestamp": {
+                        "__bigint__": "1730484671134121655"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "53802091" },
+                    "instructions": {
+                        "__bigint__": "53800566"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326449694942173" }
+                    "timestamp": {
+                        "__bigint__": "1730484671752624876"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45678703" },
+                    "instructions": {
+                        "__bigint__": "45694007"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326450345624791" }
+                    "timestamp": {
+                        "__bigint__": "1730484672369543287"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45638342" },
+                    "instructions": {
+                        "__bigint__": "45657784"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326450648060029" }
+                    "timestamp": {
+                        "__bigint__": "1730484672703087840"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45840776" },
+                    "instructions": {
+                        "__bigint__": "45900820"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326451279235756" }
+                    "timestamp": {
+                        "__bigint__": "1730484673323712192"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44752808" },
+                    "instructions": {
+                        "__bigint__": "44809247"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326451967978456" }
+                    "timestamp": {
+                        "__bigint__": "1730484673906865186"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "48138123" },
+                    "instructions": {
+                        "__bigint__": "48115673"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326452853595870" }
+                    "timestamp": {
+                        "__bigint__": "1730484674795344047"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45545441" },
+                    "instructions": {
+                        "__bigint__": "45573038"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326453537128697" }
+                    "timestamp": {
+                        "__bigint__": "1730484675474722945"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45454473" },
+                    "instructions": {
+                        "__bigint__": "45477899"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326454151409323" }
+                    "timestamp": {
+                        "__bigint__": "1730484676019116190"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45665411" },
+                    "instructions": {
+                        "__bigint__": "45698008"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326454551219806" }
+                    "timestamp": {
+                        "__bigint__": "1730484676360540559"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44609580" },
+                    "instructions": {
+                        "__bigint__": "44609194"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326455137681579" }
+                    "timestamp": {
+                        "__bigint__": "1730484676970469470"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "47976049" },
+                    "instructions": {
+                        "__bigint__": "47974149"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326455721554683" }
+                    "timestamp": {
+                        "__bigint__": "1730484677613314870"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0-dontmerge",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "12616896746" },
+                    "instructions": {
+                        "__bigint__": "12761905339"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484659436243107" }
+                    "timestamp": {
+                        "__bigint__": "1734478286466949002"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45091320" },
+                    "instructions": {
+                        "__bigint__": "45121303"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484669638389709" }
+                    "timestamp": {
+                        "__bigint__": "1734478296048975677"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44987753" },
+                    "instructions": {
+                        "__bigint__": "44949874"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484669934552560" }
+                    "timestamp": {
+                        "__bigint__": "1734478296688641475"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45114648" },
+                    "instructions": {
+                        "__bigint__": "45124796"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484670533769239" }
+                    "timestamp": {
+                        "__bigint__": "1734478296991662408"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44012852" },
+                    "instructions": {
+                        "__bigint__": "44117720"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484671134121655" }
+                    "timestamp": {
+                        "__bigint__": "1734478297605975226"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "53800566" },
+                    "instructions": {
+                        "__bigint__": "53832650"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484671752624876" }
+                    "timestamp": {
+                        "__bigint__": "1734478298314274152"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45694007" },
+                    "instructions": {
+                        "__bigint__": "45759730"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484672369543287" }
+                    "timestamp": {
+                        "__bigint__": "1734478298898629419"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45657784" },
+                    "instructions": {
+                        "__bigint__": "45674501"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484672703087840" }
+                    "timestamp": {
+                        "__bigint__": "1734478299241327162"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45900820" },
+                    "instructions": {
+                        "__bigint__": "45884545"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484673323712192" }
+                    "timestamp": {
+                        "__bigint__": "1734478300148581649"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44809247" },
+                    "instructions": {
+                        "__bigint__": "44813518"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484673906865186" }
+                    "timestamp": {
+                        "__bigint__": "1734478300774199689"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "48115673" },
+                    "instructions": {
+                        "__bigint__": "48174164"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484674795344047" }
+                    "timestamp": {
+                        "__bigint__": "1734478301727857251"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45573038" },
+                    "instructions": {
+                        "__bigint__": "45609691"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484675474722945" }
+                    "timestamp": {
+                        "__bigint__": "1734478302677764395"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45477899" },
+                    "instructions": {
+                        "__bigint__": "45485624"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484676019116190" }
+                    "timestamp": {
+                        "__bigint__": "1734478303298534567"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45698008" },
+                    "instructions": {
+                        "__bigint__": "45740742"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484676360540559" }
+                    "timestamp": {
+                        "__bigint__": "1734478304566685302"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44609194" },
+                    "instructions": {
+                        "__bigint__": "44680525"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484676970469470" }
+                    "timestamp": {
+                        "__bigint__": "1734478305198393753"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "47974149" },
+                    "instructions": {
+                        "__bigint__": "48013907"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484677613314870" }
+                    "timestamp": {
+                        "__bigint__": "1734478305844729143"
+                    }
                 }
             ]
         }

@@ -1,0 +1,150 @@
+{
+    "cycles": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dontmerge",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "9404159"
+                    },
+                    "method_name": "receiveAllCycles",
+                    "timestamp": {
+                        "__bigint__": "1734478296767413532"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9600146"
+                    },
+                    "method_name": "receiveVariableCycles",
+                    "timestamp": {
+                        "__bigint__": "1734478297036779690"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9452379"
+                    },
+                    "method_name": "receiveNoCycles",
+                    "timestamp": {
+                        "__bigint__": "1734478297345724629"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "10061939"
+                    },
+                    "method_name": "receiveCyclesByChunk",
+                    "timestamp": {
+                        "__bigint__": "1734478297635550814"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1280854"
+                    },
+                    "method_name": "assertMsgCyclesAcceptTypes",
+                    "timestamp": {
+                        "__bigint__": "1734478298247486561"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1061183"
+                    },
+                    "method_name": "assertMsgCyclesAvailableTypes",
+                    "timestamp": {
+                        "__bigint__": "1734478298376991595"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1281086"
+                    },
+                    "method_name": "assertMsgCyclesAcceptTypes",
+                    "timestamp": {
+                        "__bigint__": "1734478298888143196"
+                    }
+                }
+            ]
+        }
+    },
+    "intermediary": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dontmerge",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1903084"
+                    },
+                    "method_name": "sendAllCycles",
+                    "timestamp": {
+                        "__bigint__": "1734478296767413532"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2686481"
+                    },
+                    "method_name": "sendVariableCycles",
+                    "timestamp": {
+                        "__bigint__": "1734478297036779690"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1864152"
+                    },
+                    "method_name": "sendNoCycles",
+                    "timestamp": {
+                        "__bigint__": "1734478297345724629"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2668849"
+                    },
+                    "method_name": "sendCyclesByChunk",
+                    "timestamp": {
+                        "__bigint__": "1734478297635550814"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2434131"
+                    },
+                    "method_name": "assertMsgCyclesAcceptTypes",
+                    "timestamp": {
+                        "__bigint__": "1734478298247486561"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1634586"
+                    },
+                    "method_name": "assertMsgCyclesAvailableTypes",
+                    "timestamp": {
+                        "__bigint__": "1734478298376991595"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2435093"
+                    },
+                    "method_name": "assertMsgCyclesRefundedTypes",
+                    "timestamp": {
+                        "__bigint__": "1734478298888143196"
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -1,22 +1,30 @@
 {
     "pre_and_post_upgrade": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1026297279" },
+                    "instructions": {
+                        "__bigint__": "1344700582"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730326453668735801" }
+                    "timestamp": {
+                        "__bigint__": "1730484658527181074"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0-dontmerge",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1344700582" },
+                    "instructions": {
+                        "__bigint__": "1354447698"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484658527181074" }
+                    "timestamp": {
+                        "__bigint__": "1734478308001718441"
+                    }
                 }
             ]
         }

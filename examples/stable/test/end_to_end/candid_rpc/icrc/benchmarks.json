@@ -1,52 +1,84 @@
 {
     "proxy": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "14832948" },
+                    "instructions": {
+                        "__bigint__": "14809675"
+                    },
                     "method_name": "icrc1_transfer",
-                    "timestamp": { "__bigint__": "1730326454053266353" }
+                    "timestamp": {
+                        "__bigint__": "1730484646842338901"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "18199779" },
+                    "instructions": {
+                        "__bigint__": "18266538"
+                    },
                     "method_name": "icrc2_approve",
-                    "timestamp": { "__bigint__": "1730326456153652174" }
+                    "timestamp": {
+                        "__bigint__": "1730484648954940565"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "17256527" },
+                    "instructions": {
+                        "__bigint__": "17056173"
+                    },
                     "method_name": "icrc2_transfer_from",
-                    "timestamp": { "__bigint__": "1730326458396604816" }
+                    "timestamp": {
+                        "__bigint__": "1730484650818708125"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "10026189" },
+                    "instructions": {
+                        "__bigint__": "9870138"
+                    },
                     "method_name": "icrc2_allowance",
-                    "timestamp": { "__bigint__": "1730326460340443097" }
+                    "timestamp": {
+                        "__bigint__": "1730484653073539564"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0-dontmerge",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "14809675" },
+                    "instructions": {
+                        "__bigint__": "14698074"
+                    },
                     "method_name": "icrc1_transfer",
-                    "timestamp": { "__bigint__": "1730484646842338901" }
+                    "timestamp": {
+                        "__bigint__": "1734478305368825694"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "18266538" },
+                    "instructions": {
+                        "__bigint__": "17931740"
+                    },
                     "method_name": "icrc2_approve",
-                    "timestamp": { "__bigint__": "1730484648954940565" }
+                    "timestamp": {
+                        "__bigint__": "1734478305645536431"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "17056173" },
+                    "instructions": {
+                        "__bigint__": "16916059"
+                    },
                     "method_name": "icrc2_transfer_from",
-                    "timestamp": { "__bigint__": "1730484650818708125" }
+                    "timestamp": {
+                        "__bigint__": "1734478305941881820"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "9870138" },
+                    "instructions": {
+                        "__bigint__": "9788433"
+                    },
                     "method_name": "icrc2_allowance",
-                    "timestamp": { "__bigint__": "1730484653073539564" }
+                    "timestamp": {
+                        "__bigint__": "1734478306242229037"
+                    }
                 }
             ]
         }
