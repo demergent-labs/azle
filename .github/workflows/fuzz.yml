@@ -22,12 +22,12 @@ jobs:
             matrix:
                 test_group:
                     - {
-                          name: 'E2E Class',
-                          directories: './tests/end_to_end/candid_rpc/class_syntax'
+                          name: 'Stable E2E CRPC',
+                          directories: './examples/stable/test/end_to_end/candid_rpc'
                       }
                     - {
-                          name: 'Property IC API',
-                          directories: './tests/property/ic_api'
+                          name: 'Stable Property IC API',
+                          directories: './examples/stable/test/property/ic_api'
                       }
         uses: ./.github/workflows/run_test.yml
         with:
