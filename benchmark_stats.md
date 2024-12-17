@@ -1,21 +1,28 @@
-# Benchmark Results (2024-12-16)
+# Benchmark Results
 
-## Version Results (`0.25.0-dev`)
+## Version (`0.25.0-dev`)
 
-- **Count**: 1_356
-- **Mean**: 618_168_541
-- **Median**: 1_332_409
-- **Standard Deviation**: 2_444_766_278
-- **Min**: 84_524
-- **Max**: 19_060_732_880
-- **Baseline Weighted Efficiency Score**: 62_267_291
+| Metric                             | Value          | Change                                   |
+| ---------------------------------- | -------------- | ---------------------------------------- |
+| Count                              | 1_356          | <span style="color: red">3.51%</span>    |
+| Mean                               | 618_168_541    | <span style="color: green">-5.27%</span> |
+| Median                             | 1_332_409      | <span style="color: red">18.46%</span>   |
+| Standard Deviation                 | 2_444_766_278  | <span style="color: green">-1.91%</span> |
+| Min                                | 84_524         | <span style="color: red">1.26%</span>    |
+| Max                                | 19_060_732_880 | <span style="color: red">3.46%</span>    |
+| Baseline Weighted Efficiency Score | 62_267_291     | <span style="color: green">-5.14%</span> |
 
-Performance changes from `0.25.0-dev` to `0.25.0-pre-bifurcation`:
+## Version (`0.25.0-pre-bifurcation`)
 
-- Baseline Weighted Efficiency Score: -5.42%
-- Average Score: -5.56%
-- Median Score: 15.58%
-- Min Score: 1.24%
+| Metric                             | Value          | Change |
+| ---------------------------------- | -------------- | ------ |
+| Count                              | 1_310          | 0.00%  |
+| Mean                               | 652_556_137    | 0.00%  |
+| Median                             | 1_124_780      | 0.00%  |
+| Standard Deviation                 | 2_492_467_966  | 0.00%  |
+| Min                                | 83_475         | 0.00%  |
+| Max                                | 18_422_514_685 | 0.00%  |
+| Baseline Weighted Efficiency Score | 65_643_132     | 0.00%  |
 
 ---
 

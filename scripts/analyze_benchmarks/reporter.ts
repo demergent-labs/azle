@@ -11,86 +11,112 @@ export async function reportResults(
     results: Statistics,
     version: string
 ): Promise<void> {
+    await updateJsonFile(results, version);
+    await outputMarkdownFromJson();
+    console.info(`Report generated at ${MARKDOWN_FILE}`);
+}
+
+async function updateJsonFile(
+    results: Statistics,
+    version: string
+): Promise<void> {
     const fileContent = await readFile(RESULTS_FILE, 'utf-8');
     const allResults: Record<string, Statistics> = JSON.parse(fileContent);
 
     const updatedResults = { ...allResults, [version]: results };
     await writeFile(RESULTS_FILE, JSON.stringify(updatedResults, null, 4));
-
-    const comparisonResults = compareChanges(updatedResults);
-
-    const markdownContent = generateMarkdownReport(
-        version,
-        results,
-        comparisonResults
-    );
-    await writeFile(MARKDOWN_FILE, markdownContent);
-
-    console.info(`Report generated at ${MARKDOWN_FILE}`);
 }
 
-function generateMarkdownReport(
-    version: string,
-    results: Statistics,
-    synthesis: string
-): string {
-    const timestamp = new Date().toISOString().split('T')[0];
+async function outputMarkdownFromJson(): Promise<void> {
+    const markdownContent = await generateMarkdownReport();
+    await writeFile(MARKDOWN_FILE, markdownContent);
+}
 
-    return `# Benchmark Results (${timestamp})
+async function generateMarkdownReport(): Promise<string> {
+    const fileContent = await readFile(RESULTS_FILE, 'utf-8');
+    const allResults: Record<string, Statistics> = JSON.parse(fileContent);
 
-## Version Results (\`${version}\`)
+    return `# Benchmark Results
 
-${Object.entries(results)
-    .map(
-        ([key, value]) =>
-            `- **${camelToTitleCase(key)}**: ${formatNumber(Math.floor(value))}`
-    )
-    .join('\n')}
-
-${synthesis}
+${Object.entries(allResults).reduce((acc, [version, stats], index) => {
+    const comparison = compareChanges(allResults, index);
+    return (
+        acc +
+        (acc ? '\n\n' : '') +
+        generateVersionTable(version, stats, comparison)
+    );
+}, '')}
 
 ---
-*Report generated automatically by Azle benchmark tools*
-`;
+*Report generated automatically by Azle benchmark tools*`;
 }
 
-function compareChanges(results: Record<string, Statistics>): string {
-    const versions = Object.keys(results);
-    if (versions.length >= 2) {
-        const [previous, current] = versions.slice(-2);
-        const changes = calculateVersionChanges(
-            results[previous],
-            results[current]
-        );
+function generateVersionTable(
+    version: string,
+    results: Statistics,
+    comparisonResults: Statistics
+): string {
+    return `## Version (\`${version}\`)
 
-        return Object.entries(changes).reduce(
-            (acc, [key, value]) =>
-                `${acc}- ${camelToTitleCase(
-                    key.replace('Change', '')
-                )}: ${value.toFixed(2)}%\n`,
-            `\nPerformance changes from \`${previous}\` to \`${current}\`:\n`
-        );
+| Metric | Value | Change |
+|--------|-------|--------|
+${Object.entries(results)
+    .map(([key, value]) => {
+        const change = comparisonResults[key as keyof Statistics];
+        let changeText = `${change.toFixed(2)}%`;
+        if (change < 0) {
+            changeText = `<span style="color: green">${changeText}</span>`;
+        } else if (change > 0) {
+            changeText = `<span style="color: red">${changeText}</span>`;
+        }
+        return `| ${camelToTitleCase(key)} | ${formatNumber(
+            Math.floor(value)
+        )} | ${changeText} |`;
+    })
+    .join('\n')}`;
+}
+
+function compareChanges(
+    results: Record<string, Statistics>,
+    index: number
+): Statistics {
+    const versions = Object.keys(results);
+    if (index + 1 < versions.length) {
+        const previous = versions[index + 1];
+        const current = versions[index];
+        return calculateVersionChanges(results[previous], results[current]);
     }
-    return '';
+    // Return a Statistics object with all values set to 0 if there's no previous version
+    return {
+        baselineWeightedEfficiencyScore: 0,
+        mean: 0,
+        median: 0,
+        min: 0,
+        count: 0,
+        standardDeviation: 0,
+        max: 0
+    };
 }
 
 function calculateChange(prevValue: number, currValue: number): number {
-    return ((prevValue - currValue) / prevValue) * 100;
+    return ((currValue - prevValue) / prevValue) * 100;
 }
 
 function calculateVersionChanges(
     previous: Statistics,
     current: Statistics
-): Record<string, number> {
-    return {
-        baselineWeightedEfficiencyScoreChange: calculateChange(
-            previous.baselineWeightedEfficiencyScore,
-            current.baselineWeightedEfficiencyScore
-        ),
-        averageScoreChange: calculateChange(previous.mean, current.mean),
-        medianScoreChange: calculateChange(previous.median, current.median),
-        minScoreChange: calculateChange(previous.min, current.min)
-    };
+): Statistics {
+    const changes = {} as Statistics;
+
+    // Calculate changes for all properties in Statistics
+    for (const key in previous) {
+        changes[key as keyof Statistics] = calculateChange(
+            previous[key as keyof Statistics],
+            current[key as keyof Statistics]
+        );
+    }
+
+    return changes;
 }
 
 function camelToTitleCase(camelCase: string): string {
