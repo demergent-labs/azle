@@ -1,3 +1,7 @@
 {
-    "expectedErrors": ["Candid parser error"]
+    "expectedErrors": [
+        "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unrecognized token",
+        "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unrecognized EOF found at",
+        "Method: executeCallRaw \\(update\\)[\\s\\S]*Uncaught: Candid parser error: Unknown token"
+    ]
 }

@@ -1,3 +1,7 @@
 {
-    "expectedErrors": ["User does not exist:", "Recording does not exist:"]
+    "expectedErrors": [
+        "Method: deleteUser \\(update\\)[\\s\\S]*Uncaught Error: User does not exist:",
+        "Method: createRecording \\(update\\)[\\s\\S]*Uncaught Error: User does not exist:",
+        "Method: deleteRecording \\(update\\)[\\s\\S]*Uncaught Error: Recording does not exist:"
+    ]
 }
