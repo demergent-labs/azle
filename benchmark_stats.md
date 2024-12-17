@@ -2,16 +2,6 @@
 
 ## Version `0.25.0-dev`
 
-Stable Benchmarks based on 611 method executions.
-
-Experimental Benchmarks based on 745 method executions.
-
-Baseline Weighted Efficiency Score:
-
-- Stable: 12_425_390 (<span style="color: red">17.85%</span>)
-
-- Experimental: 105_381_438 (<span style="color: green">-10.78%</span>)
-
 <table>
 <tr>
     <th></th>
@@ -20,10 +10,43 @@ Baseline Weighted Efficiency Score:
 </tr>
 <tr>
     <th>Metric</th>
-    <th>Number of Instructions</th>
+    <th>Score</th>
     <th>Change</th>
-    <th>Number of Instructions</th>
+    <th>Score</th>
     <th>Change</th>
+</tr>
+    <td>Baseline Weighted Efficiency</td>
+    <td>12_425_390</td>
+    <td><span style="color: red">17.85%</span></td>
+    <td>105_381_438</td>
+    <td><span style="color: green">-10.78%</span></td>
+</tr>
+<tr>
+<td colspan="5">&nbsp;</td>
+</tr>
+<tr>
+    <th></th>
+    <th>Count</th>
+    <th></th>
+    <th>Count</th>
+    <th></th>
+</tr>
+    <tr>
+    <td>Method Executions</td>
+    <td>611</td>
+    <td><span style="color: green">-2.08%</span></td>
+    <td>745</td>
+    <td><span style="color: red">8.60%</span></td>
+</tr>
+<tr>
+<td colspan="5">&nbsp;</td>
+</tr>
+<tr>
+    <th></th>
+    <th>Number of Instructions</th>
+    <th></th>
+    <th>Number of Instructions</th>
+    <th></th>
 </tr>
 <tr>
     <td>Mean</td>
@@ -60,19 +83,10 @@ Baseline Weighted Efficiency Score:
     <td>18_426_067_752</td>
     <td><span style="color: red">0.02%</span></td>
 </tr>
+
 </table>
 
 ## Version `0.25.0-pre-bifurcation`
-
-Stable Benchmarks based on 624 method executions.
-
-Experimental Benchmarks based on 686 method executions.
-
-Baseline Weighted Efficiency Score:
-
-- Stable: 10_543_095 (0.00%)
-
-- Experimental: 118_118_515 (0.00%)
 
 <table>
 <tr>
@@ -82,10 +96,43 @@ Baseline Weighted Efficiency Score:
 </tr>
 <tr>
     <th>Metric</th>
-    <th>Number of Instructions</th>
+    <th>Score</th>
     <th>Change</th>
-    <th>Number of Instructions</th>
+    <th>Score</th>
     <th>Change</th>
+</tr>
+    <td>Baseline Weighted Efficiency</td>
+    <td>10_543_095</td>
+    <td>0.00%</td>
+    <td>118_118_515</td>
+    <td>0.00%</td>
+</tr>
+<tr>
+<td colspan="5">&nbsp;</td>
+</tr>
+<tr>
+    <th></th>
+    <th>Count</th>
+    <th></th>
+    <th>Count</th>
+    <th></th>
+</tr>
+    <tr>
+    <td>Method Executions</td>
+    <td>624</td>
+    <td>0.00%</td>
+    <td>686</td>
+    <td>0.00%</td>
+</tr>
+<tr>
+<td colspan="5">&nbsp;</td>
+</tr>
+<tr>
+    <th></th>
+    <th>Number of Instructions</th>
+    <th></th>
+    <th>Number of Instructions</th>
+    <th></th>
 </tr>
 <tr>
     <td>Mean</td>
@@ -122,6 +169,7 @@ Baseline Weighted Efficiency Score:
     <td>18_422_514_685</td>
     <td>0.00%</td>
 </tr>
+
 </table>
 
 ---
