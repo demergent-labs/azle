@@ -1,6 +1,31 @@
 {
     "canister1": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": { "version": "0.25.0-pre-bifurcation", "benchmarks": [] }
+        "previous": {
+            "version": "0.25.0-pre-bifurcation",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5499208898"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1734133390459503339"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "11963642"
+                    },
+                    "method_name": "simpleUpdate",
+                    "timestamp": {
+                        "__bigint__": "1734133413583963268"
+                    }
+                }
+            ]
+        }
     }
 }

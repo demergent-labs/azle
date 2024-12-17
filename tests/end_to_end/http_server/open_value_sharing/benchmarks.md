@@ -1,6 +1,24 @@
 # Benchmarks for wallet
 
-## Current benchmarks Azle version: 0.25.0-pre-bifurcation
+## Current benchmarks Azle version: 0.25.0-dev
+
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | add_to_whitelist | 1_432_369    | 1_162_947 | $0.0000015463 | $1.54             | <font color="red">+12_542</font>  |
+| 1   | wallet_receive   | 1_731_616    | 1_282_646 | $0.0000017055 | $1.70             | <font color="red">+18_612</font>  |
+| 2   | wallet_receive   | 1_725_599    | 1_280_239 | $0.0000017023 | $1.70             | <font color="red">+8_557</font>   |
+| 3   | wallet_receive   | 1_725_223    | 1_280_089 | $0.0000017021 | $1.70             | <font color="red">+1_897</font>   |
+| 4   | wallet_receive   | 1_724_358    | 1_279_743 | $0.0000017016 | $1.70             | <font color="red">+169</font>     |
+| 5   | wallet_receive   | 1_724_062    | 1_279_624 | $0.0000017015 | $1.70             | <font color="green">-2_148</font> |
+| 6   | wallet_receive   | 1_723_514    | 1_279_405 | $0.0000017012 | $1.70             | <font color="green">-2_278</font> |
+| 7   | wallet_receive   | 1_725_090    | 1_280_036 | $0.0000017020 | $1.70             | <font color="red">+184</font>     |
+| 8   | wallet_receive   | 1_724_583    | 1_279_833 | $0.0000017018 | $1.70             | <font color="green">-4_678</font> |
+| 9   | wallet_receive   | 1_723_719    | 1_279_487 | $0.0000017013 | $1.70             | <font color="green">-3_003</font> |
+| 10  | wallet_receive   | 1_725_189    | 1_280_075 | $0.0000017021 | $1.70             | <font color="green">-2_380</font> |
+| 11  | wallet_receive   | 1_723_719    | 1_279_487 | $0.0000017013 | $1.70             | <font color="green">-1_230</font> |
+| 12  | wallet_receive   | 1_723_613    | 1_279_445 | $0.0000017012 | $1.70             | <font color="red">+217</font>     |
+
+## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
@@ -17,10 +35,6 @@
 | 10  | wallet_receive   | 1_727_569    | 1_281_027 | $0.0000017033 | $1.70             |
 | 11  | wallet_receive   | 1_724_949    | 1_279_979 | $0.0000017019 | $1.70             |
 | 12  | wallet_receive   | 1_723_396    | 1_279_358 | $0.0000017011 | $1.70             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 
