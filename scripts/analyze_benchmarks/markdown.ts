@@ -139,7 +139,10 @@ ${Object.entries(results.stable)
 }
 
 function formatChangeValue(change: number): string {
-    if (change === 0) return `${change.toFixed(2)}%`;
+    if (change === 0) {
+        return `${change.toFixed(2)}%`;
+    }
+
     return `<span style="color: ${change < 0 ? 'green' : 'red'}">${change.toFixed(2)}%</span>`;
 }
 
@@ -161,7 +164,7 @@ function compareChanges(
         );
         return { stable, experimental };
     }
-    // Return a Statistics object with all values set to 0 if there's no previous version
+
     return {
         stable: createDefaultStatistics(),
         experimental: createDefaultStatistics()
