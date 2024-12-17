@@ -92,16 +92,16 @@ jobs:
             matrix:
                 test_group:
                     - {
-                          name: 'Stable Demo Examples',
+                          name: 'Stable Demo',
                           directories: './examples/stable/demo'
                       }
                     - {
-                          name: 'Stable Demo Examples (Experimental)',
+                          name: 'Stable Demo (Experimental)',
                           directories: './examples/stable/demo',
                           run-experimental: true
                       }
                     - {
-                          name: 'Experimental Demo Examples',
+                          name: 'Experimental Demo',
                           directories: './examples/experimental/demo'
                       }
                     - {

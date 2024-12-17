@@ -26,18 +26,18 @@ runs:
               ') }}"
 
               UNSTABLE_EXCLUSIONS="${{ format('
+              examples/stable/test/end_to_end/candid_rpc/multi_deploy
+              examples/stable/test/property/candid_rpc/stable_b_tree_map
+              examples/stable/test/property/ic_api/performance_counter
+              examples/stable/test/property/ic_api/instruction_counter
               examples/experimental/demo/basic_bitcoin
               examples/experimental/demo/bitcoin_psbt
               examples/experimental/demo/ckbtc
-              examples/stable/test/end_to_end/candid_rpc/multi_deploy
               examples/experimental/test/end_to_end/http_server/ethers_base
               examples/experimental/test/end_to_end/http_server/http_outcall_fetch
               examples/experimental/test/end_to_end/http_server/ic_evm_rpc
               examples/experimental/test/end_to_end/http_server/multi_deploy
-              examples/stable/test/property/candid_rpc/stable_b_tree_map
               examples/experimental/test/property/candid_rpc/stable_b_tree_map
-              examples/stable/test/property/ic_api/performance_counter
-              examples/stable/test/property/ic_api/instruction_counter
               ') }}"
 
               SLOW_EXCLUSIONS="${{ format('
