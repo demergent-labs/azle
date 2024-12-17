@@ -6,15 +6,14 @@ export type BenchmarkEntry = {
     timestamp: { __bigint__: string };
 };
 
+type VersionBenchmarks = {
+    version: string;
+    benchmarks: BenchmarkEntry[];
+};
+
 type CanisterBenchmark = {
-    current?: {
-        version: string;
-        benchmarks: BenchmarkEntry[];
-    };
-    previous: {
-        version: string;
-        benchmarks: BenchmarkEntry[];
-    };
+    current: VersionBenchmarks;
+    previous: VersionBenchmarks;
 };
 
 type BenchmarksJson = {
@@ -29,10 +28,9 @@ type BenchmarksJson = {
 export async function extractBenchmarksEntriesFromFiles(
     files: string[]
 ): Promise<Record<string, BenchmarkEntry[]>> {
-    const versionEntriesArrays = await Promise.all(
-        files.map(extractBenchmarkEntries)
-    );
-    const versionEntries = versionEntriesArrays.flat();
+    const versionEntries = (
+        await Promise.all(files.map(extractBenchmarkEntries))
+    ).flat();
 
     return groupEntriesByVersion(versionEntries);
 }
@@ -48,26 +46,25 @@ async function extractBenchmarkEntries(
     const data: BenchmarksJson = JSON.parse(await readFile(file, 'utf-8'));
 
     return Object.values(data).flatMap((canisterData) => {
-        const currentEntries = canisterData.current
-            ? canisterData.current.benchmarks.map(
-                  (benchmark) =>
-                      [canisterData.current!.version, benchmark] as [
-                          string,
-                          BenchmarkEntry
-                      ]
-              )
-            : [];
-
-        const previousEntries = canisterData.previous.benchmarks.map(
-            (benchmark) =>
-                [canisterData.previous.version, benchmark] as [
-                    string,
-                    BenchmarkEntry
-                ]
-        );
+        const currentEntries = getBenchmarkEntries(canisterData.current);
+        const previousEntries = getBenchmarkEntries(canisterData.previous);
 
         return [...currentEntries, ...previousEntries];
     });
+}
+
+/**
+ * Extracts benchmark entries with their versions from a VersionBenchmarks object
+ * @param versionBenchmarks Object containing version and its benchmark entries
+ * @returns Array of tuples containing version and benchmark entry pairs
+ */
+function getBenchmarkEntries(
+    versionBenchmarks: VersionBenchmarks
+): [string, BenchmarkEntry][] {
+    return versionBenchmarks.benchmarks.map((benchmark) => [
+        versionBenchmarks.version,
+        benchmark
+    ]);
 }
 
 /**
