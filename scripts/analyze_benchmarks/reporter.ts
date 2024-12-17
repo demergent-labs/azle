@@ -14,6 +14,11 @@ export type StableAndExperimentalStatistics = {
 const RESULTS_FILE = join(AZLE_PACKAGE_PATH, 'benchmark_stats.json');
 const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
 
+/**
+ * Reports benchmark results by updating JSON file and generating markdown report
+ * @param results Statistics for stable and experimental benchmarks
+ * @param version Version string for the results
+ */
 export async function reportResults(
     results: StableAndExperimentalStatistics,
     version: string
@@ -22,6 +27,10 @@ export async function reportResults(
     await outputMarkdownFromJson();
 }
 
+/**
+ * Reads the benchmark statistics from the JSON file
+ * @returns Record of version-keyed benchmark statistics
+ */
 export async function readBenchmarkJsonFile(): Promise<
     Record<string, Record<StableOrExperimental, Statistics>>
 > {

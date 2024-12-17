@@ -20,6 +20,14 @@ type BenchmarkEntry = {
 
 type BenchmarkData = Record<string, BenchmarkEntry>;
 
+/**
+ * Validates benchmark entries against expected versions
+ * @param filePath Path to the benchmark file
+ * @param entry Benchmark entry to validate
+ * @param expectedCurrentVersion Expected current version
+ * @param expectedPreviousVersion Expected previous version
+ * @returns Array of validation issues found
+ */
 function validateEntry(
     filePath: string,
     entry: BenchmarkEntry,
@@ -52,6 +60,13 @@ function validateEntry(
     ].filter(Boolean) as BenchmarkIssue[];
 }
 
+/**
+ * Validates versions in a benchmark file
+ * @param filePath Path to the benchmark file
+ * @param expectedCurrentVersion Expected current version
+ * @param expectedPreviousVersion Expected previous version
+ * @returns Array of validation issues found
+ */
 async function validateFile(
     filePath: string,
     expectedCurrentVersion: string,
@@ -70,6 +85,13 @@ async function validateFile(
     );
 }
 
+/**
+ * Validates versions across multiple benchmark files
+ * @param benchmarkFilePaths Array of paths to benchmark files
+ * @param expectedCurrentVersion Expected current version
+ * @param expectedPreviousVersion Expected previous version
+ * @returns Array of all validation issues found
+ */
 async function validateBenchmarkVersions(
     benchmarkFilePaths: string[],
     expectedCurrentVersion: string,

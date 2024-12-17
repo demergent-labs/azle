@@ -7,6 +7,11 @@ import { findBenchmarkFiles } from './file_finder';
 import { reportResults, StableAndExperimentalStatistics } from './reporter';
 import { calculateVersionStatistics } from './statistics';
 
+/**
+ * Analyzes benchmarks for a specific version across stable and experimental examples
+ * @param targetVersion Version string to analyze
+ * @returns Statistics for both stable and experimental benchmarks
+ */
 async function analyzeBenchmarksForVersion(
     targetVersion: string
 ): Promise<StableAndExperimentalStatistics> {
@@ -35,6 +40,10 @@ async function analyzeBenchmarksForVersion(
     };
 }
 
+/**
+ * Runs the benchmark analysis for a specified version or current version
+ * @param specifiedVersion Optional version to analyze. If not provided, uses current package version
+ */
 function runBenchmarkAnalysis(specifiedVersion?: string): void {
     const versionToAnalyze = specifiedVersion ?? currentAzleVersion;
     console.info('Analyzing benchmarks...');

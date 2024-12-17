@@ -17,6 +17,11 @@ const EFFICIENCY_WEIGHTS = {
     mean: 0.1
 } as const;
 
+/**
+ * Calculates statistics for a set of benchmark entries
+ * @param entries Array of benchmark entries to analyze
+ * @returns Statistical analysis of the benchmark data
+ */
 export function calculateVersionStatistics(
     entries: BenchmarkEntry[]
 ): Statistics {
@@ -27,6 +32,12 @@ export function calculateVersionStatistics(
     return calculateStatistics(instructions);
 }
 
+/**
+ * Calculates statistical measures for an array of instruction counts
+ * @param instructions Array of instruction counts
+ * @returns Statistical analysis including mean, median, standard deviation, etc.
+ * @throws Error if input array is empty or contains no valid instructions
+ */
 function calculateStatistics(instructions: number[]): Statistics {
     if (instructions.length === 0) {
         throw new Error('Cannot calculate statistics for empty array');
@@ -65,20 +76,35 @@ function calculateStatistics(instructions: number[]): Statistics {
     };
 }
 
-function calculateMean(instructions: readonly number[]): number {
+/**
+ * Calculates the mean of an array of numbers
+ * @param instructions Array of instruction counts
+ * @returns Arithmetic mean
+ */
+function calculateMean(instructions: number[]): number {
     return (
         instructions.reduce((acc, val) => acc + val, 0) / instructions.length
     );
 }
 
-function calculateMedian(sorted: readonly number[]): number {
+/**
+ * Calculates the median of a sorted array of numbers
+ * @param sorted Sorted array of numbers
+ * @returns Median value
+ */
+function calculateMedian(sorted: number[]): number {
     const mid = Math.floor(sorted.length / 2);
     return sorted.length % 2 === 0
         ? (sorted[mid - 1] + sorted[mid]) / 2
         : sorted[mid];
 }
 
-function calculateStandardDeviation(instructions: readonly number[]): number {
+/**
+ * Calculates the standard deviation of an array of numbers
+ * @param instructions Array of instruction counts
+ * @returns Standard deviation
+ */
+function calculateStandardDeviation(instructions: number[]): number {
     const mean = calculateMean(instructions);
     return Math.sqrt(
         instructions
@@ -87,6 +113,13 @@ function calculateStandardDeviation(instructions: readonly number[]): number {
     );
 }
 
+/**
+ * Calculates a weighted efficiency score based on min, median, and mean values
+ * @param min Minimum instruction count
+ * @param median Median instruction count
+ * @param mean Mean instruction count
+ * @returns Weighted efficiency score
+ */
 function calculateBaselineWeightEfficiencyScore(
     min: number,
     median: number,

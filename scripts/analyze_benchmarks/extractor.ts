@@ -21,6 +21,11 @@ type BenchmarksJson = {
     [canisterName: string]: CanisterBenchmark;
 };
 
+/**
+ * Extracts benchmark entries from multiple files and groups them by version
+ * @param files Array of file paths to process
+ * @returns A record mapping version strings to arrays of benchmark entries
+ */
 export async function extractBenchmarksEntriesFromFiles(
     files: string[]
 ): Promise<Record<string, BenchmarkEntry[]>> {
@@ -32,6 +37,11 @@ export async function extractBenchmarksEntriesFromFiles(
     return groupEntriesByVersion(versionEntries);
 }
 
+/**
+ * Extracts benchmark entries from a single file
+ * @param file Path to the benchmark file
+ * @returns Array of tuples containing version and benchmark entry pairs
+ */
 async function extractBenchmarkEntries(
     file: string
 ): Promise<Array<[string, BenchmarkEntry]>> {
@@ -60,6 +70,11 @@ async function extractBenchmarkEntries(
     });
 }
 
+/**
+ * Groups benchmark entries by their version
+ * @param entries Array of version and benchmark entry pairs
+ * @returns A record mapping version strings to arrays of benchmark entries
+ */
 function groupEntriesByVersion(
     entries: Array<[string, BenchmarkEntry]>
 ): Record<string, BenchmarkEntry[]> {
