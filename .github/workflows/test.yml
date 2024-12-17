@@ -91,49 +91,56 @@ jobs:
             fail-fast: false
             matrix:
                 test_group:
-                    - { name: 'Examples', directories: './examples' }
                     - {
-                          name: 'Examples (Experimental)',
-                          directories: './examples',
+                          name: 'Stable Demo',
+                          directories: './examples/stable/demo'
+                      }
+                    - {
+                          name: 'Stable Demo (Experimental)',
+                          directories: './examples/stable/demo',
                           run-experimental: true
                       }
                     - {
-                          name: 'E2E Class',
-                          directories: './tests/end_to_end/candid_rpc/class_syntax'
+                          name: 'Experimental Demo',
+                          directories: './examples/experimental/demo'
                       }
                     - {
-                          name: 'E2E Class (Experimental)',
-                          directories: './tests/end_to_end/candid_rpc/class_syntax',
+                          name: 'Stable E2E CRPC',
+                          directories: './examples/stable/test/end_to_end/candid_rpc'
+                      }
+                    - {
+                          name: 'Stable E2E CRPC (Experimental)',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
                           run-experimental: true
                       }
                     - {
-                          name: 'E2E Functional',
-                          directories: './tests/end_to_end/candid_rpc/functional_syntax'
+                          name: 'Experimental E2E CRPC',
+                          directories: './examples/experimental/test/end_to_end/candid_rpc'
                       }
                     - {
-                          name: 'E2E HTTP Server',
-                          directories: './tests/end_to_end/http_server'
+                          name: 'Experimental E2E HTTP Server',
+                          directories: './examples/experimental/test/end_to_end/http_server'
                       }
                     - {
-                          name: 'Property Class',
-                          directories: './tests/property/candid_rpc/class_api'
+                          name: 'Stable Property CRPC',
+                          directories: './examples/stable/test/property/candid_rpc'
                       }
                     - {
-                          name: 'Property Class (Experimental)',
-                          directories: './tests/property/candid_rpc/class_api',
+                          name: 'Stable Property CRPC (Experimental)',
+                          directories: './examples/stable/test/property/candid_rpc',
                           run-experimental: true
                       }
                     - {
-                          name: 'Property Functional',
-                          directories: './tests/property/candid_rpc/functional_api'
+                          name: 'Experimental Property CRPC',
+                          directories: './examples/experimental/test/property/candid_rpc'
                       }
                     - {
-                          name: 'Property IC API',
-                          directories: './tests/property/ic_api'
+                          name: 'Stable Property IC API',
+                          directories: './examples/stable/test/property/ic_api'
                       }
                     - {
-                          name: 'Property IC API (Experimental)',
-                          directories: './tests/property/ic_api',
+                          name: 'Stable Property IC API (Experimental)',
+                          directories: './examples/stable/test/property/ic_api',
                           run-experimental: true
                       }
         uses: ./.github/workflows/run_test.yml
