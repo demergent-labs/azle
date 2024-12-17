@@ -96,9 +96,21 @@ Baseline Weighted Efficiency Score:
         comparisonResults.experimental.baselineWeightedEfficiencyScore
     )})
 
-| Metric | Number of Instructions | Change | Experimental Number of Instructions | Experimental Change |
-|--------|------------------------|--------|-------------------------------------|---------------------|
-${generateTableRows(results, comparisonResults)}`;
+<table>
+<tr>
+    <th></th>
+    <th colspan="2">Stable</th>
+    <th colspan="2">Experimental</th>
+</tr>
+<tr>
+    <th>Metric</th>
+    <th>Number of Instructions</th>
+    <th>Change</th>
+    <th>Number of Instructions</th>
+    <th>Change</th>
+</tr>
+${generateTableRows(results, comparisonResults)}
+</table>`;
 }
 
 function generateTableRows(
@@ -123,7 +135,13 @@ function generateTableRows(
             const experimentalFormattedChange =
                 formatChangeValue(experimentalChange);
 
-            return `| ${metric} | ${stableFormattedValue} | ${stableFormattedChange} | ${experimentalFormattedValue} | ${experimentalFormattedChange} |`;
+            return `<tr>
+    <td>${metric}</td>
+    <td>${stableFormattedValue}</td>
+    <td>${stableFormattedChange}</td>
+    <td>${experimentalFormattedValue}</td>
+    <td>${experimentalFormattedChange}</td>
+</tr>`;
         })
         .join('\n');
 }
