@@ -1,0 +1,22 @@
+{
+    "whoami": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.1",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5479055613"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1734548543195974860"
+                    }
+                }
+            ]
+        }
+    }
+}

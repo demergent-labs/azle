@@ -1,32 +1,48 @@
 {
     "simple_erc20": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "2179897" },
+                    "instructions": {
+                        "__bigint__": "2180949"
+                    },
                     "method_name": "initializeSupply",
-                    "timestamp": { "__bigint__": "1730326469746710007" }
+                    "timestamp": {
+                        "__bigint__": "1730484632952289687"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1806970" },
+                    "instructions": {
+                        "__bigint__": "1801014"
+                    },
                     "method_name": "transfer",
-                    "timestamp": { "__bigint__": "1730326471906158789" }
+                    "timestamp": {
+                        "__bigint__": "1730484634912310495"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.1",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "2180949" },
+                    "instructions": {
+                        "__bigint__": "2173283"
+                    },
                     "method_name": "initializeSupply",
-                    "timestamp": { "__bigint__": "1730484632952289687" }
+                    "timestamp": {
+                        "__bigint__": "1734548498174215605"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1801014" },
+                    "instructions": {
+                        "__bigint__": "1805812"
+                    },
                     "method_name": "transfer",
-                    "timestamp": { "__bigint__": "1730484634912310495" }
+                    "timestamp": {
+                        "__bigint__": "1734548498726357531"
+                    }
                 }
             ]
         }

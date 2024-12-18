@@ -1,16 +1,16 @@
 # Benchmarks for apollo_server
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
-| Id  | Method Name | Instructions   | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | -------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 11_885_097_106 | 9_154_628_842 | $0.0121726353 | $12_172.63        | <font color="red">+8_776_838</font> |
+| Id  | Method Name | Instructions   | Cycles        | USD           | USD/Million Calls | Change                                |
+| --- | ----------- | -------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init        | 12_040_087_443 | 9_616_624_977 | $0.0127869377 | $12_786.93        | <font color="red">+154_990_337</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name | Instructions   | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | -------------- | ------------- | ------------- | ----------------- |
-| 0   | init        | 11_876_320_268 | 9_151_118_107 | $0.0121679672 | $12_167.96        |
+| 0   | init        | 11_885_097_106 | 9_154_628_842 | $0.0121726353 | $12_172.63        |
 
 ---
 

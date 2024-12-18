@@ -1,22 +1,30 @@
 {
     "ethers": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8135798587" },
+                    "instructions": {
+                        "__bigint__": "8137053096"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326438259173470" }
+                    "timestamp": {
+                        "__bigint__": "1730484663671907719"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.1",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8137053096" },
+                    "instructions": {
+                        "__bigint__": "8254514596"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484663671907719" }
+                    "timestamp": {
+                        "__bigint__": "1734548482112184770"
+                    }
                 }
             ]
         }

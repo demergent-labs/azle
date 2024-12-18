@@ -1,20 +1,20 @@
 # Benchmarks for stable_b_tree_map_instruction_threshold
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
-| Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                |
-| --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | insertSmallRecord  | 18_015_030_956 | 14_406_602_382 | $0.0191560270 | $19_156.02        | <font color="red">+661_005_323</font> |
-| 1   | insertMediumRecord | 16_482_146_164 | 12_993_448_465 | $0.0172769986 | $17_276.99        | <font color="red">+662_166_127</font> |
-| 2   | insertLargeRecord  | 19_060_732_880 | 15_224_883_152 | $0.0202440704 | $20_244.07        | <font color="red">+834_524_947</font> |
+| Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                 |
+| --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | -------------------------------------- |
+| 0   | insertSmallRecord  | 18_016_942_524 | 14_407_367_009 | $0.0191570437 | $19_157.04        | <font color="red">+1_911_568</font>    |
+| 1   | insertMediumRecord | 16_471_967_336 | 12_989_376_934 | $0.0172715848 | $17_271.58        | <font color="green">-10_178_828</font> |
+| 2   | insertLargeRecord  | 19_039_319_803 | 15_216_317_921 | $0.0202326815 | $20_232.68        | <font color="green">-21_413_077</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls |
 | --- | ------------------ | -------------- | -------------- | ------------- | ----------------- |
-| 0   | insertSmallRecord  | 17_354_025_633 | 13_742_200_253 | $0.0182725914 | $18_272.59        |
-| 1   | insertMediumRecord | 15_819_980_037 | 12_328_582_014 | $0.0163929456 | $16_392.94        |
-| 2   | insertLargeRecord  | 18_226_207_933 | 14_491_073_173 | $0.0192683453 | $19_268.34        |
+| 0   | insertSmallRecord  | 18_015_030_956 | 14_406_602_382 | $0.0191560270 | $19_156.02        |
+| 1   | insertMediumRecord | 16_482_146_164 | 12_993_448_465 | $0.0172769986 | $17_276.99        |
+| 2   | insertLargeRecord  | 19_060_732_880 | 15_224_883_152 | $0.0202440704 | $20_244.07        |
 
 ---
 

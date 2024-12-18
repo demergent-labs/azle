@@ -1,22 +1,22 @@
 # Benchmarks for complex_types
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
 | Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
 | --- | -------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | createUser     | 18_523_069   | 7_999_227  | $0.0000106363 | $10.63            | <font color="green">-404_303</font> |
-| 1   | createThread   | 19_462_062   | 8_374_824  | $0.0000111358 | $11.13            | <font color="green">-633_366</font> |
-| 2   | createPost     | 21_816_144   | 9_316_457  | $0.0000123878 | $12.38            | <font color="green">-648_532</font> |
-| 3   | createReaction | 24_761_621   | 10_494_648 | $0.0000139544 | $13.95            | <font color="green">-678_503</font> |
+| 0   | createUser     | 18_336_711   | 7_924_684  | $0.0000105372 | $10.53            | <font color="green">-186_358</font> |
+| 1   | createThread   | 19_492_039   | 8_386_815  | $0.0000111517 | $11.15            | <font color="red">+29_977</font>    |
+| 2   | createPost     | 21_832_511   | 9_323_004  | $0.0000123965 | $12.39            | <font color="red">+16_367</font>    |
+| 3   | createReaction | 24_761_469   | 10_494_587 | $0.0000139543 | $13.95            | <font color="green">-152</font>     |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | createUser     | 18_927_372   | 8_160_948  | $0.0000108514 | $10.85            |
-| 1   | createThread   | 20_095_428   | 8_628_171  | $0.0000114726 | $11.47            |
-| 2   | createPost     | 22_464_676   | 9_575_870  | $0.0000127327 | $12.73            |
-| 3   | createReaction | 25_440_124   | 10_766_049 | $0.0000143153 | $14.31            |
+| 0   | createUser     | 18_523_069   | 7_999_227  | $0.0000106363 | $10.63            |
+| 1   | createThread   | 19_462_062   | 8_374_824  | $0.0000111358 | $11.13            |
+| 2   | createPost     | 21_816_144   | 9_316_457  | $0.0000123878 | $12.38            |
+| 3   | createReaction | 24_761_621   | 10_494_648 | $0.0000139544 | $13.95            |
 
 ---
 

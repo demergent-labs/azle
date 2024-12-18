@@ -1,0 +1,67 @@
+{
+    "rejections": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.1",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5521474842"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1734548539475891549"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "10972061"
+                    },
+                    "method_name": "getRejectionCodeNoError",
+                    "timestamp": {
+                        "__bigint__": "1734548552100819894"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "10131974"
+                    },
+                    "method_name": "getRejectionCodeDestinationInvalid",
+                    "timestamp": {
+                        "__bigint__": "1734548552412196499"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "11350589"
+                    },
+                    "method_name": "getRejectionCodeCanisterReject",
+                    "timestamp": {
+                        "__bigint__": "1734548552798413074"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "10814892"
+                    },
+                    "method_name": "getRejectionCodeCanisterError",
+                    "timestamp": {
+                        "__bigint__": "1734548553296873529"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "12088641"
+                    },
+                    "method_name": "getRejectionMessage",
+                    "timestamp": {
+                        "__bigint__": "1734548553567687041"
+                    }
+                }
+            ]
+        }
+    }
+}

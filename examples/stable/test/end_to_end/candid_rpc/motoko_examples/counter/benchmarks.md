@@ -1,20 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
-| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                           |
-| --- | ----------- | ------------ | ------- | ------------- | ----------------- | -------------------------------- |
-| 0   | set         | 1_022_489    | 998_995 | $0.0000013283 | $1.32             | <font color="red">+19_397</font> |
-| 1   | inc         | 899_086      | 949_634 | $0.0000012627 | $1.26             | <font color="red">+28_138</font> |
-| 2   | inc         | 893_922      | 947_568 | $0.0000012600 | $1.25             | <font color="red">+23_040</font> |
+| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | ------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | set         | 1_005_290    | 992_116 | $0.0000013192 | $1.31             | <font color="green">-17_199</font> |
+| 1   | inc         | 889_905      | 945_962 | $0.0000012578 | $1.25             | <font color="green">-9_181</font>  |
+| 2   | inc         | 889_868      | 945_947 | $0.0000012578 | $1.25             | <font color="green">-4_054</font>  |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ------- | ------------- | ----------------- |
-| 0   | set         | 1_003_092    | 991_236 | $0.0000013180 | $1.31             |
-| 1   | inc         | 870_948      | 938_379 | $0.0000012477 | $1.24             |
-| 2   | inc         | 870_882      | 938_352 | $0.0000012477 | $1.24             |
+| 0   | set         | 1_022_489    | 998_995 | $0.0000013283 | $1.32             |
+| 1   | inc         | 899_086      | 949_634 | $0.0000012627 | $1.26             |
+| 2   | inc         | 893_922      | 947_568 | $0.0000012600 | $1.25             |
 
 ---
 

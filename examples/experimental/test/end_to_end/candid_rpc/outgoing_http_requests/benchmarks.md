@@ -1,18 +1,18 @@
 # Benchmarks for outgoing_http_requests
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
-| 0   | xkcd        | 168_239_538  | 67_885_815 | $0.0000902657 | $90.26            | <font color="red">+208_544</font> |
-| 1   | xkcdRaw     | 2_125_891    | 1_440_356  | $0.0000019152 | $1.91             | <font color="green">-6_621</font> |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | xkcd        | 168_149_306  | 67_849_722 | $0.0000902177 | $90.21            | <font color="green">-90_232</font> |
+| 1   | xkcdRaw     | 2_129_895    | 1_441_958  | $0.0000019173 | $1.91             | <font color="red">+4_004</font>    |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | xkcd        | 168_030_994  | 67_802_397 | $0.0000901548 | $90.15            |
-| 1   | xkcdRaw     | 2_132_512    | 1_443_004  | $0.0000019187 | $1.91             |
+| 0   | xkcd        | 168_239_538  | 67_885_815 | $0.0000902657 | $90.26            |
+| 1   | xkcdRaw     | 2_125_891    | 1_440_356  | $0.0000019152 | $1.91             |
 
 ---
 

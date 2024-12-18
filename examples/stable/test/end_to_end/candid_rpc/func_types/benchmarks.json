@@ -1,32 +1,48 @@
 {
     "func_types": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1042137033" },
+                    "instructions": {
+                        "__bigint__": "1360370814"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326445762643251" }
+                    "timestamp": {
+                        "__bigint__": "1730484644760868548"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1658417" },
+                    "instructions": {
+                        "__bigint__": "1656909"
+                    },
                     "method_name": "getNotifierFromNotifiersCanister",
-                    "timestamp": { "__bigint__": "1730326457048141578" }
+                    "timestamp": {
+                        "__bigint__": "1730484657151616309"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.1",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1360370814" },
+                    "instructions": {
+                        "__bigint__": "1370377947"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484644760868548" }
+                    "timestamp": {
+                        "__bigint__": "1734548468554627643"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1656909" },
+                    "instructions": {
+                        "__bigint__": "1650430"
+                    },
                     "method_name": "getNotifierFromNotifiersCanister",
-                    "timestamp": { "__bigint__": "1730484657151616309" }
+                    "timestamp": {
+                        "__bigint__": "1734548479650584564"
+                    }
                 }
             ]
         }

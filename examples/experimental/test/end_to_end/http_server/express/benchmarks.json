@@ -1,0 +1,58 @@
+{
+    "express": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.1",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "8272039324"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1734548488656739517"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "54210928"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1734548503712840637"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "47805059"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1734548504632921417"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "47953165"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1734548505309018401"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "44778469"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1734548505905592541"
+                    }
+                }
+            ]
+        }
+    }
+}

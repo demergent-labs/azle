@@ -1,18 +1,18 @@
 # Benchmarks for func_types
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
-| Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                |
-| --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init                             | 1_360_370_814 | 944_738_325 | $0.0012561902 | $1_256.19         | <font color="red">+318_233_781</font> |
-| 1   | getNotifierFromNotifiersCanister | 1_656_909     | 1_252_763   | $0.0000016658 | $1.66             | <font color="green">-1_508</font>     |
+| Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                               |
+| --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init                             | 1_370_377_947 | 948_741_178 | $0.0012615127 | $1_261.51         | <font color="red">+10_007_133</font> |
+| 1   | getNotifierFromNotifiersCanister | 1_650_430     | 1_250_172   | $0.0000016623 | $1.66             | <font color="green">-6_479</font>    |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | init                             | 1_042_137_033 | 817_444_813 | $0.0010869318 | $1_086.93         |
-| 1   | getNotifierFromNotifiersCanister | 1_658_417     | 1_253_366   | $0.0000016666 | $1.66             |
+| 0   | init                             | 1_360_370_814 | 944_738_325 | $0.0012561902 | $1_256.19         |
+| 1   | getNotifierFromNotifiersCanister | 1_656_909     | 1_252_763   | $0.0000016658 | $1.66             |
 
 ---
 

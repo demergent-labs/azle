@@ -1,10 +1,10 @@
 # Benchmarks for optional_types
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 No benchmarks reported
 

@@ -1,32 +1,48 @@
 {
     "ic_api": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1678855" },
+                    "instructions": {
+                        "__bigint__": "1674128"
+                    },
                     "method_name": "dataCertificateNull",
-                    "timestamp": { "__bigint__": "1730326545924274095" }
+                    "timestamp": {
+                        "__bigint__": "1730484698000253256"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1215442" },
+                    "instructions": {
+                        "__bigint__": "1213309"
+                    },
                     "method_name": "setCertifiedData",
-                    "timestamp": { "__bigint__": "1730326548115738314" }
+                    "timestamp": {
+                        "__bigint__": "1730484700197084233"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.1",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1674128" },
+                    "instructions": {
+                        "__bigint__": "1671735"
+                    },
                     "method_name": "dataCertificateNull",
-                    "timestamp": { "__bigint__": "1730484698000253256" }
+                    "timestamp": {
+                        "__bigint__": "1734548573263497747"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1213309" },
+                    "instructions": {
+                        "__bigint__": "1221343"
+                    },
                     "method_name": "setCertifiedData",
-                    "timestamp": { "__bigint__": "1730484700197084233" }
+                    "timestamp": {
+                        "__bigint__": "1734548573578152709"
+                    }
                 }
             ]
         }

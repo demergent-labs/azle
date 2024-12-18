@@ -1,32 +1,48 @@
 {
     "outgoing_http_requests": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "24930769" },
+                    "instructions": {
+                        "__bigint__": "23714014"
+                    },
                     "method_name": "xkcd",
-                    "timestamp": { "__bigint__": "1730326450893038404" }
+                    "timestamp": {
+                        "__bigint__": "1730484651698364145"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1987971" },
+                    "instructions": {
+                        "__bigint__": "1414933"
+                    },
                     "method_name": "xkcdRaw",
-                    "timestamp": { "__bigint__": "1730326453152490442" }
+                    "timestamp": {
+                        "__bigint__": "1730484654249133454"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.1",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "23714014" },
+                    "instructions": {
+                        "__bigint__": "23691728"
+                    },
                     "method_name": "xkcd",
-                    "timestamp": { "__bigint__": "1730484651698364145" }
+                    "timestamp": {
+                        "__bigint__": "1734548478239621374"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1414933" },
+                    "instructions": {
+                        "__bigint__": "1402321"
+                    },
                     "method_name": "xkcdRaw",
-                    "timestamp": { "__bigint__": "1730484654249133454" }
+                    "timestamp": {
+                        "__bigint__": "1734548479148630630"
+                    }
                 }
             ]
         }

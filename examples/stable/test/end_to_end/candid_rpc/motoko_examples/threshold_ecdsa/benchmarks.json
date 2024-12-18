@@ -1,32 +1,48 @@
 {
     "threshold_ecdsa": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8876819" },
+                    "instructions": {
+                        "__bigint__": "8728678"
+                    },
                     "method_name": "publicKey",
-                    "timestamp": { "__bigint__": "1730326449370079011" }
+                    "timestamp": {
+                        "__bigint__": "1730484650674844202"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "8961254" },
+                    "instructions": {
+                        "__bigint__": "8915339"
+                    },
                     "method_name": "sign",
-                    "timestamp": { "__bigint__": "1730326451536072132" }
+                    "timestamp": {
+                        "__bigint__": "1730484652923372438"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.1",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8728678" },
+                    "instructions": {
+                        "__bigint__": "8711436"
+                    },
                     "method_name": "publicKey",
-                    "timestamp": { "__bigint__": "1730484650674844202" }
+                    "timestamp": {
+                        "__bigint__": "1734548476996479651"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "8915339" },
+                    "instructions": {
+                        "__bigint__": "8846270"
+                    },
                     "method_name": "sign",
-                    "timestamp": { "__bigint__": "1730484652923372438" }
+                    "timestamp": {
+                        "__bigint__": "1734548477573931997"
+                    }
                 }
             ]
         }

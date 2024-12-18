@@ -1,22 +1,22 @@
 # Benchmarks for async_await
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
 | Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | getRandomnessDirectly        | 1_388_768    | 1_145_507 | $0.0000015231 | $1.52             | <font color="green">-14_448</font> |
-| 1   | getRandomnessIndirectly      | 1_338_727    | 1_125_490 | $0.0000014965 | $1.49             | <font color="red">+7_427</font>    |
-| 2   | getRandomnessSuperIndirectly | 1_372_516    | 1_139_006 | $0.0000015145 | $1.51             | <font color="red">+1_808</font>    |
-| 3   | returnPromiseVoid            | 1_326_092    | 1_120_436 | $0.0000014898 | $1.48             | <font color="red">+10_558</font>   |
+| 0   | getRandomnessDirectly        | 1_358_572    | 1_133_428 | $0.0000015071 | $1.50             | <font color="green">-30_196</font> |
+| 1   | getRandomnessIndirectly      | 1_323_027    | 1_119_210 | $0.0000014882 | $1.48             | <font color="green">-15_700</font> |
+| 2   | getRandomnessSuperIndirectly | 1_358_497    | 1_133_398 | $0.0000015070 | $1.50             | <font color="green">-14_019</font> |
+| 3   | returnPromiseVoid            | 1_310_568    | 1_114_227 | $0.0000014816 | $1.48             | <font color="green">-15_524</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name                  | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | getRandomnessDirectly        | 1_403_216    | 1_151_286 | $0.0000015308 | $1.53             |
-| 1   | getRandomnessIndirectly      | 1_331_300    | 1_122_520 | $0.0000014926 | $1.49             |
-| 2   | getRandomnessSuperIndirectly | 1_370_708    | 1_138_283 | $0.0000015135 | $1.51             |
-| 3   | returnPromiseVoid            | 1_315_534    | 1_116_213 | $0.0000014842 | $1.48             |
+| 0   | getRandomnessDirectly        | 1_388_768    | 1_145_507 | $0.0000015231 | $1.52             |
+| 1   | getRandomnessIndirectly      | 1_338_727    | 1_125_490 | $0.0000014965 | $1.49             |
+| 2   | getRandomnessSuperIndirectly | 1_372_516    | 1_139_006 | $0.0000015145 | $1.51             |
+| 3   | returnPromiseVoid            | 1_326_092    | 1_120_436 | $0.0000014898 | $1.48             |
 
 ---
 

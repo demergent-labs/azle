@@ -1,16 +1,16 @@
 # Benchmarks for whoami
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.1
 
-| Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                |
-| --- | ----------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | postUpgrade | 1_345_834_456 | 938_923_782 | $0.0012484588 | $1_248.45         | <font color="red">+318_288_414</font> |
+| Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------- | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade | 1_354_149_660 | 942_249_864 | $0.0012528814 | $1_252.88         | <font color="red">+8_315_204</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | postUpgrade | 1_027_546_042 | 811_608_416 | $0.0010791714 | $1_079.17         |
+| 0   | postUpgrade | 1_345_834_456 | 938_923_782 | $0.0012484588 | $1_248.45         |
 
 ---
 
