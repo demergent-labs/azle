@@ -6,7 +6,6 @@ import { describe, expect, test } from '@jest/globals';
 import * as fc from 'fast-check';
 import { join } from 'path';
 
-import { getCanisterId } from '../dfx';
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
 import { runBenchmarksForCanisters } from './benchmarks';
@@ -120,26 +119,9 @@ type GetCanisterActorOptions = {
 
 export async function getCanisterActor<T>(
     canisterName: string,
-    options: GetCanisterActorOptions = {}
+    _options: GetCanisterActorOptions = {}
 ): Promise<ActorSubclass<T>> {
-    const { createActor } = await import(
-        join(process.cwd(), 'test', 'dfx_generated', canisterName)
-    );
-
-    const agent =
-        options.agent ??
-        new HttpAgent({
-            host: 'http://127.0.0.1:8000',
-            identity: options.identity
-        });
-
-    if (process.env.DFX_NETWORK !== 'ic') {
-        await agent.fetchRootKey();
-    }
-
-    return createActor(getCanisterId(canisterName), {
-        agent
-    });
+    throw new Error('This prop tests uses getCanisterActor and is good to go');
 }
 
 function processEnvVars(): {
