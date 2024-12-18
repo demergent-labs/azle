@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
         "xCanister violated contract: \\\\\"ic0_certified_data_set\\\\\" cannot be executed in non replicated query mode",
-        "xCanister violated contract: ic0_certified_data_set failed because the passed data must be no larger than 32 bytes"
+        "Method: assertSetCertifiedDataTypes \\(update\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister violated contract: ic0_certified_data_set failed because the passed data must be no larger than 32 bytes"
     ]
 }

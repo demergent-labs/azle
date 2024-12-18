@@ -1,3 +1,3 @@
 {
-    "expectedErrors": ["xreject_message proptest message:"]
+    "expectedErrors": ["reject_message proptest message:"]
 }

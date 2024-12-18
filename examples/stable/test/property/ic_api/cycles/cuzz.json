@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "xUncaught Error: numChunks cannot be 0",
+        "Method: receiveCyclesByChunk \\(update\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: numChunks cannot be 0",
         "xCanister trapped: heap out of bounds"
     ]
 }

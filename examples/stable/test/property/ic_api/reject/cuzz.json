@@ -1,3 +1,3 @@
 {
-    "expectedErrors": ["xreject proptest message:", "xOdd numbers are rejected"]
+    "expectedErrors": ["reject proptest message:", "Odd numbers are rejected"]
 }

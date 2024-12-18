@@ -1,3 +1,6 @@
 {
-    "expectedErrors": ["xCannot parse header", "xCandid parser error"]
+    "expectedErrors": [
+        "Method: candidEncode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
+        "xCandid parser error"
+    ]
 }
