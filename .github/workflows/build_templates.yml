@@ -31,9 +31,6 @@ jobs:
         needs: workflow-config
         if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
         runs-on: ubuntu-latest
-        env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
             - uses: actions/checkout@v4
               with:
