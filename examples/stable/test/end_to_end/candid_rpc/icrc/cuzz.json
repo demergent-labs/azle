@@ -1,7 +1,7 @@
 {
     "expectedErrors": [
-        "assertion failed at ICRC1.mo:262.5-262.37",
-        "assertion failed at ICRC1.mo:268.20-268.59",
-        "is larger than the max allowed 2097152"
+        "xassertion failed at ICRC1.mo:262.5-262.37",
+        "xassertion failed at ICRC1.mo:268.20-268.59",
+        "xis larger than the max allowed 2097152"
     ]
 }

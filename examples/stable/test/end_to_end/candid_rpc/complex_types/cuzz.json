@@ -1,10 +1,14 @@
 {
-    "callDelay": ".25",
+    "callDelay": "0",
     "expectedErrors": [
-        "Author not found",
-        "Post not found",
-        "Thread not found",
-        "cannot read property 'Symbol.iterator' of undefined",
-        "Canister trapped: heap out of bounds"
+        "Method: createPost \\(update\\)[\\s\\S]*Uncaught Error: Author not found",
+        "Method: createReaction \\(update\\)[\\s\\S]*Uncaught Error: Author not found",
+        "Method: createThread \\(update\\)[\\s\\S]*Uncaught Error: Author not found",
+        "Method: createPost \\(update\\)[\\s\\S]*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
+        "Method: createReaction \\(update\\)[\\s\\S]*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
+        "Method: createThread \\(update\\)[\\s\\S]*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
+        "Method: createReaction \\(update\\)[\\s\\S]*Uncaught Error: Post not found",
+        "xThread not found",
+        "xCanister trapped: heap out of bounds"
     ]
 }

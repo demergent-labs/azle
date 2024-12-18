@@ -1,7 +1,6 @@
 {
     "expectedErrors": [
-        "No route to canister",
-        "Management canister has no method",
-        "not found"
+        "Method: canisterCrossCanisterCall \\(update\\)[\\s\\S]*Uncaught Error: Rejection code 3, No route to canister",
+        "Method: canisterCrossCanisterCall \\(update\\)[\\s\\S]*Uncaught Error: Rejection code 5, IC0536: Management canister has no method"
     ]
 }

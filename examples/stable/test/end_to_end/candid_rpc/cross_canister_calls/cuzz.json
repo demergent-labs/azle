@@ -1,7 +1,7 @@
 {
     "expectedErrors": [
-        "hahahaha",
-        "Uncaught TypeError: cannot convert to bigint",
-        "Failed to encode Candid arguments"
+        "xhahahaha",
+        "xUncaught TypeError: cannot convert to bigint",
+        "xFailed to encode Candid arguments"
     ]
 }

@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "Uncaught TypeError: cannot convert to bigint",
-        "Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat64 argument"
+        "xUncaught TypeError: cannot convert to bigint",
+        "xUncaught Error: Failed to encode Candid arguments: Error: Invalid nat64 argument"
     ]
 }

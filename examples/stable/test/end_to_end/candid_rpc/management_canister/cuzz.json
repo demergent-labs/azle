@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "not found"
+        "xUncaught Error: Rejection code 3, Unable to route management canister request",
+        "xnot found"
     ]
 }

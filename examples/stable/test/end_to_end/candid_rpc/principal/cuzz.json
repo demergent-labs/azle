@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "Uncaught Error: Invalid character",
-        "does not have a valid checksum"
+        "xUncaught Error: Invalid character",
+        "xdoes not have a valid checksum"
     ]
 }
