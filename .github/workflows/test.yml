@@ -70,31 +70,38 @@ jobs:
     build-templates:
         name: Build templates for Dependabot
         needs: workflow-config
-        if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
               with:
                   ref: ${{ github.head_ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
             - uses: ./.github/actions/setup_node
+              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
 
             - uses: ./.github/actions/setup_dfx
+              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
 
             - run: npm install
+              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
 
             - name: Install global dependencies
+              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
               run: |
                   AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
 
             - name: Build stable template
+              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
               run: AZLE_VERBOSE=true npx azle template
 
             - name: Build experimental template
+              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
               run: AZLE_VERBOSE=true npx azle template --experimental
 
             - uses: ./.github/actions/commit_and_push
+              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
               with:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'
@@ -102,9 +109,7 @@ jobs:
 
     get-exclude-dirs:
         name: Get exclude directories
-        needs:
-            - workflow-config
-            - build-templates
+        needs: workflow-config
         runs-on: ubuntu-latest
         outputs:
             exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
@@ -123,6 +128,7 @@ jobs:
         needs:
             - workflow-config
             - get-exclude-dirs
+            - build-templates
         strategy:
             fail-fast: false
             matrix:
