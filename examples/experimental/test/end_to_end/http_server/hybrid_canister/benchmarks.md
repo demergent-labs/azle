@@ -8,7 +8,7 @@
 | 1   | http_request_update | 44_780_337    | 18_502_134    | $0.0000246017 | $24.60            | <font color="green">-3_238</font>   |
 | 2   | candidUpdate        | 1_430_674     | 1_162_269     | $0.0000015454 | $1.54             | <font color="red">+3_609</font>     |
 
-## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
+## Baseline benchmarks Azle version: 0.25.0-alpha
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -26,7 +26,7 @@
 | 1   | http_request_update | 45_205_098    | 18_672_039    | $0.0000248277 | $24.82            | <font color="red">+101_022</font>    |
 | 2   | candidUpdate        | 1_798_186     | 1_309_274     | $0.0000017409 | $1.74             | <font color="red">+4_704</font>      |
 
-## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
+## Baseline benchmarks Azle version: 0.25.0-alpha
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -44,7 +44,7 @@
 | 1   | http_request_update | 44_787_036    | 18_504_814    | $0.0000246053 | $24.60            | <font color="green">-14_716</font>  |
 | 2   | candidUpdate        | 1_453_301     | 1_171_320     | $0.0000015575 | $1.55             | <font color="green">-215</font>     |
 
-## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
+## Baseline benchmarks Azle version: 0.25.0-alpha
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -62,7 +62,7 @@
 | 1   | http_request_update | 45_228_817    | 18_681_526    | $0.0000248403 | $24.84            | <font color="red">+86_450</font>     |
 | 2   | candidUpdate        | 1_821_544     | 1_318_617     | $0.0000017533 | $1.75             | <font color="green">-67</font>       |
 
-## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
+## Baseline benchmarks Azle version: 0.25.0-alpha
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -74,11 +74,11 @@
 
 **Note on calculations:**
 
--   Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
--   base_fee: 590_000 cycles
--   per_instruction_fee: 0.4 cycles
--   additional_fee_per_billion: 400_000_000 cycles per billion instructions
--   USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
+- base_fee: 590_000 cycles
+- per_instruction_fee: 0.4 cycles
+- additional_fee_per_billion: 400_000_000 cycles per billion instructions
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
 For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).

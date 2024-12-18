@@ -11,7 +11,7 @@
 | 4   | stableMap3Remove | 3_566_497     | 2_016_598     | $0.0000026814 | $2.68             | <font color="green">-8_742</font>    |
 | 5   | stableMap4Remove | 5_486_940     | 2_784_776     | $0.0000037028 | $3.70             | <font color="green">-6_633</font>    |
 
-## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
+## Baseline benchmarks Azle version: 0.25.0-alpha
 
 | Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ---------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -35,7 +35,7 @@
 | 4   | stableMap8Remove | 1_927_100     | 1_360_840     | $0.0000018095 | $1.80             | <font color="green">-3_902</font>     |
 | 5   | stableMap9Remove | 2_967_797     | 1_777_118     | $0.0000023630 | $2.36             | <font color="red">+3_001</font>       |
 
-## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
+## Baseline benchmarks Azle version: 0.25.0-alpha
 
 | Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ---------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -62,7 +62,7 @@
 | 7   | stableMap16Remove | 2_979_649     | 1_781_859     | $0.0000023693 | $2.36             | <font color="green">-1_125</font>     |
 | 8   | stableMap17Remove | 3_108_645     | 1_833_458     | $0.0000024379 | $2.43             | <font color="green">-2_332</font>     |
 
-## Baseline benchmarks Azle version: 0.25.0-pre-bifurcation
+## Baseline benchmarks Azle version: 0.25.0-alpha
 
 | Id  | Method Name       | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -80,11 +80,11 @@
 
 **Note on calculations:**
 
--   Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
--   base_fee: 590_000 cycles
--   per_instruction_fee: 0.4 cycles
--   additional_fee_per_billion: 400_000_000 cycles per billion instructions
--   USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- Cycles are calculated using the formula: base_fee + (per_instruction_fee \* number_of_instructions) + (additional_fee_per_billion \* floor(number_of_instructions / 1_000_000_000))
+- base_fee: 590_000 cycles
+- per_instruction_fee: 0.4 cycles
+- additional_fee_per_billion: 400_000_000 cycles per billion instructions
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
 For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).

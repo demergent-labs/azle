@@ -51,22 +51,37 @@ jobs:
             fail-fast: false
             matrix:
                 benchmark_group:
-                    - { name: 'Examples', directories: './examples' }
                     - {
-                          name: 'E2E Class',
-                          directories: './tests/end_to_end/candid_rpc/class_syntax'
+                          name: 'Stable Demo',
+                          directories: './examples/stable/demo'
                       }
                     - {
-                          name: 'E2E Functional',
-                          directories: './tests/end_to_end/candid_rpc/functional_syntax'
+                          name: 'Experimental Demo',
+                          directories: './examples/experimental/demo'
                       }
                     - {
-                          name: 'E2E HTTP Server',
-                          directories: './tests/end_to_end/http_server'
+                          name: 'Stable E2E CRPC',
+                          directories: './examples/stable/test/end_to_end/candid_rpc'
                       }
                     - {
-                          name: 'Property Class',
-                          directories: './tests/property/candid_rpc/class_api'
+                          name: 'Experimental E2E CRPC',
+                          directories: './examples/experimental/test/end_to_end/candid_rpc'
+                      }
+                    - {
+                          name: 'Experimental E2E HTTP Server',
+                          directories: './examples/experimental/test/end_to_end/http_server'
+                      }
+                    - {
+                          name: 'Stable Property CRPC',
+                          directories: './examples/stable/test/property/candid_rpc'
+                      }
+                    - {
+                          name: 'Experimental Property CRPC',
+                          directories: './examples/experimental/test/property/candid_rpc'
+                      }
+                    - {
+                          name: 'Stable Property IC API',
+                          directories: './examples/stable/test/property/ic_api'
                       }
         uses: ./.github/workflows/benchmark_parallel.yml
         secrets:
@@ -91,9 +106,37 @@ jobs:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
-    create-pr:
+    analyze-benchmarks:
+        name: Analyze Benchmark Results
         needs:
             - squash-branches
+            - create-branch-prefix
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Analyze benchmarks
+              run: npx tsx scripts/analyze_benchmarks/index.ts
+
+            - uses: ./.github/actions/commit_and_push
+              with:
+                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+                  branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
+                  commit-message: 'analyze benchmark results'
+                  create-branch: 'false'
+
+    create-pr:
+        needs:
+            - analyze-benchmarks
             - create-branch-prefix
         runs-on: ubuntu-latest
         steps:
