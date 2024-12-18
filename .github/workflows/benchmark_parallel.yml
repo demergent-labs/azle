@@ -72,10 +72,10 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - run: npm ci
+            - run: npm install
             - run: npm link
 
-            - run: npm ci
+            - run: npm install
               working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle
