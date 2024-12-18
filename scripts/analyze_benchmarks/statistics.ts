@@ -11,11 +11,11 @@ export type Statistics = {
 };
 
 const MAX_VALID_INSTRUCTIONS = 40_000_000_000;
-const EFFICIENCY_WEIGHTS = {
+const BASELINE_EFFICIENCY_WEIGHTS = {
     min: 0.6,
     median: 0.3,
     mean: 0.1
-} as const;
+};
 
 /**
  * Calculates statistics for a set of benchmark entries
@@ -63,7 +63,7 @@ function calculateStatistics(instructions: number[]): Statistics {
     const standardDeviation = calculateStandardDeviation(filteredInstructions);
     const max = sorted[sorted.length - 1];
     const baselineWeightedEfficiencyScore =
-        calculateBaselineWeightEfficiencyScore(min, median, mean);
+        calculateBaselineWeightedEfficiencyScore(min, median, mean);
 
     return {
         count,
@@ -120,14 +120,14 @@ function calculateStandardDeviation(instructions: number[]): number {
  * @param mean Mean instruction count
  * @returns Weighted efficiency score
  */
-function calculateBaselineWeightEfficiencyScore(
+function calculateBaselineWeightedEfficiencyScore(
     min: number,
     median: number,
     mean: number
 ): number {
     return (
-        EFFICIENCY_WEIGHTS.min * min +
-        EFFICIENCY_WEIGHTS.median * median +
-        EFFICIENCY_WEIGHTS.mean * mean
+        BASELINE_EFFICIENCY_WEIGHTS.min * min +
+        BASELINE_EFFICIENCY_WEIGHTS.median * median +
+        BASELINE_EFFICIENCY_WEIGHTS.mean * mean
     );
 }

@@ -194,12 +194,11 @@ function calculateVersionChanges(
     current: Statistics
 ): Statistics {
     return Object.keys(previous).reduce((changes, key) => {
-        const typedKey = key as keyof Statistics;
-        changes[typedKey] = calculateChange(
-            previous[typedKey],
-            current[typedKey]
-        );
-        return changes;
+        const statsKey = key as keyof Statistics;
+        return {
+            ...changes,
+            [statsKey]: calculateChange(previous[statsKey], current[statsKey])
+        };
     }, {} as Statistics);
 }
 

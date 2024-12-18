@@ -44,12 +44,11 @@ async function analyzeBenchmarksForVersion(
  * Runs the benchmark analysis for a specified version or current version
  * @param specifiedVersion Optional version to analyze. If not provided, uses current package version
  */
-function runBenchmarkAnalysis(specifiedVersion?: string): void {
+async function runBenchmarkAnalysis(specifiedVersion?: string): Promise<void> {
     const versionToAnalyze = specifiedVersion ?? currentAzleVersion;
     console.info('Analyzing benchmarks...');
-    analyzeBenchmarksForVersion(versionToAnalyze).then((statistics) =>
-        reportResults(statistics, versionToAnalyze)
-    );
+    const statistics = await analyzeBenchmarksForVersion(versionToAnalyze);
+    await reportResults(statistics, versionToAnalyze);
 }
 
 runBenchmarkAnalysis(process.argv[2]);
