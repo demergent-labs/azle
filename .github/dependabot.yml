@@ -24,12 +24,6 @@ updates:
                   - 'ts-jest'
       ignore:
           - dependency-name: 'binaryen'
-            update-types:
-                [
-                    'version-update:semver-major',
-                    'version-update:semver-minor',
-                    'version-update:semver-patch'
-                ]
 
     - package-ecosystem: 'cargo'
       directory: '/'
@@ -43,3 +37,7 @@ updates:
                   - 'ic-cdk*'
                   - 'ic-stable-structures'
                   - 'ic-wasi-polyfill'
+                  - 'candid*'
+          serde:
+              patterns:
+                  - 'serde*'
