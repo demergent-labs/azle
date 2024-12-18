@@ -9,9 +9,14 @@ updates:
           prefix: 'deps'
           prefix-development: 'deps(dev)'
       groups:
+          dfinity:
+              patterns:
+                  - '@dfinity/*'
           eslint:
               patterns:
                   - 'eslint*'
+                  - 'typescript-eslint'
+                  - '@eslint/*'
                   - '@typescript-eslint/*'
           jest:
               patterns:
