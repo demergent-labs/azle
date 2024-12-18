@@ -29,7 +29,6 @@ jobs:
     build-templates:
         name: Build templates for Dependabot
         needs: workflow-config
-        if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
