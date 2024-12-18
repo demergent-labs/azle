@@ -73,6 +73,7 @@ runs:
                   echo "link-azle=true" >> $GITHUB_OUTPUT
                 fi
                 echo "fuzz=false" >> $GITHUB_OUTPUT
+                echo ${{ github.actor }}
                 echo "is-dependabot=${{ github.actor == 'dependabot[bot]' }}" >> $GITHUB_OUTPUT
               fi
 
