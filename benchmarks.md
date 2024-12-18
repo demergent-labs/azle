@@ -87,7 +87,7 @@
 
 </table>
 
-## Version `0.25.0-pre-bifurcation`
+## Version `0.25.0-alpha`
 
 <table>
     <tr>

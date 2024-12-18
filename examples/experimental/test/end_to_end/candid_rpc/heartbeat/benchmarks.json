@@ -1,7 +1,7 @@
 {
     "heartbeat_async": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "139749330" },
@@ -1558,7 +1558,7 @@
     },
     "heartbeat_sync": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "91478" },

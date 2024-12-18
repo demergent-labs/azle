@@ -1,3 +1,5 @@
+import semver from 'semver';
+
 import {
     readBenchmarkJsonFile,
     StableAndExperimentalStatistics,
@@ -7,9 +9,16 @@ import { Statistics } from './statistics';
 
 export async function generateMarkdownReport(): Promise<string> {
     const benchmarksJson = await readBenchmarkJsonFile();
+
+    const sortedBenchmarks = Object.fromEntries(
+        Object.entries(benchmarksJson).sort(([a], [b]) => {
+            return -semver.compare(a, b); // Reverse sort (newest first)
+        })
+    );
+
     return `# Benchmarks
 
-${generateVersionTables(benchmarksJson)}
+${generateVersionTables(sortedBenchmarks)}
 
 ---
 *Report generated automatically by Azle*`;

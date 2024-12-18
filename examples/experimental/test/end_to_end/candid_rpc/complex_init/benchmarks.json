@@ -1,7 +1,7 @@
 {
     "complex_init": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "5352215311" },
@@ -23,7 +23,7 @@
     },
     "rec_init": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "5357331916" },

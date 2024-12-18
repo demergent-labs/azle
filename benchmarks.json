@@ -19,7 +19,7 @@
             "baselineWeightedEfficiencyScore": 105381438.76483223
         }
     },
-    "0.25.0-pre-bifurcation": {
+    "0.25.0-alpha": {
         "stable": {
             "count": 624,
             "mean": 101374357.53525642,
