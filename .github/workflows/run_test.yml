@@ -101,14 +101,14 @@ jobs:
               if: matrix.os == 'macos-latest'
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
-            - run: npm install
+            - run: npm ci
 
             - run: npm link
               if: matrix.azle_source == 'repo'
 
             - run: npm run lint
 
-            - run: npm install
+            - run: npm ci
               working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle
