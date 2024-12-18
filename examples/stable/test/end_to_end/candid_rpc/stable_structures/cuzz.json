@@ -1,5 +1,6 @@
 {
     "expectedErrors": [
-        "Method: stableMap16Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected token"
+        "Method: stableMap16Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected token",
+        "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected token"
     ]
 }
