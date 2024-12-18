@@ -53,7 +53,6 @@ jobs:
             exclude-release-only: ${{ steps.determine-workflow-config.outputs.exclude-release-only }}
             link-azle: ${{ steps.determine-workflow-config.outputs.link-azle }}
             fuzz: ${{ steps.determine-workflow-config.outputs.fuzz }}
-            is-dependabot: ${{ steps.determine-workflow-config.outputs.is-dependabot }}
         steps:
             - uses: actions/checkout@v4
 
@@ -66,46 +65,6 @@ jobs:
                   exclude-release-only-dispatch-input-value: ${{ inputs.exclude-release-only-tests }}
                   link-azle-dispatch-input-value: ${{ inputs.link-azle }}
                   fuzz-dispatch-input-value: ${{ inputs.fuzz }}
-
-    build-templates:
-        name: Build templates for Dependabot
-        needs: workflow-config
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
-              with:
-                  ref: ${{ github.head_ref }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
-
-            - uses: ./.github/actions/setup_node
-              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
-
-            - uses: ./.github/actions/setup_dfx
-              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
-
-            - run: npm install
-              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
-
-            - name: Install global dependencies
-              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
-              run: |
-                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
-
-            - name: Build stable template
-              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
-              run: AZLE_VERBOSE=true npx azle template
-
-            - name: Build experimental template
-              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
-              run: AZLE_VERBOSE=true npx azle template --experimental
-
-            - uses: ./.github/actions/commit_and_push
-              if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
-              with:
-                  branch-name: ${{ github.head_ref }}
-                  commit-message: 'chore: update templates for dependency changes'
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
 
     get-exclude-dirs:
         name: Get exclude directories
@@ -128,7 +87,6 @@ jobs:
         needs:
             - workflow-config
             - get-exclude-dirs
-            - build-templates
         strategy:
             fail-fast: false
             matrix:

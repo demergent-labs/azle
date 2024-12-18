@@ -1,0 +1,63 @@
+name: Build Templates
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+
+jobs:
+    workflow-config:
+        name: Determine workflow config
+        runs-on: ubuntu-latest
+        outputs:
+            is-dependabot: ${{ steps.determine-workflow-config.outputs.is-dependabot }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: determine-workflow-config
+              uses: ./.github/actions/determine_workflow_config
+              with:
+                  is-workflow-dispatch: false
+                  exclude-slow-dispatch-input-value: true
+                  exclude-unstable-dispatch-input-value: true
+                  exclude-release-only-dispatch-input-value: true
+                  link-azle-dispatch-input-value: true
+
+    build-templates:
+        name: Build templates for Dependabot
+        needs: workflow-config
+        if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - run: npm install
+
+            - name: Install global dependencies
+              run: |
+                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
+
+            - name: Build stable template
+              run: AZLE_VERBOSE=true npx azle template
+
+            - name: Build experimental template
+              run: AZLE_VERBOSE=true npx azle template --experimental
+
+            - uses: ./.github/actions/commit_and_push
+              with:
+                  branch-name: ${{ github.head_ref }}
+                  commit-message: 'chore: update templates for dependency changes'
+                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
