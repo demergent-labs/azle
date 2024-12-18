@@ -3,6 +3,7 @@
         "Method: executeClearChunkStore \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
         "Method: executeDeleteCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
         "Method: executeDepositCycles \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
+        "Method: executeInstallCode \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
         "xnot found"
     ]
 }

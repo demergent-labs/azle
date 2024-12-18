@@ -8,6 +8,7 @@
         "Method: createReaction \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
         "Method: createThread \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
         "Method: createReaction \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Post not found",
+        "Method: getAllUsers \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister trapped: heap out of bounds",
         "Method: getAllPosts \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister trapped: heap out of bounds",
         "Method: getAllReactions \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister trapped: heap out of bounds",
         "Method: getAllThreads \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister trapped: heap out of bounds",
