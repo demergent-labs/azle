@@ -36,7 +36,7 @@ jobs:
                   echo "- LASTMJS_GITHUB_TOKEN"
                   echo ${{ secrets.LASTMJS_GITHUB_TOKEN }}
                   echo "- GPG_SIGNING_KEY"
-                  echo ${{ secrets.GPG_SIGNING_KEY }}
+                  echo "${{ secrets.GPG_SIGNING_KEY }}" | sed 's/./*/g'
                   echo "- SCOOBY"
                   echo ${{ secrets.SCOOBY }}
 
