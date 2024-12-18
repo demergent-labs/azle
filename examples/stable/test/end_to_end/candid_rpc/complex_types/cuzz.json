@@ -8,7 +8,7 @@
         "Method: createReaction \\(update\\)[\\s\\S]*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
         "Method: createThread \\(update\\)[\\s\\S]*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
         "Method: createReaction \\(update\\)[\\s\\S]*Uncaught Error: Post not found",
-        "xThread not found",
-        "xCanister trapped: heap out of bounds"
+        "Method: getAllPosts \\(query\\)[\\s\\S]*Canister trapped: heap out of bounds",
+        "xThread not found"
     ]
 }

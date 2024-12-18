@@ -1,3 +1,5 @@
 {
-    "expectedErrors": ["xUncaught SyntaxError"]
+    "expectedErrors": [
+        "Method: stableMap16Insert \\(update\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected token"
+    ]
 }

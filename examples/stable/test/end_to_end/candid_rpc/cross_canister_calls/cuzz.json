@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "xhahahaha",
+        "Method: trap \\(update\\)[\\s\\S]*Canister called `ic0.trap` with message: hahahaha",
         "xUncaught TypeError: cannot convert to bigint",
         "xFailed to encode Candid arguments"
     ]

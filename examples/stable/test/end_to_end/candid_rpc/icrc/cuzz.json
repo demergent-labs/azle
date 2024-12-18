@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "xassertion failed at ICRC1.mo:262.5-262.37",
+        "Method: icrc1_transfer \\(update\\)[\\s\\S]*assertion failed at ICRC1.mo:262.5-262.37",
         "xassertion failed at ICRC1.mo:268.20-268.59",
         "xis larger than the max allowed 2097152"
     ]

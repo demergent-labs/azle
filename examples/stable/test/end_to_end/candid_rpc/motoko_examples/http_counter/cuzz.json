@@ -1,3 +1,5 @@
 {
-    "expectedErrors": ["xshould not happen"]
+    "expectedErrors": [
+        "Method: http_streaming \\(query\\)[\\s\\S]*should not happen"
+    ]
 }

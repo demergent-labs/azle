@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "xUncaught Error: Invalid character",
+        "Method: principalFromText \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Invalid character",
         "xdoes not have a valid checksum"
     ]
 }

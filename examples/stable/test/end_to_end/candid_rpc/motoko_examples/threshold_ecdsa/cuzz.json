@@ -1,3 +1,5 @@
 {
-    "expectedErrors": ["xmessageHash must be 32 bytes"]
+    "expectedErrors": [
+        "Method: sign \\(update\\)[\\s\\S]*messageHash must be 32 bytes"
+    ]
 }

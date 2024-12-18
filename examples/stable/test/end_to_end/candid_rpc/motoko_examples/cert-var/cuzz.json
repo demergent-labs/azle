@@ -1,3 +1,5 @@
 {
-    "expectedErrors": ["xUncaught Error: Invalid nat32 argument: 4294967296"]
+    "expectedErrors": [
+        "Method: inc \\(update\\)[\\s\\S]*Uncaught Error: Invalid nat32 argument: 4294967296"
+    ]
 }

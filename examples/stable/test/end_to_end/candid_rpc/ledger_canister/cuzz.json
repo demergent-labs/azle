@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "xInvalid account identifier: Checksum failed for",
+        "Method: executeTransfer \\(update\\)[\\s\\S]*Uncaught Error: Rejection code 5, IC0503: Error from Canister bd3sg-teaaa-aaaaa-qaaba-cai: Canister called `ic0.trap` with message: Invalid account identifier: Checksum failed for .*, expected check bytes 081f456e but found 0c000000",
         "xDeserialization Failed"
     ]
 }

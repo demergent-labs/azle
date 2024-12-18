@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "Method: getUserById \\(query\\)[\\s\\S]*Canister called `ic0.trap` with message: Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record {id:text; username:text} argument: \\[null\\]",
-        "Method: createRecording \\(update\\)[\\s\\S]*Canister called `ic0.trap` with message: Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record {id:text; username:text} argument: \\[\\{\"id\":\"\"\\}\\]"
+        "Method: getUserById \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister called `ic0.trap` with message: Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record {id:text; username:text} argument: \\[null\\]",
+        "Method: createRecording \\(update\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister called `ic0.trap` with message: Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record {id:text; username:text} argument: \\[\\{\"id\":\"\"\\}\\]"
     ]
 }
