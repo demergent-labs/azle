@@ -1,9 +1,6 @@
 name: Build Templates
 
 on:
-    push:
-        branches:
-            - main
     pull_request:
         types:
             - opened
@@ -24,10 +21,10 @@ jobs:
               uses: ./.github/actions/determine_workflow_config
               with:
                   is-workflow-dispatch: false
-                  exclude-slow-dispatch-input-value: true
-                  exclude-unstable-dispatch-input-value: true
-                  exclude-release-only-dispatch-input-value: true
-                  link-azle-dispatch-input-value: true
+                  exclude-slow-dispatch-input-value: false
+                  exclude-unstable-dispatch-input-value: false
+                  exclude-release-only-dispatch-input-value: false
+                  link-azle-dispatch-input-value: false
 
     build-templates:
         name: Build templates for Dependabot
