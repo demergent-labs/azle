@@ -53,6 +53,7 @@ jobs:
             exclude-release-only: ${{ steps.determine-workflow-config.outputs.exclude-release-only }}
             link-azle: ${{ steps.determine-workflow-config.outputs.link-azle }}
             fuzz: ${{ steps.determine-workflow-config.outputs.fuzz }}
+            is-dependabot: ${{ steps.determine-workflow-config.outputs.is-dependabot }}
         steps:
             - uses: actions/checkout@v4
 
@@ -66,9 +67,44 @@ jobs:
                   link-azle-dispatch-input-value: ${{ inputs.link-azle }}
                   fuzz-dispatch-input-value: ${{ inputs.fuzz }}
 
+    build-templates:
+        name: Build templates for Dependabot
+        needs: workflow-config
+        if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - run: npm install
+
+            - name: Install global dependencies
+              run: |
+                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
+
+            - name: Build stable template
+              run: AZLE_VERBOSE=true npx azle template
+
+            - name: Build experimental template
+              run: AZLE_VERBOSE=true npx azle template --experimental
+
+            - uses: ./.github/actions/commit_and_push
+              with:
+                  branch-name: ${{ github.head_ref }}
+                  commit-message: 'chore: update templates for dependency changes'
+                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+
     get-exclude-dirs:
         name: Get exclude directories
-        needs: workflow-config
+        needs:
+            - workflow-config
+            - build-templates
         runs-on: ubuntu-latest
         outputs:
             exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}

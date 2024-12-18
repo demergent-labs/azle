@@ -38,6 +38,9 @@ outputs:
     fuzz:
         description: 'Whether to run fuzz tests'
         value: ${{ steps.determine_workflow_config.outputs.fuzz }}
+    is-dependabot:
+        description: 'Whether the commit is from Dependabot'
+        value: ${{ steps.determine_workflow_config.outputs.is-dependabot }}
 
 runs:
     using: 'composite'
@@ -54,6 +57,7 @@ runs:
                 echo "exclude-release-only=${{ inputs.exclude-release-only-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "link-azle=${{ inputs.link-azle-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "fuzz=${{ inputs.fuzz-dispatch-input-value }}" >> $GITHUB_OUTPUT
+                echo "is-dependabot=false" >> $GITHUB_OUTPUT
               else
                 EXCLUDE_SLOW=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' }}
                 EXCLUDE_UNSTABLE=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' || steps.workflow-context.outputs.is_feature_branch_pr == 'true' }}
@@ -69,6 +73,7 @@ runs:
                   echo "link-azle=true" >> $GITHUB_OUTPUT
                 fi
                 echo "fuzz=false" >> $GITHUB_OUTPUT
+                echo "is-dependabot=${{ github.actor == 'dependabot[bot]' }}" >> $GITHUB_OUTPUT
               fi
 
         - id: echo-outputs
@@ -80,3 +85,4 @@ runs:
               echo "exclude-release-only: ${{ steps.determine_workflow_config.outputs.exclude-release-only }}"
               echo "link-azle: ${{ steps.determine_workflow_config.outputs.link-azle }}"
               echo "fuzz: ${{ steps.determine_workflow_config.outputs.fuzz }}"
+              echo "is-dependabot: ${{ steps.determine_workflow_config.outputs.is-dependabot }}"
