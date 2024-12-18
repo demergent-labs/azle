@@ -1,7 +1,7 @@
 {
     "expectedErrors": [
-        "Method: canisterCrossCanisterCall \\(update\\)[\\s\\S]*Uncaught Error: Rejection code 3, No route to canister",
-        "Method: canisterCrossCanisterCall \\(update\\)[\\s\\S]*Uncaught Error: Rejection code 5, IC0536: Management canister has no method",
-        "Method: canisterCrossCanisterCall \\(update\\)[\\s\\S]*Uncaught Error: Rejection code 3, Canister .* not found"
+        "Method: canisterCrossCanisterCall \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, No route to canister",
+        "Method: canisterCrossCanisterCall \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 5, IC0536: Management canister has no method",
+        "Method: canisterCrossCanisterCall \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found"
     ]
 }

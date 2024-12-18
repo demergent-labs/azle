@@ -1,7 +1,7 @@
 {
     "expectedErrors": [
-        "Method: dateToJSONString \\(query\\)[\\s\\S]*Uncaught Error: Failed to encode Candid arguments: Error: Invalid text argument: null",
-        "xDate value is NaN",
+        "Method: dateToJSONString \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid text argument: null",
+        "Method: dateToISOString \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught RangeError: Date value is NaN",
         "xUncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument: null",
         "xUncaught RangeError: cannot convert NaN or Infinity to BigInt",
         "xUncaught Error: Failed to encode Candid arguments: Error: Invalid nat64 argument"

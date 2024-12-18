@@ -1,6 +1,7 @@
 {
     "expectedErrors": [
-        "Method: trap \\(update\\)[\\s\\S]*Canister called `ic0.trap` with message: hahahaha",
+        "Method: trap \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister called `ic0.trap` with message: hahahaha",
+        "Method: trap \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister called `ic0.trap` with message: hahahaha",
         "xUncaught TypeError: cannot convert to bigint",
         "xFailed to encode Candid arguments"
     ]

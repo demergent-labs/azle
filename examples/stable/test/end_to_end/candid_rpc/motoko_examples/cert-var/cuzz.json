@@ -1,5 +1,5 @@
 {
     "expectedErrors": [
-        "Method: inc \\(update\\)[\\s\\S]*Uncaught Error: Invalid nat32 argument: 4294967296"
+        "Method: inc \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Invalid nat32 argument: 4294967296"
     ]
 }

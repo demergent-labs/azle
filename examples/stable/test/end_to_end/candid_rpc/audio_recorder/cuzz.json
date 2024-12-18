@@ -1,7 +1,7 @@
 {
     "expectedErrors": [
-        "Method: deleteUser \\(update\\)[\\s\\S]*Uncaught Error: User does not exist:",
-        "Method: createRecording \\(update\\)[\\s\\S]*Uncaught Error: User does not exist:",
-        "Method: deleteRecording \\(update\\)[\\s\\S]*Uncaught Error: Recording does not exist:"
+        "Method: deleteUser \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: User does not exist:",
+        "Method: createRecording \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: User does not exist:",
+        "Method: deleteRecording \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Recording does not exist:"
     ]
 }
