@@ -5,25 +5,20 @@ import { join } from 'path';
 
 import { getCanisterId } from '../dfx';
 
-/**
- * Options for getting a canister actor
- * @interface GetCanisterActorOptions
- * @property {Identity} [identity] - Optional identity for authentication
- * @property {Agent} [agent] - Optional pre-configured agent
- * @property {string} [parentDir] - Optional parent directory path for the dfx generated files
- */
 type GetCanisterActorOptions = {
+    /** Optional identity for authentication */
     identity?: Identity;
+    /** Optional pre-configured agent */
     agent?: Agent;
+    /** Optional parent directory path for the dfx generated files */
     parentDir?: string;
 };
 
 /**
  * Creates an actor instance for interacting with a canister
- * @template T - The interface type of the actor
- * @param {string} canisterName - Name of the canister to create an actor for
- * @param {GetCanisterActorOptions} [options={}] - Configuration options
- * @returns {Promise<ActorSubclass<T>>} A promise that resolves to the actor instance
+ * @param canisterName - Name of the canister to create an actor for
+ * @param options - Configuration options
+ * @returns A promise that resolves to the actor instance
  */
 export async function getCanisterActor<T>(
     canisterName: string,

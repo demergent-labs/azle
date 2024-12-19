@@ -4,9 +4,9 @@ import { getCanisterActor } from '../get_canister_actor';
 
 /**
  * Creates an actor instance with cache clearing functionality
- * @param {string} parentDir - Parent directory path containing the dfx generated files
- * @param {Agent} [agent] - Optional pre-configured agent
- * @returns {Promise<ActorSubclass<T>>} A promise that resolves to the actor instance
+ * @param parentDir - Parent directory path containing the dfx generated files
+ * @param agent - Optional pre-configured agent
+ * @returns A promise that resolves to the actor instance
  */
 export async function getActor<T>(
     parentDir: string,
