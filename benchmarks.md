@@ -17,10 +17,10 @@
     </tr>
     <tr>
         <td>Baseline Weighted Efficiency</td>
-        <td>12_425_390</td>
-        <td><span style="color: red">17.85%</span></td>
-        <td>105_381_438</td>
-        <td><span style="color: green">-10.78%</span></td>
+        <td>10_809_101</td>
+        <td><span style="color: red">2.52%</span></td>
+        <td>112_968_550</td>
+        <td><span style="color: green">-4.36%</span></td>
     </tr>
     <tr>
         <td colspan="5">&nbsp;</td>
@@ -34,10 +34,10 @@
     </tr>
     <tr>
         <td>Method Executions</td>
-        <td>611</td>
-        <td><span style="color: green">-2.08%</span></td>
-        <td>745</td>
-        <td><span style="color: red">8.60%</span></td>
+        <td>661</td>
+        <td><span style="color: red">5.93%</span></td>
+        <td>795</td>
+        <td><span style="color: red">15.89%</span></td>
     </tr>
     <tr>
         <td colspan="5">&nbsp;</td>
@@ -51,38 +51,38 @@
     </tr>
     	<tr>
         <td>Mean</td>
-        <td>120_237_704</td>
-        <td><span style="color: red">18.61%</span></td>
-        <td>1_026_538_663</td>
-        <td><span style="color: green">-11.04%</span></td>
+        <td>103_962_661</td>
+        <td><span style="color: red">2.55%</span></td>
+        <td>1_102_381_216</td>
+        <td><span style="color: green">-4.47%</span></td>
     </tr>
 	<tr>
         <td>Median</td>
-        <td>1_011_216</td>
-        <td><span style="color: green">-2.86%</span></td>
-        <td>8_922_860</td>
-        <td><span style="color: red">0.03%</span></td>
+        <td>1_023_419</td>
+        <td><span style="color: green">-1.69%</span></td>
+        <td>8_932_293</td>
+        <td><span style="color: red">0.13%</span></td>
     </tr>
 	<tr>
         <td>Standard Deviation</td>
-        <td>1_266_731_659</td>
-        <td><span style="color: red">6.19%</span></td>
-        <td>3_031_934_484</td>
-        <td><span style="color: green">-4.32%</span></td>
+        <td>1_211_220_245</td>
+        <td><span style="color: red">1.53%</span></td>
+        <td>3_064_040_274</td>
+        <td><span style="color: green">-3.31%</span></td>
     </tr>
 	<tr>
         <td>Min</td>
-        <td>163_759</td>
-        <td><span style="color: red">5.24%</span></td>
-        <td>84_524</td>
-        <td><span style="color: red">1.26%</span></td>
+        <td>176_350</td>
+        <td><span style="color: red">13.33%</span></td>
+        <td>84_568</td>
+        <td><span style="color: red">1.31%</span></td>
     </tr>
 	<tr>
         <td>Max</td>
-        <td>19_060_732_880</td>
-        <td><span style="color: red">4.58%</span></td>
-        <td>18_426_067_752</td>
-        <td><span style="color: red">0.02%</span></td>
+        <td>19_037_581_805</td>
+        <td><span style="color: red">4.45%</span></td>
+        <td>18_481_788_095</td>
+        <td><span style="color: red">0.32%</span></td>
     </tr>
 
 </table>
