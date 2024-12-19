@@ -1,6 +1,6 @@
 import { Agent } from '@dfinity/agent';
 
-import { getCanisterActor } from '../index';
+import { getCanisterActor } from '../get_canister_actor';
 
 export async function getActor(parentDir: string, agent?: Agent): Promise<any> {
     const resolvedPathIndex = require.resolve(
