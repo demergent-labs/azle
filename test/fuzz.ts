@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import { CuzzConfig } from 'cuzz';
-import { readFile } from 'fs-extra';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { DfxJson } from '../src/build/stable/utils/types';
@@ -57,7 +57,8 @@ function fuzzTestCanister(canisterName: string, callDelay: string): void {
         canisterName,
         '--skip-deploy',
         '--call-delay',
-        callDelay
+        callDelay,
+        '--clear-console'
     ];
 
     const cuzzArgs =
