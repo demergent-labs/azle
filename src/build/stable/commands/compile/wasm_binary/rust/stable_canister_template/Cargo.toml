@@ -7,13 +7,13 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.10.2"
+candid = "0.10.11"
 candid_parser = "0.1.2"
-ic-cdk = "0.12.2"
-ic-cdk-macros = "0.8.4"
-ic-cdk-timers = "0.6.0"
-ic-stable-structures = "0.6.5"
-ic-wasi-polyfill = "0.6.1"
+ic-cdk = "0.16.0"
+ic-cdk-macros = "0.16.0"
+ic-cdk-timers = "0.11.0"
+ic-stable-structures = "0.6.7"
+ic-wasi-polyfill = "0.6.4"
 rquickjs = { version = "0.6.2", features = ["array-buffer"] }
 scopeguard = "1.2.0"
 serde = "1.0.202"
