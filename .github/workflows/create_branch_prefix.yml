@@ -10,6 +10,10 @@ on:
                 required: true
                 type: string
                 description: 'Version to use in branch names'
+            signing-key-id:
+                required: true
+                type: string
+                description: 'Signing key ID to use for signing commits'
         outputs:
             branch-prefix:
                 description: 'The generated branch prefix ({prefix}--{version}-)'
@@ -43,7 +47,7 @@ jobs:
             - uses: ./.github/actions/configure_git
               with:
                   gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
-                  signing_key_id: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+                  signing_key_id: ${{ inputs.signing-key-id }}
 
             - name: Create base branch
               run: git checkout -b ${{ steps.create-prefix.outputs.base-branch }}
