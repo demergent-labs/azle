@@ -16,6 +16,6 @@ ic-stable-structures = "0.6.5"
 ic-wasi-polyfill = "0.6.1"
 rquickjs = { version = "0.6.2", features = ["array-buffer"] }
 scopeguard = "1.2.0"
-serde = "1.0.202"
-serde_json = "1.0.107"
+serde = "1.0.216"
+serde_json = "1.0.133"
 slotmap = "=1.0.6"
