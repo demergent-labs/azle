@@ -58,4 +58,4 @@ jobs:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'
                   gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
-                  signing-key-id: 2ED5FB11C6D5168EB9D69C5EF524010C7419CA66
+                  signing-key-id: ${{ needs.workflow-config.outputs.is-dependabot == 'true' && '2ED5FB11C6D5168EB9D69C5EF524010C7419CA66' || 'C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0' }}
