@@ -78,7 +78,7 @@
         "lint-staged": "15.2.11",
         "semver": "^7.6.3",
         "prettier": "^3.4.2",
-        "puppeteer": "^23.10.3",
+        "puppeteer": "^23.11.0",
         "ts-jest": "^29.1.4",
         "typescript-eslint": "^8.18.0"
     },
