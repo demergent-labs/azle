@@ -4,6 +4,7 @@
         "Method: icrc1_transfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*assertion failed at ICRC1.mo:268.20-268.59",
         "Method: icrc2_transfer_from \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*assertion failed at ICRC1.mo:262.5-262.37",
         "Method: icrc2_approve \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*assertion failed at ICRC1.mo:268.20-268.59",
+        "Method: icrc2_approve \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*assertion failed at ICRC1.mo:262.5-262.37",
         "xis larger than the max allowed 2097152"
     ]
 }

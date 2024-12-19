@@ -1,7 +1,16 @@
 {
     "expectedErrors": [
-        "Method: candidEncode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
-        "Method: assertCandidDecodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
-        "xCandid parser error"
+        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized token",
+        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized EOF found at",
+        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown token",
+        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed string at",
+        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown escape character",
+        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized token",
+        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized EOF found at",
+        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown token",
+        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed string at",
+        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown escape character",
+        "Method: candidDecodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
+        "Method: assertCandidDecodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header"
     ]
 }

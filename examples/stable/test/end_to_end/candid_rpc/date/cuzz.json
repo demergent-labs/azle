@@ -6,6 +6,8 @@
         "Method: getFullYear \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument",
         "Method: getDay \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument",
         "Method: getHours \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument",
+        "Method: getMinutes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument",
+        "Method: getMilliseconds \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument",
         "xUncaught RangeError: cannot convert NaN or Infinity to BigInt",
         "xUncaught Error: Failed to encode Candid arguments: Error: Invalid nat64 argument"
     ]
