@@ -31,11 +31,5 @@ export async function getCanisterActor<T>(
         agent
     });
 
-    if (typeof canisterName === 'string') {
-        throw new Error(
-            'This prop tests uses getCanisterActor and is good to go'
-        );
-    }
-
     return actor;
 }
