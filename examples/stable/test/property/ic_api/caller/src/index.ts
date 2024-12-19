@@ -17,7 +17,7 @@ import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 export default class {
     initCaller: Principal | null = null;
     postUpgradeCaller: Principal | null = null;
-    preUpgradeCaller = StableBTreeMap<'PRE_UPGRADE_CALLER', Principal>(0);
+    preUpgradeCaller = new StableBTreeMap<'PRE_UPGRADE_CALLER', Principal>(0);
     inspectMessageCaller: Principal | null = null;
 
     @init([])
