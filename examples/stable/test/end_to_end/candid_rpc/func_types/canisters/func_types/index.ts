@@ -56,7 +56,7 @@ const NullFunc = IDL.Func(
 type NullFunc = Func;
 
 export default class {
-    stableStorage = StableBTreeMap<string, StableFunc>(0);
+    stableStorage = new StableBTreeMap<string, StableFunc>(0);
 
     @init([])
     init(): void {

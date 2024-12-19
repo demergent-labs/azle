@@ -1,11 +1,11 @@
 import { IDL, query, StableBTreeMap, update } from 'azle';
 
 export default class {
-    stableMap5 = StableBTreeMap<[string] | [], number>(5);
-    stableMap6 = StableBTreeMap<bigint[], boolean>(6);
-    stableMap7 = StableBTreeMap<null, null>(7);
-    stableMap8 = StableBTreeMap<boolean, null>(8);
-    stableMap9 = StableBTreeMap<number, string[]>(9);
+    stableMap5 = new StableBTreeMap<[string] | [], number>(5);
+    stableMap6 = new StableBTreeMap<bigint[], boolean>(6);
+    stableMap7 = new StableBTreeMap<null, null>(7);
+    stableMap8 = new StableBTreeMap<boolean, null>(8);
+    stableMap9 = new StableBTreeMap<number, string[]>(9);
 
     @query([], IDL.Bool)
     getRedeployed(): boolean {

@@ -15,7 +15,7 @@ import {
 } from 'azle/canisters/management';
 
 export default class {
-    stableStorage = StableBTreeMap<string, string>(0);
+    stableStorage = new StableBTreeMap<string, string>(0);
 
     @init([IDL.Text])
     init(ethereumUrl: string): void {

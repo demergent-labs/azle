@@ -16,9 +16,10 @@ import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 export default class {
     initCanisterVersion: bigint | null = null;
     postUpgradeCanisterVersion: bigint | null = null;
-    preUpgradeCanisterVersion = StableBTreeMap<'PRE_UPGRADE_VERSION', bigint>(
-        0
-    );
+    preUpgradeCanisterVersion = new StableBTreeMap<
+        'PRE_UPGRADE_VERSION',
+        bigint
+    >(0);
     inspectMessageCanisterVersion: bigint | null = null;
     meaninglessState: bigint = 0n;
 

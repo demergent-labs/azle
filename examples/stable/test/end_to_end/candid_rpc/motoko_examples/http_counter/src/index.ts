@@ -98,7 +98,7 @@ export type HttpResponse = {
 };
 
 export default class {
-    stableStorage = StableBTreeMap<string, bigint>(0);
+    stableStorage = new StableBTreeMap<string, bigint>(0);
 
     @init([])
     init(): void {

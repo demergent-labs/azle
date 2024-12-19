@@ -3,11 +3,11 @@ import { IDL, query, StableBTreeMap, update } from 'azle';
 import { Reaction, User } from '../types';
 
 export default class {
-    stableMap0 = StableBTreeMap<number, string>(0);
-    stableMap1 = StableBTreeMap<number, Uint8Array>(1);
-    stableMap2 = StableBTreeMap<number, bigint>(2);
-    stableMap3 = StableBTreeMap<Reaction, bigint>(3);
-    stableMap4 = StableBTreeMap<User, number>(4);
+    stableMap0 = new StableBTreeMap<number, string>(0);
+    stableMap1 = new StableBTreeMap<number, Uint8Array>(1);
+    stableMap2 = new StableBTreeMap<number, bigint>(2);
+    stableMap3 = new StableBTreeMap<Reaction, bigint>(3);
+    stableMap4 = new StableBTreeMap<User, number>(4);
 
     @query([], IDL.Bool)
     getRedeployed(): boolean {

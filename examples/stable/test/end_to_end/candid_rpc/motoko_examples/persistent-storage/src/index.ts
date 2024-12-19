@@ -9,7 +9,7 @@ import {
 } from 'azle';
 
 export default class {
-    stableStorage = StableBTreeMap<string, bigint>(0);
+    stableStorage = new StableBTreeMap<string, bigint>(0);
     redeployed = false;
 
     @init([])
