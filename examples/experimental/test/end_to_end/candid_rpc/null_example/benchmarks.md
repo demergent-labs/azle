@@ -4,9 +4,9 @@
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | setPartiallyNullRecord | 8_982_425    | 4_182_970 | $0.0000055620 | $5.56             | <font color="green">-4_566</font>  |
-| 1   | setSmallNullRecord     | 5_375_052    | 2_740_020 | $0.0000036433 | $3.64             | <font color="green">-27_102</font> |
-| 2   | setLargeNullRecord     | 8_703_421    | 4_071_368 | $0.0000054136 | $5.41             | <font color="green">-14_709</font> |
+| 0   | setPartiallyNullRecord | 8_976_268    | 4_180_507 | $0.0000055587 | $5.55             | <font color="green">-10_723</font> |
+| 1   | setSmallNullRecord     | 5_386_314    | 2_744_525 | $0.0000036493 | $3.64             | <font color="green">-15_840</font> |
+| 2   | setLargeNullRecord     | 8_705_047    | 4_072_018 | $0.0000054144 | $5.41             | <font color="green">-13_083</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

@@ -2,9 +2,9 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
-| --- | ------------------ | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | testRecServiceCall | 6_229_268    | 3_081_707 | $0.0000040977 | $4.09             | <font color="red">+51_913</font> |
+| Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ------------------ | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | testRecServiceCall | 6_153_901    | 3_051_560 | $0.0000040576 | $4.05             | <font color="green">-23_454</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 
@@ -18,7 +18,7 @@
 
 | Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                |
 | --- | ----------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init        | 1_337_859_120 | 935_733_648 | $0.0012442170 | $1_244.21         | <font color="red">+317_679_006</font> |
+| 0   | init        | 1_346_232_492 | 939_082_996 | $0.0012486705 | $1_248.67         | <font color="red">+326_052_378</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

@@ -2,10 +2,10 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | publicKey   | 148_390_394  | 59_946_157 | $0.0000797086 | $79.70            | <font color="green">-32_704</font> |
-| 1   | sign        | 148_548_313  | 60_009_325 | $0.0000797926 | $79.79            | <font color="green">-12_120</font> |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
+| 0   | publicKey   | 148_415_933  | 59_956_373 | $0.0000797222 | $79.72            | <font color="green">-7_165</font> |
+| 1   | sign        | 148_614_846  | 60_035_938 | $0.0000798280 | $79.82            | <font color="red">+54_413</font>  |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

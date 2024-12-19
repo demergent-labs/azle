@@ -4,8 +4,8 @@
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | initializeSupply | 2_138_473    | 1_445_389 | $0.0000019219 | $1.92             | <font color="red">+51_581</font> |
-| 1   | transfer         | 1_744_935    | 1_287_974 | $0.0000017126 | $1.71             | <font color="red">+23_862</font> |
+| 0   | initializeSupply | 2_097_212    | 1_428_884 | $0.0000018999 | $1.89             | <font color="red">+10_320</font> |
+| 1   | transfer         | 1_740_063    | 1_286_025 | $0.0000017100 | $1.70             | <font color="red">+18_990</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

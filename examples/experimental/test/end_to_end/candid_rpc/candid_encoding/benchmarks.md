@@ -1,3 +1,5 @@
+⚠️ **WARNING: Benchmark process failed for version 0.25.0-dev**
+
 # Benchmarks for candid_encoding
 
 ## Current benchmarks Azle version: 0.25.0-dev

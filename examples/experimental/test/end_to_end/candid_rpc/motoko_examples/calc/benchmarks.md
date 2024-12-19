@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | add         | 1_274_992    | 1_099_996 | $0.0000014626 | $1.46             | <font color="green">-1_299</font> |
-| 1   | sub         | 1_253_918    | 1_091_567 | $0.0000014514 | $1.45             | <font color="green">-985</font>   |
-| 2   | mul         | 1_252_202    | 1_090_880 | $0.0000014505 | $1.45             | <font color="green">-954</font>   |
-| 3   | div         | 1_614_082    | 1_235_632 | $0.0000016430 | $1.64             | <font color="green">-3_081</font> |
-| 4   | clearall    | 849_588      | 929_835   | $0.0000012364 | $1.23             | <font color="green">-587</font>   |
-| 5   | add         | 1_252_734    | 1_091_093 | $0.0000014508 | $1.45             | <font color="red">+2_115</font>   |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | add         | 1_262_446    | 1_094_978 | $0.0000014560 | $1.45             | <font color="green">-13_845</font> |
+| 1   | sub         | 1_250_113    | 1_090_045 | $0.0000014494 | $1.44             | <font color="green">-4_790</font>  |
+| 2   | mul         | 1_247_263    | 1_088_905 | $0.0000014479 | $1.44             | <font color="green">-5_893</font>  |
+| 3   | div         | 1_615_981    | 1_236_392 | $0.0000016440 | $1.64             | <font color="green">-1_182</font>  |
+| 4   | clearall    | 847_463      | 928_985   | $0.0000012352 | $1.23             | <font color="green">-2_712</font>  |
+| 5   | add         | 1_248_101    | 1_089_240 | $0.0000014483 | $1.44             | <font color="green">-2_518</font>  |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

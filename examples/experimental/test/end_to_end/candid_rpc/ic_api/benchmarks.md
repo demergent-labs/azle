@@ -4,8 +4,8 @@
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | dataCertificateNull | 1_674_128    | 1_259_651 | $0.0000016749 | $1.67             | <font color="green">-4_727</font> |
-| 1   | setCertifiedData    | 1_213_309    | 1_075_323 | $0.0000014298 | $1.42             | <font color="green">-2_133</font> |
+| 0   | dataCertificateNull | 1_671_735    | 1_258_694 | $0.0000016736 | $1.67             | <font color="green">-7_120</font> |
+| 1   | setCertifiedData    | 1_221_343    | 1_078_537 | $0.0000014341 | $1.43             | <font color="red">+5_901</font>   |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

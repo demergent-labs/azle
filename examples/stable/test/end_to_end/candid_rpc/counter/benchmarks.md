@@ -4,9 +4,9 @@
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | incrementCount | 1_498_092    | 1_189_236 | $0.0000015813 | $1.58             | <font color="red">+4_206</font>  |
-| 1   | incrementCount | 1_471_932    | 1_178_772 | $0.0000015674 | $1.56             | <font color="red">+25_338</font> |
-| 2   | incrementCount | 1_467_017    | 1_176_806 | $0.0000015648 | $1.56             | <font color="red">+18_922</font> |
+| 0   | incrementCount | 1_505_115    | 1_192_046 | $0.0000015850 | $1.58             | <font color="red">+11_229</font> |
+| 1   | incrementCount | 1_482_732    | 1_183_092 | $0.0000015731 | $1.57             | <font color="red">+36_138</font> |
+| 2   | incrementCount | 1_482_565    | 1_183_026 | $0.0000015730 | $1.57             | <font color="red">+34_470</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

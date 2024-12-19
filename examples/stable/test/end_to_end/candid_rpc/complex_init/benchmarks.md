@@ -4,7 +4,7 @@
 
 | Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                |
 | --- | ----------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init        | 1_337_523_744 | 935_599_497 | $0.0012440386 | $1_244.03         | <font color="red">+316_923_521</font> |
+| 0   | init        | 1_345_806_541 | 938_912_616 | $0.0012484439 | $1_248.44         | <font color="red">+325_206_318</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 
@@ -18,7 +18,7 @@
 
 | Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                |
 | --- | ----------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init        | 1_337_409_820 | 935_553_928 | $0.0012439780 | $1_243.97         | <font color="red">+316_848_728</font> |
+| 0   | init        | 1_345_705_937 | 938_872_374 | $0.0012483904 | $1_248.39         | <font color="red">+325_144_845</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

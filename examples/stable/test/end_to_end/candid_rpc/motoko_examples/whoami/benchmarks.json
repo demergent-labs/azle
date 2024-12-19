@@ -4,9 +4,13 @@
             "version": "0.25.0-alpha",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1027546042" },
+                    "instructions": {
+                        "__bigint__": "1027546042"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730326458669318113" }
+                    "timestamp": {
+                        "__bigint__": "1730326458669318113"
+                    }
                 }
             ]
         },
@@ -14,9 +18,13 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1345834456" },
+                    "instructions": {
+                        "__bigint__": "1354149660"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484657032788090" }
+                    "timestamp": {
+                        "__bigint__": "1734632067856773827"
+                    }
                 }
             ]
         }
