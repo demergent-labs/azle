@@ -3,6 +3,7 @@
         "Method: executeTransfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Invalid account identifier: Checksum failed for .*, expected check bytes .* but found",
         "Method: getAccountBalance \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Invalid account identifier: Checksum failed for .*, expected check bytes .* but found",
         "Method: account_balance \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Invalid account identifier: Checksum failed for .*, expected check bytes .* but found",
-        "Method: executeTransfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Deserialization Failed: \\\\\"Fail to decode argument 0 from table5 to record"
+        "Method: executeTransfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Deserialization Failed: \\\\\"Fail to decode argument 0 from table5 to record",
+        "Method: transfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Deserialization Failed: \\\\\"Fail to decode argument 0 from table5 to record"
     ]
 }
