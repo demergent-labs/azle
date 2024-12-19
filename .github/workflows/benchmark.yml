@@ -1,4 +1,5 @@
 name: Benchmark
+
 on:
     workflow_dispatch:
         inputs:
@@ -17,6 +18,10 @@ on:
                 required: true
                 type: boolean
                 default: false
+            signing-key-id:
+                required: true
+                type: string
+                default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
 jobs:
     get-exclude-dirs:
@@ -39,7 +44,7 @@ jobs:
         with:
             prefix: 'benchmark'
             version: $(jq -r '.version' package.json)
-            signing-key-id: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+            signing-key-id: ${{ inputs.signing-key-id }}
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
@@ -94,7 +99,7 @@ jobs:
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             directories: ${{ matrix.benchmark_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
-            signing-key-id: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+            signing-key-id: ${{ inputs.signing-key-id }}
 
     squash-branches:
         needs: [run-benchmarks, create-branch-prefix]
@@ -103,7 +108,7 @@ jobs:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'run benchmarks'
-            signing-key-id: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+            signing-key-id: ${{ inputs.signing-key-id }}
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -136,7 +141,7 @@ jobs:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'analyze benchmark results'
                   create-branch: 'false'
-                  signing-key-id: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+                  signing-key-id: ${{ inputs.signing-key-id }}
 
     create-pr:
         needs:
