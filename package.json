@@ -33,7 +33,7 @@
         "@sinonjs/text-encoding": "^0.7.3",
         "binaryen": "^116.0.0",
         "buffer": "^6.0.3",
-        "chokidar": "^4.0.1",
+        "chokidar": "^4.0.3",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
         "crypto-browserify": "^3.12.0",
