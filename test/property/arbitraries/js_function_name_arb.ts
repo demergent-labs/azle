@@ -129,6 +129,7 @@ const jsKeywords = [
     'yield',
     // Additional words with special meaning
     'NaN',
+    'IDL',
     'Infinity',
     'undefined',
     'arguments',
