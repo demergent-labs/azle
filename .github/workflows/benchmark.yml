@@ -137,7 +137,7 @@ jobs:
 
             - uses: ./.github/actions/commit_and_push
               with:
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'analyze benchmark results'
                   create-branch: 'false'
