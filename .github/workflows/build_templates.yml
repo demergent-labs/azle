@@ -58,3 +58,4 @@ jobs:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'
                   gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+                  signing_key_id: 2ED5FB11C6D5168EB9D69C5EF524010C7419CA66

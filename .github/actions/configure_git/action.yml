@@ -4,6 +4,9 @@ inputs:
     gpg_signing_key:
         description: 'The GPG signing key to use for signing commits'
         required: true
+    signing_key_id:
+        description: 'The GPG signing key ID to configure for git'
+        required: true
 runs:
     using: composite
     steps:
@@ -14,5 +17,5 @@ runs:
               git config --global user.email 'jordan.michael.last@gmail.com'
               git config --global commit.gpgsign true
               echo -n "${{ inputs.gpg_signing_key }}" | base64 --decode | gpg --import
-              git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+              git config --global user.signingkey ${{ inputs.signing_key_id }}
           shell: bash

@@ -14,12 +14,16 @@ inputs:
     gpg_signing_key:
         description: 'The GPG signing key to use for signing commits'
         required: true
+    signing_key_id:
+        description: 'The GPG signing key ID to configure for git'
+        required: true
 runs:
     using: composite
     steps:
         - uses: ./.github/actions/configure_git
           with:
               gpg_signing_key: ${{ inputs.gpg_signing_key }}
+              signing_key_id: ${{ inputs.signing_key_id }}
 
         - name: Commit and push changes
           shell: bash
