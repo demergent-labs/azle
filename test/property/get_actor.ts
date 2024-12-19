@@ -11,7 +11,7 @@ import { getCanisterActor } from '../get_canister_actor';
 export async function getActor<T>(
     parentDir: string,
     agent?: Agent
-): Promise<ActorSubclass<T>> {
+): Promise<ActorSubclass<T> & { [key: string]: any }> {
     const resolvedPathIndex = require.resolve(
         `${parentDir}/dfx_generated/canister/index.js`
     );
