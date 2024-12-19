@@ -6,7 +6,7 @@ steps:
 
     - uses: ./.github/actions/commit_and_push
       with:
-          gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+          gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
           branch-name: 'branch-name'
           commit-message: 'commit message'
           create-branch: 'true'

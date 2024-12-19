@@ -26,20 +26,6 @@ jobs:
                   exclude-release-only-dispatch-input-value: false
                   link-azle-dispatch-input-value: false
 
-    print-secrets:
-        name: Print Workflow Secrets
-        runs-on: ubuntu-latest
-        steps:
-            - name: List used secrets
-              run: |
-                  echo "Secrets used in this workflow:"
-                  echo "- LASTMJS_GITHUB_TOKEN"
-                  echo ${{ secrets.LASTMJS_GITHUB_TOKEN }}
-                  echo "- GPG_SIGNING_KEY"
-                  echo "${{ secrets.GPG_SIGNING_KEY }}" | sed 's/./*/g'
-                  echo "- SCOOBY"
-                  echo ${{ secrets.SCOOBY }}
-
     build-templates:
         name: Build templates for Dependabot
         needs: workflow-config
@@ -71,4 +57,5 @@ jobs:
               with:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
+                  signing-key-id: ${{ needs.workflow-config.outputs.is-dependabot == 'true' && '2ED5FB11C6D5168EB9D69C5EF524010C7419CA66' || 'C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0' }}
