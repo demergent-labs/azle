@@ -41,9 +41,9 @@ type LargeRecord = {
 };
 
 export default class {
-    smallRecordMap = StableBTreeMap<string, SmallRecord>(0);
-    mediumRecordMap = StableBTreeMap<string, MediumRecord>(1);
-    largeRecordMap = StableBTreeMap<string, LargeRecord>(2);
+    smallRecordMap = new StableBTreeMap<string, SmallRecord>(0);
+    mediumRecordMap = new StableBTreeMap<string, MediumRecord>(1);
+    largeRecordMap = new StableBTreeMap<string, LargeRecord>(2);
 
     @update([IDL.Nat32])
     insertSmallRecord(numToInsert: number): void {

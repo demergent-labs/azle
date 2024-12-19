@@ -29,8 +29,8 @@ type Recording = {
 };
 
 export default class {
-    users = StableBTreeMap<Principal, User>(0);
-    recordings = StableBTreeMap<Principal, Recording>(1);
+    users = new StableBTreeMap<Principal, User>(0);
+    recordings = new StableBTreeMap<Principal, Recording>(1);
 
     @update([IDL.Text], User)
     createUser(username: string): User {
