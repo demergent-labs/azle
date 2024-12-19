@@ -123,13 +123,10 @@ export async function getCanisterActor<T>(
 
     const { createActor } = await import(importPath);
 
-    const agent = new HttpAgent({
-        host: 'http://127.0.0.1:8000'
+    const agent = await HttpAgent.create({
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     });
-
-    if (process.env.DFX_NETWORK !== 'ic') {
-        await agent.fetchRootKey();
-    }
 
     const actor = createActor(getCanisterId(canisterName), {
         agent

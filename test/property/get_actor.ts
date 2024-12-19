@@ -1,8 +1,17 @@
-import { Agent, HttpAgent } from '@dfinity/agent';
+import { ActorSubclass, Agent } from '@dfinity/agent';
 
-import { getCanisterId } from '../../dfx';
+import { getCanisterActor } from '../get_canister_actor';
 
-export function getActor(parentDir: string, agent?: Agent): any {
+/**
+ * Creates an actor instance with cache clearing functionality
+ * @param parentDir - Parent directory path containing the dfx generated files
+ * @param agent - Optional pre-configured agent
+ * @returns A promise that resolves to the actor instance
+ */
+export async function getActor<T>(
+    parentDir: string,
+    agent?: Agent
+): Promise<ActorSubclass<T> & { [key: string]: any }> {
     const resolvedPathIndex = require.resolve(
         `${parentDir}/dfx_generated/canister/index.js`
     );
@@ -13,15 +22,8 @@ export function getActor(parentDir: string, agent?: Agent): any {
     delete require.cache[resolvedPathIndex];
     delete require.cache[resolvedPathDid];
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { createActor } = require(`${parentDir}/dfx_generated/canister`);
-
-    return createActor(getCanisterId('canister'), {
-        agent:
-            agent ??
-            new HttpAgent({
-                host: 'http://127.0.0.1:8000',
-                verifyQuerySignatures: false // TODO Major issue: https://forum.dfinity.org/t/agent-js-0-20-0-is-released-replica-signed-query-edition/24743/16?u=lastmjs
-            })
+    return getCanisterActor('canister', {
+        parentDir,
+        agent
     });
 }

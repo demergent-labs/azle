@@ -43,7 +43,7 @@ function generateTest(
         name: `method "${functionName}" expected ${behavior}`,
         test: async (): Promise<AzleResult> => {
             await agent.fetchRootKey();
-            const actor = getActor(__dirname, agent);
+            const actor = await getActor(__dirname, agent);
             try {
                 const result = await actor[functionName](...paramValues);
 

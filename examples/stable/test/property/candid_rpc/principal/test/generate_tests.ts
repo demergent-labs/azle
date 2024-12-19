@@ -18,7 +18,7 @@ export function generateTests(
             {
                 name: `principal ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
                     const result = await actor[functionName](
                         ...namedParamPrincipals.map(
                             (param) => param.value.value.agentArgumentValue
