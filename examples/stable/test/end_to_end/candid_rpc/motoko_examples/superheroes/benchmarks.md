@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | create      | 3_662_180    | 2_054_872 | $0.0000027323 | $2.73             | <font color="red">+76_937</font>  |
-| 1   | create      | 4_719_779    | 2_477_911 | $0.0000032948 | $3.29             | <font color="red">+143_991</font> |
-| 2   | update      | 5_072_985    | 2_619_194 | $0.0000034827 | $3.48             | <font color="red">+186_800</font> |
-| 3   | update      | 3_561_803    | 2_014_721 | $0.0000026789 | $2.67             | <font color="red">+103_110</font> |
-| 4   | deleteHero  | 1_221_842    | 1_078_736 | $0.0000014344 | $1.43             | <font color="red">+33_514</font>  |
-| 5   | deleteHero  | 1_207_029    | 1_072_811 | $0.0000014265 | $1.42             | <font color="red">+28_954</font>  |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | create      | 3_632_331    | 2_042_932 | $0.0000027164 | $2.71             | <font color="red">+47_088</font> |
+| 1   | create      | 4_639_132    | 2_445_652 | $0.0000032519 | $3.25             | <font color="red">+63_344</font> |
+| 2   | update      | 4_962_786    | 2_575_114 | $0.0000034241 | $3.42             | <font color="red">+76_601</font> |
+| 3   | update      | 3_524_602    | 1_999_840 | $0.0000026591 | $2.65             | <font color="red">+65_909</font> |
+| 4   | deleteHero  | 1_223_552    | 1_079_420 | $0.0000014353 | $1.43             | <font color="red">+35_224</font> |
+| 5   | deleteHero  | 1_207_123    | 1_072_849 | $0.0000014265 | $1.42             | <font color="red">+29_048</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

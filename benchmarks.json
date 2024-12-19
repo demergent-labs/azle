@@ -1,22 +1,22 @@
 {
     "0.25.0-dev": {
         "stable": {
-            "count": 611,
-            "mean": 120237704.94599018,
-            "median": 1011216,
-            "standardDeviation": 1266731659.1596396,
-            "min": 163759,
-            "max": 19060732880,
-            "baselineWeightedEfficiencyScore": 12425390.694599018
+            "count": 661,
+            "mean": 103962661.52344932,
+            "median": 1023419,
+            "standardDeviation": 1211220245.065482,
+            "min": 176350,
+            "max": 19037581805,
+            "baselineWeightedEfficiencyScore": 10809101.852344932
         },
         "experimental": {
-            "count": 745,
-            "mean": 1026538663.6483221,
-            "median": 8922860,
-            "standardDeviation": 3031934484.2442517,
-            "min": 84524,
-            "max": 18426067752,
-            "baselineWeightedEfficiencyScore": 105381438.76483223
+            "count": 795,
+            "mean": 1102381216.7433963,
+            "median": 8932293,
+            "standardDeviation": 3064040274.508855,
+            "min": 84568,
+            "max": 18481788095,
+            "baselineWeightedEfficiencyScore": 112968550.37433964
         }
     },
     "0.25.0-alpha": {

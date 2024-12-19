@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.25.0-dev
 
-| Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
-| --- | --------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | createUser      | 11_112_042   | 5_034_816  | $0.0000066946 | $6.69             | <font color="green">-98_916</font>  |
-| 1   | createRecording | 30_590_934   | 12_826_373 | $0.0000170548 | $17.05            | <font color="green">-279_671</font> |
-| 2   | deleteRecording | 42_858_618   | 17_733_447 | $0.0000235796 | $23.57            | <font color="green">-715_470</font> |
-| 3   | createRecording | 30_419_558   | 12_757_823 | $0.0000169637 | $16.96            | <font color="green">-249_376</font> |
-| 4   | deleteUser      | 29_329_040   | 12_321_616 | $0.0000163837 | $16.38            | <font color="green">-466_399</font> |
+| Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
+| --- | --------------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
+| 0   | createUser      | 11_274_434   | 5_099_773  | $0.0000067810 | $6.78             | <font color="red">+63_476</font>  |
+| 1   | createRecording | 31_367_227   | 13_136_890 | $0.0000174677 | $17.46            | <font color="red">+496_622</font> |
+| 2   | deleteRecording | 43_955_908   | 18_172_363 | $0.0000241632 | $24.16            | <font color="red">+381_820</font> |
+| 3   | createRecording | 31_170_998   | 13_058_399 | $0.0000173634 | $17.36            | <font color="red">+502_064</font> |
+| 4   | deleteUser      | 29_986_452   | 12_584_580 | $0.0000167333 | $16.73            | <font color="red">+191_013</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

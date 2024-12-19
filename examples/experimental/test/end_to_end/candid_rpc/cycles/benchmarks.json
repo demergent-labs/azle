@@ -1,0 +1,78 @@
+{
+    "cycles": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1131574"
+                    },
+                    "method_name": "receiveCycles",
+                    "timestamp": {
+                        "__bigint__": "1734632124418307793"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1224197"
+                    },
+                    "method_name": "receiveCycles",
+                    "timestamp": {
+                        "__bigint__": "1734632124707736203"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1225163"
+                    },
+                    "method_name": "receiveCycles",
+                    "timestamp": {
+                        "__bigint__": "1734632125056185385"
+                    }
+                }
+            ]
+        }
+    },
+    "intermediary": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0-dev",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5478420014"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1734632113217942622"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "11243249"
+                    },
+                    "method_name": "sendCycles",
+                    "timestamp": {
+                        "__bigint__": "1734632124707736203"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1415066"
+                    },
+                    "method_name": "sendCyclesNotify",
+                    "timestamp": {
+                        "__bigint__": "1734632125056185385"
+                    }
+                }
+            ]
+        }
+    }
+}

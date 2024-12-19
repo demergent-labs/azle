@@ -4,7 +4,7 @@
 
 | Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                |
 | --- | ----------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | postUpgrade | 1_342_974_884 | 937_779_953 | $0.0012469379 | $1_246.93         | <font color="red">+318_032_114</font> |
+| 0   | postUpgrade | 1_352_716_114 | 941_676_445 | $0.0012521189 | $1_252.11         | <font color="red">+327_773_344</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

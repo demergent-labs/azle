@@ -4,19 +4,19 @@
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | balance          | 2_283_209    | 1_503_283 | $0.0000019989 | $1.99             | <font color="green">-13_589</font> |
-| 1   | account          | 3_629_152    | 2_041_660 | $0.0000027147 | $2.71             | <font color="green">-16_665</font> |
-| 2   | balance          | 2_231_272    | 1_482_508 | $0.0000019712 | $1.97             | <font color="red">+9_723</font>    |
-| 3   | account          | 3_621_851    | 2_038_740 | $0.0000027109 | $2.71             | <font color="green">-1_183</font>  |
-| 4   | accounts         | 1_664_619    | 1_255_847 | $0.0000016699 | $1.66             | <font color="red">+4_174</font>    |
-| 5   | transfer         | 3_600_981    | 2_030_392 | $0.0000026998 | $2.69             | <font color="red">+31_671</font>   |
-| 6   | balance          | 2_233_099    | 1_483_239 | $0.0000019722 | $1.97             | <font color="red">+13_481</font>   |
-| 7   | account          | 3_620_022    | 2_038_008 | $0.0000027099 | $2.70             | <font color="red">+3_252</font>    |
-| 8   | balance          | 2_229_060    | 1_481_624 | $0.0000019701 | $1.97             | <font color="red">+17_548</font>   |
-| 9   | account          | 3_619_874    | 2_037_949 | $0.0000027098 | $2.70             | <font color="red">+3_286</font>    |
-| 10  | accounts         | 1_663_880    | 1_255_552 | $0.0000016695 | $1.66             | <font color="red">+11_985</font>   |
-| 11  | trap             | 1_616_594    | 1_236_637 | $0.0000016443 | $1.64             | <font color="green">-8_809</font>  |
-| 12  | sendNotification | 2_653_658    | 1_651_463 | $0.0000021959 | $2.19             | <font color="red">+5_607</font>    |
+| 0   | balance          | 2_269_534    | 1_497_813 | $0.0000019916 | $1.99             | <font color="green">-27_264</font> |
+| 1   | account          | 3_611_985    | 2_034_794 | $0.0000027056 | $2.70             | <font color="green">-33_832</font> |
+| 2   | balance          | 2_219_636    | 1_477_854 | $0.0000019651 | $1.96             | <font color="green">-1_913</font>  |
+| 3   | account          | 3_605_706    | 2_032_282 | $0.0000027023 | $2.70             | <font color="green">-17_328</font> |
+| 4   | accounts         | 1_656_637    | 1_252_654 | $0.0000016656 | $1.66             | <font color="green">-3_808</font>  |
+| 5   | transfer         | 3_573_978    | 2_019_591 | $0.0000026854 | $2.68             | <font color="red">+4_668</font>    |
+| 6   | balance          | 2_221_674    | 1_478_669 | $0.0000019661 | $1.96             | <font color="red">+2_056</font>    |
+| 7   | account          | 3_603_328    | 2_031_331 | $0.0000027010 | $2.70             | <font color="green">-13_442</font> |
+| 8   | balance          | 2_217_511    | 1_477_004 | $0.0000019639 | $1.96             | <font color="red">+5_999</font>    |
+| 9   | account          | 3_603_318    | 2_031_327 | $0.0000027010 | $2.70             | <font color="green">-13_270</font> |
+| 10  | accounts         | 1_655_411    | 1_252_164 | $0.0000016650 | $1.66             | <font color="red">+3_516</font>    |
+| 11  | trap             | 1_632_275    | 1_242_910 | $0.0000016527 | $1.65             | <font color="red">+6_872</font>    |
+| 12  | sendNotification | 2_665_532    | 1_656_212 | $0.0000022022 | $2.20             | <font color="red">+17_481</font>   |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 
@@ -42,8 +42,8 @@
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | transfer            | 2_189_412    | 1_465_764 | $0.0000019490 | $1.94             | <font color="red">+24_380</font> |
-| 1   | receiveNotification | 1_447_501    | 1_169_000 | $0.0000015544 | $1.55             | <font color="red">+60_070</font> |
+| 0   | transfer            | 2_189_409    | 1_465_763 | $0.0000019490 | $1.94             | <font color="red">+24_377</font> |
+| 1   | receiveNotification | 1_414_885    | 1_155_954 | $0.0000015370 | $1.53             | <font color="red">+27_454</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-alpha
 

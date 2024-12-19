@@ -6,5 +6,5 @@ steps:
 
     - uses: ./.github/actions/configure_git
       with:
-          gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+          gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
 ```

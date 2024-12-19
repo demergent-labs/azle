@@ -4,9 +4,13 @@
             "version": "0.25.0-alpha",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1605051" },
+                    "instructions": {
+                        "__bigint__": "1605051"
+                    },
                     "method_name": "sendNotification",
-                    "timestamp": { "__bigint__": "1730326465090461913" }
+                    "timestamp": {
+                        "__bigint__": "1730326465090461913"
+                    }
                 }
             ]
         },
@@ -14,9 +18,13 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1609604" },
+                    "instructions": {
+                        "__bigint__": "1594239"
+                    },
                     "method_name": "sendNotification",
-                    "timestamp": { "__bigint__": "1730484662485467041" }
+                    "timestamp": {
+                        "__bigint__": "1734632072680959782"
+                    }
                 }
             ]
         }
@@ -26,9 +34,13 @@
             "version": "0.25.0-alpha",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "912297" },
+                    "instructions": {
+                        "__bigint__": "912297"
+                    },
                     "method_name": "receiveNotification",
-                    "timestamp": { "__bigint__": "1730326465090461913" }
+                    "timestamp": {
+                        "__bigint__": "1730326465090461913"
+                    }
                 }
             ]
         },
@@ -36,9 +48,13 @@
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "923050" },
+                    "instructions": {
+                        "__bigint__": "906072"
+                    },
                     "method_name": "receiveNotification",
-                    "timestamp": { "__bigint__": "1730484662485467041" }
+                    "timestamp": {
+                        "__bigint__": "1734632072680959782"
+                    }
                 }
             ]
         }

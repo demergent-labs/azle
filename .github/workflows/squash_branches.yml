@@ -11,6 +11,9 @@ on:
             commit-message:
                 required: true
                 type: string
+            signing-key-id:
+                required: true
+                type: string
         secrets:
             GPG_SIGNING_KEY:
                 required: true
@@ -35,8 +38,8 @@ jobs:
 
             - uses: ./.github/actions/configure_git
               with:
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
-
+                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
+                  signing-key-id: ${{ inputs.signing-key-id }}
             - name: Collect branches
               id: collect-branches
               run: |
