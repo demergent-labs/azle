@@ -3,7 +3,7 @@ import { ActorSubclass, Agent, HttpAgent } from '@dfinity/agent';
 import { getCanisterId } from '../../dfx';
 
 /**
- * Creates an actor instance with require.cache (not ES module) clearing functionality
+ * Creates an actor instance with require (not ES module) cache clearing functionality
  * @param parentDir - Parent directory path containing the dfx generated files
  * @param agent - Optional pre-configured agent
  * @returns A promise that resolves to the actor instance
