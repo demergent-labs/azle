@@ -8,7 +8,7 @@ on:
                 required: false
                 type: string
                 default: '.1'
-            timeout:
+            time-limit:
                 description: 'Length of time (in minutes) after which the fuzz tests will automatically succeed'
                 required: false
                 type: string
@@ -41,5 +41,5 @@ jobs:
                 stable/test/end_to_end/candid_rpc/tuple_types
             fuzz: true
             call-delay: ${{ inputs.call-delay }}
-            timeout: ${{ inputs.timeout }}
+            time-limit: ${{ inputs.time-limit }}
             link-azle: true
