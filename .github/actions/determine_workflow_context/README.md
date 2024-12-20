@@ -9,8 +9,8 @@ steps:
 
     - name: Use run conditions
       run: |
-          echo "Is main branch push: ${{ steps.workflow-context.outputs.is_main_branch_push }}"
-          echo "Is main branch merge from release push: ${{ steps.workflow-context.outputs.is_main_branch_merge_from_release_push }}"
+          echo "Is main branch push from feature merge: ${{ steps.workflow-context.outputs.is_main_branch_push_from_feature_merge }}"
+          echo "Is main branch push from release merge: ${{ steps.workflow-context.outputs.is_main_branch_push_from_release_merge }}"
           echo "Is release branch PR: ${{ steps.workflow-context.outputs.is_release_branch_pr }}"
           echo "Is feature branch PR: ${{ steps.workflow-context.outputs.is_feature_branch_pr }}"
           echo "Is feature branch draft PR: ${{ steps.workflow-context.outputs.is_feature_branch_draft_pr }}"
