@@ -19,7 +19,8 @@ export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
     const describeLongTest =
         process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
-        process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+        process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true' ||
+        process.env.AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE === 'true'
             ? describe.skip
             : describe;
 
