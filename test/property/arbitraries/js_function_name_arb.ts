@@ -140,7 +140,8 @@ const jsKeywords = [
     'heartbeat',
     'inspectMessage',
     'query',
-    'update'
+    'update',
+    'ic'
 ];
 
 // This breaks rust but it doesn't seem to be a rust keyword
