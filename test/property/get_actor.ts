@@ -1,6 +1,6 @@
-import { ActorSubclass, Agent } from '@dfinity/agent';
+import { ActorSubclass, Agent, HttpAgent } from '@dfinity/agent';
 
-import { getCanisterActor } from '../get_canister_actor';
+import { getCanisterId } from '../../dfx';
 
 /**
  * Creates an actor instance with cache clearing functionality
@@ -22,8 +22,15 @@ export async function getActor<T>(
     delete require.cache[resolvedPathIndex];
     delete require.cache[resolvedPathDid];
 
-    return getCanisterActor('canister', {
-        parentDir,
-        agent
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { createActor } = require(`${parentDir}/dfx_generated/canister`);
+
+    return createActor(getCanisterId('canister'), {
+        agent:
+            agent ??
+            (await HttpAgent.create({
+                host: 'http://127.0.0.1:8000',
+                shouldFetchRootKey: true
+            }))
     });
 }

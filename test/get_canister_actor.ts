@@ -26,7 +26,7 @@ export async function getCanisterActor<T>(
 ): Promise<ActorSubclass<T>> {
     const parentDir = options.parentDir ?? join(process.cwd(), 'test');
     const { createActor } = await import(
-        `${join(parentDir, 'dfx_generated', canisterName)}?t=${Date.now()}`
+        join(parentDir, 'dfx_generated', canisterName)
     );
 
     const agent =
