@@ -20,6 +20,7 @@ module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
     testTimeout: 100_000_000,
+bail: true,
     transform: {
         '^.+\\.ts$': ['ts-jest', { isolatedModules: true }],
         '^.+\\\\.js$': 'ts-jest'
