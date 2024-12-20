@@ -14,6 +14,7 @@
         "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected token",
         "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected data at the end",
         "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
+        "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected end of string",
         "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected token",
         "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
         "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected data at the end"
