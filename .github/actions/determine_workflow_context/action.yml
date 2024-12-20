@@ -3,7 +3,7 @@ description: 'Determines the workflow context based on the current GitHub contex
 outputs:
     is_main_branch_push_from_feature_merge:
         description: 'True if this is a push to the main branch (excluding merges from release branches)'
-        value: ${{ steps.workflow-context.outputs.is_main_branch_push_from_release_merge }}
+        value: ${{ steps.workflow-context.outputs.is_main_branch_push_from_feature_merge }}
     is_main_branch_push_from_release_merge:
         description: 'True if this is a push to the main branch from a release branch merge'
         value: ${{ steps.workflow-context.outputs.is_main_branch_push_from_release_merge }}
