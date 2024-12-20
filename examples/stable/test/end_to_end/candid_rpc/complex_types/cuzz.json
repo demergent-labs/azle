@@ -1,10 +1,19 @@
 {
-    "callDelay": ".25",
     "expectedErrors": [
-        "Author not found",
-        "Post not found",
-        "Thread not found",
-        "cannot read property 'Symbol.iterator' of undefined",
-        "Canister trapped: heap out of bounds"
+        "Reject text:.*Uncaught Error: Author not found",
+        "Reject text:.*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
+        "Reject text:.*Error from Canister .*: Canister trapped: heap out of bounds",
+        "Method: createPost \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Author not found",
+        "Method: createReaction \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Author not found",
+        "Method: createThread \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Author not found",
+        "Method: createPost \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Thread not found",
+        "Method: createReaction \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Post not found",
+        "Method: createPost \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
+        "Method: createReaction \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
+        "Method: createThread \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot read property 'Symbol.iterator' of undefined",
+        "Method: getAllUsers \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister trapped: heap out of bounds",
+        "Method: getAllPosts \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister trapped: heap out of bounds",
+        "Method: getAllReactions \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister trapped: heap out of bounds",
+        "Method: getAllThreads \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister trapped: heap out of bounds"
     ]
 }

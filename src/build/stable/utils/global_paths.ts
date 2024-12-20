@@ -9,6 +9,8 @@ export const AZLE_PACKAGE_PATH = join(
     '..'
 );
 
+export const AZLE_CARGO_TARGET_DIR = join(AZLE_PACKAGE_PATH, 'target');
+
 export const STABLE_STATIC_CANISTER_TEMPLATE_PATH = join(
     AZLE_PACKAGE_PATH,
     'canister_templates',

@@ -25,7 +25,7 @@ on:
                 required: false
                 type: string
                 default: '.1'
-            timeout:
+            time-limit:
                 required: false
                 type: string
                 default: '300'
@@ -157,15 +157,7 @@ jobs:
                   echo "runs=$RUNS" >> $GITHUB_OUTPUT
 
             - name: Run tests
-              run: |
-                  timeout ${{ inputs.timeout }}m npm test
-                  exit_code=$?
-                  if [ $exit_code -eq 124 ] || [ $exit_code -eq 142 ]; then
-                      # Exit code 124 is for timeout, 142 is for SIGALRM
-                      exit 0
-                  else
-                      exit $exit_code
-                  fi
+              run: npm test
               working-directory: ${{ matrix.test.path }}
               shell: bash -l {0}
               env:
@@ -174,3 +166,4 @@ jobs:
                   AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
                   AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}
+                  AZLE_FUZZ_TIME_LIMIT: ${{ inputs.time-limit }}
