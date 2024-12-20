@@ -34,7 +34,8 @@ const HeterogeneousUpdateMethodArb = UpdateMethodArb(
 
 const arrayConstraints =
     process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
-    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true' ||
+    process.env.AZLE_IS_MAIN_BRANCH_PUSH === 'true'
         ? shortArrayConstraints
         : defaultArrayConstraints;
 

@@ -11,7 +11,8 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 const max =
     process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
-    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true' ||
+    process.env.AZLE_IS_MAIN_BRANCH_PUSH === 'true'
         ? 80
         : 200;
 

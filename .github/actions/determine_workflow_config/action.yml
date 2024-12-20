@@ -60,7 +60,7 @@ runs:
                 echo "is-dependabot=false" >> $GITHUB_OUTPUT
               else
                 EXCLUDE_SLOW=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' }}
-                EXCLUDE_UNSTABLE=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' || steps.workflow-context.outputs.is_feature_branch_pr == 'true' }}
+                EXCLUDE_UNSTABLE=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' || steps.workflow-context.outputs.is_feature_branch_pr == 'true' || steps.workflow-context.outputs.is_main_branch_push == 'true' }}
                 EXCLUDE_RELEASE_ONLY=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' || steps.workflow-context.outputs.is_feature_branch_pr == 'true' || steps.workflow-context.outputs.is_main_branch_push == 'true' }}
 
                 echo "exclude-slow=$EXCLUDE_SLOW" >> $GITHUB_OUTPUT
