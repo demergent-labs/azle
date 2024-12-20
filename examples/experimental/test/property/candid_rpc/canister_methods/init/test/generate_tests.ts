@@ -17,7 +17,7 @@ export function generateTests(
             {
                 name: `init method`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
                     const result = await actor.getInitValues();
 
                     return testEquality(result, expectedResult);

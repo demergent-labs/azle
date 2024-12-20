@@ -124,7 +124,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
                 {
                     name: `pre upgrade was not called after first deploy`,
                     test: async (): Promise<AzleResult> => {
-                        const actor = getActor(__dirname);
+                        const actor = await getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
                         return testEquality(result, []);
@@ -135,7 +135,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
                 {
                     name: `pre upgrade was called after second deploy`,
                     test: async (): Promise<AzleResult> => {
-                        const actor = getActor(__dirname);
+                        const actor = await getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
                         return testEquality(result, [true]);
