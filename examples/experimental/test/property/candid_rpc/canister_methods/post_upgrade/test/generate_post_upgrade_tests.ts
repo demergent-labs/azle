@@ -18,7 +18,7 @@ export function generateTests(
             {
                 name: `post upgrade method`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const postUpgradeValues =
                         await actor.getPostUpgradeValues();

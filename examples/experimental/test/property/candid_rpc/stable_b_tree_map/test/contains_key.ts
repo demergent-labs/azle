@@ -54,7 +54,7 @@ function generateTests(
             {
                 name: `containsKey after first deploy ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const result = await actor[functionName](
                         keySampleAgentArgumentValue
@@ -68,7 +68,7 @@ function generateTests(
             {
                 name: `containsKey after second deploy ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const result = await actor[functionName](
                         keySampleAgentArgumentValue
@@ -82,7 +82,7 @@ function generateTests(
             {
                 name: `containsKey after third deploy ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const result = await actor[functionName](
                         keySampleAgentArgumentValue

@@ -19,7 +19,7 @@ export function generateTests(
             {
                 name: `query method "${functionName}"`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
                     const result = await actor[functionName](...paramValues);
                     return testEquality(result, expectedResult);
                 }

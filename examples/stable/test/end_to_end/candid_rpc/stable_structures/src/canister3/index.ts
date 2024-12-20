@@ -3,14 +3,14 @@ import { IDL, Principal, query, StableBTreeMap, update } from 'azle';
 import { Callback, Reaction, User } from '../types';
 
 export default class {
-    stableMap10 = StableBTreeMap<number, [boolean] | []>(10);
-    stableMap11 = StableBTreeMap<bigint, User>(11);
-    stableMap12 = StableBTreeMap<Uint8Array, Reaction>(12);
-    stableMap13 = StableBTreeMap<string, Principal>(13);
-    stableMap14 = StableBTreeMap<string, Callback>(14);
-    stableMap15 = StableBTreeMap<Callback, string>(15);
-    stableMap16 = StableBTreeMap<string, object>(16);
-    stableMap17 = StableBTreeMap<object, string>(17);
+    stableMap10 = new StableBTreeMap<number, [boolean] | []>(10);
+    stableMap11 = new StableBTreeMap<bigint, User>(11);
+    stableMap12 = new StableBTreeMap<Uint8Array, Reaction>(12);
+    stableMap13 = new StableBTreeMap<string, Principal>(13);
+    stableMap14 = new StableBTreeMap<string, Callback>(14);
+    stableMap15 = new StableBTreeMap<Callback, string>(15);
+    stableMap16 = new StableBTreeMap<string, object>(16);
+    stableMap17 = new StableBTreeMap<object, string>(17);
 
     @query([], IDL.Bool)
     getRedeployed(): boolean {
