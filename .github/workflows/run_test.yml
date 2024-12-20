@@ -53,7 +53,7 @@ jobs:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
-            AZLE_IS_MAIN_BRANCH_PUSH: ''
+            AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ''
             AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ''
             AZLE_IS_RELEASE_BRANCH_PR: ''
             AZLE_IS_FEATURE_BRANCH_PR: ''
@@ -75,7 +75,7 @@ jobs:
 
             - name: Set condition environment variables
               run: |
-                  echo "AZLE_IS_MAIN_BRANCH_PUSH=${{ steps.set-conditions.outputs.is_main_branch_push }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" >> $GITHUB_ENV
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" >> $GITHUB_ENV
                   echo "AZLE_IS_RELEASE_BRANCH_PR=${{ steps.set-conditions.outputs.is_release_branch_pr }}" >> $GITHUB_ENV
                   echo "AZLE_IS_FEATURE_BRANCH_PR=${{ steps.set-conditions.outputs.is_feature_branch_pr }}" >> $GITHUB_ENV
@@ -83,7 +83,7 @@ jobs:
 
             - name: Print environment variables
               run: |
-                  echo "AZLE_IS_MAIN_BRANCH_PUSH: $AZLE_IS_MAIN_BRANCH_PUSH"
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
                   echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
@@ -124,7 +124,7 @@ jobs:
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
+              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
@@ -133,7 +133,7 @@ jobs:
               run: |
                   RUNS=1
 
-                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push }}" == "true" ]]; then
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" ]]; then
                       RUNS=100
                   fi
 
