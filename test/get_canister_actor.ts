@@ -33,6 +33,7 @@ export async function getCanisterActor<T>(
         options.agent ??
         (await HttpAgent.create({
             host: 'http://127.0.0.1:8000',
+            identity: options.identity,
             shouldFetchRootKey: true
         }));
 
