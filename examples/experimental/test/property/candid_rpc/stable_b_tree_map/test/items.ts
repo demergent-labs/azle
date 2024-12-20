@@ -54,7 +54,7 @@ function generateTests(
             {
                 name: `items after first deploy ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const result = await actor[functionName]();
 
@@ -71,7 +71,7 @@ function generateTests(
             {
                 name: `items after second deploy ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const result = await actor[functionName]();
 
@@ -88,7 +88,7 @@ function generateTests(
             {
                 name: `items after third deploy ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const result = await actor[functionName]();
 

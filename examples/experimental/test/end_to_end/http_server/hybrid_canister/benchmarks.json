@@ -1,7 +1,7 @@
 {
     "server": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "8135229603" },
@@ -43,7 +43,7 @@
     },
     "server_init_and_post_upgrade": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "8146812651" },
@@ -85,7 +85,7 @@
     },
     "canister": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "8136193902" },
@@ -127,7 +127,7 @@
     },
     "canister_init_and_post_upgrade": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": { "__bigint__": "8147477834" },

@@ -1,18 +1,18 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
 import { describe, expect, test } from '@jest/globals';
 import * as fc from 'fast-check';
 import { join } from 'path';
 
-import { getCanisterId } from '../dfx';
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
 import { runBenchmarksForCanisters } from './benchmarks';
 import { runFuzzTests } from './fuzz';
 
 export type Test = () => void;
+
+export { getCanisterActor } from './get_canister_actor';
 
 export function runTests(
     tests: Test,
@@ -111,35 +111,6 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
     const path = process.env.AZLE_PROPTEST_PATH;
 
     return seed !== undefined ? { ...baseParams, seed, path } : baseParams;
-}
-
-type GetCanisterActorOptions = {
-    identity?: Identity;
-    agent?: HttpAgent;
-};
-
-export async function getCanisterActor<T>(
-    canisterName: string,
-    options: GetCanisterActorOptions = {}
-): Promise<ActorSubclass<T>> {
-    const { createActor } = await import(
-        join(process.cwd(), 'test', 'dfx_generated', canisterName)
-    );
-
-    const agent =
-        options.agent ??
-        new HttpAgent({
-            host: 'http://127.0.0.1:8000',
-            identity: options.identity
-        });
-
-    if (process.env.DFX_NETWORK !== 'ic') {
-        await agent.fetchRootKey();
-    }
-
-    return createActor(getCanisterId(canisterName), {
-        agent
-    });
 }
 
 function processEnvVars(): {

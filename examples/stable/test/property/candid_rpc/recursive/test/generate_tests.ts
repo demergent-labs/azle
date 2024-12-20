@@ -13,7 +13,7 @@ export function generateTests(
             {
                 name: `recursive ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const params = namedParamRecursive.map(
                         (param) => param.value.value.agentArgumentValue

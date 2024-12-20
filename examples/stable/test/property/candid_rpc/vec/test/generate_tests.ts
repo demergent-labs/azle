@@ -14,7 +14,7 @@ export function generateTests(
             {
                 name: `vec ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const params = namedParamVecs.map(
                         (param) => param.value.value.agentArgumentValue

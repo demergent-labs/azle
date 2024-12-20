@@ -1,0 +1,43 @@
+version: 2
+updates:
+    - package-ecosystem: 'npm'
+      directory: '/'
+      schedule:
+          interval: 'daily'
+      versioning-strategy: increase
+      commit-message:
+          prefix: 'deps'
+          prefix-development: 'deps(dev)'
+      groups:
+          dfinity:
+              patterns:
+                  - '@dfinity/*'
+          eslint:
+              patterns:
+                  - 'eslint*'
+                  - 'typescript-eslint'
+                  - '@eslint/*'
+                  - '@typescript-eslint/*'
+          jest:
+              patterns:
+                  - 'jest*'
+                  - 'ts-jest'
+      ignore:
+          - dependency-name: 'binaryen'
+
+    - package-ecosystem: 'cargo'
+      directory: '/'
+      schedule:
+          interval: 'daily'
+      commit-message:
+          prefix: 'deps'
+      groups:
+          ic-dependencies:
+              patterns:
+                  - 'ic-cdk*'
+                  - 'ic-stable-structures'
+                  - 'ic-wasi-polyfill'
+                  - 'candid*'
+          serde:
+              patterns:
+                  - 'serde*'

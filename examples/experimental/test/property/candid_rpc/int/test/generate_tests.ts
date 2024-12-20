@@ -20,7 +20,7 @@ export function generateTests(
             {
                 name: `int ${functionName}`,
                 test: async (): Promise<AzleResult> => {
-                    const actor = getActor(__dirname);
+                    const actor = await getActor(__dirname);
 
                     const result = await actor[functionName](...paramValues);
 

@@ -11,7 +11,8 @@ const hugeAutoGenAutoUploadSmallFileInfos: [number, Unit][] = [[0, 'GiB']]; // T
 
 const hugeAutoGenAutoUploadFileInfos: [number, Unit][] =
     process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
-    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true'
+    process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true' ||
+    process.env.AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE === 'true'
         ? hugeAutoGenAutoUploadSmallFileInfos
         : [...hugeAutoGenAutoUploadSmallFileInfos, [2, 'GiB']]; // TODO add tests for 5GiB and maybe larger https://github.com/demergent-labs/azle/issues/2065
 

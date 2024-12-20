@@ -15,6 +15,10 @@ on:
                 required: false
                 type: string
                 default: ''
+            signing-key-id:
+                required: true
+                type: string
+                description: 'Signing key ID to use for signing commits'
 
         secrets:
             GPG_SIGNING_KEY:
@@ -119,5 +123,6 @@ jobs:
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
-                  gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
                   create-branch: 'true'
+                  signing-key-id: ${{ inputs.signing-key-id }}

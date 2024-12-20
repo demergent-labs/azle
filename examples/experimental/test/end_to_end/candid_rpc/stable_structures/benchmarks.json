@@ -1,7 +1,7 @@
 {
     "canister1": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": {
@@ -121,7 +121,7 @@
     },
     "canister2": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": {
@@ -241,7 +241,7 @@
     },
     "canister3": {
         "previous": {
-            "version": "0.25.0-pre-bifurcation",
+            "version": "0.25.0-alpha",
             "benchmarks": [
                 {
                     "instructions": {
