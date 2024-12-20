@@ -15,7 +15,7 @@ candid = "0.10.11"
 candid_parser = "0.1.2"
 ic-stable-structures = "0.6.7"
 open_value_sharing = { path = "../open_value_sharing" }
-slotmap = "=1.0.6"
+slotmap = "=1.0.7"
 sha2 = "0.10.8"
 serde = "1.0.216"
 serde_json = "1.0.133"
