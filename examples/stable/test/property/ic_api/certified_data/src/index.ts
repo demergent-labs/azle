@@ -28,7 +28,7 @@ const PRE_UPGRADE_DATA = new Uint8Array([
 
 export default class {
     data: Uint8Array = new Uint8Array();
-    stableStorage = StableBTreeMap<string, boolean>(0);
+    stableStorage = new StableBTreeMap<string, boolean>(0);
     afterFirstPostUpgrade = false;
 
     @init([IDL.Bool, IDL.Vec(IDL.Nat8)])
