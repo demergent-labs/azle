@@ -124,7 +124,7 @@ jobs:
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
+              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
@@ -133,8 +133,8 @@ jobs:
               run: |
                   RUNS=1
 
-                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" ]]; then
-                      RUNS=100
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" == "true" ]]; then
+                      RUNS=5
                   fi
 
                   if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" ]]; then
