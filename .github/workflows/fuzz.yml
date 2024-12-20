@@ -17,7 +17,6 @@ on:
 jobs:
     get-exclude-dirs:
         name: Get exclude directories
-        needs: workflow-config
         runs-on: ubuntu-latest
         outputs:
             exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
