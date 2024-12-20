@@ -15,8 +15,24 @@ on:
                 default: '300'
 
 jobs:
+    get-exclude-dirs:
+        name: Get exclude directories
+        needs: workflow-config
+        runs-on: ubuntu-latest
+        outputs:
+            exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get-exclude-dirs
+              uses: ./.github/actions/get_exclude_dirs
+              with:
+                  exclude-slow: false
+                  exclude-unstable: true
+                  exclude-release-only: true
+
     run-tests:
         name: ${{ matrix.test_group.name }}
+        needs: get-exclude-dirs
         strategy:
             fail-fast: false
             matrix:
@@ -39,6 +55,7 @@ jobs:
                 stable/test/end_to_end/candid_rpc/outgoing_http_requests
                 stable/test/end_to_end/candid_rpc/recursion
                 stable/test/end_to_end/candid_rpc/tuple_types
+                ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             fuzz: true
             call-delay: ${{ inputs.call-delay }}
             time-limit: ${{ inputs.time-limit }}
