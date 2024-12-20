@@ -30,9 +30,6 @@ export class StableBTreeMap<Key = any, Value = any> {
                 globalThis._azleIcStable.stableBTreeMapInit(memoryId);
             }
         }
-
-        isSerializable(keySerializable);
-        isSerializable(valueSerializable);
     }
 
     /**
@@ -62,6 +59,7 @@ export class StableBTreeMap<Key = any, Value = any> {
             encodedKey
         );
     }
+
     /**
      * Retrieves the value stored at the provided key.
      * @param key the location from which to retrieve.
@@ -319,15 +317,5 @@ export class StableBTreeMap<Key = any, Value = any> {
                 new Uint8Array(encodedValue)
             );
         });
-    }
-}
-
-function isSerializable(obj: any): asserts obj is Serializable {
-    if (obj.toBytes === undefined) {
-        throw new Error(`value must have a toBytes method`);
-    }
-
-    if (obj.fromBytes === undefined) {
-        throw new Error(`value must have a fromBytes method`);
     }
 }
