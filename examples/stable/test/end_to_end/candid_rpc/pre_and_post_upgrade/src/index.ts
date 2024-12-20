@@ -18,7 +18,7 @@ type Entry = {
 };
 
 export default class {
-    stableStorage = StableBTreeMap<string, Entry[]>(0);
+    stableStorage = new StableBTreeMap<string, Entry[]>(0);
 
     entries: {
         [key: string]: bigint;

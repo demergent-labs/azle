@@ -85,7 +85,7 @@ const CanisterConfigArb = fc
         > => {
             const globalDeclarations = [
                 /*TS*/ `const PRE_UPGRADE_HOOK_EXECUTED = 'PRE_UPGRADE_HOOK_EXECUTED';`,
-                /*TS*/ `let stable = StableBTreeMap<string, boolean>(0);`
+                /*TS*/ `let stable = new StableBTreeMap<string, boolean>(0);`
             ];
 
             return {
