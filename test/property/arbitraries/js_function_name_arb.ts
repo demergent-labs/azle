@@ -133,7 +133,14 @@ const jsKeywords = [
     'Infinity',
     'undefined',
     'arguments',
-    'eval'
+    'eval',
+    'init',
+    'postUpgrade',
+    'preUpgrade',
+    'heartbeat',
+    'inspectMessage',
+    'query',
+    'update'
 ];
 
 // This breaks rust but it doesn't seem to be a rust keyword
