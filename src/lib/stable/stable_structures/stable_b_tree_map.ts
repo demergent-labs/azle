@@ -195,7 +195,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      * The keys for each element in the map in sorted order.
      * @param startIndex the starting index to begin retrieval
      * @param length the number of keys to retrieve
-     * @returns they keys in the map.
+     * @returns the keys in the map.
      */
     keys(startIndex?: number, length?: number): Key[] {
         if (
