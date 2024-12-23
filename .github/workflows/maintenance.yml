@@ -1,4 +1,4 @@
-name: Maintenance
+name: Example/test maintenance (package-lock updating, formatting, linting)
 on:
     workflow_dispatch:
         inputs:
@@ -44,16 +44,14 @@ jobs:
             - uses: ./.github/actions/commit_and_push
               with:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  commit-message: 'Run global prettier and eslint fixes'
+                  commit-message: 'Example/test maintenance: formatting and linting'
                   gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
                   signing-key-id: ${{ inputs.signing-key-id }}
 
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  directories: |
-                      ./examples
-                      ./tests
+                  directories: ./examples
 
     update-test-dependencies:
         needs:
@@ -93,21 +91,20 @@ jobs:
             - uses: ./.github/actions/commit_and_push
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
-                  commit-message: 'Update dependencies for ${{ matrix.test.displayPath }}'
+                  commit-message: 'Example/test maintenance: update dependencies'
                   gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
                   create-branch: 'true'
                   signing-key-id: ${{ inputs.signing-key-id }}
 
     squash-branches:
         needs:
-            - prepare-maintenance
             - update-test-dependencies
             - create-branch-prefix
         uses: ./.github/workflows/squash_branches.yml
         with:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
-            commit-message: 'Maintenance: Update dependencies and fix formatting'
+            commit-message: 'Example/test maintenance: update dependencies'
             signing-key-id: ${{ inputs.signing-key-id }}
         secrets:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
@@ -116,7 +113,6 @@ jobs:
 
     create-pr:
         needs:
-            - prepare-maintenance
             - squash-branches
             - create-branch-prefix
         runs-on: ubuntu-latest
@@ -132,7 +128,7 @@ jobs:
                   gh pr create \
                     --base main \
                     --head ${{ needs.create-branch-prefix.outputs.base-branch }} \
-                    --title "Maintenance: Update dependencies and fix formatting" \
+                    --title "Example/test maintenance: update dependencies, formatting, and linting" \
                     --body "Automated PR for maintenance tasks:
                     - Updated package-lock.json files
                     - Fixed formatting with Prettier
