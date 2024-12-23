@@ -32,6 +32,8 @@ jobs:
 
             - uses: ./.github/actions/setup_node
 
+            - uses: ./.github/actions/setup_dfx
+
             - run: npm install
 
             # Run global prettier/lint fixes
