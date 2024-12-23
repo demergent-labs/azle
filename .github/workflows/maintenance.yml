@@ -76,6 +76,8 @@ jobs:
 
             - uses: ./.github/actions/setup_node
 
+            - uses: ./.github/actions/setup_dfx
+
             # Update package-lock.json in test directory
             - name: Update package-lock.json
               working-directory: ${{ matrix.test.path }}
