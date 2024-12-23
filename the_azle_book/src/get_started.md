@@ -1,15 +1,15 @@
 # Get Started
 
--   [Installation](#installation)
--   [Deployment](#deployment)
+- [Installation](#installation)
+- [Deployment](#deployment)
 
 Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
 Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
 
--   Azle is built with various software packages that have not yet reached maturity
--   Azle does not yet have multiple independent security reviews/audits
--   Azle does not yet have many live, successful, continuously operating applications deployed to ICP
+- Azle is built with various software packages that have not yet reached maturity
+- Azle does not yet have multiple independent security reviews/audits
+- Azle does not yet have many live, successful, continuously operating applications deployed to ICP
 
 ## Installation
 

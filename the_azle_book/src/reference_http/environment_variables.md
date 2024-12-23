@@ -1,16 +1,16 @@
 # Environment Variables
 
--   [AZLE_AUTORELOAD](#azle_autoreload)
--   [AZLE_IDENTITY_STORAGE_MODE](#azle_identity_storage_mode)
--   [AZLE_INSTRUCTION_COUNT](#azle_instruction_count)
--   [AZLE_PROPTEST_NUM_RUNS](#azle_proptest_num_runs)
--   [AZLE_PROPTEST_PATH](#azle_proptest_path)
--   [AZLE_PROPTEST_QUIET](#azle_proptest_quiet)
--   [AZLE_PROPTEST_SEED](#azle_proptest_seed)
--   [AZLE_PROPTEST_VERBOSE](#azle_proptest_verbose)
--   [AZLE_TEST_FETCH](#azle_test_fetch)
--   [AZLE_UPLOADER_IDENTITY_NAME]()
--   [AZLE_VERBOSE](#azle_verbose)
+- [AZLE_AUTORELOAD](#azle_autoreload)
+- [AZLE_IDENTITY_STORAGE_MODE](#azle_identity_storage_mode)
+- [AZLE_INSTRUCTION_COUNT](#azle_instruction_count)
+- [AZLE_PROPTEST_NUM_RUNS](#azle_proptest_num_runs)
+- [AZLE_PROPTEST_PATH](#azle_proptest_path)
+- [AZLE_PROPTEST_QUIET](#azle_proptest_quiet)
+- [AZLE_PROPTEST_SEED](#azle_proptest_seed)
+- [AZLE_PROPTEST_VERBOSE](#azle_proptest_verbose)
+- [AZLE_TEST_FETCH](#azle_test_fetch)
+- [AZLE_UPLOADER_IDENTITY_NAME]()
+- [AZLE_VERBOSE](#azle_verbose)
 
 ## AZLE_AUTORELOAD
 

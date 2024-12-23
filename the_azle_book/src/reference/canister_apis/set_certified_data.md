@@ -4,7 +4,7 @@ This section is a work in progress.
 
 Examples:
 
--   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
+- [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
 import { blob, Canister, ic, update, Void } from 'azle/experimental';

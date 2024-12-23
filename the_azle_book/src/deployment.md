@@ -1,9 +1,9 @@
 # Deployment
 
--   [Starting the local replica](#starting-the-local-replica)
--   [Deploying to the local replica](#deploying-to-the-local-replica)
--   [Interacting with your canister](#interacting-with-your-canister)
--   [Deploying to mainnet](#deploying-to-mainnet)
+- [Starting the local replica](#starting-the-local-replica)
+- [Deploying to the local replica](#deploying-to-the-local-replica)
+- [Interacting with your canister](#interacting-with-your-canister)
+- [Deploying to mainnet](#deploying-to-mainnet)
 
 There are two main [ICP](https://internetcomputer.org/) environments that you will generally interact with: [the local replica](#deploying-to-the-local-replica) and [mainnet](#deploying-to-mainnet).
 

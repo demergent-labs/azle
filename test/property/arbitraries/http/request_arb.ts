@@ -108,8 +108,8 @@ export function HttpRequestArb(
                     ? `Some(${httpRequest.certificate_version.Some})`
                     : `[${httpRequest.certificate_version.Some}]`
                 : api === 'functional'
-                ? `None`
-                : [];
+                  ? `None`
+                  : [];
 
         const optImport =
             api === 'functional'

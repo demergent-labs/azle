@@ -35,8 +35,8 @@ export function SimpleCandidDefinitionArb(
                 const typeObject = useTypeDeclaration
                     ? name
                     : context.api === 'functional'
-                    ? candidType
-                    : idl;
+                      ? candidType
+                      : idl;
                 const runtimeTypeObject =
                     candidTypeToRuntimeTypeObject(candidType);
                 const variableAliasDeclarations =

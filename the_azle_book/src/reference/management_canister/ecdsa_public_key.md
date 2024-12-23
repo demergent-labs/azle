@@ -4,7 +4,7 @@ This section is a work in progress.
 
 Examples:
 
--   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
+- [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
 import { blob, Canister, ic, None, Record, update } from 'azle/experimental';
