@@ -74,10 +74,14 @@ jobs:
                     git merge --squash $branch
                   done
 
-                  # Create a merge commit with a descriptive message
-                  git commit -am "${{ inputs.commit-message }}"
-
-                  git push origin HEAD:$CURRENT_BRANCH
+                  # Check if there are any changes to commit
+                  if git diff --staged --quiet; then
+                    echo "No changes to commit"
+                  else
+                    # Create a merge commit with a descriptive message
+                    git commit -am "${{ inputs.commit-message }}"
+                    git push origin HEAD:$CURRENT_BRANCH
+                  fi
 
             - name: Delete branches
               run: |
