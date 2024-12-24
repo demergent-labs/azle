@@ -85,5 +85,9 @@ jobs:
 
             - name: Delete branches
               run: |
-                  echo "Starting branch deletion process..."
-                  git push origin --delete ${{ steps.collect-branches.outputs.branches }}
+                  if [ -n "$(echo ${{ steps.collect-branches.outputs.branches }} | tr -d '[:space:]')" ]; then
+                      echo "Starting branch deletion process..."
+                      git push origin --delete ${{ steps.collect-branches.outputs.branches }}
+                  else
+                      echo "No branches to delete"
+                  fi
