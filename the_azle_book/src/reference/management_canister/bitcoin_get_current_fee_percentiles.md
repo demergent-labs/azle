@@ -4,7 +4,7 @@ This section is a work in progress.
 
 Examples:
 
--   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
+- [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
 
 ```typescript
 import { Canister, ic, update, Vec } from 'azle/experimental';

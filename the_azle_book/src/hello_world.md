@@ -1,15 +1,15 @@
 # Hello World
 
--   [Quick start](#quick-start)
--   [Methodical start](#slow-start)
-    -   [The project directory and file structure](#the-project-directory-and-file-structure)
-    -   [index.ts](#indexts)
-    -   [tsconfig.json](#tsconfigjson)
-    -   [dfx.json](#dfxjson)
-    -   [Local deployment](#local-deployment)
-    -   [Common deployment issues](#common-deployment-issues)
-    -   [Interacting with your canister from the command line](#interacting-with-your-canister-from-the-command-line)
-    -   [Interacting with your canister from the web UI](#interacting-with-your-canister-from-the-web-ui)
+- [Quick start](#quick-start)
+- [Methodical start](#slow-start)
+    - [The project directory and file structure](#the-project-directory-and-file-structure)
+    - [index.ts](#indexts)
+    - [tsconfig.json](#tsconfigjson)
+    - [dfx.json](#dfxjson)
+    - [Local deployment](#local-deployment)
+    - [Common deployment issues](#common-deployment-issues)
+    - [Interacting with your canister from the command line](#interacting-with-your-canister-from-the-command-line)
+    - [Interacting with your canister from the web UI](#interacting-with-your-canister-from-the-web-ui)
 
 Let's build your first application (canister) with Azle!
 

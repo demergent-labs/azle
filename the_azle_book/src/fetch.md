@@ -32,11 +32,11 @@ app.listen();
 
 Keep these important points in mind when performing a cross-canister call:
 
--   Use the `icp://` protocol in the URL
--   The `canister id` of the canister that you are calling immediately follows `icp://` in the URL
--   The `canister method` that you are calling immediately follows the `canister id` in the URL
--   The `candidPath` property of the `body` is the path to the Candid file defining the method signatures of the canister that you are calling. You must obtain this file and copy it into your canister. See the [Assets chapter](./assets.md) for info on copying files into your canister
--   The `args` property of the `body` is an array of the arguments that will be passed to the `canister method` that you are calling
+- Use the `icp://` protocol in the URL
+- The `canister id` of the canister that you are calling immediately follows `icp://` in the URL
+- The `canister method` that you are calling immediately follows the `canister id` in the URL
+- The `candidPath` property of the `body` is the path to the Candid file defining the method signatures of the canister that you are calling. You must obtain this file and copy it into your canister. See the [Assets chapter](./assets.md) for info on copying files into your canister
+- The `args` property of the `body` is an array of the arguments that will be passed to the `canister method` that you are calling
 
 Here's an example of performing an HTTPS outcall:
 
@@ -79,24 +79,24 @@ Canister `fetch` is used to perform cross-canister calls and [HTTPS outcalls](ht
 
 Examples:
 
--   [async_await](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/async_await)
--   [bitcoin](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/bitcoin)
--   [canister](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/canister)
--   [ckbtc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/ckbtc)
--   [composite_queries](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/composite_queries)
--   [cross_canister_calls](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls)
--   [cycles](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/cycles)
--   [func_types](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/func_types)
--   [heartbeat](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/heartbeat)
--   [ic_evm_rpc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ic_evm_rpc)
--   [icrc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/icrc)
--   [ledger_canister](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/ledger_canister)
--   [management_canister](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/management_canister)
--   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/threshold_ecdsa)
--   [whoami](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/whoami)
--   [recursion](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/recursion)
--   [rejections](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/rejections)
--   [timers](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/timers)
+- [async_await](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/async_await)
+- [bitcoin](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/bitcoin)
+- [canister](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/canister)
+- [ckbtc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/ckbtc)
+- [composite_queries](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/composite_queries)
+- [cross_canister_calls](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/cross_canister_calls)
+- [cycles](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/cycles)
+- [func_types](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/func_types)
+- [heartbeat](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/heartbeat)
+- [ic_evm_rpc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ic_evm_rpc)
+- [icrc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/icrc)
+- [ledger_canister](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/ledger_canister)
+- [management_canister](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/management_canister)
+- [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/threshold_ecdsa)
+- [whoami](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/motoko_examples/whoami)
+- [recursion](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/recursion)
+- [rejections](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/rejections)
+- [timers](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/timers)
 
 ## Cross-canister calls to an HTTP canister
 
@@ -106,9 +106,9 @@ We are working on better abstractions for these types of calls. For now you woul
 
 Examples:
 
--   [ethereum_json_rpc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/ethereum_json_rpc)
--   [http_outcall_fetch](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/http_outcall_fetch)
--   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/outgoing_http_requests)
+- [ethereum_json_rpc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/ethereum_json_rpc)
+- [http_outcall_fetch](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/http_outcall_fetch)
+- [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/functional_syntax/outgoing_http_requests)
 
 <!-- // TODO explain that you can generally only do these in POST unless the method is a query method
 // TODO we have to show the imports

@@ -4,8 +4,8 @@ This section is a work in progress.
 
 Examples:
 
--   [composite_queries](https://github.com/demergent-labs/azle/tree/main/examples/composite_queries)
--   [manual_reply](https://github.com/demergent-labs/azle/tree/main/examples/manual_reply)
+- [composite_queries](https://github.com/demergent-labs/azle/tree/main/examples/composite_queries)
+- [manual_reply](https://github.com/demergent-labs/azle/tree/main/examples/manual_reply)
 
 ```typescript
 import { blob, Canister, ic, Manual, update } from 'azle/experimental';

@@ -4,19 +4,19 @@ This section documents the Candid RPC methodology for developing Azle applicatio
 
 Candid RPC is heading towards 1.0 and production-readiness in 2024.
 
--   [Get Started](#get-started)
--   [Examples](#examples)
--   [Canister Class](#canister-class)
--   [@dfinity/candid IDL](#dfinitycandid-idl)
--   [Decorators](#decorators)
-    -   [@query](#query)
-    -   [@update](#update)
-    -   [@init](#init)
-    -   [@postUpgrade](#postupgrade)
-    -   [@preUpgrade](#preupgrade)
-    -   [@inspectMessage](#inspectmessage)
-    -   [@heartbeat](#heartbeat)
--   [IC API](#ic-api)
+- [Get Started](#get-started)
+- [Examples](#examples)
+- [Canister Class](#canister-class)
+- [@dfinity/candid IDL](#dfinitycandid-idl)
+- [Decorators](#decorators)
+    - [@query](#query)
+    - [@update](#update)
+    - [@init](#init)
+    - [@postUpgrade](#postupgrade)
+    - [@preUpgrade](#preupgrade)
+    - [@inspectMessage](#inspectmessage)
+    - [@heartbeat](#heartbeat)
+- [IC API](#ic-api)
 
 ## Get Started
 
@@ -24,9 +24,9 @@ Azle helps you to build secure decentralized/replicated servers in TypeScript or
 
 Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
 
--   Azle is built with various software packages that have not yet reached maturity
--   Azle does not yet have multiple independent security reviews/audits
--   Azle does not yet have many live, successful, continuously operating applications deployed to ICP
+- Azle is built with various software packages that have not yet reached maturity
+- Azle does not yet have multiple independent security reviews/audits
+- Azle does not yet have many live, successful, continuously operating applications deployed to ICP
 
 ### Installation
 

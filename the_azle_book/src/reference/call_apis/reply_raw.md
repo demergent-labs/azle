@@ -4,8 +4,8 @@ This section is a work in progress.
 
 Examples:
 
--   [manual_reply](https://github.com/demergent-labs/azle/tree/main/examples/manual_reply)
--   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
+- [manual_reply](https://github.com/demergent-labs/azle/tree/main/examples/manual_reply)
+- [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
 import {

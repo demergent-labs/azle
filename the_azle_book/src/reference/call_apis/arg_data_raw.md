@@ -4,7 +4,7 @@ This section is a work in progress.
 
 Examples:
 
--   [ic_api](https://github.com/demergent-labs/azle/blob/main/examples/ic_api)
+- [ic_api](https://github.com/demergent-labs/azle/blob/main/examples/ic_api)
 
 ```typescript
 import { blob, bool, Canister, ic, int8, query, text } from 'azle/experimental';

@@ -4,8 +4,8 @@ This section is a work in progress.
 
 Examples:
 
--   [inspect_message](https://github.com/demergent-labs/azle/tree/main/examples/inspect_message)
--   [run_time_errors](https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors)
+- [inspect_message](https://github.com/demergent-labs/azle/tree/main/examples/inspect_message)
+- [run_time_errors](https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors)
 
 ```typescript
 import { bool, Canister, ic, inspectMessage, update } from 'azle/experimental';

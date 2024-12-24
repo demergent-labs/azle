@@ -45,8 +45,8 @@ export function InspectMessageMethodArb(
                 const methodImplementationLocation =
                     api === 'class'
                         ? 'INLINE'
-                        : constraints.methodImplementationLocation ??
-                          defaultMethodImplementationLocation;
+                        : (constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation);
 
                 const inspectMessageImports =
                     api === 'functional'

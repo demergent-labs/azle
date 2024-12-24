@@ -80,8 +80,8 @@ export function PostUpgradeMethodArb<
                 const methodImplementationLocation =
                     api === 'class'
                         ? 'INLINE'
-                        : constraints.methodImplementationLocation ??
-                          defaultMethodImplementationLocation;
+                        : (constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation);
 
                 const imports = new Set([
                     'postUpgrade',

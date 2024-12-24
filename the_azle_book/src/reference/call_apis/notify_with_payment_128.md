@@ -4,7 +4,7 @@ This section is a work in progress.
 
 Examples:
 
--   [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
+- [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
 
 ```typescript
 import { Canister, ic, update, Void } from 'azle/experimental';
