@@ -2,17 +2,17 @@
 
 Azle is a [TypeScript](https://www.typescriptlang.org/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/backend/choosing-language) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC). In other words, it's a TypeScript/JavaScript runtime for building applications ([canisters](https://internetcomputer.org/docs/current/concepts/canisters-code)) on the IC.
 
--   [npm package](https://www.npmjs.com/package/azle)
--   [GitHub repo](https://github.com/demergent-labs/azle)
--   [Discord channel](https://discord.gg/5Hb6rM2QUM)
+- [npm package](https://www.npmjs.com/package/azle)
+- [GitHub repo](https://github.com/demergent-labs/azle)
+- [Discord channel](https://discord.gg/5Hb6rM2QUM)
 
 ## Disclaimer
 
 Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
 
--   Azle is built with various software packages that have not yet reached maturity
--   Azle does not yet have multiple independent security reviews/audits
--   Azle does not yet have many live, successful, continuously operating applications deployed to ICP
+- Azle is built with various software packages that have not yet reached maturity
+- Azle does not yet have multiple independent security reviews/audits
+- Azle does not yet have many live, successful, continuously operating applications deployed to ICP
 
 ## Demergent Labs
 
@@ -34,19 +34,19 @@ One of the core benefits of Azle is that it allows web developers to bring their
 
 As for the IC, we believe its main benefits can be broken down into the following categories:
 
--   [Ownership](#ownership)
--   [Security](#security)
--   [Developer Experience](#developer-experience)
+- [Ownership](#ownership)
+- [Security](#security)
+- [Developer Experience](#developer-experience)
 
 Most of these benefits stem from the decentralized nature of the IC, though the IC is best thought of as a progressively decentralizing cloud platform. As opposed to traditional cloud platforms, its goal is to be owned and controlled by many independent entities.
 
 #### Ownership
 
--   [Full-stack group ownership](#full-stack-group-ownership)
--   [Autonomous ownership](#autonomous-ownership)
--   [Permanent APIs](#permanent-apis)
--   [Credible neutrality](#credible-neutrality)
--   [Reduced platform risk](#reduced-platform-risk)
+- [Full-stack group ownership](#full-stack-group-ownership)
+- [Autonomous ownership](#autonomous-ownership)
+- [Permanent APIs](#permanent-apis)
+- [Credible neutrality](#credible-neutrality)
+- [Reduced platform risk](#reduced-platform-risk)
 
 ##### Full-stack group ownership
 
@@ -78,13 +78,13 @@ Because the IC is not owned or controlled by any one entity or individual, the r
 
 #### Security
 
--   [Built-in replication](#built-in-replication)
--   [Built-in authentication](#built-in-authentication)
--   [Built-in firewall/port management](#built-in-firewallport-management)
--   [Built-in sandboxing](#built-in-sandboxing)
--   [Threshold protocols](#threshold-protocols)
--   [Verifiable source code](#verifiable-source-code)
--   [Blockchain integration](#blockchain-integration)
+- [Built-in replication](#built-in-replication)
+- [Built-in authentication](#built-in-authentication)
+- [Built-in firewall/port management](#built-in-firewallport-management)
+- [Built-in sandboxing](#built-in-sandboxing)
+- [Threshold protocols](#threshold-protocols)
+- [Verifiable source code](#verifiable-source-code)
+- [Blockchain integration](#blockchain-integration)
 
 ##### Built-in replication
 
@@ -122,8 +122,8 @@ In addition to these blockchain client integrations, a [threshold ECDSA protocol
 
 #### Developer experience
 
--   [Built-in devops](#built-in-devops)
--   [Orthogonal persistence](#orthogonal-persistence)
+- [Built-in devops](#built-in-devops)
+- [Orthogonal persistence](#orthogonal-persistence)
 
 ##### Built-in devops
 
@@ -147,25 +147,25 @@ It's important to note that both Azle and the IC are early-stage projects. The I
 
 Some of Azle's main drawbacks can be summarized as follows:
 
--   [Beta](#beta)
--   [Security risks](#security-risks)
--   [Missing APIs](#missing-apis)
+- [Beta](#beta)
+- [Security risks](#security-risks)
+- [Missing APIs](#missing-apis)
 
 ##### Beta
 
 Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
 
--   Extensive automated property test coverage
--   Multiple independent security reviews/audits
--   Broad npm package support
+- Extensive automated property test coverage
+- Multiple independent security reviews/audits
+- Broad npm package support
 
 ##### Security risks
 
 As discussed earlier, these are some things to keep in mind:
 
--   Azle does not yet have extensive automated property tests
--   Azle does not yet have multiple independent security reviews/audits
--   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
+- Azle does not yet have extensive automated property tests
+- Azle does not yet have multiple independent security reviews/audits
+- Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 
 ##### Missing APIs
 
@@ -175,12 +175,12 @@ Azle is not Node.js nor is it V8 running in a web browser. It is using a JavaScr
 
 Some of the IC's main drawbacks can be summarized as follows:
 
--   [Early](#early)
--   [High latencies](#high-latencies)
--   [Limited and expensive compute resources](#limited-and-expensive-compute-resources)
--   [Limited scalability](#limited-scalability)
--   [Lack of privacy](#lack-of-privacy)
--   [NNS risk](#nns-risk)
+- [Early](#early)
+- [High latencies](#high-latencies)
+- [Limited and expensive compute resources](#limited-and-expensive-compute-resources)
+- [Limited scalability](#limited-scalability)
+- [Lack of privacy](#lack-of-privacy)
+- [NNS risk](#nns-risk)
 
 ##### Early
 

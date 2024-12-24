@@ -8,9 +8,9 @@ Welcome to The Azle Book! This is a guide for building secure decentralized/repl
 
 Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
 
--   Azle is built with various software packages that have not yet reached maturity
--   Azle does not yet have multiple independent security reviews/audits
--   Azle does not yet have many live, successful, continuously operating applications deployed to ICP
+- Azle is built with various software packages that have not yet reached maturity
+- Azle does not yet have multiple independent security reviews/audits
+- Azle does not yet have many live, successful, continuously operating applications deployed to ICP
 
 The Azle Book is subject to the following license and Azle's [License Extension](https://github.com/demergent-labs/azle/blob/main/LICENSE_EXTENSION.md):
 

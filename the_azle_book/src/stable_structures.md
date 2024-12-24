@@ -2,11 +2,11 @@
 
 ## TL;DR
 
--   96 GiB of stable memory
--   Persistent across upgrades
--   Familiar API
--   Must specify memory id
--   No migrations per memory id
+- 96 GiB of stable memory
+- Persistent across upgrades
+- Familiar API
+- Must specify memory id
+- No migrations per memory id
 
 Stable structures are data structures with familiar APIs that allow write and read access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 96 GiB of binary storage. Stable memory persists automatically across upgrades.
 

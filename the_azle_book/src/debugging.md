@@ -4,10 +4,10 @@ If your terminal logs ever say `did not produce a response` or `response failed 
 
 # Debugging
 
--   [console.log and try/catch](#consolelog-and-trycatch)
--   [Canister did not produce a response](#canister-did-not-produce-a-response)
--   [No error message](#no-error-message)
--   [Final Compiled and Bundled JavaScript](#final-compiled-and-bundled-javascript)
+- [console.log and try/catch](#consolelog-and-trycatch)
+- [Canister did not produce a response](#canister-did-not-produce-a-response)
+- [No error message](#no-error-message)
+- [Final Compiled and Bundled JavaScript](#final-compiled-and-bundled-javascript)
 
 Azle currently has less-than-elegant error reporting. We hope to improve this significantly in the future.
 
