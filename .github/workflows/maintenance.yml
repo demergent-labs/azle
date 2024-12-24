@@ -14,11 +14,21 @@ jobs:
             - id: set-key
               run: echo "key=C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0" >> $GITHUB_OUTPUT
 
+    determine-prefix:
+        runs-on: ubuntu-latest
+        outputs:
+            prefix: ${{ steps.set-prefix.outputs.prefix }}
+        steps:
+            - id: set-prefix
+              run: echo "prefix=maintenance-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
     create-branch-prefix:
-        needs: determine-signing-key
+        needs:
+            - determine-signing-key
+            - determine-prefix
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
-            prefix: "maintenance-${{ format('yyyy-MM-dd', 'UTC') }}"
+            prefix: ${{ needs.determine-prefix.outputs.prefix }}
             version: $(jq -r '.version' package.json)
             signing-key-id: ${{ needs.determine-signing-key.outputs.signing-key-id }}
         secrets:
