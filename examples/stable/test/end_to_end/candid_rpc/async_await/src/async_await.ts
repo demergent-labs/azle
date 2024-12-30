@@ -26,7 +26,7 @@ export default class {
         ]);
     }
 
-    @update([])
+    @update
     async returnPromiseVoid(): Promise<void> {
         await call('aaaaa-aa', 'raw_rand', {
             returnIdlType: IDL.Vec(IDL.Nat8)
