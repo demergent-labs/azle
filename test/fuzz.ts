@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import { CuzzConfig } from 'cuzz';
-import { readFile } from 'fs-extra';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { DfxJson } from '../src/build/stable/utils/types';
@@ -57,13 +57,17 @@ function fuzzTestCanister(canisterName: string, callDelay: string): void {
         canisterName,
         '--skip-deploy',
         '--call-delay',
-        callDelay
+        callDelay,
+        '--clear-console'
     ];
 
-    const cuzzArgs =
-        process.env.AZLE_FUZZ_TERMINAL === 'true'
-            ? [...baseCuzzArgs, '--terminal']
-            : baseCuzzArgs;
+    const cuzzArgs = [
+        ...baseCuzzArgs,
+        ...(process.env.AZLE_FUZZ_TERMINAL === 'true' ? ['--terminal'] : []),
+        ...(process.env.AZLE_FUZZ_TIME_LIMIT !== undefined
+            ? ['--time-limit', process.env.AZLE_FUZZ_TIME_LIMIT]
+            : [])
+    ];
 
     let cuzzProcess = spawn('node_modules/.bin/cuzz', cuzzArgs, {
         stdio: 'inherit'

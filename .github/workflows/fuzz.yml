@@ -8,32 +8,54 @@ on:
                 required: false
                 type: string
                 default: '.1'
-            timeout:
+            time-limit:
                 description: 'Length of time (in minutes) after which the fuzz tests will automatically succeed'
                 required: false
                 type: string
                 default: '300'
 
 jobs:
+    get-exclude-dirs:
+        name: Get exclude directories
+        runs-on: ubuntu-latest
+        outputs:
+            exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get-exclude-dirs
+              uses: ./.github/actions/get_exclude_dirs
+              with:
+                  exclude-slow: false
+                  exclude-unstable: true
+                  exclude-release-only: true
+
     run-tests:
         name: ${{ matrix.test_group.name }}
+        needs: get-exclude-dirs
         strategy:
             fail-fast: false
             matrix:
                 test_group:
                     - {
-                          name: 'E2E Class',
-                          directories: './tests/end_to_end/candid_rpc/class_syntax'
+                          name: 'Stable E2E CRPC',
+                          directories: './examples/stable/test/end_to_end/candid_rpc'
                       }
                     - {
-                          name: 'Property IC API',
-                          directories: './tests/property/ic_api'
+                          name: 'Stable Property IC API',
+                          directories: './examples/stable/test/property/ic_api'
                       }
         uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
-            exclude-dirs: class_syntax/new
+            exclude-dirs: >-
+                stable/test/end_to_end/candid_rpc/new
+                stable/test/end_to_end/candid_rpc/ethereum_json_rpc
+                stable/test/end_to_end/candid_rpc/motoko_examples/superheroes
+                stable/test/end_to_end/candid_rpc/outgoing_http_requests
+                stable/test/end_to_end/candid_rpc/recursion
+                stable/test/end_to_end/candid_rpc/tuple_types
+                ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             fuzz: true
             call-delay: ${{ inputs.call-delay }}
-            timeout: ${{ inputs.timeout }}
+            time-limit: ${{ inputs.time-limit }}
             link-azle: true
