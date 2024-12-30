@@ -48,8 +48,8 @@ export function PreUpgradeMethodArb(
                 const methodImplementationLocation =
                     api === 'class'
                         ? 'INLINE'
-                        : constraints.methodImplementationLocation ??
-                          defaultMethodImplementationLocation;
+                        : (constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation);
 
                 const imports = new Set(['preUpgrade']);
 

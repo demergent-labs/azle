@@ -140,8 +140,8 @@ app.listen();
 
 Examples:
 
--   [fetch_ic](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/fetch_ic)
--   [internet_identity](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/internet_identity)
+- [fetch_ic](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/fetch_ic)
+- [internet_identity](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/internet_identity)
 
 ## Under-the-hood
 

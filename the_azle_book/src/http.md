@@ -6,7 +6,7 @@ This chapter is a work in progress.
 
 Examples:
 
--   [http_counter](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter)
+- [http_counter](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter)
 
 ```typescript
 import {
@@ -82,8 +82,8 @@ export default Canister({
 
 Examples:
 
--   [ethereum_json_rpc](https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc)
--   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
+- [ethereum_json_rpc](https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc)
+- [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
 import {

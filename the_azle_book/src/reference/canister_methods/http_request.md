@@ -4,7 +4,7 @@ This section is a work in progress.
 
 Examples:
 
--   [http_counter](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter)
+- [http_counter](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter)
 
 ```typescript
 import {

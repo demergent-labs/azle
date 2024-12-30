@@ -63,5 +63,5 @@ Now if you call the functions with the `n2dcQfuwFw7M2UYzLfM6P7DwewsQaygb8S` addr
 
 If you need more information you can view the following:
 
--   [Developing Bitcoin dapps locally]()https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development
--   [Deploying your first Bitcoin dapp](https://internetcomputer.org/docs/current/samples/deploying-your-first-bitcoin-dapp)
+- [Developing Bitcoin dapps locally]()https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development
+- [Deploying your first Bitcoin dapp](https://internetcomputer.org/docs/current/samples/deploying-your-first-bitcoin-dapp)

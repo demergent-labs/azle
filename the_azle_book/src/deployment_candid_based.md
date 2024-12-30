@@ -1,10 +1,10 @@
 # Deployment
 
--   [Starting the local replica](#starting-the-local-replica)
--   [Deploying to the local replica](#deploying-to-the-local-replica)
--   [Interacting with your canister](#interacting-with-your-canister)
--   [Deploying to mainnet](#deploying-to-mainnet)
--   [Common deployment issues](#common-deployment-issues)
+- [Starting the local replica](#starting-the-local-replica)
+- [Deploying to the local replica](#deploying-to-the-local-replica)
+- [Interacting with your canister](#interacting-with-your-canister)
+- [Deploying to mainnet](#deploying-to-mainnet)
+- [Common deployment issues](#common-deployment-issues)
 
 There are two main Internet Computer (IC) environments that you will generally interact with: the local replica and mainnet.
 
@@ -68,9 +68,9 @@ dfx deploy canister_name
 
 As a developer you can generally interact with your canister in three ways:
 
--   [dfx command line](#dfx-command-line)
--   [dfx web UI](#dfx-web-ui)
--   [@dfinity/agent](#dfinityagent)
+- [dfx command line](#dfx-command-line)
+- [dfx web UI](#dfx-web-ui)
+- [@dfinity/agent](#dfinityagent)
 
 ### dfx command line
 
@@ -119,9 +119,9 @@ Open up [http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-
 
 There are other agents for other languages as well:
 
--   [Java](https://github.com/ic4j/ic4j-agent)
--   [Python](https://github.com/rocklabs-io/ic-py)
--   [Rust](https://crates.io/crates/ic-agent)
+- [Java](https://github.com/ic4j/ic4j-agent)
+- [Python](https://github.com/rocklabs-io/ic-py)
+- [Rust](https://crates.io/crates/ic-agent)
 
 ## Deploying to mainnet
 

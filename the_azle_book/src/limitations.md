@@ -2,14 +2,14 @@
 
 There are a number of limitations that you are likely to run into while you develop with Azle on ICP. These are generally the most limiting:
 
--   5 billion instruction limit for query calls (HTTP GET requests) (~1 second of computation)
--   40 billion instruction limit for update calls (HTTP POST/etc requests) (~10 seconds of computation)
--   2 MiB request size limit
--   3 MiB response size limit
--   4 GiB heap limit
--   High request latency relative to traditional web applications (think seconds not milliseconds)
--   High costs relative to traditional web applications (think ~10x traditional web costs)
--   StableBTreeMap memory id `254` is reserved for the stable memory file system
+- 5 billion instruction limit for query calls (HTTP GET requests) (~1 second of computation)
+- 40 billion instruction limit for update calls (HTTP POST/etc requests) (~10 seconds of computation)
+- 2 MiB request size limit
+- 3 MiB response size limit
+- 4 GiB heap limit
+- High request latency relative to traditional web applications (think seconds not milliseconds)
+- High costs relative to traditional web applications (think ~10x traditional web costs)
+- StableBTreeMap memory id `254` is reserved for the stable memory file system
 
 Read more [here](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits) for in-depth information on current ICP limitations.
 

@@ -1,4 +1,5 @@
 import express from 'express';
+// @ts-expect-error
 import { compile } from 'watr';
 
 const app = express();

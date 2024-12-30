@@ -59,10 +59,10 @@ bootstrap();
 
 # Servers
 
--   [Node.js http.server](#nodejs-httpserver)
--   [Express](#express)
--   [Server](#server)
--   [Limitations](#limitations)
+- [Node.js http.server](#nodejs-httpserver)
+- [Express](#express)
+- [Server](#server)
+- [Limitations](#limitations)
 
 Azle supports building HTTP servers on ICP using the [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver) class as the foundation. These servers can serve static files or act as API backends, or both.
 
@@ -235,9 +235,9 @@ async function asynchronousHelloWorld() {
 
 For a deeper understanding of possible limitations you may want to refer to [The HTTP Gateway Protocol Specification](https://internetcomputer.org/docs/current/references/http-gateway-protocol-spec).
 
--   The top-level route `/api` is currently reserved by the replica locally
--   The `Transfer-Encoding` header is not supported
--   `gzip` responses most likely do not work
--   HTTP requests are generally limited to ~2 MiB
--   HTTP responses are generally limited to ~3 MiB
--   You cannot set HTTP status codes in the 1xx range
+- The top-level route `/api` is currently reserved by the replica locally
+- The `Transfer-Encoding` header is not supported
+- `gzip` responses most likely do not work
+- HTTP requests are generally limited to ~2 MiB
+- HTTP responses are generally limited to ~3 MiB
+- You cannot set HTTP status codes in the 1xx range

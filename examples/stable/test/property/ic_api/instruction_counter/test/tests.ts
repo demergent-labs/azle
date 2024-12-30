@@ -34,9 +34,9 @@ export function getTests(): Test {
                                 (loops === 0
                                     ? 0n
                                     : loops === 1
-                                    ? zeroToOneDelta
-                                    : zeroToOneDelta +
-                                      (BigInt(loops) - 1n) * oneToTwoDelta)
+                                      ? zeroToOneDelta
+                                      : zeroToOneDelta +
+                                        (BigInt(loops) - 1n) * oneToTwoDelta)
                         );
                     }
                 ),

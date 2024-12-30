@@ -2,14 +2,14 @@
 
 ## TL;DR
 
--   Created with the `query` function
--   Read-only
--   Executed on a single node
--   No consensus
--   Latency on the order of ~100 milliseconds
--   [5 billion Wasm instruction limit](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits)
--   4 GiB heap limit
--   [~32k queries per second per canister](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6)
+- Created with the `query` function
+- Read-only
+- Executed on a single node
+- No consensus
+- Latency on the order of ~100 milliseconds
+- [5 billion Wasm instruction limit](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits)
+- 4 GiB heap limit
+- [~32k queries per second per canister](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6)
 
 The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method named `getString`:
 

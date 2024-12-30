@@ -4,7 +4,7 @@ This section is a work in progress.
 
 Examples:
 
--   [call_raw](https://github.com/demergent-labs/azle/tree/main/examples/call_raw)
+- [call_raw](https://github.com/demergent-labs/azle/tree/main/examples/call_raw)
 
 ```typescript
 import { Canister, ic, nat, Principal, text, update } from 'azle/experimental';
