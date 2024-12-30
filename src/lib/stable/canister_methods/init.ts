@@ -8,11 +8,7 @@ export function init<This, Args extends any[], Return>(
 ): MethodType<This, Args, Return>;
 
 export function init<This, Args extends any[], Return>(
-    paramIdlTypes?: IDL.Type[],
-    returnIdlType?: IDL.Type,
-    options?: {
-        manual?: boolean;
-    }
+    paramIdlTypes?: IDL.Type[]
 ): (
     originalMethod: MethodType<This, Args, Return>,
     context: ClassMethodDecoratorContext
@@ -23,5 +19,5 @@ export function init<This, Args extends any[], Return>(
     param2?: ClassMethodDecoratorContext | IDL.Type,
     param3?: { manual?: boolean }
 ): any {
-    return decoratorArgumentsHandler('init', 'init', param1, param2, param3);
+    return decoratorArgumentsHandler('init', param1, param2, param3);
 }

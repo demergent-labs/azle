@@ -1,6 +1,5 @@
 import { IDL } from '@dfinity/candid';
 
-import { Method, MethodMeta } from '../../../build/stable/utils/types';
 import { handleUncaughtError } from '../error';
 import {
     CanisterMethodMode,
@@ -14,7 +13,6 @@ export type MethodType<This, Args extends any[], Return> = (
 
 export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
-    methodMetaKey: keyof MethodMeta,
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?: ClassMethodDecoratorContext | IDL.Type,
     param3?: { composite?: boolean; manual?: boolean }
@@ -26,7 +24,6 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
 
         return decoratorImplementation(
             canisterMethodMode,
-            methodMetaKey,
             originalMethod,
             context
         );
@@ -43,7 +40,6 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
         ): MethodType<This, Args, Return> => {
             return decoratorImplementation(
                 canisterMethodMode,
-                methodMetaKey,
                 originalMethod,
                 context,
                 paramIdlTypes,
@@ -56,7 +52,6 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
 
 function decoratorImplementation<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
-    methodMetaKey: keyof MethodMeta,
     originalMethod: MethodType<This, Args, Return>,
     context: ClassMethodDecoratorContext,
     paramIdlTypes?: IDL.Type[],
@@ -68,29 +63,13 @@ function decoratorImplementation<This, Args extends any[], Return>(
     const index = globalThis._azleCanisterMethodsIndex++;
     const indexString = index.toString();
 
-    if (canisterMethodMode !== 'heartbeat') {
-        if (Array.isArray(globalThis._azleMethodMeta[methodMetaKey])) {
-            if (canisterMethodMode === 'query') {
-                (globalThis._azleMethodMeta[methodMetaKey] as Method[]).push({
-                    name,
-                    index,
-                    composite: options?.composite ?? false
-                });
-            } else {
-                (globalThis._azleMethodMeta[methodMetaKey] as Method[]).push({
-                    name,
-                    index
-                });
-            }
-        } else {
-            (globalThis._azleMethodMeta[methodMetaKey] as Method) = {
-                name,
-                index
-            };
-        }
-    }
-
     if (canisterMethodMode === 'query') {
+        globalThis._azleMethodMeta.queries?.push({
+            name,
+            index,
+            composite: options?.composite ?? false
+        });
+
         globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
             paramIdlTypes ?? [],
             returnIdlType === undefined ? [] : [returnIdlType],
@@ -99,6 +78,11 @@ function decoratorImplementation<This, Args extends any[], Return>(
     }
 
     if (canisterMethodMode === 'update') {
+        globalThis._azleMethodMeta.updates?.push({
+            name,
+            index
+        });
+
         globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
             paramIdlTypes ?? [],
             returnIdlType === undefined ? [] : [returnIdlType]
@@ -106,18 +90,24 @@ function decoratorImplementation<This, Args extends any[], Return>(
     }
 
     if (canisterMethodMode === 'init') {
-        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
-            paramIdlTypes ?? [],
-            [],
-            ['init']
+        globalThis._azleMethodMeta.init = {
+            name,
+            index
+        };
+
+        globalThis._azleInitAndPostUpgradeIdlTypes.push(
+            IDL.Func(paramIdlTypes ?? [], [], ['init'])
         );
     }
 
     if (canisterMethodMode === 'postUpgrade') {
-        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
-            paramIdlTypes ?? [],
-            [],
-            ['post_upgrade']
+        globalThis._azleMethodMeta.post_upgrade = {
+            name,
+            index
+        };
+
+        globalThis._azleInitAndPostUpgradeIdlTypes.push(
+            IDL.Func(paramIdlTypes ?? [], [], ['post_upgrade'])
         );
     }
 

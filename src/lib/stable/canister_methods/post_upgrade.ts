@@ -8,11 +8,7 @@ export function postUpgrade<This, Args extends any[], Return>(
 ): MethodType<This, Args, Return>;
 
 export function postUpgrade<This, Args extends any[], Return>(
-    paramIdlTypes?: IDL.Type[],
-    returnIdlType?: IDL.Type,
-    options?: {
-        manual?: boolean;
-    }
+    paramIdlTypes?: IDL.Type[]
 ): (
     originalMethod: MethodType<This, Args, Return>,
     context: ClassMethodDecoratorContext
@@ -23,11 +19,5 @@ export function postUpgrade<This, Args extends any[], Return>(
     param2?: ClassMethodDecoratorContext | IDL.Type,
     param3?: { manual?: boolean }
 ): any {
-    return decoratorArgumentsHandler(
-        'postUpgrade',
-        'post_upgrade',
-        param1,
-        param2,
-        param3
-    );
+    return decoratorArgumentsHandler('postUpgrade', param1, param2, param3);
 }
