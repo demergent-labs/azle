@@ -17,7 +17,7 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     methodMetaKey: keyof MethodMeta,
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?: ClassMethodDecoratorContext | IDL.Type,
-    param3?: { manual?: boolean }
+    param3?: { composite?: boolean; manual?: boolean }
 ): any {
     // First overload - decorator without params
     if (typeof param1 === 'function') {
@@ -61,7 +61,7 @@ function decoratorImplementation<This, Args extends any[], Return>(
     context: ClassMethodDecoratorContext,
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
-    options?: { manual?: boolean }
+    options?: { composite?: boolean; manual?: boolean }
 ): MethodType<This, Args, Return> {
     const name = context.name as string;
 
@@ -70,10 +70,18 @@ function decoratorImplementation<This, Args extends any[], Return>(
 
     if (canisterMethodMode !== 'heartbeat') {
         if (Array.isArray(globalThis._azleMethodMeta[methodMetaKey])) {
-            (globalThis._azleMethodMeta[methodMetaKey] as Method[]).push({
-                name,
-                index
-            });
+            if (canisterMethodMode === 'query') {
+                (globalThis._azleMethodMeta[methodMetaKey] as Method[]).push({
+                    name,
+                    index,
+                    composite: options?.composite ?? false
+                });
+            } else {
+                (globalThis._azleMethodMeta[methodMetaKey] as Method[]).push({
+                    name,
+                    index
+                });
+            }
         } else {
             (globalThis._azleMethodMeta[methodMetaKey] as Method) = {
                 name,

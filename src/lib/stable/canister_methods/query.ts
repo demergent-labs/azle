@@ -11,6 +11,7 @@ export function query<This, Args extends any[], Return>(
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
     options?: {
+        composite?: boolean;
         manual?: boolean;
     }
 ): (
