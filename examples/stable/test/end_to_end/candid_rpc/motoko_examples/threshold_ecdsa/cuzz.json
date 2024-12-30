@@ -1,3 +1,5 @@
 {
-    "expectedErrors": ["messageHash must be 32 bytes"]
+    "expectedErrors": [
+        "Method: sign \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*messageHash must be 32 bytes"
+    ]
 }

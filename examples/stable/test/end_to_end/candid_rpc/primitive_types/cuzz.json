@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "Uncaught: Anything you want",
+        "Method: getEmpty \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Anything you want",
         "Error: Invalid empty argument: undefined"
     ]
 }
