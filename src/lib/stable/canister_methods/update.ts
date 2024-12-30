@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { decoratorArgumentsHandler, MethodType } from '.';
+import { decoratorArgumentsHandler, DecoratorFunction, MethodType } from '.';
 
 export function update<This, Args extends any[], Return>(
     originalMethod: MethodType<This, Args, Return>,
@@ -18,11 +18,10 @@ export function update<This, Args extends any[], Return>(
     context: ClassMethodDecoratorContext
 ) => MethodType<This, Args, Return>;
 
-// TODO get rid of the any return type
 export function update<This, Args extends any[], Return>(
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?: ClassMethodDecoratorContext | IDL.Type,
     param3?: { manual?: boolean }
-): any {
+): MethodType<This, Args, Return> | DecoratorFunction<This, Args, Return> {
     return decoratorArgumentsHandler('update', param1, param2, param3);
 }

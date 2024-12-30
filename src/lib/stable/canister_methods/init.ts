@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { decoratorArgumentsHandler, MethodType } from '.';
+import { decoratorArgumentsHandler, DecoratorFunction, MethodType } from '.';
 
 export function init<This, Args extends any[], Return>(
     originalMethod: MethodType<This, Args, Return>,
@@ -17,6 +17,6 @@ export function init<This, Args extends any[], Return>(
 export function init<This, Args extends any[], Return>(
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?: ClassMethodDecoratorContext
-): any {
+): MethodType<This, Args, Return> | DecoratorFunction<This, Args, Return> {
     return decoratorArgumentsHandler('init', param1, param2);
 }

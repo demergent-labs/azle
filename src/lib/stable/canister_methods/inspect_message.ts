@@ -4,6 +4,6 @@ import { decoratorArgumentsHandler, MethodType } from '.';
 export function inspectMessage<This, Args extends any[], Return>(
     originalMethod: MethodType<This, Args, Return>,
     context: ClassMethodDecoratorContext
-): MethodType<This, Args, Return> {
-    return decoratorArgumentsHandler('inspectMessage', originalMethod, context);
+): void {
+    decoratorArgumentsHandler('inspectMessage', originalMethod, context);
 }

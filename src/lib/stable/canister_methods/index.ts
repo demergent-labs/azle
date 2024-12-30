@@ -11,12 +11,17 @@ export type MethodType<This, Args extends any[], Return> = (
     ...args: Args
 ) => Return;
 
+export type DecoratorFunction<This, Args extends any[], Return> = (
+    originalMethod: MethodType<This, Args, Return>,
+    context: ClassMethodDecoratorContext
+) => MethodType<This, Args, Return>;
+
 export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?: ClassMethodDecoratorContext | IDL.Type,
     param3?: { composite?: boolean; manual?: boolean }
-): any {
+): MethodType<This, Args, Return> | DecoratorFunction<This, Args, Return> {
     // First overload - decorator without params
     if (typeof param1 === 'function') {
         const originalMethod = param1;
