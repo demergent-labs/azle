@@ -17,7 +17,7 @@ import {
 import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
-    // @init([])
+    // @init
     // init(): void {
     //     trap(`trapped from init`);
     // }

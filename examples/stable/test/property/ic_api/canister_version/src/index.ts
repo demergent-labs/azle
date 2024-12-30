@@ -23,7 +23,7 @@ export default class {
     inspectMessageCanisterVersion: bigint | null = null;
     meaninglessState: bigint = 0n;
 
-    @init([])
+    @init
     init(): void {
         this.initCanisterVersion = canisterVersion();
     }

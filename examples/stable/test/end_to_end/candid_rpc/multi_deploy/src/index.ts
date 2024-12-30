@@ -4,7 +4,7 @@ export default class {
     initCalled: boolean = false;
     postUpgradeCalled: boolean = false;
 
-    @init([])
+    @init
     init(): void {
         console.info('Init was called');
         this.initCalled = true;

@@ -68,20 +68,50 @@ function decoratorImplementation<This, Args extends any[], Return>(
     const index = globalThis._azleCanisterMethodsIndex++;
     const indexString = index.toString();
 
-    if (Array.isArray(globalThis._azleMethodMeta[methodMetaKey])) {
-        (globalThis._azleMethodMeta[methodMetaKey] as Method[]).push({
-            name,
-            index
-        });
-    } else {
-        (globalThis._azleMethodMeta[methodMetaKey] as Method) = { name, index };
+    if (canisterMethodMode !== 'heartbeat') {
+        if (Array.isArray(globalThis._azleMethodMeta[methodMetaKey])) {
+            (globalThis._azleMethodMeta[methodMetaKey] as Method[]).push({
+                name,
+                index
+            });
+        } else {
+            (globalThis._azleMethodMeta[methodMetaKey] as Method) = {
+                name,
+                index
+            };
+        }
     }
 
-    globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
-        paramIdlTypes ?? [],
-        returnIdlType === undefined ? [] : [returnIdlType],
-        canisterMethodMode === 'query' ? ['query'] : []
-    );
+    if (canisterMethodMode === 'query') {
+        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
+            paramIdlTypes ?? [],
+            returnIdlType === undefined ? [] : [returnIdlType],
+            ['query']
+        );
+    }
+
+    if (canisterMethodMode === 'update') {
+        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
+            paramIdlTypes ?? [],
+            returnIdlType === undefined ? [] : [returnIdlType]
+        );
+    }
+
+    if (canisterMethodMode === 'init') {
+        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
+            paramIdlTypes ?? [],
+            [],
+            ['init']
+        );
+    }
+
+    if (canisterMethodMode === 'postUpgrade') {
+        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
+            paramIdlTypes ?? [],
+            [],
+            ['post_upgrade']
+        );
+    }
 
     globalThis._azleCallbacks[indexString] = async (
         args: Uint8Array
