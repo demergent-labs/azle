@@ -1,52 +1,27 @@
 import { IDL } from '@dfinity/candid';
 
-import { handleUncaughtError } from '../error';
-import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
+import { decoratorArgumentsHandler, MethodType } from '.';
 
 export function query<This, Args extends any[], Return>(
-    paramIdlTypes: IDL.Type[],
+    originalMethod: MethodType<This, Args, Return>,
+    context: ClassMethodDecoratorContext
+): MethodType<This, Args, Return>;
+
+export function query<This, Args extends any[], Return>(
+    paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
     options?: {
-        composite?: boolean;
         manual?: boolean;
     }
-) {
-    return (
-        originalMethod: (this: This, ...args: Args) => Return,
-        context: ClassMethodDecoratorContext
-    ): void => {
-        const index = globalThis._azleCanisterMethodsIndex++;
-        const name = context.name as string;
-        const composite = options?.composite ?? false;
-        const indexString = index.toString();
+): (
+    originalMethod: MethodType<This, Args, Return>,
+    context: ClassMethodDecoratorContext
+) => MethodType<This, Args, Return>;
 
-        globalThis._azleMethodMeta.queries?.push({
-            name,
-            index,
-            composite
-        });
-
-        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
-            paramIdlTypes,
-            returnIdlType === undefined ? [] : [returnIdlType],
-            ['query']
-        );
-
-        globalThis._azleCallbacks[indexString] = async (
-            args: Uint8Array
-        ): Promise<void> => {
-            try {
-                await executeAndReplyWithCandidSerde(
-                    'query',
-                    args,
-                    originalMethod.bind(globalThis._azleCanisterClassInstance),
-                    paramIdlTypes,
-                    returnIdlType,
-                    options?.manual ?? false
-                );
-            } catch (error: any) {
-                handleUncaughtError(error);
-            }
-        };
-    };
+export function query<This, Args extends any[], Return>(
+    param1?: MethodType<This, Args, Return> | IDL.Type[],
+    param2?: ClassMethodDecoratorContext | IDL.Type,
+    param3?: { manual?: boolean }
+): any {
+    decoratorArgumentsHandler('query', 'queries', param1, param2, param3);
 }

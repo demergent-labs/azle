@@ -2,7 +2,7 @@ import { IDL, JsonValue } from '@dfinity/candid';
 
 import { reply } from './ic_apis';
 
-type CanisterMethodMode =
+export type CanisterMethodMode =
     | 'query'
     | 'update'
     | 'init'
