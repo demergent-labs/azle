@@ -4,9 +4,9 @@ This section is a work in progress.
 
 Examples:
 
--   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
--   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
--   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
+- [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
+- [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
+- [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
 import { Canister, ic, Principal, update } from 'azle/experimental';

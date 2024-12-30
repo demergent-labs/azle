@@ -78,8 +78,8 @@ export function UpdateMethodArb<
                 const methodImplementationLocation =
                     api === 'class'
                         ? 'INLINE'
-                        : constraints.methodImplementationLocation ??
-                          defaultMethodImplementationLocation;
+                        : (constraints.methodImplementationLocation ??
+                          defaultMethodImplementationLocation);
                 const functionName = constraints.name ?? defaultFunctionName;
 
                 const imports = new Set([

@@ -7,9 +7,8 @@ export type IsExact<T, U> = [T] extends [U]
         ? true
         : false
     : false;
-export type NotAnyAndExact<T, U> = IsAny<T> extends true
-    ? false
-    : IsExact<T, U>;
+export type NotAnyAndExact<T, U> =
+    IsAny<T> extends true ? false : IsExact<T, U>;
 export type AssertType<T extends true> = T;
 
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;

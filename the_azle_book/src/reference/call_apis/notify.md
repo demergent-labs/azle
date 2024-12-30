@@ -4,8 +4,8 @@ This section is a work in progress.
 
 Examples:
 
--   [cross_canister_calls](https://github.com/demergent-labs/azle/tree/main/examples/cross_canister_calls)
--   [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
+- [cross_canister_calls](https://github.com/demergent-labs/azle/tree/main/examples/cross_canister_calls)
+- [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
 
 ```typescript
 import { Canister, ic, update, Void } from 'azle/experimental';

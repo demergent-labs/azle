@@ -4,7 +4,7 @@ This section is a work in progress.
 
 Examples:
 
--   [rejections](https://github.com/demergent-labs/azle/tree/main/examples/rejections)
+- [rejections](https://github.com/demergent-labs/azle/tree/main/examples/rejections)
 
 ```typescript
 import { Canister, ic, RejectionCode, update } from 'azle/experimental';

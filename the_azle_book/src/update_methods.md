@@ -2,15 +2,15 @@
 
 ## TL;DR
 
--   Created with the `update` function
--   Read-write
--   Executed on many nodes
--   Consensus
--   Latency ~2-5 seconds
--   [20 billion Wasm instruction limit](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits)
--   4 GiB heap limit
--   96 GiB stable memory limit
--   [~900 updates per second per canister](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6)
+- Created with the `update` function
+- Read-write
+- Executed on many nodes
+- Consensus
+- Latency ~2-5 seconds
+- [20 billion Wasm instruction limit](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits)
+- 4 GiB heap limit
+- 96 GiB stable memory limit
+- [~900 updates per second per canister](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6)
 
 Update methods are similar to query methods, but state changes can be persisted. Here's an example of a simple update method:
 

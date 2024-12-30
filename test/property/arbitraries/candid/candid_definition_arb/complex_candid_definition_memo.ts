@@ -39,8 +39,8 @@ export function complexCandidDefinitionMemo(
     const newConstraints: DefinitionConstraints = {
         depthLevel: constraints.depthLevel,
         weights:
-            constraints.recursiveWeights ?? false
-                ? constraints.weights ?? {}
+            (constraints.recursiveWeights ?? false)
+                ? (constraints.weights ?? {})
                 : {},
         recursiveWeights: constraints.recursiveWeights,
         forceInline: constraints.forceInline
