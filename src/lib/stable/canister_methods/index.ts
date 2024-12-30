@@ -111,13 +111,34 @@ function decoratorImplementation<This, Args extends any[], Return>(
         );
     }
 
+    if (canisterMethodMode === 'preUpgrade') {
+        globalThis._azleMethodMeta.pre_upgrade = {
+            name,
+            index
+        };
+    }
+
+    if (canisterMethodMode === 'heartbeat') {
+        globalThis._azleMethodMeta.heartbeat = {
+            name,
+            index
+        };
+    }
+
+    if (canisterMethodMode === 'inspectMessage') {
+        globalThis._azleMethodMeta.inspect_message = {
+            name,
+            index
+        };
+    }
+
     globalThis._azleCallbacks[indexString] = async (
-        args: Uint8Array
+        args?: Uint8Array
     ): Promise<void> => {
         try {
             await executeAndReplyWithCandidSerde(
                 canisterMethodMode,
-                args,
+                args ?? new Uint8Array(),
                 originalMethod.bind(globalThis._azleCanisterClassInstance),
                 paramIdlTypes ?? [],
                 returnIdlType,

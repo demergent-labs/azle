@@ -16,8 +16,7 @@ export function init<This, Args extends any[], Return>(
 
 export function init<This, Args extends any[], Return>(
     param1?: MethodType<This, Args, Return> | IDL.Type[],
-    param2?: ClassMethodDecoratorContext | IDL.Type,
-    param3?: { manual?: boolean }
+    param2?: ClassMethodDecoratorContext
 ): any {
-    return decoratorArgumentsHandler('init', param1, param2, param3);
+    return decoratorArgumentsHandler('init', param1, param2);
 }
