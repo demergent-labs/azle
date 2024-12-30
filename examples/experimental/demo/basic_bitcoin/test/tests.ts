@@ -37,7 +37,7 @@ export function getTests(
     getAddress: AddressFunc,
     addressForm: string
 ): Test {
-    const origin = `http://${canisterId}.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:8000`;
     return () => {
         beforeAll(async () => {
             context = {
