@@ -100,7 +100,7 @@ type Candid = {
 };
 
 export default class {
-    @query([])
+    @query
     opt(): void {}
 
     @query([], CandidVariant)

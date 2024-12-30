@@ -1,7 +1,7 @@
 import { query } from 'azle';
 
 export default class {
-    @query([])
+    @query
     main(): void {
         console.info('Hello World!');
     }

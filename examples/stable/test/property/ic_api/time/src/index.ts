@@ -41,7 +41,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     inspectMessageTime(): void {}
 
     @query([], IDL.Nat64)

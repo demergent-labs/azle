@@ -1,7 +1,7 @@
 import { candidEncode, notify, Principal, trap, update } from 'azle';
 
 export default class {
-    @update([])
+    @update
     sendNotification(): void {
         return notify(
             Principal.fromText(

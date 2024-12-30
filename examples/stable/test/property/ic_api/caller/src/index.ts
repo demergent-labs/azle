@@ -76,7 +76,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     setInspectMessageCaller(): void {
         this.inspectMessageCaller = caller();
     }

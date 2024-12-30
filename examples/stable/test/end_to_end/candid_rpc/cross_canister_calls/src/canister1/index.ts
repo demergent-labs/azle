@@ -44,7 +44,7 @@ export default class {
         return (await call(this.canister2Id, 'trap')) as never;
     }
 
-    @update([])
+    @update
     sendNotification(): void {
         return notify(this.canister2Id, 'receiveNotification', {
             paramIdlTypes: [IDL.Text],

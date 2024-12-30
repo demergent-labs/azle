@@ -83,7 +83,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     setInspectMessageCanisterVersion(): void {
         this.inspectMessageCanisterVersion = canisterVersion();
     }

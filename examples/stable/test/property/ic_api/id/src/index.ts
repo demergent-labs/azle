@@ -75,7 +75,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     setInspectMessageId(): void {
         this.inspectMessageId = id();
     }

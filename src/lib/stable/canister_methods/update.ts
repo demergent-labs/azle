@@ -23,5 +23,11 @@ export function update<This, Args extends any[], Return>(
     param2?: ClassMethodDecoratorContext | IDL.Type,
     param3?: { manual?: boolean }
 ): any {
-    decoratorArgumentsHandler('update', 'updates', param1, param2, param3);
+    return decoratorArgumentsHandler(
+        'update',
+        'updates',
+        param1,
+        param2,
+        param3
+    );
 }
