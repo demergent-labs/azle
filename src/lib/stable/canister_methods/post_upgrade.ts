@@ -1,43 +1,33 @@
 import { IDL } from '@dfinity/candid';
 
-import { handleUncaughtError } from '../error';
-import { executeAndReplyWithCandidSerde } from '../execute_with_candid_serde';
+import { decoratorArgumentsHandler, MethodType } from '.';
 
 export function postUpgrade<This, Args extends any[], Return>(
-    paramIdlTypes: IDL.Type[]
-) {
-    return (
-        originalMethod: (this: This, ...args: Args) => Return,
-        context: ClassMethodDecoratorContext
-    ): void => {
-        const index = globalThis._azleCanisterMethodsIndex++;
-        const name = context.name as string;
-        const indexString = index.toString();
+    originalMethod: MethodType<This, Args, Return>,
+    context: ClassMethodDecoratorContext
+): MethodType<This, Args, Return>;
 
-        globalThis._azleMethodMeta.post_upgrade = {
-            name,
-            index
-        };
+export function postUpgrade<This, Args extends any[], Return>(
+    paramIdlTypes?: IDL.Type[],
+    returnIdlType?: IDL.Type,
+    options?: {
+        manual?: boolean;
+    }
+): (
+    originalMethod: MethodType<This, Args, Return>,
+    context: ClassMethodDecoratorContext
+) => MethodType<This, Args, Return>;
 
-        globalThis._azleInitAndPostUpgradeIdlTypes.push(
-            IDL.Func(paramIdlTypes, [], ['post_upgrade'])
-        );
-
-        globalThis._azleCallbacks[indexString] = async (
-            args: Uint8Array
-        ): Promise<void> => {
-            try {
-                await executeAndReplyWithCandidSerde(
-                    'postUpgrade',
-                    args,
-                    originalMethod.bind(globalThis._azleCanisterClassInstance),
-                    paramIdlTypes,
-                    undefined,
-                    false
-                );
-            } catch (error: any) {
-                handleUncaughtError(error);
-            }
-        };
-    };
+export function postUpgrade<This, Args extends any[], Return>(
+    param1?: MethodType<This, Args, Return> | IDL.Type[],
+    param2?: ClassMethodDecoratorContext | IDL.Type,
+    param3?: { manual?: boolean }
+): any {
+    return decoratorArgumentsHandler(
+        'postUpgrade',
+        'post_upgrade',
+        param1,
+        param2,
+        param3
+    );
 }

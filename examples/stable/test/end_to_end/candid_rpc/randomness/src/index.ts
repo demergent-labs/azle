@@ -3,7 +3,7 @@ import { IDL, postUpgrade, query, update } from 'azle';
 export default class {
     redeployed = false;
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         this.redeployed = true;
     }

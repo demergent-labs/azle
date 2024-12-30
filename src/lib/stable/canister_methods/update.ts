@@ -18,6 +18,7 @@ export function update<This, Args extends any[], Return>(
     context: ClassMethodDecoratorContext
 ) => MethodType<This, Args, Return>;
 
+// TODO get rid of the any return type
 export function update<This, Args extends any[], Return>(
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?: ClassMethodDecoratorContext | IDL.Type,

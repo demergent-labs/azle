@@ -37,7 +37,7 @@ export default class {
         }
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         this.postUpgradeCanisterVersion = canisterVersion();
     }

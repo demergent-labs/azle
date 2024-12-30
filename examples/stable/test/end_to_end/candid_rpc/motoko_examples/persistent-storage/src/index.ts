@@ -17,7 +17,7 @@ export default class {
         this.stableStorage.insert('counter', 0n);
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         this.redeployed = true;
     }

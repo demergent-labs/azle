@@ -31,7 +31,7 @@ export default class {
         this.stableStorage.insert('entries', []);
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         console.info('postUpgrade');
 

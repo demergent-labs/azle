@@ -21,7 +21,7 @@ export default class {
         return globalThis._azleInitCalled;
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         console.info('Post Upgrade was called');
         this.initCalled = false;

@@ -22,7 +22,7 @@ export default class {
     //     trap(`trapped from init`);
     // }
 
-    // @postUpgrade([])
+    // @postUpgrade
     // postUpgrade(): void {
     //     trap(`trapped from postUpgrade`);
     // }

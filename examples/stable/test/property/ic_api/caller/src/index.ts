@@ -34,7 +34,7 @@ export default class {
         }
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         this.postUpgradeCaller = caller();
     }
