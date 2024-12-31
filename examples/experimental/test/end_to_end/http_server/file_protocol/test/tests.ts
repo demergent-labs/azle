@@ -39,7 +39,8 @@ export function getTests(canisterId: string): Test {
             expect(responseText.trim()).toBe('test3');
         });
 
-        it('reads in a file in a grandchild directory', async () => {
+        // TODO enable this tests once https://github.com/demergent-labs/azle/issues/2404 is resolved
+        it.skip('reads in a file in a grandchild directory', async () => {
             const response = await fetch(`${origin}/read-test5`, {
                 method: 'PATCH',
                 headers: [['Content-Type', 'application/json']],

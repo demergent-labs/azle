@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=http://$(dfx canister id backend).localhost:$(dfx info webserver-port) VITE_IDENTITY_PROVIDER=http://$(dfx canister id internet_identity).localhost:$(dfx info webserver-port) vite build",
+        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=http://$(dfx canister id backend).raw.localhost:$(dfx info webserver-port) VITE_IDENTITY_PROVIDER=http://$(dfx canister id internet_identity).localhost:$(dfx info webserver-port) vite build",
         "pretest": "tsx test/pretest.ts",
         "test": "jest"
     },
