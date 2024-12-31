@@ -4,7 +4,7 @@ version = "0.0.0"
 edition = "2018"
 
 [dependencies]
-serde = "1.0.216"
+serde = "1.0.217"
 serde_json = "1.0.134"
 candid = "0.10.11"
 ic-cdk = "0.17.1"
