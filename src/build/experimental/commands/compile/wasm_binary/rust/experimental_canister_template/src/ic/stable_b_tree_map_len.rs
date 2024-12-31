@@ -15,7 +15,7 @@ impl JsFn for NativeFunction {
         let len = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
             let stable_b_tree_maps = stable_b_tree_maps.borrow();
 
-            stable_b_tree_maps[&memory_id].len()
+            stable_b_tree_maps.get(&memory_id).unwrap().len()
         });
 
         context.new_string(&len.to_string()).into()

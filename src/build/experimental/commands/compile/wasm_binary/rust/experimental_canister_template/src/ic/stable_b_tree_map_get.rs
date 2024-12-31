@@ -21,7 +21,10 @@ impl JsFn for NativeFunction {
         let value_option = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
             let stable_b_tree_maps = stable_b_tree_maps.borrow();
 
-            stable_b_tree_maps[&memory_id].get(&AzleStableBTreeMapKey { bytes: key })
+            stable_b_tree_maps
+                .get(&memory_id)
+                .unwrap()
+                .get(&AzleStableBTreeMapKey { bytes: key })
         });
 
         // TODO could we somehow encode the entire option here more easily
