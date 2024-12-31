@@ -58,6 +58,9 @@ export function getTests(): Test {
             );
         });
 
+        // TODO this test will simply hang if it fails because timers don't throw any errors that we can catch
+        // TODO we would need to use the canister logs somehow to check if the timer has hit its instruction limit
+        // TODO but see this issue: https://forum.dfinity.org/t/no-instruction-limit-hit-canister-logs-within-timer/39518
         it('should not hit the instruction limit with chunking in a timer', async () => {
             const actor = await getCanisterActor<Actor>('canister');
 
