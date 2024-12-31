@@ -58,7 +58,7 @@ type NullFunc = Func;
 export default class {
     stableStorage = new StableBTreeMap<string, StableFunc>(0);
 
-    @init([])
+    @init
     init(): void {
         this.stableStorage.insert('stableFunc', [
             Principal.from('aaaaa-aa'),

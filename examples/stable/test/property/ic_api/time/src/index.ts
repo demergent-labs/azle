@@ -17,12 +17,12 @@ import {
 import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
-    // @init([])
+    // @init
     // init(): void {
     //     trap(`trapped from init`);
     // }
 
-    // @postUpgrade([])
+    // @postUpgrade
     // postUpgrade(): void {
     //     trap(`trapped from postUpgrade`);
     // }
@@ -41,7 +41,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     inspectMessageTime(): void {}
 
     @query([], IDL.Nat64)

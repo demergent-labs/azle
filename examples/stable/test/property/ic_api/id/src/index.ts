@@ -20,7 +20,7 @@ export default class {
     preUpgradeId = new StableBTreeMap<'PRE_UPGRADE_ID', Principal>(0);
     inspectMessageId: Principal | null = null;
 
-    @init([])
+    @init
     init(): void {
         this.initId = id();
     }
@@ -34,7 +34,7 @@ export default class {
         }
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         this.postUpgradeId = id();
     }
@@ -75,7 +75,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     setInspectMessageId(): void {
         this.inspectMessageId = id();
     }

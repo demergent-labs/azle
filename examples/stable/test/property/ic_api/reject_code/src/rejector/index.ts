@@ -11,6 +11,6 @@ export default class {
         reject('Rejection with message');
     }
 
-    @query([])
+    @query
     noError(): void {}
 }

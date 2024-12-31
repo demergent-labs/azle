@@ -23,7 +23,7 @@ export default class {
     inspectMessageCanisterVersion: bigint | null = null;
     meaninglessState: bigint = 0n;
 
-    @init([])
+    @init
     init(): void {
         this.initCanisterVersion = canisterVersion();
     }
@@ -37,7 +37,7 @@ export default class {
         }
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         this.postUpgradeCanisterVersion = canisterVersion();
     }
@@ -83,7 +83,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     setInspectMessageCanisterVersion(): void {
         this.inspectMessageCanisterVersion = canisterVersion();
     }

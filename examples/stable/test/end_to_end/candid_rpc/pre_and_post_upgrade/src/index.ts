@@ -24,14 +24,14 @@ export default class {
         [key: string]: bigint;
     } = {};
 
-    @init([])
+    @init
     init(): void {
         console.info('init');
 
         this.stableStorage.insert('entries', []);
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         console.info('postUpgrade');
 

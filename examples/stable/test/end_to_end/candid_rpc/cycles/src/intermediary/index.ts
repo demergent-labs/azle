@@ -12,7 +12,7 @@ export default class {
         });
     }
 
-    @update([])
+    @update
     sendCyclesNotify(): void {
         return notify(this.cyclesPrincipal, 'receiveCycles', {
             cycles: 1_000_000n

@@ -20,7 +20,7 @@ export default class {
     preUpgradeCaller = new StableBTreeMap<'PRE_UPGRADE_CALLER', Principal>(0);
     inspectMessageCaller: Principal | null = null;
 
-    @init([])
+    @init
     init(): void {
         this.initCaller = caller();
     }
@@ -34,7 +34,7 @@ export default class {
         }
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         this.postUpgradeCaller = caller();
     }
@@ -76,7 +76,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     setInspectMessageCaller(): void {
         this.inspectMessageCaller = caller();
     }

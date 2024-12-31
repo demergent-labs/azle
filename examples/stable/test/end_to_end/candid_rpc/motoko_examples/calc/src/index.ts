@@ -34,7 +34,7 @@ export default class {
         }
     }
 
-    @update([])
+    @update
     clearall(): void {
         this.cell = 0n;
     }

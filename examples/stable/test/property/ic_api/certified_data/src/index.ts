@@ -90,7 +90,7 @@ export default class {
         return certificate !== undefined ? [certificate] : [];
     }
 
-    @query([])
+    @query
     setDataCertificateInQuery(): void {
         setCertifiedData(new Uint8Array([3]));
     }

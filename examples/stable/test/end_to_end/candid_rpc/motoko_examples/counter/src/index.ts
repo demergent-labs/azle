@@ -13,7 +13,7 @@ export default class {
         this.counter = n;
     }
 
-    @update([])
+    @update
     inc(): void {
         this.counter += 1n;
     }

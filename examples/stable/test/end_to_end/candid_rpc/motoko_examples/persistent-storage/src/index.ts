@@ -12,12 +12,12 @@ export default class {
     stableStorage = new StableBTreeMap<string, bigint>(0);
     redeployed = false;
 
-    @init([])
+    @init
     init(): void {
         this.stableStorage.insert('counter', 0n);
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         this.redeployed = true;
     }

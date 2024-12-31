@@ -4,7 +4,7 @@ export default class {
     initCalled: boolean = false;
     postUpgradeCalled: boolean = false;
 
-    @init([])
+    @init
     init(): void {
         console.info('Init was called');
         this.initCalled = true;
@@ -21,7 +21,7 @@ export default class {
         return globalThis._azleInitCalled;
     }
 
-    @postUpgrade([])
+    @postUpgrade
     postUpgrade(): void {
         console.info('Post Upgrade was called');
         this.initCalled = false;

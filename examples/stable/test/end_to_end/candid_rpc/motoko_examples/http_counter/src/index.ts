@@ -100,7 +100,7 @@ export type HttpResponse = {
 export default class {
     stableStorage = new StableBTreeMap<string, bigint>(0);
 
-    @init([])
+    @init
     init(): void {
         this.stableStorage.insert('counter', 0n);
     }

@@ -37,7 +37,7 @@ export default class {
         return param;
     }
 
-    @query([])
+    @query
     voidIsNotNull(): void {
         print(
             'Even though they are both None in Python, for Candid null and void are different.'
