@@ -19,7 +19,7 @@ export function getWebServerPort(): string {
 export function getCanisterOrigin(canisterName: string): string {
     return `http://${getCanisterId(
         canisterName
-    )}.localhost:${getWebServerPort()}`;
+    )}.raw.localhost:${getWebServerPort()}`;
 }
 
 export function getAgentHost(): string {

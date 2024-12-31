@@ -69,7 +69,7 @@ dfx deploy [canisterName]
 
 ## Interacting with your canister
 
-You will generally interact with your canister through an HTTP client such as `curl`, `fetch`, or a web browser. The URL of your canister locally will look like this: `http://[canisterId].localhost:[replicaPort]`. Azle will print your canister's URL in the terminal after a successful deploy.
+You will generally interact with your canister through an HTTP client such as `curl`, `fetch`, or a web browser. The URL of your canister locally will look like this: `http://[canisterId].raw.localhost:[replicaPort]`. Azle will print your canister's URL in the terminal after a successful deploy.
 
 ```bash
 # You can obtain the canisterId like this
@@ -79,10 +79,10 @@ dfx canister id [canisterName]
 dfx info webserver-port
 
 # An example of performing a GET request to a canister
-curl http://a3shf-5eaaa-aaaaa-qaafa-cai.localhost:8000
+curl http://a3shf-5eaaa-aaaaa-qaafa-cai.raw.localhost:8000
 
 # An example of performing a POST request to a canister
-curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://a3shf-5eaaa-aaaaa-qaafa-cai.localhost:8000
+curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://a3shf-5eaaa-aaaaa-qaafa-cai.raw.localhost:8000
 ```
 
 ## Deploying to mainnet

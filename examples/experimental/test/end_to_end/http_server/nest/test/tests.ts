@@ -29,7 +29,8 @@ export function getTests(canisterId: string): Test {
             expect(responseText).toBe('put');
         });
 
-        it('app patch', async () => {
+        // TODO enable this tests once https://github.com/demergent-labs/azle/issues/2404 is resolved
+        it.skip('app patch', async () => {
             const response = await fetch(`${origin}/patch`, {
                 method: 'PATCH'
             });
@@ -133,7 +134,8 @@ export function getTests(canisterId: string): Test {
             expect(responseText).toBe('dogs put');
         });
 
-        it('dogs patch', async () => {
+        // TODO enable this tests once https://github.com/demergent-labs/azle/issues/2404 is resolved
+        it.skip('dogs patch', async () => {
             const response = await fetch(`${origin}/dogs/patch`, {
                 method: 'PATCH'
             });
@@ -239,7 +241,8 @@ export function getTests(canisterId: string): Test {
             expect(responseText).toBe('cats put');
         });
 
-        it('cats patch', async () => {
+        // TODO enable this tests once https://github.com/demergent-labs/azle/issues/2404 is resolved
+        it.skip('cats patch', async () => {
             const response = await fetch(`${origin}/cats/patch`, {
                 method: 'PATCH'
             });

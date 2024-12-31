@@ -29,7 +29,7 @@ impl JsFn for NativeFunction {
 
         let values: Vec<Vec<u8>> = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
             let stable_b_tree_maps = stable_b_tree_maps.borrow();
-            let stable_b_tree_map = &stable_b_tree_maps[&memory_id];
+            let stable_b_tree_map = stable_b_tree_maps.get(&memory_id).unwrap();
 
             stable_b_tree_map
                 .iter()

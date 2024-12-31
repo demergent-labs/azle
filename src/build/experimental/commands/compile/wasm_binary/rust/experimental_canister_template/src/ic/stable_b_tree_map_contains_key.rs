@@ -22,7 +22,10 @@ impl JsFn for NativeFunction {
             .with(|stable_b_tree_maps| {
                 let stable_b_tree_maps = stable_b_tree_maps.borrow();
 
-                stable_b_tree_maps[&memory_id].contains_key(&AzleStableBTreeMapKey { bytes: key })
+                stable_b_tree_maps
+                    .get(&memory_id)
+                    .unwrap()
+                    .contains_key(&AzleStableBTreeMapKey { bytes: key })
             })
             .into()
     }
