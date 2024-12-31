@@ -4,5 +4,4 @@
 - [ ] Error handling beautiful (no unwraps or expects etc)
 - [ ] Code tested thoroughly
 - [ ] All new functions have JSDoc/Rustdoc comments
-- [ ] Link pr to the related issues
-- [ ] All tasks in linked issues have been completed or made into separate issues
+- [ ] Related issues have been linked and all tasks have been completed or made into separate issues
