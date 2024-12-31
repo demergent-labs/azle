@@ -16,6 +16,7 @@ export type DecoratorFunction<This, Args extends any[], Return> = (
     context: ClassMethodDecoratorContext
 ) => MethodType<This, Args, Return>;
 
+// TODO make the if/else more declarative for determining overload
 export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
     param1?: MethodType<This, Args, Return> | IDL.Type[],
@@ -50,6 +51,21 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
             originalMethod: MethodType<This, Args, Return>,
             context: ClassMethodDecoratorContext
         ): MethodType<This, Args, Return> => {
+            // TODO addInitializer is probably the key to getting all of this to work
+            // TODO we probably want to redesign to get the functions off of this class
+            // TODO instead of globally
+            // TODO maybe we should do it both ways
+            // TODO one way is using the class, but if it doesn't work
+            // TODO we can fall back to global?
+            // TODO we want to design this to be extensible from the beginning, right?
+            context.addInitializer(function () {
+                console.log('initializer running for ', context.name);
+                console.log(
+                    'typeof this.getRandomnessDirectly',
+                    typeof this.getRandomnessDirectly
+                );
+            });
+
             return decoratorImplementation(
                 canisterMethodMode,
                 originalMethod,
