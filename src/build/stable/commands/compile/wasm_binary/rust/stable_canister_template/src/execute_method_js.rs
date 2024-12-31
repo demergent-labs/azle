@@ -29,11 +29,15 @@ fn execute_method_js_with_result(
     pass_arg_data: bool,
 ) -> Result<(), Box<dyn Error>> {
     quickjs_with_ctx(|ctx| {
-        let callbacks: Object = ctx
+        let canister_class_instance: Object = ctx
             .clone()
             .globals()
+            .get("_azleCanisterClassInstance")
+            .map_err(|e| format!("Failed to get globalThis._azleCanisterClassInstance: {e}"))?;
+
+        let callbacks: Object = canister_class_instance
             .get("_azleCallbacks")
-            .map_err(|e| format!("Failed to get globalThis._azleCallbacks: {e}"))?;
+            .map_err(|e| format!("Failed to get canisterClassInstance._azleCallbacks: {e}"))?;
 
         let method_callback: Function = callbacks.get(&function_name).map_err(|e| {
             format!("Failed to get globalThis._azleCallbacks[{function_name}]: {e}")
