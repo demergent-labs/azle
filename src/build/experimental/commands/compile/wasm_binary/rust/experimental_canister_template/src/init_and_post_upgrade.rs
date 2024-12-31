@@ -16,7 +16,7 @@ pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
     // Without something like this the init and post_upgrade functions
     // seem to be optimized into the same function in the Wasm binary
     // This causes problems during Wasm binary manipulation
-    format!("prevent init and post_upgrade optimization");
+    let _ = format!("prevent init and post_upgrade optimization");
 
     initialize(true, function_index, pass_arg_data);
 

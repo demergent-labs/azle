@@ -3,7 +3,7 @@ import { expect, it, Test } from 'azle/test';
 import { getTests as getBitcoinTests } from 'bitcore_lib_example/test/tests';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:8000`;
     return () => {
         describe(
             'run tests common with bitcore_lib_example',

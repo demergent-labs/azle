@@ -6,7 +6,7 @@ import { createActor } from '../dfx_generated/canister_init_and_post_upgrade';
 
 export function getTests(): Test {
     const canisterId = getCanisterId('canister_init_and_post_upgrade');
-    const origin = `http://${canisterId}.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:8000`;
     const actor = createActor(canisterId, {
         agentOptions: {
             host: 'http://127.0.0.1:8000'
