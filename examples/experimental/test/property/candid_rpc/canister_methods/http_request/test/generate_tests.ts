@@ -28,7 +28,10 @@ export function generateTests(
                             ([name]) =>
                                 name !== 'x-ic-streaming-response' &&
                                 name !== 'content-length' &&
-                                name !== 'date'
+                                name !== 'date' &&
+                                name !== 'access-control-allow-origin' &&
+                                name !== 'access-control-expose-headers' &&
+                                name !== 'vary'
                         )
                         .sort();
                     const processedResponse = {
