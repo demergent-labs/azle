@@ -1,7 +1,7 @@
 import { expect, it, Test } from 'azle/test';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:8000`;
 
     return () => {
         it('gets address using an off-the-shelf bitcoin library', async () => {

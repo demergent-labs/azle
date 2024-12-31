@@ -9,12 +9,12 @@ export function compile(
     ioType: IOType
 ): void {
     execSyncPretty(
-        `CARGO_TARGET_DIR=${AZLE_CARGO_TARGET_DIR} cargo build --target wasm32-wasi --manifest-path ${manifestPath} --release`,
+        `CARGO_TARGET_DIR=${AZLE_CARGO_TARGET_DIR} cargo build --target wasm32-wasip1 --manifest-path ${manifestPath} --release`,
         ioType
     );
 
     execSyncPretty(
-        `wasi2ic ${AZLE_CARGO_TARGET_DIR}/wasm32-wasi/release/experimental_canister_template.wasm ${wasmDest}`,
+        `wasi2ic ${AZLE_CARGO_TARGET_DIR}/wasm32-wasip1/release/experimental_canister_template.wasm ${wasmDest}`,
         ioType
     );
 }
