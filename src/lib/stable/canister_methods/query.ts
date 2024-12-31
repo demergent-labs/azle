@@ -22,7 +22,7 @@ export function query<This, Args extends any[], Return>(
 export function query<This, Args extends any[], Return>(
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?: ClassMethodDecoratorContext | IDL.Type,
-    param3?: { manual?: boolean }
+    param3?: { composite?: boolean; manual?: boolean }
 ): MethodType<This, Args, Return> | DecoratorFunction<This, Args, Return> {
     return decoratorArgumentsHandler('query', param1, param2, param3);
 }

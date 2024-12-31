@@ -23,7 +23,14 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     param3?: { composite?: boolean; manual?: boolean }
 ): MethodType<This, Args, Return> | DecoratorFunction<This, Args, Return> {
     // First overload - decorator without params
-    if (typeof param1 === 'function') {
+    if (
+        typeof param1 === 'function' &&
+        param2 !== undefined &&
+        'kind' in param2 &&
+        param2.kind === 'method' &&
+        param2.metadata !== undefined &&
+        param2.name !== undefined
+    ) {
         const originalMethod = param1;
         const context = param2 as ClassMethodDecoratorContext;
 
