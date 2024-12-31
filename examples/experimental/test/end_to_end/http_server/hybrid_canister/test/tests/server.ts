@@ -5,7 +5,7 @@ import { createActor } from '../dfx_generated/server';
 
 export function getTests(): Test {
     const canisterId = getCanisterId('server');
-    const origin = `http://${canisterId}.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:8000`;
     const actor = createActor(canisterId, {
         agentOptions: {
             host: 'http://127.0.0.1:8000'

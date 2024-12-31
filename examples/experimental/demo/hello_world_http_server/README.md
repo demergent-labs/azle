@@ -84,7 +84,7 @@ If you would like your canister to autoreload on file changes:
 AZLE_AUTORELOAD=true dfx deploy
 ```
 
-View your frontend in a web browser at `http://[canisterId].localhost:8000`.
+View your frontend in a web browser at `http://[canisterId].raw.localhost:8000`.
 
 To obtain your application's [canisterId]:
 
@@ -95,6 +95,6 @@ dfx canister id backend
 Communicate with your canister using any HTTP client library, for example using `curl`:
 
 ```bash
-curl http://[canisterId].localhost:8000/db
-curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].localhost:8000/db/update
+curl http://[canisterId].raw.localhost:8000/db
+curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].raw.localhost:8000/db/update
 ```

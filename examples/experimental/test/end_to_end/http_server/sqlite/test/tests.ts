@@ -9,7 +9,7 @@ const UUID_V4_PATTERN =
     /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:8000`;
 
     return () => {
         it('/init-called true', async () => {

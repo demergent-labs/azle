@@ -3,7 +3,7 @@ import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:8000`;
 
     return () => {
         it('makes range requests for audio', async () => {

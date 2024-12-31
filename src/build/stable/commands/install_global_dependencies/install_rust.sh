@@ -14,11 +14,11 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --defaul
 source $HOME/.cargo/env
 
 # Add the WASM target for WebAssembly
-rustup target add wasm32-wasi
+rustup target add wasm32-wasip1
 
 echo "Rust $RUST_VERSION installation completed."
 rustc --version
 cargo --version
-rustup target list --installed | grep wasm32-wasi
+rustup target list --installed | grep wasm32-wasip1
 
 exit 0

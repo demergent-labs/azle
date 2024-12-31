@@ -16,7 +16,7 @@ import { hugeFilesTests } from './huge_file_tests';
 import { manualTests } from './manual_tests';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:8000`;
     const describeLongTest =
         process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
         process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true' ||

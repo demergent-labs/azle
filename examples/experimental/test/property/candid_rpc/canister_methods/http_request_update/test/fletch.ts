@@ -22,7 +22,7 @@ export async function fletch(
 
     const { method, body, headers, url: path } = request;
 
-    const url = `http://${canisterId}.localhost:8000${path}`;
+    const url = `http://${canisterId}.raw.localhost:8000${path}`;
 
     const fetchOptions = {
         method,
