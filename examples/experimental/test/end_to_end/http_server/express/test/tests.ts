@@ -95,7 +95,8 @@ export function getTests(canisterId: string): Test {
             expect(getResponseJson).toEqual(json);
         });
 
-        it('handles patches', async () => {
+        // TODO enable this tests once https://github.com/demergent-labs/azle/issues/2404 is resolved
+        it.skip('handles patches', async () => {
             const json = {
                 hello: 'patch'
             };

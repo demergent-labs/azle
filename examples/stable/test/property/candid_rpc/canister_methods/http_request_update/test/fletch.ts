@@ -59,8 +59,8 @@ export function fletchSync(canisterName: string, options: HttpRequest) {
         --data "${escapeForExecSync(
             Buffer.from(options.body).toString('utf-8')
         )}"\
-        "${canisterId}.localhost:8000${options.url}" \
-        --resolve "${canisterId}.localhost:8000:127.0.0.1"`;
+        "${canisterId}.raw.localhost:8000${options.url}" \
+        --resolve "${canisterId}.raw.localhost:8000:127.0.0.1"`;
 
     const responseBuffer = execSync(curlCommand);
 

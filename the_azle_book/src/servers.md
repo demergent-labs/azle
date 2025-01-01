@@ -68,7 +68,7 @@ Azle supports building HTTP servers on ICP using the [Node.js http.Server](https
 
 Azle currently has good but not comprehensive support for [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver) and [Express](https://expressjs.com/). Support for other libraries like [Nest](https://nestjs.com/) are works-in-progress.
 
-Once [deployed](./deployment.md) you can access your server at a URL like this locally `http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000` or like this on mainnet `https://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.icp0.io`.
+Once [deployed](./deployment.md) you can access your server at a URL like this locally `http://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.localhost:8000` or like this on mainnet `https://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.icp0.io`.
 
 You can use any HTTP client to interact with your server, such as `curl`, `fetch`, or a web browser. See the [Interacting with your canister section](./deployment.md#interacting-with-your-canister) of the [deployment chapter](./deployment.md) for help in constructing your canister URL.
 

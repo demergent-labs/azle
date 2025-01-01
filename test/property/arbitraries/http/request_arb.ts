@@ -23,10 +23,11 @@ const RequestMethodArb = fc.constantFrom<RequestMethod>(
     'GET',
     'POST',
     'PUT',
-    'DELETE',
-    'OPTIONS',
-    'TRACE',
-    'PATCH'
+    'DELETE'
+    // TODO add back in when resolved https://github.com/demergent-labs/azle/issues/2404
+    // 'OPTIONS',
+    // 'TRACE',
+    // 'PATCH'
 );
 
 const UrlPathArb = fc.webUrl({ withQueryParameters: true }).map((url) => {

@@ -5,7 +5,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class AzleApp extends LitElement {
     canisterOrigin: string = `http://${
         import.meta.env.VITE_CANISTER_ID
-    }.localhost:8000`;
+    }.raw.localhost:8000`;
 
     @property()
     resSendResponse: string = '';

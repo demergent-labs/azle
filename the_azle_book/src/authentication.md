@@ -12,7 +12,7 @@ Then you use `fetch` and construct an `Authorization` header using an [@dfinity/
 
 ```typescript
 const response = await fetch(
-    `http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000/whoami`,
+    `http://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.localhost:8000/whoami`,
     {
         method: 'GET',
         headers: [['Authorization', toJwt(this.identity)]]
