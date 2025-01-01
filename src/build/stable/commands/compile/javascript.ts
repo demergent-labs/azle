@@ -23,24 +23,36 @@ function getPrelude(main: string): string {
         `;
 }
 
+// TODO check if the global variables are already set
+// TODO if they are not, then get them off of the class
+// TODO we want this to be extensible
+// TODO but we should use our own method as well right?
+// TODO how can we create the class instance in an extensible and non-priviledged way?
 export function handleClassApiCanister(): string {
     return /*TS*/ `
-        if (globalThis._azleNodeWasmEnvironment === false) {
+        // if (globalThis._azleNodeWasmEnvironment === false) {
             const canisterClassInstance = new Canister.default();
+            // TODO this can just be an object that has the correct properties
+            // TODO and then anyone can set it...but we do we make it so that we
+            // TODO aren't setting it in a priviledged way?
+            // TODO I feel like we need to register this when azle is imported or something
+            // TODO do we even need to worry about this right now?
+            // TODO this shouldn't affect the public API and we don't even know if anyone
+            // TODO wants to extend Azle right now
             globalThis._azleCanisterClassInstance = canisterClassInstance;
-        }
+        // }
 
-        const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
+        const canisterIdlType = IDL.Service(canisterClassInstance._azleCanisterMethodIdlTypes);
         const candid = canisterIdlType.accept(new DidVisitor(), {
             ...getDefaultVisitorData(),
             isFirstService: true,
-            systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
+            systemFuncs: canisterClassInstance._azleInitAndPostUpgradeIdlTypes
         });
 
         globalThis._azleGetCandidAndMethodMeta = () => {
             return JSON.stringify({
                 candid: toDidString(candid),
-                methodMeta: globalThis._azleMethodMeta
+                methodMeta: canisterClassInstance._azleMethodMeta
             });
         };
     `;

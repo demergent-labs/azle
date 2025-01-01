@@ -71,96 +71,116 @@ function decoratorImplementation<This, Args extends any[], Return>(
     returnIdlType?: IDL.Type,
     options?: { composite?: boolean; manual?: boolean }
 ): MethodType<This, Args, Return> {
-    const name = context.name as string;
-
-    const index = globalThis._azleCanisterMethodsIndex++;
-    const indexString = index.toString();
-
-    if (canisterMethodMode === 'query') {
-        globalThis._azleMethodMeta.queries?.push({
-            name,
-            index,
-            composite: options?.composite ?? false
-        });
-
-        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
-            paramIdlTypes ?? [],
-            returnIdlType === undefined ? [] : [returnIdlType],
-            ['query']
-        );
-    }
-
-    if (canisterMethodMode === 'update') {
-        globalThis._azleMethodMeta.updates?.push({
-            name,
-            index
-        });
-
-        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
-            paramIdlTypes ?? [],
-            returnIdlType === undefined ? [] : [returnIdlType]
-        );
-    }
-
-    if (canisterMethodMode === 'init') {
-        globalThis._azleMethodMeta.init = {
-            name,
-            index
-        };
-
-        globalThis._azleInitAndPostUpgradeIdlTypes.push(
-            IDL.Func(paramIdlTypes ?? [], [], ['init'])
-        );
-    }
-
-    if (canisterMethodMode === 'postUpgrade') {
-        globalThis._azleMethodMeta.post_upgrade = {
-            name,
-            index
-        };
-
-        globalThis._azleInitAndPostUpgradeIdlTypes.push(
-            IDL.Func(paramIdlTypes ?? [], [], ['post_upgrade'])
-        );
-    }
-
-    if (canisterMethodMode === 'preUpgrade') {
-        globalThis._azleMethodMeta.pre_upgrade = {
-            name,
-            index
-        };
-    }
-
-    if (canisterMethodMode === 'heartbeat') {
-        globalThis._azleMethodMeta.heartbeat = {
-            name,
-            index
-        };
-    }
-
-    if (canisterMethodMode === 'inspectMessage') {
-        globalThis._azleMethodMeta.inspect_message = {
-            name,
-            index
-        };
-    }
-
-    // TODO addInitializer is probably the key to getting all of this to work
-    // TODO we probably want to redesign to get the functions off of this class
-    // TODO instead of globally
-    // TODO maybe we should do it both ways
-    // TODO one way is using the class, but if it doesn't work
-    // TODO we can fall back to global?
-    // TODO we want to design this to be extensible from the beginning, right?
     context.addInitializer(function () {
-        (this as any)._azleCallbacks[indexString] = async (
+        let canisterClassInstance = this as any;
+
+        if (canisterClassInstance._azleCanisterMethodsIndex === undefined) {
+            canisterClassInstance._azleCanisterMethodsIndex = 0;
+        }
+
+        if (canisterClassInstance._azleCanisterMethodIdlTypes === undefined) {
+            canisterClassInstance._azleCanisterMethodIdlTypes = {};
+        }
+
+        if (
+            canisterClassInstance._azleInitAndPostUpgradeIdlTypes === undefined
+        ) {
+            canisterClassInstance._azleInitAndPostUpgradeIdlTypes = [];
+        }
+
+        if (canisterClassInstance._azleMethodMeta === undefined) {
+            canisterClassInstance._azleMethodMeta = {
+                queries: [],
+                updates: []
+            };
+        }
+
+        if (canisterClassInstance._azleCallbacks === undefined) {
+            canisterClassInstance._azleCallbacks = {};
+        }
+
+        const name = context.name as string;
+
+        const index = canisterClassInstance._azleCanisterMethodsIndex++;
+        const indexString = index.toString();
+
+        if (canisterMethodMode === 'query') {
+            canisterClassInstance._azleMethodMeta.queries?.push({
+                name,
+                index,
+                composite: options?.composite ?? false
+            });
+
+            canisterClassInstance._azleCanisterMethodIdlTypes[name] = IDL.Func(
+                paramIdlTypes ?? [],
+                returnIdlType === undefined ? [] : [returnIdlType],
+                ['query']
+            );
+        }
+
+        if (canisterMethodMode === 'update') {
+            canisterClassInstance._azleMethodMeta.updates?.push({
+                name,
+                index
+            });
+
+            canisterClassInstance._azleCanisterMethodIdlTypes[name] = IDL.Func(
+                paramIdlTypes ?? [],
+                returnIdlType === undefined ? [] : [returnIdlType]
+            );
+        }
+
+        if (canisterMethodMode === 'init') {
+            canisterClassInstance._azleMethodMeta.init = {
+                name,
+                index
+            };
+
+            canisterClassInstance._azleInitAndPostUpgradeIdlTypes.push(
+                IDL.Func(paramIdlTypes ?? [], [], ['init'])
+            );
+        }
+
+        if (canisterMethodMode === 'postUpgrade') {
+            canisterClassInstance._azleMethodMeta.post_upgrade = {
+                name,
+                index
+            };
+
+            canisterClassInstance._azleInitAndPostUpgradeIdlTypes.push(
+                IDL.Func(paramIdlTypes ?? [], [], ['post_upgrade'])
+            );
+        }
+
+        if (canisterMethodMode === 'preUpgrade') {
+            canisterClassInstance._azleMethodMeta.pre_upgrade = {
+                name,
+                index
+            };
+        }
+
+        if (canisterMethodMode === 'heartbeat') {
+            canisterClassInstance._azleMethodMeta.heartbeat = {
+                name,
+                index
+            };
+        }
+
+        if (canisterMethodMode === 'inspectMessage') {
+            canisterClassInstance._azleMethodMeta.inspect_message = {
+                name,
+                index
+            };
+        }
+
+        canisterClassInstance._azleCallbacks[indexString] = async (
             args?: Uint8Array
         ): Promise<void> => {
             try {
                 await executeAndReplyWithCandidSerde(
                     canisterMethodMode,
                     args ?? new Uint8Array(),
-                    originalMethod.bind(this as any),
+                    originalMethod.bind(canisterClassInstance),
                     paramIdlTypes ?? [],
                     returnIdlType,
                     options?.manual ?? false
