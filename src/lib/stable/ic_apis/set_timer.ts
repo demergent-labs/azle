@@ -1,13 +1,24 @@
 import { v4 } from 'uuid';
 
 /**
- * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
- * To cancel the timer before it executes, pass the returned `TimerId` to `clearTimer`.
- * Note that timers are not persisted across canister upgrades.
+ * Sets a one-time callback to be executed after a specified delay.
+ * The timer can be cancelled before execution using clearTimer.
  *
- * @param delay The time (in seconds) to wait before executing the provided callback.
- * @param callback the function to invoke after the specified delay has passed.
- * @returns the ID of the created timer. Used to cancel the timer.
+ * @param delay - The time to wait before execution, in seconds (as a bigint)
+ * @param callback - The function to execute after the delay. Can be async
+ * @returns The timer ID (used with clearTimer to cancel), or 0n if called outside the IC environment
+ * @throws {Error} If delay + current_time would exceed u64::MAX
+ *
+ * @remarks
+ * - Timers are not persisted across canister upgrades
+ * - Timer IDs are unique within a canister
+ * - The callback registration is automatically cleaned up after execution
+ *
+ * @example
+ * const timerId = setTimer(120n, async () => {
+ *   // This will run once after 120 seconds
+ *   await performDelayedTask();
+ * });
  */
 export function setTimer(
     delay: bigint,
