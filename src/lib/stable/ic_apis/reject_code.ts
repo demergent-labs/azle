@@ -6,6 +6,17 @@ globalThis.TextEncoder = TextEncoder;
 
 import { IDL } from '@dfinity/candid';
 
+/**
+ * Represents the possible rejection codes from cross-canister calls.
+ *
+ * - NoError (0): The call completed successfully
+ * - SysFatal (1): Fatal system error, retry unlikely to be useful
+ * - SysTransient (2): Transient system error, retry might be possible
+ * - DestinationInvalid (3): Invalid destination (e.g. canister/account does not exist)
+ * - CanisterReject (4): Explicit reject by the canister
+ * - CanisterError (5): Canister error (e.g., trap, no response)
+ * - Unknown: Unrecognized error code
+ */
 export type RejectionCode =
     | { NoError: null }
     | { SysFatal: null }
@@ -26,8 +37,17 @@ export const RejectionCode = IDL.Variant({
 });
 
 /**
- * Returns the rejection code from the most recently executed cross-canister call
- * @returns the rejection code
+ * Returns the rejection code from the most recently executed cross-canister call.
+ * Use this to check if a call was successful before attempting to access its result
+ * or rejection message.
+ *
+ * @returns The {@link RejectionCode} variant, or {Unknown: null} if called outside the IC environment
+ *
+ * @example
+ * const code = rejectCode();
+ * if (!('NoError' in code)) {
+ *   // Call was rejected, handle the error...
+ * }
  */
 export function rejectCode(): RejectionCode {
     if (
