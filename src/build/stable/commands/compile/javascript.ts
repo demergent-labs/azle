@@ -25,8 +25,7 @@ function getPrelude(main: string): string {
 
 export function handleClassApiCanister(): string {
     return /*TS*/ `
-        const exportedCanisterClassInstance = new Canister.default();
-        globalThis._azleExportedCanisterClassInstance = exportedCanisterClassInstance;
+        const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
         const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlTypes);
         const candid = canisterIdlType.accept(new DidVisitor(), {
@@ -41,6 +40,23 @@ export function handleClassApiCanister(): string {
                 methodMeta: exportedCanisterClassInstance._azleMethodMeta
             });
         };
+        
+        function getExportedCanisterClassInstance() {     
+            try {
+                new Canister.default();
+            } catch (error) {
+                if (globalThis._azleNodeWasmEnvironment === true) {
+                    if (globalThis._azleExportedCanisterClassInstance === undefined) {
+                        throw error;
+                    }
+                }
+                else {
+                    throw error;
+                }
+            }
+            
+            return globalThis._azleExportedCanisterClassInstance;
+        }
     `;
 }
 

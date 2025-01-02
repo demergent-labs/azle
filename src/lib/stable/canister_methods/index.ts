@@ -222,6 +222,8 @@ function decoratorImplementation<
                 handleUncaughtError(error);
             }
         };
+
+        globalThis._azleExportedCanisterClassInstance = this;
     });
 
     return originalMethod;
