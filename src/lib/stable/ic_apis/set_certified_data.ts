@@ -1,24 +1,28 @@
 /**
- * Sets the certified data of this canister.
+ * Sets the certified data of this canister, which can be authenticated via certificates.
+ * This data is certified by the IC system on a regular basis and can be verified by clients.
  *
- * Canisters can store up to 32 bytes of data that is certified by the
- * system on a regular basis. One can call {@link ic.dataCertificate} from a
- * {@link $query} call to get a certificate authenticating the value set by
- * calling this function.
-
- * This function can only be called from the following contexts:
+ * @param data - The data to certify (must be 32 bytes or less)
+ * @returns void, or no effect if called outside the IC environment
+ * @remarks
+ * Valid calling contexts:
+ * - {@link $init}, {@link $preUpgrade}, and {@link $postUpgrade} hooks
+ * - {@link $update} methods
+ * - Reply or reject callbacks
  *
- * - {@link $init}, {@link $preUpgrade} and {@link $postUpgrade} hooks
- * - {@link $update} calls
- * - reply or reject callbacks
+ * Invalid contexts (will cause trap):
+ * - {@link $query} methods
+ * - Any non-canister context
  *
- * This function traps if:
+ * Will also trap if data exceeds 32 bytes
  *
- * - `data.length` > 32
- * - called from an illegal context (e.g. from a {@link $query} call)
+ * @example
+ * // Set some certified data
+ * const data = new Uint8Array([1, 2, 3]);
+ * setCertifiedData(data);
  *
- * @param data the data to be set
- * @returns void
+ * // Later, in a query call:
+ * // const cert = ic.dataCertificate();
  */
 export function setCertifiedData(data: Uint8Array): void {
     if (

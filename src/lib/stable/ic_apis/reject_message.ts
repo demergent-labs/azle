@@ -2,13 +2,20 @@
 import { rejectCode } from './reject_code'; // Used for links in comments
 
 /**
- * Returns the rejection message from the most recently executed
- * cross-canister call
+ * Returns the rejection message from the most recently executed cross-canister call.
+ * This provides details about why the call was rejected.
  *
- * **Warning**: Traps if there is no reject message. It is recommended to
- * check {@link rejectCode} first.
+ * @returns The rejection message, or empty string if called outside the IC environment
+ * @remarks
+ * - Will trap if there is no reject message available
+ * - Always check {@link rejectCode} before calling this function
  *
- * @returns the rejection message
+ * @example
+ * const code = rejectCode();
+ * if (!('NoError' in code)) {
+ *   const message = rejectMessage();
+ *   // Handle the rejection...
+ * }
  */
 export function rejectMessage(): string {
     if (
