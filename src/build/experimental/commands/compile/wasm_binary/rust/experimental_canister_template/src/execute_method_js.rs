@@ -1,5 +1,5 @@
 use crate::{benchmarking::record_benchmark, run_event_loop, RUNTIME, WASM_DATA_REF_CELL};
-use wasmedge_quickjs::AsObject;
+use wasmedge_quickjs::{AsObject, JsValue};
 
 #[no_mangle]
 #[allow(unused)]
@@ -13,7 +13,14 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
 
         runtime.run_with_context(|context| {
             let global = context.get_global();
-            let callbacks = global.get("_azleCallbacks");
+
+            let canister_class_instance = global.get("_azleCanisterClassInstance");
+
+            let callbacks = if matches!(canister_class_instance, JsValue::UnDefined) {
+                global.get("_azleCallbacks")
+            } else {
+                canister_class_instance.get("_azleCallbacks").unwrap()
+            };
 
             let method_callback = callbacks.get(&function_name).unwrap();
 

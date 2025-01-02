@@ -8,9 +8,20 @@ import * as process from 'process';
 import { URL } from 'url';
 import { v4 } from 'uuid';
 
+import { MethodMeta } from '../../build/stable/utils/types';
 import { azleFetch } from './fetch';
 
+type Callbacks = {
+    [key: string]: (...args: any) => any;
+};
+
 declare global {
+    // eslint-disable-next-line no-var
+    var _azleCallbacks: Callbacks;
+    // eslint-disable-next-line no-var
+    var _azleCanisterMethodsIndex: number;
+    // eslint-disable-next-line no-var
+    var _azleMethodMeta: MethodMeta;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
     // eslint-disable-next-line no-var
@@ -32,6 +43,15 @@ globalThis._azleInsideCanister =
         : true;
 
 if (globalThis._azleInsideCanister === true) {
+    globalThis._azleCallbacks = {};
+
+    globalThis._azleCanisterMethodsIndex = 0;
+
+    globalThis._azleMethodMeta = {
+        queries: [],
+        updates: []
+    };
+
     // Even though these are set in stable/globals
     // we must set them again here because importing the url module above
     // seemingly resets globalThis.TextDecoder and globalThis.TextEncoder

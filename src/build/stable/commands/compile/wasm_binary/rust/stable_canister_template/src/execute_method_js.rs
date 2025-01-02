@@ -40,7 +40,7 @@ fn execute_method_js_with_result(
             .map_err(|e| format!("Failed to get canisterClassInstance._azleCallbacks: {e}"))?;
 
         let method_callback: Function = callbacks.get(&function_name).map_err(|e| {
-            format!("Failed to get globalThis._azleCallbacks[{function_name}]: {e}")
+            format!("Failed to get canisterClassInstance._azleCallbacks[{function_name}]: {e}")
         })?;
 
         let candid_args = if pass_arg_data {

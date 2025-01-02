@@ -1,26 +1,15 @@
-import { IDL } from '@dfinity/candid';
 // @ts-expect-error
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
-import { MethodMeta } from '../../build/stable/utils/types';
 import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { print } from './ic_apis';
 import { AzleIcStable } from './ic_apis/azle_ic_stable';
 
-type Callbacks = {
-    [key: string]: (...args: any) => any;
-};
-
+// TODO move the types over into the experimental global types that we just moved
 declare global {
     // eslint-disable-next-line no-var
-    var _azleCallbacks: Callbacks;
-    // eslint-disable-next-line no-var
     var _azleCanisterClassInstance: any;
-    // eslint-disable-next-line no-var
-    var _azleCanisterMethodIdlTypes: { [key: string]: IDL.FuncClass };
-    // eslint-disable-next-line no-var
-    var _azleCanisterMethodsIndex: number;
     // eslint-disable-next-line no-var
     var _azleCanisterMethodNames: { [key: string]: string };
     // eslint-disable-next-line no-var
@@ -32,13 +21,9 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleIcTimers: { [key: string]: string };
     // eslint-disable-next-line no-var
-    var _azleInitAndPostUpgradeIdlTypes: IDL.FuncClass[];
-    // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
     var _azleInsideCanister: boolean;
-    // eslint-disable-next-line no-var
-    var _azleMethodMeta: MethodMeta;
     // eslint-disable-next-line no-var
     var _azleNodeWasmEnvironment: boolean;
     // eslint-disable-next-line no-var
@@ -63,20 +48,7 @@ globalThis._azleInsideCanister =
 // TODO do we need to disable any other wasmedge-quickjs globals
 // TODO that we don't think are stable yet?
 if (globalThis._azleInsideCanister === true) {
-    globalThis._azleCallbacks = {};
-
-    globalThis._azleCanisterMethodsIndex = 0;
-
-    globalThis._azleCanisterMethodIdlTypes = {};
-
     globalThis._azleCanisterMethodNames = {};
-
-    globalThis._azleInitAndPostUpgradeIdlTypes = [];
-
-    globalThis._azleMethodMeta = {
-        queries: [],
-        updates: []
-    };
 
     globalThis._azleTimerCallbacks = {};
 
