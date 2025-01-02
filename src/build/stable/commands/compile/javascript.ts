@@ -25,20 +25,20 @@ function getPrelude(main: string): string {
 
 export function handleClassApiCanister(): string {
     return /*TS*/ `
-        const canisterClassInstance = new Canister.default();
-        globalThis._azleCanisterClassInstance = canisterClassInstance;
+        const exportedCanisterClassInstance = new Canister.default();
+        globalThis._azleExportedCanisterClassInstance = exportedCanisterClassInstance;
 
-        const canisterIdlType = IDL.Service(canisterClassInstance._azleCanisterMethodIdlTypes);
+        const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlTypes);
         const candid = canisterIdlType.accept(new DidVisitor(), {
             ...getDefaultVisitorData(),
             isFirstService: true,
-            systemFuncs: canisterClassInstance._azleInitAndPostUpgradeIdlTypes
+            systemFuncs: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
         });
 
         globalThis._azleGetCandidAndMethodMeta = () => {
             return JSON.stringify({
                 candid: toDidString(candid),
-                methodMeta: canisterClassInstance._azleMethodMeta
+                methodMeta: exportedCanisterClassInstance._azleMethodMeta
             });
         };
     `;
@@ -111,7 +111,7 @@ function experimentalMessage(importName: string): string {
 function handleBenchmarking(): string {
     return /*TS*/ `
         if (globalThis._azleRecordBenchmarks === true) {
-            const methodMeta = canisterClassInstance._azleMethodMeta;
+            const methodMeta = exportedCanisterClassInstance._azleMethodMeta;
 
             globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
                 if (value === undefined) {

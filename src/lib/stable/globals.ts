@@ -3,13 +3,13 @@ import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
 import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
+import { ExportedCanisterClass } from './canister_methods';
 import { print } from './ic_apis';
 import { AzleIcStable } from './ic_apis/azle_ic_stable';
 
-// TODO move the types over into the experimental global types that we just moved
 declare global {
     // eslint-disable-next-line no-var
-    var _azleCanisterClassInstance: any;
+    var _azleExportedCanisterClassInstance: ExportedCanisterClass;
     // eslint-disable-next-line no-var
     var _azleCanisterMethodNames: { [key: string]: string };
     // eslint-disable-next-line no-var

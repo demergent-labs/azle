@@ -14,12 +14,14 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
         runtime.run_with_context(|context| {
             let global = context.get_global();
 
-            let canister_class_instance = global.get("_azleCanisterClassInstance");
+            let exported_canister_class_instance = global.get("_azleExportedCanisterClassInstance");
 
-            let callbacks = if matches!(canister_class_instance, JsValue::UnDefined) {
+            let callbacks = if matches!(exported_canister_class_instance, JsValue::UnDefined) {
                 global.get("_azleCallbacks")
             } else {
-                canister_class_instance.get("_azleCallbacks").unwrap()
+                exported_canister_class_instance
+                    .get("_azleCallbacks")
+                    .unwrap()
             };
 
             let method_callback = callbacks.get(&function_name).unwrap();

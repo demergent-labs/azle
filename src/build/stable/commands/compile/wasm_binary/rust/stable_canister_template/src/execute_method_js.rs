@@ -29,18 +29,24 @@ fn execute_method_js_with_result(
     pass_arg_data: bool,
 ) -> Result<(), Box<dyn Error>> {
     quickjs_with_ctx(|ctx| {
-        let canister_class_instance: Object = ctx
+        let exported_canister_class_instance: Object = ctx
             .clone()
             .globals()
-            .get("_azleCanisterClassInstance")
-            .map_err(|e| format!("Failed to get globalThis._azleCanisterClassInstance: {e}"))?;
+            .get("_azleExportedCanisterClassInstance")
+            .map_err(|e| {
+                format!("Failed to get globalThis._azleExportedCanisterClassInstance: {e}")
+            })?;
 
-        let callbacks: Object = canister_class_instance
+        let callbacks: Object = exported_canister_class_instance
             .get("_azleCallbacks")
-            .map_err(|e| format!("Failed to get canisterClassInstance._azleCallbacks: {e}"))?;
+            .map_err(|e| {
+                format!("Failed to get exportedCanisterClassInstance._azleCallbacks: {e}")
+            })?;
 
         let method_callback: Function = callbacks.get(&function_name).map_err(|e| {
-            format!("Failed to get canisterClassInstance._azleCallbacks[{function_name}]: {e}")
+            format!(
+                "Failed to get exportedCanisterClassInstance._azleCallbacks[{function_name}]: {e}"
+            )
         })?;
 
         let candid_args = if pass_arg_data {
