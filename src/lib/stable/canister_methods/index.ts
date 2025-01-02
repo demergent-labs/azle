@@ -16,23 +16,19 @@ export type DecoratorFunction<This, Args extends any[], Return> = (
     context: ClassMethodDecoratorContext
 ) => MethodType<This, Args, Return>;
 
-// TODO make the if/else more declarative for determining overload
 export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?: ClassMethodDecoratorContext | IDL.Type,
     param3?: { composite?: boolean; manual?: boolean }
 ): MethodType<This, Args, Return> | DecoratorFunction<This, Args, Return> {
-    // First overload - decorator without params
-    if (
-        typeof param1 === 'function' &&
-        param2 !== undefined &&
-        'kind' in param2 &&
-        param2.kind === 'method' &&
-        param2.metadata !== undefined &&
-        param2.name !== undefined
-    ) {
-        const originalMethod = param1;
+    const decoratorIsOverloadWithoutParams = isDecoratorOverloadWithoutParams(
+        param1,
+        param2
+    );
+
+    if (decoratorIsOverloadWithoutParams === true) {
+        const originalMethod = param1 as MethodType<This, Args, Return>;
         const context = param2 as ClassMethodDecoratorContext;
 
         return decoratorImplementation(
@@ -40,9 +36,7 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
             originalMethod,
             context
         );
-    }
-    // Second overload - decorator with params
-    else {
+    } else {
         const paramIdlTypes = param1 as IDL.Type[] | undefined;
         const returnIdlType = param2 as IDL.Type | undefined;
         const options = param3;
@@ -61,6 +55,20 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
             );
         };
     }
+}
+
+function isDecoratorOverloadWithoutParams<This, Args extends any[], Return>(
+    param1?: MethodType<This, Args, Return> | IDL.Type[],
+    param2?: ClassMethodDecoratorContext | IDL.Type
+): boolean {
+    return (
+        typeof param1 === 'function' &&
+        param2 !== undefined &&
+        'kind' in param2 &&
+        param2.kind === 'method' &&
+        param2.metadata !== undefined &&
+        param2.name !== undefined
+    );
 }
 
 function decoratorImplementation<This, Args extends any[], Return>(
