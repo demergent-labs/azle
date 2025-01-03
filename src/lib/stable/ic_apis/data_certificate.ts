@@ -1,8 +1,16 @@
 /**
- * When called from a query call, returns the data certificate
- * authenticating `certifiedData` set by this canister. Otherwise returns
- * `undefined`.
- * @returns the data certificate or undefined
+ * Returns the data certificate authenticating this canister's certified data.
+ * Only available during query calls.
+ *
+ * @returns The data certificate as a Uint8Array, or undefined if:
+ *   - Called during an update call
+ *   - No certified data is set
+ *   - Called outside the IC environment
+ *
+ * @remarks
+ * - Used in conjunction with setCertifiedData
+ * - Enables query calls to return certified responses
+ * - Only meaningful during query calls
  */
 export function dataCertificate(): Uint8Array | undefined {
     if (

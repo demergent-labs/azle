@@ -1,7 +1,18 @@
 /**
- * Converts a Candid string into bytes
- * @param candidString a valid Candid string
- * @returns the candid value as bytes
+ * Converts a Candid string into its binary representation.
+ *
+ * @param candidString - A valid Candid type string (e.g. "(nat8,bool)")
+ * @returns The binary encoding as a Uint8Array, or empty array if called outside the IC environment
+ *
+ * @remarks
+ * - Used for low-level Candid encoding operations
+ * - Common in raw calls, manual replies, and notifications
+ * - Returns empty Uint8Array if called outside IC environment
+ *
+ * @example
+ * // Encode parameters for a raw call
+ * const encoded = candidEncode("(text)");
+ * await ic.call(canister.method, { raw: encoded });
  */
 export function candidEncode(candidString: string): Uint8Array {
     if (

@@ -1,7 +1,31 @@
 /**
- * Returns the canister version number
+ * Returns this canister's version number, which is incremented by the IC on certain operations.
  *
- * @returns the version number
+ * @returns The canister version number, or 0n if called outside the IC environment
+ *
+ * @remarks
+ * The version number is guaranteed to increase when:
+ * - The canister is created
+ * - The canister code is installed/reinstalled/upgraded
+ * - The canister's controllers are modified
+ * - The canister's status changes (running/stopping/stopped)
+ * - A non-query message is successfully executed (except install_code)
+ *
+ * The version is preserved when:
+ * - The canister is empty/uninstalled
+ * - The canister is deleted and recreated with same ID
+ * - Query calls are executed
+ *
+ * Note: The version may increase at any time, even when no apparent changes
+ * have been made to the canister's state or configuration.
+ *
+ * @example
+ * // Track state changes
+ * const oldVersion = canisterVersion();
+ * await updateState();
+ * if (canisterVersion() !== oldVersion) {
+ *   // State was modified
+ * }
  */
 export function canisterVersion(): bigint {
     if (
