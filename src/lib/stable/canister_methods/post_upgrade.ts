@@ -7,16 +7,16 @@ import {
     OriginalMethod
 } from '.';
 
-export function postUpgrade<This, Args extends any[], Return>(
+export function postUpgrade<This, Args extends unknown[], Return>(
     originalMethod: OriginalMethod<This, Args, Return>,
     context: Context<This, Args, Return>
 ): void;
 
-export function postUpgrade<This, Args extends any[], Return>(
+export function postUpgrade<This, Args extends unknown[], Return>(
     paramIdlTypes?: IDL.Type[]
 ): DecoratorFunction<This, Args, Return>;
 
-export function postUpgrade<This, Args extends any[], Return>(
+export function postUpgrade<This, Args extends unknown[], Return>(
     param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
     param2?: Context<This, Args, Return>
 ): void | DecoratorFunction<This, Args, Return> {

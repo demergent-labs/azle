@@ -11,7 +11,7 @@ import { UpdateOptions } from './update';
 
 export interface ExportedCanisterClass {
     _azleCallbacks?: {
-        [key: string]: MethodType<ExportedCanisterClass, any[], any>;
+        [key: string]: (args?: Uint8Array) => Promise<void>;
     };
     _azleCanisterMethodIdlTypes?: { [key: string]: IDL.FuncClass };
     _azleCanisterMethodsIndex?: number;
@@ -20,17 +20,17 @@ export interface ExportedCanisterClass {
     _azleShouldRegisterCanisterMethods?: boolean;
 }
 
-export type MethodType<This, Args extends any[], Return> = (
+export type MethodType<This, Args extends unknown[], Return> = (
     this: This,
     ...args: Args
 ) => Return;
 
-export type DecoratorFunction<This, Args extends any[], Return> = (
+export type DecoratorFunction<This, Args extends unknown[], Return> = (
     originalMethod: OriginalMethod<This, Args, Return>,
     context: Context<This, Args, Return>
 ) => void;
 
-export type OriginalMethod<This, Args extends any[], Return> = MethodType<
+export type OriginalMethod<This, Args extends unknown[], Return> = MethodType<
     This,
     Args,
     Return
@@ -38,11 +38,11 @@ export type OriginalMethod<This, Args extends any[], Return> = MethodType<
 
 export type Context<
     This,
-    Args extends any[],
+    Args extends unknown[],
     Return
 > = ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>;
 
-export function decoratorArgumentsHandler<This, Args extends any[], Return>(
+export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
     canisterMethodMode: CanisterMethodMode,
     param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
     param2?: Context<This, Args, Return> | IDL.Type,
@@ -81,7 +81,7 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     }
 }
 
-function decoratorImplementation<This, Args extends any[], Return>(
+function decoratorImplementation<This, Args extends unknown[], Return>(
     canisterMethodMode: CanisterMethodMode,
     originalMethod: OriginalMethod<This, Args, Return>,
     context: Context<This, Args, Return>,
@@ -212,7 +212,7 @@ function decoratorImplementation<This, Args extends any[], Return>(
                     returnIdlType,
                     options?.manual ?? false
                 );
-            } catch (error: any) {
+            } catch (error: unknown) {
                 handleUncaughtError(error);
             }
         };
@@ -228,7 +228,11 @@ function decoratorImplementation<This, Args extends any[], Return>(
     });
 }
 
-function isDecoratorOverloadedWithoutParams<This, Args extends any[], Return>(
+function isDecoratorOverloadedWithoutParams<
+    This,
+    Args extends unknown[],
+    Return
+>(
     param1?: MethodType<This, Args, Return> | IDL.Type[],
     param2?:
         | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>

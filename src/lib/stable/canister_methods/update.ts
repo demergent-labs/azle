@@ -15,7 +15,7 @@ export type UpdateOptions = {
  * Decorator to mark a method as an update call entry point.
  * Update calls are read-write and inherit latency from ICP consensus.
  */
-export function update<This, Args extends any[], Return>(
+export function update<This, Args extends unknown[], Return>(
     originalMethod: OriginalMethod<This, Args, Return>,
     context: Context<This, Args, Return>
 ): void;
@@ -29,13 +29,13 @@ export function update<This, Args extends any[], Return>(
  * @param options - Optional configuration object
  * @param options.manual - Optional flag to indicate manual handling of the method's runtime return value. This is meant to be used with `reply`, skipping automatic Candid encoding of the runtime return value.
  */
-export function update<This, Args extends any[], Return>(
+export function update<This, Args extends unknown[], Return>(
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
     options?: UpdateOptions
 ): DecoratorFunction<This, Args, Return>;
 
-export function update<This, Args extends any[], Return>(
+export function update<This, Args extends unknown[], Return>(
     param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
     param2?: Context<This, Args, Return> | IDL.Type,
     param3?: UpdateOptions
