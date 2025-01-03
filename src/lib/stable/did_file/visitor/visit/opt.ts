@@ -2,6 +2,10 @@ import { IDL } from '@dfinity/candid';
 
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 
+/**
+ * @internal
+ * Visitor for optional types in Candid generation.
+ */
 export function visitOpt<T>(
     ty: IDL.Type<T>,
     didVisitor: DidVisitor,
