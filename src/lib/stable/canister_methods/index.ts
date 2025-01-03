@@ -43,13 +43,11 @@ export type Context<
 > = ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>;
 
 /**
- * Handles decorator arguments for canister methods, supporting both overloaded and non-overloaded decorators.
+ * @internal
  *
- * @param canisterMethodMode - The mode of the canister method (query, update, etc)
- * @param param1 - Either the original method (for overloaded decorators) or an array of IDL types for parameters
- * @param param2 - Either the decorator context (for overloaded decorators) or the IDL return type
- * @param param3 - Optional query or update options
- * @returns Either void (for overloaded decorators) or a decorator function
+ * This is the entry point for our overloaded decorator functions before calling the common implementation.
+ * It handles determining which overload we are using and then either calling the common implementation or
+ * returning a decorator function which calls the common implementation.
  */
 export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
     canisterMethodMode: CanisterMethodMode,
@@ -91,17 +89,9 @@ export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
 }
 
 /**
- * Implements the decorator functionality for canister methods.
+ * @internal
  *
- * This function handles the initialization and setup of canister method metadata,
- * IDL types, and callback functions for the decorated method.
- *
- * @param canisterMethodMode - The mode of the canister method (query, update, init, etc)
- * @param originalMethod - The original class method being decorated
- * @param context - The decorator context
- * @param paramIdlTypes - Optional array of Candid IDL types for the method parameters
- * @param returnIdlType - Optional Candid IDL type for the method return value
- * @param options - Optional query or update options
+ * The common implementation for all of our exposed canister method decorators.
  */
 function decoratorImplementation<This, Args extends unknown[], Return>(
     canisterMethodMode: CanisterMethodMode,
@@ -251,23 +241,9 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 }
 
 /**
- * Determines if a decorator is being used without explicit parameter types.
+ * @internal
  *
- * This function checks if the decorator is being used in its simple form without Candid IDL type parameters:
- * ```ts
- * @query  // Simple form
- * method() {}
- * ```
- *
- * Rather than with explicit parameter types:
- * ```ts
- * @query([IDL.Text], IDL.Bool)  // With type parameters
- * method(text: string): boolean {}
- * ```
- *
- * @param param1 - Either the original method (for simple form) or an array of parameter IDL types
- * @param param2 - Either the decorator context (for simple form) or the return IDL type
- * @returns True if the decorator is used without type parameters, false otherwise
+ * Determines if the params are from a pure decorator function without our own parameter currying.
  */
 function isDecoratorOverloadedWithoutParams<
     This,

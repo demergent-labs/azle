@@ -13,8 +13,9 @@ export type QueryOptions = {
 };
 
 /**
- * Decorator to mark a method as a query call entry point.
- * Query calls are read-only and do not inherit latency from ICP consensus.
+ * Decorator to mark a method as a `query` call entry point.
+ *
+ * @remarks
  *
  * - **State**: read-only
  *
@@ -31,7 +32,9 @@ export function query<This, Args extends unknown[], Return>(
 ): void;
 
 /**
- * Decorator to mark a method as a query call entry point.
+ * Decorator to mark a method as a `query` call entry point.
+ *
+ * @remarks
  *
  * - **State**: read-only
  *
@@ -39,7 +42,7 @@ export function query<This, Args extends unknown[], Return>(
  *
  * - **Async**: yes with `composite` set to true
  *
- * - **Instruction limit**: 5_000_000_000
+ * - **Instruction limit**: [5_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
  *
  * @param paramIdlTypes - Optional array of Candid IDL types for the method parameters. The runtime arguments will be decoded using these types.
  * @param returnIdlType - Optional Candid IDL type for the method return value. The runtime return value will be encoded using this type.

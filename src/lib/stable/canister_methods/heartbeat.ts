@@ -1,13 +1,15 @@
 import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
 
 /**
- * Decorator to mark a method as the heartbeat method entry point.
+ * Decorator to mark a method as the `heartbeat` entry point.
  *
- * It is advised to use `setTimer` and `setTimerInterval` instead of the heartbeat method.
+ * @remarks
  *
- * The heartbeat method entry point will be called periodically by the IC (~every second or so).
+ * It is advised to use `setTimer` and `setTimerInterval` instead of the `heartbeat` method.
  *
- * Only one heartbeat method is allowed per canister.
+ * The `heartbeat` entry point will be called periodically by the IC (~every second or so).
+ *
+ * Only one `heartbeat` method is allowed per canister.
  *
  * - **State**: read-write
  *

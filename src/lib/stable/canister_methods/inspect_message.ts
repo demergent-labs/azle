@@ -1,13 +1,15 @@
 import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
 
 /**
- * Decorator to mark a method as the inspectMessage method entry point.
+ * Decorator to mark a method as the `inspectMessage` entry point.
  *
- * The inspectMessage method entry point will be called just before a call to an update method entry point.
+ * @remarks
  *
- * Arguments to the update method entry point can be accessed using `argDataRaw`.
+ * The `inspectMessage` entry point will be called just before a call to an `update` entry point.
  *
- * Only one inspectMessage method is allowed per canister.
+ * Arguments to the `update` entry point can be accessed using `argDataRaw`.
+ *
+ * Only one `inspectMessage` method is allowed per canister.
  *
  * - **State**: read-only
  *
