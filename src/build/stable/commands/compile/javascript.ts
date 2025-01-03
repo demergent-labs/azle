@@ -43,7 +43,9 @@ export function handleClassApiCanister(): string {
         
         function getExportedCanisterClassInstance() {     
             try {
+                Canister.default.prototype._azleShouldRegisterCanisterMethods = true;
                 new Canister.default();
+                Canister.default.prototype._azleShouldRegisterCanisterMethods = false;
             } catch (error) {
                 if (globalThis._azleNodeWasmEnvironment === true) {
                     if (globalThis._azleExportedCanisterClassInstance === undefined) {

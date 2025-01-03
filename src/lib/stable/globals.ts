@@ -9,11 +9,11 @@ import { AzleIcStable } from './ic_apis/azle_ic_stable';
 
 declare global {
     // eslint-disable-next-line no-var
-    var _azleExportedCanisterClassInstance: ExportedCanisterClass;
-    // eslint-disable-next-line no-var
     var _azleCanisterMethodNames: { [key: string]: string };
     // eslint-disable-next-line no-var
     var _azleExperimental: boolean;
+    // eslint-disable-next-line no-var
+    var _azleExportedCanisterClassInstance: ExportedCanisterClass;
     // eslint-disable-next-line no-var
     var _azleIcExperimental: AzleIcExperimental;
     // eslint-disable-next-line no-var

@@ -15,6 +15,7 @@ export interface ExportedCanisterClass {
     _azleCanisterMethodsIndex?: number;
     _azleInitAndPostUpgradeIdlTypes?: IDL.FuncClass[];
     _azleMethodMeta?: MethodMeta;
+    _azleShouldRegisterCanisterMethods?: boolean;
 }
 
 export type MethodType<This, Args extends any[], Return> = (
@@ -228,9 +229,14 @@ function decoratorImplementation<This, Args extends any[], Return>(
             }
         };
 
-        // TODO this will totally ruin everything
-        globalThis._azleExportedCanisterClassInstance =
-            exportedCanisterClassInstance;
+        if (
+            exportedCanisterClassInstance._azleShouldRegisterCanisterMethods ===
+                true &&
+            globalThis._azleExportedCanisterClassInstance === undefined
+        ) {
+            globalThis._azleExportedCanisterClassInstance =
+                exportedCanisterClassInstance;
+        }
     });
 
     return originalMethod as MethodType<ExportedCanisterClass, Args, Return>;
