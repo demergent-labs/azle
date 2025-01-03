@@ -1,14 +1,23 @@
 import { IDL } from '@dfinity/candid';
 
-import { decoratorArgumentsHandler, DecoratorFunction, MethodType } from '.';
+import {
+    Context,
+    decoratorArgumentsHandler,
+    DecoratorFunction,
+    OriginalMethod
+} from '.';
+
+export type UpdateOptions = {
+    manual?: boolean;
+};
 
 /**
  * Decorator to mark a method as an update call entry point.
  * Update calls are read-write and inherit latency from ICP consensus.
  */
 export function update<This, Args extends any[], Return>(
-    originalMethod: MethodType<This, Args, Return>,
-    context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
+    originalMethod: OriginalMethod<This, Args, Return>,
+    context: Context<This, Args, Return>
 ): void;
 
 /**
@@ -23,17 +32,13 @@ export function update<This, Args extends any[], Return>(
 export function update<This, Args extends any[], Return>(
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
-    options?: {
-        manual?: boolean;
-    }
+    options?: UpdateOptions
 ): DecoratorFunction<This, Args, Return>;
 
 export function update<This, Args extends any[], Return>(
-    param1?: MethodType<This, Args, Return> | IDL.Type[],
-    param2?:
-        | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-        | IDL.Type,
-    param3?: { manual?: boolean }
-): DecoratorFunction<This, Args, Return> | void {
+    param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
+    param2?: Context<This, Args, Return> | IDL.Type,
+    param3?: UpdateOptions
+): void | DecoratorFunction<This, Args, Return> {
     return decoratorArgumentsHandler('update', param1, param2, param3);
 }

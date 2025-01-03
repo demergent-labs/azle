@@ -6,6 +6,8 @@ import {
     CanisterMethodMode,
     executeAndReplyWithCandidSerde
 } from '../execute_with_candid_serde';
+import { QueryOptions } from './query';
+import { UpdateOptions } from './update';
 
 export interface ExportedCanisterClass {
     _azleCallbacks?: {
@@ -24,27 +26,34 @@ export type MethodType<This, Args extends any[], Return> = (
 ) => Return;
 
 export type DecoratorFunction<This, Args extends any[], Return> = (
-    originalMethod: MethodType<This, Args, Return>,
-    context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
+    originalMethod: OriginalMethod<This, Args, Return>,
+    context: Context<This, Args, Return>
 ) => void;
+
+export type OriginalMethod<This, Args extends any[], Return> = MethodType<
+    This,
+    Args,
+    Return
+>;
+
+export type Context<
+    This,
+    Args extends any[],
+    Return
+> = ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>;
 
 export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
-    param1?: MethodType<This, Args, Return> | IDL.Type[],
-    param2?:
-        | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-        | IDL.Type,
-    param3?: { composite?: boolean; manual?: boolean }
-): DecoratorFunction<This, Args, Return> | void {
+    param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
+    param2?: Context<This, Args, Return> | IDL.Type,
+    param3?: QueryOptions | UpdateOptions
+): void | DecoratorFunction<This, Args, Return> {
     const decoratorIsOverloadedWithoutParams =
         isDecoratorOverloadedWithoutParams(param1, param2);
 
     if (decoratorIsOverloadedWithoutParams === true) {
-        const originalMethod = param1 as MethodType<This, Args, Return>;
-        const context = param2 as ClassMethodDecoratorContext<
-            This,
-            MethodType<This, Args, Return>
-        >;
+        const originalMethod = param1 as OriginalMethod<This, Args, Return>;
+        const context = param2 as Context<This, Args, Return>;
 
         return decoratorImplementation(
             canisterMethodMode,
@@ -57,11 +66,8 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
         const options = param3;
 
         return (
-            originalMethod: MethodType<This, Args, Return>,
-            context: ClassMethodDecoratorContext<
-                This,
-                MethodType<This, Args, Return>
-            >
+            originalMethod: OriginalMethod<This, Args, Return>,
+            context: Context<This, Args, Return>
         ): void => {
             return decoratorImplementation(
                 canisterMethodMode,
@@ -77,11 +83,11 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
 
 function decoratorImplementation<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
-    originalMethod: MethodType<This, Args, Return>,
-    context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>,
+    originalMethod: OriginalMethod<This, Args, Return>,
+    context: Context<This, Args, Return>,
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
-    options?: { composite?: boolean; manual?: boolean }
+    options?: QueryOptions | UpdateOptions
 ): void {
     context.addInitializer(function () {
         let exportedCanisterClassInstance = this as ExportedCanisterClass;
@@ -127,7 +133,7 @@ function decoratorImplementation<This, Args extends any[], Return>(
             exportedCanisterClassInstance._azleMethodMeta.queries?.push({
                 name,
                 index,
-                composite: options?.composite ?? false
+                composite: (options as QueryOptions)?.composite ?? false
             });
 
             exportedCanisterClassInstance._azleCanisterMethodIdlTypes[name] =

@@ -1,14 +1,24 @@
 import { IDL } from '@dfinity/candid';
 
-import { decoratorArgumentsHandler, DecoratorFunction, MethodType } from '.';
+import {
+    Context,
+    decoratorArgumentsHandler,
+    DecoratorFunction,
+    OriginalMethod
+} from '.';
+
+export type QueryOptions = {
+    composite?: boolean;
+    manual?: boolean;
+};
 
 /**
  * Decorator to mark a method as a query call entry point.
  * Query calls are read-only and do not inherit latency from ICP consensus.
  */
 export function query<This, Args extends any[], Return>(
-    originalMethod: MethodType<This, Args, Return>,
-    context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
+    originalMethod: OriginalMethod<This, Args, Return>,
+    context: Context<This, Args, Return>
 ): void;
 
 /**
@@ -24,18 +34,13 @@ export function query<This, Args extends any[], Return>(
 export function query<This, Args extends any[], Return>(
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
-    options?: {
-        composite?: boolean;
-        manual?: boolean;
-    }
+    options?: QueryOptions
 ): DecoratorFunction<This, Args, Return>;
 
 export function query<This, Args extends any[], Return>(
-    param1?: MethodType<This, Args, Return> | IDL.Type[],
-    param2?:
-        | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-        | IDL.Type,
-    param3?: { composite?: boolean; manual?: boolean }
-): DecoratorFunction<This, Args, Return> | void {
+    param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
+    param2?: Context<This, Args, Return> | IDL.Type,
+    param3?: QueryOptions
+): void | DecoratorFunction<This, Args, Return> {
     return decoratorArgumentsHandler('query', param1, param2, param3);
 }
