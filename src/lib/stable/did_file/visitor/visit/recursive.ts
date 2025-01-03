@@ -2,6 +2,10 @@ import { IDL } from '@dfinity/candid';
 
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 
+/**
+ * @internal
+ * Visitor for recursive types in Candid generation.
+ */
 export function visitRecursive<T>(
     t: IDL.RecClass<T>,
     ty: IDL.ConstructType<T>,

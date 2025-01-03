@@ -3,6 +3,10 @@ import { IDL } from '@dfinity/candid';
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 import { extractCandid } from '../extract_candid';
 
+/**
+ * @internal
+ * Visitor for tuple types in Candid generation.
+ */
 export function visitTuple(
     components: IDL.Type<any>[],
     didVisitor: DidVisitor,
