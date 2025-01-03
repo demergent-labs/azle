@@ -14,6 +14,15 @@ export type UpdateOptions = {
 /**
  * Decorator to mark a method as an update call entry point.
  * Update calls are read-write and inherit latency from ICP consensus.
+ *
+ * - **State**: read-write
+ *
+ * - **Replication**: yes
+ *
+ * - **Async**: yes
+ *
+ * - **Instruction limit**: [40_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
+ *
  */
 export function update<This, Args extends unknown[], Return>(
     originalMethod: OriginalMethod<This, Args, Return>,
@@ -23,6 +32,14 @@ export function update<This, Args extends unknown[], Return>(
 /**
  * Decorator to mark a method as an update call entry point.
  * Update calls are read-write and inherit latency from ICP consensus.
+ *
+ * - **State**: read-write
+ *
+ * - **Replication**: yes
+ *
+ * - **Async**: yes
+ *
+ * - **Instruction limit**: [40_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
  *
  * @param paramIdlTypes - Optional array of Candid IDL types for the method parameters. The runtime arguments will be decoded using these types.
  * @param returnIdlType - Optional Candid IDL type for the method return value. The runtime return value will be encoded using this type.
