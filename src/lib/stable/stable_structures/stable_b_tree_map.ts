@@ -1,15 +1,37 @@
 import { stableJson } from './stable_json';
 
+/**
+ * Interface for objects that can serialize/deserialize data to/from bytes.
+ * Used by StableBTreeMap to store values in stable memory.
+ */
 export interface Serializable {
     toBytes: (data: any) => Uint8Array;
     fromBytes: (bytes: Uint8Array) => any;
 }
 
+/**
+ * A persistent key-value store that maintains data in stable memory.
+ * Provides a B-tree map implementation that persists across canister upgrades.
+ * Keys are kept in sorted order, enabling efficient range queries.
+ *
+ * @typeParam Key - The type of keys stored in the map
+ * @typeParam Value - The type of values stored in the map
+ */
 export class StableBTreeMap<Key = any, Value = any> {
     memoryId: number;
     keySerializable: Serializable;
     valueSerializable: Serializable;
 
+    /**
+     * Creates a new StableBTreeMap.
+     *
+     * @param memoryId - Unique identifier for this map's memory location (must be between 0 and 253 inclusive, 254 is reserved for azle internal use)
+     * @param keySerializable - Serializer for converting keys to/from bytes. Defaults to {@link stableJson}
+     * @param valueSerializable - Serializer for converting values to/from bytes. Defaults to {@link stableJson}
+     * @throws If memoryId is already in use or invalid
+     * @remarks Once a memoryId is allocated, it cannot be reused with a different StableBTreeMap or with different key/value types
+     */
+    // TODO update this remark once https://github.com/demergent-labs/azle/issues/843 is resolved
     constructor(
         memoryId: number,
         keySerializable: Serializable = stableJson,
@@ -34,8 +56,9 @@ export class StableBTreeMap<Key = any, Value = any> {
 
     /**
      * Checks if the given key exists in the map.
-     * @param key the key to check.
-     * @returns `true` if the key exists in the map, `false` otherwise.
+     *
+     * @param key - The key to check
+     * @returns `true` if the key exists in the map, `false` otherwise
      */
     containsKey(key: Key): boolean {
         if (
@@ -62,8 +85,9 @@ export class StableBTreeMap<Key = any, Value = any> {
 
     /**
      * Retrieves the value stored at the provided key.
-     * @param key the location from which to retrieve.
-     * @returns the value associated with the given key, if it exists.
+     *
+     * @param key - The key whose value to retrieve
+     * @returns The value associated with the key, or null if the key doesn't exist
      */
     get(key: Key): Value | null {
         if (
@@ -97,9 +121,11 @@ export class StableBTreeMap<Key = any, Value = any> {
 
     /**
      * Inserts a value into the map at the provided key.
-     * @param key the location at which to insert.
-     * @param value the value to insert.
-     * @returns the previous value of the key, if present.
+     * If the key already exists, its value is updated.
+     *
+     * @param key - The key at which to store the value
+     * @param value - The value to store
+     * @returns The previous value at the key if it existed, null otherwise
      */
     insert(key: Key, value: Value): Value | null {
         if (
@@ -136,7 +162,8 @@ export class StableBTreeMap<Key = any, Value = any> {
 
     /**
      * Checks if the map is empty.
-     * @returns `true` if the map contains no elements, `false` otherwise.
+     *
+     * @returns `true` if the map contains no elements, `false` otherwise
      */
     isEmpty(): boolean {
         if (
@@ -156,10 +183,11 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * Retrieves the items in the map in sorted order.
-     * @param startIndex the starting index to begin retrieval
-     * @param length the number of items to retrieve
-     * @returns tuples representing key/value pairs.
+     * Retrieves the items in the map in sorted order by key.
+     *
+     * @param startIndex - Optional index at which to start retrieving items (inclusive)
+     * @param length - Optional maximum number of items to retrieve
+     * @returns Array of key-value pairs as tuples, sorted by key
      */
     items(startIndex?: number, length?: number): [Key, Value][] {
         if (
@@ -192,10 +220,11 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * The keys for each element in the map in sorted order.
-     * @param startIndex the starting index to begin retrieval
-     * @param length the number of keys to retrieve
-     * @returns the keys in the map.
+     * Retrieves the keys in the map in sorted order.
+     *
+     * @param startIndex - Optional index at which to start retrieving keys (inclusive)
+     * @param length - Optional maximum number of keys to retrieve
+     * @returns Array of keys in sorted order
      */
     keys(startIndex?: number, length?: number): Key[] {
         if (
@@ -225,8 +254,9 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * Checks to see how many elements are in the map.
-     * @returns the number of elements in the map.
+     * Returns the number of key-value pairs in the map.
+     *
+     * @returns The number of elements in the map
      */
     len(): bigint {
         if (
@@ -250,9 +280,10 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * Removes a key from the map.
-     * @param key the location from which to remove.
-     * @returns the previous value at the key if it exists, `null` otherwise.
+     * Removes a key and its associated value from the map.
+     *
+     * @param key - The key to remove
+     * @returns The value that was associated with the key, or null if the key didn't exist
      */
     remove(key: Key): Value | null {
         if (
@@ -285,10 +316,11 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * The values in the map in sorted order.
-     * @param startIndex the starting index to begin retrieval
-     * @param length the number of values to retrieve
-     * @returns the values in the map.
+     * Retrieves all values in the map, ordered by their keys.
+     *
+     * @param startIndex - Optional index at which to start retrieving values (inclusive)
+     * @param length - Optional maximum number of values to retrieve
+     * @returns Array of values, ordered by their keys
      */
     values(startIndex?: number, length?: number): Value[] {
         if (

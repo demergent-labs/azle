@@ -1,7 +1,13 @@
 /**
- * Burns cycles from the canister
- * @param amount The amount of cycles to burn
- * @returns The amount of cycles that were actually burned
+ * Burns cycles from this canister's balance.
+ *
+ * @param amount - The amount of cycles to burn
+ * @returns The actual amount of cycles burned, or 0n if called outside the IC environment
+ *
+ * @remarks
+ * - Cannot burn more cycles than the canister has available
+ * - Useful for testing cycle limits or implementing cycle burning mechanics
+ * - Returns 0n if called outside the IC environment
  */
 export function cyclesBurn(amount: bigint): bigint {
     if (

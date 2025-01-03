@@ -4,7 +4,11 @@
  *   https://internetcomputer.org/docs/current/references/ic-interface-spec/#entry-points
  * )
  *
- * @returns the number of instructions
+ * @deprecated Use {@link performanceCounter}(0) instead to get instruction count
+ * @returns The number of instructions, or 0n if called outside the IC environment
+ *
+ * @remarks
+ * This function is deprecated in favor of performanceCounter which provides more functionality
  */
 export function instructionCounter(): bigint {
     if (

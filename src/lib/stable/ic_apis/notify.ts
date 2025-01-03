@@ -4,11 +4,32 @@ import { Principal } from '@dfinity/principal';
 import { idlEncode } from '../execute_with_candid_serde';
 
 /**
- * Performs a cross-canister call without awaiting the result
- * @param canisterId The ID of the canister to notify
- * @param method The method to call on the canister
- * @param options Optional parameters for the call
- * @returns void
+ * Performs a cross-canister call without waiting for a response.
+ *
+ * @param canisterId - The target canister's ID as a Principal or string
+ * @param method - The method name to call on the target canister
+ * @param options - Optional parameters:
+ *   - paramIdlTypes: Array of IDL types for the parameters
+ *   - args: Array of arguments to pass to the method
+ *   - cycles: Amount of cycles to attach to the call (defaults to 0n)
+ *   - raw: Raw bytes to pass as arguments instead of Candid-encoded args
+ * @returns void, or no effect if called outside the IC environment
+ *
+ * @example
+ * // Basic notify call
+ * notify(otherCanister, "updateCounter");
+ *
+ * // Notify with arguments and cycles
+ * notify(otherCanister, "deposit", {
+ *   paramIdlTypes: [IDL.Nat64],
+ *   args: [1000n],
+ *   cycles: 10_000_000n
+ * });
+ *
+ * @remarks
+ * - The call is "fire and forget" - errors are not returned
+ * - Useful for non-critical updates where response/error handling isn't needed
+ * - More efficient than await ic.call() when you don't need the response
  */
 export function notify(
     canisterId: Principal | string,
