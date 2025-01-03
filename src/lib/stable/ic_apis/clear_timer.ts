@@ -1,6 +1,13 @@
 /**
- * Cancels an existing timer. Does nothing if the timer has already been canceled.
- * @param timerId The ID of the timer to be cancelled.
+ * Cancels a timer previously created with setTimer or setTimerInterval.
+ *
+ * @param timerId - The ID of the timer to cancel, as returned by setTimer/setTimerInterval
+ * @returns void, or no effect if called outside the IC environment
+ *
+ * @remarks
+ * - Safe to call multiple times - does nothing if timer is already cancelled
+ * - Cleans up internal timer callback references
+ * - No effect if timer ID doesn't exist
  */
 export function clearTimer(timerId: bigint): void {
     if (

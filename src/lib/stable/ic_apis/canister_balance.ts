@@ -1,6 +1,19 @@
 /**
- * Gets the amount of funds available in the canister
- * @returns the number of cycles in the canister
+ * Returns the amount of cycles available in this canister's balance.
+ *
+ * @returns The number of cycles in the canister, or 0n if called outside the IC environment
+ *
+ * @remarks
+ * - Cycles are the utility token used to pay for computation and storage
+ * - Balance decreases as the canister consumes resources
+ * - Balance increases when cycles are transferred to the canister
+ * - Canister will be deleted if balance drops too low
+ *
+ * @example
+ * // Check if canister has enough cycles
+ * if (canisterBalance() < minimumCycles) {
+ *     throw new Error('Insufficient cycles');
+ * }
  */
 export function canisterBalance(): bigint {
     if (
