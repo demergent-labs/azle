@@ -1,11 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import {
-    decoratorArgumentsHandler,
-    DecoratorFunction,
-    ExportedCanisterClass,
-    MethodType
-} from '.';
+import { decoratorArgumentsHandler, DecoratorFunction, MethodType } from '.';
 
 /**
  * Decorator to mark a method as an update call entry point.
@@ -14,7 +9,7 @@ import {
 export function update<This, Args extends any[], Return>(
     originalMethod: MethodType<This, Args, Return>,
     context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-): MethodType<ExportedCanisterClass, Args, Return>;
+): void;
 
 /**
  * Decorator to mark a method as an update call entry point.
@@ -31,10 +26,7 @@ export function update<This, Args extends any[], Return>(
     options?: {
         manual?: boolean;
     }
-): (
-    originalMethod: MethodType<This, Args, Return>,
-    context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-) => MethodType<ExportedCanisterClass, Args, Return>;
+): DecoratorFunction<This, Args, Return>;
 
 export function update<This, Args extends any[], Return>(
     param1?: MethodType<This, Args, Return> | IDL.Type[],
@@ -42,8 +34,6 @@ export function update<This, Args extends any[], Return>(
         | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
         | IDL.Type,
     param3?: { manual?: boolean }
-):
-    | MethodType<ExportedCanisterClass, Args, Return>
-    | DecoratorFunction<ExportedCanisterClass, Args, Return> {
+): DecoratorFunction<This, Args, Return> | void {
     return decoratorArgumentsHandler('update', param1, param2, param3);
 }

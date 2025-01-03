@@ -1,11 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import {
-    decoratorArgumentsHandler,
-    DecoratorFunction,
-    ExportedCanisterClass,
-    MethodType
-} from '.';
+import { decoratorArgumentsHandler, DecoratorFunction, MethodType } from '.';
 
 /**
  * Decorator to mark a method as a query call entry point.
@@ -14,7 +9,7 @@ import {
 export function query<This, Args extends any[], Return>(
     originalMethod: MethodType<This, Args, Return>,
     context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-): MethodType<ExportedCanisterClass, Args, Return>;
+): void;
 
 /**
  * Decorator to mark a method as a query call entry point.
@@ -33,10 +28,7 @@ export function query<This, Args extends any[], Return>(
         composite?: boolean;
         manual?: boolean;
     }
-): (
-    originalMethod: MethodType<This, Args, Return>,
-    context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-) => MethodType<ExportedCanisterClass, Args, Return>;
+): DecoratorFunction<This, Args, Return>;
 
 export function query<This, Args extends any[], Return>(
     param1?: MethodType<This, Args, Return> | IDL.Type[],
@@ -44,8 +36,6 @@ export function query<This, Args extends any[], Return>(
         | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
         | IDL.Type,
     param3?: { composite?: boolean; manual?: boolean }
-):
-    | MethodType<ExportedCanisterClass, Args, Return>
-    | DecoratorFunction<ExportedCanisterClass, Args, Return> {
+): DecoratorFunction<This, Args, Return> | void {
     return decoratorArgumentsHandler('query', param1, param2, param3);
 }

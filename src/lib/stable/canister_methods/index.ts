@@ -26,7 +26,7 @@ export type MethodType<This, Args extends any[], Return> = (
 export type DecoratorFunction<This, Args extends any[], Return> = (
     originalMethod: MethodType<This, Args, Return>,
     context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-) => MethodType<This, Args, Return>;
+) => void;
 
 export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
@@ -35,9 +35,7 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
         | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
         | IDL.Type,
     param3?: { composite?: boolean; manual?: boolean }
-):
-    | MethodType<ExportedCanisterClass, Args, Return>
-    | DecoratorFunction<ExportedCanisterClass, Args, Return> {
+): DecoratorFunction<This, Args, Return> | void {
     const decoratorIsOverloadedWithoutParams =
         isDecoratorOverloadedWithoutParams(param1, param2);
 
@@ -59,12 +57,12 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
         const options = param3;
 
         return (
-            originalMethod: MethodType<ExportedCanisterClass, Args, Return>,
+            originalMethod: MethodType<This, Args, Return>,
             context: ClassMethodDecoratorContext<
-                ExportedCanisterClass,
-                MethodType<ExportedCanisterClass, Args, Return>
+                This,
+                MethodType<This, Args, Return>
             >
-        ): MethodType<ExportedCanisterClass, Args, Return> => {
+        ): void => {
             return decoratorImplementation(
                 canisterMethodMode,
                 originalMethod,
@@ -77,22 +75,6 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
     }
 }
 
-function isDecoratorOverloadedWithoutParams<This, Args extends any[], Return>(
-    param1?: MethodType<This, Args, Return> | IDL.Type[],
-    param2?:
-        | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
-        | IDL.Type
-): boolean {
-    return (
-        typeof param1 === 'function' &&
-        param2 !== undefined &&
-        'kind' in param2 &&
-        param2.kind === 'method' &&
-        param2.metadata !== undefined &&
-        param2.name !== undefined
-    );
-}
-
 function decoratorImplementation<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
     originalMethod: MethodType<This, Args, Return>,
@@ -100,7 +82,7 @@ function decoratorImplementation<This, Args extends any[], Return>(
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
     options?: { composite?: boolean; manual?: boolean }
-): MethodType<ExportedCanisterClass, Args, Return> {
+): void {
     context.addInitializer(function () {
         let exportedCanisterClassInstance = this as ExportedCanisterClass;
 
@@ -238,6 +220,20 @@ function decoratorImplementation<This, Args extends any[], Return>(
                 exportedCanisterClassInstance;
         }
     });
+}
 
-    return originalMethod as MethodType<ExportedCanisterClass, Args, Return>;
+function isDecoratorOverloadedWithoutParams<This, Args extends any[], Return>(
+    param1?: MethodType<This, Args, Return> | IDL.Type[],
+    param2?:
+        | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
+        | IDL.Type
+): boolean {
+    return (
+        typeof param1 === 'function' &&
+        param2 !== undefined &&
+        'kind' in param2 &&
+        param2.kind === 'method' &&
+        param2.metadata !== undefined &&
+        param2.name !== undefined
+    );
 }
