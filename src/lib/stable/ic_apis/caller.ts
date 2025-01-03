@@ -1,8 +1,30 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Returns the principal of the caller of the current call
- * @returns the principal of the caller of the current call
+ * Returns the Principal of the identity that called the current method.
+ *
+ * @returns The caller's Principal ID, or the anonymous Principal (0x04) if called outside the IC environment
+ *
+ * @remarks
+ * - Returns the immediate caller's Principal ID
+ * - For inter-canister calls, returns the calling canister's ID
+ * - For user calls, returns the user's Principal ID
+ * - For anonymous calls, returns the anonymous Principal
+ * - Commonly used for access control and authentication
+ * - Returns the anonymous Principal if called outside the IC environment
+ *
+ * @example
+ * // Basic authentication
+ * if (caller().toString() !== adminPrincipal) {
+ *     throw new Error('Unauthorized');
+ * }
+ *
+ * @example
+ * // Check if call is from another canister
+ * const callingCanister = caller();
+ * if (callingCanister.toString() === trustedCanister) {
+ *     // Handle inter-canister call
+ * }
  */
 export function caller(): Principal {
     if (

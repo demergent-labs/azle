@@ -4,6 +4,47 @@ import { v4 } from 'uuid';
 
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 
+/**
+ * Makes an inter-canister call to invoke a method on another canister.
+ *
+ * @param canisterId - The target canister's ID as a Principal or string
+ * @param method - The name of the method to call on the target canister
+ * @param options - Configuration options for the call
+ * @param options.paramIdlTypes - Candid types for the parameters (optional)
+ * @param options.returnIdlType - Candid type for the return value (optional)
+ * @param options.args - Arguments to pass to the method (optional)
+ * @param options.cycles - Number of cycles to attach to the call (optional)
+ * @param options.raw - Raw bytes to send instead of encoded args (optional)
+ * @returns Promise resolving to the method's return value
+ *
+ * @remarks
+ * - Supports both high-level (with IDL types) and low-level (raw bytes) calls
+ * - Can transfer cycles as part of the call
+ * - Returns undefined if called outside IC environment
+ * - Handles both string and Principal canister IDs
+ * - Automatically encodes/decodes arguments and return values
+ *
+ * @example
+ * // High-level call with IDL types
+ * const result = await call(counterCanister, 'increment', {
+ *     returnIdlType: IDL.Nat
+ * });
+ *
+ * @example
+ * // Call with cycles transfer
+ * const result = await call(targetCanister, 'store_data', {
+ *     args: [data],
+ *     paramIdlTypes: [IDL.Vec(IDL.Nat8)],
+ *     cycles: 100_000_000n
+ * });
+ *
+ * @example
+ * // Low-level call with raw bytes
+ * const result = await call(canisterId, 'raw_method', {
+ *     raw: new Uint8Array([...]),
+ *     cycles: 0n
+ * });
+ */
 export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,
     method: string,

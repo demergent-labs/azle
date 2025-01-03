@@ -3,15 +3,26 @@ import { candidEncode } from './candid_encode';
 import { id } from './id';
 
 /**
- * Resets the instruction limit when this function is called and awaited.
- * To achieve this, a simple cross-canister call to the canister calling this function is executed.
+ * Resets the instruction limit by performing a self-call to the canister.
+ * Used to handle computationally intensive operations that would otherwise exceed instruction limits.
  *
- * You should exercise the appropriate cautions similar to when executing other cross-canister calls, such as managing global mutable state across await points safely.
+ * @returns Promise<void>, or no effect if called outside the IC environment
  *
- * Only works when called from:
- * - update calls and their reply/reject callbacks ([U Ry Rt](https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-imports))
- * - timers ([T](https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-imports))
- * - heartbeats ([T](https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-imports))
+ * @example
+ * // Process large dataset in chunks
+ * for (let i = 0; i < numberOfChunks; i++) {
+ *     doPartOfHeavyComputation();
+ *     await chunk();
+ * }
+ *
+ * @remarks
+ * - Only works in:
+ *   - Update calls and their reply/reject callbacks
+ *   - Timers
+ *   - Heartbeat methods
+ * - Makes a cross-canister call to self, so state management across await points is important
+ * - Current instruction limits are ~40B for update calls
+ * - See: https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits
  */
 export async function chunk(): Promise<void> {
     if (

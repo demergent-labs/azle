@@ -1,9 +1,21 @@
 /**
- * Converts a candid value into a Candid string
- * @param candidEncoded a raw Candid value
- * @returns the Candid string
+ * Converts binary Candid data into its string representation.
+ *
+ * @param candidBytes - The binary Candid data to decode
+ * @returns The decoded Candid type string, or empty string if called outside the IC environment
+ *
+ * @remarks
+ * - Used for low-level Candid decoding operations
+ * - Helpful for debugging raw call responses
+ * - Common in raw calls and manual message handling
+ * - Returns empty string if called outside IC environment
+ *
+ * @example
+ * // Decode raw response from a call
+ * const response = await ic.call(canister.method);
+ * const decoded = candidDecode(response.raw);
  */
-export function candidDecode(candidEncoded: Uint8Array): string {
+export function candidDecode(candidBytes: Uint8Array): string {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
@@ -12,10 +24,8 @@ export function candidDecode(candidEncoded: Uint8Array): string {
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        return globalThis._azleIcExperimental.candidDecode(
-            candidEncoded.buffer
-        );
+        return globalThis._azleIcExperimental.candidDecode(candidBytes.buffer);
     }
 
-    return globalThis._azleIcStable.candidDecode(candidEncoded);
+    return globalThis._azleIcStable.candidDecode(candidBytes);
 }
