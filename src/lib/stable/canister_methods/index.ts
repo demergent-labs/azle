@@ -41,14 +41,10 @@ export function decoratorArgumentsHandler<This, Args extends any[], Return>(
         isDecoratorOverloadedWithoutParams(param1, param2);
 
     if (decoratorIsOverloadedWithoutParams === true) {
-        const originalMethod = param1 as MethodType<
-            ExportedCanisterClass,
-            Args,
-            Return
-        >;
+        const originalMethod = param1 as MethodType<This, Args, Return>;
         const context = param2 as ClassMethodDecoratorContext<
-            ExportedCanisterClass,
-            MethodType<ExportedCanisterClass, Args, Return>
+            This,
+            MethodType<This, Args, Return>
         >;
 
         return decoratorImplementation(
@@ -96,124 +92,133 @@ function isDecoratorOverloadedWithoutParams<This, Args extends any[], Return>(
     );
 }
 
-function decoratorImplementation<
-    This extends ExportedCanisterClass,
-    Args extends any[],
-    Return
->(
+function decoratorImplementation<This, Args extends any[], Return>(
     canisterMethodMode: CanisterMethodMode,
     originalMethod: MethodType<This, Args, Return>,
     context: ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>,
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
     options?: { composite?: boolean; manual?: boolean }
-): MethodType<This, Args, Return> {
+): MethodType<ExportedCanisterClass, Args, Return> {
     context.addInitializer(function () {
-        if (this._azleCanisterMethodsIndex === undefined) {
-            this._azleCanisterMethodsIndex = 0;
+        let exportedCanisterClassInstance = this as ExportedCanisterClass;
+
+        if (
+            exportedCanisterClassInstance._azleCanisterMethodsIndex ===
+            undefined
+        ) {
+            exportedCanisterClassInstance._azleCanisterMethodsIndex = 0;
         }
 
-        if (this._azleCanisterMethodIdlTypes === undefined) {
-            this._azleCanisterMethodIdlTypes = {};
+        if (
+            exportedCanisterClassInstance._azleCanisterMethodIdlTypes ===
+            undefined
+        ) {
+            exportedCanisterClassInstance._azleCanisterMethodIdlTypes = {};
         }
 
-        if (this._azleInitAndPostUpgradeIdlTypes === undefined) {
-            this._azleInitAndPostUpgradeIdlTypes = [];
+        if (
+            exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes ===
+            undefined
+        ) {
+            exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes = [];
         }
 
-        if (this._azleMethodMeta === undefined) {
-            this._azleMethodMeta = {
+        if (exportedCanisterClassInstance._azleMethodMeta === undefined) {
+            exportedCanisterClassInstance._azleMethodMeta = {
                 queries: [],
                 updates: []
             };
         }
 
-        if (this._azleCallbacks === undefined) {
-            this._azleCallbacks = {};
+        if (exportedCanisterClassInstance._azleCallbacks === undefined) {
+            exportedCanisterClassInstance._azleCallbacks = {};
         }
 
         const name = context.name as string;
 
-        const index = this._azleCanisterMethodsIndex++;
+        const index = exportedCanisterClassInstance._azleCanisterMethodsIndex++;
         const indexString = index.toString();
 
         if (canisterMethodMode === 'query') {
-            this._azleMethodMeta.queries?.push({
+            exportedCanisterClassInstance._azleMethodMeta.queries?.push({
                 name,
                 index,
                 composite: options?.composite ?? false
             });
 
-            this._azleCanisterMethodIdlTypes[name] = IDL.Func(
-                paramIdlTypes ?? [],
-                returnIdlType === undefined ? [] : [returnIdlType],
-                ['query']
-            );
+            exportedCanisterClassInstance._azleCanisterMethodIdlTypes[name] =
+                IDL.Func(
+                    paramIdlTypes ?? [],
+                    returnIdlType === undefined ? [] : [returnIdlType],
+                    ['query']
+                );
         }
 
         if (canisterMethodMode === 'update') {
-            this._azleMethodMeta.updates?.push({
+            exportedCanisterClassInstance._azleMethodMeta.updates?.push({
                 name,
                 index
             });
 
-            this._azleCanisterMethodIdlTypes[name] = IDL.Func(
-                paramIdlTypes ?? [],
-                returnIdlType === undefined ? [] : [returnIdlType]
-            );
+            exportedCanisterClassInstance._azleCanisterMethodIdlTypes[name] =
+                IDL.Func(
+                    paramIdlTypes ?? [],
+                    returnIdlType === undefined ? [] : [returnIdlType]
+                );
         }
 
         if (canisterMethodMode === 'init') {
-            this._azleMethodMeta.init = {
+            exportedCanisterClassInstance._azleMethodMeta.init = {
                 name,
                 index
             };
 
-            this._azleInitAndPostUpgradeIdlTypes.push(
+            exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes.push(
                 IDL.Func(paramIdlTypes ?? [], [], ['init'])
             );
         }
 
         if (canisterMethodMode === 'postUpgrade') {
-            this._azleMethodMeta.post_upgrade = {
+            exportedCanisterClassInstance._azleMethodMeta.post_upgrade = {
                 name,
                 index
             };
 
-            this._azleInitAndPostUpgradeIdlTypes.push(
+            exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes.push(
                 IDL.Func(paramIdlTypes ?? [], [], ['post_upgrade'])
             );
         }
 
         if (canisterMethodMode === 'preUpgrade') {
-            this._azleMethodMeta.pre_upgrade = {
+            exportedCanisterClassInstance._azleMethodMeta.pre_upgrade = {
                 name,
                 index
             };
         }
 
         if (canisterMethodMode === 'heartbeat') {
-            this._azleMethodMeta.heartbeat = {
+            exportedCanisterClassInstance._azleMethodMeta.heartbeat = {
                 name,
                 index
             };
         }
 
         if (canisterMethodMode === 'inspectMessage') {
-            this._azleMethodMeta.inspect_message = {
+            exportedCanisterClassInstance._azleMethodMeta.inspect_message = {
                 name,
                 index
             };
         }
 
-        this._azleCallbacks[indexString] = async (
+        exportedCanisterClassInstance._azleCallbacks[indexString] = async (
             args?: Uint8Array
         ): Promise<void> => {
             try {
                 await executeAndReplyWithCandidSerde(
                     canisterMethodMode,
                     args ?? new Uint8Array(),
-                    originalMethod.bind(this), // TODO manually test context and ensure we have automatic tests for this
+                    originalMethod.bind(exportedCanisterClassInstance as This),
                     paramIdlTypes ?? [],
                     returnIdlType,
                     options?.manual ?? false
@@ -223,8 +228,10 @@ function decoratorImplementation<
             }
         };
 
-        globalThis._azleExportedCanisterClassInstance = this;
+        // TODO this will totally ruin everything
+        globalThis._azleExportedCanisterClassInstance =
+            exportedCanisterClassInstance;
     });
 
-    return originalMethod;
+    return originalMethod as MethodType<ExportedCanisterClass, Args, Return>;
 }

@@ -86,7 +86,7 @@ export default Canister({
             repeatCrossCanister: repeatCrossCanisterId
         };
     }),
-    statusReport: query([], StatusReport, () => {
+    getStatusReport: query([], StatusReport, () => {
         return statusReport;
     })
 });

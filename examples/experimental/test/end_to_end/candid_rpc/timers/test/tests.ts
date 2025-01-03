@@ -16,7 +16,7 @@ let timerIds = {
 export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('gets initial timer values', async () => {
-            const result = await timersCanister.statusReport();
+            const result = await timersCanister.getStatusReport();
 
             const expectedResult = {
                 single: false,
@@ -39,7 +39,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
         wait('for repeated timer to be called once', 7_000);
 
         it('checks that only the repeated timers were called', async () => {
-            const result = await timersCanister.statusReport();
+            const result = await timersCanister.getStatusReport();
 
             const expectedResult = {
                 single: false,
@@ -60,7 +60,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
         wait('for the single timer to finish', 5_000);
 
         it('checks that everything got called (and the repeated timers ran a second time)', async () => {
-            const result = await timersCanister.statusReport();
+            const result = await timersCanister.getStatusReport();
 
             const expectedResult = {
                 single: true,
@@ -93,7 +93,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
         wait('for the repeating call interval', 7_000);
 
         it('checks that the repeating timers stopped', async () => {
-            const result = await timersCanister.statusReport();
+            const result = await timersCanister.getStatusReport();
 
             const expectedResult = {
                 single: true,
