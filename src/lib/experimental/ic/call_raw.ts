@@ -37,42 +37,26 @@ export function callRaw(
         const globalResolveId = `_resolve_${promiseId}`;
         const globalRejectId = `_reject_${promiseId}`;
 
-        // TODO perhaps we should be more robust
-        // TODO for example, we can keep the time with these
-        // TODO if they are over a certain amount old we can delete them
         globalThis._azleResolveIds[globalResolveId] = (
             bytes: ArrayBuffer
         ): void => {
             resolve(new Uint8Array(bytes));
-
-            delete globalThis._azleResolveIds[globalResolveId];
-            delete globalThis._azleRejectIds[globalRejectId];
         };
 
         globalThis._azleRejectIds[globalRejectId] = (error: any): void => {
             reject(error);
-
-            delete globalThis._azleResolveIds[globalResolveId];
-            delete globalThis._azleRejectIds[globalRejectId];
         };
 
         const canisterIdBytes = canisterId.toUint8Array().buffer;
         const argsRawBuffer = argsRaw.buffer;
         const paymentString = payment.toString();
 
-        // TODO consider finally, what if deletion goes wrong
-        try {
-            globalThis._azleIcExperimental.callRaw(
-                promiseId,
-                canisterIdBytes,
-                method,
-                argsRawBuffer,
-                paymentString
-            );
-        } catch (error) {
-            delete globalThis._azleResolveIds[globalResolveId];
-            delete globalThis._azleRejectIds[globalRejectId];
-            throw error;
-        }
+        globalThis._azleIcExperimental.callRaw(
+            promiseId,
+            canisterIdBytes,
+            method,
+            argsRawBuffer,
+            paymentString
+        );
     });
 }
