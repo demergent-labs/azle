@@ -37,13 +37,15 @@ export function callRaw(
         const globalResolveId = `_resolve_${promiseId}`;
         const globalRejectId = `_reject_${promiseId}`;
 
-        globalThis._azleResolveIds[globalResolveId] = (
+        globalThis._azleResolveCallbacks[globalResolveId] = (
             bytes: ArrayBuffer
         ): void => {
             resolve(new Uint8Array(bytes));
         };
 
-        globalThis._azleRejectIds[globalRejectId] = (error: any): void => {
+        globalThis._azleRejectCallbacks[globalRejectId] = (
+            error: any
+        ): void => {
             reject(error);
         };
 

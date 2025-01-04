@@ -55,11 +55,11 @@ impl JsFn for NativeFunction {
                 let reject_id = format!("_reject_{}", promise_id);
                 let resolve_id = format!("_resolve_{}", promise_id);
 
-                let reject_ids = global.get("_azleRejectIds");
-                let resolve_ids = global.get("_azleResolveIds");
+                let reject_callbacks = global.get("_azleRejectCallbacks");
+                let resolve_callbacks = global.get("_azleResolveCallbacks");
 
-                reject_ids.to_obj().unwrap().delete(&reject_id);
-                resolve_ids.to_obj().unwrap().delete(&resolve_id);
+                reject_callbacks.to_obj().unwrap().delete(&reject_id);
+                resolve_callbacks.to_obj().unwrap().delete(&resolve_id);
             });
 
             let call_result =
@@ -89,7 +89,7 @@ impl JsFn for NativeFunction {
 
             if should_resolve {
                 let resolve = global
-                    .get("_azleResolveIds")
+                    .get("_azleResolveCallbacks")
                     .to_obj()
                     .unwrap()
                     .get(format!("_resolve_{promise_id}").as_str())
@@ -111,7 +111,7 @@ impl JsFn for NativeFunction {
                 };
             } else {
                 let reject = global
-                    .get("_azleRejectIds")
+                    .get("_azleRejectCallbacks")
                     .to_obj()
                     .unwrap()
                     .get(format!("_reject_{promise_id}").as_str())

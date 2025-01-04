@@ -31,7 +31,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
         const returnTypeIdl = options?.returnIdlType;
         const raw = options?.raw;
 
-        globalThis._azleResolveIds[globalResolveId] = (
+        globalThis._azleResolveCallbacks[globalResolveId] = (
             result: Uint8Array | ArrayBuffer
         ): void => {
             if (raw !== undefined) {
@@ -45,7 +45,9 @@ export async function call<Args extends any[] | undefined, Return = any>(
             }
         };
 
-        globalThis._azleRejectIds[globalRejectId] = (error: any): void => {
+        globalThis._azleRejectCallbacks[globalRejectId] = (
+            error: any
+        ): void => {
             reject(error);
         };
 
