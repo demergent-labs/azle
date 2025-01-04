@@ -121,6 +121,13 @@ export type change_details =
               module_hash: Uint8Array | number[];
           };
       }
+    | {
+          load_snapshot: {
+              canister_version: bigint;
+              taken_at_timestamp: bigint;
+              snapshot_id: snapshot_id;
+          };
+      }
     | { controllers_change: { controllers: Array<Principal> } }
     | { code_uninstall: null };
 export type change_origin =
@@ -155,6 +162,10 @@ export interface definite_canister_settings {
 }
 export interface delete_canister_args {
     canister_id: canister_id;
+}
+export interface delete_canister_snapshot_args {
+    canister_id: canister_id;
+    snapshot_id: snapshot_id;
 }
 export interface deposit_cycles_args {
     canister_id: canister_id;
@@ -216,7 +227,19 @@ export interface install_code_args {
     canister_id: canister_id;
     sender_canister_version: [] | [bigint];
 }
-export type log_visibility = { controllers: null } | { public: null };
+export interface list_canister_snapshots_args {
+    canister_id: canister_id;
+}
+export type list_canister_snapshots_result = Array<snapshot>;
+export interface load_canister_snapshot_args {
+    canister_id: canister_id;
+    sender_canister_version: [] | [bigint];
+    snapshot_id: snapshot_id;
+}
+export type log_visibility =
+    | { controllers: null }
+    | { public: null }
+    | { allowed_viewers: Array<Principal> };
 export type millisatoshi_per_byte = bigint;
 export interface node_metrics {
     num_block_failures_total: bigint;
@@ -276,6 +299,12 @@ export interface sign_with_schnorr_args {
 export interface sign_with_schnorr_result {
     signature: Uint8Array | number[];
 }
+export interface snapshot {
+    id: snapshot_id;
+    total_size: bigint;
+    taken_at_timestamp: bigint;
+}
+export type snapshot_id = Uint8Array | number[];
 export interface start_canister_args {
     canister_id: canister_id;
 }
@@ -286,6 +315,17 @@ export interface stored_chunks_args {
     canister_id: canister_id;
 }
 export type stored_chunks_result = Array<chunk_hash>;
+export interface subnet_info_args {
+    subnet_id: Principal;
+}
+export interface subnet_info_result {
+    replica_version: string;
+}
+export interface take_canister_snapshot_args {
+    replace_snapshot: [] | [snapshot_id];
+    canister_id: canister_id;
+}
+export type take_canister_snapshot_result = snapshot;
 export interface uninstall_code_args {
     canister_id: canister_id;
     sender_canister_version: [] | [bigint];
@@ -338,6 +378,10 @@ export interface _SERVICE {
         create_canister_result
     >;
     delete_canister: ActorMethod<[delete_canister_args], undefined>;
+    delete_canister_snapshot: ActorMethod<
+        [delete_canister_snapshot_args],
+        undefined
+    >;
     deposit_cycles: ActorMethod<[deposit_cycles_args], undefined>;
     ecdsa_public_key: ActorMethod<
         [ecdsa_public_key_args],
@@ -350,6 +394,14 @@ export interface _SERVICE {
     http_request: ActorMethod<[http_request_args], http_request_result>;
     install_chunked_code: ActorMethod<[install_chunked_code_args], undefined>;
     install_code: ActorMethod<[install_code_args], undefined>;
+    list_canister_snapshots: ActorMethod<
+        [list_canister_snapshots_args],
+        list_canister_snapshots_result
+    >;
+    load_canister_snapshot: ActorMethod<
+        [load_canister_snapshot_args],
+        undefined
+    >;
     node_metrics_history: ActorMethod<
         [node_metrics_history_args],
         node_metrics_history_result
@@ -378,6 +430,11 @@ export interface _SERVICE {
     start_canister: ActorMethod<[start_canister_args], undefined>;
     stop_canister: ActorMethod<[stop_canister_args], undefined>;
     stored_chunks: ActorMethod<[stored_chunks_args], stored_chunks_result>;
+    subnet_info: ActorMethod<[subnet_info_args], subnet_info_result>;
+    take_canister_snapshot: ActorMethod<
+        [take_canister_snapshot_args],
+        take_canister_snapshot_result
+    >;
     uninstall_code: ActorMethod<[uninstall_code_args], undefined>;
     update_settings: ActorMethod<[update_settings_args], undefined>;
     upload_chunk: ActorMethod<[upload_chunk_args], upload_chunk_result>;
@@ -454,6 +511,7 @@ export const change_origin = IDL.Variant({
         canister_id: IDL.Principal
     })
 });
+export const snapshot_id = IDL.Vec(IDL.Nat8);
 export const change_details = IDL.Variant({
     creation: IDL.Record({ controllers: IDL.Vec(IDL.Principal) }),
     code_deployment: IDL.Record({
@@ -463,6 +521,11 @@ export const change_details = IDL.Variant({
             install: IDL.Null
         }),
         module_hash: IDL.Vec(IDL.Nat8)
+    }),
+    load_snapshot: IDL.Record({
+        canister_version: IDL.Nat64,
+        taken_at_timestamp: IDL.Nat64,
+        snapshot_id: snapshot_id
     }),
     controllers_change: IDL.Record({ controllers: IDL.Vec(IDL.Principal) }),
     code_uninstall: IDL.Null
@@ -482,7 +545,8 @@ export const canister_info_result = IDL.Record({
 export const canister_status_args = IDL.Record({ canister_id: canister_id });
 export const log_visibility = IDL.Variant({
     controllers: IDL.Null,
-    public: IDL.Null
+    public: IDL.Null,
+    allowed_viewers: IDL.Vec(IDL.Principal)
 });
 export const definite_canister_settings = IDL.Record({
     freezing_threshold: IDL.Nat,
@@ -532,6 +596,10 @@ export const create_canister_result = IDL.Record({
     canister_id: canister_id
 });
 export const delete_canister_args = IDL.Record({ canister_id: canister_id });
+export const delete_canister_snapshot_args = IDL.Record({
+    canister_id: canister_id,
+    snapshot_id: snapshot_id
+});
 export const deposit_cycles_args = IDL.Record({ canister_id: canister_id });
 export const ecdsa_curve = IDL.Variant({ secp256k1: IDL.Null });
 export const ecdsa_public_key_args = IDL.Record({
@@ -613,6 +681,20 @@ export const install_code_args = IDL.Record({
     canister_id: canister_id,
     sender_canister_version: IDL.Opt(IDL.Nat64)
 });
+export const list_canister_snapshots_args = IDL.Record({
+    canister_id: canister_id
+});
+export const snapshot = IDL.Record({
+    id: snapshot_id,
+    total_size: IDL.Nat64,
+    taken_at_timestamp: IDL.Nat64
+});
+export const list_canister_snapshots_result = IDL.Vec(snapshot);
+export const load_canister_snapshot_args = IDL.Record({
+    canister_id: canister_id,
+    sender_canister_version: IDL.Opt(IDL.Nat64),
+    snapshot_id: snapshot_id
+});
 export const node_metrics_history_args = IDL.Record({
     start_at_timestamp_nanos: IDL.Nat64,
     subnet_id: IDL.Principal
@@ -675,6 +757,13 @@ export const start_canister_args = IDL.Record({ canister_id: canister_id });
 export const stop_canister_args = IDL.Record({ canister_id: canister_id });
 export const stored_chunks_args = IDL.Record({ canister_id: canister_id });
 export const stored_chunks_result = IDL.Vec(chunk_hash);
+export const subnet_info_args = IDL.Record({ subnet_id: IDL.Principal });
+export const subnet_info_result = IDL.Record({ replica_version: IDL.Text });
+export const take_canister_snapshot_args = IDL.Record({
+    replace_snapshot: IDL.Opt(snapshot_id),
+    canister_id: canister_id
+});
+export const take_canister_snapshot_result = snapshot;
 export const uninstall_code_args = IDL.Record({
     canister_id: canister_id,
     sender_canister_version: IDL.Opt(IDL.Nat64)
@@ -763,6 +852,7 @@ export const idlFactory: idlFactory = ({ IDL }) => {
             canister_id: IDL.Principal
         })
     });
+    const snapshot_id = IDL.Vec(IDL.Nat8);
     const change_details = IDL.Variant({
         creation: IDL.Record({ controllers: IDL.Vec(IDL.Principal) }),
         code_deployment: IDL.Record({
@@ -772,6 +862,11 @@ export const idlFactory: idlFactory = ({ IDL }) => {
                 install: IDL.Null
             }),
             module_hash: IDL.Vec(IDL.Nat8)
+        }),
+        load_snapshot: IDL.Record({
+            canister_version: IDL.Nat64,
+            taken_at_timestamp: IDL.Nat64,
+            snapshot_id: snapshot_id
         }),
         controllers_change: IDL.Record({
             controllers: IDL.Vec(IDL.Principal)
@@ -793,7 +888,8 @@ export const idlFactory: idlFactory = ({ IDL }) => {
     const canister_status_args = IDL.Record({ canister_id: canister_id });
     const log_visibility = IDL.Variant({
         controllers: IDL.Null,
-        public: IDL.Null
+        public: IDL.Null,
+        allowed_viewers: IDL.Vec(IDL.Principal)
     });
     const definite_canister_settings = IDL.Record({
         freezing_threshold: IDL.Nat,
@@ -839,6 +935,10 @@ export const idlFactory: idlFactory = ({ IDL }) => {
     });
     const create_canister_result = IDL.Record({ canister_id: canister_id });
     const delete_canister_args = IDL.Record({ canister_id: canister_id });
+    const delete_canister_snapshot_args = IDL.Record({
+        canister_id: canister_id,
+        snapshot_id: snapshot_id
+    });
     const deposit_cycles_args = IDL.Record({ canister_id: canister_id });
     const ecdsa_curve = IDL.Variant({ secp256k1: IDL.Null });
     const ecdsa_public_key_args = IDL.Record({
@@ -919,6 +1019,20 @@ export const idlFactory: idlFactory = ({ IDL }) => {
         canister_id: canister_id,
         sender_canister_version: IDL.Opt(IDL.Nat64)
     });
+    const list_canister_snapshots_args = IDL.Record({
+        canister_id: canister_id
+    });
+    const snapshot = IDL.Record({
+        id: snapshot_id,
+        total_size: IDL.Nat64,
+        taken_at_timestamp: IDL.Nat64
+    });
+    const list_canister_snapshots_result = IDL.Vec(snapshot);
+    const load_canister_snapshot_args = IDL.Record({
+        canister_id: canister_id,
+        sender_canister_version: IDL.Opt(IDL.Nat64),
+        snapshot_id: snapshot_id
+    });
     const node_metrics_history_args = IDL.Record({
         start_at_timestamp_nanos: IDL.Nat64,
         subnet_id: IDL.Principal
@@ -987,6 +1101,13 @@ export const idlFactory: idlFactory = ({ IDL }) => {
     const stop_canister_args = IDL.Record({ canister_id: canister_id });
     const stored_chunks_args = IDL.Record({ canister_id: canister_id });
     const stored_chunks_result = IDL.Vec(chunk_hash);
+    const subnet_info_args = IDL.Record({ subnet_id: IDL.Principal });
+    const subnet_info_result = IDL.Record({ replica_version: IDL.Text });
+    const take_canister_snapshot_args = IDL.Record({
+        replace_snapshot: IDL.Opt(snapshot_id),
+        canister_id: canister_id
+    });
+    const take_canister_snapshot_result = snapshot;
     const uninstall_code_args = IDL.Record({
         canister_id: canister_id,
         sender_canister_version: IDL.Opt(IDL.Nat64)
@@ -1044,6 +1165,11 @@ export const idlFactory: idlFactory = ({ IDL }) => {
             []
         ),
         delete_canister: IDL.Func([delete_canister_args], [], []),
+        delete_canister_snapshot: IDL.Func(
+            [delete_canister_snapshot_args],
+            [],
+            []
+        ),
         deposit_cycles: IDL.Func([deposit_cycles_args], [], []),
         ecdsa_public_key: IDL.Func(
             [ecdsa_public_key_args],
@@ -1058,6 +1184,12 @@ export const idlFactory: idlFactory = ({ IDL }) => {
         http_request: IDL.Func([http_request_args], [http_request_result], []),
         install_chunked_code: IDL.Func([install_chunked_code_args], [], []),
         install_code: IDL.Func([install_code_args], [], []),
+        list_canister_snapshots: IDL.Func(
+            [list_canister_snapshots_args],
+            [list_canister_snapshots_result],
+            []
+        ),
+        load_canister_snapshot: IDL.Func([load_canister_snapshot_args], [], []),
         node_metrics_history: IDL.Func(
             [node_metrics_history_args],
             [node_metrics_history_result],
@@ -1094,6 +1226,12 @@ export const idlFactory: idlFactory = ({ IDL }) => {
         stored_chunks: IDL.Func(
             [stored_chunks_args],
             [stored_chunks_result],
+            []
+        ),
+        subnet_info: IDL.Func([subnet_info_args], [subnet_info_result], []),
+        take_canister_snapshot: IDL.Func(
+            [take_canister_snapshot_args],
+            [take_canister_snapshot_result],
             []
         ),
         uninstall_code: IDL.Func([uninstall_code_args], [], []),

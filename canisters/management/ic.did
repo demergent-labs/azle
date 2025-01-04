@@ -1,4 +1,4 @@
-// Taken from: https://github.com/dfinity/interface-spec/blob/c28afe4269b14f102c78b69225b7c380b826cf0f/spec/_attachments/ic.did
+// Taken from: https://github.com/dfinity/portal/blob/3279a2825c936f10df37f34c69f8789294e41816/docs/references/_attachments/ic.did
 
 // Copyright 2021 DFINITY Foundation
 // 
@@ -16,10 +16,12 @@
 
 type canister_id = principal;
 type wasm_module = blob;
+type snapshot_id = blob;
 
 type log_visibility = variant {
     controllers;
     public;
+    allowed_viewers : vec principal;
 };
 
 type canister_settings = record {
@@ -60,6 +62,11 @@ type change_details = variant {
     code_deployment : record {
         mode : variant { install; reinstall; upgrade };
         module_hash : blob;
+    };
+    load_snapshot : record {
+      canister_version : nat64;
+      snapshot_id : snapshot_id;
+      taken_at_timestamp : nat64;
     };
     controllers_change : record {
         controllers : vec principal;
@@ -360,6 +367,14 @@ type node_metrics_history_result = vec record {
     node_metrics : vec node_metrics;
 };
 
+type subnet_info_args = record {
+    subnet_id : principal;
+};
+
+type subnet_info_result = record {
+    replica_version : text;
+};
+
 type provisional_create_canister_with_cycles_args = record {
     amount : opt nat;
     settings : opt canister_settings;
@@ -381,6 +396,36 @@ type raw_rand_result = blob;
 type stored_chunks_result = vec chunk_hash;
 
 type upload_chunk_result = chunk_hash;
+
+type snapshot = record {
+  id : snapshot_id;
+  taken_at_timestamp : nat64;
+  total_size : nat64;
+};
+
+type take_canister_snapshot_args = record {
+  canister_id : canister_id;
+  replace_snapshot : opt snapshot_id;
+};
+
+type take_canister_snapshot_result = snapshot;
+
+type load_canister_snapshot_args = record {
+  canister_id : canister_id;
+  snapshot_id : snapshot_id;
+  sender_canister_version : opt nat64;
+};
+
+type list_canister_snapshots_args = record {
+  canister_id : canister_id;
+};
+
+type list_canister_snapshots_result = vec snapshot;
+
+type delete_canister_snapshot_args = record {
+  canister_id : canister_id;
+  snapshot_id : snapshot_id;
+};
 
 type fetch_canister_logs_args = record {
     canister_id : canister_id;
@@ -432,9 +477,18 @@ service ic : {
     // metrics interface
     node_metrics_history : (node_metrics_history_args) -> (node_metrics_history_result);
 
+    // subnet info
+    subnet_info : (subnet_info_args) -> (subnet_info_result);
+
     // provisional interfaces for the pre-ledger world
     provisional_create_canister_with_cycles : (provisional_create_canister_with_cycles_args) -> (provisional_create_canister_with_cycles_result);
     provisional_top_up_canister : (provisional_top_up_canister_args) -> ();
+
+    // Canister snapshots
+    take_canister_snapshot : (take_canister_snapshot_args) -> (take_canister_snapshot_result);
+    load_canister_snapshot : (load_canister_snapshot_args) -> ();
+    list_canister_snapshots : (list_canister_snapshots_args) -> (list_canister_snapshots_result);
+    delete_canister_snapshot : (delete_canister_snapshot_args) -> ();
 
     // canister logging
     fetch_canister_logs : (fetch_canister_logs_args) -> (fetch_canister_logs_result) query;
