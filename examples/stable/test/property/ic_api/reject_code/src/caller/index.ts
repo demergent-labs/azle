@@ -1,4 +1,4 @@
-import { call, IDL, rejectCode, RejectionCode, trap, update } from 'azle';
+import { call, IDL, rejectCode, RejectionCode, update } from 'azle';
 import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
@@ -111,8 +111,9 @@ function isRejectionCode(code: RejectionCode): boolean {
 }
 
 function getRejectorPrincipal(): string {
-    return (
-        process.env.REJECTOR_PRINCIPAL ??
-        trap('process.env.REJECTOR_PRINCIPAL is undefined')
-    );
+    if (process.env.REJECTOR_PRINCIPAL !== undefined) {
+        return process.env.REJECTOR_PRINCIPAL;
+    }
+
+    throw new Error(`process.env.REJECTOR_PRINCIPAL is undefined`);
 }

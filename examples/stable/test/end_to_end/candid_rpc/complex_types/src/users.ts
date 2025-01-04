@@ -1,11 +1,16 @@
+import Canister from '.';
 import { User } from './candid_types';
 import { getPostFromStatePost } from './posts';
 import { getReactionFromStateReaction } from './reactions';
-import { state, StateUser } from './state';
+import { StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 
-export function createUser(username: string, joinDepth: number): User {
-    const id = Object.keys(state.users).length.toString();
+export function createUser(
+    canister: Canister,
+    username: string,
+    joinDepth: number
+): User {
+    const id = Object.keys(canister.state.users).length.toString();
 
     const stateUser: StateUser = {
         id,
@@ -15,20 +20,21 @@ export function createUser(username: string, joinDepth: number): User {
         username
     };
 
-    state.users[id] = stateUser;
+    canister.state.users[id] = stateUser;
 
-    const user = getUserFromStateUser(stateUser, joinDepth);
+    const user = getUserFromStateUser(canister, stateUser, joinDepth);
 
     return user;
 }
 
-export function getAllUsers(joinDepth: number): User[] {
-    return Object.values(state.users).map((stateUser) =>
-        getUserFromStateUser(stateUser!, joinDepth)
+export function getAllUsers(canister: Canister, joinDepth: number): User[] {
+    return Object.values(canister.state.users).map((stateUser) =>
+        getUserFromStateUser(canister, stateUser!, joinDepth)
     );
 }
 
 export function getUserFromStateUser(
+    canister: Canister,
     stateUser: StateUser,
     joinDepth: number
 ): User {
@@ -42,21 +48,25 @@ export function getUserFromStateUser(
         };
     } else {
         const posts = stateUser.postIds
-            .map((postId) => state.posts[postId])
+            .map((postId) => canister.state.posts[postId])
             .map((statePost) =>
-                getPostFromStatePost(statePost!, joinDepth - 1)
+                getPostFromStatePost(canister, statePost!, joinDepth - 1)
             );
 
         const reactions = stateUser.reactionIds
-            .map((reactionId) => state.reactions[reactionId])
+            .map((reactionId) => canister.state.reactions[reactionId])
             .map((stateReaction) =>
-                getReactionFromStateReaction(stateReaction!, joinDepth - 1)
+                getReactionFromStateReaction(
+                    canister,
+                    stateReaction!,
+                    joinDepth - 1
+                )
             );
 
         const threads = stateUser.threadIds
-            .map((threadId) => state.threads[threadId])
+            .map((threadId) => canister.state.threads[threadId])
             .map((stateThread) =>
-                getThreadFromStateThread(stateThread!, joinDepth - 1)
+                getThreadFromStateThread(canister, stateThread!, joinDepth - 1)
             );
 
         return {

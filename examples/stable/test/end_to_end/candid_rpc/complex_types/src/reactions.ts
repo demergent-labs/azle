@@ -1,15 +1,17 @@
+import Canister from '.';
 import { Reaction, ReactionType } from './candid_types';
 import { getPostFromStatePost } from './posts';
-import { state, StatePost, StateReaction, StateUser } from './state';
+import { StatePost, StateReaction, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
 export function createReaction(
+    canister: Canister,
     authorId: string,
     postId: string,
     reactionType: ReactionType,
     joinDepth: number
 ): Reaction {
-    const id = Object.keys(state.reactions).length.toString();
+    const id = Object.keys(canister.state.reactions).length.toString();
 
     const stateReaction: StateReaction = {
         id,
@@ -18,45 +20,58 @@ export function createReaction(
         reactionType
     };
     const updatedStateAuthor = getUpdatedStateAuthor(
+        canister,
         authorId,
         stateReaction.id
     );
-    const updatedStatePost = getUpdatedStatePost(postId, stateReaction.id);
+    const updatedStatePost = getUpdatedStatePost(
+        canister,
+        postId,
+        stateReaction.id
+    );
 
-    state.reactions[id] = stateReaction;
-    state.users[authorId] = updatedStateAuthor;
-    state.posts[postId] = updatedStatePost;
+    canister.state.reactions[id] = stateReaction;
+    canister.state.users[authorId] = updatedStateAuthor;
+    canister.state.posts[postId] = updatedStatePost;
 
-    const reaction = getReactionFromStateReaction(stateReaction, joinDepth);
+    const reaction = getReactionFromStateReaction(
+        canister,
+        stateReaction,
+        joinDepth
+    );
 
     return reaction;
 }
 
-export function getAllReactions(joinDepth: number): Reaction[] {
-    return Object.values(state.reactions).map((stateReaction) =>
-        getReactionFromStateReaction(stateReaction!, joinDepth)
+export function getAllReactions(
+    canister: Canister,
+    joinDepth: number
+): Reaction[] {
+    return Object.values(canister.state.reactions).map((stateReaction) =>
+        getReactionFromStateReaction(canister, stateReaction!, joinDepth)
     );
 }
 
 export function getReactionFromStateReaction(
+    canister: Canister,
     stateReaction: StateReaction,
     joinDepth: number
 ): Reaction {
-    const stateAuthor = state.users[stateReaction.authorId];
+    const stateAuthor = canister.state.users[stateReaction.authorId];
 
     if (stateAuthor === undefined) {
         throw new Error('Author not found');
     }
 
-    const author = getUserFromStateUser(stateAuthor, joinDepth);
+    const author = getUserFromStateUser(canister, stateAuthor, joinDepth);
 
-    const statePost = state.posts[stateReaction.postId];
+    const statePost = canister.state.posts[stateReaction.postId];
 
     if (statePost === undefined) {
         throw new Error('Post not found');
     }
 
-    const post = getPostFromStatePost(statePost, joinDepth);
+    const post = getPostFromStatePost(canister, statePost, joinDepth);
 
     return {
         id: stateReaction.id,
@@ -67,10 +82,11 @@ export function getReactionFromStateReaction(
 }
 
 function getUpdatedStateAuthor(
+    canister: Canister,
     authorId: string,
     reactionId: string
 ): StateUser {
-    const stateAuthor = state.users[authorId];
+    const stateAuthor = canister.state.users[authorId];
 
     if (stateAuthor === undefined) {
         throw new Error('Author not found');
@@ -84,8 +100,12 @@ function getUpdatedStateAuthor(
     return updatedStateAuthor;
 }
 
-function getUpdatedStatePost(postId: string, reactionId: string): StatePost {
-    const statePost = state.posts[postId];
+function getUpdatedStatePost(
+    canister: Canister,
+    postId: string,
+    reactionId: string
+): StatePost {
+    const statePost = canister.state.posts[postId];
 
     if (statePost === undefined) {
         throw new Error('Post not found');

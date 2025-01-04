@@ -1,13 +1,5 @@
 import { ReactionType } from './candid_types';
 
-// TODO this state should go on the class
-export let state: State = {
-    posts: {},
-    reactions: {},
-    threads: {},
-    users: {}
-};
-
 export type State = {
     posts: {
         [id: string]: StatePost | undefined;

@@ -25,24 +25,60 @@ function getPrelude(main: string): string {
 
 export function handleClassApiCanister(): string {
     return /*TS*/ `
-        if (globalThis._azleNodeWasmEnvironment === false) {
-            const canisterClassInstance = new Canister.default();
-            globalThis._azleCanisterClassInstance = canisterClassInstance;
-        }
+        const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
-        const canisterIdlType = IDL.Service(globalThis._azleCanisterMethodIdlTypes);
+        const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlTypes);
         const candid = canisterIdlType.accept(new DidVisitor(), {
             ...getDefaultVisitorData(),
             isFirstService: true,
-            systemFuncs: globalThis._azleInitAndPostUpgradeIdlTypes
+            systemFuncs: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
         });
 
         globalThis._azleGetCandidAndMethodMeta = () => {
             return JSON.stringify({
                 candid: toDidString(candid),
-                methodMeta: globalThis._azleMethodMeta
+                methodMeta: exportedCanisterClassInstance._azleMethodMeta
             });
         };
+        
+        /**
+         * @internal
+         * 
+         * This function is designed with a very specific purpose.
+         * We need to get the _azle properties off of this class instance to use in generating the candid
+         * and method meta information. But we can't just set the result of instantiating the class to a local variable.
+         * This is because exceptions might be thrown during the class's instantiation, in the constructor or
+         * property initializers. If this happens, we would not be able to proceed to get those _azle properties out of the local variable.
+         * The likelihood of this happening is very high, since to get the candid and method meta information we must
+         * execute the Wasm module outside of the replica in our Node.js Wasm environment. Though the likelihood of this happening
+         * is high, it is not an issue unless our decorators cannot complete the setting of the _azle properties.
+         * We believe there is a very high likelihood of always being able to set the _azle properties, even if errors
+         * are thrown after this process completes.
+         * This environment is not the true canister environment and may not have certain globals or other APIs.
+         * So we use a try/catch. If there is an exception we check if we're in the Node.js Wasm environment.
+         * If we are, we do not throw an error unless the global _azleExportedCanisterClassInstance is undefined.
+         * If it is not undefined, we assume that the decorators have executed during the context.addInitializer callback.
+         * This callback occurs before the class's constructor or properties are initialized.
+         * There may be some rare conditions where this scheme will not work, but we believe the likelihood is extremely low.
+         */
+        function getExportedCanisterClassInstance() {     
+            try {
+                Canister.default.prototype._azleShouldRegisterCanisterMethods = true;
+                new Canister.default();
+                Canister.default.prototype._azleShouldRegisterCanisterMethods = false;
+            } catch (error) {
+                if (globalThis._azleNodeWasmEnvironment === true) {
+                    if (globalThis._azleExportedCanisterClassInstance === undefined) {
+                        throw error;
+                    }
+                }
+                else {
+                    throw error;
+                }
+            }
+            
+            return globalThis._azleExportedCanisterClassInstance;
+        }
     `;
 }
 
@@ -113,7 +149,7 @@ function experimentalMessage(importName: string): string {
 function handleBenchmarking(): string {
     return /*TS*/ `
         if (globalThis._azleRecordBenchmarks === true) {
-            const methodMeta = globalThis._azleMethodMeta;
+            const methodMeta = exportedCanisterClassInstance._azleMethodMeta;
 
             globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
                 if (value === undefined) {
