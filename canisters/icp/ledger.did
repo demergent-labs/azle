@@ -1,4 +1,4 @@
-// Taken from: https://github.com/dfinity/ic/blob/release-2024-09-12_01-30-canister-snapshots-hotfix-deprecated-assert/rs/rosetta-api/icp_ledger/ledger.did
+// Taken from: https://github.com/dfinity/ic/blob/release-2025-01-03_03-07-base/rs/ledger_suite/icp/ledger.did
 
 // This is the official Ledger interface that is guaranteed to be backward compatible.
 
@@ -552,4 +552,6 @@ service: (LedgerCanisterPayload) -> {
 
     icrc21_canister_call_consent_message: (icrc21_consent_message_request) -> (icrc21_consent_message_response);
     icrc10_supported_standards : () -> (vec record { name : text; url : text }) query;
+
+    is_ledger_ready: () -> (bool) query;
 }
