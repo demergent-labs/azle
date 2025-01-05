@@ -349,6 +349,7 @@ export interface _SERVICE {
     icrc2_allowance: ActorMethod<[AllowanceArgs], Allowance>;
     icrc2_approve: ActorMethod<[ApproveArgs], ApproveResult>;
     icrc2_transfer_from: ActorMethod<[TransferFromArgs], TransferFromResult>;
+    is_ledger_ready: ActorMethod<[], boolean>;
     name: ActorMethod<[], NameResult>;
     query_blocks: ActorMethod<[GetBlocksArgs], QueryBlocksResponse>;
     query_encoded_blocks: ActorMethod<
@@ -1036,6 +1037,7 @@ export const idlFactory: idlFactory = ({ IDL }) => {
             [TransferFromResult],
             []
         ),
+        is_ledger_ready: IDL.Func([], [IDL.Bool], ['query']),
         name: IDL.Func([], [NameResult], ['query']),
         query_blocks: IDL.Func(
             [GetBlocksArgs],
