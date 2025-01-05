@@ -25,6 +25,7 @@
 !install_script.sh
 !LICENSE
 !LICENSE_EXTENSION.md
+!modules.d.ts
 !NOTICE
 !package-lock.json
 !package.json
