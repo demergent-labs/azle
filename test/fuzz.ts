@@ -53,6 +53,10 @@ function getCallDelay(cuzzConfig: CuzzConfig): string {
 
 function fuzzTestCanister(canisterName: string, callDelay: string): void {
     const baseCuzzArgs = [
+        'exec',
+        '--offline',
+        'cuzz',
+        '--',
         '--canister-name',
         canisterName,
         '--skip-deploy',
@@ -69,7 +73,7 @@ function fuzzTestCanister(canisterName: string, callDelay: string): void {
             : [])
     ];
 
-    let cuzzProcess = spawn('node_modules/.bin/cuzz', cuzzArgs, {
+    let cuzzProcess = spawn('npm', cuzzArgs, {
         stdio: 'inherit'
     });
 

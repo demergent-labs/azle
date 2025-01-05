@@ -3,7 +3,6 @@ dns.setDefaultResultOrder('ipv4first');
 
 import { describe, expect, test } from '@jest/globals';
 import * as fc from 'fast-check';
-import { join } from 'path';
 
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
@@ -17,7 +16,7 @@ export { getCanisterActor } from './get_canister_actor';
 export function runTests(
     tests: Test,
     canisterNames: string | string[] | undefined = undefined,
-    cwd: string = process.cwd()
+    _cwd: string = process.cwd()
 ): void {
     const {
         shouldRunTests,
@@ -35,12 +34,7 @@ export function runTests(
             it('checks types', () => {
                 try {
                     execSyncPretty(
-                        `${join(
-                            cwd,
-                            'node_modules',
-                            '.bin',
-                            'tsc'
-                        )} --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
+                        `npm exec --offline tsc -- --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
                         'inherit'
                     );
                 } catch {
