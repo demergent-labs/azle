@@ -113,7 +113,6 @@ jobs:
               with:
                   directories: |
                       ./examples
-                      ./tests
                   exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
 
     update-test-files-for-release-commit:
