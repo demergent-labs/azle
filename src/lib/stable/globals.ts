@@ -1,4 +1,3 @@
-// @ts-expect-error
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
 import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';

@@ -4,42 +4,12 @@ on:
         inputs:
             release-version:
                 required: true
-            exclude-slow-tests:
-                description: 'Exclude slow tests'
-                required: true
-                type: boolean
-                default: false
-            exclude-unstable-tests:
-                description: 'Exclude unstable tests'
-                required: true
-                type: boolean
-                default: false
-            exclude-release-only-tests:
-                description: 'Exclude release tests'
-                required: true
-                type: boolean
-                default: false
             signing-key-id:
                 required: true
                 type: string
                 default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
 
 jobs:
-    get-exclude-dirs:
-        name: Get exclude directories
-        runs-on: ubuntu-latest
-        outputs:
-            exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
-        steps:
-            - uses: actions/checkout@v4
-
-            - id: get-exclude-dirs
-              uses: ./.github/actions/get_exclude_dirs
-              with:
-                  exclude-slow: ${{ github.event.inputs.exclude-slow-tests }}
-                  exclude-unstable: ${{ github.event.inputs.exclude-unstable-tests }}
-                  exclude-release-only: ${{ github.event.inputs.exclude-release-only-tests }}
-
     create-branch-prefix:
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
@@ -52,7 +22,6 @@ jobs:
     prepare-release:
         name: Prepare Release
         needs:
-            - get-exclude-dirs
             - create-branch-prefix
         runs-on: ubuntu-latest
         env:
@@ -111,9 +80,7 @@ jobs:
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  directories: |
-                      ./examples
-                  exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
+                  directories: ./examples
 
     update-test-files-for-release-commit:
         needs:
@@ -152,10 +119,9 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
-            - name: Run npm test (continue on error)
+            - name: Run dfx deploy
               working-directory: ${{ matrix.test.path }}
-              continue-on-error: true
-              run: npm test
+              run: dfx deploy
 
             - name: Create branch name
               id: create-branch-name
