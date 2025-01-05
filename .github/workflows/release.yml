@@ -119,9 +119,9 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
-            - name: Run dfx deploy
+            - name: npm run pretest
               working-directory: ${{ matrix.test.path }}
-              run: dfx deploy
+              run: npm run pretest
 
             - name: Create branch name
               id: create-branch-name
