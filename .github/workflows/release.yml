@@ -119,9 +119,10 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
 
-            - name: npm run pretest
-              working-directory: ${{ matrix.test.path }}
-              run: npm run pretest
+            # TODO we would like to also update the Candid files
+            # TODO what we should do is detect if there is a Candid file to generate
+            # TODO probably by looking at the dfx.json candid property of any azle canisters
+            # TODO if that is defined and if it does not go to .azle, we should probably generate it
 
             - name: Create branch name
               id: create-branch-name
