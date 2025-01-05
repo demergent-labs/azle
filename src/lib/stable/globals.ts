@@ -31,9 +31,11 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleRecordBenchmarks: boolean;
     // eslint-disable-next-line no-var
-    var _azleRejectIds: { [key: string]: (err: any) => void };
+    var _azleRejectCallbacks: { [key: string]: (err: any) => void };
     // eslint-disable-next-line no-var
-    var _azleResolveIds: { [key: string]: (buf: Uint8Array) => void };
+    var _azleResolveCallbacks: {
+        [key: string]: (buf: Uint8Array | ArrayBuffer) => void;
+    };
     // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [key: string]: () => void };
 }
@@ -54,9 +56,9 @@ if (globalThis._azleInsideCanister === true) {
 
     globalThis._azleIcTimers = {};
 
-    globalThis._azleRejectIds = {};
+    globalThis._azleRejectCallbacks = {};
 
-    globalThis._azleResolveIds = {};
+    globalThis._azleResolveCallbacks = {};
 
     globalThis.TextDecoder = TextDecoder;
     globalThis.TextEncoder = TextEncoder;

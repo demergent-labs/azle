@@ -84,8 +84,8 @@ fn cleanup(ctx: Ctx, promise_id: &str) -> Result<(), Box<dyn Error>> {
 
     let globals = ctx.clone().globals();
 
-    let reject_ids = globals.get::<_, Object>("_azleRejectIds")?;
-    let resolve_ids = globals.get::<_, Object>("_azleResolveIds")?;
+    let reject_ids = globals.get::<_, Object>("_azleRejectCallbacks")?;
+    let resolve_ids = globals.get::<_, Object>("_azleResolveCallbacks")?;
 
     reject_ids.remove(&reject_id)?;
     resolve_ids.remove(&resolve_id)?;
@@ -147,9 +147,9 @@ fn get_resolve_or_reject_global_object(
     let globals = ctx.globals();
 
     if should_resolve {
-        Ok(globals.get("_azleResolveIds")?)
+        Ok(globals.get("_azleResolveCallbacks")?)
     } else {
-        Ok(globals.get("_azleRejectIds")?)
+        Ok(globals.get("_azleRejectCallbacks")?)
     }
 }
 

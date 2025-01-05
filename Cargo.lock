@@ -538,6 +538,7 @@ dependencies = [
  "ic-stable-structures",
  "ic-wasi-polyfill",
  "open_value_sharing",
+ "scopeguard",
  "serde",
  "serde_json",
  "sha2",
