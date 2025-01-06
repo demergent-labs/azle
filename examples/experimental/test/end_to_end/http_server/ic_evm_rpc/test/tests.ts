@@ -71,7 +71,7 @@ export function getTests(canisterId: string): Test {
                     headers: [['Content-Type', 'application/json']],
                     body: JSON.stringify({
                         to: canisterAddress,
-                        value: '.0001'
+                        value: '.0004'
                     })
                 }
             );
@@ -91,7 +91,7 @@ export function getTests(canisterId: string): Test {
             );
             const responseJson = jsonParse(await response.text());
 
-            expect(responseJson).toBe(100_000_000_000_000n);
+            expect(responseJson).toBe(400_000_000_000_000n);
         });
 
         it("transfers from the canister to the caller's wallet using ethers and ethSendRawTransaction", async () => {
@@ -119,7 +119,7 @@ export function getTests(canisterId: string): Test {
             );
             const responseJson = jsonParse(await response.text());
 
-            expect(responseJson).toBeLessThan(100_000_000_000_000n);
+            expect(responseJson).toBeLessThan(400_000_000_000_000n);
         });
 
         it("gets the caller's balance after the transfer using ethers and ThresholdWallet", async () => {
