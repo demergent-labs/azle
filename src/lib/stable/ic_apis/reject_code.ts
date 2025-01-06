@@ -43,11 +43,14 @@ export const RejectionCode = IDL.Variant({
  *
  * @returns The {@link RejectionCode} variant, or {Unknown: null} if called outside the IC environment
  *
- * @example
- * const code = rejectCode();
- * if (!('NoError' in code)) {
- *   // Call was rejected, handle the error...
- * }
+ * @remarks
+ * - Used to determine why a call was rejected
+ * - Returns {Unknown: null} if called outside IC environment
+ * - **Call Context**:
+ *   - reply callback
+ *   - reply callback in a composite query
+ *   - reject callback
+ *   - reject callback in a composite query
  */
 export function rejectCode(): RejectionCode {
     if (

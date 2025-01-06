@@ -13,12 +13,13 @@ import { v4 } from 'uuid';
  * - Timers are not persisted across canister upgrades
  * - Timer IDs are unique within a canister
  * - The callback registration is automatically cleaned up after execution
- *
- * @example
- * const timerId = setTimer(120n, async () => {
- *   // This will run once after 120 seconds
- *   await performDelayedTask();
- * });
+ * - **Call Context**:
+ *   - init
+ *   - preUpgrade
+ *   - update
+ *   - reply
+ *   - heartbeat
+ *   - global_timer
  */
 export function setTimer(
     delay: bigint,

@@ -2,20 +2,17 @@
 import { rejectCode } from './reject_code'; // Used for links in comments
 
 /**
- * Returns the rejection message from the most recently executed cross-canister call.
- * This provides details about why the call was rejected.
+ * Returns the rejection message from the last failed cross-canister call.
  *
  * @returns The rejection message, or empty string if called outside the IC environment
+ *
  * @remarks
  * - Will trap if there is no reject message available
  * - Always check {@link rejectCode} before calling this function
- *
- * @example
- * const code = rejectCode();
- * if (!('NoError' in code)) {
- *   const message = rejectMessage();
- *   // Handle the rejection...
- * }
+ * - Returns empty string if called outside IC environment
+ * - **Call Context**:
+ *   - reject callback
+ *   - reject callback in a composite query
  */
 export function rejectMessage(): string {
     if (

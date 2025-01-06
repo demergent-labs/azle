@@ -23,27 +23,12 @@ import { idlDecode, idlEncode } from '../execute_with_candid_serde';
  * - Returns undefined if called outside IC environment
  * - Handles both string and Principal canister IDs
  * - Automatically encodes/decodes arguments and return values
- *
- * @example
- * // High-level call with IDL types
- * const result = await call(counterCanister, 'increment', {
- *     returnIdlType: IDL.Nat
- * });
- *
- * @example
- * // Call with cycles transfer
- * const result = await call(targetCanister, 'store_data', {
- *     args: [data],
- *     paramIdlTypes: [IDL.Vec(IDL.Nat8)],
- *     cycles: 100_000_000n
- * });
- *
- * @example
- * // Low-level call with raw bytes
- * const result = await call(canisterId, 'raw_method', {
- *     raw: new Uint8Array([...]),
- *     cycles: 0n
- * });
+ * - **Call Context**:
+ *   - update
+ *   - composite query
+ *   - reply
+ *   - heartbeat
+ *   - global_timer
  */
 export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,

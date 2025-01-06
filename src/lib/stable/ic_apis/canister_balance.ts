@@ -8,6 +8,8 @@
  * - Balance decreases as the canister consumes resources
  * - Balance increases when cycles are transferred to the canister
  * - Canister will be deleted if balance drops too low
+ * - **Call Context**:
+ *   - Any method
  *
  * @example
  * // Check if canister has enough cycles

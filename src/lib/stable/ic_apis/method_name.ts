@@ -1,6 +1,5 @@
 /**
- * Returns the name of the current canister method being executed.
- * Only available within an {@link inspectMessage} function.
+ * Returns the name of the method being called.
  *
  * @returns The name of the current method, or empty string if called outside the IC environment
  *
@@ -9,6 +8,8 @@
  * - Will trap if called outside inspect message
  * - Used to implement method-level access control
  * - Returns empty string ('') if called outside the IC environment
+ * - **Call Context**:
+ *   - inspectMessage
  */
 export function methodName(): string {
     if (

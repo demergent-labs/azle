@@ -1,6 +1,5 @@
 /**
  * Returns the data certificate authenticating this canister's certified data.
- * Only available during query calls.
  *
  * @returns The data certificate as a Uint8Array, or undefined if:
  *   - Called during an update call
@@ -11,6 +10,9 @@
  * - Used in conjunction with setCertifiedData
  * - Enables query calls to return certified responses
  * - Only meaningful during query calls
+ * - **Call Context**:
+ *   - query
+ *   - composite query
  */
 export function dataCertificate(): Uint8Array | undefined {
     if (
