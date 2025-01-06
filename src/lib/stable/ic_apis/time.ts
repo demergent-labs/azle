@@ -4,9 +4,12 @@
  *
  * @returns The current timestamp in nanoseconds, or 0n if called outside the IC environment
  *
- * @example
- * const now = time();
- * const secondsSinceEpoch = now / BigInt(1_000_000_000);
+ * @remarks
+ * - Monotonically increasing even across canister upgrades
+ * - Within an invocation of one entry point, the time is constant
+ * - Returns 0n if called outside IC environment
+ * - **Call Context**:
+ *   - Any method
  */
 export function time(): bigint {
     if (

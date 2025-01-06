@@ -19,13 +19,8 @@
  * Note: The version may increase at any time, even when no apparent changes
  * have been made to the canister's state or configuration.
  *
- * @example
- * // Track state changes
- * const oldVersion = canisterVersion();
- * await updateState();
- * if (canisterVersion() !== oldVersion) {
- *   // State was modified
- * }
+ * - **Call Context**:
+ *   - Any method
  */
 export function canisterVersion(): bigint {
     if (

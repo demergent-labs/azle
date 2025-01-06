@@ -6,8 +6,9 @@
  *
  * @remarks
  * - Used for low-level Candid encoding operations
- * - Common in raw calls, manual replies, and notifications
  * - Returns empty Uint8Array if called outside IC environment
+ * - **Call Context**:
+ *   - Any method
  *
  * @example
  * // Encode parameters for a raw call

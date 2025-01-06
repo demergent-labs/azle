@@ -8,6 +8,13 @@
  * - Safe to call multiple times - does nothing if timer is already cancelled
  * - Cleans up internal timer callback references
  * - No effect if timer ID doesn't exist
+ * - **Call Context**:
+ *   - init
+ *   - preUpgrade
+ *   - update
+ *   - reply
+ *   - heartbeat
+ *   - global_timer
  */
 export function clearTimer(timerId: bigint): void {
     if (

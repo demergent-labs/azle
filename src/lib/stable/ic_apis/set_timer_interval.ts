@@ -1,10 +1,10 @@
 import { v4 } from 'uuid';
 
 /**
- * Sets a callback to be executed periodically at the specified interval.
- * The timer continues running until explicitly cancelled via clearTimer.
+ * Sets callback to be executed periodically at the specified interval.
+ * To cancel the timer pass the returned timer ID to clearTimer
  *
- * @param interval - The time between executions in seconds (as a bigint)
+ * @param interval - The time between executions in nanoseconds (as a bigint)
  * @param callback - The function to execute periodically. Can be async
  * @returns The timer ID (used with clearTimer to cancel), or 0n if called outside the IC environment
  * @throws {Error} If interval + current_time would exceed u64::MAX
@@ -13,12 +13,13 @@ import { v4 } from 'uuid';
  * - Timers are not persisted across canister upgrades
  * - Callbacks remain registered even if they throw errors
  * - Timer IDs are unique within a canister
- *
- * @example
- * const timerId = setTimerInterval(60n, async () => {
- *   // This will run every 60 seconds
- *   await updateSomething();
- * });
+ * - **Call Context**:
+ *   - init
+ *   - preUpgrade
+ *   - update
+ *   - reply
+ *   - heartbeat
+ *   - global_timer
  */
 export function setTimerInterval(
     interval: bigint,

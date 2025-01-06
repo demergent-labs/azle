@@ -9,6 +9,8 @@ import { Principal } from '@dfinity/principal';
  * - Every canister has a unique Principal ID
  * - Used for identifying and addressing the canister
  * - Returns the anonymous Principal if called outside the IC environment
+ * - **Call Context**:
+ *   - Any method
  */
 export function id(): Principal {
     if (

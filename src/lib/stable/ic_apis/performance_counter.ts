@@ -1,5 +1,5 @@
 /**
- * Gets the value of the specified performance counter.
+ * Returns the value of the specified performance counter.
  *
  * @param counterType - The type of performance counter:
  *   - 0: Instruction counter, returns the number of WebAssembly instructions executed since the start of the current message
@@ -10,6 +10,9 @@
  * @remarks
  * - The instruction counters reset at the start of each message/call context
  * - Useful for optimizing canister execution and staying within instruction limits
+ * - Returns 0n if called outside IC environment
+ * - **Call Context**:
+ *   - Any method
  *
  * @example
  * // Check instructions used in current message

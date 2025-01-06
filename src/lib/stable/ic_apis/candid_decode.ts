@@ -6,9 +6,10 @@
  *
  * @remarks
  * - Used for low-level Candid decoding operations
- * - Helpful for debugging raw call responses
  * - Common in raw calls and manual message handling
  * - Returns empty string if called outside IC environment
+ * - **Call Context**:
+ *   - Any method
  *
  * @example
  * // Decode raw response from a call

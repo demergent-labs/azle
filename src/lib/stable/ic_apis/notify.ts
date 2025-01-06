@@ -15,21 +15,16 @@ import { idlEncode } from '../execute_with_candid_serde';
  *   - raw: Raw bytes to pass as arguments instead of Candid-encoded args
  * @returns void, or no effect if called outside the IC environment
  *
- * @example
- * // Basic notify call
- * notify(otherCanister, "updateCounter");
- *
- * // Notify with arguments and cycles
- * notify(otherCanister, "deposit", {
- *   paramIdlTypes: [IDL.Nat64],
- *   args: [1000n],
- *   cycles: 10_000_000n
- * });
- *
  * @remarks
  * - The call is "fire and forget" - errors are not returned
  * - Useful for non-critical updates where response/error handling isn't needed
  * - More efficient than await ic.call() when you don't need the response
+ * - **Call Context**:
+ *   - update
+ *   - composite query
+ *   - reply
+ *   - heartbeat
+ *   - global_timer
  */
 export function notify(
     canisterId: Principal | string,

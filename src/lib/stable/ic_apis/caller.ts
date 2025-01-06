@@ -12,19 +12,8 @@ import { Principal } from '@dfinity/principal';
  * - For anonymous calls, returns the anonymous Principal
  * - Commonly used for access control and authentication
  * - Returns the anonymous Principal if called outside the IC environment
- *
- * @example
- * // Basic authentication
- * if (caller().toString() !== adminPrincipal) {
- *     throw new Error('Unauthorized');
- * }
- *
- * @example
- * // Check if call is from another canister
- * const callingCanister = caller();
- * if (callingCanister.toString() === trustedCanister) {
- *     // Handle inter-canister call
- * }
+ * - **Call Context**:
+ *   - Any method
  */
 export function caller(): Principal {
     if (

@@ -11,6 +11,9 @@
  * @remarks
  * - Returns 0n if called outside the IC environment
  * - Cannot accept more cycles than are available in the current call
+ * - **Call Context**:
+ *   - update
+ *   - reply
  */
 export function msgCyclesAccept(maxAmount: bigint): bigint {
     if (

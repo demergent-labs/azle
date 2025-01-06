@@ -22,7 +22,7 @@ type ReplyInput<T> =
 
 /**
  * Manually replies to an ingress message with either data or raw bytes.
- * Used in canister methods marked with {@link Manual} reply handling.
+ * Used in canister methods marked with { manual: true } reply handling.
  *
  * @typeParam T - The type of data being replied with
  * @param input - Either data to be encoded and sent, or pre-encoded raw bytes
@@ -30,21 +30,13 @@ type ReplyInput<T> =
  *
  * @remarks
  * When using the data option:
- * - The data must match the type T specified in Manual<T>
  * - If idlType is provided, the data will be encoded using that type
  * - If idlType is omitted, the data will be encoded as an empty type
- *
- * @example
- * // Reply with data
- * reply({
- *   data: "Hello",
- *   idlType: IDL.Text
- * });
- *
- * // Reply with raw bytes
- * reply({
- *   raw: new Uint8Array([1, 2, 3])
- * });
+ * - **Call Context**:
+ *   - update
+ *   - query
+ *   - composite query
+ *   - reply
  */
 export function reply<T>(input: ReplyInput<T>): void {
     if (
