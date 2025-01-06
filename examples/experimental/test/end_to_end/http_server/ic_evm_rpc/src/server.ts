@@ -55,7 +55,7 @@ app.post(
         const value = ethers.parseEther(req.body.value);
         const maxPriorityFeePerGas = await ethMaxPriorityFeePerGas();
         const baseFeePerGas = BigInt(
-            (await ethFeeHistory()).Consistent?.Ok[0].baseFeePerGas[0]
+            (await ethFeeHistory()).Consistent?.Ok.baseFeePerGas[0]
         );
         const maxFeePerGas = baseFeePerGas * 2n + maxPriorityFeePerGas;
         const gasLimit = 21_000n;
@@ -96,7 +96,7 @@ app.post(
             const value = ethers.parseEther(req.body.value);
             const maxPriorityFeePerGas = await ethMaxPriorityFeePerGas();
             const baseFeePerGas = BigInt(
-                (await ethFeeHistory()).Consistent?.Ok[0].baseFeePerGas[0]
+                (await ethFeeHistory()).Consistent?.Ok.baseFeePerGas[0]
             );
             const maxFeePerGas = baseFeePerGas * 2n + maxPriorityFeePerGas;
             const gasLimit = 21_000n;
@@ -126,7 +126,6 @@ app.post(
                 unsignedSerializedTxHash,
                 signedSerializedTxHash
             );
-
             tx.signature = {
                 r,
                 s,
@@ -137,7 +136,7 @@ app.post(
 
             const result = await ethSendRawTransaction(rawTransaction);
 
-            if (result.Consistent?.Ok?.Ok.length === 1) {
+            if (result.Consistent?.Ok?.Ok?.length === 1) {
                 res.send('transaction sent');
             } else {
                 res.status(500).send('transaction failed');

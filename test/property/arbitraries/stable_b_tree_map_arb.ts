@@ -65,7 +65,7 @@ export function StableBTreeMapArb(
                 return {
                     name,
                     imports,
-                    definition: `let ${name} = new StableBTreeMap<${key}, ${value}>(${memoryId}${serializableArguments});`,
+                    definition: `let ${name} = ${context.api === 'class' ? 'new' : ''} StableBTreeMap<${key}, ${value}>(${memoryId}${serializableArguments});`,
                     keySample,
                     valueSample
                 };
