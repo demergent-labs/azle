@@ -11,9 +11,7 @@
     },
     "type": "module",
     "bin": {
-        "azle": "./src/build/index.ts",
-        "cuzz": "./node_modules/.bin/cuzz",
-        "tsc": "./node_modules/.bin/tsc"
+        "azle": "./src/build/index.ts"
     },
     "main": "./src/lib/stable/index.ts",
     "repository": {

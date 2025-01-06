@@ -1,7 +1,7 @@
 import './experimental';
 import '../stable/globals'; // We import this to remove type errors having to do with the stable and experimental globals
 
-// @ts-expect-error
+// @ts-ignore
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 import { Buffer } from 'buffer';
 import * as process from 'process';

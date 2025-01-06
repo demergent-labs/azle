@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-// @ts-expect-error
+// @ts-ignore
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
 import { Serializable } from './stable_b_tree_map';
