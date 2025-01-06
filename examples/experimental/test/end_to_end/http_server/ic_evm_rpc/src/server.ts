@@ -55,7 +55,7 @@ app.post(
         const value = ethers.parseEther(req.body.value);
         const maxPriorityFeePerGas = await ethMaxPriorityFeePerGas();
         const baseFeePerGas = BigInt(
-            (await ethFeeHistory()).Consistent?.Ok[0].baseFeePerGas[0]
+            (await ethFeeHistory()).Consistent?.Ok.baseFeePerGas[0]
         );
         const maxFeePerGas = baseFeePerGas * 2n + maxPriorityFeePerGas;
         const gasLimit = 21_000n;
