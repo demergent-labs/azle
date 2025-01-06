@@ -43,15 +43,6 @@ globalThis._azleInsideCanister =
         : true;
 
 if (globalThis._azleInsideCanister === true) {
-    globalThis._azleCallbacks = {};
-
-    globalThis._azleCanisterMethodsIndex = 0;
-
-    globalThis._azleMethodMeta = {
-        queries: [],
-        updates: []
-    };
-
     // Even though these are set in stable/globals
     // we must set them again here because importing the url module above
     // seemingly resets globalThis.TextDecoder and globalThis.TextEncoder

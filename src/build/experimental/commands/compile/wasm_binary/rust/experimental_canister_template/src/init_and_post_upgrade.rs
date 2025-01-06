@@ -115,6 +115,41 @@ pub fn initialize_js(
             "_azleNodeWasmEnvironment",
             wasmedge_quickjs::JsValue::Bool(false),
         );
+        context
+            .get_global()
+            .set("_azleCanisterMethodNames", context.new_object().into());
+
+        context
+            .get_global()
+            .set("_azleTimerCallbacks", context.new_object().into());
+
+        context
+            .get_global()
+            .set("_azleIcTimers", context.new_object().into());
+
+        context
+            .get_global()
+            .set("_azleRejectCallbacks", context.new_object().into());
+
+        context
+            .get_global()
+            .set("_azleResolveCallbacks", context.new_object().into());
+
+        context
+            .get_global()
+            .set("_azleCallbacks", context.new_object().into());
+
+        context.get_global().set(
+            "_azleCanisterMethodsIndex",
+            wasmedge_quickjs::JsValue::Int(0),
+        );
+
+        context.get_global().set("_azleMethodMeta", {
+            let mut method_meta = context.new_object();
+            method_meta.set("queries", context.new_array().into());
+            method_meta.set("updates", context.new_array().into());
+            method_meta.into()
+        });
 
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
@@ -123,6 +158,7 @@ pub fn initialize_js(
             "globalThis._azleRecordBenchmarks = {};",
             wasm_data.record_benchmarks
         ));
+
         context.eval_module_str(js.to_string(), &wasm_data.main_js_path);
 
         run_event_loop(context);
