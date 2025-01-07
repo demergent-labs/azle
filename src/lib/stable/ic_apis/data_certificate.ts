@@ -16,6 +16,8 @@ import { setCertifiedData } from './set_certified_data'; // Used for links in co
  * - **Call Context**:
  *   - query (non-replicated)
  *   - composite query
+ * - **When called outside of Call Context**:
+ *   - Returns undefined
  */
 export function dataCertificate(): Uint8Array | undefined {
     if (

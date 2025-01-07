@@ -28,6 +28,8 @@ import { idlEncode } from '../execute_with_candid_serde';
  *   - heartbeat
  *   - timer
  *   - Note: Assuming same as call
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function notify(
     canisterId: Principal | string,

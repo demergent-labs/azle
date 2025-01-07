@@ -13,6 +13,8 @@
  *   - after a cross-canister call
  *   - after a cross-canister call from a composite query
  *   - inspectMessage
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function argDataRaw(): Uint8Array {
     if (

@@ -30,6 +30,8 @@ import { idlDecode, idlEncode } from '../execute_with_candid_serde';
  *   - after a rejected cross-canister call from a composite query
  *   - heartbeat
  *   - timer
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,
