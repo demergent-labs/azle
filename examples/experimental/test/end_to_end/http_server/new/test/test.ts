@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-import { version } from '../../../../../package.json';
+import { version } from '../../../../../../../package.json';
 
 function pretest(): void {
     execSync(
