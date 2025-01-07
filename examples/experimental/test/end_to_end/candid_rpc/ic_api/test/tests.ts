@@ -116,12 +116,6 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result.toText()).toBe(icApiCanisterId);
         });
 
-        it('calls instructionCounter on the ic object', async () => {
-            const result = await icApiCanister.instructionCounter();
-
-            expect(result).toBeGreaterThan(0n);
-        });
-
         it('calls isController on the ic object', async () => {
             const principal = Principal.fromText(
                 execSync(`dfx identity get-principal`).toString().trim()

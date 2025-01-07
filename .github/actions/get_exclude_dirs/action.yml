@@ -29,7 +29,6 @@ runs:
               examples/stable/test/end_to_end/candid_rpc/multi_deploy
               examples/stable/test/property/candid_rpc/stable_b_tree_map
               examples/stable/test/property/ic_api/performance_counter
-              examples/stable/test/property/ic_api/instruction_counter
               examples/experimental/test/end_to_end/http_server/http_outcall_fetch
               examples/experimental/test/end_to_end/http_server/multi_deploy
               examples/experimental/test/property/candid_rpc/stable_b_tree_map

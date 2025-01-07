@@ -1,9 +1,0 @@
-{
-    "scripts": {
-        "pretest": "tsx test/pretest.ts",
-        "test": "jest"
-    },
-    "dependencies": {
-        "azle": "0.24.1"
-    }
-}
