@@ -19,8 +19,6 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleCallbacks: Callbacks;
     // eslint-disable-next-line no-var
-    var _azleCanisterMethodsIndex: number;
-    // eslint-disable-next-line no-var
     var _azleMethodMeta: MethodMeta;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
