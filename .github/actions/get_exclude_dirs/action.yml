@@ -31,6 +31,7 @@ runs:
               examples/stable/test/property/ic_api/performance_counter
               examples/stable/test/property/ic_api/instruction_counter
               examples/experimental/test/end_to_end/http_server/http_outcall_fetch
+              examples/experimental/test/end_to_end/http_server/ic_evm_rpc
               examples/experimental/test/end_to_end/http_server/multi_deploy
               examples/experimental/test/property/candid_rpc/stable_b_tree_map
               ') }}"
@@ -39,7 +40,6 @@ runs:
               examples/experimental/demo/basic_bitcoin
               examples/experimental/demo/bitcoin_psbt
               examples/experimental/demo/ckbtc
-              examples/experimental/test/end_to_end/http_server/ic_evm_rpc
               examples/stable/test/end_to_end/candid_rpc/bitcoin
               examples/stable/test/end_to_end/candid_rpc/stable_structures
               examples/experimental/test/end_to_end/candid_rpc/bitcoin
