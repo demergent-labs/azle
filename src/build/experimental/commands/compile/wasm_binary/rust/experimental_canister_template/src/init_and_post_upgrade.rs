@@ -140,11 +140,6 @@ pub fn initialize_js(
             .get_global()
             .set("_azleCallbacks", context.new_object().into());
 
-        context.get_global().set(
-            "_azleCanisterMethodsIndex",
-            wasmedge_quickjs::JsValue::Int(0),
-        );
-
         context.get_global().set("_azleMethodMeta", {
             let mut method_meta = context.new_object();
             method_meta.set("queries", context.new_array().into());

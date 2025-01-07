@@ -16,7 +16,6 @@ export function inspectMessage(
         callback: finalCallback,
         paramCandidTypes: [],
         returnCandidType: Void,
-        async: false,
-        index: globalThis._azleCanisterMethodsIndex++
+        async: false
     };
 }

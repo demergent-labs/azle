@@ -11,15 +11,13 @@ import { v4 } from 'uuid';
 import { MethodMeta } from '../../build/stable/utils/types';
 import { azleFetch } from './fetch';
 
-type Callbacks = {
+export type Callbacks = {
     [key: string]: (...args: any) => any;
 };
 
 declare global {
     // eslint-disable-next-line no-var
     var _azleCallbacks: Callbacks;
-    // eslint-disable-next-line no-var
-    var _azleCanisterMethodsIndex: number;
     // eslint-disable-next-line no-var
     var _azleMethodMeta: MethodMeta;
     // eslint-disable-next-line no-var

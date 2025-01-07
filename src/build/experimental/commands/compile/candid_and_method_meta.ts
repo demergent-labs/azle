@@ -66,21 +66,21 @@ async function handleHttp(): Promise<CandidAndMethodMeta> {
     ).toString();
 
     const methodMeta: MethodMeta = {
+        init: { name: 'init', index: 0 },
+        post_upgrade: { name: 'postUpgrade', index: 1 },
         queries: [
             {
                 name: 'http_request',
-                index: 0,
+                index: 2,
                 composite: true
             }
         ],
         updates: [
             {
                 name: 'http_request_update',
-                index: 1
+                index: 3
             }
-        ],
-        init: { name: 'init', index: 2 },
-        post_upgrade: { name: 'postUpgrade', index: 3 }
+        ]
     };
 
     return {

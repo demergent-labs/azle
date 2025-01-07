@@ -2,18 +2,18 @@ import '../../../../../experimental';
 
 import { IDL } from '@dfinity/candid';
 
-import { MethodMeta } from '../../../../../../../build/stable/utils/types';
+import {
+    Method,
+    MethodMeta
+} from '../../../../../../../build/stable/utils/types';
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
+import { Callbacks } from '../../../../../globals';
 import { ic } from '../../../../../ic';
 import { CandidType, Parent, toIdlTypeArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { decode, encode } from '../../../../serde';
 import { Principal } from '../../principal';
-import { createQueryMethods, createUpdateMethods } from './query_update';
-import {
-    createGetSystemFunctionIdlTypeFunction,
-    createSystemMethod
-} from './system_methods';
+import { createGetSystemFunctionIdlTypeFunction } from './system_methods';
 
 export type CanisterOptions = {
     [key: string]: CanisterMethodInfo<any, any>;
@@ -52,28 +52,11 @@ export function createCanisterFunction(
 ): _AzleFunctionReturnType {
     let canister = createCanisterFunctionBase(canisterOptions);
 
-    canister.methodMeta = {};
-    canister.methodMeta.init = createSystemMethod('init', canisterOptions);
-    canister.methodMeta.heartbeat = createSystemMethod(
-        'heartbeat',
-        canisterOptions
-    );
-    canister.methodMeta.post_upgrade = createSystemMethod(
-        'postUpgrade',
-        canisterOptions
-    );
-    canister.methodMeta.pre_upgrade = createSystemMethod(
-        'preUpgrade',
-        canisterOptions
-    );
-    canister.methodMeta.inspect_message = createSystemMethod(
-        'inspectMessage',
-        canisterOptions
-    );
-    canister.methodMeta.queries = createQueryMethods(canisterOptions);
-    canister.methodMeta.updates = createUpdateMethods(canisterOptions);
+    const { callbacks, methodMeta } =
+        createCallbacksAndMethodMeta(canisterOptions);
 
-    canister.callbacks = createCallbacks(canisterOptions);
+    canister.callbacks = callbacks;
+    canister.methodMeta = methodMeta;
 
     canister.getIdlType = createGetIdlTypeFunction(canisterOptions);
     canister.getSystemFunctionIdlTypes =
@@ -138,17 +121,107 @@ function createUpdateOrQueryFunctionIdlType(
     return IDL.Func(paramIdlTypes, returnIdlType, annotations);
 }
 
-function createCallbacks(
-    canisterOptions: CanisterOptions
-): Record<string, ((...args: any) => any) | undefined> {
-    return Object.entries(canisterOptions).reduce((acc, entry) => {
-        const canisterMethod = entry[1];
+function createCallbacksAndMethodMeta(canisterOptions: CanisterOptions): {
+    callbacks: Callbacks;
+    methodMeta: MethodMeta;
+} {
+    return Object.entries(canisterOptions).reduce(
+        (acc, [canisterMethodName, canisterMethodInfo], index) => {
+            const methodMeta = getMethodMeta(
+                canisterMethodName,
+                index,
+                canisterMethodInfo
+            );
 
+            const queries = [
+                ...(acc.methodMeta.queries ?? []),
+                ...(methodMeta.queries ?? [])
+            ];
+
+            const updates = [
+                ...(acc.methodMeta.updates ?? []),
+                ...(methodMeta.updates ?? [])
+            ];
+
+            return {
+                callbacks: {
+                    ...acc.callbacks,
+                    [index.toString()]: canisterMethodInfo.callback!
+                },
+                methodMeta: {
+                    ...acc.methodMeta,
+                    ...methodMeta,
+                    queries,
+                    updates
+                }
+            };
+        },
+        {
+            callbacks: {} as Callbacks,
+            methodMeta: {} as MethodMeta
+        }
+    );
+}
+
+function getMethodMeta(
+    canisterMethodName: string,
+    index: number,
+    canisterMethodInfo: CanisterMethodInfo<any, any>
+): MethodMeta {
+    const method: Method = {
+        name: canisterMethodName,
+        index,
+        composite:
+            canisterMethodInfo.mode === 'query'
+                ? canisterMethodInfo.async
+                : undefined
+    };
+
+    if (canisterMethodInfo.mode === 'init') {
         return {
-            ...acc,
-            [canisterMethod.index.toString()]: canisterMethod.callback
+            init: method
         };
-    }, {});
+    }
+
+    if (canisterMethodInfo.mode === 'postUpgrade') {
+        return {
+            post_upgrade: method
+        };
+    }
+
+    if (canisterMethodInfo.mode === 'preUpgrade') {
+        return {
+            pre_upgrade: method
+        };
+    }
+
+    if (canisterMethodInfo.mode === 'inspectMessage') {
+        return {
+            inspect_message: method
+        };
+    }
+
+    if (canisterMethodInfo.mode === 'heartbeat') {
+        return {
+            heartbeat: method
+        };
+    }
+
+    if (canisterMethodInfo.mode === 'query') {
+        return {
+            queries: [method]
+        };
+    }
+
+    if (canisterMethodInfo.mode === 'update') {
+        return {
+            updates: [method]
+        };
+    }
+
+    throw new Error(
+        `Invalid method mode: ${canisterMethodInfo.mode} for method: ${canisterMethodName}`
+    );
 }
 
 function createCanisterFunctionBase(

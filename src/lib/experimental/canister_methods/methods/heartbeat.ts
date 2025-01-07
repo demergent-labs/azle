@@ -13,8 +13,7 @@ export function heartbeat(
         callback: () => executeHeartbeat(callback),
         paramCandidTypes: [],
         returnCandidType: Void,
-        async: isAsync(callback),
-        index: globalThis._azleCanisterMethodsIndex++
+        async: isAsync(callback)
     };
 }
 

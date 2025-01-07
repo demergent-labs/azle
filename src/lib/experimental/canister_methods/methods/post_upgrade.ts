@@ -14,8 +14,7 @@ export function postUpgrade<
     paramCandidTypes: Params,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
         ? GenericCallback
-        : never,
-    noop?: boolean
+        : never
 ): CanisterMethodInfo<Params, Void> {
     const finalCallback =
         callback === undefined
@@ -36,7 +35,6 @@ export function postUpgrade<
         callback: finalCallback,
         paramCandidTypes: paramCandidTypes as unknown as CandidType[],
         returnCandidType: Void,
-        async: false,
-        index: noop === true ? 0 : globalThis._azleCanisterMethodsIndex++
+        async: false
     };
 }
