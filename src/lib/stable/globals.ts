@@ -50,16 +50,6 @@ globalThis._azleInsideCanister =
 // TODO do we need to disable any other wasmedge-quickjs globals
 // TODO that we don't think are stable yet?
 if (globalThis._azleInsideCanister === true) {
-    globalThis._azleCanisterMethodNames = {};
-
-    globalThis._azleTimerCallbacks = {};
-
-    globalThis._azleIcTimers = {};
-
-    globalThis._azleRejectCallbacks = {};
-
-    globalThis._azleResolveCallbacks = {};
-
     globalThis.TextDecoder = TextDecoder;
     globalThis.TextEncoder = TextEncoder;
 

@@ -101,6 +101,16 @@ pub fn initialize_js(
 
         globals.set("_azleExperimental", false)?;
 
+        globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleIcTimers", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;
+
         if init {
             globals.set("_azleInitCalled", true)?;
             globals.set("_azlePostUpgradeCalled", false)?;
