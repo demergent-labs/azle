@@ -1,13 +1,13 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { inspectMessage } from '../canister_methods/inspect_message'; // Used for links in comments
+
 /**
  * Returns the name of the method being called.
  *
  * @returns The name of the current method, or empty string if called outside the IC environment
  *
  * @remarks
- * - Only callable within an {@link inspectMessage} function
- * - Will trap if called outside inspect message
- * - Used to implement method-level access control
- * - Returns empty string ('') if called outside the IC environment
+ * - Traps if called outside {@link inspectMessage} context
  * - **Call Context**:
  *   - inspectMessage
  */

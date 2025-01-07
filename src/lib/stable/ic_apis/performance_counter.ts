@@ -9,17 +9,8 @@
  *
  * @remarks
  * - The instruction counters reset at the start of each message/call context
- * - Useful for optimizing canister execution and staying within instruction limits
- * - Returns 0n if called outside IC environment
  * - **Call Context**:
  *   - Any method
- *
- * @example
- * // Check instructions used in current message
- * const messageInstructions = performanceCounter(0);
- *
- * // Check instructions used in current call context
- * const contextInstructions = performanceCounter(1);
  */
 export function performanceCounter(counterType: number): bigint {
     if (

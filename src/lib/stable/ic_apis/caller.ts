@@ -1,17 +1,15 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Returns the Principal of the identity that called the current method.
+ * Returns the {@link Principal} of the identity that called the current method.
  *
- * @returns The caller's Principal ID, or the anonymous Principal (0x04) if called outside the IC environment
+ * @returns The caller's Principal, or the anonymous Principal if called outside the IC environment
  *
  * @remarks
- * - Returns the immediate caller's Principal ID
- * - For inter-canister calls, returns the calling canister's ID
- * - For user calls, returns the user's Principal ID
- * - For anonymous calls, returns the anonymous Principal
- * - Commonly used for access control and authentication
- * - Returns the anonymous Principal if called outside the IC environment
+ * - Returns the immediate caller's Principal
+ *   - For inter-canister calls, returns the calling canister's Principal
+ *   - For user calls, returns the user's Principal
+ *   - For anonymous calls, returns the anonymous Principal
  * - **Call Context**:
  *   - Any method
  */

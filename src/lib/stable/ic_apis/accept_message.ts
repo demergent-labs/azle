@@ -7,12 +7,9 @@ import { inspectMessage } from '../canister_methods/inspect_message'; // Used fo
  * @returns void, or no effect if called outside the IC environment
  *
  * @remarks
- * - Must be called from within an {@link inspectMessage} handler to indicate the message should be processed.
- * - Only valid within inspect_message context
  * - Signals that a message should proceed to execution
- * - Part of the message inspection control flow
  * - Cannot be called after reject_message
- * - Traps if called outside inspect_message context
+ * - Traps if called outside {@link inspectMessage} context
  * - **Call Context**:
  *   - inspectMessage
  */

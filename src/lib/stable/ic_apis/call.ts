@@ -20,8 +20,6 @@ import { idlDecode, idlEncode } from '../execute_with_candid_serde';
  * @remarks
  * - Supports both high-level (with IDL types) and low-level (raw bytes) calls
  * - Can transfer cycles as part of the call
- * - Returns undefined if called outside IC environment
- * - Handles both string and Principal canister IDs
  * - Automatically encodes/decodes arguments and return values
  * - **Call Context**:
  *   - update

@@ -9,16 +9,15 @@ import { idlEncode } from '../execute_with_candid_serde';
  * @param canisterId - The target canister's ID as a Principal or string
  * @param method - The method name to call on the target canister
  * @param options - Optional parameters:
- *   - paramIdlTypes: Array of IDL types for the parameters
- *   - args: Array of arguments to pass to the method
- *   - cycles: Amount of cycles to attach to the call (defaults to 0n)
- *   - raw: Raw bytes to pass as arguments instead of Candid-encoded args
+ * @param options.paramIdlTypes - Array of IDL types for the parameters
+ * @param options.args - Array of arguments to pass to the method
+ * @param options.cycles - Amount of cycles to attach to the call (defaults to 0n)
+ * @param options.raw - Raw bytes to pass as arguments instead of Candid-encoded args
  * @returns void, or no effect if called outside the IC environment
  *
  * @remarks
  * - The call is "fire and forget" - errors are not returned
- * - Useful for non-critical updates where response/error handling isn't needed
- * - More efficient than await ic.call() when you don't need the response
+ * - More efficient than await ic.call() when no response is needed
  * - **Call Context**:
  *   - update
  *   - composite query

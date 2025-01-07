@@ -38,14 +38,10 @@ export const RejectionCode = IDL.Variant({
 
 /**
  * Returns the rejection code from the most recently executed cross-canister call.
- * Use this to check if a call was successful before attempting to access its result
- * or rejection message.
  *
  * @returns The {@link RejectionCode} variant, or {Unknown: null} if called outside the IC environment
  *
  * @remarks
- * - Used to determine why a call was rejected
- * - Returns {Unknown: null} if called outside IC environment
  * - **Call Context**:
  *   - reply callback
  *   - reply callback in a composite query

@@ -21,17 +21,17 @@ type ReplyInput<T> =
       };
 
 /**
- * Manually replies to an ingress message with either data or raw bytes.
- * Used in canister methods marked with { manual: true } reply handling.
+ * Replies to the current call with either data or raw bytes.
  *
  * @typeParam T - The type of data being replied with
  * @param input - Either data to be encoded and sent, or pre-encoded raw bytes
  * @returns void, or no effect if called outside the IC environment
  *
  * @remarks
- * When using the data option:
- * - If idlType is provided, the data will be encoded using that type
- * - If idlType is omitted, the data will be encoded as an empty type
+ * - Used in canister methods marked with { manual: true }
+ * - When using the data option:
+ *   - If idlType is provided, the data will be encoded using that type
+ *   - If idlType is omitted, the data will be encoded as an empty type
  * - **Call Context**:
  *   - update
  *   - query
