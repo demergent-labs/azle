@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { dataCertificate } from './data_certificate'; // Used for links in comments
+
 /**
  * Sets this canister's certified data.
  *
@@ -5,9 +8,8 @@
  * @returns void, or no effect if called outside the IC environment
  *
  * @remarks
+ * - Used in conjunction with {@link dataCertificate}
  * - Limited to 32 bytes of data (traps if exceeded)
- * - Used for certified variable functionality
- * - Returns void if called outside IC environment
  * - **Call Context**:
  *   - init
  *   - preUpgrade

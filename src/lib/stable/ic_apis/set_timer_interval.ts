@@ -1,7 +1,7 @@
 import { v4 } from 'uuid';
 
 /**
- * Sets callback to be executed periodically at the specified interval.
+ * Sets a callback to be executed periodically at the specified interval.
  * To cancel the timer pass the returned timer ID to clearTimer
  *
  * @param interval - The time between executions in nanoseconds (as a bigint)
@@ -11,8 +11,9 @@ import { v4 } from 'uuid';
  *
  * @remarks
  * - Timers are not persisted across canister upgrades
- * - Callbacks remain registered even if they throw errors
  * - Timer IDs are unique within a canister
+ * - The timer can be cancelled using clearTimer
+ * - Callbacks remain registered even if they throw errors
  * - **Call Context**:
  *   - init
  *   - preUpgrade

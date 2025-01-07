@@ -2,9 +2,8 @@ import { v4 } from 'uuid';
 
 /**
  * Sets a one-time callback to be executed after a specified delay.
- * The timer can be cancelled before execution using clearTimer.
  *
- * @param delay - The time to wait before execution, in seconds (as a bigint)
+ * @param delay - The time to wait before execution, in nanoseconds
  * @param callback - The function to execute after the delay. Can be async
  * @returns The timer ID (used with clearTimer to cancel), or 0n if called outside the IC environment
  * @throws {Error} If delay + current_time would exceed u64::MAX
@@ -12,6 +11,7 @@ import { v4 } from 'uuid';
  * @remarks
  * - Timers are not persisted across canister upgrades
  * - Timer IDs are unique within a canister
+ * - The timer can be cancelled before execution using clearTimer
  * - The callback registration is automatically cleaned up after execution
  * - **Call Context**:
  *   - init

@@ -9,7 +9,6 @@ import { rejectCode } from './reject_code'; // Used for links in comments
  * @remarks
  * - Will trap if there is no reject message available
  * - Always check {@link rejectCode} before calling this function
- * - Returns empty string if called outside IC environment
  * - **Call Context**:
  *   - reject callback
  *   - reject callback in a composite query

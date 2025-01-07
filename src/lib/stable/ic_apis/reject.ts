@@ -6,8 +6,6 @@
  *
  * @remarks
  * - Used in canister methods marked with { manual: true }
- * - Stops execution and rejects the current call
- * - Traps if called outside valid context
  * - **Call Context**:
  *   - update
  *   - query

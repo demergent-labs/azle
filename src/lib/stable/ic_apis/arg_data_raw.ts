@@ -4,10 +4,6 @@
  * @returns The raw argument bytes as Uint8Array, or empty array if called outside the IC environment
  *
  * @remarks
- * - Commonly used in inspect_message handlers
- * - Used for low-level access to method parameters before Candid decoding.
- * - Useful for custom argument parsing or debugging
- * - Returns empty Uint8Array if called outside IC environment
  * - **Call Context**:
  *   - init
  *   - update

@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { setCertifiedData } from './set_certified_data'; // Used for links in comments
+
 /**
  * Returns the data certificate authenticating this canister's certified data.
  *
@@ -7,7 +10,7 @@
  *   - Called outside the IC environment
  *
  * @remarks
- * - Used in conjunction with setCertifiedData
+ * - Used in conjunction with {@link setCertifiedData}
  * - Enables query calls to return certified responses
  * - Only meaningful during query calls
  * - **Call Context**:

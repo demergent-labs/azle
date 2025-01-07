@@ -1,10 +1,9 @@
 /**
  * Returns the amount of cycles that were transferred in the current call and are still available.
  *
- * @returns The amount of cycles available from the current call
+ * @returns The amount of cycles available from the current call, or 0n if called outside the IC environment
  *
  * @remarks
- * - Returns 0n if called outside the IC environment
  * - Amount decreases as cycles are accepted by the canister
  * - **Call Context**:
  *   - update

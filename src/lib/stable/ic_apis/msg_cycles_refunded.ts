@@ -1,10 +1,9 @@
 /**
  * Returns the amount of cycles that were refunded from the last cross-canister call.
  *
- * @returns The amount of cycles refunded from the last call
+ * @returns The amount of cycles refunded from the last call, or 0n if called outside the IC environment
  *
  * @remarks
- * - Returns 0n if called outside the IC environment
  * - Only meaningful after a cross-canister call
  * - Refunded cycles are already added to canister balance
  * - **Call Context**:

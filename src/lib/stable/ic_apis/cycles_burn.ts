@@ -6,8 +6,6 @@
  *
  * @remarks
  * - Cannot burn more cycles than the canister has available
- * - Useful for testing cycle limits or implementing cycle burning mechanics
- * - Returns 0n if called outside the IC environment
  * - **Call Context**:
  *   - init
  *   - preUpgrade
