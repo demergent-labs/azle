@@ -12,6 +12,8 @@ import { rejectCode } from './reject_code'; // Used for links in comments
  * - **Call Context**:
  *   - after a rejected cross-canister call
  *   - after a rejected cross-canister call from a composite query
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function rejectMessage(): string {
     if (

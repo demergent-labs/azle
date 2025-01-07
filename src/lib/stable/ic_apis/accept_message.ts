@@ -10,6 +10,8 @@ import { inspectMessage } from '../canister_methods/inspect_message'; // Used fo
  * - Signals that a message should proceed to execution
  * - **Call Context**:
  *   - inspectMessage
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function acceptMessage(): void {
     if (
