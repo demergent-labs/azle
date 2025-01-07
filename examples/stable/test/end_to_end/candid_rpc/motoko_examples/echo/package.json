@@ -4,7 +4,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.24.1"
+        "azle": "0.25.0-rc.12"
     },
     "devDependencies": {
         "echo_end_to_end_test_functional_syntax": "file:../../../../../../experimental/test/end_to_end/candid_rpc/motoko_examples/echo"
