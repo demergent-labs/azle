@@ -199,14 +199,26 @@ async function handleNewCommand(): Promise<void> {
             throw new Error(experimentalMessageCli('the --http-server option'));
         }
 
-        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', 'hello_world');
+        const templatePath = join(
+            AZLE_PACKAGE_PATH,
+            'examples',
+            'stable',
+            'demo',
+            'hello_world'
+        );
 
         await runNewCommand(azleVersion, templatePath);
     } else {
         const projectName =
             httpServer === true ? 'hello_world_http_server' : 'hello_world';
 
-        const templatePath = join(AZLE_PACKAGE_PATH, 'examples', projectName);
+        const templatePath = join(
+            AZLE_PACKAGE_PATH,
+            'examples',
+            httpServer === true ? 'experimental' : 'stable',
+            'demo',
+            projectName
+        );
 
         await runNewCommand(azleVersion, templatePath);
     }
