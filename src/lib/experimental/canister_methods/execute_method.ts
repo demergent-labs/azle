@@ -65,6 +65,6 @@ function getResult(args: any[], callback: any): any {
 
 function reportFinalInstructions(): void {
     if (process.env.AZLE_INSTRUCTION_COUNT === 'true') {
-        console.info(`final instructions: ${ic.instructionCounter()}`);
+        console.info(`final instructions: ${ic.performanceCounter(1)}`);
     }
 }

@@ -20,7 +20,6 @@ export type AzleIcStable = {
     cyclesBurn: (amountString: string) => string;
     dataCertificate: () => Uint8Array | undefined;
     id: () => Uint8Array;
-    instructionCounter: () => number;
     isController: (principalBytes: Uint8Array) => boolean;
     msgCyclesAccept: (maxAmountString: string) => string;
     msgCyclesAvailable: () => string;

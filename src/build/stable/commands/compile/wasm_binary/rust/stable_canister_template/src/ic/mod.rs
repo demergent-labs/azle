@@ -14,7 +14,6 @@ mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
 mod id;
-mod instruction_counter;
 mod is_controller;
 mod method_name;
 mod msg_cycles_accept;
@@ -79,11 +78,6 @@ pub fn register(ctx: Ctx) -> Result<()> {
     )?;
 
     ic.set("id", id::get_function(ctx.clone()))?;
-
-    ic.set(
-        "instructionCounter",
-        instruction_counter::get_function(ctx.clone()),
-    )?;
 
     ic.set("isController", is_controller::get_function(ctx.clone()))?;
 

@@ -6,7 +6,6 @@ import {
     dataCertificate,
     id,
     IDL,
-    instructionCounter,
     isController,
     performanceCounter,
     Principal,
@@ -120,13 +119,6 @@ export default class {
     @query([], IDL.Principal)
     id(): Principal {
         return id();
-    }
-
-    // Returns the number of instructions that the canister executed since the last
-    // entry point.
-    @query([], IDL.Nat64)
-    instructionCounter(): bigint {
-        return instructionCounter();
     }
 
     // determines whether the given principal is a controller of the canister

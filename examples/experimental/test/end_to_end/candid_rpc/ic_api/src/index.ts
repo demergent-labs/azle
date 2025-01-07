@@ -86,11 +86,6 @@ export default Canister({
     id: query([], Principal, () => {
         return ic.id();
     }),
-    // Returns the number of instructions that the canister executed since the last
-    // entry point.
-    instructionCounter: query([], nat64, () => {
-        return ic.instructionCounter();
-    }),
     // determines whether the given principal is a controller of the canister
     isController: query([Principal], bool, (principal) => {
         return ic.isController(principal);
