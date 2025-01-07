@@ -11,7 +11,7 @@ import { v4 } from 'uuid';
 import { MethodMeta } from '../../build/stable/utils/types';
 import { azleFetch } from './fetch';
 
-type Callbacks = {
+export type Callbacks = {
     [key: string]: (...args: any) => any;
 };
 

@@ -14,8 +14,7 @@ export function init<
     paramCandidTypes: Params,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
         ? GenericCallback
-        : never,
-    noop?: boolean
+        : never
 ): CanisterMethodInfo<Params, Void> {
     const finalCallback =
         callback === undefined
@@ -36,7 +35,6 @@ export function init<
         callback: finalCallback,
         paramCandidTypes: paramCandidTypes as any,
         returnCandidType: Void,
-        async: false,
-        index: noop === true ? 0 : globalThis._azleCanisterMethodsIndex++
+        async: false
     };
 }

@@ -42,6 +42,5 @@ postUpgrade(
                 }>
             >
         >;
-    },
-    true
+    }
 );
