@@ -20,7 +20,7 @@
  * have been made to the canister's state or configuration.
  *
  * - **Call Context**:
- *   - Any method
+ *   - Any method (not start)
  */
 export function canisterVersion(): bigint {
     if (

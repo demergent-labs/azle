@@ -8,11 +8,14 @@
  * - Cannot burn more cycles than the canister has available
  * - **Call Context**:
  *   - init
+ *   - postUpgrade
  *   - preUpgrade
  *   - update
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  *   - heartbeat
- *   - global_timer
+ *   - timer
+ *   - Note: Also cleanupCallback
  */
 export function cyclesBurn(amount: bigint): bigint {
     if (

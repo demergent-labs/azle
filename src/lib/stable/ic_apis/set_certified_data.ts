@@ -12,11 +12,13 @@ import { dataCertificate } from './data_certificate'; // Used for links in comme
  * - Limited to 32 bytes of data (traps if exceeded)
  * - **Call Context**:
  *   - init
+ *   - postUpgrade
  *   - preUpgrade
  *   - update
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  *   - heartbeat
- *   - global_timer
+ *   - timer
  */
 export function setCertifiedData(data: Uint8Array): void {
     if (

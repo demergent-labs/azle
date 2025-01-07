@@ -16,11 +16,14 @@ import { v4 } from 'uuid';
  * - Callbacks remain registered even if they throw errors
  * - **Call Context**:
  *   - init
+ *   - postUpgrade
  *   - preUpgrade
  *   - update
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  *   - heartbeat
- *   - global_timer
+ *   - timer
+ *   - Note: Also cleanupCallback
  */
 export function setTimerInterval(
     interval: bigint,

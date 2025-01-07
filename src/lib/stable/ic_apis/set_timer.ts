@@ -15,11 +15,14 @@ import { v4 } from 'uuid';
  * - The callback registration is automatically cleaned up after execution
  * - **Call Context**:
  *   - init
+ *   - postUpgrade
  *   - preUpgrade
  *   - update
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  *   - heartbeat
- *   - global_timer
+ *   - timer
+ *   - Note: Also cleanupCallback
  */
 export function setTimer(
     delay: bigint,

@@ -5,7 +5,7 @@
  *
  * @remarks
  * - **Call Context**:
- *   - Any method
+ *   - Any method (not start)
  */
 export function canisterBalance(): bigint {
     if (

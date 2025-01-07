@@ -34,9 +34,12 @@ type ReplyInput<T> =
  *   - If idlType is omitted, the data will be encoded as an empty type
  * - **Call Context**:
  *   - update
- *   - query
+ *   - query (replicated and non-replicated)
  *   - composite query
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
+ *   - after a cross-canister call from a composite query
+ *   - after a rejected cross-canister call from a composite query
  */
 export function reply<T>(input: ReplyInput<T>): void {
     if (

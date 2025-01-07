@@ -6,10 +6,12 @@
  * @remarks
  * - **Call Context**:
  *   - init
+ *   - postUpgrade
  *   - update
- *   - query
+ *   - query (replicated and non-replicated)
  *   - composite query
- *   - reply
+ *   - after a cross-canister call
+ *   - after a cross-canister call from a composite query
  *   - inspectMessage
  */
 export function argDataRaw(): Uint8Array {

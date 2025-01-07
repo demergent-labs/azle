@@ -8,7 +8,7 @@ import { Principal } from '@dfinity/principal';
  * @remarks
  * - Every canister has a unique Principal
  * - **Call Context**:
- *   - Any method
+ *   - Any method (not start)
  */
 export function id(): Principal {
     if (

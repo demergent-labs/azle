@@ -11,7 +11,7 @@ import { Principal } from '@dfinity/principal';
  *   - For user calls, returns the user's Principal
  *   - For anonymous calls, returns the anonymous Principal
  * - **Call Context**:
- *   - Any method
+ *   - Any method (not start)
  */
 export function caller(): Principal {
     if (

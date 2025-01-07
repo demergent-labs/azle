@@ -10,8 +10,8 @@ import { rejectCode } from './reject_code'; // Used for links in comments
  * - Will trap if there is no reject message available
  * - Always check {@link rejectCode} before calling this function
  * - **Call Context**:
- *   - reject callback
- *   - reject callback in a composite query
+ *   - after a rejected cross-canister call
+ *   - after a rejected cross-canister call from a composite query
  */
 export function rejectMessage(): string {
     if (

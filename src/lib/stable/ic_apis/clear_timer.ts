@@ -10,11 +10,15 @@
  * - No effect if timer ID doesn't exist
  * - **Call Context**:
  *   - init
+ *   - postUpgrade
  *   - preUpgrade
  *   - update
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  *   - heartbeat
- *   - global_timer
+ *   - timer
+ *   - Note: Assuming same as timer
+ *   - Note: Also cleanupCallback
  */
 export function clearTimer(timerId: bigint): void {
     if (
