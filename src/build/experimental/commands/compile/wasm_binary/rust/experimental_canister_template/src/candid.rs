@@ -34,6 +34,42 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
                 wasmedge_quickjs::JsValue::Bool(true),
             );
 
+            context
+                .get_global()
+                .set("_azleCanisterMethodNames", context.new_object().into());
+
+            context
+                .get_global()
+                .set("_azleTimerCallbacks", context.new_object().into());
+
+            context
+                .get_global()
+                .set("_azleIcTimers", context.new_object().into());
+
+            context
+                .get_global()
+                .set("_azleRejectCallbacks", context.new_object().into());
+
+            context
+                .get_global()
+                .set("_azleResolveCallbacks", context.new_object().into());
+
+            context
+                .get_global()
+                .set("_azleCallbacks", context.new_object().into());
+
+            context.get_global().set(
+                "_azleCanisterMethodsIndex",
+                wasmedge_quickjs::JsValue::Int(0),
+            );
+
+            context.get_global().set("_azleMethodMeta", {
+                let mut method_meta = context.new_object();
+                method_meta.set("queries", context.new_array().into());
+                method_meta.set("updates", context.new_array().into());
+                method_meta.into()
+            });
+
             ic::register(context);
 
             let wasm_data = get_wasm_data();

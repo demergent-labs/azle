@@ -115,6 +115,7 @@ pub fn initialize_js(
             "_azleNodeWasmEnvironment",
             wasmedge_quickjs::JsValue::Bool(false),
         );
+
         context
             .get_global()
             .set("_azleCanisterMethodNames", context.new_object().into());
