@@ -24,9 +24,12 @@ import { idlDecode, idlEncode } from '../execute_with_candid_serde';
  * - **Call Context**:
  *   - update
  *   - composite query
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
+ *   - after a cross-canister call from a composite query
+ *   - after a rejected cross-canister call from a composite query
  *   - heartbeat
- *   - global_timer
+ *   - timer
  */
 export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,

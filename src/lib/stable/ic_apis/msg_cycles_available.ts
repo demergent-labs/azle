@@ -7,7 +7,8 @@
  * - Amount decreases as cycles are accepted by the canister
  * - **Call Context**:
  *   - update
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  */
 export function msgCyclesAvailable(): bigint {
     if (

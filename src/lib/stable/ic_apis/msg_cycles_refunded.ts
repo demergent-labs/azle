@@ -7,8 +7,8 @@
  * - Only meaningful after a cross-canister call
  * - Refunded cycles are already added to canister balance
  * - **Call Context**:
- *   - reply callback
- *   - reject callback
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  */
 export function msgCyclesRefunded(): bigint {
     if (

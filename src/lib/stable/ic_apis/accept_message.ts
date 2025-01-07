@@ -8,8 +8,6 @@ import { inspectMessage } from '../canister_methods/inspect_message'; // Used fo
  *
  * @remarks
  * - Signals that a message should proceed to execution
- * - Cannot be called after reject_message
- * - Traps if called outside {@link inspectMessage} context
  * - **Call Context**:
  *   - inspectMessage
  */

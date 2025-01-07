@@ -8,7 +8,8 @@
  * - Cannot accept more cycles than are available in the current call
  * - **Call Context**:
  *   - update
- *   - reply
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  */
 export function msgCyclesAccept(maxAmount: bigint): bigint {
     if (

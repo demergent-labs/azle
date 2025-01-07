@@ -12,9 +12,10 @@ import { id } from './id';
  * - Current instruction limits are ~40B for update calls
  * - See: https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits
  * - **Call Context**:
- *   - Update calls and their reply/reject callbacks
- *   - Timers
- *   - Heartbeat methods
+ *   - update
+ *   - after a cross-canister call (only from updates?)
+ *   - heartbeat
+ *   - timer
  */
 export async function chunk(): Promise<void> {
     if (

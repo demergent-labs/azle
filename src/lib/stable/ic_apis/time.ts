@@ -8,7 +8,7 @@
  * - Returns the number of nanoseconds since 1970-01-01 (Unix epoch).
  * - Within an invocation of one entry point, the time is constant
  * - **Call Context**:
- *   - Any method
+ *   - Any method (not start)
  */
 export function time(): bigint {
     if (

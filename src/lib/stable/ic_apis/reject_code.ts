@@ -43,10 +43,10 @@ export const RejectionCode = IDL.Variant({
  *
  * @remarks
  * - **Call Context**:
- *   - reply callback
- *   - reply callback in a composite query
- *   - reject callback
- *   - reject callback in a composite query
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
+ *   - after a cross-canister call from a composite query
+ *   - after a rejected cross-canister call from a composite query
  */
 export function rejectCode(): RejectionCode {
     if (
