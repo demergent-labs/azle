@@ -19,6 +19,8 @@
  *   - timer
  *   - Note: Assuming same as timer
  *   - Note: Also cleanupCallback
+ * - **When called outside of Call Context**:
+ *   - No effect
  */
 export function clearTimer(timerId: bigint): void {
     if (

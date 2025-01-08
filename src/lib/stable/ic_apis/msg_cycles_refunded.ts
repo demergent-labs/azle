@@ -4,11 +4,12 @@
  * @returns The amount of cycles refunded from the last call, or 0n if called outside the IC environment
  *
  * @remarks
- * - Only meaningful after a cross-canister call
  * - Refunded cycles are already added to canister balance
  * - **Call Context**:
  *   - after a cross-canister call
  *   - after a rejected cross-canister call
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function msgCyclesRefunded(): bigint {
     if (

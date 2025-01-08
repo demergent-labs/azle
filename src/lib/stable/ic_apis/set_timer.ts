@@ -23,6 +23,8 @@ import { v4 } from 'uuid';
  *   - heartbeat
  *   - timer
  *   - Note: Also cleanupCallback
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function setTimer(
     delay: bigint,

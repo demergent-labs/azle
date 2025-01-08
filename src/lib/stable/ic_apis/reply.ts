@@ -40,6 +40,8 @@ type ReplyInput<T> =
  *   - after a rejected cross-canister call
  *   - after a cross-canister call from a composite query
  *   - after a rejected cross-canister call from a composite query
+ * - **When called outside of Call Context**:
+ *   - Throws
  */
 export function reply<T>(input: ReplyInput<T>): void {
     if (
