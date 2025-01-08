@@ -16,6 +16,8 @@
  *   - heartbeat
  *   - timer
  *   - Note: Also cleanupCallback
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function cyclesBurn(amount: bigint): bigint {
     if (

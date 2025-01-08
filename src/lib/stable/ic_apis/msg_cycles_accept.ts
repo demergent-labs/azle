@@ -10,6 +10,8 @@
  *   - update
  *   - after a cross-canister call
  *   - after a rejected cross-canister call
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function msgCyclesAccept(maxAmount: bigint): bigint {
     if (

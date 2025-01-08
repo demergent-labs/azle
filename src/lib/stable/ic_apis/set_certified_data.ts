@@ -19,6 +19,8 @@ import { dataCertificate } from './data_certificate'; // Used for links in comme
  *   - after a rejected cross-canister call
  *   - heartbeat
  *   - timer
+ * - **When called outside of Call Context**:
+ *   - Traps
  */
 export function setCertifiedData(data: Uint8Array): void {
     if (

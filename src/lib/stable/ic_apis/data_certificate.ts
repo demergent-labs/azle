@@ -12,7 +12,6 @@ import { setCertifiedData } from './set_certified_data'; // Used for links in co
  * @remarks
  * - Used in conjunction with {@link setCertifiedData}
  * - Enables query calls to return certified responses
- * - Only meaningful during query calls
  * - **Call Context**:
  *   - query (non-replicated)
  *   - composite query

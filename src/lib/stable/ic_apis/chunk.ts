@@ -13,9 +13,12 @@ import { id } from './id';
  * - See: https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits
  * - **Call Context**:
  *   - update
- *   - after a cross-canister call (only from updates?)
+ *   - after a cross-canister call
+ *   - after a rejected cross-canister call
  *   - heartbeat
  *   - timer
+ * - **When called outside of Call Context**:
+ *   - Throws
  */
 export async function chunk(): Promise<void> {
     if (
