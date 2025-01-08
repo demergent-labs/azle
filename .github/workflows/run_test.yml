@@ -108,7 +108,7 @@ jobs:
 
             - run: npm run lint
 
-            - run: npm install
+            - run: npm install --verbose
               working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle
