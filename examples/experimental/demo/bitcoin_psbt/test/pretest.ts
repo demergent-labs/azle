@@ -1,11 +1,11 @@
-import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
-import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(
-        join('examples', 'experimental', 'demo', 'basic_bitcoin')
-    );
+    execSync(`npm install $(npm pack ../basic_bitcoin)`);
+
+    if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {
+        execSync(`npm link azle`);
+    }
 
     execSync(`dfx canister uninstall-code bitcoin_psbt || true`, {
         stdio: 'inherit'

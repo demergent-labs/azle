@@ -7,5 +7,5 @@ module.exports = {
         '^.+\\.ts$': ['ts-jest', { isolatedModules: true }],
         '^.+\\.js$': 'ts-jest'
     },
-    transformIgnorePatterns: ['/node_modules/(?!(azle)/)'] // Make sure azle is transformed
+    transformIgnorePatterns: ['/node_modules/(?!(azle|basic_bitcoin)/)'] // Make sure azle is transformed
 };

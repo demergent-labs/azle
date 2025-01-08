@@ -1,5 +1,6 @@
 {
     "name": "basic_bitcoin",
+    "version": "0.0.0",
     "scripts": {
         "install": "./scripts/install.sh",
         "pretest": "tsx test/pretest.ts",
