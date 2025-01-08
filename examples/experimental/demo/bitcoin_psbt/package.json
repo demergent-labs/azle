@@ -11,7 +11,7 @@
         "help": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf help",
         "premanualtest": "tsx test/pretest.ts",
         "manualtest": "jest test/manual_test.ts test/manual.test.ts",
-        "preinstall": "npm pack ../basic_bitcoin",
+        "preinstall": "echo 'absolutely running preinstall'",
         "install": "./scripts/install.sh",
         "pretest": "tsx test/pretest.ts",
         "test": "jest test/test.ts"
