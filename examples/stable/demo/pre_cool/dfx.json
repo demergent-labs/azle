@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "pre_cool": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/pre_cool",
+                "node_compatibility": true
+            }
+        }
+    }
+}
