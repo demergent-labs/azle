@@ -1,7 +1,18 @@
 {
     "scripts": {
-        "preinstall": "echo 'absolutely running preinstall'",
-        "install": "echo 'absolutely running install'",
+        "bitcoin": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
+        "clean": "rm -rf .bitcoin/data/regtest",
+        "generate": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf -generate $npm_config_blocks",
+        "getblock": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getblock $npm_config_blockhash 2",
+        "getblockcount": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getblockcount",
+        "getblockhash": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getblockhash $npm_config_index",
+        "getrawmempool": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getrawmempool true",
+        "getrawtransaction": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getrawtransaction $npm_config_txid",
+        "help": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf help",
+        "premanualtest": "tsx test/pretest.ts",
+        "manualtest": "jest test/manual_test.ts test/manual.test.ts",
+        "preinstall": "npm pack ../basic_bitcoin",
+        "install": "./scripts/install.sh",
         "pretest": "tsx test/pretest.ts",
         "test": "jest test/test.ts"
     },

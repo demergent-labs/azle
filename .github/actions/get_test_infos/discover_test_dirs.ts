@@ -3,6 +3,16 @@ import { join } from 'path';
 
 // Recursively find directories and check for package.json with a test script
 export async function discoverTestDirs(dirToSearch: string): Promise<string[]> {
+    // Check if the initial directory is a test directory
+    const initialDirPackageJson = join(dirToSearch, 'package.json');
+    const hasInitialTestScript = await checkForTestScript(
+        initialDirPackageJson
+    );
+
+    if (hasInitialTestScript) {
+        return [dirToSearch];
+    }
+
     const files = await readdir(dirToSearch, { withFileTypes: true });
 
     return files.reduce(

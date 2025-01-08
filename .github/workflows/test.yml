@@ -93,7 +93,7 @@ jobs:
                 test_group:
                     - {
                           name: 'Experimental Demo',
-                          directories: './examples/experimental/demo'
+                          directories: './examples/experimental/demo/bitcoin_psbt'
                       }
         uses: ./.github/workflows/run_test.yml
         with:
