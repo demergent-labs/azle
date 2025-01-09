@@ -115,9 +115,6 @@ jobs:
               if: matrix.azle_source == 'repo'
               working-directory: ${{ matrix.test.path }}
 
-            - run: npx azle install-dfx-extension
-              working-directory: ${{ matrix.test.path }}
-
             - name: Start dfx with artificial delay 0
               if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
               working-directory: ${{ matrix.test.path }}
