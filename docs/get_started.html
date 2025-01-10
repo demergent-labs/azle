@@ -150,30 +150,30 @@
 <li><a href="#deployment">Deployment</a></li>
 </ul>
 <p>Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on <a href="https://internetcomputer.org/">ICP</a>. The current replication factor is <a href="https://dashboard.internetcomputer.org/subnets">13-40 times</a>.</p>
-<p>Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:</p>
-<ul>
-<li>Azle is built with various software packages that have not yet reached maturity</li>
-<li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle does not yet have many live, successful, continuously operating applications deployed to ICP</li>
-</ul>
+<p>Please remember that the HTTP Server functionality is only accessible in Azle's experimental mode.</p>
+<p>Azle runs in experimental mode through explicitly enabling a flag in <code>dfx.json</code> or certain CLI commands.</p>
+<p>This mode is intended for developers who are willing to accept the risk of using an alpha or beta project. Its focus is on quickly enabling new features and functionality without requiring the time and other resources necessary to advance them to the stable mode. The Node.js standard libary, npm ecosystem, and HTTP server functionality are also major areas of focus.</p>
+<blockquote>
+<p>NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.</p>
+</blockquote>
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
 <blockquote>
 <p>Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a></p>
 </blockquote>
-<p>You will need <a href="#nodejs-20">Node.js 20</a> and <a href="#dfx">dfx</a> to develop ICP applications with Azle:</p>
-<h3 id="nodejs-20"><a class="header" href="#nodejs-20">Node.js 20</a></h3>
-<p>It's recommended to use nvm to install Node.js 20:</p>
+<p>You will need <a href="#nodejs-22">Node.js 22</a> and <a href="#dfx">dfx</a> to develop ICP applications with Azle:</p>
+<h3 id="nodejs-22"><a class="header" href="#nodejs-22">Node.js 22</a></h3>
+<p>It's recommended to use nvm to install Node.js 22:</p>
 <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 </code></pre>
 <p>Restart your terminal and then run:</p>
-<pre><code class="language-bash">nvm install 20
+<pre><code class="language-bash">nvm install 22
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">node --version
 </code></pre>
 <h3 id="dfx"><a class="header" href="#dfx">dfx</a></h3>
 <p>Install the dfx command line tools for managing ICP applications:</p>
-<pre><code class="language-bash">DFX_VERSION=0.22.0 sh -ci &quot;$(curl -fsSL https://internetcomputer.org/install.sh)&quot;
+<pre><code class="language-bash">DFX_VERSION=0.24.3 sh -ci &quot;$(curl -fsSL https://internetcomputer.org/install.sh)&quot;
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">dfx --version
@@ -197,13 +197,13 @@ dfx deploy
 <p>If you would like your canister to autoreload on file changes:</p>
 <pre><code class="language-bash">AZLE_AUTORELOAD=true dfx deploy
 </code></pre>
-<p>View your frontend in a web browser at <code>http://[canisterId].localhost:8000</code>.</p>
+<p>View your frontend in a web browser at <code>http://[canisterId].raw.localhost:8000</code>.</p>
 <p>To obtain your application's [canisterId]:</p>
 <pre><code class="language-bash">dfx canister id backend
 </code></pre>
 <p>Communicate with your canister using any HTTP client library, for example using <code>curl</code>:</p>
-<pre><code class="language-bash">curl http://[canisterId].localhost:8000/db
-curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hello\&quot;: \&quot;world\&quot; }&quot; http://[canisterId].localhost:8000/db/update
+<pre><code class="language-bash">curl http://[canisterId].raw.localhost:8000/db
+curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hello\&quot;: \&quot;world\&quot; }&quot; http://[canisterId].raw.localhost:8000/db/update
 </code></pre>
 
                     </main>

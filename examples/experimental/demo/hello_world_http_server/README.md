@@ -5,21 +5,25 @@
 
 Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
-Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
+## Experimental Mode
 
-- Azle is built with various software packages that have not yet reached maturity
-- Azle does not yet have multiple independent security reviews/audits
-- Azle does not yet have many live, successful, continuously operating applications deployed to ICP
+This example can only be run in Azle's experimental mode.
+
+Azle runs in experimental mode through explicitly enabling a flag in `dfx.json` or certain CLI commands.
+
+This mode is intended for developers who are willing to accept the risk of using an alpha or beta project. Its focus is on quickly enabling new features and functionality without requiring the time and other resources necessary to advance them to the stable mode. The Node.js standard libary, npm ecosystem, and HTTP server functionality are also major areas of focus.
+
+> NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.
 
 ## Installation
 
 > Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-You will need [Node.js 20](#nodejs-20) and [dfx](#dfx) to develop ICP applications with Azle:
+You will need [Node.js 22](#nodejs-22) and [dfx](#dfx) to develop ICP applications with Azle:
 
-### Node.js 20
+### Node.js 22
 
-It's recommended to use nvm to install Node.js 20:
+It's recommended to use nvm to install Node.js 22:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -28,7 +32,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 Restart your terminal and then run:
 
 ```bash
-nvm install 20
+nvm install 22
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -42,7 +46,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.22.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+DFX_VERSION=0.24.3 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:

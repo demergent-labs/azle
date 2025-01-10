@@ -2,7 +2,7 @@
 
 This section documents the Candid RPC methodology for developing Azle applications. This methodology embraces ICP's Candid language, exposing canister methods directly to Candid-speaking clients, and using Candid for serialization and deserialization purposes.
 
-Candid RPC is heading towards 1.0 and production-readiness in 2024.
+Candid RPC is heading towards 1.0 and production-readiness in 2025.
 
 - [Get Started](#get-started)
 - [Examples](#examples)
@@ -22,21 +22,21 @@ Candid RPC is heading towards 1.0 and production-readiness in 2024.
 
 Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
-Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
+Please remember that Azle stable mode is continuously subjected to [intense scrutiny and testing](https://github.com/demergent-labs/azle/actions), however it does not yet have multiple independent security reviews/audits.
 
-- Azle is built with various software packages that have not yet reached maturity
-- Azle does not yet have multiple independent security reviews/audits
-- Azle does not yet have many live, successful, continuously operating applications deployed to ICP
+Azle runs in stable mode by default.
+
+This mode is intended for production use after Azle's 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.
 
 ### Installation
 
 > Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-You will need [Node.js 20](#nodejs-20) and [dfx](#dfx) to develop ICP applications with Azle:
+You will need [Node.js 22](#nodejs-22) and [dfx](#dfx) to develop ICP applications with Azle:
 
-#### Node.js 20
+#### Node.js 22
 
-It's recommended to use nvm to install Node.js 20:
+It's recommended to use nvm to install Node.js 22:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -45,7 +45,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 Restart your terminal and then run:
 
 ```bash
-nvm install 20
+nvm install 22
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -59,7 +59,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.22.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+DFX_VERSION=0.24.3 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -97,7 +97,7 @@ dfx deploy
 
 ## Examples
 
-Some of the best documentation for creating Candid RPC canisters is currently in [the tests directory](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax).
+Some of the best documentation for creating Candid RPC canisters is currently in [the examples directory](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc).
 
 ## Canister Class
 
@@ -114,11 +114,11 @@ export default class {
 }
 ```
 
-You must use the `@query`, `@update`, `@init`, `@postUpgrade`, `@preUpgrade`, `@inspectMessage`, and `@heartbeat` decorators to expose your canister's methods. Adding TypeScript types is optional.
+You must use the [@query](#query), [@update](#update), [@init](#init), [@postUpgrade](#postupgrade), [@preUpgrade](#preupgrade), [@inspectMessage](#inspectmessage), and [@heartbeat](#heartbeat) decorators to expose your canister's methods. Adding TypeScript types is optional.
 
 ## @dfinity/candid IDL
 
-For each of your canister's methods, deserialization of incoming arguments and serialization of return values is handled with a combination of the `@query`, `@update`, `@init`, and `@postUpgrade` decorators and the [IDL](https://agent-js.icp.xyz/candid/modules/IDL.html) object from the [@dfinity/candid](https://agent-js.icp.xyz/candid/index.html) library.
+For each of your canister's methods, deserialization of incoming arguments and serialization of return values is handled with a combination of the [@query](#query), [@update](#update), [@init](#init), and [@postUpgrade](#postupgrade) decorators and the [IDL](https://agent-js.icp.xyz/candid/modules/IDL.html) object from the [@dfinity/candid](https://agent-js.icp.xyz/candid/index.html) library.
 
 `IDL` is re-exported by Azle, and has properties that correspond to [Candid's supported types](https://internetcomputer.org/docs/current/references/candid-ref). You must use `IDL` to instruct the method decorators on how to deserialize arguments and serialize the return value. Here's an example of accessing the Candid types from `IDL`:
 
@@ -217,7 +217,7 @@ Exposes the decorated method as the `canister_heartbeat` method called on a regu
 
 The IC API is exposed as functions exported from `azle`. You can see the available functions in [the source code](https://github.com/demergent-labs/azle/tree/main/src/lib/stable/ic_apis).
 
-Some of the best documentation for using the IC API is currently in [the tests directory](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax), especially the [ic_api test example](https://github.com/demergent-labs/azle/blob/main/tests/end_to_end/candid_rpc/class_syntax/ic_api/src/index.ts).
+Some of the best documentation for using the IC API is currently in [the examples directory](https://github.com/demergent-labs/azle/tree/main/examples/stable), especially the [ic_api property tests](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/property/ic_api).
 
 Here's an example of getting the caller's principal using the `caller` function:
 

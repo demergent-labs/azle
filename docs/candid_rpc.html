@@ -146,7 +146,7 @@
                     <main>
                         <h1 id="candid-rpc"><a class="header" href="#candid-rpc">Candid RPC</a></h1>
 <p>This section documents the Candid RPC methodology for developing Azle applications. This methodology embraces ICP's Candid language, exposing canister methods directly to Candid-speaking clients, and using Candid for serialization and deserialization purposes.</p>
-<p>Candid RPC is heading towards 1.0 and production-readiness in 2024.</p>
+<p>Candid RPC is heading towards 1.0 and production-readiness in 2025.</p>
 <ul>
 <li><a href="#get-started">Get Started</a></li>
 <li><a href="#examples">Examples</a></li>
@@ -167,30 +167,27 @@
 </ul>
 <h2 id="get-started"><a class="header" href="#get-started">Get Started</a></h2>
 <p>Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on <a href="https://internetcomputer.org/">ICP</a>. The current replication factor is <a href="https://dashboard.internetcomputer.org/subnets">13-40 times</a>.</p>
-<p>Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:</p>
-<ul>
-<li>Azle is built with various software packages that have not yet reached maturity</li>
-<li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle does not yet have many live, successful, continuously operating applications deployed to ICP</li>
-</ul>
+<p>Please remember that Azle stable mode is continuously subjected to <a href="https://github.com/demergent-labs/azle/actions">intense scrutiny and testing</a>, however it does not yet have multiple independent security reviews/audits.</p>
+<p>Azle runs in stable mode by default.</p>
+<p>This mode is intended for production use after Azle's 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.</p>
 <h3 id="installation"><a class="header" href="#installation">Installation</a></h3>
 <blockquote>
 <p>Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a></p>
 </blockquote>
-<p>You will need <a href="#nodejs-20">Node.js 20</a> and <a href="#dfx">dfx</a> to develop ICP applications with Azle:</p>
-<h4 id="nodejs-20"><a class="header" href="#nodejs-20">Node.js 20</a></h4>
-<p>It's recommended to use nvm to install Node.js 20:</p>
+<p>You will need <a href="#nodejs-22">Node.js 22</a> and <a href="#dfx">dfx</a> to develop ICP applications with Azle:</p>
+<h4 id="nodejs-22"><a class="header" href="#nodejs-22">Node.js 22</a></h4>
+<p>It's recommended to use nvm to install Node.js 22:</p>
 <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 </code></pre>
 <p>Restart your terminal and then run:</p>
-<pre><code class="language-bash">nvm install 20
+<pre><code class="language-bash">nvm install 22
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">node --version
 </code></pre>
 <h4 id="dfx"><a class="header" href="#dfx">dfx</a></h4>
 <p>Install the dfx command line tools for managing ICP applications:</p>
-<pre><code class="language-bash">DFX_VERSION=0.22.0 sh -ci &quot;$(curl -fsSL https://internetcomputer.org/install.sh)&quot;
+<pre><code class="language-bash">DFX_VERSION=0.24.3 sh -ci &quot;$(curl -fsSL https://internetcomputer.org/install.sh)&quot;
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">dfx --version
@@ -212,7 +209,7 @@ dfx start --clean
 dfx deploy
 </code></pre>
 <h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
-<p>Some of the best documentation for creating Candid RPC canisters is currently in <a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax">the tests directory</a>.</p>
+<p>Some of the best documentation for creating Candid RPC canisters is currently in <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc">the examples directory</a>.</p>
 <h2 id="canister-class"><a class="header" href="#canister-class">Canister Class</a></h2>
 <p>Your canister's functionality must be encapsulated in a class exported using the default export:</p>
 <pre><code class="language-typescript">import { IDL, query } from 'azle';
@@ -224,9 +221,9 @@ export default class {
     }
 }
 </code></pre>
-<p>You must use the <code>@query</code>, <code>@update</code>, <code>@init</code>, <code>@postUpgrade</code>, <code>@preUpgrade</code>, <code>@inspectMessage</code>, and <code>@heartbeat</code> decorators to expose your canister's methods. Adding TypeScript types is optional.</p>
+<p>You must use the <a href="#query">@query</a>, <a href="#update">@update</a>, <a href="#init">@init</a>, <a href="#postupgrade">@postUpgrade</a>, <a href="#preupgrade">@preUpgrade</a>, <a href="#inspectmessage">@inspectMessage</a>, and <a href="#heartbeat">@heartbeat</a> decorators to expose your canister's methods. Adding TypeScript types is optional.</p>
 <h2 id="dfinitycandid-idl"><a class="header" href="#dfinitycandid-idl">@dfinity/candid IDL</a></h2>
-<p>For each of your canister's methods, deserialization of incoming arguments and serialization of return values is handled with a combination of the <code>@query</code>, <code>@update</code>, <code>@init</code>, and <code>@postUpgrade</code> decorators and the <a href="https://agent-js.icp.xyz/candid/modules/IDL.html">IDL</a> object from the <a href="https://agent-js.icp.xyz/candid/index.html">@dfinity/candid</a> library.</p>
+<p>For each of your canister's methods, deserialization of incoming arguments and serialization of return values is handled with a combination of the <a href="#query">@query</a>, <a href="#update">@update</a>, <a href="#init">@init</a>, and <a href="#postupgrade">@postUpgrade</a> decorators and the <a href="https://agent-js.icp.xyz/candid/modules/IDL.html">IDL</a> object from the <a href="https://agent-js.icp.xyz/candid/index.html">@dfinity/candid</a> library.</p>
 <p><code>IDL</code> is re-exported by Azle, and has properties that correspond to <a href="https://internetcomputer.org/docs/current/references/candid-ref">Candid's supported types</a>. You must use <code>IDL</code> to instruct the method decorators on how to deserialize arguments and serialize the return value. Here's an example of accessing the Candid types from <code>IDL</code>:</p>
 <pre><code class="language-typescript">import { IDL } from 'azle';
 
@@ -300,7 +297,7 @@ IDL.Empty;
 <p>Exposes the decorated method as the <code>canister_heartbeat</code> method called on a regular interval (every second or so).</p>
 <h2 id="ic-api"><a class="header" href="#ic-api">IC API</a></h2>
 <p>The IC API is exposed as functions exported from <code>azle</code>. You can see the available functions in <a href="https://github.com/demergent-labs/azle/tree/main/src/lib/stable/ic_apis">the source code</a>.</p>
-<p>Some of the best documentation for using the IC API is currently in <a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax">the tests directory</a>, especially the <a href="https://github.com/demergent-labs/azle/blob/main/tests/end_to_end/candid_rpc/class_syntax/ic_api/src/index.ts">ic_api test example</a>.</p>
+<p>Some of the best documentation for using the IC API is currently in <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable">the examples directory</a>, especially the <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/property/ic_api">ic_api property tests</a>.</p>
 <p>Here's an example of getting the caller's principal using the <code>caller</code> function:</p>
 <pre><code class="language-typescript">import { caller, IDL, update } from 'azle';
 
