@@ -152,12 +152,16 @@
 <li><a href="https://discord.gg/5Hb6rM2QUM">Discord channel</a></li>
 </ul>
 <h2 id="disclaimer"><a class="header" href="#disclaimer">Disclaimer</a></h2>
-<p>Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:</p>
-<ul>
-<li>Azle is built with various software packages that have not yet reached maturity</li>
-<li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle does not yet have many live, successful, continuously operating applications deployed to ICP</li>
-</ul>
+<p>Azle stable mode is continuously subjected to <a href="https://github.com/demergent-labs/azle/actions">intense scrutiny and testing</a>, however it does not yet have multiple independent security reviews/audits.</p>
+<h2 id="stable-mode"><a class="header" href="#stable-mode">Stable Mode</a></h2>
+<p>Azle runs in stable mode by default.</p>
+<p>This mode is intended for production use after Azle's 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.</p>
+<h2 id="experimental-mode"><a class="header" href="#experimental-mode">Experimental Mode</a></h2>
+<p>Azle runs in experimental mode through explicitly enabling a flag in <code>dfx.json</code> or certain CLI commands.</p>
+<p>This mode is intended for developers who are willing to accept the risk of using an alpha or beta project. Its focus is on quickly enabling new features and functionality without requiring the time and other resources necessary to advance them to the stable mode. The Node.js standard libary, npm ecosystem, and HTTP server functionality are also major areas of focus.</p>
+<blockquote>
+<p>NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.</p>
+</blockquote>
 <h2 id="demergent-labs"><a class="header" href="#demergent-labs">Demergent Labs</a></h2>
 <p>Azle is currently developed by <a href="https://github.com/demergent-labs">Demergent Labs</a>, a for-profit company with a <a href="https://dfinity.org/grants">grant</a> from <a href="https://dfinity.org/">DFINITY</a>.</p>
 <p>Demergent Labs' <a href="https://github.com/demergent-labs/blog/blob/main/demergent-labs-grand-plan-part-1.md">vision</a> is to accelerate the adoption of Web3, the Internet Computer, and sustainable open source.</p>

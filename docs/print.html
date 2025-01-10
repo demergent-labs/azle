@@ -150,16 +150,11 @@
     <img src="logo.svg" alt="The Azle Logo" height="250px" />
 </div>
 <p>Welcome to The Azle Book! This is a guide for building secure decentralized/replicated servers in TypeScript or JavaScript on <a href="https://internetcomputer.org/">ICP</a>. The current replication factor is <a href="https://dashboard.internetcomputer.org/subnets">13-40 times</a>.</p>
-<p>Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:</p>
-<ul>
-<li>Azle is built with various software packages that have not yet reached maturity</li>
-<li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle does not yet have many live, successful, continuously operating applications deployed to ICP</li>
-</ul>
+<p>Please remember that Azle stable mode is continuously subjected to <a href="https://github.com/demergent-labs/azle/actions">intense scrutiny and testing</a>, however it does not yet have multiple independent security reviews/audits.</p>
 <p>The Azle Book is subject to the following license and Azle's <a href="https://github.com/demergent-labs/azle/blob/main/LICENSE_EXTENSION.md">License Extension</a>:</p>
 <pre><code>MIT License
 
-Copyright (c) 2024 AZLE token holders (nlhft-2iaaa-aaaae-qaaua-cai)
+Copyright (c) 2025 AZLE token holders (nlhft-2iaaa-aaaae-qaaua-cai)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &quot;Software&quot;), to deal
@@ -183,11 +178,11 @@ SOFTWARE.
 <p>Azle applications (<a href="https://internetcomputer.org/docs/current/concepts/canisters-code">canisters</a>) can be developed using two main methodologies: <a href="./candid_rpc.html">Candid RPC</a> and <a href="./http_server.html">HTTP Server</a>.</p>
 <p>Candid RPC embraces ICP's <a href="https://internetcomputer.org/docs/current/developer-docs/smart-contracts/candid/">Candid language</a>, exposing canister methods directly to Candid-speaking clients, and using Candid for serialization and deserialization purposes.</p>
 <p>HTTP Server embraces traditional web server techniques, allowing you to write HTTP servers using popular libraries such as <a href="https://expressjs.com/">Express</a>, and using <a href="https://www.json.org/json-en.html">JSON</a> for simple serialization and deserialization purposes.</p>
-<p>Candid RPC is heading towards 1.0 and production-readiness in 2024.</p>
+<p>Candid RPC is heading towards 1.0 and production-readiness in 2025.</p>
 <p>HTTP Server will remain experimental for an unknown length of time.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid-rpc"><a class="header" href="#candid-rpc">Candid RPC</a></h1>
 <p>This section documents the Candid RPC methodology for developing Azle applications. This methodology embraces ICP's Candid language, exposing canister methods directly to Candid-speaking clients, and using Candid for serialization and deserialization purposes.</p>
-<p>Candid RPC is heading towards 1.0 and production-readiness in 2024.</p>
+<p>Candid RPC is heading towards 1.0 and production-readiness in 2025.</p>
 <ul>
 <li><a href="candid_rpc.html#get-started">Get Started</a></li>
 <li><a href="candid_rpc.html#examples">Examples</a></li>
@@ -208,30 +203,27 @@ SOFTWARE.
 </ul>
 <h2 id="get-started"><a class="header" href="#get-started">Get Started</a></h2>
 <p>Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on <a href="https://internetcomputer.org/">ICP</a>. The current replication factor is <a href="https://dashboard.internetcomputer.org/subnets">13-40 times</a>.</p>
-<p>Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:</p>
-<ul>
-<li>Azle is built with various software packages that have not yet reached maturity</li>
-<li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle does not yet have many live, successful, continuously operating applications deployed to ICP</li>
-</ul>
+<p>Please remember that Azle stable mode is continuously subjected to <a href="https://github.com/demergent-labs/azle/actions">intense scrutiny and testing</a>, however it does not yet have multiple independent security reviews/audits.</p>
+<p>Azle runs in stable mode by default.</p>
+<p>This mode is intended for production use after Azle's 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.</p>
 <h3 id="installation"><a class="header" href="#installation">Installation</a></h3>
 <blockquote>
 <p>Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a></p>
 </blockquote>
-<p>You will need <a href="candid_rpc.html#nodejs-20">Node.js 20</a> and <a href="candid_rpc.html#dfx">dfx</a> to develop ICP applications with Azle:</p>
-<h4 id="nodejs-20"><a class="header" href="#nodejs-20">Node.js 20</a></h4>
-<p>It's recommended to use nvm to install Node.js 20:</p>
+<p>You will need <a href="candid_rpc.html#nodejs-22">Node.js 22</a> and <a href="candid_rpc.html#dfx">dfx</a> to develop ICP applications with Azle:</p>
+<h4 id="nodejs-22"><a class="header" href="#nodejs-22">Node.js 22</a></h4>
+<p>It's recommended to use nvm to install Node.js 22:</p>
 <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 </code></pre>
 <p>Restart your terminal and then run:</p>
-<pre><code class="language-bash">nvm install 20
+<pre><code class="language-bash">nvm install 22
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">node --version
 </code></pre>
 <h4 id="dfx"><a class="header" href="#dfx">dfx</a></h4>
 <p>Install the dfx command line tools for managing ICP applications:</p>
-<pre><code class="language-bash">DFX_VERSION=0.22.0 sh -ci &quot;$(curl -fsSL https://internetcomputer.org/install.sh)&quot;
+<pre><code class="language-bash">DFX_VERSION=0.24.3 sh -ci &quot;$(curl -fsSL https://internetcomputer.org/install.sh)&quot;
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">dfx --version
@@ -253,7 +245,7 @@ dfx start --clean
 dfx deploy
 </code></pre>
 <h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
-<p>Some of the best documentation for creating Candid RPC canisters is currently in <a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax">the tests directory</a>.</p>
+<p>Some of the best documentation for creating Candid RPC canisters is currently in <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc">the examples directory</a>.</p>
 <h2 id="canister-class"><a class="header" href="#canister-class">Canister Class</a></h2>
 <p>Your canister's functionality must be encapsulated in a class exported using the default export:</p>
 <pre><code class="language-typescript">import { IDL, query } from 'azle';
@@ -265,9 +257,9 @@ export default class {
     }
 }
 </code></pre>
-<p>You must use the <code>@query</code>, <code>@update</code>, <code>@init</code>, <code>@postUpgrade</code>, <code>@preUpgrade</code>, <code>@inspectMessage</code>, and <code>@heartbeat</code> decorators to expose your canister's methods. Adding TypeScript types is optional.</p>
+<p>You must use the <a href="candid_rpc.html#query">@query</a>, <a href="candid_rpc.html#update">@update</a>, <a href="candid_rpc.html#init">@init</a>, <a href="candid_rpc.html#postupgrade">@postUpgrade</a>, <a href="candid_rpc.html#preupgrade">@preUpgrade</a>, <a href="candid_rpc.html#inspectmessage">@inspectMessage</a>, and <a href="candid_rpc.html#heartbeat">@heartbeat</a> decorators to expose your canister's methods. Adding TypeScript types is optional.</p>
 <h2 id="dfinitycandid-idl"><a class="header" href="#dfinitycandid-idl">@dfinity/candid IDL</a></h2>
-<p>For each of your canister's methods, deserialization of incoming arguments and serialization of return values is handled with a combination of the <code>@query</code>, <code>@update</code>, <code>@init</code>, and <code>@postUpgrade</code> decorators and the <a href="https://agent-js.icp.xyz/candid/modules/IDL.html">IDL</a> object from the <a href="https://agent-js.icp.xyz/candid/index.html">@dfinity/candid</a> library.</p>
+<p>For each of your canister's methods, deserialization of incoming arguments and serialization of return values is handled with a combination of the <a href="candid_rpc.html#query">@query</a>, <a href="candid_rpc.html#update">@update</a>, <a href="candid_rpc.html#init">@init</a>, and <a href="candid_rpc.html#postupgrade">@postUpgrade</a> decorators and the <a href="https://agent-js.icp.xyz/candid/modules/IDL.html">IDL</a> object from the <a href="https://agent-js.icp.xyz/candid/index.html">@dfinity/candid</a> library.</p>
 <p><code>IDL</code> is re-exported by Azle, and has properties that correspond to <a href="https://internetcomputer.org/docs/current/references/candid-ref">Candid's supported types</a>. You must use <code>IDL</code> to instruct the method decorators on how to deserialize arguments and serialize the return value. Here's an example of accessing the Candid types from <code>IDL</code>:</p>
 <pre><code class="language-typescript">import { IDL } from 'azle';
 
@@ -341,7 +333,7 @@ IDL.Empty;
 <p>Exposes the decorated method as the <code>canister_heartbeat</code> method called on a regular interval (every second or so).</p>
 <h2 id="ic-api"><a class="header" href="#ic-api">IC API</a></h2>
 <p>The IC API is exposed as functions exported from <code>azle</code>. You can see the available functions in <a href="https://github.com/demergent-labs/azle/tree/main/src/lib/stable/ic_apis">the source code</a>.</p>
-<p>Some of the best documentation for using the IC API is currently in <a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax">the tests directory</a>, especially the <a href="https://github.com/demergent-labs/azle/blob/main/tests/end_to_end/candid_rpc/class_syntax/ic_api/src/index.ts">ic_api test example</a>.</p>
+<p>Some of the best documentation for using the IC API is currently in <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable">the examples directory</a>, especially the <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/property/ic_api">ic_api property tests</a>.</p>
 <p>Here's an example of getting the caller's principal using the <code>caller</code> function:</p>
 <pre><code class="language-typescript">import { caller, IDL, update } from 'azle';
 
@@ -365,30 +357,30 @@ export default class {
 <li><a href="get_started.html#deployment">Deployment</a></li>
 </ul>
 <p>Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on <a href="https://internetcomputer.org/">ICP</a>. The current replication factor is <a href="https://dashboard.internetcomputer.org/subnets">13-40 times</a>.</p>
-<p>Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:</p>
-<ul>
-<li>Azle is built with various software packages that have not yet reached maturity</li>
-<li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle does not yet have many live, successful, continuously operating applications deployed to ICP</li>
-</ul>
+<p>Please remember that the HTTP Server functionality is only accessible in Azle's experimental mode.</p>
+<p>Azle runs in experimental mode through explicitly enabling a flag in <code>dfx.json</code> or certain CLI commands.</p>
+<p>This mode is intended for developers who are willing to accept the risk of using an alpha or beta project. Its focus is on quickly enabling new features and functionality without requiring the time and other resources necessary to advance them to the stable mode. The Node.js standard libary, npm ecosystem, and HTTP server functionality are also major areas of focus.</p>
+<blockquote>
+<p>NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.</p>
+</blockquote>
 <h2 id="installation-1"><a class="header" href="#installation-1">Installation</a></h2>
 <blockquote>
 <p>Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a></p>
 </blockquote>
-<p>You will need <a href="get_started.html#nodejs-20">Node.js 20</a> and <a href="get_started.html#dfx">dfx</a> to develop ICP applications with Azle:</p>
-<h3 id="nodejs-20-1"><a class="header" href="#nodejs-20-1">Node.js 20</a></h3>
-<p>It's recommended to use nvm to install Node.js 20:</p>
+<p>You will need <a href="get_started.html#nodejs-22">Node.js 22</a> and <a href="get_started.html#dfx">dfx</a> to develop ICP applications with Azle:</p>
+<h3 id="nodejs-22-1"><a class="header" href="#nodejs-22-1">Node.js 22</a></h3>
+<p>It's recommended to use nvm to install Node.js 22:</p>
 <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 </code></pre>
 <p>Restart your terminal and then run:</p>
-<pre><code class="language-bash">nvm install 20
+<pre><code class="language-bash">nvm install 22
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">node --version
 </code></pre>
 <h3 id="dfx-1"><a class="header" href="#dfx-1">dfx</a></h3>
 <p>Install the dfx command line tools for managing ICP applications:</p>
-<pre><code class="language-bash">DFX_VERSION=0.22.0 sh -ci &quot;$(curl -fsSL https://internetcomputer.org/install.sh)&quot;
+<pre><code class="language-bash">DFX_VERSION=0.24.3 sh -ci &quot;$(curl -fsSL https://internetcomputer.org/install.sh)&quot;
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">dfx --version
@@ -412,35 +404,35 @@ dfx deploy
 <p>If you would like your canister to autoreload on file changes:</p>
 <pre><code class="language-bash">AZLE_AUTORELOAD=true dfx deploy
 </code></pre>
-<p>View your frontend in a web browser at <code>http://[canisterId].localhost:8000</code>.</p>
+<p>View your frontend in a web browser at <code>http://[canisterId].raw.localhost:8000</code>.</p>
 <p>To obtain your application's [canisterId]:</p>
 <pre><code class="language-bash">dfx canister id backend
 </code></pre>
 <p>Communicate with your canister using any HTTP client library, for example using <code>curl</code>:</p>
-<pre><code class="language-bash">curl http://[canisterId].localhost:8000/db
-curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hello\&quot;: \&quot;world\&quot; }&quot; http://[canisterId].localhost:8000/db/update
+<pre><code class="language-bash">curl http://[canisterId].raw.localhost:8000/db
+curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hello\&quot;: \&quot;world\&quot; }&quot; http://[canisterId].raw.localhost:8000/db/update
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="examples-1"><a class="header" href="#examples-1">Examples</a></h2>
-<p>There are many Azle examples in the <a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server">tests directory</a>. We recommend starting with the following:</p>
+<p>There are many Azle examples in the <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server">examples directory</a>. We recommend starting with the following:</p>
 <ul>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/apollo_server">apollo_server</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/audio_and_video">audio_and_video</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/autoreload">autoreload</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ethers">ethers</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ethers_base">ethers_base</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/express">express</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/fetch_ic">fetch_ic</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/file_protocol">file_protocol</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/fs">fs</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/hello_world_http_server">hello_world_http_server</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/http_outcall_fetch">http_outcall_fetch</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/hybrid_canister">hybrid_canister</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ic_evm_rpc">ic_evm_rpc</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/internet_identity">internet_identity</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/large_files">large_files</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/sqlite">sqlite</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/tfjs">tfjs</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/web_assembly">web_assembly</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/apollo_server">apollo_server</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/audio_and_video">audio_and_video</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/autoreload">autoreload</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers">ethers</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers_base">ethers_base</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/express">express</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/fetch_ic">fetch_ic</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/file_protocol">file_protocol</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/fs">fs</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/hello_world_http_server">hello_world_http_server</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/http_outcall_fetch">http_outcall_fetch</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/hybrid_canister">hybrid_canister</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ic_evm_rpc">ic_evm_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/internet_identity">internet_identity</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/large_files">large_files</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/sqlite">sqlite</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/tfjs">tfjs</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/web_assembly">web_assembly</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="deployment-2"><a class="header" href="#deployment-2">Deployment</a></h1>
 <ul>
@@ -481,7 +473,7 @@ curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hel
 <pre><code class="language-bash">dfx deploy [canisterName]
 </code></pre>
 <h2 id="interacting-with-your-canister"><a class="header" href="#interacting-with-your-canister">Interacting with your canister</a></h2>
-<p>You will generally interact with your canister through an HTTP client such as <code>curl</code>, <code>fetch</code>, or a web browser. The URL of your canister locally will look like this: <code>http://[canisterId].localhost:[replicaPort]</code>. Azle will print your canister's URL in the terminal after a successful deploy.</p>
+<p>You will generally interact with your canister through an HTTP client such as <code>curl</code>, <code>fetch</code>, or a web browser. The URL of your canister locally will look like this: <code>http://[canisterId].raw.localhost:[replicaPort]</code>. Azle will print your canister's URL in the terminal after a successful deploy.</p>
 <pre><code class="language-bash"># You can obtain the canisterId like this
 dfx canister id [canisterName]
 
@@ -489,10 +481,10 @@ dfx canister id [canisterName]
 dfx info webserver-port
 
 # An example of performing a GET request to a canister
-curl http://a3shf-5eaaa-aaaaa-qaafa-cai.localhost:8000
+curl http://a3shf-5eaaa-aaaaa-qaafa-cai.raw.localhost:8000
 
 # An example of performing a POST request to a canister
-curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hello\&quot;: \&quot;world\&quot; }&quot; http://a3shf-5eaaa-aaaaa-qaafa-cai.localhost:8000
+curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hello\&quot;: \&quot;world\&quot; }&quot; http://a3shf-5eaaa-aaaaa-qaafa-cai.raw.localhost:8000
 </code></pre>
 <h2 id="deploying-to-mainnet"><a class="header" href="#deploying-to-mainnet">Deploying to mainnet</a></h2>
 <p>Assuming you are <a href="https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet">setup with a cycles wallet</a>, then you are ready to deploy to mainnet.</p>
@@ -724,7 +716,7 @@ bootstrap();
 </ul>
 <p>Azle supports building HTTP servers on ICP using the <a href="https://nodejs.org/api/http.html#class-httpserver">Node.js http.Server</a> class as the foundation. These servers can serve static files or act as API backends, or both.</p>
 <p>Azle currently has good but not comprehensive support for <a href="https://nodejs.org/api/http.html#class-httpserver">Node.js http.Server</a> and <a href="https://expressjs.com/">Express</a>. Support for other libraries like <a href="https://nestjs.com/">Nest</a> are works-in-progress.</p>
-<p>Once <a href="./deployment.html">deployed</a> you can access your server at a URL like this locally <code>http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000</code> or like this on mainnet <code>https://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.icp0.io</code>.</p>
+<p>Once <a href="./deployment.html">deployed</a> you can access your server at a URL like this locally <code>http://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.localhost:8000</code> or like this on mainnet <code>https://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.icp0.io</code>.</p>
 <p>You can use any HTTP client to interact with your server, such as <code>curl</code>, <code>fetch</code>, or a web browser. See the <a href="./deployment.html#interacting-with-your-canister">Interacting with your canister section</a> of the <a href="./deployment.html">deployment chapter</a> for help in constructing your canister URL.</p>
 <h2 id="nodejs-httpserver"><a class="header" href="#nodejs-httpserver">Node.js http.server</a></h2>
 <p>Azle supports instances of <a href="https://nodejs.org/api/http.html#class-httpserver">Node.js http.Server</a>. <code>listen()</code> must be called on the server instance for Azle to use it to handle HTTP requests. Azle does not respect a port being passed into <code>listen()</code>. The port is set by the ICP replica (e.g. <code>dfx start --host 127.0.0.1:8000</code>), not by Azle.</p>
@@ -739,7 +731,7 @@ const server = createServer((req, res) =&gt; {
 server.listen();
 </code></pre>
 <h2 id="express"><a class="header" href="#express">Express</a></h2>
-<p><a href="https://expressjs.com/">Express</a> is one of the most popular backend JavaScript web frameworks, and it's the recommended way to get started building servers in Azle. Here's the main code from the <a href="https://github.com/demergent-labs/azle/tree/main/examples/hello_world">hello_world example</a>:</p>
+<p><a href="https://expressjs.com/">Express</a> is one of the most popular backend JavaScript web frameworks, and it's the recommended way to get started building servers in Azle. Here's the main code from the <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/hello_world_http_server">hello_world_http_server example</a>:</p>
 <pre><code class="language-typescript">import express, { Request } from 'express';
 
 let db = {
@@ -905,7 +897,7 @@ app.listen();
 </code></pre>
 <p>Then you use <code>fetch</code> and construct an <code>Authorization</code> header using an <a href="https://www.npmjs.com/package/@dfinity/agent">@dfinity/agent</a> <code>Identity</code>:</p>
 <pre><code class="language-typescript">const response = await fetch(
-    `http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000/whoami`,
+    `http://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.localhost:8000/whoami`,
     {
         method: 'GET',
         headers: [['Authorization', toJwt(this.identity)]]
@@ -1197,19 +1189,19 @@ return responseJson;
 <h1 id="tokens"><a class="header" href="#tokens">Tokens</a></h1>
 <p>Examples:</p>
 <ul>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/basic_bitcoin">basic_bitcoin</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/bitcoin">bitcoin</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/bitcoinjs_lib">bitcoinjs-lib</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/bitcore_lib">bitcore-lib</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ckbtc">ckbtc</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/ethereum_json_rpc">ethereum_json_rpc</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ethers">ethers</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ethers_base">ethers_base</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/basic_bitcoin">basic_bitcoin</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/bitcoin">bitcoin</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcoinjs_lib">bitcoinjs-lib</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcore_lib">bitcore-lib</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/ckbtc">ckbtc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers">ethers</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers_base">ethers_base</a></li>
 <li><a href="https://github.com/lastmjs/extendable-token-azle">extendable-token-azle</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ic_evm_rpc">ic_evm_rpc</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/icrc">icrc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ic_evm_rpc">ic_evm_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/icrc">icrc</a></li>
 <li><a href="https://github.com/demergent-labs/ICRC-1">ICRC-1</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/ledger_canister">ledger_canister</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ledger_canister">ledger_canister</a></li>
 </ul>
 <!-- -   ICRC transfer from frontend
 -   ICRC transfer from backend
@@ -1258,12 +1250,12 @@ This could take a bit of work. -->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin"><a class="header" href="#bitcoin">Bitcoin</a></h1>
 <p>Examples:</p>
 <ul>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/basic_bitcoin">basic_bitcoin</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/bitcoin">bitcoin</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin_psbt">bitcoin_psbt</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/bitcoinjs_lib">bitcoinjs_lib</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/bitcore_lib">bitcore_lib</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ckbtc">ckbtc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/basic_bitcoin">basic_bitcoin</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/bitcoin">bitcoin</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/bitcoin_psbt">bitcoin_psbt</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcoinjs_lib">bitcoinjs_lib</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcore_lib">bitcore_lib</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/ckbtc">ckbtc</a></li>
 </ul>
 <p>There are two main ways to interact with Bitcoin on ICP: through the <a href="bitcoin.html#management-canister">management canister</a> and through the <a href="bitcoin.html#ckbtc">ckBTC canister</a>.</p>
 <h2 id="management-canister"><a class="header" href="#management-canister">management canister</a></h2>
@@ -1328,10 +1320,10 @@ function padPrincipalWithZeros(principalBlob: Uint8Array): Uint8Array {
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ethereum"><a class="header" href="#ethereum">Ethereum</a></h1>
 <p>Examples:</p>
 <ul>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/ethereum_json_rpc">ethereum_json_rpc</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ethers">ethers</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ethers_base">ethers_base</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ic_evm_rpc">ic_evm_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ethereum_json_rpc">ethereum_json_rpc</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers">ethers</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers_base">ethers_base</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ic_evm_rpc">ic_evm_rpc</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="databases"><a class="header" href="#databases">Databases</a></h1>
 <p>The eventual goal for Azle is to support as many database solutions as possible. This is difficult for a number of reasons related to ICP's decentralized computing paradigm and Wasm environment.</p>
@@ -1340,9 +1332,9 @@ function padPrincipalWithZeros(principalBlob: Uint8Array): Uint8Array {
 <p>The following examples should be very useful as you get started using SQLite in Azle:</p>
 <p>Examples:</p>
 <ul>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/sqlite">sqlite</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/sqlite_drizzle">sqlite_drizzle</a></li>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/sqlite_typeorm">sqlite_typeorm</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/sqlite">sqlite</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/sqlite_drizzle">sqlite_drizzle</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/sqlite_typeorm">sqlite_typeorm</a></li>
 </ul>
 <h2 id="sqljs"><a class="header" href="#sqljs">sql.js</a></h2>
 <p>SQLite in Azle works using an <a href="https://en.wikipedia.org/wiki/Asm.js">asm.js</a> build of SQLite from <code>sql.js</code> without modifications to the library. The database is stored entirely in memory on the heap, giving you ~2 GiB of space. Serialization across upgrades is possible using stable memory like this:</p>
@@ -1572,12 +1564,16 @@ Let's discuss some important limitations of Azle and ICP that you are likely to 
 <li><a href="https://discord.gg/5Hb6rM2QUM">Discord channel</a></li>
 </ul>
 <h2 id="disclaimer"><a class="header" href="#disclaimer">Disclaimer</a></h2>
-<p>Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:</p>
-<ul>
-<li>Azle is built with various software packages that have not yet reached maturity</li>
-<li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle does not yet have many live, successful, continuously operating applications deployed to ICP</li>
-</ul>
+<p>Azle stable mode is continuously subjected to <a href="https://github.com/demergent-labs/azle/actions">intense scrutiny and testing</a>, however it does not yet have multiple independent security reviews/audits.</p>
+<h2 id="stable-mode"><a class="header" href="#stable-mode">Stable Mode</a></h2>
+<p>Azle runs in stable mode by default.</p>
+<p>This mode is intended for production use after Azle's 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.</p>
+<h2 id="experimental-mode"><a class="header" href="#experimental-mode">Experimental Mode</a></h2>
+<p>Azle runs in experimental mode through explicitly enabling a flag in <code>dfx.json</code> or certain CLI commands.</p>
+<p>This mode is intended for developers who are willing to accept the risk of using an alpha or beta project. Its focus is on quickly enabling new features and functionality without requiring the time and other resources necessary to advance them to the stable mode. The Node.js standard libary, npm ecosystem, and HTTP server functionality are also major areas of focus.</p>
+<blockquote>
+<p>NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.</p>
+</blockquote>
 <h2 id="demergent-labs"><a class="header" href="#demergent-labs">Demergent Labs</a></h2>
 <p>Azle is currently developed by <a href="https://github.com/demergent-labs">Demergent Labs</a>, a for-profit company with a <a href="https://dfinity.org/grants">grant</a> from <a href="https://dfinity.org/">DFINITY</a>.</p>
 <p>Demergent Labs' <a href="https://github.com/demergent-labs/blog/blob/main/demergent-labs-grand-plan-part-1.md">vision</a> is to accelerate the adoption of Web3, the Internet Computer, and sustainable open source.</p>
@@ -1719,17 +1715,17 @@ Let's discuss some important limitations of Azle and ICP that you are likely to 
 <blockquote>
 <p>Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a></p>
 </blockquote>
-<p>It's recommended to use nvm and Node.js 20:</p>
+<p>It's recommended to use nvm and Node.js 22:</p>
 <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 </code></pre>
 <p>Restart your terminal and then run:</p>
-<pre><code class="language-bash">nvm install 20
+<pre><code class="language-bash">nvm install 22
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">node --version
 </code></pre>
 <p>Install the dfx command line tools for managing ICP applications:</p>
-<pre><code class="language-bash">DFX_VERSION=0.22.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
+<pre><code class="language-bash">DFX_VERSION=0.24.3 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">dfx --version
@@ -3333,8 +3329,6 @@ async function repeatCrossCanisterTimerCallback() {
 <p>Perhaps we don't need to do that here, since each API will show this information.</p>
 <p>Maybe here we just show the basic concept of cycles, link to the main cycles cost page, and show a few examples of how to break down these costs or estimate these costs.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="caveats-1"><a class="header" href="#caveats-1">Caveats</a></h1>
-<h2 id="unknown-security-vulnerabilities"><a class="header" href="#unknown-security-vulnerabilities">Unknown security vulnerabilities</a></h2>
-<p>Azle is a beta project. See <a href="/azle.html#disclaimer">the disclaimer</a> for more information.</p>
 <h2 id="npm-packages"><a class="header" href="#npm-packages">npm packages</a></h2>
 <p>Some npm packages will work and some will not work. It is our long-term goal to support as many npm packages as possible. There are various reasons why an npm package may not currently work, including the small Wasm binary limit of the IC and unimplemented web or Node.js APIs. Feel free to open issues if your npm package does not work in Azle.</p>
 <h2 id="javascript-environment-apis"><a class="header" href="#javascript-environment-apis">JavaScript environment APIs</a></h2>

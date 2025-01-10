@@ -91,7 +91,7 @@ server.listen();
 
 ## Express
 
-[Express](https://expressjs.com/) is one of the most popular backend JavaScript web frameworks, and it's the recommended way to get started building servers in Azle. Here's the main code from the [hello_world example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world):
+[Express](https://expressjs.com/) is one of the most popular backend JavaScript web frameworks, and it's the recommended way to get started building servers in Azle. Here's the main code from the [hello_world_http_server example](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/hello_world_http_server):
 
 ```typescript
 import express, { Request } from 'express';

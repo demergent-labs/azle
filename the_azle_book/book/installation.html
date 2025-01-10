@@ -148,17 +148,17 @@
 <blockquote>
 <p>Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a></p>
 </blockquote>
-<p>It's recommended to use nvm and Node.js 20:</p>
+<p>It's recommended to use nvm and Node.js 22:</p>
 <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 </code></pre>
 <p>Restart your terminal and then run:</p>
-<pre><code class="language-bash">nvm install 20
+<pre><code class="language-bash">nvm install 22
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">node --version
 </code></pre>
 <p>Install the dfx command line tools for managing ICP applications:</p>
-<pre><code class="language-bash">DFX_VERSION=0.22.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
+<pre><code class="language-bash">DFX_VERSION=0.24.3 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">dfx --version

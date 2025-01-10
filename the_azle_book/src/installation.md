@@ -2,7 +2,7 @@
 
 > Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-It's recommended to use nvm and Node.js 20:
+It's recommended to use nvm and Node.js 22:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -11,7 +11,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 Restart your terminal and then run:
 
 ```bash
-nvm install 20
+nvm install 22
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -23,7 +23,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.22.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.24.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
