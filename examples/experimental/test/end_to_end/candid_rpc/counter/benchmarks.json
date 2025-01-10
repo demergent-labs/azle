@@ -1,42 +1,66 @@
 {
     "counter": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1481635" },
+                    "instructions": {
+                        "__bigint__": "1479468"
+                    },
                     "method_name": "incrementCount",
-                    "timestamp": { "__bigint__": "1730326459956976086" }
+                    "timestamp": {
+                        "__bigint__": "1730484650167852369"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1455012" },
+                    "instructions": {
+                        "__bigint__": "1455480"
+                    },
                     "method_name": "incrementCount",
-                    "timestamp": { "__bigint__": "1730326461821654011" }
+                    "timestamp": {
+                        "__bigint__": "1730484652045613063"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1454315" },
+                    "instructions": {
+                        "__bigint__": "1459299"
+                    },
                     "method_name": "incrementCount",
-                    "timestamp": { "__bigint__": "1730326464008204140" }
+                    "timestamp": {
+                        "__bigint__": "1730484654196653423"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1479468" },
+                    "instructions": {
+                        "__bigint__": "1468502"
+                    },
                     "method_name": "incrementCount",
-                    "timestamp": { "__bigint__": "1730484650167852369" }
+                    "timestamp": {
+                        "__bigint__": "1736543872219074851"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1455480" },
+                    "instructions": {
+                        "__bigint__": "1458086"
+                    },
                     "method_name": "incrementCount",
-                    "timestamp": { "__bigint__": "1730484652045613063" }
+                    "timestamp": {
+                        "__bigint__": "1736543872498046698"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1459299" },
+                    "instructions": {
+                        "__bigint__": "1456636"
+                    },
                     "method_name": "incrementCount",
-                    "timestamp": { "__bigint__": "1730484654196653423" }
+                    "timestamp": {
+                        "__bigint__": "1736543872766174374"
+                    }
                 }
             ]
         }

@@ -1,44 +1,60 @@
 {
     "canister1": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1605051" },
+                    "instructions": {
+                        "__bigint__": "1609604"
+                    },
                     "method_name": "sendNotification",
-                    "timestamp": { "__bigint__": "1730326465090461913" }
+                    "timestamp": {
+                        "__bigint__": "1730484662485467041"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1609604" },
+                    "instructions": {
+                        "__bigint__": "1757055"
+                    },
                     "method_name": "sendNotification",
-                    "timestamp": { "__bigint__": "1730484662485467041" }
+                    "timestamp": {
+                        "__bigint__": "1736543878681415269"
+                    }
                 }
             ]
         }
     },
     "canister2": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "912297" },
+                    "instructions": {
+                        "__bigint__": "923050"
+                    },
                     "method_name": "receiveNotification",
-                    "timestamp": { "__bigint__": "1730326465090461913" }
+                    "timestamp": {
+                        "__bigint__": "1730484662485467041"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "923050" },
+                    "instructions": {
+                        "__bigint__": "982453"
+                    },
                     "method_name": "receiveNotification",
-                    "timestamp": { "__bigint__": "1730484662485467041" }
+                    "timestamp": {
+                        "__bigint__": "1736543878681415269"
+                    }
                 }
             ]
         }

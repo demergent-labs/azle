@@ -1,32 +1,48 @@
 {
     "key_value_store": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1403875" },
+                    "instructions": {
+                        "__bigint__": "1430991"
+                    },
                     "method_name": "set",
-                    "timestamp": { "__bigint__": "1730326446547376286" }
+                    "timestamp": {
+                        "__bigint__": "1730484642935611174"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1352622" },
+                    "instructions": {
+                        "__bigint__": "1386326"
+                    },
                     "method_name": "set",
-                    "timestamp": { "__bigint__": "1730326448801367024" }
+                    "timestamp": {
+                        "__bigint__": "1730484645178294327"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1430991" },
+                    "instructions": {
+                        "__bigint__": "1514019"
+                    },
                     "method_name": "set",
-                    "timestamp": { "__bigint__": "1730484642935611174" }
+                    "timestamp": {
+                        "__bigint__": "1736543867967876692"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1386326" },
+                    "instructions": {
+                        "__bigint__": "1474124"
+                    },
                     "method_name": "set",
-                    "timestamp": { "__bigint__": "1730484645178294327" }
+                    "timestamp": {
+                        "__bigint__": "1736543868233953127"
+                    }
                 }
             ]
         }
