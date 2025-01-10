@@ -17,5 +17,5 @@ ic-wasi-polyfill = "0.6.4"
 rquickjs = { version = "0.8.1", features = ["array-buffer"] }
 scopeguard = "1.2.0"
 serde = "1.0.217"
-serde_json = "1.0.134"
+serde_json = "1.0.135"
 slotmap = "=1.0.7"
