@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 import { MethodMeta } from '../../../build/stable/utils/types';
+import { DidVisitor, getDefaultVisitorData, toDidString } from '../did_file';
 import { handleUncaughtError } from '../error';
 import {
     CanisterMethodMode,
@@ -178,6 +179,10 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
             exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes.push(
                 IDL.Func(paramIdlTypes ?? [], [], ['init'])
             );
+
+            verifyInitAndPostUpgradeHaveTheSameParams(
+                exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+            );
         }
 
         if (canisterMethodMode === 'postUpgrade') {
@@ -188,6 +193,10 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
             exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes.push(
                 IDL.Func(paramIdlTypes ?? [], [], ['post_upgrade'])
+            );
+
+            verifyInitAndPostUpgradeHaveTheSameParams(
+                exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
             );
         }
 
@@ -263,4 +272,59 @@ function isDecoratorOverloadedWithoutParams<
         param2.metadata !== undefined &&
         param2.name !== undefined
     );
+}
+
+function verifyInitAndPostUpgradeHaveTheSameParams(
+    idlTypes: IDL.FuncClass[]
+): void | never {
+    if (idlTypes.length === 2) {
+        const init = idlTypes.find((idlType) =>
+            idlType.annotations.find((annotation) => annotation === 'init')
+        );
+        const postUpgrade = idlTypes.find((idlType) =>
+            idlType.annotations.find(
+                (annotation) => annotation === 'post_upgrade'
+            )
+        );
+
+        if (init !== undefined && postUpgrade !== undefined) {
+            const initAsFunc = IDL.Func(init.argTypes, init.retTypes);
+            const postUpgradeAsFunc = IDL.Func(
+                postUpgrade.argTypes,
+                postUpgrade.retTypes
+            );
+            const visitor = new DidVisitor();
+            const initResult = visitor.visitFunc(
+                initAsFunc,
+                getDefaultVisitorData()
+            );
+            const postUpgradeResult = visitor.visitFunc(
+                postUpgradeAsFunc,
+                getDefaultVisitorData()
+            );
+            const initString = toDidString(initResult);
+            const postUpgradeString = toDidString(postUpgradeResult);
+            if (initString !== postUpgradeString) {
+                throw new Error(
+                    `'init' and 'postUpgrade' methods must have the same parameters.\nFound:\n- init: ${initString}\n- postUpgrade: ${postUpgradeString}`
+                );
+            }
+        }
+        // Should be unreachable
+        throw new Error('init and postUpgrade methods must be defined');
+    }
+
+    if (idlTypes.length > 2) {
+        const visitor = new DidVisitor();
+        const methodStrings = idlTypes.map((idlType) => {
+            const func = IDL.Func(idlType.argTypes, idlType.retTypes);
+            const result = visitor.visitFunc(func, getDefaultVisitorData());
+            return toDidString(result);
+        });
+        throw new Error(
+            `More than two init and postUpgrade methods found:\n${methodStrings.join('\n')}`
+        );
+    }
+
+    return;
 }
