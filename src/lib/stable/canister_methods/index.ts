@@ -250,9 +250,11 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 }
 
 /**
- * @internal
+ * Determines if decorator parameters match the pattern for a pure decorator without custom parameters.
  *
- * Determines if the params are from a pure decorator function without our own parameter currying.
+ * @param param1 - First parameter which could be either a method or IDL types
+ * @param param2 - Second parameter which could be either a context or IDL type
+ * @returns True if parameters match pure decorator pattern, false otherwise
  */
 function isDecoratorOverloadedWithoutParams<
     This,
@@ -274,57 +276,70 @@ function isDecoratorOverloadedWithoutParams<
     );
 }
 
+/**
+ * @internal
+ *
+ * Uses the candid string of the init and post-upgrade methods to verify that
+ * they have matching parameter signatures.
+ *
+ * @param idlTypes - Array of IDL function types representing canister methods
+ * @throws {Error} If methods have mismatched parameters or if invalid number of methods
+ */
 function verifyInitAndPostUpgradeHaveTheSameParams(
     idlTypes: IDL.FuncClass[]
-): void | never {
-    if (idlTypes.length === 2) {
-        const init = idlTypes.find((idlType) =>
-            idlType.annotations.find((annotation) => annotation === 'init')
-        );
-        const postUpgrade = idlTypes.find((idlType) =>
-            idlType.annotations.find(
-                (annotation) => annotation === 'post_upgrade'
-            )
-        );
-
-        if (init !== undefined && postUpgrade !== undefined) {
-            const initAsFunc = IDL.Func(init.argTypes, init.retTypes);
-            const postUpgradeAsFunc = IDL.Func(
-                postUpgrade.argTypes,
-                postUpgrade.retTypes
-            );
-            const visitor = new DidVisitor();
-            const initResult = visitor.visitFunc(
-                initAsFunc,
-                getDefaultVisitorData()
-            );
-            const postUpgradeResult = visitor.visitFunc(
-                postUpgradeAsFunc,
-                getDefaultVisitorData()
-            );
-            const initString = toDidString(initResult);
-            const postUpgradeString = toDidString(postUpgradeResult);
-            if (initString !== postUpgradeString) {
-                throw new Error(
-                    `'init' and 'postUpgrade' methods must have the same parameters.\nFound:\n- init: ${initString}\n- postUpgrade: ${postUpgradeString}`
-                );
-            }
-        }
-        // Should be unreachable
-        throw new Error('init and postUpgrade methods must be defined');
+): void {
+    if (idlTypes.length === 0 || idlTypes.length === 1) {
+        return;
     }
 
     if (idlTypes.length > 2) {
-        const visitor = new DidVisitor();
-        const methodStrings = idlTypes.map((idlType) => {
-            const func = IDL.Func(idlType.argTypes, idlType.retTypes);
-            const result = visitor.visitFunc(func, getDefaultVisitorData());
-            return toDidString(result);
-        });
-        throw new Error(
-            `More than two init and postUpgrade methods found:\n${methodStrings.join('\n')}`
-        );
+        throwTooManyMethodsError(idlTypes);
     }
 
-    return;
+    const [init, postUpgrade] = findInitAndPostUpgradeMethods(idlTypes);
+
+    if (init === undefined || postUpgrade === undefined) {
+        throw new Error('Both init and postUpgrade methods must be defined');
+    }
+
+    // Get rid of the annotations to facilitate comparison
+    // TODO verify if the annotations even show up in the candid string. we might be able to remove this
+    const initFunc = IDL.Func(init.argTypes, init.retTypes);
+    const postUpgradeFunc = IDL.Func(
+        postUpgrade.argTypes,
+        postUpgrade.retTypes
+    );
+    const initSignature = getFunctionSignature(initFunc);
+    const postUpgradeSignature = getFunctionSignature(postUpgradeFunc);
+
+    if (initSignature !== postUpgradeSignature) {
+        throw new Error(
+            `'init' and 'postUpgrade' methods must have the same parameters.\nFound:\n- init: ${initSignature}\n- postUpgrade: ${postUpgradeSignature}`
+        );
+    }
+}
+
+function findInitAndPostUpgradeMethods(
+    idlTypes: IDL.FuncClass[]
+): [IDL.FuncClass | undefined, IDL.FuncClass | undefined] {
+    const init = idlTypes.find((type) => type.annotations.includes('init'));
+
+    const postUpgrade = idlTypes.find((type) =>
+        type.annotations.includes('post_upgrade')
+    );
+
+    return [init, postUpgrade];
+}
+
+function getFunctionSignature(func: IDL.FuncClass): string {
+    const visitor = new DidVisitor();
+    const result = visitor.visitFunc(func, getDefaultVisitorData());
+    return toDidString(result);
+}
+
+function throwTooManyMethodsError(idlTypes: IDL.FuncClass[]): never {
+    const methodSignatures = idlTypes.map(getFunctionSignature);
+    throw new Error(
+        `More than two init and postUpgrade methods found:\n${methodSignatures.join('\n')}`
+    );
 }
