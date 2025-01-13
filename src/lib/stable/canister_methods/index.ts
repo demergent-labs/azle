@@ -250,11 +250,9 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 }
 
 /**
- * Determines if decorator parameters match the pattern for a pure decorator without custom parameters.
+ * @internal
  *
- * @param param1 - First parameter which could be either a method or IDL types
- * @param param2 - Second parameter which could be either a context or IDL type
- * @returns True if parameters match pure decorator pattern, false otherwise
+ * Determines if the params are from a pure decorator function without our own parameter currying.
  */
 function isDecoratorOverloadedWithoutParams<
     This,
