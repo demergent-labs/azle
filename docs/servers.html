@@ -202,7 +202,7 @@ bootstrap();
 </ul>
 <p>Azle supports building HTTP servers on ICP using the <a href="https://nodejs.org/api/http.html#class-httpserver">Node.js http.Server</a> class as the foundation. These servers can serve static files or act as API backends, or both.</p>
 <p>Azle currently has good but not comprehensive support for <a href="https://nodejs.org/api/http.html#class-httpserver">Node.js http.Server</a> and <a href="https://expressjs.com/">Express</a>. Support for other libraries like <a href="https://nestjs.com/">Nest</a> are works-in-progress.</p>
-<p>Once <a href="./deployment.html">deployed</a> you can access your server at a URL like this locally <code>http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000</code> or like this on mainnet <code>https://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.icp0.io</code>.</p>
+<p>Once <a href="./deployment.html">deployed</a> you can access your server at a URL like this locally <code>http://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.localhost:8000</code> or like this on mainnet <code>https://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.icp0.io</code>.</p>
 <p>You can use any HTTP client to interact with your server, such as <code>curl</code>, <code>fetch</code>, or a web browser. See the <a href="./deployment.html#interacting-with-your-canister">Interacting with your canister section</a> of the <a href="./deployment.html">deployment chapter</a> for help in constructing your canister URL.</p>
 <h2 id="nodejs-httpserver"><a class="header" href="#nodejs-httpserver">Node.js http.server</a></h2>
 <p>Azle supports instances of <a href="https://nodejs.org/api/http.html#class-httpserver">Node.js http.Server</a>. <code>listen()</code> must be called on the server instance for Azle to use it to handle HTTP requests. Azle does not respect a port being passed into <code>listen()</code>. The port is set by the ICP replica (e.g. <code>dfx start --host 127.0.0.1:8000</code>), not by Azle.</p>
@@ -217,7 +217,7 @@ const server = createServer((req, res) =&gt; {
 server.listen();
 </code></pre>
 <h2 id="express"><a class="header" href="#express">Express</a></h2>
-<p><a href="https://expressjs.com/">Express</a> is one of the most popular backend JavaScript web frameworks, and it's the recommended way to get started building servers in Azle. Here's the main code from the <a href="https://github.com/demergent-labs/azle/tree/main/examples/hello_world">hello_world example</a>:</p>
+<p><a href="https://expressjs.com/">Express</a> is one of the most popular backend JavaScript web frameworks, and it's the recommended way to get started building servers in Azle. Here's the main code from the <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/hello_world_http_server">hello_world_http_server example</a>:</p>
 <pre><code class="language-typescript">import express, { Request } from 'express';
 
 let db = {

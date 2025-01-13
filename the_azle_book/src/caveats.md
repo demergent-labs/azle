@@ -1,9 +1,5 @@
 # Caveats
 
-## Unknown security vulnerabilities
-
-Azle is a beta project. See [the disclaimer](/azle.md#disclaimer) for more information.
-
 ## npm packages
 
 Some npm packages will work and some will not work. It is our long-term goal to support as many npm packages as possible. There are various reasons why an npm package may not currently work, including the small Wasm binary limit of the IC and unimplemented web or Node.js APIs. Feel free to open issues if your npm package does not work in Azle.

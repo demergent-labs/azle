@@ -31,7 +31,7 @@ export function StableBTreeMapArb(
             UniqueIdentifierArb('globalNames'),
             createUniquePrimitiveArb(
                 fc.nat({
-                    max: 254
+                    max: 253
                 })
             )
         )

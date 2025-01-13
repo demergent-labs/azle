@@ -18,19 +18,19 @@ Demergent Labs does not keep any token implementations up-to-date. Here are some
 
 Examples:
 
-- [basic_bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/basic_bitcoin)
-- [bitcoin](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/bitcoin)
-- [bitcoinjs-lib](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/bitcoinjs_lib)
-- [bitcore-lib](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/bitcore_lib)
-- [ckbtc](https://github.com/demergent-labs/azle/tree/main/examples/ckbtc)
-- [ethereum_json_rpc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/ethereum_json_rpc)
-- [ethers](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ethers)
-- [ethers_base](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ethers_base)
+- [basic_bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/basic_bitcoin)
+- [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/bitcoin)
+- [bitcoinjs-lib](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcoinjs_lib)
+- [bitcore-lib](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcore_lib)
+- [ckbtc](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/ckbtc)
+- [ethereum_json_rpc](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ethereum_json_rpc)
+- [ethers](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers)
+- [ethers_base](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers_base)
 - [extendable-token-azle](https://github.com/lastmjs/extendable-token-azle)
-- [ic_evm_rpc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/http_server/ic_evm_rpc)
-- [icrc](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/icrc)
+- [ic_evm_rpc](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ic_evm_rpc)
+- [icrc](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/icrc)
 - [ICRC-1](https://github.com/demergent-labs/ICRC-1)
-- [ledger_canister](https://github.com/demergent-labs/azle/tree/main/tests/end_to_end/candid_rpc/class_syntax/ledger_canister)
+- [ledger_canister](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ledger_canister)
 
 <!-- -   ICRC transfer from frontend
 -   ICRC transfer from backend
