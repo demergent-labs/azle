@@ -86,6 +86,10 @@ export default Canister({
     id: query([], Principal, () => {
         return ic.id();
     }),
+    // returns true if the canister is in replicated execution
+    inReplicatedExecution: update([], bool, () => {
+        return ic.inReplicatedExecution();
+    }),
     // determines whether the given principal is a controller of the canister
     isController: query([Principal], bool, (principal) => {
         return ic.isController(principal);

@@ -14,6 +14,7 @@ import { chunk } from './chunk';
 import { clearTimer } from './clear_timer';
 import { dataCertificate } from './data_certificate';
 import { id } from './id';
+import { inReplicatedExecution } from './in_replicated_execution';
 import { isController } from './is_controller';
 import { methodName } from './method_name';
 import { msgCyclesAccept } from './msg_cycles_accept';
@@ -52,6 +53,7 @@ export const ic = {
     clearTimer,
     dataCertificate,
     id,
+    inReplicatedExecution,
     isController,
     methodName,
     msgCyclesAccept,
