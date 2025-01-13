@@ -301,7 +301,6 @@ function verifyInitAndPostUpgradeHaveTheSameParams(
     }
 
     // Get rid of the annotations to facilitate comparison
-    // TODO verify if the annotations even show up in the candid string. we might be able to remove this
     const initFunc = IDL.Func(init.argTypes, init.retTypes);
     const postUpgradeFunc = IDL.Func(
         postUpgrade.argTypes,
