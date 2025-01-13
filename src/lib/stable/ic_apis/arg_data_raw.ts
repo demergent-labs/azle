@@ -1,20 +1,21 @@
 /**
- * Returns the raw argument data passed to the current method call.
+ * Returns the argument data of the current method call as bytes.
  *
- * @returns The raw argument bytes as Uint8Array, or empty array if called outside the IC environment
+ * @returns The argument bytes
  *
  * @remarks
+ *
  * - **Call Context**:
- *   - init
- *   - postUpgrade
- *   - update
- *   - query (replicated and non-replicated)
- *   - composite query
- *   - after a cross-canister call
- *   - after a cross-canister call from a composite query
- *   - inspectMessage
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - \@init
+ *   - \@postUpgrade
+ *   - \@inspectMessage
+ *   - \@update
+ *   - \@query, replicated and non-replicated
+ *   - \@query(..., { composite: true })
+ *   - after a successful cross-canister await
+ *   - after a successful cross-canister await from a composite query
+ * - **Outside of Call Context**:
+ *   - traps
  */
 export function argDataRaw(): Uint8Array {
     if (

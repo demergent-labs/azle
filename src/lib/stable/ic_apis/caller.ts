@@ -1,24 +1,28 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Returns the {@link Principal} of the identity that called the current method.
+ * Returns the Principal of the identity that initiated the current call.
  *
- * @returns The caller's Principal, or the anonymous Principal if called outside the IC environment
+ * @returns The caller's Principal
  *
  * @remarks
- * - Returns the immediate caller's Principal
- *   - For inter-canister calls, returns the calling canister's Principal
- *   - For user calls, returns the user's Principal
- *   - For anonymous calls, returns the anonymous Principal
+ *
+ * When called from:
+ * - \@init: Principal of the identity requesting installation
+ * - \@postUpgrade: Principal of the identity requesting upgrade
+ * - \@heartbeat: Principal of the management canister
+ * - timer: Principal of the management canister
+ * - inter-canister callee: Principal of the calling canister
+ *
  * - **Call Context**:
- *   - Any method (not start)
+ *   - any besides start
  */
 export function caller(): Principal {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
-        return Principal.fromHex('04');
+        return Principal.fromHex('04'); // the anonymous principal
     }
 
     if (globalThis._azleIcExperimental !== undefined) {

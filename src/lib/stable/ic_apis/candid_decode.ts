@@ -1,12 +1,13 @@
 /**
- * Converts binary Candid data into its string representation.
+ * Decodes binary Candid value bytes into its string representation.
  *
- * @param candidBytes - The binary Candid data to decode
- * @returns The decoded Candid type string, or empty string if called outside the IC environment
+ * @param candidBytes - The binary Candid value bytes to decode
+ * @returns The decoded Candid value string
  *
  * @remarks
+ *
  * - **Call Context**:
- *   - Any method
+ *   - any
  */
 export function candidDecode(candidBytes: Uint8Array): string {
     if (

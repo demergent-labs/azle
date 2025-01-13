@@ -1,14 +1,15 @@
 /**
  * Accepts an ingress message during message inspection.
  *
- * @returns void, or no effect if called outside the IC environment
+ * @returns void
  *
  * @remarks
- * - Signals that a message should proceed to execution
+ *
+ * - Traps if invoked twice
  * - **Call Context**:
- *   - inspectMessage
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - \@inspectMessage
+ * - **Outside of Call Context**:
+ *   - traps
  */
 export function acceptMessage(): void {
     if (

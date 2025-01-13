@@ -1,12 +1,13 @@
 /**
- * Converts a Candid string into its binary representation.
+ * Converts a Candid value string into its binary representation.
  *
- * @param candidString - A valid Candid type string (e.g. "(nat8,bool)")
- * @returns The binary encoding as a Uint8Array, or empty array if called outside the IC environment
+ * @param candidString - A Candid value string
+ * @returns The encoded binary Candid value bytes
  *
  * @remarks
+ *
  * - **Call Context**:
- *   - Any method
+ *   - any
  */
 export function candidEncode(candidString: string): Uint8Array {
     if (
