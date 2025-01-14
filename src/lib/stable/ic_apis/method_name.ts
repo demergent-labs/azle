@@ -1,15 +1,12 @@
 /**
- * Returns the name of the method being called.
+ * Returns the name of the method being called during message inspection.
  *
- * @returns The name of the current method, or empty string if called outside the IC environment
+ * @returns The name of the method
  *
  * @remarks
  *
  * - **Call Context**:
  *   - \@inspectMessage
- *
- * - **Outside of Call Context**:
- *   - traps
  */
 export function methodName(): string {
     if (

@@ -1,7 +1,7 @@
 /**
- * Returns the amount of cycles that were transferred in the current call and are still available.
+ * Returns the amount of cycles that were transferred with the current call and are still available.
  *
- * @returns The amount of cycles available from the current call, or 0n if called outside the IC environment
+ * @returns The amount of cycles available
  *
  * @remarks
  *
@@ -11,9 +11,6 @@
  *   - \@update
  *   - after a successful inter-canister await
  *   - after an unsuccessful inter-canister await
- *
- * - **Outside of Call Context**:
- *   - traps
  */
 export function msgCyclesAvailable(): bigint {
     if (

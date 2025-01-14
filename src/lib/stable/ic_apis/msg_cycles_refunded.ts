@@ -1,17 +1,16 @@
 /**
- * Returns the amount of cycles that were refunded from the last cross-canister call.
+ * Returns the amount of cycles that were refunded from the last inter-canister call.
  *
- * @returns The amount of cycles refunded from the last call, or 0n if called outside the IC environment
+ * @returns The amount of cycles refunded
  *
  * @remarks
- * - Refunded cycles are already added to canister balance
+ *
+ * - Can only be called after an inter-canister await
+ * - All unaccepted cycles transferred with an inter-canister call are automatically refunded to the calling canister at the end of the call
  *
  * - **Call Context**:
  *   - after a successful inter-canister await
  *   - after an unsuccessful inter-canister await
- *
- * - **Outside of Call Context**:
- *   - traps
  */
 export function msgCyclesRefunded(): bigint {
     if (

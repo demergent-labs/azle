@@ -1,11 +1,11 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Determines if a given {@link Principal} is a controller of the canister.
+ * Determines if a given `Principal` is a controller of the canister.
  *
- * @param principal - The principal to check
+ * @param principal - The `Principal` to check
  *
- * @returns True if the principal is a controller, false if not or if called outside the IC environment
+ * @returns true if the `Principal` is a controller of the canister, false if not
  *
  * @remarks
  *
