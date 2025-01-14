@@ -24,5 +24,5 @@ export function time(): bigint {
         return BigInt(globalThis._azleIcExperimental.time());
     }
 
-    return BigInt(globalThis._azleIcStable.time());
+    return globalThis._azleIcStable.time();
 }

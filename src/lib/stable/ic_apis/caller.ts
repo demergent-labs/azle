@@ -1,18 +1,18 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Returns the Principal of the identity that initiated the current call.
+ * Returns the `Principal` of the identity that initiated the current call.
  *
- * @returns The caller's Principal
+ * @returns The caller's `Principal`
  *
  * @remarks
  *
  * When called from:
- * - \@init: Principal of the identity requesting installation
- * - \@postUpgrade: Principal of the identity requesting upgrade
- * - \@heartbeat: Principal of the management canister
- * - timer: Principal of the management canister
- * - inter-canister callee: Principal of the calling canister
+ * - \@init: `Principal` of the identity requesting installation
+ * - \@postUpgrade: `Principal` of the identity requesting upgrade
+ * - \@heartbeat: `Principal` of the management canister
+ * - timer: `Principal` of the management canister
+ * - inter-canister callee: `Principal` of the calling canister
  *
  * - **Call Context**:
  *   - any besides start

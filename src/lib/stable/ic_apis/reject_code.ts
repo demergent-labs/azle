@@ -15,7 +15,7 @@ import { IDL } from '@dfinity/candid';
  * - DestinationInvalid (3): Invalid destination (e.g. canister/account does not exist)
  * - CanisterReject (4): Explicit reject by the canister
  * - CanisterError (5): Canister error (e.g., trap, no response)
- * - Unknown: Unrecognized error code
+ * - Unknown (6): Unrecognized error code
  */
 export type RejectionCode =
     | { NoError: null }

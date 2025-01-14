@@ -30,13 +30,13 @@ export type AzleIcStable = {
         argsRawBuffer: Uint8Array,
         cyclesString: string
     ) => void;
-    performanceCounter: (counterType: number) => number;
+    performanceCounter: (counterType: number) => bigint;
     rejectCode: () => number;
     replyRaw: (bytes: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
     setTimer: (delay: string, timerCallbackId: string) => bigint;
     setTimerInterval: (interval: string, timerCallbackId: string) => bigint;
-    time: () => number;
+    time: () => bigint;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
     // assuming that their types are the same as the types declared by our

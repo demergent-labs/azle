@@ -1,22 +1,17 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { setCertifiedData } from './set_certified_data'; // Used for links in comments
-
 /**
  * Returns the data certificate authenticating the canister's certified data.
  *
- * @returns The data certificate as a Uint8Array, or undefined if:
- *   - Called during an update call
- *   - No certified data is set
- *   - Called outside the IC environment
+ * @returns The data certificate, or undefined if called outside of the following:
+ *   - a non-replicated query call from an ingress message
+ *   - a composite query call from an ingress message before an inter-canister await
  *
  * @remarks
- * - Used in conjunction with {@link setCertifiedData}
+ *
+ * - Used in conjunction with `setCertifiedData`
  * - Enables query calls to return certified responses
+ *
  * - **Call Context**:
- *   - query (non-replicated)
- *   - composite query
- * - **When called outside of Call Context**:
- *   - Returns undefined
+ *   - any besides start
  */
 export function dataCertificate(): Uint8Array | undefined {
     if (

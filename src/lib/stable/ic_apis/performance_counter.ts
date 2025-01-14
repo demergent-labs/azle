@@ -31,5 +31,5 @@ export function performanceCounter(counterType: number): bigint {
         );
     }
 
-    return BigInt(globalThis._azleIcStable.performanceCounter(counterType));
+    return globalThis._azleIcStable.performanceCounter(counterType);
 }

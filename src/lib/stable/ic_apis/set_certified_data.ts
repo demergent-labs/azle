@@ -19,9 +19,6 @@
  *   - timer
  *   - after a successful inter-canister await
  *   - after an unsuccessful inter-canister await
- *
- * - **Outside of Call Context**:
- *   - traps
  */
 export function setCertifiedData(data: Uint8Array): void {
     if (

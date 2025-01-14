@@ -1,14 +1,14 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Returns the canister's {@link Principal}.
+ * Returns the `Principal` of the canister.
  *
- * @returns The canister's Principal, or the anonymous Principal if called outside the IC environment
+ * @returns The `Principal` of the canister
  *
  * @remarks
- * - Every canister has a unique Principal
+ *
  * - **Call Context**:
- *   - Any method (not start)
+ *   - any besides start
  */
 export function id(): Principal {
     if (
