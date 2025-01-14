@@ -1,72 +1,120 @@
 {
     "simple_to_do": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1908472" },
+                    "instructions": {
+                        "__bigint__": "1999748"
+                    },
                     "method_name": "addTodo",
-                    "timestamp": { "__bigint__": "1730326446620210235" }
+                    "timestamp": {
+                        "__bigint__": "1730484648899811502"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1642955" },
+                    "instructions": {
+                        "__bigint__": "1711863"
+                    },
                     "method_name": "addTodo",
-                    "timestamp": { "__bigint__": "1730326448739707763" }
+                    "timestamp": {
+                        "__bigint__": "1730484651039719509"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "977612" },
+                    "instructions": {
+                        "__bigint__": "1004972"
+                    },
                     "method_name": "completeTodo",
-                    "timestamp": { "__bigint__": "1730326450913840861" }
+                    "timestamp": {
+                        "__bigint__": "1730484653242980803"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "915539" },
+                    "instructions": {
+                        "__bigint__": "935033"
+                    },
                     "method_name": "clearCompleted",
-                    "timestamp": { "__bigint__": "1730326452874179432" }
+                    "timestamp": {
+                        "__bigint__": "1730484655348324657"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "969805" },
+                    "instructions": {
+                        "__bigint__": "999059"
+                    },
                     "method_name": "completeTodo",
-                    "timestamp": { "__bigint__": "1730326454953656648" }
+                    "timestamp": {
+                        "__bigint__": "1730484657279647236"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "898144" },
+                    "instructions": {
+                        "__bigint__": "921093"
+                    },
                     "method_name": "clearCompleted",
-                    "timestamp": { "__bigint__": "1730326457189917848" }
+                    "timestamp": {
+                        "__bigint__": "1730484659512787252"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1999748" },
+                    "instructions": {
+                        "__bigint__": "2109587"
+                    },
                     "method_name": "addTodo",
-                    "timestamp": { "__bigint__": "1730484648899811502" }
+                    "timestamp": {
+                        "__bigint__": "1736543873018011026"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1711863" },
+                    "instructions": {
+                        "__bigint__": "1805791"
+                    },
                     "method_name": "addTodo",
-                    "timestamp": { "__bigint__": "1730484651039719509" }
+                    "timestamp": {
+                        "__bigint__": "1736543873355737011"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1004972" },
+                    "instructions": {
+                        "__bigint__": "1071507"
+                    },
                     "method_name": "completeTodo",
-                    "timestamp": { "__bigint__": "1730484653242980803" }
+                    "timestamp": {
+                        "__bigint__": "1736543873621870873"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "935033" },
+                    "instructions": {
+                        "__bigint__": "1006007"
+                    },
                     "method_name": "clearCompleted",
-                    "timestamp": { "__bigint__": "1730484655348324657" }
+                    "timestamp": {
+                        "__bigint__": "1736543873890319899"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "999059" },
+                    "instructions": {
+                        "__bigint__": "1069046"
+                    },
                     "method_name": "completeTodo",
-                    "timestamp": { "__bigint__": "1730484657279647236" }
+                    "timestamp": {
+                        "__bigint__": "1736543874179009099"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "921093" },
+                    "instructions": {
+                        "__bigint__": "987923"
+                    },
                     "method_name": "clearCompleted",
-                    "timestamp": { "__bigint__": "1730484659512787252" }
+                    "timestamp": {
+                        "__bigint__": "1736543874453193667"
+                    }
                 }
             ]
         }

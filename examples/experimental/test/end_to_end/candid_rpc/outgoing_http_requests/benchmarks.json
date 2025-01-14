@@ -1,32 +1,48 @@
 {
     "outgoing_http_requests": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "168030994" },
+                    "instructions": {
+                        "__bigint__": "168239538"
+                    },
                     "method_name": "xkcd",
-                    "timestamp": { "__bigint__": "1730326486418602117" }
+                    "timestamp": {
+                        "__bigint__": "1730484654503955802"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "2132512" },
+                    "instructions": {
+                        "__bigint__": "2125891"
+                    },
                     "method_name": "xkcdRaw",
-                    "timestamp": { "__bigint__": "1730326488699811635" }
+                    "timestamp": {
+                        "__bigint__": "1730484656807962443"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "168239538" },
+                    "instructions": {
+                        "__bigint__": "179235685"
+                    },
                     "method_name": "xkcd",
-                    "timestamp": { "__bigint__": "1730484654503955802" }
+                    "timestamp": {
+                        "__bigint__": "1736543895843546112"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "2125891" },
+                    "instructions": {
+                        "__bigint__": "2125536"
+                    },
                     "method_name": "xkcdRaw",
-                    "timestamp": { "__bigint__": "1730484656807962443" }
+                    "timestamp": {
+                        "__bigint__": "1736543896675748792"
+                    }
                 }
             ]
         }

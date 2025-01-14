@@ -1,26 +1,26 @@
 # Benchmarks for simple_to_do
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
-| --- | -------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | addTodo        | 1_999_748    | 1_389_899 | $0.0000018481 | $1.84             | <font color="red">+91_276</font> |
-| 1   | addTodo        | 1_711_863    | 1_274_745 | $0.0000016950 | $1.69             | <font color="red">+68_908</font> |
-| 2   | completeTodo   | 1_004_972    | 991_988   | $0.0000013190 | $1.31             | <font color="red">+27_360</font> |
-| 3   | clearCompleted | 935_033      | 964_013   | $0.0000012818 | $1.28             | <font color="red">+19_494</font> |
-| 4   | completeTodo   | 999_059      | 989_623   | $0.0000013159 | $1.31             | <font color="red">+29_254</font> |
-| 5   | clearCompleted | 921_093      | 958_437   | $0.0000012744 | $1.27             | <font color="red">+22_949</font> |
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | addTodo        | 2_109_587    | 1_433_834 | $0.0000019065 | $1.90             | <font color="red">+109_839</font> |
+| 1   | addTodo        | 1_805_791    | 1_312_316 | $0.0000017449 | $1.74             | <font color="red">+93_928</font>  |
+| 2   | completeTodo   | 1_071_507    | 1_018_602 | $0.0000013544 | $1.35             | <font color="red">+66_535</font>  |
+| 3   | clearCompleted | 1_006_007    | 992_402   | $0.0000013196 | $1.31             | <font color="red">+70_974</font>  |
+| 4   | completeTodo   | 1_069_046    | 1_017_618 | $0.0000013531 | $1.35             | <font color="red">+69_987</font>  |
+| 5   | clearCompleted | 987_923      | 985_169   | $0.0000013099 | $1.30             | <font color="red">+66_830</font>  |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | addTodo        | 1_908_472    | 1_353_388 | $0.0000017996 | $1.79             |
-| 1   | addTodo        | 1_642_955    | 1_247_182 | $0.0000016583 | $1.65             |
-| 2   | completeTodo   | 977_612      | 981_044   | $0.0000013045 | $1.30             |
-| 3   | clearCompleted | 915_539      | 956_215   | $0.0000012715 | $1.27             |
-| 4   | completeTodo   | 969_805      | 977_922   | $0.0000013003 | $1.30             |
-| 5   | clearCompleted | 898_144      | 949_257   | $0.0000012622 | $1.26             |
+| 0   | addTodo        | 1_999_748    | 1_389_899 | $0.0000018481 | $1.84             |
+| 1   | addTodo        | 1_711_863    | 1_274_745 | $0.0000016950 | $1.69             |
+| 2   | completeTodo   | 1_004_972    | 991_988   | $0.0000013190 | $1.31             |
+| 3   | clearCompleted | 935_033      | 964_013   | $0.0000012818 | $1.28             |
+| 4   | completeTodo   | 999_059      | 989_623   | $0.0000013159 | $1.31             |
+| 5   | clearCompleted | 921_093      | 958_437   | $0.0000012744 | $1.27             |
 
 ---
 

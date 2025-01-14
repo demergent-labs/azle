@@ -1,10 +1,10 @@
 # Benchmarks for query
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.0
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 No benchmarks reported
 

@@ -1,22 +1,30 @@
 {
     "phone_book": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "2932924" },
+                    "instructions": {
+                        "__bigint__": "3044077"
+                    },
                     "method_name": "insert",
-                    "timestamp": { "__bigint__": "1730326453034433896" }
+                    "timestamp": {
+                        "__bigint__": "1730484649260910625"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "3044077" },
+                    "instructions": {
+                        "__bigint__": "3202373"
+                    },
                     "method_name": "insert",
-                    "timestamp": { "__bigint__": "1730484649260910625" }
+                    "timestamp": {
+                        "__bigint__": "1736543868521979736"
+                    }
                 }
             ]
         }

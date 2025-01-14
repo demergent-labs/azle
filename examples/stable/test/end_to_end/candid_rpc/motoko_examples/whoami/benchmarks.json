@@ -1,22 +1,30 @@
 {
     "whoami": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1027546042" },
+                    "instructions": {
+                        "__bigint__": "1345834456"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730326458669318113" }
+                    "timestamp": {
+                        "__bigint__": "1730484657032788090"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1345834456" },
+                    "instructions": {
+                        "__bigint__": "1012962933"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484657032788090" }
+                    "timestamp": {
+                        "__bigint__": "1736543880131144099"
+                    }
                 }
             ]
         }

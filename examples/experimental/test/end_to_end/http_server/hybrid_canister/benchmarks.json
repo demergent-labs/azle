@@ -1,168 +1,264 @@
 {
     "server": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8135229603" },
+                    "instructions": {
+                        "__bigint__": "8136350495"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326465686949432" }
+                    "timestamp": {
+                        "__bigint__": "1730484694971903180"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44783575" },
+                    "instructions": {
+                        "__bigint__": "44780337"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326502677601771" }
+                    "timestamp": {
+                        "__bigint__": "1730484734199419711"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1427065" },
+                    "instructions": {
+                        "__bigint__": "1430674"
+                    },
                     "method_name": "candidUpdate",
-                    "timestamp": { "__bigint__": "1730326503247894219" }
+                    "timestamp": {
+                        "__bigint__": "1730484735067229932"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8136350495" },
+                    "instructions": {
+                        "__bigint__": "8275850092"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484694971903180" }
+                    "timestamp": {
+                        "__bigint__": "1736543866038986122"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44780337" },
+                    "instructions": {
+                        "__bigint__": "44935647"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484734199419711" }
+                    "timestamp": {
+                        "__bigint__": "1736543895135138998"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1430674" },
+                    "instructions": {
+                        "__bigint__": "1437007"
+                    },
                     "method_name": "candidUpdate",
-                    "timestamp": { "__bigint__": "1730484735067229932" }
+                    "timestamp": {
+                        "__bigint__": "1736543895677862321"
+                    }
                 }
             ]
         }
     },
     "server_init_and_post_upgrade": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8146812651" },
+                    "instructions": {
+                        "__bigint__": "8159511992"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730326513912579479" }
+                    "timestamp": {
+                        "__bigint__": "1730484746384825815"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45104076" },
+                    "instructions": {
+                        "__bigint__": "45205098"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326518022415597" }
+                    "timestamp": {
+                        "__bigint__": "1730484752774824801"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1793482" },
+                    "instructions": {
+                        "__bigint__": "1798186"
+                    },
                     "method_name": "candidUpdate",
-                    "timestamp": { "__bigint__": "1730326518639034396" }
+                    "timestamp": {
+                        "__bigint__": "1730484753381816504"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8159511992" },
+                    "instructions": {
+                        "__bigint__": "8299370212"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484746384825815" }
+                    "timestamp": {
+                        "__bigint__": "1736543903500228132"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45205098" },
+                    "instructions": {
+                        "__bigint__": "45340887"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484752774824801" }
+                    "timestamp": {
+                        "__bigint__": "1736543909647319181"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1798186" },
+                    "instructions": {
+                        "__bigint__": "1803298"
+                    },
                     "method_name": "candidUpdate",
-                    "timestamp": { "__bigint__": "1730484753381816504" }
+                    "timestamp": {
+                        "__bigint__": "1736543910176470705"
+                    }
                 }
             ]
         }
     },
     "canister": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8136193902" },
+                    "instructions": {
+                        "__bigint__": "8138675913"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326449946764546" }
+                    "timestamp": {
+                        "__bigint__": "1730484679058721805"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44801752" },
+                    "instructions": {
+                        "__bigint__": "44787036"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326481306612355" }
+                    "timestamp": {
+                        "__bigint__": "1730484711073260921"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1453516" },
+                    "instructions": {
+                        "__bigint__": "1453301"
+                    },
                     "method_name": "candidUpdate",
-                    "timestamp": { "__bigint__": "1730326481915913641" }
+                    "timestamp": {
+                        "__bigint__": "1730484712348624453"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8138675913" },
+                    "instructions": {
+                        "__bigint__": "8278061865"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484679058721805" }
+                    "timestamp": {
+                        "__bigint__": "1736543852548481663"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "44787036" },
+                    "instructions": {
+                        "__bigint__": "44971989"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484711073260921" }
+                    "timestamp": {
+                        "__bigint__": "1736543881812116346"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1453301" },
+                    "instructions": {
+                        "__bigint__": "1462146"
+                    },
                     "method_name": "candidUpdate",
-                    "timestamp": { "__bigint__": "1730484712348624453" }
+                    "timestamp": {
+                        "__bigint__": "1736543882583597918"
+                    }
                 }
             ]
         }
     },
     "canister_init_and_post_upgrade": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8147477834" },
+                    "instructions": {
+                        "__bigint__": "8161414553"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730326492904505399" }
+                    "timestamp": {
+                        "__bigint__": "1730484723982308078"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45142367" },
+                    "instructions": {
+                        "__bigint__": "45228817"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730326499762716781" }
+                    "timestamp": {
+                        "__bigint__": "1730484731457348472"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1821611" },
+                    "instructions": {
+                        "__bigint__": "1821544"
+                    },
                     "method_name": "candidUpdate",
-                    "timestamp": { "__bigint__": "1730326500634584140" }
+                    "timestamp": {
+                        "__bigint__": "1730484732075897353"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8161414553" },
+                    "instructions": {
+                        "__bigint__": "8301400676"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730484723982308078" }
+                    "timestamp": {
+                        "__bigint__": "1736543890583147682"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "45228817" },
+                    "instructions": {
+                        "__bigint__": "45353972"
+                    },
                     "method_name": "http_request_update",
-                    "timestamp": { "__bigint__": "1730484731457348472" }
+                    "timestamp": {
+                        "__bigint__": "1736543894337459788"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1821544" },
+                    "instructions": {
+                        "__bigint__": "1820946"
+                    },
                     "method_name": "candidUpdate",
-                    "timestamp": { "__bigint__": "1730484732075897353" }
+                    "timestamp": {
+                        "__bigint__": "1736543894875021562"
+                    }
                 }
             ]
         }
