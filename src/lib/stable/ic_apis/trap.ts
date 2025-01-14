@@ -6,12 +6,14 @@
  * @throws {Error} If called outside of the IC environment where the API is not available
  *
  * @remarks
+ *
  * - Immediately stops execution
  * - Produces a `CANISTER_ERROR` (5) rejection code
  * - Discards all state changes in current call
  * - Message appears in error logs
+ *
  * - **Call Context**:
- *   - Any method
+ *   - any
  */
 export function trap(message: string): never {
     if (

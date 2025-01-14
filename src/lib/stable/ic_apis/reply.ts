@@ -24,24 +24,29 @@ type ReplyInput<T> =
  * Replies to the current call with either data or raw bytes.
  *
  * @typeParam T - The type of data being replied with
+ *
  * @param input - Either data to be encoded and sent, or pre-encoded raw bytes
- * @returns void, or no effect if called outside the IC environment
+ *
+ * @returns void
  *
  * @remarks
+ *
  * - Used in canister methods marked with { manual: true }
  * - When using the data option:
  *   - If idlType is provided, the data will be encoded using that type
  *   - If idlType is omitted, the data will be encoded as an empty type
+ *
  * - **Call Context**:
- *   - update
- *   - query (replicated and non-replicated)
- *   - composite query
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - after a cross-canister call from a composite query
- *   - after a rejected cross-canister call from a composite query
- * - **When called outside of Call Context**:
- *   - Throws
+ *   - \@update
+ *   - \@query, replicated and non-replicated
+ *   - \@query(..., { composite: true })
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
+ *   - after a successful inter-canister await from a composite query
+ *   - after an unsuccessful inter-canister await from a composite query
+ *
+ * - **Outside of Call Context**:
+ *   - throws
  */
 export function reply<T>(input: ReplyInput<T>): void {
     if (

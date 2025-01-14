@@ -12,10 +12,8 @@
  *   - \@update
  *   - \@query, replicated and non-replicated
  *   - \@query(..., { composite: true })
- *   - after a successful cross-canister await
- *   - after a successful cross-canister await from a composite query
- * - **Outside of Call Context**:
- *   - traps
+ *   - after a successful inter-canister await
+ *   - after a successful inter-canister await from a composite query
  */
 export function argDataRaw(): Uint8Array {
     if (

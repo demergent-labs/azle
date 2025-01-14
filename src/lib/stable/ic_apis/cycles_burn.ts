@@ -1,23 +1,21 @@
 /**
- * Burns the specified amount of cycles from the canister's balance.
+ * Attempts to irrevocably remove the specified amount of cycles from the canister's balance.
  *
- * @param amount - The number of cycles to burn
- * @returns The number of cycles actually burned, or 0n if called outside the IC environment
+ * @param amount - The number of cycles to burn. Maximum value is 2^128 - 1 (u128)
+ *
+ * @returns The number of cycles actually burned
  *
  * @remarks
- * - Cannot burn more cycles than the canister has available
+ *
  * - **Call Context**:
- *   - init
- *   - postUpgrade
- *   - preUpgrade
- *   - update
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - heartbeat
+ *   - \@init
+ *   - \@postUpgrade
+ *   - \@preUpgrade
+ *   - \@update
+ *   - \@heartbeat
  *   - timer
- *   - Note: Also cleanupCallback
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function cyclesBurn(amount: bigint): bigint {
     if (

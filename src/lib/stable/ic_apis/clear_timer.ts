@@ -1,26 +1,22 @@
 /**
- * Cancels a timer previously created with setTimer or setTimerInterval.
+ * Cancels a timer previously created with `setTimer` or `setTimerInterval`.
  *
- * @param timerId - The ID of the timer to cancel, as returned by setTimer/setTimerInterval
- * @returns void, or no effect if called outside the IC environment
+ * @param timerId - The ID of the timer to cancel, as returned by `setTimer` or `setTimerInterval`
+ *
+ * @returns void
  *
  * @remarks
- * - Safe to call multiple times - does nothing if timer is already cancelled
- * - Cleans up internal timer callback references
- * - No effect if timer ID doesn't exist
+ * - Does nothing if timer is already cancelled
+ *
  * - **Call Context**:
- *   - init
- *   - postUpgrade
- *   - preUpgrade
- *   - update
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - heartbeat
+ *   - \@init
+ *   - \@postUpgrade
+ *   - \@preUpgrade
+ *   - \@update
+ *   - \@heartbeat
  *   - timer
- *   - Note: Assuming same as timer
- *   - Note: Also cleanupCallback
- * - **When called outside of Call Context**:
- *   - No effect
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function clearTimer(timerId: bigint): void {
     if (

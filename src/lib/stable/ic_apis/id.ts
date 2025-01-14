@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Returns this canister's {@link Principal}.
+ * Returns the canister's {@link Principal}.
  *
  * @returns The canister's Principal, or the anonymous Principal if called outside the IC environment
  *

@@ -5,13 +5,16 @@
  * @returns The actual amount of cycles accepted, which may be less than maxAmount if fewer cycles were available, or 0n if called outside the IC environment
  *
  * @remarks
+ *
  * - Cannot accept more cycles than are available in the current call
+ *
  * - **Call Context**:
- *   - update
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - \@update
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
+ *
+ * - **Outside of Call Context**:
+ *   - traps
  */
 export function msgCyclesAccept(maxAmount: bigint): bigint {
     if (

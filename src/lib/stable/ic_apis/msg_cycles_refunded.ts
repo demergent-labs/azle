@@ -5,11 +5,13 @@
  *
  * @remarks
  * - Refunded cycles are already added to canister balance
+ *
  * - **Call Context**:
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
+ *
+ * - **Outside of Call Context**:
+ *   - traps
  */
 export function msgCyclesRefunded(): bigint {
     if (

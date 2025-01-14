@@ -13,23 +13,25 @@ import { idlEncode } from '../execute_with_candid_serde';
  * @param options.args - Array of arguments to pass to the method
  * @param options.cycles - Amount of cycles to attach to the call (defaults to 0n)
  * @param options.raw - Raw bytes to pass as arguments instead of Candid-encoded args
- * @returns void, or no effect if called outside the IC environment
+ *
+ * @returns void
  *
  * @remarks
  * - The call is "fire and forget" - errors are not returned
  * - More efficient than await ic.call() when no response is needed
+ *
  * - **Call Context**:
- *   - update
- *   - composite query
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - after a cross-canister call from a composite query
- *   - after a rejected cross-canister call from a composite query
- *   - heartbeat
+ *   - \@update
+ *   - \@query(..., { composite: true })
+ *   - \@heartbeat
  *   - timer
- *   - Note: Assuming same as call
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
+ *   - after a successful inter-canister await from a composite query
+ *   - after an unsuccessful inter-canister await from a composite query
+ *
+ * - **Outside of Call Context**:
+ *   - traps
  */
 export function notify(
     canisterId: Principal | string,

@@ -2,7 +2,7 @@
 import { setCertifiedData } from './set_certified_data'; // Used for links in comments
 
 /**
- * Returns the data certificate authenticating this canister's certified data.
+ * Returns the data certificate authenticating the canister's certified data.
  *
  * @returns The data certificate as a Uint8Array, or undefined if:
  *   - Called during an update call

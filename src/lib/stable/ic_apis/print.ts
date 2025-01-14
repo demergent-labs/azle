@@ -2,12 +2,14 @@
  * Prints a message to the replica log output.
  *
  * @param message - The message to print
- * @returns void, or no effect if called outside the IC environment
+ *
+ * @returns void
  *
  * @remarks
  * - Output appears in replica logs, not to end users
+ *
  * - **Call Context**:
- *   - Any method
+ *   - any
  */
 export function print(message: string): void {
     if (

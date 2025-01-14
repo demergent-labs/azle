@@ -6,10 +6,9 @@
  * @remarks
  *
  * - Traps if invoked twice
+ *
  * - **Call Context**:
  *   - \@inspectMessage
- * - **Outside of Call Context**:
- *   - traps
  */
 export function acceptMessage(): void {
     if (

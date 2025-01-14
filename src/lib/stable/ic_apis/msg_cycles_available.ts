@@ -4,13 +4,16 @@
  * @returns The amount of cycles available from the current call, or 0n if called outside the IC environment
  *
  * @remarks
+ *
  * - Amount decreases as cycles are accepted by the canister
+ *
  * - **Call Context**:
- *   - update
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - \@update
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
+ *
+ * - **Outside of Call Context**:
+ *   - traps
  */
 export function msgCyclesAvailable(): bigint {
     if (

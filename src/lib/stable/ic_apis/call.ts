@@ -21,17 +21,16 @@ import { idlDecode, idlEncode } from '../execute_with_candid_serde';
  * - Supports both high-level (with IDL types) and low-level (raw bytes) calls
  * - Can transfer cycles as part of the call
  * - Automatically encodes/decodes arguments and return values
+ *
  * - **Call Context**:
- *   - update
- *   - composite query
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - after a cross-canister call from a composite query
- *   - after a rejected cross-canister call from a composite query
- *   - heartbeat
+ *   - \@update
+ *   - \@query(..., { composite: true })
+ *   - \@heartbeat
  *   - timer
- * - **When called outside of Call Context**:
- *   - Throws
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
+ *   - after a successful inter-canister await from a composite query
+ *   - after an unsuccessful inter-canister await from a composite query
  */
 export async function call<Args extends any[] | undefined, Return = any>(
     canisterId: Principal | string,

@@ -3,22 +3,26 @@ import { candidEncode } from './candid_encode';
 import { id } from './id';
 
 /**
- * Resets the instruction limit to allow continuation of computationally intensive operations.
+ * Resets the instruction limit after the await point.
  *
- * @returns Promise<void>, or no effect if called outside the IC environment
+ * @returns Promise\<void\>
  *
  * @remarks
- * - Makes a cross-canister call to self, so state management across await points is important
- * - Current instruction limits are ~40B for update calls
- * - See: https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits
+ *
+ * - **Important**: Makes an inter-canister call to the canister itself
+ *   - Global state can change from before the await point to after the await point
+ *   - All code running after the await point will be in one of the following call contexts
+ *     - after a successful inter-canister await
+ *     - after an unsuccessful inter-canister await
+ *     - the original call context
+ * - See [the current instruction limits](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
+ *
  * - **Call Context**:
- *   - update
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - heartbeat
+ *   - \@update
+ *   - \@heartbeat
  *   - timer
- * - **When called outside of Call Context**:
- *   - Throws
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export async function chunk(): Promise<void> {
     if (

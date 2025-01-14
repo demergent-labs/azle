@@ -2,7 +2,7 @@ use core::time::Duration;
 
 use ic_cdk::trap;
 use ic_cdk_timers::{set_timer_interval, TimerId};
-use rquickjs::{Ctx, Function, Object, Result};
+use rquickjs::{BigInt, Ctx, Function, Object, Result};
 use slotmap::Key;
 
 use crate::{error::quickjs_call_with_error_handling, ic::throw_error, quickjs_with_ctx};
@@ -10,7 +10,7 @@ use crate::{error::quickjs_call_with_error_handling, ic::throw_error, quickjs_wi
 pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(
         ctx.clone(),
-        move |interval: String, callback_id: String| -> Result<u64> {
+        move |interval: String, callback_id: String| -> Result<BigInt> {
             let interval: u64 = interval.parse().map_err(|e| throw_error(ctx.clone(), e))?;
             let interval_duration = Duration::new(interval, 0);
 
@@ -42,7 +42,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             let timer_id: TimerId = set_timer_interval(interval_duration, closure);
             let timer_id_u64: u64 = timer_id.data().as_ffi();
 
-            Ok(timer_id_u64)
+            Ok(BigInt::from_u64(ctx.clone(), timer_id_u64)?)
         },
     )
 }

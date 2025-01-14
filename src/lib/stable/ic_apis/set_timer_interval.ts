@@ -1,31 +1,33 @@
 import { v4 } from 'uuid';
 
 /**
- * Sets a callback to be executed periodically at the specified interval.
- * To cancel the timer pass the returned timer ID to clearTimer
+ * Sets a callback to be executed periodically every specified interval.
  *
- * @param interval - The time between executions in nanoseconds (as a bigint)
- * @param callback - The function to execute periodically. Can be async
- * @returns The timer ID (used with clearTimer to cancel), or 0n if called outside the IC environment
- * @throws {Error} If interval + current_time would exceed u64::MAX
+ * @param interval - The time between executions, in seconds. Maximum value is 2^64 - 1 (u64) seconds
+ * @param callback - The callback to execute. Can be async
+ *
+ * @returns The timer ID (used with `clearTimer` to cancel the timer)
  *
  * @remarks
  * - Timers are not persisted across canister upgrades
- * - Timer IDs are unique within a canister
- * - The timer can be cancelled using clearTimer
- * - Callbacks remain registered even if they throw errors
+ * - Timers are deactivated in the following cases
+ *   - Changes to the canister's Wasm module
+ *     - management canister
+ *       - `install_code`
+ *       - `install_chunked_code`
+ *       - `uninstall_code`
+ *     - When the canister runs out of cycles
+ * - Traps if `interval` + `time()` is more than 2^64 - 1 (u64) nanoseconds
+ *
  * - **Call Context**:
- *   - init
- *   - postUpgrade
- *   - preUpgrade
- *   - update
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - heartbeat
+ *   - \@init
+ *   - \@postUpgrade
+ *   - \@preUpgrade
+ *   - \@update
+ *   - \@heartbeat
  *   - timer
- *   - Note: Also cleanupCallback
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function setTimerInterval(
     interval: bigint,

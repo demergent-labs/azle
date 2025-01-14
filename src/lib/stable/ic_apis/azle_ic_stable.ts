@@ -15,7 +15,7 @@ export type AzleIcStable = {
     candidDecode: (candidBytes: Uint8Array) => string;
     candidEncode: (candidString: string) => Uint8Array;
     canisterBalance: () => string;
-    canisterVersion: () => number;
+    canisterVersion: () => bigint;
     clearTimer: (timerId: string) => void;
     cyclesBurn: (amountString: string) => string;
     dataCertificate: () => Uint8Array | undefined;
@@ -34,8 +34,8 @@ export type AzleIcStable = {
     rejectCode: () => number;
     replyRaw: (bytes: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
-    setTimer: (delay: string, timerCallbackId: string) => number;
-    setTimerInterval: (interval: string, timerCallbackId: string) => number;
+    setTimer: (delay: string, timerCallbackId: string) => bigint;
+    setTimerInterval: (interval: string, timerCallbackId: string) => bigint;
     time: () => number;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am

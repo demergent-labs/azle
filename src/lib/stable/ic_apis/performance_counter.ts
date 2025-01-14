@@ -5,12 +5,15 @@
  *   - 0: Instruction counter, returns the number of WebAssembly instructions executed since the start of the current message
  *   - 1: Call context instruction counter, returns the number of WebAssembly instructions executed since the start of the current call context
  *   - Other values will trap, but in the future the IC might support more performance counters
- * @returns The performance counter value as a bigint, or 0n if called outside the IC environment
+ *
+ * @returns The performance counter value as a bigint
  *
  * @remarks
+ *
  * - The instruction counters reset at the start of each message/call context
+ *
  * - **Call Context**:
- *   - Any method
+ *   - any
  */
 export function performanceCounter(counterType: number): bigint {
     if (

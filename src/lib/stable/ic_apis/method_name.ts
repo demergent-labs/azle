@@ -4,10 +4,12 @@
  * @returns The name of the current method, or empty string if called outside the IC environment
  *
  * @remarks
+ *
  * - **Call Context**:
- *   - inspectMessage
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - \@inspectMessage
+ *
+ * - **Outside of Call Context**:
+ *   - traps
  */
 export function methodName(): string {
     if (

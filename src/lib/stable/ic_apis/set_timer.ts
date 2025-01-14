@@ -3,28 +3,31 @@ import { v4 } from 'uuid';
 /**
  * Sets a one-time callback to be executed after a specified delay.
  *
- * @param delay - The time to wait before execution, in nanoseconds
- * @param callback - The function to execute after the delay. Can be async
- * @returns The timer ID (used with clearTimer to cancel), or 0n if called outside the IC environment
- * @throws {Error} If delay + current_time would exceed u64::MAX
+ * @param delay - The time to wait before execution, in seconds. Maximum value is 2^64 - 1 (u64) seconds
+ * @param callback - The callback to execute. Can be async
+ *
+ * @returns The timer ID (used with `clearTimer` to cancel the timer before it executes)
  *
  * @remarks
  * - Timers are not persisted across canister upgrades
- * - Timer IDs are unique within a canister
- * - The timer can be cancelled before execution using clearTimer
- * - The callback registration is automatically cleaned up after execution
+ * - Timers are deactivated in the following cases
+ *   - Changes to the canister's Wasm module
+ *     - management canister
+ *       - `install_code`
+ *       - `install_chunked_code`
+ *       - `uninstall_code`
+ *     - When the canister runs out of cycles
+ * - Traps if `delay` + `time()` is more than 2^64 - 1 (u64) nanoseconds
+ *
  * - **Call Context**:
- *   - init
- *   - postUpgrade
- *   - preUpgrade
- *   - update
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - heartbeat
+ *   - \@init
+ *   - \@postUpgrade
+ *   - \@preUpgrade
+ *   - \@update
+ *   - \@heartbeat
  *   - timer
- *   - Note: Also cleanupCallback
- * - **When called outside of Call Context**:
- *   - Traps
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function setTimer(
     delay: bigint,

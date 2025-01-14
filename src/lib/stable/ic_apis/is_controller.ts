@@ -1,14 +1,16 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Determines if a given {@link Principal} is a controller of this canister.
+ * Determines if a given {@link Principal} is a controller of the canister.
  *
  * @param principal - The principal to check
+ *
  * @returns True if the principal is a controller, false if not or if called outside the IC environment
  *
  * @remarks
+ *
  * - **Call Context**:
- *   - Any method
+ *   - any
  */
 export function isController(principal: Principal): boolean {
     if (

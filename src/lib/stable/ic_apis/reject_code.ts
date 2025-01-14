@@ -39,15 +39,17 @@ export const RejectionCode = IDL.Variant({
 /**
  * Returns the rejection code from the most recently executed cross-canister call.
  *
- * @returns The {@link RejectionCode} variant, or {Unknown: null} if called outside the IC environment
+ * @returns The `RejectionCode` variant
  *
  * @remarks
+ *
  * - **Call Context**:
- *   - after a cross-canister call
- *   - after a rejected cross-canister call
- *   - after a cross-canister call from a composite query
- *   - after a rejected cross-canister call from a composite query
- * - **When called outside of Call Context**:
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
+ *   - after a successful inter-canister await from a composite query
+ *   - after an unsuccessful inter-canister await from a composite query
+ *
+ * - **Outside of Call Context**:
  *   - Traps
  */
 export function rejectCode(): RejectionCode {

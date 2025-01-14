@@ -1,11 +1,11 @@
 /**
- * Returns this canister's version number, which is incremented by the IC on certain operations.
+ * Returns the canister's version number, which is incremented by ICP on certain operations.
  *
- * @returns The canister version number, or 0n if called outside the IC environment
+ * @returns The canister's version number
  *
  * @remarks
+ *
  * The version number is guaranteed to increase when:
- * - The canister is created
  * - The canister code is installed/reinstalled/upgraded
  * - The canister's controllers are modified
  * - The canister's status changes (running/stopping/stopped)
@@ -20,7 +20,7 @@
  * have been made to the canister's state or configuration.
  *
  * - **Call Context**:
- *   - Any method (not start)
+ *   - any besides start
  */
 export function canisterVersion(): bigint {
     if (
@@ -34,5 +34,5 @@ export function canisterVersion(): bigint {
         return BigInt(globalThis._azleIcExperimental.canisterVersion());
     }
 
-    return BigInt(globalThis._azleIcStable.canisterVersion());
+    return globalThis._azleIcStable.canisterVersion();
 }
