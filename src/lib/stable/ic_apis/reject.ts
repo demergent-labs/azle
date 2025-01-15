@@ -6,7 +6,7 @@
  *
  * @remarks
  *
- * Produces reject code `CanisterReject (4)`
+ * - Produces reject code `CanisterReject (4)`
  *
  * - **Call Context**:
  *   - \@update(..., { manual: true })
