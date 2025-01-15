@@ -44,9 +44,6 @@ type ReplyInput<T> =
  *   - after an unsuccessful inter-canister await
  *   - after a successful inter-canister await from a composite query
  *   - after an unsuccessful inter-canister await from a composite query
- *
- * - **Outside of Call Context**:
- *   - throws
  */
 export function reply<T>(input: ReplyInput<T>): void {
     if (

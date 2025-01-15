@@ -1,16 +1,15 @@
 /**
  * Returns the value of the specified performance counter.
  *
- * @param counterType - The type of performance counter:
- *   - 0: Instruction counter, returns the number of WebAssembly instructions executed since the start of the current message
- *   - 1: Call context instruction counter, returns the number of WebAssembly instructions executed since the start of the current call context
- *   - Other values will trap, but in the future the IC might support more performance counters
+ * @param counterType - A supported performance counter type. The available types are:
+ *   - 0: current execution instruction counter. The number of WebAssembly instructions the canister has executed since the beginning of the current message execution
+ *   - 1: call context instruction counter. The number of WebAssembly instructions the canister has executed within the call context of the current message execution since call context creation. The counter monotonically increases across all message executions in the call context until the corresponding call context is removed.
  *
- * @returns The performance counter value as a bigint
+ * @returns The performance counter value
  *
  * @remarks
  *
- * - The instruction counters reset at the start of each message/call context
+ *  - Consider using `counterType` `1` in most cases; it measures across inter-canister awaits
  *
  * - **Call Context**:
  *   - any
