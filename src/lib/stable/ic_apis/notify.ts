@@ -29,9 +29,6 @@ import { idlEncode } from '../execute_with_candid_serde';
  *   - after an unsuccessful inter-canister await
  *   - after a successful inter-canister await from a composite query
  *   - after an unsuccessful inter-canister await from a composite query
- *
- * - **Outside of Call Context**:
- *   - traps
  */
 export function notify(
     canisterId: Principal | string,

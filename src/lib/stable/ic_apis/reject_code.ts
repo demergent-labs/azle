@@ -7,15 +7,15 @@ globalThis.TextEncoder = TextEncoder;
 import { IDL } from '@dfinity/candid';
 
 /**
- * Represents the possible rejection codes from cross-canister calls.
+ * Represents the possible reject codes from inter-canister calls.
  *
- * - NoError (0): The call completed successfully
+ * - NoError (0): The call did not reject
  * - SysFatal (1): Fatal system error, retry unlikely to be useful
  * - SysTransient (2): Transient system error, retry might be possible
  * - DestinationInvalid (3): Invalid destination (e.g. canister/account does not exist)
  * - CanisterReject (4): Explicit reject by the canister
  * - CanisterError (5): Canister error (e.g., trap, no response)
- * - Unknown (6): Unrecognized error code
+ * - Unknown (6): Unknown error code
  */
 export type RejectionCode =
     | { NoError: null }
@@ -37,9 +37,9 @@ export const RejectionCode = IDL.Variant({
 });
 
 /**
- * Returns the rejection code from the most recently executed cross-canister call.
+ * Returns the reject code from the most recently executed inter-canister call.
  *
- * @returns The `RejectionCode` variant
+ * @returns The reject code
  *
  * @remarks
  *
@@ -48,9 +48,6 @@ export const RejectionCode = IDL.Variant({
  *   - after an unsuccessful inter-canister await
  *   - after a successful inter-canister await from a composite query
  *   - after an unsuccessful inter-canister await from a composite query
- *
- * - **Outside of Call Context**:
- *   - Traps
  */
 export function rejectCode(): RejectionCode {
     if (

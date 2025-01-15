@@ -1,18 +1,15 @@
 /**
- * Returns the rejection message from the last failed cross-canister call.
+ * Returns the reject message from the last unsuccesful inter-canister call.
  *
- * @returns The rejection message
+ * @returns The reject message
  *
  * @remarks
- * - Will trap if there is no reject message available
- * - Always check `rejectCode` before calling this function
+ *
+ * - Will trap if there is no reject message available (if `rejectCode()` is `0`)
  *
  * - **Call Context**:
  *   - after an unsuccessful inter-canister await
  *   - after an unsuccessful inter-canister await from a composite query
- *
- * - **Outside of Call Context**:
- *   - traps
  */
 export function rejectMessage(): string {
     if (
