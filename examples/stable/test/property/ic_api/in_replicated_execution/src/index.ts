@@ -1,5 +1,8 @@
 import {
     acceptMessage,
+    call,
+    heartbeat,
+    id,
     IDL,
     init,
     inReplicatedExecution,
@@ -8,6 +11,7 @@ import {
     postUpgrade,
     preUpgrade,
     query,
+    setTimer,
     StableBTreeMap,
     update
 } from 'azle';
@@ -20,7 +24,8 @@ export default class {
         'PRE_UPGRADE_VERSION',
         boolean
     >(0);
-    inspectMessageIsInReplicatedExecution: boolean | null = null;
+    timerIsInReplicatedExecution: boolean | null = null;
+    heartbeatIsInReplicatedExecution: boolean | null = null;
 
     @init
     init(): void {
@@ -39,6 +44,9 @@ export default class {
     @postUpgrade
     postUpgrade(): void {
         this.postUpgradeIsInReplicatedExecution = inReplicatedExecution();
+        setTimer(0n, () => {
+            this.timerIsInReplicatedExecution = inReplicatedExecution();
+        });
     }
 
     @query([], IDL.Opt(IDL.Bool))
@@ -70,36 +78,63 @@ export default class {
         }
     }
 
-    @inspectMessage
-    inspectMessage(): void {
-        if (methodName() === 'getInspectMessageIsInReplicatedExecution') {
-            if (
-                inReplicatedExecution() ===
-                this.inspectMessageIsInReplicatedExecution
-            ) {
-                acceptMessage();
-            }
-        } else {
-            acceptMessage();
-        }
-    }
-
-    @update
-    setInspectMessageIsInReplicatedExecution(): void {
-        this.inspectMessageIsInReplicatedExecution = inReplicatedExecution();
+    @heartbeat
+    heartbeat(): void {
+        this.heartbeatIsInReplicatedExecution = inReplicatedExecution();
     }
 
     @query([], IDL.Opt(IDL.Bool))
-    getInspectMessageIsInReplicatedExecution(): [boolean] | [] {
-        if (this.inspectMessageIsInReplicatedExecution === null) {
+    getHeartbeatIsInReplicatedExecution(): [boolean] | [] {
+        if (this.heartbeatIsInReplicatedExecution === null) {
             return [];
         } else {
-            return [this.inspectMessageIsInReplicatedExecution];
+            return [this.heartbeatIsInReplicatedExecution];
         }
+    }
+
+    @query([], IDL.Opt(IDL.Bool))
+    getTimerIsInReplicatedExecution(): [boolean] | [] {
+        if (this.timerIsInReplicatedExecution === null) {
+            return [];
+        } else {
+            return [this.timerIsInReplicatedExecution];
+        }
+    }
+
+    @inspectMessage
+    inspectMessage(): void {
+        if (
+            methodName() ===
+            'getInspectMessageIsInReplicatedExecutionWhenInspectingUpdates'
+        ) {
+            if (inReplicatedExecution() === true) {
+                acceptMessage();
+            }
+            return;
+        }
+
+        acceptMessage();
+    }
+
+    @update([], IDL.Bool)
+    getInspectMessageIsInReplicatedExecution(): boolean {
+        return true;
     }
 
     @query([], IDL.Bool)
     getQueryIsInReplicatedExecution(): boolean {
+        return inReplicatedExecution();
+    }
+
+    @update([], IDL.Bool)
+    async getQueryInReplicatedModeIsInReplicatedExecution(): Promise<boolean> {
+        return await call(id(), 'getQueryIsInReplicatedExecution', {
+            returnIdlType: IDL.Bool
+        });
+    }
+
+    @query([], IDL.Bool, { composite: true })
+    getCompositeQueryIsInReplicatedExecution(): boolean {
         return inReplicatedExecution();
     }
 
