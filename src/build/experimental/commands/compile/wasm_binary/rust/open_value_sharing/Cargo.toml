@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 serde = "1.0.217"
-serde_json = "1.0.134"
+serde_json = "1.0.135"
 candid = "0.10.11"
 ic-cdk = "0.17.1"
 ic-cdk-macros = "0.17.1"

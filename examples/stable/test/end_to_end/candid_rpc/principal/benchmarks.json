@@ -1,6 +1,12 @@
 {
     "principal": {
-        "previous": { "version": "0.25.0-alpha", "benchmarks": [] },
-        "current": { "version": "0.25.0-dev", "benchmarks": [] }
+        "previous": {
+            "version": "0.25.0-dev",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": []
+        }
     }
 }

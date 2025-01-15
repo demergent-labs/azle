@@ -1,44 +1,60 @@
 {
     "recursion": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "6177355" },
+                    "instructions": {
+                        "__bigint__": "6229268"
+                    },
                     "method_name": "testRecServiceCall",
-                    "timestamp": { "__bigint__": "1730326463951438122" }
+                    "timestamp": {
+                        "__bigint__": "1730484667478078055"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "6229268" },
+                    "instructions": {
+                        "__bigint__": "6594931"
+                    },
                     "method_name": "testRecServiceCall",
-                    "timestamp": { "__bigint__": "1730484667478078055" }
+                    "timestamp": {
+                        "__bigint__": "1736543880299986931"
+                    }
                 }
             ]
         }
     },
     "recursive_canister": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1020180114" },
+                    "instructions": {
+                        "__bigint__": "1337859120"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730326448821974355" }
+                    "timestamp": {
+                        "__bigint__": "1730484650810353837"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1337859120" },
+                    "instructions": {
+                        "__bigint__": "1006996746"
+                    },
                     "method_name": "init",
-                    "timestamp": { "__bigint__": "1730484650810353837" }
+                    "timestamp": {
+                        "__bigint__": "1736543865954326333"
+                    }
                 }
             ]
         }
