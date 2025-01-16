@@ -1,8 +1,17 @@
 /**
- * When called from a query call, returns the data certificate
- * authenticating `certifiedData` set by this canister. Otherwise returns
- * `undefined`.
- * @returns the data certificate or undefined
+ * Returns the data certificate authenticating the canister's certified data.
+ *
+ * @returns The data certificate, or undefined if called outside of the following:
+ *   - a non-replicated query call from an ingress message
+ *   - a composite query call from an ingress message before an inter-canister await
+ *
+ * @remarks
+ *
+ * - Used in conjunction with `setCertifiedData`
+ * - Enables query calls to return certified responses
+ *
+ * - **Call Context**:
+ *   - any besides start
  */
 export function dataCertificate(): Uint8Array | undefined {
     if (

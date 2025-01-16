@@ -1,7 +1,13 @@
 /**
- * Converts a Candid string into bytes
- * @param candidString a valid Candid string
- * @returns the candid value as bytes
+ * Converts a Candid value string into its binary representation.
+ *
+ * @param candidString - A Candid value string
+ * @returns The encoded binary Candid value bytes
+ *
+ * @remarks
+ *
+ * - **Call Context**:
+ *   - any
  */
 export function candidEncode(candidString: string): Uint8Array {
     if (

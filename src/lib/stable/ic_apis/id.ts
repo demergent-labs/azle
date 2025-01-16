@@ -1,8 +1,14 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Returns the canister's id as a principal
- * @returns the canister's id as a principal
+ * Returns the `Principal` of the canister.
+ *
+ * @returns The `Principal` of the canister
+ *
+ * @remarks
+ *
+ * - **Call Context**:
+ *   - any besides start
  */
 export function id(): Principal {
     if (

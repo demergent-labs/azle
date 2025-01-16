@@ -1,7 +1,21 @@
 /**
- * Burns cycles from the canister
- * @param amount The amount of cycles to burn
- * @returns The amount of cycles that were actually burned
+ * Attempts to irrevocably remove the specified amount of cycles from the canister's balance.
+ *
+ * @param amount - The number of cycles to burn. Maximum value is 2^128 - 1 (u128)
+ *
+ * @returns The number of cycles actually burned
+ *
+ * @remarks
+ *
+ * - **Call Context**:
+ *   - \@init
+ *   - \@postUpgrade
+ *   - \@preUpgrade
+ *   - \@update
+ *   - \@heartbeat
+ *   - timer
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function cyclesBurn(amount: bigint): bigint {
     if (

@@ -2,15 +2,32 @@ import { IDL, JsonValue } from '@dfinity/candid';
 
 import { reply } from './ic_apis';
 
+/**
+ * Represents the different types of canister method execution modes.
+ */
 export type CanisterMethodMode =
-    | 'query'
-    | 'update'
-    | 'init'
-    | 'postUpgrade'
-    | 'preUpgrade'
-    | 'inspectMessage'
-    | 'heartbeat';
+    | 'query' // Read-only operations
+    | 'update' // State-modifying operations
+    | 'init' // Canister initialization
+    | 'postUpgrade' // After canister upgrade
+    | 'preUpgrade' // Before canister upgrade
+    | 'inspectMessage' // Message inspection
+    | 'heartbeat'; // Periodic heartbeat
 
+/**
+ * Executes a canister method with Candid serialization/deserialization handling.
+ * This function manages the full lifecycle of a canister method call:
+ * 1. Decodes the input arguments from Candid format
+ * 2. Executes the callback with decoded arguments
+ * 3. Encodes and replies with the result
+ *
+ * @param mode - The execution mode of the canister method
+ * @param args - Raw Candid-encoded input arguments as bytes
+ * @param callback - The actual method implementation to execute
+ * @param paramIdlTypes - Candid type definitions for the input parameters
+ * @param returnIdlType - Candid type definition for the return value
+ * @param manual - If true, skips automatic reply handling
+ */
 export async function executeAndReplyWithCandidSerde(
     mode: CanisterMethodMode,
     args: Uint8Array,
@@ -24,6 +41,15 @@ export async function executeAndReplyWithCandidSerde(
     encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }
 
+/**
+ * Decodes Candid-encoded arguments based on the method mode.
+ * Only decodes arguments for init, postUpgrade, query, and update methods.
+ *
+ * @param mode - The execution mode of the canister method
+ * @param args - Raw Candid-encoded input arguments
+ * @param paramIdlTypes - Candid type definitions for the parameters
+ * @returns Decoded argument values as a JSON-compatible array
+ */
 function decodeArgs(
     mode: CanisterMethodMode,
     args: Uint8Array,
@@ -41,6 +67,13 @@ function decodeArgs(
     }
 }
 
+/**
+ * Executes the callback function with the decoded arguments.
+ *
+ * @param args - Decoded arguments to pass to the callback
+ * @param callback - The method implementation to execute
+ * @returns The result of the callback execution
+ */
 async function getUnencodedResult(
     args: JsonValue[],
     callback: (...args: any) => any
@@ -48,6 +81,15 @@ async function getUnencodedResult(
     return await callback(...args);
 }
 
+/**
+ * Handles the encoding and reply of the method result.
+ * Only sends replies for query and update methods when manual mode is not enabled.
+ *
+ * @param mode - The execution mode of the canister method
+ * @param manual - If true, skips automatic reply handling
+ * @param unencodedResult - The raw result from the callback
+ * @param returnIdlType - Candid type definition for the return value
+ */
 function encodeResultAndReply(
     mode: CanisterMethodMode,
     manual: boolean,
@@ -61,6 +103,14 @@ function encodeResultAndReply(
     reply({ data: unencodedResult, idlType: returnIdlType });
 }
 
+/**
+ * Encodes JavaScript values into Candid format.
+ *
+ * @param argTypes - Candid type definitions for the values to encode
+ * @param args - Values to encode into Candid format
+ * @returns Candid-encoded data as bytes
+ * @throws {Error} If encoding fails
+ */
 export function idlEncode(
     argTypes: Array<IDL.Type<any>>,
     args: any[]
@@ -76,6 +126,14 @@ export function idlEncode(
     }
 }
 
+/**
+ * Decodes Candid-encoded data into JavaScript values.
+ *
+ * @param retTypes - Candid type definitions for the values to decode
+ * @param bytes - Candid-encoded data to decode
+ * @returns Decoded JavaScript values
+ * @throws {Error} If decoding fails
+ */
 export function idlDecode(
     retTypes: IDL.Type[],
     bytes: Uint8Array

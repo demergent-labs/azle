@@ -4,6 +4,16 @@ import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
 import { Serializable } from './stable_b_tree_map';
 
+/**
+ * Creates a serializer for converting data structures to and from stable storage format.
+ * Uses JSON serialization with custom replacer and reviver functions to handle special
+ * data types like BigInt, Principal, and TypedArrays.
+ *
+ * @param options - Configuration options
+ * @param options.replacer - Custom replacer function for JSON serialization
+ * @param options.reviver - Custom reviver function for JSON deserialization
+ * @returns A Serializable object that can convert data to/from bytes
+ */
 export function StableJson(options?: {
     replacer?: typeof jsonReplacer;
     reviver?: typeof jsonReviver;
@@ -31,6 +41,18 @@ export function StableJson(options?: {
 
 export const stableJson = StableJson();
 
+/**
+ * Custom JSON replacer function that handles special data types during serialization.
+ * Converts various JavaScript types to a stable format:
+ * - BigInt to string representation
+ * - Principal to string representation
+ * - Special number values (NaN, Infinity, -Infinity)
+ * - TypedArrays to regular arrays
+ *
+ * @param _key - The key being processed (unused)
+ * @param value - The value to convert
+ * @returns The converted value safe for JSON string serialization
+ */
 export function jsonReplacer(_key: string, value: any): any {
     if (typeof value === 'bigint') {
         return {
@@ -117,6 +139,18 @@ export function jsonReplacer(_key: string, value: any): any {
     return value;
 }
 
+/**
+ * Custom JSON reviver function that restores special data types during deserialization.
+ * Converts the serialized format back to native JavaScript types:
+ * - String representations back to BigInt
+ * - String representations back to Principal
+ * - Special number values (NaN, Infinity, -Infinity)
+ * - Arrays back to appropriate TypedArrays
+ *
+ * @param _key - The key being processed (unused)
+ * @param value - The value to convert
+ * @returns The restored JavaScript value
+ */
 export function jsonReviver(_key: string, value: any): any {
     if (typeof value === 'object' && value !== null) {
         if (typeof value.__bigint__ === 'string') {

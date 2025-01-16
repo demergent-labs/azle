@@ -1,9 +1,15 @@
 /**
- * Converts a candid value into a Candid string
- * @param candidEncoded a raw Candid value
- * @returns the Candid string
+ * Decodes binary Candid value bytes into its string representation.
+ *
+ * @param candidBytes - The binary Candid value bytes to decode
+ * @returns The decoded Candid value string
+ *
+ * @remarks
+ *
+ * - **Call Context**:
+ *   - any
  */
-export function candidDecode(candidEncoded: Uint8Array): string {
+export function candidDecode(candidBytes: Uint8Array): string {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
@@ -12,10 +18,8 @@ export function candidDecode(candidEncoded: Uint8Array): string {
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        return globalThis._azleIcExperimental.candidDecode(
-            candidEncoded.buffer
-        );
+        return globalThis._azleIcExperimental.candidDecode(candidBytes.buffer);
     }
 
-    return globalThis._azleIcStable.candidDecode(candidEncoded);
+    return globalThis._azleIcStable.candidDecode(candidBytes);
 }

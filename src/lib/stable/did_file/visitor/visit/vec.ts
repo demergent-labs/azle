@@ -2,6 +2,10 @@ import { IDL } from '@dfinity/candid';
 
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 
+/**
+ * @internal
+ * Visitor for vector types in Candid generation.
+ */
 export function visitVec<T>(
     ty: IDL.Type<T>,
     didVisitor: DidVisitor,

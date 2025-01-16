@@ -1,7 +1,16 @@
 /**
- * Moves cycles from the call to the canister balance
- * @param maxAmount the max amount of cycles to move
- * @returns the actual amount moved
+ * Moves up to `maxAmount` of the available cycles from the current call to the canister cycle balance.
+ *
+ * @param maxAmount - Maximum number of cycles to accept from the available cycles
+ *
+ * @returns The actual amount of cycles accepted
+ *
+ * @remarks
+ *
+ * - **Call Context**:
+ *   - \@update
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function msgCyclesAccept(maxAmount: bigint): bigint {
     if (

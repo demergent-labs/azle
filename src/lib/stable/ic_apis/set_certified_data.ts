@@ -1,24 +1,24 @@
 /**
- * Sets the certified data of this canister.
+ * Sets the canister's certified data.
  *
- * Canisters can store up to 32 bytes of data that is certified by the
- * system on a regular basis. One can call {@link ic.dataCertificate} from a
- * {@link $query} call to get a certificate authenticating the value set by
- * calling this function.
-
- * This function can only be called from the following contexts:
+ * @param data - The data to certify (max 32 bytes)
  *
- * - {@link $init}, {@link $preUpgrade} and {@link $postUpgrade} hooks
- * - {@link $update} calls
- * - reply or reject callbacks
- *
- * This function traps if:
- *
- * - `data.length` > 32
- * - called from an illegal context (e.g. from a {@link $query} call)
- *
- * @param data the data to be set
  * @returns void
+ *
+ * @remarks
+ *
+ * - Used in conjunction with `dataCertificate`
+ * - Limited to 32 bytes of data (traps if exceeded)
+ *
+ * - **Call Context**:
+ *   - \@init
+ *   - \@postUpgrade
+ *   - \@preUpgrade
+ *   - \@update
+ *   - \@heartbeat
+ *   - timer
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function setCertifiedData(data: Uint8Array): void {
     if (

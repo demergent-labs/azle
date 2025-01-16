@@ -4,6 +4,10 @@ import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 import { escapeCandidKeywords } from '../escape_candid_keywords';
 import { extractCandid } from '../extract_candid';
 
+/**
+ * @internal
+ * Visitor for record types in Candid generation.
+ */
 export function visitRecord(
     fields: [string, IDL.Type<any>][],
     didVisitor: DidVisitor,

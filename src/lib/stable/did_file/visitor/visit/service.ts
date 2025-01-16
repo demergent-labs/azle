@@ -9,6 +9,10 @@ import {
 import { escapeCandidKeywords } from '../escape_candid_keywords';
 import { extractCandid } from '../extract_candid';
 
+/**
+ * @internal
+ * Visitor for service definitions in Candid generation.
+ */
 export function visitService(
     t: IDL.ServiceClass,
     didVisitor: DidVisitor,

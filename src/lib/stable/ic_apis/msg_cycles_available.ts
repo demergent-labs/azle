@@ -1,7 +1,16 @@
 /**
- * Returns the amount of cycles that were transferred by the caller of the
- * current call, and is still available in this message
- * @returns the amount of cycles
+ * Returns the amount of cycles that were transferred with the current call and are still available.
+ *
+ * @returns The amount of cycles available
+ *
+ * @remarks
+ *
+ * - Amount decreases as cycles are accepted by the canister
+ *
+ * - **Call Context**:
+ *   - \@update
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function msgCyclesAvailable(): bigint {
     if (
