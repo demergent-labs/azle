@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 /**
  * Sets a one-time callback to be executed after a specified delay.
  *
- * @param delay - The time to wait before execution, in seconds. Maximum value is 2^64 - 1 (u64) seconds
+ * @param delay - The time to wait before execution, in seconds. Represented as a u64 (max size 2^64 - 1)
  * @param callback - The callback to execute. Can be async
  *
  * @returns The timer ID (used with `clearTimer` to cancel the timer before it executes)

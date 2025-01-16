@@ -1,7 +1,7 @@
 /**
  * Returns the canister's version number, which is incremented by ICP on certain operations.
  *
- * @returns The canister's version number
+ * @returns The canister's version number. Represented as a u64 (max size 2^64 - 1)
  *
  * @remarks
  *

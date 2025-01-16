@@ -1,9 +1,9 @@
 /**
  * Moves up to `maxAmount` of the available cycles from the current call to the canister cycle balance.
  *
- * @param maxAmount - Maximum number of cycles to accept from the available cycles
+ * @param maxAmount - Maximum number of cycles to accept from the available cycles. Represented as a u128 (max size 2^128 - 1)
  *
- * @returns The actual amount of cycles accepted
+ * @returns The actual amount of cycles accepted. Represented as a u128 (max size 2^128 - 1)
  *
  * @remarks
  *

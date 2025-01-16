@@ -1,7 +1,7 @@
 /**
  * Cancels a timer previously created with `setTimer` or `setTimerInterval`.
  *
- * @param timerId - The ID of the timer to cancel, as returned by `setTimer` or `setTimerInterval`
+ * @param timerId - The ID of the timer to cancel, as returned by `setTimer` or `setTimerInterval`. Represented as a u64 (max size 2^64 - 1)
  *
  * @returns void
  *
