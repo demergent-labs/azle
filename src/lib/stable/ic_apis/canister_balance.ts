@@ -1,7 +1,7 @@
 /**
  * Returns the amount of cycles owned by and available to the canister.
  *
- * @returns The cycle balance
+ * @returns The cycle balance. Represented as a u128 (max size 2^128 - 1)
  *
  * @remarks
  *

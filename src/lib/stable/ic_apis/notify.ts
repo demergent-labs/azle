@@ -11,7 +11,7 @@ import { idlEncode } from '../execute_with_candid_serde';
  * @param options - Optional parameters:
  * @param options.paramIdlTypes - Array of IDL types for the parameters
  * @param options.args - Array of arguments to pass to the method
- * @param options.cycles - Amount of cycles to attach to the call (defaults to 0n)
+ * @param options.cycles - Amount of cycles to attach to the call (defaults to 0n). Represented as a u128 (max size 2^128 - 1)
  * @param options.raw - Raw bytes to pass as arguments instead of Candid-encoded args
  *
  * @returns void

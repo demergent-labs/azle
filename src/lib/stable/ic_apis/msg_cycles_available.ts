@@ -1,7 +1,7 @@
 /**
  * Returns the amount of cycles that were transferred with the current call and are still available.
  *
- * @returns The amount of cycles available
+ * @returns The amount of cycles available. Represented as a u128 (max size 2^128 - 1)
  *
  * @remarks
  *

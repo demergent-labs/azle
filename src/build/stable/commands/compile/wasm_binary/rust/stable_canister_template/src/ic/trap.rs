@@ -1,8 +1,10 @@
+// TODO readdress the workarounds below once this issue is resolved: https://github.com/DelSkayn/rquickjs/issues/413
+
 use ic_cdk::api::trap;
 use rquickjs::{Ctx, Function, Result};
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
-    Function::new(ctx, |message: String| cast_trap(message))
+    Function::new(ctx, |message: String| -> () { cast_trap(message) })
 }
 
 /// This function is needed to handle the never type (!) return from trap() in a Function::new closure.
