@@ -1,7 +1,7 @@
 /**
  * Returns the amount of cycles that were refunded from the last inter-canister call.
  *
- * @returns The amount of cycles refunded
+ * @returns The amount of cycles refunded. Represented as a u128 (max size 2^128 - 1)
  *
  * @remarks
  *
