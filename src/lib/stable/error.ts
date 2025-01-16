@@ -7,7 +7,6 @@ import { trap } from './ic_apis/trap';
  *
  * @param rawError - The raw error value to handle. Can be an Error object or any other value
  * @returns never - This function always traps and never returns
- * @throws Calls IC trap with the formatted error message
  */
 export function handleUncaughtError(rawError: any): never {
     if (rawError instanceof Error) {
