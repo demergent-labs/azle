@@ -48,10 +48,10 @@ jobs:
                   AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
 
             - name: Build stable template
-              run: AZLE_VERBOSE=true npx azle template
+              run: npx azle template
 
             - name: Build experimental template
-              run: AZLE_VERBOSE=true npx azle template --experimental
+              run: npx azle template --experimental
 
             - uses: ./.github/actions/commit_and_push
               with:
