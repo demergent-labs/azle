@@ -41,7 +41,7 @@ jobs:
               shell: bash
               run: |
                   VERSION="${{ inputs.version }}"
-                  echo "branch-prefix=${{ inputs.prefix }}--$VERSION-" >> $GITHUB_OUTPUT
+                  echo "branch-prefix=${{ inputs.prefix }}--$VERSION--" >> $GITHUB_OUTPUT
                   echo "base-branch=${{ inputs.prefix }}--$VERSION" >> $GITHUB_OUTPUT
 
             - uses: ./.github/actions/configure_git

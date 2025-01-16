@@ -18,4 +18,4 @@ runs:
           shell: bash
           run: |
               SAFE_PATH=$(echo '${{ inputs.path }}' | sed 's/\//-/g')
-              echo "branch-name=${{ inputs.prefix }}--prefix-end--${SAFE_PATH}" >> $GITHUB_OUTPUT
+              echo "branch-name=${{ inputs.prefix }}${SAFE_PATH}" >> $GITHUB_OUTPUT

@@ -44,7 +44,7 @@ jobs:
               id: collect-branches
               run: |
                   # Get branches and convert to space-separated list
-                  BRANCHES=$(git branch -r | grep "origin/${{ inputs.branch-prefix }}--prefix-end--" | sed 's/origin\///' | xargs)
+                  BRANCHES=$(git branch -r | grep "origin/${{ inputs.branch-prefix }}" | sed 's/origin\///' | xargs)
                   echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
 
             - name: Display collected branches
