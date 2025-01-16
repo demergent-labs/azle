@@ -1,10 +1,11 @@
 import { CandidDef, CandidTypesDefs } from './did_visitor';
 
 /**
+ * @internal
+ *
  * Internal helper for the Candid visitor system that combines multiple visitor results.
  * Separates Candid definitions from their associated type definitions.
  *
- * @internal
  * @param paramInfo - Array of visitor results, each containing a Candid definition and its type definitions
  * @returns Tuple of [Array of Candid definitions, Combined type definitions map]
  *
