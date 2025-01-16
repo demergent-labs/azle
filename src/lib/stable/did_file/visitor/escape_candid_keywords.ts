@@ -1,7 +1,8 @@
 /**
+ * @internal
+ *
  * Internal list of Candid language keywords that need to be escaped in identifiers.
  *
- * @internal
  * These keywords cannot be used as raw identifiers in Candid and must be quoted when used as field names.
  */
 const CANDID_KEYWORDS = [
@@ -32,9 +33,10 @@ const CANDID_KEYWORDS = [
 ];
 
 /**
+ * @internal
+ *
  * Internal helper that quotes Candid keywords when they appear as identifiers.
  *
- * @internal
  * @param key - The identifier to potentially escape
  * @returns The identifier, quoted if it's a Candid keyword
  *
