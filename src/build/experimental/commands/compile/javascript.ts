@@ -46,7 +46,7 @@ export function getPrelude(main: string): string {
         import { ethers } from 'ethers';
         ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
-        import { IDL, idlToString } from 'azle';
+        import { IDL, idlToString, getDefaultVisitorData } from 'azle';
         export { Principal } from '@dfinity/principal';
         import * as Canister from './${main}';
 
@@ -84,7 +84,7 @@ export function getPrelude(main: string): string {
                 const candid = idlToString(canister.getIdlType([]), {
                     ...getDefaultVisitorData(),
                     isFirstService: true,
-                    systemFuncs: canister.getSystemFunctionIdlTypes()
+                    initAndPostUpgradeParams: canister.getInitAndPostUpgradeParamIdlTypes()
                 });
 
                 globalThis._azleCallbacks = canister.callbacks;

@@ -13,7 +13,7 @@ import { CandidType, Parent, toIdlTypeArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { decode, encode } from '../../../../serde';
 import { Principal } from '../../principal';
-import { createGetSystemFunctionIdlTypeFunction } from './system_methods';
+import { createGetInitAndPostUpgradeParamIdlTypes } from './system_methods';
 
 export type CanisterOptions = {
     [key: string]: CanisterMethodInfo<any, any>;
@@ -23,15 +23,24 @@ type _AzleFunctionReturnType = {
     (principal: Principal): void;
     methodMeta?: MethodMeta;
     callbacks?: any;
-    getSystemFunctionIdlTypes?: (parents: Parent[]) => IDL.FuncClass[];
+    getInitAndPostUpgradeParamIdlTypes?: (parents: Parent[]) => IDL.Type[];
     getIdlType?: (parents: Parent[]) => IDL.Type<any>;
 };
 
 type CallRawFunction = typeof ic.callRaw;
 type NotifyRawFunction = typeof ic.notifyRaw;
 
+type Mode =
+    | 'query'
+    | 'update'
+    | 'init'
+    | 'postUpgrade'
+    | 'preUpgrade'
+    | 'inspectMessage'
+    | 'heartbeat';
+
 type FunctionInfo = {
-    mode: 'query' | 'update';
+    mode: Mode;
     paramCandidTypes: CandidType[];
     returnCandidType: CandidType;
 };
@@ -59,8 +68,8 @@ export function createCanisterFunction(
     canister.methodMeta = methodMeta;
 
     canister.getIdlType = createGetIdlTypeFunction(canisterOptions);
-    canister.getSystemFunctionIdlTypes =
-        createGetSystemFunctionIdlTypeFunction(canisterOptions);
+    canister.getInitAndPostUpgradeParamIdlTypes =
+        createGetInitAndPostUpgradeParamIdlTypes(canisterOptions);
 
     return canister;
 }
@@ -97,7 +106,7 @@ function createGetIdlTypeFunction(
     };
 }
 
-function createAnnotation(mode: 'query' | 'update'): string[] {
+function createAnnotation(mode: Mode): string[] {
     if (mode === 'query') {
         return ['query'];
     }

@@ -13,7 +13,7 @@ function getPrelude(main: string): string {
     return /*TS*/ `
             import 'azle/src/lib/stable/globals';
 
-            import { IDL, idlToString } from 'azle';
+            import { IDL, idlToString, getDefaultVisitorData } from 'azle';
 
             import * as Canister from './${main}';
 
@@ -31,7 +31,7 @@ export function handleClassApiCanister(): string {
         const candid = idlToString(canisterIdlType, {
             ...getDefaultVisitorData(),
             isFirstService: true,
-            systemFuncs: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+            initAndPostUpgradeParams: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
         });
 
         globalThis._azleGetCandidAndMethodMeta = () => {

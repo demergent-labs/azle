@@ -6,7 +6,7 @@ import {
     getDefaultVisitorData,
     VisitorData,
     VisitorResult
-} from './visitor/index.js';
+} from './visitor';
 
 /**
  * Converts an IDL type to its string representation in Candid format.
