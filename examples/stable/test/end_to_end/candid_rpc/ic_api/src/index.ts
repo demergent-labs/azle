@@ -1,5 +1,4 @@
 import {
-    caller,
     canisterBalance,
     canisterVersion,
     dataCertificate,
@@ -7,6 +6,7 @@ import {
     IDL,
     isController,
     msgArgData,
+    msgCaller,
     performanceCounter,
     Principal,
     query,
@@ -17,46 +17,7 @@ import {
     update
 } from 'azle';
 
-// TODO: See https://github.com/demergent-labs/azle/issues/496
-// TODO this and related stuff should be commented out after it's converted to class syntax
-// const ArgDataMultipleParamsResult = IDL.Record({
-//     blob: IDL.Vec(IDL.Nat8),
-//     int: IDL.Int8,
-//     boolean: IDL.Bool,
-//     string: IDL.Text,
-// });
-// type ArgDataMultipleParamsResult = {
-//     blob: Uint8Array,
-//     int: bigint,
-//     boolean: boolean,
-//     string: string
-// }
-
 export default class {
-    // // returns the argument data as an array.
-    // @query([], IDL.Vec(IDL.Null))
-    // argDataZeroParams(): null[] {
-    //     return argData();
-    // }
-
-    // // returns the argument data as an array.
-    // @query([IDL.Bool], IDL.Bool)
-    // argDataOneParam(): boolean {
-    //     return argData()[0];
-    // }
-
-    // returns the argument data as an array.
-    // @query([IDL.Vec(IDL.Nat8), IDL.Int8, IDL.Bool, IDL.Text], ArgDataMultipleParamsResult)
-    // argDataMultipleParams(_arg1: Uint8Array, _arg2: number, _arg3: boolean, _arg4: string): ArgDataMultipleParamsResult {
-    //     const data = argData();
-    //     return {
-    //         blob: Uint8Array.from(data[0]),
-    //         int: data[1],
-    //         boolean: data[2],
-    //         string: data[3]
-    //     };
-    // }
-
     // returns the argument data as bytes.
     @query([IDL.Vec(IDL.Nat8), IDL.Int8, IDL.Bool, IDL.Text], IDL.Vec(IDL.Nat8))
     msgArgData(
@@ -71,7 +32,7 @@ export default class {
     // returns the principal of the identity that called this function
     @query([], IDL.Principal)
     caller(): Principal {
-        return caller();
+        return msgCaller();
     }
 
     // returns the amount of cycles available in the canister

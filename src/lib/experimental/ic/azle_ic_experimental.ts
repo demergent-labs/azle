@@ -11,7 +11,7 @@ export type AzleIcExperimental = {
         argsRaw: ArrayBuffer,
         paymentString: string
     ) => void;
-    caller: () => ArrayBuffer;
+    msgCaller: () => ArrayBuffer;
     candidCompiler: (candidPath: string) => string;
     candidDecode: (candidBytes: ArrayBuffer) => string;
     candidEncode: (candidString: string) => ArrayBuffer;
