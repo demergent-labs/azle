@@ -3,7 +3,7 @@
  * we expose to the users. This is the interface for the rust functions.
  */
 export type AzleIcStable = {
-    argDataRaw: () => Uint8Array;
+    msgArgData: () => Uint8Array;
     callRaw: (
         promiseId: string,
         canisterIdBytes: Uint8Array,

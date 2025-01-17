@@ -1,5 +1,4 @@
 import {
-    argDataRaw,
     caller,
     canisterBalance,
     canisterVersion,
@@ -7,6 +6,7 @@ import {
     id,
     IDL,
     isController,
+    msgArgData,
     performanceCounter,
     Principal,
     query,
@@ -59,13 +59,13 @@ export default class {
 
     // returns the argument data as bytes.
     @query([IDL.Vec(IDL.Nat8), IDL.Int8, IDL.Bool, IDL.Text], IDL.Vec(IDL.Nat8))
-    argDataRaw(
+    msgArgData(
         _arg1: Uint8Array,
         _arg2: number,
         _arg3: boolean,
         _arg4: string
     ): Uint8Array {
-        return argDataRaw();
+        return msgArgData();
     }
 
     // returns the principal of the identity that called this function
