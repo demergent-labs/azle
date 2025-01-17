@@ -77,6 +77,8 @@ pub fn register(ctx: Ctx) -> Result<()> {
         data_certificate::get_function(ctx.clone()),
     )?;
 
+    ic.set("debugPrint", debug_print::get_function(ctx.clone()))?;
+
     ic.set("id", id::get_function(ctx.clone()))?;
 
     ic.set("isController", is_controller::get_function(ctx.clone()))?;
@@ -104,8 +106,6 @@ pub fn register(ctx: Ctx) -> Result<()> {
         "performanceCounter",
         performance_counter::get_function(ctx.clone()),
     )?;
-
-    ic.set("debugPrint", debug_print::get_function(ctx.clone()))?;
 
     ic.set("reject", reject::get_function(ctx.clone()))?;
 
