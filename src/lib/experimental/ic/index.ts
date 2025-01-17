@@ -22,7 +22,6 @@ import { msgCyclesRefunded } from './msg_cycles_refunded';
 import { notify } from './notify';
 import { notifyRaw } from './notify_raw';
 import { performanceCounter } from './performance_counter';
-import { print } from './print';
 import { reject } from './reject';
 import { rejectCode } from './reject_code';
 import { rejectMessage } from './reject_message';
@@ -60,7 +59,6 @@ export const ic = {
     notify,
     notifyRaw,
     performanceCounter,
-    print,
     reject,
     rejectCode,
     rejectMessage,

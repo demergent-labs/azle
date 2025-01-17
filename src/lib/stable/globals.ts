@@ -4,7 +4,6 @@ import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { ExportedCanisterClass } from './canister_methods';
-import { print } from './ic_apis';
 import { AzleIcStable } from './ic_apis/azle_ic_stable';
 
 declare global {
@@ -80,7 +79,13 @@ if (globalThis._azleInsideCanister === true) {
             })
             .join(' ');
 
-        print(jsonStringifiedArgs);
+        if (globalThis._azleIcStable !== undefined) {
+            return globalThis._azleIcStable.print(jsonStringifiedArgs);
+        } else if (globalThis._azleIcExperimental !== undefined) {
+            return globalThis._azleIcExperimental.print(jsonStringifiedArgs);
+        }
+
+        throw new Error(`No global print implementation found`);
     };
 
     globalThis.console = {

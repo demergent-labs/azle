@@ -1,6 +1,5 @@
 import {
     Canister,
-    ic,
     int,
     Null,
     query,
@@ -31,7 +30,7 @@ export default Canister({
         return param;
     }),
     voidIsNotNull: query([], Void, () => {
-        ic.print(
+        console.info(
             'Even though they are both None in Python, for Candid null and void are different.'
         );
     }),
