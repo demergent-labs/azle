@@ -47,7 +47,7 @@ export type AzleIcExperimental = {
     // interceptor.
     acceptMessage: () => void;
     methodName: () => string;
-    print: (...args: any) => void;
+    debugPrint: (...args: any) => void;
     reject: (message: string) => void;
     rejectMessage: () => string;
     trap: (message: string) => never;

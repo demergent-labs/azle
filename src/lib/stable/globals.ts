@@ -80,12 +80,14 @@ if (globalThis._azleInsideCanister === true) {
             .join(' ');
 
         if (globalThis._azleIcStable !== undefined) {
-            return globalThis._azleIcStable.print(jsonStringifiedArgs);
+            return globalThis._azleIcStable.debugPrint(jsonStringifiedArgs);
         } else if (globalThis._azleIcExperimental !== undefined) {
-            return globalThis._azleIcExperimental.print(jsonStringifiedArgs);
+            return globalThis._azleIcExperimental.debugPrint(
+                jsonStringifiedArgs
+            );
         }
 
-        throw new Error(`No global print implementation found`);
+        throw new Error(`No global debugPrint implementation found`);
     };
 
     globalThis.console = {

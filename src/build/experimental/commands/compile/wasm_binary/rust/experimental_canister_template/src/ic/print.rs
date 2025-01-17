@@ -1,17 +1,22 @@
-use wasmedge_quickjs::{Context, JsFn, JsValue};
+use ic_cdk::print;
+use rquickjs::{Ctx, Function};
 
 pub struct NativeFunction;
-impl JsFn for NativeFunction {
-    fn call(_context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let first_arg_option = argv.get(0);
 
-        if let Some(first_arg) = first_arg_option {
-            let string_to_print = first_arg.clone().to_string().unwrap().to_string();
-            ic_cdk::print(string_to_print);
-        } else {
-            ic_cdk::print("");
+impl rquickjs::function::Func<NativeFunction> for NativeFunction {
+    const NAME: &'static str = "print\0";
+    const LENGTH: u8 = 1;
+    type Output = ();
+
+    fn call(ctx: Ctx, args: &[rquickjs::Value]) -> Result<Self::Output, rquickjs::Error> {
+        let first_arg = args.first().unwrap();
+        let string_to_print = first_arg.clone().to_string().unwrap().to_string();
+        print(string_to_print);
+
+        if args.len() == 0 {
+            print("");
         }
 
-        JsValue::UnDefined
+        Ok(())
     }
 }
