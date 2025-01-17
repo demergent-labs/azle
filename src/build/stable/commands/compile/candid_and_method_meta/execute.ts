@@ -34,8 +34,8 @@ export async function execute(
                 console.info(message);
             },
             global_timer_set: (): void => {},
-            instruction_counter: (): void => {},
             in_replicated_execution: (): void => {},
+            instruction_counter: (): void => {},
             is_controller: (): void => {},
             msg_arg_data_copy: (): void => {},
             msg_arg_data_size: (): void => {},

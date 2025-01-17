@@ -1,7 +1,7 @@
 /**
- * Checks if in replicated execution.
+ * Checks if the current call is in replicated or non-replicated execution mode.
  *
- * @returns true if in replicated execution, false otherwise
+ * @returns true if in replicated execution mode, false otherwise
  *
  * @remarks
  * - **Call Context**:

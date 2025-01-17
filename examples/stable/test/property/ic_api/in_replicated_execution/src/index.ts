@@ -21,11 +21,12 @@ export default class {
     initIsInReplicatedExecution: boolean | null = null;
     postUpgradeIsInReplicatedExecution: boolean | null = null;
     preUpgradeIsInReplicatedExecution = new StableBTreeMap<
-        'PRE_UPGRADE_VERSION',
+        'PRE_UPGRADE_IS_IN_REPLICATED_EXECUTION',
         boolean
     >(0);
     timerIsInReplicatedExecution: boolean | null = null;
     heartbeatIsInReplicatedExecution: boolean | null = null;
+    sneakyInspect: number | null = null;
 
     @init
     init(): void {
@@ -61,7 +62,7 @@ export default class {
     @preUpgrade
     preUpgrade(): void {
         this.preUpgradeIsInReplicatedExecution.insert(
-            'PRE_UPGRADE_VERSION',
+            'PRE_UPGRADE_IS_IN_REPLICATED_EXECUTION',
             inReplicatedExecution()
         );
     }
@@ -69,7 +70,9 @@ export default class {
     @query([], IDL.Opt(IDL.Bool))
     getPreUpgradeIsInReplicatedExecution(): [boolean] | [] {
         const preUpgradeIsInReplicatedExecution =
-            this.preUpgradeIsInReplicatedExecution.get('PRE_UPGRADE_VERSION');
+            this.preUpgradeIsInReplicatedExecution.get(
+                'PRE_UPGRADE_IS_IN_REPLICATED_EXECUTION'
+            );
 
         if (preUpgradeIsInReplicatedExecution === null) {
             return [];
@@ -103,11 +106,13 @@ export default class {
 
     @inspectMessage
     inspectMessage(): void {
-        if (
-            methodName() ===
-            'getInspectMessageIsInReplicatedExecutionWhenInspectingUpdates'
-        ) {
+        if (methodName() === 'getInspectMessageIsInReplicatedExecution') {
+            console.log('inspecting getInspectMessageIsInReplicatedExecution');
+            console.log(
+                `inReplicatedExecution() === ${inReplicatedExecution()}`
+            );
             if (inReplicatedExecution() === true) {
+                // TODO for https://github.com/demergent-labs/azle/issues/2539
                 acceptMessage();
             }
             return;
@@ -118,7 +123,7 @@ export default class {
 
     @update([], IDL.Bool)
     getInspectMessageIsInReplicatedExecution(): boolean {
-        return true;
+        return false;
     }
 
     @query([], IDL.Bool)

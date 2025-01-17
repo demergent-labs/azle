@@ -6,7 +6,6 @@ import {
     dataCertificate,
     id,
     IDL,
-    inReplicatedExecution,
     isController,
     performanceCounter,
     Principal,
@@ -119,11 +118,6 @@ export default class {
     @query([], IDL.Principal)
     id(): Principal {
         return id();
-    }
-
-    @update([], IDL.Bool)
-    inReplicatedExecution(): boolean {
-        return inReplicatedExecution();
     }
 
     // determines whether the given principal is a controller of the canister

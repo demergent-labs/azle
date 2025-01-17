@@ -1,4 +1,4 @@
-import { expect, getCanisterActor, it, Test } from 'azle/test';
+import { expect, getCanisterActor, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
@@ -18,7 +18,7 @@ export function getTests(): Test {
             for (let i = 0; i < 10; i++) {
                 expect(
                     await actor.getInspectMessageIsInReplicatedExecution()
-                ).toBe(true);
+                ).toBe(false);
             }
         });
 
@@ -70,7 +70,7 @@ export function getTests(): Test {
             ).toStrictEqual([true]);
         });
 
-        it('redeploys the canister', async () => {
+        please('redeploys the canister', async () => {
             execSync(`dfx deploy canister --upgrade-unchanged`);
         });
 
@@ -104,9 +104,9 @@ async function checkInitIsInReplicatedExecution(
         await actor.getInitIsInReplicatedExecution();
 
     if (isInitialDeployment === false) {
-        expect(initIsInReplicatedExecution).toHaveLength(0);
+        expect(initIsInReplicatedExecution).toStrictEqual([]);
     } else {
-        expect(initIsInReplicatedExecution[0]).toBe(true);
+        expect(initIsInReplicatedExecution).toStrictEqual([true]);
     }
 }
 
@@ -117,18 +117,18 @@ async function checkUpgradeIsInReplicatedExecution(
     if (isInitialDeployment === true) {
         const postUpgradeCanisterVersion =
             await actor.getPostUpgradeIsInReplicatedExecution();
-        expect(postUpgradeCanisterVersion).toHaveLength(0);
+        expect(postUpgradeCanisterVersion).toStrictEqual([]);
 
         const preUpgradeCanisterVersion =
             await actor.getPreUpgradeIsInReplicatedExecution();
-        expect(preUpgradeCanisterVersion).toHaveLength(0);
+        expect(preUpgradeCanisterVersion).toStrictEqual([]);
     } else {
         const postUpgradeCanisterVersionAfterUpgrade =
             await actor.getPostUpgradeIsInReplicatedExecution();
-        expect(postUpgradeCanisterVersionAfterUpgrade[0]).toBe(true);
+        expect(postUpgradeCanisterVersionAfterUpgrade).toStrictEqual([true]);
 
         const preUpgradeCanisterVersionAfterUpgrade =
             await actor.getPreUpgradeIsInReplicatedExecution();
-        expect(preUpgradeCanisterVersionAfterUpgrade[0]).toBe(true);
+        expect(preUpgradeCanisterVersionAfterUpgrade).toStrictEqual([true]);
     }
 }

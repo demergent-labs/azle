@@ -79,12 +79,6 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result.toText()).toBe(icApiCanisterId);
         });
 
-        it('calls inReplicatedExecution on the ic object', async () => {
-            const result = await icApiCanister.inReplicatedExecution();
-
-            expect(result).toBe(true);
-        });
-
         it('calls isController on the ic object', async () => {
             const principal = Principal.fromText(
                 execSync(`dfx identity get-principal`).toString().trim()
