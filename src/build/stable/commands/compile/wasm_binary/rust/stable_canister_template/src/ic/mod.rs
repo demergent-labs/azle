@@ -13,6 +13,7 @@ mod canister_version;
 mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
+mod debug_print;
 mod id;
 mod in_replicated_execution;
 mod is_controller;
@@ -22,7 +23,6 @@ mod msg_cycles_available;
 mod msg_cycles_refunded;
 mod notify_raw;
 mod performance_counter;
-mod print;
 mod reject;
 mod reject_code;
 mod reject_message;
@@ -78,6 +78,8 @@ pub fn register(ctx: Ctx) -> Result<()> {
         data_certificate::get_function(ctx.clone()),
     )?;
 
+    ic.set("debugPrint", debug_print::get_function(ctx.clone()))?;
+
     ic.set("id", id::get_function(ctx.clone()))?;
 
     ic.set(
@@ -110,8 +112,6 @@ pub fn register(ctx: Ctx) -> Result<()> {
         "performanceCounter",
         performance_counter::get_function(ctx.clone()),
     )?;
-
-    ic.set("print", print::get_function(ctx.clone()))?;
 
     ic.set("reject", reject::get_function(ctx.clone()))?;
 

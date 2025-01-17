@@ -1,4 +1,4 @@
-import { IDL, print, query, update } from 'azle';
+import { IDL, query, update } from 'azle';
 
 const PartiallyNullRecord = IDL.Record({
     firstItem: IDL.Int,
@@ -39,7 +39,7 @@ export default class {
 
     @query
     voidIsNotNull(): void {
-        print(
+        console.info(
             'Even though they are both None in Python, for Candid null and void are different.'
         );
     }

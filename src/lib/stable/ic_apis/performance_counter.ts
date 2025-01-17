@@ -5,7 +5,7 @@
  *   - 0: current execution instruction counter. The number of WebAssembly instructions the canister has executed since the beginning of the current message execution
  *   - 1: call context instruction counter. The number of WebAssembly instructions the canister has executed within the call context of the current message execution since call context creation. The counter monotonically increases across all message executions in the call context until the corresponding call context is removed.
  *
- * @returns The performance counter value
+ * @returns The performance counter value. Represented as a u64 (max size 2^64 - 1)
  *
  * @remarks
  *

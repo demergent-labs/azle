@@ -1,9 +1,9 @@
 /**
  * Attempts to irrevocably remove the specified amount of cycles from the canister's balance.
  *
- * @param amount - The number of cycles to burn. Maximum value is 2^128 - 1 (u128)
+ * @param amount - The number of cycles to burn. Represented as a u128 (max size 2^128 - 1)
  *
- * @returns The number of cycles actually burned
+ * @returns The number of cycles actually burned. Represented as a u128 (max size 2^128 - 1)
  *
  * @remarks
  *

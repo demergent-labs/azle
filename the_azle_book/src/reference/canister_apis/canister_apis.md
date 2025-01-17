@@ -10,7 +10,6 @@
 - [instruction counter](./instruction_counter.md)
 - [is controller](./is_controller.md)
 - [performance counter](./performance_counter.md)
-- [print](./print.md)
 - [set certified data](./set_certified_data.md)
 - [time](./time.md)
 - [trap](./trap.md)

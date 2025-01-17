@@ -4,7 +4,7 @@ use rquickjs::{Ctx, Function, Result};
 use crate::{stable_b_tree_map::STABLE_B_TREE_MAPS, MEMORY_MANAGER_REF_CELL};
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
-    Function::new(ctx, |memory_id: u8| {
+    Function::new(ctx, |memory_id: u8| -> () {
         STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
             let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
 

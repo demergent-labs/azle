@@ -105,7 +105,6 @@
             - [instruction counter](./reference/canister_apis/instruction_counter.md)
             - [is controller](./reference/canister_apis/is_controller.md)
             - [performance counter](./reference/canister_apis/performance_counter.md)
-            - [print](./reference/canister_apis/print.md)
             - [set certified data](./reference/canister_apis/set_certified_data.md)
             - [time](./reference/canister_apis/time.md)
             - [trap](./reference/canister_apis/trap.md)

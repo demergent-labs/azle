@@ -19,7 +19,6 @@ export { msgCyclesAvailable } from './msg_cycles_available';
 export { msgCyclesRefunded } from './msg_cycles_refunded';
 export { notify } from './notify';
 export { performanceCounter } from './performance_counter';
-export { print } from './print';
 export { reject } from './reject';
 export { rejectCode, RejectionCode } from './reject_code';
 export { rejectMessage } from './reject_message';

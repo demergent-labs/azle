@@ -1,7 +1,7 @@
 /**
  * Gets the current ICP system time.
  *
- * @returns The current ICP system time in nanoseconds since the epoch (1970-01-01)
+ * @returns The current ICP system time in nanoseconds since the epoch (1970-01-01). Represented as a u64 (max size 2^64 - 1)
  *
  * @remarks
  *

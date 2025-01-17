@@ -16,43 +16,6 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             );
         });
 
-        // it('calls argData on the ic object with zero params', async () => {
-        //     const result = await icApiCanister.argDataZeroParams();
-
-        //     expect(Array.isArray(result)).toBe(true);
-        //     expect(result.length).toBe(0);
-        // });
-
-        // it('calls argData on the ic object with a single param', async () => {
-        //     const result = await icApiCanister.argDataOneParam(true);
-
-        //     expect(result).toBe(true);
-        // });
-
-        // it('calls argData on the ic object with multiple params', async () => {
-        //     const blobString = 'Surprise!';
-        //     const blob = blobString.split('').map((char) => char.charCodeAt(0));
-        //     const int = 127;
-        //     const bool = true;
-        //     const string = 'test';
-
-        //     const result = await icApiCanister.argDataMultipleParams(
-        //         blob,
-        //         int,
-        //         bool,
-        //         string
-        //     );
-
-        //     const expected = {
-        //         blob,
-        //         int,
-        //         boolean: bool,
-        //         string
-        //     };
-
-        //     expect(result).toStrictEqual(expected);
-        // });
-
         it('calls argDataRaw on the ic object', async () => {
             const blobString = 'Surprise!';
             const blob = Uint8Array.from(
@@ -136,12 +99,6 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             const result = await icApiCanister.performanceCounter();
 
             expect(result).toBeGreaterThan(0n);
-        });
-
-        it('calls print on the ic object', async () => {
-            const result = await icApiCanister.print('Hello World!');
-
-            expect(result).toBe(true);
         });
 
         it('calls reject on the ic object', async () => {
