@@ -9,7 +9,6 @@ import {
     isController,
     performanceCounter,
     Principal,
-    print,
     query,
     reject,
     setCertifiedData,
@@ -130,14 +129,6 @@ export default class {
     @query([], IDL.Nat64)
     performanceCounter(): bigint {
         return performanceCounter(0);
-    }
-
-    // prints a message through the local replica's output
-    @query([IDL.Text], IDL.Bool)
-    print(message: string): boolean {
-        print(message);
-
-        return true;
     }
 
     @query([IDL.Text], IDL.Empty, { manual: true })

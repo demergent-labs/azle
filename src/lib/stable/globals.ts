@@ -4,7 +4,6 @@ import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
 import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { ExportedCanisterClass } from './canister_methods';
-import { print } from './ic_apis';
 import { AzleIcStable } from './ic_apis/azle_ic_stable';
 
 declare global {
@@ -80,7 +79,15 @@ if (globalThis._azleInsideCanister === true) {
             })
             .join(' ');
 
-        print(jsonStringifiedArgs);
+        if (globalThis._azleIcStable !== undefined) {
+            return globalThis._azleIcStable.debugPrint(jsonStringifiedArgs);
+        } else if (globalThis._azleIcExperimental !== undefined) {
+            return globalThis._azleIcExperimental.debugPrint(
+                jsonStringifiedArgs
+            );
+        }
+
+        throw new Error(`No global debugPrint implementation found`);
     };
 
     globalThis.console = {

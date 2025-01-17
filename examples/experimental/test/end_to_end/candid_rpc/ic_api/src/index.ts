@@ -93,12 +93,6 @@ export default Canister({
     performanceCounter: query([], nat64, () => {
         return ic.performanceCounter(0);
     }),
-    // prints a message through the local replica's output
-    print: query([text], bool, (message) => {
-        ic.print(message);
-
-        return true;
-    }),
     reject: query(
         [text],
         Manual(empty),

@@ -10,6 +10,7 @@ mod canister_version;
 mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
+mod debug_print;
 mod id;
 mod is_controller;
 mod method_name;
@@ -18,7 +19,6 @@ mod msg_cycles_available;
 mod msg_cycles_refunded;
 mod notify_raw;
 mod performance_counter;
-mod print;
 mod reject;
 mod reject_code;
 mod reject_message;
@@ -125,6 +125,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
+    ic.set(
+        "debugPrint",
+        context
+            .new_function::<debug_print::NativeFunction>("")
+            .into(),
+    );
+
     ic.set("id", context.new_function::<id::NativeFunction>("").into());
 
     ic.set(
@@ -174,11 +181,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         context
             .new_function::<performance_counter::NativeFunction>("")
             .into(),
-    );
-
-    ic.set(
-        "print",
-        context.new_function::<print::NativeFunction>("").into(),
     );
 
     ic.set(
