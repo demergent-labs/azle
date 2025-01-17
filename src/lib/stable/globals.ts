@@ -104,6 +104,12 @@ if (globalThis._azleInsideCanister === true) {
     }
 }
 
+/**
+ * Creates a getter property on globalThis that throws an error when accessed.
+ * Used to prevent access to experimental features when experimental mode is disabled.
+ *
+ * @param name - The name of the global property to restrict
+ */
 function createGlobalExperimentalErrorProperty(name: string): void {
     Object.defineProperty(globalThis, name, {
         get() {
@@ -112,6 +118,12 @@ function createGlobalExperimentalErrorProperty(name: string): void {
     });
 }
 
+/**
+ * Generates an error message explaining how to enable experimental mode for a given feature.
+ *
+ * @param name - The name of the experimental feature
+ * @returns A formatted error message with dfx.json configuration instructions
+ */
 function experimentalWarningMessage(name: string): string {
     return `Azle: experimental mode must be enabled to use global ${name}. You can enable experimental mode in your dfx.json file like this:
 {

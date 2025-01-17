@@ -1,13 +1,33 @@
 import { v4 } from 'uuid';
 
 /**
- * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
- * To cancel the timer before it executes, pass the returned `TimerId` to `clearTimer`.
- * Note that timers are not persisted across canister upgrades.
+ * Sets a one-time callback to be executed after a specified delay.
  *
- * @param delay The time (in seconds) to wait before executing the provided callback.
- * @param callback the function to invoke after the specified delay has passed.
- * @returns the ID of the created timer. Used to cancel the timer.
+ * @param delay - The time to wait before execution, in seconds. Represented as a u64 (max size 2^64 - 1)
+ * @param callback - The callback to execute. Can be async
+ *
+ * @returns The timer ID (used with `clearTimer` to cancel the timer before it executes)
+ *
+ * @remarks
+ * - Timers are not persisted across canister upgrades
+ * - Timers are deactivated in the following cases
+ *   - Changes to the canister's Wasm module
+ *     - management canister
+ *       - `install_code`
+ *       - `install_chunked_code`
+ *       - `uninstall_code`
+ *     - When the canister runs out of cycles
+ * - Traps if `delay` + `time()` is more than 2^64 - 1 (u64) nanoseconds
+ *
+ * - **Call Context**:
+ *   - \@init
+ *   - \@postUpgrade
+ *   - \@preUpgrade
+ *   - \@update
+ *   - \@heartbeat
+ *   - timer
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export function setTimer(
     delay: bigint,

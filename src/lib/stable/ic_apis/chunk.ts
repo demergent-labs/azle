@@ -3,15 +3,26 @@ import { candidEncode } from './candid_encode';
 import { id } from './id';
 
 /**
- * Resets the instruction limit when this function is called and awaited.
- * To achieve this, a simple cross-canister call to the canister calling this function is executed.
+ * Resets the instruction limit after the await point.
  *
- * You should exercise the appropriate cautions similar to when executing other cross-canister calls, such as managing global mutable state across await points safely.
+ * @returns Promise\<void\>
  *
- * Only works when called from:
- * - update calls and their reply/reject callbacks ([U Ry Rt](https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-imports))
- * - timers ([T](https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-imports))
- * - heartbeats ([T](https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-imports))
+ * @remarks
+ *
+ * - **Important**: Makes an inter-canister call to the canister itself
+ *   - Global state can change from before the await point to after the await point
+ *   - All code running after the await point will be in one of the following call contexts
+ *     - after a successful inter-canister await
+ *     - after an unsuccessful inter-canister await
+ *     - the original call context
+ * - See [the current instruction limits](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
+ *
+ * - **Call Context**:
+ *   - \@update
+ *   - \@heartbeat
+ *   - timer
+ *   - after a successful inter-canister await
+ *   - after an unsuccessful inter-canister await
  */
 export async function chunk(): Promise<void> {
     if (

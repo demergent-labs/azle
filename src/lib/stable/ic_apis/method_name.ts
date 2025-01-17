@@ -1,6 +1,12 @@
 /**
- * Returns the name of the current canister method
- * @returns the current canister method name
+ * Returns the name of the method being called during message inspection.
+ *
+ * @returns The name of the method
+ *
+ * @remarks
+ *
+ * - **Call Context**:
+ *   - \@inspectMessage
  */
 export function methodName(): string {
     if (

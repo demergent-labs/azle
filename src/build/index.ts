@@ -86,7 +86,7 @@ async function build(): Promise<void> {
     }
 
     if (command === 'template') {
-        await handleTemplateCommand(ioType);
+        await handleTemplateCommand('inherit');
 
         return;
     }
@@ -159,14 +159,21 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
 }
 
 async function handleTemplateCommand(ioType: IOType): Promise<void> {
-    const experimental =
-        process.argv.includes('--experimental') ||
-        process.env.AZLE_EXPERIMENTAL === 'true';
+    const all = process.argv.includes('--all');
 
-    if (experimental === false) {
+    if (all === true) {
         await runStableTemplateCommand(ioType);
-    } else {
         await runExperimentalTemplateCommand(ioType);
+    } else {
+        const experimental =
+            process.argv.includes('--experimental') ||
+            process.env.AZLE_EXPERIMENTAL === 'true';
+
+        if (experimental === false) {
+            await runStableTemplateCommand(ioType);
+        } else {
+            await runExperimentalTemplateCommand(ioType);
+        }
     }
 }
 

@@ -1,24 +1,24 @@
 # Benchmarks for bytes_canister
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------- |
-| 0   | getBytes    | 1_973_945    | 1_379_578  | $0.0000018344 | $1.83             | <font color="red">+3_643</font> |
-| 1   | getBytes    | 2_645_466    | 1_648_186  | $0.0000021915 | $2.19             | <font color="green">-616</font> |
-| 2   | getBytes    | 9_731_416    | 4_482_566  | $0.0000059603 | $5.96             | <font color="red">+1_656</font> |
-| 3   | getBytes    | 79_931_211   | 32_562_484 | $0.0000432974 | $43.29            | <font color="red">+4_279</font> |
-| 4   | getBytes    | 157_924_895  | 63_759_958 | $0.0000847797 | $84.77            | <font color="red">+2_370</font> |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
+| 0   | getBytes    | 1_968_970    | 1_377_588  | $0.0000018317 | $1.83             | <font color="green">-4_975</font> |
+| 1   | getBytes    | 2_651_291    | 1_650_516  | $0.0000021946 | $2.19             | <font color="red">+5_825</font>   |
+| 2   | getBytes    | 9_739_366    | 4_485_746  | $0.0000059646 | $5.96             | <font color="red">+7_950</font>   |
+| 3   | getBytes    | 79_937_934   | 32_565_173 | $0.0000433009 | $43.30            | <font color="red">+6_723</font>   |
+| 4   | getBytes    | 157_928_673  | 63_761_469 | $0.0000847817 | $84.78            | <font color="red">+3_778</font>   |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | getBytes    | 1_970_302    | 1_378_120  | $0.0000018324 | $1.83             |
-| 1   | getBytes    | 2_646_082    | 1_648_432  | $0.0000021919 | $2.19             |
-| 2   | getBytes    | 9_729_760    | 4_481_904  | $0.0000059595 | $5.95             |
-| 3   | getBytes    | 79_926_932   | 32_560_772 | $0.0000432951 | $43.29            |
-| 4   | getBytes    | 157_922_525  | 63_759_010 | $0.0000847784 | $84.77            |
+| 0   | getBytes    | 1_973_945    | 1_379_578  | $0.0000018344 | $1.83             |
+| 1   | getBytes    | 2_645_466    | 1_648_186  | $0.0000021915 | $2.19             |
+| 2   | getBytes    | 9_731_416    | 4_482_566  | $0.0000059603 | $5.96             |
+| 3   | getBytes    | 79_931_211   | 32_562_484 | $0.0000432974 | $43.29            |
+| 4   | getBytes    | 157_924_895  | 63_759_958 | $0.0000847797 | $84.77            |
 
 ---
 

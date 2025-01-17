@@ -1,32 +1,48 @@
 {
     "threshold_ecdsa": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "148423098" },
+                    "instructions": {
+                        "__bigint__": "148390394"
+                    },
                     "method_name": "publicKey",
-                    "timestamp": { "__bigint__": "1730326491941121657" }
+                    "timestamp": {
+                        "__bigint__": "1730484650532528298"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "148560433" },
+                    "instructions": {
+                        "__bigint__": "148548313"
+                    },
                     "method_name": "sign",
-                    "timestamp": { "__bigint__": "1730326494047613519" }
+                    "timestamp": {
+                        "__bigint__": "1730484652506119596"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "148390394" },
+                    "instructions": {
+                        "__bigint__": "159532203"
+                    },
                     "method_name": "publicKey",
-                    "timestamp": { "__bigint__": "1730484650532528298" }
+                    "timestamp": {
+                        "__bigint__": "1736543902142920796"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "148548313" },
+                    "instructions": {
+                        "__bigint__": "159640584"
+                    },
                     "method_name": "sign",
-                    "timestamp": { "__bigint__": "1730484652506119596" }
+                    "timestamp": {
+                        "__bigint__": "1736543902695953962"
+                    }
                 }
             ]
         }

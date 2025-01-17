@@ -1,0 +1,22 @@
+{
+    "backend": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "8277732757"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1736543836647871586"
+                    }
+                }
+            ]
+        }
+    }
+}

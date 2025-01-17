@@ -1,9 +1,16 @@
 import { Principal } from '@dfinity/principal';
 
 /**
- * Determine if a {@link Principal} is a controller of the canister.
- * @param principal The Principal to check
- * @returns true if the Principal is a controller, false otherwise
+ * Determines if a given `Principal` is a controller of the canister.
+ *
+ * @param principal - The `Principal` to check
+ *
+ * @returns true if the `Principal` is a controller of the canister, false if not
+ *
+ * @remarks
+ *
+ * - **Call Context**:
+ *   - any
  */
 export function isController(principal: Principal): boolean {
     if (

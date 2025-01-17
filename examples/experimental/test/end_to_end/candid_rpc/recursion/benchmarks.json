@@ -1,0 +1,42 @@
+{
+    "recursion": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "18678126"
+                    },
+                    "method_name": "testRecServiceCall",
+                    "timestamp": {
+                        "__bigint__": "1736543927768000922"
+                    }
+                }
+            ]
+        }
+    },
+    "recursive_canister": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5471069261"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1736543908250571631"
+                    }
+                }
+            ]
+        }
+    }
+}

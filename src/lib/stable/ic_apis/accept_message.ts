@@ -1,9 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { inspectMessage } from '../canister_methods/inspect_message'; // Used for links in comments
-
 /**
- * Accepts the ingress message. Calling from outside the
- * {@link inspectMessage} context will cause the canister to trap.
+ * Accepts an ingress message during message inspection.
+ *
+ * @returns void
+ *
+ * @remarks
+ *
+ * - Traps if invoked twice
+ *
+ * - **Call Context**:
+ *   - \@inspectMessage
  */
 export function acceptMessage(): void {
     if (

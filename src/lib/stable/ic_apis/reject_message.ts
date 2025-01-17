@@ -1,14 +1,15 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { rejectCode } from './reject_code'; // Used for links in comments
-
 /**
- * Returns the rejection message from the most recently executed
- * cross-canister call
+ * Returns the reject message from the last unsuccesful inter-canister call.
  *
- * **Warning**: Traps if there is no reject message. It is recommended to
- * check {@link rejectCode} first.
+ * @returns The reject message
  *
- * @returns the rejection message
+ * @remarks
+ *
+ * - Will trap if there is no reject message available (if `rejectCode()` is `0`)
+ *
+ * - **Call Context**:
+ *   - after an unsuccessful inter-canister await
+ *   - after an unsuccessful inter-canister await from a composite query
  */
 export function rejectMessage(): string {
     if (

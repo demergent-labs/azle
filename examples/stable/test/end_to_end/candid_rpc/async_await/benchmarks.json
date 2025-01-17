@@ -1,52 +1,84 @@
 {
     "async_await": {
         "previous": {
-            "version": "0.25.0-alpha",
+            "version": "0.25.0-dev",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1403216" },
+                    "instructions": {
+                        "__bigint__": "1388768"
+                    },
                     "method_name": "getRandomnessDirectly",
-                    "timestamp": { "__bigint__": "1730326449453914519" }
+                    "timestamp": {
+                        "__bigint__": "1730484656843273509"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1331300" },
+                    "instructions": {
+                        "__bigint__": "1338727"
+                    },
                     "method_name": "getRandomnessIndirectly",
-                    "timestamp": { "__bigint__": "1730326451554098278" }
+                    "timestamp": {
+                        "__bigint__": "1730484659117732492"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1370708" },
+                    "instructions": {
+                        "__bigint__": "1372516"
+                    },
                     "method_name": "getRandomnessSuperIndirectly",
-                    "timestamp": { "__bigint__": "1730326453791902468" }
+                    "timestamp": {
+                        "__bigint__": "1730484661065333779"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1315534" },
+                    "instructions": {
+                        "__bigint__": "1326092"
+                    },
                     "method_name": "returnPromiseVoid",
-                    "timestamp": { "__bigint__": "1730326455706568989" }
+                    "timestamp": {
+                        "__bigint__": "1730484663266640951"
+                    }
                 }
             ]
         },
         "current": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "1388768" },
+                    "instructions": {
+                        "__bigint__": "1503772"
+                    },
                     "method_name": "getRandomnessDirectly",
-                    "timestamp": { "__bigint__": "1730484656843273509" }
+                    "timestamp": {
+                        "__bigint__": "1736543872336153559"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1338727" },
+                    "instructions": {
+                        "__bigint__": "1451242"
+                    },
                     "method_name": "getRandomnessIndirectly",
-                    "timestamp": { "__bigint__": "1730484659117732492" }
+                    "timestamp": {
+                        "__bigint__": "1736543872821748376"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1372516" },
+                    "instructions": {
+                        "__bigint__": "1489527"
+                    },
                     "method_name": "getRandomnessSuperIndirectly",
-                    "timestamp": { "__bigint__": "1730484661065333779" }
+                    "timestamp": {
+                        "__bigint__": "1736543873181002729"
+                    }
                 },
                 {
-                    "instructions": { "__bigint__": "1326092" },
+                    "instructions": {
+                        "__bigint__": "1439432"
+                    },
                     "method_name": "returnPromiseVoid",
-                    "timestamp": { "__bigint__": "1730484663266640951" }
+                    "timestamp": {
+                        "__bigint__": "1736543874232512653"
+                    }
                 }
             ]
         }

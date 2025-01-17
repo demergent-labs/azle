@@ -16,7 +16,29 @@ export function idlToString(
     return toDidString(result);
 }
 
-function toDidString(result: VisitorResult): string {
+/**
+ * Converts a Candid type visitor result into a formatted Candid interface definition string.
+ * Used to generate .did files from TypeScript canister definitions.
+ *
+ * @param result - The visitor result containing Candid type definitions and service interface
+ * @returns A formatted string containing the complete Candid interface definition
+ *
+ * @remarks
+ * - Combines named type definitions with the service interface
+ * - Handles recursive type definitions (currently using numeric suffixes)
+ * - Preserves type relationships and structure
+ * - Adds proper newlines for formatting
+ *
+ * @example
+ * const visitorResult = visitCanister(canisterClass);
+ * const didString = toDidString(visitorResult);
+ * // Result:
+ * // type MyRecord = record { field: text };
+ * // service : {
+ * //   method : (MyRecord) -> (bool);
+ * // }
+ */
+export function toDidString(result: VisitorResult): string {
     // TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
     // TODO Once types have names we should deduplicate the init and post_upgrade param types
     // TODO maybe even before we have names we should deduplicate all sorts of types
