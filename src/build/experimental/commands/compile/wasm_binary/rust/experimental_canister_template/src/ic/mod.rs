@@ -125,6 +125,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
+    ic.set(
+        "debugPrint",
+        context
+            .new_function::<debug_print::NativeFunction>("")
+            .into(),
+    );
+
     ic.set("id", context.new_function::<id::NativeFunction>("").into());
 
     ic.set(
@@ -173,13 +180,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "performanceCounter",
         context
             .new_function::<performance_counter::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "debugPrint",
-        context
-            .new_function::<debug_print::NativeFunction>("")
             .into(),
     );
 
