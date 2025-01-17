@@ -1,2 +1,2 @@
-export { toDidString } from './to_did_string';
+export { idlToString } from './to_did_string';
 export * from './visitor';

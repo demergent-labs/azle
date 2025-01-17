@@ -1,6 +1,22 @@
-import { CandidTypesDefs, VisitorResult } from './visitor/index.js';
+import { IDL } from '@dfinity/candid';
 
-export function toDidString(result: VisitorResult): string {
+import {
+    CandidTypesDefs,
+    DidVisitor,
+    getDefaultVisitorData,
+    VisitorData,
+    VisitorResult
+} from './visitor/index.js';
+
+export function idlToString(
+    type: IDL.Type,
+    startingData: VisitorData = getDefaultVisitorData()
+): string {
+    const result = type.accept(new DidVisitor(), startingData);
+    return toDidString(result);
+}
+
+function toDidString(result: VisitorResult): string {
     // TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
     // TODO Once types have names we should deduplicate the init and post_upgrade param types
     // TODO maybe even before we have names we should deduplicate all sorts of types

@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 import { MethodMeta } from '../../../build/stable/utils/types';
-import { DidVisitor, getDefaultVisitorData, toDidString } from '../did_file';
+import { idlToString } from '../did_file';
 import { handleUncaughtError } from '../error';
 import {
     CanisterMethodMode,
@@ -306,8 +306,8 @@ function verifyInitAndPostUpgradeHaveTheSameParams(
         postUpgrade.argTypes,
         postUpgrade.retTypes
     );
-    const initSignature = getFunctionSignature(initFunc);
-    const postUpgradeSignature = getFunctionSignature(postUpgradeFunc);
+    const initSignature = idlToString(initFunc);
+    const postUpgradeSignature = idlToString(postUpgradeFunc);
 
     if (initSignature !== postUpgradeSignature) {
         throw new Error(
@@ -328,14 +328,8 @@ function findInitAndPostUpgradeMethods(
     return [init, postUpgrade];
 }
 
-function getFunctionSignature(func: IDL.FuncClass): string {
-    const visitor = new DidVisitor();
-    const result = visitor.visitFunc(func, getDefaultVisitorData());
-    return toDidString(result);
-}
-
 function throwTooManyMethodsError(idlTypes: IDL.FuncClass[]): never {
-    const methodSignatures = idlTypes.map(getFunctionSignature);
+    const methodSignatures = idlTypes.map((type) => idlToString(type));
     throw new Error(
         `More than two init and postUpgrade methods found:\n${methodSignatures.join('\n')}`
     );
