@@ -16,10 +16,19 @@ export interface ExportedCanisterClass {
     };
     _azleCanisterMethodIdlTypes?: { [key: string]: IDL.FuncClass };
     _azleCanisterMethodsIndex?: number;
-    _azleInitAndPostUpgradeIdlTypes?: IDL.FuncClass[];
+    _azleInitAndPostUpgradeIdlTypes?: IDL.Type[];
+    _azleDefinedSystemMethods?: SystemMethods;
     _azleMethodMeta?: MethodMeta;
     _azleShouldRegisterCanisterMethods?: boolean;
 }
+
+type SystemMethods = {
+    init: boolean;
+    postUpgrade: boolean;
+    preUpgrade: boolean;
+    heartbeat: boolean;
+    inspectMessage: boolean;
+};
 
 export type MethodType<This, Args extends unknown[], Return> = (
     this: This,
@@ -113,6 +122,19 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         }
 
         if (
+            exportedCanisterClassInstance._azleDefinedSystemMethods ===
+            undefined
+        ) {
+            exportedCanisterClassInstance._azleDefinedSystemMethods = {
+                init: false,
+                postUpgrade: false,
+                preUpgrade: false,
+                heartbeat: false,
+                inspectMessage: false
+            };
+        }
+
+        if (
             exportedCanisterClassInstance._azleCanisterMethodIdlTypes ===
             undefined
         ) {
@@ -171,36 +193,69 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         }
 
         if (canisterMethodMode === 'init') {
+            throwIfMethodAlreadyDefined(
+                'init',
+                exportedCanisterClassInstance._azleDefinedSystemMethods.init
+            );
+
+            exportedCanisterClassInstance._azleDefinedSystemMethods.init = true;
             exportedCanisterClassInstance._azleMethodMeta.init = {
                 name,
                 index
             };
 
-            exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes.push(
-                IDL.Func(paramIdlTypes ?? [], [], ['init'])
-            );
+            const postUpgradeDefined =
+                exportedCanisterClassInstance._azleDefinedSystemMethods
+                    .postUpgrade;
 
-            verifyInitAndPostUpgradeHaveTheSameParams(
-                exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
-            );
+            if (postUpgradeDefined === true) {
+                verifyInitAndPostUpgradeHaveTheSameParams(
+                    paramIdlTypes ?? [],
+                    exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+                );
+            } else {
+                exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes =
+                    paramIdlTypes ?? [];
+            }
         }
 
         if (canisterMethodMode === 'postUpgrade') {
+            throwIfMethodAlreadyDefined(
+                'postUpgrade',
+                exportedCanisterClassInstance._azleDefinedSystemMethods
+                    .postUpgrade
+            );
+
+            exportedCanisterClassInstance._azleDefinedSystemMethods.postUpgrade =
+                true;
             exportedCanisterClassInstance._azleMethodMeta.post_upgrade = {
                 name,
                 index
             };
 
-            exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes.push(
-                IDL.Func(paramIdlTypes ?? [], [], ['post_upgrade'])
-            );
+            const initDefined =
+                exportedCanisterClassInstance._azleDefinedSystemMethods.init;
 
-            verifyInitAndPostUpgradeHaveTheSameParams(
-                exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
-            );
+            if (initDefined === true) {
+                verifyInitAndPostUpgradeHaveTheSameParams(
+                    paramIdlTypes ?? [],
+                    exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+                );
+            } else {
+                exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes =
+                    paramIdlTypes ?? [];
+            }
         }
 
         if (canisterMethodMode === 'preUpgrade') {
+            throwIfMethodAlreadyDefined(
+                'preUpgrade',
+                exportedCanisterClassInstance._azleDefinedSystemMethods
+                    .preUpgrade
+            );
+
+            exportedCanisterClassInstance._azleDefinedSystemMethods.preUpgrade =
+                true;
             exportedCanisterClassInstance._azleMethodMeta.pre_upgrade = {
                 name,
                 index
@@ -208,6 +263,14 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         }
 
         if (canisterMethodMode === 'heartbeat') {
+            throwIfMethodAlreadyDefined(
+                'heartbeat',
+                exportedCanisterClassInstance._azleDefinedSystemMethods
+                    .heartbeat
+            );
+
+            exportedCanisterClassInstance._azleDefinedSystemMethods.heartbeat =
+                true;
             exportedCanisterClassInstance._azleMethodMeta.heartbeat = {
                 name,
                 index
@@ -215,6 +278,14 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         }
 
         if (canisterMethodMode === 'inspectMessage') {
+            throwIfMethodAlreadyDefined(
+                'inspectMessage',
+                exportedCanisterClassInstance._azleDefinedSystemMethods
+                    .inspectMessage
+            );
+
+            exportedCanisterClassInstance._azleDefinedSystemMethods.inspectMessage =
+                true;
             exportedCanisterClassInstance._azleMethodMeta.inspect_message = {
                 name,
                 index
@@ -284,53 +355,35 @@ function isDecoratorOverloadedWithoutParams<
  * @throws {Error} If methods have mismatched parameters or if invalid number of methods
  */
 function verifyInitAndPostUpgradeHaveTheSameParams(
-    idlTypes: IDL.FuncClass[]
+    a: IDL.Type[],
+    b: IDL.Type[]
 ): void {
-    if (idlTypes.length === 0 || idlTypes.length === 1) {
-        return;
-    }
+    const aSignature = idlToString(IDL.Func(a, []));
+    const bSignature = idlToString(IDL.Func(b, []));
 
-    if (idlTypes.length > 2) {
-        throwTooManyMethodsError(idlTypes);
-    }
-
-    const [init, postUpgrade] = findInitAndPostUpgradeMethods(idlTypes);
-
-    if (init === undefined || postUpgrade === undefined) {
-        throw new Error('Both init and postUpgrade methods must be defined');
-    }
-
-    // Get rid of the annotations to facilitate comparison
-    const initFunc = IDL.Func(init.argTypes, init.retTypes);
-    const postUpgradeFunc = IDL.Func(
-        postUpgrade.argTypes,
-        postUpgrade.retTypes
-    );
-    const initSignature = idlToString(initFunc);
-    const postUpgradeSignature = idlToString(postUpgradeFunc);
-
-    if (initSignature !== postUpgradeSignature) {
+    if (aSignature !== bSignature) {
         throw new Error(
-            `'init' and 'postUpgrade' methods must have the same parameters.\nFound:\n- init: ${initSignature}\n- postUpgrade: ${postUpgradeSignature}`
+            `'init' and 'postUpgrade' methods must have the same parameters.\nFound:\n${aSignature}\n${bSignature}`
         );
     }
 }
 
-function findInitAndPostUpgradeMethods(
-    idlTypes: IDL.FuncClass[]
-): [IDL.FuncClass | undefined, IDL.FuncClass | undefined] {
-    const init = idlTypes.find((type) => type.annotations.includes('init'));
-
-    const postUpgrade = idlTypes.find((type) =>
-        type.annotations.includes('post_upgrade')
-    );
-
-    return [init, postUpgrade];
-}
-
-function throwTooManyMethodsError(idlTypes: IDL.FuncClass[]): never {
-    const methodSignatures = idlTypes.map((type) => idlToString(type));
-    throw new Error(
-        `More than two init and postUpgrade methods found:\n${methodSignatures.join('\n')}`
-    );
+/**
+ * @internal
+ *
+ * Throws an error if a method is already defined in the class.
+ *
+ * @param methodName - The name of the method
+ * @param isDefined - Whether the method is already defined
+ * @throws {Error} If the method is already defined
+ */
+function throwIfMethodAlreadyDefined(
+    methodName: string,
+    isDefined: boolean
+): void {
+    if (isDefined === true) {
+        throw new Error(
+            `'${methodName}' method has multiple definitions in the class`
+        );
+    }
 }
