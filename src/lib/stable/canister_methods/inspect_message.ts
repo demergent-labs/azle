@@ -7,7 +7,7 @@ import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
  *
  * The `inspectMessage` entry point will be called just before a call to an `update` entry point.
  *
- * Arguments to the `update` entry point can be accessed using `argDataRaw`.
+ * Arguments to the `update` entry point can be accessed using `msgArgData`.
  *
  * Only one `inspectMessage` method is allowed per canister.
  *
