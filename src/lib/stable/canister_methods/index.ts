@@ -17,12 +17,12 @@ export interface ExportedCanisterClass {
     _azleCanisterMethodIdlTypes?: { [key: string]: IDL.FuncClass };
     _azleCanisterMethodsIndex?: number;
     _azleInitAndPostUpgradeIdlTypes?: IDL.Type[];
-    _azleDefinedSystemMethods?: SystemMethods;
+    _azleDefinedSystemMethods?: DefinedSystemMethods;
     _azleMethodMeta?: MethodMeta;
     _azleShouldRegisterCanisterMethods?: boolean;
 }
 
-type SystemMethods = {
+type DefinedSystemMethods = {
     init: boolean;
     postUpgrade: boolean;
     preUpgrade: boolean;

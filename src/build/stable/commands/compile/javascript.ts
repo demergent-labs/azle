@@ -13,7 +13,7 @@ function getPrelude(main: string): string {
     return /*TS*/ `
             import 'azle/src/lib/stable/globals';
 
-            import { IDL, idlToString, getDefaultVisitorData } from 'azle';
+            import { getDefaultVisitorData, IDL, idlToString } from 'azle';
 
             import * as Canister from './${main}';
 

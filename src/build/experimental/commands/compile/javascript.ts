@@ -46,7 +46,7 @@ export function getPrelude(main: string): string {
         import { ethers } from 'ethers';
         ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
-        import { IDL, idlToString, getDefaultVisitorData } from 'azle';
+        import { getDefaultVisitorData, IDL, idlToString } from 'azle';
         export { Principal } from '@dfinity/principal';
         import * as Canister from './${main}';
 
