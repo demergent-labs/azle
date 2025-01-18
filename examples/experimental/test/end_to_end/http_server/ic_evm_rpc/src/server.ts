@@ -18,7 +18,7 @@ app.use(express.json());
 
 app.get('/caller-address', async (_req, res) => {
     const address = ethers.computeAddress(
-        ethers.hexlify(await ecdsaPublicKey([ic.caller().toUint8Array()]))
+        ethers.hexlify(await ecdsaPublicKey([ic.msgCaller().toUint8Array()]))
     );
 
     res.send(address);

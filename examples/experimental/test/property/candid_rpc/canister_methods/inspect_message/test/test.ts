@@ -92,14 +92,14 @@ function generateInspectMessageMethodBody(): string {
     const returnPrincipal = getPrincipal(AZLE_RETURN_IDENTITY_NAME);
     const throwPrincipal = getPrincipal(AZLE_THROW_IDENTITY_NAME);
     return `
-        if (ic.caller().toText() === "${acceptPrincipal}") {
+        if (ic.msgCaller().toText() === "${acceptPrincipal}") {
             ic.acceptMessage();
             return;
         }
-        if (ic.caller().toText() === "${returnPrincipal}") {
+        if (ic.msgCaller().toText() === "${returnPrincipal}") {
             return;
         }
-        if (ic.caller().toText() === "${throwPrincipal}") {
+        if (ic.msgCaller().toText() === "${throwPrincipal}") {
             throw new Error(\`Method "$\{ic.methodName()}" not allowed\`);
         }
         throw new Error("Unexpected caller");

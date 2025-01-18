@@ -16,12 +16,12 @@ let someone: Principal = Principal.fromText('aaaaa-aa');
 const WhoAmI = Canister({
     // Manually save the calling principal and argument for later access.
     init: init([Principal], (somebody) => {
-        install = ic.caller();
+        install = ic.msgCaller();
         someone = somebody;
     }),
     // Manually re-save these variables after new deploys.
     postUpgrade: postUpgrade([Principal], (somebody) => {
-        install = ic.caller();
+        install = ic.msgCaller();
         someone = somebody;
     }),
     // Return the principal identifier of the wallet canister that installed this
@@ -36,7 +36,7 @@ const WhoAmI = Canister({
     }),
     // Return the principal identifier of the caller of this method.
     whoami: update([], Principal, () => {
-        return ic.caller();
+        return ic.msgCaller();
     }),
     // Return the principal identifier of this canister.
     id: update([], Principal, async () => {

@@ -4,7 +4,7 @@ import express from 'express';
 const app = express();
 
 app.get('/whoami', (req, res) => {
-    res.send(ic.caller().toString());
+    res.send(ic.msgCaller().toString());
 });
 
 app.use(express.static('/dist'));
