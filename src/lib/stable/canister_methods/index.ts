@@ -26,8 +26,8 @@ type DefinedSystemMethods = {
     init: boolean;
     postUpgrade: boolean;
     preUpgrade: boolean;
-    heartbeat: boolean;
     inspectMessage: boolean;
+    heartbeat: boolean;
 };
 
 export type MethodType<This, Args extends unknown[], Return> = (
@@ -262,21 +262,6 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
             };
         }
 
-        if (canisterMethodMode === 'heartbeat') {
-            throwIfMethodAlreadyDefined(
-                'heartbeat',
-                exportedCanisterClassInstance._azleDefinedSystemMethods
-                    .heartbeat
-            );
-
-            exportedCanisterClassInstance._azleDefinedSystemMethods.heartbeat =
-                true;
-            exportedCanisterClassInstance._azleMethodMeta.heartbeat = {
-                name,
-                index
-            };
-        }
-
         if (canisterMethodMode === 'inspectMessage') {
             throwIfMethodAlreadyDefined(
                 'inspectMessage',
@@ -287,6 +272,21 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
             exportedCanisterClassInstance._azleDefinedSystemMethods.inspectMessage =
                 true;
             exportedCanisterClassInstance._azleMethodMeta.inspect_message = {
+                name,
+                index
+            };
+        }
+
+        if (canisterMethodMode === 'heartbeat') {
+            throwIfMethodAlreadyDefined(
+                'heartbeat',
+                exportedCanisterClassInstance._azleDefinedSystemMethods
+                    .heartbeat
+            );
+
+            exportedCanisterClassInstance._azleDefinedSystemMethods.heartbeat =
+                true;
+            exportedCanisterClassInstance._azleMethodMeta.heartbeat = {
                 name,
                 index
             };
@@ -348,7 +348,7 @@ function isDecoratorOverloadedWithoutParams<
 /**
  * @internal
  *
- * Uses the candid string of the init and post-upgrade methods to verify that
+ * Uses the candid string of the `init` and `postUpgrade` methods to verify that
  * they have matching parameter signatures.
  *
  * @param idlTypes - Array of IDL function types representing canister methods
@@ -378,12 +378,12 @@ function verifyInitAndPostUpgradeHaveTheSameParams(
  * @throws {Error} If the method is already defined
  */
 function throwIfMethodAlreadyDefined(
-    methodName: string,
+    methodName: keyof DefinedSystemMethods,
     isDefined: boolean
 ): void {
     if (isDefined === true) {
         throw new Error(
-            `'${methodName}' method has multiple definitions in the class`
+            `'${methodName}' method can only have one definition in the exported canister class`
         );
     }
 }

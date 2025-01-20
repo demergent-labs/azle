@@ -31,7 +31,7 @@ export function handleClassApiCanister(): string {
         const candid = idlToString(canisterIdlType, {
             ...getDefaultVisitorData(),
             isFirstService: true,
-            initAndPostUpgradeParams: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+            initAndPostUpgradeParamIdlTypes: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
         });
 
         globalThis._azleGetCandidAndMethodMeta = () => {

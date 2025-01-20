@@ -84,7 +84,7 @@ export function getPrelude(main: string): string {
                 const candid = idlToString(canister.getIdlType([]), {
                     ...getDefaultVisitorData(),
                     isFirstService: true,
-                    initAndPostUpgradeParams: canister.getInitAndPostUpgradeParamIdlTypes()
+                    initAndPostUpgradeParamIdlTypes: canister.getInitAndPostUpgradeParamIdlTypes()
                 });
 
                 globalThis._azleCallbacks = canister.callbacks;

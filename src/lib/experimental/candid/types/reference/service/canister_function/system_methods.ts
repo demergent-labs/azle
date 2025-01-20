@@ -12,60 +12,49 @@ export function createGetInitAndPostUpgradeParamIdlTypes(
 ) {
     return (parents: Parent[]): IDL.Type[] => {
         const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
-        let foundInit = false;
-        let foundPostUpgrade = false;
 
-        return Object.entries(serviceFunctionInfo).reduce(
-            (accumulator, [_methodName, functionInfo]) => {
-                const mode = functionInfo.mode;
-                const isInitOrPostUpgradeMethod =
-                    mode === 'init' || mode === 'postUpgrade';
-                if (!isInitOrPostUpgradeMethod) {
-                    return accumulator;
-                }
-
-                if (mode === 'init') {
-                    if (foundInit === true) {
-                        throw new Error(
-                            'Init method already found in canister options'
-                        );
-                    }
-                    foundInit = true;
-                } else if (mode === 'postUpgrade') {
-                    if (foundPostUpgrade === true) {
-                        throw new Error(
-                            'PostUpgrade method already found in canister options'
-                        );
-                    }
-                    foundPostUpgrade = true;
-                }
-
-                const paramIdlTypes = toIdlTypeArray(
-                    functionInfo.paramCandidTypes,
-                    parents
-                );
-                if (
-                    (mode === 'init' && foundPostUpgrade) ||
-                    (mode === 'postUpgrade' && foundInit)
-                ) {
-                    const functionSignature = idlToString(
-                        IDL.Func(paramIdlTypes, [])
-                    );
-
-                    const accumulatorSignature = idlToString(
-                        IDL.Func(accumulator, [])
-                    );
-
-                    if (functionSignature !== accumulatorSignature) {
-                        throw new Error(
-                            'Init and postUpgrade methods must have the same function signature'
-                        );
-                    }
-                }
-
-                return paramIdlTypes;
-            },
-            [] as IDL.Type[]
+        const initMethod = Object.entries(serviceFunctionInfo).find(
+            ([_, info]) => info.mode === 'init'
         );
+        const postUpgradeMethod = Object.entries(serviceFunctionInfo).find(
+            ([_, info]) => info.mode === 'postUpgrade'
+        );
+
+        if (initMethod !== undefined && postUpgradeMethod !== undefined) {
+            const initParams = toIdlTypeArray(
+                initMethod[1].paramCandidTypes,
+                parents
+            );
+            const postUpgradeParams = toIdlTypeArray(
+                postUpgradeMethod[1].paramCandidTypes,
+                parents
+            );
+
+            const initSignature = idlToString(IDL.Func(initParams, []));
+            const postUpgradeSignature = idlToString(
+                IDL.Func(postUpgradeParams, [])
+            );
+
+            if (initSignature !== postUpgradeSignature) {
+                throw new Error(
+                    `'init' and 'postUpgrade' methods must have the same parameters.\nFound:\n${initSignature}\n${postUpgradeSignature}`
+                );
+            }
+
+            return initParams;
+        }
+
+        if (initMethod !== undefined) {
+            return toIdlTypeArray(initMethod[1].paramCandidTypes, parents);
+        }
+
+        if (postUpgradeMethod !== undefined) {
+            return toIdlTypeArray(
+                postUpgradeMethod[1].paramCandidTypes,
+                parents
+            );
+        }
+
+        return [];
     };
 }

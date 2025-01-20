@@ -41,7 +41,7 @@ export function visitService(
 function serviceToCandidString(
     t: IDL.ServiceClass,
     canisterMethodCandidStrings: string[],
-    initOrPostUpgradeMethodCandidString: string[],
+    initAndPostUpgradeMethodCandidString: string[],
     candidTypes: CandidTypesDefs,
     isFirstService: boolean
 ): [CandidDef, CandidTypesDefs] {
@@ -57,7 +57,7 @@ function serviceToCandidString(
         .join(func_separator);
 
     const canisterParamsString = createCanisterParamsString(
-        initOrPostUpgradeMethodCandidString
+        initAndPostUpgradeMethodCandidString
     );
 
     if (isFirstService === true) {
@@ -73,7 +73,7 @@ function getInitAndPostUpgradeMethodCandid(
     didVisitor: DidVisitor,
     data: VisitorData
 ): [CandidDef[], CandidTypesDefs] {
-    const result = IDL.Func(data.initAndPostUpgradeParams, []).accept(
+    const result = IDL.Func(data.initAndPostUpgradeParamIdlTypes, []).accept(
         didVisitor,
         {
             ...data,

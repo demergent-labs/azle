@@ -22,7 +22,7 @@ export type VisitorData = {
     /** Indicates if this is the first/primary service being processed */
     isFirstService: boolean;
     /** Collection of system functions (init, postUpgrade) to process */
-    initAndPostUpgradeParams: IDL.FuncClass[];
+    initAndPostUpgradeParamIdlTypes: IDL.FuncClass[];
 };
 
 /**
@@ -60,7 +60,7 @@ export function getDefaultVisitorData(): VisitorData {
         usedRecClasses: [],
         isOnService: false,
         isFirstService: false,
-        initAndPostUpgradeParams: []
+        initAndPostUpgradeParamIdlTypes: []
     };
 }
 

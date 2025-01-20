@@ -16,7 +16,7 @@ import {
  * @returns The Candid string representation of the type
  *
  * @example
- * const recordType = IDL.Record({ 'name': IDL.Text, 'age': IDL.Nat8 });
+ * const recordType = IDL.Record({ name: IDL.Text, age: IDL.Nat8 });
  * const candidStr = idlToString(recordType);
  * // Result: "record { name : text; age : nat8 }"
  */

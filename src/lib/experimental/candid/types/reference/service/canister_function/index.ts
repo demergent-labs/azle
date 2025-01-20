@@ -6,6 +6,7 @@ import {
     Method,
     MethodMeta
 } from '../../../../../../../build/stable/utils/types';
+import { CanisterMethodMode } from '../../../../../../stable/execute_with_candid_serde';
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { Callbacks } from '../../../../../globals';
 import { ic } from '../../../../../ic';
@@ -30,17 +31,8 @@ type _AzleFunctionReturnType = {
 type CallRawFunction = typeof ic.callRaw;
 type NotifyRawFunction = typeof ic.notifyRaw;
 
-type Mode =
-    | 'query'
-    | 'update'
-    | 'init'
-    | 'postUpgrade'
-    | 'preUpgrade'
-    | 'inspectMessage'
-    | 'heartbeat';
-
 type FunctionInfo = {
-    mode: Mode;
+    mode: CanisterMethodMode;
     paramCandidTypes: CandidType[];
     returnCandidType: CandidType;
 };
@@ -106,7 +98,7 @@ function createGetIdlTypeFunction(
     };
 }
 
-function createAnnotation(mode: Mode): string[] {
+function createAnnotation(mode: CanisterMethodMode): string[] {
     if (mode === 'query') {
         return ['query'];
     }
