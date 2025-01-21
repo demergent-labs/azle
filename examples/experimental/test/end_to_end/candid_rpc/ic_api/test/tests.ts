@@ -16,7 +16,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             );
         });
 
-        it('calls argDataRaw on the ic object', async () => {
+        it('calls msgArgData on the ic object', async () => {
             const blobString = 'Surprise!';
             const blob = Uint8Array.from(
                 blobString.split('').map((char) => char.charCodeAt(0))
@@ -26,7 +26,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             const string = 'test';
             const candidString = `(blob "${blobString}", ${int} : int8, ${bool}, "${string}")`;
 
-            const resultBytes = await icApiCanister.argDataRaw(
+            const resultBytes = await icApiCanister.msgArgData(
                 blob,
                 int,
                 bool,
@@ -37,8 +37,8 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toBe(candidString);
         });
 
-        it('calls caller on the ic object', async () => {
-            const result = await icApiCanister.caller();
+        it('calls msgCaller on the ic object', async () => {
+            const result = await icApiCanister.msgCaller();
 
             expect(result.toText()).toBe('2vxsx-fae');
         });

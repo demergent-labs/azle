@@ -1,7 +1,7 @@
 // TODO maybe this should be Ledger? We should look into making the Ledger
 // better using the latest Wasm and did that I know of
 
-import { call, caller, id, IDL, Principal, update } from 'azle';
+import { call, id, IDL, msgCaller, Principal, update } from 'azle';
 import { Account, TransferArgs, TransferResult } from 'azle/canisters/icrc_1';
 
 import {
@@ -23,7 +23,9 @@ export default class {
             args: [
                 {
                     owner: id(),
-                    subaccount: [padPrincipalWithZeros(caller().toUint8Array())]
+                    subaccount: [
+                        padPrincipalWithZeros(msgCaller().toUint8Array())
+                    ]
                 }
             ]
         });
@@ -41,7 +43,7 @@ export default class {
                     {
                         owner: [id()],
                         subaccount: [
-                            padPrincipalWithZeros(caller().toUint8Array())
+                            padPrincipalWithZeros(msgCaller().toUint8Array())
                         ]
                     }
                 ]
@@ -59,7 +61,9 @@ export default class {
             args: [
                 {
                     owner: [id()],
-                    subaccount: [padPrincipalWithZeros(caller().toUint8Array())]
+                    subaccount: [
+                        padPrincipalWithZeros(msgCaller().toUint8Array())
+                    ]
                 }
             ]
         });
@@ -74,7 +78,7 @@ export default class {
             args: [
                 {
                     from_subaccount: [
-                        padPrincipalWithZeros(caller().toUint8Array())
+                        padPrincipalWithZeros(msgCaller().toUint8Array())
                     ],
                     to: {
                         owner: id(),

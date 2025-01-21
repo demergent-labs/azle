@@ -17,7 +17,7 @@ import { Principal } from '@dfinity/principal';
  * - **Call Context**:
  *   - any besides start
  */
-export function caller(): Principal {
+export function msgCaller(): Principal {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
@@ -27,9 +27,9 @@ export function caller(): Principal {
 
     if (globalThis._azleIcExperimental !== undefined) {
         return Principal.fromUint8Array(
-            new Uint8Array(globalThis._azleIcExperimental.caller())
+            new Uint8Array(globalThis._azleIcExperimental.msgCaller())
         );
     }
 
-    return Principal.fromUint8Array(globalThis._azleIcStable.caller());
+    return Principal.fromUint8Array(globalThis._azleIcStable.msgCaller());
 }

@@ -1,10 +1,8 @@
 import '../experimental';
 
 import { acceptMessage } from './accept_message';
-import { argDataRaw } from './arg_data_raw';
 import { call } from './call';
 import { callRaw } from './call_raw';
-import { caller } from './caller';
 import { candidCompiler } from './candid_compiler';
 import { candidDecode } from './candid_decode';
 import { candidEncode } from './candid_encode';
@@ -16,6 +14,8 @@ import { dataCertificate } from './data_certificate';
 import { id } from './id';
 import { isController } from './is_controller';
 import { methodName } from './method_name';
+import { msgArgData } from './msg_arg_data';
+import { msgCaller } from './msg_caller';
 import { msgCyclesAccept } from './msg_cycles_accept';
 import { msgCyclesAvailable } from './msg_cycles_available';
 import { msgCyclesRefunded } from './msg_cycles_refunded';
@@ -38,10 +38,10 @@ export * from './types';
 /** API entrypoint for interacting with the Internet Computer */
 export const ic = {
     acceptMessage,
-    argDataRaw,
+    msgArgData,
     call,
     callRaw,
-    caller,
+    msgCaller,
     candidCompiler,
     candidDecode,
     candidEncode,

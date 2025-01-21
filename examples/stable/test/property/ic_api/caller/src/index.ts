@@ -1,10 +1,10 @@
 import {
     acceptMessage,
-    caller,
     IDL,
     init,
     inspectMessage,
     methodName,
+    msgCaller,
     postUpgrade,
     preUpgrade,
     Principal,
@@ -22,7 +22,7 @@ export default class {
 
     @init
     init(): void {
-        this.initCaller = caller();
+        this.initCaller = msgCaller();
     }
 
     @query([], IDL.Opt(IDL.Principal))
@@ -36,7 +36,7 @@ export default class {
 
     @postUpgrade
     postUpgrade(): void {
-        this.postUpgradeCaller = caller();
+        this.postUpgradeCaller = msgCaller();
     }
 
     @query([], IDL.Opt(IDL.Principal))
@@ -50,7 +50,7 @@ export default class {
 
     @preUpgrade
     preUpgrade(): void {
-        this.preUpgradeCaller.insert('PRE_UPGRADE_CALLER', caller());
+        this.preUpgradeCaller.insert('PRE_UPGRADE_CALLER', msgCaller());
     }
 
     @query([], IDL.Opt(IDL.Principal))
@@ -68,7 +68,7 @@ export default class {
     @inspectMessage
     inspectMessage(): void {
         if (methodName() === 'getInspectMessageCaller') {
-            if (caller().toText() === this.inspectMessageCaller?.toText()) {
+            if (msgCaller().toText() === this.inspectMessageCaller?.toText()) {
                 acceptMessage();
             }
         } else {
@@ -78,7 +78,7 @@ export default class {
 
     @update
     setInspectMessageCaller(): void {
-        this.inspectMessageCaller = caller();
+        this.inspectMessageCaller = msgCaller();
     }
 
     @query([], IDL.Opt(IDL.Principal))
@@ -92,19 +92,19 @@ export default class {
 
     @query([], IDL.Principal)
     getQueryCaller(): Principal {
-        return caller();
+        return msgCaller();
     }
 
     @update([], IDL.Principal)
     getUpdateCaller(): Principal {
-        return caller();
+        return msgCaller();
     }
 
     @query([], IDL.Bool)
     assertTypes(): boolean {
         type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof caller>, Principal>
+            NotAnyAndExact<ReturnType<typeof msgCaller>, Principal>
         >;
-        return caller() instanceof Principal;
+        return msgCaller() instanceof Principal;
     }
 }

@@ -37,7 +37,7 @@ export function getTests(): Test {
             );
         });
 
-        it('gets the init arg data raw from the canister', async () => {
+        it('gets the init msg arg data from the canister', async () => {
             const constraints: DefinitionConstraints = {
                 recursiveWeights: true,
                 weights: {
@@ -82,7 +82,7 @@ export function getTests(): Test {
             );
         });
 
-        it('asserts argDataRaw static and runtime types', async () => {
+        it('asserts msgArgData static and runtime types', async () => {
             const actor = await getCanisterActor<Actor>('canister');
             expect(await actor.assertTypes()).toBe(true);
         });
@@ -107,14 +107,14 @@ async function testDeploy(
     )}' ${mode === 'postUpgrade' ? '--upgrade-unchanged' : ''}`;
     execSync(deployCommand, { stdio: 'pipe' });
 
-    const initArgDataRaw = await actor.getInitArgDataRaw();
-    const postUpgradeArgDataRaw = await actor.getPostUpgradeArgDataRaw();
-    const expectedInitArgDataRaw =
+    const initMsgArgData = await actor.getInitMsgArgData();
+    const postUpgradeMsgArgData = await actor.getPostUpgradeMsgArgData();
+    const expectedInitMsgArgData =
         mode === 'init' ? [await actor.candidEncode(argString)] : [];
-    const expectedPostUpgradeArgDataRaw =
+    const expectedPostUpgradeMsgArgData =
         mode === 'postUpgrade' ? [await actor.candidEncode(argString)] : [];
-    expect(initArgDataRaw).toEqual(expectedInitArgDataRaw);
-    expect(postUpgradeArgDataRaw).toEqual(expectedPostUpgradeArgDataRaw);
+    expect(initMsgArgData).toEqual(expectedInitMsgArgData);
+    expect(postUpgradeMsgArgData).toEqual(expectedPostUpgradeMsgArgData);
 }
 
 async function testCanisterMethod(
@@ -122,7 +122,7 @@ async function testCanisterMethod(
     mode: 'Query' | 'Update'
 ): Promise<Promise<void>> {
     const argString = generateRandomCandidString(argData);
-    const command = `dfx canister call canister get${mode}ArgDataRaw '${escapeSingleQuotes(
+    const command = `dfx canister call canister get${mode}MsgArgData '${escapeSingleQuotes(
         argString
     )}'`;
     console.info(`command: ${command}`);

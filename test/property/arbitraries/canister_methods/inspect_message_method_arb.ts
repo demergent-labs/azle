@@ -51,7 +51,7 @@ export function InspectMessageMethodArb(
                 const inspectMessageImports =
                     api === 'functional'
                         ? ['ic']
-                        : ['caller', 'acceptMessage', 'methodName'];
+                        : ['msgCaller', 'acceptMessage', 'methodName'];
                 const imports = new Set([
                     'inspectMessage',
                     ...inspectMessageImports

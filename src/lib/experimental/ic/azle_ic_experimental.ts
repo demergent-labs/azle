@@ -3,7 +3,7 @@
  * we expose to the users. This is the interface for the rust functions.
  */
 export type AzleIcExperimental = {
-    argDataRaw: () => ArrayBuffer;
+    msgArgData: () => ArrayBuffer;
     callRaw: (
         promiseId: string,
         canisterIdBytes: ArrayBuffer,
@@ -11,7 +11,7 @@ export type AzleIcExperimental = {
         argsRaw: ArrayBuffer,
         paymentString: string
     ) => void;
-    caller: () => ArrayBuffer;
+    msgCaller: () => ArrayBuffer;
     candidCompiler: (candidPath: string) => string;
     candidDecode: (candidBytes: ArrayBuffer) => string;
     candidEncode: (candidString: string) => ArrayBuffer;

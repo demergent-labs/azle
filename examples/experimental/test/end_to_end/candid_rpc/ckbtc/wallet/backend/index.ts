@@ -41,7 +41,7 @@ export default Canister({
                                 owner: ic.id(),
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.caller().toUint8Array()
+                                        ic.msgCaller().toUint8Array()
                                     )
                                 ]
                             }
@@ -58,7 +58,7 @@ export default Canister({
                     {
                         owner: ic.id(),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.caller().toUint8Array())
+                            padPrincipalWithZeros(ic.msgCaller().toUint8Array())
                         )
                     }
                 ]
@@ -77,7 +77,7 @@ export default Canister({
                                 owner: [ic.id()],
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.caller().toUint8Array()
+                                        ic.msgCaller().toUint8Array()
                                     )
                                 ]
                             }
@@ -94,7 +94,7 @@ export default Canister({
                     {
                         owner: Some(ic.id()),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.caller().toUint8Array())
+                            padPrincipalWithZeros(ic.msgCaller().toUint8Array())
                         )
                     }
                 ]
@@ -113,7 +113,7 @@ export default Canister({
                                 owner: [ic.id()],
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.caller().toUint8Array()
+                                        ic.msgCaller().toUint8Array()
                                     )
                                 ]
                             }
@@ -130,7 +130,7 @@ export default Canister({
                     {
                         owner: Some(ic.id()),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.caller().toUint8Array())
+                            padPrincipalWithZeros(ic.msgCaller().toUint8Array())
                         )
                     }
                 ]
@@ -151,7 +151,7 @@ export default Canister({
                                 {
                                     from_subaccount: [
                                         padPrincipalWithZeros(
-                                            ic.caller().toUint8Array()
+                                            ic.msgCaller().toUint8Array()
                                         )
                                     ],
                                     to: {
@@ -182,7 +182,7 @@ export default Canister({
                         {
                             from_subaccount: Some(
                                 padPrincipalWithZeros(
-                                    ic.caller().toUint8Array()
+                                    ic.msgCaller().toUint8Array()
                                 )
                             ),
                             to: {

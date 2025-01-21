@@ -9,7 +9,7 @@ app.use(express.json());
 app.get('/caller-address', async (_req, res) => {
     const wallet = new ThresholdWallet(
         {
-            derivationPath: [ic.caller().toUint8Array()]
+            derivationPath: [ic.msgCaller().toUint8Array()]
         },
         ethers.getDefaultProvider('https://sepolia.base.org')
     );

@@ -9,5 +9,5 @@
         "resolveJsonModule": true,
         "esModuleInterop": true
     },
-    "exclude": ["examples/new"]
+    "exclude": ["examples/new", ".dfx", ".azle"]
 }

@@ -1,4 +1,4 @@
-import { call, caller, IDL, trap, update } from 'azle';
+import { call, IDL, msgCaller, trap, update } from 'azle';
 import {
     ecdsa_public_key_args,
     ecdsa_public_key_result,
@@ -54,7 +54,7 @@ async function getPublicKeyResult(): Promise<ecdsa_public_key_result> {
             args: [
                 {
                     canister_id: [],
-                    derivation_path: [caller().toUint8Array()],
+                    derivation_path: [msgCaller().toUint8Array()],
                     key_id: {
                         curve: { secp256k1: null },
                         name: 'dfx_test_key'
@@ -77,7 +77,7 @@ async function getSignatureResult(
             args: [
                 {
                     message_hash: messageHash,
-                    derivation_path: [caller().toUint8Array()],
+                    derivation_path: [msgCaller().toUint8Array()],
                     key_id: {
                         curve: { secp256k1: null },
                         name: 'dfx_test_key'

@@ -10,9 +10,9 @@ export function generateCanister(
 ): string {
     return /*ts*/ `
 import {
-    argDataRaw,
     candidEncode,
     init,
+    msgArgData,
     postUpgrade,
     query,
     update
@@ -24,45 +24,45 @@ ${variableAliasDeclarations.join('\n')}
 import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
-    initArgDataRaw: Uint8Array | null = null;
-    postUpgradeArgDataRaw: Uint8Array | null = null;
+    initMsgArgData: Uint8Array | null = null;
+    postUpgradeMsgArgData: Uint8Array | null = null;
 
     @init([${initIdlType}])
     init(_arg: ${initTsType}): void {
-        this.initArgDataRaw = argDataRaw();
+        this.initMsgArgData = msgArgData();
     }
 
     @query([], IDL.Opt(IDL.Vec(IDL.Nat8)))
-    getInitArgDataRaw(): [Uint8Array] | [] {
-        if (this.initArgDataRaw === null) {
+    getInitMsgArgData(): [Uint8Array] | [] {
+        if (this.initMsgArgData === null) {
             return [];
         } else {
-            return [this.initArgDataRaw];
+            return [this.initMsgArgData];
         }
     }
 
     @postUpgrade([${initIdlType}])
     postUpgrade(_arg: ${initTsType}): void {
-        this.postUpgradeArgDataRaw = argDataRaw();
+        this.postUpgradeMsgArgData = msgArgData();
     }
 
     @query([], IDL.Opt(IDL.Vec(IDL.Nat8)))
-    getPostUpgradeArgDataRaw(): [Uint8Array] | [] {
-        if (this.postUpgradeArgDataRaw === null) {
+    getPostUpgradeMsgArgData(): [Uint8Array] | [] {
+        if (this.postUpgradeMsgArgData === null) {
             return [];
         } else {
-            return [this.postUpgradeArgDataRaw];
+            return [this.postUpgradeMsgArgData];
         }
     }
 
     @query([${queryIdlType}], IDL.Vec(IDL.Nat8))
-    getQueryArgDataRaw(_arg: ${queryTsType}): Uint8Array {
-        return argDataRaw();
+    getQueryMsgArgData(_arg: ${queryTsType}): Uint8Array {
+        return msgArgData();
     }
 
     @update([${updateIdlType}], IDL.Vec(IDL.Nat8))
-    getUpdateArgDataRaw(_arg: ${updateTsType}): Uint8Array {
-        return argDataRaw();
+    getUpdateMsgArgData(_arg: ${updateTsType}): Uint8Array {
+        return msgArgData();
     }
 
     @query([IDL.Text], IDL.Vec(IDL.Nat8))
@@ -73,9 +73,9 @@ export default class {
     @query([], IDL.Bool)
     assertTypes(): boolean {
         type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof argDataRaw>, Uint8Array>
+            NotAnyAndExact<ReturnType<typeof msgArgData>, Uint8Array>
         >;
-        return argDataRaw() instanceof Uint8Array;
+        return msgArgData() instanceof Uint8Array;
     }
 }
     `;
