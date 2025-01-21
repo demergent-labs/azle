@@ -6,10 +6,12 @@ import * as fc from 'fast-check';
 
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
+import { Agent, HttpAgent } from '@dfinity/agent';
+
 import { runBenchmarksForCanisters } from './benchmarks';
 import { runFuzzTests } from './fuzz';
 
-export type Test = () => void;
+export type Test = (agent: Agent) => void;
 
 export { getCanisterActor } from './get_canister_actor';
 
@@ -25,8 +27,17 @@ export function runTests(
         shouldFuzz
     } = processEnvVars();
 
+    describe('agent setup', () => {
+        it('set up agent for test use', async () => {
+            (global as any).agent = await HttpAgent.create({
+                host: 'http://127.0.0.1:8000',
+                shouldFetchRootKey: true
+            });
+            console.log('agent created');
+        });
+    });
     if (shouldRunTests === true) {
-        describe(`tests`, tests);
+        describe(`tests`, () => tests((global as any).agent));
     }
 
     if (shouldRunTypeChecks === true) {

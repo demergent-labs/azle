@@ -1,12 +1,17 @@
+import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from '../dfx_generated/query/query.did';
 
-export function getTests(): Test {
+export function getTests(
+    createActor: () => Promise<ActorSubclass<_SERVICE>>
+): Test {
     return () => {
         it('makes a simple query call', async () => {
-            const result = await global.queryCanister.simpleQuery();
+            const queryCanister = await createActor();
+            const result = await queryCanister.simpleQuery();
+
             expect(result).toBe('This is a query function');
         });
     };
