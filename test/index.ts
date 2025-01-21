@@ -15,9 +15,9 @@ export type Test = () => void;
 
 export { getCanisterActor } from './get_canister_actor';
 
-let createActors: (() => Promise<ActorSubclass<any>>)[] = [];
+let createActors: Record<string, () => Promise<ActorSubclass<any>>> = {};
 
-export function runTests<T extends unknown[]>(
+export function runTests<T extends Record<string, unknown>>(
     tests: Test,
     createActorsParam: { [K in keyof T]: () => Promise<ActorSubclass<T[K]>> },
     canisterNames: string | string[] | undefined = undefined,
@@ -30,7 +30,7 @@ export function runTests<T extends unknown[]>(
         shouldFuzz
     } = processEnvVars();
 
-    createActors = createActorsParam as (() => Promise<ActorSubclass<any>>)[];
+    createActors = createActorsParam;
 
     describe('agent setup', () => {
         it('set up agent for test use', async () => {
@@ -98,16 +98,29 @@ export function please(name: string, fn: () => void | Promise<void>): void {
 please.skip = test.skip;
 please.only = test.only;
 
-export function it<T extends unknown[]>(
-    name: string,
-    fn: (
-        ...actors: { [K in keyof T]: ActorSubclass<T[K]> }
-    ) => void | Promise<void>
+export function it<T extends Record<string, unknown>>(
+    description: string,
+    fn: (actors: {
+        [K in keyof T]: ActorSubclass<T[K]>;
+    }) => void | Promise<void>
 ): void {
-    test(`it ${name}`, async () => {
-        console.info(`Testing: ${name}`);
-        const actors = await Promise.all(createActors.map((actor) => actor()));
-        await fn(...(actors as { [K in keyof T]: ActorSubclass<T[K]> }));
+    test(description, async () => {
+        console.info(`Testing: ${description}`);
+
+        const actorPromises = Object.entries(createActors).reduce(
+            (acc, [key, creator]) => {
+                acc[key] = creator();
+                return acc;
+            },
+            {} as { [key: string]: Promise<ActorSubclass<any>> }
+        );
+
+        const actors = await Promise.all(Object.values(actorPromises));
+        const actorsMap = Object.fromEntries(
+            Object.keys(actorPromises).map((key, index) => [key, actors[index]])
+        );
+
+        await fn(actorsMap as any);
     });
 }
 it.only = test.only;

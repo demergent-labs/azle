@@ -11,19 +11,19 @@ import { getTests } from './tests';
 const canister1Name = 'canister1';
 const canister2Name = 'canister2';
 
-const createActors = [
-    async (): Promise<ActorSubclass<CANISTER1_SERVICE>> =>
+const createActors = {
+    canister1: async (): Promise<ActorSubclass<CANISTER1_SERVICE>> =>
         createActorCanister1(getCanisterId(canister1Name), {
             agentOptions: {
                 host: 'http://127.0.0.1:8000'
             }
         }),
-    async (): Promise<ActorSubclass<CANISTER2_SERVICE>> =>
+    canister2: async (): Promise<ActorSubclass<CANISTER2_SERVICE>> =>
         createActorCanister2(getCanisterId(canister2Name), {
             agentOptions: {
                 host: 'http://127.0.0.1:8000'
             }
         })
-];
+};
 
 runTests(getTests(), createActors, [canister1Name, canister2Name]);
