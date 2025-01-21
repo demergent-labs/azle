@@ -19,20 +19,20 @@ export function visitService(
     data: VisitorData
 ): [CandidDef, CandidTypesDefs] {
     const queryAndUpdateMethods = getQueryAndUpdateMethods(t, didVisitor, data);
-    const initMethod = getSystemMethod('init', didVisitor, data);
-    const postMethod = getSystemMethod('postUpgrade', didVisitor, data);
+    const initAndPostUpgradeMethodCandid = getInitAndPostUpgradeMethodCandid(
+        didVisitor,
+        data
+    );
 
     const candidTypes = {
         ...queryAndUpdateMethods[1],
-        ...initMethod[1],
-        ...postMethod[1]
+        ...initAndPostUpgradeMethodCandid[1]
     };
 
     return serviceToCandidString(
         t,
         queryAndUpdateMethods[0],
-        initMethod[0],
-        postMethod[0],
+        initAndPostUpgradeMethodCandid[0],
         candidTypes,
         data.isFirstService
     );
@@ -41,8 +41,7 @@ export function visitService(
 function serviceToCandidString(
     t: IDL.ServiceClass,
     canisterMethodCandidStrings: string[],
-    initMethodCandidString: string[],
-    postMethodCandidString: string[],
+    initAndPostUpgradeMethodCandidString: string[],
     candidTypes: CandidTypesDefs,
     isFirstService: boolean
 ): [CandidDef, CandidTypesDefs] {
@@ -58,8 +57,7 @@ function serviceToCandidString(
         .join(func_separator);
 
     const canisterParamsString = createCanisterParamsString(
-        initMethodCandidString,
-        postMethodCandidString
+        initAndPostUpgradeMethodCandidString
     );
 
     if (isFirstService === true) {
@@ -71,32 +69,19 @@ function serviceToCandidString(
     return [`service {${funcStrings}}`, candidTypes];
 }
 
-function getSystemMethod(
-    methodName: 'init' | 'postUpgrade',
+function getInitAndPostUpgradeMethodCandid(
     didVisitor: DidVisitor,
     data: VisitorData
 ): [CandidDef[], CandidTypesDefs] {
-    const isInitFunction = (func: IDL.FuncClass): boolean =>
-        func.annotations.includes(methodName);
-    const result = extractCandid(
-        data.systemFuncs
-            .filter((func) => isInitFunction(func))
-            .map((initFunc) =>
-                initFunc.accept(didVisitor, {
-                    ...data,
-                    isOnService: true,
-                    isFirstService: false
-                })
-            )
+    const result = IDL.Func(data.initAndPostUpgradeParamIdlTypes, []).accept(
+        didVisitor,
+        {
+            ...data,
+            isOnService: true,
+            isFirstService: false
+        }
     );
-
-    if (result[0].length > 1) {
-        console.info(
-            `WARNING: too many ${methodName} methods detected. Expected no more than 1, found ${result[0].length}`
-        );
-    }
-
-    return [result[0], result[1]];
+    return extractCandid([result]);
 }
 
 function getQueryAndUpdateMethods(
@@ -115,19 +100,7 @@ function getQueryAndUpdateMethods(
     );
 }
 
-function createCanisterParamsString(
-    initMethodCandidString: string[],
-    postMethodCandidString: string[]
-): string {
-    if (initMethodCandidString.length === 0) {
-        if (postMethodCandidString.length === 0) {
-            return '()';
-        }
-        const parts = postMethodCandidString[0].split('->');
-        if (parts.length >= 2) {
-            return parts[0].trim();
-        }
-    }
+function createCanisterParamsString(initMethodCandidString: string[]): string {
     const parts = initMethodCandidString[0].split('->');
     if (parts.length >= 2) {
         return parts.slice(0, -1).join('->').trim();
