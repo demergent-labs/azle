@@ -51,11 +51,11 @@ export default Canister({
     // ),
 
     // returns the argument data as bytes.
-    argDataRaw: query(
+    msgArgData: query(
         [blob, int8, bool, text],
         blob,
         (_arg1, _arg2, _arg3, _arg4) => {
-            return ic.argDataRaw();
+            return ic.msgArgData();
         }
     ),
     // returns the principal of the identity that called this function

@@ -1,5 +1,4 @@
 mod accept_message;
-mod arg_data_raw;
 mod call_raw;
 mod caller;
 mod candid_compiler;
@@ -15,6 +14,7 @@ mod id;
 mod in_replicated_execution;
 mod is_controller;
 mod method_name;
+mod msg_arg_data;
 mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
@@ -50,13 +50,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "acceptMessage",
         context
             .new_function::<accept_message::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "argDataRaw",
-        context
-            .new_function::<arg_data_raw::NativeFunction>("")
             .into(),
     );
 
@@ -153,6 +146,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "methodName",
         context
             .new_function::<method_name::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "msgArgData",
+        context
+            .new_function::<msg_arg_data::NativeFunction>("")
             .into(),
     );
 

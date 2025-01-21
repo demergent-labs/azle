@@ -3,7 +3,6 @@ use std::fmt::Display;
 use rquickjs::{Ctx, Error, Object, Result, String};
 
 mod accept_message;
-mod arg_data_raw;
 mod call_raw;
 mod caller;
 mod candid_decode;
@@ -18,6 +17,7 @@ mod id;
 mod in_replicated_execution;
 mod is_controller;
 mod method_name;
+mod msg_arg_data;
 mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
@@ -48,8 +48,6 @@ pub fn register(ctx: Ctx) -> Result<()> {
     let ic = Object::new(ctx.clone())?;
 
     ic.set("acceptMessage", accept_message::get_function(ctx.clone()))?;
-
-    ic.set("argDataRaw", arg_data_raw::get_function(ctx.clone()))?;
 
     ic.set("callRaw", call_raw::get_function(ctx.clone()))?;
 
@@ -90,6 +88,8 @@ pub fn register(ctx: Ctx) -> Result<()> {
     ic.set("isController", is_controller::get_function(ctx.clone()))?;
 
     ic.set("methodName", method_name::get_function(ctx.clone()))?;
+
+    ic.set("msgArgData", msg_arg_data::get_function(ctx.clone()))?;
 
     ic.set(
         "msgCyclesAccept",

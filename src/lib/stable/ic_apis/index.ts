@@ -1,5 +1,4 @@
 export { acceptMessage } from './accept_message';
-export { argDataRaw } from './arg_data_raw';
 export { call } from './call';
 export { caller } from './caller';
 export { candidDecode } from './candid_decode';
@@ -14,6 +13,7 @@ export { id } from './id';
 export { inReplicatedExecution } from './in_replicated_execution';
 export { isController } from './is_controller';
 export { methodName } from './method_name';
+export { msgArgData } from './msg_arg_data';
 export { msgCyclesAccept } from './msg_cycles_accept';
 export { msgCyclesAvailable } from './msg_cycles_available';
 export { msgCyclesRefunded } from './msg_cycles_refunded';
