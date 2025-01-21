@@ -22,7 +22,7 @@ export function msgCaller(): Principal {
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
-        return Principal.fromHex('04');
+        return Principal.fromHex('04'); // the anonymous principal
     }
 
     if (globalThis._azleIcExperimental !== undefined) {

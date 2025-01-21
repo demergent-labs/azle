@@ -50,8 +50,6 @@ pub fn register(ctx: Ctx) -> Result<()> {
 
     ic.set("callRaw", call_raw::get_function(ctx.clone()))?;
 
-    ic.set("msgCaller", msg_caller::get_function(ctx.clone()))?;
-
     ic.set("candidDecode", candid_decode::get_function(ctx.clone()))?;
 
     ic.set("candidEncode", candid_encode::get_function(ctx.clone()))?;
@@ -84,6 +82,8 @@ pub fn register(ctx: Ctx) -> Result<()> {
     ic.set("methodName", method_name::get_function(ctx.clone()))?;
 
     ic.set("msgArgData", msg_arg_data::get_function(ctx.clone()))?;
+
+    ic.set("msgCaller", msg_caller::get_function(ctx.clone()))?;
 
     ic.set(
         "msgCyclesAccept",

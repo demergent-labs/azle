@@ -58,13 +58,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "msgCaller",
-        context
-            .new_function::<msg_caller::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
         "candidCompiler",
         context
             .new_function::<candid_compiler::NativeFunction>("")
@@ -147,6 +140,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "msgArgData",
         context
             .new_function::<msg_arg_data::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "msgCaller",
+        context
+            .new_function::<msg_caller::NativeFunction>("")
             .into(),
     );
 
