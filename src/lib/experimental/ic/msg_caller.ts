@@ -1,22 +1,16 @@
-import { Principal } from '@dfinity/principal';
+import '../experimental';
+
+import { Principal } from '../candid/types/reference/principal';
 
 /**
- * Returns the principal of the caller of the current call
- * @returns the principal of the caller of the current call
+ * Returns the caller of the current call
+ * @returns the caller of the current call
  */
 export function msgCaller(): Principal {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
+    if (globalThis._azleIcExperimental === undefined) {
         return Principal.fromHex('04');
     }
 
-    if (globalThis._azleIcExperimental !== undefined) {
-        return Principal.fromUint8Array(
-            new Uint8Array(globalThis._azleIcExperimental.msgCaller())
-        );
-    }
-
-    return Principal.fromUint8Array(globalThis._azleIcStable.msgCaller());
+    const callerBytes = globalThis._azleIcExperimental.msgCaller();
+    return Principal.fromUint8Array(new Uint8Array(callerBytes));
 }
