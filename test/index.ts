@@ -107,13 +107,12 @@ export function it<T extends Record<string, unknown>>(
     test(description, async () => {
         console.info(`Testing: ${description}`);
 
-        const actorPromises = Object.entries(createActors).reduce(
-            (acc, [key, creator]) => {
-                acc[key] = creator();
-                return acc;
-            },
-            {} as { [key: string]: Promise<ActorSubclass<any>> }
-        );
+        const actorPromises = {} as {
+            [key: string]: Promise<ActorSubclass<any>>;
+        };
+        for (const [key, creator] of Object.entries(createActors)) {
+            actorPromises[key] = creator();
+        }
 
         const actors = await Promise.all(Object.values(actorPromises));
         const actorsMap = Object.fromEntries(
