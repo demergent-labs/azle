@@ -11,6 +11,7 @@ export { clearTimer } from './clear_timer';
 export { cyclesBurn } from './cycles_burn';
 export { dataCertificate } from './data_certificate';
 export { id } from './id';
+export { inReplicatedExecution } from './in_replicated_execution';
 export { isController } from './is_controller';
 export { methodName } from './method_name';
 export { msgCyclesAccept } from './msg_cycles_accept';

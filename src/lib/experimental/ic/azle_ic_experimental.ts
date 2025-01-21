@@ -21,6 +21,7 @@ export type AzleIcExperimental = {
     cyclesBurn: (amount: string) => string;
     dataCertificate: () => ArrayBuffer | undefined;
     id: () => string;
+    inReplicatedExecution: () => boolean;
     isController: (principalBytes: ArrayBuffer) => boolean;
     msgCyclesAccept: (maxAmountString: string) => string;
     msgCyclesAvailable: () => string;

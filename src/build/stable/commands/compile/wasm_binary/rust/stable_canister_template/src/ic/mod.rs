@@ -15,6 +15,7 @@ mod cycles_burn;
 mod data_certificate;
 mod debug_print;
 mod id;
+mod in_replicated_execution;
 mod is_controller;
 mod method_name;
 mod msg_cycles_accept;
@@ -80,6 +81,11 @@ pub fn register(ctx: Ctx) -> Result<()> {
     ic.set("debugPrint", debug_print::get_function(ctx.clone()))?;
 
     ic.set("id", id::get_function(ctx.clone()))?;
+
+    ic.set(
+        "inReplicatedExecution",
+        in_replicated_execution::get_function(ctx.clone()),
+    )?;
 
     ic.set("isController", is_controller::get_function(ctx.clone()))?;
 
