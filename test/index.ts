@@ -98,7 +98,13 @@ export function please(name: string, fn: () => void | Promise<void>): void {
 please.skip = test.skip;
 please.only = test.only;
 
-export function it<T extends Record<string, unknown>>(
+export function it<
+    T extends Record<string, unknown> = typeof createActors extends {
+        [K: string]: () => Promise<ActorSubclass<infer U>>;
+    }
+        ? { [P in keyof typeof createActors]: U }
+        : never
+>(
     description: string,
     fn: (actors: {
         [K in keyof T]: ActorSubclass<T[K]>;

@@ -13,16 +13,12 @@ type Canisters = {
 
 export function getTests(): Test {
     return () => {
-        it<Pick<Canisters, 'canister1'>>('gets balance of account 0', async ({
-            canister1
-        }) => {
+        it<Canisters>('gets balance of account 0', async ({ canister1 }) => {
             const result = await canister1.balance('0');
             expect(result).toBe(100n);
         });
 
-        it<Pick<Canisters, 'canister1'>>('gets account 0 details', async ({
-            canister1
-        }) => {
+        it<Canisters>('gets account 0 details', async ({ canister1 }) => {
             const result = await canister1.account({
                 id: '0'
             });
@@ -31,17 +27,15 @@ export function getTests(): Test {
             expect(result).toEqual([expected]);
         });
 
-        it<Pick<Canisters, 'canister1'>>('gets balance of account 1', async ({
-            canister1
-        }) => {
+        it<Canisters>('gets balance of account 1', async ({ canister1 }) => {
             const result = await canister1.balance('1');
 
             expect(result).toBe(0n);
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('fails to get non-existent account 1', async ({ canister1 }) => {
+        it<Canisters>('fails to get non-existent account 1', async ({
+            canister1
+        }) => {
             const result = await canister1.account({
                 id: '1'
             });
@@ -49,9 +43,7 @@ export function getTests(): Test {
             expect(result).toHaveLength(0);
         });
 
-        it<Pick<Canisters, 'canister1'>>('gets all accounts', async ({
-            canister1
-        }) => {
+        it<Canisters>('gets all accounts', async ({ canister1 }) => {
             const result = await canister1.accounts();
 
             const expected = { id: '0', balance: 100n };
@@ -59,25 +51,25 @@ export function getTests(): Test {
             expect(result).toEqual([expected]);
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('transfers from account 0 to account 1', async ({ canister1 }) => {
+        it<Canisters>('transfers from account 0 to account 1', async ({
+            canister1
+        }) => {
             const result = await canister1.transfer('0', '1', 34n);
 
             expect(result).toBe(34n);
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('gets updated balance of account 0', async ({ canister1 }) => {
+        it<Canisters>('gets updated balance of account 0', async ({
+            canister1
+        }) => {
             const result = await canister1.balance('0');
 
             expect(result).toBe(66n);
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('gets updated account 0 details', async ({ canister1 }) => {
+        it<Canisters>('gets updated account 0 details', async ({
+            canister1
+        }) => {
             const result = await canister1.account({
                 id: '0'
             });
@@ -87,17 +79,17 @@ export function getTests(): Test {
             expect(result).toEqual([expected]);
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('gets update balance of account 1', async ({ canister1 }) => {
+        it<Canisters>('gets update balance of account 1', async ({
+            canister1
+        }) => {
             const result = await canister1.balance('1');
 
             expect(result).toBe(34n);
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('gets account 1 details after creation', async ({ canister1 }) => {
+        it<Canisters>('gets account 1 details after creation', async ({
+            canister1
+        }) => {
             const result = await canister1.account({
                 id: '1'
             });
@@ -107,9 +99,9 @@ export function getTests(): Test {
             expect(result).toEqual([expected]);
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('gets all updated account details', async ({ canister1 }) => {
+        it<Canisters>('gets all updated account details', async ({
+            canister1
+        }) => {
             const result = await canister1.accounts();
 
             const expected = [
@@ -120,9 +112,7 @@ export function getTests(): Test {
             expect(result).toEqual(expected);
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('propagates traps across cross canister calls', async ({
+        it<Canisters>('propagates traps across cross canister calls', async ({
             canister1
         }) => {
             const canister1Id = getCanisterId('canister1');
@@ -134,9 +124,7 @@ export function getTests(): Test {
             await expect(canister1.trap()).rejects.toThrow(partialErrorMessage);
         });
 
-        it<
-            Pick<Canisters, 'canister2'>
-        >('gets no notifications from canister2 before any are sent', async ({
+        it<Canisters>('gets no notifications from canister2 before any are sent', async ({
             canister2
         }) => {
             const result = await canister2.getNotification();
@@ -144,17 +132,17 @@ export function getTests(): Test {
             expect(result).toBe('');
         });
 
-        it<
-            Pick<Canisters, 'canister1'>
-        >('sends a notification to canister 2', async ({ canister1 }) => {
+        it<Canisters>('sends a notification to canister 2', async ({
+            canister1
+        }) => {
             const result = await canister1.sendNotification();
 
             expect(result).toBeUndefined();
         });
 
-        it<
-            Pick<Canisters, 'canister2'>
-        >('gets sent notification from canister 2', async ({ canister2 }) => {
+        it<Canisters>('gets sent notification from canister 2', async ({
+            canister2
+        }) => {
             const result = await canister2.getNotification();
 
             expect(result).toBe('This is the notification');
@@ -169,9 +157,9 @@ export function getTests(): Test {
             expect(result).toBe('This is the notification');
         });
 
-        it<
-            Pick<Canisters, 'canister2'>
-        >('gets notification from canister2', async ({ canister2 }) => {
+        it<Canisters>('gets notification from canister2', async ({
+            canister2
+        }) => {
             const result = await canister2.getNotification();
             expect(result).toBe('This is the notification');
         });
