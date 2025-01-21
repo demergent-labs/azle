@@ -10,6 +10,7 @@ mod cycles_burn;
 mod data_certificate;
 mod debug_print;
 mod id;
+mod in_replicated_execution;
 mod is_controller;
 mod method_name;
 mod msg_arg_data;
@@ -121,6 +122,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set("id", context.new_function::<id::NativeFunction>("").into());
+
+    ic.set(
+        "inReplicatedExecution",
+        context
+            .new_function::<in_replicated_execution::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "isController",
