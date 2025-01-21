@@ -6,17 +6,21 @@ import * as fc from 'fast-check';
 
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
-import { Agent, HttpAgent } from '@dfinity/agent';
+import { ActorSubclass, HttpAgent } from '@dfinity/agent';
 
 import { runBenchmarksForCanisters } from './benchmarks';
 import { runFuzzTests } from './fuzz';
 
-export type Test = (agent: Agent) => void;
+export type Test = () => void;
 
 export { getCanisterActor } from './get_canister_actor';
 
-export function runTests(
+// let createActors: <T>(() => Promise<ActorSubclass<T>>)[] = [];
+let createActors: (() => Promise<ActorSubclass<any>>)[] = [];
+
+export function runTests<T>(
     tests: Test,
+    createActorsParam: (() => Promise<ActorSubclass<T>>)[],
     canisterNames: string | string[] | undefined = undefined,
     _cwd: string = process.cwd()
 ): void {
@@ -26,6 +30,8 @@ export function runTests(
         shouldRecordBenchmarks,
         shouldFuzz
     } = processEnvVars();
+
+    createActors = createActorsParam;
 
     describe('agent setup', () => {
         it('set up agent for test use', async () => {
@@ -37,7 +43,7 @@ export function runTests(
         });
     });
     if (shouldRunTests === true) {
-        describe(`tests`, () => tests((global as any).agent));
+        describe(`tests`, () => tests());
     }
 
     if (shouldRunTypeChecks === true) {
@@ -93,10 +99,14 @@ export function please(name: string, fn: () => void | Promise<void>): void {
 please.skip = test.skip;
 please.only = test.only;
 
-export function it(name: string, fn: () => void | Promise<void>): void {
+export function it<T>(
+    name: string,
+    fn: (...actors: ActorSubclass<T>[]) => void | Promise<void>
+): void {
     test(`it ${name}`, async () => {
         console.info(`Testing: ${name}`);
-        await fn();
+        const actors = await Promise.all(createActors.map((actor) => actor()));
+        await fn(...actors);
     });
 }
 it.only = test.only;
