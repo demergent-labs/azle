@@ -350,7 +350,7 @@ function isDecoratorOverloadedWithoutParams<
 /**
  * @internal
  *
- * Uses the candid string of the `init` and `postUpgrade` methods to verify that
+ * Uses the candid string of the `@init` and `@postUpgrade` methods to verify that
  * they have matching parameter signatures.
  *
  * @param idlTypes - Array of IDL function types representing canister methods
@@ -365,7 +365,7 @@ function verifyInitAndPostUpgradeHaveTheSameParams(
 
     if (aSignature !== bSignature) {
         throw new Error(
-            `'init' and 'postUpgrade' methods must have the same parameters.\nFound:\n${aSignature}\n${bSignature}`
+            `'@init' and '@postUpgrade' methods must have the same parameters.\nFound:\n${aSignature}\n${bSignature}`
         );
     }
 }
@@ -385,7 +385,7 @@ function throwIfMethodAlreadyDefined(
 ): void {
     if (isDefined === true) {
         throw new Error(
-            `'${methodName}' method can only have one definition in the exported canister class`
+            `'@${methodName}' method can only have one definition in the exported canister class`
         );
     }
 }

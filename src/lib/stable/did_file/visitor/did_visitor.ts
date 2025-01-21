@@ -21,7 +21,7 @@ export type VisitorData = {
     isOnService: boolean;
     /** Indicates if this is the first/primary service being processed */
     isFirstService: boolean;
-    /** Collection of system functions (init, postUpgrade) to process */
+    /** Collection of IDL function types for \@init and \@postUpgrade methods */
     initAndPostUpgradeParamIdlTypes: IDL.FuncClass[];
 };
 
