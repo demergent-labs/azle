@@ -18,7 +18,7 @@ export function getTests(canisterName: string): Test {
             browser = await puppeteer.launch({
                 headless:
                     process.env.GITHUB_RUN_ID === undefined ? false : true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
+                args: ['--no-sandbox']
             });
             page = await browser.newPage();
 

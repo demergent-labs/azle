@@ -27,7 +27,7 @@ export function handleClassApiCanister(): string {
     return /*TS*/ `
         const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
-        const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlTypes);
+        const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes);
         const candid = idlToString(canisterIdlType, {
             ...getDefaultVisitorData(),
             isFirstService: true,

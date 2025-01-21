@@ -37,7 +37,7 @@ export function createGetInitAndPostUpgradeParamIdlTypes(
 
             if (initSignature !== postUpgradeSignature) {
                 throw new Error(
-                    `'init' and 'postUpgrade' methods must have the same parameters.\nFound:\n${initSignature}\n${postUpgradeSignature}`
+                    `'@init' and '@postUpgrade' methods must have the same parameters.\nFound:\n${initSignature}\n${postUpgradeSignature}`
                 );
             }
 

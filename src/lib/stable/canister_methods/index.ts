@@ -14,7 +14,7 @@ export interface ExportedCanisterClass {
     _azleCallbacks?: {
         [key: string]: (args?: Uint8Array) => Promise<void>;
     };
-    _azleCanisterMethodIdlTypes?: { [key: string]: IDL.FuncClass };
+    _azleCanisterMethodIdlParamTypes?: { [key: string]: IDL.FuncClass };
     _azleCanisterMethodsIndex?: number;
     _azleInitAndPostUpgradeIdlTypes?: IDL.Type[];
     _azleDefinedSystemMethods?: DefinedSystemMethods;
@@ -135,10 +135,10 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         }
 
         if (
-            exportedCanisterClassInstance._azleCanisterMethodIdlTypes ===
+            exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes ===
             undefined
         ) {
-            exportedCanisterClassInstance._azleCanisterMethodIdlTypes = {};
+            exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes = {};
         }
 
         if (
@@ -171,12 +171,13 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                 composite: (options as QueryOptions)?.composite ?? false
             });
 
-            exportedCanisterClassInstance._azleCanisterMethodIdlTypes[name] =
-                IDL.Func(
-                    paramIdlTypes ?? [],
-                    returnIdlType === undefined ? [] : [returnIdlType],
-                    ['query']
-                );
+            exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes[
+                name
+            ] = IDL.Func(
+                paramIdlTypes ?? [],
+                returnIdlType === undefined ? [] : [returnIdlType],
+                ['query']
+            );
         }
 
         if (canisterMethodMode === 'update') {
@@ -185,11 +186,12 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                 index
             });
 
-            exportedCanisterClassInstance._azleCanisterMethodIdlTypes[name] =
-                IDL.Func(
-                    paramIdlTypes ?? [],
-                    returnIdlType === undefined ? [] : [returnIdlType]
-                );
+            exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes[
+                name
+            ] = IDL.Func(
+                paramIdlTypes ?? [],
+                returnIdlType === undefined ? [] : [returnIdlType]
+            );
         }
 
         if (canisterMethodMode === 'init') {
