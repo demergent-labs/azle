@@ -15,12 +15,11 @@ export type Test = () => void;
 
 export { getCanisterActor } from './get_canister_actor';
 
-// let createActors: <T>(() => Promise<ActorSubclass<T>>)[] = [];
 let createActors: (() => Promise<ActorSubclass<any>>)[] = [];
 
-export function runTests<T>(
+export function runTests<T extends unknown[]>(
     tests: Test,
-    createActorsParam: (() => Promise<ActorSubclass<T>>)[],
+    createActorsParam: { [K in keyof T]: () => Promise<ActorSubclass<T[K]>> },
     canisterNames: string | string[] | undefined = undefined,
     _cwd: string = process.cwd()
 ): void {
@@ -31,7 +30,7 @@ export function runTests<T>(
         shouldFuzz
     } = processEnvVars();
 
-    createActors = createActorsParam;
+    createActors = createActorsParam as (() => Promise<ActorSubclass<any>>)[];
 
     describe('agent setup', () => {
         it('set up agent for test use', async () => {
@@ -99,14 +98,16 @@ export function please(name: string, fn: () => void | Promise<void>): void {
 please.skip = test.skip;
 please.only = test.only;
 
-export function it<T>(
+export function it<T extends unknown[]>(
     name: string,
-    fn: (...actors: ActorSubclass<T>[]) => void | Promise<void>
+    fn: (
+        ...actors: { [K in keyof T]: ActorSubclass<T[K]> }
+    ) => void | Promise<void>
 ): void {
     test(`it ${name}`, async () => {
         console.info(`Testing: ${name}`);
         const actors = await Promise.all(createActors.map((actor) => actor()));
-        await fn(...actors);
+        await fn(...(actors as { [K in keyof T]: ActorSubclass<T[K]> }));
     });
 }
 it.only = test.only;
