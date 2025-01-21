@@ -26,7 +26,6 @@ export default class {
     >(0);
     timerIsInReplicatedExecution: boolean | null = null;
     heartbeatIsInReplicatedExecution: boolean | null = null;
-    sneakyInspect: number | null = null;
 
     @init
     init(): void {
@@ -107,10 +106,6 @@ export default class {
     @inspectMessage
     inspectMessage(): void {
         if (methodName() === 'getInspectMessageIsInReplicatedExecution') {
-            console.log('inspecting getInspectMessageIsInReplicatedExecution');
-            console.log(
-                `inReplicatedExecution() === ${inReplicatedExecution()}`
-            );
             if (inReplicatedExecution() === true) {
                 // TODO for https://github.com/demergent-labs/azle/issues/2539
                 acceptMessage();
@@ -118,7 +113,14 @@ export default class {
             return;
         }
 
-        acceptMessage();
+        const acceptableMethods = [
+            'getQueryInReplicatedModeIsInReplicatedExecution',
+            'getUpdateIsInReplicatedExecution'
+        ];
+
+        if (acceptableMethods.includes(methodName())) {
+            acceptMessage();
+        }
     }
 
     @update([], IDL.Bool)

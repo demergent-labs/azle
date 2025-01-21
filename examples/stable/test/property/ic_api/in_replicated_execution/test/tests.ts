@@ -70,7 +70,7 @@ export function getTests(): Test {
             ).toStrictEqual([true]);
         });
 
-        please('redeploys the canister', async () => {
+        please('redeploy the canister', async () => {
             execSync(`dfx deploy canister --upgrade-unchanged`);
         });
 
