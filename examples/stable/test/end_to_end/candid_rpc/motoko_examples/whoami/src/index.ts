@@ -1,9 +1,9 @@
 import {
     call,
-    caller,
     id,
     IDL,
     init,
+    msgCaller,
     postUpgrade,
     Principal,
     query,
@@ -11,21 +11,20 @@ import {
 } from 'azle';
 
 class WhoAmI {
-    // We use the zero principal but any principal could be used.
     install: Principal = Principal.fromText('aaaaa-aa');
     someone: Principal = Principal.fromText('aaaaa-aa');
 
     // Manually save the calling principal and argument for later access.
     @init([IDL.Principal])
     init(somebody: Principal): void {
-        this.install = caller();
+        this.install = msgCaller();
         this.someone = somebody;
     }
 
     // Manually re-save these variables after new deploys.
     @postUpgrade([IDL.Principal])
     postUpgrade(somebody: Principal): void {
-        this.install = caller();
+        this.install = msgCaller();
         this.someone = somebody;
     }
 
@@ -46,7 +45,7 @@ class WhoAmI {
     // Return the principal identifier of the caller of this method.
     @update([], IDL.Principal)
     whoami(): Principal {
-        return caller();
+        return msgCaller();
     }
 
     // Return the principal identifier of this canister.

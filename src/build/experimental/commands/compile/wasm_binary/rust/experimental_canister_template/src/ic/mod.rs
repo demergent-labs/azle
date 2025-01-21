@@ -1,6 +1,5 @@
 mod accept_message;
 mod call_raw;
-mod caller;
 mod candid_compiler;
 mod candid_decode;
 mod candid_encode;
@@ -15,6 +14,7 @@ mod in_replicated_execution;
 mod is_controller;
 mod method_name;
 mod msg_arg_data;
+mod msg_caller;
 mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
@@ -56,11 +56,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     ic.set(
         "callRaw",
         context.new_function::<call_raw::NativeFunction>("").into(),
-    );
-
-    ic.set(
-        "caller",
-        context.new_function::<caller::NativeFunction>("").into(),
     );
 
     ic.set(
@@ -153,6 +148,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "msgArgData",
         context
             .new_function::<msg_arg_data::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "msgCaller",
+        context
+            .new_function::<msg_caller::NativeFunction>("")
             .into(),
     );
 

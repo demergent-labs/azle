@@ -1,8 +1,8 @@
 // TODO we should pull the wallet out into its own repo
 
 import {
-    caller,
     IDL,
+    msgCaller,
     msgCyclesAccept,
     msgCyclesAvailable,
     Principal,
@@ -58,7 +58,7 @@ export default class {
         console.info(`cycles available: ${msgCyclesAvailable()}`);
 
         const callerInWhitelist = this.principalsWhitelist.includes(
-            caller().toText()
+            msgCaller().toText()
         );
 
         if (callerInWhitelist === true) {
@@ -69,7 +69,7 @@ export default class {
             this.payments.push({
                 time: time(),
                 amount: cyclesAvailable,
-                principal: caller()
+                principal: msgCaller()
             });
         }
     }

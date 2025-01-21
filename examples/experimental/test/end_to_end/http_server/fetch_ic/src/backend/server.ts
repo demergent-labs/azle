@@ -11,7 +11,7 @@ app.get('/headers-array', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.headers
     });
 });
@@ -22,7 +22,7 @@ app.get('/headers-object', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.headers
     });
 });
@@ -33,7 +33,7 @@ app.post('/body-uint8array', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.body
     });
 });
@@ -44,7 +44,7 @@ app.put('/body-string', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.body
     });
 });
@@ -55,7 +55,7 @@ app.patch('/body-array-buffer', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.body
     });
 });
@@ -66,7 +66,7 @@ app.delete('/body-blob', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.body
     });
 });
@@ -77,7 +77,7 @@ app.post('/body-data-view', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.body
     });
 });
@@ -88,7 +88,7 @@ app.get('/url-query-params-get', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.query
     });
 });
@@ -99,7 +99,7 @@ app.post('/url-query-params-post', (req, res) => {
     res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
     res.json({
-        whoami: ic.caller().toString(),
+        whoami: ic.msgCaller().toString(),
         value: req.query
     });
 });
