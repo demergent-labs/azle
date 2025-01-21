@@ -13,7 +13,7 @@ function getPrelude(main: string): string {
     return /*TS*/ `
             import 'azle/src/lib/stable/globals';
 
-            import { DidVisitor, getDefaultVisitorData, IDL, toDidString } from 'azle';
+            import { getDefaultVisitorData, IDL, idlToString } from 'azle';
 
             import * as Canister from './${main}';
 
@@ -27,23 +27,23 @@ export function handleClassApiCanister(): string {
     return /*TS*/ `
         const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
-        const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlTypes);
-        const candid = canisterIdlType.accept(new DidVisitor(), {
+        const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes);
+        const candid = idlToString(canisterIdlType, {
             ...getDefaultVisitorData(),
             isFirstService: true,
-            systemFuncs: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+            initAndPostUpgradeParamIdlTypes: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
         });
 
         globalThis._azleGetCandidAndMethodMeta = () => {
             return JSON.stringify({
-                candid: toDidString(candid),
+                candid,
                 methodMeta: exportedCanisterClassInstance._azleMethodMeta
             });
         };
-        
+
         /**
          * @internal
-         * 
+         *
          * This function is designed with a very specific purpose.
          * We need to get the _azle properties off of this class instance to use in generating the candid
          * and method meta information. But we can't just set the result of instantiating the class to a local variable.
@@ -61,7 +61,7 @@ export function handleClassApiCanister(): string {
          * This callback occurs before the class's constructor or properties are initialized.
          * There may be some rare conditions where this scheme will not work, but we believe the likelihood is extremely low.
          */
-        function getExportedCanisterClassInstance() {     
+        function getExportedCanisterClassInstance() {
             try {
                 Canister.default.prototype._azleShouldRegisterCanisterMethods = true;
                 new Canister.default();
@@ -76,7 +76,7 @@ export function handleClassApiCanister(): string {
                     throw error;
                 }
             }
-            
+
             return globalThis._azleExportedCanisterClassInstance;
         }
     `;

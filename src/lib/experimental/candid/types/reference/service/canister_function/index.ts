@@ -6,6 +6,7 @@ import {
     Method,
     MethodMeta
 } from '../../../../../../../build/stable/utils/types';
+import { CanisterMethodMode } from '../../../../../../stable/execute_with_candid_serde';
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { Callbacks } from '../../../../../globals';
 import { ic } from '../../../../../ic';
@@ -13,7 +14,7 @@ import { CandidType, Parent, toIdlTypeArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { decode, encode } from '../../../../serde';
 import { Principal } from '../../principal';
-import { createGetSystemFunctionIdlTypeFunction } from './system_methods';
+import { createGetInitAndPostUpgradeParamIdlTypes } from './system_methods';
 
 export type CanisterOptions = {
     [key: string]: CanisterMethodInfo<any, any>;
@@ -23,7 +24,7 @@ type _AzleFunctionReturnType = {
     (principal: Principal): void;
     methodMeta?: MethodMeta;
     callbacks?: any;
-    getSystemFunctionIdlTypes?: (parents: Parent[]) => IDL.FuncClass[];
+    getInitAndPostUpgradeParamIdlTypes?: (parents: Parent[]) => IDL.Type[];
     getIdlType?: (parents: Parent[]) => IDL.Type<any>;
 };
 
@@ -31,7 +32,7 @@ type CallRawFunction = typeof ic.callRaw;
 type NotifyRawFunction = typeof ic.notifyRaw;
 
 type FunctionInfo = {
-    mode: 'query' | 'update';
+    mode: CanisterMethodMode;
     paramCandidTypes: CandidType[];
     returnCandidType: CandidType;
 };
@@ -59,8 +60,8 @@ export function createCanisterFunction(
     canister.methodMeta = methodMeta;
 
     canister.getIdlType = createGetIdlTypeFunction(canisterOptions);
-    canister.getSystemFunctionIdlTypes =
-        createGetSystemFunctionIdlTypeFunction(canisterOptions);
+    canister.getInitAndPostUpgradeParamIdlTypes =
+        createGetInitAndPostUpgradeParamIdlTypes(canisterOptions);
 
     return canister;
 }
@@ -97,7 +98,7 @@ function createGetIdlTypeFunction(
     };
 }
 
-function createAnnotation(mode: 'query' | 'update'): string[] {
+function createAnnotation(mode: CanisterMethodMode): string[] {
     if (mode === 'query') {
         return ['query'];
     }
