@@ -31,7 +31,7 @@ export default class {
 
     // returns the principal of the identity that called this function
     @query([], IDL.Principal)
-    caller(): Principal {
+    msgCaller(): Principal {
         return msgCaller();
     }
 

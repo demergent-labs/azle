@@ -37,8 +37,8 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toBe(candidString);
         });
 
-        it('calls caller on the ic object', async () => {
-            const result = await icApiCanister.caller();
+        it('calls msgCaller on the ic object', async () => {
+            const result = await icApiCanister.msgCaller();
 
             expect(result.toText()).toBe('2vxsx-fae');
         });

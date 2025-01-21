@@ -59,7 +59,7 @@ export default Canister({
         }
     ),
     // returns the principal of the identity that called this function
-    caller: query([], Principal, () => {
+    msgCaller: query([], Principal, () => {
         return ic.msgCaller();
     }),
     // returns the amount of cycles available in the canister
