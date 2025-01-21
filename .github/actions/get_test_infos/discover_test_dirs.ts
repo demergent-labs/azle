@@ -3,25 +3,24 @@ import { join } from 'path';
 
 // Recursively find directories and check for package.json with a test script
 export async function discoverTestDirs(dirToSearch: string): Promise<string[]> {
+    // Check the root directory first
+    const hasTestScript = await checkForTestScript(
+        join(dirToSearch, 'package.json')
+    );
+    if (hasTestScript === true) {
+        return [dirToSearch];
+    }
+
+    // If no test script found, check subdirectories
     const files = await readdir(dirToSearch, { withFileTypes: true });
 
     return files.reduce(
         async (accPromise, file) => {
             const acc = await accPromise;
-
             const fullPath = join(dirToSearch, file.name);
 
             if (file.isDirectory() && !fullPath.includes('node_modules')) {
-                // Check for package.json and if it contains a test script
-                const packageJsonPath = join(fullPath, 'package.json');
-                const hasTestScript = await checkForTestScript(packageJsonPath);
-
-                // Recurse into subdirectory
-                return [
-                    ...acc,
-                    ...(hasTestScript ? [fullPath] : []),
-                    ...(await discoverTestDirs(fullPath))
-                ];
+                return [...acc, ...(await discoverTestDirs(fullPath))];
             }
 
             return acc;
