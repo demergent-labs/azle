@@ -27,7 +27,7 @@ export function runTests(
 
     describe('agent setup', () => {
         // TODO temporary fix for https://github.com/demergent-labs/azle/issues/2496
-        wait('for root key to be fetched', 5000);
+        wait('for root key to be fetched', 5_000);
     });
 
     if (shouldRunTests === true) {
