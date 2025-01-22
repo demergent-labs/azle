@@ -5,4 +5,14 @@ export default class {
     simpleQuery(): string {
         return 'This is a query function';
     }
+
+    @query([], IDL.Text, { hidden: true })
+    hiddenQuery(): string {
+        return 'This is a hidden query function';
+    }
+
+    @query([], IDL.Text, { hidden: false })
+    visibleQuery(): string {
+        return 'This is a visible query function';
+    }
 }
