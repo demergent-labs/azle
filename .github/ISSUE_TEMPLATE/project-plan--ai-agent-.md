@@ -1,11 +1,11 @@
 ---
 name: Project Plan (AI Agent)
-about: A Project Plan is intended primarily to describe this issue to an AI agent.
-  It can also be helpful for a human implementer.
+about:
+    A Project Plan is intended primarily to describe this issue to an AI agent.
+    It can also be helpful for a human implementer.
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 - [ ] Read the entire project plan carefully before beginning work
@@ -18,8 +18,6 @@ assignees: ''
 # Description
 
 # Tasks
-
-// These should be checkboxes
 
 # Acceptance Criteria
 
