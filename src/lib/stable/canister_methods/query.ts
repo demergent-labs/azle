@@ -10,6 +10,7 @@ import {
 export type QueryOptions = {
     composite?: boolean;
     manual?: boolean;
+    hidden?: boolean;
 };
 
 /**
@@ -49,6 +50,7 @@ export function query<This, Args extends unknown[], Return>(
  * @param options - Optional configuration object
  * @param options.composite - Optional flag to indicate that the method should be treated as a composite query method capable of some cross-canister query calls.
  * @param options.manual - Optional flag to indicate manual handling of the method's runtime return value. This is meant to be used with `reply`, skipping automatic Candid encoding of the runtime return value.
+ * @param options.hidden - Optional flag to indicate that the method should be hidden from the canister's candid interface.
  */
 export function query<This, Args extends unknown[], Return>(
     paramIdlTypes?: IDL.Type[],

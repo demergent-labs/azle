@@ -9,6 +9,7 @@ import {
 
 export type UpdateOptions = {
     manual?: boolean;
+    hidden?: boolean;
 };
 
 /**
@@ -37,7 +38,7 @@ export function update<This, Args extends unknown[], Return>(
  * @param returnIdlType - Optional Candid IDL type for the method return value. The runtime return value will be encoded using this type.
  * @param options - Optional configuration object
  * @param options.manual - Optional flag to indicate manual handling of the method's runtime return value. This is meant to be used with `reply` or `reject`, skipping automatic Candid encoding of the runtime return value.
- *
+ * @param options.hidden - Optional flag to indicate that the method should be hidden from the canister's candid interface.
  * @remarks
  *
  * - **State**: read-write

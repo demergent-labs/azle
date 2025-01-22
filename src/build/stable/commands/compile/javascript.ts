@@ -27,7 +27,17 @@ export function handleClassApiCanister(): string {
     return /*TS*/ `
         const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
-        const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes);
+        const visibleMethodIdlParamTypes = Object.fromEntries(
+            Object.entries(exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes)
+            .filter(([methodName]) => {
+                const { queries = [], updates = [] } = exportedCanisterClassInstance._azleMethodMeta;
+                const allMethods = [...queries, ...updates];
+                const method = allMethods.find(m => m.name === methodName);
+                return method?.hidden === false;
+            })
+        );
+
+        const canisterIdlType = IDL.Service(visibleMethodIdlParamTypes);
         const candid = idlToString(canisterIdlType, {
             ...getDefaultVisitorData(),
             isFirstService: true,
