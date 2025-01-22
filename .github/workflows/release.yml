@@ -43,18 +43,19 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - run: npm install
+            - uses: ./.github/actions/npm_install
 
             - name: Install global dependencies
               run: |
                   AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
 
-            - name: Update version and build templates
+            - name: Update version
               run: |
                   VERSION=${{ inputs.release-version }}
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
-                  npm install
+
+            - uses: ./.github/actions/npm_install
 
             - name: Build stable template
               run: npx azle template
@@ -105,15 +106,16 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - run: npm install
+            - uses: ./.github/actions/npm_install
 
             - name: Update azle version
               working-directory: ${{ matrix.test.path }}
               run: |
                   sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ inputs.release-version }}\3/" package.json
 
-            - run: npm install
-              working-directory: ${{ matrix.test.path }}
+            - uses: ./.github/actions/npm_install
+              with:
+                  working-directory: ${{ matrix.test.path }}
 
             - name: Start dfx with artificial delay 0
               working-directory: ${{ matrix.test.path }}

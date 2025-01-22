@@ -1,0 +1,47 @@
+name: 'NPM Install with Retries'
+description: 'Run npm install with exponential backoff retries'
+
+inputs:
+    working-directory:
+        description: 'Directory where to run npm install'
+        required: false
+        default: '.'
+    max-attempts:
+        description: 'Maximum number of retry attempts'
+        required: false
+        default: '5'
+    initial-delay:
+        description: 'Initial delay in seconds before first retry'
+        required: false
+        default: '1'
+    max-delay:
+        description: 'Maximum delay in seconds between retries'
+        required: false
+        default: '60'
+
+runs:
+    using: 'composite'
+    steps:
+        - shell: bash
+          run: |
+              attempt=1
+              max_attempts=${{ inputs.max-attempts }}
+              delay=${{ inputs.initial-delay }}
+              max_delay=${{ inputs.max-delay }}
+
+              until cd ${{ inputs.working-directory }} && npm install; do
+                if [ $attempt -ge $max_attempts ]; then
+                  echo "npm install failed after $attempt attempts"
+                  exit 1
+                fi
+
+                attempt=$(($attempt + 1))
+                echo "npm install failed, retrying in $delay seconds... (attempt $attempt/$max_attempts)"
+                sleep $delay
+
+                # Exponential backoff with a configurable maximum
+                delay=$(( delay * 2 ))
+                if [ $delay -gt $max_delay ]; then
+                  delay=$max_delay
+                fi
+              done

@@ -129,8 +129,7 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - name: Install dependencies
-              run: npm install
+            - uses: ./.github/actions/npm_install
 
             - name: Analyze benchmarks
               run: npx tsx scripts/analyze_benchmarks/index.ts

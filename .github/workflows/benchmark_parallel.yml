@@ -76,11 +76,13 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - run: npm install
+            - uses: ./.github/actions/npm_install
+
             - run: npm link
 
-            - run: npm install
-              working-directory: ${{ matrix.test.path }}
+            - uses: ./.github/actions/npm_install
+              with:
+                  working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle
               working-directory: ${{ matrix.test.path }}
