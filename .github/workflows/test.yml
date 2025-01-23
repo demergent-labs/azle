@@ -95,6 +95,11 @@ jobs:
                           name: 'Stable Demo',
                           directories: './examples/stable/test/property/candid_rpc/stable_b_tree_map'
                       }
+                    - {
+                          name: 'Stable Demo Experimental',
+                          directories: './examples/stable/test/property/candid_rpc/stable_b_tree_map',
+                          run-experimental: true
+                      }
         uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
