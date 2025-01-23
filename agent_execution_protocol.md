@@ -31,10 +31,25 @@ IMPORTANT: All directory and file creation for the planning process should be do
 ## Execute the next step
 
 15. Read in all `.agents/project_execution/execution_step_*.md` files and look for any changes from the user
-16. Start with `.agents/project_execution/execution_step_1.md` and begin to execute that step. After you have executed that step, write into the file: the current date, what was added, changed, or removed, the names of the directories, files, and functions involved in the change, the reason for why the changes were necessary, and any remaining blockers
+16. Start with `.agents/project_execution/execution_step_1.md` and begin to execute that step. After you have executed that step, write into the file: the current date and time, what was added, changed, or removed, the names of the directories, files, and functions involved in the change, the reason for why the changes were necessary, and any remaining blockers
 
 17. HALT: Allow the user to review `.agents/project_execution/execution_step_1.md` and all of the actual changes to the codebase. Allow them to make revisions. Once steps 15 and 16 are fully completed for a given execution step, update the `.agents/project_execution/overview.md` file by checking the appropriate checkbox
 
 ## Execute all steps
 
 18. Repeat steps 15, 16, and 17 for all execution steps
+
+Ignore everything below:
+
+TODOs
+
+1. I think we need a way to link each execution step to the previous and next steps, or the AI might not realize each step is part of a chain. Perhaps put into each execution step file at the top that it should read in all of the execution steps
+2. The AI might forget the execution protocol, so we need to somehow periodically have it read the file in again.
+3. Remember always that the AI will lose context and focus. The purpose here is to always refresh it with the appropriate context it needs from the protocol, overview, and each step
+4. Unify the project plan and custom cursor rules
+5. Use templating in here so that we can change directory and file structures easily
+6. Open source this
+7. Is there a way to stop cursor from opening files after editing them?
+8. We need to tell it to read files if they already exist to pick up where it left off
+9. I think we should put the overview and detailed plan all in one file. And absolutely everything should have a checkbox, and when done the AI should put a timestamp
+10. It will lose its context the farther it goes, it needs to read in all files periodically
