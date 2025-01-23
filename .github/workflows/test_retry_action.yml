@@ -50,5 +50,5 @@ jobs:
               continue-on-error: true
               with:
                   command: 'nonexistent-command'
-                  max-attempts: '2'
+                  max-attempts: '5'
                   initial-delay: '2'
