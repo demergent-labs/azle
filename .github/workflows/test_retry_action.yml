@@ -1,0 +1,31 @@
+name: Test Retry Action
+
+on:
+    workflow_dispatch:
+
+jobs:
+    test-commands:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Test npm install
+              uses: ./.github/actions/retry-command
+              with:
+                  command: 'npm install'
+                  max-attempts: '3'
+
+            - name: Test ls command
+              uses: ./.github/actions/retry-command
+              with:
+                  command: 'ls -la'
+                  max-attempts: '2'
+
+            # This command should fail and retry
+            - name: Test failing command
+              uses: ./.github/actions/retry-command
+              continue-on-error: true
+              with:
+                  command: 'nonexistent-command'
+                  max-attempts: '2'
+                  initial-delay: '2'
