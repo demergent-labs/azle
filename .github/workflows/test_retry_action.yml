@@ -30,6 +30,20 @@ jobs:
                   command: 'ls -la'
                   max-attempts: '2'
 
+            - name: Test ls command
+              uses: ./.github/actions/retry-command
+              with:
+                  command: 'ls -la'
+                  max-attempts: '2'
+                  working-directory: 'src/build/stable'
+
+            - name: Test ls command
+              uses: ./.github/actions/retry-command
+              with:
+                  command: 'ls -la'
+                  max-attempts: '2'
+                  working-directory: 'examples/stable'
+
             # This command should fail and retry
             - name: Test failing command
               uses: ./.github/actions/retry-command
