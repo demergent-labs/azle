@@ -76,12 +76,15 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
 
             - run: npm link
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
               with:
+                  command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle

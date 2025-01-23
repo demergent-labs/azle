@@ -52,7 +52,9 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
 
             # Run global prettier/lint fixes
             - name: Run Prettier
@@ -99,8 +101,9 @@ jobs:
 
             # Update package-lock.json in test directory
             - name: Update package-lock.json
-              uses: ./.github/actions/npm_install
+              uses: ./.github/actions/retry_command
               with:
+                  command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
             - name: Create branch name
