@@ -29,12 +29,7 @@ export function handleClassApiCanister(): string {
 
         const visibleMethodIdlParamTypes = Object.fromEntries(
             Object.entries(exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes)
-            .filter(([methodName]) => {
-                const { queries = [], updates = [] } = exportedCanisterClassInstance._azleMethodMeta;
-                const allMethods = [...queries, ...updates];
-                const method = allMethods.find(m => m.name === methodName);
-                return method?.hidden === false;
-            })
+                .filter(([methodName]) => isMethodVisible(methodName))
         );
 
         const canisterIdlType = IDL.Service(visibleMethodIdlParamTypes);
@@ -50,6 +45,18 @@ export function handleClassApiCanister(): string {
                 methodMeta: exportedCanisterClassInstance._azleMethodMeta
             });
         };
+
+        /**
+         * @internal
+         *
+         * Determines if a method should be visible in Candid based on its hidden status
+         */
+        function isMethodVisible(methodName) {
+            const { queries = [], updates = [] } = exportedCanisterClassInstance._azleMethodMeta;
+            const allMethods = [...queries, ...updates];
+            const method = allMethods.find(m => m.name === methodName);
+            return method?.hidden === false;
+        }
 
         /**
          * @internal
