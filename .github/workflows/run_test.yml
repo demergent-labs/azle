@@ -101,15 +101,18 @@ jobs:
               if: matrix.os == 'macos-latest'
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
 
             - run: npm link
               if: matrix.azle_source == 'repo'
 
             - run: npm run lint
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
               with:
+                  command: 'npm run lint'
                   working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle

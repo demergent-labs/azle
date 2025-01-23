@@ -41,7 +41,9 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
 
             - name: Install global dependencies
               run: |

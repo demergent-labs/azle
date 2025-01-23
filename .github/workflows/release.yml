@@ -43,7 +43,9 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
 
             - name: Install global dependencies
               run: |
@@ -55,7 +57,9 @@ jobs:
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
 
             - name: Build stable template
               run: npx azle template
@@ -106,15 +110,18 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
 
             - name: Update azle version
               working-directory: ${{ matrix.test.path }}
               run: |
                   sed -E -i "s/(\"azle\": \")(.*)(\")/\1${{ inputs.release-version }}\3/" package.json
 
-            - uses: ./.github/actions/npm_install
+            - uses: ./.github/actions/retry_command
               with:
+                  command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
             - name: Start dfx with artificial delay 0
