@@ -3,6 +3,8 @@
 // TODO require seems to work for all of them
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const deepEqual = require('deep-is');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { expect } = require('@jest/globals');
 
 import { jsonStringify } from '../../../src/lib/stable/json';
 
@@ -114,6 +116,7 @@ export function testEquality<T = any>(actual: T, expected: T): AzleResult {
     } else {
         const actualJson = jsonStringify(actual);
         const expectedJson = jsonStringify(expected);
+        expect(actualJson).toEqual(expectedJson);
         if (actualJson !== expectedJson) {
             const message = `Expected: ${expectedJson}, Received: ${actualJson}`;
             return { Ok: { isSuccessful: false, message } };
