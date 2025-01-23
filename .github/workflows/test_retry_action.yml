@@ -44,6 +44,13 @@ jobs:
                   max-attempts: '2'
                   working-directory: 'examples/stable'
 
+            - name: Test ls command
+              uses: ./.github/actions/retry-command
+              with:
+                  command: 'cat fake_file'
+                  max-attempts: '2'
+                  working-directory: 'examples/stable'
+
             # This command should fail and retry
             - name: Test failing command
               uses: ./.github/actions/retry-command

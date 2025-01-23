@@ -43,6 +43,10 @@ runs:
                   exit 1
                 fi
 
+                if [ $attempt -eq 3 ]; then
+                  touch fake_file
+                fi
+
                 attempt=$(($attempt + 1))
                 echo "Command failed, retrying in $delay seconds... (attempt $attempt/$max_attempts)"
                 sleep $delay
