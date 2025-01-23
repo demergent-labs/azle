@@ -147,11 +147,11 @@ jobs:
                   fi
 
                   if [[ "${{ steps.set-conditions.outputs.is_feature_branch_pr }}" == "true" ]]; then
-                      RUNS=5
+                      RUNS=10
                   fi
 
                   if [[ "${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" == "true" ]]; then
-                      RUNS=1
+                      RUNS=10
                   fi
 
                   echo "Running tests $RUNS times"
