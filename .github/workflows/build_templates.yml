@@ -39,6 +39,8 @@ jobs:
 
             - uses: ./.github/actions/setup_node
 
+            - uses: ./.github/actions/setup_dfx
+
             - uses: ./.github/actions/npm_install
 
             - name: Install global dependencies
