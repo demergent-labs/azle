@@ -118,11 +118,14 @@ export function testEquality<T = any>(actual: T, expected: T): AzleResult {
             const message = `Expected: ${expectedJson}, Received: ${actualJson}`;
             return { Ok: { isSuccessful: false, message } };
         } else {
-            console.log(
-                `Expected: ${expectedJson}, Received: ${actualJson}`,
-                'deepEqual failed'
+            throw new Error(
+                `Expected: ${expectedJson}, Received: ${actualJson}\ndeepEqual failed`
             );
-            return { Ok: { isSuccessful: true } };
+            // console.log(
+            //     `Expected: ${expectedJson}, Received: ${actualJson}`,
+            //     'deepEqual failed'
+            // );
+            // return { Ok: { isSuccessful: true } };
         }
     }
 }
