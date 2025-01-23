@@ -48,7 +48,7 @@ jobs:
               uses: ./.github/actions/retry-command
               with:
                   command: 'cat fake_file'
-                  max-attempts: '2'
+                  max-attempts: '5'
                   working-directory: 'examples/stable'
 
             # This command should fail and retry
