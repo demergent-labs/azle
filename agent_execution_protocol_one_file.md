@@ -47,5 +47,8 @@ TODOs
 2. Simplify this as much as possible, we want to be as concise as we can be
 3. Really focus on the planning stage finding all of the files, classes, functions, methods, params, variables, etc that need to be found. Perhaps we can have the reasoning models do this part? Using composer normal mode maybe? I don't know if it can grep and search and stuff like the agent though
 4. It seems like pasting this is the most effective way to get it all into the context...having it read in the file seems to skip important pieces...
+5. If you ever feel like it's forgetting steps, ask it to read in .agents/project_plan.md again...I'm trying to get it to do this automatically. It seems you need to start by pasting in agent_execution_protocol_one_file.md, and then get it to read in .agents/project_plan.md often
+6. Refer to specific steps when you're continuing work, I think that will force it to go read the step again and refresh its memory of exactly everything it needs to do
+7. Basically each step should start with a summary of the protocol at step 9, if it doesn't do that you might want to manually prompt it to do that
 
 END OF FILE
