@@ -103,6 +103,7 @@ jobs:
             - name: Update package-lock.json
               uses: ./.github/actions/retry_command
               with:
+                  command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
             - name: Create branch name
