@@ -2,8 +2,11 @@ name: Run Benchmarks on Release Merge
 
 on:
     pull_request:
-        branches:
-            - '*' # Run on all PRs for testing
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
 
 jobs:
     determine-context:
