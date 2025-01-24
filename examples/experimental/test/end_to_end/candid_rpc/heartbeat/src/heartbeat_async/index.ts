@@ -1,5 +1,5 @@
-import { blob, Canister, heartbeat, ic, query } from 'azle/experimental';
-import { managementCanister } from 'azle/experimental/canisters/management';
+import { call, IDL } from 'azle';
+import { blob, Canister, heartbeat, query } from 'azle/experimental';
 
 let initialized: blob = Uint8Array.from([]);
 
@@ -22,6 +22,8 @@ async function getRandomness(): Promise<Uint8Array> {
 
         return responseJson;
     } else {
-        return await ic.call(managementCanister.raw_rand);
+        return await call('aaaaa-aa', 'raw_rand', {
+            returnIdlType: IDL.Vec(IDL.Nat8)
+        });
     }
 }

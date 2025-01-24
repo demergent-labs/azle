@@ -1,9 +1,9 @@
+import { candidEncode, IDL, reject, reply } from 'azle';
 import {
     blob,
     bool,
     Canister,
     float32,
-    ic,
     int,
     int8,
     Manual,
@@ -75,11 +75,11 @@ export default Canister({
         Manual(text),
         (message) => {
             if (message === 'reject') {
-                ic.reject(message);
+                reject(message);
                 return;
             }
 
-            ic.reply({ data: message, candidType: text });
+            reply({ data: message, idlType: text.getIdlType() });
         },
         { manual: true }
     ),
@@ -87,11 +87,11 @@ export default Canister({
         [],
         Manual(blob),
         () => {
-            ic.reply({
+            reply({
                 data: new Uint8Array([
                     83, 117, 114, 112, 114, 105, 115, 101, 33
                 ]),
-                candidType: blob
+                idlType: blob.getIdlType()
             });
         },
         { manual: true }
@@ -100,7 +100,7 @@ export default Canister({
         [],
         Manual(float32),
         () => {
-            ic.reply({ data: 1245.678, candidType: float32 });
+            reply({ data: 1245.678, idlType: float32.getIdlType() });
         },
         { manual: true }
     ),
@@ -108,7 +108,7 @@ export default Canister({
         [],
         Manual(int8),
         () => {
-            ic.reply({ data: -100, candidType: int8 });
+            reply({ data: -100, idlType: int8.getIdlType() });
         },
         { manual: true }
     ),
@@ -116,7 +116,7 @@ export default Canister({
         [],
         Manual(nat),
         () => {
-            ic.reply({ data: 184467440737095516150n, candidType: nat });
+            reply({ data: 184467440737095516150n, idlType: nat.getIdlType() });
         },
         { manual: true }
     ),
@@ -124,7 +124,7 @@ export default Canister({
         [],
         Manual(Null),
         () => {
-            ic.reply({ data: null, candidType: Null });
+            reply({ data: null, idlType: Null.getIdlType() });
         },
         { manual: true }
     ),
@@ -132,7 +132,7 @@ export default Canister({
         [],
         Manual(Void),
         () => {
-            ic.reply({ data: undefined, candidType: Void });
+            reply({ data: null, idlType: IDL.Null });
         },
         { manual: true }
     ),
@@ -156,7 +156,7 @@ export default Canister({
                     Gas: { Elemental: null }
                 }
             };
-            ic.reply({ data: element, candidType: Element });
+            reply({ data: element, idlType: Element.getIdlType([]) });
         },
         { manual: true }
     ),
@@ -164,7 +164,7 @@ export default Canister({
         [],
         Manual(reserved),
         () => {
-            ic.reply({ data: undefined, candidType: reserved });
+            reply({ data: undefined, idlType: reserved.getIdlType() });
         },
         { manual: true }
     ),
@@ -172,7 +172,7 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            ic.reply({ data: 'hello', candidType: text });
+            reply({ data: 'hello', idlType: text.getIdlType() });
         },
         { manual: true }
     ),
@@ -181,7 +181,7 @@ export default Canister({
         Manual(Gas),
         () => {
             const gas = { Toxic: null };
-            ic.reply({ data: gas, candidType: Gas });
+            reply({ data: gas, idlType: Gas.getIdlType([]) });
         },
         { manual: true }
     ),
@@ -189,8 +189,8 @@ export default Canister({
         [],
         Manual(RawReply),
         () => {
-            ic.reply({
-                raw: ic.candidEncode(
+            reply({
+                raw: candidEncode(
                     '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
                 )
             });
@@ -203,11 +203,11 @@ export default Canister({
         Manual(text),
         (message) => {
             if (message === 'reject') {
-                ic.reject(message);
+                reject(message);
                 return;
             }
 
-            ic.reply({ data: message, candidType: text });
+            reply({ data: message, idlType: text.getIdlType() });
         },
         { manual: true }
     ),
@@ -215,11 +215,11 @@ export default Canister({
         [],
         Manual(blob),
         () => {
-            ic.reply({
+            reply({
                 data: new Uint8Array([
                     83, 117, 114, 112, 114, 105, 115, 101, 33
                 ]),
-                candidType: blob
+                idlType: blob.getIdlType()
             });
         },
         { manual: true }
@@ -228,7 +228,7 @@ export default Canister({
         [],
         Manual(float32),
         () => {
-            ic.reply({ data: 1245.678, candidType: float32 });
+            reply({ data: 1245.678, idlType: float32.getIdlType() });
         },
         { manual: true }
     ),
@@ -236,7 +236,7 @@ export default Canister({
         [],
         Manual(int8),
         () => {
-            ic.reply({ data: -100, candidType: int8 });
+            reply({ data: -100, idlType: int8.getIdlType() });
         },
         { manual: true }
     ),
@@ -244,7 +244,10 @@ export default Canister({
         [],
         Manual(nat),
         () => {
-            ic.reply({ data: 184_467_440_737_095_516_150n, candidType: nat });
+            reply({
+                data: 184_467_440_737_095_516_150n,
+                idlType: nat.getIdlType()
+            });
         },
         { manual: true }
     ),
@@ -252,7 +255,7 @@ export default Canister({
         [],
         Manual(Null),
         () => {
-            ic.reply({ data: null, candidType: Null });
+            reply({ data: null, idlType: Null.getIdlType() });
         },
         { manual: true }
     ),
@@ -260,7 +263,7 @@ export default Canister({
         [],
         Manual(Void),
         () => {
-            ic.reply({ data: undefined, candidType: Void });
+            reply({ data: undefined });
         },
         { manual: true }
     ),
@@ -284,7 +287,7 @@ export default Canister({
                     Gas: { Elemental: null }
                 }
             };
-            ic.reply({ data: element, candidType: Element });
+            reply({ data: element, idlType: Element.getIdlType([]) });
         },
         { manual: true }
     ),
@@ -292,7 +295,7 @@ export default Canister({
         [],
         Manual(reserved),
         () => {
-            ic.reply({ data: undefined, candidType: reserved });
+            reply({ data: undefined, idlType: reserved.getIdlType() });
         },
         { manual: true }
     ),
@@ -300,7 +303,7 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            ic.reply({ data: 'hello', candidType: text });
+            reply({ data: 'hello', idlType: text.getIdlType() });
         },
         { manual: true }
     ),
@@ -309,7 +312,7 @@ export default Canister({
         Manual(Gas),
         () => {
             const gas = { Toxic: null };
-            ic.reply({ data: gas, candidType: Gas });
+            reply({ data: gas, idlType: Gas.getIdlType([]) });
         },
         { manual: true }
     )

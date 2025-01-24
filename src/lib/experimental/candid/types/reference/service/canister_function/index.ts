@@ -7,9 +7,9 @@ import {
     MethodMeta
 } from '../../../../../../../build/stable/utils/types';
 import { CanisterMethodMode } from '../../../../../../stable/execute_with_candid_serde';
+import { call, notify } from '../../../../../../stable/ic_apis';
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { Callbacks } from '../../../../../globals';
-import { ic } from '../../../../../ic';
 import { CandidType, Parent, toIdlTypeArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { decode, encode } from '../../../../serde';
@@ -28,9 +28,6 @@ type _AzleFunctionReturnType = {
     getIdlType?: (parents: Parent[]) => IDL.Type<any>;
 };
 
-type CallRawFunction = typeof ic.callRaw;
-type NotifyRawFunction = typeof ic.notifyRaw;
-
 type FunctionInfo = {
     mode: CanisterMethodMode;
     paramCandidTypes: CandidType[];
@@ -38,8 +35,7 @@ type FunctionInfo = {
 };
 
 type ServiceCall = (
-    notify: boolean,
-    callFunction: CallRawFunction | NotifyRawFunction,
+    isNotify: boolean,
     cycles: bigint,
     args: any[]
 ) => void | Promise<any>;
@@ -237,8 +233,7 @@ function createCanisterFunctionBase(
                 return {
                     ...acc,
                     [key]: (
-                        notify: boolean,
-                        callFunction: CallRawFunction | NotifyRawFunction,
+                        isNotify: boolean,
                         cycles: bigint,
                         args: any[]
                     ): ReturnType<ServiceCall> => {
@@ -247,7 +242,7 @@ function createCanisterFunctionBase(
                             key,
                             value.paramCandidTypes,
                             value.returnCandidType
-                        )(notify, callFunction, cycles, args);
+                        )(isNotify, cycles, args);
                     }
                 };
             },
@@ -268,28 +263,25 @@ function serviceCall(
     returnCandidType: CandidType
 ): ServiceCall {
     return (
-        notify: boolean,
-        callFunction: CallRawFunction | NotifyRawFunction,
+        isNotify: boolean,
         cycles: bigint,
         args: any[]
-    ) => {
+    ): void | Promise<any> => {
         const encodedArgs = encode(paramCandidTypes, args);
 
-        if (notify === true) {
-            return (callFunction as NotifyRawFunction)(
-                canisterId,
-                methodName,
-                encodedArgs,
-                cycles
-            );
+        if (isNotify === true) {
+            return notify(canisterId, methodName, {
+                args,
+                cycles,
+                raw: encodedArgs
+            });
         } else {
             return (async (): Promise<any> => {
-                const encodedResult = await (callFunction as CallRawFunction)(
-                    canisterId,
-                    methodName,
-                    encodedArgs,
-                    cycles
-                );
+                const encodedResult = await call(canisterId, methodName, {
+                    args,
+                    cycles,
+                    raw: encodedArgs
+                });
 
                 return decode(returnCandidType, encodedResult);
             })();

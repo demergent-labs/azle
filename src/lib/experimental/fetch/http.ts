@@ -3,7 +3,7 @@ import '../experimental';
 import { inflate } from 'pako';
 
 import { http_transform } from '../../../../canisters/management';
-import { ic } from '../ic';
+import { id } from '../../stable/ic_apis';
 import { azleFetch, serialize } from '.';
 import { AzleFetchResponse } from './response';
 import { getUrl } from './url';
@@ -141,7 +141,7 @@ function getHttpTransform(): [] | [http_transform] {
     return [
         {
             function: [
-                ic.id(),
+                id(),
                 globalThis._azleOutgoingHttpOptionsTransformMethodName
             ],
             context:

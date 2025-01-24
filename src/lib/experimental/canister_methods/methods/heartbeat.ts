@@ -1,7 +1,7 @@
 import '../../experimental';
 
+import { trap } from '../../../stable/ic_apis';
 import { Void } from '../../candid/types/primitive/void';
-import { ic } from '../../ic';
 import { isAsync } from '../is_async';
 import { CanisterMethodInfo } from '../types/canister_method_info';
 
@@ -26,7 +26,7 @@ function executeHeartbeat(callback: any): void {
         typeof result.then === 'function'
     ) {
         result.catch((error: any) => {
-            ic.trap(error.toString());
+            trap(error.toString());
         });
     }
 
