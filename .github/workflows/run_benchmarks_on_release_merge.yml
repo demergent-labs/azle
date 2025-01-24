@@ -1,16 +1,16 @@
 name: Run Benchmarks on Release Merge
 
 on:
-    push:
+    pull_request:
         branches:
-            - main
+            - '*' # Run on all PRs for testing
 
 jobs:
     determine-context:
         name: Determine Workflow Context
         runs-on: ubuntu-latest
         outputs:
-            should-run: ${{ steps.workflow-context.outputs.is_main_branch_push_from_release_merge }}
+            should-run: 'true' # Bypass release check
         steps:
             - uses: actions/checkout@v4
             - uses: ./.github/actions/determine_workflow_context
