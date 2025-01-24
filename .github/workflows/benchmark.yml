@@ -39,7 +39,7 @@ on:
         secrets:
             GPG_SIGNING_KEY:
                 required: true
-            GITHUB_TOKEN:
+            GH_TOKEN:
                 required: true
             LASTMJS_GITHUB_TOKEN:
                 required: true
