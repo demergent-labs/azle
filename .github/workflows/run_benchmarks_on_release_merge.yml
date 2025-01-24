@@ -23,5 +23,7 @@ jobs:
             exclude-slow-benchmarks: false
             exclude-unstable-benchmarks: false
             exclude-release-only-benchmarks: false
-            signing-key-id: ${{ secrets.GPG_SIGNING_KEY_ID }}
-        secrets: inherit
+        secrets:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
