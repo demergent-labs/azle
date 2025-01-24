@@ -22,15 +22,17 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('includes non-hidden methods in candid interface', () => {
-            expect(candid).toContain('queryUndefined');
-            expect(candid).toContain('queryHiddenFalse');
-            expect(candid).toContain('updateUndefined');
-            expect(candid).toContain('updateHiddenFalse');
+            expect(candid).toContain('queryUndefined: () -> (text) query;');
+            expect(candid).toContain('queryHiddenFalse: () -> (text) query;');
+            expect(candid).toContain('updateUndefined: () -> (text);');
+            expect(candid).toContain('updateHiddenFalse: () -> (text);');
         });
 
         it('excludes hidden methods from candid interface', () => {
-            expect(candid).not.toContain('queryHiddenTrue');
-            expect(candid).not.toContain('updateHiddenTrue');
+            expect(candid).not.toContain(
+                'queryHiddenTrue: () -> (text) query;'
+            );
+            expect(candid).not.toContain('updateHiddenTrue: () -> (text);');
         });
 
         it('allows calling non-hidden query methods', async () => {
@@ -58,20 +60,20 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
 
         it('allows calling hidden query methods via dfx', () => {
             const queryResult = execSync(
-                `dfx canister call ${canisterName} queryHiddenTrue`
+                `dfx canister call ${canisterName} queryHiddenTrue --output json`
             )
                 .toString()
                 .trim();
-            expect(queryResult).toBe('("query hidden true")');
+            expect(queryResult).toBe('"query hidden true"');
         });
 
         it('allows calling hidden update methods via dfx', () => {
             const updateResult = execSync(
-                `dfx canister call ${canisterName} updateHiddenTrue`
+                `dfx canister call ${canisterName} updateHiddenTrue --output json`
             )
                 .toString()
                 .trim();
-            expect(updateResult).toBe('("update hidden true")');
+            expect(updateResult).toBe('"update hidden true"');
         });
     };
 }

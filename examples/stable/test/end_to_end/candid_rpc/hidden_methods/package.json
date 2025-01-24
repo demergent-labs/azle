@@ -1,5 +1,4 @@
 {
-    "name": "hidden_methods_end_to_end_test",
     "scripts": {
         "pretest": "tsx test/pretest.ts",
         "test": "jest"
