@@ -168,7 +168,8 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
             exportedCanisterClassInstance._azleMethodMeta.queries?.push({
                 name,
                 index,
-                composite: (options as QueryOptions)?.composite ?? false
+                composite: (options as QueryOptions)?.composite ?? false,
+                hidden: (options as QueryOptions)?.hidden ?? false
             });
 
             exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes[
@@ -183,7 +184,8 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'update') {
             exportedCanisterClassInstance._azleMethodMeta.updates?.push({
                 name,
-                index
+                index,
+                hidden: (options as UpdateOptions)?.hidden ?? false
             });
 
             exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes[

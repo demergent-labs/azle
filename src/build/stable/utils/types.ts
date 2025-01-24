@@ -51,6 +51,7 @@ export type Method = {
     name: string;
     composite?: boolean;
     index: number;
+    hidden?: boolean;
 };
 
 export type MethodMeta = {

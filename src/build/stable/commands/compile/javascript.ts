@@ -27,7 +27,12 @@ export function handleClassApiCanister(): string {
     return /*TS*/ `
         const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
-        const canisterIdlType = IDL.Service(exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes);
+        const visibleMethodIdlParamTypes = Object.fromEntries(
+            Object.entries(exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes)
+                .filter(([methodName]) => isMethodVisible(methodName, exportedCanisterClassInstance._azleMethodMeta))
+        );
+
+        const canisterIdlType = IDL.Service(visibleMethodIdlParamTypes);
         const candid = idlToString(canisterIdlType, {
             ...getDefaultVisitorData(),
             isFirstService: true,
@@ -40,6 +45,18 @@ export function handleClassApiCanister(): string {
                 methodMeta: exportedCanisterClassInstance._azleMethodMeta
             });
         };
+
+        /**
+         * @internal
+         *
+         * Determines if a method should be visible in Candid based on its hidden status
+         */
+        function isMethodVisible(methodName, methodMeta) {
+            const { queries = [], updates = [] } = methodMeta;
+            const allMethods = [...queries, ...updates];
+            const method = allMethods.find(m => m.name === methodName);
+            return method?.hidden === false;
+        }
 
         /**
          * @internal
