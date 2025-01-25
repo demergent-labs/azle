@@ -1,8 +1,6 @@
 import './set_experimental';
 
 import { execSync } from 'child_process';
-// @ts-ignore
-import libraryDeepEqual from 'deep-is';
 import fc from 'fast-check';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
@@ -132,15 +130,3 @@ export const shortArrayConstraints = {
     minLength: 5,
     maxLength: 20
 };
-
-export function deepEqual(a: any, b: any): boolean {
-    const result = libraryDeepEqual(a, b);
-
-    if (result === false) {
-        console.info('deepEqual returned false');
-        console.info('deepEqual value a', a);
-        console.info('deepEqual value b', b);
-    }
-
-    return result;
-}

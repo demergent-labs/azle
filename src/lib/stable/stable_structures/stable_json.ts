@@ -54,6 +54,12 @@ export const stableJson = StableJson();
  * @returns The converted value safe for JSON string serialization
  */
 export function jsonReplacer(_key: string, value: any): any {
+    if (typeof value === 'undefined') {
+        return {
+            __undefined__: '__undefined__'
+        };
+    }
+
     if (typeof value === 'bigint') {
         return {
             __bigint__: value.toString()
@@ -153,6 +159,10 @@ export function jsonReplacer(_key: string, value: any): any {
  */
 export function jsonReviver(_key: string, value: any): any {
     if (typeof value === 'object' && value !== null) {
+        if (typeof value.__undefined__ === 'string') {
+            return undefined;
+        }
+
         if (typeof value.__bigint__ === 'string') {
             return BigInt(value.__bigint__);
         }
