@@ -1,15 +1,13 @@
 // TODO maybe this should be Ledger? We should look into making the Ledger
 // better using the latest Wasm and did that I know of
 
+import { call, id, msgCaller } from 'azle';
 import {
     blob,
     Canister,
-    ic,
-    init,
     nat,
     nat64,
     None,
-    postUpgrade,
     Principal,
     Result,
     serialize,
@@ -17,18 +15,11 @@ import {
     text,
     update
 } from 'azle/experimental';
-import { ICRC } from 'azle/experimental/canisters/icrc';
 import { TransferError } from 'azle/experimental/canisters/icrc/icrc_1';
 
-import { Minter, UpdateBalanceResult } from './minter';
-
-let ckBTC: typeof ICRC;
-
-let minter: typeof Minter;
+import { UpdateBalanceResult } from './minter';
 
 export default Canister({
-    init: init([], setupCanisters),
-    postUpgrade: postUpgrade([], setupCanisters),
     getBalance: update([], nat64, async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -38,10 +29,10 @@ export default Canister({
                         candidPath: `/candid/icp/icrc.did`,
                         args: [
                             {
-                                owner: ic.id(),
+                                owner: id(),
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.msgCaller().toUint8Array()
+                                        msgCaller().toUint8Array()
                                     )
                                 ]
                             }
@@ -53,12 +44,12 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(ckBTC.icrc1_balance_of, {
+            return await call(getCkBtcPrincipal(), 'icrc1_balance_of', {
                 args: [
                     {
-                        owner: ic.id(),
+                        owner: id(),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.msgCaller().toUint8Array())
+                            padPrincipalWithZeros(msgCaller().toUint8Array())
                         )
                     }
                 ]
@@ -74,10 +65,10 @@ export default Canister({
                         candidPath: `/minter/minter.did`,
                         args: [
                             {
-                                owner: [ic.id()],
+                                owner: [id()],
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.msgCaller().toUint8Array()
+                                        msgCaller().toUint8Array()
                                     )
                                 ]
                             }
@@ -89,12 +80,12 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(minter.update_balance, {
+            return await call(getMinterPrincipal(), 'update_balance', {
                 args: [
                     {
-                        owner: Some(ic.id()),
+                        owner: Some(id()),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.msgCaller().toUint8Array())
+                            padPrincipalWithZeros(msgCaller().toUint8Array())
                         )
                     }
                 ]
@@ -110,10 +101,10 @@ export default Canister({
                         candidPath: `/minter/minter.did`,
                         args: [
                             {
-                                owner: [ic.id()],
+                                owner: [id()],
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.msgCaller().toUint8Array()
+                                        msgCaller().toUint8Array()
                                     )
                                 ]
                             }
@@ -125,12 +116,12 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(minter.get_btc_address, {
+            return await call(getMinterPrincipal(), 'get_btc_address', {
                 args: [
                     {
-                        owner: Some(ic.id()),
+                        owner: Some(id()),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.msgCaller().toUint8Array())
+                            padPrincipalWithZeros(msgCaller().toUint8Array())
                         )
                     }
                 ]
@@ -151,11 +142,11 @@ export default Canister({
                                 {
                                     from_subaccount: [
                                         padPrincipalWithZeros(
-                                            ic.msgCaller().toUint8Array()
+                                            msgCaller().toUint8Array()
                                         )
                                     ],
                                     to: {
-                                        owner: ic.id(),
+                                        owner: id(),
                                         subaccount: [
                                             padPrincipalWithZeros(
                                                 Principal.fromText(
@@ -177,16 +168,16 @@ export default Canister({
 
                 return responseJson;
             } else {
-                return await ic.call(ckBTC.icrc1_transfer, {
+                return await call(getCkBtcPrincipal(), 'icrc1_transfer', {
                     args: [
                         {
                             from_subaccount: Some(
                                 padPrincipalWithZeros(
-                                    ic.msgCaller().toUint8Array()
+                                    msgCaller().toUint8Array()
                                 )
                             ),
                             to: {
-                                owner: ic.id(),
+                                owner: id(),
                                 subaccount: Some(
                                     padPrincipalWithZeros(
                                         Principal.fromText(to).toUint8Array()
@@ -209,22 +200,6 @@ function padPrincipalWithZeros(blob: blob): blob {
     let newUin8Array = new Uint8Array(32);
     newUin8Array.set(blob);
     return newUin8Array;
-}
-
-function setupCanisters(): void {
-    ckBTC = ICRC(
-        Principal.fromText(
-            process.env.CK_BTC_PRINCIPAL ??
-                ic.trap('process.env.CK_BTC_PRINCIPAL is undefined')
-        )
-    );
-
-    minter = Minter(
-        Principal.fromText(
-            process.env.MINTER_PRINCIPAL ??
-                ic.trap('process.env.MINTER_PRINCIPAL is undefined')
-        )
-    );
 }
 
 function getCkBtcPrincipal(): string {
