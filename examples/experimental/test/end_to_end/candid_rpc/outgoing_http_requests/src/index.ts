@@ -1,3 +1,4 @@
+import { call, candidEncode, id, reply } from 'azle';
 import {
     Canister,
     ic,
@@ -11,8 +12,7 @@ import {
 } from 'azle/experimental';
 import {
     HttpResponse,
-    HttpTransformArgs,
-    managementCanister
+    HttpTransformArgs
 } from 'azle/experimental/canisters/management';
 
 export default Canister({
@@ -29,8 +29,9 @@ export default Canister({
 
             return responseText;
         } else {
-            const httpResponse = await ic.call(
-                managementCanister.http_request,
+            const httpResponse = await call(
+                Principal.fromText('aaaaa-aa'),
+                'http_request',
                 {
                     args: [
                         {
@@ -42,7 +43,7 @@ export default Canister({
                             headers: [],
                             body: None,
                             transform: Some({
-                                function: [ic.id(), 'xkcdTransform'] as [
+                                function: [id(), 'xkcdTransform'] as [
                                     Principal,
                                     string
                                 ],
@@ -61,10 +62,11 @@ export default Canister({
         [],
         Manual(HttpResponse),
         async () => {
-            const httpResponse = await ic.callRaw(
+            const httpResponse = await call(
                 Principal.fromText('aaaaa-aa'),
                 'http_request',
-                ic.candidEncode(`
+                {
+                    raw: candidEncode(`
                 (
                     record {
                         url = "https://xkcd.com/642/info.0.json";
@@ -72,16 +74,15 @@ export default Canister({
                         method = variant { get };
                         headers = vec {};
                         body = null;
-                        transform = record { function = func "${ic
-                            .id()
-                            .toString()}".xkcdTransform; context = vec {} };
+                        transform = record { function = func "${id().toString()}".xkcdTransform; context = vec {} };
                     }
                 )
             `),
-                50_000_000n
+                    cycles: 50_000_000n
+                }
             );
 
-            ic.reply({ raw: httpResponse });
+            reply({ raw: httpResponse });
         },
         { manual: true }
     ),

@@ -1,5 +1,5 @@
-import { jsonParse, jsonStringify } from 'azle/experimental';
-import { BitcoinNetwork } from 'azle/experimental/canisters/management';
+import { jsonParse, jsonStringify } from 'azle';
+import { bitcoin_network } from 'azle/canisters/management';
 import { determineKeyName, determineNetwork } from 'basic_bitcoin/src';
 import * as bitcoinApi from 'basic_bitcoin/src/bitcoin_api';
 import express, { Request } from 'express';
@@ -11,7 +11,7 @@ import * as bitcoinWallet from './bitcoin_wallet';
 // When developing locally this should be `Regtest`.
 // When deploying to the IC this should be `Testnet`.
 // `Mainnet` is currently unsupported.
-const NETWORK: BitcoinNetwork = determineNetwork(
+const NETWORK: bitcoin_network = determineNetwork(
     process.env.BITCOIN_NETWORK
 ) ?? {
     testnet: null

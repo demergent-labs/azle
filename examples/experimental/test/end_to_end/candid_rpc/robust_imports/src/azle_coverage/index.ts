@@ -1,4 +1,5 @@
-import { ic, ic as lemon, int16 as coconut } from 'azle/experimental';
+import { acceptMessage, IDL, methodName, reply, trap } from 'azle';
+import { int16 as coconut } from 'azle/experimental';
 
 import kiwi, {
     banana,
@@ -167,11 +168,11 @@ export const buyHoneydew = honeydew(() => {
 });
 
 export const keepIlamaClean = ilama(() => {
-    console.info(`Method "${lemon.methodName()}" was called`);
-    if (lemon.methodName() === 'dirtyIlama') {
+    console.info(`Method "${methodName()}" was called`);
+    if (methodName() === 'dirtyIlama') {
         return;
     }
-    lemon.acceptMessage();
+    acceptMessage();
 });
 
 export const addSigFigs = kiwi([fig32], fig64, (figs) => {
@@ -192,14 +193,12 @@ export const checkWatermelonForSeeds = kiwi(
     (shouldHaveSeeds, watermelon) => {
         if ('Seedless' in watermelon) {
             if (shouldHaveSeeds === true) {
-                lemon.trap('Watermelon is seedless when it should have seeds');
+                trap('Watermelon is seedless when it should have seeds');
             }
         }
         if ('Seeds' in watermelon) {
             if (shouldHaveSeeds === false) {
-                lemon.trap(
-                    'Watermelon is has seeds when it should be seedless'
-                );
+                trap('Watermelon has seeds when it should be seedless');
             }
         }
     }
@@ -261,7 +260,7 @@ export const isMangoTrickyToEat = kiwi(
     [],
     Mango(boysenberry),
     () => {
-        lemon.reply({ data: true, candidType: blackberry });
+        reply({ data: true, idlType: IDL.Bool });
     },
     { manual: true }
 );
@@ -291,7 +290,7 @@ export const removeRambutanSkins = ugni([], rambutan, () => {
     const preparedFruit = soncoya.get(0);
 
     if (preparedFruit === null) {
-        return ic.trap('soncoya is None');
+        return trap('soncoya is None');
     }
 
     soncoya.remove(0);
@@ -321,7 +320,7 @@ export const pickElderberry = ugni([], elderberry, () => {
     const preparedFruit = soncoya.get(0);
 
     if (preparedFruit === null) {
-        return ic.trap('soncoya is None');
+        return trap('soncoya is None');
     }
 
     soncoya.remove(0);

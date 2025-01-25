@@ -1,10 +1,10 @@
-import { ic } from 'azle/experimental';
+import { msgCaller } from 'azle';
 import express from 'express';
 
 const app = express();
 
 app.get('/whoami', (req, res) => {
-    res.send(ic.msgCaller().toString());
+    res.send(msgCaller().toString());
 });
 
 app.use(express.static('/dist'));

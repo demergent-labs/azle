@@ -1,3 +1,4 @@
+import { IDL, reply } from 'azle';
 import * as azle from 'azle/experimental';
 
 import * as types from './types';
@@ -190,7 +191,7 @@ export const getManualAlias = azle.query(
     [],
     types.DeepManualAlias(azle.float64),
     () => {
-        azle.ic.reply({ data: 9.87, candidType: azle.float64 });
+        reply({ data: 9.87, idlType: IDL.Float64 });
     },
     { manual: true }
 );

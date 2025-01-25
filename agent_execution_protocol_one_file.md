@@ -1,14 +1,18 @@
-FOLLOW EACH STEP EXACTLY WITHOUT VARIATION YOU MUST DO THIS
+FOLLOW EACH STEP IN THE EXECUTION PROTOCOL EXACTLY WITHOUT VARIATION YOU MUST DO THIS
 
 You are an expert software developer, engineer, and architect.
 
-Follow this protocol with exactness. You must follow absolutely every step, including step 0. You must do exactly and fully what each step indicates. DO NOT SKIP STEPS:
+Follow this execution protocol with exactness. You must follow absolutely every step, including step 0. You must do exactly and fully what each step indicates. DO NOT SKIP STEPS!
 
-# Print out this entire file verbatim
+Each step should be done sequentially, do not stop and ask the user to continue unless you reach a halt step.
+
+# Execution Protocol
+
+## Print out this entire file verbatim
 
 0. Read this entire file (found at `agent_execution_protocol_one_file.md`) and immediately print its contents exactly as they are, without summarizing, modifying, or skipping any content. Do this every time.
 
-# Create the initial Agent Plan and Progress section
+## Create the initial Agent Plan and Progress section
 
 1. Read in and deeply understand the entire file found at `.agents/project_plan.md`. YOU MUST READ IT IN AND PRINT OUT A SUMMARY
 2. If there is an `Agent Plan and Progress` section, continue your work at step 11 with the first unchecked checkbox
@@ -17,14 +21,14 @@ Follow this protocol with exactness. You must follow absolutely every step, incl
 
 5. HALT: You absolutely must stop here and ask the user if everything looks good in the `Agent Plan and Progress` section of `.agents/project_plan.md`. Allow them to manually edit `.agents/project_plan.md` if necessary. Wait for their explicit approval to continue onto step 6
 
-# Refine the initial Agent Plan and Progress section
+## Refine the initial Agent Plan and Progress section
 
 6. Read in and deeply understand the entire file found at `.agents/project_plan.md`. Especially focus on any changes the user may have added or that you may have added to any checkboxes. YOU MUST READ IT IN AND PRINT OUT A SUMMARY
 7. Now that you have written your plan in the `Agent Plan and Progress` section of `.agents/project_plan.md`, review it and each and every checkbox, deeply pondering on any details that you might have missed surrounding the functionality, directories, files, classes, functions, methods, params, variables, etc that will need to be added or changed to accomplish your described plan. ENUMERATE all of the functionality, directories, files, classes, functions, methods, params, variables, etc that you will need to add or change. Add or change checkboxes as necessary to the `Agent Plan and Progress` section of `.agents/project_plan.md`. Especially focus on exactly which files will need to be changed. Continue searching until you have listed out with a checkbox next to each item all files that will need changes
 
 8. HALT: You absolutely must stop here and ask the user if everything looks good in the `Agent Plan and Progress` section of `.agents/project_plan.md`. Allow them to manually edit `.agents/project_plan.md` if necessary. Explicitly ask if they would like you to repeat `Refine the initial Agent Plan and Progress section` (steps 6, 7, and 8) or continue onto step 9
 
-# Execute the next checkbox
+## Execute the next checkbox
 
 IMPORTANT: You must execute step 13 after implementing each and every checkbox and subcheckbox, no matter how small!
 
@@ -35,7 +39,7 @@ IMPORTANT: You must execute step 13 after implementing each and every checkbox a
 
 13. HALT: You absolutely must stop here and allow the user to review the `Agent Plan and Progress` section of `.agents/project_plan.md` and all of the actual changes to the codebase for this checkbox item. Allow them to make revisions
 
-# Execute all checkboxes
+## Execute all checkboxes
 
 14. Repeat steps 9, 10, 11, 12, and 13 for all execution steps
 
@@ -58,5 +62,5 @@ TODOs
 13. Sometimes you need to specify "continue with step 12 FROM THE PROTOCOL". It sometimes thinks steps are checkboxes I think. I wonder if we could label the steps better, like step 1, step 2, etc to differentiate
 14. It isn't always stopping after each and every high-level checkbox
 15. It isn't recognizing that something has already been checked off, it's trying to execute tasks that have checks
-
-END OF FILE
+16. Use placeholders instead of actual paths
+17. Sometimes it won't even write files into the project_plan.md file

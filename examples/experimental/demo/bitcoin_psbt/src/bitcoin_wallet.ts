@@ -10,11 +10,11 @@
 // import * as ecc from 'tiny-secp256k1'; // TODO we should switch to this import as soon as we have wasm support
 import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import {
-    BitcoinNetwork,
-    MillisatoshiPerByte,
-    Satoshi,
-    Utxo
-} from 'azle/experimental/canisters/management';
+    bitcoin_network,
+    millisatoshi_per_byte,
+    satoshi,
+    utxo
+} from 'azle/canisters/management';
 import * as bitcoinApi from 'basic_bitcoin/src/bitcoin_api';
 import {
     determineNetwork,
@@ -28,7 +28,7 @@ import { Buffer } from 'buffer';
 
 /// Returns the P2PKH address of this canister at the given derivation path.
 export async function getP2wpkhAddress(
-    network: BitcoinNetwork,
+    network: bitcoin_network,
     keyName: string,
     derivationPath: Uint8Array[]
 ): Promise<string> {
@@ -43,11 +43,11 @@ export async function getP2wpkhAddress(
 /// given destination, where the source of the funds is the canister itself
 /// at the given derivation path.
 export async function send(
-    network: BitcoinNetwork,
+    network: bitcoin_network,
     derivationPath: Uint8Array[],
     keyName: string,
     dstAddress: string,
-    amount: Satoshi
+    amount: satoshi
 ): Promise<string> {
     // Get fee percentiles from previous transactions to estimate our own fee.
     const feePercentiles = await bitcoinApi.getCurrentFeePercentiles(network);
@@ -111,11 +111,11 @@ export async function send(
 async function buildTransaction(
     ownPublicKey: Uint8Array,
     ownAddress: string,
-    ownUtxos: Utxo[],
+    ownUtxos: utxo[],
     dstAddress: string,
-    amount: Satoshi,
-    feePerByte: MillisatoshiPerByte,
-    network: BitcoinNetwork
+    amount: satoshi,
+    feePerByte: millisatoshi_per_byte,
+    network: bitcoin_network
 ): Promise<Psbt> {
     // We have a chicken-and-egg problem where we need to know the length
     // of the transaction in order to compute its proper fee, but we need
@@ -160,12 +160,12 @@ async function buildTransaction(
 }
 
 function buildTransactionWithFee(
-    ownUtxos: Utxo[],
+    ownUtxos: utxo[],
     ownAddress: string,
     destAddress: string,
     amount: bigint,
     fee: bigint,
-    bitcoinNetwork: BitcoinNetwork
+    bitcoinNetwork: bitcoin_network
 ): Psbt {
     // Assume that any amount below this threshold is dust.
     const dustThreshold = 1_000n;
@@ -174,7 +174,7 @@ function buildTransactionWithFee(
     // even if they were previously spent in a transaction. This isn't a
     // problem as long as at most one transaction is created per block and
     // we're using min_confirmations of 1.
-    let utxosToSpend: Utxo[] = [];
+    let utxosToSpend: utxo[] = [];
     let totalSpent = 0n;
     for (const utxo of [...ownUtxos].reverse()) {
         totalSpent += utxo.value;
@@ -253,7 +253,7 @@ async function signTransaction(
 
 // Converts a public key to a P2WPKH address.
 function publicKeyToP2wpkhAddress(
-    network: BitcoinNetwork,
+    network: bitcoin_network,
     publicKey: Uint8Array
 ): string {
     const { address } = payments.p2wpkh({
