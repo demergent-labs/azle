@@ -1,5 +1,7 @@
 ## Contributor
 
+This is a meaningless change that should not be merged.
+
 - [ ] Breaking changes enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
 - [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
 - [ ] Code has been declaratized
