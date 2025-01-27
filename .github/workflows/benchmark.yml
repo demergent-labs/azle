@@ -34,7 +34,7 @@ on:
                 required: true
                 type: boolean
             signing-key-id:
-                required: true
+                required: false
                 type: string
                 default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
         secrets:
