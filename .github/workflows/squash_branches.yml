@@ -11,35 +11,25 @@ on:
             commit-message:
                 required: true
                 type: string
-            signing-key-id:
-                required: true
-                type: string
         secrets:
-            GPG_SIGNING_KEY:
-                required: true
             GH_TOKEN:
                 required: true
-            LASTMJS_GITHUB_TOKEN:
-                required: true
+
+permissions: write-all
 
 jobs:
     squash:
         name: Squash Branches
         runs-on: ubuntu-latest
         env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
         steps:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ secrets.GH_TOKEN }}
                   fetch-depth: 0
 
-            - uses: ./.github/actions/configure_git
-              with:
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
-                  signing-key-id: ${{ inputs.signing-key-id }}
             - name: Collect branches
               id: collect-branches
               run: |
@@ -65,8 +55,6 @@ jobs:
                   git fetch origin $BRANCHES_TO_FETCH
 
             - name: Squash changes
-              env:
-                  PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
               run: |
                   CURRENT_BRANCH=$(git branch --show-current)
 
