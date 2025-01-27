@@ -1,0 +1,29 @@
+name: Run Benchmarks on Release Merge
+
+on:
+    pull_request:
+
+jobs:
+    determine-context:
+        name: Determine Workflow Context
+        runs-on: ubuntu-latest
+        outputs:
+            should-run: 'true' # Bypass release check
+        steps:
+            - uses: actions/checkout@v4
+            - uses: ./.github/actions/determine_workflow_context
+              id: workflow-context
+
+    run-benchmarks:
+        name: Run Benchmarks
+        needs: determine-context
+        if: needs.determine-context.outputs.should-run == 'true'
+        uses: ./.github/workflows/benchmark.yml
+        with:
+            exclude-slow-benchmarks: false
+            exclude-unstable-benchmarks: false
+            exclude-release-only-benchmarks: false
+        secrets:
+            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}

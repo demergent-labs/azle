@@ -22,6 +22,28 @@ on:
                 required: true
                 type: string
                 default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+    workflow_call:
+        inputs:
+            exclude-slow-benchmarks:
+                required: true
+                type: boolean
+            exclude-unstable-benchmarks:
+                required: true
+                type: boolean
+            exclude-release-only-benchmarks:
+                required: true
+                type: boolean
+            signing-key-id:
+                required: false
+                type: string
+                default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+        secrets:
+            GPG_SIGNING_KEY:
+                required: true
+            GH_TOKEN:
+                required: true
+            LASTMJS_GITHUB_TOKEN:
+                required: true
 
 jobs:
     get-exclude-dirs:
