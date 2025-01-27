@@ -13,6 +13,8 @@ This is a meaningless change that should not be merged.
 
 ## Reviewer
 
+This is a meaningless change that should be merged into test base but not into main.
+
 - [ ] Breaking changes enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
 - [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
 - [ ] Code has been declaratized
