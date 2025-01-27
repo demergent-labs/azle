@@ -1,40 +1,40 @@
 # Benchmarks for wallet
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.25.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | add_to_whitelist | 1_432_369    | 1_162_947 | $0.0000015463 | $1.54             | <font color="red">+12_542</font>  |
-| 1   | wallet_receive   | 1_731_616    | 1_282_646 | $0.0000017055 | $1.70             | <font color="red">+18_612</font>  |
-| 2   | wallet_receive   | 1_725_599    | 1_280_239 | $0.0000017023 | $1.70             | <font color="red">+8_557</font>   |
-| 3   | wallet_receive   | 1_725_223    | 1_280_089 | $0.0000017021 | $1.70             | <font color="red">+1_897</font>   |
-| 4   | wallet_receive   | 1_724_358    | 1_279_743 | $0.0000017016 | $1.70             | <font color="red">+169</font>     |
-| 5   | wallet_receive   | 1_724_062    | 1_279_624 | $0.0000017015 | $1.70             | <font color="green">-2_148</font> |
-| 6   | wallet_receive   | 1_723_514    | 1_279_405 | $0.0000017012 | $1.70             | <font color="green">-2_278</font> |
-| 7   | wallet_receive   | 1_725_090    | 1_280_036 | $0.0000017020 | $1.70             | <font color="red">+184</font>     |
-| 8   | wallet_receive   | 1_724_583    | 1_279_833 | $0.0000017018 | $1.70             | <font color="green">-4_678</font> |
-| 9   | wallet_receive   | 1_723_719    | 1_279_487 | $0.0000017013 | $1.70             | <font color="green">-3_003</font> |
-| 10  | wallet_receive   | 1_725_189    | 1_280_075 | $0.0000017021 | $1.70             | <font color="green">-2_380</font> |
-| 11  | wallet_receive   | 1_723_719    | 1_279_487 | $0.0000017013 | $1.70             | <font color="green">-1_230</font> |
-| 12  | wallet_receive   | 1_723_613    | 1_279_445 | $0.0000017012 | $1.70             | <font color="red">+217</font>     |
+| 0   | add_to_whitelist | 1_563_404    | 1_215_361 | $0.0000016160 | $1.61             | <font color="red">+131_035</font> |
+| 1   | wallet_receive   | 1_853_671    | 1_331_468 | $0.0000017704 | $1.77             | <font color="red">+122_055</font> |
+| 2   | wallet_receive   | 1_842_335    | 1_326_934 | $0.0000017644 | $1.76             | <font color="red">+116_736</font> |
+| 3   | wallet_receive   | 1_837_195    | 1_324_878 | $0.0000017617 | $1.76             | <font color="red">+111_972</font> |
+| 4   | wallet_receive   | 1_839_085    | 1_325_634 | $0.0000017627 | $1.76             | <font color="red">+114_727</font> |
+| 5   | wallet_receive   | 1_836_831    | 1_324_732 | $0.0000017615 | $1.76             | <font color="red">+112_769</font> |
+| 6   | wallet_receive   | 1_839_232    | 1_325_692 | $0.0000017627 | $1.76             | <font color="red">+115_718</font> |
+| 7   | wallet_receive   | 1_838_168    | 1_325_267 | $0.0000017622 | $1.76             | <font color="red">+113_078</font> |
+| 8   | wallet_receive   | 1_836_648    | 1_324_659 | $0.0000017614 | $1.76             | <font color="red">+112_065</font> |
+| 9   | wallet_receive   | 1_839_136    | 1_325_654 | $0.0000017627 | $1.76             | <font color="red">+115_417</font> |
+| 10  | wallet_receive   | 1_839_225    | 1_325_690 | $0.0000017627 | $1.76             | <font color="red">+114_036</font> |
+| 11  | wallet_receive   | 1_838_185    | 1_325_274 | $0.0000017622 | $1.76             | <font color="red">+114_466</font> |
+| 12  | wallet_receive   | 1_841_327    | 1_326_530 | $0.0000017638 | $1.76             | <font color="red">+117_714</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-alpha
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | add_to_whitelist | 1_419_827    | 1_157_930 | $0.0000015397 | $1.53             |
-| 1   | wallet_receive   | 1_713_004    | 1_275_201 | $0.0000016956 | $1.69             |
-| 2   | wallet_receive   | 1_717_042    | 1_276_816 | $0.0000016977 | $1.69             |
-| 3   | wallet_receive   | 1_723_326    | 1_279_330 | $0.0000017011 | $1.70             |
-| 4   | wallet_receive   | 1_724_189    | 1_279_675 | $0.0000017015 | $1.70             |
-| 5   | wallet_receive   | 1_726_210    | 1_280_484 | $0.0000017026 | $1.70             |
-| 6   | wallet_receive   | 1_725_792    | 1_280_316 | $0.0000017024 | $1.70             |
-| 7   | wallet_receive   | 1_724_906    | 1_279_962 | $0.0000017019 | $1.70             |
-| 8   | wallet_receive   | 1_729_261    | 1_281_704 | $0.0000017042 | $1.70             |
-| 9   | wallet_receive   | 1_726_722    | 1_280_688 | $0.0000017029 | $1.70             |
-| 10  | wallet_receive   | 1_727_569    | 1_281_027 | $0.0000017033 | $1.70             |
-| 11  | wallet_receive   | 1_724_949    | 1_279_979 | $0.0000017019 | $1.70             |
-| 12  | wallet_receive   | 1_723_396    | 1_279_358 | $0.0000017011 | $1.70             |
+| 0   | add_to_whitelist | 1_432_369    | 1_162_947 | $0.0000015463 | $1.54             |
+| 1   | wallet_receive   | 1_731_616    | 1_282_646 | $0.0000017055 | $1.70             |
+| 2   | wallet_receive   | 1_725_599    | 1_280_239 | $0.0000017023 | $1.70             |
+| 3   | wallet_receive   | 1_725_223    | 1_280_089 | $0.0000017021 | $1.70             |
+| 4   | wallet_receive   | 1_724_358    | 1_279_743 | $0.0000017016 | $1.70             |
+| 5   | wallet_receive   | 1_724_062    | 1_279_624 | $0.0000017015 | $1.70             |
+| 6   | wallet_receive   | 1_723_514    | 1_279_405 | $0.0000017012 | $1.70             |
+| 7   | wallet_receive   | 1_725_090    | 1_280_036 | $0.0000017020 | $1.70             |
+| 8   | wallet_receive   | 1_724_583    | 1_279_833 | $0.0000017018 | $1.70             |
+| 9   | wallet_receive   | 1_723_719    | 1_279_487 | $0.0000017013 | $1.70             |
+| 10  | wallet_receive   | 1_725_189    | 1_280_075 | $0.0000017021 | $1.70             |
+| 11  | wallet_receive   | 1_723_719    | 1_279_487 | $0.0000017013 | $1.70             |
+| 12  | wallet_receive   | 1_723_613    | 1_279_445 | $0.0000017012 | $1.70             |
 
 ---
 

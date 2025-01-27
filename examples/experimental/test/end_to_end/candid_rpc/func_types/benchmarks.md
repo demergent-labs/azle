@@ -4,8 +4,8 @@
 
 | Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                             | 5_500_494_320 | 4_200_787_728 | $0.0055856614 | $5_585.66         |
-| 1   | getNotifierFromNotifiersCanister | 11_545_225    | 5_208_090     | $0.0000069250 | $6.92             |
+| 0   | init                             | 5_514_850_576 | 4_206_530_230 | $0.0055932971 | $5_593.29         |
+| 1   | getNotifierFromNotifiersCanister | 11_541_358    | 5_206_543     | $0.0000069230 | $6.92             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

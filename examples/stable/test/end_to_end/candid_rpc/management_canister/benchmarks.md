@@ -4,34 +4,34 @@
 
 | Id  | Method Name               | Instructions | Cycles     | USD           | USD/Million Calls | Change                                  |
 | --- | ------------------------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | executeCreateCanister     | 16_098_435   | 7_029_374  | $0.0000093467 | $9.34             | <font color="red">+2_140_721</font>     |
-| 1   | executeUpdateSettings     | 17_438_636   | 7_565_454  | $0.0000100596 | $10.05            | <font color="red">+2_180_856</font>     |
-| 2   | getCanisterStatus         | 3_808_556    | 2_113_422  | $0.0000028102 | $2.81             | <font color="red">+235_752</font>       |
-| 3   | executeInstallCode        | 29_637_524   | 12_445_009 | $0.0000165478 | $16.54            | <font color="green">-232_995_890</font> |
-| 4   | executeUninstallCode      | 4_452_035    | 2_370_814  | $0.0000031524 | $3.15             | <font color="red">+363_687</font>       |
-| 5   | getCanisterStatus         | 3_811_831    | 2_114_732  | $0.0000028119 | $2.81             | <font color="red">+287_563</font>       |
-| 6   | executeUploadChunk        | 18_329_658   | 7_921_863  | $0.0000105335 | $10.53            | <font color="green">-234_013_334</font> |
-| 7   | getStoredChunks           | 3_086_143    | 1_824_457  | $0.0000024259 | $2.42             | <font color="red">+253_569</font>       |
-| 8   | getStoredChunks           | 3_083_455    | 1_823_382  | $0.0000024245 | $2.42             | <font color="red">+247_097</font>       |
-| 9   | executeInstallChunkedCode | 20_999_345   | 8_989_738  | $0.0000119534 | $11.95            | <font color="red">+1_638_414</font>     |
-| 10  | executeUninstallCode      | 4_451_554    | 2_370_621  | $0.0000031521 | $3.15             | <font color="red">+354_955</font>       |
-| 11  | executeClearChunkStore    | 3_088_422    | 1_825_368  | $0.0000024271 | $2.42             | <font color="red">+254_768</font>       |
-| 12  | getStoredChunks           | 3_083_240    | 1_823_296  | $0.0000024244 | $2.42             | <font color="red">+250_966</font>       |
-| 13  | getCanisterStatus         | 3_808_402    | 2_113_360  | $0.0000028101 | $2.81             | <font color="red">+295_582</font>       |
-| 14  | executeDepositCycles      | 3_092_700    | 1_827_080  | $0.0000024294 | $2.42             | <font color="red">+252_525</font>       |
-| 15  | getCanisterStatus         | 3_804_317    | 2_111_726  | $0.0000028079 | $2.80             | <font color="red">+280_636</font>       |
-| 16  | executeUninstallCode      | 4_451_900    | 2_370_760  | $0.0000031523 | $3.15             | <font color="red">+357_456</font>       |
-| 17  | getCanisterStatus         | 3_807_735    | 2_113_094  | $0.0000028097 | $2.80             | <font color="red">+288_486</font>       |
-| 18  | executeStopCanister       | 3_094_977    | 1_827_990  | $0.0000024306 | $2.43             | <font color="red">+255_281</font>       |
-| 19  | getCanisterStatus         | 3_809_861    | 2_113_944  | $0.0000028108 | $2.81             | <font color="red">+285_453</font>       |
-| 20  | getCanisterStatus         | 3_803_065    | 2_111_226  | $0.0000028072 | $2.80             | <font color="red">+274_061</font>       |
-| 21  | executeStartCanister      | 3_082_864    | 1_823_145  | $0.0000024242 | $2.42             | <font color="red">+248_839</font>       |
-| 22  | getCanisterStatus         | 3_803_729    | 2_111_491  | $0.0000028076 | $2.80             | <font color="red">+278_455</font>       |
-| 23  | getCanisterStatus         | 3_806_530    | 2_112_612  | $0.0000028091 | $2.80             | <font color="red">+279_539</font>       |
-| 24  | getCanisterInfo           | 6_741_396    | 3_286_558  | $0.0000043700 | $4.37             | <font color="red">+482_305</font>       |
-| 25  | executeStopCanister       | 3_082_187    | 1_822_874  | $0.0000024238 | $2.42             | <font color="red">+241_716</font>       |
-| 26  | executeDeleteCanister     | 3_080_226    | 1_822_090  | $0.0000024228 | $2.42             | <font color="red">+240_056</font>       |
-| 27  | getRawRand                | 1_420_442    | 1_158_176  | $0.0000015400 | $1.53             | <font color="red">+128_568</font>       |
+| 0   | executeCreateCanister     | 16_104_767   | 7_031_906  | $0.0000093501 | $9.35             | <font color="red">+2_147_053</font>     |
+| 1   | executeUpdateSettings     | 17_412_563   | 7_555_025  | $0.0000100457 | $10.04            | <font color="red">+2_154_783</font>     |
+| 2   | getCanisterStatus         | 3_816_648    | 2_116_659  | $0.0000028145 | $2.81             | <font color="red">+243_844</font>       |
+| 3   | executeInstallCode        | 29_675_026   | 12_460_010 | $0.0000165677 | $16.56            | <font color="green">-232_958_388</font> |
+| 4   | executeUninstallCode      | 4_447_556    | 2_369_022  | $0.0000031500 | $3.15             | <font color="red">+359_208</font>       |
+| 5   | getCanisterStatus         | 3_812_527    | 2_115_010  | $0.0000028123 | $2.81             | <font color="red">+288_259</font>       |
+| 6   | executeUploadChunk        | 18_336_506   | 7_924_602  | $0.0000105371 | $10.53            | <font color="green">-234_006_486</font> |
+| 7   | getStoredChunks           | 3_089_786    | 1_825_914  | $0.0000024279 | $2.42             | <font color="red">+257_212</font>       |
+| 8   | getStoredChunks           | 3_087_688    | 1_825_075  | $0.0000024267 | $2.42             | <font color="red">+251_330</font>       |
+| 9   | executeInstallChunkedCode | 21_000_030   | 8_990_012  | $0.0000119537 | $11.95            | <font color="red">+1_639_099</font>     |
+| 10  | executeUninstallCode      | 4_453_373    | 2_371_349  | $0.0000031531 | $3.15             | <font color="red">+356_774</font>       |
+| 11  | executeClearChunkStore    | 3_094_546    | 1_827_818  | $0.0000024304 | $2.43             | <font color="red">+260_892</font>       |
+| 12  | getStoredChunks           | 3_093_295    | 1_827_318  | $0.0000024297 | $2.42             | <font color="red">+261_021</font>       |
+| 13  | getCanisterStatus         | 3_810_935    | 2_114_374  | $0.0000028114 | $2.81             | <font color="red">+298_115</font>       |
+| 14  | executeDepositCycles      | 3_090_662    | 1_826_264  | $0.0000024283 | $2.42             | <font color="red">+250_487</font>       |
+| 15  | getCanisterStatus         | 3_809_728    | 2_113_891  | $0.0000028108 | $2.81             | <font color="red">+286_047</font>       |
+| 16  | executeUninstallCode      | 4_444_117    | 2_367_646  | $0.0000031482 | $3.14             | <font color="red">+349_673</font>       |
+| 17  | getCanisterStatus         | 3_809_396    | 2_113_758  | $0.0000028106 | $2.81             | <font color="red">+290_147</font>       |
+| 18  | executeStopCanister       | 3_086_532    | 1_824_612  | $0.0000024261 | $2.42             | <font color="red">+246_836</font>       |
+| 19  | getCanisterStatus         | 3_815_782    | 2_116_312  | $0.0000028140 | $2.81             | <font color="red">+291_374</font>       |
+| 20  | getCanisterStatus         | 3_815_248    | 2_116_099  | $0.0000028137 | $2.81             | <font color="red">+286_244</font>       |
+| 21  | executeStartCanister      | 3_074_759    | 1_819_903  | $0.0000024199 | $2.41             | <font color="red">+240_734</font>       |
+| 22  | getCanisterStatus         | 3_799_322    | 2_109_728  | $0.0000028052 | $2.80             | <font color="red">+274_048</font>       |
+| 23  | getCanisterStatus         | 3_812_061    | 2_114_824  | $0.0000028120 | $2.81             | <font color="red">+285_070</font>       |
+| 24  | getCanisterInfo           | 6_763_456    | 3_295_382  | $0.0000043818 | $4.38             | <font color="red">+504_365</font>       |
+| 25  | executeStopCanister       | 3_085_802    | 1_824_320  | $0.0000024257 | $2.42             | <font color="red">+245_331</font>       |
+| 26  | executeDeleteCanister     | 3_084_786    | 1_823_914  | $0.0000024252 | $2.42             | <font color="red">+244_616</font>       |
+| 27  | getRawRand                | 1_416_635    | 1_156_654  | $0.0000015380 | $1.53             | <font color="red">+124_761</font>       |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

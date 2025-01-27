@@ -4,13 +4,13 @@
 
 | Id  | Method Name                   | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | receiveAllCycles              | 10_105_417   | 4_632_166 | $0.0000061593 | $6.15             |
-| 1   | receiveVariableCycles         | 10_300_021   | 4_710_008 | $0.0000062628 | $6.26             |
-| 2   | receiveNoCycles               | 10_053_607   | 4_611_442 | $0.0000061317 | $6.13             |
-| 3   | receiveCyclesByChunk          | 10_702_715   | 4_871_086 | $0.0000064769 | $6.47             |
-| 4   | assertMsgCyclesAcceptTypes    | 1_364_581    | 1_135_832 | $0.0000015103 | $1.51             |
-| 5   | assertMsgCyclesAvailableTypes | 1_138_411    | 1_045_364 | $0.0000013900 | $1.38             |
-| 6   | assertMsgCyclesAcceptTypes    | 1_365_789    | 1_136_315 | $0.0000015109 | $1.51             |
+| 0   | receiveAllCycles              | 10_090_454   | 4_626_181 | $0.0000061513 | $6.15             |
+| 1   | receiveVariableCycles         | 10_274_407   | 4_699_762 | $0.0000062491 | $6.24             |
+| 2   | receiveNoCycles               | 10_050_449   | 4_610_179 | $0.0000061300 | $6.13             |
+| 3   | receiveCyclesByChunk          | 10_648_980   | 4_849_592 | $0.0000064484 | $6.44             |
+| 4   | assertMsgCyclesAcceptTypes    | 1_365_967    | 1_136_386 | $0.0000015110 | $1.51             |
+| 5   | assertMsgCyclesAvailableTypes | 1_140_643    | 1_046_257 | $0.0000013912 | $1.39             |
+| 6   | assertMsgCyclesAcceptTypes    | 1_370_921    | 1_138_368 | $0.0000015137 | $1.51             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 
@@ -22,13 +22,13 @@ No benchmarks reported
 
 | Id  | Method Name                   | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | sendAllCycles                 | 2_103_473    | 1_431_389 | $0.0000019033 | $1.90             |
-| 1   | sendVariableCycles            | 2_907_402    | 1_752_960 | $0.0000023309 | $2.33             |
-| 2   | sendNoCycles                  | 2_040_393    | 1_406_157 | $0.0000018697 | $1.86             |
-| 3   | sendCyclesByChunk             | 2_878_027    | 1_741_210 | $0.0000023152 | $2.31             |
-| 4   | assertMsgCyclesAcceptTypes    | 2_637_332    | 1_644_932 | $0.0000021872 | $2.18             |
-| 5   | assertMsgCyclesAvailableTypes | 1_802_154    | 1_310_861 | $0.0000017430 | $1.74             |
-| 6   | assertMsgCyclesRefundedTypes  | 2_637_193    | 1_644_877 | $0.0000021871 | $2.18             |
+| 0   | sendAllCycles                 | 2_098_824    | 1_429_529 | $0.0000019008 | $1.90             |
+| 1   | sendVariableCycles            | 2_901_276    | 1_750_510 | $0.0000023276 | $2.32             |
+| 2   | sendNoCycles                  | 2_042_537    | 1_407_014 | $0.0000018709 | $1.87             |
+| 3   | sendCyclesByChunk             | 2_885_617    | 1_744_246 | $0.0000023193 | $2.31             |
+| 4   | assertMsgCyclesAcceptTypes    | 2_633_571    | 1_643_428 | $0.0000021852 | $2.18             |
+| 5   | assertMsgCyclesAvailableTypes | 1_802_863    | 1_311_145 | $0.0000017434 | $1.74             |
+| 6   | assertMsgCyclesRefundedTypes  | 2_637_423    | 1_644_969 | $0.0000021873 | $2.18             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

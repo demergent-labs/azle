@@ -1,0 +1,168 @@
+{
+    "canister1": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5496354234"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1737996858861067831"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "14566657"
+                    },
+                    "method_name": "balance",
+                    "timestamp": {
+                        "__bigint__": "1737996879000503083"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "15990018"
+                    },
+                    "method_name": "account",
+                    "timestamp": {
+                        "__bigint__": "1737996879266688649"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "14500882"
+                    },
+                    "method_name": "balance",
+                    "timestamp": {
+                        "__bigint__": "1737996879559320726"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "15977385"
+                    },
+                    "method_name": "account",
+                    "timestamp": {
+                        "__bigint__": "1737996879823894298"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "14000509"
+                    },
+                    "method_name": "accounts",
+                    "timestamp": {
+                        "__bigint__": "1737996880092481073"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "16022705"
+                    },
+                    "method_name": "transfer",
+                    "timestamp": {
+                        "__bigint__": "1737996880407227731"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "14524925"
+                    },
+                    "method_name": "balance",
+                    "timestamp": {
+                        "__bigint__": "1737996880651386965"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "15947226"
+                    },
+                    "method_name": "account",
+                    "timestamp": {
+                        "__bigint__": "1737996880922931163"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "14498159"
+                    },
+                    "method_name": "balance",
+                    "timestamp": {
+                        "__bigint__": "1737996881237131112"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "15962972"
+                    },
+                    "method_name": "account",
+                    "timestamp": {
+                        "__bigint__": "1737996881480418404"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "13990480"
+                    },
+                    "method_name": "accounts",
+                    "timestamp": {
+                        "__bigint__": "1737996881749046952"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "13626093"
+                    },
+                    "method_name": "trap",
+                    "timestamp": {
+                        "__bigint__": "1737996882096281469"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2071232"
+                    },
+                    "method_name": "sendNotification",
+                    "timestamp": {
+                        "__bigint__": "1737996882589228271"
+                    }
+                }
+            ]
+        }
+    },
+    "canister2": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "2238456"
+                    },
+                    "method_name": "transfer",
+                    "timestamp": {
+                        "__bigint__": "1737996880407227731"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1400549"
+                    },
+                    "method_name": "receiveNotification",
+                    "timestamp": {
+                        "__bigint__": "1737996882589228271"
+                    }
+                }
+            ]
+        }
+    }
+}

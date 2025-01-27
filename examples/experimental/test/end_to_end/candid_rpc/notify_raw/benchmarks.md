@@ -4,7 +4,7 @@
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | sendNotification | 1_632_296    | 1_242_918 | $0.0000016527 | $1.65             | <font color="green">-2_482</font> |
+| 0   | sendNotification | 1_632_516    | 1_243_006 | $0.0000016528 | $1.65             | <font color="green">-2_262</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 
@@ -18,7 +18,7 @@
 
 | Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls | Change                            |
 | --- | ------------------- | ------------ | ------- | ------------- | ----------------- | --------------------------------- |
-| 0   | receiveNotification | 860_025      | 934_010 | $0.0000012419 | $1.24             | <font color="green">-6_165</font> |
+| 0   | receiveNotification | 862_653      | 935_061 | $0.0000012433 | $1.24             | <font color="green">-3_537</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

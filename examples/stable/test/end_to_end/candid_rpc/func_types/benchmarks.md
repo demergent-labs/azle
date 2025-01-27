@@ -4,8 +4,8 @@
 
 | Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                  |
 | --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | init                             | 1_028_896_713 | 812_148_685 | $0.0010798897 | $1_079.88         | <font color="green">-331_474_101</font> |
-| 1   | getNotifierFromNotifiersCanister | 1_825_738     | 1_320_295   | $0.0000017556 | $1.75             | <font color="red">+168_829</font>       |
+| 0   | init                             | 1_030_555_488 | 812_812_195 | $0.0010807720 | $1_080.77         | <font color="green">-329_815_326</font> |
+| 1   | getNotifierFromNotifiersCanister | 1_827_628     | 1_321_051   | $0.0000017566 | $1.75             | <font color="red">+170_719</font>       |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | add         | 1_263_633    | 1_095_453 | $0.0000014566 | $1.45             | <font color="green">-11_359</font> |
-| 1   | sub         | 1_251_130    | 1_090_452 | $0.0000014499 | $1.44             | <font color="green">-2_788</font>  |
-| 2   | mul         | 1_251_423    | 1_090_569 | $0.0000014501 | $1.45             | <font color="green">-779</font>    |
-| 3   | div         | 1_609_771    | 1_233_908 | $0.0000016407 | $1.64             | <font color="green">-4_311</font>  |
-| 4   | clearall    | 847_716      | 929_086   | $0.0000012354 | $1.23             | <font color="green">-1_872</font>  |
-| 5   | add         | 1_248_755    | 1_089_502 | $0.0000014487 | $1.44             | <font color="green">-3_979</font>  |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | add         | 1_266_613    | 1_096_645 | $0.0000014582 | $1.45             | <font color="green">-8_379</font> |
+| 1   | sub         | 1_251_345    | 1_090_538 | $0.0000014501 | $1.45             | <font color="green">-2_573</font> |
+| 2   | mul         | 1_250_182    | 1_090_072 | $0.0000014494 | $1.44             | <font color="green">-2_020</font> |
+| 3   | div         | 1_611_290    | 1_234_516 | $0.0000016415 | $1.64             | <font color="green">-2_792</font> |
+| 4   | clearall    | 851_562      | 930_624   | $0.0000012374 | $1.23             | <font color="red">+1_974</font>   |
+| 5   | add         | 1_249_129    | 1_089_651 | $0.0000014489 | $1.44             | <font color="green">-3_605</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

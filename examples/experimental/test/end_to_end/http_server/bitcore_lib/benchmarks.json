@@ -55,47 +55,47 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "10209412571"
+                        "__bigint__": "10214923753"
                     },
                     "method_name": "init",
                     "timestamp": {
-                        "__bigint__": "1736543834101978892"
+                        "__bigint__": "1737996818099840940"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1118641072"
+                        "__bigint__": "1101741686"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543842894959696"
+                        "__bigint__": "1737996832045066622"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "11621237293"
+                        "__bigint__": "11433697052"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543843665851116"
+                        "__bigint__": "1737996833074696781"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "14237573010"
+                        "__bigint__": "13710170022"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543846384387410"
+                        "__bigint__": "1737996836422960706"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "12654259245"
+                        "__bigint__": "17452333326"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543850015929128"
+                        "__bigint__": "1737996839582311326"
                     }
                 }
             ]

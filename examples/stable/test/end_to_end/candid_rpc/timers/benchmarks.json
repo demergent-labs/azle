@@ -37,29 +37,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "10779154"
+                        "__bigint__": "10811482"
                     },
                     "method_name": "setTimers",
                     "timestamp": {
-                        "__bigint__": "1736543874431471200"
+                        "__bigint__": "1737996864739220550"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1280235"
+                        "__bigint__": "1272252"
                     },
                     "method_name": "clearTimer",
                     "timestamp": {
-                        "__bigint__": "1736543886693521330"
+                        "__bigint__": "1737996877229088419"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1277409"
+                        "__bigint__": "1270447"
                     },
                     "method_name": "clearTimer",
                     "timestamp": {
-                        "__bigint__": "1736543886693521330"
+                        "__bigint__": "1737996877229088419"
                     }
                 }
             ]

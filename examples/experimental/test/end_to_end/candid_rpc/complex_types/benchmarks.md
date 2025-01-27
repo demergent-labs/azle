@@ -2,12 +2,12 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
-| --- | -------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | createUser     | 80_674_877   | 32_859_950 | $0.0000436929 | $43.69            | <font color="green">-21_928</font>  |
-| 1   | createThread   | 164_214_204  | 66_275_681 | $0.0000881248 | $88.12            | <font color="green">-80_278</font>  |
-| 2   | createPost     | 86_903_400   | 35_351_360 | $0.0000470056 | $47.00            | <font color="red">+54_179</font>    |
-| 3   | createReaction | 173_030_138  | 69_802_055 | $0.0000928137 | $92.81            | <font color="green">-121_755</font> |
+| Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
+| 0   | createUser     | 80_814_541   | 32_915_816 | $0.0000437672 | $43.76            | <font color="red">+117_736</font> |
+| 1   | createThread   | 164_546_882  | 66_408_752 | $0.0000883017 | $88.30            | <font color="red">+252_400</font> |
+| 2   | createPost     | 86_981_964   | 35_382_785 | $0.0000470474 | $47.04            | <font color="red">+132_743</font> |
+| 3   | createReaction | 173_330_313  | 69_922_125 | $0.0000929734 | $92.97            | <font color="red">+178_420</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

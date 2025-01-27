@@ -2,15 +2,15 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
-| 0   | init                | 5_564_020_303 | 4_226_198_121 | $0.0056194489 | $5_619.44         | <font color="red">+90_431_579</font> |
-| 1   | ethGetBalance       | 181_801_456   | 73_310_582    | $0.0000974789 | $97.47            | <font color="red">+11_137_832</font> |
-| 2   | ethGetBalance       | 181_651_624   | 73_250_649    | $0.0000973992 | $97.39            | <font color="red">+11_077_162</font> |
-| 3   | ethGetBalance       | 181_693_512   | 73_267_404    | $0.0000974215 | $97.42            | <font color="red">+11_160_441</font> |
-| 4   | ethGetBlockByNumber | 180_641_394   | 72_846_557    | $0.0000968619 | $96.86            | <font color="red">+11_113_897</font> |
-| 5   | ethGetBlockByNumber | 180_501_042   | 72_790_416    | $0.0000967872 | $96.78            | <font color="red">+11_006_572</font> |
-| 6   | ethGetBlockByNumber | 180_683_991   | 72_863_596    | $0.0000968845 | $96.88            | <font color="red">+11_170_471</font> |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init                | 5_576_841_912 | 4_231_326_764 | $0.0056262683 | $5_626.26         | <font color="red">+103_253_188</font> |
+| 1   | ethGetBalance       | 181_785_271   | 73_304_108    | $0.0000974703 | $97.47            | <font color="red">+11_121_647</font>  |
+| 2   | ethGetBalance       | 181_616_663   | 73_236_665    | $0.0000973806 | $97.38            | <font color="red">+11_042_201</font>  |
+| 3   | ethGetBalance       | 181_514_436   | 73_195_774    | $0.0000973262 | $97.32            | <font color="red">+10_981_365</font>  |
+| 4   | ethGetBlockByNumber | 180_579_158   | 72_821_663    | $0.0000968288 | $96.82            | <font color="red">+11_051_661</font>  |
+| 5   | ethGetBlockByNumber | 180_642_429   | 72_846_971    | $0.0000968624 | $96.86            | <font color="red">+11_147_959</font>  |
+| 6   | ethGetBlockByNumber | 180_703_613   | 72_871_445    | $0.0000968950 | $96.89            | <font color="red">+11_190_093</font>  |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

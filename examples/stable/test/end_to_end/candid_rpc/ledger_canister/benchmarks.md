@@ -4,21 +4,21 @@
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | getAccountBalance | 5_295_806    | 2_708_322 | $0.0000036012 | $3.60             | <font color="red">+350_037</font>   |
-| 1   | getTransferFee    | 2_333_967    | 1_523_586 | $0.0000020259 | $2.02             | <font color="red">+222_766</font>   |
-| 2   | executeTransfer   | 14_306_297   | 6_312_518 | $0.0000083936 | $8.39             | <font color="red">+954_330</font>   |
-| 3   | executeTransfer   | 14_310_681   | 6_314_272 | $0.0000083959 | $8.39             | <font color="red">+954_717</font>   |
-| 4   | getBlocks         | 6_195_157    | 3_068_062 | $0.0000040795 | $4.07             | <font color="red">+444_063</font>   |
-| 5   | getSymbol         | 1_803_080    | 1_311_232 | $0.0000017435 | $1.74             | <font color="red">+181_758</font>   |
-| 6   | getName           | 1_806_585    | 1_312_634 | $0.0000017454 | $1.74             | <font color="red">+179_323</font>   |
-| 7   | getDecimals       | 1_803_852    | 1_311_540 | $0.0000017439 | $1.74             | <font color="red">+177_690</font>   |
-| 8   | getArchives       | 1_800_729    | 1_310_291 | $0.0000017423 | $1.74             | <font color="red">+174_373</font>   |
-| 9   | executeTransfer   | 14_302_546   | 6_311_018 | $0.0000083916 | $8.39             | <font color="red">+950_325</font>   |
-| 10  | getAccountBalance | 5_217_864    | 2_677_145 | $0.0000035597 | $3.55             | <font color="red">+313_658</font>   |
-| 11  | executeTransfer   | 14_286_533   | 6_304_613 | $0.0000083831 | $8.38             | <font color="red">+970_839</font>   |
-| 12  | executeTransfer   | 14_299_730   | 6_309_892 | $0.0000083901 | $8.39             | <font color="red">+966_998</font>   |
-| 13  | executeTransfer   | 15_146_679   | 6_648_671 | $0.0000088405 | $8.84             | <font color="red">+1_017_861</font> |
-| 14  | executeTransfer   | 15_145_212   | 6_648_084 | $0.0000088398 | $8.83             | <font color="red">+1_037_223</font> |
+| 0   | getAccountBalance | 5_309_377    | 2_713_750 | $0.0000036084 | $3.60             | <font color="red">+363_608</font>   |
+| 1   | getTransferFee    | 2_331_275    | 1_522_510 | $0.0000020244 | $2.02             | <font color="red">+220_074</font>   |
+| 2   | executeTransfer   | 14_291_989   | 6_306_795 | $0.0000083860 | $8.38             | <font color="red">+940_022</font>   |
+| 3   | executeTransfer   | 14_299_493   | 6_309_797 | $0.0000083899 | $8.38             | <font color="red">+943_529</font>   |
+| 4   | getBlocks         | 6_188_919    | 3_065_567 | $0.0000040762 | $4.07             | <font color="red">+437_825</font>   |
+| 5   | getSymbol         | 1_802_837    | 1_311_134 | $0.0000017434 | $1.74             | <font color="red">+181_515</font>   |
+| 6   | getName           | 1_803_780    | 1_311_512 | $0.0000017439 | $1.74             | <font color="red">+176_518</font>   |
+| 7   | getDecimals       | 1_803_045    | 1_311_218 | $0.0000017435 | $1.74             | <font color="red">+176_883</font>   |
+| 8   | getArchives       | 1_798_953    | 1_309_581 | $0.0000017413 | $1.74             | <font color="red">+172_597</font>   |
+| 9   | executeTransfer   | 14_310_624   | 6_314_249 | $0.0000083959 | $8.39             | <font color="red">+958_403</font>   |
+| 10  | getAccountBalance | 5_220_458    | 2_678_183 | $0.0000035611 | $3.56             | <font color="red">+316_252</font>   |
+| 11  | executeTransfer   | 14_263_432   | 6_295_372 | $0.0000083708 | $8.37             | <font color="red">+947_738</font>   |
+| 12  | executeTransfer   | 14_276_185   | 6_300_474 | $0.0000083776 | $8.37             | <font color="red">+943_453</font>   |
+| 13  | executeTransfer   | 15_112_703   | 6_635_081 | $0.0000088225 | $8.82             | <font color="red">+983_885</font>   |
+| 14  | executeTransfer   | 15_122_043   | 6_638_817 | $0.0000088274 | $8.82             | <font color="red">+1_014_054</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | create      | 4_469_491    | 2_377_796 | $0.0000031617 | $3.16             | <font color="red">+5_282</font>   |
-| 1   | create      | 5_768_160    | 2_897_264 | $0.0000038524 | $3.85             | <font color="green">-1_886</font> |
-| 2   | update      | 6_203_219    | 3_071_287 | $0.0000040838 | $4.08             | <font color="green">-7_642</font> |
-| 3   | update      | 4_390_514    | 2_346_205 | $0.0000031197 | $3.11             | <font color="green">-4_694</font> |
-| 4   | deleteHero  | 1_221_005    | 1_078_402 | $0.0000014339 | $1.43             | <font color="red">+977</font>     |
-| 5   | deleteHero  | 1_213_795    | 1_075_518 | $0.0000014301 | $1.43             | <font color="red">+2_456</font>   |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | create      | 4_472_235    | 2_378_894 | $0.0000031631 | $3.16             | <font color="red">+8_026</font>  |
+| 1   | create      | 5_778_278    | 2_901_311 | $0.0000038578 | $3.85             | <font color="red">+8_232</font>  |
+| 2   | update      | 6_212_425    | 3_074_970 | $0.0000040887 | $4.08             | <font color="red">+1_564</font>  |
+| 3   | update      | 4_407_642    | 2_353_056 | $0.0000031288 | $3.12             | <font color="red">+12_434</font> |
+| 4   | deleteHero  | 1_223_162    | 1_079_264 | $0.0000014351 | $1.43             | <font color="red">+3_134</font>  |
+| 5   | deleteHero  | 1_215_920    | 1_076_368 | $0.0000014312 | $1.43             | <font color="red">+4_581</font>  |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

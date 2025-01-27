@@ -4,9 +4,9 @@
 
 | Id  | Method Name               | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | canisterNestedReturnType  | 6_931_988    | 3_362_795 | $0.0000044714 | $4.47             |
-| 1   | canisterList              | 8_014_927    | 3_795_970 | $0.0000050474 | $5.04             |
-| 2   | canisterCrossCanisterCall | 12_131_038   | 5_442_415 | $0.0000072366 | $7.23             |
+| 0   | canisterNestedReturnType  | 6_935_019    | 3_364_007 | $0.0000044730 | $4.47             |
+| 1   | canisterList              | 8_023_167    | 3_799_266 | $0.0000050518 | $5.05             |
+| 2   | canisterCrossCanisterCall | 12_149_986   | 5_449_994 | $0.0000072467 | $7.24             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

@@ -4,7 +4,7 @@
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | postUpgrade | 5_468_981_745 | 4_188_182_698 | $0.0055689009 | $5_568.90         |
+| 0   | postUpgrade | 5_481_803_691 | 4_193_311_476 | $0.0055757205 | $5_575.72         |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

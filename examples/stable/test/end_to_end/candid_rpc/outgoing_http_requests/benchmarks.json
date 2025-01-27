@@ -28,20 +28,20 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "25440152"
+                        "__bigint__": "25431270"
                     },
                     "method_name": "xkcd",
                     "timestamp": {
-                        "__bigint__": "1736543870263911584"
+                        "__bigint__": "1737996854696267641"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1523343"
+                        "__bigint__": "1526245"
                     },
                     "method_name": "xkcdRaw",
                     "timestamp": {
-                        "__bigint__": "1736543871331757038"
+                        "__bigint__": "1737996855828508660"
                     }
                 }
             ]

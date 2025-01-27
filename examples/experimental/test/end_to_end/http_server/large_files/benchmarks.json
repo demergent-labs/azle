@@ -1,13 +1,30 @@
 {
     "backend": {
-        "previous": { "version": "No previous benchmarks", "benchmarks": [] },
-        "current": {
+        "previous": {
             "version": "0.25.0-alpha",
             "benchmarks": [
                 {
-                    "instructions": { "__bigint__": "8147445070" },
+                    "instructions": {
+                        "__bigint__": "8147445070"
+                    },
                     "method_name": "postUpgrade",
-                    "timestamp": { "__bigint__": "1730326512723189987" }
+                    "timestamp": {
+                        "__bigint__": "1730326512723189987"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "8297820446"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1737998963605634447"
+                    }
                 }
             ]
         }

@@ -19,11 +19,11 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1757055"
+                        "__bigint__": "1763155"
                     },
                     "method_name": "sendNotification",
                     "timestamp": {
-                        "__bigint__": "1736543878681415269"
+                        "__bigint__": "1737996866149374385"
                     }
                 }
             ]
@@ -49,11 +49,11 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "982453"
+                        "__bigint__": "981283"
                     },
                     "method_name": "receiveNotification",
                     "timestamp": {
-                        "__bigint__": "1736543878681415269"
+                        "__bigint__": "1737996866149374385"
                     }
                 }
             ]

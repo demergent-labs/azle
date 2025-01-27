@@ -37,29 +37,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "8275850092"
+                        "__bigint__": "8282550587"
                     },
                     "method_name": "init",
                     "timestamp": {
-                        "__bigint__": "1736543866038986122"
+                        "__bigint__": "1737996859467368574"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "44935647"
+                        "__bigint__": "44923564"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543895135138998"
+                        "__bigint__": "1737996896230768217"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1437007"
+                        "__bigint__": "1431517"
                     },
                     "method_name": "candidUpdate",
                     "timestamp": {
-                        "__bigint__": "1736543895677862321"
+                        "__bigint__": "1737996897056536600"
                     }
                 }
             ]
@@ -103,29 +103,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "8299370212"
+                        "__bigint__": "8306802100"
                     },
                     "method_name": "postUpgrade",
                     "timestamp": {
-                        "__bigint__": "1736543903500228132"
+                        "__bigint__": "1737996905410944736"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "45340887"
+                        "__bigint__": "45309961"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543909647319181"
+                        "__bigint__": "1737996911710234423"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1803298"
+                        "__bigint__": "1801225"
                     },
                     "method_name": "candidUpdate",
                     "timestamp": {
-                        "__bigint__": "1736543910176470705"
+                        "__bigint__": "1737996912210279627"
                     }
                 }
             ]
@@ -169,29 +169,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "8278061865"
+                        "__bigint__": "8284986699"
                     },
                     "method_name": "init",
                     "timestamp": {
-                        "__bigint__": "1736543852548481663"
+                        "__bigint__": "1737996845392683806"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "44971989"
+                        "__bigint__": "44903728"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543881812116346"
+                        "__bigint__": "1737996880231877333"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1462146"
+                        "__bigint__": "1457906"
                     },
                     "method_name": "candidUpdate",
                     "timestamp": {
-                        "__bigint__": "1736543882583597918"
+                        "__bigint__": "1737996881069495430"
                     }
                 }
             ]
@@ -235,29 +235,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "8301400676"
+                        "__bigint__": "8308775044"
                     },
                     "method_name": "postUpgrade",
                     "timestamp": {
-                        "__bigint__": "1736543890583147682"
+                        "__bigint__": "1737996888998386054"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "45353972"
+                        "__bigint__": "45324822"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543894337459788"
+                        "__bigint__": "1737996895403956273"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1820946"
+                        "__bigint__": "1824244"
                     },
                     "method_name": "candidUpdate",
                     "timestamp": {
-                        "__bigint__": "1736543894875021562"
+                        "__bigint__": "1737996895742795595"
                     }
                 }
             ]

@@ -19,11 +19,11 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "6594931"
+                        "__bigint__": "6609158"
                     },
                     "method_name": "testRecServiceCall",
                     "timestamp": {
-                        "__bigint__": "1736543880299986931"
+                        "__bigint__": "1737996863268451027"
                     }
                 }
             ]
@@ -49,11 +49,11 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1006996746"
+                        "__bigint__": "1008010983"
                     },
                     "method_name": "init",
                     "timestamp": {
-                        "__bigint__": "1736543865954326333"
+                        "__bigint__": "1737996844060128049"
                     }
                 }
             ]

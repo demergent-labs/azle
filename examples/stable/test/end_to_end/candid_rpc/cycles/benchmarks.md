@@ -4,9 +4,9 @@
 
 | Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | receiveCycles | 1_623_150    | 1_239_260 | $0.0000016478 | $1.64             | <font color="red">+106_216</font> |
-| 1   | receiveCycles | 1_631_239    | 1_242_495 | $0.0000016521 | $1.65             | <font color="red">+111_447</font> |
-| 2   | receiveCycles | 1_629_734    | 1_241_893 | $0.0000016513 | $1.65             | <font color="red">+107_353</font> |
+| 0   | receiveCycles | 1_629_598    | 1_241_839 | $0.0000016512 | $1.65             | <font color="red">+112_664</font> |
+| 1   | receiveCycles | 1_631_293    | 1_242_517 | $0.0000016521 | $1.65             | <font color="red">+111_501</font> |
+| 2   | receiveCycles | 1_632_907    | 1_243_162 | $0.0000016530 | $1.65             | <font color="red">+110_526</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 
@@ -22,8 +22,8 @@
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | sendCycles       | 1_866_564    | 1_336_625 | $0.0000017773 | $1.77             | <font color="red">+159_853</font> |
-| 1   | sendCyclesNotify | 2_190_101    | 1_466_040 | $0.0000019493 | $1.94             | <font color="red">+165_818</font> |
+| 0   | sendCycles       | 1_871_678    | 1_338_671 | $0.0000017800 | $1.77             | <font color="red">+164_967</font> |
+| 1   | sendCyclesNotify | 2_191_208    | 1_466_483 | $0.0000019499 | $1.94             | <font color="red">+166_925</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

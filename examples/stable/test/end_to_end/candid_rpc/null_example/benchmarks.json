@@ -37,29 +37,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "6090775"
+                        "__bigint__": "6073908"
                     },
                     "method_name": "setPartiallyNullRecord",
                     "timestamp": {
-                        "__bigint__": "1736543870276382634"
+                        "__bigint__": "1737996853506244689"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "4414313"
+                        "__bigint__": "4420550"
                     },
                     "method_name": "setSmallNullRecord",
                     "timestamp": {
-                        "__bigint__": "1736543870540143691"
+                        "__bigint__": "1737996853823179256"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "5759346"
+                        "__bigint__": "5738692"
                     },
                     "method_name": "setLargeNullRecord",
                     "timestamp": {
-                        "__bigint__": "1736543870804204858"
+                        "__bigint__": "1737996854072635524"
                     }
                 }
             ]

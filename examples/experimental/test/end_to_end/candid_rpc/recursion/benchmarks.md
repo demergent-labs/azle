@@ -4,7 +4,7 @@
 
 | Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------ | ------------ | --------- | ------------- | ----------------- |
-| 0   | testRecServiceCall | 18_678_126   | 8_061_250 | $0.0000107188 | $10.71            |
+| 0   | testRecServiceCall | 18_668_497   | 8_057_398 | $0.0000107137 | $10.71            |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 
@@ -16,7 +16,7 @@ No benchmarks reported
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init        | 5_471_069_261 | 4_189_017_704 | $0.0055700112 | $5_570.01         |
+| 0   | init        | 5_483_761_304 | 4_194_094_521 | $0.0055767617 | $5_576.76         |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

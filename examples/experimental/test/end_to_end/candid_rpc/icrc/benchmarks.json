@@ -9,47 +9,47 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "5601073274"
+                        "__bigint__": "5614512270"
                     },
                     "method_name": "init",
                     "timestamp": {
-                        "__bigint__": "1736543892110547371"
+                        "__bigint__": "1737996849276965037"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "96011365"
+                        "__bigint__": "96179071"
                     },
                     "method_name": "icrc1_transfer",
                     "timestamp": {
-                        "__bigint__": "1736543903178140093"
+                        "__bigint__": "1737996864228371097"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "103749679"
+                        "__bigint__": "103767841"
                     },
                     "method_name": "icrc2_approve",
                     "timestamp": {
-                        "__bigint__": "1736543903718601175"
+                        "__bigint__": "1737996864717019948"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "101303913"
+                        "__bigint__": "101442200"
                     },
                     "method_name": "icrc2_transfer_from",
                     "timestamp": {
-                        "__bigint__": "1736543903976510955"
+                        "__bigint__": "1737996864998780432"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "87604404"
+                        "__bigint__": "87624678"
                     },
                     "method_name": "icrc2_allowance",
                     "timestamp": {
-                        "__bigint__": "1736543904459536313"
+                        "__bigint__": "1737996865261249792"
                     }
                 }
             ]

@@ -4,8 +4,8 @@
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | set         | 1_410_528    | 1_154_211 | $0.0000015347 | $1.53             | <font color="green">-8_473</font> |
-| 1   | set         | 1_388_499    | 1_145_399 | $0.0000015230 | $1.52             | <font color="red">+2_117</font>   |
+| 0   | set         | 1_413_825    | 1_155_530 | $0.0000015365 | $1.53             | <font color="green">-5_176</font> |
+| 1   | set         | 1_391_969    | 1_146_787 | $0.0000015248 | $1.52             | <font color="red">+5_587</font>   |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

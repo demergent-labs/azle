@@ -4,7 +4,7 @@
 
 | Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ------------ | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | simpleUpdate | 1_291_601    | 1_106_640 | $0.0000014715 | $1.47             | <font color="green">-7_280</font> |
+| 0   | simpleUpdate | 1_296_232    | 1_108_492 | $0.0000014739 | $1.47             | <font color="green">-2_649</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

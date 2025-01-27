@@ -9,65 +9,65 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "10105417"
+                        "__bigint__": "10090454"
                     },
                     "method_name": "receiveAllCycles",
                     "timestamp": {
-                        "__bigint__": "1736543867199233321"
+                        "__bigint__": "1737996830312953790"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "10300021"
+                        "__bigint__": "10274407"
                     },
                     "method_name": "receiveVariableCycles",
                     "timestamp": {
-                        "__bigint__": "1736543867465124922"
+                        "__bigint__": "1737996830602049901"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "10053607"
+                        "__bigint__": "10050449"
                     },
                     "method_name": "receiveNoCycles",
                     "timestamp": {
-                        "__bigint__": "1736543868023584525"
+                        "__bigint__": "1737996830847110848"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "10702715"
+                        "__bigint__": "10648980"
                     },
                     "method_name": "receiveCyclesByChunk",
                     "timestamp": {
-                        "__bigint__": "1736543868288983444"
+                        "__bigint__": "1737996831402296633"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1364581"
+                        "__bigint__": "1365967"
                     },
                     "method_name": "assertMsgCyclesAcceptTypes",
                     "timestamp": {
-                        "__bigint__": "1736543868843738254"
+                        "__bigint__": "1737996831766621257"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1138411"
+                        "__bigint__": "1140643"
                     },
                     "method_name": "assertMsgCyclesAvailableTypes",
                     "timestamp": {
-                        "__bigint__": "1736543869109098651"
+                        "__bigint__": "1737996832034904549"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1365789"
+                        "__bigint__": "1370921"
                     },
                     "method_name": "assertMsgCyclesAcceptTypes",
                     "timestamp": {
-                        "__bigint__": "1736543869373639196"
+                        "__bigint__": "1737996832279544240"
                     }
                 }
             ]
@@ -83,65 +83,65 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "2103473"
+                        "__bigint__": "2098824"
                     },
                     "method_name": "sendAllCycles",
                     "timestamp": {
-                        "__bigint__": "1736543867199233321"
+                        "__bigint__": "1737996830312953790"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2907402"
+                        "__bigint__": "2901276"
                     },
                     "method_name": "sendVariableCycles",
                     "timestamp": {
-                        "__bigint__": "1736543867465124922"
+                        "__bigint__": "1737996830602049901"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2040393"
+                        "__bigint__": "2042537"
                     },
                     "method_name": "sendNoCycles",
                     "timestamp": {
-                        "__bigint__": "1736543868023584525"
+                        "__bigint__": "1737996830847110848"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2878027"
+                        "__bigint__": "2885617"
                     },
                     "method_name": "sendCyclesByChunk",
                     "timestamp": {
-                        "__bigint__": "1736543868288983444"
+                        "__bigint__": "1737996831402296633"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2637332"
+                        "__bigint__": "2633571"
                     },
                     "method_name": "assertMsgCyclesAcceptTypes",
                     "timestamp": {
-                        "__bigint__": "1736543868843738254"
+                        "__bigint__": "1737996831766621257"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1802154"
+                        "__bigint__": "1802863"
                     },
                     "method_name": "assertMsgCyclesAvailableTypes",
                     "timestamp": {
-                        "__bigint__": "1736543869109098651"
+                        "__bigint__": "1737996832034904549"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2637193"
+                        "__bigint__": "2637423"
                     },
                     "method_name": "assertMsgCyclesRefundedTypes",
                     "timestamp": {
-                        "__bigint__": "1736543869373639196"
+                        "__bigint__": "1737996832279544240"
                     }
                 }
             ]

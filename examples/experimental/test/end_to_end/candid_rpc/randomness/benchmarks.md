@@ -4,12 +4,12 @@
 
 | Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
 | --- | ------------ | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | postUpgrade  | 5_463_762_239 | 4_186_094_895 | $0.0055661248 | $5_566.12         | <font color="green">-411_798_505</font> |
-| 1   | randomNumber | 1_039_601     | 1_005_840     | $0.0000013374 | $1.33             | <font color="red">+2_461</font>         |
-| 2   | randomNumber | 1_026_950     | 1_000_780     | $0.0000013307 | $1.33             | <font color="red">+4_354</font>         |
-| 3   | randomNumber | 1_025_640     | 1_000_256     | $0.0000013300 | $1.33             | <font color="red">+3_656</font>         |
-| 4   | randomNumber | 1_025_642     | 1_000_256     | $0.0000013300 | $1.33             | <font color="red">+5_011</font>         |
-| 5   | randomNumber | 1_025_256     | 1_000_102     | $0.0000013298 | $1.32             | <font color="red">+2_143</font>         |
+| 0   | postUpgrade  | 5_477_498_379 | 4_191_589_351 | $0.0055734306 | $5_573.43         | <font color="green">-398_062_365</font> |
+| 1   | randomNumber | 1_040_340     | 1_006_136     | $0.0000013378 | $1.33             | <font color="red">+3_200</font>         |
+| 2   | randomNumber | 1_028_348     | 1_001_339     | $0.0000013315 | $1.33             | <font color="red">+5_752</font>         |
+| 3   | randomNumber | 1_025_433     | 1_000_173     | $0.0000013299 | $1.32             | <font color="red">+3_449</font>         |
+| 4   | randomNumber | 1_027_324     | 1_000_929     | $0.0000013309 | $1.33             | <font color="red">+6_693</font>         |
+| 5   | randomNumber | 1_026_659     | 1_000_663     | $0.0000013306 | $1.33             | <font color="red">+3_546</font>         |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

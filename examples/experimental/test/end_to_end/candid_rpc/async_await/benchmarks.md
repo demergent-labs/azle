@@ -4,10 +4,10 @@
 
 | Id  | Method Name                  | Instructions | Cycles     | USD           | USD/Million Calls | Change                               |
 | --- | ---------------------------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------------ |
-| 0   | getRandomnessDirectly        | 151_172_733  | 61_059_093 | $0.0000811884 | $81.18            | <font color="red">+11_010_980</font> |
-| 1   | getRandomnessIndirectly      | 151_341_892  | 61_126_756 | $0.0000812784 | $81.27            | <font color="red">+11_171_101</font> |
-| 2   | getRandomnessSuperIndirectly | 151_268_211  | 61_097_284 | $0.0000812392 | $81.23            | <font color="red">+11_099_959</font> |
-| 3   | returnPromiseVoid            | 151_232_271  | 61_082_908 | $0.0000812201 | $81.22            | <font color="red">+11_094_857</font> |
+| 0   | getRandomnessDirectly        | 151_159_946  | 61_053_978 | $0.0000811816 | $81.18            | <font color="red">+10_998_193</font> |
+| 1   | getRandomnessIndirectly      | 151_183_298  | 61_063_319 | $0.0000811941 | $81.19            | <font color="red">+11_012_507</font> |
+| 2   | getRandomnessSuperIndirectly | 151_202_005  | 61_070_802 | $0.0000812040 | $81.20            | <font color="red">+11_033_753</font> |
+| 3   | returnPromiseVoid            | 151_225_512  | 61_080_204 | $0.0000812165 | $81.21            | <font color="red">+11_088_098</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

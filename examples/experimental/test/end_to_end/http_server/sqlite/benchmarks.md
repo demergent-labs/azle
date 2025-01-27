@@ -4,11 +4,11 @@
 
 | Id  | Method Name         | Instructions   | Cycles        | USD           | USD/Million Calls | Change                                 |
 | --- | ------------------- | -------------- | ------------- | ------------- | ----------------- | -------------------------------------- |
-| 0   | postUpgrade         | 12_685_124_836 | 9_874_639_934 | $0.0131300125 | $13_130.01        | <font color="red">+123_063_479</font>  |
-| 1   | http_request_update | 148_761_649    | 60_094_659    | $0.0000799061 | $79.90            | <font color="red">+385_554</font>      |
-| 2   | http_request_update | 75_960_082     | 30_974_032    | $0.0000411852 | $41.18            | <font color="red">+366_267</font>      |
-| 3   | http_request_update | 144_946_888    | 58_568_755    | $0.0000778771 | $77.87            | <font color="green">-18_939_198</font> |
-| 4   | http_request_update | 83_989_366     | 34_185_746    | $0.0000454558 | $45.45            | <font color="red">+207_809</font>      |
+| 0   | postUpgrade         | 12_692_331_025 | 9_877_522_410 | $0.0131338452 | $13_133.84        | <font color="red">+130_269_668</font>  |
+| 1   | http_request_update | 148_464_966    | 59_975_986    | $0.0000797483 | $79.74            | <font color="red">+88_871</font>       |
+| 2   | http_request_update | 75_664_812     | 30_855_924    | $0.0000410282 | $41.02            | <font color="red">+70_997</font>       |
+| 3   | http_request_update | 144_771_035    | 58_498_414    | $0.0000777836 | $77.78            | <font color="green">-19_115_051</font> |
+| 4   | http_request_update | 83_881_212     | 34_142_484    | $0.0000453982 | $45.39            | <font color="red">+99_655</font>       |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

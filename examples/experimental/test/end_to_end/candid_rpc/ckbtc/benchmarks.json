@@ -1,0 +1,121 @@
+{
+    "wallet_backend": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5570898274"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1737996932341124053"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81098382"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1737996957243954624"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81044631"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1737996957510565078"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104796667"
+                    },
+                    "method_name": "getDepositAddress",
+                    "timestamp": {
+                        "__bigint__": "1737996957997391909"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104840702"
+                    },
+                    "method_name": "getDepositAddress",
+                    "timestamp": {
+                        "__bigint__": "1737996958281989857"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104785624"
+                    },
+                    "method_name": "updateBalance",
+                    "timestamp": {
+                        "__bigint__": "1737997018688688453"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104658660"
+                    },
+                    "method_name": "updateBalance",
+                    "timestamp": {
+                        "__bigint__": "1737997018978086102"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81142624"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1737997019248513987"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81178604"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1737997019748680580"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "89435125"
+                    },
+                    "method_name": "transfer",
+                    "timestamp": {
+                        "__bigint__": "1737997020018682250"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81101510"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1737997020304956768"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81147961"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1737997020626085139"
+                    }
+                }
+            ]
+        }
+    }
+}

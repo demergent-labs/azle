@@ -4,9 +4,9 @@
 
 | Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | receiveCycles | 1_137_258    | 1_044_903 | $0.0000013894 | $1.38             |
-| 1   | receiveCycles | 1_231_075    | 1_082_430 | $0.0000014393 | $1.43             |
-| 2   | receiveCycles | 1_231_487    | 1_082_594 | $0.0000014395 | $1.43             |
+| 0   | receiveCycles | 1_135_844    | 1_044_337 | $0.0000013886 | $1.38             |
+| 1   | receiveCycles | 1_230_119    | 1_082_047 | $0.0000014388 | $1.43             |
+| 2   | receiveCycles | 1_231_262    | 1_082_504 | $0.0000014394 | $1.43             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 
@@ -18,9 +18,9 @@ No benchmarks reported
 
 | Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ---------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init             | 5_467_867_868 | 4_187_737_147 | $0.0055683085 | $5_568.30         |
-| 1   | sendCycles       | 10_725_972    | 4_880_388     | $0.0000064893 | $6.48             |
-| 2   | sendCyclesNotify | 1_419_057     | 1_157_622     | $0.0000015393 | $1.53             |
+| 0   | init             | 5_481_580_874 | 4_193_222_349 | $0.0055756020 | $5_575.60         |
+| 1   | sendCycles       | 10_730_022    | 4_882_008     | $0.0000064915 | $6.49             |
+| 2   | sendCyclesNotify | 1_422_011     | 1_158_804     | $0.0000015408 | $1.54             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

@@ -1,10 +1,6 @@
 {
     "canister1": {
         "previous": {
-            "version": "0.25.0-alpha",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
@@ -23,6 +19,29 @@
                     "method_name": "simpleUpdate",
                     "timestamp": {
                         "__bigint__": "1734133413583963268"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.25.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5502714398"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1737996878754025710"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "11321957"
+                    },
+                    "method_name": "simpleUpdate",
+                    "timestamp": {
+                        "__bigint__": "1737996910049191417"
                     }
                 }
             ]

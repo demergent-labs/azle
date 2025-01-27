@@ -46,20 +46,20 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "8276429035"
+                        "__bigint__": "8283539712"
                     },
                     "method_name": "init",
                     "timestamp": {
-                        "__bigint__": "1736543842521839580"
+                        "__bigint__": "1737996796773259963"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "54051962"
+                        "__bigint__": "54019552"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1736543854584260540"
+                        "__bigint__": "1737996814073216081"
                     }
                 }
             ]

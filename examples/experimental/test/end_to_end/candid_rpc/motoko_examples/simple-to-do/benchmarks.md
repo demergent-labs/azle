@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.25.0
 
-| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | addTodo        | 1_921_464    | 1_358_585 | $0.0000018065 | $1.80             | <font color="green">-784</font>   |
-| 1   | addTodo        | 1_677_002    | 1_260_800 | $0.0000016764 | $1.67             | <font color="green">-1_604</font> |
-| 2   | completeTodo   | 987_976      | 985_190   | $0.0000013100 | $1.30             | <font color="green">-1_083</font> |
-| 3   | clearCompleted | 898_570      | 949_428   | $0.0000012624 | $1.26             | <font color="red">+153</font>     |
-| 4   | completeTodo   | 986_300      | 984_520   | $0.0000013091 | $1.30             | <font color="red">+1_026</font>   |
-| 5   | clearCompleted | 886_330      | 944_532   | $0.0000012559 | $1.25             | <font color="red">+4_218</font>   |
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | addTodo        | 1_926_448    | 1_360_579 | $0.0000018091 | $1.80             | <font color="red">+4_200</font> |
+| 1   | addTodo        | 1_679_090    | 1_261_636 | $0.0000016776 | $1.67             | <font color="red">+484</font>   |
+| 2   | completeTodo   | 991_988      | 986_795   | $0.0000013121 | $1.31             | <font color="red">+2_929</font> |
+| 3   | clearCompleted | 902_550      | 951_020   | $0.0000012645 | $1.26             | <font color="red">+4_133</font> |
+| 4   | completeTodo   | 985_806      | 984_322   | $0.0000013088 | $1.30             | <font color="red">+532</font>   |
+| 5   | clearCompleted | 884_661      | 943_864   | $0.0000012550 | $1.25             | <font color="red">+2_549</font> |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

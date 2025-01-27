@@ -4,8 +4,8 @@
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                               |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------------ |
-| 0   | xkcd        | 179_235_685  | 72_284_274 | $0.0000961142 | $96.11            | <font color="red">+10_996_147</font> |
-| 1   | xkcdRaw     | 2_125_536    | 1_440_214  | $0.0000019150 | $1.91             | <font color="green">-355</font>      |
+| 0   | xkcd        | 179_068_422  | 72_217_368 | $0.0000960253 | $96.02            | <font color="red">+10_828_884</font> |
+| 1   | xkcdRaw     | 2_120_690    | 1_438_276  | $0.0000019124 | $1.91             | <font color="green">-5_201</font>    |
 
 ## Baseline benchmarks Azle version: 0.25.0-dev
 

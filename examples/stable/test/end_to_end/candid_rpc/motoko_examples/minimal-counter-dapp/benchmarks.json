@@ -46,38 +46,38 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1234416"
+                        "__bigint__": "1237865"
                     },
                     "method_name": "count",
                     "timestamp": {
-                        "__bigint__": "1736543867669780183"
+                        "__bigint__": "1737996849677462875"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1201186"
+                        "__bigint__": "1199407"
                     },
                     "method_name": "count",
                     "timestamp": {
-                        "__bigint__": "1736543867932262882"
+                        "__bigint__": "1737996849988218732"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1196584"
+                        "__bigint__": "1198315"
                     },
                     "method_name": "reset",
                     "timestamp": {
-                        "__bigint__": "1736543868217315196"
+                        "__bigint__": "1737996850233625641"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1201111"
+                        "__bigint__": "1209476"
                     },
                     "method_name": "count",
                     "timestamp": {
-                        "__bigint__": "1736543868459427705"
+                        "__bigint__": "1737996850502741173"
                     }
                 }
             ]
