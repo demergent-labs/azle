@@ -7,7 +7,7 @@
 - [ ] Code tested thoroughly
 - [ ] All new functions have JSDoc/Rustdoc comments
 - [ ] Related issues have been linked and all tasks have been completed or made into separate issues
-- [ ] This PR's name is worthy to be in the release notes
+- [ ] This PR's name is properly capitalized, descriptive, and ready to be in the release notes
 
 ## Reviewer
 
@@ -18,4 +18,4 @@
 - [ ] Code tested thoroughly
 - [ ] All new functions have JSDoc/Rustdoc comments
 - [ ] Related issues have been linked and all tasks have been completed or made into separate issues
-- [ ] This PR's name is worthy to be in the release notes
+- [ ] This PR's name is properly capitalized, descriptive, and ready to be in the release notes
