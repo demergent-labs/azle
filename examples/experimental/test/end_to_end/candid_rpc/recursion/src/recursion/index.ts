@@ -1,4 +1,4 @@
-import { call, trap } from 'azle';
+import { call, IDL, trap } from 'azle';
 import {
     Canister,
     Func,
@@ -159,12 +159,25 @@ export default Canister({
                 const responseJson = await response.json();
                 return MyFullCanister(responseJson);
             } else {
-                return await call(
-                    myFullCanister.principal.toText(),
-                    'myQuery',
-                    {
+                let MyFullCanisterIdl = IDL.Rec();
+
+                MyFullCanisterIdl.fill(
+                    IDL.Service({
+                        myQuery: IDL.Func(
+                            [MyFullCanisterIdl],
+                            [MyFullCanisterIdl],
+                            ['query']
+                        ),
+                        getMessage: IDL.Func([], [IDL.Text], ['query'])
+                    })
+                );
+
+                return MyFullCanister(
+                    await call(myFullCanister.principal.toText(), 'myQuery', {
+                        paramIdlTypes: [MyFullCanisterIdl],
+                        returnIdlType: MyFullCanisterIdl,
                         args: [myFullCanister.principal]
-                    }
+                    })
                 );
             }
         }
