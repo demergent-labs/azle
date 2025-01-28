@@ -173,11 +173,15 @@ export default Canister({
                 );
 
                 return MyFullCanister(
-                    await call(myFullCanister.principal.toText(), 'myQuery', {
-                        paramIdlTypes: [MyFullCanisterIdl],
-                        returnIdlType: MyFullCanisterIdl,
-                        args: [myFullCanister.principal]
-                    })
+                    await call<[Principal], Principal>(
+                        myFullCanister.principal.toText(),
+                        'myQuery',
+                        {
+                            paramIdlTypes: [MyFullCanisterIdl],
+                            returnIdlType: MyFullCanisterIdl,
+                            args: [myFullCanister.principal]
+                        }
+                    )
                 );
             }
         }
