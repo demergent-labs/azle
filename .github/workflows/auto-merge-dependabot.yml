@@ -1,0 +1,35 @@
+name: Auto Merge Dependabot PRs
+on:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+
+jobs:
+    check-conditions:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "${{ github.actor }}"
+            - run: echo "${{ github.event.pull_request.title }}"
+            - run: echo "${{ contains(github.event.pull_request.title, 'deps') }}"
+            - run: echo "${{ github.actor == 'dependabot[bot]' }}"
+
+    auto-merge:
+        if: ${{ github.actor == 'dependabot[bot]' && contains(github.event.pull_request.title, 'deps') }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Approve PR
+              run: gh pr review --approve "$PR_NUMBER"
+              env:
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+                  GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+
+            - name: Merge PR
+              run: |
+                  gh pr merge "$PR_NUMBER" \
+                      --merge \
+                      --auto
+              env:
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+                  GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
