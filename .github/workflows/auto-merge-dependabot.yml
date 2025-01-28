@@ -19,6 +19,11 @@ jobs:
         if: ${{ github.actor == 'dependabot[bot]' && contains(github.event.pull_request.labels.*.name, 'dependencies') }}
         runs-on: ubuntu-latest
         steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }}
+                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+
             - name: Approve PR
               run: gh pr review --approve "$PR_NUMBER"
               env:
