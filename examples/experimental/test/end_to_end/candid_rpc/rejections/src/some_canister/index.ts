@@ -1,27 +1,18 @@
-import {
-    bool,
-    Canister,
-    empty,
-    ic,
-    Manual,
-    query,
-    text
-} from 'azle/experimental';
+import { reject } from 'azle';
+import { bool, Canister, empty, Manual, query, text } from 'azle/experimental';
 
 export default Canister({
     reject: query(
         [text],
         Manual(empty),
         (message) => {
-            ic.reject(message);
+            reject(message);
         },
         { manual: true }
     ),
-
     accept: query([], bool, () => {
         return true;
     }),
-
     error: query(
         [],
         Manual(empty),
