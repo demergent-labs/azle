@@ -1,3 +1,8 @@
+import { call, id } from 'azle';
+import {
+    http_request_args,
+    http_request_result
+} from 'azle/canisters/management';
 import {
     Canister,
     ic,
@@ -5,15 +10,13 @@ import {
     nat32,
     Principal,
     query,
-    Some,
     StableBTreeMap,
     text,
     update
 } from 'azle/experimental';
 import {
     HttpResponse,
-    HttpTransformArgs,
-    managementCanister
+    HttpTransformArgs
 } from 'azle/experimental/canisters/management';
 
 let stableStorage = StableBTreeMap<text, text>(0);
@@ -72,16 +75,21 @@ async function getBalance(
 
         return responseText;
     } else {
-        const httpResponse = await ic.call(managementCanister.http_request, {
+        const httpResponse = await call<
+            [http_request_args],
+            http_request_result
+        >('aaaaa-aa', 'http_request', {
+            paramIdlTypes: [http_request_args],
+            returnIdlType: http_request_result,
             args: [
                 {
                     url,
-                    max_response_bytes: Some(2_000n),
+                    max_response_bytes: [2_000n],
                     method: {
                         post: null
                     },
                     headers: [],
-                    body: Some(
+                    body: [
                         Buffer.from(
                             JSON.stringify({
                                 jsonrpc: '2.0',
@@ -91,22 +99,25 @@ async function getBalance(
                             }),
                             'utf-8'
                         )
-                    ),
-                    transform: Some({
-                        function: [ic.id(), 'ethTransform'] as [
-                            Principal,
-                            string
-                        ],
-                        context: Uint8Array.from([])
-                    })
+                    ],
+                    transform: [
+                        {
+                            function: [id(), 'ethTransform'] as [
+                                Principal,
+                                string
+                            ],
+                            context: Uint8Array.from([])
+                        }
+                    ]
                 }
             ],
             cycles: 50_000_000n
         });
 
-        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+        return Buffer.from(httpResponse.body).toString('utf-8');
     }
 }
+
 async function getBlockByNumber(url: string, number: number): Promise<string> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         ic.setOutgoingHttpOptions({
@@ -128,16 +139,21 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
 
         return responseText;
     } else {
-        const httpResponse = await ic.call(managementCanister.http_request, {
+        const httpResponse = await call<
+            [http_request_args],
+            http_request_result
+        >('aaaaa-aa', 'http_request', {
+            paramIdlTypes: [http_request_args],
+            returnIdlType: http_request_result,
             args: [
                 {
                     url,
-                    max_response_bytes: Some(2_000n),
+                    max_response_bytes: [2_000n],
                     method: {
                         post: null
                     },
                     headers: [],
-                    body: Some(
+                    body: [
                         Buffer.from(
                             JSON.stringify({
                                 jsonrpc: '2.0',
@@ -147,19 +163,21 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
                             }),
                             'utf-8'
                         )
-                    ),
-                    transform: Some({
-                        function: [ic.id(), 'ethTransform'] as [
-                            Principal,
-                            string
-                        ],
-                        context: Uint8Array.from([])
-                    })
+                    ],
+                    transform: [
+                        {
+                            function: [id(), 'ethTransform'] as [
+                                Principal,
+                                string
+                            ],
+                            context: Uint8Array.from([])
+                        }
+                    ]
                 }
             ],
             cycles: 50_000_000n
         });
 
-        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+        return Buffer.from(httpResponse.body).toString('utf-8');
     }
 }

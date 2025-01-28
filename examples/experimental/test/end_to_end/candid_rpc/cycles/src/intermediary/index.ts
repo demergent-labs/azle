@@ -1,4 +1,4 @@
-import { call, canisterBalance, notify, trap } from 'azle';
+import { call, canisterBalance, IDL, notify, trap } from 'azle';
 import {
     Canister,
     nat,
@@ -25,9 +25,14 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call(getCyclesPrincipal(), 'receiveCycles', {
-                cycles: 1_000_000n
-            });
+            return await call<undefined, bigint>(
+                getCyclesPrincipal(),
+                'receiveCycles',
+                {
+                    returnIdlType: IDL.Nat,
+                    cycles: 1_000_000n
+                }
+            );
         }
     }),
     sendCyclesNotify: update([], Void, () => {
