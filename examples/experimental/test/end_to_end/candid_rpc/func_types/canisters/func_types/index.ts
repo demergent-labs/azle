@@ -1,4 +1,4 @@
-import { call, IDL } from 'azle';
+import { call } from 'azle';
 import {
     Canister,
     Func,
@@ -58,7 +58,6 @@ export default Canister({
             'start_canister'
         ]);
     }),
-
     getStableFunc: query([], StableFunc, () => {
         const stableFunc = stableStorage.get('stableFunc');
         if (stableFunc === null) {
@@ -66,15 +65,12 @@ export default Canister({
         }
         return stableFunc;
     }),
-
     basicFuncParam: query([BasicFunc], BasicFunc, (basicFunc) => {
         return basicFunc;
     }),
-
     nullFuncParam: query([NullFunc], NullFunc, (nullFunc) => {
         return nullFunc;
     }),
-
     basicFuncParamArray: query(
         [Vec(BasicFunc)],
         Vec(BasicFunc),
@@ -82,11 +78,9 @@ export default Canister({
             return basicFunc;
         }
     ),
-
     basicFuncReturnType: query([], BasicFunc, () => {
         return [Principal.fromText('aaaaa-aa'), 'create_canister'];
     }),
-
     basicFuncReturnTypeArray: query([], Vec(BasicFunc), () => {
         return [
             [Principal.fromText('aaaaa-aa'), 'create_canister'],
@@ -94,15 +88,12 @@ export default Canister({
             [Principal.fromText('aaaaa-aa'), 'install_code']
         ];
     }),
-
     complexFuncParam: query([ComplexFunc], ComplexFunc, (complexFunc) => {
         return complexFunc;
     }),
-
     complexFuncReturnType: query([], ComplexFunc, () => {
         return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
     }),
-
     getNotifierFromNotifiersCanister: update([], NotifierFunc, async () => {
         const notifierPrincipal = getNotifierPrincipal();
 
@@ -119,9 +110,13 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call(notifierPrincipal, 'getNotifier', {
-                returnIdlType: IDL.Func([IDL.Vec(IDL.Nat8)], [], ['oneway'])
-            });
+            return await call<undefined, NotifierFunc>(
+                notifierPrincipal,
+                'getNotifier',
+                {
+                    returnIdlType: NotifierFunc.getIdlType([])
+                }
+            );
         }
     })
 });
