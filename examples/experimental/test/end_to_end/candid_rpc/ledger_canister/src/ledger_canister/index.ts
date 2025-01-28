@@ -1,7 +1,20 @@
+import { call } from 'azle';
+import {
+    AccountBalanceArgs,
+    Archives,
+    DecimalsResult,
+    GetBlocksArgs,
+    NameResult,
+    QueryBlocksResponse,
+    SymbolResult,
+    Tokens,
+    TransferArgs,
+    TransferFee,
+    TransferFeeArg,
+    TransferResult
+} from 'azle/canisters/icp';
 import {
     Canister,
-    ic,
-    init,
     nat32,
     nat64,
     None,
@@ -15,136 +28,141 @@ import {
 } from 'azle/experimental';
 import {
     Address,
-    Archives,
+    Archives as ArchivesExperimental,
     binaryAddressFromAddress,
-    GetBlocksArgs,
+    GetBlocksArgs as GetBlocksArgsExperimental,
     hexAddressFromPrincipal,
-    Ledger,
-    QueryBlocksResponse,
-    Tokens,
-    TransferFee,
-    TransferResult
+    QueryBlocksResponse as QueryBlocksResponseExperimental,
+    Tokens as TokensExperimental,
+    TransferFee as TransferFeeExperimental,
+    TransferResult as TransferResultExperimental
 } from 'azle/experimental/canisters/ledger';
 
-let icpCanister: typeof Ledger;
-
 export default Canister({
-    init: init([], () => {
-        icpCanister = Ledger(Principal.fromText(getIcpCanisterPrincipal()));
-    }),
     executeTransfer: update(
         [Address, nat64, nat64, Opt(nat64)],
-        TransferResult,
+        TransferResultExperimental,
         async (to, amount, fee, createdAtTime) => {
+            const icpCanisterPrincipal = getIcpCanisterPrincipal();
+
+            const arg: TransferArgs = {
+                memo: 0n,
+                amount: {
+                    e8s: amount
+                },
+                fee: {
+                    e8s: fee
+                },
+                from_subaccount: [],
+                to: binaryAddressFromAddress(to),
+                created_at_time:
+                    'None' in createdAtTime
+                        ? []
+                        : [
+                              {
+                                  timestamp_nanos: createdAtTime.Some
+                              }
+                          ]
+            };
+
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 const response = await fetch(
-                    `icp://${getIcpCanisterPrincipal()}/transfer`,
+                    `icp://${icpCanisterPrincipal}/transfer`,
                     {
                         body: serialize({
                             candidPath: `/src/ledger.did`,
-                            args: [
-                                {
-                                    memo: 0n,
-                                    amount: {
-                                        e8s: amount
-                                    },
-                                    fee: {
-                                        e8s: fee
-                                    },
-                                    from_subaccount: [],
-                                    to: binaryAddressFromAddress(to),
-                                    created_at_time:
-                                        'None' in createdAtTime
-                                            ? []
-                                            : [
-                                                  {
-                                                      timestamp_nanos:
-                                                          createdAtTime.Some
-                                                  }
-                                              ]
-                                }
-                            ]
+                            args: [arg]
                         })
                     }
                 );
 
                 return await response.json();
             } else {
-                return await ic.call(icpCanister.transfer, {
-                    args: [
-                        {
-                            memo: 0n,
-                            amount: {
-                                e8s: amount
-                            },
-                            fee: {
-                                e8s: fee
-                            },
-                            from_subaccount: None,
-                            to: binaryAddressFromAddress(to),
-                            created_at_time:
-                                'None' in createdAtTime
-                                    ? None
-                                    : Some({
-                                          timestamp_nanos: createdAtTime.Some
-                                      })
-                        }
-                    ]
-                });
+                return await call<[TransferArgs], TransferResult>(
+                    icpCanisterPrincipal,
+                    'transfer',
+                    {
+                        paramIdlTypes: [TransferArgs],
+                        returnIdlType: TransferResult,
+                        args: [arg]
+                    }
+                );
             }
         }
     ),
-    getAccountBalance: update([Address], Tokens, async (address) => {
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(
-                `icp://${getIcpCanisterPrincipal()}/account_balance`,
-                {
-                    body: serialize({
-                        candidPath: `/src/ledger.did`,
-                        args: [
-                            {
-                                account: binaryAddressFromAddress(address)
-                            }
-                        ]
-                    })
-                }
-            );
+    getAccountBalance: update(
+        [Address],
+        TokensExperimental,
+        async (address) => {
+            const icpCanisterPrincipal = getIcpCanisterPrincipal();
 
-            return await response.json();
-        } else {
-            return await ic.call(icpCanister.account_balance, {
-                args: [
+            const arg: AccountBalanceArgs = {
+                account: binaryAddressFromAddress(address)
+            };
+
+            if (process.env.AZLE_TEST_FETCH === 'true') {
+                const response = await fetch(
+                    `icp://${icpCanisterPrincipal}/account_balance`,
                     {
-                        account: binaryAddressFromAddress(address)
+                        body: serialize({
+                            candidPath: `/src/ledger.did`,
+                            args: [arg]
+                        })
                     }
-                ]
-            });
+                );
+
+                return await response.json();
+            } else {
+                return await call<[AccountBalanceArgs], Tokens>(
+                    icpCanisterPrincipal,
+                    'account_balance',
+                    {
+                        paramIdlTypes: [AccountBalanceArgs],
+                        returnIdlType: Tokens,
+                        args: [arg]
+                    }
+                );
+            }
         }
-    }),
-    getTransferFee: update([], TransferFee, async () => {
+    ),
+    getTransferFee: update([], TransferFeeExperimental, async () => {
+        const icpCanisterPrincipal = getIcpCanisterPrincipal();
+
+        const arg: TransferFeeArg = {};
+
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${getIcpCanisterPrincipal()}/transfer_fee`,
+                `icp://${icpCanisterPrincipal}/transfer_fee`,
                 {
                     body: serialize({
                         candidPath: `/src/ledger.did`,
-                        args: [{}]
+                        args: [arg]
                     })
                 }
             );
 
             return await response.json();
         } else {
-            return await ic.call(icpCanister.transfer_fee, { args: [{}] });
+            return await call<[TransferFeeArg], TransferFee>(
+                icpCanisterPrincipal,
+                'transfer_fee',
+                {
+                    paramIdlTypes: [TransferFeeArg],
+                    returnIdlType: TransferFee,
+                    args: [arg]
+                }
+            );
         }
     }),
     getBlocks: update(
-        [GetBlocksArgs],
-        QueryBlocksResponse,
+        [GetBlocksArgsExperimental],
+        QueryBlocksResponseExperimental,
         async (getBlocksArgs) => {
+            const icpCanisterPrincipal = getIcpCanisterPrincipal();
+
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 const response = await fetch(
-                    `icp://${getIcpCanisterPrincipal()}/query_blocks`,
+                    `icp://${icpCanisterPrincipal}/query_blocks`,
                     {
                         body: serialize({
                             candidPath: `/src/ledger.did`,
@@ -182,16 +200,52 @@ export default Canister({
                     first_block_index
                 };
             } else {
-                return await ic.call(icpCanister.query_blocks, {
-                    args: [getBlocksArgs]
+                const {
+                    archived_blocks,
+                    blocks,
+                    certificate,
+                    chain_length,
+                    first_block_index
+                } = await call<[GetBlocksArgs], QueryBlocksResponse>(
+                    icpCanisterPrincipal,
+                    'query_blocks',
+                    {
+                        paramIdlTypes: [GetBlocksArgs],
+                        returnIdlType: QueryBlocksResponse,
+                        args: [getBlocksArgs]
+                    }
+                );
+                const azleBlocks = blocks.map((block) => {
+                    const { parent_hash, timestamp, transaction } = block;
+                    const { created_at_time, memo, operation } = transaction;
+
+                    return {
+                        parent_hash,
+                        timestamp,
+                        transaction: {
+                            created_at_time,
+                            memo,
+                            operation: agentOptToAzleOpt(operation)
+                        }
+                    };
                 });
+
+                return {
+                    archived_blocks,
+                    blocks: azleBlocks,
+                    certificate,
+                    chain_length,
+                    first_block_index
+                } as unknown as QueryBlocksResponseExperimental;
             }
         }
     ),
     getSymbol: update([], text, async () => {
+        const icpCanisterPrincipal = getIcpCanisterPrincipal();
+
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${getIcpCanisterPrincipal()}/symbol`,
+                `icp://${icpCanisterPrincipal}/symbol`,
                 {
                     body: serialize({
                         candidPath: `/src/ledger.did`
@@ -201,33 +255,46 @@ export default Canister({
 
             return (await response.json()).symbol;
         } else {
-            const symbolResult = await ic.call(icpCanister.symbol);
-
-            return symbolResult.symbol;
-        }
-    }),
-    getName: update([], text, async () => {
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(
-                `icp://${getIcpCanisterPrincipal()}/name`,
+            const result = await call<undefined, SymbolResult>(
+                icpCanisterPrincipal,
+                'symbol',
                 {
-                    body: serialize({
-                        candidPath: `/src/ledger.did`
-                    })
+                    returnIdlType: SymbolResult
                 }
             );
 
+            return result.symbol;
+        }
+    }),
+    getName: update([], text, async () => {
+        const icpCanisterPrincipal = getIcpCanisterPrincipal();
+
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(`icp://${icpCanisterPrincipal}/name`, {
+                body: serialize({
+                    candidPath: `/src/ledger.did`
+                })
+            });
+
             return (await response.json()).name;
         } else {
-            const nameResult = await ic.call(icpCanister.name);
+            const result = await call<undefined, NameResult>(
+                icpCanisterPrincipal,
+                'name',
+                {
+                    returnIdlType: NameResult
+                }
+            );
 
-            return nameResult.name;
+            return result.name;
         }
     }),
     getDecimals: update([], nat32, async () => {
+        const icpCanisterPrincipal = getIcpCanisterPrincipal();
+
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${getIcpCanisterPrincipal()}/decimals`,
+                `icp://${icpCanisterPrincipal}/decimals`,
                 {
                     body: serialize({
                         candidPath: `/src/ledger.did`
@@ -237,15 +304,23 @@ export default Canister({
 
             return (await response.json()).decimals;
         } else {
-            const decimalsResult = await ic.call(icpCanister.decimals);
+            const result = await call<undefined, DecimalsResult>(
+                icpCanisterPrincipal,
+                'decimals',
+                {
+                    returnIdlType: DecimalsResult
+                }
+            );
 
-            return decimalsResult.decimals;
+            return result.decimals;
         }
     }),
-    getArchives: update([], Archives, async () => {
+    getArchives: update([], ArchivesExperimental, async () => {
+        const icpCanisterPrincipal = getIcpCanisterPrincipal();
+
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${getIcpCanisterPrincipal()}/archives`,
+                `icp://${icpCanisterPrincipal}/archives`,
                 {
                     body: serialize({
                         candidPath: `/src/ledger.did`
@@ -255,7 +330,13 @@ export default Canister({
 
             return await response.json();
         } else {
-            return await ic.call(icpCanister.archives);
+            return await call<undefined, Archives>(
+                icpCanisterPrincipal,
+                'archives',
+                {
+                    returnIdlType: Archives
+                }
+            );
         }
     }),
     getAddressFromPrincipal: query([Principal], text, (principal) => {

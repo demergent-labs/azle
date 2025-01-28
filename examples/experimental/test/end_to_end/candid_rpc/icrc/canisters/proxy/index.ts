@@ -217,7 +217,7 @@ export default Canister({
     icrc1_balance_of: query([AccountExperimental], nat, async (account) => {
         const icrcPrincipal = getIcrcPrincipal();
 
-        const arg = {
+        const arg: Account = {
             ...account,
             subaccount: azleOptToAgentOpt(account.subaccount)
         };
@@ -240,6 +240,8 @@ export default Canister({
                 icrcPrincipal,
                 'icrc1_balance_of',
                 {
+                    paramIdlTypes: [Account],
+                    returnIdlType: IDL.Nat,
                     args: [arg]
                 }
             );
@@ -251,7 +253,7 @@ export default Canister({
         async (transferArgs) => {
             const icrcPrincipal = getIcrcPrincipal();
 
-            const arg = {
+            const arg: TransferArgs = {
                 ...transferArgs,
                 from_subaccount: azleOptToAgentOpt(
                     transferArgs.from_subaccount
@@ -283,6 +285,8 @@ export default Canister({
                     icrcPrincipal,
                     'icrc1_transfer',
                     {
+                        paramIdlTypes: [TransferArgs],
+                        returnIdlType: TransferResult,
                         args: [arg]
                     }
                 );
@@ -324,7 +328,7 @@ export default Canister({
         async (approveArgs) => {
             const icrcPrincipal = getIcrcPrincipal();
 
-            const arg = {
+            const arg: ApproveArgs = {
                 ...approveArgs,
                 from_subaccount: azleOptToAgentOpt(approveArgs.from_subaccount),
                 spender: {
@@ -360,6 +364,8 @@ export default Canister({
                     icrcPrincipal,
                     'icrc2_approve',
                     {
+                        paramIdlTypes: [ApproveArgs],
+                        returnIdlType: ApproveResult,
                         args: [arg]
                     }
                 );
@@ -372,7 +378,7 @@ export default Canister({
         async (transferFromArgs) => {
             const icrcPrincipal = getIcrcPrincipal();
 
-            const arg = {
+            const arg: TransferFromArgs = {
                 ...transferFromArgs,
                 spender_subaccount: azleOptToAgentOpt(
                     transferFromArgs.spender_subaccount
@@ -414,6 +420,8 @@ export default Canister({
                     icrcPrincipal,
                     'icrc2_transfer_from',
                     {
+                        paramIdlTypes: [TransferFromArgs],
+                        returnIdlType: TransferFromResult,
                         args: [arg]
                     }
                 );
@@ -426,7 +434,7 @@ export default Canister({
         async (allowanceArgs) => {
             const icrcPrincipal = getIcrcPrincipal();
 
-            const arg = {
+            const arg: AllowanceArgs = {
                 ...allowanceArgs,
                 account: {
                     ...allowanceArgs.account,
@@ -460,6 +468,8 @@ export default Canister({
                     icrcPrincipal,
                     'icrc2_allowance',
                     {
+                        paramIdlTypes: [AllowanceArgs],
+                        returnIdlType: AllowanceResult,
                         args: [arg]
                     }
                 );
