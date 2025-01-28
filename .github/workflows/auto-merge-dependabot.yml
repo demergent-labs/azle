@@ -7,6 +7,14 @@ on:
             - reopened
 
 jobs:
+    check-conditions:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "${{ github.actor }}"
+            - run: echo "${{ github.event.pull_request.title }}"
+            - run: echo "${{ contains(github.event.pull_request.title, 'deps') }}"
+            - run: echo "${{ github.actor == 'dependabot[bot]' }}"
+
     auto-merge:
         if: ${{ github.actor == 'dependabot[bot]' && contains(github.event.pull_request.title, 'deps') }}
         runs-on: ubuntu-latest
