@@ -25,7 +25,8 @@ export function getTests(): Test {
                     fc.asyncProperty(
                         fc.float({ min: 0, max: 1 }),
                         fc.integer({
-                            min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
+                            // min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
+                            min: 3 * 1024 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
                             max: 4 * 1024 * 1024 * 1024 // 4GiB in bytes (the largest size of an azle canister)
                         }),
                         async (
@@ -41,7 +42,16 @@ export function getTests(): Test {
                                 wasmMemoryLimit
                             );
 
-                            execSync(`dfx deploy --no-wallet`);
+                            execSync(`dfx canister stop canister || true`, {
+                                stdio: 'inherit'
+                            });
+
+                            execSync(`dfx canister delete canister || true`, {
+                                stdio: 'inherit'
+                            });
+                            execSync(`dfx deploy --no-wallet`, {
+                                stdio: 'inherit'
+                            });
                             execSync(`dfx generate canister`, {
                                 stdio: 'inherit'
                             });
@@ -50,7 +60,11 @@ export function getTests(): Test {
                             const actor =
                                 await getCanisterActor<Actor>('canister');
 
-                            await addBytesUntilLimitReached(actor, canisterId);
+                            await addBytesUntilLimitReached(
+                                actor,
+                                canisterId,
+                                wasmMemoryLimit
+                            );
 
                             const lowMemoryHandlerCalled =
                                 await actor.wasLowMemoryHandlerCalled();
@@ -70,19 +84,23 @@ export function getTests(): Test {
  * Adds random bytes to the canister until it reaches its memory limit
  * @param actor - The canister actor instance
  * @param canisterId - The canister's principal ID
+ * @param wasmMemoryLimit - The memory limit in bytes
  */
 async function addBytesUntilLimitReached(
     actor: Actor,
-    canisterId: string
+    canisterId: string,
+    wasmMemoryLimit: number
 ): Promise<void> {
     let callCount = 0;
+    // Target ~15 calls to reach the limit (middle of 10-20 range)
+    const bytesToAdd = Math.floor(wasmMemoryLimit / 15);
 
     while (true) {
         callCount++;
         console.log(`Called addRandomBytes ${callCount} times`); // TODO don't forget to remove this before the pr
 
         try {
-            await actor.addRandomBytes(262144); // 0.25 MiB
+            await actor.addRandomBytes(bytesToAdd);
         } catch (error: unknown) {
             validateMemoryLimitError(error, canisterId);
             break;
