@@ -1,6 +1,8 @@
-import { call, IDL, rejectCode, rejectMessage } from 'azle';
+import { call, rejectCode, rejectMessage } from 'azle';
 import {
+    bool,
     Canister,
+    empty,
     RejectionCode,
     serialize,
     text,
@@ -18,8 +20,8 @@ export default Canister({
                 })
             });
         } else {
-            await call(someCanisterPrincipal, 'accept', {
-                returnIdlType: IDL.Bool
+            await call<undefined, bool>(someCanisterPrincipal, 'accept', {
+                returnIdlType: bool.getIdlType()
             });
         }
 
@@ -34,7 +36,10 @@ export default Canister({
                     })
                 });
             } else {
-                await call('rkp4c-7iaaa-aaaaa-aaaca-cai', 'method');
+                await call<undefined, undefined>(
+                    'rkp4c-7iaaa-aaaaa-aaaca-cai',
+                    'method'
+                );
             }
         } catch {
             // continue regardless of error
@@ -54,9 +59,9 @@ export default Canister({
                     })
                 });
             } else {
-                await call(someCanisterPrincipal, 'reject', {
-                    paramIdlTypes: [IDL.Text],
-                    returnIdlType: IDL.Empty,
+                await call<[text], empty>(someCanisterPrincipal, 'reject', {
+                    paramIdlTypes: [text.getIdlType()],
+                    returnIdlType: empty.getIdlType(),
                     args: ['reject']
                 });
             }
@@ -77,8 +82,8 @@ export default Canister({
                     })
                 });
             } else {
-                await call(someCanisterPrincipal, 'error', {
-                    returnIdlType: IDL.Empty
+                await call<undefined, empty>(someCanisterPrincipal, 'error', {
+                    returnIdlType: empty.getIdlType()
                 });
             }
         } catch {
@@ -99,9 +104,9 @@ export default Canister({
                     })
                 });
             } else {
-                await call(someCanisterPrincipal, 'reject', {
-                    paramIdlTypes: [IDL.Text],
-                    returnIdlType: IDL.Empty,
+                await call<[text], empty>(someCanisterPrincipal, 'reject', {
+                    paramIdlTypes: [text.getIdlType()],
+                    returnIdlType: empty.getIdlType(),
                     args: [message]
                 });
             }
