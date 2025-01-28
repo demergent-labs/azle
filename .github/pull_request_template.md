@@ -1,21 +1,33 @@
 ## Contributor
 
-- [ ] Breaking changes enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
-- [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
 - [ ] Code has been declaratized
+- [ ] All new functions have JSDoc/Rustdoc comments
 - [ ] Error handling beautiful (no unwraps or expects etc)
 - [ ] Code tested thoroughly
-- [ ] All new functions have JSDoc/Rustdoc comments
+- [ ] PR title:
+    - [ ] Indicates breaking changes with suffix "(breaking changes)"
+    - [ ] Sentence cased
 - [ ] Related issues have been linked and all tasks have been completed or made into separate issues
-- [ ] This PR's name is properly capitalized, descriptive, and ready to be in the release notes
+- [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
+- [ ] All breaking changes
+    - [ ] Described [below](#breaking-changes)
+    - [ ] Migration path described
 
 ## Reviewer
 
-- [ ] Breaking changes enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
-- [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
 - [ ] Code has been declaratized
+- [ ] All new functions have JSDoc/Rustdoc comments
 - [ ] Error handling beautiful (no unwraps or expects etc)
 - [ ] Code tested thoroughly
-- [ ] All new functions have JSDoc/Rustdoc comments
+- [ ] PR title:
+    - [ ] Indicates breaking changes with suffix "(breaking changes)"
+    - [ ] Sentence cased
 - [ ] Related issues have been linked and all tasks have been completed or made into separate issues
-- [ ] This PR's name is properly capitalized, descriptive, and ready to be in the release notes
+- [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
+- [ ] All breaking changes
+    - [ ] Described [below](#breaking-changes)
+    - [ ] Migration path described
+
+## Breaking Changes
+
+- None
