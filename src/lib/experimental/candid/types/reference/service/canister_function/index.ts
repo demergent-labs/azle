@@ -277,11 +277,15 @@ function serviceCall(
             });
         } else {
             return (async (): Promise<any> => {
-                const encodedResult = await call(canisterId, methodName, {
-                    args,
-                    cycles,
-                    raw: encodedArgs
-                });
+                const encodedResult = await call<unknown[], Uint8Array>(
+                    canisterId,
+                    methodName,
+                    {
+                        args,
+                        cycles,
+                        raw: encodedArgs
+                    }
+                );
 
                 return decode(returnCandidType, encodedResult);
             })();
