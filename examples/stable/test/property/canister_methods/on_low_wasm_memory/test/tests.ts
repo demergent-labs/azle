@@ -14,6 +14,7 @@ import fc from 'fast-check';
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 import {
     configureDfxJsonWasmMemorySettings,
+    getCanisterStatus,
     resetDfxJson
 } from './helpers/dfx';
 
@@ -60,11 +61,18 @@ export function getTests(): Test {
                             const actor =
                                 await getCanisterActor<Actor>('canister');
 
-                            await addBytesUntilLimitReached(
-                                actor,
-                                canisterId,
-                                wasmMemoryLimit
+                            // Get initial status
+                            const initialStatus = getCanisterStatus();
+                            console.log(
+                                'Initial canister status:',
+                                initialStatus
                             );
+
+                            await addBytesUntilLimitReached(actor, canisterId);
+
+                            // Get final status
+                            const finalStatus = getCanisterStatus();
+                            console.log('Final canister status:', finalStatus);
 
                             const lowMemoryHandlerCalled =
                                 await actor.wasLowMemoryHandlerCalled();
@@ -84,23 +92,44 @@ export function getTests(): Test {
  * Adds random bytes to the canister until it reaches its memory limit
  * @param actor - The canister actor instance
  * @param canisterId - The canister's principal ID
- * @param wasmMemoryLimit - The memory limit in bytes
  */
 async function addBytesUntilLimitReached(
     actor: Actor,
-    canisterId: string,
-    wasmMemoryLimit: number
+    canisterId: string
 ): Promise<void> {
     let callCount = 0;
-    // Target ~15 calls to reach the limit (middle of 10-20 range)
-    const bytesToAdd = Math.floor(wasmMemoryLimit / 15);
+    const HARD_LIMIT = 4 * 1024 * 1024 * 1024; // 4 GiB in bytes
 
     while (true) {
         callCount++;
         console.log(`Called addRandomBytes ${callCount} times`); // TODO don't forget to remove this before the pr
 
+        // Get current status to make informed decision about next chunk size
+        const status = getCanisterStatus();
+        const remainingToSoftLimit = status.wasmMemoryLimit - status.memorySize;
+        const remainingToHardLimit = HARD_LIMIT - status.memorySize;
+
+        // If we're already over the soft limit, we're done
+        if (remainingToSoftLimit <= 0) {
+            break;
+        }
+
+        // If we're close to the hard limit, stop to prevent IC0503
+        if (remainingToHardLimit < 1024 * 1024) {
+            // Less than 1MB remaining
+            break;
+        }
+
+        // Target going slightly over the soft limit in the next 2-3 calls
+        // but never exceeding the hard limit
+        const targetChunkSize = Math.min(
+            Math.floor(remainingToSoftLimit / 8), // More gradual increase
+            Math.floor(remainingToHardLimit / 16), // More conservative with hard limit
+            100 * 1024 * 1024 // Cap at 100MB per chunk to avoid instruction limits
+        );
+
         try {
-            await actor.addRandomBytes(bytesToAdd);
+            await actor.addRandomBytes(targetChunkSize);
         } catch (error: unknown) {
             validateMemoryLimitError(error, canisterId);
             break;
