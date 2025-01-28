@@ -1,12 +1,11 @@
 import { call, msgCaller, trap } from 'azle';
 import {
-    blob,
-    Canister,
-    None,
-    Record,
-    serialize,
-    update
-} from 'azle/experimental';
+    ecdsa_public_key_args,
+    ecdsa_public_key_result,
+    sign_with_ecdsa_args,
+    sign_with_ecdsa_result
+} from 'azle/canisters/management';
+import { blob, Canister, Record, serialize, update } from 'azle/experimental';
 
 const PublicKey = Record({
     publicKey: blob
@@ -19,6 +18,7 @@ const Signature = Record({
 export default Canister({
     publicKey: update([], PublicKey, async () => {
         const publicKeyResult = await getPublicKeyResult();
+
         return {
             publicKey: publicKeyResult.public_key
         };
@@ -39,60 +39,57 @@ export default Canister({
 async function getPublicKeyResult(): Promise<any> {
     const caller = msgCaller().toUint8Array();
 
+    const arg: ecdsa_public_key_args = {
+        canister_id: [],
+        derivation_path: [caller],
+        key_id: {
+            curve: { secp256k1: null },
+            name: 'dfx_test_key'
+        }
+    };
+
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const publicKeyResponse = await fetch(
             `icp://aaaaa-aa/ecdsa_public_key`,
             {
                 body: serialize({
-                    args: [
-                        {
-                            canister_id: [],
-                            derivation_path: [caller],
-                            key_id: {
-                                curve: { secp256k1: null },
-                                name: 'dfx_test_key'
-                            }
-                        }
-                    ]
+                    args: [arg]
                 })
             }
         );
 
         return await publicKeyResponse.json();
     } else {
-        return await call('aaaaa-aa', 'ecdsa_public_key', {
-            args: [
-                {
-                    canister_id: None,
-                    derivation_path: [caller],
-                    key_id: {
-                        curve: { secp256k1: null },
-                        name: 'dfx_test_key'
-                    }
-                }
-            ]
-        });
+        return await call<[ecdsa_public_key_args], ecdsa_public_key_result>(
+            'aaaaa-aa',
+            'ecdsa_public_key',
+            {
+                paramIdlTypes: [ecdsa_public_key_args],
+                returnIdlType: ecdsa_public_key_result,
+                args: [arg]
+            }
+        );
     }
 }
 
 async function getSignatureResult(messageHash: Uint8Array): Promise<any> {
     const caller = msgCaller().toUint8Array();
 
+    const arg: sign_with_ecdsa_args = {
+        message_hash: messageHash,
+        derivation_path: [caller],
+        key_id: {
+            curve: { secp256k1: null },
+            name: 'dfx_test_key'
+        }
+    };
+
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const publicKeyResponse = await fetch(
             `icp://aaaaa-aa/sign_with_ecdsa`,
             {
                 body: serialize({
-                    args: [
-                        {
-                            message_hash: messageHash,
-                            derivation_path: [caller],
-                            key_id: {
-                                curve: { secp256k1: null },
-                                name: 'dfx_test_key'
-                            }
-                        }
-                    ],
+                    args: [arg],
                     cycles: 10_000_000_000n
                 })
             }
@@ -100,18 +97,15 @@ async function getSignatureResult(messageHash: Uint8Array): Promise<any> {
 
         return await publicKeyResponse.json();
     } else {
-        return await call('aaaaa-aa', 'sign_with_ecdsa', {
-            args: [
-                {
-                    message_hash: messageHash,
-                    derivation_path: [caller],
-                    key_id: {
-                        curve: { secp256k1: null },
-                        name: 'dfx_test_key'
-                    }
-                }
-            ],
-            cycles: 10_000_000_000n
-        });
+        return await call<[sign_with_ecdsa_args], sign_with_ecdsa_result>(
+            'aaaaa-aa',
+            'sign_with_ecdsa',
+            {
+                paramIdlTypes: [sign_with_ecdsa_args],
+                returnIdlType: sign_with_ecdsa_result,
+                args: [arg],
+                cycles: 10_000_000_000n
+            }
+        );
     }
 }
