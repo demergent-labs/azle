@@ -1,6 +1,7 @@
 import { Principal } from 'azle';
 import { getCanisterId } from 'azle/dfx';
 import {
+    captureAssertionOutput,
     defaultPropTestParams,
     expect,
     getCanisterActor,
@@ -19,43 +20,48 @@ import {
 export function getTests(): Test {
     return () => {
         it('should trigger low memory handler when memory limit is approached', async () => {
-            await fc.assert(
-                fc.asyncProperty(
-                    fc.float({ min: 0, max: 1 }),
-                    fc.integer({
-                        min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
-                        // max: 4 * 1024 * 1024 * 1024 // 4GiB in bytes (the largest size of an azle canister)
-                        max: 90 * 1024 * 1024 // 90 MiB in bytes (about the smallest size of an azle canister)
-                    }),
-                    async (wasmMemoryThresholdPercentage, wasmMemoryLimit) => {
-                        // Calculate actual threshold based on percentage
-                        const wasmMemoryThreshold =
-                            wasmMemoryLimit * wasmMemoryThresholdPercentage;
-
-                        await configureDfxJsonWasmMemorySettings(
-                            wasmMemoryThreshold,
+            await captureAssertionOutput(async () => {
+                await fc.assert(
+                    fc.asyncProperty(
+                        fc.float({ min: 0, max: 1 }),
+                        fc.integer({
+                            min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
+                            max: 4 * 1024 * 1024 * 1024 // 4GiB in bytes (the largest size of an azle canister)
+                        }),
+                        async (
+                            wasmMemoryThresholdPercentage,
                             wasmMemoryLimit
-                        );
+                        ) => {
+                            // Calculate actual threshold based on percentage
+                            const wasmMemoryThreshold =
+                                wasmMemoryLimit * wasmMemoryThresholdPercentage;
 
-                        execSync(`dfx deploy --no-wallet`);
-                        execSync(`dfx generate canister`, {
-                            stdio: 'inherit'
-                        });
+                            await configureDfxJsonWasmMemorySettings(
+                                wasmMemoryThreshold,
+                                wasmMemoryLimit
+                            );
 
-                        const canisterId = getCanisterId('canister');
-                        const actor = await getCanisterActor<Actor>('canister');
+                            execSync(`dfx deploy --no-wallet`);
+                            execSync(`dfx generate canister`, {
+                                stdio: 'inherit'
+                            });
 
-                        await addBytesUntilLimitReached(actor, canisterId);
+                            const canisterId = getCanisterId('canister');
+                            const actor =
+                                await getCanisterActor<Actor>('canister');
 
-                        const lowMemoryHandlerCalled =
-                            await actor.wasLowMemoryHandlerCalled();
-                        expect(lowMemoryHandlerCalled).toBe(true);
+                            await addBytesUntilLimitReached(actor, canisterId);
 
-                        await resetDfxJson();
-                    }
-                ),
-                defaultPropTestParams()
-            );
+                            const lowMemoryHandlerCalled =
+                                await actor.wasLowMemoryHandlerCalled();
+                            expect(lowMemoryHandlerCalled).toBe(true);
+
+                            await resetDfxJson();
+                        }
+                    ),
+                    defaultPropTestParams()
+                );
+            });
         });
     };
 }
@@ -69,14 +75,21 @@ async function addBytesUntilLimitReached(
     actor: Actor,
     canisterId: string
 ): Promise<void> {
+    let callCount = 0;
+
     while (true) {
+        callCount++;
+        console.log(`Called addRandomBytes ${callCount} times`); // TODO don't forget to remove this before the pr
+
         try {
-            await actor.addRandomBytes();
+            await actor.addRandomBytes(262144); // 0.25 MiB
         } catch (error: unknown) {
             validateMemoryLimitError(error, canisterId);
             break;
         }
     }
+
+    console.info(`Called addRandomBytes ${callCount} times`);
 }
 
 /**

@@ -180,3 +180,46 @@ function createWait(name: string, delay: number): () => Promise<void> {
         });
     };
 }
+
+/**
+ * Parses a fast-check error message and returns a command to reproduce the failure
+ * @param error The error message from fast-check containing seed and path information
+ * @returns A command string that can be used to reproduce the failure
+ */
+export function getReproductionCommand(error: string): string {
+    // Look for the fast-check error details in the full stack trace
+    const fcErrorMatch = error.match(
+        /Property failed after \d+ tests[\s\S]*?{ seed: (-?\d+), path: "([^"]+)"/
+    );
+
+    if (fcErrorMatch === null) {
+        return 'Could not parse fast-check error output';
+    }
+
+    const [, seed, path] = fcErrorMatch;
+    return `AZLE_PROPTEST_SEED=${seed} AZLE_PROPTEST_PATH="${path}" npm test`;
+}
+
+/**
+ * Wraps a fast-check assertion to capture its output in case of failure
+ * @param assertion The fast-check assertion to run
+ */
+export async function captureAssertionOutput(
+    assertion: () => Promise<void>
+): Promise<void> {
+    try {
+        await assertion();
+    } catch (error) {
+        const errorOutput =
+            error instanceof Error ? error.message : String(error);
+        const reproductionCommand = getReproductionCommand(errorOutput);
+        throw new Error(
+            `To reproduce this exact test case, run:
+${reproductionCommand}
+
+Test failed with:
+${errorOutput}
+`
+        );
+    }
+}

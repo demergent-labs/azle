@@ -26,11 +26,10 @@ export default class MemoryManagementCanister {
         return this.storedBytes.length;
     }
 
-    @update
-    async addRandomBytes(): Promise<void> {
-        const BYTES_TO_ADD = 262144; // 0.25 MiB
+    @update([IDL.Nat32])
+    async addRandomBytes(bytesToAdd: number): Promise<void> {
         const randomBytes = await fetchRandomBytesFromIC();
-        const expandedBytes = expandRandomBytes(randomBytes, BYTES_TO_ADD);
+        const expandedBytes = expandRandomBytes(randomBytes, bytesToAdd);
 
         const newBuffer = new Uint8Array(
             this.storedBytes.length + expandedBytes.length
