@@ -54,7 +54,7 @@ const WhoAmI = Canister({
 
             return await response.json();
         } else {
-            return await call(self.principal.toText(), 'whoami', {
+            return await call<undefined, Principal>(self.principal, 'whoami', {
                 returnIdlType: IDL.Principal
             });
         }
