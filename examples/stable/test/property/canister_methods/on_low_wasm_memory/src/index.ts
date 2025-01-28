@@ -31,10 +31,13 @@ export default class MemoryManagementCanister {
         const BYTES_TO_ADD = 262144; // 0.25 MiB
         const randomBytes = await fetchRandomBytesFromIC();
         const expandedBytes = expandRandomBytes(randomBytes, BYTES_TO_ADD);
-        this.storedBytes = new Uint8Array([
-            ...this.storedBytes,
-            ...expandedBytes
-        ]);
+
+        const newBuffer = new Uint8Array(
+            this.storedBytes.length + expandedBytes.length
+        );
+        newBuffer.set(this.storedBytes);
+        newBuffer.set(expandedBytes, this.storedBytes.length);
+        this.storedBytes = newBuffer;
     }
 }
 
