@@ -1,11 +1,9 @@
+import { call, IDL, notify } from 'azle';
 import {
     Canister,
-    ic,
-    init,
     nat64,
     None,
     Opt,
-    Principal,
     serialize,
     Some,
     text,
@@ -14,15 +12,9 @@ import {
     Void
 } from 'azle/experimental';
 
-import Canister2 from '../canister2';
 import { Account, AccountArgs } from '../canister2/types';
 
-let canister2: typeof Canister2;
-
 export default Canister({
-    init: init([], () => {
-        canister2 = Canister2(Principal.fromText(getCanister2Principal()));
-    }),
     transfer: update([text, text, nat64], nat64, async (from, to, amount) => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -38,7 +30,9 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.transfer, {
+            return await call(getCanister2Principal(), 'transfer', {
+                paramIdlTypes: [IDL.Text, IDL.Text, IDL.Nat64],
+                returnIdlType: IDL.Nat64,
                 args: [from, to, amount]
             });
         }
@@ -58,7 +52,9 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.balance, {
+            return await call(getCanister2Principal(), 'balance', {
+                paramIdlTypes: [IDL.Text],
+                returnIdlType: IDL.Nat64,
                 args: [id]
             });
         }
@@ -82,7 +78,17 @@ export default Canister({
                 return None;
             }
         } else {
-            return await ic.call(canister2.account, {
+            const AccountIdl = IDL.Record({
+                id: IDL.Text,
+                balance: IDL.Nat64
+            });
+            const AccountArgsIdl = IDL.Record({
+                id: IDL.Text
+            });
+
+            return await call(getCanister2Principal(), 'account', {
+                paramIdlTypes: [AccountArgsIdl],
+                returnIdlType: IDL.Opt(AccountIdl),
                 args: [args]
             });
         }
@@ -102,7 +108,14 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.accounts, {
+            const AccountIdl = IDL.Record({
+                id: IDL.Text,
+                balance: IDL.Nat64
+            });
+
+            return await call(getCanister2Principal(), 'accounts', {
+                paramIdlTypes: [],
+                returnIdlType: IDL.Vec(AccountIdl),
                 args: []
             });
         }
@@ -122,7 +135,9 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.trap, {
+            return await call(getCanister2Principal(), 'trap', {
+                paramIdlTypes: [],
+                returnIdlType: IDL.Text,
                 args: []
             });
         }
@@ -130,7 +145,7 @@ export default Canister({
     sendNotification: update([], Void, () => {
         // TODO for now there seems to be no fetch analogy because notify must be synchronous
         // TODO and fetch must be asynchronous
-        return ic.notify(canister2.receiveNotification, {
+        return notify(getCanister2Principal(), 'receiveNotification', {
             args: ['This is the notification'],
             cycles: 10n
         });

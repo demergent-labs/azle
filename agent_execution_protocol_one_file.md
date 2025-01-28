@@ -64,3 +64,5 @@ TODOs
 15. It isn't recognizing that something has already been checked off, it's trying to execute tasks that have checks
 16. Use placeholders instead of actual paths
 17. Sometimes it won't even write files into the project_plan.md file
+18. Every time you ask the agent to go to step 9, explain that it should go to step 9 of the execution protocol, and then go to step 10, 11, 12, and 13 and execute them exactly
+19. We should try to instruct it to ask for help if it needs help...so that it doesn't hallucinate

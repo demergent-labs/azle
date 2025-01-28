@@ -1,17 +1,37 @@
-// TODO once the Bitcoin integration is live, add the methods and tests
-
+import { call } from 'azle';
+import {
+    canister_info_args,
+    canister_info_result,
+    canister_status_args,
+    canister_status_result,
+    chunk_hash,
+    clear_chunk_store_args,
+    create_canister_args,
+    create_canister_result,
+    delete_canister_args,
+    deposit_cycles_args,
+    install_chunked_code_args,
+    install_code_args,
+    provisional_create_canister_with_cycles_args,
+    provisional_create_canister_with_cycles_result,
+    provisional_top_up_canister_args,
+    raw_rand_result,
+    start_canister_args,
+    stop_canister_args,
+    stored_chunks_args,
+    stored_chunks_result,
+    uninstall_code_args,
+    update_settings_args,
+    upload_chunk_args
+} from 'azle/canisters/management';
 import {
     blob,
     bool,
     Canister,
-    ic,
     nat,
-    None,
-    Opt,
     Principal,
     query,
     serialize,
-    Some,
     update,
     Vec
 } from 'azle/experimental';
@@ -22,7 +42,6 @@ import {
     CanisterStatusResult,
     ChunkHash,
     CreateCanisterResult,
-    managementCanister,
     ProvisionalCreateCanisterWithCyclesResult,
     StoredChunksResult
 } from 'azle/experimental/canisters/management';
@@ -65,21 +84,28 @@ export default Canister({
                 })
             });
         } else {
-            await ic.call(managementCanister.update_settings, {
-                args: [
-                    {
-                        canister_id: canisterId,
-                        settings: {
-                            controllers: None,
-                            compute_allocation: Some(1n),
-                            memory_allocation: Some(3_000_000n),
-                            freezing_threshold: Some(2_000_000n),
-                            reserved_cycles_limit: None
-                        },
-                        sender_canister_version: None
-                    }
-                ]
-            });
+            await call<[update_settings_args], void>(
+                'aaaaa-aa',
+                'update_settings',
+                {
+                    paramIdlTypes: [update_settings_args],
+                    args: [
+                        {
+                            canister_id: canisterId,
+                            settings: {
+                                controllers: [],
+                                compute_allocation: [1n],
+                                memory_allocation: [3_000_000n],
+                                freezing_threshold: [2_000_000n],
+                                reserved_cycles_limit: [],
+                                log_visibility: [],
+                                wasm_memory_limit: []
+                            },
+                            sender_canister_version: []
+                        }
+                    ]
+                }
+            );
         }
 
         return true;
@@ -102,14 +128,20 @@ export default Canister({
 
                 return await response.json();
             } else {
-                return await ic.call(managementCanister.upload_chunk, {
-                    args: [
-                        {
-                            canister_id: canisterId,
-                            chunk
-                        }
-                    ]
-                });
+                return await call<[upload_chunk_args], chunk_hash>(
+                    'aaaaa-aa',
+                    'upload_chunk',
+                    {
+                        paramIdlTypes: [upload_chunk_args],
+                        returnIdlType: chunk_hash,
+                        args: [
+                            {
+                                canister_id: canisterId,
+                                chunk
+                            }
+                        ]
+                    }
+                );
             }
         }
     ),
@@ -125,13 +157,18 @@ export default Canister({
                 })
             });
         } else {
-            await ic.call(managementCanister.clear_chunk_store, {
-                args: [
-                    {
-                        canister_id: canisterId
-                    }
-                ]
-            });
+            await call<[clear_chunk_store_args], void>(
+                'aaaaa-aa',
+                'clear_chunk_store',
+                {
+                    paramIdlTypes: [clear_chunk_store_args],
+                    args: [
+                        {
+                            canister_id: canisterId
+                        }
+                    ]
+                }
+            );
         }
 
         return true;
@@ -152,13 +189,19 @@ export default Canister({
                 });
                 return await response.json();
             } else {
-                return await ic.call(managementCanister.stored_chunks, {
-                    args: [
-                        {
-                            canister_id: canisterId
-                        }
-                    ]
-                });
+                return await call<[stored_chunks_args], stored_chunks_result>(
+                    'aaaaa-aa',
+                    'stored_chunks',
+                    {
+                        paramIdlTypes: [stored_chunks_args],
+                        returnIdlType: stored_chunks_result,
+                        args: [
+                            {
+                                canister_id: canisterId
+                            }
+                        ]
+                    }
+                );
             }
         }
     ),
@@ -184,20 +227,25 @@ export default Canister({
                     })
                 });
             } else {
-                await ic.call(managementCanister.install_code, {
-                    args: [
-                        {
-                            mode: {
-                                install: null
-                            },
-                            canister_id: canisterId,
-                            wasm_module: wasmModule,
-                            arg: Uint8Array.from([]),
-                            sender_canister_version: None
-                        }
-                    ],
-                    cycles: 100_000_000_000n
-                });
+                await call<[install_code_args], void>(
+                    'aaaaa-aa',
+                    'install_code',
+                    {
+                        paramIdlTypes: [install_code_args],
+                        args: [
+                            {
+                                mode: {
+                                    install: null
+                                },
+                                canister_id: canisterId,
+                                wasm_module: wasmModule,
+                                arg: Uint8Array.from([]),
+                                sender_canister_version: []
+                            }
+                        ],
+                        cycles: 100_000_000_000n
+                    }
+                );
             }
 
             return true;
@@ -227,22 +275,27 @@ export default Canister({
                     })
                 });
             } else {
-                await ic.call(managementCanister.install_chunked_code, {
-                    args: [
-                        {
-                            mode: {
-                                install: null
-                            },
-                            target_canister: canisterId,
-                            store_canister: None,
-                            chunk_hashes_list: chunkHashes,
-                            wasm_module_hash: wasmModuleHash,
-                            arg: Uint8Array.from([]),
-                            sender_canister_version: None
-                        }
-                    ],
-                    cycles: 100_000_000_000n
-                });
+                await call<[install_chunked_code_args], void>(
+                    'aaaaa-aa',
+                    'install_chunked_code',
+                    {
+                        paramIdlTypes: [install_chunked_code_args],
+                        args: [
+                            {
+                                mode: {
+                                    install: null
+                                },
+                                target_canister: canisterId,
+                                store_canister: [],
+                                chunk_hashes_list: chunkHashes,
+                                wasm_module_hash: wasmModuleHash,
+                                arg: Uint8Array.from([]),
+                                sender_canister_version: []
+                            }
+                        ],
+                        cycles: 100_000_000_000n
+                    }
+                );
             }
 
             return true;
@@ -261,14 +314,19 @@ export default Canister({
                 })
             });
         } else {
-            await ic.call(managementCanister.uninstall_code, {
-                args: [
-                    {
-                        canister_id: canisterId,
-                        sender_canister_version: None
-                    }
-                ]
-            });
+            await call<[uninstall_code_args], void>(
+                'aaaaa-aa',
+                'uninstall_code',
+                {
+                    paramIdlTypes: [uninstall_code_args],
+                    args: [
+                        {
+                            canister_id: canisterId,
+                            sender_canister_version: []
+                        }
+                    ]
+                }
+            );
         }
 
         return true;
@@ -281,13 +339,18 @@ export default Canister({
                 })
             });
         } else {
-            await ic.call(managementCanister.start_canister, {
-                args: [
-                    {
-                        canister_id: canisterId
-                    }
-                ]
-            });
+            await call<[start_canister_args], void>(
+                'aaaaa-aa',
+                'start_canister',
+                {
+                    paramIdlTypes: [start_canister_args],
+                    args: [
+                        {
+                            canister_id: canisterId
+                        }
+                    ]
+                }
+            );
         }
         return true;
     }),
@@ -299,13 +362,18 @@ export default Canister({
                 })
             });
         } else {
-            await ic.call(managementCanister.stop_canister, {
-                args: [
-                    {
-                        canister_id: canisterId
-                    }
-                ]
-            });
+            await call<[stop_canister_args], void>(
+                'aaaaa-aa',
+                'stop_canister',
+                {
+                    paramIdlTypes: [stop_canister_args],
+                    args: [
+                        {
+                            canister_id: canisterId
+                        }
+                    ]
+                }
+            );
         }
 
         return true;
@@ -318,9 +386,10 @@ export default Canister({
                 const { canister_id, num_requested_changes } = args;
                 const infoArgs = {
                     canister_id,
-                    num_requested_changes: azleOptToAgentOpt(
-                        num_requested_changes
-                    )
+                    num_requested_changes:
+                        num_requested_changes?.Some === undefined
+                            ? []
+                            : [num_requested_changes.Some]
                 };
                 const response = await fetch(`icp://aaaaa-aa/canister_info`, {
                     body: serialize({
@@ -329,9 +398,24 @@ export default Canister({
                 });
                 return await response.json();
             } else {
-                return await ic.call(managementCanister.canister_info, {
-                    args: [args]
-                });
+                return await call<[canister_info_args], canister_info_result>(
+                    'aaaaa-aa',
+                    'canister_info',
+                    {
+                        paramIdlTypes: [canister_info_args],
+                        returnIdlType: canister_info_result,
+                        args: [
+                            {
+                                canister_id: args.canister_id,
+                                num_requested_changes:
+                                    args.num_requested_changes?.Some ===
+                                    undefined
+                                        ? []
+                                        : [args.num_requested_changes.Some]
+                            }
+                        ]
+                    }
+                );
             }
         }
     ),
@@ -347,7 +431,12 @@ export default Canister({
                 });
                 return await response.json();
             } else {
-                return await ic.call(managementCanister.canister_status, {
+                return await call<
+                    [canister_status_args],
+                    canister_status_result
+                >('aaaaa-aa', 'canister_status', {
+                    paramIdlTypes: [canister_status_args],
+                    returnIdlType: canister_status_result,
                     args: [args]
                 });
             }
@@ -361,13 +450,18 @@ export default Canister({
                 })
             });
         } else {
-            await ic.call(managementCanister.delete_canister, {
-                args: [
-                    {
-                        canister_id: canisterId
-                    }
-                ]
-            });
+            await call<[delete_canister_args], void>(
+                'aaaaa-aa',
+                'delete_canister',
+                {
+                    paramIdlTypes: [delete_canister_args],
+                    args: [
+                        {
+                            canister_id: canisterId
+                        }
+                    ]
+                }
+            );
         }
 
         return true;
@@ -381,14 +475,19 @@ export default Canister({
                 })
             });
         } else {
-            await ic.call(managementCanister.deposit_cycles, {
-                args: [
-                    {
-                        canister_id: canisterId
-                    }
-                ],
-                cycles: 10_000_000n
-            });
+            await call<[deposit_cycles_args], void>(
+                'aaaaa-aa',
+                'deposit_cycles',
+                {
+                    paramIdlTypes: [deposit_cycles_args],
+                    args: [
+                        {
+                            canister_id: canisterId
+                        }
+                    ],
+                    cycles: 10_000_000n
+                }
+            );
         }
 
         return true;
@@ -398,10 +497,15 @@ export default Canister({
             const response = await fetch(`icp://aaaaa-aa/raw_rand`);
             return await response.json();
         } else {
-            return await ic.call(managementCanister.raw_rand);
+            return await call<undefined, raw_rand_result>(
+                'aaaaa-aa',
+                'raw_rand',
+                {
+                    returnIdlType: raw_rand_result
+                }
+            );
         }
     }),
-    // TODO we should test this like we test depositCycles
     provisionalCreateCanisterWithCycles: update(
         [],
         ProvisionalCreateCanisterWithCyclesResult,
@@ -424,23 +528,27 @@ export default Canister({
                 );
                 return await response.json();
             } else {
-                return await ic.call(
-                    managementCanister.provisional_create_canister_with_cycles,
-                    {
-                        args: [
-                            {
-                                amount: None,
-                                settings: None,
-                                sender_canister_version: None,
-                                specified_id: None
-                            }
-                        ]
-                    }
-                );
+                return await call<
+                    [provisional_create_canister_with_cycles_args],
+                    provisional_create_canister_with_cycles_result
+                >('aaaaa-aa', 'provisional_create_canister_with_cycles', {
+                    paramIdlTypes: [
+                        provisional_create_canister_with_cycles_args
+                    ],
+                    returnIdlType:
+                        provisional_create_canister_with_cycles_result,
+                    args: [
+                        {
+                            amount: [],
+                            settings: [],
+                            sender_canister_version: [],
+                            specified_id: []
+                        }
+                    ]
+                });
             }
         }
     ),
-    // TODO we should test this like we test depositCycles
     provisionalTopUpCanister: update(
         [Principal, nat],
         bool,
@@ -453,14 +561,19 @@ export default Canister({
                     })
                 });
             } else {
-                await ic.call(managementCanister.provisional_top_up_canister, {
-                    args: [
-                        {
-                            canister_id: canisterId,
-                            amount
-                        }
-                    ]
-                });
+                await call<[provisional_top_up_canister_args], void>(
+                    'aaaaa-aa',
+                    'provisional_top_up_canister',
+                    {
+                        paramIdlTypes: [provisional_top_up_canister_args],
+                        args: [
+                            {
+                                canister_id: canisterId,
+                                amount
+                            }
+                        ]
+                    }
+                );
             }
 
             return true;
@@ -481,17 +594,15 @@ async function createCanister(): Promise<any> {
         });
         return await response.json();
     } else {
-        return await ic.call(managementCanister.create_canister, {
-            args: [{ settings: None, sender_canister_version: None }],
-            cycles: 50_000_000_000_000n
-        });
-    }
-}
-
-function azleOptToAgentOpt<T>(opt: Opt<T>): [T] | [] {
-    if ('None' in opt) {
-        return [];
-    } else {
-        return [opt.Some];
+        return await call<[create_canister_args], create_canister_result>(
+            'aaaaa-aa',
+            'create_canister',
+            {
+                paramIdlTypes: [create_canister_args],
+                returnIdlType: create_canister_result,
+                args: [{ settings: [], sender_canister_version: [] }],
+                cycles: 50_000_000_000_000n
+            }
+        );
     }
 }

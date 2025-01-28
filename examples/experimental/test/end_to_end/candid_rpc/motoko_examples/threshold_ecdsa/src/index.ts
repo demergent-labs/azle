@@ -1,13 +1,12 @@
+import { call, msgCaller, trap } from 'azle';
 import {
     blob,
     Canister,
-    ic,
     None,
     Record,
     serialize,
     update
 } from 'azle/experimental';
-import { managementCanister } from 'azle/experimental/canisters/management';
 
 const PublicKey = Record({
     publicKey: blob
@@ -26,7 +25,7 @@ export default Canister({
     }),
     sign: update([blob], Signature, async (messageHash) => {
         if (messageHash.length !== 32) {
-            ic.trap('messageHash must be 32 bytes');
+            trap('messageHash must be 32 bytes');
         }
 
         const signatureResult = await getSignatureResult(messageHash);
@@ -38,7 +37,7 @@ export default Canister({
 });
 
 async function getPublicKeyResult(): Promise<any> {
-    const caller = ic.msgCaller().toUint8Array();
+    const caller = msgCaller().toUint8Array();
 
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const publicKeyResponse = await fetch(
@@ -61,7 +60,7 @@ async function getPublicKeyResult(): Promise<any> {
 
         return await publicKeyResponse.json();
     } else {
-        return await ic.call(managementCanister.ecdsa_public_key, {
+        return await call('aaaaa-aa', 'ecdsa_public_key', {
             args: [
                 {
                     canister_id: None,
@@ -77,7 +76,7 @@ async function getPublicKeyResult(): Promise<any> {
 }
 
 async function getSignatureResult(messageHash: Uint8Array): Promise<any> {
-    const caller = ic.msgCaller().toUint8Array();
+    const caller = msgCaller().toUint8Array();
 
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const publicKeyResponse = await fetch(
@@ -101,7 +100,7 @@ async function getSignatureResult(messageHash: Uint8Array): Promise<any> {
 
         return await publicKeyResponse.json();
     } else {
-        return await ic.call(managementCanister.sign_with_ecdsa, {
+        return await call('aaaaa-aa', 'sign_with_ecdsa', {
             args: [
                 {
                     message_hash: messageHash,

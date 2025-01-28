@@ -1,6 +1,6 @@
+import { call, id, IDL, msgCaller } from 'azle';
 import {
     Canister,
-    ic,
     init,
     postUpgrade,
     Principal,
@@ -16,12 +16,12 @@ let someone: Principal = Principal.fromText('aaaaa-aa');
 const WhoAmI = Canister({
     // Manually save the calling principal and argument for later access.
     init: init([Principal], (somebody) => {
-        install = ic.msgCaller();
+        install = msgCaller();
         someone = somebody;
     }),
     // Manually re-save these variables after new deploys.
     postUpgrade: postUpgrade([Principal], (somebody) => {
-        install = ic.msgCaller();
+        install = msgCaller();
         someone = somebody;
     }),
     // Return the principal identifier of the wallet canister that installed this
@@ -36,11 +36,11 @@ const WhoAmI = Canister({
     }),
     // Return the principal identifier of the caller of this method.
     whoami: update([], Principal, () => {
-        return ic.msgCaller();
+        return msgCaller();
     }),
     // Return the principal identifier of this canister.
     id: update([], Principal, async () => {
-        const self: any = WhoAmI(ic.id());
+        const self: any = WhoAmI(id());
 
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -54,7 +54,9 @@ const WhoAmI = Canister({
 
             return await response.json();
         } else {
-            return await ic.call(self.whoami);
+            return await call(self.principal.toText(), 'whoami', {
+                returnIdlType: IDL.Principal
+            });
         }
     }),
     // Return the principal identifier of this canister via the global `ic` object.
@@ -62,7 +64,7 @@ const WhoAmI = Canister({
     // canister call to itself. Additionally, it can now be a `Query` which means it
     // doesn't have to go through consensus.
     idQuick: query([], Principal, () => {
-        return ic.id();
+        return id();
     })
 });
 

@@ -1,6 +1,6 @@
+import { call, IDL, trap } from 'azle';
 import {
     Canister,
-    ic,
     Principal,
     query,
     Record,
@@ -37,27 +37,25 @@ export default Canister({
             return someCanisters;
         }
     ),
-    canisterCrossCanisterCall: update(
-        [SomeCanister],
-        text,
-        async (someCanister) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://${getSomeCanisterPrincipal()}/update1`,
-                    {
-                        body: serialize({
-                            candidPath: `/candid/some_canister.did`
-                        })
-                    }
-                );
-                const responseJson = await response.json();
+    canisterCrossCanisterCall: update([SomeCanister], text, async () => {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getSomeCanisterPrincipal()}/update1`,
+                {
+                    body: serialize({
+                        candidPath: `/candid/some_canister.did`
+                    })
+                }
+            );
+            const responseJson = await response.json();
 
-                return responseJson;
-            } else {
-                return await ic.call(someCanister.update1);
-            }
+            return responseJson;
+        } else {
+            return await call(getSomeCanisterPrincipal(), 'update1', {
+                returnIdlType: IDL.Text
+            });
         }
-    )
+    })
 });
 
 function getSomeCanisterPrincipal(): string {
@@ -65,5 +63,5 @@ function getSomeCanisterPrincipal(): string {
         return process.env.SOME_CANISTER_PRINCIPAL;
     }
 
-    throw new Error(`process.env.SOME_CANISTER_PRINCIPAL is not defined`);
+    trap(`process.env.SOME_CANISTER_PRINCIPAL is not defined`);
 }

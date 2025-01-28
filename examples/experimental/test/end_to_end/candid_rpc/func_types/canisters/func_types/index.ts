@@ -1,7 +1,7 @@
+import { call, IDL } from 'azle';
 import {
     Canister,
     Func,
-    ic,
     init,
     nat64,
     Null,
@@ -19,7 +19,7 @@ import {
     Void
 } from 'azle/experimental';
 
-import Notifier, { NotifierFunc } from '../notifiers';
+import { NotifierFunc } from '../notifiers';
 
 const BasicFunc = Func([text], text, 'query');
 type BasicFunc = typeof BasicFunc.tsType;
@@ -104,13 +104,11 @@ export default Canister({
     }),
 
     getNotifierFromNotifiersCanister: update([], NotifierFunc, async () => {
-        const notifiersCanister = Notifier(
-            Principal.fromText(getNotifierPrincipal())
-        );
+        const notifierPrincipal = getNotifierPrincipal();
 
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${getNotifierPrincipal()}/getNotifier`,
+                `icp://${notifierPrincipal}/getNotifier`,
                 {
                     body: serialize({
                         candidPath: `/candid/notifiers.did`
@@ -121,7 +119,9 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(notifiersCanister.getNotifier);
+            return await call(notifierPrincipal, 'getNotifier', {
+                returnIdlType: IDL.Func([IDL.Vec(IDL.Nat8)], [], ['oneway'])
+            });
         }
     })
 });

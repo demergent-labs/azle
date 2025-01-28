@@ -1,6 +1,6 @@
+import { trap } from 'azle';
 import {
     Canister,
-    ic,
     nat64,
     None,
     Opt,
@@ -59,7 +59,7 @@ export default Canister({
         return Object.values(state.accounts);
     }),
     trap: query([], text, () => {
-        ic.trap('hahahaha');
+        trap('hahahaha');
         return 'You will never get here';
     }),
     receiveNotification: update([text], Void, (message) => {
