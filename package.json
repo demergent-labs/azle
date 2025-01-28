@@ -64,8 +64,8 @@
         "@types/pako": "^2.0.3",
         "@types/semver": "^7.5.8",
         "@types/uuid": "^10.0.0",
-        "@typescript-eslint/eslint-plugin": "^8.21.0",
-        "@typescript-eslint/parser": "^8.21.0",
+        "@typescript-eslint/eslint-plugin": "^8.22.0",
+        "@typescript-eslint/parser": "^8.22.0",
         "deep-equal": "^2.2.3",
         "eslint": "^9.19.0",
         "eslint-config-prettier": "^10.0.1",
@@ -78,7 +78,7 @@
         "puppeteer": "^24.1.1",
         "semver": "^7.6.3",
         "ts-jest": "^29.1.4",
-        "typescript-eslint": "^8.21.0"
+        "typescript-eslint": "^8.22.0"
     },
     "lint-staged": {
         "*.{js,ts}": "eslint --cache --fix",
