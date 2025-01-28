@@ -1,4 +1,4 @@
-import { candidEncode, IDL, reject, reply } from 'azle';
+import { candidEncode, reject, reply } from 'azle';
 import {
     blob,
     bool,
@@ -132,7 +132,7 @@ export default Canister({
         [],
         Manual(Void),
         () => {
-            reply({ data: null, idlType: IDL.Null });
+            reply({ data: undefined });
         },
         { manual: true }
     ),
