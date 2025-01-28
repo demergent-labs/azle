@@ -13,10 +13,23 @@ export type Test = () => void;
 
 export { getCanisterActor } from './get_canister_actor';
 
+export interface RunTestsOptions {
+    /**
+     * Whether to set up the agent before running tests
+     * @default true
+     */
+    shouldSetupAgent: boolean;
+}
+
+export const DEFAULT_RUN_TESTS_OPTIONS: RunTestsOptions = {
+    shouldSetupAgent: true
+};
+
 export function runTests(
     tests: Test,
     canisterNames: string | string[] | undefined = undefined,
-    _cwd: string = process.cwd()
+    _cwd: string = process.cwd(),
+    options: RunTestsOptions = DEFAULT_RUN_TESTS_OPTIONS
 ): void {
     const {
         shouldRunTests,
@@ -25,10 +38,12 @@ export function runTests(
         shouldFuzz
     } = processEnvVars();
 
-    describe('agent setup', () => {
-        // TODO temporary fix for https://github.com/demergent-labs/azle/issues/2496
-        wait('for root key to be fetched', 5_000);
-    });
+    if (options.shouldSetupAgent === true) {
+        describe('agent setup', () => {
+            // TODO temporary fix for https://github.com/demergent-labs/azle/issues/2496
+            wait('for root key to be fetched', 5_000);
+        });
+    }
 
     if (shouldRunTests === true) {
         describe(`tests`, tests);
