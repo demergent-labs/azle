@@ -51,10 +51,14 @@ export async function fetchIcp(
 
     const canisterPrincipal = Principal.fromText(canisterId);
 
-    const result = await call(canisterPrincipal, canisterMethod, {
-        raw: argsRaw,
-        cycles: BigInt(cycles ?? 0)
-    });
+    const result = await call<undefined, Uint8Array>(
+        canisterPrincipal,
+        canisterMethod,
+        {
+            raw: argsRaw,
+            cycles: BigInt(cycles ?? 0)
+        }
+    );
 
     const decodedResult = IDL.decode(funcIdl.retTypes, result);
 
