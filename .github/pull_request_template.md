@@ -5,7 +5,7 @@
 - [ ] Error handling beautiful (no unwraps or expects etc)
 - [ ] Code tested thoroughly
 - [ ] PR title:
-    - [ ] Indicates breaking changes with suffix "(Breaking Changes)"
+    - [ ] Indicates breaking changes with suffix "(breaking changes)"
     - [ ] Sentence cased
 - [ ] Related issues have been linked and all tasks have been completed or made into separate issues
 - [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
@@ -20,7 +20,7 @@
 - [ ] Error handling beautiful (no unwraps or expects etc)
 - [ ] Code tested thoroughly
 - [ ] PR title:
-    - [ ] Indicates breaking changes with suffix "(Breaking Changes)"
+    - [ ] Indicates breaking changes with suffix "(breaking changes)"
     - [ ] Sentence cased
 - [ ] Related issues have been linked and all tasks have been completed or made into separate issues
 - [ ] New documentation enumerated in [the release issue](https://github.com/demergent-labs/azle/issues/2053)
