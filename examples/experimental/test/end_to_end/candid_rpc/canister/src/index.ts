@@ -1,4 +1,4 @@
-import { call, IDL, trap } from 'azle';
+import { call, IDL } from 'azle';
 import {
     Canister,
     Principal,
@@ -63,5 +63,5 @@ function getSomeCanisterPrincipal(): string {
         return process.env.SOME_CANISTER_PRINCIPAL;
     }
 
-    trap(`process.env.SOME_CANISTER_PRINCIPAL is not defined`);
+    throw new Error(`process.env.SOME_CANISTER_PRINCIPAL is not defined`);
 }

@@ -1,7 +1,7 @@
 // TODO maybe this should be Ledger? We should look into making the Ledger
 // better using the latest Wasm and did that I know of
 
-import { call, id, msgCaller, trap } from 'azle';
+import { call, id, msgCaller } from 'azle';
 import {
     blob,
     Canister,
@@ -207,7 +207,7 @@ function getCkBtcPrincipal(): string {
         return process.env.CK_BTC_PRINCIPAL;
     }
 
-    trap(`process.env.CK_BTC_PRINCIPAL is not defined`);
+    throw new Error(`process.env.CK_BTC_PRINCIPAL is not defined`);
 }
 
 function getMinterPrincipal(): string {
@@ -215,5 +215,5 @@ function getMinterPrincipal(): string {
         return process.env.MINTER_PRINCIPAL;
     }
 
-    trap(`process.env.MINTER_PRINCIPAL is not defined`);
+    throw new Error(`process.env.MINTER_PRINCIPAL is not defined`);
 }
