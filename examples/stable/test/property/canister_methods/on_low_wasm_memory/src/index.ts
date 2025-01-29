@@ -42,6 +42,7 @@ export default class MemoryManagementCanister {
 
 /**
  * Fetches random bytes from the Internet Computer's random number generator
+ *
  * @returns Promise resolving to a Uint8Array of random bytes
  */
 async function fetchRandomBytesFromIC(): Promise<Uint8Array> {
@@ -52,6 +53,7 @@ async function fetchRandomBytesFromIC(): Promise<Uint8Array> {
 
 /**
  * Expands a small array of random bytes into a larger array by repeating the pattern
+ *
  * @param sourceBytes - Original random bytes to expand
  * @param targetSize - Desired size of the expanded array
  * @returns Expanded Uint8Array

@@ -10,6 +10,7 @@ export interface CanisterStatus {
 
 /**
  * Gets the current status of the canister including memory information
+ *
  * @returns Object containing status, memory size, and wasm memory limit
  * @throws Error if canister doesn't exist or status can't be parsed
  */

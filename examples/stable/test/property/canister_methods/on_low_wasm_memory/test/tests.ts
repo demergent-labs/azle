@@ -62,6 +62,7 @@ export function getTests(): Test {
 
 /**
  * Adds random bytes to the canister until it reaches its memory limit
+ *
  * @param actor - The canister actor instance
  * @param canisterId - The canister's principal ID
  */
@@ -96,6 +97,7 @@ async function addBytesUntilLimitReached(actor: Actor): Promise<void> {
 
 /**
  * Validates that the error received matches the expected memory limit error
+ *
  * @param error - The error object to validate
  */
 function validateMemoryLimitError(error: unknown): void {
@@ -127,6 +129,7 @@ function validateMemoryLimitError(error: unknown): void {
  * Validates the initial state of the canister:
  * - Confirms low memory handler has not been called
  * - Verifies wasm memory limit matches configured value
+ *
  * @param actor - The canister actor instance
  * @param wasmMemoryLimit - The configured wasm memory limit
  */
@@ -148,6 +151,7 @@ async function validateInitialStatus(
  * - Verifies memory size exceeds (wasmMemoryLimit - wasmMemoryThreshold)
  * - Verifies memory size exceeds wasmMemoryLimit (current behavior)
  * - Confirms low memory handler was called
+ *
  * @param actor - The canister actor instance
  * @param wasmMemoryLimit - The configured wasm memory limit
  * @param wasmMemoryThreshold - The configured memory threshold
