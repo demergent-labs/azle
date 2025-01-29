@@ -5,47 +5,31 @@ import {
     captureAssertionOutput,
     defaultPropTestParams,
     expect,
-    getCanisterActor,
     it,
-    please,
     Test
 } from 'azle/test';
-import { execSync } from 'child_process';
 import fc from 'fast-check';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 import {
-    canisterExists,
     configureDfxJsonWasmMemorySettings,
+    deployFreshCanister,
     getCanisterStatus,
     resetDfxJson
 } from './helpers/dfx';
 
+const HARD_LIMIT = 3.5 * 1024 * 1024 * 1024; // 3.5 GiB in bytes (We can't use 4 GiB because we need enough memory to successfully finish a call)
+const CANISTER_NAME = 'canister';
+
 export function getTests(): Test {
     return () => {
         beforeAll(async () => {
-            await resetDfxJson();
+            await resetDfxJson(CANISTER_NAME);
         });
 
         afterAll(async () => {
-            await resetDfxJson();
+            await resetDfxJson(CANISTER_NAME);
         });
-
-        please(
-            'completely remove the canister so changes to dfx.json can take effect',
-            () => {
-                execSync(`dfx canister stop canister || true`, {
-                    stdio: 'inherit'
-                });
-                execSync(`dfx canister delete canister || true`, {
-                    stdio: 'inherit'
-                });
-                // Verify canister doesn't exist before deploying
-                console.log(1);
-                expect(canisterExists()).toBe(false);
-                console.log(2);
-            }
-        );
 
         it('should trigger low memory handler when memory limit is approached', async () => {
             await captureAssertionOutput(async () => {
@@ -53,9 +37,8 @@ export function getTests(): Test {
                     fc.asyncProperty(
                         fc.float({ min: 0, max: 1 }),
                         fc.integer({
-                            // min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
-                            min: 3 * 1024 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
-                            max: 4 * 1024 * 1024 * 1024 // 4GiB in bytes (the largest size of an azle canister)
+                            min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
+                            max: HARD_LIMIT
                         }),
                         async (
                             wasmMemoryThresholdPercentage,
@@ -66,37 +49,33 @@ export function getTests(): Test {
                                 wasmMemoryLimit * wasmMemoryThresholdPercentage;
 
                             await configureDfxJsonWasmMemorySettings(
+                                CANISTER_NAME,
                                 wasmMemoryThreshold,
                                 wasmMemoryLimit
                             );
 
-                            execSync(`dfx deploy --no-wallet`, {
-                                stdio: 'inherit'
-                            });
-                            execSync(`dfx generate canister`, {
-                                stdio: 'inherit'
-                            });
-
-                            const canisterId = getCanisterId('canister');
                             const actor =
-                                await getCanisterActor<Actor>('canister');
+                                await deployFreshCanister<Actor>(CANISTER_NAME);
 
-                            // Get initial status
-                            expect(canisterExists()).toBe(true);
-                            const initialStatus = getCanisterStatus();
-                            console.log(
-                                'Initial canister status:',
-                                initialStatus
+                            const lowMemoryHandlerCalledAtBeginning =
+                                await actor.wasLowMemoryHandlerCalled();
+
+                            expect(lowMemoryHandlerCalledAtBeginning).toBe(
+                                false
                             );
 
-                            await addBytesUntilLimitReached(actor, canisterId);
+                            validateInitialStatus(wasmMemoryLimit);
 
-                            // Get final status
-                            const finalStatus = getCanisterStatus();
-                            console.log('Final canister status:', finalStatus);
+                            await addBytesUntilLimitReached(actor);
+
+                            validateFinalStatus(
+                                wasmMemoryLimit,
+                                wasmMemoryThreshold
+                            );
 
                             const lowMemoryHandlerCalled =
                                 await actor.wasLowMemoryHandlerCalled();
+
                             expect(lowMemoryHandlerCalled).toBe(true);
                         }
                     ),
@@ -112,58 +91,45 @@ export function getTests(): Test {
  * @param actor - The canister actor instance
  * @param canisterId - The canister's principal ID
  */
-async function addBytesUntilLimitReached(
-    actor: Actor,
-    canisterId: string
-): Promise<void> {
+async function addBytesUntilLimitReached(actor: Actor): Promise<void> {
     let callCount = 0;
-    const HARD_LIMIT = 4 * 1024 * 1024 * 1024; // 4 GiB in bytes
 
     while (true) {
         callCount++;
-        console.log(`Called addRandomBytes ${callCount} times`); // TODO don't forget to remove this before the pr
 
         // Get current status to make informed decision about next chunk size
-        const status = getCanisterStatus();
-        const remainingToSoftLimit = status.wasmMemoryLimit - status.memorySize;
-        const remainingToHardLimit = HARD_LIMIT - status.memorySize;
+        const status = getCanisterStatus(CANISTER_NAME);
+        const remainingHardLimit = HARD_LIMIT - status.memorySize;
 
-        // If we're already over the soft limit, we're done
-        if (remainingToSoftLimit <= 0) {
+        if (remainingHardLimit <= 0) {
             break;
         }
 
-        // If we're close to the hard limit, stop to prevent IC0503
-        if (remainingToHardLimit < 1024 * 1024) {
-            // Less than 1MB remaining
-            break;
-        }
+        // Calculate the maximum possible chunk we can add without hitting hard limit
+        const maxPossibleChunk = remainingHardLimit;
 
-        // Target going slightly over the soft limit in the next 2-3 calls
-        // but never exceeding the hard limit
-        const targetChunkSize = Math.min(
-            Math.floor(remainingToSoftLimit / 8), // More gradual increase
-            Math.floor(remainingToHardLimit / 16), // More conservative with hard limit
-            100 * 1024 * 1024 // Cap at 100MB per chunk to avoid instruction limits
+        // Start with an aggressive chunk size (up to 100MB) but ensure we don't exceed hard limit
+        let targetChunkSize = Math.min(
+            maxPossibleChunk,
+            100 * 1024 * 1024 // 100MB cap
         );
 
         try {
+            console.info(`Called addRandomBytes ${callCount} times`);
             await actor.addRandomBytes(targetChunkSize);
         } catch (error: unknown) {
-            validateMemoryLimitError(error, canisterId);
+            validateMemoryLimitError(error);
             break;
         }
     }
-
-    console.info(`Called addRandomBytes ${callCount} times`);
 }
 
 /**
  * Validates that the error received matches the expected memory limit error
  * @param error - The error object to validate
- * @param canisterId - The canister's principal ID
  */
-function validateMemoryLimitError(error: unknown, canisterId: string): void {
+function validateMemoryLimitError(error: unknown): void {
+    const canisterId = getCanisterId('canister');
     expect(error).toMatchObject({
         name: 'AgentError',
         methodName: 'addRandomBytes',
@@ -185,4 +151,32 @@ function validateMemoryLimitError(error: unknown, canisterId: string): void {
             )
         )
     });
+}
+
+/**
+ * Validates the initial status of the canister matches expected memory limits
+ * @param wasmMemoryLimit - The configured wasm memory limit
+ */
+function validateInitialStatus(wasmMemoryLimit: number): void {
+    const initialStatus = getCanisterStatus(CANISTER_NAME);
+    expect(initialStatus.wasmMemoryLimit).toBe(wasmMemoryLimit);
+}
+
+/**
+ * Validates the final status of the canister after memory operations
+ * @param wasmMemoryLimit - The configured wasm memory limit
+ * @param wasmMemoryThreshold - The configured memory threshold
+ */
+function validateFinalStatus(
+    wasmMemoryLimit: number,
+    wasmMemoryThreshold: number
+): void {
+    const finalStatus = getCanisterStatus(CANISTER_NAME);
+
+    // This is the behavior I am expecting
+    expect(finalStatus.memorySize).toBeGreaterThan(
+        wasmMemoryLimit - wasmMemoryThreshold
+    );
+    // This is the behavior we are getting
+    expect(finalStatus.memorySize).toBeGreaterThan(wasmMemoryLimit);
 }

@@ -1,3 +1,5 @@
+import { ActorSubclass } from '@dfinity/agent';
+import { getCanisterActor } from 'azle/test';
 import { execSync } from 'child_process';
 import { writeFile } from 'fs/promises';
 
@@ -8,34 +10,12 @@ export interface CanisterStatus {
 }
 
 /**
- * Checks if the canister exists
- * @returns true if the canister exists, false otherwise
- */
-export function canisterExists(): boolean {
-    try {
-        const result = execSync('dfx canister status canister', {
-            stdio: 'pipe'
-        }).toString();
-        console.log(result);
-        return true;
-    } catch (error) {
-        if (
-            error instanceof Error &&
-            error.message.includes('Cannot find canister id')
-        ) {
-            return false;
-        }
-        throw error;
-    }
-}
-
-/**
  * Gets the current status of the canister including memory information
  * @returns Object containing status, memory size, and wasm memory limit
  * @throws Error if canister doesn't exist or status can't be parsed
  */
-export function getCanisterStatus(): CanisterStatus {
-    const output = execSync('dfx canister status canister', {
+export function getCanisterStatus(canisterName: string): CanisterStatus {
+    const output = execSync(`dfx canister status ${canisterName}`, {
         encoding: 'utf-8'
     });
 
@@ -64,12 +44,13 @@ export function getCanisterStatus(): CanisterStatus {
  * @param wasmMemoryLimit - The to set wasm_memory_limit in the dfx.json file
  */
 export async function configureDfxJsonWasmMemorySettings(
+    canisterName: string,
     wasmMemoryThreshold: string | number,
     wasmMemoryLimit: string | number
 ): Promise<void> {
     const dfxJson = {
         canisters: {
-            canister: {
+            [canisterName]: {
                 type: 'azle',
                 main: 'src/index.ts',
                 candid_gen: 'automatic',
@@ -92,10 +73,10 @@ export async function configureDfxJsonWasmMemorySettings(
  * Resets the dfx.json configuration file to default settings.
  * This is typically called after tests to ensure a clean state.
  */
-export async function resetDfxJson(): Promise<void> {
+export async function resetDfxJson(canisterName: string): Promise<void> {
     const dfxJson = {
         canisters: {
-            canister: {
+            [canisterName]: {
                 type: 'azle',
                 main: 'src/index.ts',
                 candid_gen: 'automatic',
@@ -107,4 +88,28 @@ export async function resetDfxJson(): Promise<void> {
         }
     };
     await writeFile('./dfx.json', `${JSON.stringify(dfxJson, null, 4)}\n`);
+}
+
+/**
+ * Completely removes the canister and redeploys it
+ *
+ * @remarks
+ * This is necessary because the changes to the dfx.json are only applied on canister creation.
+ */
+export async function deployFreshCanister<T>(
+    canisterName: string
+): Promise<ActorSubclass<T>> {
+    execSync(`dfx canister stop ${canisterName} || true`, {
+        stdio: 'inherit'
+    });
+    execSync(`dfx canister delete ${canisterName} --no-withdrawal || true`, {
+        stdio: 'inherit'
+    });
+    execSync(`dfx deploy ${canisterName} --no-wallet`, {
+        stdio: 'inherit'
+    });
+    execSync(`dfx generate ${canisterName}`, {
+        stdio: 'inherit'
+    });
+    return await getCanisterActor<T>(canisterName);
 }
