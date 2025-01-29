@@ -1,9 +1,22 @@
 import {
+    canisterBalance,
+    canisterVersion,
+    dataCertificate,
+    id,
+    isController,
+    msgArgData,
+    msgCaller,
+    performanceCounter,
+    reject,
+    setCertifiedData,
+    time,
+    trap
+} from 'azle';
+import {
     blob,
     bool,
     Canister,
     empty,
-    ic,
     int8,
     Manual,
     nat,
@@ -16,102 +29,71 @@ import {
     Void
 } from 'azle/experimental';
 
-// TODO: See https://github.com/demergent-labs/azle/issues/496
-// const ArgDataMultipleParamsResult = Record({
-//     blob: blob,
-//     int: int8,
-//     boolean: bool,
-//     string: text,
-// });
-
 export default Canister({
-    // // returns the argument data as an array.
-    // argDataZeroParams: query([], Vec(Null), () => {
-    //     return ic.argData();
-    // }),
-
-    // // returns the argument data as an array.
-    // argDataOneParam: query([bool], bool, () => {
-    //     return ic.argData()[0];
-    // }),
-
-    // // returns the argument data as an array.
-    // argDataMultipleParams: query(
-    //     [blob, int8, bool, text],
-    //     ArgDataMultipleParamsResult,
-    //     (_arg1, _arg2, _arg3, _arg4) => {
-    //         const argData = ic.argData();
-    //         return {
-    //             blob: Uint8Array.from(argData[0]),
-    //             int: argData[1],
-    //             boolean: argData[2],
-    //             string: argData[3]
-    //         };
-    //     }
-    // ),
-
     // returns the argument data as bytes.
     msgArgData: query(
         [blob, int8, bool, text],
         blob,
         (_arg1, _arg2, _arg3, _arg4) => {
-            return ic.msgArgData();
+            return msgArgData();
         }
     ),
     // returns the principal of the identity that called this function
     msgCaller: query([], Principal, () => {
-        return ic.msgCaller();
+        return msgCaller();
     }),
     // returns the amount of cycles available in the canister
     canisterBalance: query([], nat, () => {
-        return ic.canisterBalance();
+        return canisterBalance();
     }),
     // returns the canister's version number
     canisterVersion: query([], nat64, () => {
-        return ic.canisterVersion();
+        return canisterVersion();
     }),
     // When called from a query call, returns the data certificate
     // authenticating certified data set by this canister. Otherwise returns
     // None.
     dataCertificate: query([], Opt(blob), () => {
-        return ic.dataCertificate();
+        const cert = dataCertificate();
+        return cert === undefined ? { None: null } : { Some: cert };
     }),
     // When called from a query call, returns the data certificate
     // authenticating certified data set by this canister. Otherwise returns
     // None.
     dataCertificateNull: update([], Opt(blob), () => {
-        return ic.dataCertificate();
+        const cert = dataCertificate();
+        return cert === undefined ? { None: null } : { Some: cert };
     }),
     // returns this canister's id
     id: query([], Principal, () => {
-        return ic.id();
+        return id();
     }),
     // determines whether the given principal is a controller of the canister
     isController: query([Principal], bool, (principal) => {
-        return ic.isController(principal);
+        return isController(principal);
     }),
     performanceCounter: query([], nat64, () => {
-        return ic.performanceCounter(0);
+        return performanceCounter(0);
     }),
     reject: query(
         [text],
         Manual(empty),
         (message) => {
-            ic.reject(message);
+            reject(message);
         },
         { manual: true }
     ),
     // sets up to 32 bytes of certified data
     setCertifiedData: update([blob], Void, (data) => {
-        ic.setCertifiedData(data);
+        setCertifiedData(data);
     }),
     // returns the current timestamp
     time: query([], nat64, () => {
-        return ic.time();
+        return time();
     }),
     // traps with a message, stopping execution and discarding all state within the call
     trap: query([text], bool, (message) => {
-        ic.trap(message);
+        trap(message);
 
         return true;
     })

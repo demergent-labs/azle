@@ -1,7 +1,7 @@
+import { call } from 'azle';
 import {
     Canister,
     Func,
-    ic,
     init,
     nat64,
     Null,
@@ -19,7 +19,7 @@ import {
     Void
 } from 'azle/experimental';
 
-import Notifier, { NotifierFunc } from '../notifiers';
+import { NotifierFunc } from '../notifiers';
 
 const BasicFunc = Func([text], text, 'query');
 type BasicFunc = typeof BasicFunc.tsType;
@@ -58,7 +58,6 @@ export default Canister({
             'start_canister'
         ]);
     }),
-
     getStableFunc: query([], StableFunc, () => {
         const stableFunc = stableStorage.get('stableFunc');
         if (stableFunc === null) {
@@ -66,15 +65,12 @@ export default Canister({
         }
         return stableFunc;
     }),
-
     basicFuncParam: query([BasicFunc], BasicFunc, (basicFunc) => {
         return basicFunc;
     }),
-
     nullFuncParam: query([NullFunc], NullFunc, (nullFunc) => {
         return nullFunc;
     }),
-
     basicFuncParamArray: query(
         [Vec(BasicFunc)],
         Vec(BasicFunc),
@@ -82,11 +78,9 @@ export default Canister({
             return basicFunc;
         }
     ),
-
     basicFuncReturnType: query([], BasicFunc, () => {
         return [Principal.fromText('aaaaa-aa'), 'create_canister'];
     }),
-
     basicFuncReturnTypeArray: query([], Vec(BasicFunc), () => {
         return [
             [Principal.fromText('aaaaa-aa'), 'create_canister'],
@@ -94,23 +88,18 @@ export default Canister({
             [Principal.fromText('aaaaa-aa'), 'install_code']
         ];
     }),
-
     complexFuncParam: query([ComplexFunc], ComplexFunc, (complexFunc) => {
         return complexFunc;
     }),
-
     complexFuncReturnType: query([], ComplexFunc, () => {
         return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
     }),
-
     getNotifierFromNotifiersCanister: update([], NotifierFunc, async () => {
-        const notifiersCanister = Notifier(
-            Principal.fromText(getNotifierPrincipal())
-        );
+        const notifierPrincipal = getNotifierPrincipal();
 
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${getNotifierPrincipal()}/getNotifier`,
+                `icp://${notifierPrincipal}/getNotifier`,
                 {
                     body: serialize({
                         candidPath: `/candid/notifiers.did`
@@ -121,7 +110,13 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(notifiersCanister.getNotifier);
+            return await call<undefined, NotifierFunc>(
+                notifierPrincipal,
+                'getNotifier',
+                {
+                    returnIdlType: NotifierFunc.getIdlType([])
+                }
+            );
         }
     })
 });

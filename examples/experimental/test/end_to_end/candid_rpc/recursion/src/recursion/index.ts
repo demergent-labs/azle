@@ -1,7 +1,7 @@
+import { call, IDL, trap } from 'azle';
 import {
     Canister,
     Func,
-    ic,
     int8,
     None,
     Opt,
@@ -138,7 +138,7 @@ export default Canister({
             Principal.fromText(
                 process.env.MY_CANISTER_PRINCIPAL ??
                     // Principal.fromText('asrmz-lmaaa-aaaaa-qaaeq-cai') ??
-                    ic.trap('process.env.MY_CANISTER_PRINCIPAL is undefined')
+                    trap('process.env.MY_CANISTER_PRINCIPAL is undefined')
             )
         );
     }),
@@ -159,9 +159,30 @@ export default Canister({
                 const responseJson = await response.json();
                 return MyFullCanister(responseJson);
             } else {
-                return await ic.call(myFullCanister.myQuery, {
-                    args: [myFullCanister]
-                });
+                let MyFullCanisterIdl = IDL.Rec();
+
+                MyFullCanisterIdl.fill(
+                    IDL.Service({
+                        myQuery: IDL.Func(
+                            [MyFullCanisterIdl],
+                            [MyFullCanisterIdl],
+                            ['query']
+                        ),
+                        getMessage: IDL.Func([], [IDL.Text], ['query'])
+                    })
+                );
+
+                return MyFullCanister(
+                    await call<[Principal], Principal>(
+                        myFullCanister.principal.toText(),
+                        'myQuery',
+                        {
+                            paramIdlTypes: [MyFullCanisterIdl],
+                            returnIdlType: MyFullCanisterIdl,
+                            args: [myFullCanister.principal]
+                        }
+                    )
+                );
             }
         }
     )

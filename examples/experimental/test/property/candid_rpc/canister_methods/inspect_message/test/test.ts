@@ -23,7 +23,7 @@ const AZLE_RETURN_IDENTITY_NAME = `_prop_test_azle_return_identity_${v4()}`;
 const AZLE_THROW_IDENTITY_NAME = `_prop_test_azle_throw_identity_${v4()}`;
 
 const api: Api = 'functional';
-const context = { api, constraints: {} };
+const context = { api, constraints: {}, inspectMessageImportHack: true };
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -92,15 +92,15 @@ function generateInspectMessageMethodBody(): string {
     const returnPrincipal = getPrincipal(AZLE_RETURN_IDENTITY_NAME);
     const throwPrincipal = getPrincipal(AZLE_THROW_IDENTITY_NAME);
     return `
-        if (ic.msgCaller().toText() === "${acceptPrincipal}") {
-            ic.acceptMessage();
+        if (msgCaller().toText() === "${acceptPrincipal}") {
+            acceptMessage();
             return;
         }
-        if (ic.msgCaller().toText() === "${returnPrincipal}") {
+        if (msgCaller().toText() === "${returnPrincipal}") {
             return;
         }
-        if (ic.msgCaller().toText() === "${throwPrincipal}") {
-            throw new Error(\`Method "$\{ic.methodName()}" not allowed\`);
+        if (msgCaller().toText() === "${throwPrincipal}") {
+            throw new Error(\`Method "$\{methodName()}" not allowed\`);
         }
         throw new Error("Unexpected caller");
     `;

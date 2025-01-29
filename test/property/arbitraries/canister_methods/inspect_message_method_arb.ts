@@ -48,14 +48,7 @@ export function InspectMessageMethodArb(
                         : (constraints.methodImplementationLocation ??
                           defaultMethodImplementationLocation);
 
-                const inspectMessageImports =
-                    api === 'functional'
-                        ? ['ic']
-                        : ['msgCaller', 'acceptMessage', 'methodName'];
-                const imports = new Set([
-                    'inspectMessage',
-                    ...inspectMessageImports
-                ]);
+                const imports = new Set(['inspectMessage']);
 
                 const methodImplementation = generateMethodImplementation(
                     [],

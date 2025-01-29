@@ -23,7 +23,7 @@ const AZLE_RETURN_IDENTITY_NAME = `_prop_test_azle_return_identity_${v4()}`;
 const AZLE_THROW_IDENTITY_NAME = `_prop_test_azle_throw_identity_${v4()}`;
 
 const api: Api = 'class';
-const context = { api, constraints: {} };
+const context = { api, constraints: {}, inspectMessageImportHack: true };
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

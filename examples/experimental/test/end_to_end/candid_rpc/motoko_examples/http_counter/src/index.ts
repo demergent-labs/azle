@@ -1,10 +1,10 @@
+import { id, trap } from 'azle';
 import {
     blob,
     Canister,
     HeaderField,
     HttpRequest,
     HttpResponse,
-    ic,
     init,
     nat,
     None,
@@ -38,7 +38,7 @@ export default Canister({
                         body: encode('Counter'),
                         streaming_strategy: Some({
                             Callback: {
-                                callback: [ic.id(), 'http_streaming'],
+                                callback: [id(), 'http_streaming'],
                                 token: {
                                     arbitrary_data: 'start'
                                 }
@@ -51,7 +51,7 @@ export default Canister({
                 const counter = stableStorage.get('counter');
 
                 if (counter === null) {
-                    ic.trap('counter does not exist');
+                    trap('counter does not exist');
                 }
 
                 return {
@@ -106,7 +106,7 @@ export default Canister({
             const counterOpt = stableStorage.get('counter');
             const counter =
                 counterOpt === null
-                    ? ic.trap('counter does not exist')
+                    ? trap('counter does not exist')
                     : counterOpt;
 
             stableStorage.insert('counter', counter + 1n);
@@ -115,7 +115,7 @@ export default Canister({
                 const counterOpt = stableStorage.get('counter');
                 const counter =
                     counterOpt === null
-                        ? ic.trap('counter does not exist')
+                        ? trap('counter does not exist')
                         : counterOpt;
 
                 return {
@@ -170,7 +170,7 @@ export default Canister({
                     const counterOpt = stableStorage.get('counter');
                     const counter =
                         counterOpt === null
-                            ? ic.trap('counter does not exist')
+                            ? trap('counter does not exist')
                             : counterOpt;
 
                     return {
@@ -185,7 +185,7 @@ export default Canister({
                     };
                 }
                 default: {
-                    return ic.trap('should not happen');
+                    return trap('should not happen');
                 }
             }
         }

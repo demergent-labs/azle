@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { ic } from 'azle/experimental';
+import { time } from 'azle';
 import express from 'express';
 
 async function init(): Promise<void> {
@@ -9,7 +9,7 @@ async function init(): Promise<void> {
 
     tf.env().platform = {
         fetch,
-        now: (): number => Number(ic.time()), // TODO time probably off (look into nano vs milli)
+        now: (): number => Number(time()), // TODO time probably off (look into nano vs milli)
         encode: (text: string): Buffer => Buffer.from(text),
         decode: (bytes: Uint8Array): string => Buffer.from(bytes).toString(),
         isTypedArray: ((array: any): boolean => {

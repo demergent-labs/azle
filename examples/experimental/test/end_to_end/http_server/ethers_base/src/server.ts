@@ -1,4 +1,5 @@
-import { ic, jsonStringify, ThresholdWallet } from 'azle/experimental';
+import { id, msgCaller } from 'azle';
+import { jsonStringify, ThresholdWallet } from 'azle/experimental';
 import { ethers } from 'ethers';
 import express, { Request } from 'express';
 
@@ -9,7 +10,7 @@ app.use(express.json());
 app.get('/caller-address', async (_req, res) => {
     const wallet = new ThresholdWallet(
         {
-            derivationPath: [ic.msgCaller().toUint8Array()]
+            derivationPath: [msgCaller().toUint8Array()]
         },
         ethers.getDefaultProvider('https://sepolia.base.org')
     );
@@ -20,7 +21,7 @@ app.get('/caller-address', async (_req, res) => {
 app.get('/canister-address', async (_req, res) => {
     const wallet = new ThresholdWallet(
         {
-            derivationPath: [ic.id().toUint8Array()]
+            derivationPath: [id().toUint8Array()]
         },
         ethers.getDefaultProvider('https://sepolia.base.org')
     );
@@ -68,7 +69,7 @@ app.post(
         try {
             const wallet = new ThresholdWallet(
                 {
-                    derivationPath: [ic.id().toUint8Array()]
+                    derivationPath: [id().toUint8Array()]
                 },
                 ethers.getDefaultProvider('https://sepolia.base.org')
             );

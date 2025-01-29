@@ -1,7 +1,7 @@
+import { time } from 'azle';
 import {
     blob,
     Canister,
-    ic,
     nat64,
     None,
     Opt,
@@ -40,7 +40,7 @@ export default Canister({
         const id = generateId();
         const user: User = {
             id,
-            createdAt: ic.time(),
+            createdAt: time(),
             recordingIds: [],
             username
         };
@@ -89,7 +89,7 @@ export default Canister({
             const recording: Recording = {
                 id,
                 audio,
-                createdAt: ic.time(),
+                createdAt: time(),
                 name,
                 userId
             };

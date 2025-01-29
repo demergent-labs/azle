@@ -1,7 +1,7 @@
+import { trap } from 'azle';
 import {
     bool,
     Canister,
-    ic,
     init,
     nat,
     postUpgrade,
@@ -27,7 +27,7 @@ export default Canister({
     increment: update([], nat, () => {
         const counter = stableStorage.get('counter');
         if (counter === null) {
-            return ic.trap('counter not defined');
+            return trap('counter not defined');
         }
         const incrementedCounter = counter + 1n;
 
@@ -39,7 +39,7 @@ export default Canister({
         const counter = stableStorage.get('counter');
 
         if (counter === null) {
-            return ic.trap('counter not defined');
+            return trap('counter not defined');
         }
 
         return counter;
@@ -49,7 +49,7 @@ export default Canister({
 
         const counter = stableStorage.get('counter');
         if (counter === null) {
-            return ic.trap('counter not defined');
+            return trap('counter not defined');
         }
 
         return counter;

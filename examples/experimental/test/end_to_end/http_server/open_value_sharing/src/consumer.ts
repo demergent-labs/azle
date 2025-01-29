@@ -1,4 +1,5 @@
-import { ic, jsonStringify, StableBTreeMap } from 'azle/experimental';
+import { chunk, performanceCounter } from 'azle';
+import { jsonStringify, StableBTreeMap } from 'azle/experimental';
 import express from 'express';
 
 let db = StableBTreeMap(0);
@@ -21,13 +22,13 @@ app.post('/test-long-running', async (req, res) => {
         }
 
         if (i % 30_000 === 0) {
-            await ic.chunk();
+            await chunk();
         }
     }
 
     res.send(
         jsonStringify({
-            instructions: ic.performanceCounter(1)
+            instructions: performanceCounter(1)
         })
     );
 });

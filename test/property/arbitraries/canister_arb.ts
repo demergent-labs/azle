@@ -9,7 +9,7 @@ import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { UpdateMethod } from './canister_methods/update_method_arb';
-import { Context } from './types';
+import { Api, Context } from './types';
 
 export type Canister = {
     initArgs: string[] | undefined;
@@ -93,7 +93,8 @@ export function CanisterArb<
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
             canisterMethods,
-            context.api
+            context.api,
+            context.inspectMessageImportHack
         );
 
         const tests = canisterMethods.reduce(
@@ -131,7 +132,8 @@ export function CanisterArb<
 function generateSourceCode(
     globalDeclarations: string[],
     canisterMethods: (UpdateMethod | QueryMethod)[],
-    api: 'class' | 'functional'
+    api: Api,
+    inspectMessageImportHack?: boolean
 ): string {
     const canisterImports = api === 'functional' ? ['Canister'] : [];
     const imports = [
@@ -168,6 +170,7 @@ function generateSourceCode(
     `;
 
     return /*TS*/ `
+        ${inspectMessageImportHack === true ? `import { acceptMessage, methodName, msgCaller } from 'azle';` : ''}
         import { ${imports} } from '${importLocation}';
         // @ts-ignore
         import deepEqual from 'deep-is';
