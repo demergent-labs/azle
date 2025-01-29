@@ -182,11 +182,15 @@ function createWait(name: string, delay: number): () => Promise<void> {
 }
 
 /**
- * Parses a fast-check error message and returns a command to reproduce the failure
- * @param error The error message from fast-check containing seed and path information
- * @returns A command string that can be used to reproduce the failure
+ * @internal
+ *
+ * Extracts the seed and path from a fast-check error message and formats them into a command
+ * that can be used to reproduce the exact test case that failed.
+ *
+ * @param error - The error message from fast-check containing seed and path information
+ * @returns A command string that can be used to reproduce the exact test case that failed
  */
-export function getReproductionCommand(error: string): string {
+function formatPropertyTestReproductionCommand(error: string): string {
     // Look for the fast-check error details in the full stack trace
     const fcErrorMatch = error.match(
         /Property failed after \d+ tests[\s\S]*?{ seed: (-?\d+), path: "([^"]+)"/
@@ -201,8 +205,15 @@ export function getReproductionCommand(error: string): string {
 }
 
 /**
- * Wraps a fast-check assertion to capture its output in case of failure
- * @param assertion The fast-check assertion to run
+ * Wraps a fast-check property test assertion and provides a helpful error message if the test fails.
+ *
+ * @param assertion - The fast-check property test assertion to run
+ * @throws Error with reproduction command and original error message if the assertion fails
+ *
+ * @remarks
+ * The error message includes:
+ * 1. A command that can be used to reproduce the exact failing test case
+ * 2. The original error message from fast-check
  */
 export async function runAndProvideReproduction(
     assertion: () => Promise<void>
@@ -212,7 +223,8 @@ export async function runAndProvideReproduction(
     } catch (error) {
         const errorOutput =
             error instanceof Error ? error.message : String(error);
-        const reproductionCommand = getReproductionCommand(errorOutput);
+        const reproductionCommand =
+            formatPropertyTestReproductionCommand(errorOutput);
         throw new Error(
             `To reproduce this exact test case, run:
 ${reproductionCommand}

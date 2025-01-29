@@ -73,20 +73,16 @@ async function addBytesUntilLimitReached(actor: Actor): Promise<void> {
 
         // Get current status to make informed decision about next chunk size
         const status = getCanisterStatus(CANISTER_NAME);
-        const remainingHardLimit = HARD_LIMIT - status.memorySize;
+        const maxPossibleChunk = HARD_LIMIT - status.memorySize;
 
-        if (remainingHardLimit <= 0) {
+        if (maxPossibleChunk <= 0) {
             break;
         }
 
-        // Calculate the maximum possible chunk we can add without hitting hard limit
-        const maxPossibleChunk = remainingHardLimit;
-
-        // Start with an aggressive chunk size (up to 100MB) but ensure we don't exceed hard limit
-        let targetChunkSize = Math.min(
-            maxPossibleChunk,
-            100 * 1024 * 1024 // 100MB cap
-        );
+        // 100MiBs is a good general purpose chunk size. The biggest canisters
+        // fill up in less than 20 calls (less than 1 minute). Large chunks are
+        // more likely to run out of memory in the middle of the call.
+        let targetChunkSize = Math.min(maxPossibleChunk, 100 * 1024 * 1024);
 
         try {
             console.info(`Called addRandomBytes ${callCount} times`);
@@ -103,7 +99,7 @@ async function addBytesUntilLimitReached(actor: Actor): Promise<void> {
  * @param error - The error object to validate
  */
 function validateMemoryLimitError(error: unknown): void {
-    const canisterId = getCanisterId('canister');
+    const canisterId = getCanisterId(CANISTER_NAME);
     expect(error).toMatchObject({
         name: 'AgentError',
         methodName: 'addRandomBytes',
