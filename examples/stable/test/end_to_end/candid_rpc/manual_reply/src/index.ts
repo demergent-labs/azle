@@ -1,4 +1,4 @@
-import { candidEncode, IDL, query, reject, reply, update } from 'azle';
+import { candidEncode, IDL, msgReply, query, reject, update } from 'azle';
 
 const Options = IDL.Variant({
     Small: IDL.Null,
@@ -95,40 +95,50 @@ export default class {
             return;
         }
 
-        reply({ data: message, idlType: IDL.Text });
+        msgReply(new Uint8Array(IDL.encode([IDL.Text], [message])));
     }
 
     @update([], IDL.Vec(IDL.Nat8), { manual: true })
     updateBlob(): void {
-        reply({
-            data: new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-            idlType: IDL.Vec(IDL.Nat8)
-        });
+        msgReply(
+            new Uint8Array(
+                IDL.encode(
+                    [IDL.Vec(IDL.Nat8)],
+                    [
+                        new Uint8Array([
+                            83, 117, 114, 112, 114, 105, 115, 101, 33
+                        ])
+                    ]
+                )
+            )
+        );
     }
 
     @update([], IDL.Float32, { manual: true })
     updateFloat32(): void {
-        reply({ data: 1245.678, idlType: IDL.Float32 });
+        msgReply(new Uint8Array(IDL.encode([IDL.Float32], [1245.678])));
     }
 
     @update([], IDL.Int8, { manual: true })
     updateInt8(): void {
-        reply({ data: -100, idlType: IDL.Int8 });
+        msgReply(new Uint8Array(IDL.encode([IDL.Int8], [-100])));
     }
 
     @update([], IDL.Nat, { manual: true })
     updateNat(): void {
-        reply({ data: 184467440737095516150n, idlType: IDL.Nat });
+        msgReply(
+            new Uint8Array(IDL.encode([IDL.Nat], [184467440737095516150n]))
+        );
     }
 
     @update([], IDL.Null, { manual: true })
     updateNull(): void {
-        reply({ data: null, idlType: IDL.Null });
+        msgReply(new Uint8Array(IDL.encode([IDL.Null], [null])));
     }
 
     @update([], undefined, { manual: true })
     updateVoid(): void {
-        reply({ data: undefined });
+        msgReply(new Uint8Array(IDL.encode([], [])));
     }
 
     @update([], Element, { manual: true })
@@ -141,32 +151,33 @@ export default class {
             ],
             state: { Gas: { Elemental: null } }
         };
-        reply({ data: element, idlType: Element });
+
+        msgReply(new Uint8Array(IDL.encode([Element], [element])));
     }
 
     @update([], IDL.Reserved, { manual: true })
     updateReserved(): void {
-        reply({ data: undefined, idlType: IDL.Reserved });
+        msgReply(new Uint8Array(IDL.encode([IDL.Reserved], [undefined])));
     }
 
     @update([], IDL.Text, { manual: true })
     updateString(): void {
-        reply({ data: 'hello', idlType: IDL.Text });
+        msgReply(new Uint8Array(IDL.encode([IDL.Text], ['hello'])));
     }
 
     @update([], Gas, { manual: true })
     updateVariant(): void {
         const gas: Gas = { Toxic: null };
-        reply({ data: gas, idlType: Gas });
+        msgReply(new Uint8Array(IDL.encode([Gas], [gas])));
     }
 
     @update([], RawReply, { manual: true })
     replyRaw(): void {
-        reply({
-            raw: candidEncode(
+        msgReply(
+            candidEncode(
                 '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
             )
-        });
+        );
     }
 
     // Queries
@@ -177,40 +188,50 @@ export default class {
             return;
         }
 
-        reply({ data: message, idlType: IDL.Text });
+        msgReply(new Uint8Array(IDL.encode([IDL.Text], [message])));
     }
 
     @query([], IDL.Vec(IDL.Nat8), { manual: true })
     queryBlob(): void {
-        reply({
-            data: new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-            idlType: IDL.Vec(IDL.Nat8)
-        });
+        msgReply(
+            new Uint8Array(
+                IDL.encode(
+                    [IDL.Vec(IDL.Nat8)],
+                    [
+                        new Uint8Array([
+                            83, 117, 114, 112, 114, 105, 115, 101, 33
+                        ])
+                    ]
+                )
+            )
+        );
     }
 
     @query([], IDL.Float32, { manual: true })
     queryFloat32(): void {
-        reply({ data: 1245.678, idlType: IDL.Float32 });
+        msgReply(new Uint8Array(IDL.encode([IDL.Float32], [1245.678])));
     }
 
     @query([], IDL.Int8, { manual: true })
     queryInt8(): void {
-        reply({ data: -100, idlType: IDL.Int8 });
+        msgReply(new Uint8Array(IDL.encode([IDL.Int8], [-100])));
     }
 
     @query([], IDL.Nat, { manual: true })
     queryNat(): void {
-        reply({ data: 184467440737095516150n, idlType: IDL.Nat });
+        msgReply(
+            new Uint8Array(IDL.encode([IDL.Nat], [184467440737095516150n]))
+        );
     }
 
     @query([], IDL.Null, { manual: true })
     queryNull(): void {
-        reply({ data: null, idlType: IDL.Null });
+        msgReply(new Uint8Array(IDL.encode([IDL.Null], [null])));
     }
 
     @query([], undefined, { manual: true })
     queryVoid(): void {
-        reply({ data: undefined });
+        msgReply(new Uint8Array(IDL.encode([], [])));
     }
 
     @query([], Element, { manual: true })
@@ -224,23 +245,22 @@ export default class {
             state: { Gas: { Elemental: null } }
         };
 
-        reply({ data: element, idlType: Element });
+        msgReply(new Uint8Array(IDL.encode([Element], [element])));
     }
 
     @query([], IDL.Reserved, { manual: true })
     queryReserved(): void {
-        reply({ data: undefined, idlType: IDL.Reserved });
+        msgReply(new Uint8Array(IDL.encode([IDL.Reserved], [undefined])));
     }
 
     @query([], IDL.Text, { manual: true })
     queryString(): void {
-        reply({ data: 'hello', idlType: IDL.Text });
+        msgReply(new Uint8Array(IDL.encode([IDL.Text], ['hello'])));
     }
 
     @query([], Gas, { manual: true })
     queryVariant(): void {
         const gas: Gas = { Toxic: null };
-
-        reply({ data: gas, idlType: Gas });
+        msgReply(new Uint8Array(IDL.encode([Gas], [gas])));
     }
 }
