@@ -5,7 +5,7 @@ export function generateCanister(
     variableAliasDeclarations: string[]
 ): string {
     return /*ts*/ `
-import { query, reply, update } from 'azle';
+import { msgReply, query, update } from 'azle';
 ${imports
     .map((importDeclaration) => `import { ${importDeclaration} } from 'azle';`)
     .join('\n')}
@@ -14,12 +14,16 @@ ${variableAliasDeclarations.join('\n')}
 export default class {
     @query([${idlType}], ${idlType}, { manual: true })
     alwaysReplyQuery(input: ${tsType}): void {
-        reply({ data: input, idlType: ${idlType} });
+        const encoded = new Uint8Array(IDL.encode([${idlType}], [input]));
+
+        msgReply(encoded);
     }
 
     @update([${idlType}], ${idlType}, { manual: true })
     alwaysReplyUpdate(input: ${tsType}): void {
-        reply({ data: input, idlType: ${idlType} });
+        const encoded = new Uint8Array(IDL.encode([${idlType}], [input]));
+
+        msgReply(encoded);
     }
 }
     `;

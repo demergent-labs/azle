@@ -102,7 +102,7 @@ function encodeResultAndReply(
 
     const encodedResult = idlEncode(
         [...(returnIdlType !== undefined ? [returnIdlType] : [])],
-        [unencodedResult]
+        [...(unencodedResult !== undefined ? [unencodedResult] : [])]
     );
 
     msgReply(encodedResult);
