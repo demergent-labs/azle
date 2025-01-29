@@ -1,7 +1,7 @@
 import '../experimental';
 
 import { handleUncaughtError } from '../../stable/error';
-import { performanceCounter, reply } from '../../stable/ic_apis';
+import { msgReply, performanceCounter } from '../../stable/ic_apis';
 import { CandidType } from '../candid/candid_type';
 import { decode } from '../candid/serde/decode';
 import { encode } from '../candid/serde/encode';
@@ -36,7 +36,7 @@ export function executeMethod(
         result
             .then((result: any) => {
                 if (!manual) {
-                    reply({ raw: encode(returnCandidType, result) });
+                    msgReply(encode(returnCandidType, result));
                 }
 
                 // TODO this won't be accurate because we have most likely had
@@ -48,7 +48,7 @@ export function executeMethod(
             });
     } else {
         if (!manual) {
-            reply({ raw: encode(returnCandidType, result) });
+            msgReply(encode(returnCandidType, result));
         }
 
         reportFinalInstructions();
