@@ -1,4 +1,3 @@
-import { afterAll, beforeAll } from '@jest/globals';
 import { Principal } from 'azle';
 import { getCanisterId } from 'azle/dfx';
 import {
@@ -11,33 +10,20 @@ import {
 import fc from 'fast-check';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
-import {
-    configureDfxJsonWasmMemorySettings,
-    deployFreshCanister,
-    getCanisterStatus,
-    resetDfxJson
-} from './helpers/dfx';
+import { deployFreshCanister, getCanisterStatus } from './helpers/dfx';
 
 const HARD_LIMIT = 3.5 * 1024 * 1024 * 1024; // 3.5 GiB in bytes (We can't use 4 GiB because we need enough memory to successfully finish a call)
 const CANISTER_NAME = 'canister';
 
 export function getTests(): Test {
     return () => {
-        beforeAll(async () => {
-            await resetDfxJson(CANISTER_NAME);
-        });
-
-        afterAll(async () => {
-            await resetDfxJson(CANISTER_NAME);
-        });
-
         it('should trigger low memory handler when memory limit is approached', async () => {
             await runAndProvideReproduction(async () => {
                 await fc.assert(
                     fc.asyncProperty(
-                        fc.float({ min: 0, max: 1 }),
+                        fc.integer({ min: 0, max: 100 }),
                         fc.integer({
-                            min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of an azle canister)
+                            min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of this azle canister)
                             max: HARD_LIMIT
                         }),
                         async (
@@ -45,17 +31,16 @@ export function getTests(): Test {
                             wasmMemoryLimit
                         ) => {
                             // Calculate actual threshold based on percentage
-                            const wasmMemoryThreshold =
-                                wasmMemoryLimit * wasmMemoryThresholdPercentage;
+                            const wasmMemoryThreshold = Math.floor(
+                                wasmMemoryLimit *
+                                    (wasmMemoryThresholdPercentage / 100)
+                            );
 
-                            await configureDfxJsonWasmMemorySettings(
+                            const actor = await deployFreshCanister<Actor>(
                                 CANISTER_NAME,
                                 wasmMemoryThreshold,
                                 wasmMemoryLimit
                             );
-
-                            const actor =
-                                await deployFreshCanister<Actor>(CANISTER_NAME);
 
                             await validateInitialStatus(actor, wasmMemoryLimit);
 
