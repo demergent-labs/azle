@@ -57,26 +57,15 @@ export function getTests(): Test {
                             const actor =
                                 await deployFreshCanister<Actor>(CANISTER_NAME);
 
-                            const lowMemoryHandlerCalledAtBeginning =
-                                await actor.wasLowMemoryHandlerCalled();
-
-                            expect(lowMemoryHandlerCalledAtBeginning).toBe(
-                                false
-                            );
-
-                            validateInitialStatus(wasmMemoryLimit);
+                            await validateInitialStatus(actor, wasmMemoryLimit);
 
                             await addBytesUntilLimitReached(actor);
 
-                            validateFinalStatus(
+                            await validateFinalStatus(
+                                actor,
                                 wasmMemoryLimit,
                                 wasmMemoryThreshold
                             );
-
-                            const lowMemoryHandlerCalled =
-                                await actor.wasLowMemoryHandlerCalled();
-
-                            expect(lowMemoryHandlerCalled).toBe(true);
                         }
                     ),
                     defaultPropTestParams()
@@ -154,23 +143,39 @@ function validateMemoryLimitError(error: unknown): void {
 }
 
 /**
- * Validates the initial status of the canister matches expected memory limits
+ * Validates the initial state of the canister:
+ * - Confirms low memory handler has not been called
+ * - Verifies wasm memory limit matches configured value
+ * @param actor - The canister actor instance
  * @param wasmMemoryLimit - The configured wasm memory limit
  */
-function validateInitialStatus(wasmMemoryLimit: number): void {
+async function validateInitialStatus(
+    actor: Actor,
+    wasmMemoryLimit: number
+): Promise<void> {
+    const lowMemoryHandlerCalledAtBeginning =
+        await actor.wasLowMemoryHandlerCalled();
+
+    expect(lowMemoryHandlerCalledAtBeginning).toBe(false);
+
     const initialStatus = getCanisterStatus(CANISTER_NAME);
     expect(initialStatus.wasmMemoryLimit).toBe(wasmMemoryLimit);
 }
 
 /**
- * Validates the final status of the canister after memory operations
+ * Validates the final state of the canister after memory operations:
+ * - Verifies memory size exceeds (wasmMemoryLimit - wasmMemoryThreshold)
+ * - Verifies memory size exceeds wasmMemoryLimit (current behavior)
+ * - Confirms low memory handler was called
+ * @param actor - The canister actor instance
  * @param wasmMemoryLimit - The configured wasm memory limit
  * @param wasmMemoryThreshold - The configured memory threshold
  */
-function validateFinalStatus(
+async function validateFinalStatus(
+    actor: Actor,
     wasmMemoryLimit: number,
     wasmMemoryThreshold: number
-): void {
+): Promise<void> {
     const finalStatus = getCanisterStatus(CANISTER_NAME);
 
     // This is the behavior I am expecting
@@ -179,4 +184,8 @@ function validateFinalStatus(
     );
     // This is the behavior we are getting
     expect(finalStatus.memorySize).toBeGreaterThan(wasmMemoryLimit);
+
+    const lowMemoryHandlerCalled = await actor.wasLowMemoryHandlerCalled();
+
+    expect(lowMemoryHandlerCalled).toBe(true);
 }
