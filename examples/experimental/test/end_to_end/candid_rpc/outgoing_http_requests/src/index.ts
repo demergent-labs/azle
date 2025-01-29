@@ -1,4 +1,4 @@
-import { call, candidEncode, id, reply } from 'azle';
+import { call, candidEncode, id, msgReply } from 'azle';
 import {
     http_request_args,
     http_request_result
@@ -87,7 +87,7 @@ export default Canister({
                 }
             );
 
-            reply({ raw: httpResponse });
+            msgReply(httpResponse);
         },
         { manual: true }
     ),
