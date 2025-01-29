@@ -1,3 +1,4 @@
+import { afterAll, beforeAll } from '@jest/globals';
 import { Principal } from 'azle';
 import { getCanisterId } from 'azle/dfx';
 import {
@@ -6,6 +7,7 @@ import {
     expect,
     getCanisterActor,
     it,
+    please,
     Test
 } from 'azle/test';
 import { execSync } from 'child_process';
@@ -13,6 +15,7 @@ import fc from 'fast-check';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 import {
+    canisterExists,
     configureDfxJsonWasmMemorySettings,
     getCanisterStatus,
     resetDfxJson
@@ -20,6 +23,30 @@ import {
 
 export function getTests(): Test {
     return () => {
+        beforeAll(async () => {
+            await resetDfxJson();
+        });
+
+        afterAll(async () => {
+            await resetDfxJson();
+        });
+
+        please(
+            'completely remove the canister so changes to dfx.json can take effect',
+            () => {
+                execSync(`dfx canister stop canister || true`, {
+                    stdio: 'inherit'
+                });
+                execSync(`dfx canister delete canister || true`, {
+                    stdio: 'inherit'
+                });
+                // Verify canister doesn't exist before deploying
+                console.log(1);
+                expect(canisterExists()).toBe(false);
+                console.log(2);
+            }
+        );
+
         it('should trigger low memory handler when memory limit is approached', async () => {
             await captureAssertionOutput(async () => {
                 await fc.assert(
@@ -43,13 +70,6 @@ export function getTests(): Test {
                                 wasmMemoryLimit
                             );
 
-                            execSync(`dfx canister stop canister || true`, {
-                                stdio: 'inherit'
-                            });
-
-                            execSync(`dfx canister delete canister || true`, {
-                                stdio: 'inherit'
-                            });
                             execSync(`dfx deploy --no-wallet`, {
                                 stdio: 'inherit'
                             });
@@ -62,6 +82,7 @@ export function getTests(): Test {
                                 await getCanisterActor<Actor>('canister');
 
                             // Get initial status
+                            expect(canisterExists()).toBe(true);
                             const initialStatus = getCanisterStatus();
                             console.log(
                                 'Initial canister status:',
@@ -77,8 +98,6 @@ export function getTests(): Test {
                             const lowMemoryHandlerCalled =
                                 await actor.wasLowMemoryHandlerCalled();
                             expect(lowMemoryHandlerCalled).toBe(true);
-
-                            await resetDfxJson();
                         }
                     ),
                     defaultPropTestParams()

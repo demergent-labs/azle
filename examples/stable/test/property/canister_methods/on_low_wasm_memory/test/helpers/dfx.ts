@@ -8,8 +8,31 @@ export interface CanisterStatus {
 }
 
 /**
+ * Checks if the canister exists
+ * @returns true if the canister exists, false otherwise
+ */
+export function canisterExists(): boolean {
+    try {
+        const result = execSync('dfx canister status canister', {
+            stdio: 'pipe'
+        }).toString();
+        console.log(result);
+        return true;
+    } catch (error) {
+        if (
+            error instanceof Error &&
+            error.message.includes('Cannot find canister id')
+        ) {
+            return false;
+        }
+        throw error;
+    }
+}
+
+/**
  * Gets the current status of the canister including memory information
  * @returns Object containing status, memory size, and wasm memory limit
+ * @throws Error if canister doesn't exist or status can't be parsed
  */
 export function getCanisterStatus(): CanisterStatus {
     const output = execSync('dfx canister status canister', {
@@ -83,5 +106,5 @@ export async function resetDfxJson(): Promise<void> {
             }
         }
     };
-    await writeFile('./dfx.json', JSON.stringify(dfxJson, null, 4));
+    await writeFile('./dfx.json', `${JSON.stringify(dfxJson, null, 4)}\n`);
 }
