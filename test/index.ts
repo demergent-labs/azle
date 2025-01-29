@@ -204,7 +204,7 @@ export function getReproductionCommand(error: string): string {
  * Wraps a fast-check assertion to capture its output in case of failure
  * @param assertion The fast-check assertion to run
  */
-export async function captureAssertionOutput(
+export async function runAndProvideReproduction(
     assertion: () => Promise<void>
 ): Promise<void> {
     try {

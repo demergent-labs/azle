@@ -2,10 +2,10 @@ import { afterAll, beforeAll } from '@jest/globals';
 import { Principal } from 'azle';
 import { getCanisterId } from 'azle/dfx';
 import {
-    captureAssertionOutput,
     defaultPropTestParams,
     expect,
     it,
+    runAndProvideReproduction,
     Test
 } from 'azle/test';
 import fc from 'fast-check';
@@ -32,7 +32,7 @@ export function getTests(): Test {
         });
 
         it('should trigger low memory handler when memory limit is approached', async () => {
-            await captureAssertionOutput(async () => {
+            await runAndProvideReproduction(async () => {
                 await fc.assert(
                     fc.asyncProperty(
                         fc.float({ min: 0, max: 1 }),
