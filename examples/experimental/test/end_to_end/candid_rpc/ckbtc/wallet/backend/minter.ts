@@ -59,6 +59,12 @@ const UpdateBalanceError = Variant({
 
 export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
 
+export const AccountArg = Record({
+    owner: Opt(Principal),
+    subaccount: Opt(blob)
+});
+export type AccountArg = typeof AccountArg.tsType;
+
 export const Minter = Canister({
     get_btc_address: update(
         [

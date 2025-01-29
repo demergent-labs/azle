@@ -1,25 +1,17 @@
+import { call, id, reply } from 'azle';
 import {
     Canister,
-    ic,
-    init,
     Manual,
     nat,
-    Principal,
     query,
     serialize,
     text,
     update
 } from 'azle/experimental';
 
-import Canister2 from '../canister2';
-
-let canister2: typeof Canister2;
 let counter: nat = 0n;
 
 const CompQueryCanister = Canister({
-    init: init([], () => {
-        canister2 = Canister2(Principal.fromText(getCanister2Principal()));
-    }),
     // Composite query calling a query
     simpleCompositeQuery: query([], text, async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
@@ -35,7 +27,13 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.simpleQuery);
+            return await call<undefined, text>(
+                getCanister2Principal(),
+                'simpleQuery',
+                {
+                    returnIdlType: text.getIdlType()
+                }
+            );
         }
     }),
     // Composite query calling a manual query
@@ -53,7 +51,13 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return (await ic.call(canister2.manualQuery)) as unknown as string; // TODO is this the best we can do for the types in this situation?
+            return await call<undefined, text>(
+                getCanister2Principal(),
+                'manualQuery',
+                {
+                    returnIdlType: text.getIdlType()
+                }
+            );
         }
     }),
     // Manual composite query calling a manual query
@@ -72,11 +76,17 @@ const CompQueryCanister = Canister({
                 );
                 const responseJson = await response.json();
 
-                ic.reply({ data: responseJson, candidType: text });
+                reply({ data: responseJson, idlType: text.getIdlType() });
             } else {
-                ic.reply({
-                    data: await ic.call(canister2.manualQuery),
-                    candidType: text
+                reply({
+                    data: await call<undefined, text>(
+                        getCanister2Principal(),
+                        'manualQuery',
+                        {
+                            returnIdlType: text.getIdlType()
+                        }
+                    ),
+                    idlType: text.getIdlType()
                 });
             }
         },
@@ -97,7 +107,13 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.deepQuery);
+            return await call<undefined, text>(
+                getCanister2Principal(),
+                'deepQuery',
+                {
+                    returnIdlType: text.getIdlType()
+                }
+            );
         }
     }),
     // Composite query calling an update method. SHOULDN'T WORK
@@ -115,7 +131,13 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.updateQuery);
+            return await call<undefined, text>(
+                getCanister2Principal(),
+                'updateQuery',
+                {
+                    returnIdlType: text.getIdlType()
+                }
+            );
         }
     }),
     // Composite query being called by a query method. SHOULDN'T WORK
@@ -133,7 +155,13 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.simpleQuery);
+            return await call<undefined, text>(
+                getCanister2Principal(),
+                'simpleQuery',
+                {
+                    returnIdlType: text.getIdlType()
+                }
+            );
         }
     }),
     // Composite query being called by an update method. SHOULDN'T WORK
@@ -151,7 +179,13 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await ic.call(canister2.deepQuery);
+            return await call<undefined, text>(
+                getCanister2Principal(),
+                'deepQuery',
+                {
+                    returnIdlType: text.getIdlType()
+                }
+            );
         }
     }),
     // Composite query that modifies the state. Should revert after the call is done
@@ -162,7 +196,7 @@ const CompQueryCanister = Canister({
     }),
     // Composite query calling queries on the same canister
     incCanister1: query([], nat, async () => {
-        const self: any = CompQueryCanister(ic.id());
+        const self = CompQueryCanister(id());
 
         counter += 1n;
 
@@ -198,7 +232,7 @@ function getCanister2Principal(): string {
     throw new Error(`process.env.CANISTER2_PRINCIPAL is not defined`);
 }
 
-async function incCanister(canister: any, candidPath: string): Promise<any> {
+async function incCanister(canister: any, candidPath: string): Promise<nat> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(
             `icp://${canister.principal.toText()}/incCounter`,
@@ -208,11 +242,17 @@ async function incCanister(canister: any, candidPath: string): Promise<any> {
 
         return responseJson;
     } else {
-        return await ic.call(canister.incCounter);
+        return await call<undefined, nat>(
+            canister.principal.toText(),
+            'incCounter',
+            {
+                returnIdlType: nat.getIdlType()
+            }
+        );
     }
 }
 
-async function incCanister2(): Promise<any> {
+async function incCanister2(): Promise<nat> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(
             `icp://${getCanister2Principal()}/incCounter`,
@@ -226,6 +266,12 @@ async function incCanister2(): Promise<any> {
 
         return responseJson;
     } else {
-        return await ic.call(canister2.incCounter);
+        return await call<undefined, nat>(
+            getCanister2Principal(),
+            'incCounter',
+            {
+                returnIdlType: nat.getIdlType()
+            }
+        );
     }
 }

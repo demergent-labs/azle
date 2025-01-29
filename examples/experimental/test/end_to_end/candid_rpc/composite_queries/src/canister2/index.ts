@@ -1,25 +1,17 @@
+import { call, reply } from 'azle';
 import {
     Canister,
-    ic,
-    init,
     Manual,
     nat,
-    Principal,
     query,
     serialize,
     text,
     update
 } from 'azle/experimental';
 
-import Canister3 from '../canister3';
-
-let canister3: typeof Canister3;
 let counter: nat = 0n;
 
 export default Canister({
-    init: init([], () => {
-        canister3 = Canister3(Principal.fromText(getCanister3Principal()));
-    }),
     // TODO is this supposed to be a query?
     incCounter: query([], nat, () => {
         counter += 1n;
@@ -35,17 +27,19 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            ic.reply({
+            reply({
                 data: 'Hello from Canister 2 manual query',
-                candidType: text
+                idlType: text.getIdlType()
             });
         },
         { manual: true }
     ),
     deepQuery: query([], text, async () => {
+        const canister3Principal = getCanister3Principal();
+
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${getCanister3Principal()}/deepQuery`,
+                `icp://${canister3Principal}/deepQuery`,
                 {
                     body: serialize({
                         candidPath: `/candid/canister3.did`
@@ -55,7 +49,13 @@ export default Canister({
 
             return await response.json();
         } else {
-            return await ic.call(canister3.deepQuery);
+            return await call<undefined, text>(
+                canister3Principal,
+                'deepQuery',
+                {
+                    returnIdlType: text.getIdlType()
+                }
+            );
         }
     })
 });
