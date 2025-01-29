@@ -1,4 +1,4 @@
-import { call, reply } from 'azle';
+import { call, IDL, msgReply } from 'azle';
 import {
     Canister,
     Manual,
@@ -27,10 +27,14 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            reply({
-                data: 'Hello from Canister 2 manual query',
-                idlType: text.getIdlType()
-            });
+            const encoded = new Uint8Array(
+                IDL.encode(
+                    [text.getIdlType()],
+                    ['Hello from Canister 2 manual query']
+                )
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
