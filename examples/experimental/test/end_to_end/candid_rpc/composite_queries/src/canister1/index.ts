@@ -1,4 +1,4 @@
-import { call, id, reply } from 'azle';
+import { call, id, IDL, msgReply } from 'azle';
 import {
     Canister,
     Manual,
@@ -76,18 +76,25 @@ const CompQueryCanister = Canister({
                 );
                 const responseJson = await response.json();
 
-                reply({ data: responseJson, idlType: text.getIdlType() });
+                const encoded = new Uint8Array(
+                    IDL.encode([text.getIdlType()], [responseJson])
+                );
+
+                msgReply(encoded);
             } else {
-                reply({
-                    data: await call<undefined, text>(
-                        getCanister2Principal(),
-                        'manualQuery',
-                        {
-                            returnIdlType: text.getIdlType()
-                        }
-                    ),
-                    idlType: text.getIdlType()
-                });
+                const result = await call<undefined, text>(
+                    getCanister2Principal(),
+                    'manualQuery',
+                    {
+                        returnIdlType: text.getIdlType()
+                    }
+                );
+
+                const encoded = new Uint8Array(
+                    IDL.encode([text.getIdlType()], [result])
+                );
+
+                msgReply(encoded);
             }
         },
         { manual: true }
