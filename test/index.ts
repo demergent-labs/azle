@@ -127,6 +127,38 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
     return seed !== undefined ? { ...baseParams, seed, path } : baseParams;
 }
 
+/**
+ * Wraps a fast-check property test assertion and provides a helpful error message if the test fails.
+ *
+ * @param assertion - The fast-check property test assertion to run
+ * @throws Error with reproduction command and original error message if the assertion fails
+ *
+ * @remarks
+ * The error message includes:
+ * 1. A command that can be used to reproduce the exact failing test case
+ * 2. The original error message from fast-check
+ */
+export async function runAndProvideReproduction(
+    assertion: () => Promise<void>
+): Promise<void> {
+    try {
+        await assertion();
+    } catch (error) {
+        const errorOutput =
+            error instanceof Error ? error.message : String(error);
+        const reproductionCommand =
+            formatPropertyTestReproductionCommand(errorOutput);
+        throw new Error(
+            `To reproduce this exact test case, run:
+${reproductionCommand}
+
+Test failed with:
+${errorOutput}
+`
+        );
+    }
+}
+
 function processEnvVars(): {
     shouldRunTests: boolean;
     shouldRunTypeChecks: boolean;
@@ -202,36 +234,4 @@ function formatPropertyTestReproductionCommand(error: string): string {
 
     const [, seed, path] = fcErrorMatch;
     return `AZLE_PROPTEST_SEED=${seed} AZLE_PROPTEST_PATH="${path}" npm test`;
-}
-
-/**
- * Wraps a fast-check property test assertion and provides a helpful error message if the test fails.
- *
- * @param assertion - The fast-check property test assertion to run
- * @throws Error with reproduction command and original error message if the assertion fails
- *
- * @remarks
- * The error message includes:
- * 1. A command that can be used to reproduce the exact failing test case
- * 2. The original error message from fast-check
- */
-export async function runAndProvideReproduction(
-    assertion: () => Promise<void>
-): Promise<void> {
-    try {
-        await assertion();
-    } catch (error) {
-        const errorOutput =
-            error instanceof Error ? error.message : String(error);
-        const reproductionCommand =
-            formatPropertyTestReproductionCommand(errorOutput);
-        throw new Error(
-            `To reproduce this exact test case, run:
-${reproductionCommand}
-
-Test failed with:
-${errorOutput}
-`
-        );
-    }
 }
