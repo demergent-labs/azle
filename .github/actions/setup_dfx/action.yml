@@ -13,10 +13,12 @@ runs:
               echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
           shell: bash
 
+        # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
         - name: Install dfx
           uses: ./.github/actions/retry_command
           with:
               command: |
-                  # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
                   src/build/stable/commands/install_global_dependencies/install_dfx.sh "${{ steps.get-dfx-version.outputs.dfx-version }}"
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+
+        - run: echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+          shell: bash
