@@ -5,19 +5,17 @@
  *
  * @remarks
  *
- * The version number is guaranteed to increase when:
- * - The canister code is installed/reinstalled/upgraded
- * - The canister's controllers are modified
- * - The canister's status changes (running/stopping/stopped)
- * - A non-query message is successfully executed (except install_code)
+ * The version number starts at 0 upon canister creation. The version number is guaranteed to increase when:
+ * - Changes to canister code
+ * - Changes to canister settings
+ * - Changes to canister running status (Running/Stopping/Stopped)
+ * - Changes to memory (WASM memory or stable memory)
+ * - Any successful management canister call (`update_settings`, `load_canister_snapshot`, `install_code`, `install_chunked_code`, `uninstall_code`, `start_canister`, and `stop_canister`)
+ * - Canister runs out of cycles and code is uninstalled
+ * - Successful execution of update methods, heartbeats, global timers, or response callbacks
  *
- * The version is preserved when:
- * - The canister is empty/uninstalled
- * - The canister is deleted and recreated with same ID
- * - Query calls are executed
- *
- * Note: The version may increase at any time, even when no apparent changes
- * have been made to the canister's state or configuration.
+ * Note: The system may arbitrarily increment the version at any time, even when
+ * no observable changes occur
  *
  * - **Call Context**:
  *   - any besides start

@@ -34,7 +34,7 @@ export type AzleIcExperimental = {
     ) => void;
     performanceCounter: (counterType: string) => string;
     rejectCode: () => string;
-    replyRaw: (bytes: ArrayBuffer) => void;
+    msgReply: (bytes: ArrayBuffer) => void;
     setCertifiedData: (dataBytes: ArrayBuffer) => void;
     setTimer: (delayString: string, timerCallbackId: string) => string;
     setTimerInterval: (

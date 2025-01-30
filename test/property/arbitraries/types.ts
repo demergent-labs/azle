@@ -25,4 +25,5 @@ type Constraints =
 export type Context<Constraint extends Constraints = Record<string, never>> = {
     api: Api;
     constraints: Constraint;
+    inspectMessageImportHack?: boolean;
 };

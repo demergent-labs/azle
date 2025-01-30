@@ -1,3 +1,4 @@
+import { IDL, msgReply } from 'azle';
 import * as azle from 'azle/experimental';
 
 import * as types from './types';
@@ -190,7 +191,9 @@ export const getManualAlias = azle.query(
     [],
     types.DeepManualAlias(azle.float64),
     () => {
-        azle.ic.reply({ data: 9.87, candidType: azle.float64 });
+        const encoded = new Uint8Array(IDL.encode([IDL.Float64], [9.87]));
+
+        msgReply(encoded);
     },
     { manual: true }
 );

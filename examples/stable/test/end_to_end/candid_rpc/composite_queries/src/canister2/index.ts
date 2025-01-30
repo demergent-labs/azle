@@ -1,4 +1,4 @@
-import { call, IDL, query, reply, update } from 'azle';
+import { call, IDL, msgReply, query, update } from 'azle';
 
 export default class {
     canister3Id: string = getCanister3Id();
@@ -24,10 +24,11 @@ export default class {
         manual: true
     })
     manualQuery(): void {
-        reply({
-            data: 'Hello from Canister 2 manual query',
-            idlType: IDL.Text
-        });
+        const encoded = new Uint8Array(
+            IDL.encode([IDL.Text], ['Hello from Canister 2 manual query'])
+        );
+
+        msgReply(encoded);
     }
 
     @query([], IDL.Text, {

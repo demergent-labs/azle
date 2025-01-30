@@ -1,5 +1,5 @@
-import { blob, Canister, ic, update, Void } from 'azle/experimental';
-import { managementCanister } from 'azle/experimental/canisters/management';
+import { call, IDL } from 'azle';
+import { blob, Canister, update, Void } from 'azle/experimental';
 
 export default Canister({
     getRandomnessDirectly: update([], blob, async () => {
@@ -9,7 +9,9 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await ic.call(managementCanister.raw_rand);
+            return await call('aaaaa-aa', 'raw_rand', {
+                returnIdlType: IDL.Vec(IDL.Nat8)
+            });
         }
     }),
     getRandomnessIndirectly: update([], blob, async () => {
@@ -30,7 +32,9 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/raw_rand`);
         } else {
-            await ic.call(managementCanister.raw_rand);
+            await call('aaaaa-aa', 'raw_rand', {
+                returnIdlType: IDL.Vec(IDL.Nat8)
+            });
         }
     })
 });
@@ -54,6 +58,8 @@ async function getRandomness(): Promise<blob> {
 
         return responseJson;
     } else {
-        return await ic.call(managementCanister.raw_rand);
+        return await call('aaaaa-aa', 'raw_rand', {
+            returnIdlType: IDL.Vec(IDL.Nat8)
+        });
     }
 }

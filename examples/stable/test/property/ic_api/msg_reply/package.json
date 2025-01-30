@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "test": "jest"
+    },
+    "dependencies": {
+        "azle": "0.25.0"
+    }
+}

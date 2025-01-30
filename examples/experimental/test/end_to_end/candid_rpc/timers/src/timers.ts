@@ -1,8 +1,8 @@
+import { call, clearTimer, IDL, setTimer, setTimerInterval } from 'azle';
 import {
     blob,
     bool,
     Canister,
-    ic,
     int8,
     nat64,
     query,
@@ -11,7 +11,6 @@ import {
     update,
     Void
 } from 'azle/experimental';
-import { managementCanister } from 'azle/experimental/canisters/management';
 
 const StatusReport = Record({
     single: bool,
@@ -44,35 +43,35 @@ let statusReport: StatusReport = {
 
 export default Canister({
     clearTimer: update([nat64], Void, (timerId) => {
-        ic.clearTimer(timerId);
+        clearTimer(timerId);
         console.info(`timer ${timerId} cancelled`);
     }),
     setTimers: update([nat64, nat64], TimerIds, (delay, interval) => {
         const capturedValue = '🚩';
 
-        const singleId = ic.setTimer(delay, oneTimeTimerCallback);
+        const singleId = setTimer(delay, oneTimeTimerCallback);
 
-        const inlineId = ic.setTimer(delay, () => {
+        const inlineId = setTimer(delay, () => {
             statusReport.inline = 1;
             console.info('Inline timer called');
         });
 
-        const captureId = ic.setTimer(delay, () => {
+        const captureId = setTimer(delay, () => {
             statusReport.capture = capturedValue;
             console.info(`Timer captured value ${capturedValue}`);
         });
 
-        const repeatId = ic.setTimerInterval(interval, () => {
+        const repeatId = setTimerInterval(interval, () => {
             statusReport.repeat++;
             console.info(`Repeating timer. Call ${statusReport.repeat}`);
         });
 
-        const singleCrossCanisterId = ic.setTimer(
+        const singleCrossCanisterId = setTimer(
             delay,
             singleCrossCanisterTimerCallback
         );
 
-        const repeatCrossCanisterId = ic.setTimerInterval(
+        const repeatCrossCanisterId = setTimerInterval(
             interval,
             repeatCrossCanisterTimerCallback
         );
@@ -118,6 +117,8 @@ async function getRandomness(): Promise<blob> {
 
         return responseJson;
     } else {
-        return await ic.call(managementCanister.raw_rand);
+        return await call<undefined, Uint8Array>('aaaaa-aa', 'raw_rand', {
+            returnIdlType: IDL.Vec(IDL.Nat8)
+        });
     }
 }

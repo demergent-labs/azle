@@ -21,12 +21,12 @@ mod msg_caller;
 mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
+mod msg_reply;
 mod notify_raw;
 mod performance_counter;
 mod reject;
 mod reject_code;
 mod reject_message;
-mod reply_raw;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
@@ -119,7 +119,7 @@ pub fn register(ctx: Ctx) -> Result<()> {
 
     ic.set("rejectMessage", reject_message::get_function(ctx.clone()))?;
 
-    ic.set("replyRaw", reply_raw::get_function(ctx.clone()))?;
+    ic.set("msgReply", msg_reply::get_function(ctx.clone()))?;
 
     ic.set(
         "setCertifiedData",

@@ -1,8 +1,8 @@
+import { trap } from 'azle';
 import {
     blob,
     Canister,
     Func,
-    ic,
     Principal,
     query,
     Void
@@ -16,7 +16,7 @@ export default Canister({
         return [
             Principal.fromText(
                 process.env.NOTIFIERS_PRINCIPAL ??
-                    ic.trap('process.env.NOTIFIERS_PRINCIPAL is undefined')
+                    trap('process.env.NOTIFIERS_PRINCIPAL is undefined')
             ),
             'notify'
         ];

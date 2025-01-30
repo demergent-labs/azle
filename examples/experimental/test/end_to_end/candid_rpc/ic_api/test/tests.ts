@@ -11,7 +11,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         please('install didc', async () => {
             execSync(
-                `cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 --force didc`,
+                `cargo install --git https://github.com/dfinity/candid --rev 5d3c7c35da652d145171bc071ac11c63d73bf803 didc`,
                 { stdio: 'inherit' }
             );
         });

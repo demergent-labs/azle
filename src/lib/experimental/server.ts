@@ -10,10 +10,12 @@ import { IncomingMessageForServer } from 'http';
 // @ts-ignore
 import httpMessageParser from 'http-message-parser';
 
+import { idlEncode } from '../stable/execute_with_candid_serde';
+import { msgReply } from '../stable/ic_apis';
 import { CandidType } from './candid/candid_type';
 import { Manual } from './candid/manual';
 import { blob } from './candid/types/constructed/blob';
-import { None, Opt, Some } from './candid/types/constructed/opt';
+import { Opt } from './candid/types/constructed/opt';
 import { Record } from './candid/types/constructed/record';
 import { Tuple } from './candid/types/constructed/tuple';
 import { Variant } from './candid/types/constructed/variant';
@@ -28,7 +30,6 @@ import { init } from './canister_methods/methods/init';
 import { postUpgrade } from './canister_methods/methods/post_upgrade';
 import { query } from './canister_methods/methods/query';
 import { update } from './canister_methods/methods/update';
-import { ic } from './ic';
 
 export type HeaderField = [text, text];
 export const HeaderField = Tuple(text, text);
@@ -196,16 +197,20 @@ export async function httpHandler(
     }
 
     if (shouldUpgrade(httpRequest, query)) {
-        ic.reply({
-            data: {
-                status_code: 204,
-                headers: [],
-                body: Uint8Array.from([]),
-                streaming_strategy: None,
-                upgrade: Some(true)
-            },
-            candidType: HttpResponse()
-        });
+        const encoded = idlEncode(
+            [HttpResponse().getIdlType([])],
+            [
+                {
+                    status_code: 204,
+                    headers: [],
+                    body: Uint8Array.from([]),
+                    streaming_strategy: [],
+                    upgrade: [true]
+                }
+            ]
+        );
+
+        msgReply(encoded);
 
         return;
     }
@@ -289,31 +294,33 @@ export async function httpHandler(
             // TODO this.res.getHeaders() seems to be missing some headers like Transfer-Encoding
             // TODO also Express in Node has more headers like Date, Connection, Keep-Alive
             // TODO Conection and Keep-Alive might just not make sense in our context
-            ic.reply({
-                data: {
-                    status_code: this.res.statusCode,
-                    headers: Object.entries(this.res.getHeaders())
-                        .map((entry) => entry)
-                        .filter((header) => {
-                            // TODO it seems the ic proxy always wants to put its own content-length
-                            // TODO and having either of these headers causes issues
-                            // TODO we are essentially disabling transfer-encoding and thus the ability
-                            // TODO to do a chunked encoding
-                            return (
-                                header[0].toLowerCase() !== 'content-length' &&
-                                header[0].toLowerCase() !== 'transfer-encoding'
-                            );
-                        }),
-                    body: new Uint8Array(unchunkedBody),
-                    streaming_strategy: {
-                        None: null
-                    },
-                    upgrade: {
-                        None: null
+            const encoded = idlEncode(
+                [HttpResponse().getIdlType([])],
+                [
+                    {
+                        status_code: this.res.statusCode,
+                        headers: Object.entries(this.res.getHeaders())
+                            .map((entry) => entry)
+                            .filter((header) => {
+                                // TODO it seems the ic proxy always wants to put its own content-length
+                                // TODO and having either of these headers causes issues
+                                // TODO we are essentially disabling transfer-encoding and thus the ability
+                                // TODO to do a chunked encoding
+                                return (
+                                    header[0].toLowerCase() !==
+                                        'content-length' &&
+                                    header[0].toLowerCase() !==
+                                        'transfer-encoding'
+                                );
+                            }),
+                        body: new Uint8Array(unchunkedBody),
+                        streaming_strategy: [],
+                        upgrade: []
                     }
-                },
-                candidType: HttpResponse()
-            });
+                ]
+            );
+
+            msgReply(encoded);
         }
     }
 

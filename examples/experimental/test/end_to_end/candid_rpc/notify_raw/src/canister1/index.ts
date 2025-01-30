@@ -1,15 +1,18 @@
-import { Canister, ic, Principal, update, Void } from 'azle/experimental';
+import { candidEncode, notify, trap } from 'azle';
+import { Canister, Principal, update, Void } from 'azle/experimental';
 
 export default Canister({
     sendNotification: update([], Void, () => {
-        return ic.notifyRaw(
+        return notify(
             Principal.fromText(
                 process.env.CANISTER2_PRINCIPAL ??
-                    ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
+                    trap('process.env.CANISTER2_PRINCIPAL is undefined')
             ),
             'receiveNotification',
-            Uint8Array.from(ic.candidEncode('()')),
-            0n
+            {
+                raw: candidEncode('()'),
+                cycles: 0n
+            }
         );
     })
 });

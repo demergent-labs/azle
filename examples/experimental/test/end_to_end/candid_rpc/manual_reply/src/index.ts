@@ -1,9 +1,9 @@
+import { candidEncode, IDL, msgReply, reject } from 'azle';
 import {
     blob,
     bool,
     Canister,
     float32,
-    ic,
     int,
     int8,
     Manual,
@@ -75,11 +75,15 @@ export default Canister({
         Manual(text),
         (message) => {
             if (message === 'reject') {
-                ic.reject(message);
+                reject(message);
                 return;
             }
 
-            ic.reply({ data: message, candidType: text });
+            const encoded = new Uint8Array(
+                IDL.encode([text.getIdlType()], [message])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -87,12 +91,18 @@ export default Canister({
         [],
         Manual(blob),
         () => {
-            ic.reply({
-                data: new Uint8Array([
-                    83, 117, 114, 112, 114, 105, 115, 101, 33
-                ]),
-                candidType: blob
-            });
+            const encoded = new Uint8Array(
+                IDL.encode(
+                    [blob.getIdlType()],
+                    [
+                        new Uint8Array([
+                            83, 117, 114, 112, 114, 105, 115, 101, 33
+                        ])
+                    ]
+                )
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -100,7 +110,11 @@ export default Canister({
         [],
         Manual(float32),
         () => {
-            ic.reply({ data: 1245.678, candidType: float32 });
+            const encoded = new Uint8Array(
+                IDL.encode([float32.getIdlType()], [1245.678])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -108,7 +122,11 @@ export default Canister({
         [],
         Manual(int8),
         () => {
-            ic.reply({ data: -100, candidType: int8 });
+            const encoded = new Uint8Array(
+                IDL.encode([int8.getIdlType()], [-100])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -116,7 +134,11 @@ export default Canister({
         [],
         Manual(nat),
         () => {
-            ic.reply({ data: 184467440737095516150n, candidType: nat });
+            const encoded = new Uint8Array(
+                IDL.encode([nat.getIdlType()], [184467440737095516150n])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -124,7 +146,11 @@ export default Canister({
         [],
         Manual(Null),
         () => {
-            ic.reply({ data: null, candidType: Null });
+            const encoded = new Uint8Array(
+                IDL.encode([Null.getIdlType()], [null])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -132,7 +158,9 @@ export default Canister({
         [],
         Manual(Void),
         () => {
-            ic.reply({ data: undefined, candidType: Void });
+            const encoded = new Uint8Array(IDL.encode([], []));
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -156,7 +184,11 @@ export default Canister({
                     Gas: { Elemental: null }
                 }
             };
-            ic.reply({ data: element, candidType: Element });
+            const encoded = new Uint8Array(
+                IDL.encode([Element.getIdlType([])], [element])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -164,7 +196,11 @@ export default Canister({
         [],
         Manual(reserved),
         () => {
-            ic.reply({ data: undefined, candidType: reserved });
+            const encoded = new Uint8Array(
+                IDL.encode([reserved.getIdlType()], [undefined])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -172,7 +208,11 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            ic.reply({ data: 'hello', candidType: text });
+            const encoded = new Uint8Array(
+                IDL.encode([text.getIdlType()], ['hello'])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -181,7 +221,11 @@ export default Canister({
         Manual(Gas),
         () => {
             const gas = { Toxic: null };
-            ic.reply({ data: gas, candidType: Gas });
+            const encoded = new Uint8Array(
+                IDL.encode([Gas.getIdlType([])], [gas])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -189,11 +233,11 @@ export default Canister({
         [],
         Manual(RawReply),
         () => {
-            ic.reply({
-                raw: ic.candidEncode(
+            msgReply(
+                candidEncode(
                     '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
                 )
-            });
+            );
         },
         { manual: true }
     ),
@@ -203,11 +247,15 @@ export default Canister({
         Manual(text),
         (message) => {
             if (message === 'reject') {
-                ic.reject(message);
+                reject(message);
                 return;
             }
 
-            ic.reply({ data: message, candidType: text });
+            const encoded = new Uint8Array(
+                IDL.encode([text.getIdlType()], [message])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -215,12 +263,18 @@ export default Canister({
         [],
         Manual(blob),
         () => {
-            ic.reply({
-                data: new Uint8Array([
-                    83, 117, 114, 112, 114, 105, 115, 101, 33
-                ]),
-                candidType: blob
-            });
+            const encoded = new Uint8Array(
+                IDL.encode(
+                    [blob.getIdlType()],
+                    [
+                        new Uint8Array([
+                            83, 117, 114, 112, 114, 105, 115, 101, 33
+                        ])
+                    ]
+                )
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -228,7 +282,11 @@ export default Canister({
         [],
         Manual(float32),
         () => {
-            ic.reply({ data: 1245.678, candidType: float32 });
+            const encoded = new Uint8Array(
+                IDL.encode([float32.getIdlType()], [1245.678])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -236,7 +294,11 @@ export default Canister({
         [],
         Manual(int8),
         () => {
-            ic.reply({ data: -100, candidType: int8 });
+            const encoded = new Uint8Array(
+                IDL.encode([int8.getIdlType()], [-100])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -244,7 +306,11 @@ export default Canister({
         [],
         Manual(nat),
         () => {
-            ic.reply({ data: 184_467_440_737_095_516_150n, candidType: nat });
+            const encoded = new Uint8Array(
+                IDL.encode([nat.getIdlType()], [184467440737095516150n])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -252,7 +318,11 @@ export default Canister({
         [],
         Manual(Null),
         () => {
-            ic.reply({ data: null, candidType: Null });
+            const encoded = new Uint8Array(
+                IDL.encode([Null.getIdlType()], [null])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -260,7 +330,9 @@ export default Canister({
         [],
         Manual(Void),
         () => {
-            ic.reply({ data: undefined, candidType: Void });
+            const encoded = new Uint8Array(IDL.encode([], []));
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -284,7 +356,12 @@ export default Canister({
                     Gas: { Elemental: null }
                 }
             };
-            ic.reply({ data: element, candidType: Element });
+
+            const encoded = new Uint8Array(
+                IDL.encode([Element.getIdlType([])], [element])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -292,7 +369,11 @@ export default Canister({
         [],
         Manual(reserved),
         () => {
-            ic.reply({ data: undefined, candidType: reserved });
+            const encoded = new Uint8Array(
+                IDL.encode([reserved.getIdlType()], [undefined])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -300,7 +381,11 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            ic.reply({ data: 'hello', candidType: text });
+            const encoded = new Uint8Array(
+                IDL.encode([text.getIdlType()], ['hello'])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     ),
@@ -309,7 +394,12 @@ export default Canister({
         Manual(Gas),
         () => {
             const gas = { Toxic: null };
-            ic.reply({ data: gas, candidType: Gas });
+
+            const encoded = new Uint8Array(
+                IDL.encode([Gas.getIdlType([])], [gas])
+            );
+
+            msgReply(encoded);
         },
         { manual: true }
     )

@@ -18,12 +18,12 @@ mod msg_caller;
 mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
+mod msg_reply;
 mod notify_raw;
 mod performance_counter;
 mod reject;
 mod reject_code;
 mod reject_message;
-mod reply_raw;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
@@ -213,8 +213,8 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "replyRaw",
-        context.new_function::<reply_raw::NativeFunction>("").into(),
+        "msgReply",
+        context.new_function::<msg_reply::NativeFunction>("").into(),
     );
 
     ic.set(

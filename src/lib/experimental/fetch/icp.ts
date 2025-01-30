@@ -3,6 +3,7 @@ import '../experimental';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 
+import { call } from '../../stable/ic_apis';
 import { ic } from '../ic';
 import { getUrl } from './url';
 
@@ -50,11 +51,13 @@ export async function fetchIcp(
 
     const canisterPrincipal = Principal.fromText(canisterId);
 
-    const result = await ic.callRaw(
+    const result = await call<undefined, Uint8Array>(
         canisterPrincipal,
         canisterMethod,
-        argsRaw,
-        BigInt(cycles ?? 0)
+        {
+            raw: argsRaw,
+            cycles: BigInt(cycles ?? 0)
+        }
     );
 
     const decodedResult = IDL.decode(funcIdl.retTypes, result);

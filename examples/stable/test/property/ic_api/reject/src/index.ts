@@ -1,4 +1,4 @@
-import { IDL, query, reject, reply, update } from 'azle';
+import { IDL, msgReply, query, reject, update } from 'azle';
 
 export default class {
     @query([IDL.Text], undefined, { manual: true })
@@ -14,7 +14,9 @@ export default class {
     @query([IDL.Int], IDL.Int, { manual: true })
     evenOrRejectQuery(number: bigint): void {
         if (number % 2n === 0n) {
-            reply({ data: number, idlType: IDL.Int });
+            const encoded = new Uint8Array(IDL.encode([IDL.Int], [number]));
+
+            msgReply(encoded);
         } else {
             reject('Odd numbers are rejected');
         }
@@ -23,7 +25,9 @@ export default class {
     @update([IDL.Int], IDL.Int, { manual: true })
     evenOrRejectUpdate(number: bigint): void {
         if (number % 2n === 0n) {
-            reply({ data: number, idlType: IDL.Int });
+            const encoded = new Uint8Array(IDL.encode([IDL.Int], [number]));
+
+            msgReply(encoded);
         } else {
             reject('Odd numbers are rejected');
         }

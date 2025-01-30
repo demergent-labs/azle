@@ -1,23 +1,25 @@
+import { call, candidEncode, id, msgReply } from 'azle';
+import {
+    http_request_args,
+    http_request_result
+} from 'azle/canisters/management';
 import {
     Canister,
     ic,
     Manual,
-    None,
     Principal,
     query,
-    Some,
     text,
     update
 } from 'azle/experimental';
 import {
     HttpResponse,
-    HttpTransformArgs,
-    managementCanister
+    HttpTransformArgs
 } from 'azle/experimental/canisters/management';
 
 export default Canister({
     xkcd: update([], text, async () => {
-        if (process.env.AZLE_TEST_FETCH) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
             ic.setOutgoingHttpOptions({
                 maxResponseBytes: 2_000n,
                 cycles: 50_000_000n,
@@ -29,30 +31,34 @@ export default Canister({
 
             return responseText;
         } else {
-            const httpResponse = await ic.call(
-                managementCanister.http_request,
-                {
-                    args: [
-                        {
-                            url: `https://xkcd.com/642/info.0.json`,
-                            max_response_bytes: Some(2_000n),
-                            method: {
-                                get: null
-                            },
-                            headers: [],
-                            body: None,
-                            transform: Some({
-                                function: [ic.id(), 'xkcdTransform'] as [
+            const httpResponse = await call<
+                [http_request_args],
+                http_request_result
+            >(Principal.fromText('aaaaa-aa'), 'http_request', {
+                paramIdlTypes: [http_request_args],
+                returnIdlType: http_request_result,
+                args: [
+                    {
+                        url: `https://xkcd.com/642/info.0.json`,
+                        max_response_bytes: [2_000n],
+                        method: {
+                            get: null
+                        },
+                        headers: [],
+                        body: [],
+                        transform: [
+                            {
+                                function: [id(), 'xkcdTransform'] as [
                                     Principal,
                                     string
                                 ],
                                 context: Uint8Array.from([])
-                            })
-                        }
-                    ],
-                    cycles: 50_000_000n
-                }
-            );
+                            }
+                        ]
+                    }
+                ],
+                cycles: 50_000_000n
+            });
 
             return Buffer.from(httpResponse.body).toString();
         }
@@ -61,10 +67,11 @@ export default Canister({
         [],
         Manual(HttpResponse),
         async () => {
-            const httpResponse = await ic.callRaw(
+            const httpResponse = await call<undefined, Uint8Array>(
                 Principal.fromText('aaaaa-aa'),
                 'http_request',
-                ic.candidEncode(`
+                {
+                    raw: candidEncode(`
                 (
                     record {
                         url = "https://xkcd.com/642/info.0.json";
@@ -72,16 +79,15 @@ export default Canister({
                         method = variant { get };
                         headers = vec {};
                         body = null;
-                        transform = record { function = func "${ic
-                            .id()
-                            .toString()}".xkcdTransform; context = vec {} };
+                        transform = record { function = func "${id().toString()}".xkcdTransform; context = vec {} };
                     }
                 )
             `),
-                50_000_000n
+                    cycles: 50_000_000n
+                }
             );
 
-            ic.reply({ raw: httpResponse });
+            msgReply(httpResponse);
         },
         { manual: true }
     ),
