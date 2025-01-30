@@ -27,29 +27,37 @@ jobs:
                   IS_LASTMJS_ACTOR="${{ github.actor == 'lastmjs' }}"
                   IS_DEPENDENCIES_LABEL="${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}"
 
-                  IS_LASTMJS_DEPENDABOT_PR="false"
+                  IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE="false"
                   if [[ "$IS_DEPENDENCIES_LABEL" == "true" && "$IS_LASTMJS_ACTOR" == "true" && "$HAS_TEMPLATE_UPDATE_COMMIT" == "true" ]]; then
-                      IS_LASTMJS_DEPENDABOT_PR="true"
+                      IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE="true"
                   else
-                      IS_LASTMJS_DEPENDABOT_PR="false"
+                      IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE="false"
                   fi
 
-                  IS_DEPENDABOT_TEMPLATE_UPDATE_PR="false"
+                  IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE="false"
                   if [[ "$IS_DEPENDENCIES_LABEL" == "true" && "$IS_DEPENDABOT_ACTOR" == "true" ]]; then
-                      IS_DEPENDABOT_TEMPLATE_UPDATE_PR="true"
+                      IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE="true"
                   else
-                      IS_DEPENDABOT_TEMPLATE_UPDATE_PR="false"
+                      IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE="false"
                   fi
 
                   SHOULD_AUTO_MERGE="false"
-                  if [[ $IS_LASTMJS_DEPENDABOT_PR == "true" || $IS_DEPENDABOT_TEMPLATE_UPDATE_PR == "true" ]]; then
+                  if [[ $IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE == "true" || $IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE == "true" ]]; then
                       SHOULD_AUTO_MERGE="true"
                   fi
-
                   echo "should_auto_merge=$SHOULD_AUTO_MERGE" >> $GITHUB_OUTPUT
-                  echo "$IS_LASTMJS_DEPENDABOT_PR"
-                  echo "$IS_DEPENDABOT_TEMPLATE_UPDATE_PR"
-                  echo "$SHOULD_AUTO_MERGE"
+
+            - name: Log results for debugging
+              run: |
+                  echo "Commit message: $COMMIT_MESSAGE"
+                  echo "Has template update commit: $HAS_TEMPLATE_UPDATE_COMMIT"
+                  echo "Is dependencies label: $IS_DEPENDENCIES_LABEL"
+                  echo "Is lastmjs actor: $IS_LASTMJS_ACTOR"
+                  echo "Is dependabot actor: $IS_DEPENDABOT_ACTOR"
+                  echo "Is dependabot PR with template update: $IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE"
+                  echo "Is dependabot PR without template update: $IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE"
+                  echo "Should auto merge: $SHOULD_AUTO_MERGE"
+                  echo "Should run auto merge output: ${{ steps.set_conditions.outputs.should_auto_merge }}"
 
     auto-merge:
         needs: check-conditions
