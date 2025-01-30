@@ -43,20 +43,19 @@ jobs:
                   if [[ $IS_STANDARD_DEPENDABOT_PR == "true" || $HAS_TEMPLATE_UPDATE == "true"  ]]; then
                       SHOULD_AUTO_MERGE="true"
                   fi
-                  echo "should_auto_merge=$SHOULD_AUTO_MERGE" >> $GITHUB_OUTPUT
 
-            - name: Log auto-merge evaluation details
-              run: |
+                  # Add logging here where variables are in scope
                   echo "Commit message: $COMMIT_MESSAGE"
                   echo "Actor: ${{ github.actor }}"
-                  echo "Has template update commit: $IS_TEMPLATE_UPDATE_COMMIT"
+                  echo "Is template update commit: $IS_TEMPLATE_UPDATE_COMMIT"
                   echo "Has dependencies label: $HAS_DEPENDENCIES_LABEL"
-                  echo "Is maintainer author: $IS_LASTMJS_ACTOR"
-                  echo "Is dependabot author: $IS_DEPENDABOT_ACTOR"
+                  echo "Is lastmjs actor: $IS_LASTMJS_ACTOR"
+                  echo "Is dependabot actor: $IS_DEPENDABOT_ACTOR"
                   echo "Is standard dependabot PR: $IS_STANDARD_DEPENDABOT_PR"
                   echo "Has template update: $HAS_TEMPLATE_UPDATE"
                   echo "Should auto merge: $SHOULD_AUTO_MERGE"
-                  echo "Should run auto merge output: ${{ steps.determine-eligibility.outputs.should_auto_merge }}"
+
+                  echo "should_auto_merge=$SHOULD_AUTO_MERGE" >> $GITHUB_OUTPUT
 
     perform-auto-merge:
         needs: evaluate-auto-merge-conditions
