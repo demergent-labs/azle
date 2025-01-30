@@ -14,6 +14,9 @@ DFX_VERSION=$1
 echo "Installing dfx version $DFX_VERSION..."
 DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --retry 3 -fsSL https://sdk.dfinity.org/install.sh)"
 
+# Add dfx to PATH for current session
+export PATH="$HOME/.local/share/dfx/bin:$PATH"
+
 # Verify installation
 if ! command -v dfx &> /dev/null; then
     echo "dfx installation verification failed" >&2
