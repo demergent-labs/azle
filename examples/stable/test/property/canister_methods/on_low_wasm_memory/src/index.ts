@@ -21,20 +21,21 @@ export default class {
         let newBuffer = new Uint8Array(
             this.storedBytes.length + randomBytes.length
         );
+
         newBuffer.set(this.storedBytes);
         newBuffer.set(randomBytes, this.storedBytes.length);
+
         this.storedBytes = newBuffer;
     }
 }
 
 /**
- * Expands a small array of random bytes into a larger array by repeating the pattern
+ * Fetches random bytes from the IC and repeats them to the desired size
  *
- * @param sourceBytes - Original random bytes to expand
- * @param targetSize - Desired size of the expanded array
- * @returns Expanded bytes
+ * @param size - Size of the resulting array
+ * @returns An array of random bytes
  */
-async function fetchRandomBytes(targetSize: number): Promise<Uint8Array> {
+async function fetchRandomBytes(size: number): Promise<Uint8Array> {
     const randomBytes = await call<undefined, Uint8Array>(
         'aaaaa-aa',
         'raw_rand',
@@ -42,12 +43,13 @@ async function fetchRandomBytes(targetSize: number): Promise<Uint8Array> {
             returnIdlType: IDL.Vec(IDL.Nat8)
         }
     );
-    let expandedBytes = new Uint8Array(targetSize);
-    const iterations = Math.floor(targetSize / randomBytes.length);
 
-    for (let i = 0; i < iterations; i++) {
-        expandedBytes.set(randomBytes, i * randomBytes.length);
+    const result = new Uint8Array(size);
+    const repeats = Math.floor(size / randomBytes.length);
+
+    for (let i = 0; i < repeats; i++) {
+        result.set(randomBytes, i * randomBytes.length);
     }
 
-    return expandedBytes;
+    return result;
 }
