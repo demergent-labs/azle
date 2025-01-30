@@ -10,13 +10,14 @@ import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
  *
  * Only one `onLowWasmMemory` method is allowed per canister.
  *
+ * // TODO: verify the below info when onLowWasmMemory is fully supported on the IC (see https://forum.dfinity.org/t/how-to-verify-wasm-memory-threshold-is-set-correctly/40670)
  * - **State**: read-write
  *
  * - **Replication**: yes
  *
- * - **Async**: No // TODO: verify this
+ * - **Async**: no
  *
- * - **Instruction limit**: [200_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits) // TODO: verify this
+ * - **Instruction limit**: [-](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
  */
 export function onLowWasmMemory<This, Args extends unknown[], Return>(
     originalMethod: OriginalMethod<This, Args, Return>,
