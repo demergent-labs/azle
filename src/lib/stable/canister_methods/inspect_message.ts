@@ -13,9 +13,9 @@ import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
  *
  * - **State**: read-only
  *
- * - **Replication**: None
+ * - **Replication**: none
  *
- * - **Async**: No
+ * - **Async**: no
  *
  * - **Instruction limit**: [200_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
  *

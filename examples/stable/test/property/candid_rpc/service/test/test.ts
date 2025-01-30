@@ -40,7 +40,7 @@ const arrayConstraints =
         ? shortArrayConstraints
         : {
               ...defaultArrayConstraints,
-              maxLength: 30 // If the number of generated services is too large we will run out of space in the wasm custom section.
+              maxLength: 30 // If the number of generated services is too large we will run out of space in the Wasm custom section.
           };
 
 const CanisterConfigArb = fc

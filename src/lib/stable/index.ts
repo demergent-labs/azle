@@ -2,6 +2,7 @@ import './globals';
 export { heartbeat } from './canister_methods/heartbeat';
 export { init } from './canister_methods/init';
 export { inspectMessage } from './canister_methods/inspect_message';
+export { onLowWasmMemory } from './canister_methods/on_low_wasm_memory';
 export { postUpgrade } from './canister_methods/post_upgrade';
 export { preUpgrade } from './canister_methods/pre_upgrade';
 export { query } from './canister_methods/query';
