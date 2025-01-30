@@ -7,61 +7,60 @@ on:
             - reopened
 
 jobs:
-    check-conditions:
+    evaluate-auto-merge-conditions:
         runs-on: ubuntu-latest
         outputs:
-            should_auto_merge: ${{ steps.set_conditions.outputs.should_auto_merge }}
+            should_auto_merge: ${{ steps.determine-eligibility.outputs.should_auto_merge }}
         steps:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref }} # This is necessary for this job to be able to get the correct commit message from `git log`
 
-            - name: Set conditions
-              id: set_conditions
+            - name: Evaluate auto-merge eligibility
+              id: determine-eligibility
               run: |
-                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
-                  echo "$COMMIT_MESSAGE"
-                  HAS_TEMPLATE_UPDATE_COMMIT="${{ contains(github.head_ref, 'chore: update templates for dependency changes') }}"
-                  echo "${{ github.actor }}"
                   IS_DEPENDABOT_ACTOR="${{ github.actor == 'dependabot[bot]' }}"
                   IS_LASTMJS_ACTOR="${{ github.actor == 'lastmjs' }}"
-                  IS_DEPENDENCIES_LABEL="${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}"
+                  HAS_DEPENDENCIES_LABEL="${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}"
+                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
 
-                  IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE="false"
-                  if [[ "$IS_DEPENDENCIES_LABEL" == "true" && "$IS_LASTMJS_ACTOR" == "true" && "$HAS_TEMPLATE_UPDATE_COMMIT" == "true" ]]; then
-                      IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE="true"
-                  else
-                      IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE="false"
+                  IS_TEMPLATE_UPDATE_COMMIT="false"
+                  if [[ "$COMMIT_MESSAGE" == "chore: update templates for dependency changes" ]]; then
+                      IS_TEMPLATE_UPDATE_COMMIT="true"
                   fi
 
-                  IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE="false"
-                  if [[ "$IS_DEPENDENCIES_LABEL" == "true" && "$IS_DEPENDABOT_ACTOR" == "true" ]]; then
-                      IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE="true"
-                  else
-                      IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE="false"
+                  IS_STANDARD_DEPENDABOT_PR="false"
+                  if [[ "$HAS_DEPENDENCIES_LABEL" == "true" && "$IS_DEPENDABOT_ACTOR" == "true" ]]; then
+                      IS_STANDARD_DEPENDABOT_PR="true"
+                  fi
+
+                  HAS_TEMPLATE_UPDATE="false"
+                  if [[ "$HAS_DEPENDENCIES_LABEL" == "true" && "$IS_LASTMJS_ACTOR" == "true" && "$IS_TEMPLATE_UPDATE_COMMIT" == "true" ]]; then
+                      HAS_TEMPLATE_UPDATE="true"
                   fi
 
                   SHOULD_AUTO_MERGE="false"
-                  if [[ $IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE == "true" || $IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE == "true" ]]; then
+                  if [[ $IS_STANDARD_DEPENDABOT_PR == "true" || $HAS_TEMPLATE_UPDATE == "true"  ]]; then
                       SHOULD_AUTO_MERGE="true"
                   fi
                   echo "should_auto_merge=$SHOULD_AUTO_MERGE" >> $GITHUB_OUTPUT
 
-            - name: Log results for debugging
+            - name: Log auto-merge evaluation details
               run: |
                   echo "Commit message: $COMMIT_MESSAGE"
-                  echo "Has template update commit: $HAS_TEMPLATE_UPDATE_COMMIT"
-                  echo "Is dependencies label: $IS_DEPENDENCIES_LABEL"
-                  echo "Is lastmjs actor: $IS_LASTMJS_ACTOR"
-                  echo "Is dependabot actor: $IS_DEPENDABOT_ACTOR"
-                  echo "Is dependabot PR with template update: $IS_DEPENDABOT_PR_WITH_TEMPLATE_UPDATE"
-                  echo "Is dependabot PR without template update: $IS_DEPENDABOT_PR_WITHOUT_TEMPLATE_UPDATE"
+                  echo "Actor: ${{ github.actor }}"
+                  echo "Has template update commit: $IS_TEMPLATE_UPDATE_COMMIT"
+                  echo "Has dependencies label: $HAS_DEPENDENCIES_LABEL"
+                  echo "Is maintainer author: $IS_LASTMJS_ACTOR"
+                  echo "Is dependabot author: $IS_DEPENDABOT_ACTOR"
+                  echo "Is standard dependabot PR: $IS_STANDARD_DEPENDABOT_PR"
+                  echo "Has template update: $HAS_TEMPLATE_UPDATE"
                   echo "Should auto merge: $SHOULD_AUTO_MERGE"
-                  echo "Should run auto merge output: ${{ steps.set_conditions.outputs.should_auto_merge }}"
+                  echo "Should run auto merge output: ${{ steps.determine-eligibility.outputs.should_auto_merge }}"
 
-    auto-merge:
-        needs: check-conditions
-        if: ${{ needs.check-conditions.outputs.should_auto_merge == 'true' }}
+    perform-auto-merge:
+        needs: evaluate-auto-merge-conditions
+        if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -69,13 +68,13 @@ jobs:
                   ref: ${{ github.event.pull_request.head.ref }}
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
-            - name: Approve PR
+            - name: Approve dependency update PR
               run: gh pr review --approve "$PR_NUMBER"
               env:
                   PR_NUMBER: ${{ github.event.pull_request.number }}
                   GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
-            - name: Merge PR
+            - name: Merge dependency update PR
               run: |
                   gh pr merge "$PR_NUMBER" \
                       --merge \
