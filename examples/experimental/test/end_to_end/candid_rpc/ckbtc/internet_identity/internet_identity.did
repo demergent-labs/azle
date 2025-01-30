@@ -178,7 +178,7 @@ type InternetIdentityStats = record {
 type ArchiveConfig = record {
     // The allowed module hash of the archive canister.
     // Changing this parameter does _not_ deploy the archive, but enable archive deployments with the
-    // corresponding wasm module.
+    // corresponding Wasm module.
     module_hash : blob;
     // Buffered archive entries limit. If reached, II will stop accepting new anchor operations
     // until the buffered operations are acknowledged by the archive.
@@ -323,7 +323,7 @@ type WebAuthnCredential = record {
 };
 
 type DeployArchiveResult = variant {
-    // The archive was deployed successfully and the supplied wasm module has been installed. The principal of the archive
+    // The archive was deployed successfully and the supplied Wasm module has been installed. The principal of the archive
     // canister is returned.
     success: principal;
     // Initial archive creation is already in progress.

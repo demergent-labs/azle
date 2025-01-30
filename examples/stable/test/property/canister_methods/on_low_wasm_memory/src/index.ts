@@ -10,7 +10,7 @@ export default class {
     }
 
     @query([], IDL.Bool)
-    getOnLowWasMemoryCalled(): boolean {
+    getOnLowWasmMemoryCalled(): boolean {
         return this.onLowWasmMemoryCalled;
     }
 
@@ -44,7 +44,7 @@ async function fetchRandomBytes(size: number): Promise<Uint8Array> {
         }
     );
 
-    const result = new Uint8Array(size);
+    let result = new Uint8Array(size);
     const repeats = Math.floor(size / randomBytes.length);
 
     for (let i = 0; i < repeats; i++) {

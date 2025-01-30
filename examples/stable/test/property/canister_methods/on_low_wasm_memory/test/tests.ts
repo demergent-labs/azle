@@ -63,17 +63,17 @@ export function getTests(): Test {
 /**
  * Validates the initial state of the canister:
  * - Confirms low memory handler has not been called
- * - Verifies wasm memory limit matches configured value
+ * - Verifies Wasm memory limit matches configured value
  *
  * @param actor - The canister actor instance
- * @param wasmMemoryLimit - The configured wasm memory limit
+ * @param wasmMemoryLimit - The configured Wasm memory limit
  */
 async function validateInitialStatus(
     actor: Actor,
     wasmMemoryLimit: number
 ): Promise<void> {
     const lowMemoryHandlerCalledAtBeginning =
-        await actor.getOnLowWasMemoryCalled();
+        await actor.getOnLowWasmMemoryCalled();
 
     expect(lowMemoryHandlerCalledAtBeginning).toBe(false);
 
@@ -153,7 +153,7 @@ function validateMemoryLimitError(error: unknown): void {
  * - Confirms low memory handler was called
  *
  * @param actor - The canister actor instance
- * @param wasmMemoryLimit - The configured wasm memory limit
+ * @param wasmMemoryLimit - The configured Wasm memory limit
  * @param wasmMemoryThreshold - The configured memory threshold
  */
 async function validateFinalStatus(
@@ -171,7 +171,7 @@ async function validateFinalStatus(
     // TODO: Remove this check when wasmMemoryThreshold is supported on the IC: https://forum.dfinity.org/t/how-to-verify-wasm-memory-threshold-is-set-correctly/40670
     expect(finalStatus.memorySize).toBeGreaterThan(wasmMemoryLimit);
 
-    const lowMemoryHandlerCalled = await actor.getOnLowWasMemoryCalled();
+    const lowMemoryHandlerCalled = await actor.getOnLowWasmMemoryCalled();
 
     expect(lowMemoryHandlerCalled).toBe(true);
 }

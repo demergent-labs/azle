@@ -7,7 +7,7 @@
 //! * Support for address types that aren't P2PKH.
 //! * Caching spent UTXOs so that they are not reused in future transactions.
 //! * Option to set the fee.
-// import * as ecc from 'tiny-secp256k1'; // TODO we should switch to this import as soon as we have wasm support
+// import * as ecc from 'tiny-secp256k1'; // TODO we should switch to this import as soon as we have Wasm support
 import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import {
     BitcoinNetwork,

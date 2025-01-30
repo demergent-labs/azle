@@ -15,9 +15,9 @@ import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
  *
  * - **Replication**: yes
  *
- * - **Async**: no
+ * - **Async**: yes
  *
- * - **Instruction limit**: [-](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
+ * - **Instruction limit**: [40_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
  */
 export function onLowWasmMemory<This, Args extends unknown[], Return>(
     originalMethod: OriginalMethod<This, Args, Return>,

@@ -10,7 +10,7 @@ export type CanisterStatus = {
 /**
  * Gets the current status of the canister including memory information
  *
- * @returns Object containing status, memory size, and wasm memory limit
+ * @returns Object containing status, memory size, and Wasm memory limit
  * @throws Error if canister doesn't exist or status can't be parsed
  */
 export function getCanisterStatus(canisterName: string): CanisterStatus {
@@ -37,7 +37,7 @@ export function getCanisterStatus(canisterName: string): CanisterStatus {
  * Completely removes the canister and redeploys it
  *
  * @remarks
- * This is necessary because the changes to the wasm memory limit and threshold are only applied on canister creation.
+ * This is necessary because the changes to the Wasm memory limit and threshold are only applied on canister creation.
  */
 export async function deployFreshCanister<T>(
     canisterName: string,
