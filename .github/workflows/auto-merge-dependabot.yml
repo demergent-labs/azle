@@ -9,14 +9,51 @@ on:
 jobs:
     check-conditions:
         runs-on: ubuntu-latest
+        outputs:
+            should_auto_merge: ${{ steps.set_conditions.outputs.should_auto_merge }}
         steps:
-            - run: echo "${{ github.actor }}"
-            - run: echo "${{ github.event.pull_request.labels.*.name }}"
-            - run: echo "${{ github.actor == 'dependabot[bot]' }}"
-            - run: echo "${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}"
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }} # This is necessary for this job to be able to get the correct commit message from `git log`
+
+            - name: Set conditions
+              id: set_conditions
+              run: |
+                  COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
+                  echo "$COMMIT_MESSAGE"
+                  HAS_TEMPLATE_UPDATE_COMMIT="${{ contains(github.head_ref, 'chore: update templates for dependency changes') }}"
+                  echo "${{ github.actor }}"
+                  IS_DEPENDABOT_ACTOR="${{ github.actor == 'dependabot[bot]' }}"
+                  IS_LASTMJS_ACTOR="${{ github.actor == 'lastmjs' }}"
+                  IS_DEPENDENCIES_LABEL="${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}"
+
+                  IS_LASTMJS_DEPENDABOT_PR="false"
+                  if [[ "$IS_DEPENDENCIES_LABEL" == "true" && "$IS_LASTMJS_ACTOR" == "true" && "$HAS_TEMPLATE_UPDATE_COMMIT" == "true" ]]; then
+                      IS_LASTMJS_DEPENDABOT_PR="true"
+                  else
+                      IS_LASTMJS_DEPENDABOT_PR="false"
+                  fi
+
+                  IS_DEPENDABOT_TEMPLATE_UPDATE_PR="false"
+                  if [[ "$IS_DEPENDENCIES_LABEL" == "true" && "$IS_DEPENDABOT_ACTOR" == "true" ]]; then
+                      IS_DEPENDABOT_TEMPLATE_UPDATE_PR="true"
+                  else
+                      IS_DEPENDABOT_TEMPLATE_UPDATE_PR="false"
+                  fi
+
+                  SHOULD_AUTO_MERGE="false"
+                  if [[ $IS_LASTMJS_DEPENDABOT_PR == "true" || $IS_DEPENDABOT_TEMPLATE_UPDATE_PR == "true" ]]; then
+                      SHOULD_AUTO_MERGE="true"
+                  fi
+
+                  echo "should_auto_merge=$SHOULD_AUTO_MERGE" >> $GITHUB_OUTPUT
+                  echo "$IS_LASTMJS_DEPENDABOT_PR"
+                  echo "$IS_DEPENDABOT_TEMPLATE_UPDATE_PR"
+                  echo "$SHOULD_AUTO_MERGE"
 
     auto-merge:
-        if: ${{ github.actor == 'dependabot[bot]' && contains(github.event.pull_request.labels.*.name, 'dependencies') }}
+        needs: check-conditions
+        if: ${{ needs.check-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
