@@ -99,6 +99,18 @@ it.skip = test.skip;
 export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
     const baseParams = {
         numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
+        reporter: (runDetails: fc.RunDetails<T>): void => {
+            const seed = runDetails.seed;
+            const path = runDetails.counterexamplePath;
+            const reproductionCommand = `AZLE_PROPTEST_SEED=${seed}${path !== null ? ` AZLE_PROPTEST_PATH="${path}"` : ''} AZLE_VERBOSE=true AZLE_TEMPLATE=true npm test`;
+            const reproductionMessage = `To reproduce this exact test case, run:\n${reproductionCommand}`;
+            console.info(reproductionMessage);
+            if (runDetails.failed) {
+                throw new Error(
+                    `${reproductionMessage}\n\n${fc.defaultReportMessage(runDetails)}`
+                );
+            }
+        },
         endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
     };
 
@@ -110,38 +122,6 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
     const path = process.env.AZLE_PROPTEST_PATH;
 
     return seed !== undefined ? { ...baseParams, seed, path } : baseParams;
-}
-
-/**
- * Wraps a fast-check property test assertion and provides a helpful error message if the test fails.
- *
- * @param assertion - The fast-check property test assertion to run
- * @throws Error with reproduction command and original error message if the assertion fails
- *
- * @remarks
- * The error message includes:
- * 1. A command that can be used to reproduce the exact failing test case
- * 2. The original error message from fast-check
- */
-export async function runAndProvideReproduction(
-    assertion: () => Promise<void>
-): Promise<void> {
-    try {
-        await assertion();
-    } catch (error) {
-        const errorOutput =
-            error instanceof Error ? error.message : String(error);
-        const reproductionCommand =
-            formatPropertyTestReproductionCommand(errorOutput);
-        throw new Error(
-            `To reproduce this exact test case, run:
-${reproductionCommand}
-
-Test failed with:
-${errorOutput}
-`
-        );
-    }
 }
 
 function processEnvVars(): {
@@ -196,27 +176,4 @@ function createWait(name: string, delay: number): () => Promise<void> {
             setTimeout(resolve, delay);
         });
     };
-}
-
-/**
- * @internal
- *
- * Extracts the seed and path from a fast-check error message and formats them into a command
- * that can be used to reproduce the exact test case that failed.
- *
- * @param error - The error message from fast-check containing seed and path information
- * @returns A command string that can be used to reproduce the exact test case that failed
- */
-function formatPropertyTestReproductionCommand(error: string): string {
-    // Look for the fast-check error details in the full stack trace
-    const fcErrorMatch = error.match(
-        /Property failed after \d+ tests[\s\S]*?{ seed: (-?\d+), path: "([^"]+)"/
-    );
-
-    if (fcErrorMatch === null) {
-        return 'Could not parse fast-check error output';
-    }
-
-    const [, seed, path] = fcErrorMatch;
-    return `AZLE_PROPTEST_SEED=${seed} AZLE_PROPTEST_PATH="${path}" AZLE_VERBOSE=true AZLE_TEMPLATE=true npm test`;
 }
