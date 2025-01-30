@@ -58,41 +58,52 @@ export function getTests(): Test {
 
                         const actor = await getCanisterActor<Actor>('canister');
 
-                        const initId = await actor.getInitId();
-                        expect(initId[0]?.toText()).toEqual(canisterIdText);
-
-                        const postUpgradeId = await actor.getPostUpgradeId();
-                        expect(postUpgradeId).toHaveLength(0);
-
-                        const preUpgradeId = await actor.getPreUpgradeId();
-                        expect(preUpgradeId).toHaveLength(0);
-
-                        await actor.setInspectMessageId();
-                        const inspectMessageId =
-                            await actor.getInspectMessageId();
-                        expect(inspectMessageId[0]?.toText()).toEqual(
+                        const initCanisterSelf =
+                            await actor.getInitCanisterSelf();
+                        expect(initCanisterSelf[0]?.toText()).toEqual(
                             canisterIdText
                         );
 
-                        const queryId = await actor.getQueryId();
-                        expect(queryId.toText()).toEqual(canisterIdText);
+                        const postUpgradeCanisterSelf =
+                            await actor.getPostUpgradeCanisterSelf();
+                        expect(postUpgradeCanisterSelf).toHaveLength(0);
 
-                        const updateId = await actor.getUpdateId();
-                        expect(updateId.toText()).toEqual(canisterIdText);
+                        const preUpgradeCanisterSelf =
+                            await actor.getPreUpgradeCanisterSelf();
+                        expect(preUpgradeCanisterSelf).toHaveLength(0);
+
+                        await actor.setInspectMessageCanisterSelf();
+                        const inspectMessageCanisterSelf =
+                            await actor.getInspectMessageCanisterSelf();
+                        expect(inspectMessageCanisterSelf[0]?.toText()).toEqual(
+                            canisterIdText
+                        );
+
+                        const queryCanisterSelf =
+                            await actor.getQueryCanisterSelf();
+                        expect(queryCanisterSelf.toText()).toEqual(
+                            canisterIdText
+                        );
+
+                        const updateCanisterSelf =
+                            await actor.getUpdateCanisterSelf();
+                        expect(updateCanisterSelf.toText()).toEqual(
+                            canisterIdText
+                        );
 
                         execSync(`dfx deploy canister --upgrade-unchanged`);
 
-                        const postUpgradeIdAfterUpgrade =
-                            await actor.getPostUpgradeId();
-                        expect(postUpgradeIdAfterUpgrade[0]?.toText()).toEqual(
-                            canisterIdText
-                        );
+                        const postUpgradeCanisterSelfAfterUpgrade =
+                            await actor.getPostUpgradeCanisterSelf();
+                        expect(
+                            postUpgradeCanisterSelfAfterUpgrade[0]?.toText()
+                        ).toEqual(canisterIdText);
 
-                        const preUpgradeIdAfterUpgrade =
-                            await actor.getPreUpgradeId();
-                        expect(preUpgradeIdAfterUpgrade[0]?.toText()).toEqual(
-                            canisterIdText
-                        );
+                        const preUpgradeCanisterSelfAfterUpgrade =
+                            await actor.getPreUpgradeCanisterSelf();
+                        expect(
+                            preUpgradeCanisterSelfAfterUpgrade[0]?.toText()
+                        ).toEqual(canisterIdText);
                     }
                 ),
                 defaultPropTestParams()

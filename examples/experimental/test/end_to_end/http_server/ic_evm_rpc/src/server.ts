@@ -1,4 +1,5 @@
-import { ic, jsonStringify } from 'azle/experimental';
+import { canisterSelf, msgCaller } from 'azle';
+import { jsonStringify } from 'azle/experimental';
 import { ethers } from 'ethers';
 import express, { Request } from 'express';
 
@@ -18,7 +19,7 @@ app.use(express.json());
 
 app.get('/caller-address', async (_req, res) => {
     const address = ethers.computeAddress(
-        ethers.hexlify(await ecdsaPublicKey([ic.msgCaller().toUint8Array()]))
+        ethers.hexlify(await ecdsaPublicKey([msgCaller().toUint8Array()]))
     );
 
     res.send(address);
@@ -27,7 +28,9 @@ app.get('/caller-address', async (_req, res) => {
 app.get('/canister-address', async (_req, res) => {
     if (canisterAddress.value === null) {
         canisterAddress.value = ethers.computeAddress(
-            ethers.hexlify(await ecdsaPublicKey([ic.id().toUint8Array()]))
+            ethers.hexlify(
+                await ecdsaPublicKey([canisterSelf().toUint8Array()])
+            )
         );
     }
 
@@ -87,7 +90,7 @@ app.post(
             if (canisterAddress.value === null) {
                 canisterAddress.value = ethers.computeAddress(
                     ethers.hexlify(
-                        await ecdsaPublicKey([ic.id().toUint8Array()])
+                        await ecdsaPublicKey([canisterSelf().toUint8Array()])
                     )
                 );
             }
@@ -117,7 +120,7 @@ app.post(
                 ethers.keccak256(unsignedSerializedTx);
 
             const signedSerializedTxHash = await signWithEcdsa(
-                [ic.id().toUint8Array()],
+                [canisterSelf().toUint8Array()],
                 ethers.getBytes(unsignedSerializedTxHash)
             );
 

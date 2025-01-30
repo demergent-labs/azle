@@ -1,4 +1,4 @@
-import { id } from 'azle';
+import { canisterSelf } from 'azle';
 import { readdir, stat } from 'fs/promises';
 import { basename, join } from 'path';
 
@@ -65,7 +65,7 @@ async function getFileDetails(filePath: string): Promise<string> {
     const hardLinks = stats.nlink;
 
     // Get owner and group names using 'id' command
-    const owner = id();
+    const owner = canisterSelf();
 
     // Get file size
     const size = stats.size.toString();

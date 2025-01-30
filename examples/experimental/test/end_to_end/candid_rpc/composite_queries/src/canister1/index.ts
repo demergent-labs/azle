@@ -1,4 +1,4 @@
-import { call, id, IDL, msgReply } from 'azle';
+import { call, canisterSelf, IDL, msgReply } from 'azle';
 import {
     Canister,
     Manual,
@@ -203,7 +203,7 @@ const CompQueryCanister = Canister({
     }),
     // Composite query calling queries on the same canister
     incCanister1: query([], nat, async () => {
-        const self = CompQueryCanister(id());
+        const self = CompQueryCanister(canisterSelf());
 
         counter += 1n;
 

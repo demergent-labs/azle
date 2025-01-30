@@ -1,6 +1,6 @@
 import {
     call,
-    id,
+    canisterSelf,
     IDL,
     init,
     msgCaller,
@@ -51,7 +51,9 @@ class WhoAmI {
     // Return the principal identifier of this canister.
     @update([], IDL.Principal)
     async id(): Promise<Principal> {
-        return await call(id(), 'whoami', { returnIdlType: IDL.Principal });
+        return await call(canisterSelf(), 'whoami', {
+            returnIdlType: IDL.Principal
+        });
     }
 
     // Return the principal identifier of this canister via the global `ic` object.
@@ -60,7 +62,7 @@ class WhoAmI {
     // doesn't have to go through consensus.
     @query([], IDL.Principal)
     idQuick(): Principal {
-        return id();
+        return canisterSelf();
     }
 }
 

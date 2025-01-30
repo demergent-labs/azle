@@ -1,5 +1,5 @@
 import {
-    id,
+    canisterSelf,
     IDL,
     init,
     Principal,
@@ -117,7 +117,10 @@ export default class {
                         streaming_strategy: [
                             {
                                 Callback: {
-                                    callback: [id(), 'http_streaming'],
+                                    callback: [
+                                        canisterSelf(),
+                                        'http_streaming'
+                                    ],
                                     token: {
                                         arbitrary_data: 'start'
                                     }
