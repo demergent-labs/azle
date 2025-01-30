@@ -1,4 +1,4 @@
-import { acceptMessage, IDL, methodName, reply, trap } from 'azle';
+import { acceptMessage, IDL, methodName, msgReply, trap } from 'azle';
 import { int16 as coconut } from 'azle/experimental';
 
 import kiwi, {
@@ -260,7 +260,9 @@ export const isMangoTrickyToEat = kiwi(
     [],
     Mango(boysenberry),
     () => {
-        reply({ data: true, idlType: IDL.Bool });
+        const encoded = new Uint8Array(IDL.encode([IDL.Bool], [true]));
+
+        msgReply(encoded);
     },
     { manual: true }
 );

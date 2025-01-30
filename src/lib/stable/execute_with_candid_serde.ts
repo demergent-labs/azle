@@ -1,6 +1,6 @@
 import { IDL, JsonValue } from '@dfinity/candid';
 
-import { reply } from './ic_apis';
+import { msgReply } from './ic_apis';
 
 /**
  * Represents the different types of canister method execution modes.
@@ -100,7 +100,12 @@ function encodeResultAndReply(
         return;
     }
 
-    reply({ data: unencodedResult, idlType: returnIdlType });
+    const encodedResult = idlEncode(
+        [...(returnIdlType !== undefined ? [returnIdlType] : [])],
+        [...(unencodedResult !== undefined ? [unencodedResult] : [])]
+    );
+
+    msgReply(encodedResult);
 }
 
 /**

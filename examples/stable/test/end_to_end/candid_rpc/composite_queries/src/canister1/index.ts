@@ -1,4 +1,4 @@
-import { call, id, IDL, query, reply, update } from 'azle';
+import { call, id, IDL, msgReply, query, update } from 'azle';
 
 export default class Canister {
     canister2Id: string = getCanister2Id();
@@ -30,12 +30,17 @@ export default class Canister {
         manual: true
     })
     async totallyManualQuery(): Promise<void> {
-        reply({
-            data: await call(this.canister2Id, 'manualQuery', {
+        const result = await call<undefined, string>(
+            this.canister2Id,
+            'manualQuery',
+            {
                 returnIdlType: IDL.Text
-            }),
-            idlType: IDL.Text
-        });
+            }
+        );
+
+        const encoded = new Uint8Array(IDL.encode([IDL.Text], [result]));
+
+        msgReply(encoded);
     }
 
     // Composite query calling another composite query

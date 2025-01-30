@@ -3,9 +3,9 @@ import {
     candidEncode,
     id,
     IDL,
+    msgReply,
     Principal,
     query,
-    reply,
     update
 } from 'azle';
 import {
@@ -71,7 +71,7 @@ export default class {
             }
         );
 
-        reply({ raw: httpResponse });
+        msgReply(httpResponse);
     }
 
     @query([http_transform_args], http_request_result)
