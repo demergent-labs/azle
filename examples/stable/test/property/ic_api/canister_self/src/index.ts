@@ -4,7 +4,7 @@ import {
     IDL,
     init,
     inspectMessage,
-    methodName,
+    msgMethodName,
     postUpgrade,
     preUpgrade,
     Principal,
@@ -74,7 +74,7 @@ export default class {
 
     @inspectMessage
     inspectMessage(): void {
-        if (methodName() === 'getInspectMessageCanisterSelf') {
+        if (msgMethodName() === 'getInspectMessageCanisterSelf') {
             if (
                 canisterSelf().toText() ===
                 this.inspectMessageCanisterSelf?.toText()

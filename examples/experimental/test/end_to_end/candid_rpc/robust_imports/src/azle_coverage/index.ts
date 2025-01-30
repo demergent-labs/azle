@@ -1,4 +1,4 @@
-import { acceptMessage, IDL, methodName, msgReply, trap } from 'azle';
+import { acceptMessage, IDL, msgMethodName, msgReply, trap } from 'azle';
 import { int16 as coconut } from 'azle/experimental';
 
 import kiwi, {
@@ -168,8 +168,8 @@ export const buyHoneydew = honeydew(() => {
 });
 
 export const keepIlamaClean = ilama(() => {
-    console.info(`Method "${methodName()}" was called`);
-    if (methodName() === 'dirtyIlama') {
+    console.info(`Method "${msgMethodName()}" was called`);
+    if (msgMethodName() === 'dirtyIlama') {
         return;
     }
     acceptMessage();

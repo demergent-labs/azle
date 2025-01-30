@@ -1,20 +1,20 @@
-import { acceptMessage, methodName } from 'azle';
+import { acceptMessage, msgMethodName } from 'azle';
 import { bool, Canister, inspectMessage, update } from 'azle/experimental';
 
 export default Canister({
     inspectMessage: inspectMessage(() => {
         console.info('inspectMessage called');
 
-        if (methodName() === 'accessible') {
+        if (msgMethodName() === 'accessible') {
             acceptMessage();
             return;
         }
 
-        if (methodName() === 'inaccessible') {
+        if (msgMethodName() === 'inaccessible') {
             return;
         }
 
-        throw `Method "${methodName()}" not allowed`;
+        throw `Method "${msgMethodName()}" not allowed`;
     }),
     accessible: update([], bool, () => {
         return true;

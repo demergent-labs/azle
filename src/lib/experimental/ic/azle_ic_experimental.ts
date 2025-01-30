@@ -47,7 +47,7 @@ export type AzleIcExperimental = {
     // assuming that their types are the same as the types declared by our
     // interceptor.
     acceptMessage: () => void;
-    methodName: () => string;
+    msgMethodName: () => string;
     debugPrint: (...args: any) => void;
     reject: (message: string) => void;
     rejectMessage: () => string;

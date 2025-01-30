@@ -7,7 +7,7 @@ import {
     init,
     inReplicatedExecution,
     inspectMessage,
-    methodName,
+    msgMethodName,
     postUpgrade,
     preUpgrade,
     query,
@@ -105,7 +105,7 @@ export default class {
 
     @inspectMessage
     inspectMessage(): void {
-        if (methodName() === 'getInspectMessageIsInReplicatedExecution') {
+        if (msgMethodName() === 'getInspectMessageIsInReplicatedExecution') {
             if (inReplicatedExecution() === true) {
                 // TODO for https://github.com/demergent-labs/azle/issues/2539
                 acceptMessage();
@@ -118,7 +118,7 @@ export default class {
             'getUpdateIsInReplicatedExecution'
         ];
 
-        if (acceptableMethods.includes(methodName())) {
+        if (acceptableMethods.includes(msgMethodName())) {
             acceptMessage();
         }
     }

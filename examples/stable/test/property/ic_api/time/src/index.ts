@@ -5,7 +5,7 @@ import {
     IDL,
     // init,
     inspectMessage,
-    methodName,
+    msgMethodName,
     // msgArgData,
     // postUpgrade,
     // preUpgrade,
@@ -34,7 +34,7 @@ export default class {
 
     @inspectMessage
     inspectMessage(): void {
-        if (methodName() === 'inspectMessageTime') {
+        if (msgMethodName() === 'inspectMessageTime') {
             trap(`inspectMessageTime trap message: ${time()}`);
         } else {
             acceptMessage();
