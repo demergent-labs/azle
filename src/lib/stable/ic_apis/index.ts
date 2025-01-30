@@ -2,7 +2,7 @@ export { acceptMessage } from './accept_message';
 export { call } from './call';
 export { candidDecode } from './candid_decode';
 export { candidEncode } from './candid_encode';
-export { canisterBalance } from './canister_balance';
+export { canisterCycleBalance } from './canister_cycle_balance';
 export { canisterVersion } from './canister_version';
 export { chunk } from './chunk';
 export { clearTimer } from './clear_timer';

@@ -79,11 +79,11 @@ export function getTests(): Test {
             );
         });
 
-        it('asserts canisterBalance static and runtime types', async () => {
+        it('asserts canisterCycleBalance static and runtime types', async () => {
             const intermediaryCanister =
                 await getCanisterActor<Actor>('intermediary');
             expect(
-                await intermediaryCanister.assertCanisterBalanceTypes()
+                await intermediaryCanister.assertCanisterCycleBalanceTypes()
             ).toBe(true);
         });
 
@@ -140,7 +140,7 @@ function validateCyclesResult(
         result.initialAvailable - result.accepted
     );
     expect(result.cyclesRefunded).toBe(result.finalAvailable);
-    expect(result.endingCanisterBalance - result.startingCanisterBalance).toBe(
-        result.accepted
-    );
+    expect(
+        result.endingCanisterCycleBalance - result.startingCanisterCycleBalance
+    ).toBe(result.accepted);
 }

@@ -13,8 +13,9 @@ export function getTests(
     return () => {
         it('gets the initial canister balance', async () => {
             const intermediaryCallResult =
-                await intermediaryCanister.getCanisterBalance();
-            const cyclesCallResult = await cyclesCanister.getCanisterBalance();
+                await intermediaryCanister.getCanisterCycleBalance();
+            const cyclesCallResult =
+                await cyclesCanister.getCanisterCycleBalance();
 
             const twoAndAHalfTrillion = 2_500_000_000_000n;
             const fourTrillion = 4_000_000_000_000n;
@@ -36,8 +37,8 @@ export function getTests(
 
             // TODO It would be a bit messy and difficult to try and do this
             // const intermediaryCallResult =
-            //     await intermediaryCanister.getCanisterBalance();
-            // const cyclesCallResult = await cyclesCanister.getCanisterBalance();
+            //     await intermediaryCanister.getCanisterCycleBalance();
+            // const cyclesCallResult = await cyclesCanister.getCanisterCycleBalance();
 
             expect(refundResult).toBe(500_000n);
             // expect(intermediaryCallResult).toBe(3_999_999_500_000n);
@@ -50,9 +51,9 @@ export function getTests(
 
             // TODO It would be a bit messy and difficult to try and do this
             // const intermediaryCallResult =
-            //     await intermediaryCanister.getCanisterBalance();
+            //     await intermediaryCanister.getCanisterCycleBalance();
             // const cyclesCallResult =
-            //     await cyclesCanister.getCanisterBalance();
+            //     await cyclesCanister.getCanisterCycleBalance();
 
             expect(sendCyclesNotifyResult).toBeUndefined();
             // expect(intermediaryCallResult).toBe(3_999_998_500_000n);
