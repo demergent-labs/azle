@@ -1,8 +1,8 @@
-# method_name Tests
+# msg_method_name Tests
 
 ## Current Status
 
-We have decided that the `method_name` function is sufficiently tested for release candidate in the following locations:
+We have decided that the `msgMethodName` function is sufficiently tested for release candidate in the following locations:
 
 - tests/end_to_end/candid_rpc/class_syntax/inspect_message/
 - tests/property/candid_rpc/class_api/canister_methods/inspect_message/
