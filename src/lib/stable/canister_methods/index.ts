@@ -28,6 +28,7 @@ type DefinedSystemMethods = {
     preUpgrade: boolean;
     inspectMessage: boolean;
     heartbeat: boolean;
+    onLowWasmMemory: boolean;
 };
 
 export type MethodType<This, Args extends unknown[], Return> = (
@@ -130,7 +131,8 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                 postUpgrade: false,
                 preUpgrade: false,
                 heartbeat: false,
-                inspectMessage: false
+                inspectMessage: false,
+                onLowWasmMemory: false
             };
         }
 
@@ -291,6 +293,21 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
             exportedCanisterClassInstance._azleDefinedSystemMethods.heartbeat =
                 true;
             exportedCanisterClassInstance._azleMethodMeta.heartbeat = {
+                name,
+                index
+            };
+        }
+
+        if (canisterMethodMode === 'onLowWasmMemory') {
+            throwIfMethodAlreadyDefined(
+                'onLowWasmMemory',
+                exportedCanisterClassInstance._azleDefinedSystemMethods
+                    .onLowWasmMemory
+            );
+
+            exportedCanisterClassInstance._azleDefinedSystemMethods.onLowWasmMemory =
+                true;
+            exportedCanisterClassInstance._azleMethodMeta.on_low_wasm_memory = {
                 name,
                 index
             };

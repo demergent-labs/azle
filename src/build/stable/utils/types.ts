@@ -62,6 +62,7 @@ export type MethodMeta = {
     post_upgrade?: Method;
     heartbeat?: Method;
     inspect_message?: Method;
+    on_low_wasm_memory?: Method;
 };
 
 export type WasmData = {

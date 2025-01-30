@@ -137,6 +137,16 @@ export function addCanisterMethodProxies(
             false
         );
     }
+
+    if (methodMeta?.on_low_wasm_memory !== undefined) {
+        addCanisterMethod(
+            module,
+            'canister_on_low_wasm_memory',
+            'execute_method_js',
+            methodMeta.on_low_wasm_memory.index,
+            false
+        );
+    }
 }
 
 export function addCanisterMethod(
