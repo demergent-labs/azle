@@ -13,7 +13,7 @@ export type CanisterMethodMode =
     | 'preUpgrade' // Before canister upgrade
     | 'inspectMessage' // Message inspection
     | 'heartbeat' // Periodic heartbeat
-    | 'onLowWasmMemory'; // Low WASM memory handler
+    | 'onLowWasmMemory'; // Low Wasm memory handler
 
 /**
  * Executes a canister method with Candid serialization/deserialization handling.

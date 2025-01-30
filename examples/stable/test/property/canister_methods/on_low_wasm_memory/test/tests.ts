@@ -9,8 +9,8 @@ import {
 } from 'azle/test';
 import fc from 'fast-check';
 
+import { deployFreshCanister, getCanisterStatus } from './dfx';
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
-import { deployFreshCanister, getCanisterStatus } from './helpers/dfx';
 
 const HARD_LIMIT = 3.5 * 1024 * 1024 * 1024; // 3.5 GiB in bytes (We can't use 4 GiB because we need enough memory to successfully finish a call)
 const CANISTER_NAME = 'canister';
@@ -61,6 +61,27 @@ export function getTests(): Test {
 }
 
 /**
+ * Validates the initial state of the canister:
+ * - Confirms low memory handler has not been called
+ * - Verifies wasm memory limit matches configured value
+ *
+ * @param actor - The canister actor instance
+ * @param wasmMemoryLimit - The configured wasm memory limit
+ */
+async function validateInitialStatus(
+    actor: Actor,
+    wasmMemoryLimit: number
+): Promise<void> {
+    const lowMemoryHandlerCalledAtBeginning =
+        await actor.getOnLowWasMemoryCalled();
+
+    expect(lowMemoryHandlerCalledAtBeginning).toBe(false);
+
+    const initialStatus = getCanisterStatus(CANISTER_NAME);
+    expect(initialStatus.wasmMemoryLimit).toBe(wasmMemoryLimit);
+}
+
+/**
  * Adds random bytes to the canister until it reaches its memory limit
  *
  * @param actor - The canister actor instance
@@ -83,7 +104,7 @@ async function addBytesUntilLimitReached(actor: Actor): Promise<void> {
         // 100MiBs is a good general purpose chunk size. The biggest canisters
         // fill up in less than 20 calls (less than 1 minute). Large chunks are
         // more likely to run out of memory in the middle of the call.
-        let targetChunkSize = Math.min(maxPossibleChunk, 100 * 1024 * 1024);
+        const targetChunkSize = Math.min(maxPossibleChunk, 100 * 1024 * 1024);
 
         try {
             console.info(`Called addRandomBytes ${callCount} times`);
@@ -126,27 +147,6 @@ function validateMemoryLimitError(error: unknown): void {
 }
 
 /**
- * Validates the initial state of the canister:
- * - Confirms low memory handler has not been called
- * - Verifies wasm memory limit matches configured value
- *
- * @param actor - The canister actor instance
- * @param wasmMemoryLimit - The configured wasm memory limit
- */
-async function validateInitialStatus(
-    actor: Actor,
-    wasmMemoryLimit: number
-): Promise<void> {
-    const lowMemoryHandlerCalledAtBeginning =
-        await actor.wasLowMemoryHandlerCalled();
-
-    expect(lowMemoryHandlerCalledAtBeginning).toBe(false);
-
-    const initialStatus = getCanisterStatus(CANISTER_NAME);
-    expect(initialStatus.wasmMemoryLimit).toBe(wasmMemoryLimit);
-}
-
-/**
  * Validates the final state of the canister after memory operations:
  * - Verifies memory size exceeds (wasmMemoryLimit - wasmMemoryThreshold)
  * - Verifies memory size exceeds wasmMemoryLimit (current behavior)
@@ -163,14 +163,15 @@ async function validateFinalStatus(
 ): Promise<void> {
     const finalStatus = getCanisterStatus(CANISTER_NAME);
 
-    // This is the behavior I am expecting
     expect(finalStatus.memorySize).toBeGreaterThan(
         wasmMemoryLimit - wasmMemoryThreshold
     );
-    // This is the behavior we are getting
+    // TODO: Add this check when wasmMemoryThreshold is supported on the IC: https://forum.dfinity.org/t/how-to-verify-wasm-memory-threshold-is-set-correctly/40670
+    // expect(finalStatus.memorySize).toBeLessThan(wasmMemoryLimit);
+    // TODO: Remove this check when wasmMemoryThreshold is supported on the IC: https://forum.dfinity.org/t/how-to-verify-wasm-memory-threshold-is-set-correctly/40670
     expect(finalStatus.memorySize).toBeGreaterThan(wasmMemoryLimit);
 
-    const lowMemoryHandlerCalled = await actor.wasLowMemoryHandlerCalled();
+    const lowMemoryHandlerCalled = await actor.getOnLowWasMemoryCalled();
 
     expect(lowMemoryHandlerCalled).toBe(true);
 }

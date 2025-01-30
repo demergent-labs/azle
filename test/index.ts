@@ -13,23 +13,10 @@ export type Test = () => void;
 
 export { getCanisterActor } from './get_canister_actor';
 
-export interface RunTestsOptions {
-    /**
-     * Whether to set up the agent before running tests
-     * @default true
-     */
-    shouldSetupAgent: boolean;
-}
-
-export const DEFAULT_RUN_TESTS_OPTIONS: RunTestsOptions = {
-    shouldSetupAgent: true
-};
-
 export function runTests(
     tests: Test,
     canisterNames: string | string[] | undefined = undefined,
-    _cwd: string = process.cwd(),
-    options: RunTestsOptions = DEFAULT_RUN_TESTS_OPTIONS
+    _cwd: string = process.cwd()
 ): void {
     const {
         shouldRunTests,
@@ -38,12 +25,10 @@ export function runTests(
         shouldFuzz
     } = processEnvVars();
 
-    if (options.shouldSetupAgent === true) {
-        describe('agent setup', () => {
-            // TODO temporary fix for https://github.com/demergent-labs/azle/issues/2496
-            wait('for root key to be fetched', 5_000);
-        });
-    }
+    describe('agent setup', () => {
+        // TODO temporary fix for https://github.com/demergent-labs/azle/issues/2496
+        wait('for root key to be fetched', 5_000);
+    });
 
     if (shouldRunTests === true) {
         describe(`tests`, tests);
@@ -233,5 +218,5 @@ function formatPropertyTestReproductionCommand(error: string): string {
     }
 
     const [, seed, path] = fcErrorMatch;
-    return `AZLE_PROPTEST_SEED=${seed} AZLE_PROPTEST_PATH="${path}" npm test`;
+    return `AZLE_PROPTEST_SEED=${seed} AZLE_PROPTEST_PATH="${path}" AZLE_VERBOSE=true AZLE_TEMPLATE=true npm test`;
 }

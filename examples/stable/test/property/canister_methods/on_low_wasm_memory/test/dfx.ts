@@ -2,11 +2,10 @@ import { ActorSubclass } from '@dfinity/agent';
 import { getCanisterActor } from 'azle/test';
 import { execSync } from 'child_process';
 
-export interface CanisterStatus {
-    status: string;
+export type CanisterStatus = {
     memorySize: number;
     wasmMemoryLimit: number;
-}
+};
 
 /**
  * Gets the current status of the canister including memory information
@@ -19,18 +18,16 @@ export function getCanisterStatus(canisterName: string): CanisterStatus {
         encoding: 'utf-8'
     });
 
-    const statusMatch = output.match(/Status: ([^\n]+)/);
     const memorySizeMatch = output.match(/Memory Size: Nat\((\d+)\)/);
     const wasmMemoryLimitMatch = output.match(
         /Wasm memory limit: ([0-9_]+) Bytes/
     );
 
-    if (!statusMatch || !memorySizeMatch || !wasmMemoryLimitMatch) {
+    if (memorySizeMatch === null || wasmMemoryLimitMatch === null) {
         throw new Error('Failed to parse canister status output');
     }
 
     return {
-        status: statusMatch[1],
         memorySize: parseInt(memorySizeMatch[1]),
         wasmMemoryLimit: parseInt(wasmMemoryLimitMatch[1].replace(/_/g, ''))
     };
@@ -40,7 +37,7 @@ export function getCanisterStatus(canisterName: string): CanisterStatus {
  * Completely removes the canister and redeploys it
  *
  * @remarks
- * This is necessary because the changes to the dfx.json are only applied on canister creation.
+ * This is necessary because the changes to the wasm memory limit and threshold are only applied on canister creation.
  */
 export async function deployFreshCanister<T>(
     canisterName: string,
@@ -53,7 +50,7 @@ export async function deployFreshCanister<T>(
     execSync(`dfx canister delete ${canisterName} --no-withdrawal || true`, {
         stdio: 'inherit'
     });
-    // TODO: Add back in when this is resolved https://github.com/demergent-labs/azle/issues/2606
+    // TODO: Add wasmMemoryThreshold when it is supported on the IC: https://forum.dfinity.org/t/how-to-verify-wasm-memory-threshold-is-set-correctly/40670
     // ${
     //     wasmMemoryThreshold
     //         ? `--wasm-memory-threshold ${wasmMemoryThreshold}`

@@ -44,9 +44,9 @@ type ServiceCall = (
     args: any[]
 ) => void | Promise<any>;
 
-export interface ServiceFunctionInfo {
+export type ServiceFunctionInfo = {
     [key: string]: FunctionInfo;
-}
+};
 
 export function createCanisterFunction(
     canisterOptions: CanisterOptions
