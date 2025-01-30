@@ -69,12 +69,12 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toHaveLength(0);
         });
 
-        it('calls id on the ic object', async () => {
+        it('calls canisterSelf on the ic object', async () => {
             const icApiCanisterId = execSync(`dfx canister id ic_api`)
                 .toString()
                 .trim();
 
-            const result = await icApiCanister.id();
+            const result = await icApiCanister.canisterSelf();
 
             expect(result.toText()).toBe(icApiCanisterId);
         });

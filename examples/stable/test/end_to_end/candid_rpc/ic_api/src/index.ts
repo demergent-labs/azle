@@ -1,8 +1,8 @@
 import {
     canisterCycleBalance,
+    canisterSelf,
     canisterVersion,
     dataCertificate,
-    id,
     IDL,
     isController,
     msgArgData,
@@ -77,8 +77,8 @@ export default class {
 
     // returns this canister's id
     @query([], IDL.Principal)
-    id(): Principal {
-        return id();
+    canisterSelf(): Principal {
+        return canisterSelf();
     }
 
     // determines whether the given principal is a controller of the canister

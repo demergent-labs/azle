@@ -10,7 +10,7 @@ import { Principal } from '@dfinity/principal';
  * - **Call Context**:
  *   - any besides start
  */
-export function id(): Principal {
+export function canisterSelf(): Principal {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
@@ -19,8 +19,10 @@ export function id(): Principal {
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        return Principal.fromText(globalThis._azleIcExperimental.id());
+        return Principal.fromText(
+            globalThis._azleIcExperimental.canisterSelf()
+        );
     }
 
-    return Principal.fromUint8Array(globalThis._azleIcStable.id());
+    return Principal.fromUint8Array(globalThis._azleIcStable.canisterSelf());
 }

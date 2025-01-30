@@ -4,12 +4,12 @@ mod candid_compiler;
 mod candid_decode;
 mod candid_encode;
 mod canister_cycle_balance;
+mod canister_self;
 mod canister_version;
 mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
 mod debug_print;
-mod id;
 mod in_replicated_execution;
 mod is_controller;
 mod method_name;
@@ -121,7 +121,12 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
-    ic.set("id", context.new_function::<id::NativeFunction>("").into());
+    ic.set(
+        "canisterSelf",
+        context
+            .new_function::<canister_self::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "inReplicatedExecution",
