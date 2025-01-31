@@ -5,7 +5,7 @@
  *
  * @remarks
  *
- * - Will trap if there is no reject message available (if `rejectCode()` is `0`)
+ * - Will trap if there is no reject message available (if `msgRejectCode()` is `0`)
  *
  * - **Call Context**:
  *   - after an unsuccessful inter-canister await

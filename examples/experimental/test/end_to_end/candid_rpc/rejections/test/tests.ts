@@ -9,28 +9,28 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test {
         it('reject code NO_ERROR', async () => {
             const result = await rejectionsCanister.getRejectionCodeNoError();
 
-            expect(result).toStrictEqual({ NoError: null });
+            expect(result).toStrictEqual(0);
         });
 
         it('reject code DESTINATION_INVALID', async () => {
             const result =
                 await rejectionsCanister.getRejectionCodeDestinationInvalid();
 
-            expect(result).toStrictEqual({ DestinationInvalid: null });
+            expect(result).toStrictEqual(3);
         });
 
         it('reject code CANISTER_REJECT', async () => {
             const result =
                 await rejectionsCanister.getRejectionCodeCanisterReject();
 
-            expect(result).toStrictEqual({ CanisterReject: null });
+            expect(result).toStrictEqual(4);
         });
 
         it('reject code CANISTER_ERROR', async () => {
             const result =
                 await rejectionsCanister.getRejectionCodeCanisterError();
 
-            expect(result).toStrictEqual({ CanisterError: null });
+            expect(result).toStrictEqual(5);
         });
 
         it('reject message', async () => {
