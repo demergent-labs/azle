@@ -1,4 +1,4 @@
-import { candidEncode, IDL, msgReply, reject } from 'azle';
+import { candidEncode, IDL, msgReject, msgReply } from 'azle';
 import {
     blob,
     bool,
@@ -75,7 +75,7 @@ export default Canister({
         Manual(text),
         (message) => {
             if (message === 'reject') {
-                reject(message);
+                msgReject(message);
                 return;
             }
 
@@ -247,7 +247,7 @@ export default Canister({
         Manual(text),
         (message) => {
             if (message === 'reject') {
-                reject(message);
+                msgReject(message);
                 return;
             }
 

@@ -1,14 +1,14 @@
-import { IDL, msgReply, query, reject, update } from 'azle';
+import { IDL, msgReject, msgReply, query, update } from 'azle';
 
 export default class {
     @query([IDL.Text], undefined, { manual: true })
     alwaysRejectQuery(message: string): void {
-        reject(`reject proptest message: ${message}`);
+        msgReject(`reject proptest message: ${message}`);
     }
 
     @update([IDL.Text], undefined, { manual: true })
     alwaysRejectUpdate(message: string): void {
-        reject(`reject proptest message: ${message}`);
+        msgReject(`reject proptest message: ${message}`);
     }
 
     @query([IDL.Int], IDL.Int, { manual: true })
@@ -18,7 +18,7 @@ export default class {
 
             msgReply(encoded);
         } else {
-            reject('Odd numbers are rejected');
+            msgReject('Odd numbers are rejected');
         }
     }
 
@@ -29,7 +29,7 @@ export default class {
 
             msgReply(encoded);
         } else {
-            reject('Odd numbers are rejected');
+            msgReject('Odd numbers are rejected');
         }
     }
 }

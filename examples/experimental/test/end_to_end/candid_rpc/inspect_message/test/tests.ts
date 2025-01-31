@@ -8,12 +8,12 @@ export function getTests(
     inspectMessageCanister: ActorSubclass<_SERVICE>
 ): Test {
     return () => {
-        it('calls `ic.acceptMessage` in inspectMessage', async () => {
+        it('calls `acceptMessage` in inspectMessage', async () => {
             const result = await inspectMessageCanister.accessible();
             expect(result).toBe(true);
         });
 
-        it('rejects because `ic.acceptMessage` was not called in inspectMessage', async () => {
+        it('rejects because `acceptMessage` was not called in inspectMessage', async () => {
             await expect(inspectMessageCanister.inaccessible()).rejects.toThrow(
                 /IC0406/
             );
