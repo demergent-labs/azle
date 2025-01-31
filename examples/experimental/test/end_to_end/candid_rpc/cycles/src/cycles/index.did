@@ -1,4 +1,4 @@
 service: () -> {
-    getCanisterBalance: () -> (nat) query;
+    getCanisterCycleBalance: () -> (nat) query;
     receiveCycles: () -> (nat);
 }

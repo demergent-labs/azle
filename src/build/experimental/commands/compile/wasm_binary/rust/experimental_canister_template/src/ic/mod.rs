@@ -3,7 +3,7 @@ mod call_raw;
 mod candid_compiler;
 mod candid_decode;
 mod candid_encode;
-mod canister_balance;
+mod canister_cycle_balance;
 mod canister_version;
 mod clear_timer;
 mod cycles_burn;
@@ -80,9 +80,9 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "canisterBalance",
+        "canisterCycleBalance",
         context
-            .new_function::<canister_balance::NativeFunction>("")
+            .new_function::<canister_cycle_balance::NativeFunction>("")
             .into(),
     );
 

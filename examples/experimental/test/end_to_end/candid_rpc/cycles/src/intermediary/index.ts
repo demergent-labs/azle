@@ -1,4 +1,4 @@
-import { call, canisterBalance, IDL, notify, trap } from 'azle';
+import { call, canisterCycleBalance, IDL, notify, trap } from 'azle';
 import {
     Canister,
     nat,
@@ -40,8 +40,8 @@ export default Canister({
             cycles: 1_000_000n
         });
     }),
-    getCanisterBalance: query([], nat, () => {
-        return canisterBalance();
+    getCanisterCycleBalance: query([], nat, () => {
+        return canisterCycleBalance();
     })
 });
 

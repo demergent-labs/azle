@@ -1,5 +1,5 @@
 import {
-    canisterBalance,
+    canisterCycleBalance,
     canisterVersion,
     dataCertificate,
     id,
@@ -37,8 +37,8 @@ export default class {
 
     // returns the amount of cycles available in the canister
     @query([], IDL.Nat64)
-    canisterBalance(): bigint {
-        return canisterBalance();
+    canisterCycleBalance(): bigint {
+        return canisterCycleBalance();
     }
 
     // returns the canister's version number

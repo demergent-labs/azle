@@ -1,6 +1,6 @@
 import {
     call,
-    canisterBalance,
+    canisterCycleBalance,
     IDL,
     msgCyclesRefunded,
     query,
@@ -68,11 +68,11 @@ export default class {
     }
 
     @query([], IDL.Bool)
-    assertCanisterBalanceTypes(): boolean {
+    assertCanisterCycleBalanceTypes(): boolean {
         type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof canisterBalance>, bigint>
+            NotAnyAndExact<ReturnType<typeof canisterCycleBalance>, bigint>
         >;
-        return typeof canisterBalance() === 'bigint';
+        return typeof canisterCycleBalance() === 'bigint';
     }
 
     @update([IDL.Nat64], IDL.Bool)

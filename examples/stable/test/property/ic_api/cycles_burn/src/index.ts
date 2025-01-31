@@ -1,10 +1,10 @@
-import { canisterBalance, cyclesBurn, IDL, query, update } from 'azle';
+import { canisterCycleBalance, cyclesBurn, IDL, query, update } from 'azle';
 import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
     @query([], IDL.Nat)
     getCycleBalance(): bigint {
-        return canisterBalance();
+        return canisterCycleBalance();
     }
 
     @update([IDL.Nat], IDL.Nat)
