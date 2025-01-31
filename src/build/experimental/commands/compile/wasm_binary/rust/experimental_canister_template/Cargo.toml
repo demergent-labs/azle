@@ -19,7 +19,7 @@ scopeguard = "1.2.0"
 slotmap = "=1.0.7"
 sha2 = "0.10.8"
 serde = "1.0.217"
-serde_json = "1.0.137"
+serde_json = "1.0.138"
 ic-wasi-polyfill = "0.7.0"
 wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "573c6c07316de64e4bb9a9561b079f265fd9bcc4" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }
