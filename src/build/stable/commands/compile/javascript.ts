@@ -80,6 +80,9 @@ export function handleClassApiCanister(): string {
          */
         function getExportedCanisterClassInstance() {
             try {
+                if (Canister.default === undefined) {
+                    throw new Error("Azle canisters require that you export a default class. Please use 'export default class { ... }' or define your class and then 'export default YourClass'.");
+                }
                 Canister.default.prototype._azleShouldRegisterCanisterMethods = true;
                 new Canister.default();
                 Canister.default.prototype._azleShouldRegisterCanisterMethods = false;
