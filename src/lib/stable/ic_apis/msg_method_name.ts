@@ -8,7 +8,7 @@
  * - **Call Context**:
  *   - \@inspectMessage
  */
-export function methodName(): string {
+export function msgMethodName(): string {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
@@ -17,8 +17,8 @@ export function methodName(): string {
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        return globalThis._azleIcExperimental.methodName();
+        return globalThis._azleIcExperimental.msgMethodName();
     }
 
-    return globalThis._azleIcStable.methodName();
+    return globalThis._azleIcStable.msgMethodName();
 }

@@ -15,12 +15,12 @@ mod data_certificate;
 mod debug_print;
 mod in_replicated_execution;
 mod is_controller;
-mod method_name;
 mod msg_arg_data;
 mod msg_caller;
 mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
+mod msg_method_name;
 mod msg_reply;
 mod notify_raw;
 mod performance_counter;
@@ -85,7 +85,7 @@ pub fn register(ctx: Ctx) -> Result<()> {
 
     ic.set("isController", is_controller::get_function(ctx.clone()))?;
 
-    ic.set("methodName", method_name::get_function(ctx.clone()))?;
+    ic.set("msgMethodName", msg_method_name::get_function(ctx.clone()))?;
 
     ic.set("msgArgData", msg_arg_data::get_function(ctx.clone()))?;
 

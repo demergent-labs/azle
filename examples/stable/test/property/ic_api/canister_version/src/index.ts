@@ -4,7 +4,7 @@ import {
     IDL,
     init,
     inspectMessage,
-    methodName,
+    msgMethodName,
     postUpgrade,
     preUpgrade,
     query,
@@ -74,7 +74,7 @@ export default class {
 
     @inspectMessage
     inspectMessage(): void {
-        if (methodName() === 'getInspectMessageCanisterVersion') {
+        if (msgMethodName() === 'getInspectMessageCanisterVersion') {
             if (canisterVersion() === this.inspectMessageCanisterVersion) {
                 acceptMessage();
             }

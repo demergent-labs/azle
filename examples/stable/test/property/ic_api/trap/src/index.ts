@@ -2,8 +2,8 @@ import {
     acceptMessage,
     IDL,
     inspectMessage,
-    methodName,
     msgArgData,
+    msgMethodName,
     query,
     trap,
     update
@@ -12,7 +12,7 @@ import {
 export default class {
     @inspectMessage
     inspectMessage(): void {
-        if (methodName() === 'inspectMessageTrap') {
+        if (msgMethodName() === 'inspectMessageTrap') {
             const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
 
             trap(`trap proptest message: ${message}`);

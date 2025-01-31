@@ -3,8 +3,8 @@ import {
     IDL,
     init,
     inspectMessage,
-    methodName,
     msgCaller,
+    msgMethodName,
     postUpgrade,
     preUpgrade,
     Principal,
@@ -67,7 +67,7 @@ export default class {
 
     @inspectMessage
     inspectMessage(): void {
-        if (methodName() === 'getInspectMessageCaller') {
+        if (msgMethodName() === 'getInspectMessageCaller') {
             if (msgCaller().toText() === this.inspectMessageCaller?.toText()) {
                 acceptMessage();
             }

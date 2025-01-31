@@ -12,12 +12,12 @@ mod data_certificate;
 mod debug_print;
 mod in_replicated_execution;
 mod is_controller;
-mod method_name;
 mod msg_arg_data;
 mod msg_caller;
 mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
+mod msg_method_name;
 mod msg_reply;
 mod notify_raw;
 mod performance_counter;
@@ -143,9 +143,9 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "methodName",
+        "msgMethodName",
         context
-            .new_function::<method_name::NativeFunction>("")
+            .new_function::<msg_method_name::NativeFunction>("")
             .into(),
     );
 

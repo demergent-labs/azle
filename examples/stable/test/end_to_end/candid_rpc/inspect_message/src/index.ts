@@ -1,4 +1,10 @@
-import { acceptMessage, IDL, inspectMessage, methodName, update } from 'azle';
+import {
+    acceptMessage,
+    IDL,
+    inspectMessage,
+    msgMethodName,
+    update
+} from 'azle';
 
 export default class {
     @inspectMessage
@@ -6,18 +12,18 @@ export default class {
         console.info('inspectMessage called');
 
         if (
-            methodName() === 'accessible' ||
-            methodName() === '_azle_get_benchmarks'
+            msgMethodName() === 'accessible' ||
+            msgMethodName() === '_azle_get_benchmarks'
         ) {
             acceptMessage();
             return;
         }
 
-        if (methodName() === 'inaccessible') {
+        if (msgMethodName() === 'inaccessible') {
             return;
         }
 
-        throw `Method "${methodName()}" not allowed`;
+        throw `Method "${msgMethodName()}" not allowed`;
     }
 
     @update([], IDL.Bool)

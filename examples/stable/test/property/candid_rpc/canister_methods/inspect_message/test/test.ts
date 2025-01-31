@@ -100,7 +100,7 @@ function generateInspectMessageMethodBody(): string {
             return;
         }
         if (msgCaller().toText() === "${throwPrincipal}") {
-            throw new Error(\`Method "$\{methodName()}" not allowed\`);
+            throw new Error(\`Method "$\{msgMethodName()}" not allowed\`);
         }
         throw new Error("Unexpected caller");
     `;
