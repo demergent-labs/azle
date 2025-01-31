@@ -1,4 +1,4 @@
-import { call, candidEncode, id, msgReply } from 'azle';
+import { call, candidEncode, canisterSelf, msgReply } from 'azle';
 import {
     http_request_args,
     http_request_result
@@ -48,7 +48,7 @@ export default Canister({
                         body: [],
                         transform: [
                             {
-                                function: [id(), 'xkcdTransform'] as [
+                                function: [canisterSelf(), 'xkcdTransform'] as [
                                     Principal,
                                     string
                                 ],
@@ -79,7 +79,7 @@ export default Canister({
                         method = variant { get };
                         headers = vec {};
                         body = null;
-                        transform = record { function = func "${id().toString()}".xkcdTransform; context = vec {} };
+                        transform = record { function = func "${canisterSelf().toString()}".xkcdTransform; context = vec {} };
                     }
                 )
             `),

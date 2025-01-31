@@ -1,4 +1,4 @@
-import { call, id } from 'azle';
+import { call, canisterSelf } from 'azle';
 import {
     http_request_args,
     http_request_result
@@ -102,7 +102,7 @@ async function getBalance(
                     ],
                     transform: [
                         {
-                            function: [id(), 'ethTransform'] as [
+                            function: [canisterSelf(), 'ethTransform'] as [
                                 Principal,
                                 string
                             ],
@@ -166,7 +166,7 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
                     ],
                     transform: [
                         {
-                            function: [id(), 'ethTransform'] as [
+                            function: [canisterSelf(), 'ethTransform'] as [
                                 Principal,
                                 string
                             ],

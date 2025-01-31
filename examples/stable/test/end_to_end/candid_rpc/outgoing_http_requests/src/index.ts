@@ -1,7 +1,7 @@
 import {
     call,
     candidEncode,
-    id,
+    canisterSelf,
     IDL,
     msgReply,
     Principal,
@@ -34,7 +34,7 @@ export default class {
                     body: [],
                     transform: [
                         {
-                            function: [id(), 'xkcdTransform'] as [
+                            function: [canisterSelf(), 'xkcdTransform'] as [
                                 Principal,
                                 string
                             ],
@@ -63,7 +63,7 @@ export default class {
                             method = variant { get };
                             headers = vec {};
                             body = null;
-                            transform = record { function = func "${id().toString()}".xkcdTransform; context = vec {} };
+                            transform = record { function = func "${canisterSelf().toString()}".xkcdTransform; context = vec {} };
                         }
                     )
                 `),

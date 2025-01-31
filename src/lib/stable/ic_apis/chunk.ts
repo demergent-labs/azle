@@ -1,6 +1,6 @@
 import { call } from './call';
 import { candidEncode } from './candid_encode';
-import { id } from './id';
+import { canisterSelf } from './canister_self';
 
 /**
  * Resets the instruction limit after the await point.
@@ -32,5 +32,8 @@ export async function chunk(): Promise<void> {
         return undefined;
     }
 
-    await call(id(), '_azle_chunk', { raw: candidEncode('()'), cycles: 0n });
+    await call(canisterSelf(), '_azle_chunk', {
+        raw: candidEncode('()'),
+        cycles: 0n
+    });
 }

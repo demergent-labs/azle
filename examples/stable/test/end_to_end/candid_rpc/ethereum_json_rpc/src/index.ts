@@ -1,6 +1,6 @@
 import {
     call,
-    id,
+    canisterSelf,
     IDL,
     init,
     Principal,
@@ -85,7 +85,7 @@ async function getBalance(
                     ],
                     transform: [
                         {
-                            function: [id(), 'ethTransform'] as [
+                            function: [canisterSelf(), 'ethTransform'] as [
                                 Principal,
                                 string
                             ],
@@ -127,7 +127,7 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
                     ],
                     transform: [
                         {
-                            function: [id(), 'ethTransform'] as [
+                            function: [canisterSelf(), 'ethTransform'] as [
                                 Principal,
                                 string
                             ],

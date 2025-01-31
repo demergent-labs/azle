@@ -1,8 +1,8 @@
 import {
     acceptMessage,
     call,
+    canisterSelf,
     heartbeat,
-    id,
     IDL,
     init,
     inReplicatedExecution,
@@ -135,7 +135,7 @@ export default class {
 
     @update([], IDL.Bool)
     async getQueryInReplicatedModeIsInReplicatedExecution(): Promise<boolean> {
-        return await call(id(), 'getQueryIsInReplicatedExecution', {
+        return await call(canisterSelf(), 'getQueryIsInReplicatedExecution', {
             returnIdlType: IDL.Bool
         });
     }

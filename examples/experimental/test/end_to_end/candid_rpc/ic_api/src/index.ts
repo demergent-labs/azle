@@ -1,8 +1,8 @@
 import {
     canisterCycleBalance,
+    canisterSelf,
     canisterVersion,
     dataCertificate,
-    id,
     isController,
     msgArgData,
     msgCaller,
@@ -65,8 +65,8 @@ export default Canister({
         return cert === undefined ? { None: null } : { Some: cert };
     }),
     // returns this canister's id
-    id: query([], Principal, () => {
-        return id();
+    canisterSelf: query([], Principal, () => {
+        return canisterSelf();
     }),
     // determines whether the given principal is a controller of the canister
     isController: query([Principal], bool, (principal) => {

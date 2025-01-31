@@ -1,4 +1,4 @@
-import { call, id, IDL, msgCaller } from 'azle';
+import { call, canisterSelf, IDL, msgCaller } from 'azle';
 import {
     Canister,
     init,
@@ -40,7 +40,7 @@ const WhoAmI = Canister({
     }),
     // Return the principal identifier of this canister.
     id: update([], Principal, async () => {
-        const self: any = WhoAmI(id());
+        const self: any = WhoAmI(canisterSelf());
 
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -64,7 +64,7 @@ const WhoAmI = Canister({
     // canister call to itself. Additionally, it can now be a `Query` which means it
     // doesn't have to go through consensus.
     idQuick: query([], Principal, () => {
-        return id();
+        return canisterSelf();
     })
 });
 

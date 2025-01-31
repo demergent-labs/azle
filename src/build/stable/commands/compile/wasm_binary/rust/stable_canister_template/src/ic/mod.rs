@@ -7,12 +7,12 @@ mod call_raw;
 mod candid_decode;
 mod candid_encode;
 mod canister_cycle_balance;
+mod canister_self;
 mod canister_version;
 mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
 mod debug_print;
-mod id;
 mod in_replicated_execution;
 mod is_controller;
 mod method_name;
@@ -76,7 +76,7 @@ pub fn register(ctx: Ctx) -> Result<()> {
 
     ic.set("debugPrint", debug_print::get_function(ctx.clone()))?;
 
-    ic.set("id", id::get_function(ctx.clone()))?;
+    ic.set("canisterSelf", canister_self::get_function(ctx.clone()))?;
 
     ic.set(
         "inReplicatedExecution",

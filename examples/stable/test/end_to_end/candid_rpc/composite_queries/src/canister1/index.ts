@@ -1,4 +1,4 @@
-import { call, id, IDL, msgReply, query, update } from 'azle';
+import { call, canisterSelf, IDL, msgReply, query, update } from 'azle';
 
 export default class Canister {
     canister2Id: string = getCanister2Id();
@@ -125,7 +125,7 @@ function getCanister2Id(): string {
 }
 
 async function incCanister(): Promise<bigint> {
-    return await call(id(), 'incCounter', {
+    return await call(canisterSelf(), 'incCounter', {
         returnIdlType: IDL.Nat
     });
 }

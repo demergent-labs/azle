@@ -1,4 +1,4 @@
-import { id, trap } from 'azle';
+import { canisterSelf, trap } from 'azle';
 import {
     blob,
     Canister,
@@ -38,7 +38,7 @@ export default Canister({
                         body: encode('Counter'),
                         streaming_strategy: Some({
                             Callback: {
-                                callback: [id(), 'http_streaming'],
+                                callback: [canisterSelf(), 'http_streaming'],
                                 token: {
                                     arbitrary_data: 'start'
                                 }
