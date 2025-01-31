@@ -1,4 +1,4 @@
-import { call, IDL, rejectMessage, update } from 'azle';
+import { call, IDL, msgRejectMsg, update } from 'azle';
 import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
 
 export default class {
@@ -12,7 +12,7 @@ export default class {
     @update([IDL.Text], IDL.Bool)
     async assertTypes(message: string): Promise<boolean> {
         type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof rejectMessage>, string>
+            NotAnyAndExact<ReturnType<typeof msgRejectMsg>, string>
         >;
         return (
             typeof (await getRejectMessage(this.rejectorPrincipal, message)) ===
@@ -32,7 +32,7 @@ async function getRejectMessage(
             args: [message]
         });
     } catch {
-        return rejectMessage();
+        return msgRejectMsg();
     }
     throw new Error('This should never be thrown');
 }

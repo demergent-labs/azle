@@ -1,4 +1,4 @@
-import { call, IDL, rejectCode, rejectMessage, update } from 'azle';
+import { call, IDL, msgRejectMsg, rejectCode, update } from 'azle';
 
 const RejectionCode = IDL.Variant({
     NoError: IDL.Null,
@@ -90,7 +90,7 @@ export default class {
             // continue regardless of error
         }
 
-        return rejectMessage();
+        return msgRejectMsg();
     }
 }
 
