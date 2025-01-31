@@ -99,6 +99,18 @@ it.skip = test.skip;
 export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
     const baseParams = {
         numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
+        reporter: (runDetails: fc.RunDetails<T>): void => {
+            const seed = runDetails.seed;
+            const path = runDetails.counterexamplePath;
+            const reproductionCommand = `AZLE_PROPTEST_SEED=${seed}${path !== null ? ` AZLE_PROPTEST_PATH="${path}"` : ''} AZLE_VERBOSE=true AZLE_TEMPLATE=true npm test`;
+            const reproductionMessage = `To reproduce this exact test case, run:\n${reproductionCommand}`;
+            console.info(reproductionMessage);
+            if (runDetails.failed) {
+                throw new Error(
+                    `${reproductionMessage}\n\n${fc.defaultReportMessage(runDetails)}`
+                );
+            }
+        },
         endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
     };
 

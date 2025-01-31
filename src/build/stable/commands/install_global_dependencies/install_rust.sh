@@ -13,7 +13,7 @@ echo "Installing Rust version $RUST_VERSION..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain "$RUST_VERSION"
 source $HOME/.cargo/env
 
-# Add the WASM target for WebAssembly
+# Add the Wasm target for WebAssembly
 rustup target add wasm32-wasip1
 
 echo "Rust $RUST_VERSION installation completed."
