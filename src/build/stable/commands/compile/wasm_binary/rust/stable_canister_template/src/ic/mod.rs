@@ -6,7 +6,7 @@ mod accept_message;
 mod call_raw;
 mod candid_decode;
 mod candid_encode;
-mod canister_balance;
+mod canister_cycle_balance;
 mod canister_version;
 mod clear_timer;
 mod cycles_burn;
@@ -56,8 +56,8 @@ pub fn register(ctx: Ctx) -> Result<()> {
     ic.set("candidEncode", candid_encode::get_function(ctx.clone()))?;
 
     ic.set(
-        "canisterBalance",
-        canister_balance::get_function(ctx.clone()),
+        "canisterCycleBalance",
+        canister_cycle_balance::get_function(ctx.clone()),
     )?;
 
     ic.set(

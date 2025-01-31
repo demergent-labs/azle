@@ -15,7 +15,7 @@
  * - **Call Context**:
  *   - any besides start
  */
-export function canisterBalance(): bigint {
+export function canisterCycleBalance(): bigint {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
@@ -24,8 +24,8 @@ export function canisterBalance(): bigint {
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        return BigInt(globalThis._azleIcExperimental.canisterBalance());
+        return BigInt(globalThis._azleIcExperimental.canisterCycleBalance());
     }
 
-    return BigInt(globalThis._azleIcStable.canisterBalance());
+    return BigInt(globalThis._azleIcStable.canisterCycleBalance());
 }

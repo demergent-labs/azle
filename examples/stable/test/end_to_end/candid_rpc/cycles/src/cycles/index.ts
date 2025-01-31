@@ -1,5 +1,5 @@
 import {
-    canisterBalance,
+    canisterCycleBalance,
     IDL,
     msgCyclesAccept,
     msgCyclesAvailable,
@@ -14,7 +14,7 @@ export default class {
     }
 
     @query([], IDL.Nat64)
-    getCanisterBalance(): bigint {
-        return canisterBalance();
+    getCanisterCycleBalance(): bigint {
+        return canisterCycleBalance();
     }
 }

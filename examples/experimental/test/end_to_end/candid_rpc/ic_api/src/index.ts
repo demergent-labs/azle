@@ -1,5 +1,5 @@
 import {
-    canisterBalance,
+    canisterCycleBalance,
     canisterVersion,
     dataCertificate,
     id,
@@ -43,8 +43,8 @@ export default Canister({
         return msgCaller();
     }),
     // returns the amount of cycles available in the canister
-    canisterBalance: query([], nat, () => {
-        return canisterBalance();
+    canisterCycleBalance: query([], nat, () => {
+        return canisterCycleBalance();
     }),
     // returns the canister's version number
     canisterVersion: query([], nat64, () => {

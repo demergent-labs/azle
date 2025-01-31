@@ -1,5 +1,5 @@
 import {
-    canisterBalance,
+    canisterCycleBalance,
     IDL,
     msgCyclesAccept,
     msgCyclesAvailable,
@@ -61,7 +61,7 @@ function acceptCycles(
         throw new Error('numChunks cannot be 0');
     }
 
-    const startingCanisterBalance = canisterBalance();
+    const startingCanisterCycleBalance = canisterCycleBalance();
     const initialAvailable = msgCyclesAvailable();
     const acceptAmount = receiveAmount ?? initialAvailable;
     const accepted =
@@ -75,15 +75,15 @@ function acceptCycles(
               )
             : msgCyclesAccept(acceptAmount);
     const finalAvailable = msgCyclesAvailable();
-    const endingCanisterBalance = canisterBalance();
+    const endingCanisterCycleBalance = canisterCycleBalance();
     const cyclesRefunded = 0n; // This will always be 0 in the cycles canister
 
     return {
         initialAvailable,
         accepted,
         finalAvailable,
-        startingCanisterBalance,
-        endingCanisterBalance,
+        startingCanisterCycleBalance,
+        endingCanisterCycleBalance,
         cyclesRefunded
     };
 }

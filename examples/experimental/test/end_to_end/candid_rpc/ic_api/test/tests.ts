@@ -43,8 +43,8 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result.toText()).toBe('2vxsx-fae');
         });
 
-        it('calls canisterBalance on the ic object', async () => {
-            const result = await icApiCanister.canisterBalance();
+        it('calls canisterCycleBalance on the ic object', async () => {
+            const result = await icApiCanister.canisterCycleBalance();
 
             expect(result).toBeGreaterThan(2_000_000_000_000n);
             expect(result).toBeLessThan(4_000_000_000_000n);

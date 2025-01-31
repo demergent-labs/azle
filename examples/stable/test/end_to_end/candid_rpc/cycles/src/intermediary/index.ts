@@ -1,4 +1,4 @@
-import { call, canisterBalance, IDL, notify, query, update } from 'azle';
+import { call, canisterCycleBalance, IDL, notify, query, update } from 'azle';
 
 export default class {
     cyclesPrincipal = getCyclesPrincipal();
@@ -20,8 +20,8 @@ export default class {
     }
 
     @query([], IDL.Nat64)
-    getCanisterBalance(): bigint {
-        return canisterBalance();
+    getCanisterCycleBalance(): bigint {
+        return canisterCycleBalance();
     }
 }
 
