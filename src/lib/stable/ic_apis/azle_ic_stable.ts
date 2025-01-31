@@ -32,7 +32,7 @@ export type AzleIcStable = {
         cyclesString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
-    rejectCode: () => number;
+    msgRejectCode: () => number;
     msgReply: (bytes: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
     setTimer: (delay: string, timerCallbackId: string) => bigint;

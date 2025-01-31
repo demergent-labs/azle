@@ -33,7 +33,7 @@ export type AzleIcExperimental = {
         paymentString: string
     ) => void;
     performanceCounter: (counterType: string) => string;
-    rejectCode: () => string;
+    msgRejectCode: () => string;
     msgReply: (bytes: ArrayBuffer) => void;
     setCertifiedData: (dataBytes: ArrayBuffer) => void;
     setTimer: (delayString: string, timerCallbackId: string) => string;

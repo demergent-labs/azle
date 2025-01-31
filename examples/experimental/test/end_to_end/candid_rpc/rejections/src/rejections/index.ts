@@ -1,16 +1,16 @@
-import { call, msgRejectMsg, rejectCode } from 'azle';
+import { call, msgRejectCode, msgRejectMsg } from 'azle';
 import {
     bool,
     Canister,
     empty,
-    RejectionCode,
+    nat32,
     serialize,
     text,
     update
 } from 'azle/experimental';
 
 export default Canister({
-    getRejectionCodeNoError: update([], RejectionCode, async () => {
+    getRejectionCodeNoError: update([], nat32, async () => {
         const someCanisterPrincipal = getSomeCanisterPrincipal();
 
         if (process.env.AZLE_TEST_FETCH === 'true') {
@@ -25,9 +25,9 @@ export default Canister({
             });
         }
 
-        return rejectCode();
+        return msgRejectCode();
     }),
-    getRejectionCodeDestinationInvalid: update([], RejectionCode, async () => {
+    getRejectionCodeDestinationInvalid: update([], nat32, async () => {
         try {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://rkp4c-7iaaa-aaaaa-aaaca-cai/method`, {
@@ -45,9 +45,9 @@ export default Canister({
             // continue regardless of error
         }
 
-        return rejectCode();
+        return msgRejectCode();
     }),
-    getRejectionCodeCanisterReject: update([], RejectionCode, async () => {
+    getRejectionCodeCanisterReject: update([], nat32, async () => {
         const someCanisterPrincipal = getSomeCanisterPrincipal();
 
         try {
@@ -69,9 +69,9 @@ export default Canister({
             // continue regardless of error
         }
 
-        return rejectCode();
+        return msgRejectCode();
     }),
-    getRejectionCodeCanisterError: update([], RejectionCode, async () => {
+    getRejectionCodeCanisterError: update([], nat32, async () => {
         const someCanisterPrincipal = getSomeCanisterPrincipal();
 
         try {
@@ -90,7 +90,7 @@ export default Canister({
             // continue regardless of error
         }
 
-        return rejectCode();
+        return msgRejectCode();
     }),
     getRejectionMessage: update([text], text, async (message: text) => {
         const someCanisterPrincipal = getSomeCanisterPrincipal();

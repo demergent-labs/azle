@@ -1,61 +1,28 @@
-import { call, IDL, msgRejectMsg, rejectCode, update } from 'azle';
-
-const RejectionCode = IDL.Variant({
-    NoError: IDL.Null,
-    SysFatal: IDL.Null,
-    SysTransient: IDL.Null,
-    DestinationInvalid: IDL.Null,
-    CanisterReject: IDL.Null,
-    CanisterError: IDL.Null,
-    Unknown: IDL.Null
-});
-
-type RejectionCode =
-    | {
-          NoError: null;
-      }
-    | {
-          SysFatal: null;
-      }
-    | {
-          SysTransient: null;
-      }
-    | {
-          DestinationInvalid: null;
-      }
-    | {
-          CanisterReject: null;
-      }
-    | {
-          CanisterError: null;
-      }
-    | {
-          Unknown: null;
-      };
+import { call, IDL, msgRejectCode, msgRejectMsg, update } from 'azle';
 
 export default class {
-    @update([], RejectionCode)
-    async getRejectionCodeNoError(): Promise<RejectionCode> {
+    @update([], IDL.Nat32)
+    async getRejectionCodeNoError(): Promise<number> {
         await call(getSomeCanisterPrincipal(), 'accept', {
             returnIdlType: IDL.Bool
         });
 
-        return rejectCode();
+        return msgRejectCode();
     }
 
-    @update([], RejectionCode)
-    async getRejectionCodeDestinationInvalid(): Promise<RejectionCode> {
+    @update([], IDL.Nat32)
+    async getRejectionCodeDestinationInvalid(): Promise<number> {
         try {
             await call('rkp4c-7iaaa-aaaaa-aaaca-cai', 'method');
         } catch {
             // continue regardless of error
         }
 
-        return rejectCode();
+        return msgRejectCode();
     }
 
-    @update([], RejectionCode)
-    async getRejectionCodeCanisterReject(): Promise<RejectionCode> {
+    @update([], IDL.Nat32)
+    async getRejectionCodeCanisterReject(): Promise<number> {
         try {
             await call(getSomeCanisterPrincipal(), 'reject', {
                 paramIdlTypes: [IDL.Text],
@@ -65,18 +32,18 @@ export default class {
             // continue regardless of error
         }
 
-        return rejectCode();
+        return msgRejectCode();
     }
 
-    @update([], RejectionCode)
-    async getRejectionCodeCanisterError(): Promise<RejectionCode> {
+    @update([], IDL.Nat32)
+    async getRejectionCodeCanisterError(): Promise<number> {
         try {
             await call(getSomeCanisterPrincipal(), 'error');
         } catch {
             // continue regardless of error
         }
 
-        return rejectCode();
+        return msgRejectCode();
     }
 
     @update([IDL.Text], IDL.Text)
