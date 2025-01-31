@@ -1,4 +1,4 @@
-import { call, rejectCode, rejectMessage } from 'azle';
+import { call, msgRejectMsg, rejectCode } from 'azle';
 import {
     bool,
     Canister,
@@ -114,7 +114,7 @@ export default Canister({
             // continue regardless of error
         }
 
-        return rejectMessage();
+        return msgRejectMsg();
     })
 });
 

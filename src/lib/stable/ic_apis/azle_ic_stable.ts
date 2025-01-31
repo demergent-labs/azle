@@ -46,7 +46,7 @@ export type AzleIcStable = {
     msgMethodName: () => string;
     debugPrint: (...args: any) => void;
     reject: (message: string) => void;
-    rejectMessage: () => string;
+    msgRejectMsg: () => string;
     trap: (message: string) => never;
     // These calls are intercepted by our IC object and redirected to their
     // corresponding raw version. The rust version is never called, we don't
