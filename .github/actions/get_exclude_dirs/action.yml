@@ -29,6 +29,7 @@ runs:
               examples/experimental/demo/bitcoin_psbt
               examples/stable/test/end_to_end/candid_rpc/multi_deploy
               examples/stable/test/property/ic_api/performance_counter
+              examples/experimental/test/end_to_end/http_server/ethers_base
               examples/experimental/test/end_to_end/http_server/http_outcall_fetch
               examples/experimental/test/end_to_end/http_server/ic_evm_rpc
               examples/experimental/test/end_to_end/http_server/multi_deploy
