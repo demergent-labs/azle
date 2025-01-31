@@ -18,7 +18,7 @@ import { idlEncode } from '../execute_with_candid_serde';
  *
  * @remarks
  * - The call is "fire and forget" - errors are not returned
- * - More efficient than await ic.call() when no response is needed
+ * - More efficient than await `call` when no response is needed
  *
  * - **Call Context**:
  *   - \@update

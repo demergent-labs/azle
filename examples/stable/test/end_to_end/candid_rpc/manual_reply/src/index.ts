@@ -1,4 +1,4 @@
-import { candidEncode, IDL, msgReply, query, reject, update } from 'azle';
+import { candidEncode, IDL, msgReject, msgReply, query, update } from 'azle';
 
 const Options = IDL.Variant({
     Small: IDL.Null,
@@ -91,7 +91,7 @@ export default class {
     @update([IDL.Text], IDL.Text, { manual: true })
     manualUpdate(message: string): void {
         if (message === 'reject') {
-            reject(message);
+            msgReject(message);
             return;
         }
 
@@ -184,7 +184,7 @@ export default class {
     @query([IDL.Text], IDL.Text, { manual: true })
     manualQuery(message: string): void {
         if (message === 'reject') {
-            reject(message);
+            msgReject(message);
             return;
         }
 

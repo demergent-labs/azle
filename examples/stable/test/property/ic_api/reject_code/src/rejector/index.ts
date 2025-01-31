@@ -1,4 +1,4 @@
-import { IDL, query, reject } from 'azle';
+import { IDL, msgReject, query } from 'azle';
 
 export default class {
     @query([], IDL.Text)
@@ -8,7 +8,7 @@ export default class {
 
     @query([], IDL.Text, { manual: true })
     rejectWithMessage(): void {
-        reject('Rejection with message');
+        msgReject('Rejection with message');
     }
 
     @query

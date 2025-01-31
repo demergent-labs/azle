@@ -1,4 +1,4 @@
-import { reject } from 'azle';
+import { msgReject } from 'azle';
 import { bool, Canister, empty, Manual, query, text } from 'azle/experimental';
 
 export default Canister({
@@ -6,7 +6,7 @@ export default Canister({
         [text],
         Manual(empty),
         (message) => {
-            reject(message);
+            msgReject(message);
         },
         { manual: true }
     ),
@@ -17,7 +17,7 @@ export default Canister({
         [],
         Manual(empty),
         () => {
-            // This errors because neither ic.reject nor ic.reply were called
+            // This errors because neither msgReject nor msgReply were called
         },
         { manual: true }
     )

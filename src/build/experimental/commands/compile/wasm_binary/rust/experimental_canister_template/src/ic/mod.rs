@@ -18,11 +18,11 @@ mod msg_cycles_accept;
 mod msg_cycles_available;
 mod msg_cycles_refunded;
 mod msg_method_name;
+mod msg_reject;
 mod msg_reject_msg;
 mod msg_reply;
 mod notify_raw;
 mod performance_counter;
-mod reject;
 mod reject_code;
 mod set_certified_data;
 mod set_timer;
@@ -199,8 +199,10 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "reject",
-        context.new_function::<reject::NativeFunction>("").into(),
+        "msgReject",
+        context
+            .new_function::<msg_reject::NativeFunction>("")
+            .into(),
     );
 
     ic.set(

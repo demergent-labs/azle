@@ -7,10 +7,10 @@ import {
     isController,
     msgArgData,
     msgCaller,
+    msgReject,
     performanceCounter,
     Principal,
     query,
-    reject,
     setCertifiedData,
     time,
     trap,
@@ -93,8 +93,8 @@ export default class {
     }
 
     @query([IDL.Text], IDL.Empty, { manual: true })
-    reject(message: string): void {
-        reject(message);
+    msgReject(message: string): void {
+        msgReject(message);
     }
 
     // sets up to 32 bytes of certified data

@@ -7,7 +7,7 @@ import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
 
 export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
-        it('manualUpdate when calling ic.reject', async () => {
+        it('manualUpdate when calling msgReject', async () => {
             const rejectionMessage = 'reject';
             const canisterId = getCanisterId('manual_reply');
             const expectedErrorMessage = new RegExp(
@@ -18,7 +18,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
             ).rejects.toThrow(expectedErrorMessage);
         });
 
-        it('manualUpdate when calling ic.reply', async () => {
+        it('manualUpdate when calling msgReply', async () => {
             const result = await manualReplyCanister.manualUpdate('accept');
 
             expect(result).toBe('accept');
@@ -103,7 +103,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toStrictEqual({ Toxic: null });
         });
 
-        it('manualQuery when calling ic.reject', async () => {
+        it('manualQuery when calling msgReject', async () => {
             const rejectionMessage = 'reject';
             await expect(
                 manualReplyCanister.manualQuery(rejectionMessage)
@@ -115,7 +115,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
             });
         });
 
-        it('manualQuery when calling ic.reply', async () => {
+        it('manualQuery when calling msgReply', async () => {
             const result = await manualReplyCanister.manualQuery('accept');
 
             expect(result).toBe('accept');

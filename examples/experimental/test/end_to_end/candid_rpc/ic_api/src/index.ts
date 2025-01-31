@@ -6,8 +6,8 @@ import {
     isController,
     msgArgData,
     msgCaller,
+    msgReject,
     performanceCounter,
-    reject,
     setCertifiedData,
     time,
     trap
@@ -75,11 +75,11 @@ export default Canister({
     performanceCounter: query([], nat64, () => {
         return performanceCounter(0);
     }),
-    reject: query(
+    msgReject: query(
         [text],
         Manual(empty),
         (message) => {
-            reject(message);
+            msgReject(message);
         },
         { manual: true }
     ),

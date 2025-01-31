@@ -45,7 +45,7 @@ export type AzleIcStable = {
     acceptMessage: () => void;
     msgMethodName: () => string;
     debugPrint: (...args: any) => void;
-    reject: (message: string) => void;
+    msgReject: (message: string) => void;
     msgRejectMsg: () => string;
     trap: (message: string) => never;
     // These calls are intercepted by our IC object and redirected to their

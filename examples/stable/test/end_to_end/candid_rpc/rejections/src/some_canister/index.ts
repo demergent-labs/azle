@@ -1,9 +1,9 @@
-import { IDL, query, reject } from 'azle';
+import { IDL, msgReject, query } from 'azle';
 
 export default class {
     @query([IDL.Text], IDL.Empty, { manual: true })
     reject(message: string): void {
-        reject(message);
+        msgReject(message);
     }
 
     @query([], IDL.Bool)
@@ -13,6 +13,6 @@ export default class {
 
     @query([], IDL.Empty, { manual: true })
     error(): void {
-        // This errors because neither ic.reject nor ic.reply were called
+        // This errors because neither msgReject nor msgReply were called
     }
 }

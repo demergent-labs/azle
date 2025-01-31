@@ -95,11 +95,11 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toBeGreaterThan(0n);
         });
 
-        it('calls reject on the ic object', async () => {
+        it('calls msgReject on the ic object', async () => {
             const rejectionMessage = 'Rejected!';
 
             await expect(
-                icApiCanister.reject(rejectionMessage)
+                icApiCanister.msgReject(rejectionMessage)
             ).rejects.toThrow(rejectionMessage);
         });
 
