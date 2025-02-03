@@ -17,13 +17,13 @@ function getPrelude(main: string): string {
 
             import * as Canister from './${main}';
 
-            ${handleClassApiCanister()}
+            ${handleClassApiCanister(main)}
 
             ${handleBenchmarking()}
         `;
 }
 
-export function handleClassApiCanister(): string {
+export function handleClassApiCanister(main: string): string {
     return /*TS*/ `
         const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
@@ -81,7 +81,7 @@ export function handleClassApiCanister(): string {
         function getExportedCanisterClassInstance() {
             try {
                 if (Canister.default === undefined) {
-                    throw new Error("Azle canisters require that you export a default class. Please use 'export default class { ... }' or define your class and then 'export default YourClass'.");
+                    throw new Error('Your canister class must be the default export of ${main}');
                 }
                 Canister.default.prototype._azleShouldRegisterCanisterMethods = true;
                 new Canister.default();
