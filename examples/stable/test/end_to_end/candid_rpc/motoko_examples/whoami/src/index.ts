@@ -3,6 +3,7 @@ import {
     canisterSelf,
     IDL,
     init,
+    msgArgData,
     msgCaller,
     postUpgrade,
     Principal,
@@ -22,8 +23,13 @@ class WhoAmI {
     }
 
     // Manually re-save these variables after new deploys.
-    @postUpgrade([IDL.Principal])
-    postUpgrade(somebody: Principal): void {
+    @postUpgrade([IDL.Principal], { manual: true })
+    postUpgrade(): void {
+        const somebody = IDL.decode(
+            [IDL.Principal],
+            msgArgData()
+        )[0] as unknown as Principal;
+
         this.install = msgCaller();
         this.someone = somebody;
     }

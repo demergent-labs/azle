@@ -7,6 +7,10 @@ import {
     OriginalMethod
 } from '.';
 
+export type PostUpgradeOptions = {
+    manual?: boolean;
+};
+
 /**
  * Decorator to mark a method as the `postUpgrade` entry point.
  *
@@ -53,12 +57,13 @@ export function postUpgrade<This, Args extends unknown[], Return>(
  * - **Instruction limit**: [300_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits) (shared with `preUpgrade`)
  */
 export function postUpgrade<This, Args extends unknown[], Return>(
-    paramIdlTypes?: IDL.Type[]
+    paramIdlTypes?: IDL.Type[],
+    options?: PostUpgradeOptions
 ): DecoratorFunction<This, Args, Return>;
 
 export function postUpgrade<This, Args extends unknown[], Return>(
     param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
-    param2?: Context<This, Args, Return>
+    param2?: Context<This, Args, Return> | PostUpgradeOptions
 ): void | DecoratorFunction<This, Args, Return> {
     return decoratorArgumentsHandler('postUpgrade', param1, param2);
 }

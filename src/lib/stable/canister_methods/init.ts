@@ -7,6 +7,10 @@ import {
     OriginalMethod
 } from '.';
 
+export type InitOptions = {
+    manual?: boolean;
+};
+
 /**
  * Decorator to mark a method as the initialization entry point.
  *
@@ -49,12 +53,13 @@ export function init<This, Args extends unknown[], Return>(
  * - **Instruction limit**: [300_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
  */
 export function init<This, Args extends unknown[], Return>(
-    paramIdlTypes?: IDL.Type[]
+    paramIdlTypes?: IDL.Type[],
+    options?: InitOptions
 ): DecoratorFunction<This, Args, Return>;
 
 export function init<This, Args extends unknown[], Return>(
     param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
-    param2?: Context<This, Args, Return>
+    param2?: Context<This, Args, Return> | InitOptions
 ): void | DecoratorFunction<This, Args, Return> {
     return decoratorArgumentsHandler('init', param1, param2);
 }

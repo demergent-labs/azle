@@ -7,6 +7,8 @@ import {
     CanisterMethodMode,
     executeAndReplyWithCandidSerde
 } from '../execute_with_candid_serde';
+import { InitOptions } from './init';
+import { PostUpgradeOptions } from './post_upgrade';
 import { QueryOptions } from './query';
 import { UpdateOptions } from './update';
 
@@ -63,7 +65,11 @@ export type Context<
 export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
     canisterMethodMode: CanisterMethodMode,
     param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
-    param2?: Context<This, Args, Return> | IDL.Type,
+    param2?:
+        | Context<This, Args, Return>
+        | IDL.Type
+        | InitOptions
+        | PostUpgradeOptions,
     param3?: QueryOptions | UpdateOptions
 ): void | DecoratorFunction<This, Args, Return> {
     const decoratorIsOverloadedWithoutParams =
@@ -80,8 +86,16 @@ export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
         );
     } else {
         const paramIdlTypes = param1 as IDL.Type[] | undefined;
-        const returnIdlType = param2 as IDL.Type | undefined;
-        const options = param3;
+        const returnIdlType = (
+            canisterMethodMode === 'query' || canisterMethodMode === 'update'
+                ? param2
+                : undefined
+        ) as IDL.Type | undefined;
+        const options =
+            canisterMethodMode === 'init' ||
+            canisterMethodMode === 'postUpgrade'
+                ? (param2 as InitOptions | PostUpgradeOptions)
+                : param3;
 
         return (
             originalMethod: OriginalMethod<This, Args, Return>,
@@ -110,7 +124,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
     context: Context<This, Args, Return>,
     paramIdlTypes?: IDL.Type[],
     returnIdlType?: IDL.Type,
-    options?: QueryOptions | UpdateOptions
+    options?: QueryOptions | UpdateOptions | InitOptions | PostUpgradeOptions
 ): void {
     context.addInitializer(function () {
         let exportedCanisterClassInstance = this as ExportedCanisterClass;
@@ -355,6 +369,8 @@ function isDecoratorOverloadedWithoutParams<
     param2?:
         | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
         | IDL.Type
+        | InitOptions
+        | PostUpgradeOptions
 ): boolean {
     return (
         typeof param1 === 'function' &&
