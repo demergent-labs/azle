@@ -1,8 +1,10 @@
-import { IDL, msgReject, query } from 'azle';
+import { IDL, msgArgData, msgReject, query } from 'azle';
 
 export default class {
     @query([IDL.Text], IDL.Empty, { manual: true })
-    reject(message: string): void {
+    reject(): void {
+        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+
         msgReject(message);
     }
 
