@@ -37,7 +37,7 @@ export async function executeAndReplyWithCandidSerde(
     returnIdlType: IDL.Type | undefined,
     manual: boolean
 ): Promise<void> {
-    const decodedArgs = decodeArgs(mode, args, paramIdlTypes);
+    const decodedArgs = decodeArgs(manual, mode, args, paramIdlTypes);
     const unencodedResult = await getUnencodedResult(decodedArgs, callback);
     encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }
@@ -52,10 +52,15 @@ export async function executeAndReplyWithCandidSerde(
  * @returns Decoded argument values as a JSON-compatible array
  */
 function decodeArgs(
+    manual: boolean,
     mode: CanisterMethodMode,
     args: Uint8Array,
     paramIdlTypes: IDL.Type[]
 ): JsonValue[] {
+    if (manual === true) {
+        return [];
+    }
+
     if (
         mode === 'init' ||
         mode === 'postUpgrade' ||

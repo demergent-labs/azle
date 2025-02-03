@@ -1,7 +1,7 @@
 /**
  * Returns the reject code from the most recently executed inter-canister call.
  *
- * @returns The reject code
+ * @returns The reject code. Represented as a number between 0 and 6 inclusive
  *
  * @remarks
  *
