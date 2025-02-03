@@ -23,10 +23,9 @@ export function update<
     const finalCallback =
         callback === undefined
             ? undefined
-            : (...args: any[]): void => {
+            : (): void => {
                   executeMethod(
                       'update',
-                      args,
                       callback,
                       paramCandidTypes as unknown as CandidType[],
                       returnCandidType,

@@ -16,26 +16,26 @@ use crate::{
 
 #[inline(never)]
 #[no_mangle]
-pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
+pub extern "C" fn init(function_index: i32) {
     // Without something like this the init and post_upgrade functions
     // seem to be optimized into the same function in the Wasm binary
     // This causes problems during Wasm binary manipulation
     let _ = format!("prevent init and post_upgrade optimization");
 
-    if let Err(e) = initialize(true, function_index, pass_arg_data) {
+    if let Err(e) = initialize(true, function_index) {
         trap(&format!("Azle InitError: {}", e));
     }
 }
 
 #[inline(never)]
 #[no_mangle]
-pub extern "C" fn post_upgrade(function_index: i32, pass_arg_data: i32) {
-    if let Err(e) = initialize(false, function_index, pass_arg_data) {
+pub extern "C" fn post_upgrade(function_index: i32) {
+    if let Err(e) = initialize(false, function_index) {
         trap(&format!("Azle PostUpgradeError: {}", e));
     }
 }
 
-fn initialize(init: bool, function_index: i32, pass_arg_data: i32) -> Result<(), Box<dyn Error>> {
+fn initialize(init: bool, function_index: i32) -> Result<(), Box<dyn Error>> {
     let wasm_data = get_wasm_data()?;
 
     WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
@@ -55,13 +55,7 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) -> Result<(),
 
     let js = get_js_code();
 
-    initialize_js(
-        &wasm_data,
-        str::from_utf8(&js)?,
-        init,
-        function_index,
-        pass_arg_data,
-    )?;
+    initialize_js(&wasm_data, str::from_utf8(&js)?, init, function_index)?;
 
     Ok(())
 }
@@ -71,7 +65,6 @@ pub fn initialize_js(
     js: &str,
     init: bool,
     function_index: i32,
-    pass_arg_data: i32,
 ) -> Result<(), Box<dyn Error>> {
     let runtime = Runtime::new()?;
     let context = Context::full(&runtime)?;
@@ -136,13 +129,13 @@ pub fn initialize_js(
         Ok(())
     })?;
 
-    execute_developer_init_or_post_upgrade(function_index, pass_arg_data);
+    execute_developer_init_or_post_upgrade(function_index);
 
     Ok(())
 }
 
-fn execute_developer_init_or_post_upgrade(function_index: i32, pass_arg_data: i32) {
+fn execute_developer_init_or_post_upgrade(function_index: i32) {
     if function_index != -1 {
-        execute_method_js(function_index, pass_arg_data);
+        execute_method_js(function_index);
     }
 }

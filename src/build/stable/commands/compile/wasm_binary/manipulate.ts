@@ -77,8 +77,7 @@ export function addCanisterMethodProxies(
                     : 'canister_query'
             } ${functionName}`,
             'execute_method_js',
-            index,
-            true
+            index
         );
     });
 
@@ -87,8 +86,7 @@ export function addCanisterMethodProxies(
             module,
             `canister_update ${functionName}`,
             'execute_method_js',
-            index,
-            true
+            index
         );
     });
 
@@ -96,16 +94,14 @@ export function addCanisterMethodProxies(
         module,
         'canister_init',
         'init',
-        methodMeta?.init?.index ?? -1,
-        true
+        methodMeta?.init?.index ?? -1
     );
 
     addCanisterMethod(
         module,
         'canister_post_upgrade',
         'post_upgrade',
-        methodMeta?.post_upgrade?.index ?? -1,
-        true
+        methodMeta?.post_upgrade?.index ?? -1
     );
 
     if (methodMeta?.pre_upgrade !== undefined) {
@@ -113,8 +109,7 @@ export function addCanisterMethodProxies(
             module,
             'canister_pre_upgrade',
             'execute_method_js',
-            methodMeta.pre_upgrade.index,
-            false
+            methodMeta.pre_upgrade.index
         );
     }
 
@@ -123,8 +118,7 @@ export function addCanisterMethodProxies(
             module,
             'canister_inspect_message',
             'execute_method_js',
-            methodMeta.inspect_message.index,
-            false
+            methodMeta.inspect_message.index
         );
     }
 
@@ -133,8 +127,7 @@ export function addCanisterMethodProxies(
             module,
             'canister_heartbeat',
             'execute_method_js',
-            methodMeta.heartbeat.index,
-            false
+            methodMeta.heartbeat.index
         );
     }
 
@@ -143,8 +136,7 @@ export function addCanisterMethodProxies(
             module,
             'canister_on_low_wasm_memory',
             'execute_method_js',
-            methodMeta.on_low_wasm_memory.index,
-            false
+            methodMeta.on_low_wasm_memory.index
         );
     }
 }
@@ -153,18 +145,10 @@ export function addCanisterMethod(
     module: binaryen.Module,
     exportName: string,
     functionToCall: string,
-    index: number,
-    passArgData: boolean
+    index: number
 ): void {
     const funcBody = module.block(null, [
-        module.call(
-            functionToCall,
-            [
-                module.i32.const(index),
-                module.i32.const(passArgData === true ? 1 : 0)
-            ],
-            binaryen.none
-        )
+        module.call(functionToCall, [module.i32.const(index)], binaryen.none)
     ]);
 
     module.addFunction(exportName, binaryen.none, binaryen.none, [], funcBody);

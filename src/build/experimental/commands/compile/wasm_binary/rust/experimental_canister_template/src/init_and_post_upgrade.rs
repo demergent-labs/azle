@@ -12,24 +12,24 @@ use crate::{upload_file, web_assembly};
 
 #[inline(never)]
 #[no_mangle]
-pub extern "C" fn init(function_index: i32, pass_arg_data: i32) {
+pub extern "C" fn init(function_index: i32) {
     // Without something like this the init and post_upgrade functions
     // seem to be optimized into the same function in the Wasm binary
     // This causes problems during Wasm binary manipulation
     let _ = format!("prevent init and post_upgrade optimization");
 
-    initialize(true, function_index, pass_arg_data);
+    initialize(true, function_index);
 
     upload_file::init_hashes().unwrap();
 }
 
 #[inline(never)]
 #[no_mangle]
-pub extern "C" fn post_upgrade(function_index: i32, pass_arg_data: i32) {
-    initialize(false, function_index, pass_arg_data);
+pub extern "C" fn post_upgrade(function_index: i32) {
+    initialize(false, function_index);
 }
 
-fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
+fn initialize(init: bool, function_index: i32) {
     std::panic::set_hook(Box::new(|panic_info| {
         let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
             *s
@@ -77,7 +77,6 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
         std::str::from_utf8(&js).unwrap(),
         init,
         function_index,
-        pass_arg_data,
     );
 
     ic_cdk::spawn(async move {
@@ -85,13 +84,7 @@ fn initialize(init: bool, function_index: i32, pass_arg_data: i32) {
     });
 }
 
-pub fn initialize_js(
-    wasm_data: &WasmData,
-    js: &str,
-    init: bool,
-    function_index: i32,
-    pass_arg_data: i32,
-) {
+pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index: i32) {
     let mut rt = wasmedge_quickjs::Runtime::new();
 
     rt.run_with_context(|context| {
@@ -178,7 +171,7 @@ pub fn initialize_js(
     });
 
     if function_index != -1 {
-        execute_method_js::execute_method_js(function_index, pass_arg_data);
+        execute_method_js::execute_method_js(function_index);
     }
 
     // _azleInitCalled and _azlePostUpgradeCalled refer to Azle's own init/post_upgrade methods being called

@@ -39,7 +39,7 @@ pub fn reload_js(
                 .with(|wasm_data_ref_cell| wasm_data_ref_cell.borrow().as_ref().unwrap().clone());
 
             let js_string = String::from_utf8_lossy(&reloaded_js_complete_bytes);
-            initialize_js(&wasm_data, &js_string, false, function_index, 1); // TODO should the last arg be 0?
+            initialize_js(&wasm_data, &js_string, false, function_index);
             ic_cdk::println!("Azle: Reloaded canister JavaScript");
         }
     });

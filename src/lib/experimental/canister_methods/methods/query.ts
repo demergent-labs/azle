@@ -24,10 +24,9 @@ export function query<
     const finalCallback =
         callback === undefined
             ? undefined
-            : (...args: any[]): void => {
+            : (): void => {
                   executeMethod(
                       'query',
-                      args,
                       callback,
                       paramCandidTypes as unknown as CandidType[],
                       returnCandidType,

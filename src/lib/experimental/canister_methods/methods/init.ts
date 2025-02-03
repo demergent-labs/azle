@@ -19,10 +19,9 @@ export function init<
     const finalCallback =
         callback === undefined
             ? undefined
-            : (...args: any[]): void => {
+            : (): void => {
                   executeMethod(
                       'init',
-                      args,
                       callback,
                       paramCandidTypes as unknown as CandidType[],
                       Void,

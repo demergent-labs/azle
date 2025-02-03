@@ -3,9 +3,8 @@ use wasmedge_quickjs::{AsObject, JsValue};
 
 #[no_mangle]
 #[allow(unused)]
-pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
+pub extern "C" fn execute_method_js(function_index: i32) {
     let function_name = function_index.to_string();
-    let pass_arg_data = pass_arg_data == 1;
 
     RUNTIME.with(|runtime| {
         let mut runtime = runtime.borrow_mut();
@@ -26,17 +25,8 @@ pub extern "C" fn execute_method_js(function_index: i32, pass_arg_data: i32) {
 
             let method_callback = callbacks.get(&function_name).unwrap();
 
-            let candid_args = if pass_arg_data {
-                ic_cdk::api::call::arg_data_raw()
-            } else {
-                vec![]
-            };
-
-            let candid_args_js_value: wasmedge_quickjs::JsValue =
-                context.new_array_buffer(&candid_args).into();
-
             let method_callback_function = method_callback.to_function().unwrap();
-            let result = method_callback_function.call(&[candid_args_js_value]);
+            let result = method_callback_function.call(&[]);
 
             match &result {
                 wasmedge_quickjs::JsValue::Exception(js_exception) => {

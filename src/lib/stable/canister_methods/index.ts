@@ -12,7 +12,7 @@ import { UpdateOptions } from './update';
 
 export interface ExportedCanisterClass {
     _azleCallbacks?: {
-        [key: string]: (args?: Uint8Array) => Promise<void>;
+        [key: string]: () => Promise<void>;
     };
     _azleCanisterMethodIdlParamTypes?: { [key: string]: IDL.FuncClass };
     _azleCanisterMethodsIndex?: number;
@@ -313,22 +313,22 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
             };
         }
 
-        exportedCanisterClassInstance._azleCallbacks[indexString] = async (
-            args?: Uint8Array
-        ): Promise<void> => {
-            try {
-                await executeAndReplyWithCandidSerde(
-                    canisterMethodMode,
-                    args ?? new Uint8Array(),
-                    originalMethod.bind(exportedCanisterClassInstance as This),
-                    paramIdlTypes ?? [],
-                    returnIdlType,
-                    options?.manual ?? false
-                );
-            } catch (error: unknown) {
-                handleUncaughtError(error);
-            }
-        };
+        exportedCanisterClassInstance._azleCallbacks[indexString] =
+            async (): Promise<void> => {
+                try {
+                    await executeAndReplyWithCandidSerde(
+                        canisterMethodMode,
+                        originalMethod.bind(
+                            exportedCanisterClassInstance as This
+                        ),
+                        paramIdlTypes ?? [],
+                        returnIdlType,
+                        options?.manual ?? false
+                    );
+                } catch (error: unknown) {
+                    handleUncaughtError(error);
+                }
+            };
 
         if (
             exportedCanisterClassInstance._azleShouldRegisterCanisterMethods ===
