@@ -47,7 +47,7 @@ export function getTests(): Test {
                             uuid,
                             idlType,
                             tsType,
-                            Array.from(imports),
+                            Array.from(imports.add('msgArgData')),
                             variableAliasDeclarations
                         );
 
