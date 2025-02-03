@@ -51,7 +51,7 @@ export function getPrelude(main: string): string {
         import * as Canister from './${main}';
 
         if (isClassSyntaxExport(Canister)) {
-            ${handleClassApiCanister()}
+            ${handleClassApiCanister(main)}
         }
         else {
             // TODO This setTimeout is here to allow asynchronous operations during canister initialization
