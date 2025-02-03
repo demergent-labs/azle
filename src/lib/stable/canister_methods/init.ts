@@ -36,7 +36,9 @@ export function init<This, Args extends unknown[], Return>(
 /**
  * Decorator to mark a method as the initialization entry point.
  *
- * @param paramIdlTypes - Optional array of Candid IDL types for the method parameters. The runtime arguments will be decoded using these types.
+ * @param paramIdlTypes - Optional array of Candid IDL types for the method parameters. The runtime arguments will be decoded using these types
+ * @param options - Optional configuration object
+ * @param options.manual - Optional flag to indicate manual handling of the method's runtime arguments. This is meant to be used with `msgArgData` and `IDL.decode`, skipping automatic Candid decoding of the runtime arguments
  *
  * @remarks
  *

@@ -37,7 +37,7 @@ export function update<This, Args extends unknown[], Return>(
  * @param paramIdlTypes - Optional array of Candid IDL types for the method parameters. The runtime arguments will be decoded using these types.
  * @param returnIdlType - Optional Candid IDL type for the method return value. The runtime return value will be encoded using this type.
  * @param options - Optional configuration object
- * @param options.manual - Optional flag to indicate manual handling of the method's runtime return value. This is meant to be used with `msgReply` or `msgReject`, skipping automatic Candid encoding of the runtime return value.
+ * @param options.manual - Optional flag to indicate manual handling of the method's runtime arguments and return value. This is meant to be used with `msgArgData` and `IDL.decode` for arguments, and `msgReply`/`msgReject` and `IDL.encode` for the return value, skipping automatic Candid decoding of the runtime arguments and encoding of the runtime return value
  * @param options.hidden - Optional flag to indicate that the method should be hidden from the canister's candid interface.
  * @remarks
  *
