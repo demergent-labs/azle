@@ -2,7 +2,6 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { describe, expect, test } from '@jest/globals';
-import * as fc from 'fast-check';
 
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
@@ -12,6 +11,7 @@ import { runFuzzTests } from './fuzz';
 export type Test = () => void;
 
 export { getCanisterActor } from './get_canister_actor';
+export { defaultPropTestParams } from './property/default_prop_test_params';
 
 export function runTests(
     tests: Test,
@@ -95,34 +95,6 @@ export function it(name: string, fn: () => void | Promise<void>): void {
 }
 it.only = test.only;
 it.skip = test.skip;
-
-export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
-    const baseParams = {
-        numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
-        reporter: (runDetails: fc.RunDetails<T>): void => {
-            const seed = runDetails.seed;
-            const path = runDetails.counterexamplePath;
-            const reproductionCommand = `AZLE_PROPTEST_SEED=${seed}${path !== null ? ` AZLE_PROPTEST_PATH="${path}"` : ''} AZLE_VERBOSE=true AZLE_TEMPLATE=true npm test`;
-            const reproductionMessage = `To reproduce this exact test case, run:\n${reproductionCommand}`;
-            console.info(reproductionMessage);
-            if (runDetails.failed) {
-                throw new Error(
-                    `${reproductionMessage}\n\n${fc.defaultReportMessage(runDetails)}`
-                );
-            }
-        },
-        endOnFailure: process.env.AZLE_PROPTEST_SHRINK === 'true' ? false : true
-    };
-
-    const seed =
-        process.env.AZLE_PROPTEST_SEED !== undefined
-            ? Number(process.env.AZLE_PROPTEST_SEED)
-            : undefined;
-
-    const path = process.env.AZLE_PROPTEST_PATH;
-
-    return seed !== undefined ? { ...baseParams, seed, path } : baseParams;
-}
 
 function processEnvVars(): {
     shouldRunTests: boolean;
