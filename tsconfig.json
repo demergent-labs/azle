@@ -1,8 +1,7 @@
 {
     "compilerOptions": {
         "strict": true,
-        "target": "ES2022",
-        "module": "ES2022",
+        "target": "ES2024",
         "moduleResolution": "node",
         "allowJs": true,
         "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
