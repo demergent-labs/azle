@@ -129,7 +129,7 @@ export function getBuildOptions(ts: string): BuildOptions {
         treeShaking: true,
         write: false,
         logLevel: 'silent',
-        target: 'es2020',
+        target: 'es2024',
         preserveSymlinks: true,
         plugins: [
             {

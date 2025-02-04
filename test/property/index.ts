@@ -6,6 +6,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
 import { Canister } from './arbitraries/canister_arb';
 import { clear as clearUniquePrimitiveArb } from './arbitraries/unique_primitive_arb';
+import { defaultPropTestParams } from './default_prop_test_params';
 import { runTests } from './test';
 
 export type Named<T> = {
@@ -19,26 +20,16 @@ export async function runPropTests(
     canisterArb: fc.Arbitrary<Canister>,
     runTestsSeparately = false
 ): Promise<void> {
-    const defaultParams = {
+    const executionParams = {
+        ...defaultPropTestParams(),
         numRuns: runTestsSeparately
             ? 1
-            : Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
-        endOnFailure: true // TODO This essentially disables shrinking. We don't know how to do shrinking well yet
+            : Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
     };
     // TODO https://github.com/demergent-labs/azle/issues/1568
     const numRuns = runTestsSeparately
         ? Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
         : 1;
-
-    const seed =
-        process.env.AZLE_PROPTEST_SEED !== undefined
-            ? Number(process.env.AZLE_PROPTEST_SEED)
-            : undefined;
-
-    const path = process.env.AZLE_PROPTEST_PATH;
-
-    const executionParams =
-        seed !== undefined ? { ...defaultParams, seed, path } : defaultParams;
 
     try {
         for (let i = 0; i < numRuns; i++) {
