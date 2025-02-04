@@ -58,7 +58,7 @@ export function InspectMessageMethodArb(
                     functionName,
                     methodName,
                     api,
-                    true
+                    api === 'class'
                 );
 
                 const globalDeclarations =
