@@ -58,6 +58,7 @@ export function PreUpgradeMethodArb(
                     returnType,
                     generator.generateBody,
                     methodImplementationLocation,
+                    functionName,
                     methodName,
                     api
                 );

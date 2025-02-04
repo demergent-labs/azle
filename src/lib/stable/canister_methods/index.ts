@@ -8,6 +8,7 @@ import {
     executeAndReplyWithCandidSerde
 } from '../execute_with_candid_serde';
 import { InitOptions } from './init';
+import { InspectMessageOptions } from './inspect_message';
 import { PostUpgradeOptions } from './post_upgrade';
 import { QueryOptions } from './query';
 import { UpdateOptions } from './update';
@@ -64,7 +65,10 @@ export type Context<
  */
 export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
     canisterMethodMode: CanisterMethodMode,
-    param1?: OriginalMethod<This, Args, Return> | IDL.Type[],
+    param1?:
+        | OriginalMethod<This, Args, Return>
+        | IDL.Type[]
+        | InspectMessageOptions,
     param2?:
         | Context<This, Args, Return>
         | IDL.Type
@@ -85,17 +89,33 @@ export function decoratorArgumentsHandler<This, Args extends unknown[], Return>(
             context
         );
     } else {
-        const paramIdlTypes = param1 as IDL.Type[] | undefined;
+        const paramIdlTypes = (
+            canisterMethodMode === 'query' ||
+            canisterMethodMode === 'update' ||
+            canisterMethodMode === 'init' ||
+            canisterMethodMode === 'postUpgrade'
+                ? param1
+                : undefined
+        ) as IDL.Type[] | undefined;
         const returnIdlType = (
             canisterMethodMode === 'query' || canisterMethodMode === 'update'
                 ? param2
                 : undefined
         ) as IDL.Type | undefined;
-        const options =
-            canisterMethodMode === 'init' ||
-            canisterMethodMode === 'postUpgrade'
-                ? (param2 as InitOptions | PostUpgradeOptions)
-                : param3;
+        const options = (
+            canisterMethodMode === 'inspectMessage'
+                ? param1
+                : canisterMethodMode === 'init' ||
+                    canisterMethodMode === 'postUpgrade'
+                  ? param2
+                  : param3
+        ) as
+            | QueryOptions
+            | UpdateOptions
+            | InitOptions
+            | PostUpgradeOptions
+            | InspectMessageOptions
+            | undefined;
 
         return (
             originalMethod: OriginalMethod<This, Args, Return>,
@@ -337,7 +357,8 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                         ),
                         paramIdlTypes ?? [],
                         returnIdlType,
-                        options?.manual ?? false
+                        options?.manual ?? false,
+                        exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes
                     );
                 } catch (error: unknown) {
                     handleUncaughtError(error);
@@ -365,7 +386,10 @@ function isDecoratorOverloadedWithoutParams<
     Args extends unknown[],
     Return
 >(
-    param1?: MethodType<This, Args, Return> | IDL.Type[],
+    param1?:
+        | MethodType<This, Args, Return>
+        | IDL.Type[]
+        | InspectMessageOptions,
     param2?:
         | ClassMethodDecoratorContext<This, MethodType<This, Args, Return>>
         | IDL.Type

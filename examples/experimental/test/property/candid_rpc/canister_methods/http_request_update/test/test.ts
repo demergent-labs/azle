@@ -38,7 +38,7 @@ const HttpRequestUpdateMethodArb = RecordArb(context).chain((record) => {
 });
 
 const CanisterConfigArb = HttpRequestUpdateMethodArb.map(
-    (httpRequestUpdateMethod): CanisterConfig<HttpRequest> => {
+    (httpRequestUpdateMethod): CanisterConfig<HttpRequest, HttpRequest> => {
         const httpRequestMethod = generateHttpRequestMethod();
         const getStateMethod = generateGetStateMethod();
 
