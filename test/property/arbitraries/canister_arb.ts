@@ -137,10 +137,10 @@ function generateSourceCode<
     ParamAgentResponseValue
 >(
     globalDeclarations: string[],
-    canisterMethods: CanisterMethod<
-        ParamAgentArgumentValue,
-        ParamAgentResponseValue
-    >[],
+    canisterMethods: (
+        | UpdateMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
+        | QueryMethod
+    )[],
     api: Api,
     inspectMessageImportHack?: boolean
 ): string {

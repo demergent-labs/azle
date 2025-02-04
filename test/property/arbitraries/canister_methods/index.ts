@@ -75,7 +75,7 @@ export function generateMethodImplementation<
     functionName: string,
     methodName: string,
     api: Api,
-    inspectMessage?: boolean // TODO should we test manual here as well?
+    inspectMessage?: boolean
 ): string {
     const paramNames = namedParams
         .map((namedParam) => {
