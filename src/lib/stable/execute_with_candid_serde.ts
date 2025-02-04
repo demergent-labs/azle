@@ -1,6 +1,7 @@
 import { IDL, JsonValue } from '@dfinity/candid';
 
-import { msgReply } from './ic_apis';
+import { msgArgData } from './ic_apis/msg_arg_data';
+import { msgReply } from './ic_apis/msg_reply';
 
 /**
  * Represents the different types of canister method execution modes.
@@ -31,13 +32,12 @@ export type CanisterMethodMode =
  */
 export async function executeAndReplyWithCandidSerde(
     mode: CanisterMethodMode,
-    args: Uint8Array,
     callback: (...args: any) => any,
     paramIdlTypes: IDL.Type[],
     returnIdlType: IDL.Type | undefined,
     manual: boolean
 ): Promise<void> {
-    const decodedArgs = decodeArgs(mode, args, paramIdlTypes);
+    const decodedArgs = decodeArgs(manual, mode, paramIdlTypes);
     const unencodedResult = await getUnencodedResult(decodedArgs, callback);
     encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }
@@ -52,17 +52,21 @@ export async function executeAndReplyWithCandidSerde(
  * @returns Decoded argument values as a JSON-compatible array
  */
 function decodeArgs(
+    manual: boolean,
     mode: CanisterMethodMode,
-    args: Uint8Array,
     paramIdlTypes: IDL.Type[]
 ): JsonValue[] {
+    if (manual === true) {
+        return [];
+    }
+
     if (
         mode === 'init' ||
         mode === 'postUpgrade' ||
         mode === 'query' ||
         mode === 'update'
     ) {
-        return idlDecode(paramIdlTypes, args);
+        return idlDecode(paramIdlTypes, msgArgData());
     } else {
         return [];
     }

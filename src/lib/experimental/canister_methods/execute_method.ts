@@ -1,7 +1,7 @@
 import '../experimental';
 
 import { handleUncaughtError } from '../../stable/error';
-import { msgReply, performanceCounter } from '../../stable/ic_apis';
+import { msgArgData, msgReply, performanceCounter } from '../../stable/ic_apis';
 import { CandidType } from '../candid/candid_type';
 import { decode } from '../candid/serde/decode';
 import { encode } from '../candid/serde/encode';
@@ -9,14 +9,15 @@ import { CanisterMethodInfo } from './types/canister_method_info';
 
 export function executeMethod(
     mode: CanisterMethodInfo<any, any>['mode'],
-    args: any[],
     callback: any,
     paramCandidTypes: CandidType[],
     returnCandidType: CandidType,
     manual: boolean
 ): void {
+    const args = msgArgData();
+
     const decodedArgs =
-        mode === 'inspectMessage' ? args : decode(paramCandidTypes, args[0]);
+        mode === 'inspectMessage' ? args : decode(paramCandidTypes, args);
 
     const result = getResult(decodedArgs, callback);
 

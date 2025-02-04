@@ -1,4 +1,12 @@
-import { candidEncode, IDL, msgReject, msgReply, query, update } from 'azle';
+import {
+    candidEncode,
+    IDL,
+    msgArgData,
+    msgReject,
+    msgReply,
+    query,
+    update
+} from 'azle';
 
 const Options = IDL.Variant({
     Small: IDL.Null,
@@ -89,7 +97,9 @@ type Element = {
 export default class {
     // Updates
     @update([IDL.Text], IDL.Text, { manual: true })
-    manualUpdate(message: string): void {
+    manualUpdate(): void {
+        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+
         if (message === 'reject') {
             msgReject(message);
             return;
@@ -182,7 +192,9 @@ export default class {
 
     // Queries
     @query([IDL.Text], IDL.Text, { manual: true })
-    manualQuery(message: string): void {
+    manualQuery(): void {
+        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+
         if (message === 'reject') {
             msgReject(message);
             return;

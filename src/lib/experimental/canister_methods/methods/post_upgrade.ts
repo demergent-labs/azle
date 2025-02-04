@@ -19,10 +19,9 @@ export function postUpgrade<
     const finalCallback =
         callback === undefined
             ? undefined
-            : (...args: any[]): void => {
+            : (): void => {
                   executeMethod(
                       'postUpgrade',
-                      args,
                       callback,
                       paramCandidTypes as unknown as CandidType[],
                       Void,

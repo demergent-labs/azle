@@ -93,7 +93,9 @@ export default class {
     }
 
     @query([IDL.Text], IDL.Empty, { manual: true })
-    msgReject(message: string): void {
+    msgReject(): void {
+        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+
         msgReject(message);
     }
 

@@ -1,18 +1,27 @@
-import { IDL, msgReject, msgReply, query, update } from 'azle';
+import { IDL, msgArgData, msgReject, msgReply, query, update } from 'azle';
 
 export default class {
     @query([IDL.Text], undefined, { manual: true })
-    alwaysRejectQuery(message: string): void {
+    alwaysRejectQuery(): void {
+        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+
         msgReject(`reject proptest message: ${message}`);
     }
 
     @update([IDL.Text], undefined, { manual: true })
-    alwaysRejectUpdate(message: string): void {
+    alwaysRejectUpdate(): void {
+        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+
         msgReject(`reject proptest message: ${message}`);
     }
 
     @query([IDL.Int], IDL.Int, { manual: true })
-    evenOrRejectQuery(number: bigint): void {
+    evenOrRejectQuery(): void {
+        const number = IDL.decode(
+            [IDL.Int],
+            msgArgData()
+        )[0] as unknown as bigint;
+
         if (number % 2n === 0n) {
             const encoded = new Uint8Array(IDL.encode([IDL.Int], [number]));
 
@@ -23,7 +32,12 @@ export default class {
     }
 
     @update([IDL.Int], IDL.Int, { manual: true })
-    evenOrRejectUpdate(number: bigint): void {
+    evenOrRejectUpdate(): void {
+        const number = IDL.decode(
+            [IDL.Int],
+            msgArgData()
+        )[0] as unknown as bigint;
+
         if (number % 2n === 0n) {
             const encoded = new Uint8Array(IDL.encode([IDL.Int], [number]));
 

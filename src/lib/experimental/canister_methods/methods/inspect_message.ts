@@ -8,7 +8,7 @@ export function inspectMessage(
     callback: () => void | Promise<void>
 ): CanisterMethodInfo<[], Void> {
     const finalCallback = (): void => {
-        executeMethod('inspectMessage', [], callback, [], Void, false);
+        executeMethod('inspectMessage', callback, [], Void, false);
     };
 
     return {
