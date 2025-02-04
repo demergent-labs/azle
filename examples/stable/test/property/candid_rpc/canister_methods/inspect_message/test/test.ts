@@ -53,7 +53,10 @@ function CanisterConfigArb() {
                 `return ${returnType.src.valueLiteral}`,
             generateTests: (...args) => generateTests(...args, agents)
         },
-        fc.array(CandidValueAndMetaArb(context)),
+        fc.array(CandidValueAndMetaArb(context), {
+            size: 'max',
+            maxLength: 5
+        }),
         CandidReturnTypeArb(context)
     );
 

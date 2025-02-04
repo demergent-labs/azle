@@ -1,5 +1,7 @@
 import { runPropTests } from 'azle/test/property';
+import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
 import { CanisterArb } from 'azle/test/property/arbitraries/canister_arb';
+import { UpdateMethod } from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
 import { StableBTreeMapArb } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
 import { Context } from 'azle/test/property/arbitraries/types';
 import fc from 'fast-check';
@@ -62,7 +64,10 @@ const StableBTreeMapTestArb = fc
                                 lenTestQueryMethod,
                                 valuesTestQueryMethod,
                                 removeTestQueryMethod
-                            ]
+                            ] as UpdateMethod<
+                                CorrespondingJSType,
+                                CorrespondingJSType
+                            >[]
                         };
                     }
                 );
