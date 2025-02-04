@@ -32,7 +32,10 @@ import { idlDecode, idlEncode } from '../execute_with_candid_serde';
  *   - after a successful inter-canister await from a composite query
  *   - after an unsuccessful inter-canister await from a composite query
  */
-export async function call<Args extends any[] | undefined, Return = any>(
+export async function call<
+    Args extends unknown[] | undefined,
+    Return = unknown
+>(
     canisterId: Principal | string,
     method: string,
     options?: {
@@ -74,7 +77,7 @@ export async function call<Args extends any[] | undefined, Return = any>(
         };
 
         globalThis._azleRejectCallbacks[globalRejectId] = (
-            error: any
+            error: unknown
         ): void => {
             reject(error);
         };
