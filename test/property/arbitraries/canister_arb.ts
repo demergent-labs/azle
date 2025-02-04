@@ -23,7 +23,7 @@ export type CanisterMethod<
     ParamAgentResponseValue
 > =
     | QueryMethod
-    | UpdateMethod
+    | UpdateMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
     | InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
     | PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
     | PreUpgradeMethod
@@ -42,7 +42,10 @@ export type CanisterConfig<
     >;
     preUpgradeMethod?: PreUpgradeMethod;
     queryMethods?: QueryMethod[];
-    updateMethods?: UpdateMethod[];
+    updateMethods?: UpdateMethod<
+        ParamAgentArgumentValue,
+        ParamAgentResponseValue
+    >[];
 };
 
 // TODO: Update the signature to support init, pre/post upgrade, heartbeat, etc.
@@ -129,9 +132,15 @@ export function CanisterArb<
     });
 }
 
-function generateSourceCode(
+function generateSourceCode<
+    ParamAgentArgumentValue extends CorrespondingJSType,
+    ParamAgentResponseValue
+>(
     globalDeclarations: string[],
-    canisterMethods: (UpdateMethod | QueryMethod)[],
+    canisterMethods: CanisterMethod<
+        ParamAgentArgumentValue,
+        ParamAgentResponseValue
+    >[],
     api: Api,
     inspectMessageImportHack?: boolean
 ): string {

@@ -19,7 +19,8 @@ export type BodyGenerator<
     returnType: CandidValueAndMeta<
         ReturnTypeAgentArgumentValue,
         ReturnTypeAgentResponseValue
-    >
+    >,
+    methodName: string
 ) => string;
 
 export type TestsGenerator<
@@ -71,8 +72,10 @@ export function generateMethodImplementation<
         ReturnAgentType
     >,
     methodImplementationLocation: MethodImplementationLocation,
+    functionName: string,
     methodName: string,
-    api: Api
+    api: Api,
+    inspectMessage?: boolean // TODO should we test manual here as well?
 ): string {
     const paramNames = namedParams
         .map((namedParam) => {
@@ -83,7 +86,11 @@ export function generateMethodImplementation<
         })
         .join(', ');
 
-    const body = generateBody(namedParams, returnType);
+    const body = generateBody(namedParams, returnType, functionName);
+
+    if (inspectMessage === true) {
+        return `(methodName: string, ...args: any[]): ${returnType.src.typeAnnotation} {${body}}`;
+    }
 
     if (api === 'class') {
         return `(${paramNames}): ${returnType.src.typeAnnotation} {${body}}`;

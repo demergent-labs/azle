@@ -9,7 +9,10 @@ import {
     CanisterConfig
 } from 'azle/test/property/arbitraries/canister_arb';
 import { InspectMessageMethodArb } from 'azle/test/property/arbitraries/canister_methods/inspect_message_method_arb';
-import { UpdateMethodArb } from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
+import {
+    UpdateMethod,
+    UpdateMethodArb
+} from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
 import { Api } from 'azle/test/property/arbitraries/types';
 import fc from 'fast-check';
 import { v4 } from 'uuid';
@@ -40,17 +43,6 @@ function CanisterConfigArb() {
         [createAuthenticatedAgentSync(AZLE_THROW_IDENTITY_NAME, true), 'THROW']
     ];
 
-    const InspectMessageArb = InspectMessageMethodArb(
-        {
-            api,
-            constraints: {}
-        },
-        {
-            generateBody: () => generateInspectMessageMethodBody(),
-            generateTests: () => []
-        }
-    );
-
     const HeterogeneousUpdateMethodArb = UpdateMethodArb(
         {
             api,
@@ -71,37 +63,65 @@ function CanisterConfigArb() {
     };
 
     return fc
-        .tuple(InspectMessageArb, fc.array(HeterogeneousUpdateMethodArb, small))
-        .map(
-            ([inspectMessageMethod, updateMethods]): CanisterConfig<
-                CorrespondingJSType,
-                CorrespondingJSType
-            > => {
-                return {
-                    inspectMessageMethod,
-                    updateMethods
-                };
-            }
-        );
+        .array(HeterogeneousUpdateMethodArb, small)
+        .chain((updateMethods) => {
+            const InspectMessageArb = InspectMessageMethodArb(
+                {
+                    api,
+                    constraints: {}
+                },
+                {
+                    generateBody: () =>
+                        generateInspectMessageMethodBody(updateMethods),
+                    generateTests: () => []
+                }
+            );
+
+            return InspectMessageArb.map(
+                (
+                    inspectMessage
+                ): CanisterConfig<CorrespondingJSType, CorrespondingJSType> => {
+                    return {
+                        inspectMessageMethod: inspectMessage,
+                        updateMethods
+                    };
+                }
+            );
+        });
 }
 
 runPropTests(CanisterArb(context, CanisterConfigArb()));
 
-function generateInspectMessageMethodBody(): string {
+function generateInspectMessageMethodBody(
+    updateMethods: UpdateMethod<CorrespondingJSType, CorrespondingJSType>[]
+): string {
     const acceptPrincipal = getPrincipal(AZLE_ACCEPT_IDENTITY_NAME);
     const returnPrincipal = getPrincipal(AZLE_RETURN_IDENTITY_NAME);
     const throwPrincipal = getPrincipal(AZLE_THROW_IDENTITY_NAME);
+
     return `
+        const expectedArgs: {
+            ${updateMethods.map((updateMethod) => `'${updateMethod.methodName}': [${updateMethod.paramTypes.map((paramType) => paramType.src.typeAnnotation).join(', ')}]`).join(',\n')}
+        } = {
+            ${updateMethods.map((updateMethod) => `'${updateMethod.methodName}': [${updateMethod.paramTypes.map((paramType) => paramType.src.valueLiteral).join(', ')}]`).join(',\n')}
+        };
+
+        if (deepEqual(args, expectedArgs[methodName as keyof typeof expectedArgs]) !== true) {
+            throw new Error("Expected @inspectMessage arguments do not match");
+        }        
+
         if (msgCaller().toText() === "${acceptPrincipal}") {
-            acceptMessage();
-            return;
+            return true;
         }
+
         if (msgCaller().toText() === "${returnPrincipal}") {
-            return;
+            return false;
         }
+
         if (msgCaller().toText() === "${throwPrincipal}") {
             throw new Error(\`Method "$\{msgMethodName()}" not allowed\`);
         }
+
         throw new Error("Unexpected caller");
     `;
 }

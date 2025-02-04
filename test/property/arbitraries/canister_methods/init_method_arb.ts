@@ -95,6 +95,7 @@ export function InitMethodArb<
                     returnType,
                     generator.generateBody,
                     methodImplementationLocation,
+                    functionName,
                     methodName,
                     api
                 );

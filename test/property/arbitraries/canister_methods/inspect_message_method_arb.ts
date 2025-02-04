@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { Test } from '../../test';
-import { VoidArb } from '../candid/primitive/void';
+import { BoolArb } from '../candid/primitive/bool';
 import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
@@ -31,7 +31,7 @@ export function InspectMessageMethodArb(
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),
-            VoidArb({ ...context, constraints: {} }),
+            BoolArb({ ...context, constraints: {} }),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
         )
@@ -55,8 +55,10 @@ export function InspectMessageMethodArb(
                     returnType,
                     generator.generateBody,
                     methodImplementationLocation,
+                    functionName,
                     methodName,
-                    api
+                    api,
+                    true
                 );
 
                 const globalDeclarations =

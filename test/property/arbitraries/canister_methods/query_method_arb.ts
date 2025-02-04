@@ -100,6 +100,7 @@ export function QueryMethodArb<
                     returnType,
                     generator.generateBody,
                     methodImplementationLocation,
+                    functionName,
                     methodName,
                     api
                 );
