@@ -9,19 +9,22 @@ export function getTests(
 ): Test {
     return () => {
         it('calls `acceptMessage` in inspectMessage', async () => {
-            const result = await inspectMessageCanister.accessible();
+            const result =
+                await inspectMessageCanister.accessible('testing accessible');
             expect(result).toBe(true);
         });
 
         it('rejects because `acceptMessage` was not called in inspectMessage', async () => {
-            await expect(inspectMessageCanister.inaccessible()).rejects.toThrow(
-                /IC0406/
-            );
+            await expect(
+                inspectMessageCanister.inaccessible(12_345n)
+            ).rejects.toThrow(/IC0406/);
         });
 
         it('rejects because `inspectMessage` threw', async () => {
             await expect(
-                inspectMessageCanister.alsoInaccessible()
+                inspectMessageCanister.alsoInaccessible({
+                    prop1: 'testing alsoInaccessible'
+                })
             ).rejects.toThrow(/IC0503/);
         });
     };

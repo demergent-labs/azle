@@ -1,23 +1,16 @@
-import {
-    acceptMessage,
-    IDL,
-    inspectMessage,
-    msgArgData,
-    msgMethodName,
-    query,
-    trap,
-    update
-} from 'azle';
+import { IDL, inspectMessage, msgArgData, query, trap, update } from 'azle';
 
 export default class {
     @inspectMessage
-    inspectMessage(): void {
-        if (msgMethodName() === 'inspectMessageTrap') {
+    inspectMessage(methodName: string): boolean {
+        if (methodName === 'inspectMessageTrap') {
             const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
 
             trap(`trap proptest message: ${message}`);
+
+            return false;
         } else {
-            acceptMessage();
+            return true;
         }
     }
 

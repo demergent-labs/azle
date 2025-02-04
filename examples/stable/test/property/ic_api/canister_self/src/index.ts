@@ -1,10 +1,8 @@
 import {
-    acceptMessage,
     canisterSelf,
     IDL,
     init,
     inspectMessage,
-    msgMethodName,
     postUpgrade,
     preUpgrade,
     Principal,
@@ -73,17 +71,19 @@ export default class {
     }
 
     @inspectMessage
-    inspectMessage(): void {
-        if (msgMethodName() === 'getInspectMessageCanisterSelf') {
+    inspectMessage(methodName: string): boolean {
+        if (methodName === 'getInspectMessageCanisterSelf') {
             if (
                 canisterSelf().toText() ===
                 this.inspectMessageCanisterSelf?.toText()
             ) {
-                acceptMessage();
+                return true;
             }
         } else {
-            acceptMessage();
+            return true;
         }
+
+        return false;
     }
 
     @update

@@ -1,11 +1,9 @@
 // TODO to improve these tests we would also test init, postUpgrade, and preUpgrade
 
 import {
-    acceptMessage,
     IDL,
     // init,
     inspectMessage,
-    msgMethodName,
     // msgArgData,
     // postUpgrade,
     // preUpgrade,
@@ -33,11 +31,13 @@ export default class {
     // }
 
     @inspectMessage
-    inspectMessage(): void {
-        if (msgMethodName() === 'inspectMessageTime') {
+    inspectMessage(methodName: string): boolean {
+        if (methodName === 'inspectMessageTime') {
             trap(`inspectMessageTime trap message: ${time()}`);
+
+            return false;
         } else {
-            acceptMessage();
+            return true;
         }
     }
 
