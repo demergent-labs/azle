@@ -277,13 +277,12 @@ function serviceCall(
             });
         } else {
             return (async (): Promise<any> => {
-                const encodedResult = await call<unknown[], Uint8Array>(
+                const encodedResult = await call<Uint8Array, Uint8Array>(
                     canisterId,
                     methodName,
                     {
-                        args,
-                        cycles,
-                        raw: encodedArgs
+                        args: encodedArgs,
+                        cycles
                     }
                 );
 

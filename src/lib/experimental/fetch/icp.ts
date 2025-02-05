@@ -51,11 +51,11 @@ export async function fetchIcp(
 
     const canisterPrincipal = Principal.fromText(canisterId);
 
-    const result = await call<undefined, Uint8Array>(
+    const result = await call<Uint8Array, Uint8Array>(
         canisterPrincipal,
         canisterMethod,
         {
-            raw: argsRaw,
+            args: argsRaw,
             cycles: BigInt(cycles ?? 0)
         }
     );

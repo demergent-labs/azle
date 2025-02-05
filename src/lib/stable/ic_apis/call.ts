@@ -33,8 +33,8 @@ import { idlDecode, idlEncode } from '../execute_with_candid_serde';
  *   - after an unsuccessful inter-canister await from a composite query
  */
 export async function call<
-    Args extends unknown[] | undefined,
-    Return = unknown
+    Args extends any[] | Uint8Array | undefined,
+    Return = any
 >(
     canisterId: Principal | string,
     method: string,
@@ -43,10 +43,8 @@ export async function call<
         returnIdlType?: IDL.Type;
         args?: Args;
         cycles?: bigint;
-        raw?: Uint8Array;
     }
 ): Promise<Return> {
-    // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         if (
             globalThis._azleIcStable === undefined &&
@@ -60,16 +58,18 @@ export async function call<
         const globalRejectId = `_reject_${promiseId}`;
 
         const returnTypeIdl = options?.returnIdlType;
-        const raw = options?.raw;
 
         globalThis._azleResolveCallbacks[globalResolveId] = (
             result: Uint8Array | ArrayBuffer
         ): void => {
-            if (raw !== undefined) {
+            if (returnTypeIdl === undefined) {
                 resolve(new Uint8Array(result) as Return);
             } else {
                 const idlType =
-                    returnTypeIdl === undefined ? [] : [returnTypeIdl];
+                    Array.isArray(returnTypeIdl) && returnTypeIdl.length === 0
+                        ? []
+                        : [returnTypeIdl];
+
                 resolve(
                     idlDecode(idlType, new Uint8Array(result))[0] as Return
                 );
@@ -91,8 +91,11 @@ export async function call<
                 ? Principal.fromText(canisterId)
                 : canisterId;
         const canisterIdBytes = canisterIdPrincipal.toUint8Array();
+        // TODO don't do casts, do type guard type check things, we need to throw if these types are incorrect
         const argsRaw =
-            raw === undefined ? idlEncode(paramIdlTypes, args) : raw;
+            options?.paramIdlTypes === undefined
+                ? (args as Uint8Array)
+                : idlEncode(paramIdlTypes, args as any[]);
         const cyclesString = cycles.toString();
 
         if (globalThis._azleIcExperimental !== undefined) {

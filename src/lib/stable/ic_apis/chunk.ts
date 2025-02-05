@@ -32,8 +32,8 @@ export async function chunk(): Promise<void> {
         return undefined;
     }
 
-    await call(canisterSelf(), '_azle_chunk', {
-        raw: candidEncode('()'),
+    await call<Uint8Array, Uint8Array>(canisterSelf(), '_azle_chunk', {
+        args: candidEncode('()'),
         cycles: 0n
     });
 }
