@@ -1,4 +1,4 @@
-// TODO double-check undefined stuff on args and return encoding/decoding very well
+// TODO pass the global ids into the Rust, clean up the Rust a lot
 
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';

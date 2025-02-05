@@ -12,7 +12,8 @@ export default Canister({
             {
                 args: candidEncode('()'),
                 cycles: 0n,
-                oneway: true
+                oneway: true,
+                raw: true
             }
         );
     })

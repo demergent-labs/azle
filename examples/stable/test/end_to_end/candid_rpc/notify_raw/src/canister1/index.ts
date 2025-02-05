@@ -12,7 +12,8 @@ export default class {
             {
                 args: Uint8Array.from(candidEncode('()')),
                 cycles: 0n,
-                oneway: true
+                oneway: true,
+                raw: true
             }
         );
     }
