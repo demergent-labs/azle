@@ -1,12 +1,6 @@
 import { Principal } from 'azle';
 import { getCanisterId } from 'azle/dfx';
-import {
-    defaultPropTestParams,
-    expect,
-    it,
-    runAndProvideReproduction,
-    Test
-} from 'azle/test';
+import { defaultPropTestParams, expect, it, Test } from 'azle/test';
 import fc from 'fast-check';
 
 import { deployFreshCanister, getCanisterStatus } from './dfx';
@@ -18,44 +12,39 @@ const CANISTER_NAME = 'canister';
 export function getTests(): Test {
     return () => {
         it('should trigger low memory handler when memory limit is approached', async () => {
-            await runAndProvideReproduction(async () => {
-                await fc.assert(
-                    fc.asyncProperty(
-                        fc.integer({ min: 0, max: 100 }),
-                        fc.integer({
-                            min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of this azle canister)
-                            max: HARD_LIMIT
-                        }),
-                        async (
-                            wasmMemoryThresholdPercentage,
+            await fc.assert(
+                fc.asyncProperty(
+                    fc.integer({ min: 0, max: 100 }),
+                    fc.integer({
+                        min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of this azle canister)
+                        max: HARD_LIMIT
+                    }),
+                    async (wasmMemoryThresholdPercentage, wasmMemoryLimit) => {
+                        // Calculate actual threshold based on percentage
+                        const wasmMemoryThreshold = Math.floor(
+                            wasmMemoryLimit *
+                                (wasmMemoryThresholdPercentage / 100)
+                        );
+
+                        const actor = await deployFreshCanister<Actor>(
+                            CANISTER_NAME,
+                            wasmMemoryThreshold,
                             wasmMemoryLimit
-                        ) => {
-                            // Calculate actual threshold based on percentage
-                            const wasmMemoryThreshold = Math.floor(
-                                wasmMemoryLimit *
-                                    (wasmMemoryThresholdPercentage / 100)
-                            );
+                        );
 
-                            const actor = await deployFreshCanister<Actor>(
-                                CANISTER_NAME,
-                                wasmMemoryThreshold,
-                                wasmMemoryLimit
-                            );
+                        await validateInitialStatus(actor, wasmMemoryLimit);
 
-                            await validateInitialStatus(actor, wasmMemoryLimit);
+                        await addBytesUntilLimitReached(actor);
 
-                            await addBytesUntilLimitReached(actor);
-
-                            await validateFinalStatus(
-                                actor,
-                                wasmMemoryLimit,
-                                wasmMemoryThreshold
-                            );
-                        }
-                    ),
-                    defaultPropTestParams()
-                );
-            });
+                        await validateFinalStatus(
+                            actor,
+                            wasmMemoryLimit,
+                            wasmMemoryThreshold
+                        );
+                    }
+                ),
+                defaultPropTestParams()
+            );
         });
     };
 }
