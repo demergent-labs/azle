@@ -81,15 +81,19 @@ impl JsFn for NativeFunction {
                     (true, candid_bytes_js_value)
                 }
                 Err(err) => {
-                    let err_js_value: JsValue = context_clone
+                    let mut err_object = context_clone
                         .new_error(&format!(
-                            "Rejection code {rejection_code}, {error_message}",
-                            rejection_code = (err.0 as i32).to_string(),
-                            error_message = err.1
+                            "The inter-canister call failed with reject code {}: {}",
+                            (err.0 as i32).to_string(),
+                            err.1
                         ))
-                        .into();
+                        .to_obj()
+                        .unwrap();
 
-                    (false, err_js_value)
+                    err_object.set("rejectCode", (err.0 as i32).into());
+                    err_object.set("rejectMessage", context_clone.new_string(&err.1).into());
+
+                    (false, err_object.into())
                 }
             };
 

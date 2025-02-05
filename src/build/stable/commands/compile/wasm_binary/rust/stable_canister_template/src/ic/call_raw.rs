@@ -131,13 +131,18 @@ fn prepare_js_value<'a>(
             Ok((true, candid_bytes_js_value))
         }
         Err(err) => {
-            let err_js_value = Exception::from_message(
+            let err_js_object = Exception::from_message(
                 ctx.clone(),
-                &format!("Rejection code {}, {}", (err.0 as i32).to_string(), err.1),
-            )
-            .into_js(&ctx)?;
+                &format!(
+                    "The inter-canister call failed with reject code {}: {}",
+                    err.0 as i32, &err.1
+                ),
+            )?;
 
-            Ok((false, err_js_value))
+            err_js_object.set("rejectCode", err.0 as i32)?;
+            err_js_object.set("rejectMessage", &err.1)?;
+
+            Ok((false, err_js_object.into_js(&ctx)?))
         }
     }
 }

@@ -29,14 +29,17 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             match notify_result {
                 Ok(_) => Undefined.into_js(&ctx),
                 Err(err) => {
-                    let err_string = format!(
-                        "Rejection code {rejection_code}",
-                        rejection_code = (err as i32).to_string()
-                    );
-                    let err_js_value =
-                        Exception::from_message(ctx.clone(), &err_string).into_js(&ctx)?;
+                    let err_js_object = Exception::from_message(
+                        ctx.clone(),
+                        &format!(
+                            "The inter-canister call failed with reject code {}",
+                            err as i32
+                        ),
+                    )?;
 
-                    Ok(err_js_value)
+                    err_js_object.set("rejectCode", err as i32)?;
+
+                    Ok(err_js_object.into_js(&ctx)?)
                 }
             }
         },

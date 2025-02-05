@@ -1,3 +1,5 @@
+import { RejectCode } from './msg_reject_code';
+
 /**
  * The interface for our rust methods it slightly different than the interface
  * we expose to the users. This is the interface for the rust functions.
@@ -33,7 +35,7 @@ export type AzleIcStable = {
         cyclesString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
-    msgRejectCode: () => number;
+    msgRejectCode: () => RejectCode;
     msgReply: (bytes: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
     setTimer: (delay: string, timerCallbackId: string) => bigint;

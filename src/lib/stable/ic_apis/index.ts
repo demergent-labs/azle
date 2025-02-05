@@ -1,5 +1,5 @@
 export { acceptMessage } from './accept_message';
-export { call } from './call';
+export { call, CallError } from './call';
 export { candidDecode } from './candid_decode';
 export { candidEncode } from './candid_encode';
 export { canisterCycleBalance } from './canister_cycle_balance';

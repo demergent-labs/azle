@@ -3,6 +3,7 @@ import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid';
 
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
+import { RejectCode } from './msg_reject_code';
 
 type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     paramIdlTypes?: IDL.Type[];
@@ -13,6 +14,12 @@ type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     raw?: boolean;
     timeout?: bigint | null;
 };
+
+// TODO add the sync property once the ic-cdk v0.18.0 comes out
+export interface CallError extends Error {
+    rejectCode: RejectCode;
+    rejectMessage?: string;
+}
 
 /**
  * Makes an inter-canister call to invoke a method on another canister.
