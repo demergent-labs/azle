@@ -1,4 +1,4 @@
-import { call, IDL, notify, update } from 'azle';
+import { call, IDL, update } from 'azle';
 
 import { Account, AccountArgs } from '../canister2/types';
 
@@ -45,12 +45,17 @@ export default class {
     }
 
     @update
-    sendNotification(): void {
-        return notify(this.canister2Id, 'receiveNotification', {
-            paramIdlTypes: [IDL.Text],
-            args: ['This is the notification'],
-            cycles: 10n
-        });
+    async sendNotification(): Promise<void> {
+        return await call<[string], void>(
+            this.canister2Id,
+            'receiveNotification',
+            {
+                paramIdlTypes: [IDL.Text],
+                args: ['This is the notification'],
+                cycles: 10n,
+                oneway: true
+            }
+        );
     }
 }
 

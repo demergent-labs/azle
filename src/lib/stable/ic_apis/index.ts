@@ -21,7 +21,6 @@ export { msgReject } from './msg_reject';
 export { msgRejectCode } from './msg_reject_code';
 export { msgRejectMsg } from './msg_reject_msg';
 export { msgReply } from './msg_reply';
-export { notify } from './notify';
 export { performanceCounter } from './performance_counter';
 export { setCertifiedData } from './set_certified_data';
 export { setTimer } from './set_timer';

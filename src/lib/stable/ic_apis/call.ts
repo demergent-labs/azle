@@ -1,3 +1,5 @@
+// TODO double-check undefined stuff on args and return encoding/decoding very well
+
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid';
@@ -43,77 +45,102 @@ export async function call<
         returnIdlType?: IDL.Type;
         args?: Args;
         cycles?: bigint;
+        oneway?: boolean;
     }
 ): Promise<Return> {
-    return new Promise((resolve, reject) => {
-        if (
-            globalThis._azleIcStable === undefined &&
-            globalThis._azleIcExperimental === undefined
-        ) {
-            return undefined;
-        }
+    const paramIdlTypes = options?.paramIdlTypes ?? [];
+    const args = options?.args;
+    const cycles = options?.cycles ?? 0n;
 
-        const promiseId = v4();
-        const globalResolveId = `_resolve_${promiseId}`;
-        const globalRejectId = `_reject_${promiseId}`;
+    const canisterIdPrincipal =
+        typeof canisterId === 'string'
+            ? Principal.fromText(canisterId)
+            : canisterId;
+    const canisterIdBytes = canisterIdPrincipal.toUint8Array();
+    // TODO don't do casts, do type guard type check things, we need to throw if these types are incorrect
+    const argsRaw =
+        options?.paramIdlTypes === undefined
+            ? args === undefined
+                ? idlEncode([], [])
+                : (args as Uint8Array) // TODO work on undefined checks of course...should we do a Uint8Array.from or something? No, probably force a Uint8Array
+            : idlEncode(paramIdlTypes, (args ?? []) as any[]);
+    const cyclesString = cycles.toString();
 
-        const returnTypeIdl = options?.returnIdlType;
-
-        globalThis._azleResolveCallbacks[globalResolveId] = (
-            result: Uint8Array | ArrayBuffer
-        ): void => {
-            if (returnTypeIdl === undefined) {
-                resolve(new Uint8Array(result) as Return);
-            } else {
-                const idlType =
-                    Array.isArray(returnTypeIdl) && returnTypeIdl.length === 0
-                        ? []
-                        : [returnTypeIdl];
-
-                resolve(
-                    idlDecode(idlType, new Uint8Array(result))[0] as Return
-                );
-            }
-        };
-
-        globalThis._azleRejectCallbacks[globalRejectId] = (
-            error: unknown
-        ): void => {
-            reject(error);
-        };
-
-        const paramIdlTypes = options?.paramIdlTypes ?? [];
-        const args = options?.args ?? [];
-        const cycles = options?.cycles ?? 0n;
-
-        const canisterIdPrincipal =
-            typeof canisterId === 'string'
-                ? Principal.fromText(canisterId)
-                : canisterId;
-        const canisterIdBytes = canisterIdPrincipal.toUint8Array();
-        // TODO don't do casts, do type guard type check things, we need to throw if these types are incorrect
-        const argsRaw =
-            options?.paramIdlTypes === undefined
-                ? (args as Uint8Array)
-                : idlEncode(paramIdlTypes, args as any[]);
-        const cyclesString = cycles.toString();
-
+    if (options?.oneway === true) {
         if (globalThis._azleIcExperimental !== undefined) {
-            globalThis._azleIcExperimental.callRaw(
-                promiseId,
+            globalThis._azleIcExperimental.notifyRaw(
                 canisterIdBytes.buffer,
                 method,
                 argsRaw.buffer,
                 cyclesString
             );
         } else {
-            globalThis._azleIcStable.callRaw(
-                promiseId,
+            globalThis._azleIcStable.notifyRaw(
                 canisterIdBytes,
                 method,
                 argsRaw,
                 cyclesString
             );
         }
-    });
+
+        return Promise.resolve(undefined as Return);
+    } else {
+        return new Promise((resolve, reject) => {
+            if (
+                globalThis._azleIcStable === undefined &&
+                globalThis._azleIcExperimental === undefined
+            ) {
+                return undefined;
+            }
+
+            const promiseId = v4();
+            const globalResolveId = `_resolve_${promiseId}`;
+            const globalRejectId = `_reject_${promiseId}`;
+
+            const returnIdlType = options?.returnIdlType;
+
+            globalThis._azleResolveCallbacks[globalResolveId] = (
+                result: Uint8Array | ArrayBuffer
+            ): void => {
+                if (returnIdlType === undefined) {
+                    resolve(new Uint8Array(result) as Return);
+                } else {
+                    // TODO this is wrong for a return value of void
+                    const idlType =
+                        Array.isArray(returnIdlType) &&
+                        returnIdlType.length === 0
+                            ? []
+                            : [returnIdlType];
+
+                    resolve(
+                        idlDecode(idlType, new Uint8Array(result))[0] as Return
+                    );
+                }
+            };
+
+            globalThis._azleRejectCallbacks[globalRejectId] = (
+                error: unknown
+            ): void => {
+                reject(error);
+            };
+
+            if (globalThis._azleIcExperimental !== undefined) {
+                globalThis._azleIcExperimental.callRaw(
+                    promiseId,
+                    canisterIdBytes.buffer,
+                    method,
+                    argsRaw.buffer,
+                    cyclesString
+                );
+            } else {
+                globalThis._azleIcStable.callRaw(
+                    promiseId,
+                    canisterIdBytes,
+                    method,
+                    argsRaw,
+                    cyclesString
+                );
+            }
+        });
+    }
 }
