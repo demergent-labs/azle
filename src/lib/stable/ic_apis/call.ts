@@ -6,6 +6,15 @@ import { v4 } from 'uuid';
 
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 
+type CallOptions<Args extends any[] | Uint8Array | undefined> = {
+    paramIdlTypes?: IDL.Type[];
+    returnIdlType?: IDL.Type;
+    args?: Args;
+    cycles?: bigint;
+    oneway?: boolean;
+    timeout?: bigint | null;
+};
+
 /**
  * Makes an inter-canister call to invoke a method on another canister.
  *
@@ -40,112 +49,165 @@ export async function call<
 >(
     canisterId: Principal | string,
     method: string,
-    options?: {
-        paramIdlTypes?: IDL.Type[];
-        returnIdlType?: IDL.Type;
-        args?: Args;
-        cycles?: bigint;
-        oneway?: boolean;
-        timeout?: bigint | null;
-    }
+    options?: CallOptions<Args>
 ): Promise<Return> {
     if (typeof options?.timeout === 'bigint') {
-        throw new Error('timeout is not yet supported');
+        throw new Error('timeout is not yet implemented');
     }
 
-    const paramIdlTypes = options?.paramIdlTypes ?? [];
-    const args = options?.args;
-    const cycles = options?.cycles ?? 0n;
-
-    const canisterIdPrincipal =
-        typeof canisterId === 'string'
-            ? Principal.fromText(canisterId)
-            : canisterId;
-    const canisterIdBytes = canisterIdPrincipal.toUint8Array();
-    // TODO don't do casts, do type guard type check things, we need to throw if these types are incorrect
-    const argsRaw =
-        options?.paramIdlTypes === undefined
-            ? args === undefined
-                ? idlEncode([], [])
-                : (args as Uint8Array) // TODO work on undefined checks of course...should we do a Uint8Array.from or something? No, probably force a Uint8Array
-            : idlEncode(paramIdlTypes, (args ?? []) as any[]);
-    const cyclesString = cycles.toString();
+    const canisterIdBytes = getCanisterIdBytes(canisterId);
+    const argsRaw = getArgsRaw(options);
+    const cyclesString = getCyclesString(options);
 
     if (options?.oneway === true) {
+        return handleOneWay<Return>(
+            canisterIdBytes,
+            method,
+            argsRaw,
+            cyclesString
+        );
+    } else {
+        return handleTwoWay<Return>(
+            canisterIdBytes,
+            method,
+            argsRaw,
+            cyclesString,
+            options?.returnIdlType
+        );
+    }
+}
+
+function getCanisterIdBytes(canisterId: Principal | string): Uint8Array {
+    return typeof canisterId === 'string'
+        ? Principal.fromText(canisterId).toUint8Array()
+        : canisterId.toUint8Array();
+}
+
+function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
+    callOptions?: CallOptions<Args>
+): Uint8Array {
+    if (callOptions?.paramIdlTypes === undefined) {
+        if (callOptions?.args === undefined) {
+            return idlEncode([], []);
+        }
+
+        if (callOptions.args instanceof Uint8Array === false) {
+            throw new Error(
+                `args must be a Uint8Array if no paramIdlTypes are provided to call`
+            );
+        }
+
+        return callOptions.args;
+    } else {
+        if (Array.isArray(callOptions.args) === false) {
+            throw new Error(
+                `args must be an array of JavaScript values if paramIdlTypes are provided to call`
+            );
+        }
+
+        return idlEncode(callOptions.paramIdlTypes, callOptions.args);
+    }
+}
+
+function getCyclesString<Args extends any[] | Uint8Array | undefined>(
+    options?: CallOptions<Args>
+): string {
+    const cycles = options?.cycles ?? 0n;
+    return cycles.toString();
+}
+
+function handleOneWay<Return>(
+    canisterIdBytes: Uint8Array,
+    method: string,
+    argsRaw: Uint8Array,
+    cyclesString: string
+): Promise<Return> {
+    if (globalThis._azleIcExperimental !== undefined) {
+        globalThis._azleIcExperimental.notifyRaw(
+            canisterIdBytes.buffer,
+            method,
+            argsRaw.buffer,
+            cyclesString
+        );
+    } else {
+        globalThis._azleIcStable.notifyRaw(
+            canisterIdBytes,
+            method,
+            argsRaw,
+            cyclesString
+        );
+    }
+
+    return Promise.resolve(undefined as Return);
+}
+
+function handleTwoWay<Return>(
+    canisterIdBytes: Uint8Array,
+    method: string,
+    argsRaw: Uint8Array,
+    cyclesString: string,
+    returnIdlType?: IDL.Type
+): Promise<Return> {
+    return new Promise((resolve, reject) => {
+        const promiseId = v4();
+
+        createResolveCallback<Return>(promiseId, resolve, returnIdlType);
+        createRejectCallback(promiseId, reject);
+
         if (globalThis._azleIcExperimental !== undefined) {
-            globalThis._azleIcExperimental.notifyRaw(
+            globalThis._azleIcExperimental.callRaw(
+                promiseId,
                 canisterIdBytes.buffer,
                 method,
                 argsRaw.buffer,
                 cyclesString
             );
         } else {
-            globalThis._azleIcStable.notifyRaw(
+            globalThis._azleIcStable.callRaw(
+                promiseId,
                 canisterIdBytes,
                 method,
                 argsRaw,
                 cyclesString
             );
         }
+    });
+}
 
-        return Promise.resolve(undefined as Return);
-    } else {
-        return new Promise((resolve, reject) => {
-            if (
-                globalThis._azleIcStable === undefined &&
-                globalThis._azleIcExperimental === undefined
-            ) {
-                return undefined;
-            }
+// TODO right here we need to figure out how to handle a raw return value, vs a void Candid return value, versus a regular return value
+function createResolveCallback<Return>(
+    promiseId: string,
+    resolve: (value: Return | PromiseLike<Return>) => void,
+    returnIdlType?: IDL.Type
+): void {
+    const globalResolveId = `_resolve_${promiseId}`;
 
-            const promiseId = v4();
-            const globalResolveId = `_resolve_${promiseId}`;
-            const globalRejectId = `_reject_${promiseId}`;
+    globalThis._azleResolveCallbacks[globalResolveId] = (
+        result: Uint8Array | ArrayBuffer
+    ): void => {
+        if (returnIdlType === undefined) {
+            resolve(new Uint8Array(result) as Return);
+        } else {
+            // TODO this is wrong for a return value of void
+            const idlType =
+                Array.isArray(returnIdlType) && returnIdlType.length === 0
+                    ? []
+                    : [returnIdlType];
 
-            const returnIdlType = options?.returnIdlType;
+            resolve(idlDecode(idlType, new Uint8Array(result))[0] as Return);
+        }
+    };
+}
 
-            globalThis._azleResolveCallbacks[globalResolveId] = (
-                result: Uint8Array | ArrayBuffer
-            ): void => {
-                if (returnIdlType === undefined) {
-                    resolve(new Uint8Array(result) as Return);
-                } else {
-                    // TODO this is wrong for a return value of void
-                    const idlType =
-                        Array.isArray(returnIdlType) &&
-                        returnIdlType.length === 0
-                            ? []
-                            : [returnIdlType];
+function createRejectCallback(
+    promiseId: string,
+    reject: (reason?: any) => void
+): void {
+    const globalRejectId = `_reject_${promiseId}`;
 
-                    resolve(
-                        idlDecode(idlType, new Uint8Array(result))[0] as Return
-                    );
-                }
-            };
-
-            globalThis._azleRejectCallbacks[globalRejectId] = (
-                error: unknown
-            ): void => {
-                reject(error);
-            };
-
-            if (globalThis._azleIcExperimental !== undefined) {
-                globalThis._azleIcExperimental.callRaw(
-                    promiseId,
-                    canisterIdBytes.buffer,
-                    method,
-                    argsRaw.buffer,
-                    cyclesString
-                );
-            } else {
-                globalThis._azleIcStable.callRaw(
-                    promiseId,
-                    canisterIdBytes,
-                    method,
-                    argsRaw,
-                    cyclesString
-                );
-            }
-        });
-    }
+    globalThis._azleRejectCallbacks[globalRejectId] = (
+        error: unknown
+    ): void => {
+        reject(error);
+    };
 }

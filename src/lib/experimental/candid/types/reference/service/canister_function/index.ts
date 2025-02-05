@@ -7,7 +7,7 @@ import {
     MethodMeta
 } from '../../../../../../../build/stable/utils/types';
 import { CanisterMethodMode } from '../../../../../../stable/execute_with_candid_serde';
-import { call, notify } from '../../../../../../stable/ic_apis';
+import { call } from '../../../../../../stable/ic_apis';
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { Callbacks } from '../../../../../globals';
 import { CandidType, Parent, toIdlTypeArray } from '../../../../index';
@@ -262,18 +262,14 @@ function serviceCall(
     paramCandidTypes: CandidType[],
     returnCandidType: CandidType
 ): ServiceCall {
-    return (
-        isNotify: boolean,
-        cycles: bigint,
-        args: any[]
-    ): void | Promise<any> => {
+    return (isNotify: boolean, cycles: bigint, args: any[]): Promise<any> => {
         const encodedArgs = encode(paramCandidTypes, args);
 
         if (isNotify === true) {
-            return notify(canisterId, methodName, {
-                args,
+            return call(canisterId, methodName, {
+                args: encodedArgs,
                 cycles,
-                raw: encodedArgs
+                oneway: true
             });
         } else {
             return (async (): Promise<any> => {
