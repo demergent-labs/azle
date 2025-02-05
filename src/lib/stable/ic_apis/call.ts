@@ -46,8 +46,13 @@ export async function call<
         args?: Args;
         cycles?: bigint;
         oneway?: boolean;
+        timeout?: bigint | null;
     }
 ): Promise<Return> {
+    if (typeof options?.timeout === 'bigint') {
+        throw new Error('timeout is not yet supported');
+    }
+
     const paramIdlTypes = options?.paramIdlTypes ?? [];
     const args = options?.args;
     const cycles = options?.cycles ?? 0n;
