@@ -67,7 +67,8 @@ export default class {
                         }
                     )
                 `),
-                cycles: 50_000_000n
+                cycles: 50_000_000n,
+                raw: true
             }
         );
 

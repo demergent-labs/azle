@@ -278,7 +278,8 @@ function serviceCall(
                     methodName,
                     {
                         args: encodedArgs,
-                        cycles
+                        cycles,
+                        raw: true
                     }
                 );
 

@@ -56,7 +56,8 @@ export async function fetchIcp(
         canisterMethod,
         {
             args: argsRaw,
-            cycles: BigInt(cycles ?? 0)
+            cycles: BigInt(cycles ?? 0),
+            raw: true
         }
     );
 

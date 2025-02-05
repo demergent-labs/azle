@@ -11,7 +11,8 @@ export default Canister({
                 method,
                 {
                     args: candidEncode(candidArgs),
-                    cycles: payment
+                    cycles: payment,
+                    raw: true
                 }
             );
 
