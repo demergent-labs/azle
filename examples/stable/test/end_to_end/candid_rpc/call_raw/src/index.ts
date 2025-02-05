@@ -10,7 +10,8 @@ export default class {
     ): Promise<string> {
         const result = await call<Uint8Array, Uint8Array>(canisterId, method, {
             args: candidEncode(candidArgs),
-            cycles
+            cycles,
+            raw: true
         });
 
         return candidDecode(result);

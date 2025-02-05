@@ -12,6 +12,7 @@ type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     args?: Args;
     cycles?: bigint;
     oneway?: boolean;
+    raw?: boolean;
     timeout?: bigint | null;
 };
 
@@ -72,6 +73,7 @@ export async function call<
             method,
             argsRaw,
             cyclesString,
+            options?.raw ?? false,
             options?.returnIdlType
         );
     }
@@ -86,26 +88,29 @@ function getCanisterIdBytes(canisterId: Principal | string): Uint8Array {
 function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
     callOptions?: CallOptions<Args>
 ): Uint8Array {
-    if (callOptions?.paramIdlTypes === undefined) {
+    if (callOptions?.raw === true) {
         if (callOptions?.args === undefined) {
             return idlEncode([], []);
         }
 
         if (callOptions.args instanceof Uint8Array === false) {
             throw new Error(
-                `args must be a Uint8Array if no paramIdlTypes are provided to call`
+                `args must be a Uint8Array. If you did not intend to make a raw call, then consider setting the raw property of the call options to undefined or false`
             );
         }
 
         return callOptions.args;
     } else {
-        if (Array.isArray(callOptions.args) === false) {
+        if (callOptions?.args instanceof Uint8Array === true) {
             throw new Error(
-                `args must be an array of JavaScript values if paramIdlTypes are provided to call`
+                `args must be an array of JavaScript values. If you intended to make a raw call, then consider setting the raw property of the call options to true`
             );
         }
 
-        return idlEncode(callOptions.paramIdlTypes, callOptions.args);
+        return idlEncode(
+            callOptions?.paramIdlTypes ?? [],
+            callOptions?.args ?? []
+        );
     }
 }
 
@@ -146,12 +151,13 @@ function handleTwoWay<Return>(
     method: string,
     argsRaw: Uint8Array,
     cyclesString: string,
+    raw: boolean,
     returnIdlType?: IDL.Type
 ): Promise<Return> {
     return new Promise((resolve, reject) => {
         const promiseId = v4();
 
-        createResolveCallback<Return>(promiseId, resolve, returnIdlType);
+        createResolveCallback<Return>(promiseId, resolve, raw, returnIdlType);
         createRejectCallback(promiseId, reject);
 
         if (globalThis._azleIcExperimental !== undefined) {
@@ -174,10 +180,10 @@ function handleTwoWay<Return>(
     });
 }
 
-// TODO right here we need to figure out how to handle a raw return value, vs a void Candid return value, versus a regular return value
 function createResolveCallback<Return>(
     promiseId: string,
     resolve: (value: Return | PromiseLike<Return>) => void,
+    raw: boolean,
     returnIdlType?: IDL.Type
 ): void {
     const globalResolveId = `_resolve_${promiseId}`;
@@ -185,16 +191,15 @@ function createResolveCallback<Return>(
     globalThis._azleResolveCallbacks[globalResolveId] = (
         result: Uint8Array | ArrayBuffer
     ): void => {
-        if (returnIdlType === undefined) {
+        if (raw === true) {
             resolve(new Uint8Array(result) as Return);
         } else {
-            // TODO this is wrong for a return value of void
-            const idlType =
-                Array.isArray(returnIdlType) && returnIdlType.length === 0
-                    ? []
-                    : [returnIdlType];
-
-            resolve(idlDecode(idlType, new Uint8Array(result))[0] as Return);
+            resolve(
+                idlDecode(
+                    returnIdlType === undefined ? [] : [returnIdlType],
+                    new Uint8Array(result)
+                )[0] as Return
+            );
         }
     };
 }
