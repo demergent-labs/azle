@@ -6,10 +6,14 @@ export default Canister({
         [Principal, text, text, nat],
         text,
         async (canisterId, method, candidArgs, payment) => {
-            const result = await call(canisterId, method, {
-                raw: candidEncode(candidArgs),
-                cycles: payment
-            });
+            const result = await call<Uint8Array, Uint8Array>(
+                canisterId,
+                method,
+                {
+                    args: candidEncode(candidArgs),
+                    cycles: payment
+                }
+            );
 
             return candidDecode(result);
         }

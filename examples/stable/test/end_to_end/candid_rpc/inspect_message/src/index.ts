@@ -1,43 +1,40 @@
-import {
-    acceptMessage,
-    IDL,
-    inspectMessage,
-    msgMethodName,
-    update
-} from 'azle';
+import { IDL, inspectMessage, jsonStringify, update } from 'azle';
 
 export default class {
     @inspectMessage
-    inspectMessage(): void {
-        console.info('inspectMessage called');
+    inspectMessage(methodName: string, ...args: any): boolean {
+        console.info(`inspectMessage called with methodName:`, methodName);
+        console.info(`inspectMessage called with args:`, jsonStringify(args));
 
         if (
-            msgMethodName() === 'accessible' ||
-            msgMethodName() === '_azle_get_benchmarks'
+            methodName === 'accessible' ||
+            methodName === '_azle_get_benchmarks'
         ) {
-            acceptMessage();
-            return;
+            return true;
         }
 
-        if (msgMethodName() === 'inaccessible') {
-            return;
+        if (methodName === 'inaccessible') {
+            return false;
         }
 
-        throw `Method "${msgMethodName()}" not allowed`;
+        throw `Method "${methodName}" not allowed`;
     }
 
-    @update([], IDL.Bool)
-    accessible(): boolean {
+    @update([IDL.Text], IDL.Bool)
+    accessible(message: string): boolean {
+        console.info(`accessible called with message: ${message}`);
         return true;
     }
 
-    @update([], IDL.Bool)
-    inaccessible(): boolean {
+    @update([IDL.Nat64], IDL.Bool)
+    inaccessible(number: bigint): boolean {
+        console.info(`inaccessible called with number: ${number}`);
         return false;
     }
 
-    @update([], IDL.Bool)
-    alsoInaccessible(): boolean {
+    @update([IDL.Record({ prop1: IDL.Text })], IDL.Bool)
+    alsoInaccessible(record: { prop1: string }): boolean {
+        console.info(`alsoInaccessible called with record: ${record}`);
         return false;
     }
 }
