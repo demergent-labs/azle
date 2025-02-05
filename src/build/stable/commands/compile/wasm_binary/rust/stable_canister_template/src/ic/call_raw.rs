@@ -29,7 +29,8 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
     Function::new(
         ctx.clone(),
-        move |promise_id: String,
+        move |global_resolve_id: String,
+              global_reject_id: String,
               canister_id_bytes: TypedArray<u8>,
               method: String,
               args_raw: TypedArray<u8>,
@@ -57,7 +58,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 // Even during a trap, the IC will ensure that the closure runs in its own call
                 // thus allowing us to recover from a trap and persist that state
                 let _cleanup = scopeguard::guard((), |_| {
-                    let result = cleanup(ctx.clone(), &promise_id);
+                    let result = cleanup(ctx.clone(), &global_resolve_id, &global_reject_id);
 
                     if let Err(e) = result {
                         trap(&format!("Azle CallRawCleanupError: {e}"));
@@ -66,7 +67,12 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
-                let result = resolve_or_reject(ctx.clone(), &call_result, &promise_id);
+                let result = resolve_or_reject(
+                    ctx.clone(),
+                    &call_result,
+                    &global_resolve_id,
+                    &global_reject_id,
+                );
 
                 if let Err(e) = result {
                     trap(&format!("Azle CallRawError: {e}"));
@@ -78,17 +84,18 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
     )
 }
 
-fn cleanup(ctx: Ctx, promise_id: &str) -> Result<(), Box<dyn Error>> {
-    let reject_id = format!("_reject_{}", promise_id);
-    let resolve_id = format!("_resolve_{}", promise_id);
-
+fn cleanup(
+    ctx: Ctx,
+    global_resolve_id: &str,
+    global_reject_id: &str,
+) -> Result<(), Box<dyn Error>> {
     let globals = ctx.clone().globals();
 
-    let reject_ids = globals.get::<_, Object>("_azleRejectCallbacks")?;
-    let resolve_ids = globals.get::<_, Object>("_azleResolveCallbacks")?;
+    let resolve_callbacks = globals.get::<_, Object>("_azleResolveCallbacks")?;
+    let reject_callbacks = globals.get::<_, Object>("_azleRejectCallbacks")?;
 
-    reject_ids.remove(&reject_id)?;
-    resolve_ids.remove(&resolve_id)?;
+    resolve_callbacks.remove(global_resolve_id)?;
+    reject_callbacks.remove(global_reject_id)?;
 
     Ok(())
 }
@@ -96,10 +103,16 @@ fn cleanup(ctx: Ctx, promise_id: &str) -> Result<(), Box<dyn Error>> {
 fn resolve_or_reject<'a>(
     ctx: Ctx<'a>,
     call_result: &Result<Vec<u8>, (RejectionCode, String)>,
-    promise_id: &str,
+    global_resolve_id: &str,
+    global_reject_id: &str,
 ) -> Result<(), Box<dyn Error>> {
     let (should_resolve, js_value) = prepare_js_value(ctx.clone(), &call_result)?;
-    let callback = get_callback(ctx.clone(), &promise_id, should_resolve)?;
+    let callback = get_callback(
+        ctx.clone(),
+        should_resolve,
+        global_resolve_id,
+        global_reject_id,
+    )?;
 
     quickjs_call_with_error_handling(ctx.clone(), callback, (js_value,))?;
 
@@ -131,11 +144,16 @@ fn prepare_js_value<'a>(
 
 fn get_callback<'a>(
     ctx: Ctx<'a>,
-    promise_id: &str,
     should_resolve: bool,
+    global_resolve_id: &str,
+    global_reject_id: &str,
 ) -> Result<Function<'a>, Box<dyn Error>> {
     let global_object = get_resolve_or_reject_global_object(ctx.clone(), should_resolve)?;
-    let callback_name = get_resolve_or_reject_callback_name(&promise_id, should_resolve);
+    let callback_name = if should_resolve {
+        global_resolve_id
+    } else {
+        global_reject_id
+    };
 
     Ok(global_object.get(callback_name)?)
 }
@@ -150,13 +168,5 @@ fn get_resolve_or_reject_global_object(
         Ok(globals.get("_azleResolveCallbacks")?)
     } else {
         Ok(globals.get("_azleRejectCallbacks")?)
-    }
-}
-
-fn get_resolve_or_reject_callback_name(promise_id: &str, should_resolve: bool) -> String {
-    if should_resolve {
-        format!("_resolve_{promise_id}")
-    } else {
-        format!("_reject_{promise_id}")
     }
 }

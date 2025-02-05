@@ -1,5 +1,3 @@
-// TODO pass the global ids into the Rust, clean up the Rust a lot
-
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid';
@@ -156,13 +154,21 @@ function handleTwoWay<Return>(
 ): Promise<Return> {
     return new Promise((resolve, reject) => {
         const promiseId = v4();
+        const globalResolveId = `_resolve_${promiseId}`;
+        const globalRejectId = `_reject_${promiseId}`;
 
-        createResolveCallback<Return>(promiseId, resolve, raw, returnIdlType);
-        createRejectCallback(promiseId, reject);
+        createResolveCallback<Return>(
+            globalResolveId,
+            resolve,
+            raw,
+            returnIdlType
+        );
+        createRejectCallback(globalRejectId, reject);
 
         if (globalThis._azleIcExperimental !== undefined) {
             globalThis._azleIcExperimental.callRaw(
-                promiseId,
+                globalResolveId,
+                globalRejectId,
                 canisterIdBytes.buffer,
                 method,
                 argsRaw.buffer,
@@ -170,7 +176,8 @@ function handleTwoWay<Return>(
             );
         } else {
             globalThis._azleIcStable.callRaw(
-                promiseId,
+                globalResolveId,
+                globalRejectId,
                 canisterIdBytes,
                 method,
                 argsRaw,
@@ -181,13 +188,11 @@ function handleTwoWay<Return>(
 }
 
 function createResolveCallback<Return>(
-    promiseId: string,
+    globalResolveId: string,
     resolve: (value: Return | PromiseLike<Return>) => void,
     raw: boolean,
     returnIdlType?: IDL.Type
 ): void {
-    const globalResolveId = `_resolve_${promiseId}`;
-
     globalThis._azleResolveCallbacks[globalResolveId] = (
         result: Uint8Array | ArrayBuffer
     ): void => {
@@ -205,11 +210,9 @@ function createResolveCallback<Return>(
 }
 
 function createRejectCallback(
-    promiseId: string,
+    globalRejectId: string,
     reject: (reason?: any) => void
 ): void {
-    const globalRejectId = `_reject_${promiseId}`;
-
     globalThis._azleRejectCallbacks[globalRejectId] = (
         error: unknown
     ): void => {

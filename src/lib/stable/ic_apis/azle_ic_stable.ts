@@ -5,7 +5,8 @@
 export type AzleIcStable = {
     msgArgData: () => Uint8Array;
     callRaw: (
-        promiseId: string,
+        globalResolveId: string,
+        globalRejectId: string,
         canisterIdBytes: Uint8Array,
         method: string,
         argsRaw: Uint8Array,

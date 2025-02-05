@@ -5,13 +5,19 @@ use crate::run_event_loop;
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
     fn call(context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        let promise_id = if let JsValue::String(js_string) = argv.get(0).unwrap() {
+        let global_resolve_id = if let JsValue::String(js_string) = argv.get(0).unwrap() {
             js_string.to_string()
         } else {
             panic!("conversion from JsValue to JsString failed")
         };
 
-        let canister_id_bytes = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(1).unwrap()
+        let global_reject_id = if let JsValue::String(js_string) = argv.get(1).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
+
+        let canister_id_bytes = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(2).unwrap()
         {
             js_array_buffer.to_vec()
         } else {
@@ -19,19 +25,19 @@ impl JsFn for NativeFunction {
         };
         let canister_id = candid::Principal::from_slice(&canister_id_bytes);
 
-        let method = if let JsValue::String(js_string) = argv.get(2).unwrap() {
+        let method = if let JsValue::String(js_string) = argv.get(3).unwrap() {
             js_string.to_string()
         } else {
             panic!("conversion from JsValue to JsString failed")
         };
 
-        let args_raw = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(3).unwrap() {
+        let args_raw = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(4).unwrap() {
             js_array_buffer.to_vec()
         } else {
             panic!("conversion from JsValue to JsArrayBuffer failed")
         };
 
-        let payment_string = if let JsValue::String(js_string) = argv.get(4).unwrap() {
+        let payment_string = if let JsValue::String(js_string) = argv.get(5).unwrap() {
             js_string.to_string()
         } else {
             panic!("conversion from JsValue to JsString failed")
@@ -52,14 +58,14 @@ impl JsFn for NativeFunction {
             let _cleanup = scopeguard::guard((), |_| {
                 let global = context_clone_cleanup.get_global();
 
-                let reject_id = format!("_reject_{}", promise_id);
-                let resolve_id = format!("_resolve_{}", promise_id);
-
-                let reject_callbacks = global.get("_azleRejectCallbacks");
                 let resolve_callbacks = global.get("_azleResolveCallbacks");
+                let reject_callbacks = global.get("_azleRejectCallbacks");
 
-                reject_callbacks.to_obj().unwrap().delete(&reject_id);
-                resolve_callbacks.to_obj().unwrap().delete(&resolve_id);
+                resolve_callbacks
+                    .to_obj()
+                    .unwrap()
+                    .delete(&global_resolve_id);
+                reject_callbacks.to_obj().unwrap().delete(&global_reject_id);
             });
 
             let call_result =
@@ -92,7 +98,7 @@ impl JsFn for NativeFunction {
                     .get("_azleResolveCallbacks")
                     .to_obj()
                     .unwrap()
-                    .get(format!("_resolve_{promise_id}").as_str())
+                    .get(&global_resolve_id)
                     .to_function()
                     .unwrap();
 
@@ -114,7 +120,7 @@ impl JsFn for NativeFunction {
                     .get("_azleRejectCallbacks")
                     .to_obj()
                     .unwrap()
-                    .get(format!("_reject_{promise_id}").as_str())
+                    .get(&global_reject_id)
                     .to_function()
                     .unwrap();
 

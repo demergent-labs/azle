@@ -5,7 +5,8 @@
 export type AzleIcExperimental = {
     msgArgData: () => ArrayBuffer;
     callRaw: (
-        promiseId: string,
+        globalResolveId: string,
+        globalRejectId: string,
         canisterIdBytes: ArrayBuffer,
         method: string,
         argsRaw: ArrayBuffer,
