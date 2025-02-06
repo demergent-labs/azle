@@ -1,4 +1,4 @@
-import { IDL } from 'azle';
+import { IDL, Principal } from 'azle';
 
 import {
     UpdateBalanceError,
@@ -59,11 +59,19 @@ export const GetBtcAddressArgs = IDL.Record({
     owner: IDL.Opt(IDL.Principal),
     subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
 });
+export type GetBtcAddressArgs = {
+    owner: [Principal] | [];
+    subaccount: [Uint8Array] | [];
+};
 
 export const UpdateBalanceArgs = IDL.Record({
     owner: IDL.Opt(IDL.Principal),
     subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
 });
+export type UpdateBalanceArgs = {
+    owner: [Principal] | [];
+    subaccount: [Uint8Array] | [];
+};
 
 export const Minter = IDL.Service({
     get_btc_address: IDL.Func([GetBtcAddressArgs], [IDL.Text]),

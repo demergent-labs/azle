@@ -128,7 +128,7 @@ async function repeatCrossCanisterTimerCallback(
 }
 
 async function getRandomness(): Promise<Uint8Array> {
-    return await call('aaaaa-aa', 'raw_rand', {
+    return await call<undefined, Uint8Array>('aaaaa-aa', 'raw_rand', {
         returnIdlType: IDL.Vec(IDL.Nat8)
     });
 }

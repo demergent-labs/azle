@@ -15,10 +15,14 @@ export default class {
 
     @update([IDL.Nat64], CyclesResult)
     async sendAllCycles(amount: bigint): Promise<CyclesResult> {
-        const result = await call(this.cyclesPrincipal, 'receiveAllCycles', {
-            returnIdlType: CyclesResult,
-            cycles: amount
-        });
+        const result = await call<undefined, CyclesResult>(
+            this.cyclesPrincipal,
+            'receiveAllCycles',
+            {
+                returnIdlType: CyclesResult,
+                cycles: amount
+            }
+        );
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
 
@@ -27,7 +31,7 @@ export default class {
         amountToSend: bigint,
         amountToAccept: bigint
     ): Promise<CyclesResult> {
-        const result = await call(
+        const result = await call<[bigint], CyclesResult>(
             this.cyclesPrincipal,
             'receiveVariableCycles',
             {
@@ -42,10 +46,14 @@ export default class {
 
     @update([IDL.Nat64], CyclesResult)
     async sendNoCycles(amount: bigint): Promise<CyclesResult> {
-        const result = await call(this.cyclesPrincipal, 'receiveNoCycles', {
-            returnIdlType: CyclesResult,
-            cycles: amount
-        });
+        const result = await call<undefined, CyclesResult>(
+            this.cyclesPrincipal,
+            'receiveNoCycles',
+            {
+                returnIdlType: CyclesResult,
+                cycles: amount
+            }
+        );
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
 
@@ -54,7 +62,7 @@ export default class {
         amount: bigint,
         numChunks: bigint
     ): Promise<CyclesResult> {
-        const result = await call(
+        const result = await call<[bigint], CyclesResult>(
             this.cyclesPrincipal,
             'receiveCyclesByChunk',
             {
@@ -77,16 +85,20 @@ export default class {
 
     @update([IDL.Nat64], IDL.Bool)
     async assertMsgCyclesAcceptTypes(amount: bigint): Promise<boolean> {
-        return await call(this.cyclesPrincipal, 'assertMsgCyclesAcceptTypes', {
-            paramIdlTypes: [IDL.Nat64],
-            returnIdlType: IDL.Bool,
-            args: [amount]
-        });
+        return await call<[bigint], boolean>(
+            this.cyclesPrincipal,
+            'assertMsgCyclesAcceptTypes',
+            {
+                paramIdlTypes: [IDL.Nat64],
+                returnIdlType: IDL.Bool,
+                args: [amount]
+            }
+        );
     }
 
     @update([], IDL.Bool)
     async assertMsgCyclesAvailableTypes(): Promise<boolean> {
-        return await call(
+        return await call<undefined, boolean>(
             this.cyclesPrincipal,
             'assertMsgCyclesAvailableTypes',
             {
@@ -97,11 +109,15 @@ export default class {
 
     @update([IDL.Nat64], IDL.Bool)
     async assertMsgCyclesRefundedTypes(amount: bigint): Promise<boolean> {
-        await call(this.cyclesPrincipal, 'assertMsgCyclesAcceptTypes', {
-            paramIdlTypes: [IDL.Nat64],
-            returnIdlType: IDL.Bool,
-            args: [amount]
-        });
+        await call<[bigint], boolean>(
+            this.cyclesPrincipal,
+            'assertMsgCyclesAcceptTypes',
+            {
+                paramIdlTypes: [IDL.Nat64],
+                returnIdlType: IDL.Bool,
+                args: [amount]
+            }
+        );
         // NOTE: if there is no cross canister call, msgCyclesRefunded() cannot be called
         type _AssertReturnType = AssertType<
             NotAnyAndExact<ReturnType<typeof msgCyclesRefunded>, bigint>

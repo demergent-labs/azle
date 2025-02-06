@@ -36,10 +36,14 @@ export default Canister({
         }
     }),
     sendCyclesNotify: update([], Void, async () => {
-        return await call(getCyclesPrincipal(), 'receiveCycles', {
-            cycles: 1_000_000n,
-            oneway: true
-        });
+        return await call<undefined, void>(
+            getCyclesPrincipal(),
+            'receiveCycles',
+            {
+                cycles: 1_000_000n,
+                oneway: true
+            }
+        );
     }),
     getCanisterCycleBalance: query([], nat, () => {
         return canisterCycleBalance();

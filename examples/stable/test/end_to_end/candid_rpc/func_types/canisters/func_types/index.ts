@@ -116,9 +116,13 @@ export default class {
 
     @update([], NotifierFunc)
     async getNotifierFromNotifiersCanister(): Promise<NotifierFunc> {
-        return await call(getNotifierPrincipal(), 'getNotifier', {
-            returnIdlType: NotifierFunc
-        });
+        return await call<undefined, NotifierFunc>(
+            getNotifierPrincipal(),
+            'getNotifier',
+            {
+                returnIdlType: NotifierFunc
+            }
+        );
     }
 }
 

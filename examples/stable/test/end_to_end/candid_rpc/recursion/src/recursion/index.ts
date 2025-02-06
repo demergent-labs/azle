@@ -250,10 +250,14 @@ export default class {
     async testRecServiceCall(
         myFullCanister: MyFullCanister
     ): Promise<MyFullCanister> {
-        return await call(myFullCanister, 'myQuery', {
-            paramIdlTypes: [MyFullCanister],
-            returnIdlType: MyFullCanister,
-            args: [myFullCanister]
-        });
+        return await call<[MyFullCanister], MyFullCanister>(
+            myFullCanister,
+            'myQuery',
+            {
+                paramIdlTypes: [MyFullCanister],
+                returnIdlType: MyFullCanister,
+                args: [myFullCanister]
+            }
+        );
     }
 }

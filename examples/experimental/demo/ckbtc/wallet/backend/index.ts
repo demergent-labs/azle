@@ -17,28 +17,53 @@ export default class {
 
     @update([], IDL.Nat64)
     async getBalance(): Promise<bigint> {
-        return await call(this.ckBtcPrincipal, 'icrc1_balance_of', {
-            paramIdlTypes: [Account],
-            returnIdlType: IDL.Nat,
+        return await call<[Account], bigint>(
+            this.ckBtcPrincipal,
+            'icrc1_balance_of',
+            {
+                paramIdlTypes: [Account],
+                returnIdlType: IDL.Nat,
+                args: [
+                    {
+                        owner: canisterSelf(),
+                        subaccount: [
+                            padPrincipalWithZeros(msgCaller().toUint8Array())
+                        ]
+                    }
+                ]
+            }
+        );
+    }
+
+    @update([], UpdateBalanceResult)
+    async updateBalance(): Promise<UpdateBalanceResult> {
+        const updateBalanceResult: UpdateBalanceResult = await call<
+            [UpdateBalanceArgs],
+            UpdateBalanceResult
+        >(this.minterPrincipal, 'update_balance', {
+            paramIdlTypes: [UpdateBalanceArgs],
+            returnIdlType: UpdateBalanceResult,
             args: [
                 {
-                    owner: canisterSelf(),
+                    owner: [canisterSelf()],
                     subaccount: [
                         padPrincipalWithZeros(msgCaller().toUint8Array())
                     ]
                 }
             ]
         });
+
+        return updateBalanceResult;
     }
 
-    @update([], UpdateBalanceResult)
-    async updateBalance(): Promise<UpdateBalanceResult> {
-        const updateBalanceResult: UpdateBalanceResult = await call(
+    @update([], IDL.Text)
+    async getDepositAddress(): Promise<string> {
+        return await call<[GetBtcAddressArgs], string>(
             this.minterPrincipal,
-            'update_balance',
+            'get_btc_address',
             {
-                paramIdlTypes: [UpdateBalanceArgs],
-                returnIdlType: UpdateBalanceResult,
+                paramIdlTypes: [GetBtcAddressArgs],
+                returnIdlType: IDL.Text,
                 args: [
                     {
                         owner: [canisterSelf()],
@@ -49,52 +74,38 @@ export default class {
                 ]
             }
         );
-
-        return updateBalanceResult;
-    }
-
-    @update([], IDL.Text)
-    async getDepositAddress(): Promise<string> {
-        return await call(this.minterPrincipal, 'get_btc_address', {
-            paramIdlTypes: [GetBtcAddressArgs],
-            returnIdlType: IDL.Text,
-            args: [
-                {
-                    owner: [canisterSelf()],
-                    subaccount: [
-                        padPrincipalWithZeros(msgCaller().toUint8Array())
-                    ]
-                }
-            ]
-        });
     }
 
     // TODO get rid of Result
     @update([IDL.Text, IDL.Nat], TransferResult)
     async transfer(to: string, amount: bigint): Promise<TransferResult> {
-        return await call(this.ckBtcPrincipal, 'icrc1_transfer', {
-            paramIdlTypes: [TransferArgs],
-            returnIdlType: TransferResult,
-            args: [
-                {
-                    from_subaccount: [
-                        padPrincipalWithZeros(msgCaller().toUint8Array())
-                    ],
-                    to: {
-                        owner: canisterSelf(),
-                        subaccount: [
-                            padPrincipalWithZeros(
-                                Principal.fromText(to).toUint8Array()
-                            )
-                        ]
-                    },
-                    amount,
-                    fee: [],
-                    memo: [],
-                    created_at_time: []
-                }
-            ]
-        });
+        return await call<[TransferArgs], TransferResult>(
+            this.ckBtcPrincipal,
+            'icrc1_transfer',
+            {
+                paramIdlTypes: [TransferArgs],
+                returnIdlType: TransferResult,
+                args: [
+                    {
+                        from_subaccount: [
+                            padPrincipalWithZeros(msgCaller().toUint8Array())
+                        ],
+                        to: {
+                            owner: canisterSelf(),
+                            subaccount: [
+                                padPrincipalWithZeros(
+                                    Principal.fromText(to).toUint8Array()
+                                )
+                            ]
+                        },
+                        amount,
+                        fee: [],
+                        memo: [],
+                        created_at_time: []
+                    }
+                ]
+            }
+        );
     }
 }
 

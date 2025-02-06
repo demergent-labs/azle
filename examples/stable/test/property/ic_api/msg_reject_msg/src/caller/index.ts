@@ -26,7 +26,7 @@ async function getRejectMessage(
     message: string
 ): Promise<string> {
     try {
-        await call(rejectorPrincipal, 'echoReject', {
+        await call<[string], string>(rejectorPrincipal, 'echoReject', {
             paramIdlTypes: [IDL.Text],
             returnIdlType: IDL.Text,
             args: [message]

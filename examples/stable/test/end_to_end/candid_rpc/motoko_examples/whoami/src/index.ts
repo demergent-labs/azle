@@ -57,7 +57,7 @@ class WhoAmI {
     // Return the principal identifier of this canister.
     @update([], IDL.Principal)
     async id(): Promise<Principal> {
-        return await call(canisterSelf(), 'whoami', {
+        return await call<undefined, Principal>(canisterSelf(), 'whoami', {
             returnIdlType: IDL.Principal
         });
     }

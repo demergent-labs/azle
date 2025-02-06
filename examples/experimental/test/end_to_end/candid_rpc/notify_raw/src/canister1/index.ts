@@ -3,7 +3,7 @@ import { Canister, Principal, update, Void } from 'azle/experimental';
 
 export default Canister({
     sendNotification: update([], Void, async () => {
-        return await call(
+        return await call<undefined, void>(
             Principal.fromText(
                 process.env.CANISTER2_PRINCIPAL ??
                     trap('process.env.CANISTER2_PRINCIPAL is undefined')

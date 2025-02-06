@@ -6,10 +6,14 @@ export default class {
     // Reports the number of cycles returned from the Cycles canister
     @update([], IDL.Nat64)
     async sendCycles(): Promise<bigint> {
-        return await call(this.cyclesPrincipal, 'receiveCycles', {
-            returnIdlType: IDL.Nat64,
-            cycles: 1_000_000n
-        });
+        return await call<undefined, bigint>(
+            this.cyclesPrincipal,
+            'receiveCycles',
+            {
+                returnIdlType: IDL.Nat64,
+                cycles: 1_000_000n
+            }
+        );
     }
 
     @update
