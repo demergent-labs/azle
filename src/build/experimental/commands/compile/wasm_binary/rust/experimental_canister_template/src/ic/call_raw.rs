@@ -84,8 +84,7 @@ impl JsFn for NativeFunction {
                     let mut err_object = context_clone
                         .new_error(&format!(
                             "The inter-canister call failed with reject code {}: {}",
-                            (err.0 as i32).to_string(),
-                            err.1
+                            err.0 as i32, err.1
                         ))
                         .to_obj()
                         .unwrap();

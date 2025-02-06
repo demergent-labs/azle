@@ -266,10 +266,11 @@ function serviceCall(
         const encodedArgs = encode(paramCandidTypes, args);
 
         if (isNotify === true) {
-            return call(canisterId, methodName, {
+            return call<Uint8Array, void>(canisterId, methodName, {
                 args: encodedArgs,
                 cycles,
-                oneway: true
+                oneway: true,
+                raw: true
             });
         } else {
             return (async (): Promise<any> => {
