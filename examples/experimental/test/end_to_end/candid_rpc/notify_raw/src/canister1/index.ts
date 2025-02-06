@@ -1,4 +1,4 @@
-import { call, candidEncode, trap } from 'azle';
+import { call, trap } from 'azle';
 import { Canister, Principal, update, Void } from 'azle/experimental';
 
 export default Canister({
@@ -10,7 +10,6 @@ export default Canister({
             ),
             'receiveNotification',
             {
-                args: candidEncode('()'),
                 cycles: 0n,
                 oneway: true,
                 raw: true

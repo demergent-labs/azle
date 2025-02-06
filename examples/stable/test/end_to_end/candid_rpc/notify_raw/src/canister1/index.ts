@@ -1,4 +1,4 @@
-import { call, candidEncode, Principal, trap, update } from 'azle';
+import { call, Principal, trap, update } from 'azle';
 
 export default class {
     @update
@@ -10,7 +10,6 @@ export default class {
             ),
             'receiveNotification',
             {
-                args: Uint8Array.from(candidEncode('()')),
                 cycles: 0n,
                 oneway: true,
                 raw: true
