@@ -22,7 +22,10 @@ export default class {
     @update([], IDL.Bool)
     async assertTypes(): Promise<boolean> {
         type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof msgRejectCode>, number>
+            NotAnyAndExact<
+                ReturnType<typeof msgRejectCode>,
+                0 | 1 | 2 | 3 | 4 | 5 | 6
+            >
         >;
         const throwErrorRejectCode = await getThrowErrorRejectCode(
             this.rejectorPrincipal
