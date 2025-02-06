@@ -33,8 +33,7 @@ import {
     query,
     serialize,
     update,
-    Vec,
-    Void
+    Vec
 } from 'azle/experimental';
 import {
     CanisterInfoArgs,
@@ -85,7 +84,7 @@ export default Canister({
                 })
             });
         } else {
-            await call<[update_settings_args], Void>(
+            await call<[update_settings_args], void>(
                 'aaaaa-aa',
                 'update_settings',
                 {
@@ -139,7 +138,7 @@ export default Canister({
                 })
             });
         } else {
-            await call<[clear_chunk_store_args], Void>(
+            await call<[clear_chunk_store_args], void>(
                 'aaaaa-aa',
                 'clear_chunk_store',
                 {
@@ -201,7 +200,7 @@ export default Canister({
                     })
                 });
             } else {
-                await call<[install_code_args], Void>(
+                await call<[install_code_args], void>(
                     'aaaaa-aa',
                     'install_code',
                     {
@@ -239,7 +238,7 @@ export default Canister({
                     })
                 });
             } else {
-                await call<[install_chunked_code_args], Void>(
+                await call<[install_chunked_code_args], void>(
                     'aaaaa-aa',
                     'install_chunked_code',
                     {
@@ -266,7 +265,7 @@ export default Canister({
                 })
             });
         } else {
-            await call<[uninstall_code_args], Void>(
+            await call<[uninstall_code_args], void>(
                 'aaaaa-aa',
                 'uninstall_code',
                 {
@@ -290,7 +289,7 @@ export default Canister({
                 })
             });
         } else {
-            await call<[start_canister_args], Void>(
+            await call<[start_canister_args], void>(
                 'aaaaa-aa',
                 'start_canister',
                 {
@@ -313,7 +312,7 @@ export default Canister({
                 })
             });
         } else {
-            await call<[stop_canister_args], Void>(
+            await call<[stop_canister_args], void>(
                 'aaaaa-aa',
                 'stop_canister',
                 {
@@ -392,7 +391,7 @@ export default Canister({
                 })
             });
         } else {
-            await call<[delete_canister_args], Void>(
+            await call<[delete_canister_args], void>(
                 'aaaaa-aa',
                 'delete_canister',
                 {
@@ -417,7 +416,7 @@ export default Canister({
                 })
             });
         } else {
-            await call<[deposit_cycles_args], Void>(
+            await call<[deposit_cycles_args], void>(
                 'aaaaa-aa',
                 'deposit_cycles',
                 {
@@ -497,7 +496,7 @@ export default Canister({
                     })
                 });
             } else {
-                await call<[provisional_top_up_canister_args], Void>(
+                await call<[provisional_top_up_canister_args], void>(
                     'aaaaa-aa',
                     'provisional_top_up_canister',
                     {

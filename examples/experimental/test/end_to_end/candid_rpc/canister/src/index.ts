@@ -51,7 +51,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, text>(
+            return await call<undefined, string>(
                 getSomeCanisterPrincipal(),
                 'update1',
                 {

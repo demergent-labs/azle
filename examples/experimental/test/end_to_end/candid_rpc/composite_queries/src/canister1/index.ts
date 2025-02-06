@@ -27,7 +27,7 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, text>(
+            return await call<undefined, string>(
                 getCanister2Principal(),
                 'simpleQuery',
                 {
@@ -51,7 +51,7 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, text>(
+            return await call<undefined, string>(
                 getCanister2Principal(),
                 'manualQuery',
                 {
@@ -82,7 +82,7 @@ const CompQueryCanister = Canister({
 
                 msgReply(encoded);
             } else {
-                const result = await call<undefined, text>(
+                const result = await call<undefined, string>(
                     getCanister2Principal(),
                     'manualQuery',
                     {
@@ -114,7 +114,7 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, text>(
+            return await call<undefined, string>(
                 getCanister2Principal(),
                 'deepQuery',
                 {
@@ -138,7 +138,7 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, text>(
+            return await call<undefined, string>(
                 getCanister2Principal(),
                 'updateQuery',
                 {
@@ -162,7 +162,7 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, text>(
+            return await call<undefined, string>(
                 getCanister2Principal(),
                 'simpleQuery',
                 {
@@ -186,7 +186,7 @@ const CompQueryCanister = Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, text>(
+            return await call<undefined, string>(
                 getCanister2Principal(),
                 'deepQuery',
                 {
@@ -249,7 +249,7 @@ async function incCanister(canister: any, candidPath: string): Promise<nat> {
 
         return responseJson;
     } else {
-        return await call<undefined, nat>(
+        return await call<undefined, bigint>(
             canister.principal.toText(),
             'incCounter',
             {
@@ -273,7 +273,7 @@ async function incCanister2(): Promise<nat> {
 
         return responseJson;
     } else {
-        return await call<undefined, nat>(
+        return await call<undefined, bigint>(
             getCanister2Principal(),
             'incCounter',
             {

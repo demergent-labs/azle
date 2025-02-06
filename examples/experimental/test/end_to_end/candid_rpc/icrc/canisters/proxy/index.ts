@@ -102,7 +102,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, nat8>(
+            return await call<undefined, bigint>(
                 icrcPrincipal,
                 'icrc1_decimals',
                 {
@@ -149,7 +149,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, nat>(icrcPrincipal, 'icrc1_fee', {
+            return await call<undefined, bigint>(icrcPrincipal, 'icrc1_fee', {
                 returnIdlType: IDL.Nat
             });
         }
@@ -170,7 +170,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<undefined, nat>(
+            return await call<undefined, bigint>(
                 icrcPrincipal,
                 'icrc1_total_supply',
                 {
@@ -236,7 +236,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<[Account], nat>(
+            return await call<[Account], bigint>(
                 icrcPrincipal,
                 'icrc1_balance_of',
                 {

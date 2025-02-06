@@ -100,7 +100,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<[Account], nat>(
+            return await call<[Account], bigint>(
                 getCkBtcPrincipal(),
                 'icrc1_balance_of',
                 {
@@ -162,7 +162,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<[AccountArg], text>(
+            return await call<[AccountArg], string>(
                 getMinterPrincipal(),
                 'get_btc_address',
                 {

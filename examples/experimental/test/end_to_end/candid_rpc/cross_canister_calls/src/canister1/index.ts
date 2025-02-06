@@ -30,7 +30,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<[text, text, nat64], nat64>(
+            return await call<[text, text, bigint], bigint>(
                 getCanister2Principal(),
                 'transfer',
                 {
@@ -60,7 +60,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call<[text], nat64>(
+            return await call<[text], bigint>(
                 getCanister2Principal(),
                 'balance',
                 {
