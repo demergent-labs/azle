@@ -1,4 +1,4 @@
-import { call, notify } from 'azle';
+import { call } from 'azle';
 import {
     Canister,
     nat64,
@@ -155,15 +155,17 @@ export default Canister({
             );
         }
     }),
-    sendNotification: update([], Void, () => {
-        // TODO for now there seems to be no fetch analogy because notify must be synchronous
-        // TODO and fetch must be asynchronous
-        // TODO though for azle stable we are going to make notify simply return a resolved promise immediately
-        return notify(getCanister2Principal(), 'receiveNotification', {
-            paramIdlTypes: [text.getIdlType()],
-            args: ['This is the notification'],
-            cycles: 10n
-        });
+    sendNotification: update([], Void, async () => {
+        return await call<[string], void>(
+            getCanister2Principal(),
+            'receiveNotification',
+            {
+                paramIdlTypes: [text.getIdlType()],
+                args: ['This is the notification'],
+                cycles: 10n,
+                oneway: true
+            }
+        );
     })
 });
 

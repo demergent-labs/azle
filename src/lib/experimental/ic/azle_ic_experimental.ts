@@ -55,12 +55,6 @@ export type AzleIcExperimental = {
     msgReject: (message: string) => void;
     msgRejectMsg: () => string;
     trap: (message: string) => never;
-    // These calls are intercepted by our IC object and redirected to their
-    // corresponding raw version. The rust version is never called, we don't
-    // have enough info about types to do so
-    call: () => never;
-    notify: () => never;
-    reply: () => never;
     // Stable B Tree Map Functions
     stableBTreeMapInit: (memoryId: string) => void;
     stableBTreeMapContainsKey: (
