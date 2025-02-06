@@ -1,5 +1,5 @@
-import { acceptMessage, IDL, msgMethodName, msgReply, trap } from 'azle';
-import { int16 as coconut } from 'azle/experimental';
+import { IDL, msgMethodName, msgReply, trap } from 'azle';
+import { ic, int16 as coconut } from 'azle/experimental';
 
 import kiwi, {
     banana,
@@ -172,7 +172,7 @@ export const keepIlamaClean = ilama(() => {
     if (msgMethodName() === 'dirtyIlama') {
         return;
     }
-    acceptMessage();
+    ic.acceptMessage();
 });
 
 export const addSigFigs = kiwi([fig32], fig64, (figs) => {

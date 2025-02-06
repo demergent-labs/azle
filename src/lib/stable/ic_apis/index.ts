@@ -1,4 +1,3 @@
-export { acceptMessage } from './accept_message';
 export { call } from './call';
 export { candidDecode } from './candid_decode';
 export { candidEncode } from './candid_encode';

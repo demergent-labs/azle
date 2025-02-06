@@ -93,7 +93,7 @@ function generateInspectMessageMethodBody(): string {
     const throwPrincipal = getPrincipal(AZLE_THROW_IDENTITY_NAME);
     return `
         if (msgCaller().toText() === "${acceptPrincipal}") {
-            acceptMessage();
+            ic.acceptMessage();
             return;
         }
         if (msgCaller().toText() === "${returnPrincipal}") {
