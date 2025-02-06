@@ -6,12 +6,33 @@ import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
 
 type CallOptions<Args extends any[] | Uint8Array | undefined> = {
+    /**
+     * Candid types for encoding the arguments
+     */
     paramIdlTypes?: IDL.Type[];
+    /**
+     * Candid type for decoding the return value
+     */
     returnIdlType?: IDL.Type;
+    /**
+     * Arguments to pass to the method. An array of JavaScript values for non-raw calls, a Uint8Array for raw calls
+     */
     args?: Args;
+    /**
+     * Number of cycles to attach to the call. Represented as a u128 (max size 2^128 - 1)
+     */
     cycles?: bigint;
+    /**
+     * Instructs the inter-canister call to resolve its promise immediately without waiting for the response. ICP's async mechanism is not invoked
+     */
     oneway?: boolean;
+    /**
+     * Instructs the inter-canister call to accept raw bytes for the arguments and to return raw bytes; skips encoding and decoding
+     */
     raw?: boolean;
+    /**
+     * Not yet implemented. Will allow for best-effort inter-canister calls
+     */
     timeout?: bigint | null;
 };
 
@@ -22,22 +43,26 @@ export interface CallError extends Error {
 }
 
 /**
- * Makes an inter-canister call to invoke a method on another canister.
+ * Makes an inter-canister call to a method on another canister.
  *
- * @param canisterId - The target canister's ID as a Principal or string
+ * @param canisterId - The target canister's ID
  * @param method - The name of the method to call on the target canister
  * @param options - Configuration options for the call
- * @param options.paramIdlTypes - Candid types for the parameters (optional)
- * @param options.returnIdlType - Candid type for the return value (optional)
- * @param options.args - Arguments to pass to the method (optional)
- * @param options.cycles - Number of cycles to attach to the call (optional). Represented as a u128 (max size 2^128 - 1)
- * @param options.raw - Raw bytes to send instead of encoded args (optional)
- * @returns Promise resolving to the method's return value
+ * @param options.paramIdlTypes - Candid types for encoding the arguments
+ * @param options.returnIdlType - Candid type for decoding the return value
+ * @param options.args - Arguments to pass to the method. An array of JavaScript values for non-raw calls, a Uint8Array for raw calls
+ * @param options.cycles - Number of cycles to attach to the call. Represented as a u128 (max size 2^128 - 1)
+ * @param options.oneway - Instructs the inter-canister call to resolve its promise immediately without waiting for the response. ICP's async mechanism is not invoked
+ * @param options.raw - Instructs the inter-canister call to accept raw bytes for the arguments and to return raw bytes; skips encoding and decoding
+ * @param options.timeout - Not yet implemented. Will allow for best-effort inter-canister calls
+ *
+ * @returns Promise resolving to the target canister method's return value
  *
  * @remarks
+ *
+ * - By default (if oneway is not set to true) the inter-canister call is asynchronous according to ICP's async mechanism
  * - Supports both high-level (with IDL types) and low-level (raw bytes) calls
- * - Can transfer cycles as part of the call
- * - Automatically encodes/decodes arguments and return values
+ * - Calls are routed based on the target canister's ID, regardless of which subnet the originating and target canisters are deployed to
  *
  * - **Call Context**:
  *   - \@update
