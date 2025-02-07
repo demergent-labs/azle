@@ -3,3 +3,4 @@
 node_modules
 dist
 dfx_generated
+!src
