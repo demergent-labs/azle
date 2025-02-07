@@ -136,9 +136,13 @@ export default class {
 
     @update([], IDL.Bool)
     async getQueryInReplicatedModeIsInReplicatedExecution(): Promise<boolean> {
-        return await call(canisterSelf(), 'getQueryIsInReplicatedExecution', {
-            returnIdlType: IDL.Bool
-        });
+        return await call<undefined, boolean>(
+            canisterSelf(),
+            'getQueryIsInReplicatedExecution',
+            {
+                returnIdlType: IDL.Bool
+            }
+        );
     }
 
     @query([], IDL.Bool, { composite: true })

@@ -35,7 +35,7 @@ export default class {
         composite: true
     })
     async deepQuery(): Promise<string> {
-        return await call(this.canister3Id, 'deepQuery', {
+        return await call<undefined, string>(this.canister3Id, 'deepQuery', {
             returnIdlType: IDL.Text
         });
     }

@@ -1,3 +1,5 @@
+import { RejectCode } from '../../stable/ic_apis/msg_reject_code';
+
 /**
  * The interface for our rust methods it slightly different than the interface
  * we expose to the users. This is the interface for the rust functions.
@@ -5,7 +7,8 @@
 export type AzleIcExperimental = {
     msgArgData: () => ArrayBuffer;
     callRaw: (
-        promiseId: string,
+        globalResolveId: string,
+        globalRejectId: string,
         canisterIdBytes: ArrayBuffer,
         method: string,
         argsRaw: ArrayBuffer,
@@ -33,7 +36,7 @@ export type AzleIcExperimental = {
         paymentString: string
     ) => void;
     performanceCounter: (counterType: string) => string;
-    msgRejectCode: () => string;
+    msgRejectCode: () => RejectCode;
     msgReply: (bytes: ArrayBuffer) => void;
     setCertifiedData: (dataBytes: ArrayBuffer) => void;
     setTimer: (delayString: string, timerCallbackId: string) => string;
@@ -52,12 +55,6 @@ export type AzleIcExperimental = {
     msgReject: (message: string) => void;
     msgRejectMsg: () => string;
     trap: (message: string) => never;
-    // These calls are intercepted by our IC object and redirected to their
-    // corresponding raw version. The rust version is never called, we don't
-    // have enough info about types to do so
-    call: () => never;
-    notify: () => never;
-    reply: () => never;
     // Stable B Tree Map Functions
     stableBTreeMapInit: (memoryId: string) => void;
     stableBTreeMapContainsKey: (

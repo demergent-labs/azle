@@ -53,7 +53,7 @@ export default Canister({
 
             return await response.json();
         } else {
-            return await call<undefined, text>(
+            return await call<undefined, string>(
                 canister3Principal,
                 'deepQuery',
                 {

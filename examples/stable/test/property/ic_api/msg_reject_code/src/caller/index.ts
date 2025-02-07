@@ -22,7 +22,10 @@ export default class {
     @update([], IDL.Bool)
     async assertTypes(): Promise<boolean> {
         type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof msgRejectCode>, number>
+            NotAnyAndExact<
+                ReturnType<typeof msgRejectCode>,
+                0 | 1 | 2 | 3 | 4 | 5 | 6
+            >
         >;
         const throwErrorRejectCode = await getThrowErrorRejectCode(
             this.rejectorPrincipal
@@ -44,7 +47,7 @@ async function getThrowErrorRejectCode(
     rejectorPrincipal: string
 ): Promise<number> {
     try {
-        await call(rejectorPrincipal, 'throwError', {
+        await call<undefined, string>(rejectorPrincipal, 'throwError', {
             returnIdlType: IDL.Text
         });
     } catch {
@@ -57,7 +60,7 @@ async function getRejectWithMessageRejectCode(
     rejectorPrincipal: string
 ): Promise<number> {
     try {
-        await call(rejectorPrincipal, 'rejectWithMessage', {
+        await call<undefined, string>(rejectorPrincipal, 'rejectWithMessage', {
             returnIdlType: IDL.Text
         });
     } catch {
@@ -69,7 +72,7 @@ async function getRejectWithMessageRejectCode(
 async function getNoErrorRejectCode(
     rejectorPrincipal: string
 ): Promise<number> {
-    await call(rejectorPrincipal, 'noError');
+    await call<undefined, void>(rejectorPrincipal, 'noError');
     return msgRejectCode();
 }
 

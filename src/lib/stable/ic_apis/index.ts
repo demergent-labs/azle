@@ -1,4 +1,4 @@
-export { call } from './call';
+export { call, CallError } from './call';
 export { candidDecode } from './candid_decode';
 export { candidEncode } from './candid_encode';
 export { canisterCycleBalance } from './canister_cycle_balance';
@@ -20,7 +20,6 @@ export { msgReject } from './msg_reject';
 export { msgRejectCode } from './msg_reject_code';
 export { msgRejectMsg } from './msg_reject_msg';
 export { msgReply } from './msg_reply';
-export { notify } from './notify';
 export { performanceCounter } from './performance_counter';
 export { setCertifiedData } from './set_certified_data';
 export { setTimer } from './set_timer';

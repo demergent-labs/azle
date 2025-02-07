@@ -8,9 +8,10 @@ export default class {
         candidArgs: string,
         cycles: bigint
     ): Promise<string> {
-        const result = await call<undefined>(canisterId, method, {
-            raw: candidEncode(candidArgs),
-            cycles
+        const result = await call<Uint8Array, Uint8Array>(canisterId, method, {
+            args: candidEncode(candidArgs),
+            cycles,
+            raw: true
         });
 
         return candidDecode(result);

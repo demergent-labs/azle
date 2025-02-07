@@ -67,11 +67,11 @@ export default Canister({
         [],
         Manual(HttpResponse),
         async () => {
-            const httpResponse = await call<undefined, Uint8Array>(
+            const httpResponse = await call<Uint8Array, Uint8Array>(
                 Principal.fromText('aaaaa-aa'),
                 'http_request',
                 {
-                    raw: candidEncode(`
+                    args: candidEncode(`
                 (
                     record {
                         url = "https://xkcd.com/642/info.0.json";
@@ -83,7 +83,8 @@ export default Canister({
                     }
                 )
             `),
-                    cycles: 50_000_000n
+                    cycles: 50_000_000n,
+                    raw: true
                 }
             );
 

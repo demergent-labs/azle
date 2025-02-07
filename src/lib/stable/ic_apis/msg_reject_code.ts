@@ -1,3 +1,5 @@
+export type RejectCode = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
 /**
  * Returns the reject code from the most recently executed inter-canister call.
  *
@@ -11,15 +13,15 @@
  *   - after a successful inter-canister await from a composite query
  *   - after an unsuccessful inter-canister await from a composite query
  */
-export function msgRejectCode(): number {
+export function msgRejectCode(): RejectCode {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
-        return 10_000; // 10_000 is an arbitrary number that is unlikely to ever be used by the IC
+        return 6;
     }
 
     return globalThis._azleIcExperimental !== undefined
-        ? Number(globalThis._azleIcExperimental.msgRejectCode())
+        ? globalThis._azleIcExperimental.msgRejectCode()
         : globalThis._azleIcStable.msgRejectCode();
 }

@@ -1,5 +1,4 @@
 import { call } from './call';
-import { candidEncode } from './candid_encode';
 import { canisterSelf } from './canister_self';
 
 /**
@@ -32,8 +31,8 @@ export async function chunk(): Promise<void> {
         return undefined;
     }
 
-    await call(canisterSelf(), '_azle_chunk', {
-        raw: candidEncode('()'),
-        cycles: 0n
+    await call<undefined, Uint8Array>(canisterSelf(), '_azle_chunk', {
+        cycles: 0n,
+        raw: true
     });
 }

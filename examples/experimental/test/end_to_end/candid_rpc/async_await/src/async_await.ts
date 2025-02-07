@@ -9,7 +9,7 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call('aaaaa-aa', 'raw_rand', {
+            return await call<undefined, Uint8Array>('aaaaa-aa', 'raw_rand', {
                 returnIdlType: IDL.Vec(IDL.Nat8)
             });
         }
@@ -32,7 +32,7 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/raw_rand`);
         } else {
-            await call('aaaaa-aa', 'raw_rand', {
+            await call<undefined, Uint8Array>('aaaaa-aa', 'raw_rand', {
                 returnIdlType: IDL.Vec(IDL.Nat8)
             });
         }
@@ -58,7 +58,7 @@ async function getRandomness(): Promise<blob> {
 
         return responseJson;
     } else {
-        return await call('aaaaa-aa', 'raw_rand', {
+        return await call<undefined, Uint8Array>('aaaaa-aa', 'raw_rand', {
             returnIdlType: IDL.Vec(IDL.Nat8)
         });
     }

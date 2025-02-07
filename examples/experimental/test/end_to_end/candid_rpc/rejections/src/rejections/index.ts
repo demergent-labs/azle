@@ -20,7 +20,7 @@ export default Canister({
                 })
             });
         } else {
-            await call<undefined, bool>(someCanisterPrincipal, 'accept', {
+            await call<undefined, boolean>(someCanisterPrincipal, 'accept', {
                 returnIdlType: bool.getIdlType()
             });
         }
@@ -59,7 +59,7 @@ export default Canister({
                     })
                 });
             } else {
-                await call<[text], empty>(someCanisterPrincipal, 'reject', {
+                await call<[text], never>(someCanisterPrincipal, 'reject', {
                     paramIdlTypes: [text.getIdlType()],
                     returnIdlType: empty.getIdlType(),
                     args: ['reject']
@@ -82,7 +82,7 @@ export default Canister({
                     })
                 });
             } else {
-                await call<undefined, empty>(someCanisterPrincipal, 'error', {
+                await call<undefined, never>(someCanisterPrincipal, 'error', {
                     returnIdlType: empty.getIdlType()
                 });
             }
@@ -104,7 +104,7 @@ export default Canister({
                     })
                 });
             } else {
-                await call<[text], empty>(someCanisterPrincipal, 'reject', {
+                await call<[text], never>(someCanisterPrincipal, 'reject', {
                     paramIdlTypes: [text.getIdlType()],
                     returnIdlType: empty.getIdlType(),
                     args: [message]

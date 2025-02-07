@@ -51,9 +51,13 @@ export default Canister({
 
             return responseJson;
         } else {
-            return await call(getSomeCanisterPrincipal(), 'update1', {
-                returnIdlType: IDL.Text
-            });
+            return await call<undefined, string>(
+                getSomeCanisterPrincipal(),
+                'update1',
+                {
+                    returnIdlType: IDL.Text
+                }
+            );
         }
     })
 });
