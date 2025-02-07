@@ -96,11 +96,11 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('calls msgReject on the ic object', async () => {
-            const rejectionMessage = 'Rejected!';
+            const rejectMessage = 'Rejected!';
 
             await expect(
-                icApiCanister.msgReject(rejectionMessage)
-            ).rejects.toThrow(rejectionMessage);
+                icApiCanister.msgReject(rejectMessage)
+            ).rejects.toThrow(rejectMessage);
         });
 
         it('calls setDataCertificate on the ic object', async () => {

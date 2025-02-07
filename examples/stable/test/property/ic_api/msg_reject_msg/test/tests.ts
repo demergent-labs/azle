@@ -11,7 +11,7 @@ import { _SERVICE as Actor } from './dfx_generated/caller/caller.did';
 
 export function getTests(): Test {
     return () => {
-        it('should echo the rejection message in echoThroughReject', async () => {
+        it('should echo the reject message in echoThroughReject', async () => {
             const callerCanister = await getCanisterActor<Actor>('caller');
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (message) => {

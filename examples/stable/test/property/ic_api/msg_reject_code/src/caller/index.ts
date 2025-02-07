@@ -36,9 +36,9 @@ export default class {
             this.rejectorPrincipal
         );
         return (
-            isRejectionCode(throwErrorRejectCode) &&
-            isRejectionCode(rejectWithMessageRejectCode) &&
-            isRejectionCode(noErrorRejectCode)
+            isRejectCode(throwErrorRejectCode) &&
+            isRejectCode(rejectWithMessageRejectCode) &&
+            isRejectCode(noErrorRejectCode)
         );
     }
 }
@@ -77,11 +77,11 @@ async function getNoErrorRejectCode(
 }
 
 /**
- * Type guard that checks if a value is a valid RejectionCode.
+ * Type guard that checks if a value is a valid RejectCode.
  * @param code The value to check
- * @returns True if the value is a RejectionCode, false otherwise
+ * @returns True if the value is a RejectCode, false otherwise
  */
-function isRejectionCode(code: number): boolean {
+function isRejectCode(code: number): boolean {
     return code >= 0 && code <= 6;
 }
 

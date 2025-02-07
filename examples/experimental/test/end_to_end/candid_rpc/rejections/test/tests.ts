@@ -7,38 +7,38 @@ import { _SERVICE } from './dfx_generated/rejections/rejections.did';
 export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('reject code NO_ERROR', async () => {
-            const result = await rejectionsCanister.getRejectionCodeNoError();
+            const result = await rejectionsCanister.getRejectCodeNoError();
 
             expect(result).toStrictEqual(0);
         });
 
         it('reject code DESTINATION_INVALID', async () => {
             const result =
-                await rejectionsCanister.getRejectionCodeDestinationInvalid();
+                await rejectionsCanister.getRejectCodeDestinationInvalid();
 
             expect(result).toStrictEqual(3);
         });
 
         it('reject code CANISTER_REJECT', async () => {
             const result =
-                await rejectionsCanister.getRejectionCodeCanisterReject();
+                await rejectionsCanister.getRejectCodeCanisterReject();
 
             expect(result).toStrictEqual(4);
         });
 
         it('reject code CANISTER_ERROR', async () => {
             const result =
-                await rejectionsCanister.getRejectionCodeCanisterError();
+                await rejectionsCanister.getRejectCodeCanisterError();
 
             expect(result).toStrictEqual(5);
         });
 
         it('reject message', async () => {
-            const rejectionMessage = 'custom rejection message';
+            const rejectMessage = 'custom reject message';
             const result =
-                await rejectionsCanister.getRejectionMessage(rejectionMessage);
+                await rejectionsCanister.getRejectMessage(rejectMessage);
 
-            expect(result).toBe(rejectionMessage);
+            expect(result).toBe(rejectMessage);
         });
     };
 }
