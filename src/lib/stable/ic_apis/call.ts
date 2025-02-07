@@ -120,7 +120,7 @@ function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
 ): Uint8Array {
     if (callOptions?.raw === true) {
         if (callOptions?.args === undefined) {
-            return idlEncode([], []);
+            return new Uint8Array([68, 73, 68, 76, 0, 0]); // pre-encoded Candid empty params
         }
 
         if (callOptions.args instanceof Uint8Array === false) {
@@ -135,6 +135,13 @@ function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
             throw new Error(
                 `args must be an array of JavaScript values. If you intended to make a raw call, then consider setting the raw property of the call options to true`
             );
+        }
+
+        if (
+            callOptions?.paramIdlTypes === undefined &&
+            callOptions?.args === undefined
+        ) {
+            return new Uint8Array([68, 73, 68, 76, 0, 0]); // pre-encoded Candid empty params
         }
 
         return idlEncode(

@@ -1,7 +1,8 @@
-import { acceptMessage, msgMethodName } from 'azle';
+import { msgMethodName } from 'azle';
 import {
     bool,
     Canister,
+    ic,
     inspectMessage,
     nat64,
     Record,
@@ -14,7 +15,7 @@ export default Canister({
         console.info('inspectMessage called');
 
         if (msgMethodName() === 'accessible') {
-            acceptMessage();
+            ic.acceptMessage();
             return;
         }
 

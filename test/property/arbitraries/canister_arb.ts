@@ -179,7 +179,7 @@ function generateSourceCode<
     `;
 
     return /*TS*/ `
-        ${inspectMessageImportHack === true ? `import { acceptMessage, msgCaller, msgMethodName } from 'azle';` : ''}
+        ${inspectMessageImportHack === true ? `import { msgCaller, msgMethodName } from 'azle'; import { ic } from 'azle/experimental';` : ''}
         import { ${imports} } from '${importLocation}';
         // @ts-ignore
         import deepEqual from 'deep-is';
