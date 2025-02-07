@@ -10,7 +10,7 @@ import {
 } from 'azle/experimental';
 
 export default Canister({
-    getRejectionCodeNoError: update([], nat32, async () => {
+    getRejectCodeNoError: update([], nat32, async () => {
         const someCanisterPrincipal = getSomeCanisterPrincipal();
 
         if (process.env.AZLE_TEST_FETCH === 'true') {
@@ -27,7 +27,7 @@ export default Canister({
 
         return msgRejectCode();
     }),
-    getRejectionCodeDestinationInvalid: update([], nat32, async () => {
+    getRejectCodeDestinationInvalid: update([], nat32, async () => {
         try {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://rkp4c-7iaaa-aaaaa-aaaca-cai/method`, {
@@ -47,7 +47,7 @@ export default Canister({
 
         return msgRejectCode();
     }),
-    getRejectionCodeCanisterReject: update([], nat32, async () => {
+    getRejectCodeCanisterReject: update([], nat32, async () => {
         const someCanisterPrincipal = getSomeCanisterPrincipal();
 
         try {
@@ -71,7 +71,7 @@ export default Canister({
 
         return msgRejectCode();
     }),
-    getRejectionCodeCanisterError: update([], nat32, async () => {
+    getRejectCodeCanisterError: update([], nat32, async () => {
         const someCanisterPrincipal = getSomeCanisterPrincipal();
 
         try {
@@ -92,7 +92,7 @@ export default Canister({
 
         return msgRejectCode();
     }),
-    getRejectionMessage: update([text], text, async (message: text) => {
+    getRejectMessage: update([text], text, async (message: text) => {
         const someCanisterPrincipal = getSomeCanisterPrincipal();
 
         try {

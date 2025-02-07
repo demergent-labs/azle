@@ -2,7 +2,7 @@ import { call, IDL, msgRejectCode, msgRejectMsg, update } from 'azle';
 
 export default class {
     @update([], IDL.Nat32)
-    async getRejectionCodeNoError(): Promise<number> {
+    async getRejectCodeNoError(): Promise<number> {
         await call<undefined, boolean>(getSomeCanisterPrincipal(), 'accept', {
             returnIdlType: IDL.Bool
         });
@@ -11,7 +11,7 @@ export default class {
     }
 
     @update([], IDL.Nat32)
-    async getRejectionCodeDestinationInvalid(): Promise<number> {
+    async getRejectCodeDestinationInvalid(): Promise<number> {
         try {
             await call<undefined, void>(
                 'rkp4c-7iaaa-aaaaa-aaaca-cai',
@@ -25,7 +25,7 @@ export default class {
     }
 
     @update([], IDL.Nat32)
-    async getRejectionCodeCanisterReject(): Promise<number> {
+    async getRejectCodeCanisterReject(): Promise<number> {
         try {
             await call<[string], void>(getSomeCanisterPrincipal(), 'reject', {
                 paramIdlTypes: [IDL.Text],
@@ -39,7 +39,7 @@ export default class {
     }
 
     @update([], IDL.Nat32)
-    async getRejectionCodeCanisterError(): Promise<number> {
+    async getRejectCodeCanisterError(): Promise<number> {
         try {
             await call<undefined, void>(getSomeCanisterPrincipal(), 'error');
         } catch {
@@ -50,7 +50,7 @@ export default class {
     }
 
     @update([IDL.Text], IDL.Text)
-    async getRejectionMessage(message: string): Promise<string> {
+    async getRejectMessage(message: string): Promise<string> {
         try {
             await call<[string], void>(getSomeCanisterPrincipal(), 'reject', {
                 paramIdlTypes: [IDL.Text],

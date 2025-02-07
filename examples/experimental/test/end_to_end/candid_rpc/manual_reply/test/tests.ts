@@ -8,13 +8,13 @@ import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
 export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('manualUpdate when calling msgReject', async () => {
-            const rejectionMessage = 'reject';
+            const rejectMessage = 'reject';
             const canisterId = getCanisterId('manual_reply');
             const expectedErrorMessage = new RegExp(
-                `Call failed:\\s*Canister: ${canisterId}\\s*Method: manualUpdate \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0406"\\s*"Reject code": "4"\\s*"Reject message": "${rejectionMessage}`
+                `Call failed:\\s*Canister: ${canisterId}\\s*Method: manualUpdate \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0406"\\s*"Reject code": "4"\\s*"Reject message": "${rejectMessage}`
             );
             await expect(
-                manualReplyCanister.manualUpdate(rejectionMessage)
+                manualReplyCanister.manualUpdate(rejectMessage)
             ).rejects.toThrow(expectedErrorMessage);
         });
 
@@ -104,13 +104,13 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('manualQuery when calling msgReject', async () => {
-            const rejectionMessage = 'reject';
+            const rejectMessage = 'reject';
             await expect(
-                manualReplyCanister.manualQuery(rejectionMessage)
+                manualReplyCanister.manualQuery(rejectMessage)
             ).rejects.toMatchObject({
                 props: {
                     Code: 'CanisterReject',
-                    Message: rejectionMessage
+                    Message: rejectMessage
                 }
             });
         });
