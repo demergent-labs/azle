@@ -151,6 +151,23 @@ jobs:
             run-experimental: ${{ matrix.test_group.run-experimental || false }}
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
 
+    top-level-checks:
+        name: Top level checks
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+
+            - run: npm run typecheck
+            - run: npm run lint
+
     check-test-success:
         name: Check Azle tests succeeded
         needs: run-tests
