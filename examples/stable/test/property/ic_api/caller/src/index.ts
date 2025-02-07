@@ -1,10 +1,8 @@
 import {
-    acceptMessage,
     IDL,
     init,
     inspectMessage,
     msgCaller,
-    msgMethodName,
     postUpgrade,
     preUpgrade,
     Principal,
@@ -66,14 +64,16 @@ export default class {
     }
 
     @inspectMessage
-    inspectMessage(): void {
-        if (msgMethodName() === 'getInspectMessageCaller') {
+    inspectMessage(methodName: string): boolean {
+        if (methodName === 'getInspectMessageCaller') {
             if (msgCaller().toText() === this.inspectMessageCaller?.toText()) {
-                acceptMessage();
+                return true;
             }
         } else {
-            acceptMessage();
+            return true;
         }
+
+        return false;
     }
 
     @update

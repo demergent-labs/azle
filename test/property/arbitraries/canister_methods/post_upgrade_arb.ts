@@ -100,6 +100,7 @@ export function PostUpgradeMethodArb<
                     returnType,
                     generator.generateBody,
                     methodImplementationLocation,
+                    functionName,
                     methodName,
                     api
                 );

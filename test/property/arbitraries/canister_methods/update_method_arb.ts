@@ -16,11 +16,19 @@ import {
     TestsGenerator
 } from '.';
 
-export type UpdateMethod = {
+export type UpdateMethod<
+    ParamAgentArgumentValue extends CorrespondingJSType,
+    ParamAgentResponseValue
+> = {
     imports: Set<string>;
     globalDeclarations: string[];
     sourceCode: string;
     tests: Test[][];
+    paramTypes: CandidValueAndMeta<
+        ParamAgentArgumentValue,
+        ParamAgentResponseValue
+    >[];
+    methodName: string;
 };
 
 export function UpdateMethodArb<
@@ -53,7 +61,9 @@ export function UpdateMethodArb<
             ReturnTypeAgentResponseValue
         >
     >
-): fc.Arbitrary<UpdateMethod> {
+): fc.Arbitrary<
+    UpdateMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
+> {
     const api = context.api;
     const constraints = context.constraints;
     return fc
@@ -74,7 +84,10 @@ export function UpdateMethodArb<
                 returnType,
                 defaultMethodImplementationLocation,
                 methodName
-            ]): UpdateMethod => {
+            ]): UpdateMethod<
+                ParamAgentArgumentValue,
+                ParamAgentResponseValue
+            > => {
                 const methodImplementationLocation =
                     api === 'class'
                         ? 'INLINE'
@@ -100,6 +113,7 @@ export function UpdateMethodArb<
                     returnType,
                     generator.generateBody,
                     methodImplementationLocation,
+                    functionName,
                     methodName,
                     api
                 );
@@ -136,7 +150,9 @@ export function UpdateMethodArb<
                     imports,
                     globalDeclarations,
                     sourceCode,
-                    tests
+                    tests,
+                    paramTypes,
+                    methodName: functionName
                 };
             }
         );

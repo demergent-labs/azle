@@ -9,7 +9,7 @@ import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
  *
  * The `heartbeat` entry point will be called periodically by the IC (~every second or so).
  *
- * Only one `heartbeat` method is allowed per canister.
+ * Only one `@heartbeat` method is allowed per canister.
  *
  * - **State**: read-write
  *
@@ -18,6 +18,8 @@ import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
  * - **Async**: yes
  *
  * - **Instruction limit**: [40_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits)
+ *
+ * See [more documentation](https://internetcomputer.org/docs/current/references/ic-interface-spec#heartbeat).
  */
 export function heartbeat<This, Args extends unknown[], Return>(
     originalMethod: OriginalMethod<This, Args, Return>,

@@ -1,6 +1,8 @@
 import { IDL, JsonValue } from '@dfinity/candid';
 
+import { ExportedCanisterClass } from './canister_methods';
 import { msgArgData } from './ic_apis/msg_arg_data';
+import { msgMethodName } from './ic_apis/msg_method_name';
 import { msgReply } from './ic_apis/msg_reply';
 
 /**
@@ -35,10 +37,21 @@ export async function executeAndReplyWithCandidSerde(
     callback: (...args: any) => any,
     paramIdlTypes: IDL.Type[],
     returnIdlType: IDL.Type | undefined,
-    manual: boolean
+    manual: boolean,
+    canisterMethodIdlParamTypes: ExportedCanisterClass['_azleCanisterMethodIdlParamTypes']
 ): Promise<void> {
-    const decodedArgs = decodeArgs(manual, mode, paramIdlTypes);
-    const unencodedResult = await getUnencodedResult(decodedArgs, callback);
+    const decodedArgs = decodeArgs(
+        mode,
+        manual,
+        paramIdlTypes,
+        canisterMethodIdlParamTypes
+    );
+    const unencodedResult = await getUnencodedResult(
+        mode,
+        manual,
+        decodedArgs,
+        callback
+    );
     encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }
 
@@ -52,9 +65,10 @@ export async function executeAndReplyWithCandidSerde(
  * @returns Decoded argument values as a JSON-compatible array
  */
 function decodeArgs(
-    manual: boolean,
     mode: CanisterMethodMode,
-    paramIdlTypes: IDL.Type[]
+    manual: boolean,
+    paramIdlTypes: IDL.Type[],
+    canisterMethodIdlParamTypes: ExportedCanisterClass['_azleCanisterMethodIdlParamTypes']
 ): JsonValue[] {
     if (manual === true) {
         return [];
@@ -67,9 +81,24 @@ function decodeArgs(
         mode === 'update'
     ) {
         return idlDecode(paramIdlTypes, msgArgData());
-    } else {
-        return [];
     }
+
+    if (mode === 'inspectMessage') {
+        const methodName = msgMethodName();
+
+        const paramIdlTypes =
+            canisterMethodIdlParamTypes?.[methodName]?.argTypes;
+
+        if (paramIdlTypes === undefined) {
+            throw new Error(
+                `@inspectMessage could not find the IDL types for method ${methodName}`
+            );
+        }
+
+        return idlDecode(paramIdlTypes, msgArgData());
+    }
+
+    return [];
 }
 
 /**
@@ -80,10 +109,26 @@ function decodeArgs(
  * @returns The result of the callback execution
  */
 async function getUnencodedResult(
+    mode: CanisterMethodMode,
+    manual: boolean,
     args: JsonValue[],
     callback: (...args: any) => any
 ): Promise<any> {
-    return await callback(...args);
+    if (mode === 'inspectMessage') {
+        const result = await callback(
+            ...(manual === true ? [] : [msgMethodName(), ...args])
+        );
+
+        if (result === true) {
+            if (globalThis._azleIcStable !== undefined) {
+                globalThis._azleIcStable.acceptMessage();
+            } else {
+                globalThis._azleIcExperimental.acceptMessage();
+            }
+        }
+    } else {
+        return await callback(...args);
+    }
 }
 
 /**

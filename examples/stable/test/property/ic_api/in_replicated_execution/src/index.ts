@@ -1,5 +1,4 @@
 import {
-    acceptMessage,
     call,
     canisterSelf,
     heartbeat,
@@ -7,7 +6,6 @@ import {
     init,
     inReplicatedExecution,
     inspectMessage,
-    msgMethodName,
     postUpgrade,
     preUpgrade,
     query,
@@ -104,13 +102,14 @@ export default class {
     }
 
     @inspectMessage
-    inspectMessage(): void {
-        if (msgMethodName() === 'getInspectMessageIsInReplicatedExecution') {
+    inspectMessage(methodName: string): boolean {
+        if (methodName === 'getInspectMessageIsInReplicatedExecution') {
             if (inReplicatedExecution() === true) {
                 // TODO for https://github.com/demergent-labs/azle/issues/2539
-                acceptMessage();
+                return true;
             }
-            return;
+
+            return false;
         }
 
         const acceptableMethods = [
@@ -118,9 +117,11 @@ export default class {
             'getUpdateIsInReplicatedExecution'
         ];
 
-        if (acceptableMethods.includes(msgMethodName())) {
-            acceptMessage();
+        if (acceptableMethods.includes(methodName)) {
+            return true;
         }
+
+        return false;
     }
 
     @update([], IDL.Bool)

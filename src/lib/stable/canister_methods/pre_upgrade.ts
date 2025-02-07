@@ -7,7 +7,7 @@ import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
  *
  * The `preUpgrade` method will be called just before the canister is upgraded.
  *
- * Only one `preUpgrade` method is allowed per canister.
+ * Only one `@preUpgrade` method is allowed per canister.
  *
  * - **State**: read-write
  *
@@ -15,7 +15,9 @@ import { Context, decoratorArgumentsHandler, OriginalMethod } from '.';
  *
  * - **Async**: no
  *
- * - **Instruction limit**: [300_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits) (shared with `postUpgrade`)
+ * - **Instruction limit**: [300_000_000_000](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits) (shared with `@postUpgrade`)
+ *
+ * See [more documentation](https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-upgrades).
  */
 export function preUpgrade<This, Args extends unknown[], Return>(
     originalMethod: OriginalMethod<This, Args, Return>,
