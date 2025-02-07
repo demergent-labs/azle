@@ -6,6 +6,21 @@ export default class {
         console.info(`inspectMessage called with methodName:`, methodName);
         console.info(`inspectMessage called with args:`, jsonStringify(args));
 
+        if (methodName === 'accessible' && args[0] !== 'testing accessible') {
+            throw new Error(`accessible args are incorrect`);
+        }
+
+        if (methodName === 'inaccessible' && args[0] !== 12_345n) {
+            throw new Error(`inaccessible args are incorrect`);
+        }
+
+        if (
+            methodName === 'alsoInaccessible' &&
+            args[0].prop1 !== 'testing alsoInaccessible'
+        ) {
+            throw new Error(`alsoInaccessible args are incorrect`);
+        }
+
         if (
             methodName === 'accessible' ||
             methodName === '_azle_get_benchmarks'
@@ -17,7 +32,7 @@ export default class {
             return false;
         }
 
-        throw `Method "${methodName}" not allowed`;
+        throw new Error(`Method "${methodName}" not allowed`);
     }
 
     @update([IDL.Text], IDL.Bool)

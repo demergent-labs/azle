@@ -25,7 +25,7 @@ export function getTests(
                 inspectMessageCanister.alsoInaccessible({
                     prop1: 'testing alsoInaccessible'
                 })
-            ).rejects.toThrow(/IC0503/);
+            ).rejects.toThrow(/Method \\"alsoInaccessible\\" not allowed/);
         });
     };
 }

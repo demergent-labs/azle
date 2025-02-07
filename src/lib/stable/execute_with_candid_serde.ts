@@ -1,7 +1,6 @@
 import { IDL, JsonValue } from '@dfinity/candid';
 
 import { ExportedCanisterClass } from './canister_methods';
-import { acceptMessage } from './ic_apis/accept_message';
 import { msgArgData } from './ic_apis/msg_arg_data';
 import { msgMethodName } from './ic_apis/msg_method_name';
 import { msgReply } from './ic_apis/msg_reply';
@@ -121,7 +120,11 @@ async function getUnencodedResult(
         );
 
         if (result === true) {
-            acceptMessage();
+            if (globalThis._azleIcStable !== undefined) {
+                globalThis._azleIcStable.acceptMessage();
+            } else {
+                globalThis._azleIcExperimental.acceptMessage();
+            }
         }
     } else {
         return await callback(...args);
