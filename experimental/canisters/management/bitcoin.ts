@@ -13,6 +13,10 @@ import {
     Vec
 } from '../../';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export const BitcoinAddress = text;
 export type BitcoinAddress = text;
 
@@ -80,6 +84,10 @@ export const GetUtxosResult = Record({
     tip_height: nat32,
     utxos: Vec(Utxo)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type GetUtxosResult = typeof GetUtxosResult.tsType;
 
 export const SendTransactionArgs = Record({
