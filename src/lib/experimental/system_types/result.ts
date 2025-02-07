@@ -38,11 +38,19 @@ export function Result<Ok extends CandidType, Err extends CandidType>(
     return new AzleResult<Ok, Err>(ok, err);
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Result<Ok, Err> = RequireExactlyOne<{
     Ok: Ok;
     Err: Err;
 }>;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 // Using a namespace is the only way we can see to get Result exported as:
 // - a type
 // - a function

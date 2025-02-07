@@ -9,6 +9,10 @@ import { Parent, toIdlType } from '../../to_idl_type';
 import { TypeMapping } from '../../type_mapping';
 import { RequireExactlyOne } from './variant';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Opt<T> = RequireExactlyOne<{ Some: T; None: null }>;
 
 /**

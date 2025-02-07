@@ -22,12 +22,24 @@ import {
     TransferFromResult
 } from './icrc_2';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const SupportedStandard = Record({
     name: text,
     url: text
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type SupportedStandard = typeof SupportedStandard.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const ICRC = Canister({
     icrc1_metadata: query([], Vec(Tuple(text, Value))),
     icrc1_name: query([], text),

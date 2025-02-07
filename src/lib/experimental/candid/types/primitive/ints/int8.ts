@@ -33,4 +33,8 @@ export class AzleInt8 {
  * Please use alternative functionality exported directly from `azle`.
  */
 export const int8 = AzleInt8;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type int8 = number & { _azleKind?: 'AzleInt8' };

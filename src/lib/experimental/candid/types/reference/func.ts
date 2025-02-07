@@ -7,6 +7,10 @@ import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 import { Principal } from './principal';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Func = [Principal, string];
 type Mode = 'query' | 'update' | 'oneway';
 

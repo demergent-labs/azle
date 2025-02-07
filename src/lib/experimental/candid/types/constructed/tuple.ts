@@ -51,4 +51,8 @@ export class AzleTuple<T extends any[]> {
 export function Tuple<T extends CandidType[]>(...types: T): AzleTuple<T> {
     return new AzleTuple<T>(types);
 }
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Tuple<T> = T;

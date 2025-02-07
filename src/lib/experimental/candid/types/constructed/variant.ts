@@ -20,6 +20,10 @@ export type Variant<
     [K in keyof T]: TypeMapping<T[K]>;
 }>;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Variant<
     T extends {

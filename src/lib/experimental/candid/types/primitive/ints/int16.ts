@@ -33,4 +33,8 @@ export class AzleInt16 {
  * Please use alternative functionality exported directly from `azle`.
  */
 export const int16 = AzleInt16;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type int16 = number & { _azleKind?: 'AzleInt16' };

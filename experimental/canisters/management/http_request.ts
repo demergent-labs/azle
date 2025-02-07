@@ -13,19 +13,39 @@ import {
     Vec
 } from '../../';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const HttpHeader = Record({
     name: text,
     value: text
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type HttpHeader = typeof HttpHeader.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const HttpMethod = Variant({
     get: Null,
     head: Null,
     post: Null
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type HttpMethod = typeof HttpMethod.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const HttpResponse = Record({
     /**
      * The response status (e.g., 200, 404)
@@ -43,21 +63,45 @@ export const HttpResponse = Record({
      */
     body: blob
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type HttpResponse = typeof HttpResponse.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const HttpTransformArgs = Record({
     response: HttpResponse,
     context: blob
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type HttpTransformArgs = typeof HttpTransformArgs.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const HttpTransformFunc = Func(
     [HttpTransformArgs],
     HttpResponse,
     'query'
 );
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type HttpTransformFunc = typeof HttpTransformFunc.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const HttpTransform = Record({
     /**
      * Transforms raw responses to sanitized responses. Must be an exported
@@ -70,8 +114,16 @@ export const HttpTransform = Record({
      */
     context: blob
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type HttpTransform = typeof HttpTransform.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const HttpRequestArgs = Record({
     /**
      * The requested URL. The URL must be valid according to
@@ -108,4 +160,8 @@ export const HttpRequestArgs = Record({
      */
     transform: Opt(HttpTransform)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type HttpRequestArgs = typeof HttpRequestArgs.tsType;

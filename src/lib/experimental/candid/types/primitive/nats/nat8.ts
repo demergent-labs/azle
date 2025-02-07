@@ -33,4 +33,8 @@ export class AzleNat8 {
  * Please use alternative functionality exported directly from `azle`.
  */
 export const nat8 = AzleNat8;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type nat8 = number & { _azleKind?: 'AzleNat8' };

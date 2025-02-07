@@ -7,6 +7,10 @@ import { sha224 } from 'js-sha256';
 import { blob } from '../../../../src/lib/experimental/candid/types/constructed/blob';
 import { Address } from '../index';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // TODO we need to review these heavily
 export function hexAddressFromPrincipal(
     principal: Principal,
@@ -15,6 +19,10 @@ export function hexAddressFromPrincipal(
     return addressFromPrincipal(principal, subaccount);
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export function binaryAddressFromPrincipal(
     principal: Principal,
     subaccount: number
@@ -25,6 +33,10 @@ export function binaryAddressFromPrincipal(
     );
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export function binaryAddressFromAddress(address: Address): blob {
     return Uint8Array.from(
         address.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ?? []
