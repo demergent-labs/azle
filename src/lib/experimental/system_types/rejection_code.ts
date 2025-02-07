@@ -4,7 +4,8 @@ import { Variant } from '../candid/types/constructed/variant';
 import { Null } from '../candid/types/primitive/null';
 
 /**
- * Indicates an error was encountered during a canister method.
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
  */
 export const RejectionCode = Variant({
     NoError: Null,
@@ -15,4 +16,8 @@ export const RejectionCode = Variant({
     CanisterError: Null,
     Unknown: Null
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type RejectionCode = typeof RejectionCode.tsType;

@@ -16,6 +16,10 @@ import { Principal } from '../../../src/lib/experimental/candid/types/reference/
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { managementCanister } from '.'; // Used for links in comments
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Argument type of {@link managementCanister.canister_info}. */
 export const CanisterInfoArgs = Record({
     /** Principle of the canister. */
@@ -26,15 +30,31 @@ export const CanisterInfoArgs = Record({
      */
     num_requested_changes: Opt(nat64)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type CanisterInfoArgs = typeof CanisterInfoArgs.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Details about a canister creation. */
 export const CreationRecord = Record({
     /** Initial set of canister controllers. */
     controllers: Vec(Principal)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type CreationRecord = typeof CreationRecord.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** The mode with which a canister is installed. */
 export const CanisterInstallMode = Variant({
     /** A fresh install of a new canister. */
@@ -44,8 +64,16 @@ export const CanisterInstallMode = Variant({
     /** Upgrade an existing canister. */
     upgrade: Null
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type CanisterInstallMode = typeof CanisterInstallMode.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Details about a canister code deployment. */
 export const CodeDeploymentRecord = Record({
     /** See {@link CanisterInstallMode}. */
@@ -53,15 +81,31 @@ export const CodeDeploymentRecord = Record({
     /** A SHA256 hash of the new module installed on the canister. */
     module_hash: Vec(nat8)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type CodeDeploymentRecord = typeof CodeDeploymentRecord.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Details about updating canister controllers. */
 export const ControllersChangeRecord = Record({
     /** The full new set of canister controllers. */
     controllers: Vec(Principal)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type ControllersChangeRecord = typeof ControllersChangeRecord.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Provides details on the respective canister change. */
 export const CanisterChangeDetails = Variant({
     /** See {@link CreationRecord}. */
@@ -73,15 +117,31 @@ export const CanisterChangeDetails = Variant({
     /** See {@link ControllersChangeRecord}. */
     controllers_change: ControllersChangeRecord
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type CanisterChangeDetails = typeof CanisterChangeDetails.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Details about a canister change initiated by a user. */
 export const FromUserRecord = Record({
     /** Principle of the user. */
     user_id: Principal
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type FromUserRecord = typeof FromUserRecord.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /**
  * Details about a canister change initiated by a canister (called *originator*).
  */
@@ -96,8 +156,16 @@ export const FromCanisterRecord = Record({
      */
     canister_version: Opt(nat64)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type FromCanisterRecord = typeof FromCanisterRecord.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Provides details on who initiated a canister change. */
 export const CanisterChangeOrigin = Variant({
     /** See {@link FromUserRecord}. */
@@ -105,8 +173,16 @@ export const CanisterChangeOrigin = Variant({
     /** See {@link FromCanisterRecord}. */
     from_canister: FromCanisterRecord
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type CanisterChangeOrigin = typeof CanisterChangeOrigin.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Represents a canister change as stored in the canister history. */
 export const CanisterChange = Record({
     /**
@@ -121,8 +197,16 @@ export const CanisterChange = Record({
     /** The change’s details. */
     details: CanisterChangeDetails
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type CanisterChange = typeof CanisterChange.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 /** Return type of {@link managementCanister.canister_info}. */
 export const CanisterInfoResult = Record({
     /**
@@ -145,4 +229,8 @@ export const CanisterInfoResult = Record({
     /** Controllers of the canister. */
     controllers: Vec(Principal)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type CanisterInfoResult = typeof CanisterInfoResult.tsType;

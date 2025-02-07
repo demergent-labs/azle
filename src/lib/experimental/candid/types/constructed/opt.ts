@@ -10,28 +10,37 @@ import { TypeMapping } from '../../type_mapping';
 import { RequireExactlyOne } from './variant';
 
 /**
- * Represents an optional value: every {@link Opt} is either `Some` and contains
- * a value, or `None` and does not.
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
  */
 export type Opt<T> = RequireExactlyOne<{ Some: T; None: null }>;
 
 /**
- * Wraps the provided value in a `Some` {@link Opt}
- * @param value - the value to be wrapped
- * @returns a `Some` {@link Opt} containing the provided value
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
  */
 export function Some<T>(value: T): Opt<T> {
     return { Some: value };
 }
 
-/** An {@link Opt} representing the absence of a value */
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export const None = { None: null };
 
-// TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function Opt<T extends CandidType>(t: T): AzleOpt<T> {
     return new AzleOpt<T>(t);
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class AzleOpt<T> {
     constructor(t: any) {
         this.innerType = t;

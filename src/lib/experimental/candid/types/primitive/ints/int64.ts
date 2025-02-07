@@ -5,6 +5,10 @@ import { IDL } from '@dfinity/candid';
 import { decode } from '../../../serde/decode';
 import { encode } from '../../../serde/encode';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class AzleInt64 {
     _azleKind = 'AzleInt64' as const;
     static _azleKind = 'AzleInt64' as const;
@@ -23,5 +27,14 @@ export class AzleInt64 {
         return IDL.Int64;
     }
 }
+
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export const int64 = AzleInt64;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type int64 = bigint & { _azleKind?: 'AzleInt64' };

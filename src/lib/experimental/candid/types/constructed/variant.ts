@@ -8,6 +8,10 @@ import { encode } from '../../serde/encode';
 import { TypeMapping } from '../../type_mapping';
 import { CandidTypeMap, toIdlTypeMap } from './to_idl_map';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Variant<
     T extends {
         [K in keyof T]: any;
@@ -16,7 +20,10 @@ export type Variant<
     [K in keyof T]: TypeMapping<T[K]>;
 }>;
 
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Variant<
     T extends {
@@ -40,6 +47,10 @@ export function Variant<
     };
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type RequireExactlyOne<
     ObjectType,
     KeysType extends keyof ObjectType = keyof ObjectType

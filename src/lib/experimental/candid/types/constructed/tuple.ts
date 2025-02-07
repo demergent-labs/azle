@@ -8,6 +8,10 @@ import { encode } from '../../serde/encode';
 import { Parent, toIdlType } from '../../to_idl_type';
 import { TypeMapping } from '../../type_mapping';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class AzleTuple<T extends any[]> {
     constructor(t: CandidType[]) {
         this.innerTypes = t;
@@ -40,7 +44,15 @@ export class AzleTuple<T extends any[]> {
     }
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function Tuple<T extends CandidType[]>(...types: T): AzleTuple<T> {
     return new AzleTuple<T>(types);
 }
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Tuple<T> = T;

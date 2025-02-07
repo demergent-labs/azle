@@ -28,6 +28,10 @@ import { Principal } from './types/reference/principal';
 // TODO I believe we have some unnecessary cases and constructs in here now
 // TODO we probably don't need AzleTuple or AzleOpt
 // TODO remove and run tests
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T
     : T extends () => any

@@ -5,6 +5,10 @@ import { v4 } from 'uuid';
 
 import { CandidType, Parent } from './index';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type _AzleRecursiveFunction = {
     (...args: any[]): CandidType;
     azleName?: string;
@@ -12,6 +16,10 @@ export type _AzleRecursiveFunction = {
     getIdlType?: (parents: Parent[]) => IDL.Type<any>;
 };
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function Recursive(candidTypeCallback: any): any {
     const name = v4();
 

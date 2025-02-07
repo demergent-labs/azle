@@ -28,38 +28,90 @@ import {
 } from '../../';
 import * as icrc from '../icrc';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // Amount of tokens, measured in 10^-8 of a token.
 export const Tokens = Record({
     e8s: nat64
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Tokens = typeof Tokens.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // Number of nanoseconds from the UNIX epoch in UTC timezone.
 export const TimeStamp = Record({
     timestamp_nanos: nat64
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type TimeStamp = typeof TimeStamp.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // AccountIdentifier is a 32-byte array.
 // The first 4 bytes is big-endian encoding of a CRC32 checksum of the last 28 bytes.
 export const AccountIdentifier = blob;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type AccountIdentifier = blob;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // Subaccount is an arbitrary 32-byte byte array.
 // Ledger uses subaccounts to compute the source address, which enables one
 // principal to control multiple ledger accounts.
 export const SubAccount = blob;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type SubAccount = blob;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // Sequence number of a block produced by the ledger.
 export const BlockIndex = nat64;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type BlockIndex = nat64;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // An arbitrary number associated with a transaction.
 // The caller can set it in a `transfer` call as a correlation identifier.
 export const Memo = nat64;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Memo = nat64;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // Arguments for the `transfer` call.
 export const TransferArgs = Record({
     // Transaction memo.
@@ -81,28 +133,68 @@ export const TransferArgs = Record({
     // If null, the ledger uses current IC time as the timestamp.
     created_at_time: Opt(TimeStamp)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type TransferArgs = typeof TransferArgs.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const BadFee = Record({
     expected_fee: Tokens
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type BadFee = typeof BadFee.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const InsufficientFunds = Record({
     balance: Tokens
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type InsufficientFunds = typeof InsufficientFunds.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const TxTooOld = Record({
     allowed_window_nanos: nat64
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type TxTooOld = typeof TxTooOld.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const TxDuplicate = Record({
     duplicate_of: BlockIndex
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type TxDuplicate = typeof TxDuplicate.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const TransferError = Variant({
     // The fee that the caller specified in the transfer request was not the one that ledger expects.
     // The caller can change the transfer fee to the `expected_fee` and retry the request.
@@ -120,78 +212,174 @@ export const TransferError = Variant({
     // `duplicate_of` field is equal to the index of the block containing the original transaction.
     TxDuplicate: TxDuplicate
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type TransferError = typeof TransferError.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const TransferResult = Variant({
     Ok: nat64,
     Err: TransferError
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type TransferResult = typeof TransferResult.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // Arguments for the `account_balance` call.
 export const AccountBalanceArgs = Record({
     account: AccountIdentifier
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type AccountBalanceArgs = typeof AccountBalanceArgs.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const TransferFeeArg = Record({});
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type TransferFeeArg = typeof TransferFeeArg.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const TransferFee = Record({
     // The fee to pay to perform a transfer
     transfer_fee: Tokens
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type TransferFee = typeof TransferFee.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const GetBlocksArgs = Record({
     // The index of the first block to fetch.
     start: BlockIndex,
     // Max number of blocks to fetch.
     length: nat64
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type GetBlocksArgs = typeof GetBlocksArgs.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Mint = Record({
     to: AccountIdentifier,
     amount: Tokens
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Mint = typeof Mint.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Burn = Record({
     from: AccountIdentifier,
     amount: Tokens
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Burn = typeof Burn.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Transfer = Record({
     from: AccountIdentifier,
     to: AccountIdentifier,
     amount: Tokens,
     fee: Tokens
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Transfer = typeof Transfer.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Operation = Variant({
     Mint: Mint,
     Burn: Burn,
     Transfer: Transfer
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Operation = typeof Operation.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Transaction = Record({
     memo: Memo,
     operation: Opt(Operation),
     created_at_time: TimeStamp
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Transaction = typeof Transaction.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Block = Record({
     parent_hash: Opt(blob),
     transaction: Transaction,
     timestamp: TimeStamp
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Block = typeof Block.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // A prefix of the block range specified in the [GetBlocksArgs] request.
 export const BlockRange = Record({
     // A prefix of the requested block range.
@@ -209,20 +397,44 @@ export const BlockRange = Record({
     // 2. [GetBlocksArgs.from] was larger than the last block known to the canister.
     blocks: Vec(Block)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type BlockRange = typeof BlockRange.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const BadFirstBlockIndex = Record({
     requested_index: BlockIndex,
     first_valid_index: BlockIndex
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type BadFirstBlockIndex = typeof BadFirstBlockIndex.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Other = Record({
     error_code: nat64,
     error_message: text
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Other = typeof Other.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
 export const QueryArchiveError = Variant({
     // [GetBlocksArgs.from] argument was smaller than the first block
@@ -231,24 +443,48 @@ export const QueryArchiveError = Variant({
     // Reserved for future use.
     Other: Other
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type QueryArchiveError = typeof QueryArchiveError.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const QueryArchiveResult = Variant({
     // Successfully fetched zero or more blocks.
     Ok: BlockRange,
     // The [GetBlocksArgs] request was invalid.
     Err: QueryArchiveError
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type QueryArchiveResult = typeof QueryArchiveResult.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // A function that is used for fetching archived ledger blocks.
 export const QueryArchiveFn = Func(
     [GetBlocksArgs],
     QueryArchiveResult,
     'query'
 );
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type QueryArchiveFn = typeof QueryArchiveFn.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const ArchivedBlock = Record({
     // The index of the first archived block that can be fetched using the callback.
     start: BlockIndex,
@@ -259,8 +495,16 @@ export const ArchivedBlock = Record({
     // and [len] fields above.
     callback: QueryArchiveFn
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type ArchivedBlock = typeof ArchivedBlock.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 // The result of a "query_blocks" call.
 //
 // The structure of the result is somewhat complicated because the main ledger canister might
@@ -294,36 +538,92 @@ export const QueryBlocksResponse = Record({
     // of the originally requested block range.
     archived_blocks: Vec(ArchivedBlock)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type QueryBlocksResponse = typeof QueryBlocksResponse.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Archive = Record({
     canister_id: Principal
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Archive = typeof Archive.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Archives = Record({
     archives: Vec(Archive)
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Archives = typeof Archives.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const SymbolResult = Record({
     symbol: text
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type SymbolResult = typeof SymbolResult.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const NameResult = Record({
     name: text
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type NameResult = typeof NameResult.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const DecimalsResult = Record({
     decimals: nat32
 });
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type DecimalsResult = typeof DecimalsResult.tsType;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Address = text;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export type Address = text;
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const Ledger = Canister({
     // Transfers tokens from a subaccount of the caller to the destination address.
     // The source address is computed from the principal of the caller and the specified subaccount.

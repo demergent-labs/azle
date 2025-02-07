@@ -9,7 +9,10 @@ import { Parent } from '../../to_idl_type';
 import { TypeMapping } from '../../type_mapping';
 import { CandidTypeMap, toIdlTypeMap } from './to_idl_map';
 
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Record<
     T extends {

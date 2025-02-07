@@ -5,6 +5,10 @@ import { IDL } from '@dfinity/candid';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class AzleVoid {
     _azleKind = 'AzleVoid' as const;
     static _azleKind = 'AzleVoid' as const;
@@ -24,5 +28,13 @@ export class AzleVoid {
     }
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export const Void = AzleVoid;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Void = void;

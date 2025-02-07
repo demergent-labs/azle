@@ -8,6 +8,10 @@ import { encode } from '../../serde/encode';
 import { Parent, toIdlType } from '../../to_idl_type';
 import { TypeMapping } from '../../type_mapping';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class AzleVec<T> {
     constructor(t: any) {
         this.innerType = t;
@@ -33,8 +37,15 @@ export class AzleVec<T> {
     }
 }
 
-// TODO Should we tighten the Vec<T> T type parameter? https://github.com/demergent-labs/azle/issues/1483
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Vec<T> = TypeMapping<AzleVec<T>>;
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function Vec<T extends CandidType>(t: T): AzleVec<T> {
     return new AzleVec(t);
 }

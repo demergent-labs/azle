@@ -57,6 +57,10 @@ export * from './canister_management';
 export * from './http_request';
 export * from './t_ecdsa';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle/canisters`.
+ */
 export const managementCanister = Canister({
     // bitcoin
     bitcoin_get_balance: update([GetBalanceArgs], Satoshi),
