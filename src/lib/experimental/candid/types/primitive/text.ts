@@ -5,6 +5,10 @@ import { IDL } from '@dfinity/candid';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class AzleText {
     _azleKind = 'AzleText' as const;
     static _azleKind = 'AzleText' as const;
@@ -24,5 +28,9 @@ export class AzleText {
     }
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export const text = AzleText;
 export type text = string;

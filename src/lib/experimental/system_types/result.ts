@@ -6,6 +6,10 @@ import { CandidType } from '../candid/candid_type';
 import { Parent, toIdlType } from '../candid/to_idl_type';
 import { RequireExactlyOne } from '../candid/types/constructed/variant';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class AzleResult<T extends CandidType, K extends CandidType> {
     constructor(ok: T, err: K) {
         this.Ok = ok;
@@ -23,6 +27,10 @@ export class AzleResult<T extends CandidType, K extends CandidType> {
     }
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function Result<Ok extends CandidType, Err extends CandidType>(
     ok: Ok,
     err: Err
@@ -51,10 +59,18 @@ export namespace Result {
     }
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function Ok<T>(value: T): Result<T, any> {
     return { Ok: value };
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function Err<T>(value: T): Result<any, T> {
     return { Err: value };
 }

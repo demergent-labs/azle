@@ -7,6 +7,10 @@ import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 import { Parent } from '../../to_idl_type';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class Principal extends DfinityPrincipal {
     static _azleKind = 'Principal' as const;
 

@@ -5,6 +5,10 @@ import { IDL } from '@dfinity/candid';
 import { decode } from '../../../serde/decode';
 import { encode } from '../../../serde/encode';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export class AzleFloat32 {
     _azleKind = 'AzleFloat32' as const;
     static _azleKind = 'AzleFloat32' as const;
@@ -24,5 +28,9 @@ export class AzleFloat32 {
     }
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export const float32 = AzleFloat32;
 export type float32 = number;

@@ -7,6 +7,10 @@ import { executeMethod } from '../execute_method';
 import { Callback } from '../types/callback';
 import { CanisterMethodInfo } from '../types/canister_method_info';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function postUpgrade<
     const Params extends ReadonlyArray<CandidType>,
     GenericCallback extends Callback<Params, typeof Void>

@@ -4,11 +4,19 @@ import { IDL } from '@dfinity/candid';
 
 import { CandidType } from './candid_type';
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export type Parent = {
     idlType: IDL.RecClass;
     name: string;
 };
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function toIdlType(
     candidType: CandidType,
     parents: Parent[] = []
@@ -31,6 +39,10 @@ export function toIdlType(
     return (candidType as any).getIdlType(parents);
 }
 
+/**
+ * @deprecated since Azle v0.26.0 - this will be removed in a future major release.
+ * Please use alternative functionality exported directly from `azle`.
+ */
 export function toIdlTypeArray(
     candidTypes: CandidType | CandidType[],
     parents: Parent[] = []
