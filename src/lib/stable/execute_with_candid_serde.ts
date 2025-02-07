@@ -169,7 +169,7 @@ function encodeResultAndReply(
 export function idlEncode(
     argTypes: Array<IDL.Type<any>>,
     args: any[]
-): Uint8Array {
+): Uint8Array<ArrayBuffer> {
     try {
         // TODO IDL.encode has ArrayBuffer as the return type, but it actually returns a Uint8Array
         // TODO we may need to remove the new Uint8Array in the future if they address the situation
@@ -191,10 +191,10 @@ export function idlEncode(
  */
 export function idlDecode(
     retTypes: IDL.Type[],
-    bytes: Uint8Array
+    bytes: Uint8Array<ArrayBuffer>
 ): JsonValue[] {
     try {
-        return IDL.decode(retTypes, bytes);
+        return IDL.decode(retTypes, bytes.buffer);
     } catch (error) {
         throw new Error(`Failed to decode Candid bytes: ${error}`);
     }

@@ -26,14 +26,14 @@ export class AzleTuple<T extends any[]> {
     _azleKind = 'AzleTuple' as const;
     static _azleKind = 'AzleTuple' as const;
 
-    toBytes(data: any): Uint8Array {
+    toBytes(data: any): Uint8Array<ArrayBuffer> {
         return encode(this, data);
     }
 
     // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    fromBytes(bytes: Uint8Array) {
-        return decode(this, bytes);
+    fromBytes(bytes: Uint8Array<ArrayBuffer>) {
+        return decode(this, bytes.buffer);
     }
 
     getIdlType(parents: Parent[]): IDL.TupleClass<any> {

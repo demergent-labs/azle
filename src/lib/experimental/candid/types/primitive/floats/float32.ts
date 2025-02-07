@@ -15,12 +15,12 @@ export class AzleFloat32 {
 
     static tsType: float32;
 
-    static toBytes(data: float32): Uint8Array {
+    static toBytes(data: float32): Uint8Array<ArrayBuffer> {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array): float32 {
-        return decode<float32>(this, bytes) as float32;
+    static fromBytes(bytes: Uint8Array<ArrayBuffer>): float32 {
+        return decode<float32>(this, bytes.buffer) as float32;
     }
 
     static getIdlType(): IDL.FloatClass {

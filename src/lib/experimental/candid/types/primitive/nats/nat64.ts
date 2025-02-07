@@ -15,12 +15,12 @@ export class AzleNat64 {
 
     static tsType: nat64;
 
-    static toBytes(data: nat64): Uint8Array {
+    static toBytes(data: nat64): Uint8Array<ArrayBuffer> {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array): nat64 {
-        return decode<nat64>(this, bytes) as nat64;
+    static fromBytes(bytes: Uint8Array<ArrayBuffer>): nat64 {
+        return decode<nat64>(this, bytes.buffer) as nat64;
     }
 
     static getIdlType(): IDL.FixedNatClass {

@@ -15,12 +15,12 @@ export class AzleVoid {
 
     static tsType: Void;
 
-    static toBytes(data: undefined): Uint8Array {
+    static toBytes(data: undefined): Uint8Array<ArrayBuffer> {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array): undefined {
-        return decode<undefined>(this, bytes) as undefined;
+    static fromBytes(bytes: Uint8Array<ArrayBuffer>): undefined {
+        return decode<undefined>(this, bytes.buffer) as undefined;
     }
 
     static getIdlType(): IDL.Type<any> {

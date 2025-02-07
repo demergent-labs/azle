@@ -9,7 +9,7 @@
  * - **Call Context**:
  *   - any
  */
-export function candidDecode(candidBytes: Uint8Array): string {
+export function candidDecode(candidBytes: Uint8Array<ArrayBuffer>): string {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined

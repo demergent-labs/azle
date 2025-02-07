@@ -126,7 +126,7 @@ async function prepareRequestBody(
         init.body instanceof Float32Array ||
         init.body instanceof Float64Array
     ) {
-        return new Uint8Array(init.body);
+        return new Uint8Array(init.body as ArrayBuffer);
     }
 
     if (init.body instanceof DataView) {

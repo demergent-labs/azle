@@ -22,7 +22,7 @@ export function StableJson(options?: {
     const textDecoder = new TextDecoder();
 
     return {
-        toBytes(data: any): Uint8Array {
+        toBytes(data: any): Uint8Array<ArrayBuffer> {
             const result = JSON.stringify(
                 data,
                 options?.replacer ?? jsonReplacer
@@ -30,7 +30,7 @@ export function StableJson(options?: {
 
             return textEncoder.encode(result);
         },
-        fromBytes(bytes: Uint8Array): any {
+        fromBytes(bytes: Uint8Array<ArrayBuffer>): any {
             return JSON.parse(
                 textDecoder.decode(bytes),
                 options?.reviver ?? jsonReviver
