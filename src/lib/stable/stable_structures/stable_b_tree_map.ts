@@ -1,8 +1,15 @@
 import { stableJson } from './stable_json';
 
 /**
- * Interface for objects that can serialize/deserialize data to/from bytes.
- * Used by StableBTreeMap to store values in stable memory.
+ * Interface used by `StableBTreeMap` to store and retrieve keys and values as bytes in stable memory.
+ *
+ * @remarks
+ *
+ * The interface describes an object that can serialize/deserialize data to/from bytes.
+ *
+ * `StableBTreeMap` uses a default `Serializable` called `stableJson`, which serializes data to/from ICP-enabled JSON bytes.
+ *
+ * You can provide your own `Serializable` implementations for keys or values to store data in different formats.
  */
 export interface Serializable {
     toBytes: (data: any) => Uint8Array;
@@ -30,16 +37,6 @@ export class StableBTreeMap<Key = any, Value = any> {
     keySerializable: Serializable;
     valueSerializable: Serializable;
 
-    /**
-     * Creates a new StableBTreeMap.
-     *
-     * @param memoryId - Unique identifier for this map's memory location (must be between 0 and 253 inclusive, 254 is reserved for azle internal use)
-     * @param keySerializable - Serializer for converting keys to/from bytes. Defaults to {@link stableJson}
-     * @param valueSerializable - Serializer for converting values to/from bytes. Defaults to {@link stableJson}
-     *
-     * @remarks Once a memoryId is allocated, it cannot be reused with a different StableBTreeMap or with different key/value types
-     */
-    // TODO update this remark once https://github.com/demergent-labs/azle/issues/843 is resolved
     constructor(
         memoryId: number,
         keySerializable: Serializable = stableJson,
@@ -92,9 +89,9 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * Retrieves the value stored at the provided key.
+     * Retrieves the value stored at the provided key if it exists.
      *
-     * @param key - The key whose value to retrieve
+     * @param key - The key whose value will be retrieved
      * @returns The value associated with the key, or null if the key doesn't exist
      */
     get(key: Key): Value | null {
@@ -102,7 +99,7 @@ export class StableBTreeMap<Key = any, Value = any> {
             globalThis._azleIcStable === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
-            return undefined as any;
+            return null;
         }
 
         const encodedKey = this.keySerializable.toBytes(key);
@@ -133,6 +130,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      *
      * @param key - The key at which to store the value
      * @param value - The value to store
+     *
      * @returns The previous value at the key if it existed, null otherwise
      */
     insert(key: Key, value: Value): Value | null {
@@ -191,11 +189,12 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * Retrieves the items in the map in sorted order by key.
+     * Retrieves the items in the map in byte-level (not based on the JavaScript runtime value) sorted order by key.
      *
      * @param startIndex - Optional index at which to start retrieving items (inclusive)
      * @param length - Optional maximum number of items to retrieve
-     * @returns Array of key-value pairs as tuples, sorted by key
+     *
+     * @returns Array of key-value pair tuples, in byte-level (not based on the JavaScript runtime value) sorted order by key
      */
     items(startIndex?: number, length?: number): [Key, Value][] {
         if (
@@ -228,11 +227,12 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * Retrieves the keys in the map in sorted order.
+     * Retrieves the keys in the map in byte-level (not based on the JavaScript runtime value) sorted order.
      *
      * @param startIndex - Optional index at which to start retrieving keys (inclusive)
      * @param length - Optional maximum number of keys to retrieve
-     * @returns Array of keys in sorted order
+     *
+     * @returns Array of keys in byte-level (not based on the JavaScript runtime value) sorted order
      */
     keys(startIndex?: number, length?: number): Key[] {
         if (
@@ -264,7 +264,7 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Returns the number of key-value pairs in the map.
      *
-     * @returns The number of elements in the map
+     * @returns The number of key-value pairs in the map
      */
     len(): bigint {
         if (
@@ -324,11 +324,11 @@ export class StableBTreeMap<Key = any, Value = any> {
     }
 
     /**
-     * Retrieves all values in the map, ordered by their keys.
+     * Retrieves the values in the map in byte-level (not based on the JavaScript runtime value) sorted order by key.
      *
      * @param startIndex - Optional index at which to start retrieving values (inclusive)
      * @param length - Optional maximum number of values to retrieve
-     * @returns Array of values, ordered by their keys
+     * @returns Array of values, in byte-level (not based on the JavaScript runtime value) sorted order by key
      */
     values(startIndex?: number, length?: number): Value[] {
         if (
