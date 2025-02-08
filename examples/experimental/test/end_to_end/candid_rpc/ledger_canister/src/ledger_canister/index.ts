@@ -12,7 +12,7 @@ import {
     TransferFee,
     TransferFeeArg,
     TransferResult
-} from 'azle/canisters/icp';
+} from 'azle/canisters/icp/idl';
 import {
     Canister,
     nat32,

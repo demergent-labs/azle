@@ -23,7 +23,7 @@ import {
     uninstall_code_args,
     update_settings_args,
     upload_chunk_args
-} from 'azle/canisters/management';
+} from 'azle/canisters/management/idl';
 import {
     blob,
     bool,

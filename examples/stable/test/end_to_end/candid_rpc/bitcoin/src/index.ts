@@ -7,7 +7,7 @@ import {
     bitcoin_get_utxos_args,
     bitcoin_get_utxos_result,
     bitcoin_send_transaction_args
-} from 'azle/canisters/management';
+} from 'azle/canisters/management/idl';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
