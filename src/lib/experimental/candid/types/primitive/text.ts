@@ -20,7 +20,8 @@ export class AzleText {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): string {
-        return decode<string>(this, bytes.buffer) as string;
+        // @ts-ignore
+        return decode<string>(this, bytes);
     }
 
     static getIdlType(): IDL.TextClass {

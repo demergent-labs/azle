@@ -170,7 +170,9 @@ jobs:
 
     check-test-success:
         name: Check Azle tests succeeded
-        needs: run-tests
+        needs:
+            - run-tests
+            - top-level-checks
         runs-on: ubuntu-latest
         if: success()
         steps:
@@ -178,7 +180,9 @@ jobs:
 
     check-test-failure:
         name: Check Azle tests didn't fail
-        needs: run-tests
+        needs:
+            - run-tests
+            - top-level-checks
         runs-on: ubuntu-latest
         if: failure()
         steps:

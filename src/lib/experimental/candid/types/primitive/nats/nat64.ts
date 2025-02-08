@@ -20,7 +20,8 @@ export class AzleNat64 {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): nat64 {
-        return decode<nat64>(this, bytes.buffer) as nat64;
+        // @ts-ignore
+        return decode<nat64>(this, bytes);
     }
 
     static getIdlType(): IDL.FixedNatClass {

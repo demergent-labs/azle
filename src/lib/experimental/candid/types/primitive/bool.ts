@@ -20,7 +20,8 @@ export class AzleBool {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): bool {
-        return decode<bool>(this, bytes.buffer) as bool;
+        // @ts-ignore
+        return decode<bool>(this, bytes);
     }
 
     static getIdlType(): IDL.BoolClass {

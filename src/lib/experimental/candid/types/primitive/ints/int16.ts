@@ -20,7 +20,8 @@ export class AzleInt16 {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): int16 {
-        return decode<int16>(this, bytes.buffer) as int16;
+        // @ts-ignore
+        return decode<int16>(this, bytes);
     }
 
     static getIdlType(): IDL.FixedIntClass {

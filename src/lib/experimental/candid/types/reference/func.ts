@@ -37,7 +37,8 @@ export function Func(
             return encode(this, data);
         },
         fromBytes(bytes: Uint8Array<ArrayBuffer>): Func {
-            return decode<Func>(this, bytes.buffer) as Func;
+            // @ts-ignore
+            return decode<Func>(this, bytes);
         },
         getIdlType(parents: Parent[]): IDL.FuncClass {
             return IDL.Func(

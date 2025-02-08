@@ -20,7 +20,8 @@ export class AzleVoid {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): undefined {
-        return decode<undefined>(this, bytes.buffer) as undefined;
+        // @ts-ignore
+        return decode<undefined>(this, bytes);
     }
 
     static getIdlType(): IDL.Type<any> {

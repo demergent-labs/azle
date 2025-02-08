@@ -20,7 +20,7 @@ export function msgArgData(): Uint8Array<ArrayBuffer> {
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
-        return new Uint8Array(new ArrayBuffer(0));
+        return new Uint8Array();
     }
 
     if (globalThis._azleIcExperimental !== undefined) {

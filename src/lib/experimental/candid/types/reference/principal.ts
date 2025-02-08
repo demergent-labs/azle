@@ -21,7 +21,8 @@ export class Principal extends DfinityPrincipal {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): DfinityPrincipal {
-        return decode<DfinityPrincipal>(this, bytes.buffer) as DfinityPrincipal;
+        // @ts-ignore
+        return decode<DfinityPrincipal>(this, bytes);
     }
 
     static getIdlType(_parents: Parent[]): IDL.PrincipalClass {

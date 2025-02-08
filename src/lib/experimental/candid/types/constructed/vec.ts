@@ -29,7 +29,8 @@ export class AzleVec<T> {
     }
 
     fromBytes(bytes: Uint8Array<ArrayBuffer>): T[] {
-        return decode<T[]>(this, bytes.buffer) as T[];
+        // @ts-ignore
+        return decode<T[]>(this, bytes);
     }
 
     getIdlType(parents: Parent[]): IDL.VecClass<T> {

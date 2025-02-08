@@ -20,7 +20,8 @@ export class AzleBlob {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): blob {
-        return decode(this, bytes.buffer) as blob;
+        // @ts-ignore
+        return decode(this, bytes) as blob;
     }
 
     static getIdlType(): IDL.VecClass<number | bigint> {

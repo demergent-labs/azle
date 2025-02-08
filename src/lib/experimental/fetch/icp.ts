@@ -61,7 +61,8 @@ export async function fetchIcp(
         }
     );
 
-    const decodedResult = IDL.decode(funcIdl.retTypes, result.buffer);
+    // @ts-ignore
+    const decodedResult = IDL.decode(funcIdl.retTypes, result);
 
     // Using Response from wasmedge-quickjs doesn't seem ideal for the time being
     // It seems very tied to the low-level implementation at first glance

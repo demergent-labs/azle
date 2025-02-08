@@ -20,7 +20,8 @@ export class AzleNull {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): Null {
-        return decode<Null>(this, bytes.buffer) as Null;
+        // @ts-ignore
+        return decode<Null>(this, bytes);
     }
 
     static getIdlType(): IDL.NullClass {

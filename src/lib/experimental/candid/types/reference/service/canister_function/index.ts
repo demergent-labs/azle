@@ -283,7 +283,8 @@ function serviceCall(
                     raw: true
                 });
 
-                return decode(returnCandidType, encodedResult.buffer);
+                // @ts-ignore
+                return decode(returnCandidType, encodedResult);
             })();
         }
     };

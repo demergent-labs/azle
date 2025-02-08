@@ -58,7 +58,8 @@ function addressFromPrincipal(
             ])
         )
         .getHash('UINT8ARRAY');
-    const checksum = to32Bits(getCrc32(hash.buffer));
+    // @ts-ignore
+    const checksum = to32Bits(getCrc32(hash));
 
     return toHexString(new Uint8Array([...checksum, ...hash]));
 }

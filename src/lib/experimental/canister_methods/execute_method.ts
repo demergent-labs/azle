@@ -17,9 +17,8 @@ export function executeMethod(
     const args = msgArgData();
 
     const decodedArgs =
-        mode === 'inspectMessage'
-            ? args
-            : decode(paramCandidTypes, args.buffer);
+        // @ts-ignore
+        mode === 'inspectMessage' ? args : decode(paramCandidTypes, args);
 
     const result = getResult(decodedArgs, callback);
 

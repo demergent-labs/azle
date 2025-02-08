@@ -20,7 +20,8 @@ export class AzleFloat64 {
     }
 
     static fromBytes(bytes: Uint8Array<ArrayBuffer>): float64 {
-        return decode<float64>(this, bytes.buffer) as float64;
+        // @ts-ignore
+        return decode<float64>(this, bytes);
     }
 
     static getIdlType(): IDL.FloatClass {
