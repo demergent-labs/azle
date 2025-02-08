@@ -24,7 +24,7 @@ export async function getContext(
     const consumer = await getConsumer(canisterConfig);
     const managementDid = (
         await readFile(
-            join(AZLE_PACKAGE_PATH, 'canisters', 'management', 'ic.did')
+            join(AZLE_PACKAGE_PATH, 'canisters', 'management', 'idl', 'ic.did')
         )
     ).toString();
     const wasmData: WasmData = {
