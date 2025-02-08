@@ -10,12 +10,20 @@ export interface Serializable {
 }
 
 /**
- * A persistent key-value store that maintains data in stable memory.
- * Provides a B-tree map implementation that persists across canister upgrades.
- * Keys are kept in sorted order, enabling efficient range queries.
+ * Provides a `BTreeMap` implementation backed by stable memory that automatically persists across canister upgrades.
  *
  * @typeParam Key - The type of keys stored in the map
  * @typeParam Value - The type of values stored in the map
+ *
+ * @param memoryId - Unique identifier for this map's memory (must be between 0 and 253 inclusive, 254 is reserved for Azle internal use)
+ * @param keySerializable - Serializable for converting keys to/from bytes. Defaults to `stableJson`
+ * @param valueSerializable - Serializable for converting values to/from bytes. Defaults to `stableJson`
+ *
+ * @remarks
+ *
+ * Keys are kept in sorted order based on their serialized bytes, not based on their JavaScript runtime values.
+ * This byte-level ordering is based on the default implementation for `Vec<u8>` of `Ord` and `PartialOrd` in Rust.
+ *
  */
 export class StableBTreeMap<Key = any, Value = any> {
     memoryId: number;
@@ -28,7 +36,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      * @param memoryId - Unique identifier for this map's memory location (must be between 0 and 253 inclusive, 254 is reserved for azle internal use)
      * @param keySerializable - Serializer for converting keys to/from bytes. Defaults to {@link stableJson}
      * @param valueSerializable - Serializer for converting values to/from bytes. Defaults to {@link stableJson}
-     * @throws If memoryId is already in use or invalid
+     *
      * @remarks Once a memoryId is allocated, it cannot be reused with a different StableBTreeMap or with different key/value types
      */
     // TODO update this remark once https://github.com/demergent-labs/azle/issues/843 is resolved
