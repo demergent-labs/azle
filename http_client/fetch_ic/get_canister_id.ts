@@ -1,7 +1,9 @@
 // TODO it would be pretty cool to get the canister id from DNS records
 // TODO seems we would have to call some service that can query DNS
 export function getCanisterId(input: RequestInfo | URL): string {
+    // @ts-ignore
     if (typeof import.meta.env.IC_ORIGIN_CANISTER_ID === 'string') {
+        // @ts-ignore
         return import.meta.env.IC_ORIGIN_CANISTER_ID;
     }
 
