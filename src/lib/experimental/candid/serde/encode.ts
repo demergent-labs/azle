@@ -22,7 +22,7 @@ import { EncodeVisitor } from './visitors/encode_visitor';
 export function encode<T = any>(
     candidType: CandidType | CandidType[],
     data: T | T[]
-): Uint8Array<ArrayBuffer> {
+): Uint8Array {
     if (Array.isArray(candidType)) {
         if (Array.isArray(data)) {
             return encodeMultiple(candidType, data);
@@ -34,10 +34,7 @@ export function encode<T = any>(
     return encodeSingle(candidType, data);
 }
 
-function encodeSingle(
-    candidType: CandidType,
-    data: any
-): Uint8Array<ArrayBuffer> {
+function encodeSingle(candidType: CandidType, data: any): Uint8Array {
     const idlType = toIdlType(candidType);
 
     // The candid type was AzleVoid if when converted to an Idl Type it is []
@@ -55,10 +52,7 @@ function encodeSingle(
     return new Uint8Array(IDL.encode([idlType], [encodeReadyKey]));
 }
 
-function encodeMultiple(
-    candidTypes: CandidType[],
-    data: any[]
-): Uint8Array<ArrayBuffer> {
+function encodeMultiple(candidTypes: CandidType[], data: any[]): Uint8Array {
     const idlTypes = toIdlTypeArray(candidTypes);
     const values = data.map((datum, index) =>
         idlTypes[index].accept(new EncodeVisitor(), {

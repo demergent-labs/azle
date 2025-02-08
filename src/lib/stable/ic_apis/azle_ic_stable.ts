@@ -5,18 +5,18 @@ import { RejectCode } from './msg_reject_code';
  * we expose to the users. This is the interface for the rust functions.
  */
 export type AzleIcStable = {
-    msgArgData: () => Uint8Array<ArrayBuffer>;
+    msgArgData: () => Uint8Array;
     callRaw: (
         globalResolveId: string,
         globalRejectId: string,
-        canisterIdBytes: Uint8Array<ArrayBuffer>,
+        canisterIdBytes: Uint8Array,
         method: string,
-        argsRaw: Uint8Array<ArrayBuffer>,
+        argsRaw: Uint8Array,
         cyclesString: string
     ) => void;
-    msgCaller: () => Uint8Array<ArrayBuffer>;
-    candidDecode: (candidBytes: Uint8Array<ArrayBuffer>) => string;
-    candidEncode: (candidString: string) => Uint8Array<ArrayBuffer>;
+    msgCaller: () => Uint8Array;
+    candidDecode: (candidBytes: Uint8Array) => string;
+    candidEncode: (candidString: string) => Uint8Array;
     canisterCycleBalance: () => string;
     canisterVersion: () => bigint;
     clearTimer: (timerId: string) => void;
@@ -29,15 +29,15 @@ export type AzleIcStable = {
     msgCyclesAvailable: () => string;
     msgCyclesRefunded: () => string;
     notifyRaw: (
-        canisterIdBytes: Uint8Array<ArrayBuffer>,
+        canisterIdBytes: Uint8Array,
         method: string,
-        argsRawBuffer: Uint8Array<ArrayBuffer>,
+        argsRawBuffer: Uint8Array,
         cyclesString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
     msgRejectCode: () => RejectCode;
-    msgReply: (bytes: Uint8Array<ArrayBuffer>) => void;
-    setCertifiedData: (dataBytes: Uint8Array<ArrayBuffer>) => void;
+    msgReply: (bytes: Uint8Array) => void;
+    setCertifiedData: (dataBytes: Uint8Array) => void;
     setTimer: (delay: string, timerCallbackId: string) => bigint;
     setTimerInterval: (interval: string, timerCallbackId: string) => bigint;
     time: () => bigint;
@@ -55,16 +55,16 @@ export type AzleIcStable = {
     stableBTreeMapInit: (memoryId: number) => void;
     stableBTreeMapContainsKey: (
         memoryId: number,
-        encodedKey: Uint8Array<ArrayBuffer>
+        encodedKey: Uint8Array
     ) => boolean;
     stableBTreeMapGet: (
         memoryId: number,
-        encodedKey: Uint8Array<ArrayBuffer>
+        encodedKey: Uint8Array
     ) => Uint8Array | undefined;
     stableBTreeMapInsert: (
         memoryId: number,
-        encodedKey: Uint8Array<ArrayBuffer>,
-        encodedValue: Uint8Array<ArrayBuffer>
+        encodedKey: Uint8Array,
+        encodedValue: Uint8Array
     ) => Uint8Array | undefined;
     stableBTreeMapIsEmpty: (memoryId: number) => boolean;
     // TODO should these indexes and lengths be bigints for future proofing?
@@ -72,20 +72,17 @@ export type AzleIcStable = {
         memoryId: number,
         startIndex: number,
         length: number
-    ) => [Uint8Array<ArrayBuffer>, Uint8Array<ArrayBuffer>][];
+    ) => [Uint8Array, Uint8Array][];
     stableBTreeMapKeys: (
         memoryId: number,
         startIndex: number,
         length: number
-    ) => Uint8Array<ArrayBuffer>[];
+    ) => Uint8Array[];
     stableBTreeMapLen: (memoryId: number) => number;
-    stableBTreeMapRemove: (
-        memoryId: number,
-        encodedKey: Uint8Array<ArrayBuffer>
-    ) => Uint8Array<ArrayBuffer>;
+    stableBTreeMapRemove(memoryId: number, encodedKey: Uint8Array): Uint8Array;
     stableBTreeMapValues: (
         memoryId: number,
         startIndex: number,
         length: number
-    ) => Uint8Array<ArrayBuffer>[];
+    ) => Uint8Array[];
 };

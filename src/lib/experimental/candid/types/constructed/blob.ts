@@ -15,12 +15,12 @@ export class AzleBlob {
 
     static tsType: blob;
 
-    static toBytes(data: blob): Uint8Array<ArrayBuffer> {
+    static toBytes(data: blob): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): blob {
-        return decode(this, bytes.buffer) as blob;
+    static fromBytes(bytes: Uint8Array): blob {
+        return decode(this, bytes) as blob;
     }
 
     static getIdlType(): IDL.VecClass<number | bigint> {

@@ -33,11 +33,11 @@ export function Func(
 ) {
     return {
         tsType: {} as Func,
-        toBytes(data: Func): Uint8Array<ArrayBuffer> {
+        toBytes(data: Func): Uint8Array {
             return encode(this, data);
         },
-        fromBytes(bytes: Uint8Array<ArrayBuffer>): Func {
-            return decode<Func>(this, bytes.buffer) as Func;
+        fromBytes(bytes: Uint8Array): Func {
+            return decode<Func>(this, bytes) as Func;
         },
         getIdlType(parents: Parent[]): IDL.FuncClass {
             return IDL.Func(

@@ -15,12 +15,12 @@ export class AzleText {
 
     static tsType: text;
 
-    static toBytes(data: string): Uint8Array<ArrayBuffer> {
+    static toBytes(data: string): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): string {
-        return decode<string>(this, bytes.buffer) as string;
+    static fromBytes(bytes: Uint8Array): string {
+        return decode<string>(this, bytes) as string;
     }
 
     static getIdlType(): IDL.TextClass {

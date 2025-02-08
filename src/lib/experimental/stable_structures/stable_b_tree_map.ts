@@ -5,8 +5,8 @@ import { stableJson } from '../../stable/stable_structures/stable_json';
  * Please use alternative functionality exported directly from `azle`.
  */
 export interface Serializable {
-    toBytes: (data: any) => Uint8Array<ArrayBuffer>;
-    fromBytes: (bytes: Uint8Array<ArrayBuffer>) => any;
+    toBytes: (data: any) => Uint8Array;
+    fromBytes: (bytes: Uint8Array) => any;
 }
 
 /**
@@ -43,7 +43,9 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey = keySerializable.toBytes(key).buffer;
+            const encodedKey: ArrayBuffer = new Uint8Array(
+                keySerializable.toBytes(key)
+            ).buffer;
 
             return globalThis._azleIcExperimental.stableBTreeMapContainsKey(
                 memoryId,
@@ -60,7 +62,9 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey = keySerializable.toBytes(key).buffer;
+            const encodedKey: ArrayBuffer = new Uint8Array(
+                keySerializable.toBytes(key)
+            ).buffer;
 
             const encodedResult =
                 globalThis._azleIcExperimental.stableBTreeMapGet(
@@ -87,8 +91,12 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey = keySerializable.toBytes(key).buffer;
-            const encodedValue = valueSerializable.toBytes(value).buffer;
+            const encodedKey: ArrayBuffer = new Uint8Array(
+                keySerializable.toBytes(key)
+            ).buffer;
+            const encodedValue: ArrayBuffer = new Uint8Array(
+                valueSerializable.toBytes(value)
+            ).buffer;
 
             const encodedResult =
                 globalThis._azleIcExperimental.stableBTreeMapInsert(
@@ -190,7 +198,9 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey = keySerializable.toBytes(key).buffer;
+            const encodedKey: ArrayBuffer = new Uint8Array(
+                keySerializable.toBytes(key)
+            ).buffer;
 
             const encodedValue =
                 globalThis._azleIcExperimental.stableBTreeMapRemove(

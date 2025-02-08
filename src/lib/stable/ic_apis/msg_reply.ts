@@ -19,7 +19,7 @@
  *   - after a successful inter-canister await from a composite query
  *   - after an unsuccessful inter-canister await from a composite query
  */
-export function msgReply(data: Uint8Array<ArrayBuffer>): void {
+export function msgReply(data: Uint8Array): void {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
@@ -28,6 +28,6 @@ export function msgReply(data: Uint8Array<ArrayBuffer>): void {
     }
 
     return globalThis._azleIcExperimental !== undefined
-        ? globalThis._azleIcExperimental.msgReply(data.buffer)
+        ? globalThis._azleIcExperimental.msgReply(new Uint8Array(data).buffer)
         : globalThis._azleIcStable.msgReply(data);
 }

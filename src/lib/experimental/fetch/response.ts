@@ -37,11 +37,12 @@ export class AzleFetchResponse {
             return new ArrayBuffer(0);
         }
 
-        return (
-            this.body as unknown as
-                | Uint8Array<ArrayBuffer>
-                | Buffer<ArrayBuffer>
-        ).buffer;
+        const body = this.body as unknown as Uint8Array | Buffer;
+        let bytes: Uint8Array<ArrayBuffer> = new Uint8Array(
+            body.buffer.byteLength
+        );
+        bytes.set(body);
+        return bytes.buffer;
     }
 
     async bytes(): Promise<Uint8Array> {

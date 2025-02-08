@@ -21,10 +21,8 @@ export function isController(principal: Principal): boolean {
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        const principalBytes =
-            principal.toUint8Array() as Uint8Array<ArrayBuffer>;
         return globalThis._azleIcExperimental.isController(
-            principalBytes.buffer
+            new Uint8Array(principal.toUint8Array()).buffer
         );
     }
 

@@ -24,12 +24,12 @@ export class AzleVec<T> {
     _azleKind = 'AzleVec' as const;
     static _azleKind = 'AzleVec' as const;
 
-    toBytes(data: T[]): Uint8Array<ArrayBuffer> {
+    toBytes(data: T[]): Uint8Array {
         return encode(this, data);
     }
 
-    fromBytes(bytes: Uint8Array<ArrayBuffer>): T[] {
-        return decode<T[]>(this, bytes.buffer) as T[];
+    fromBytes(bytes: Uint8Array): T[] {
+        return decode<T[]>(this, bytes) as T[];
     }
 
     getIdlType(parents: Parent[]): IDL.VecClass<T> {

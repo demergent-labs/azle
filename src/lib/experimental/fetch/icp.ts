@@ -51,7 +51,7 @@ export async function fetchIcp(
 
     const canisterPrincipal = Principal.fromText(canisterId);
 
-    const result = await call<Uint8Array<ArrayBuffer>, Uint8Array<ArrayBuffer>>(
+    const result = await call<Uint8Array, Uint8Array>(
         canisterPrincipal,
         canisterMethod,
         {
@@ -61,7 +61,8 @@ export async function fetchIcp(
         }
     );
 
-    const decodedResult = IDL.decode(funcIdl.retTypes, result.buffer);
+    const resultBytes: Uint8Array<ArrayBuffer> = new Uint8Array(result);
+    const decodedResult = IDL.decode(funcIdl.retTypes, resultBytes.buffer);
 
     // Using Response from wasmedge-quickjs doesn't seem ideal for the time being
     // It seems very tied to the low-level implementation at first glance

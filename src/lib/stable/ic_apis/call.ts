@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
 
-type CallOptions<Args extends any[] | Uint8Array<ArrayBuffer> | undefined> = {
+type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     /**
      * Candid types for encoding the arguments
      */
@@ -75,7 +75,7 @@ export interface CallError extends Error {
  *   - after an unsuccessful inter-canister await from a composite query
  */
 export async function call<
-    Args extends any[] | Uint8Array<ArrayBuffer> | undefined,
+    Args extends any[] | Uint8Array | undefined,
     Return = any
 >(
     canisterId: Principal | string,
@@ -109,20 +109,15 @@ export async function call<
     }
 }
 
-function getCanisterIdBytes(
-    canisterId: Principal | string
-): Uint8Array<ArrayBuffer> {
-    const canister =
-        typeof canisterId === 'string'
-            ? Principal.fromText(canisterId)
-            : canisterId;
-
-    return canister.toUint8Array() as Uint8Array<ArrayBuffer>;
+function getCanisterIdBytes(canisterId: Principal | string): Uint8Array {
+    return typeof canisterId === 'string'
+        ? Principal.fromText(canisterId).toUint8Array()
+        : canisterId.toUint8Array();
 }
 
-function getArgsRaw<Args extends any[] | Uint8Array<ArrayBuffer> | undefined>(
+function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
     callOptions?: CallOptions<Args>
-): Uint8Array<ArrayBuffer> {
+): Uint8Array {
     if (callOptions?.raw === true) {
         if (callOptions?.args === undefined) {
             return new Uint8Array([68, 73, 68, 76, 0, 0]); // pre-encoded Candid empty params
@@ -156,24 +151,24 @@ function getArgsRaw<Args extends any[] | Uint8Array<ArrayBuffer> | undefined>(
     }
 }
 
-function getCyclesString<
-    Args extends any[] | Uint8Array<ArrayBuffer> | undefined
->(options?: CallOptions<Args>): string {
+function getCyclesString<Args extends any[] | Uint8Array | undefined>(
+    options?: CallOptions<Args>
+): string {
     const cycles = options?.cycles ?? 0n;
     return cycles.toString();
 }
 
 function handleOneWay<Return>(
-    canisterIdBytes: Uint8Array<ArrayBuffer>,
+    canisterIdBytes: Uint8Array,
     method: string,
-    argsRaw: Uint8Array<ArrayBuffer>,
+    argsRaw: Uint8Array,
     cyclesString: string
 ): Promise<Return> {
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.notifyRaw(
-            canisterIdBytes.buffer,
+            new Uint8Array(canisterIdBytes).buffer,
             method,
-            argsRaw.buffer,
+            new Uint8Array(argsRaw).buffer,
             cyclesString
         );
     } else {
@@ -189,9 +184,9 @@ function handleOneWay<Return>(
 }
 
 function handleTwoWay<Return>(
-    canisterIdBytes: Uint8Array<ArrayBuffer>,
+    canisterIdBytes: Uint8Array,
     method: string,
-    argsRaw: Uint8Array<ArrayBuffer>,
+    argsRaw: Uint8Array,
     cyclesString: string,
     raw: boolean,
     returnIdlType?: IDL.Type
@@ -213,9 +208,9 @@ function handleTwoWay<Return>(
             globalThis._azleIcExperimental.callRaw(
                 globalResolveId,
                 globalRejectId,
-                canisterIdBytes.buffer,
+                new Uint8Array(canisterIdBytes).buffer,
                 method,
-                argsRaw.buffer,
+                new Uint8Array(argsRaw).buffer,
                 cyclesString
             );
         } else {

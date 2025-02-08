@@ -15,12 +15,12 @@ export class AzleBool {
 
     static tsType: bool;
 
-    static toBytes(data: bool): Uint8Array<ArrayBuffer> {
+    static toBytes(data: bool): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): bool {
-        return decode<bool>(this, bytes.buffer) as bool;
+    static fromBytes(bytes: Uint8Array): bool {
+        return decode<bool>(this, bytes) as bool;
     }
 
     static getIdlType(): IDL.BoolClass {
