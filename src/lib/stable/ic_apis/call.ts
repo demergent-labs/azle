@@ -36,6 +36,12 @@ type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     timeout?: bigint | null;
 };
 
+/**
+ * The error object thrown on an unsuccessful inter-canister call.
+ *
+ * @property rejectCode - Code associated with an unsuccessful inter-canister call
+ * @property rejectMessage - An optional message providing additional context or details about the reject
+ */
 // TODO add the sync property once the ic-cdk v0.18.0 comes out
 export interface CallError extends Error {
     rejectCode: RejectCode;

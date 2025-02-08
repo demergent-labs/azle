@@ -23,8 +23,8 @@ export interface Serializable {
  * @typeParam Value - The type of values stored in the map
  *
  * @param memoryId - Unique identifier for this map's memory (must be between 0 and 253 inclusive, 254 is reserved for Azle internal use)
- * @param keySerializable - Serializable for converting keys to/from bytes. Defaults to `stableJson`
- * @param valueSerializable - Serializable for converting values to/from bytes. Defaults to `stableJson`
+ * @param keySerializable - Serializable for converting keys to/from bytes. Defaults to an ICP-enabled `stableJson`
+ * @param valueSerializable - Serializable for converting values to/from bytes. Defaults to an ICP-enabled `stableJson`
  *
  * @remarks
  *
