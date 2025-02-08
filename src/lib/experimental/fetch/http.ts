@@ -2,7 +2,7 @@ import '../experimental';
 
 import { inflate } from 'pako';
 
-import { http_transform } from '../../../../canisters/management';
+import { http_transform } from '../../../../canisters/management/idl';
 import { canisterSelf } from '../../stable/ic_apis/canister_self';
 import { azleFetch, serialize } from '.';
 import { AzleFetchResponse } from './response';
