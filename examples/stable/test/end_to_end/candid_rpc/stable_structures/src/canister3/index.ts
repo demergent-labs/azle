@@ -27,7 +27,7 @@ export default class {
     @query([IDL.Float32], IDL.Opt(IDL.Opt(IDL.Bool)))
     stableMap10Get(key: number): [[boolean] | []] | [] {
         const result = this.stableMap10.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -40,7 +40,7 @@ export default class {
         value: [boolean] | []
     ): [[boolean] | []] | [] {
         const result = this.stableMap10.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -70,7 +70,7 @@ export default class {
     @update([IDL.Float32], IDL.Opt(IDL.Opt(IDL.Bool)))
     stableMap10Remove(key: number): [[boolean] | []] | [] {
         const result = this.stableMap10.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -92,7 +92,7 @@ export default class {
     @query([IDL.Nat], IDL.Opt(User))
     stableMap11Get(key: bigint): [User] | [] {
         const result = this.stableMap11.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -102,7 +102,7 @@ export default class {
     @update([IDL.Nat, User], IDL.Opt(User))
     stableMap11Insert(key: bigint, value: User): [User] | [] {
         const result = this.stableMap11.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -132,7 +132,7 @@ export default class {
     @update([IDL.Nat], IDL.Opt(User))
     stableMap11Remove(key: bigint): [User] | [] {
         const result = this.stableMap11.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -154,7 +154,7 @@ export default class {
     @query([IDL.Vec(IDL.Nat8)], IDL.Opt(Reaction))
     stableMap12Get(key: Uint8Array): [Reaction] | [] {
         const result = this.stableMap12.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -164,7 +164,7 @@ export default class {
     @update([IDL.Vec(IDL.Nat8), Reaction], IDL.Opt(Reaction))
     stableMap12Insert(key: Uint8Array, value: Reaction): [Reaction] | [] {
         const result = this.stableMap12.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -194,7 +194,7 @@ export default class {
     @update([IDL.Vec(IDL.Nat8)], IDL.Opt(Reaction))
     stableMap12Remove(key: Uint8Array): [Reaction] | [] {
         const result = this.stableMap12.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -216,7 +216,7 @@ export default class {
     @query([IDL.Text], IDL.Opt(IDL.Principal))
     stableMap13Get(key: string): [Principal] | [] {
         const result = this.stableMap13.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -226,7 +226,7 @@ export default class {
     @update([IDL.Text, IDL.Principal], IDL.Opt(IDL.Principal))
     stableMap13Insert(key: string, value: Principal): [Principal] | [] {
         const result = this.stableMap13.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -256,7 +256,7 @@ export default class {
     @update([IDL.Text], IDL.Opt(IDL.Principal))
     stableMap13Remove(key: string): [Principal] | [] {
         const result = this.stableMap13.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -278,7 +278,7 @@ export default class {
     @query([IDL.Text], IDL.Opt(Callback))
     stableMap14Get(key: string): [Callback] | [] {
         const result = this.stableMap14.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -288,7 +288,7 @@ export default class {
     @update([IDL.Text, Callback], IDL.Opt(Callback))
     stableMap14Insert(key: string, value: Callback): [Callback] | [] {
         const result = this.stableMap14.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -318,7 +318,7 @@ export default class {
     @update([IDL.Text], IDL.Opt(Callback))
     stableMap14Remove(key: string): [Callback] | [] {
         const result = this.stableMap14.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -340,7 +340,7 @@ export default class {
     @query([Callback], IDL.Opt(IDL.Text))
     stableMap15Get(key: Callback): [string] | [] {
         const result = this.stableMap15.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -350,7 +350,7 @@ export default class {
     @update([Callback, IDL.Text], IDL.Opt(IDL.Text))
     stableMap15Insert(key: Callback, value: string): [string] | [] {
         const result = this.stableMap15.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -380,7 +380,7 @@ export default class {
     @update([Callback], IDL.Opt(IDL.Text))
     stableMap15Remove(key: Callback): [string] | [] {
         const result = this.stableMap15.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -402,7 +402,7 @@ export default class {
     @query([IDL.Text], IDL.Opt(IDL.Text))
     stableMap16Get(key: string): [string] | [] {
         const result = this.stableMap16.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [JSON.stringify(result)];
@@ -412,7 +412,7 @@ export default class {
     @update([IDL.Text, IDL.Text], IDL.Opt(IDL.Text))
     stableMap16Insert(key: string, value: string): [string] | [] {
         const result = this.stableMap16.insert(key, JSON.parse(value));
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [JSON.stringify(result)];
@@ -444,7 +444,7 @@ export default class {
     @update([IDL.Text], IDL.Opt(IDL.Text))
     stableMap16Remove(key: string): [string] | [] {
         const result = this.stableMap16.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [JSON.stringify(result)];
@@ -466,7 +466,7 @@ export default class {
     @query([IDL.Text], IDL.Opt(IDL.Text))
     stableMap17Get(key: string): [string] | [] {
         const result = this.stableMap17.get(JSON.parse(key));
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -476,7 +476,7 @@ export default class {
     @update([IDL.Text, IDL.Text], IDL.Opt(IDL.Text))
     stableMap17Insert(key: string, value: string): [string] | [] {
         const result = this.stableMap17.insert(JSON.parse(key), value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -508,7 +508,7 @@ export default class {
     @update([IDL.Text], IDL.Opt(IDL.Text))
     stableMap17Remove(key: string): [string] | [] {
         const result = this.stableMap17.remove(JSON.parse(key));
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];

@@ -22,7 +22,7 @@ export default class {
     @query([IDL.Opt(IDL.Text)], IDL.Opt(IDL.Float64))
     stableMap5Get(key: [string] | []): [number] | [] {
         const result = this.stableMap5.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -32,7 +32,7 @@ export default class {
     @update([IDL.Opt(IDL.Text), IDL.Float64], IDL.Opt(IDL.Float64))
     stableMap5Insert(key: [string] | [], value: number): [number] | [] {
         const result = this.stableMap5.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -62,7 +62,7 @@ export default class {
     @update([IDL.Opt(IDL.Text)], IDL.Opt(IDL.Float64))
     stableMap5Remove(key: [string] | []): [number] | [] {
         const result = this.stableMap5.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -84,7 +84,7 @@ export default class {
     @query([IDL.Vec(IDL.Nat64)], IDL.Opt(IDL.Bool))
     stableMap6Get(key: bigint[]): [boolean] | [] {
         const result = this.stableMap6.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -94,7 +94,7 @@ export default class {
     @update([IDL.Vec(IDL.Nat64), IDL.Bool], IDL.Opt(IDL.Bool))
     stableMap6Insert(key: bigint[], value: boolean): [boolean] | [] {
         const result = this.stableMap6.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -124,7 +124,7 @@ export default class {
     @update([IDL.Vec(IDL.Nat64)], IDL.Opt(IDL.Bool))
     stableMap6Remove(key: bigint[]): [boolean] | [] {
         const result = this.stableMap6.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -146,21 +146,20 @@ export default class {
     @query([IDL.Null], IDL.Opt(IDL.Null))
     stableMap7Get(key: null): [null] | [] {
         const result = this.stableMap7.get(key);
-        if (this.stableMap7.containsKey(key)) {
-            return [result];
-        } else {
+        if (result === undefined) {
             return [];
+        } else {
+            return [result];
         }
     }
 
     @update([IDL.Null, IDL.Null], IDL.Opt(IDL.Null))
     stableMap7Insert(key: null, value: null): [null] | [] {
-        const hasOldValue = this.stableMap7.containsKey(key);
         const result = this.stableMap7.insert(key, value);
-        if (hasOldValue === true) {
-            return [result];
-        } else {
+        if (result === undefined) {
             return [];
+        } else {
+            return [result];
         }
     }
 
@@ -186,12 +185,11 @@ export default class {
 
     @update([IDL.Null], IDL.Opt(IDL.Null))
     stableMap7Remove(key: null): [null] | [] {
-        const hasOldValue = this.stableMap7.containsKey(key);
         const result = this.stableMap7.remove(key);
-        if (hasOldValue === true) {
-            return [result];
-        } else {
+        if (result === undefined) {
             return [];
+        } else {
+            return [result];
         }
     }
 
@@ -210,21 +208,20 @@ export default class {
     @query([IDL.Bool], IDL.Opt(IDL.Null))
     stableMap8Get(key: boolean): [null] | [] {
         const result = this.stableMap8.get(key);
-        if (this.stableMap8.containsKey(key)) {
-            return [result];
-        } else {
+        if (result === undefined) {
             return [];
+        } else {
+            return [result];
         }
     }
 
     @update([IDL.Bool, IDL.Null], IDL.Opt(IDL.Null))
     stableMap8Insert(key: boolean, value: null): [null] | [] {
-        const hasOldValue = this.stableMap8.containsKey(key);
         const result = this.stableMap8.insert(key, value);
-        if (hasOldValue === true) {
-            return [result];
-        } else {
+        if (result === undefined) {
             return [];
+        } else {
+            return [result];
         }
     }
 
@@ -250,12 +247,11 @@ export default class {
 
     @update([IDL.Bool], IDL.Opt(IDL.Null))
     stableMap8Remove(key: boolean): [null] | [] {
-        const hasOldValue = this.stableMap8.containsKey(key);
         const result = this.stableMap8.remove(key);
-        if (hasOldValue === true) {
-            return [result];
-        } else {
+        if (result === undefined) {
             return [];
+        } else {
+            return [result];
         }
     }
 
@@ -274,7 +270,7 @@ export default class {
     @query([IDL.Float64], IDL.Opt(IDL.Vec(IDL.Text)))
     stableMap9Get(key: number): [string[]] | [] {
         const result = this.stableMap9.get(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -284,7 +280,7 @@ export default class {
     @update([IDL.Float64, IDL.Vec(IDL.Text)], IDL.Opt(IDL.Vec(IDL.Text)))
     stableMap9Insert(key: number, value: string[]): [string[]] | [] {
         const result = this.stableMap9.insert(key, value);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -314,7 +310,7 @@ export default class {
     @update([IDL.Float64], IDL.Opt(IDL.Vec(IDL.Text)))
     stableMap9Remove(key: number): [string[]] | [] {
         const result = this.stableMap9.remove(key);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];

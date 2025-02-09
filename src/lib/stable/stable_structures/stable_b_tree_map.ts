@@ -92,14 +92,14 @@ export class StableBTreeMap<Key = any, Value = any> {
      * Retrieves the value stored at the provided key if it exists.
      *
      * @param key - The key whose value will be retrieved
-     * @returns The value associated with the key, or null if the key doesn't exist
+     * @returns The value associated with the key, or undefined if the key doesn't exist
      */
-    get(key: Key): Value | null {
+    get(key: Key): Value | undefined {
         if (
             globalThis._azleIcStable === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
-            return null;
+            return undefined;
         }
 
         const encodedKey = this.keySerializable.toBytes(key);
@@ -116,7 +116,7 @@ export class StableBTreeMap<Key = any, Value = any> {
                   );
 
         if (encodedResult === undefined) {
-            return null;
+            return encodedResult;
         } else {
             return this.valueSerializable.fromBytes(
                 new Uint8Array(encodedResult)
@@ -131,14 +131,14 @@ export class StableBTreeMap<Key = any, Value = any> {
      * @param key - The key at which to store the value
      * @param value - The value to store
      *
-     * @returns The previous value at the key if it existed, null otherwise
+     * @returns The previous value at the key if it existed, undefined otherwise
      */
-    insert(key: Key, value: Value): Value | null {
+    insert(key: Key, value: Value): Value | undefined {
         if (
             globalThis._azleIcStable === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
-            return undefined as any;
+            return undefined;
         }
 
         const encodedKey = this.keySerializable.toBytes(key);
@@ -158,7 +158,7 @@ export class StableBTreeMap<Key = any, Value = any> {
                   );
 
         if (encodedResult === undefined) {
-            return null;
+            return encodedResult;
         } else {
             return this.valueSerializable.fromBytes(
                 new Uint8Array(encodedResult)
@@ -291,14 +291,14 @@ export class StableBTreeMap<Key = any, Value = any> {
      * Removes a key and its associated value from the map.
      *
      * @param key - The key to remove
-     * @returns The value that was associated with the key, or null if the key didn't exist
+     * @returns The value that was associated with the key, or undefined if the key didn't exist
      */
-    remove(key: Key): Value | null {
+    remove(key: Key): Value | undefined {
         if (
             globalThis._azleIcStable === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
-            return undefined as any;
+            return undefined;
         }
 
         const encodedKey = this.keySerializable.toBytes(key);
@@ -315,7 +315,7 @@ export class StableBTreeMap<Key = any, Value = any> {
                   );
 
         if (encodedValue === undefined) {
-            return null;
+            return undefined;
         } else {
             return this.valueSerializable.fromBytes(
                 new Uint8Array(encodedValue)
