@@ -266,7 +266,7 @@ function serviceCall(
         const encodedArgs = encode(paramCandidTypes, args);
 
         if (isNotify === true) {
-            return call<Uint8Array<ArrayBuffer>, void>(canisterId, methodName, {
+            return call<Uint8Array, void>(canisterId, methodName, {
                 args: encodedArgs,
                 cycles,
                 oneway: true,
@@ -274,16 +274,16 @@ function serviceCall(
             });
         } else {
             return (async (): Promise<any> => {
-                const encodedResult = await call<
-                    Uint8Array<ArrayBuffer>,
-                    Uint8Array<ArrayBuffer>
-                >(canisterId, methodName, {
-                    args: encodedArgs,
-                    cycles,
-                    raw: true
-                });
+                const encodedResult = await call<Uint8Array, Uint8Array>(
+                    canisterId,
+                    methodName,
+                    {
+                        args: encodedArgs,
+                        cycles,
+                        raw: true
+                    }
+                );
 
-                // @ts-ignore
                 return decode(returnCandidType, encodedResult);
             })();
         }

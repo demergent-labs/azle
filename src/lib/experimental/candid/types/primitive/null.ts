@@ -15,13 +15,12 @@ export class AzleNull {
 
     static tsType: Null;
 
-    static toBytes(data: Null): Uint8Array<ArrayBuffer> {
+    static toBytes(data: Null): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): Null {
-        // @ts-ignore
-        return decode<Null>(this, bytes);
+    static fromBytes(bytes: Uint8Array): Null {
+        return decode<Null>(this, bytes) as Null;
     }
 
     static getIdlType(): IDL.NullClass {

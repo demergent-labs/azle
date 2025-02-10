@@ -70,7 +70,6 @@ function addressFromPrincipal(
             .update([...prefixBytes, ...principalBytes, ...subaccountBytes])
             .digest()
     );
-    // @ts-ignore
     const checksum = to32Bits(getCrc32(hash));
 
     return toHexString(new Uint8Array([...checksum, ...hash]));

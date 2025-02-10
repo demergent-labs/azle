@@ -16,13 +16,12 @@ export class Principal extends DfinityPrincipal {
 
     static tsType: Principal;
 
-    static toBytes(data: DfinityPrincipal): Uint8Array<ArrayBuffer> {
+    static toBytes(data: DfinityPrincipal): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): DfinityPrincipal {
-        // @ts-ignore
-        return decode<DfinityPrincipal>(this, bytes);
+    static fromBytes(bytes: Uint8Array): DfinityPrincipal {
+        return decode<DfinityPrincipal>(this, bytes) as DfinityPrincipal;
     }
 
     static getIdlType(_parents: Parent[]): IDL.PrincipalClass {

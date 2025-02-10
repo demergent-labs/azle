@@ -51,7 +51,7 @@ export async function fetchIcp(
 
     const canisterPrincipal = Principal.fromText(canisterId);
 
-    const result = await call<Uint8Array<ArrayBuffer>, Uint8Array<ArrayBuffer>>(
+    const result = await call<Uint8Array, Uint8Array>(
         canisterPrincipal,
         canisterMethod,
         {
@@ -72,13 +72,13 @@ export async function fetchIcp(
     return {
         ok: true,
         arrayBuffer: async () => {
-            return result.buffer;
+            return result;
         },
         json: async () => {
             return decodedResult[0];
         },
         text: async () => {
-            return Buffer.from(result.buffer).toString();
+            return Buffer.from(result).toString();
         }
     } as any;
 }

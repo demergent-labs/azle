@@ -5,8 +5,8 @@ import { stableJson } from '../../stable/stable_structures/stable_json';
  * Please use alternative functionality exported directly from `azle`.
  */
 export interface Serializable {
-    toBytes: (data: any) => Uint8Array<ArrayBuffer>;
-    fromBytes: (bytes: Uint8Array<ArrayBuffer>) => any;
+    toBytes: (data: any) => Uint8Array;
+    fromBytes: (bytes: Uint8Array) => any;
 }
 
 /**

@@ -9,7 +9,7 @@
  * - **Call Context**:
  *   - any
  */
-export function candidDecode(candidBytes: Uint8Array<ArrayBuffer>): string {
+export function candidDecode(candidBytes: Uint8Array): string {
     if (
         globalThis._azleIcStable === undefined &&
         globalThis._azleIcExperimental === undefined
@@ -18,7 +18,7 @@ export function candidDecode(candidBytes: Uint8Array<ArrayBuffer>): string {
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        return globalThis._azleIcExperimental.candidDecode(candidBytes.buffer);
+        return globalThis._azleIcExperimental.candidDecode(candidBytes);
     }
 
     return globalThis._azleIcStable.candidDecode(candidBytes);

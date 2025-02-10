@@ -15,13 +15,12 @@ export class AzleInt32 {
 
     static tsType: int32;
 
-    static toBytes(data: int32): Uint8Array<ArrayBuffer> {
+    static toBytes(data: int32): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): int32 {
-        // @ts-ignore
-        return decode<int32>(this, bytes);
+    static fromBytes(bytes: Uint8Array): int32 {
+        return decode<int32>(this, bytes) as int32;
     }
 
     static getIdlType(): IDL.FixedIntClass {

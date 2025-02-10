@@ -15,12 +15,11 @@ export class AzleBlob {
 
     static tsType: blob;
 
-    static toBytes(data: blob): Uint8Array<ArrayBuffer> {
+    static toBytes(data: blob): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): blob {
-        // @ts-ignore
+    static fromBytes(bytes: Uint8Array): blob {
         return decode(this, bytes) as blob;
     }
 

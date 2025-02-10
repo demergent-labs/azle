@@ -15,13 +15,12 @@ export class AzleReserved {
 
     static tsType: reserved;
 
-    static toBytes(data: any): Uint8Array<ArrayBuffer> {
+    static toBytes(data: any): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): any {
-        // @ts-ignore
-        return decode(this, bytes);
+    static fromBytes(bytes: Uint8Array): any {
+        return decode(this, bytes) as any;
     }
 
     static getIdlType(): IDL.ReservedClass {

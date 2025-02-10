@@ -5,8 +5,8 @@ import { stableJson } from './stable_json';
  * Used by StableBTreeMap to store values in stable memory.
  */
 export interface Serializable {
-    toBytes: (data: any) => Uint8Array<ArrayBuffer>;
-    fromBytes: (bytes: Uint8Array<ArrayBuffer>) => any;
+    toBytes: (data: any) => Uint8Array;
+    fromBytes: (bytes: Uint8Array) => any;
 }
 
 /**

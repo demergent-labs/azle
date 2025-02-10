@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
 
-type CallOptions<Args extends any[] | Uint8Array<ArrayBuffer> | undefined> = {
+type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     /**
      * Candid types for encoding the arguments
      */
@@ -75,7 +75,7 @@ export interface CallError extends Error {
  *   - after an unsuccessful inter-canister await from a composite query
  */
 export async function call<
-    Args extends any[] | Uint8Array<ArrayBuffer> | undefined,
+    Args extends any[] | Uint8Array | undefined,
     Return = any
 >(
     canisterId: Principal | string,
@@ -120,9 +120,9 @@ function getCanisterIdBytes(
     return canister.toUint8Array() as Uint8Array<ArrayBuffer>;
 }
 
-function getArgsRaw<Args extends any[] | Uint8Array<ArrayBuffer> | undefined>(
+function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
     callOptions?: CallOptions<Args>
-): Uint8Array<ArrayBuffer> {
+): Uint8Array {
     if (callOptions?.raw === true) {
         if (callOptions?.args === undefined) {
             return new Uint8Array([68, 73, 68, 76, 0, 0]); // pre-encoded Candid empty params
@@ -156,24 +156,24 @@ function getArgsRaw<Args extends any[] | Uint8Array<ArrayBuffer> | undefined>(
     }
 }
 
-function getCyclesString<
-    Args extends any[] | Uint8Array<ArrayBuffer> | undefined
->(options?: CallOptions<Args>): string {
+function getCyclesString<Args extends any[] | Uint8Array | undefined>(
+    options?: CallOptions<Args>
+): string {
     const cycles = options?.cycles ?? 0n;
     return cycles.toString();
 }
 
 function handleOneWay<Return>(
-    canisterIdBytes: Uint8Array<ArrayBuffer>,
+    canisterIdBytes: Uint8Array,
     method: string,
-    argsRaw: Uint8Array<ArrayBuffer>,
+    argsRaw: Uint8Array,
     cyclesString: string
 ): Promise<Return> {
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.notifyRaw(
-            canisterIdBytes.buffer,
+            canisterIdBytes,
             method,
-            argsRaw.buffer,
+            argsRaw,
             cyclesString
         );
     } else {
@@ -213,9 +213,9 @@ function handleTwoWay<Return>(
             globalThis._azleIcExperimental.callRaw(
                 globalResolveId,
                 globalRejectId,
-                canisterIdBytes.buffer,
+                canisterIdBytes,
                 method,
-                argsRaw.buffer,
+                argsRaw,
                 cyclesString
             );
         } else {

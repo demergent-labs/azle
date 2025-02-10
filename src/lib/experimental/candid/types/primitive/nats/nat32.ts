@@ -15,13 +15,12 @@ export class AzleNat32 {
 
     static tsType: nat32;
 
-    static toBytes(data: nat32): Uint8Array<ArrayBuffer> {
+    static toBytes(data: nat32): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array<ArrayBuffer>): nat32 {
-        // @ts-ignore
-        return decode<nat32>(this, bytes);
+    static fromBytes(bytes: Uint8Array): nat32 {
+        return decode<nat32>(this, bytes) as nat32;
     }
 
     static getIdlType(): IDL.FixedNatClass {

@@ -154,7 +154,7 @@ function getHttpTransform(): [] | [http_transform] {
 // Calculated according to: https://internetcomputer.org/docs/current/developer-docs/gas-cost#special-features
 // and https://forum.dfinity.org/t/a-new-price-function-for-https-outcalls/20838
 function getCycles(
-    body: Uint8Array<ArrayBuffer> | undefined,
+    body: Uint8Array | undefined,
     headers: CandidHttpHeader[],
     maxResponseBytes: bigint | undefined
 ): bigint {
@@ -187,7 +187,7 @@ function getCycles(
 // TODO some of those objects might not exist in QuickJS/wasmedge-quickjs
 async function prepareRequestBody(
     init: RequestInit | undefined
-): Promise<[Uint8Array<ArrayBuffer>] | []> {
+): Promise<[Uint8Array] | []> {
     if (init === undefined) {
         return [];
     }
@@ -202,14 +202,14 @@ async function prepareRequestBody(
 
     if (typeof init.body === 'string') {
         const textEncoder = new TextEncoder();
-        return [textEncoder.encode(init.body) as Uint8Array<ArrayBuffer>];
+        return [textEncoder.encode(init.body) as Uint8Array];
     }
 
     if (
         init.body instanceof BigUint64Array ||
         init.body instanceof BigInt64Array
     ) {
-        return [new Uint8Array(init.body.buffer as ArrayBuffer)];
+        return [new Uint8Array(init.body.buffer)];
     }
 
     if (
@@ -228,7 +228,7 @@ async function prepareRequestBody(
     }
 
     if (init.body instanceof DataView) {
-        return [new Uint8Array(init.body.buffer as ArrayBuffer)];
+        return [new Uint8Array(init.body.buffer)];
     }
 
     if (init.body instanceof Blob) {
@@ -243,9 +243,7 @@ async function prepareRequestBody(
 
     if (init.body instanceof URLSearchParams) {
         const encoder = new TextEncoder();
-        return [
-            encoder.encode(init.body.toString()) as Uint8Array<ArrayBuffer>
-        ];
+        return [encoder.encode(init.body.toString())];
     }
 
     if (init.body instanceof FormData) {
