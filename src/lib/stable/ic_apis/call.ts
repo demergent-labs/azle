@@ -109,15 +109,10 @@ export async function call<
     }
 }
 
-function getCanisterIdBytes(
-    canisterId: Principal | string
-): Uint8Array<ArrayBuffer> {
-    const canister =
-        typeof canisterId === 'string'
-            ? Principal.fromText(canisterId)
-            : canisterId;
-
-    return canister.toUint8Array() as Uint8Array<ArrayBuffer>;
+function getCanisterIdBytes(canisterId: Principal | string): Uint8Array {
+    return typeof canisterId === 'string'
+        ? Principal.fromText(canisterId).toUint8Array()
+        : canisterId.toUint8Array();
 }
 
 function getArgsRaw<Args extends any[] | Uint8Array | undefined>(

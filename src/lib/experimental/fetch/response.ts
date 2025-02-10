@@ -49,7 +49,6 @@ export class AzleFetchResponse {
             chunks.push(value);
         }
 
-        // Use reduce to merge all Uint8Array chunks
         const concatenated = chunks.reduce(
             (acc, chunk) => (acc.set(chunk, acc.length), acc),
             new Uint8Array(totalLength)
