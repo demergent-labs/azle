@@ -23,7 +23,12 @@ async function init(): Promise<void> {
     let model: tf.LayersModel;
 
     app.post('/load-model', async (_req, res) => {
-        model = await tf.loadLayersModel('file://spam/model.json');
+        try {
+            model = await tf.loadLayersModel('file://spam/model.json');
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Failed to load model');
+        }
 
         res.send('Model loaded');
     });

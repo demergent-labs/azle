@@ -217,7 +217,7 @@ export class AzleApp extends LitElement {
                     ['Authorization', toJwt(this.identity)],
                     ['Content-Type', 'application/json']
                 ],
-                body: encodedText.buffer
+                body: encodedText
             }
         );
         const responseJson = await response.json();
