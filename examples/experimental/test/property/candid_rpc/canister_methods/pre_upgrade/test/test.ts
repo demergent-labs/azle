@@ -113,7 +113,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
         globalDeclarations: [],
         sourceCode: /*TS*/ `getPreUpgradeExecuted: query([], Opt(bool),() => {
             const result = stable.get(PRE_UPGRADE_HOOK_EXECUTED)
-            if (result === null) {
+            if (result === undefined) {
                 return None
             } else {
                 return Some(result)

@@ -107,7 +107,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
             @query([], IDL.Opt(IDL.Bool))
             getPreUpgradeExecuted(){
                 const result = stable.get(PRE_UPGRADE_HOOK_EXECUTED)
-                if (result === null) {
+                if (result === undefined) {
                     return []
                 } else {
                     return [result]
