@@ -127,12 +127,12 @@ function verifyCertifiedData(
         'certified_data'
     ]);
 
-    const rawDataBuffer: ArrayBuffer = new Uint8Array([
+    const candidEncodedRawData: ArrayBuffer = new Uint8Array([
         ...new TextEncoder().encode('DIDL\x00\x01\x79'),
         ...new Uint8Array(rawData)
     ]).buffer;
 
-    const decodedData = IDL.decode([IDL.Nat32], rawDataBuffer)[0];
+    const decodedData = IDL.decode([IDL.Nat32], candidEncodedRawData)[0];
 
     expect(expectedValue).toBe(decodedData);
 }

@@ -406,17 +406,17 @@ function verifyCertifiedData(
 ): void {
     const rawData = findLookupValueOrThrow(certificate, [
         'canister',
-        canisterPrincipal.toUint8Array(),
+        new Uint8Array(canisterPrincipal.toUint8Array()).buffer,
         'certified_data'
     ]);
 
     const lengthByte = String.fromCharCode(expectedValue.length);
 
-    const candidEncodedRawData = new Uint8Array([
+    const candidEncodedRawData: ArrayBuffer = new Uint8Array([
         ...new TextEncoder().encode('DIDL\x01\x6d\x7b\x01\x00'),
         ...new TextEncoder().encode(lengthByte),
         ...new Uint8Array(rawData)
-    ]);
+    ]).buffer;
 
     const decodedData = IDL.decode(
         [IDL.Vec(IDL.Nat8)],

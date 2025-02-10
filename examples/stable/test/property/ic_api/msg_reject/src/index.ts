@@ -3,14 +3,20 @@ import { IDL, msgArgData, msgReject, msgReply, query, update } from 'azle';
 export default class {
     @query([IDL.Text], undefined, { manual: true })
     alwaysRejectQuery(): void {
-        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+        const message = IDL.decode(
+            [IDL.Text],
+            new Uint8Array(msgArgData()).buffer
+        )[0] as string;
 
         msgReject(`reject proptest message: ${message}`);
     }
 
     @update([IDL.Text], undefined, { manual: true })
     alwaysRejectUpdate(): void {
-        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+        const message = IDL.decode(
+            [IDL.Text],
+            new Uint8Array(msgArgData()).buffer
+        )[0] as string;
 
         msgReject(`reject proptest message: ${message}`);
     }
@@ -19,7 +25,7 @@ export default class {
     evenOrRejectQuery(): void {
         const number = IDL.decode(
             [IDL.Int],
-            msgArgData()
+            new Uint8Array(msgArgData()).buffer
         )[0] as unknown as bigint;
 
         if (number % 2n === 0n) {
@@ -35,7 +41,7 @@ export default class {
     evenOrRejectUpdate(): void {
         const number = IDL.decode(
             [IDL.Int],
-            msgArgData()
+            new Uint8Array(msgArgData()).buffer
         )[0] as unknown as bigint;
 
         if (number % 2n === 0n) {
