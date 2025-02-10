@@ -71,7 +71,7 @@ export default class {
                 'PRE_UPGRADE_IS_IN_REPLICATED_EXECUTION'
             );
 
-        if (preUpgradeIsInReplicatedExecution === null) {
+        if (preUpgradeIsInReplicatedExecution === undefined) {
             return [];
         } else {
             return [preUpgradeIsInReplicatedExecution];

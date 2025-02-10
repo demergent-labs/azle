@@ -31,7 +31,7 @@ export default class {
     increment(): bigint {
         let counter = this.stableStorage.get('counter');
 
-        if (counter === null) {
+        if (counter === undefined) {
             trap('counter not defined');
         }
 
@@ -46,7 +46,7 @@ export default class {
     get(): bigint {
         const counter = this.stableStorage.get('counter');
 
-        if (counter === null) {
+        if (counter === undefined) {
             trap('counter not defined');
         }
 
@@ -59,7 +59,7 @@ export default class {
 
         const counter = this.stableStorage.get('counter');
 
-        if (counter === null) {
+        if (counter === undefined) {
             trap('counter not defined');
         }
 

@@ -69,7 +69,7 @@ export default class {
     @query([], StableFunc)
     getStableFunc(): StableFunc {
         const stableFunc = this.stableStorage.get('stableFunc');
-        if (stableFunc === null) {
+        if (stableFunc === undefined) {
             return [Principal.from('aaaaa-aa'), 'raw_rand'];
         }
         return stableFunc;

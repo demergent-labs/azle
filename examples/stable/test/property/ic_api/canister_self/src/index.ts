@@ -63,7 +63,7 @@ export default class {
             'PRE_UPGRADE_CANISTER_SELF'
         );
 
-        if (preUpgradeCanisterSelf === null) {
+        if (preUpgradeCanisterSelf === undefined) {
             return [];
         } else {
             return [preUpgradeCanisterSelf];

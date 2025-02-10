@@ -133,7 +133,7 @@ export default class {
 
                 const counter = this.stableStorage.get('counter');
 
-                if (counter === null) {
+                if (counter === undefined) {
                     trap('counter does not exist');
                 }
 
@@ -190,7 +190,7 @@ export default class {
         if (req.method === 'POST') {
             const counterOpt = this.stableStorage.get('counter');
             const counter =
-                counterOpt === null
+                counterOpt === undefined
                     ? trap('counter does not exist')
                     : counterOpt;
 
@@ -199,7 +199,7 @@ export default class {
             if (req.headers.find(isGzip) === undefined) {
                 const counterOpt = this.stableStorage.get('counter');
                 const counter =
-                    counterOpt === null
+                    counterOpt === undefined
                         ? trap('counter does not exist')
                         : counterOpt;
 
@@ -253,7 +253,7 @@ export default class {
             case 'next': {
                 const counterOpt = this.stableStorage.get('counter');
                 const counter =
-                    counterOpt === null
+                    counterOpt === undefined
                         ? trap('counter does not exist')
                         : counterOpt;
 

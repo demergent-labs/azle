@@ -26,7 +26,7 @@ export default class {
     async ethGetBalance(ethereumAddress: string): Promise<string> {
         const url = this.stableStorage.get('ethereumUrl');
 
-        if (url === null) {
+        if (url === undefined) {
             throw new Error('ethereumUrl is not defined');
         }
 
@@ -37,7 +37,7 @@ export default class {
     async ethGetBlockByNumber(number: number): Promise<string> {
         const urlOpt = this.stableStorage.get('ethereumUrl');
 
-        if (urlOpt === null) {
+        if (urlOpt === undefined) {
             throw new Error('ethereumUrl is not defined');
         }
 
