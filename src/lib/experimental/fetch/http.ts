@@ -202,7 +202,7 @@ async function prepareRequestBody(
 
     if (typeof init.body === 'string') {
         const textEncoder = new TextEncoder();
-        return [textEncoder.encode(init.body) as Uint8Array];
+        return [textEncoder.encode(init.body)];
     }
 
     if (

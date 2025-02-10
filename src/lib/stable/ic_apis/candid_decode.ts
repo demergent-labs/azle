@@ -18,7 +18,9 @@ export function candidDecode(candidBytes: Uint8Array): string {
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        return globalThis._azleIcExperimental.candidDecode(candidBytes);
+        return globalThis._azleIcExperimental.candidDecode(
+            new Uint8Array(candidBytes).buffer
+        );
     }
 
     return globalThis._azleIcStable.candidDecode(candidBytes);

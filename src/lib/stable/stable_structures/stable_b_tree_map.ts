@@ -73,7 +73,7 @@ export class StableBTreeMap<Key = any, Value = any> {
         if (globalThis._azleIcExperimental !== undefined) {
             return globalThis._azleIcExperimental.stableBTreeMapContainsKey(
                 this.memoryId.toString(),
-                encodedKey.buffer
+                new Uint8Array(encodedKey).buffer
             );
         }
 
@@ -103,7 +103,7 @@ export class StableBTreeMap<Key = any, Value = any> {
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapGet(
                       this.memoryId.toString(),
-                      encodedKey.buffer
+                      new Uint8Array(encodedKey).buffer
                   )
                 : globalThis._azleIcStable.stableBTreeMapGet(
                       this.memoryId,
@@ -142,8 +142,8 @@ export class StableBTreeMap<Key = any, Value = any> {
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapInsert(
                       this.memoryId.toString(),
-                      encodedKey.buffer,
-                      encodedValue.buffer
+                      new Uint8Array(encodedKey).buffer,
+                      new Uint8Array(encodedValue).buffer
                   )
                 : globalThis._azleIcStable.stableBTreeMapInsert(
                       this.memoryId,
@@ -299,7 +299,7 @@ export class StableBTreeMap<Key = any, Value = any> {
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapRemove(
                       this.memoryId.toString(),
-                      encodedKey.buffer
+                      new Uint8Array(encodedKey).buffer
                   )
                 : globalThis._azleIcStable.stableBTreeMapRemove(
                       this.memoryId,

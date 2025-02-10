@@ -20,7 +20,7 @@ export class AzleReserved {
     }
 
     static fromBytes(bytes: Uint8Array): any {
-        return decode(this, bytes) as any;
+        return decode(this, bytes);
     }
 
     static getIdlType(): IDL.ReservedClass {

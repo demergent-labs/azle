@@ -61,8 +61,8 @@ export async function fetchIcp(
         }
     );
 
-    // @ts-ignore
-    const decodedResult = IDL.decode(funcIdl.retTypes, result);
+    const resultBytes: Uint8Array<ArrayBuffer> = new Uint8Array(result);
+    const decodedResult = IDL.decode(funcIdl.retTypes, resultBytes.buffer);
 
     // Using Response from wasmedge-quickjs doesn't seem ideal for the time being
     // It seems very tied to the low-level implementation at first glance
@@ -72,13 +72,13 @@ export async function fetchIcp(
     return {
         ok: true,
         arrayBuffer: async () => {
-            return result;
+            return result.buffer;
         },
         json: async () => {
             return decodedResult[0];
         },
         text: async () => {
-            return Buffer.from(result).toString();
+            return Buffer.from(result.buffer).toString();
         }
     } as any;
 }

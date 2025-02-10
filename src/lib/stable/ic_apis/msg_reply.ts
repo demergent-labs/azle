@@ -28,6 +28,6 @@ export function msgReply(data: Uint8Array): void {
     }
 
     return globalThis._azleIcExperimental !== undefined
-        ? globalThis._azleIcExperimental.msgReply(data.buffer)
+        ? globalThis._azleIcExperimental.msgReply(new Uint8Array(data).buffer)
         : globalThis._azleIcStable.msgReply(data);
 }

@@ -37,7 +37,25 @@ export class AzleFetchResponse {
             return new ArrayBuffer(0);
         }
 
-        return (this.body as unknown as Uint8Array | Buffer).buffer;
+        let reader = this.body.getReader();
+        let chunks: Uint8Array[] = [];
+        let totalLength = 0;
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+            totalLength += value.length;
+            chunks.push(value);
+        }
+
+        // Use reduce to merge all Uint8Array chunks
+        const concatenated = chunks.reduce(
+            (acc, chunk) => (acc.set(chunk, acc.length), acc),
+            new Uint8Array(totalLength)
+        );
+
+        return new Uint8Array(concatenated).buffer;
     }
 
     async bytes(): Promise<Uint8Array> {

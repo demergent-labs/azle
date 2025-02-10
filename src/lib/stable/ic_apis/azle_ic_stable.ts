@@ -79,10 +79,7 @@ export type AzleIcStable = {
         length: number
     ) => Uint8Array[];
     stableBTreeMapLen: (memoryId: number) => number;
-    stableBTreeMapRemove: (
-        memoryId: number,
-        encodedKey: Uint8Array
-    ) => Uint8Array;
+    stableBTreeMapRemove(memoryId: number, encodedKey: Uint8Array): Uint8Array;
     stableBTreeMapValues: (
         memoryId: number,
         startIndex: number,
