@@ -16,11 +16,12 @@ export default class {
         }
 
         if (msgMethodName() === 'inspectMessageTrap') {
-            const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+            const message = IDL.decode(
+                [IDL.Text],
+                new Uint8Array(msgArgData()).buffer
+            )[0] as string;
 
             trap(`trap proptest message: ${message}`);
-
-            return false;
         } else {
             return true;
         }

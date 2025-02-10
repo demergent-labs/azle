@@ -98,7 +98,10 @@ export default class {
     // Updates
     @update([IDL.Text], IDL.Text, { manual: true })
     manualUpdate(): void {
-        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+        const message = IDL.decode(
+            [IDL.Text],
+            new Uint8Array(msgArgData()).buffer
+        )[0] as string;
 
         if (message === 'reject') {
             msgReject(message);
@@ -193,7 +196,10 @@ export default class {
     // Queries
     @query([IDL.Text], IDL.Text, { manual: true })
     manualQuery(): void {
-        const message = IDL.decode([IDL.Text], msgArgData())[0] as string;
+        const message = IDL.decode(
+            [IDL.Text],
+            new Uint8Array(msgArgData()).buffer
+        )[0] as string;
 
         if (message === 'reject') {
             msgReject(message);

@@ -5,6 +5,7 @@
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
         "module": "ES2022",
+        "moduleResolution": "node",
         "strict": true,
         "target": "ES2024",
         "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
