@@ -2,7 +2,6 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { describe, expect, test } from '@jest/globals';
-import { execSync } from 'child_process';
 import { join } from 'path';
 
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
@@ -74,9 +73,12 @@ export function runTests(
 }
 
 async function verifyTypeCheckCommand(typeCheckCommand: string): Promise<void> {
-    const configString = execSync(`${typeCheckCommand} --showConfig`, {
-        encoding: 'utf8'
-    });
+    const configString = execSyncPretty(
+        `${typeCheckCommand} --showConfig`,
+        'pipe'
+    )
+        .toString()
+        .trim();
     const configJson = JSON.parse(configString);
     const tsConfigPath = join(process.cwd(), 'tsconfig.json');
     const tsConfigJson = JSON.parse(await readFile(tsConfigPath, 'utf8'));
