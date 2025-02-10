@@ -85,11 +85,13 @@ async function verifyTypeCheckCommand(typeCheckCommand: string): Promise<void> {
     expect(configJson).toMatchObject({
         ...tsConfigJson,
         compilerOptions: {
-            target: tsConfigJson.compilerOptions.target.toLowerCase(),
-            module: tsConfigJson.compilerOptions.module.toLowerCase(),
-            outDir: expect.stringMatching(tsConfigJson.compilerOptions.outDir),
+            target: tsConfigJson.compilerOptions?.target?.toLowerCase(),
+            module: tsConfigJson.compilerOptions?.module?.toLowerCase(),
+            outDir: expect.stringMatching(
+                tsConfigJson.compilerOptions?.outDir ?? ''
+            ),
             moduleResolution: expect.stringMatching(
-                tsConfigJson.compilerOptions.moduleResolution
+                tsConfigJson.compilerOptions?.moduleResolution ?? ''
             )
         }
     });
