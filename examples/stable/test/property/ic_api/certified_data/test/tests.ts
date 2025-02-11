@@ -378,9 +378,11 @@ async function createAndVerifyCertificate(
 
     const certificate = new Uint8Array(certificateBytes[0]).buffer;
 
+    const rootKey = await agent.fetchRootKey();
+
     return await Certificate.create({
         certificate,
-        rootKey: agent.rootKey,
+        rootKey,
         canisterId: canisterPrincipal
     });
 }
