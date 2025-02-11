@@ -16,7 +16,8 @@ const recursiveCanisterName = 'recursive_canister';
 
 const recursionCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 
@@ -24,7 +25,8 @@ const recursiveCanister = createRecursiveActor(
     getCanisterId(recursiveCanisterName),
     {
         agentOptions: {
-            host: 'http://127.0.0.1:8000'
+            host: 'http://127.0.0.1:8000',
+            shouldFetchRootKey: true
         }
     }
 );

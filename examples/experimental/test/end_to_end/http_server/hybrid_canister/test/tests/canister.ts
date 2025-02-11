@@ -8,7 +8,8 @@ export function getTests(): Test {
     const origin = `http://${canisterId}.raw.localhost:8000`;
     const actor = createActor(canisterId, {
         agentOptions: {
-            host: 'http://127.0.0.1:8000'
+            host: 'http://127.0.0.1:8000',
+            shouldFetchRootKey: true
         }
     });
 
