@@ -4,7 +4,7 @@ import {
     ecdsa_public_key_result,
     sign_with_ecdsa_args,
     sign_with_ecdsa_result
-} from 'azle/canisters/management';
+} from 'azle/canisters/management/idl';
 import { blob, Canister, Record, serialize, update } from 'azle/experimental';
 
 const PublicKey = Record({

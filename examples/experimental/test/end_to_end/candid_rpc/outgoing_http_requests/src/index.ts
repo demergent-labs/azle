@@ -2,7 +2,7 @@ import { call, candidEncode, canisterSelf, msgReply } from 'azle';
 import {
     http_request_args,
     http_request_result
-} from 'azle/canisters/management';
+} from 'azle/canisters/management/idl';
 import {
     Canister,
     ic,
