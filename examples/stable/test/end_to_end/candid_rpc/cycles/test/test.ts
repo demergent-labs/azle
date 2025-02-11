@@ -10,7 +10,8 @@ import { createActor as createIntermediaryActor } from './dfx_generated/intermed
 const cyclesCanisterName = 'cycles';
 const cyclesCanister = createCyclesActor(getCanisterId(cyclesCanisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 
@@ -19,7 +20,8 @@ const intermediaryCanister = createIntermediaryActor(
     getCanisterId(intermediaryCanisterName),
     {
         agentOptions: {
-            host: 'http://127.0.0.1:8000'
+            host: 'http://127.0.0.1:8000',
+            shouldFetchRootKey: true
         }
     }
 );

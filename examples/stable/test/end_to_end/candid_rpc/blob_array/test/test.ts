@@ -7,7 +7,8 @@ import { createActor } from './dfx_generated/blob_array';
 const canisterName = 'blob_array';
 const blobCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 

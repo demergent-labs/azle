@@ -74,6 +74,8 @@ function createConfig(id: number): Config {
     const canister = createActor(walletBackendCanisterId, {
         agentOptions: {
             host: 'http://127.0.0.1:8000',
+            shouldFetchRootKey: true,
+
             identity
         }
     });
