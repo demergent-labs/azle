@@ -27,9 +27,7 @@ export function RemoveTestArb(
 
             const returnTypeObject = `IDL.Opt(${stableBTreeMap.valueSample.src.typeObject})`;
             const returnTypeAnnotation = `[${stableBTreeMap.valueSample.src.typeAnnotation}] | []`;
-            const valueTypeIsNull =
-                stableBTreeMap.valueSample.src.typeAnnotation === 'null';
-            const body = generateBody(stableBTreeMap.name, valueTypeIsNull);
+            const body = generateBody(stableBTreeMap.name);
 
             const tests = generateTests(
                 functionName,
@@ -49,18 +47,10 @@ export function RemoveTestArb(
         });
 }
 
-function generateBody(
-    stableBTreeMapName: string,
-    valueTypeIsNull: boolean
-): string {
+function generateBody(stableBTreeMapName: string): string {
     return /*TS*/ `
-        ${
-            valueTypeIsNull
-                ? `const containsKey = ${stableBTreeMapName}.containsKey(param0);`
-                : ''
-        }
         const result = ${stableBTreeMapName}.remove(param0);
-        if (result === undefined ${valueTypeIsNull ? '&& !containsKey' : ''}) {
+        if (result === undefined) {
             return []
         } else {
             return [result]
