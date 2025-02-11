@@ -4,7 +4,7 @@ import {
     TransferArgs,
     TransferResult,
     Value
-} from 'azle/canisters/icrc_1';
+} from 'azle/canisters/icrc_1/idl';
 import {
     AllowanceArgs,
     AllowanceResult,
@@ -13,7 +13,7 @@ import {
     SupportedStandard,
     TransferFromArgs,
     TransferFromResult
-} from 'azle/canisters/icrc_2';
+} from 'azle/canisters/icrc_2/idl';
 
 export default class {
     icrcPrincipal = getIcrcPrincipal();

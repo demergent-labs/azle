@@ -15,7 +15,7 @@ import {
     TransferFee,
     TransferFeeArg,
     TransferResult
-} from 'azle/canisters/icp';
+} from 'azle/canisters/icp/idl';
 
 export default class {
     icpCanisterPrincipal = getIcpCanisterPrincipal();

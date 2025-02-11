@@ -24,7 +24,7 @@ import {
     update_settings_args,
     upload_chunk_args,
     upload_chunk_result
-} from 'azle/canisters/management';
+} from 'azle/canisters/management/idl';
 
 type State = {
     createdCanisterId: Principal;

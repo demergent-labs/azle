@@ -12,7 +12,7 @@ import {
     http_request_args,
     http_request_result,
     http_transform_args
-} from 'azle/canisters/management';
+} from 'azle/canisters/management/idl';
 
 export default class {
     stableStorage = new StableBTreeMap<string, string>(0);

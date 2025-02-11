@@ -5,7 +5,7 @@ import {
     SupportedStandard,
     TransferArgs,
     TransferResult
-} from 'azle/canisters/icrc_1';
+} from 'azle/canisters/icrc_1/idl';
 import {
     AllowanceArgs,
     AllowanceResult,
@@ -13,7 +13,7 @@ import {
     ApproveResult,
     TransferFromArgs,
     TransferFromResult
-} from 'azle/canisters/icrc_2';
+} from 'azle/canisters/icrc_2/idl';
 import {
     Canister,
     nat,
