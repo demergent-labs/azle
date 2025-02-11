@@ -60,7 +60,7 @@ function generateBody(
                 : ''
         }
         const result = ${stableBTreeMapName}.remove(param0);
-        if (result === null ${valueTypeIsNull ? '&& !containsKey' : ''}) {
+        if (result === undefined ${valueTypeIsNull ? '&& !containsKey' : ''}) {
             return []
         } else {
             return [result]

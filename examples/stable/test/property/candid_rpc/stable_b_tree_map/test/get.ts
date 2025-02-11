@@ -61,7 +61,7 @@ function generateBody(
                 ? `const containsKey = ${stableBTreeMapName}.containsKey(param0);`
                 : ''
         }
-        if (result === null ${valueTypeIsNull ? '&& !containsKey' : ''}) {
+        if (result === undefined ${valueTypeIsNull ? '&& !containsKey' : ''}) {
             return []
         } else {
             return [result]

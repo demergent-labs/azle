@@ -52,7 +52,7 @@ export function InsertTestArb(
 function generateBody(stableBTreeMapName: string): string {
     return /*TS*/ `
         const result = ${stableBTreeMapName}.insert(param0, param1);
-        if (result === null) {
+        if (result === undefined) {
             return []
         } else {
             return [result]
