@@ -5,7 +5,7 @@
         "module": "ES2022",
         "moduleResolution": "bundler",
         "allowJs": true,
-        "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
+        "noEmit": true,
         "resolveJsonModule": true,
         "esModuleInterop": true
     },
