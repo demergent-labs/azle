@@ -10,7 +10,8 @@ import { getTests } from './tests';
 const canisterName = 'ledger_canister';
 const ledgerCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 
