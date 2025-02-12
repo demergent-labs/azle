@@ -158,7 +158,7 @@ export function getTsConfigPath(): string {
     if (existsSync('tsconfig.json')) {
         return 'tsconfig.json';
     }
-    return join(AZLE_PACKAGE_PATH, 'tsconfig.json');
+    return join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json');
 }
 
 function experimentalMessage(importName: string): string {
