@@ -22,7 +22,7 @@ export function isController(principal: Principal): boolean {
 
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.isController(
-            principal.toUint8Array().buffer
+            new Uint8Array(principal.toUint8Array()).buffer
         );
     }
 

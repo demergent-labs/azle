@@ -21,12 +21,14 @@ import { DecodeVisitor } from './visitors/decode_visitor';
  */
 export function decode<T = any>(
     candidType: CandidType | CandidType[],
-    data: ArrayBuffer
+    data: Uint8Array | ArrayBuffer
 ): T | T[] {
+    const dataBytes: Uint8Array<ArrayBuffer> = new Uint8Array(data);
+    const dataBuffer: ArrayBuffer = dataBytes.buffer;
     if (Array.isArray(candidType)) {
-        return decodeMultiple(candidType, data);
+        return decodeMultiple(candidType, dataBuffer);
     }
-    return decodeSingle(candidType, data);
+    return decodeSingle(candidType, dataBuffer);
 }
 
 function decodeSingle(candidType: CandidType, data: ArrayBuffer): any {

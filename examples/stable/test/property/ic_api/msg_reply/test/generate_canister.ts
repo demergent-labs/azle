@@ -14,7 +14,7 @@ ${variableAliasDeclarations.join('\n')}
 export default class {
     @query([${idlType}], ${idlType}, { manual: true })
     alwaysReplyQuery(): void {
-        const input = IDL.decode([${idlType}], msgArgData())[0] as unknown as ${tsType};
+        const input = IDL.decode([${idlType}], new Uint8Array(msgArgData()).buffer)[0] as unknown as ${tsType};
 
         const encoded = new Uint8Array(IDL.encode([${idlType}], [input]));
 
@@ -23,7 +23,7 @@ export default class {
 
     @update([${idlType}], ${idlType}, { manual: true })
     alwaysReplyUpdate(): void {
-        const input = IDL.decode([${idlType}], msgArgData())[0] as unknown as ${tsType};
+        const input = IDL.decode([${idlType}], new Uint8Array(msgArgData()).buffer)[0] as unknown as ${tsType};
 
         const encoded = new Uint8Array(IDL.encode([${idlType}], [input]));
 

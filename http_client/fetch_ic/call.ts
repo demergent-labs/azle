@@ -113,16 +113,21 @@ async function prepareRequestBody(
     }
 
     if (
+        init.body instanceof BigUint64Array ||
+        init.body instanceof BigInt64Array
+    ) {
+        return new Uint8Array(init.body.buffer);
+    }
+
+    if (
         init.body instanceof ArrayBuffer ||
         init.body instanceof Uint8Array ||
         init.body instanceof Uint8ClampedArray ||
         init.body instanceof Uint16Array ||
         init.body instanceof Uint32Array ||
-        init.body instanceof BigUint64Array ||
         init.body instanceof Int8Array ||
         init.body instanceof Int16Array ||
         init.body instanceof Int32Array ||
-        init.body instanceof BigInt64Array ||
         init.body instanceof Float32Array ||
         init.body instanceof Float64Array
     ) {

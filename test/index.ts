@@ -2,9 +2,13 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { describe, expect, test } from '@jest/globals';
+import { join } from 'path';
 
 import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
+
 export { expect } from '@jest/globals';
+import { readFile } from 'fs/promises';
+
 import { runBenchmarksForCanisters } from './benchmarks';
 import { runFuzzTests } from './fuzz';
 
@@ -36,12 +40,11 @@ export function runTests(
 
     if (shouldRunTypeChecks === true) {
         describe(`type checks`, () => {
-            it('checks types', () => {
+            it('checks types', async () => {
+                const typeCheckCommand = `npm exec --offline tsc -- --noEmit --skipLibCheck`;
+                await verifyTypeCheckCommand(typeCheckCommand);
                 try {
-                    execSyncPretty(
-                        `npm exec --offline tsc -- --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
-                        'inherit'
-                    );
+                    execSyncPretty(typeCheckCommand, 'inherit');
                 } catch {
                     expect('Type checking failed').toBe(
                         'Type checking to pass'
@@ -67,6 +70,29 @@ export function runTests(
             it('runs fuzz tests for all canisters', runFuzzTests);
         });
     }
+}
+
+async function verifyTypeCheckCommand(typeCheckCommand: string): Promise<void> {
+    const configString = execSyncPretty(
+        `${typeCheckCommand} --showConfig`,
+        'pipe'
+    )
+        .toString()
+        .trim();
+    const configJson = JSON.parse(configString);
+    const tsConfigPath = join(process.cwd(), 'tsconfig.json');
+    const tsConfigJson = JSON.parse(await readFile(tsConfigPath, 'utf8'));
+    expect(configJson).toMatchObject({
+        ...tsConfigJson,
+        compilerOptions: {
+            target: tsConfigJson.compilerOptions.target.toLowerCase(),
+            module: tsConfigJson.compilerOptions.module.toLowerCase(),
+            outDir: expect.stringMatching(tsConfigJson.compilerOptions.outDir),
+            moduleResolution: expect.stringMatching(
+                tsConfigJson.compilerOptions.moduleResolution
+            )
+        }
+    });
 }
 
 export function wait(name: string, delay: number): void {

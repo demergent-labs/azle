@@ -172,9 +172,9 @@ function handleOneWay<Return>(
 ): Promise<Return> {
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.notifyRaw(
-            canisterIdBytes.buffer,
+            new Uint8Array(canisterIdBytes).buffer,
             method,
-            argsRaw.buffer,
+            new Uint8Array(argsRaw).buffer,
             cyclesString
         );
     } else {
@@ -214,9 +214,9 @@ function handleTwoWay<Return>(
             globalThis._azleIcExperimental.callRaw(
                 globalResolveId,
                 globalRejectId,
-                canisterIdBytes.buffer,
+                new Uint8Array(canisterIdBytes).buffer,
                 method,
-                argsRaw.buffer,
+                new Uint8Array(argsRaw).buffer,
                 cyclesString
             );
         } else {

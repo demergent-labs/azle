@@ -13,7 +13,7 @@ export default class {
     init(): void {
         const tuple = IDL.decode(
             [IDL.Tuple(IDL.Text, User)],
-            msgArgData()
+            new Uint8Array(msgArgData()).buffer
         )[0] as [string, User];
 
         this.greeting = tuple[0];

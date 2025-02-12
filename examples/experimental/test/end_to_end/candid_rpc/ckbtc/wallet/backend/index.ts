@@ -2,7 +2,11 @@
 // better using the latest Wasm and did that I know of
 
 import { call, canisterSelf, IDL, msgCaller } from 'azle';
-import { Account, TransferArgs, TransferResult } from 'azle/canisters/icrc_1';
+import {
+    Account,
+    TransferArgs,
+    TransferResult
+} from 'azle/canisters/icrc_1/idl';
 import {
     blob,
     Canister,
