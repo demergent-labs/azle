@@ -4,6 +4,8 @@ import { outputFile } from 'fs-extra';
 import { copy } from 'fs-extra/esm';
 import { join } from 'path';
 
+import { AZLE_PACKAGE_PATH } from '../utils/global_paths';
+
 export async function runCommand(
     azleVersion: string,
     templatePath: string
@@ -27,6 +29,15 @@ export async function runCommand(
     await outputFile(
         join(projectName, 'package.json'),
         JSON.stringify(parsedPackageJson, null, 4)
+    );
+
+    const tsconfig = await readFile(
+        join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json')
+    );
+
+    await outputFile(
+        join(projectName, 'tsconfig.json'),
+        JSON.stringify(tsconfig, null, 4)
     );
 
     console.info(`${projectName} created successfully`);
