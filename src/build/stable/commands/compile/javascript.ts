@@ -1,5 +1,9 @@
 import { build, BuildOptions } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
+import { existsSync } from 'fs';
+import { join } from 'path';
+
+import { AZLE_PACKAGE_PATH } from '../../utils/global_paths';
 
 export async function compile(main: string): Promise<string> {
     const prelude = getPrelude(main);
@@ -145,9 +149,16 @@ export function getBuildOptions(ts: string): BuildOptions {
                     );
                 }
             },
-            esbuildPluginTsc()
+            esbuildPluginTsc({ tsconfigPath: getTsConfigPath() })
         ]
     };
+}
+
+export function getTsConfigPath(): string {
+    if (existsSync('tsconfig.json')) {
+        return 'tsconfig.json';
+    }
+    return join(AZLE_PACKAGE_PATH, 'tsconfig.json');
 }
 
 function experimentalMessage(importName: string): string {
