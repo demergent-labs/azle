@@ -194,7 +194,7 @@ export function idlDecode(
     bytes: Uint8Array
 ): JsonValue[] {
     try {
-        return IDL.decode(retTypes, bytes);
+        return IDL.decode(retTypes, new Uint8Array(bytes).buffer);
     } catch (error) {
         throw new Error(`Failed to decode Candid bytes: ${error}`);
     }

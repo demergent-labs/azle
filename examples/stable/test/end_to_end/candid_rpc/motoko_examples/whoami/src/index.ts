@@ -27,7 +27,7 @@ class WhoAmI {
     postUpgrade(): void {
         const somebody = IDL.decode(
             [IDL.Principal],
-            msgArgData()
+            new Uint8Array(msgArgData()).buffer
         )[0] as unknown as Principal;
 
         this.install = msgCaller();
