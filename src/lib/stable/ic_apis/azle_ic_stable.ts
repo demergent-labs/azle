@@ -68,6 +68,7 @@ export type AzleIcStable = {
     ) => Uint8Array | undefined;
     stableBTreeMapIsEmpty: (memoryId: number) => boolean;
     // TODO should these indexes and lengths be bigints for future proofing?
+    // TODO handle this todo now
     stableBTreeMapItems: (
         memoryId: number,
         startIndex: number,
@@ -78,8 +79,11 @@ export type AzleIcStable = {
         startIndex: number,
         length: number
     ) => Uint8Array[];
-    stableBTreeMapLen: (memoryId: number) => number;
-    stableBTreeMapRemove(memoryId: number, encodedKey: Uint8Array): Uint8Array;
+    stableBTreeMapLen: (memoryId: number) => bigint;
+    stableBTreeMapRemove(
+        memoryId: number,
+        encodedKey: Uint8Array
+    ): Uint8Array | undefined;
     stableBTreeMapValues: (
         memoryId: number,
         startIndex: number,

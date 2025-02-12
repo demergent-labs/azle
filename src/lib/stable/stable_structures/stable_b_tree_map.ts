@@ -282,9 +282,7 @@ export class StableBTreeMap<Key = any, Value = any> {
             );
         }
 
-        return BigInt(
-            globalThis._azleIcStable.stableBTreeMapLen(this.memoryId)
-        );
+        return globalThis._azleIcStable.stableBTreeMapLen(this.memoryId);
     }
 
     /**
