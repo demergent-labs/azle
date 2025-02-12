@@ -1,4 +1,4 @@
 {
-    "extends": "../../../../../../tsconfig.dev.json",
+    "extends": "../../../../../../tsconfig.jest.json",
     "compilerOptions": { "resolveJsonModule": true }
 }
