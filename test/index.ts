@@ -39,7 +39,7 @@ export function runTests(
     if (shouldRunTypeChecks === true) {
         describe(`type checks`, () => {
             it('checks types', async () => {
-                const typeCheckCommand = `npm exec --offline tsc -- --noEmit --skipLibCheck`;
+                const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`;
                 try {
                     execSyncPretty(typeCheckCommand, 'inherit');
                 } catch {

@@ -3,7 +3,7 @@
     "version": "0.25.0",
     "description": "TypeScript and JavaScript CDK for the Internet Computer",
     "scripts": {
-        "typecheck": "tsc --noEmit --skipLibCheck",
+        "typecheck": "tsc --skipLibCheck",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --cache --fix; else eslint . --cache; fi",
         "prepare": "husky",
         "install": "cd dfx_extension && ./install.sh",
