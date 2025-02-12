@@ -1,4 +1,4 @@
 {
-    "extends": "../../../../../../../tsconfig.jest.json",
+    "extends": "../../../../../../../tsconfig.examples.json",
     "compilerOptions": { "esModuleInterop": true }
 }
