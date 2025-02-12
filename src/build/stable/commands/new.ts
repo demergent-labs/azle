@@ -31,8 +31,10 @@ export async function runCommand(
         JSON.stringify(parsedPackageJson, null, 4)
     );
 
-    const tsconfig = await readFile(
-        join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json')
+    const tsconfig = JSON.parse(
+        await readFile(join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json'), {
+            encoding: 'utf-8'
+        })
     );
 
     await outputFile(
