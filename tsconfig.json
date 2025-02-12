@@ -1,8 +1,6 @@
 {
     "extends": "./tsconfig.dev.json",
     "compilerOptions": {
-        "allowJs": true,
-        "noEmit": true,
         "resolveJsonModule": true,
         "esModuleInterop": true
     },
