@@ -7,11 +7,11 @@
     "dependencies": {
         "@dfinity/auth-client": "^2.3.0",
         "azle": "0.25.0",
-        "express": "^5.0.1",
+        "express": "^4.21.2",
         "lit": "^3.1.2",
         "vite": "^6.1.0"
     },
     "devDependencies": {
-        "@types/express": "^5.0.0"
+        "@types/express": "^4.17.21"
     }
 }
