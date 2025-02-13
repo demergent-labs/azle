@@ -28,7 +28,9 @@
         "./dfx": "./dfx/index.ts",
         "./test": "./test/index.ts",
         "./test/jest_link": "./test/jest_link.ts",
-        "./src/lib/stable/globals": "./src/lib/stable/globals.ts"
+        "./src/lib/stable/globals": "./src/lib/stable/globals.ts",
+        "./src/lib/experimental": "./src/lib/experimental/index.ts",
+        "./src/lib/experimental/globals": "./src/lib/experimental/globals.ts"
     },
     "repository": {
         "type": "git",
