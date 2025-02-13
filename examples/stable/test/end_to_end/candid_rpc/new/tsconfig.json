@@ -1,4 +1,4 @@
 {
-    "extends": "../../../../../../tsconfig.examples.json",
+    "extends": "../../../../../../tsconfig.dev.json",
     "compilerOptions": { "resolveJsonModule": true }
 }

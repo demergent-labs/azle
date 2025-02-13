@@ -1,5 +1,5 @@
 {
-    "extends": "../../../../../../tsconfig.examples.json",
+    "extends": "../../../../../../tsconfig.dev.json",
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true
