@@ -25,12 +25,15 @@
         "./canisters/icrc_10/idl": "./canisters/icrc_10/idl/index.ts",
         "./canisters/icrc_37/idl": "./canisters/icrc_37/idl/index.ts",
         "./experimental": "./src/lib/experimental/index.ts",
+        "./experimental/canisters/management": "./experimental/canisters/management/index.ts",
+        "./experimental/canisters/icrc": "./experimental/canisters/icrc/index.ts",
+        "./experimental/canisters/ledger": "./experimental/canisters/ledger/index.ts",
         "./dfx": "./dfx/index.ts",
         "./test": "./test/index.ts",
         "./test/jest_link": "./test/jest_link.ts",
         "./src/lib/stable/globals": "./src/lib/stable/globals.ts",
         "./src/lib/experimental": "./src/lib/experimental/index.ts",
-        "./src/lib/experimental/globals": "./src/lib/experimental/globals.ts"
+        "./src/lib/experimental/*": "./src/lib/experimental/*.ts"
     },
     "repository": {
         "type": "git",
