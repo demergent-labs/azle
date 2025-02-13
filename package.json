@@ -13,7 +13,19 @@
     "bin": {
         "azle": "./src/build/index.ts"
     },
-    "main": "./src/lib/stable/index.ts",
+    "exports": {
+        ".": "./src/lib/stable/index.ts",
+        "./canisters/*": "./canisters/*.ts",
+        "./canisters/management/idl": "./canisters/management/idl/index.ts",
+        "./canisters/icp/idl": "./canisters/icp/idl/index.ts",
+        "./canisters/icrc_1/idl": "./canisters/icrc_1/idl/index.ts",
+        "./canisters/icrc_2/idl": "./canisters/icrc_2/idl/index.ts",
+        "./canisters/icrc_3/idl": "./canisters/icrc_3/idl/index.ts",
+        "./canisters/icrc_7/idl": "./canisters/icrc_7/idl/index.ts",
+        "./canisters/icrc_10/idl": "./canisters/icrc_10/idl/index.ts",
+        "./canisters/icrc_37/idl": "./canisters/icrc_37/idl/index.ts",
+        "./experimental": "./src/lib/experimental/index.ts"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/demergent-labs/azle.git"
