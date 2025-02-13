@@ -5,6 +5,7 @@ import { join } from 'path';
 import {
     bundle,
     getBuildOptions as getStableBuildOptions,
+    getTsConfigPath,
     handleClassApiCanister
 } from '../../../stable/commands/compile/javascript';
 import { AZLE_PACKAGE_PATH } from '../../../stable/utils/global_paths';
@@ -188,6 +189,6 @@ export function getBuildOptions(
             ...esmAliases
         },
         external: [...externalImplemented, ...externalNotImplemented],
-        plugins: [esbuildPluginTsc()]
+        plugins: [esbuildPluginTsc({ tsconfigPath: getTsConfigPath() })]
     };
 }

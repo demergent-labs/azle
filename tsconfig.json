@@ -1,13 +1,8 @@
 {
+    "extends": "./tsconfig.dev.json",
     "compilerOptions": {
-        "strict": true,
-        "target": "ES2024",
-        "module": "ES2022",
-        "moduleResolution": "node",
-        "allowJs": true,
-        "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
         "resolveJsonModule": true,
         "esModuleInterop": true
     },
-    "exclude": ["examples/new"]
+    "exclude": ["examples"]
 }
