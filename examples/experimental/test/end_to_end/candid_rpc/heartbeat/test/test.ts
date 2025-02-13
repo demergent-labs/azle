@@ -10,7 +10,8 @@ const heartbeatAsyncCanister = createActorHeartbeatAsync(
     getCanisterId(heartbeatAsyncName),
     {
         agentOptions: {
-            host: 'http://127.0.0.1:8000'
+            host: 'http://127.0.0.1:8000',
+            shouldFetchRootKey: true
         }
     }
 );
@@ -20,7 +21,8 @@ const heartbeatSyncCanister = createActorHeartbeatSync(
     getCanisterId(heartbeatSyncName),
     {
         agentOptions: {
-            host: 'http://127.0.0.1:8000'
+            host: 'http://127.0.0.1:8000',
+            shouldFetchRootKey: true
         }
     }
 );

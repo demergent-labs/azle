@@ -7,7 +7,8 @@ import { createActor } from './dfx_generated/candid_keywords';
 const canisterName = 'candid_keywords';
 const queryCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 
