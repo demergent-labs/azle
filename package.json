@@ -33,7 +33,11 @@
         "./test/jest_link": "./test/jest_link.ts",
         "./src/lib/stable/globals": "./src/lib/stable/globals.ts",
         "./src/lib/experimental": "./src/lib/experimental/index.ts",
-        "./src/lib/experimental/*": "./src/lib/experimental/*.ts"
+        "./src/lib/experimental/*": "./src/lib/experimental/*.ts",
+        "./src/lib/stable/did_file/visitor": "./src/lib/stable/did_file/visitor/index.ts",
+        "./test/property/arbitraries/candid/candid_definition_arb": "./test/property/arbitraries/candid/candid_definition_arb/index.ts",
+        "./test/property/arbitraries/candid/candid_definition_arb/types": "./test/property/arbitraries/candid/candid_definition_arb/types.ts",
+        "./type_tests/assert_type": "./type_tests/assert_type.ts"
     },
     "repository": {
         "type": "git",
