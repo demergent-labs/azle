@@ -15,7 +15,8 @@ if (process.env.ETHEREUM_URL === undefined) {
 const canisterName = 'ethereum_json_rpc';
 const ethereumJsonRpcCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 

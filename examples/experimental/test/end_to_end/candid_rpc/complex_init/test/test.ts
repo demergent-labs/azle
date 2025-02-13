@@ -11,7 +11,8 @@ const complexInitCanister = createComplexActor(
     getCanisterId(complexInitCanisterName),
     {
         agentOptions: {
-            host: 'http://127.0.0.1:8000'
+            host: 'http://127.0.0.1:8000',
+            shouldFetchRootKey: true
         }
     }
 );
@@ -19,7 +20,8 @@ const complexInitCanister = createComplexActor(
 const recInitCanisterName = 'rec_init';
 const recInitCanister = createRecActor(getCanisterId(recInitCanisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 

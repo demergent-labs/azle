@@ -6,7 +6,8 @@ import { getTests } from './tests';
 
 const canister = createActor(getCanisterId('multi_deploy'), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 
