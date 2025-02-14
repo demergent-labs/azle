@@ -22,7 +22,7 @@ export type CanisterMethod<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 > =
-    | QueryMethod
+    | QueryMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
     | UpdateMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
     | InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
     | PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
@@ -41,7 +41,10 @@ export type CanisterConfig<
         ParamAgentResponseValue
     >;
     preUpgradeMethod?: PreUpgradeMethod;
-    queryMethods?: QueryMethod[];
+    queryMethods?: QueryMethod<
+        ParamAgentArgumentValue,
+        ParamAgentResponseValue
+    >[];
     updateMethods?: UpdateMethod<
         ParamAgentArgumentValue,
         ParamAgentResponseValue
@@ -139,7 +142,7 @@ function generateSourceCode<
     globalDeclarations: string[],
     canisterMethods: (
         | UpdateMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
-        | QueryMethod
+        | QueryMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
     )[],
     api: Api,
     inspectMessageImportHack?: boolean
