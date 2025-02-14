@@ -23,8 +23,13 @@ export function decode<T = any>(
     candidType: CandidType | CandidType[],
     data: Uint8Array | ArrayBuffer
 ): T | T[] {
-    const dataBytes: Uint8Array<ArrayBuffer> = new Uint8Array(data);
-    const dataBuffer: ArrayBuffer = dataBytes.buffer;
+    const dataBuffer =
+        data instanceof ArrayBuffer
+            ? data
+            : data.buffer instanceof ArrayBuffer
+              ? data.buffer
+              : new Uint8Array(data).buffer;
+
     if (Array.isArray(candidType)) {
         return decodeMultiple(candidType, dataBuffer);
     }

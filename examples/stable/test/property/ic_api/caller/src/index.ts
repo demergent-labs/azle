@@ -56,7 +56,7 @@ export default class {
         const preUpgradeCaller =
             this.preUpgradeCaller.get('PRE_UPGRADE_CALLER');
 
-        if (preUpgradeCaller === null) {
+        if (preUpgradeCaller === undefined) {
             return [];
         } else {
             return [preUpgradeCaller];

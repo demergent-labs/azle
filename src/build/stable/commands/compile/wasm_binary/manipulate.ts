@@ -179,6 +179,7 @@ export function getMemoryInformation(module: binaryen.Module): {
         (memorySegmentInfo) => {
             return {
                 offset: module.i32.const(memorySegmentInfo.offset),
+                // This must be wrapped in a Uint8Array or this error will be thrown during the build: Azle BuildError: RuntimeError: null function or function signature mismatch
                 data: new Uint8Array(memorySegmentInfo.data),
                 passive: memorySegmentInfo.passive
             };

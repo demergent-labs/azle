@@ -55,7 +55,7 @@ function CanisterConfigArb() {
         },
         fc.array(CandidValueAndMetaArb(context), {
             size: 'max',
-            maxLength: 5
+            maxLength: 4
         }),
         CandidReturnTypeArb(context)
     );

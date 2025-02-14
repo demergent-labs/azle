@@ -98,9 +98,13 @@ export default class {
     // Updates
     @update([IDL.Text], IDL.Text, { manual: true })
     manualUpdate(): void {
+        const argData = msgArgData();
+
         const message = IDL.decode(
             [IDL.Text],
-            new Uint8Array(msgArgData()).buffer
+            argData.buffer instanceof ArrayBuffer
+                ? argData.buffer
+                : new Uint8Array(argData).buffer
         )[0] as string;
 
         if (message === 'reject') {
@@ -196,9 +200,13 @@ export default class {
     // Queries
     @query([IDL.Text], IDL.Text, { manual: true })
     manualQuery(): void {
+        const argData = msgArgData();
+
         const message = IDL.decode(
             [IDL.Text],
-            new Uint8Array(msgArgData()).buffer
+            argData.buffer instanceof ArrayBuffer
+                ? argData.buffer
+                : new Uint8Array(argData).buffer
         )[0] as string;
 
         if (message === 'reject') {

@@ -55,7 +55,7 @@ export default class {
     @query([IDL.Principal], IDL.Opt(User))
     readUserById(id: Principal): [User] | [] {
         const result = this.users.get(id);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -66,7 +66,7 @@ export default class {
     deleteUser(id: Principal): User {
         const user = this.users.get(id);
 
-        if (user === null) {
+        if (user === undefined) {
             throw new Error(`User does not exist: ${id.toText()}`);
         }
 
@@ -87,7 +87,7 @@ export default class {
     ): Recording {
         const user = this.users.get(userId);
 
-        if (user === null) {
+        if (user === undefined) {
             throw new Error(`User does not exist: ${userId.toText()}`);
         }
 
@@ -120,7 +120,7 @@ export default class {
     @query([IDL.Principal], IDL.Opt(Recording))
     readRecordingById(id: Principal): [Recording] | [] {
         const result = this.recordings.get(id);
-        if (result === null) {
+        if (result === undefined) {
             return [];
         } else {
             return [result];
@@ -131,13 +131,13 @@ export default class {
     deleteRecording(id: Principal): Recording {
         const recording = this.recordings.get(id);
 
-        if (recording === null) {
+        if (recording === undefined) {
             throw new Error(`Recording does not exist: ${id.toText()}`);
         }
 
         const user = this.users.get(recording.userId);
 
-        if (user === null) {
+        if (user === undefined) {
             throw new Error(
                 `User does not exist: ${recording.userId.toText()}`
             );

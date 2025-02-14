@@ -3,9 +3,13 @@ import { IDL, msgArgData, msgReject, query } from 'azle';
 export default class {
     @query([IDL.Text], IDL.Empty, { manual: true })
     reject(): void {
+        const argData = msgArgData();
+
         const message = IDL.decode(
             [IDL.Text],
-            new Uint8Array(msgArgData()).buffer
+            argData.buffer instanceof ArrayBuffer
+                ? argData.buffer
+                : new Uint8Array(argData).buffer
         )[0] as string;
 
         msgReject(message);

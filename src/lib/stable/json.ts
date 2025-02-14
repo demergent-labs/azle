@@ -1,35 +1,39 @@
 import { jsonReplacer, jsonReviver } from './stable_structures/stable_json';
 
 /**
- * Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
- * This function wraps JSON.stringify but uses a custom {@link jsonReplacer} by
- * default to handle special data types correctly.
+ * An ICP-enabled wrapper over `JSON.stringify`, handling special types like `Principal`, `BigInt`, and `Uint8Array` by default.
  *
- * @param value - The value to convert to a JSON string
- * @param replacer - Optional replacer function or array for JSON serialization. Defaults to {@link jsonReplacer}
- * @param space - Optional parameter for formatting the output with indentation
- * @returns A JSON string representation of the value
+ * @param value - A JavaScript value to be converted; usually an object or array
+ * @param replacer - A function that transforms the results. Defaults to {@link jsonReplacer}
+ * @param space - Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read
+ *
+ * @returns JavaScript Object Notation (JSON) string
  */
-export function jsonStringify(value: any, replacer?: any, space?: any): string {
+export function jsonStringify(
+    value: any,
+    replacer?: (this: any, key: string, value: any) => any,
+    space?: string | number
+): string {
     return JSON.stringify(value, replacer ?? jsonReplacer, space);
 }
 
 /**
- * Converts a JavaScript Object Notation (JSON) string into an object. This
- * function wraps JSON.parse but uses a custom {@link jsonReviver} by default to
- * handle special data types correctly.
+ * An ICP-enabled wrapper over `JSON.parse`, handling special types like `Principal`, `BigInt`, and `Uint8Array` by default.
  *
- * @param value - The JSON string to parse
- * @param reviver - Optional reviver function for custom deserialization. Defaults to {@link jsonReviver}
+ * @param text - A JSON string valid for the `reviver` used
+ * @param reviver - A function that transforms the results. This function is called for each member of the object. If a member contains nested objects, the nested objects are transformed before the parent object is. Defaults to {@link jsonReviver}
+ *
  * @returns The parsed JavaScript value
- * @throws {Error} If the JSON string is invalid, with details about the parsing error
  */
-export function jsonParse(value: string, reviver?: any): any {
+export function jsonParse(
+    text: string,
+    reviver?: (this: any, key: string, value: any) => any
+): any {
     try {
-        return JSON.parse(value, reviver ?? jsonReviver);
+        return JSON.parse(text, reviver ?? jsonReviver);
     } catch (error: any) {
         throw new Error(
-            `Error parsing JSON: ${error.message}. Value: ${value}`
+            `jsonParse: Error parsing JSON: ${error.message}. text: ${text}`
         );
     }
 }

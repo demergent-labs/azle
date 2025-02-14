@@ -43,13 +43,13 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey: ArrayBuffer = new Uint8Array(
-                keySerializable.toBytes(key)
-            ).buffer;
+            const encodedKey = keySerializable.toBytes(key);
 
             return globalThis._azleIcExperimental.stableBTreeMapContainsKey(
                 memoryId,
-                encodedKey
+                encodedKey.buffer instanceof ArrayBuffer
+                    ? encodedKey.buffer
+                    : new Uint8Array(encodedKey).buffer
             );
         },
         /**
@@ -62,14 +62,14 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey: ArrayBuffer = new Uint8Array(
-                keySerializable.toBytes(key)
-            ).buffer;
+            const encodedKey = keySerializable.toBytes(key);
 
             const encodedResult =
                 globalThis._azleIcExperimental.stableBTreeMapGet(
                     memoryId,
-                    encodedKey
+                    encodedKey.buffer instanceof ArrayBuffer
+                        ? encodedKey.buffer
+                        : new Uint8Array(encodedKey).buffer
                 );
 
             if (encodedResult === undefined) {
@@ -91,18 +91,18 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey: ArrayBuffer = new Uint8Array(
-                keySerializable.toBytes(key)
-            ).buffer;
-            const encodedValue: ArrayBuffer = new Uint8Array(
-                valueSerializable.toBytes(value)
-            ).buffer;
+            const encodedKey = keySerializable.toBytes(key);
+            const encodedValue = valueSerializable.toBytes(value);
 
             const encodedResult =
                 globalThis._azleIcExperimental.stableBTreeMapInsert(
                     memoryId,
-                    encodedKey,
-                    encodedValue
+                    encodedKey.buffer instanceof ArrayBuffer
+                        ? encodedKey.buffer
+                        : new Uint8Array(encodedKey).buffer,
+                    encodedValue.buffer instanceof ArrayBuffer
+                        ? encodedValue.buffer
+                        : new Uint8Array(encodedValue).buffer
                 );
 
             if (encodedResult === undefined) {
@@ -198,14 +198,14 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey: ArrayBuffer = new Uint8Array(
-                keySerializable.toBytes(key)
-            ).buffer;
+            const encodedKey = keySerializable.toBytes(key);
 
             const encodedValue =
                 globalThis._azleIcExperimental.stableBTreeMapRemove(
                     memoryId,
-                    encodedKey
+                    encodedKey.buffer instanceof ArrayBuffer
+                        ? encodedKey.buffer
+                        : new Uint8Array(encodedKey).buffer
                 );
 
             if (encodedValue === undefined) {

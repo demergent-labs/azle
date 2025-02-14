@@ -1,9 +1,28 @@
+/**
+ * Code associated with an unsuccessful inter-canister call.
+ *
+ * Reject codes:
+ *
+ *   0: NoError
+ *
+ *   1: SysFatal
+ *
+ *   2: SysTransient
+ *
+ *   3: DestinationInvalid
+ *
+ *   4: CanisterReject
+ *
+ *   5: CanisterError
+ *
+ *   6: Unknown
+ */
 export type RejectCode = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
  * Returns the reject code from the most recently executed inter-canister call.
  *
- * @returns The reject code. Represented as a number between 0 and 6 inclusive
+ * @returns The reject code as a number between 0 and 6 inclusive
  *
  * @remarks
  *

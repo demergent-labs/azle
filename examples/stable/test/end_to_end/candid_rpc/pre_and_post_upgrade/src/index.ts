@@ -37,7 +37,7 @@ export default class {
 
         const stableEntries = this.stableStorage.get('entries');
 
-        if (stableEntries === null) {
+        if (stableEntries === undefined) {
             return;
         }
 
