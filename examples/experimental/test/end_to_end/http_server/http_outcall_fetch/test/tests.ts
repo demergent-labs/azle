@@ -208,7 +208,10 @@ export function getTests(canisterId: string): Test {
 
             expect(responseJson).toEqual({
                 message:
-                    'Rejection code 1, Header size exceeds specified response size limit 0'
+                    'The inter-canister call failed with reject code 1: Header size exceeds specified response size limit 0',
+                rejectCode: 1,
+                rejectMessage:
+                    'Header size exceeds specified response size limit 0'
             });
         });
 
@@ -219,7 +222,7 @@ export function getTests(canisterId: string): Test {
             const responseJson = await response.json();
 
             expect(responseJson.message).toMatch(
-                /Rejection code 4, http_request request sent with 0 cycles, but \d{1,3}(_\d{3})* cycles are required\./
+                /reject code 4: http_request request sent with 0 cycles, but \d{1,3}(_\d{3})* cycles are required\./
             );
         });
     };
