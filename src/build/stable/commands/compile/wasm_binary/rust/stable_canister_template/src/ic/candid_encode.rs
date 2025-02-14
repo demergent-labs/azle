@@ -1,3 +1,4 @@
+use candid::TypeEnv;
 use candid_parser::parse_idl_args;
 use rquickjs::{Ctx, Function, Result, TypedArray};
 
@@ -10,7 +11,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             let candid_args =
                 parse_idl_args(&candid_string).map_err(|e| throw_error(ctx.clone(), e))?;
             let candid_encoded = candid_args
-                .to_bytes()
+                .to_bytes_with_types(&TypeEnv::new(), &candid_args.get_types())
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
             TypedArray::<u8>::new(ctx.clone(), candid_encoded)
