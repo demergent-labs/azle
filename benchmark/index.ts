@@ -91,7 +91,8 @@ function create_canister_actors(
         execSync('dfx canister id azle').toString().trim(),
         {
             agentOptions: {
-                host: 'http://127.0.0.1:8000'
+                host: 'http://127.0.0.1:8000',
+                shouldFetchRootKey: true
             }
         }
     );
@@ -100,7 +101,8 @@ function create_canister_actors(
         execSync('dfx canister id motoko').toString().trim(),
         {
             agentOptions: {
-                host: 'http://127.0.0.1:8000'
+                host: 'http://127.0.0.1:8000',
+                shouldFetchRootKey: true
             }
         }
     );
@@ -109,7 +111,8 @@ function create_canister_actors(
         execSync('dfx canister id rust').toString().trim(),
         {
             agentOptions: {
-                host: 'http://127.0.0.1:8000'
+                host: 'http://127.0.0.1:8000',
+                shouldFetchRootKey: true
             }
         }
     );

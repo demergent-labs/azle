@@ -6,7 +6,7 @@
         "vite": "^4.4.10"
     },
     "dependencies": {
-        "@dfinity/auth-client": "^2.2.0",
+        "@dfinity/auth-client": "^2.3.0",
         "lit": "^2.8.0"
     }
 }

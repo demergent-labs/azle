@@ -1,12 +1,6 @@
 {
+    "extends": "../../../../../../tsconfig.dev.json",
     "compilerOptions": {
-        "strict": true,
-        "target": "ES2024",
-        "moduleResolution": "node",
-        "allowJs": true,
-        "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
-        "allowSyntheticDefaultImports": true,
-        "experimentalDecorators": true,
-        "module": "ES2022"
+        "allowSyntheticDefaultImports": true
     }
 }

@@ -4,6 +4,9 @@ import { outputFile } from 'fs-extra';
 import { copy } from 'fs-extra/esm';
 import { join } from 'path';
 
+import { devDependencies } from '../../../../package.json';
+import { AZLE_PACKAGE_PATH } from '../utils/global_paths';
+
 export async function runCommand(
     azleVersion: string,
     templatePath: string
@@ -23,10 +26,19 @@ export async function runCommand(
     let parsedPackageJson = JSON.parse(packageJson);
 
     parsedPackageJson.dependencies.azle = `^${azleVersion}`;
+    parsedPackageJson.devDependencies = {
+        jest: devDependencies.jest,
+        'ts-jest': devDependencies['ts-jest']
+    };
 
     await outputFile(
         join(projectName, 'package.json'),
         JSON.stringify(parsedPackageJson, null, 4)
+    );
+
+    await copy(
+        join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json'),
+        join(projectName, 'tsconfig.json')
     );
 
     console.info(`${projectName} created successfully`);

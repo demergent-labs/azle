@@ -7,7 +7,8 @@ import { getTests } from './tests';
 const canisterName = 'audio_recorder';
 const audio_recorder_canister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000'
+        host: 'http://127.0.0.1:8000',
+        shouldFetchRootKey: true
     }
 });
 

@@ -3,7 +3,7 @@
     "version": "0.25.0",
     "description": "TypeScript and JavaScript CDK for the Internet Computer",
     "scripts": {
-        "typecheck": "tsc --project tsconfig.typecheck.json",
+        "typecheck": "tsc",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --cache --fix; else eslint . --cache; fi",
         "prepare": "husky",
         "install": "cd dfx_extension && ./install.sh",
@@ -26,8 +26,8 @@
     },
     "homepage": "https://github.com/demergent-labs/azle#readme",
     "dependencies": {
-        "@dfinity/agent": "^2.2.0",
-        "@dfinity/identity-secp256k1": "^2.2.0",
+        "@dfinity/agent": "^2.3.0",
+        "@dfinity/identity-secp256k1": "^2.3.0",
         "@sinonjs/text-encoding": "^0.7.3",
         "binaryen": "^116.0.0",
         "buffer": "^6.0.3",
@@ -57,8 +57,8 @@
         "wasmedge_quickjs": "github:demergent-labs/wasmedge-quickjs#3b3b0ee91248ccf9cd954ffafbac7e024648af92"
     },
     "devDependencies": {
-        "@dfinity/identity": "^2.2.0",
         "@eslint/js": "^9.20.0",
+        "@dfinity/identity": "^2.3.0",
         "@types/deep-equal": "^1.0.4",
         "@types/fs-extra": "11.0.4",
         "@types/pako": "^2.0.3",
@@ -74,7 +74,7 @@
         "husky": "9.1.7",
         "jest": "^29.7.0",
         "lint-staged": "15.4.3",
-        "prettier": "^3.5.0",
+        "prettier": "^3.5.1",
         "puppeteer": "^24.2.0",
         "semver": "^7.7.1",
         "ts-jest": "^29.1.4",
