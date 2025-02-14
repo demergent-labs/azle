@@ -214,7 +214,16 @@ async function prepareRequestBody(
 
     if (
         init.body instanceof ArrayBuffer ||
-        init.body instanceof Uint8Array ||
+        init.body instanceof SharedArrayBuffer
+    ) {
+        return [new Uint8Array(init.body)];
+    }
+
+    if (init.body instanceof Uint8Array) {
+        return [init.body];
+    }
+
+    if (
         init.body instanceof Uint8ClampedArray ||
         init.body instanceof Uint16Array ||
         init.body instanceof Uint32Array ||

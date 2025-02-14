@@ -30,7 +30,9 @@ export function setCertifiedData(data: Uint8Array): void {
 
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.setCertifiedData(
-            new Uint8Array(data).buffer
+            data.buffer instanceof ArrayBuffer
+                ? data.buffer
+                : new Uint8Array(data).buffer
         );
         return;
     }

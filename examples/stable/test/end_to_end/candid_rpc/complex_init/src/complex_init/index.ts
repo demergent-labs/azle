@@ -11,9 +11,13 @@ export default class {
 
     @init([IDL.Tuple(IDL.Text, User)], { manual: true })
     init(): void {
+        const argData = msgArgData();
+
         const tuple = IDL.decode(
             [IDL.Tuple(IDL.Text, User)],
-            new Uint8Array(msgArgData()).buffer
+            argData.buffer instanceof ArrayBuffer
+                ? argData.buffer
+                : new Uint8Array(argData).buffer
         )[0] as [string, User];
 
         this.greeting = tuple[0];

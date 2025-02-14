@@ -313,7 +313,7 @@ export async function httpHandler(
                                         'transfer-encoding'
                                 );
                             }),
-                        body: new Uint8Array(unchunkedBody),
+                        body: new Uint8Array(unchunkedBody.buffer),
                         streaming_strategy: [],
                         upgrade: []
                     }

@@ -25,9 +25,13 @@ class WhoAmI {
     // Manually re-save these variables after new deploys.
     @postUpgrade([IDL.Principal], { manual: true })
     postUpgrade(): void {
+        const argData = msgArgData();
+
         const somebody = IDL.decode(
             [IDL.Principal],
-            new Uint8Array(msgArgData()).buffer
+            argData.buffer instanceof ArrayBuffer
+                ? argData.buffer
+                : new Uint8Array(argData).buffer
         )[0] as unknown as Principal;
 
         this.install = msgCaller();

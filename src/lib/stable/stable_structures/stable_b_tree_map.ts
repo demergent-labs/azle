@@ -78,7 +78,9 @@ export class StableBTreeMap<Key = any, Value = any> {
         if (globalThis._azleIcExperimental !== undefined) {
             return globalThis._azleIcExperimental.stableBTreeMapContainsKey(
                 this.memoryId.toString(),
-                new Uint8Array(encodedKey).buffer
+                encodedKey.buffer instanceof ArrayBuffer
+                    ? encodedKey.buffer
+                    : new Uint8Array(encodedKey).buffer
             );
         }
 
@@ -108,7 +110,9 @@ export class StableBTreeMap<Key = any, Value = any> {
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapGet(
                       this.memoryId.toString(),
-                      new Uint8Array(encodedKey).buffer
+                      encodedKey.buffer instanceof ArrayBuffer
+                          ? encodedKey.buffer
+                          : new Uint8Array(encodedKey).buffer
                   )
                 : globalThis._azleIcStable.stableBTreeMapGet(
                       this.memoryId,
@@ -119,7 +123,9 @@ export class StableBTreeMap<Key = any, Value = any> {
             return encodedResult;
         } else {
             return this.valueSerializable.fromBytes(
-                new Uint8Array(encodedResult)
+                encodedResult instanceof Uint8Array
+                    ? encodedResult
+                    : new Uint8Array(encodedResult)
             );
         }
     }
@@ -148,8 +154,12 @@ export class StableBTreeMap<Key = any, Value = any> {
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapInsert(
                       this.memoryId.toString(),
-                      new Uint8Array(encodedKey).buffer,
-                      new Uint8Array(encodedValue).buffer
+                      encodedKey.buffer instanceof ArrayBuffer
+                          ? encodedKey.buffer
+                          : new Uint8Array(encodedKey).buffer,
+                      encodedValue.buffer instanceof ArrayBuffer
+                          ? encodedValue.buffer
+                          : new Uint8Array(encodedValue).buffer
                   )
                 : globalThis._azleIcStable.stableBTreeMapInsert(
                       this.memoryId,
@@ -161,7 +171,9 @@ export class StableBTreeMap<Key = any, Value = any> {
             return encodedResult;
         } else {
             return this.valueSerializable.fromBytes(
-                new Uint8Array(encodedResult)
+                encodedResult instanceof Uint8Array
+                    ? encodedResult
+                    : new Uint8Array(encodedResult)
             );
         }
     }
@@ -217,11 +229,18 @@ export class StableBTreeMap<Key = any, Value = any> {
                       length ?? -1
                   );
 
-        // TODO too much copying
         return encodedItems.map(([encodedKey, encodedValue]) => {
             return [
-                this.keySerializable.fromBytes(new Uint8Array(encodedKey)),
-                this.valueSerializable.fromBytes(new Uint8Array(encodedValue))
+                this.keySerializable.fromBytes(
+                    encodedKey instanceof Uint8Array
+                        ? encodedKey
+                        : new Uint8Array(encodedKey)
+                ),
+                this.valueSerializable.fromBytes(
+                    encodedValue instanceof Uint8Array
+                        ? encodedValue
+                        : new Uint8Array(encodedValue)
+                )
             ];
         });
     }
@@ -255,9 +274,12 @@ export class StableBTreeMap<Key = any, Value = any> {
                       length ?? -1
                   );
 
-        // TODO too much copying
         return encodedKeys.map((encodedKey) => {
-            return this.keySerializable.fromBytes(new Uint8Array(encodedKey));
+            return this.keySerializable.fromBytes(
+                encodedKey instanceof Uint8Array
+                    ? encodedKey
+                    : new Uint8Array(encodedKey)
+            );
         });
     }
 
@@ -305,7 +327,9 @@ export class StableBTreeMap<Key = any, Value = any> {
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapRemove(
                       this.memoryId.toString(),
-                      new Uint8Array(encodedKey).buffer
+                      encodedKey.buffer instanceof ArrayBuffer
+                          ? encodedKey.buffer
+                          : new Uint8Array(encodedKey).buffer
                   )
                 : globalThis._azleIcStable.stableBTreeMapRemove(
                       this.memoryId,
@@ -316,7 +340,9 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined;
         } else {
             return this.valueSerializable.fromBytes(
-                new Uint8Array(encodedValue)
+                encodedValue instanceof Uint8Array
+                    ? encodedValue
+                    : new Uint8Array(encodedValue)
             );
         }
     }
@@ -349,10 +375,11 @@ export class StableBTreeMap<Key = any, Value = any> {
                       length ?? -1
                   );
 
-        // TODO too much copying
         return encodedValues.map((encodedValue) => {
             return this.valueSerializable.fromBytes(
-                new Uint8Array(encodedValue)
+                encodedValue instanceof Uint8Array
+                    ? encodedValue
+                    : new Uint8Array(encodedValue)
             );
         });
     }

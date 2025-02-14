@@ -172,9 +172,13 @@ function handleOneWay<Return>(
 ): Promise<Return> {
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.notifyRaw(
-            new Uint8Array(canisterIdBytes).buffer,
+            canisterIdBytes.buffer instanceof ArrayBuffer
+                ? canisterIdBytes.buffer
+                : new Uint8Array(canisterIdBytes).buffer,
             method,
-            new Uint8Array(argsRaw).buffer,
+            argsRaw.buffer instanceof ArrayBuffer
+                ? argsRaw.buffer
+                : new Uint8Array(argsRaw).buffer,
             cyclesString
         );
     } else {
@@ -214,9 +218,13 @@ function handleTwoWay<Return>(
             globalThis._azleIcExperimental.callRaw(
                 globalResolveId,
                 globalRejectId,
-                new Uint8Array(canisterIdBytes).buffer,
+                canisterIdBytes.buffer instanceof ArrayBuffer
+                    ? canisterIdBytes.buffer
+                    : new Uint8Array(canisterIdBytes).buffer,
                 method,
-                new Uint8Array(argsRaw).buffer,
+                argsRaw.buffer instanceof ArrayBuffer
+                    ? argsRaw.buffer
+                    : new Uint8Array(argsRaw).buffer,
                 cyclesString
             );
         } else {
@@ -242,12 +250,18 @@ function createResolveCallback<Return>(
         result: Uint8Array | ArrayBuffer
     ): void => {
         if (raw === true) {
-            resolve(new Uint8Array(result) as Return);
+            resolve(
+                (result instanceof Uint8Array
+                    ? result
+                    : new Uint8Array(result)) as Return
+            );
         } else {
             resolve(
                 idlDecode(
                     returnIdlType === undefined ? [] : [returnIdlType],
-                    new Uint8Array(result)
+                    result instanceof Uint8Array
+                        ? result
+                        : new Uint8Array(result)
                 )[0] as Return
             );
         }

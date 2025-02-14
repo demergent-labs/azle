@@ -37,8 +37,11 @@ export class AzleFetchResponse {
             return new ArrayBuffer(0);
         }
 
-        return new Uint8Array(this.body as unknown as Uint8Array | Buffer)
-            .buffer;
+        const result = this.body as unknown as Uint8Array | Buffer;
+
+        return result.buffer instanceof ArrayBuffer
+            ? result.buffer
+            : new Uint8Array(result).buffer;
     }
 
     async bytes(): Promise<Uint8Array> {
@@ -48,7 +51,9 @@ export class AzleFetchResponse {
             return new Uint8Array();
         }
 
-        return new Uint8Array(this.body as unknown as Uint8Array | Buffer);
+        return new Uint8Array(
+            (this.body as unknown as Uint8Array | Buffer).buffer
+        );
     }
 
     async json(): Promise<string> {

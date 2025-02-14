@@ -121,9 +121,13 @@ function verifyCertifiedData(
     canisterPrincipal: Principal,
     expectedValue: number
 ): void {
+    const canisterPrincipalBytes = canisterPrincipal.toUint8Array();
+
     const rawData = findLookupValueOrThrow(certificate, [
         'canister',
-        new Uint8Array(canisterPrincipal.toUint8Array()).buffer,
+        canisterPrincipalBytes.buffer instanceof ArrayBuffer
+            ? canisterPrincipalBytes.buffer
+            : new Uint8Array(canisterPrincipalBytes).buffer,
         'certified_data'
     ]);
 
