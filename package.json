@@ -42,6 +42,7 @@
         "./test/property/arbitraries/candid/*": "./test/property/arbitraries/candid/*.ts",
         "./test/property/arbitraries/candid/constructed/*": "./test/property/arbitraries/candid/constructed/*.ts",
         "./test/property/arbitraries/candid/constructed/blob_arb": "./test/property/arbitraries/candid/constructed/blob_arb/index.ts",
+        "./test/property/arbitraries/candid/constructed/record_arb": "./test/property/arbitraries/candid/constructed/record_arb/index.ts",
         "./test/property/arbitraries/candid/candid_definition_arb": "./test/property/arbitraries/candid/candid_definition_arb/index.ts",
         "./test/property/arbitraries/candid/candid_definition_arb/types": "./test/property/arbitraries/candid/candid_definition_arb/types.ts",
         "./type_tests/assert_type": "./type_tests/assert_type.ts"
