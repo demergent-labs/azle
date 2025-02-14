@@ -16,7 +16,10 @@ import {
     TestsGenerator
 } from '.';
 
-export type QueryMethod = {
+export type QueryMethod<
+    _ParamAgentArgumentValue extends CorrespondingJSType,
+    _ParamAgentResponseValue
+> = {
     imports: Set<string>;
     globalDeclarations: string[];
     sourceCode: string;
@@ -53,7 +56,7 @@ export function QueryMethodArb<
             ReturnTypeAgentResponseValue
         >
     >
-): fc.Arbitrary<QueryMethod> {
+): fc.Arbitrary<QueryMethod<ParamAgentArgumentValue, ParamAgentResponseValue>> {
     const api = context.api;
     const constraints = context.constraints;
     return fc
@@ -74,7 +77,10 @@ export function QueryMethodArb<
                 returnType,
                 defaultMethodImplementationLocation,
                 methodName
-            ]): QueryMethod => {
+            ]): QueryMethod<
+                ParamAgentArgumentValue,
+                ParamAgentResponseValue
+            > => {
                 const methodImplementationLocation =
                     api === 'class'
                         ? 'INLINE'
