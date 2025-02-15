@@ -128,7 +128,7 @@ function generateGetInitValuesCanisterMethod(
     paramTypeObjects: string[],
     paramTypeAnnotations: string[],
     globalInitVariableNames: string[]
-): QueryMethod {
+): QueryMethod<any, any> {
     return {
         imports: new Set(['IDL', 'query']),
         globalDeclarations: [],
@@ -138,6 +138,8 @@ function generateGetInitValuesCanisterMethod(
                 return [initialized, ${globalInitVariableNames.join()}]
             }
         `,
-        tests: []
+        tests: [],
+        paramTypes: [],
+        methodName: 'getInitValues'
     };
 }

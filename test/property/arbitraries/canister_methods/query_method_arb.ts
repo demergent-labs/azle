@@ -17,13 +17,18 @@ import {
 } from '.';
 
 export type QueryMethod<
-    _ParamAgentArgumentValue extends CorrespondingJSType,
-    _ParamAgentResponseValue
+    ParamAgentArgumentValue extends CorrespondingJSType,
+    ParamAgentResponseValue
 > = {
     imports: Set<string>;
     globalDeclarations: string[];
     sourceCode: string;
     tests: Test[][];
+    paramTypes: CandidValueAndMeta<
+        ParamAgentArgumentValue,
+        ParamAgentResponseValue
+    >[];
+    methodName: string;
 };
 
 export function QueryMethodArb<
@@ -143,7 +148,9 @@ export function QueryMethodArb<
                     imports,
                     globalDeclarations,
                     sourceCode,
-                    tests
+                    tests,
+                    paramTypes,
+                    methodName: functionName
                 };
             }
         );

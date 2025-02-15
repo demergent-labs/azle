@@ -7,10 +7,10 @@ import fc from 'fast-check';
 
 export function IsEmptyTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<QueryMethod> {
+): fc.Arbitrary<QueryMethod<any, any>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): QueryMethod => {
+        .map(([functionName]): QueryMethod<any, any> => {
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'IDL',
@@ -28,7 +28,9 @@ export function IsEmptyTestArb(
                 ${functionName}(): boolean {
                 ${body}
             }`,
-                tests
+                tests,
+                paramTypes: [],
+                methodName: functionName
             };
         });
 }

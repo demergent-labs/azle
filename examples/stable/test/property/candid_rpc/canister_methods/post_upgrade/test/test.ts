@@ -190,7 +190,7 @@ const CanisterConfigArb = fc
 function generateGetPostUpgradeValuesCanisterMethod(
     paramTypeObjects: string[],
     globalVariableNames: string[]
-): QueryMethod {
+): QueryMethod<any, any> {
     return {
         imports: new Set(['IDL', 'query']),
         globalDeclarations: [],
@@ -199,14 +199,16 @@ function generateGetPostUpgradeValuesCanisterMethod(
             getPostUpgradeValues(){
                 return [postUpgradeExecuted, ${globalVariableNames.join()}]
             }`,
-        tests: []
+        tests: [],
+        paramTypes: [],
+        methodName: 'getPostUpgradeValues'
     };
 }
 
 function generateGetInitValuesCanisterMethod(
     paramTypeObjects: string[],
     globalVariableNames: string[]
-): QueryMethod {
+): QueryMethod<any, any> {
     return {
         imports: new Set(['IDL', 'query']),
         globalDeclarations: [],
@@ -215,11 +217,15 @@ function generateGetInitValuesCanisterMethod(
             getInitValues(){
                 return [initExecuted, ${globalVariableNames.join()}]
             }`,
-        tests: []
+        tests: [],
+        paramTypes: [],
+        methodName: 'getInitValues'
     };
 }
 
-function generateIsInitCalled(globalVariableNames: string[]): QueryMethod {
+function generateIsInitCalled(
+    globalVariableNames: string[]
+): QueryMethod<any, any> {
     const areAllParamsUndefined = globalVariableNames
         .map((name) => `${name} === undefined`)
         .join(' && ');
@@ -234,13 +240,15 @@ function generateIsInitCalled(globalVariableNames: string[]): QueryMethod {
         sourceCode: /*TS*/ `
             @query([], IDL.Bool)
             isInitCalled(){${isInitCalled}}`,
-        tests: []
+        tests: [],
+        paramTypes: [],
+        methodName: 'isInitCalled'
     };
 }
 
 function generateIsPostUpgradeCalled(
     globalVariableNames: string[]
-): QueryMethod {
+): QueryMethod<any, any> {
     const areAllParamsUndefined = globalVariableNames
         .map((name) => `${name} === undefined`)
         .join(' && ');
@@ -255,7 +263,9 @@ function generateIsPostUpgradeCalled(
         sourceCode: /*TS*/ `
             @query([], IDL.Bool)
             isPostUpgradeCalled(){${isPostUpgradeCalled}}`,
-        tests: []
+        tests: [],
+        paramTypes: [],
+        methodName: 'isPostUpgradeCalled'
     };
 }
 

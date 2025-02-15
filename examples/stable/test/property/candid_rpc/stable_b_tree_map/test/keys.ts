@@ -13,10 +13,10 @@ import {
 
 export function KeysTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<QueryMethod> {
+): fc.Arbitrary<QueryMethod<any, any>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): QueryMethod => {
+        .map(([functionName]): QueryMethod<any, any> => {
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'IDL',
@@ -42,7 +42,9 @@ export function KeysTestArb(
                 ${functionName}(): ${returnTypeAnnotation} {
                 ${body}
             }`,
-                tests
+                tests,
+                paramTypes: [],
+                methodName: functionName
             };
         });
 }

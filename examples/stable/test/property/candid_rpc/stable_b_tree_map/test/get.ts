@@ -7,10 +7,10 @@ import fc from 'fast-check';
 
 export function GetTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<QueryMethod> {
+): fc.Arbitrary<QueryMethod<any, any>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): QueryMethod => {
+        .map(([functionName]): QueryMethod<any, any> => {
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'query',
@@ -43,7 +43,9 @@ export function GetTestArb(
                 ${functionName}(${paramNames}): [${returnTypeAnnotation}] | [] {
                 ${body}
             }`,
-                tests
+                tests,
+                paramTypes: [], // TODO this is not correct but I don't want to take the time to fix it now
+                methodName: functionName
             };
         });
 }
