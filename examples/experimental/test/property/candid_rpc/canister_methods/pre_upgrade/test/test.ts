@@ -99,7 +99,7 @@ const CanisterConfigArb = fc
 
 runPropTests(CanisterArb(context, CanisterConfigArb));
 
-function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
+function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod<any, any> {
     return {
         imports: new Set([
             'bool',

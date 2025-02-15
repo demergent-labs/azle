@@ -123,7 +123,7 @@ runPropTests(CanisterArb(context, CanisterConfigArb));
 function generateGetInitValuesCanisterMethod(
     paramTypes: string[],
     globalInitVariableNames: string[]
-): QueryMethod {
+): QueryMethod<any, any> {
     return {
         imports: new Set(['bool', 'query', 'Tuple']),
         globalDeclarations: [],

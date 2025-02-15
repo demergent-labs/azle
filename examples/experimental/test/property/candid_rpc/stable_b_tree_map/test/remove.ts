@@ -7,10 +7,10 @@ import fc from 'fast-check';
 
 export function RemoveTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<QueryMethod> {
+): fc.Arbitrary<QueryMethod<any, any>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): QueryMethod => {
+        .map(([functionName]): QueryMethod<any, any> => {
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'Opt',

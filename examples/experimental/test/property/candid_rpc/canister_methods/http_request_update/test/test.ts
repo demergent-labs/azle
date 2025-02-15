@@ -51,7 +51,7 @@ const CanisterConfigArb = HttpRequestUpdateMethodArb.map(
 
 runPropTests(CanisterArb(context, CanisterConfigArb));
 
-function generateHttpRequestMethod(): QueryMethod {
+function generateHttpRequestMethod(): QueryMethod<any, any> {
     return {
         imports: new Set([
             'query',
@@ -74,7 +74,7 @@ function generateHttpRequestMethod(): QueryMethod {
     };
 }
 
-function generateGetStateMethod(): QueryMethod {
+function generateGetStateMethod(): QueryMethod<any, any> {
     return {
         imports: new Set(['query', 'nat8']),
         globalDeclarations: ['let state: number = 0;'],
