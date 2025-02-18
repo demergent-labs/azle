@@ -227,7 +227,7 @@ async function handleNewCommand(): Promise<void> {
             projectName
         );
 
-        await runNewCommand(azleVersion, templatePath);
+        await runNewCommand(azleVersion, templatePath, httpServer === true);
     }
 }
 
