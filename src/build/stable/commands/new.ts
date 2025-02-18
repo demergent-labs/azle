@@ -27,6 +27,7 @@ export async function runCommand(
 
     parsedPackageJson.dependencies.azle = `^${azleVersion}`;
     parsedPackageJson.devDependencies = {
+        ...parsedPackageJson.devDependencies,
         jest: devDependencies.jest,
         'ts-jest': devDependencies['ts-jest']
     };
