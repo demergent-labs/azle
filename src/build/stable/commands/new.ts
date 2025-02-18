@@ -9,7 +9,8 @@ import { AZLE_PACKAGE_PATH } from '../utils/global_paths';
 
 export async function runCommand(
     azleVersion: string,
-    templatePath: string
+    templatePath: string,
+    useExperimentalDecorators?: boolean
 ): Promise<void> {
     if (process.argv[3] === undefined) {
         throw new Error(`You must provide a name for your Azle project`);
@@ -37,9 +38,20 @@ export async function runCommand(
         JSON.stringify(parsedPackageJson, null, 4)
     );
 
-    await copy(
-        join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json'),
-        join(projectName, 'tsconfig.json')
+    let tsConfig = JSON.parse(
+        await readFile(join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json'), {
+            encoding: 'utf-8'
+        })
+    );
+
+    if (useExperimentalDecorators === true) {
+        tsConfig.compilerOptions.experimentalDecorators =
+            useExperimentalDecorators;
+    }
+
+    await outputFile(
+        join(projectName, 'tsconfig.json'),
+        JSON.stringify(tsConfig, null, 4)
     );
 
     console.info(`${projectName} created successfully`);
