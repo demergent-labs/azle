@@ -1,16 +1,17 @@
 import { getActor } from 'azle/test/property';
-import { QueryMethod } from 'azle/test/property/arbitraries/canister_methods/query_method_arb';
 import { StableBTreeMap } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
 import { UniqueIdentifierArb } from 'azle/test/property/arbitraries/unique_identifier_arb';
 import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 import fc from 'fast-check';
 
+import { UpdateMethod } from '../../../../../../../test/property/arbitraries/canister_methods/update_method_arb';
+
 export function InsertTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<QueryMethod<any, any>> {
+): fc.Arbitrary<UpdateMethod<any, any>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): QueryMethod<any, any> => {
+        .map(([functionName]): UpdateMethod<any, any> => {
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'Opt',
@@ -39,7 +40,12 @@ export function InsertTestArb(
                 sourceCode: `${functionName}: update([${paramTypeObjects}], ${returnTypeObject}, (param0, param1) => {
                 ${body}
             })`,
-                tests
+                tests,
+                paramTypes: [
+                    stableBTreeMap.keySample,
+                    stableBTreeMap.valueSample
+                ],
+                methodName: functionName
             };
         });
 }

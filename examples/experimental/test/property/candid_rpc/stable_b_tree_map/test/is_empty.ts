@@ -1,16 +1,17 @@
 import { getActor } from 'azle/test/property';
-import { QueryMethod } from 'azle/test/property/arbitraries/canister_methods/query_method_arb';
 import { StableBTreeMap } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
 import { UniqueIdentifierArb } from 'azle/test/property/arbitraries/unique_identifier_arb';
 import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 import fc from 'fast-check';
 
+import { UpdateMethod } from '../../../../../../../test/property/arbitraries/canister_methods/update_method_arb';
+
 export function IsEmptyTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<QueryMethod<any, any>> {
+): fc.Arbitrary<UpdateMethod<any, any>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): QueryMethod<any, any> => {
+        .map(([functionName]): UpdateMethod<any, any> => {
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'bool',
@@ -27,7 +28,9 @@ export function IsEmptyTestArb(
                 sourceCode: `${functionName}: query([], bool, () => {
                 ${body}
             })`,
-                tests
+                tests,
+                paramTypes: [],
+                methodName: functionName
             };
         });
 }

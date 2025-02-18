@@ -16,19 +16,11 @@ import {
     TestsGenerator
 } from '.';
 
-export type QueryMethod<
-    ParamAgentArgumentValue extends CorrespondingJSType,
-    ParamAgentResponseValue
-> = {
+export type QueryMethod = {
     imports: Set<string>;
     globalDeclarations: string[];
     sourceCode: string;
     tests: Test[][];
-    paramTypes: CandidValueAndMeta<
-        ParamAgentArgumentValue,
-        ParamAgentResponseValue
-    >[];
-    methodName: string;
 };
 
 export function QueryMethodArb<
@@ -61,7 +53,7 @@ export function QueryMethodArb<
             ReturnTypeAgentResponseValue
         >
     >
-): fc.Arbitrary<QueryMethod<ParamAgentArgumentValue, ParamAgentResponseValue>> {
+): fc.Arbitrary<QueryMethod> {
     const api = context.api;
     const constraints = context.constraints;
     return fc
@@ -82,10 +74,7 @@ export function QueryMethodArb<
                 returnType,
                 defaultMethodImplementationLocation,
                 methodName
-            ]): QueryMethod<
-                ParamAgentArgumentValue,
-                ParamAgentResponseValue
-            > => {
+            ]): QueryMethod => {
                 const methodImplementationLocation =
                     api === 'class'
                         ? 'INLINE'
@@ -148,9 +137,7 @@ export function QueryMethodArb<
                     imports,
                     globalDeclarations,
                     sourceCode,
-                    tests,
-                    paramTypes,
-                    methodName: functionName
+                    tests
                 };
             }
         );
