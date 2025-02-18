@@ -5,3 +5,11 @@ members = [
     "src/build/experimental/commands/compile/wasm_binary/rust/open_value_sharing",
     "src/build/stable/commands/compile/wasm_binary/rust/stable_canister_template",
 ]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+debug = false
+overflow-checks = false
