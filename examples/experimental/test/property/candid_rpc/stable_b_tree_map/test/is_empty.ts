@@ -1,35 +1,44 @@
 import { getActor } from 'azle/test/property';
-import { QueryMethod } from 'azle/test/property/arbitraries/canister_methods/query_method_arb';
 import { StableBTreeMap } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
 import { UniqueIdentifierArb } from 'azle/test/property/arbitraries/unique_identifier_arb';
 import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 import fc from 'fast-check';
 
+import { CorrespondingJSType } from '../../../../../../../test/property/arbitraries/candid/corresponding_js_type';
+import { UpdateMethod } from '../../../../../../../test/property/arbitraries/canister_methods/update_method_arb';
+
 export function IsEmptyTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<QueryMethod<any, any>> {
+): fc.Arbitrary<UpdateMethod<CorrespondingJSType, CorrespondingJSType>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): QueryMethod<any, any> => {
-            const imports = new Set([
-                ...stableBTreeMap.imports,
-                'bool',
-                'query'
-            ]);
+        .map(
+            ([functionName]): UpdateMethod<
+                CorrespondingJSType,
+                CorrespondingJSType
+            > => {
+                const imports = new Set([
+                    ...stableBTreeMap.imports,
+                    'bool',
+                    'query'
+                ]);
 
-            const body = generateBody(stableBTreeMap.name);
+                const body = generateBody(stableBTreeMap.name);
 
-            const tests = generateTests(functionName);
+                const tests = generateTests(functionName);
 
-            return {
-                imports,
-                globalDeclarations: [],
-                sourceCode: `${functionName}: query([], bool, () => {
+                return {
+                    imports,
+                    globalDeclarations: [],
+                    sourceCode: `${functionName}: query([], bool, () => {
                 ${body}
             })`,
-                tests
-            };
-        });
+                    tests,
+                    paramTypes: [],
+                    methodName: functionName
+                };
+            }
+        );
 }
 
 function generateBody(stableBTreeMapName: string): string {
