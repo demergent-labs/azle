@@ -1,11 +1,10 @@
 import { getActor } from 'azle/test/property';
+import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
+import { UpdateMethod } from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
 import { StableBTreeMap } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
 import { UniqueIdentifierArb } from 'azle/test/property/arbitraries/unique_identifier_arb';
 import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 import fc from 'fast-check';
-
-import { CorrespondingJSType } from '../../../../../../../test/property/arbitraries/candid/corresponding_js_type';
-import { UpdateMethod } from '../../../../../../../test/property/arbitraries/canister_methods/update_method_arb';
 
 export function InsertTestArb(
     stableBTreeMap: StableBTreeMap
