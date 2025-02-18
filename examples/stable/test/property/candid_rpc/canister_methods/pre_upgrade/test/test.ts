@@ -99,7 +99,7 @@ const CanisterConfigArb = fc
 
 runPropTests(CanisterArb(context, CanisterConfigArb));
 
-function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod<any, any> {
+function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
     return {
         imports: new Set(['query', 'StableBTreeMap', 'IDL']),
         globalDeclarations: [],
@@ -113,8 +113,6 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod<any, any> {
                     return [result]
                 }
             }`,
-        paramTypes: [],
-        methodName: 'getPreUpgradeExecuted',
         tests: [
             [
                 {

@@ -51,7 +51,7 @@ const CanisterConfigArb = HttpRequestUpdateMethodArb.map(
 
 runPropTests(CanisterArb(context, CanisterConfigArb));
 
-function generateHttpRequestMethod(): QueryMethod<any, any> {
+function generateHttpRequestMethod(): QueryMethod {
     return {
         imports: new Set(['query']),
         globalDeclarations: [],
@@ -66,13 +66,11 @@ function generateHttpRequestMethod(): QueryMethod<any, any> {
                     upgrade: [true]
                 };
             }`,
-        tests: [],
-        paramTypes: [], // TODO this is not correct but I don't want to take the time to fix it now
-        methodName: 'http_request'
+        tests: []
     };
 }
 
-function generateGetStateMethod(): QueryMethod<any, any> {
+function generateGetStateMethod(): QueryMethod {
     return {
         imports: new Set(['query', 'IDL']),
         globalDeclarations: ['let state: number = 0;'],
@@ -81,8 +79,6 @@ function generateGetStateMethod(): QueryMethod<any, any> {
             get_state(){
                 return state;
             }`,
-        tests: [],
-        paramTypes: [],
-        methodName: 'get_state'
+        tests: []
     };
 }

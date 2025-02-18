@@ -4,48 +4,54 @@ import { UniqueIdentifierArb } from 'azle/test/property/arbitraries/unique_ident
 import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 import fc from 'fast-check';
 
+import { CorrespondingJSType } from '../../../../../../../test/property/arbitraries/candid/corresponding_js_type';
 import { UpdateMethod } from '../../../../../../../test/property/arbitraries/canister_methods/update_method_arb';
 
 export function GetTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<UpdateMethod<any, any>> {
+): fc.Arbitrary<UpdateMethod<CorrespondingJSType, CorrespondingJSType>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): UpdateMethod<any, any> => {
-            const imports = new Set([
-                ...stableBTreeMap.imports,
-                'Opt',
-                'query',
-                'None',
-                'Some'
-            ]);
+        .map(
+            ([functionName]): UpdateMethod<
+                CorrespondingJSType,
+                CorrespondingJSType
+            > => {
+                const imports = new Set([
+                    ...stableBTreeMap.imports,
+                    'Opt',
+                    'query',
+                    'None',
+                    'Some'
+                ]);
 
-            const paramTypeObjects = [
-                stableBTreeMap.keySample.src.typeObject
-            ].join(', ');
+                const paramTypeObjects = [
+                    stableBTreeMap.keySample.src.typeObject
+                ].join(', ');
 
-            const returnTypeObject = `Opt(${stableBTreeMap.valueSample.src.typeObject})`;
-            const valueTypeIsNull =
-                stableBTreeMap.valueSample.src.typeAnnotation === 'Null';
-            const body = generateBody(stableBTreeMap.name, valueTypeIsNull);
+                const returnTypeObject = `Opt(${stableBTreeMap.valueSample.src.typeObject})`;
+                const valueTypeIsNull =
+                    stableBTreeMap.valueSample.src.typeAnnotation === 'Null';
+                const body = generateBody(stableBTreeMap.name, valueTypeIsNull);
 
-            const tests = generateTests(
-                functionName,
-                stableBTreeMap.keySample.value.agentArgumentValue,
-                stableBTreeMap.valueSample.value.agentArgumentValue
-            );
+                const tests = generateTests(
+                    functionName,
+                    stableBTreeMap.keySample.value.agentArgumentValue,
+                    stableBTreeMap.valueSample.value.agentArgumentValue
+                );
 
-            return {
-                imports,
-                globalDeclarations: [],
-                sourceCode: `${functionName}: query([${paramTypeObjects}], ${returnTypeObject}, (param0) => {
+                return {
+                    imports,
+                    globalDeclarations: [],
+                    sourceCode: `${functionName}: query([${paramTypeObjects}], ${returnTypeObject}, (param0) => {
                 ${body}
             })`,
-                tests,
-                paramTypes: [stableBTreeMap.keySample],
-                methodName: functionName
-            };
-        });
+                    tests,
+                    paramTypes: [stableBTreeMap.keySample],
+                    methodName: functionName
+                };
+            }
+        );
 }
 
 function generateBody(

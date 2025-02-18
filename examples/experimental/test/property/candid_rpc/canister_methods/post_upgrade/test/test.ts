@@ -190,7 +190,7 @@ const CanisterConfigArb = fc
 function generateGetPostUpgradeValuesCanisterMethod(
     paramTypeObjects: string[],
     globalVariableNames: string[]
-): QueryMethod<any, any> {
+): QueryMethod {
     return {
         imports: new Set(['Tuple', 'bool', 'query']),
         globalDeclarations: [],
@@ -206,7 +206,7 @@ function generateGetPostUpgradeValuesCanisterMethod(
 function generateGetInitValuesCanisterMethod(
     paramTypeObjects: string[],
     globalVariableNames: string[]
-): QueryMethod<any, any> {
+): QueryMethod {
     return {
         imports: new Set(['Tuple', 'bool', 'query']),
         globalDeclarations: [],
@@ -219,9 +219,7 @@ function generateGetInitValuesCanisterMethod(
     };
 }
 
-function generateIsInitCalled(
-    globalVariableNames: string[]
-): QueryMethod<any, any> {
+function generateIsInitCalled(globalVariableNames: string[]): QueryMethod {
     const areAllParamsUndefined = globalVariableNames
         .map((name) => `${name} === undefined`)
         .join(' && ');
@@ -240,7 +238,7 @@ function generateIsInitCalled(
 
 function generateIsPostUpgradeCalled(
     globalVariableNames: string[]
-): QueryMethod<any, any> {
+): QueryMethod {
     const areAllParamsUndefined = globalVariableNames
         .map((name) => `${name} === undefined`)
         .join(' && ');

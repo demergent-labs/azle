@@ -190,7 +190,7 @@ const CanisterConfigArb = fc
 function generateGetPostUpgradeValuesCanisterMethod(
     paramTypeObjects: string[],
     globalVariableNames: string[]
-): QueryMethod<any, any> {
+): QueryMethod {
     return {
         imports: new Set(['IDL', 'query']),
         globalDeclarations: [],
@@ -199,16 +199,14 @@ function generateGetPostUpgradeValuesCanisterMethod(
             getPostUpgradeValues(){
                 return [postUpgradeExecuted, ${globalVariableNames.join()}]
             }`,
-        tests: [],
-        paramTypes: [],
-        methodName: 'getPostUpgradeValues'
+        tests: []
     };
 }
 
 function generateGetInitValuesCanisterMethod(
     paramTypeObjects: string[],
     globalVariableNames: string[]
-): QueryMethod<any, any> {
+): QueryMethod {
     return {
         imports: new Set(['IDL', 'query']),
         globalDeclarations: [],
@@ -217,15 +215,11 @@ function generateGetInitValuesCanisterMethod(
             getInitValues(){
                 return [initExecuted, ${globalVariableNames.join()}]
             }`,
-        tests: [],
-        paramTypes: [],
-        methodName: 'getInitValues'
+        tests: []
     };
 }
 
-function generateIsInitCalled(
-    globalVariableNames: string[]
-): QueryMethod<any, any> {
+function generateIsInitCalled(globalVariableNames: string[]): QueryMethod {
     const areAllParamsUndefined = globalVariableNames
         .map((name) => `${name} === undefined`)
         .join(' && ');
@@ -240,15 +234,13 @@ function generateIsInitCalled(
         sourceCode: /*TS*/ `
             @query([], IDL.Bool)
             isInitCalled(){${isInitCalled}}`,
-        tests: [],
-        paramTypes: [],
-        methodName: 'isInitCalled'
+        tests: []
     };
 }
 
 function generateIsPostUpgradeCalled(
     globalVariableNames: string[]
-): QueryMethod<any, any> {
+): QueryMethod {
     const areAllParamsUndefined = globalVariableNames
         .map((name) => `${name} === undefined`)
         .join(' && ');
@@ -263,9 +255,7 @@ function generateIsPostUpgradeCalled(
         sourceCode: /*TS*/ `
             @query([], IDL.Bool)
             isPostUpgradeCalled(){${isPostUpgradeCalled}}`,
-        tests: [],
-        paramTypes: [],
-        methodName: 'isPostUpgradeCalled'
+        tests: []
     };
 }
 

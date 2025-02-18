@@ -1,10 +1,11 @@
 import { getActor } from 'azle/test/property';
-import { QueryMethod } from 'azle/test/property/arbitraries/canister_methods/query_method_arb';
 import { StableBTreeMap } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
 import { UniqueIdentifierArb } from 'azle/test/property/arbitraries/unique_identifier_arb';
 import { AzleResult, Test, testEquality } from 'azle/test/property/test';
 import fc from 'fast-check';
 
+import { CorrespondingJSType } from '../../../../../../../test/property/arbitraries/candid/corresponding_js_type';
+import { UpdateMethod } from '../../../../../../../test/property/arbitraries/canister_methods/update_method_arb';
 import {
     getArrayForCandidTypeObject,
     getArrayStringForTypeObject,
@@ -13,43 +14,48 @@ import {
 
 export function ValuesTestArb(
     stableBTreeMap: StableBTreeMap
-): fc.Arbitrary<QueryMethod<any, any>> {
+): fc.Arbitrary<UpdateMethod<CorrespondingJSType, CorrespondingJSType>> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
-        .map(([functionName]): QueryMethod<any, any> => {
-            const imports = new Set([
-                ...stableBTreeMap.imports,
-                'IDL',
-                'query'
-            ]);
+        .map(
+            ([functionName]): UpdateMethod<
+                CorrespondingJSType,
+                CorrespondingJSType
+            > => {
+                const imports = new Set([
+                    ...stableBTreeMap.imports,
+                    'IDL',
+                    'query'
+                ]);
 
-            const returnTypeObject = `IDL.Vec(${stableBTreeMap.valueSample.src.typeObject})`;
-            const returnTypeAnnotation = getArrayTypeAnnotation(
-                stableBTreeMap.valueSample.src.typeObject,
-                stableBTreeMap.valueSample.src.typeAnnotation
-            );
-            const body = generateBody(
-                stableBTreeMap.name,
-                stableBTreeMap.valueSample.src.typeObject
-            );
+                const returnTypeObject = `IDL.Vec(${stableBTreeMap.valueSample.src.typeObject})`;
+                const returnTypeAnnotation = getArrayTypeAnnotation(
+                    stableBTreeMap.valueSample.src.typeObject,
+                    stableBTreeMap.valueSample.src.typeAnnotation
+                );
+                const body = generateBody(
+                    stableBTreeMap.name,
+                    stableBTreeMap.valueSample.src.typeObject
+                );
 
-            const tests = generateTests(
-                functionName,
-                stableBTreeMap.valueSample
-            );
+                const tests = generateTests(
+                    functionName,
+                    stableBTreeMap.valueSample
+                );
 
-            return {
-                imports,
-                globalDeclarations: [],
-                sourceCode: `@query([], ${returnTypeObject})
+                return {
+                    imports,
+                    globalDeclarations: [],
+                    sourceCode: `@query([], ${returnTypeObject})
                 ${functionName}(): ${returnTypeAnnotation} {
                 ${body}
             }`,
-                tests,
-                paramTypes: [],
-                methodName: functionName
-            };
-        });
+                    tests,
+                    paramTypes: [],
+                    methodName: functionName
+                };
+            }
+        );
 }
 
 function generateBody(
