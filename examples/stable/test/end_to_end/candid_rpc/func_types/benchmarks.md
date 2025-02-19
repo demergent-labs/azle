@@ -1,18 +1,18 @@
 # Benchmarks for func_types
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                  |
-| --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | init                             | 1_028_896_713 | 812_148_685 | $0.0010798897 | $1_079.88         | <font color="green">-331_474_101</font> |
-| 1   | getNotifierFromNotifiersCanister | 1_825_738     | 1_320_295   | $0.0000017556 | $1.75             | <font color="red">+168_829</font>       |
+| Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                 |
+| --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | -------------------------------------- |
+| 0   | init                             | 1_016_631_951 | 807_242_780 | $0.0010733665 | $1_073.36         | <font color="green">-12_264_762</font> |
+| 1   | getNotifierFromNotifiersCanister | 1_311_752     | 1_114_700   | $0.0000014822 | $1.48             | <font color="green">-513_986</font>    |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | init                             | 1_360_370_814 | 944_738_325 | $0.0012561902 | $1_256.19         |
-| 1   | getNotifierFromNotifiersCanister | 1_656_909     | 1_252_763   | $0.0000016658 | $1.66             |
+| 0   | init                             | 1_028_896_713 | 812_148_685 | $0.0010798897 | $1_079.88         |
+| 1   | getNotifierFromNotifiersCanister | 1_825_738     | 1_320_295   | $0.0000017556 | $1.75             |
 
 ---
 

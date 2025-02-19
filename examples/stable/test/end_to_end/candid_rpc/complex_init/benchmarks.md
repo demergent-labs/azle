@@ -1,30 +1,30 @@
 # Benchmarks for complex_init
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                  |
-| --- | ----------- | ------------- | ----------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | init        | 1_006_268_740 | 803_097_496 | $0.0010678546 | $1_067.85         | <font color="green">-331_255_004</font> |
+| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                                 |
+| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | -------------------------------------- |
+| 0   | init        | 992_153_737  | 397_451_494 | $0.0005284793 | $528.47           | <font color="green">-14_115_003</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | init        | 1_337_523_744 | 935_599_497 | $0.0012440386 | $1_244.03         |
+| 0   | init        | 1_006_268_740 | 803_097_496 | $0.0010678546 | $1_067.85         |
 
 # Benchmarks for rec_init
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                  |
-| --- | ----------- | ------------- | ----------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | init        | 1_006_187_848 | 803_065_139 | $0.0010678116 | $1_067.81         | <font color="green">-331_221_972</font> |
+| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                                 |
+| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | -------------------------------------- |
+| 0   | init        | 991_849_564  | 397_329_825 | $0.0005283175 | $528.31           | <font color="green">-14_338_284</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | init        | 1_337_409_820 | 935_553_928 | $0.0012439780 | $1_243.97         |
+| 0   | init        | 1_006_187_848 | 803_065_139 | $0.0010678116 | $1_067.81         |
 
 ---
 

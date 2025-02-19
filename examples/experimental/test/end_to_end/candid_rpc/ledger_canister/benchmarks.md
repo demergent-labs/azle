@@ -1,6 +1,26 @@
 # Benchmarks for ledger_canister
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
+
+| Id  | Method Name       | Instructions | Cycles     | USD           | USD/Million Calls | Change                                    |
+| --- | ----------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------------- |
+| 0   | getAccountBalance | 107_177_918  | 43_461_167 | $0.0000577890 | $57.78            | <font color="green">-7_157_108_447</font> |
+| 1   | getTransferFee    | 104_099_048  | 42_229_619 | $0.0000561515 | $56.15            | <font color="green">-3_208_031</font>     |
+| 2   | executeTransfer   | 115_233_464  | 46_683_385 | $0.0000620735 | $62.07            | <font color="red">+10_937_380</font>      |
+| 3   | executeTransfer   | 115_322_613  | 46_719_045 | $0.0000621209 | $62.12            | <font color="green">-135_466</font>       |
+| 4   | getBlocks         | 108_097_247  | 43_828_898 | $0.0000582780 | $58.27            | <font color="green">-7_352_187</font>     |
+| 5   | getSymbol         | 102_895_501  | 41_748_200 | $0.0000555113 | $55.51            | <font color="green">-5_407_287</font>     |
+| 6   | getName           | 102_639_634  | 41_645_853 | $0.0000553752 | $55.37            | <font color="green">-424_600</font>       |
+| 7   | getDecimals       | 102_946_694  | 41_768_677 | $0.0000555386 | $55.53            | <font color="red">+93_619</font>          |
+| 8   | getArchives       | 102_997_766  | 41_789_106 | $0.0000555657 | $55.56            | <font color="green">-234_469</font>       |
+| 9   | executeTransfer   | 115_374_596  | 46_739_838 | $0.0000621486 | $62.14            | <font color="red">+12_273_520</font>      |
+| 10  | getAccountBalance | 107_287_034  | 43_504_813 | $0.0000578470 | $57.84            | <font color="green">-8_292_887</font>     |
+| 11  | executeTransfer   | 115_315_654  | 46_716_261 | $0.0000621172 | $62.11            | <font color="red">+7_963_466</font>       |
+| 12  | executeTransfer   | 115_337_572  | 46_725_028 | $0.0000621289 | $62.12            | <font color="green">-206_861</font>       |
+| 13  | executeTransfer   | 116_098_251  | 47_029_300 | $0.0000625334 | $62.53            | <font color="red">+759_892</font>         |
+| 14  | executeTransfer   | 116_115_957  | 47_036_382 | $0.0000625429 | $62.54            | <font color="green">-170_134</font>       |
+
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name       | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -20,10 +40,6 @@
 | 13  | executeTransfer   | 115_338_359   | 46_725_343    | $0.0000621293 | $62.12            |
 | 14  | executeTransfer   | 116_286_091   | 47_104_436    | $0.0000626334 | $62.63            |
 | 15  | executeTransfer   | 116_270_295   | 47_098_118    | $0.0000626250 | $62.62            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

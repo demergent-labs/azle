@@ -1,30 +1,30 @@
 # Benchmarks for canister1
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | sendNotification | 1_757_055    | 1_292_822 | $0.0000017190 | $1.71             | <font color="red">+147_451</font> |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | sendNotification | 1_798_549    | 1_309_419 | $0.0000017411 | $1.74             | <font color="red">+41_494</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | sendNotification | 1_609_604    | 1_233_841 | $0.0000016406 | $1.64             |
+| 0   | sendNotification | 1_757_055    | 1_292_822 | $0.0000017190 | $1.71             |
 
 # Benchmarks for canister2
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls | Change                           |
-| --- | ------------------- | ------------ | ------- | ------------- | ----------------- | -------------------------------- |
-| 0   | receiveNotification | 982_453      | 982_981 | $0.0000013070 | $1.30             | <font color="red">+59_403</font> |
+| Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls | Change                          |
+| --- | ------------------- | ------------ | ------- | ------------- | ----------------- | ------------------------------- |
+| 0   | receiveNotification | 990_255      | 986_102 | $0.0000013112 | $1.31             | <font color="red">+7_802</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls |
 | --- | ------------------- | ------------ | ------- | ------------- | ----------------- |
-| 0   | receiveNotification | 923_050      | 959_220 | $0.0000012754 | $1.27             |
+| 0   | receiveNotification | 982_453      | 982_981 | $0.0000013070 | $1.30             |
 
 ---
 

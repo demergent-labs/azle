@@ -1,20 +1,18 @@
 # Benchmarks for backend
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init                | 8_276_429_035 | 6_511_161_614 | $0.0086576963 | $8_657.69         | <font color="red">+140_163_761</font> |
-| 1   | http_request_update | 54_051_962    | 22_210_784    | $0.0000295330 | $29.53            | <font color="red">+253_235</font>     |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | init                | 7_520_619_298 | 5_808_837_719 | $0.0077238372 | $7_723.83         | <font color="green">-755_809_737</font> |
+| 1   | http_request_update | 53_436_721    | 21_964_688    | $0.0000292058 | $29.20            | <font color="green">-615_241</font>     |
 
 ## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                | 8_136_265_274 | 6_455_096_109 | $0.0085831476 | $8_583.14         |
-| 1   | http_request_update | 53_798_727    | 22_109_490    | $0.0000293983 | $29.39            |
-| 2   | http_request_update | 47_468_265    | 19_577_306    | $0.0000260314 | $26.03            |
-| 3   | http_request_update | 47_474_297    | 19_579_718    | $0.0000260346 | $26.03            |
+| 0   | init                | 8_276_429_035 | 6_511_161_614 | $0.0086576963 | $8_657.69         |
+| 1   | http_request_update | 54_051_962    | 22_210_784    | $0.0000295330 | $29.53            |
 
 ---
 

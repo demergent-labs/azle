@@ -1,0 +1,112 @@
+{
+    "wallet_backend": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "80969629"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1739923873533686776"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "80962392"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1739923873775617587"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104792776"
+                    },
+                    "method_name": "getDepositAddress",
+                    "timestamp": {
+                        "__bigint__": "1739923874254729585"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104661243"
+                    },
+                    "method_name": "getDepositAddress",
+                    "timestamp": {
+                        "__bigint__": "1739923874530188521"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104637857"
+                    },
+                    "method_name": "updateBalance",
+                    "timestamp": {
+                        "__bigint__": "1739923935072793909"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "104740921"
+                    },
+                    "method_name": "updateBalance",
+                    "timestamp": {
+                        "__bigint__": "1739923935571268966"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "80987386"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1739923935841388996"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81022705"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1739923936111136651"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "89390408"
+                    },
+                    "method_name": "transfer",
+                    "timestamp": {
+                        "__bigint__": "1739923936606628177"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81039369"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1739923936875452148"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "81046998"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1739923937143409670"
+                    }
+                }
+            ]
+        }
+    }
+}
