@@ -30,7 +30,7 @@ export function InspectMessageMethodArb(
     const constraints = context.constraints;
     return fc
         .tuple(
-            UniqueIdentifierArb('canisterProperties'),
+            UniqueIdentifierArb('canisterProperties', 'property'),
             BoolArb({ ...context, constraints: {} }),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')

@@ -54,7 +54,7 @@ export function PostUpgradeMethodArb<
     const constraints = context.constraints;
     return fc
         .tuple(
-            UniqueIdentifierArb('canisterProperties'),
+            UniqueIdentifierArb('canisterProperties', 'property'),
             paramTypeArrayArb,
             VoidArb({ ...context, constraints: {} }),
             fc.constantFrom<MethodImplementationLocation>(
