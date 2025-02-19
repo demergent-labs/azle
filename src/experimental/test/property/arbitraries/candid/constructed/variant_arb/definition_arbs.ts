@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Variant } from '#experimental/lib/index';
 
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_function_name_arb';
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
@@ -109,7 +109,7 @@ function VariantFieldsArb(
     // an empty object.
     const VARIANT_MIN_FIELD_COUNT = 1;
     return fc
-        .uniqueArray(JsFunctionNameArb, {
+        .uniqueArray(JsPropertyNameArb, {
             minLength: VARIANT_MIN_FIELD_COUNT
         })
         .chain((fieldsNames) =>

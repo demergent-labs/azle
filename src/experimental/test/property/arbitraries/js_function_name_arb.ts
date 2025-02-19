@@ -147,9 +147,29 @@ const jsKeywords = [
 // This breaks rust but it doesn't seem to be a rust keyword
 const otherKeywords = ['drop'];
 
-export const JsFunctionNameArb = fc
+const unquotedFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)
     .filter((sample) => !rustKeywords.includes(sample))
     .filter((sample) => !jsKeywords.includes(sample))
     .filter((sample) => !otherKeywords.includes(sample))
     .filter((sample) => !azleKeywords.includes(sample));
+
+const quotedFunctionNameArb = fc
+    .stringMatching(/^"([^"\\]|\\.)+"$/)
+    .map((s: string): string => {
+        // Remove the leading and trailing quotes
+        const inner = s.slice(1, -1);
+        // Escape backslashes and double quotes in the inner part only
+        const escapedInner = inner.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        // Reassemble the string with its leading and trailing quotes intact
+        return `"${escapedInner}"`;
+    });
+
+export const JsIdentifierNameArb = fc.oneof(unquotedFunctionNameArb);
+
+export const JsPropertyNameArb = fc.oneof(
+    unquotedFunctionNameArb,
+    quotedFunctionNameArb
+);
+
+// TODO rename to JsNameArbs or something?

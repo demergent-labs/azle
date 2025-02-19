@@ -58,7 +58,7 @@ export function QueryMethodArb<
     const constraints = context.constraints;
     return fc
         .tuple(
-            UniqueIdentifierArb('canisterProperties'),
+            UniqueIdentifierArb('canisterProperties', 'property'),
             paramTypeArrayArb,
             returnTypeArb,
             MethodImplementationLocationArb,
