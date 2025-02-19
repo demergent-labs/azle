@@ -11,7 +11,7 @@ export function FuncValueArb(): fc.Arbitrary<CandidValues<Func>> {
         .map(([name, principal]) => {
             const value: Func = [principal.agentArgumentValue, name];
 
-            const valueLiteral = `[${principal.valueLiteral}, ${name}]`;
+            const valueLiteral = `[${principal.valueLiteral}, ${name.startsWith('"') ? name : `"${name}"`}]`;
 
             return {
                 valueLiteral,
