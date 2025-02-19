@@ -1,4 +1,5 @@
-use std::{cell::RefCell, error::Error, str};
+use core::ptr::read_volatile;
+use std::{env, error::Error, str};
 
 use serde::{Deserialize, Serialize};
 use serde_json;
@@ -13,71 +14,88 @@ pub struct WasmData {
     pub record_benchmarks: bool,
 }
 
-// This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
-thread_local! {
-    static STRING_REF_CELL: RefCell<Option<String>> = RefCell::new(None);
-}
-
 #[inline(never)]
 #[no_mangle]
 extern "C" fn init_js_passive_data(js_vec_location: i32) {
+    // Without something like this to make the function bodies different,
+    // the init_js_passive_data and init_wasm_data_passive_data functions
+    // seem to be optimized into the same function in the Wasm binary
+    // This causes problems during Wasm binary manipulation
+    let _ = format!("prevent init_js_passive_data and init_wasm_data_passive_data optimization");
+
     // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
-    STRING_REF_CELL.with(|string_ref_cell| {
-        *string_ref_cell.borrow_mut() = Some(format!("init_js_passive_data_{js_vec_location}"));
-    });
+    unsafe { read_volatile(&js_vec_location) };
 }
 
 #[inline(never)]
 #[no_mangle]
 extern "C" fn js_passive_data_size() -> usize {
-    // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
-    STRING_REF_CELL.with(|string_ref_cell| {
-        *string_ref_cell.borrow_mut() = Some(format!("js_passive_data_size"));
-    });
-
-    0
+    // This is to prevent compiler optimizations that interfere with the Wasm binary manipulation
+    // unsafe { read_volatile(&js_passive_data_size) };
+    env::var("js_passive_data_size").map_or(0, |s| s.len())
 }
 
+// #[inline(never)]
+// #[no_mangle]
+// extern "C" fn js_passive_data_size() -> usize {
+//     // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
+//     // STRING_REF_CELL.with(|string_ref_cell| {
+//     //     *string_ref_cell.borrow_mut() = Some(format!("js_passive_data_size"));
+//     // });
+
+//     // 0
+//     USIZE_REF_CELL.with(|usize_ref_cell| usize_ref_cell.borrow().clone())
+// }
+
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
-pub fn get_js_code() -> Vec<u8> {
+pub fn get_js_code() -> Result<Vec<u8>, Box<dyn Error>> {
     let size = js_passive_data_size();
+
     let mut js_vec = vec![243; size];
-    let js_vec_location = js_vec.as_mut_ptr() as i32;
 
-    init_js_passive_data(js_vec_location);
+    // This cast to usize appears to be well defined and safe
+    let js_vec_location = js_vec.as_mut_ptr() as usize;
 
-    js_vec
+    init_js_passive_data(i32::try_from(js_vec_location)?);
+
+    Ok(js_vec)
 }
 
 #[inline(never)]
 #[no_mangle]
 extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: i32) {
     // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
-    STRING_REF_CELL.with(|string_ref_cell| {
-        *string_ref_cell.borrow_mut() = Some(format!(
-            "init_wasm_data_passive_data_{wasm_data_vec_location}"
-        ));
-    });
+    unsafe { read_volatile(&wasm_data_vec_location) };
 }
 
 #[inline(never)]
 #[no_mangle]
 extern "C" fn wasm_data_passive_data_size() -> usize {
-    // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
-    STRING_REF_CELL.with(|string_ref_cell| {
-        *string_ref_cell.borrow_mut() = Some(format!("wasm_data_passive_data_size"));
-    });
-
-    0
+    // This is to prevent compiler optimizations that interfere with the Wasm binary manipulation
+    env::var("wasm_data_passive_data_size").map_or(0, |s| s.len())
 }
+
+// #[inline(never)]
+// #[no_mangle]
+// extern "C" fn wasm_data_passive_data_size() -> usize {
+//     // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
+//     STRING_REF_CELL.with(|string_ref_cell| {
+//         *string_ref_cell.borrow_mut() = Some(format!("wasm_data_passive_data_size"));
+//     });
+
+//     0
+// }
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
 pub fn get_wasm_data() -> Result<WasmData, Box<dyn Error>> {
     let size = wasm_data_passive_data_size();
-    let mut wasm_data_vec = vec![243; size];
-    let wasm_data_vec_location = wasm_data_vec.as_mut_ptr() as i32;
 
-    init_wasm_data_passive_data(wasm_data_vec_location);
+    let mut wasm_data_vec = vec![243; size];
+
+    // This cast to usize appears to be well defined and safe
+    let wasm_data_vec_location = wasm_data_vec.as_mut_ptr() as usize;
+
+    init_wasm_data_passive_data(i32::try_from(wasm_data_vec_location)?);
 
     let wasm_data_str = str::from_utf8(&wasm_data_vec).map_err(|e| {
         format!(
