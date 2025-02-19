@@ -1,6 +1,15 @@
 # Benchmarks for express
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
+
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | init                | 7_535_279_987 | 5_814_701_994 | $0.0077316348 | $7_731.63         | <font color="green">-755_805_595</font> |
+| 1   | http_request_update | 53_687_957    | 22_065_182    | $0.0000293394 | $29.33            | <font color="green">-656_378</font>     |
+| 2   | http_request_update | 47_285_015    | 19_504_006    | $0.0000259339 | $25.93            | <font color="green">-625_502</font>     |
+| 3   | http_request_update | 44_281_721    | 18_302_688    | $0.0000243365 | $24.33            | <font color="green">-590_983</font>     |
+
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -8,10 +17,6 @@
 | 1   | http_request_update | 54_344_335    | 22_327_734    | $0.0000296885 | $29.68            |
 | 2   | http_request_update | 47_910_517    | 19_754_206    | $0.0000262666 | $26.26            |
 | 3   | http_request_update | 44_872_704    | 18_539_081    | $0.0000246509 | $24.65            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

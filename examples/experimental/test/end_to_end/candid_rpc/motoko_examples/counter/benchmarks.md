@@ -1,20 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | ------- | ------------- | ----------------- | --------------------------------- |
-| 0   | set         | 989_864      | 985_945 | $0.0000013110 | $1.31             | <font color="green">-3_474</font> |
-| 1   | inc         | 853_438      | 931_375 | $0.0000012384 | $1.23             | <font color="red">+3_859</font>   |
-| 2   | inc         | 854_297      | 931_718 | $0.0000012389 | $1.23             | <font color="red">+3_464</font>   |
+| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                           |
+| --- | ----------- | ------------ | ------- | ------------- | ----------------- | -------------------------------- |
+| 0   | set         | 1_000_686    | 990_274 | $0.0000013167 | $1.31             | <font color="red">+10_822</font> |
+| 1   | inc         | 856_277      | 932_510 | $0.0000012399 | $1.23             | <font color="red">+2_839</font>  |
+| 2   | inc         | 856_277      | 932_510 | $0.0000012399 | $1.23             | <font color="red">+1_980</font>  |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ------- | ------------- | ----------------- |
-| 0   | set         | 993_338      | 987_335 | $0.0000013128 | $1.31             |
-| 1   | inc         | 849_579      | 929_831 | $0.0000012364 | $1.23             |
-| 2   | inc         | 850_833      | 930_333 | $0.0000012370 | $1.23             |
+| 0   | set         | 989_864      | 985_945 | $0.0000013110 | $1.31             |
+| 1   | inc         | 853_438      | 931_375 | $0.0000012384 | $1.23             |
+| 2   | inc         | 854_297      | 931_718 | $0.0000012389 | $1.23             |
 
 ---
 

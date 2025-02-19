@@ -1,10 +1,6 @@
 {
     "func_types": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.25.0",
             "benchmarks": [
                 {
@@ -23,6 +19,29 @@
                     "method_name": "getNotifierFromNotifiersCanister",
                     "timestamp": {
                         "__bigint__": "1736543918843867936"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4857745882"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1739923778664837476"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "10650397"
+                    },
+                    "method_name": "getNotifierFromNotifiersCanister",
+                    "timestamp": {
+                        "__bigint__": "1739923794342405039"
                     }
                 }
             ]

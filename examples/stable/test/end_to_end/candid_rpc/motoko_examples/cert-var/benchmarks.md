@@ -1,6 +1,24 @@
 # Benchmarks for cert-var
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | set         | 2_083_178    | 1_423_271 | $0.0000018925 | $1.89             | <font color="green">-21_562</font> |
+| 1   | inc         | 2_326_684    | 1_520_673 | $0.0000020220 | $2.02             | <font color="green">-11_574</font> |
+| 2   | set         | 2_062_558    | 1_415_023 | $0.0000018815 | $1.88             | <font color="green">-13_424</font> |
+| 3   | inc         | 2_324_813    | 1_519_925 | $0.0000020210 | $2.02             | <font color="green">-16_903</font> |
+| 4   | set         | 2_061_503    | 1_414_601 | $0.0000018810 | $1.88             | <font color="green">-19_375</font> |
+| 5   | inc         | 2_323_798    | 1_519_519 | $0.0000020205 | $2.02             | <font color="green">-17_903</font> |
+| 6   | set         | 2_064_166    | 1_415_666 | $0.0000018824 | $1.88             | <font color="green">-12_647</font> |
+| 7   | inc         | 2_321_713    | 1_518_685 | $0.0000020193 | $2.01             | <font color="green">-18_295</font> |
+| 8   | set         | 2_061_742    | 1_414_696 | $0.0000018811 | $1.88             | <font color="green">-17_489</font> |
+| 9   | inc         | 2_325_626    | 1_520_250 | $0.0000020214 | $2.02             | <font color="green">-14_520</font> |
+| 10  | set         | 2_063_056    | 1_415_222 | $0.0000018818 | $1.88             | <font color="green">-11_505</font> |
+| 11  | inc         | 2_324_548    | 1_519_819 | $0.0000020209 | $2.02             | <font color="green">-13_906</font> |
+| 12  | set         | 2_044_753    | 1_407_901 | $0.0000018720 | $1.87             | <font color="green">-34_530</font> |
+
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
@@ -17,10 +35,6 @@
 | 10  | set         | 2_074_561    | 1_419_824 | $0.0000018879 | $1.88             |
 | 11  | inc         | 2_338_454    | 1_525_381 | $0.0000020283 | $2.02             |
 | 12  | set         | 2_079_283    | 1_421_713 | $0.0000018904 | $1.89             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

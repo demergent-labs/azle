@@ -1,11 +1,11 @@
 {
     "echo": {
         "previous": {
-            "version": "0.25.0-dev",
+            "version": "0.25.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.25.0",
+            "version": "0.26.0",
             "benchmarks": []
         }
     }
