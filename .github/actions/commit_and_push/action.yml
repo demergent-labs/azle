@@ -11,6 +11,10 @@ inputs:
     commit-message:
         description: 'Commit message'
         required: true
+    add-files:
+        description: 'Optional file pattern to limit git add. E.g. "src/" to only add changes from the src directory. Defaults to "--all" to add all changes.'
+        required: false
+        default: '--all'
     gpg-signing-key:
         description: 'The GPG signing key to use for signing commits'
         required: true
@@ -40,7 +44,9 @@ runs:
               git status
 
               # Add and commit changes if there are any
-              git add --all
+              echo "Adding files: ${{ inputs.add-files }}"
+              git add "${{ inputs.add-files }}"
+
               if ! git diff --cached --quiet; then
                 git commit -m "${{ inputs.commit-message }}"
                 git push origin "${{ inputs.branch-name }}"

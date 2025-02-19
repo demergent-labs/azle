@@ -144,6 +144,7 @@ jobs:
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Update test files for ${{ matrix.test.displayPath }}'
+                  add-files: ${{ matrix.test.path }}
                   gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
                   create-branch: 'true'
                   signing-key-id: ${{ inputs.signing-key-id }}
