@@ -1,16 +1,16 @@
 # Benchmarks for persistent_storage
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | postUpgrade | 5_470_001_847 | 4_188_590_738 | $0.0055694434 | $5_569.44         | <font color="red">+101_635_781</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | postUpgrade | 4_827_128_892 | 3_531_441_556 | $0.0046956519 | $4_695.65         | <font color="green">-642_872_955</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | postUpgrade | 5_368_366_066 | 4_147_936_426 | $0.0055153866 | $5_515.38         |
+| 0   | postUpgrade | 5_470_001_847 | 4_188_590_738 | $0.0055694434 | $5_569.44         |
 
 ---
 

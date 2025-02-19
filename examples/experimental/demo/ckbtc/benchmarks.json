@@ -1,0 +1,112 @@
+{
+    "wallet_backend": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5385879"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1739923785936214654"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5335061"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1739923786192174255"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5650439"
+                    },
+                    "method_name": "2",
+                    "timestamp": {
+                        "__bigint__": "1739923786449247362"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5657992"
+                    },
+                    "method_name": "2",
+                    "timestamp": {
+                        "__bigint__": "1739923786982570790"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5654566"
+                    },
+                    "method_name": "1",
+                    "timestamp": {
+                        "__bigint__": "1739923847333720387"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5654927"
+                    },
+                    "method_name": "1",
+                    "timestamp": {
+                        "__bigint__": "1739923847647796044"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5329979"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1739923847893262983"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5327008"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1739923848161195936"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "13762824"
+                    },
+                    "method_name": "3",
+                    "timestamp": {
+                        "__bigint__": "1739923848464519516"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5324938"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1739923848733526628"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5327302"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1739923849002555662"
+                    }
+                }
+            ]
+        }
+    }
+}

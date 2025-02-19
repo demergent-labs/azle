@@ -1,15 +1,18 @@
 # Benchmarks for api
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
+
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                    |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ----------------------------------------- |
+| 0   | init                | 13_576_631_521 | 10_631_242_608 | $0.0141360444 | $14_136.04        | <font color="green">-1_111_432_932</font> |
+| 1   | http_request_update | 102_312_156    | 41_514_862     | $0.0000552011 | $55.20            | <font color="green">-778_037</font>       |
+
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls |
 | --- | ------------------- | -------------- | -------------- | ------------- | ----------------- |
 | 0   | init                | 14_688_064_453 | 11_475_815_781 | $0.0152590480 | $15_259.04        |
 | 1   | http_request_update | 103_090_193    | 41_826_077     | $0.0000556149 | $55.61            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

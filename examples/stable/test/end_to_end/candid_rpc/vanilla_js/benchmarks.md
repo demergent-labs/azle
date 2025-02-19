@@ -1,10 +1,10 @@
 # Benchmarks for vanilla_js
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 No benchmarks reported
 

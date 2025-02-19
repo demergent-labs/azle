@@ -1,65 +1,6 @@
 {
     "superheroes": {
         "previous": {
-            "version": "0.25.0-dev",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "4464209"
-                    },
-                    "method_name": "create",
-                    "timestamp": {
-                        "__bigint__": "1730484635769706925"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5770046"
-                    },
-                    "method_name": "create",
-                    "timestamp": {
-                        "__bigint__": "1730484637923836973"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "6210861"
-                    },
-                    "method_name": "update",
-                    "timestamp": {
-                        "__bigint__": "1730484640119055743"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "4395208"
-                    },
-                    "method_name": "update",
-                    "timestamp": {
-                        "__bigint__": "1730484642019681806"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1220028"
-                    },
-                    "method_name": "deleteHero",
-                    "timestamp": {
-                        "__bigint__": "1730484644225176478"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1211339"
-                    },
-                    "method_name": "deleteHero",
-                    "timestamp": {
-                        "__bigint__": "1730484646143956791"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.25.0",
             "benchmarks": [
                 {
@@ -114,6 +55,65 @@
                     "method_name": "deleteHero",
                     "timestamp": {
                         "__bigint__": "1736543882215072411"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4452931"
+                    },
+                    "method_name": "create",
+                    "timestamp": {
+                        "__bigint__": "1739923767887610492"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5701489"
+                    },
+                    "method_name": "create",
+                    "timestamp": {
+                        "__bigint__": "1739923768155867738"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "6112979"
+                    },
+                    "method_name": "update",
+                    "timestamp": {
+                        "__bigint__": "1739923768715062884"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "4376853"
+                    },
+                    "method_name": "update",
+                    "timestamp": {
+                        "__bigint__": "1739923768983081214"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1232270"
+                    },
+                    "method_name": "deleteHero",
+                    "timestamp": {
+                        "__bigint__": "1739923769250774896"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1222782"
+                    },
+                    "method_name": "deleteHero",
+                    "timestamp": {
+                        "__bigint__": "1739923769517080372"
                     }
                 }
             ]

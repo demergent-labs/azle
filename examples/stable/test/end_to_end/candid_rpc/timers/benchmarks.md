@@ -1,20 +1,20 @@
 # Benchmarks for timers
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | setTimers   | 10_779_154   | 4_901_661 | $0.0000065176 | $6.51             | <font color="red">+717_458</font> |
-| 1   | clearTimer  | 1_280_235    | 1_102_094 | $0.0000014654 | $1.46             | <font color="red">+44_890</font>  |
-| 2   | clearTimer  | 1_277_409    | 1_100_963 | $0.0000014639 | $1.46             | <font color="red">+44_915</font>  |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | setTimers   | 10_730_465   | 4_882_186 | $0.0000064917 | $6.49             | <font color="green">-48_689</font> |
+| 1   | clearTimer  | 1_257_789    | 1_093_115 | $0.0000014535 | $1.45             | <font color="green">-22_446</font> |
+| 2   | clearTimer  | 1_260_969    | 1_094_387 | $0.0000014552 | $1.45             | <font color="green">-16_440</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | setTimers   | 10_061_696   | 4_614_678 | $0.0000061360 | $6.13             |
-| 1   | clearTimer  | 1_235_345    | 1_084_138 | $0.0000014415 | $1.44             |
-| 2   | clearTimer  | 1_232_494    | 1_082_997 | $0.0000014400 | $1.44             |
+| 0   | setTimers   | 10_779_154   | 4_901_661 | $0.0000065176 | $6.51             |
+| 1   | clearTimer  | 1_280_235    | 1_102_094 | $0.0000014654 | $1.46             |
+| 2   | clearTimer  | 1_277_409    | 1_100_963 | $0.0000014639 | $1.46             |
 
 ---
 

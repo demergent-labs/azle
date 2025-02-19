@@ -1,16 +1,16 @@
 # Benchmarks for pre_and_post_upgrade
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | postUpgrade | 5_475_231_785 | 4_190_682_714 | $0.0055722251 | $5_572.22         | <font color="red">+101_193_844</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | postUpgrade | 4_832_340_143 | 3_533_526_057 | $0.0046984236 | $4_698.42         | <font color="green">-642_891_642</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | postUpgrade | 5_374_037_941 | 4_150_205_176 | $0.0055184033 | $5_518.40         |
+| 0   | postUpgrade | 5_475_231_785 | 4_190_682_714 | $0.0055722251 | $5_572.22         |
 
 ---
 
