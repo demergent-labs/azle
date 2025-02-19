@@ -1,26 +1,30 @@
 # Benchmarks for recursion
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
+
+| Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ------------------ | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | testRecServiceCall | 18_607_545   | 8_033_018 | $0.0000106813 | $10.68            | <font color="green">-70_581</font> |
+
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------ | ------------ | --------- | ------------- | ----------------- |
 | 0   | testRecServiceCall | 18_678_126   | 8_061_250 | $0.0000107188 | $10.71            |
 
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
-
 # Benchmarks for recursive_canister
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
+
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | init        | 4_827_898_974 | 3_531_749_589 | $0.0046960615 | $4_696.06         | <font color="green">-643_170_287</font> |
+
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
 | 0   | init        | 5_471_069_261 | 4_189_017_704 | $0.0055700112 | $5_570.01         |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

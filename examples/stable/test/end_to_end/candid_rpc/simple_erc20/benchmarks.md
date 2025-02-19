@@ -1,18 +1,18 @@
 # Benchmarks for simple_erc20
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | initializeSupply | 2_247_558    | 1_489_023 | $0.0000019799 | $1.97             | <font color="red">+109_085</font> |
-| 1   | transfer         | 1_853_382    | 1_331_352 | $0.0000017703 | $1.77             | <font color="red">+108_447</font> |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | initializeSupply | 2_248_302    | 1_489_320 | $0.0000019803 | $1.98             | <font color="red">+744</font>      |
+| 1   | transfer         | 1_842_777    | 1_327_110 | $0.0000017646 | $1.76             | <font color="green">-10_605</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | initializeSupply | 2_138_473    | 1_445_389 | $0.0000019219 | $1.92             |
-| 1   | transfer         | 1_744_935    | 1_287_974 | $0.0000017126 | $1.71             |
+| 0   | initializeSupply | 2_247_558    | 1_489_023 | $0.0000019799 | $1.97             |
+| 1   | transfer         | 1_853_382    | 1_331_352 | $0.0000017703 | $1.77             |
 
 ---
 

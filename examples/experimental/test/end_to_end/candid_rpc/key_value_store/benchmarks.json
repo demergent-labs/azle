@@ -1,29 +1,6 @@
 {
     "key_value_store": {
         "previous": {
-            "version": "0.25.0-dev",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1419001"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1730484623468242655"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1386382"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1730484625584143813"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.25.0",
             "benchmarks": [
                 {
@@ -42,6 +19,29 @@
                     "method_name": "set",
                     "timestamp": {
                         "__bigint__": "1736543877081464200"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1424701"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1739923745698424544"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1394028"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1739923745980976206"
                     }
                 }
             ]

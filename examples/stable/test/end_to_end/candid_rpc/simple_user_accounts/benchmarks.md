@@ -1,16 +1,16 @@
 # Benchmarks for simple_user_accounts
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | createUser  | 3_719_596    | 2_077_838 | $0.0000027628 | $2.76             | <font color="red">+276_775</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | createUser  | 3_695_453    | 2_068_181 | $0.0000027500 | $2.74             | <font color="green">-24_143</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | createUser  | 3_442_821    | 1_967_128 | $0.0000026156 | $2.61             |
+| 0   | createUser  | 3_719_596    | 2_077_838 | $0.0000027628 | $2.76             |
 
 ---
 

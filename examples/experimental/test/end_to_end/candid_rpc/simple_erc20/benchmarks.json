@@ -1,29 +1,6 @@
 {
     "simple_erc20": {
         "previous": {
-            "version": "0.25.0-dev",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "2180949"
-                    },
-                    "method_name": "initializeSupply",
-                    "timestamp": {
-                        "__bigint__": "1730484632952289687"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1801014"
-                    },
-                    "method_name": "transfer",
-                    "timestamp": {
-                        "__bigint__": "1730484634912310495"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.25.0",
             "benchmarks": [
                 {
@@ -42,6 +19,29 @@
                     "method_name": "transfer",
                     "timestamp": {
                         "__bigint__": "1736543878254195765"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "2189557"
+                    },
+                    "method_name": "initializeSupply",
+                    "timestamp": {
+                        "__bigint__": "1739923766933894989"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1805357"
+                    },
+                    "method_name": "transfer",
+                    "timestamp": {
+                        "__bigint__": "1739923767196638672"
                     }
                 }
             ]

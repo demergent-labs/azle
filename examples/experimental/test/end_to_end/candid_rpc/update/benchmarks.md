@@ -1,16 +1,16 @@
 # Benchmarks for update
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ------------ | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | simpleUpdate | 1_291_601    | 1_106_640 | $0.0000014715 | $1.47             | <font color="green">-7_280</font> |
+| Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ------------ | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | simpleUpdate | 1_308_108    | 1_113_243 | $0.0000014802 | $1.48             | <font color="red">+16_507</font> |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------ | ------------ | --------- | ------------- | ----------------- |
-| 0   | simpleUpdate | 1_298_881    | 1_109_552 | $0.0000014753 | $1.47             |
+| 0   | simpleUpdate | 1_291_601    | 1_106_640 | $0.0000014715 | $1.47             |
 
 ---
 

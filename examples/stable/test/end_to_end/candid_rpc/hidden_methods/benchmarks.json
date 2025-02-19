@@ -1,0 +1,40 @@
+{
+    "hidden_methods": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1676150"
+                    },
+                    "method_name": "updateUndefined",
+                    "timestamp": {
+                        "__bigint__": "1739923780337004832"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1571147"
+                    },
+                    "method_name": "updateHiddenFalse",
+                    "timestamp": {
+                        "__bigint__": "1739923780600355113"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1555953"
+                    },
+                    "method_name": "updateHiddenTrue",
+                    "timestamp": {
+                        "__bigint__": "1739923782349156888"
+                    }
+                }
+            ]
+        }
+    }
+}

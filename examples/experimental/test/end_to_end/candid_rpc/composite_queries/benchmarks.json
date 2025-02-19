@@ -1,10 +1,6 @@
 {
     "canister1": {
         "previous": {
-            "version": "0.25.0-alpha",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.25.0-dev",
             "benchmarks": [
                 {
@@ -23,6 +19,20 @@
                     "method_name": "simpleUpdate",
                     "timestamp": {
                         "__bigint__": "1734133413583963268"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "11266609"
+                    },
+                    "method_name": "simpleUpdate",
+                    "timestamp": {
+                        "__bigint__": "1739923829749917861"
                     }
                 }
             ]

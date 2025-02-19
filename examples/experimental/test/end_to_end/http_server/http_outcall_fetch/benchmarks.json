@@ -1,0 +1,175 @@
+{
+    "server": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "7634634475"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1739923722835531068"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "195142191"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923730560294696"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "195020414"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923731874063555"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "194468669"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923733006778153"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "190885366"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923734322346107"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "194963088"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923735424788238"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "191404099"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923737774872810"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "191454471"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923739142006678"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "191337324"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923740740033112"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "191678287"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923741824767736"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "191463300"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923742901449651"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "191627549"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923744582557489"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "191653035"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923745654463156"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "191862673"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923746788565668"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "196468848"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923747898866662"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "230954401"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923748924095781"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "193343842"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923750255871435"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "192310682"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1739923751390274524"
+                    }
+                }
+            ]
+        }
+    }
+}

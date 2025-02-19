@@ -1,6 +1,15 @@
 # Benchmarks for proxy
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
+
+| Id  | Method Name         | Instructions | Cycles     | USD           | USD/Million Calls | Change                                    |
+| --- | ------------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------------- |
+| 0   | icrc1_transfer      | 96_095_628   | 39_028_251 | $0.0000518947 | $51.89            | <font color="green">-5_504_977_646</font> |
+| 1   | icrc2_approve       | 103_648_043  | 42_049_217 | $0.0000559116 | $55.91            | <font color="red">+7_636_678</font>       |
+| 2   | icrc2_transfer_from | 101_339_648  | 41_125_859 | $0.0000546838 | $54.68            | <font color="green">-2_410_031</font>     |
+| 3   | icrc2_allowance     | 87_620_757   | 35_638_302 | $0.0000473872 | $47.38            | <font color="green">-13_683_156</font>    |
+
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -9,10 +18,6 @@
 | 2   | icrc2_approve       | 103_749_679   | 42_089_871    | $0.0000559656 | $55.96            |
 | 3   | icrc2_transfer_from | 101_303_913   | 41_111_565    | $0.0000546648 | $54.66            |
 | 4   | icrc2_allowance     | 87_604_404    | 35_631_761    | $0.0000473785 | $47.37            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

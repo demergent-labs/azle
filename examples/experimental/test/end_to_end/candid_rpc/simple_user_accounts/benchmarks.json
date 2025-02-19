@@ -1,20 +1,6 @@
 {
     "simple_user_accounts": {
         "previous": {
-            "version": "0.25.0-dev",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "3943113"
-                    },
-                    "method_name": "createUser",
-                    "timestamp": {
-                        "__bigint__": "1730484637355602197"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.25.0",
             "benchmarks": [
                 {
@@ -24,6 +10,20 @@
                     "method_name": "createUser",
                     "timestamp": {
                         "__bigint__": "1736543882426999987"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "3948857"
+                    },
+                    "method_name": "createUser",
+                    "timestamp": {
+                        "__bigint__": "1739923767672973934"
                     }
                 }
             ]

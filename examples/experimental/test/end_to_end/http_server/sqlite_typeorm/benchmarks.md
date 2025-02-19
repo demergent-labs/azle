@@ -1,24 +1,24 @@
 # Benchmarks for sqlite_typeorm
 
-## Current benchmarks Azle version: 0.25.0
+## Current benchmarks Azle version: 0.26.0
 
-| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                 |
-| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | -------------------------------------- |
-| 0   | postUpgrade         | 14_216_529_966 | 11_287_201_986 | $0.0150082539 | $15_008.25        | <font color="red">+131_798_204</font>  |
-| 1   | http_request_update | 102_468_529    | 41_577_411     | $0.0000552842 | $55.28            | <font color="red">+146_306</font>      |
-| 2   | http_request_update | 141_810_740    | 57_314_296     | $0.0000762091 | $76.20            | <font color="green">-46_189</font>     |
-| 3   | http_request_update | 143_176_013    | 57_860_405     | $0.0000769352 | $76.93            | <font color="green">-27_271_892</font> |
-| 4   | http_request_update | 67_046_180     | 27_408_472     | $0.0000364442 | $36.44            | <font color="red">+147_711</font>      |
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | postUpgrade         | 13_384_901_069 | 10_554_550_427 | $0.0140340691 | $14_034.06        | <font color="green">-831_628_897</font> |
+| 1   | http_request_update | 101_967_119    | 41_376_847     | $0.0000550176 | $55.01            | <font color="green">-501_410</font>     |
+| 2   | http_request_update | 141_412_784    | 57_155_113     | $0.0000759974 | $75.99            | <font color="green">-397_956</font>     |
+| 3   | http_request_update | 142_419_107    | 57_557_642     | $0.0000765327 | $76.53            | <font color="green">-756_906</font>     |
+| 4   | http_request_update | 66_382_554     | 27_143_021     | $0.0000360913 | $36.09            | <font color="green">-663_626</font>     |
 
-## Baseline benchmarks Azle version: 0.25.0-dev
+## Baseline benchmarks Azle version: 0.25.0
 
 | Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls |
 | --- | ------------------- | -------------- | -------------- | ------------- | ----------------- |
-| 0   | postUpgrade         | 14_084_731_762 | 11_234_482_704 | $0.0149381546 | $14_938.15        |
-| 1   | http_request_update | 102_322_223    | 41_518_889     | $0.0000552064 | $55.20            |
-| 2   | http_request_update | 141_856_929    | 57_332_771     | $0.0000762337 | $76.23            |
-| 3   | http_request_update | 170_447_905    | 68_769_162     | $0.0000914403 | $91.44            |
-| 4   | http_request_update | 66_898_469     | 27_349_387     | $0.0000363657 | $36.36            |
+| 0   | postUpgrade         | 14_216_529_966 | 11_287_201_986 | $0.0150082539 | $15_008.25        |
+| 1   | http_request_update | 102_468_529    | 41_577_411     | $0.0000552842 | $55.28            |
+| 2   | http_request_update | 141_810_740    | 57_314_296     | $0.0000762091 | $76.20            |
+| 3   | http_request_update | 143_176_013    | 57_860_405     | $0.0000769352 | $76.93            |
+| 4   | http_request_update | 67_046_180     | 27_408_472     | $0.0000364442 | $36.44            |
 
 ---
 

@@ -1,29 +1,6 @@
 {
     "outgoing_http_requests": {
         "previous": {
-            "version": "0.25.0-dev",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "23714014"
-                    },
-                    "method_name": "xkcd",
-                    "timestamp": {
-                        "__bigint__": "1730484651698364145"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1414933"
-                    },
-                    "method_name": "xkcdRaw",
-                    "timestamp": {
-                        "__bigint__": "1730484654249133454"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.25.0",
             "benchmarks": [
                 {
@@ -42,6 +19,29 @@
                     "method_name": "xkcdRaw",
                     "timestamp": {
                         "__bigint__": "1736543871331757038"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.26.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "25280734"
+                    },
+                    "method_name": "xkcd",
+                    "timestamp": {
+                        "__bigint__": "1739923801795528617"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1200873"
+                    },
+                    "method_name": "xkcdRaw",
+                    "timestamp": {
+                        "__bigint__": "1739923802851210216"
                     }
                 }
             ]

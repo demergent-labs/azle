@@ -1,15 +1,17 @@
 # Benchmarks for canister1
 
-## Current benchmarks Azle version: 0.25.0-dev
+## Current benchmarks Azle version: 0.26.0
+
+| Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls | Change                                    |
+| --- | ------------ | ------------ | --------- | ------------- | ----------------- | ----------------------------------------- |
+| 0   | simpleUpdate | 11_266_609   | 5_096_643 | $0.0000067769 | $6.77             | <font color="green">-5_487_942_289</font> |
+
+## Baseline benchmarks Azle version: 0.25.0-dev
 
 | Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------ | ------------- | ------------- | ------------- | ----------------- |
 | 0   | init         | 5_499_208_898 | 4_200_273_559 | $0.0055849777 | $5_584.97         |
 | 1   | simpleUpdate | 11_963_642    | 5_375_456     | $0.0000071476 | $7.14             |
-
-## Baseline benchmarks Azle version: 0.25.0-alpha
-
-No benchmarks reported
 
 ---
 
