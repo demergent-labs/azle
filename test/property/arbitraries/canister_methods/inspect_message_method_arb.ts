@@ -66,14 +66,18 @@ export function InspectMessageMethodArb(
                         ? [methodImplementation]
                         : [];
 
+                const escapedFunctionName = functionName.startsWith('"')
+                    ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                    : functionName;
+
                 const sourceCode =
                     api === 'functional'
-                        ? `${functionName}: inspectMessage(${
+                        ? `${escapedFunctionName}: inspectMessage(${
                               methodImplementationLocation === 'STANDALONE'
                                   ? methodName
                                   : methodImplementation
                           })`
-                        : `@inspectMessage\n${functionName}${methodImplementation}`;
+                        : `@inspectMessage\n${escapedFunctionName}${methodImplementation}`;
 
                 const tests = generator.generateTests(
                     functionName,
