@@ -60,9 +60,13 @@ function generateValue(fields: Field[], returned: boolean = false): Record {
     return fields.length === 0
         ? {}
         : fields.reduce((record, [fieldName, fieldCandidValues]) => {
+              const normalizedFieldName =
+                  fieldName.startsWith('"') && fieldName.endsWith('"')
+                      ? fieldName.slice(1, -1)
+                      : fieldName;
               return {
                   ...record,
-                  [fieldName]: returned
+                  [normalizedFieldName]: returned
                       ? fieldCandidValues.agentResponseValue
                       : fieldCandidValues.agentArgumentValue
               };
@@ -75,10 +79,12 @@ function generateValueLiteral(fields: Field[]): string {
     }
 
     const fieldLiterals = fields
-        .map(
-            ([fieldName, fieldCandidValues]) =>
-                `${fieldName}: ${fieldCandidValues.valueLiteral}`
-        )
+        .map(([fieldName, fieldCandidValues]) => {
+            const escapedFieldName = fieldName.startsWith('"')
+                ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : fieldName;
+            return `${escapedFieldName}: ${fieldCandidValues.valueLiteral}`;
+        })
         .join(',\n');
 
     return `{

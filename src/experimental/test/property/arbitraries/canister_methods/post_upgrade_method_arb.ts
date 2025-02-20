@@ -153,9 +153,13 @@ function generateSourceCode<
         .map((param) => param.src.typeObject)
         .join(', ');
 
+    const escapedFunctionName = functionName.startsWith('"')
+        ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+        : functionName;
+
     if (api === 'functional') {
-        return `${functionName}: postUpgrade([${paramTypeObjects}], ${methodImplementation})`;
+        return `${escapedFunctionName}: postUpgrade([${paramTypeObjects}], ${methodImplementation})`;
     } else {
-        return `@postUpgrade([${paramTypeObjects}])\n${functionName}${methodImplementation}`;
+        return `@postUpgrade([${paramTypeObjects}])\n${escapedFunctionName}${methodImplementation}`;
     }
 }

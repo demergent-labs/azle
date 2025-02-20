@@ -146,10 +146,12 @@ function generateCandidTypeAnnotation(
     }
 
     return `{${fields
-        .map(
-            ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`
-        )
+        .map(([fieldName, fieldDefinition]) => {
+            const escapedFieldName = fieldName.startsWith('"')
+                ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : fieldName;
+            return `${escapedFieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`;
+        })
         .join(',')}}`;
 }
 
@@ -164,10 +166,12 @@ function generateTypeObject(
     }
 
     const fieldsAsString = fields
-        .map(
-            ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.typeObject}`
-        )
+        .map(([fieldName, fieldDefinition]) => {
+            const escapedFieldName = fieldName.startsWith('"')
+                ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : fieldName;
+            return `${escapedFieldName}: ${fieldDefinition.candidMeta.typeObject}`;
+        })
         .join(',');
 
     if (api === 'class') {

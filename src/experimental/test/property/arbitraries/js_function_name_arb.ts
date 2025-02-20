@@ -155,11 +155,10 @@ const unquotedFunctionNameArb = fc
     .filter((sample) => !azleKeywords.includes(sample));
 
 const quotedFunctionNameArb = fc
-    .stringMatching(/^"([^"\\]|\\.)+"$/)
+    .stringMatching(/^"[^"\\]*(?:\\.[^"\\]*)*"$/)
     .map((s: string): string => {
         // Remove the leading and trailing quotes
         const inner = s.slice(1, -1);
-        // TODO hard code inner to be something from each of those lists and make sure it works
         if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(inner)) {
             if (
                 azleKeywords.includes(inner) ||
@@ -171,18 +170,9 @@ const quotedFunctionNameArb = fc
             }
             return inner;
         }
-        // Escape backslashes and double quotes in the inner part only
-        // const escapedInnerOld = inner
-        //     .replace(/\\/g, '\\\\')
-        //     .replace(/"/g, '\\"');
-        const escapedInner = inner;
 
         // Reassemble the string with its leading and trailing quotes intact
-        console.log(
-            "What happens if this manages to make something without need for quotes, those quotes will clear out. I be that's what is happening"
-        );
-        console.log('escapedInner', escapedInner);
-        return `"${escapedInner}"`;
+        return `"${inner}"`;
     });
 
 export const JsIdentifierNameArb = fc.oneof(unquotedFunctionNameArb);
