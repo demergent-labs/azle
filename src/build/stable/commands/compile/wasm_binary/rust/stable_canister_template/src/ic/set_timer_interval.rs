@@ -5,13 +5,12 @@ use ic_cdk_timers::{set_timer_interval, TimerId};
 use rquickjs::{BigInt, Ctx, Function, Object, Result};
 use slotmap::Key;
 
-use crate::{error::quickjs_call_with_error_handling, ic::throw_error, quickjs_with_ctx};
+use crate::{error::quickjs_call_with_error_handling, quickjs_with_ctx};
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(
         ctx.clone(),
-        move |interval: String, callback_id: String| -> Result<BigInt> {
-            let interval: u64 = interval.parse().map_err(|e| throw_error(ctx.clone(), e))?;
+        move |interval: u64, timer_callback_id: String| -> Result<BigInt> {
             let interval_duration = Duration::new(interval, 0);
 
             let closure = move || {
@@ -23,9 +22,9 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                             format!("Failed to get globalThis._azleTimerCallbacks: {e}")
                         })?;
                     let timer_callback: Function =
-                        timer_callbacks.get(callback_id.as_str()).map_err(|e| {
+                        timer_callbacks.get(timer_callback_id.as_str()).map_err(|e| {
                             format!(
-                                "Failed to get globalThis._azleTimerCallbacks[{callback_id}]: {e}"
+                                "Failed to get globalThis._azleTimerCallbacks[{timer_callback_id}]: {e}"
                             )
                         })?;
 

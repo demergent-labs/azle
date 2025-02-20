@@ -30,7 +30,7 @@ import { v4 } from 'uuid';
  *   - after an unsuccessful inter-canister await
  */
 export function setTimerInterval(
-    interval: bigint,
+    interval: number,
     callback: () => void | Promise<void>
 ): bigint {
     if (
@@ -51,11 +51,11 @@ export function setTimerInterval(
                   )
               )
             : globalThis._azleIcStable.setTimerInterval(
-                  interval.toString(),
+                  interval,
                   timerCallbackId
               );
 
-    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
+    globalThis._azleTimerCallbackIds[timerId.toString()] = timerCallbackId;
 
     // We don't delete this even if the callback throws because
     // it still needs to be here for the next tick

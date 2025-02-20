@@ -18,8 +18,6 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleIcStable: AzleIcStable;
     // eslint-disable-next-line no-var
-    var _azleIcTimers: { [key: string]: string };
-    // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
     var _azleInsideCanister: boolean;
@@ -36,7 +34,9 @@ declare global {
         [key: string]: (buf: Uint8Array | ArrayBuffer) => void;
     };
     // eslint-disable-next-line no-var
-    var _azleTimerCallbacks: { [key: string]: () => void };
+    var _azleTimerCallbackIds: { [timerId: string]: string };
+    // eslint-disable-next-line no-var
+    var _azleTimerCallbacks: { [timerCallbackId: string]: () => void };
 }
 
 globalThis._azleInsideCanister =

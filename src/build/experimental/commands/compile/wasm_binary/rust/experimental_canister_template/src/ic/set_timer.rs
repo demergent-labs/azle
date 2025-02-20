@@ -14,7 +14,7 @@ impl JsFn for NativeFunction {
         let delay_u64: u64 = delay_string.parse().unwrap();
         let delay = core::time::Duration::new(delay_u64, 0);
 
-        let callback_id = if let JsValue::String(js_string) = argv.get(1).unwrap() {
+        let timer_callback_id = if let JsValue::String(js_string) = argv.get(1).unwrap() {
             js_string.to_string()
         } else {
             panic!("conversion from JsValue to JsString failed")
@@ -32,7 +32,7 @@ impl JsFn for NativeFunction {
                         .get("_azleTimerCallbacks")
                         .to_obj()
                         .unwrap()
-                        .get(callback_id.as_str())
+                        .get(timer_callback_id.as_str())
                         .to_function()
                         .unwrap();
 

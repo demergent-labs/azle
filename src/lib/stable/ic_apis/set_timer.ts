@@ -30,7 +30,7 @@ import { v4 } from 'uuid';
  *   - after an unsuccessful inter-canister await
  */
 export function setTimer(
-    delay: bigint,
+    delay: number,
     callback: () => void | Promise<void>
 ): bigint {
     if (
@@ -50,19 +50,16 @@ export function setTimer(
                       timerCallbackId
                   )
               )
-            : globalThis._azleIcStable.setTimer(
-                  delay.toString(),
-                  timerCallbackId
-              );
+            : globalThis._azleIcStable.setTimer(delay, timerCallbackId);
 
-    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
+    globalThis._azleTimerCallbackIds[timerId.toString()] = timerCallbackId;
 
     globalThis._azleTimerCallbacks[timerCallbackId] = (): void => {
         try {
             // We immediately create another timer with a delay of 0 seconds
             // to ensure that the timer globals are deleted even if the
             // timer callback traps
-            setTimer(0n, () => {
+            setTimer(0, () => {
                 deleteTimerGlobals(timerId);
             });
 
@@ -82,8 +79,10 @@ export function setTimer(
 }
 
 export function deleteTimerGlobals(timerId: bigint): void {
-    const timerCallbackId = globalThis._azleIcTimers[timerId.toString()];
+    const timerIdString = timerId.toString();
 
-    delete globalThis._azleIcTimers[timerId.toString()];
+    const timerCallbackId = globalThis._azleTimerCallbackIds[timerIdString];
+
+    delete globalThis._azleTimerCallbackIds[timerIdString];
     delete globalThis._azleTimerCallbacks[timerCallbackId];
 }
