@@ -82,6 +82,9 @@ export function CanisterArb<
                 });
         });
 
+        console.log('>>>>>>>>>>>>>>Init Args<<<<<<<<<<<<<<<<');
+        console.log(initArgs);
+
         const postUpgradeArgs = config.postUpgradeMethod?.params.map(
             (param) => {
                 const value = param.value.value;

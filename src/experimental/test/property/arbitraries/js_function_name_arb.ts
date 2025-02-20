@@ -155,7 +155,8 @@ const unquotedFunctionNameArb = fc
     .filter((sample) => !azleKeywords.includes(sample));
 
 const quotedFunctionNameArb = fc
-    .stringMatching(/^"([^"\\]|\\.)+"$/)
+    // .stringMatching(/^"([^"\\]|\\.)+"$/)
+    .stringMatching(/^"[^"\\]*(?:\\.[^"\\]*)*"$/)
     .map((s: string): string => {
         // Remove the leading and trailing quotes
         const inner = s.slice(1, -1);

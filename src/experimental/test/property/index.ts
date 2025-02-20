@@ -59,6 +59,11 @@ export async function runPropTests(
                                 ? `--argument '(${args.join(', ')})'`
                                 : '';
 
+                        console.log('>>>>>>>>>>>>>>Deploying<<<<<<<<<<<<<<<<');
+                        console.log(argumentsString);
+
+                        const command = `dfx deploy canister ${argumentsString} --upgrade-unchanged`;
+                        console.log(command);
                         execSync(
                             `dfx deploy canister ${argumentsString} --upgrade-unchanged`,
                             {
