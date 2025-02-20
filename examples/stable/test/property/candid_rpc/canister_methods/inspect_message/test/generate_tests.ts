@@ -49,7 +49,11 @@ function generateTest(
             await agent.fetchRootKey();
             const actor = await getActor(__dirname, agent);
             try {
-                const result = await actor[functionName](...paramValues);
+                const result = await actor[
+                    functionName.startsWith('"')
+                        ? functionName.slice(1, -1)
+                        : functionName
+                ](...paramValues);
 
                 if (behavior === 'ACCEPT') {
                     return testEquality(result, expectedResult);
