@@ -161,9 +161,13 @@ function generateSourceCode<
 
     const returnTypeObject = returnType.src.typeObject;
 
+    const escapedFunctionName = functionName.startsWith('"')
+        ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+        : functionName;
+
     if (api === 'functional') {
-        return `${functionName}: query([${paramTypeObjects}], ${returnTypeObject}, ${methodImplementation})`;
+        return `${escapedFunctionName}: query([${paramTypeObjects}], ${returnTypeObject}, ${methodImplementation})`;
     } else {
-        return `@query([${paramTypeObjects}], ${returnTypeObject})\n${functionName}${methodImplementation}`;
+        return `@query([${paramTypeObjects}], ${returnTypeObject})\n${escapedFunctionName}${methodImplementation}`;
     }
 }
