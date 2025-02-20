@@ -46,9 +46,12 @@ export function VariantDefinitionArb(
                     (constraints.forceInline === undefined ||
                         constraints.forceInline === false) &&
                     useTypeDeclarationChance;
-                const fields = fieldsAndShapes.map(
-                    (field): Field => [field[0], field[1].definition]
-                );
+                const fields = fieldsAndShapes.map((field): Field => {
+                    const escapedFieldName = field[0].startsWith('"')
+                        ? `"${field[0].slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                        : field[0];
+                    return [escapedFieldName, field[1].definition];
+                });
                 const recursiveShapes = fieldsAndShapes.reduce(
                     (acc, field): RecursiveShapes => {
                         return { ...acc, ...field[1].recursiveShapes };
