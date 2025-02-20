@@ -15,54 +15,50 @@ import { Func } from '.';
 export function FuncValueArb(): fc.Arbitrary<CandidValues<Func>> {
     return fc
         .tuple(PrincipalValueArb(), JsPropertyNameArb)
-        .map(([principal, name]) => generateCandidFuncValue(principal, name));
+        .map(([principal, propertyName]) =>
+            generateCandidFuncValue(principal, propertyName)
+        );
 }
 
-/**
- * Generates a Candid function value from a name and principal
- *
- * @param name - The function name
- * @param principal - The principal value
- * @returns A CandidValues<Func> object
- */
 function generateCandidFuncValue(
     principal: CandidValues<Principal>,
-    name: string
+    propertyName: string
 ): CandidValues<Func> {
-    const value: Func = [
-        principal.agentArgumentValue,
-        extractFunctionName(name)
-    ];
+    const functionName = extractFunctionName(propertyName);
+
+    const value: Func = [principal.agentArgumentValue, functionName];
 
     return {
-        valueLiteral: generateValueLiteral(name, principal),
+        valueLiteral: generateValueLiteral(principal, functionName),
         agentArgumentValue: value,
         agentResponseValue: value
     };
 }
 
 /**
- * Extracts the function name from a potentially quoted string
+ * Extracts the function name from a potentially quoted property name
  *
- * @param name - The raw function name which may be quoted
+ * @param propertyName - The raw property name which may be quoted
  * @returns The cleaned function name
  *
  * @remarks
- * If the name has any special characters, or is otherwise not a valid identifier, it will be quoted to make it valid.
+ * If the given property name has any special characters, or is otherwise not a
+ * valid identifier, it will be quoted to make it valid. And therefore must be
+ * unquoted when used as a function name.
  */
-function extractFunctionName(name: string): string {
-    return name.startsWith('"') ? name.slice(1, -1) : name;
+function extractFunctionName(propertyName: string): string {
+    return propertyName.startsWith('"')
+        ? propertyName.slice(1, -1)
+        : propertyName;
 }
 
 function generateValueLiteral(
-    name: string,
-    principal: CandidValues<any>
+    principal: CandidValues<Principal>,
+    functionName: string
 ): string {
-    const functionName = name.startsWith('"')
-        ? `"${escapeStringLiteral(name.slice(1, -1))}"`
-        : `"${name}"`;
+    const functionNameLiteral = `"${escapeStringLiteral(functionName)}"`;
 
-    return `[${principal.valueLiteral}, ${functionName}]`;
+    return `[${principal.valueLiteral}, ${functionNameLiteral}]`;
 }
 
 function escapeStringLiteral(input: string): string {
