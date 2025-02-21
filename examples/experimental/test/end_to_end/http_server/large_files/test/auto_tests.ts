@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { Unit } from 'azle/scripts/file_generator';
+import { Unit } from 'azle/_internal';
 import { please, Test } from 'azle/test';
 import { join } from 'path';
 
