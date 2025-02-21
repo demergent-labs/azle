@@ -51,7 +51,7 @@
         "./test/property/arbitraries/candid/constructed/vec_arb": "./test/property/arbitraries/candid/constructed/vec_arb/index.ts",
         "./test/property/arbitraries/candid/reference/func_arb": "./test/property/arbitraries/candid/reference/func_arb/index.ts",
         "./test/property/arbitraries/candid/reference/service_arb": "./test/property/arbitraries/candid/reference/service_arb/index.ts",
-        "./test/property/arbitraries/candid/recursive": "./test/property/arbitraries/candid/recursive.ts",
+        "./test/property/arbitraries/candid/recursive": "./test/property/arbitraries/candid/recursive/index.ts",
         "./test/property/arbitraries/candid/candid_definition_arb": "./test/property/arbitraries/candid/candid_definition_arb/index.ts",
         "./test/property/arbitraries/candid/candid_definition_arb/types": "./test/property/arbitraries/candid/candid_definition_arb/types.ts",
         "./test/set_experimental": "./test/set_experimental.ts",
