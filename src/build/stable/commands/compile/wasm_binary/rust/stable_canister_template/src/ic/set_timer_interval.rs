@@ -16,9 +16,11 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
         let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
 
         let closure = move || {
-            let timer_id = timer_id_u64_rc_cloned.borrow().unwrap();
-
             let result = quickjs_with_ctx(|ctx| {
+                let timer_id = timer_id_u64_rc_cloned
+                    .borrow()
+                    .ok_or("TimerId not found in reference-counting pointer")?;
+
                 let globals = ctx.globals();
 
                 let timer_callbacks: Object = globals
