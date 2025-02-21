@@ -30,6 +30,7 @@
         "./experimental/canisters/icrc": "./experimental/canisters/icrc/index.ts",
         "./experimental/canisters/ledger": "./experimental/canisters/ledger/index.ts",
         "./dfx": "./dfx/index.ts",
+        "./http_client": "./http_client/index.ts",
         "./test": "./test/index.ts",
         "./test/jest_link": "./test/jest_link.ts",
         "./src/lib/stable": "./src/lib/stable/index.ts",
