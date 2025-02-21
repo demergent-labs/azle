@@ -225,8 +225,8 @@ export class StableBTreeMap<Key = any, Value = any> {
                   )
                 : globalThis._azleIcStable.stableBTreeMapItems(
                       this.memoryId,
-                      startIndex ?? 0,
-                      length ?? -1
+                      startIndex,
+                      length
                   );
 
         return encodedItems.map(([encodedKey, encodedValue]) => {
@@ -270,8 +270,8 @@ export class StableBTreeMap<Key = any, Value = any> {
                   )
                 : globalThis._azleIcStable.stableBTreeMapKeys(
                       this.memoryId,
-                      startIndex ?? 0,
-                      length ?? -1
+                      startIndex,
+                      length
                   );
 
         return encodedKeys.map((encodedKey) => {
@@ -371,8 +371,8 @@ export class StableBTreeMap<Key = any, Value = any> {
                   )
                 : globalThis._azleIcStable.stableBTreeMapValues(
                       this.memoryId,
-                      startIndex ?? 0,
-                      length ?? -1
+                      startIndex,
+                      length
                   );
 
         return encodedValues.map((encodedValue) => {
