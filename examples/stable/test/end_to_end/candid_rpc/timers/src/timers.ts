@@ -58,8 +58,8 @@ export default class Canister {
         console.info(`timer ${timerId} cancelled`);
     }
 
-    @update([IDL.Nat64, IDL.Nat64], TimerIds)
-    setTimers(delay: bigint, interval: bigint): TimerIds {
+    @update([IDL.Nat32, IDL.Nat32], TimerIds)
+    setTimers(delay: number, interval: number): TimerIds {
         const capturedValue = '🚩';
 
         const singleId = setTimer(delay, () => oneTimeTimerCallback(this));

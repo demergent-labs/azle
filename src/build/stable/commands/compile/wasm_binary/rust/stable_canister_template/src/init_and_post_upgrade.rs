@@ -99,8 +99,6 @@ pub fn initialize_js(
 
         globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
 
-        globals.set("_azleIcTimers", Object::new(ctx.clone())?)?;
-
         globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
 
         globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;

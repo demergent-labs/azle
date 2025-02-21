@@ -42,7 +42,7 @@ export default class {
     @postUpgrade
     postUpgrade(): void {
         this.postUpgradeIsInReplicatedExecution = inReplicatedExecution();
-        setTimer(0n, () => {
+        setTimer(0, () => {
             this.timerIsInReplicatedExecution = inReplicatedExecution();
         });
     }

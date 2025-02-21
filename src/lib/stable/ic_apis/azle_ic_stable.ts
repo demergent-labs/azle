@@ -38,8 +38,8 @@ export type AzleIcStable = {
     msgRejectCode: () => RejectCode;
     msgReply: (bytes: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
-    setTimer: (delay: string, timerCallbackId: string) => bigint;
-    setTimerInterval: (interval: string, timerCallbackId: string) => bigint;
+    setTimer: (delay: number) => bigint;
+    setTimerInterval: (interval: number) => bigint;
     time: () => bigint;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
@@ -69,22 +69,22 @@ export type AzleIcStable = {
     stableBTreeMapIsEmpty: (memoryId: number) => boolean;
     stableBTreeMapItems: (
         memoryId: number,
-        startIndex: number,
-        length: number
+        startIndex?: number,
+        length?: number
     ) => [Uint8Array, Uint8Array][];
     stableBTreeMapKeys: (
         memoryId: number,
-        startIndex: number,
-        length: number
+        startIndex?: number,
+        length?: number
     ) => Uint8Array[];
-    stableBTreeMapLen: (memoryId: number) => bigint;
+    stableBTreeMapLen: (memoryId: number) => number;
     stableBTreeMapRemove(
         memoryId: number,
         encodedKey: Uint8Array
     ): Uint8Array | undefined;
     stableBTreeMapValues: (
         memoryId: number,
-        startIndex: number,
-        length: number
+        startIndex?: number,
+        length?: number
     ) => Uint8Array[];
 };

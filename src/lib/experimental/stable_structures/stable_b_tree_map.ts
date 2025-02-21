@@ -179,12 +179,12 @@ export function StableBTreeMap<Key = any, Value = any>(
          * Checks to see how many elements are in the map.
          * @returns the number of elements in the map.
          */
-        len(): bigint {
+        len(): number {
             if (globalThis._azleIcExperimental === undefined) {
                 return undefined as any;
             }
 
-            return BigInt(
+            return Number(
                 globalThis._azleIcExperimental.stableBTreeMapLen(memoryId)
             );
         },

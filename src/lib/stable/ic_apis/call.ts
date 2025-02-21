@@ -33,7 +33,7 @@ type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     /**
      * Not yet implemented. Will allow for best-effort inter-canister calls
      */
-    timeout?: bigint | null;
+    timeout?: number | null;
 };
 
 /**
@@ -88,7 +88,7 @@ export async function call<
     method: string,
     options?: CallOptions<Args>
 ): Promise<Return> {
-    if (typeof options?.timeout === 'bigint') {
+    if (typeof options?.timeout === 'number') {
         throw new Error('timeout is not yet implemented');
     }
 

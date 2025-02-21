@@ -1,3 +1,5 @@
+use std::{cell::RefCell, rc::Rc};
+
 use slotmap::Key;
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
@@ -14,13 +16,12 @@ impl JsFn for NativeFunction {
         let delay_u64: u64 = delay_string.parse().unwrap();
         let delay = core::time::Duration::new(delay_u64, 0);
 
-        let callback_id = if let JsValue::String(js_string) = argv.get(1).unwrap() {
-            js_string.to_string()
-        } else {
-            panic!("conversion from JsValue to JsString failed")
-        };
+        let timer_id_u64_rc: Rc<RefCell<Option<u64>>> = Rc::new(RefCell::new(None));
+        let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
 
         let closure = move || {
+            let timer_id = timer_id_u64_rc_cloned.borrow().unwrap();
+
             RUNTIME.with(|runtime| {
                 let mut runtime = runtime.borrow_mut();
                 let runtime = runtime.as_mut().unwrap();
@@ -32,7 +33,7 @@ impl JsFn for NativeFunction {
                         .get("_azleTimerCallbacks")
                         .to_obj()
                         .unwrap()
-                        .get(callback_id.as_str())
+                        .get(&timer_id.to_string())
                         .to_function()
                         .unwrap();
 
@@ -57,6 +58,8 @@ impl JsFn for NativeFunction {
 
         let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer(delay, closure);
         let timer_id_u64: u64 = timer_id.data().as_ffi();
+
+        *timer_id_u64_rc.borrow_mut() = Some(timer_id_u64);
 
         context.new_string(&timer_id_u64.to_string()).into()
     }

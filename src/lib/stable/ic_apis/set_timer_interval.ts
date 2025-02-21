@@ -1,5 +1,3 @@
-import { v4 } from 'uuid';
-
 /**
  * Sets a callback to be executed periodically every specified interval.
  *
@@ -30,7 +28,7 @@ import { v4 } from 'uuid';
  *   - after an unsuccessful inter-canister await
  */
 export function setTimerInterval(
-    interval: bigint,
+    interval: number,
     callback: () => void | Promise<void>
 ): bigint {
     if (
@@ -40,24 +38,20 @@ export function setTimerInterval(
         return 0n;
     }
 
-    const timerCallbackId = `_interval_timer_${v4()}`;
-
     const timerId =
         globalThis._azleIcExperimental !== undefined
-            ? globalThis._azleIcExperimental.setTimerInterval(
-                  interval.toString(),
-                  timerCallbackId
+            ? BigInt(
+                  globalThis._azleIcExperimental.setTimerInterval(
+                      interval.toString()
+                  )
               )
-            : globalThis._azleIcStable.setTimerInterval(
-                  interval.toString(),
-                  timerCallbackId
-              );
+            : globalThis._azleIcStable.setTimerInterval(interval);
 
-    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
+    // We don't call deleteGlobalTimerCallbacks here because the callback
+    // still needs to exist for the next interval callback execution
+    // Deletion of globalThis._azleTimerCallbacks in the context of setTimerInterval
+    // only occurs through calling clearTimer or manual manipulation of globalThis._azleTimerCallbacks
+    globalThis._azleTimerCallbacks[timerId.toString()] = callback;
 
-    // We don't delete this even if the callback throws because
-    // it still needs to be here for the next tick
-    globalThis._azleTimerCallbacks[timerCallbackId] = callback;
-
-    return BigInt(timerId);
+    return timerId;
 }
