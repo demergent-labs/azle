@@ -1,6 +1,6 @@
 // TODO this needs to be more thoroughly tested
 
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/test';
 
 import { createActor } from './dfx_generated/complex_types';

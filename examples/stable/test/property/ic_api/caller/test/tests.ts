@@ -1,6 +1,6 @@
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
-import { createAuthenticatedAgent, whoami } from 'azle/dfx';
+import { createAuthenticatedAgent, whoami } from 'azle/_internal/dfx';
 import {
     defaultPropTestParams,
     expect,

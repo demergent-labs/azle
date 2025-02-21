@@ -1,5 +1,5 @@
 import { createActor } from 'azle/_internal';
-import { generateIdentity, getCanisterId } from 'azle/dfx';
+import { generateIdentity, getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, please, Test } from 'azle/test';
 import { v4 } from 'uuid';
 

@@ -1,7 +1,7 @@
 globalThis._azleExperimental = true;
 
 import { ActorSubclass, HttpAgent } from '@dfinity/agent';
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { defaultPropTestParams, expect, it, Test } from 'azle/test';
 import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
 import { CandidValueAndMetaArbGenerator } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';

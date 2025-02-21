@@ -1,4 +1,4 @@
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/test';
 
 import { agent, consumerActor } from './consumer_actor';

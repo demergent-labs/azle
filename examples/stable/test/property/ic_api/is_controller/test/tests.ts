@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { whoamiPrincipal } from 'azle/dfx';
+import { whoamiPrincipal } from 'azle/_internal/dfx';
 import {
     defaultPropTestParams,
     expect,

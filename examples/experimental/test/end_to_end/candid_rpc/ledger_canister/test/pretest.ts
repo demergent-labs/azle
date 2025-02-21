@@ -1,4 +1,4 @@
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { execSync } from 'child_process';
 
 function pretest(icp_ledger_path: string): void {

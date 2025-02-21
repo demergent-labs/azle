@@ -1,4 +1,4 @@
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 

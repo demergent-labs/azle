@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects

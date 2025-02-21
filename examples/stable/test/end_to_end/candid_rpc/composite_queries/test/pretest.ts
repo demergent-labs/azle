@@ -1,4 +1,4 @@
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
 import { join } from 'path';

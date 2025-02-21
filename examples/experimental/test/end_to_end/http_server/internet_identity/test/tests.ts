@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { getCanisterOrigin } from 'azle/dfx';
+import { getCanisterOrigin } from 'azle/_internal/dfx';
 import { expect, it, Test } from 'azle/test';
 import puppeteer, { ElementHandle } from 'puppeteer';
 
