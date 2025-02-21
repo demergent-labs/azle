@@ -1,5 +1,3 @@
-import { v4 } from 'uuid';
-
 /**
  * Sets a callback to be executed periodically every specified interval.
  *
@@ -40,26 +38,19 @@ export function setTimerInterval(
         return 0n;
     }
 
-    const timerCallbackId = `_interval_timer_${v4()}`;
-
     const timerId =
         globalThis._azleIcExperimental !== undefined
             ? BigInt(
                   globalThis._azleIcExperimental.setTimerInterval(
-                      interval.toString(),
-                      timerCallbackId
+                      interval.toString()
                   )
               )
-            : globalThis._azleIcStable.setTimerInterval(
-                  interval,
-                  timerCallbackId
-              );
+            : globalThis._azleIcStable.setTimerInterval(interval);
 
-    globalThis._azleTimerCallbackIds[timerId.toString()] = timerCallbackId;
-
-    // We don't delete this even if the callback throws because
-    // it still needs to be here for the next tick
-    globalThis._azleTimerCallbacks[timerCallbackId] = callback;
+    // We don't call deleteGlobalTimerCallbacks here because the callback
+    // still needs to exist for the next interval callback execution
+    // Deletion only occurs through calling clearTimer or manual manipulation of the global variables
+    globalThis._azleTimerCallbacks[timerId.toString()] = callback;
 
     return timerId;
 }

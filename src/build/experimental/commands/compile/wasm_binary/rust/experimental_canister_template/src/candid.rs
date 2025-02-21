@@ -40,10 +40,6 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
 
             context
                 .get_global()
-                .set("_azleTimerCallbackIds", context.new_object().into());
-
-            context
-                .get_global()
                 .set("_azleTimerCallbacks", context.new_object().into());
 
             context

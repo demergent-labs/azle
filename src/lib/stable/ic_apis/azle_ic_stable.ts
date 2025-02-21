@@ -38,8 +38,8 @@ export type AzleIcStable = {
     msgRejectCode: () => RejectCode;
     msgReply: (bytes: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
-    setTimer: (delay: number, timerCallbackId: string) => bigint;
-    setTimerInterval: (interval: number, timerCallbackId: string) => bigint;
+    setTimer: (delay: number) => bigint;
+    setTimerInterval: (interval: number) => bigint;
     time: () => bigint;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am

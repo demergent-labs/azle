@@ -115,10 +115,6 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
 
         context
             .get_global()
-            .set("_azleTimerCallbackIds", context.new_object().into());
-
-        context
-            .get_global()
             .set("_azleTimerCallbacks", context.new_object().into());
 
         context

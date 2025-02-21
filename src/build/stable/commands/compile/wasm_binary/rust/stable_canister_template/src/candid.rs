@@ -42,8 +42,6 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
 
         globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
 
-        globals.set("_azleTimerCallbackIds", Object::new(ctx.clone())?)?;
-
         globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
 
         globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;

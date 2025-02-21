@@ -1,5 +1,3 @@
-import { v4 } from 'uuid';
-
 /**
  * Sets a one-time callback to be executed after a specified delay.
  *
@@ -40,49 +38,26 @@ export function setTimer(
         return 0n;
     }
 
-    const timerCallbackId = `_timer_${v4()}`;
-
     const timerId =
         globalThis._azleIcExperimental !== undefined
-            ? BigInt(
-                  globalThis._azleIcExperimental.setTimer(
-                      delay.toString(),
-                      timerCallbackId
-                  )
-              )
-            : globalThis._azleIcStable.setTimer(delay, timerCallbackId);
+            ? BigInt(globalThis._azleIcExperimental.setTimer(delay.toString()))
+            : globalThis._azleIcStable.setTimer(delay);
 
-    globalThis._azleTimerCallbackIds[timerId.toString()] = timerCallbackId;
+    globalThis._azleTimerCallbacks[timerId.toString()] = (): void => {
+        // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
+        // We immediately create another timer with a delay of 0 seconds
+        // to ensure that the timer globals are deleted even if the
+        // timer callback traps
+        setTimer(0, () => {
+            deleteGlobalTimerCallbacks(timerId);
+        });
 
-    globalThis._azleTimerCallbacks[timerCallbackId] = (): void => {
-        try {
-            // We immediately create another timer with a delay of 0 seconds
-            // to ensure that the timer globals are deleted even if the
-            // timer callback traps
-            setTimer(0, () => {
-                deleteTimerGlobals(timerId);
-            });
-
-            callback();
-        } finally {
-            // In the happy path where callback() doesn't trap (even if it throws an error)
-            // this will run and delete the timer globals
-            // TODO it is debatable whether we need this finally if we use the setTimer above
-            // TODO it is debatable whether we even need the setTimer above, as devs could
-            // TODO manually call clearTimer if there were ever a problem
-            // TODO and the global state could be observed easily
-            deleteTimerGlobals(timerId);
-        }
+        callback();
     };
 
     return timerId;
 }
 
-export function deleteTimerGlobals(timerId: bigint): void {
-    const timerIdString = timerId.toString();
-
-    const timerCallbackId = globalThis._azleTimerCallbackIds[timerIdString];
-
-    delete globalThis._azleTimerCallbackIds[timerIdString];
-    delete globalThis._azleTimerCallbacks[timerCallbackId];
+export function deleteGlobalTimerCallbacks(timerId: bigint): void {
+    delete globalThis._azleTimerCallbacks[timerId.toString()];
 }

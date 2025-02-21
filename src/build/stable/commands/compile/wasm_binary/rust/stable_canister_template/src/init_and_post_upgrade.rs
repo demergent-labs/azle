@@ -97,8 +97,6 @@ pub fn initialize_js(
 
         globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
 
-        globals.set("_azleTimerCallbackIds", Object::new(ctx.clone())?)?;
-
         globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
 
         globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
