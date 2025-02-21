@@ -1,7 +1,11 @@
 import { ActorSubclass, Certificate, HttpAgent } from '@dfinity/agent';
 import { IDL, lebDecode, PipeArrayBuffer } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { createAuthenticatedAgent, getCanisterId, whoami } from 'azle/dfx';
+import {
+    createAuthenticatedAgent,
+    getCanisterId,
+    whoami
+} from 'azle/_internal/dfx';
 import {
     defaultPropTestParams,
     expect,

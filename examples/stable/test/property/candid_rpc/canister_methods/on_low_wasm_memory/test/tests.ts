@@ -1,5 +1,5 @@
 import { Principal } from 'azle';
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { defaultPropTestParams, expect, it, Test } from 'azle/test';
 import fc from 'fast-check';
 

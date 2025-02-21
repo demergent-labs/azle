@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/test';
 import {
     getRecTests,

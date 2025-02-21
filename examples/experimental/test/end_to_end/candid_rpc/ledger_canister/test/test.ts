@@ -1,7 +1,7 @@
 // TODO write tests for all ICRC functionality
 // TODO test all errors for query blocks
 
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/test';
 
 import { createActor } from './dfx_generated/ledger_canister';

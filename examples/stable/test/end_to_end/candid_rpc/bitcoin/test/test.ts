@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/test';
 import { getTests } from 'bitcoin_end_to_end_test_functional_syntax/test/tests';
 

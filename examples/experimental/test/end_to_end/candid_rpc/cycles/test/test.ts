@@ -1,6 +1,6 @@
 // TODO If we want these tests to be more exact, we can check balances and make sure they are within some margin of error
 
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/test';
 
 import { createActor as createCyclesActor } from './dfx_generated/cycles';

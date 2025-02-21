@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { AZLE_UPLOADER_IDENTITY_NAME, createActor, Unit } from 'azle/_internal';
-import { getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { hashFileByParts } from 'azle/scripts/hash_file_by_parts';
 import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';

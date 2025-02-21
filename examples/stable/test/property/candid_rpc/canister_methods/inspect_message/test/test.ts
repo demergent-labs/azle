@@ -1,5 +1,5 @@
 import { Agent } from '@dfinity/agent';
-import { createAuthenticatedAgentSync, getPrincipal } from 'azle/dfx';
+import { createAuthenticatedAgentSync, getPrincipal } from 'azle/_internal/dfx';
 import { runPropTests } from 'azle/test/property';
 import { CandidReturnTypeArb } from 'azle/test/property/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMetaArb } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
@@ -111,7 +111,7 @@ function generateInspectMessageMethodBody(
 
         if (deepEqual(args, expectedArgs[methodName as keyof typeof expectedArgs]) !== true) {
             throw new Error("Expected @inspectMessage arguments do not match");
-        }        
+        }
 
         if (msgCaller().toText() === "${acceptPrincipal}") {
             return true;
