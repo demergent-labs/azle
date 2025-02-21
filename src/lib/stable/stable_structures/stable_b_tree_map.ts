@@ -288,7 +288,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      *
      * @returns The number of key-value pairs in the map
      */
-    len(): bigint {
+    len(): number {
         if (
             globalThis._azleIcStable === undefined &&
             globalThis._azleIcExperimental === undefined
@@ -297,7 +297,7 @@ export class StableBTreeMap<Key = any, Value = any> {
         }
 
         if (globalThis._azleIcExperimental !== undefined) {
-            return BigInt(
+            return Number(
                 globalThis._azleIcExperimental.stableBTreeMapLen(
                     this.memoryId.toString()
                 )
