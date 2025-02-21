@@ -46,7 +46,7 @@ export function setTimer(
     globalThis._azleTimerCallbacks[timerId.toString()] = (): void => {
         // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
         // We immediately create another timer with a delay of 0 seconds
-        // to ensure that the timer globals are deleted even if the
+        // to ensure that globalThis._azleTimerCallbacks is deleted even if the
         // timer callback traps
         setTimer(0, () => {
             deleteGlobalTimerCallbacks(timerId);

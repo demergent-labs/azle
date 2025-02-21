@@ -34,7 +34,7 @@ declare global {
         [key: string]: (buf: Uint8Array | ArrayBuffer) => void;
     };
     // eslint-disable-next-line no-var
-    var _azleTimerCallbacks: { [timerCallbackId: string]: () => void };
+    var _azleTimerCallbacks: { [timerId: string]: () => void };
 }
 
 globalThis._azleInsideCanister =

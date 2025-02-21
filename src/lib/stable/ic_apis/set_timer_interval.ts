@@ -49,7 +49,8 @@ export function setTimerInterval(
 
     // We don't call deleteGlobalTimerCallbacks here because the callback
     // still needs to exist for the next interval callback execution
-    // Deletion only occurs through calling clearTimer or manual manipulation of the global variables
+    // Deletion of globalThis._azleTimerCallbacks in the context of setTimerInterval
+    // only occurs through calling clearTimer or manual manipulation of globalThis._azleTimerCallbacks
     globalThis._azleTimerCallbacks[timerId.toString()] = callback;
 
     return timerId;
