@@ -245,7 +245,7 @@ export function addInitPassiveDataFunction(
     module.addFunction(
         name,
         binaryen.createType([binaryen.i32]),
-        binaryen.i32, // TODO just to stop weird Rust optimizations
+        binaryen.none,
         [],
         module.block(null, [
             module.memory.init(
@@ -254,8 +254,7 @@ export function addInitPassiveDataFunction(
                 module.i32.const(0),
                 module.i32.const(encoded.byteLength)
             ),
-            module.data.drop(segmentNumber.toString() as unknown as number),
-            module.return(module.local.get(0, binaryen.i32))
+            module.data.drop(segmentNumber.toString() as unknown as number)
         ])
     );
 }

@@ -1,3 +1,5 @@
+use core::ptr::read_volatile;
+
 use open_value_sharing::Consumer;
 
 use serde::{Deserialize, Serialize};
@@ -17,16 +19,27 @@ pub struct WasmData {
 
 #[inline(never)]
 #[no_mangle]
-extern "C" fn init_js_passive_data(js_vec_location: i32) -> usize {
-    "123_456_789".parse::<usize>().unwrap() + js_vec_location as usize // TODO must be like this for weird optimization reasons
+extern "C" fn init_js_passive_data(js_vec_location: i32) {
+    // Without something like this to make the function bodies different,
+    // the init_js_passive_data and init_wasm_data_passive_data functions
+    // seem to be optimized into the same function in the Wasm binary
+    // This causes problems during Wasm binary manipulation
+    let _ = format!("prevent init_js_passive_data and init_wasm_data_passive_data optimization");
+
+    // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
+    unsafe { read_volatile(&js_vec_location) };
 }
 
-// TODO seems we need to do this to stop the compiler from hard-coding the result of this function where it is called
-// TODO hopefully there's a less hacky way to do this
+// Used to provide a safe value for the read_volatile and to differentiate between the
+// js_passive_data_size and wasm_data_passive_data_size function bodies
+// Without this problems happen during Wasm binary manipulation
+static JS_PASSIVE_DATA_SIZE: usize = 0;
+
 #[inline(never)]
 #[no_mangle]
 extern "C" fn js_passive_data_size() -> usize {
-    "123_456_789".parse().unwrap()
+    // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
+    unsafe { read_volatile(&JS_PASSIVE_DATA_SIZE) }
 }
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
@@ -42,16 +55,21 @@ pub fn get_js_code() -> Vec<u8> {
 
 #[inline(never)]
 #[no_mangle]
-extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: i32) -> usize {
-    "123_456_789".parse::<usize>().unwrap() + wasm_data_vec_location as usize // TODO must be like this for weird optimization reasons
+extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: i32) {
+    // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
+    unsafe { read_volatile(&wasm_data_vec_location) };
 }
 
-// TODO seems we need to do this to stop the compiler from hard-coding the result of this function where it is called
-// TODO hopefully there's a less hacky way to do this
+// Used to provide a safe value for the read_volatile and to differentiate between the
+// js_passive_data_size and wasm_data_passive_data_size function bodies
+// Without this problems happen during Wasm binary manipulation
+static WASM_DATA_PASSIVE_DATA_SIZE: usize = 0;
+
 #[inline(never)]
 #[no_mangle]
 extern "C" fn wasm_data_passive_data_size() -> usize {
-    "123_456_789".parse().unwrap()
+    // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
+    unsafe { read_volatile(&WASM_DATA_PASSIVE_DATA_SIZE) }
 }
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs

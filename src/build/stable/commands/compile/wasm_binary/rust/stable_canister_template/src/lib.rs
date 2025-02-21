@@ -12,7 +12,6 @@ use wasm_binary_manipulation::WasmData;
 
 mod benchmarking;
 mod candid;
-mod chunk;
 mod error;
 mod execute_method_js;
 mod guards;

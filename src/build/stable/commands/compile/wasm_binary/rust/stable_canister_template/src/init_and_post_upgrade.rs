@@ -17,7 +17,8 @@ use crate::{
 #[inline(never)]
 #[no_mangle]
 pub extern "C" fn init(function_index: i32) {
-    // Without something like this the init and post_upgrade functions
+    // Without something like this to make the function bodies different,
+    // the init and post_upgrade functions
     // seem to be optimized into the same function in the Wasm binary
     // This causes problems during Wasm binary manipulation
     let _ = format!("prevent init and post_upgrade optimization");
@@ -53,7 +54,7 @@ fn initialize(init: bool, function_index: i32) -> Result<(), Box<dyn Error>> {
 
     init_with_memory(&[], &env_vars, polyfill_memory);
 
-    let js = get_js_code();
+    let js = get_js_code()?;
 
     initialize_js(&wasm_data, str::from_utf8(&js)?, init, function_index)?;
 

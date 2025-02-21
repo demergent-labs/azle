@@ -53,7 +53,7 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
         register(ctx.clone())?;
 
         let wasm_data = get_wasm_data()?;
-        let js = get_js_code();
+        let js = get_js_code()?;
 
         let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path, str::from_utf8(&js)?)?;
 
