@@ -1,6 +1,7 @@
 globalThis._azleExperimental = true;
 
 import { ActorSubclass } from '@dfinity/agent';
+import { DidVisitor, getDefaultVisitorData } from 'azle/_internal';
 import {
     defaultPropTestParams,
     expect,
@@ -15,10 +16,6 @@ import {
     DefinitionConstraints,
     WithShapes
 } from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb/types';
-import {
-    DidVisitor,
-    getDefaultVisitorData
-} from 'azle/src/lib/stable/did_file/visitor';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 import { mkdir, writeFile } from 'fs/promises';
