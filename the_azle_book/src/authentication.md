@@ -1,11 +1,11 @@
 # Authentication TL;DR
 
-Azle canisters can import `caller` from `azle` and use it to get the [principal (public-key linked identifier)](https://internetcomputer.org/docs/current/references/ic-interface-spec#principal) of the initiator of an HTTP request. HTTP requests are anonymous (principal `2vxsx-fae`) by default, but authentication with web browsers (and maybe Node.js) can be done using a JWT-like API from `azle/http_client`.
+Azle canisters can import `caller` from `azle` and use it to get the [principal (public-key linked identifier)](https://internetcomputer.org/docs/current/references/ic-interface-spec#principal) of the initiator of an HTTP request. HTTP requests are anonymous (principal `2vxsx-fae`) by default, but authentication with web browsers (and maybe Node.js) can be done using a JWT-like API from `azle/experimental/http_client`.
 
-First you import `toJwt` from `azle/http_client`:
+First you import `toJwt` from `azle/experimental/http_client`:
 
 ```typescript
-import { toJwt } from 'azle/http_client';
+import { toJwt } from 'azle/experimental/http_client';
 ```
 
 Then you use `fetch` and construct an `Authorization` header using an [@dfinity/agent](https://www.npmjs.com/package/@dfinity/agent) `Identity`:
@@ -20,12 +20,12 @@ const response = await fetch(
 );
 ```
 
-Here's an example of the frontend of a simple web application using `azle/http_client` and [Internet Identity](https://internetcomputer.org/internet-identity):
+Here's an example of the frontend of a simple web application using `azle/experimental/http_client` and [Internet Identity](https://internetcomputer.org/internet-identity):
 
 ```typescript
 import { Identity } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
-import { toJwt } from 'azle/http_client';
+import { toJwt } from 'azle/experimental/http_client';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
@@ -147,7 +147,7 @@ Examples:
 
 Authentication of ICP calls is done through signatures on messages. [@dfinity/agent](https://www.npmjs.com/package/@dfinity/agent) provides very nice abstractions for creating all of the required signatures in the correct formats when calling into canisters on ICP. Unfortunately this requires you to abandon traditional HTTP requests, as you must use the agent's APIs.
 
-Azle attempts to enable you to perform traditional HTTP requests with traditional libraries. Currently Azle focuses on `fetch`. When importing `toJwt`, `azle/http_client` will overwrite the global `fetch` function and will intercept `fetch` requests that have `Authorization` headers with an `Identity` as a value.
+Azle attempts to enable you to perform traditional HTTP requests with traditional libraries. Currently Azle focuses on `fetch`. When importing `toJwt`, `azle/experimental/http_client` will overwrite the global `fetch` function and will intercept `fetch` requests that have `Authorization` headers with an `Identity` as a value.
 
 Once intercepted, these requests are turned into `@dfinity/agent` requests that call [the http_request and http_request_update canister methods](https://internetcomputer.org/docs/current/references/http-gateway-protocol-spec) directly, thus performing all of the required client-side authentication work.
 
