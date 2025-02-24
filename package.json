@@ -57,7 +57,7 @@
         "wasmedge_quickjs": "github:demergent-labs/wasmedge-quickjs#3b3b0ee91248ccf9cd954ffafbac7e024648af92"
     },
     "devDependencies": {
-        "@eslint/js": "^9.20.0",
+        "@eslint/js": "^9.21.0",
         "@dfinity/identity": "^2.3.0",
         "@types/deep-equal": "^1.0.4",
         "@types/fs-extra": "11.0.4",
@@ -67,7 +67,7 @@
         "@typescript-eslint/eslint-plugin": "^8.24.1",
         "@typescript-eslint/parser": "^8.24.1",
         "deep-equal": "^2.2.3",
-        "eslint": "^9.20.1",
+        "eslint": "^9.21.0",
         "eslint-config-prettier": "^10.0.1",
         "eslint-plugin-simple-import-sort": "^12.1.1",
         "fast-check": "^3.23.2",
