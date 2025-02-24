@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/_internal/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/_internal/test';
 import { getTests } from 'notify_raw_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor as createActorCanister1 } from './dfx_generated/canister1';

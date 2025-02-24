@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { describe } from '@jest/globals';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import {
     blob,
     float32,
@@ -12,7 +13,6 @@ import {
     nat32,
     nat64
 } from 'azle/experimental';
-import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { Reaction, User } from '../src/types';

@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { describe } from '@jest/globals';
-import { expect, it, please, Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';

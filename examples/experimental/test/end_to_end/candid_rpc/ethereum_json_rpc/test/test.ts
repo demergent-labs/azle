@@ -1,7 +1,7 @@
 // Ethereum genesis block balances taken from: https://raw.githubusercontent.com/lastmjs/eth-total-supply/master/nethermind-foundation.json
 
 import { getCanisterId } from 'azle/_internal/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/_internal/test';
 
 import { createActor } from './dfx_generated/ethereum_json_rpc';
 import { getTests } from './tests';

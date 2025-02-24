@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/_internal/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/_internal/test';
 
 import { createActor } from './dfx_generated/bitcoin';
 import { BitcoinDaemon, startBitcoinDaemon } from './setup';

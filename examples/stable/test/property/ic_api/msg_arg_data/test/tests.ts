@@ -2,23 +2,23 @@ globalThis._azleExperimental = true;
 
 import { ActorSubclass } from '@dfinity/agent';
 import {
-    DidVisitor,
-    getDefaultVisitorData
-} from 'azle/src/lib/stable/did_file/visitor';
-import {
     defaultPropTestParams,
     expect,
     getCanisterActor,
     it,
     please,
     Test
-} from 'azle/test';
-import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
+} from 'azle/_internal/test';
+import { candidDefinitionArb } from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb';
 import {
     CandidDefinition,
     DefinitionConstraints,
     WithShapes
-} from 'azle/test/property/arbitraries/candid/candid_definition_arb/types';
+} from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb/types';
+import {
+    DidVisitor,
+    getDefaultVisitorData
+} from 'azle/src/lib/stable/did_file/visitor';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 import { mkdir, writeFile } from 'fs/promises';

@@ -2,7 +2,7 @@
 // TODO test all errors for query blocks
 
 import { getCanisterId } from 'azle/_internal/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/_internal/test';
 
 import { createActor } from './dfx_generated/ledger_canister';
 import { getTests } from './tests';

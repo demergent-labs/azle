@@ -1,4 +1,4 @@
-import { expect, it, Test } from 'azle/test';
+import { expect, it, Test } from 'azle/_internal/test';
 
 // TODO no tests yet but we run the tests to make sure the model will load
 export function getTests(canisterId: string): Test {

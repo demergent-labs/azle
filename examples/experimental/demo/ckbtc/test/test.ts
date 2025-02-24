@@ -2,7 +2,7 @@ import { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/_internal/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/_internal/test';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { Config } from 'ckbtc_end_to_end_test_functional_syntax/test/test';
 import { getTests } from 'ckbtc_end_to_end_test_functional_syntax/test/tests';

@@ -2,14 +2,14 @@ globalThis._azleExperimental = true;
 
 import { ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { getCanisterId } from 'azle/_internal/dfx';
-import { defaultPropTestParams, expect, it, Test } from 'azle/test';
-import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
-import { CandidValueAndMetaArbGenerator } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';
+import { defaultPropTestParams, expect, it, Test } from 'azle/_internal/test';
+import { candidDefinitionArb } from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb';
+import { CandidValueAndMetaArbGenerator } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';
 import {
     CandidValueArb,
     CandidValueConstraints
-} from 'azle/test/property/arbitraries/candid/candid_values_arb';
-import { Context } from 'azle/test/property/arbitraries/types';
+} from 'azle/_internal/test/property/arbitraries/candid/candid_values_arb';
+import { Context } from 'azle/_internal/test/property/arbitraries/types';
 import fc from 'fast-check';
 import { cp, mkdir, rm, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
@@ -109,7 +109,7 @@ async function setupCanister(
 
 // Each iteration of the canister needs a unique import path to avoid caching.
 // Note: Query parameter cache busting is preferred but doesn't work with Jest.
-// TODO Once we can do cache busting we should remove this function and use getCanisterActor from azle/test.
+// TODO Once we can do cache busting we should remove this function and use getCanisterActor from azle/_internal/test.
 export async function getCanisterActor<T>(
     canisterName: string,
     uuid: string = ''
