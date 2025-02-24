@@ -34,7 +34,6 @@
         "./src/lib/stable/globals": "./src/lib/stable/globals.ts",
         "./src/lib/experimental": "./src/lib/experimental/index.ts",
         "./src/lib/experimental/*": "./src/lib/experimental/*.ts",
-        "./src/lib/stable/did_file/visitor": "./src/lib/stable/did_file/visitor/index.ts",
         "./_internal/test": "./test/index.ts",
         "./_internal/test/jest_link": "./test/jest_link.ts",
         "./_internal/test/property": "./test/property/index.ts",
