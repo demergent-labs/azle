@@ -37,13 +37,13 @@ export async function compile(
 
 export function getPrelude(main: string): string {
     return /*TS*/ `
-        import 'azle/src/lib/stable/globals';
-        import 'azle/src/lib/experimental/globals';
+        import 'azle/_internal/globals';
+        import 'azle/_internal/experimental/globals';
 
         import 'reflect-metadata';
 
         // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
-        import { ethersGetUrl, Server } from 'azle/src/lib/experimental';
+        import { ethersGetUrl, Server } from 'azle/experimental';
         import { ethers } from 'ethers';
         ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 

@@ -15,7 +15,7 @@ export async function compile(main: string): Promise<string> {
 
 function getPrelude(main: string): string {
     return /*TS*/ `
-            import 'azle/src/lib/stable/globals';
+            import 'azle/_internal/globals';
 
             import { getDefaultVisitorData, IDL, idlToString } from 'azle';
 
