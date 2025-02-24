@@ -21,7 +21,7 @@ ${imports
     .map((importDeclaration) => `import { ${importDeclaration} } from 'azle';`)
     .join('\n')}
 ${variableAliasDeclarations.join('\n')}
-import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
+import { AssertType, NotAnyAndExact } from 'azle/_internal/type_tests/assert_type';
 
 export default class {
     initMsgArgData: Uint8Array | null = null;

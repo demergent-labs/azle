@@ -55,7 +55,7 @@
         "./test/property/arbitraries/candid/candid_definition_arb": "./test/property/arbitraries/candid/candid_definition_arb/index.ts",
         "./test/property/arbitraries/candid/candid_definition_arb/types": "./test/property/arbitraries/candid/candid_definition_arb/types.ts",
         "./test/set_experimental": "./test/set_experimental.ts",
-        "./type_tests/assert_type": "./type_tests/assert_type.ts",
+        "./_internal/type_tests/assert_type": "./type_tests/assert_type.ts",
         "./_internal": "./_internal/index.ts",
         "./_internal/dfx": "./dfx/index.ts",
         "./_internal/hash_file_by_parts": "./scripts/hash_file_by_parts/index.ts"
