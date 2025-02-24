@@ -3,7 +3,7 @@
 // TODO consider how we'll do the axios tests as well
 
 import { getCanisterOrigin } from 'azle/_internal/dfx';
-import { expect, it, please, Test, wait } from 'azle/test';
+import { expect, it, please, Test, wait } from 'azle/_internal/test';
 import puppeteer, { Browser, Page } from 'puppeteer';
 
 export function getTests(canisterName: string): Test {

@@ -1,6 +1,6 @@
 import { describe } from '@jest/globals';
 import { getCanisterId } from 'azle/_internal/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/_internal/test';
 
 // @ts-ignore
 import { createActor } from './dfx_generated/recursion';

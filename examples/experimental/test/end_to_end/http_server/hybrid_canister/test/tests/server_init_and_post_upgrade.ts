@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/_internal/dfx';
-import { expect, it, please, Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 import { createActor } from '../dfx_generated/server_init_and_post_upgrade';

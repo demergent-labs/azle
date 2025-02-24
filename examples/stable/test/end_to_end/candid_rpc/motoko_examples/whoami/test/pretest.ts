@@ -1,6 +1,6 @@
 import { SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { linkAndInstallPatch } from 'azle/test/jest_link';
+import { linkAndInstallPatch } from 'azle/_internal/test/jest_link';
 import { execSync } from 'child_process';
 import { join } from 'path';
 

@@ -1,15 +1,15 @@
-import { HttpRequest } from 'azle/experimental';
-import { runPropTests } from 'azle/test/property';
-import { RecordArb } from 'azle/test/property/arbitraries/candid/constructed/record_arb';
+import { runPropTests } from 'azle/_internal/test/property';
+import { RecordArb } from 'azle/_internal/test/property/arbitraries/candid/constructed/record_arb';
 import {
     CanisterArb,
     CanisterConfig
-} from 'azle/test/property/arbitraries/canister_arb';
-import { QueryMethod } from 'azle/test/property/arbitraries/canister_methods/query_method_arb';
-import { UpdateMethodArb } from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
-import { HttpRequestArb } from 'azle/test/property/arbitraries/http/request_arb';
-import { HttpResponseArb } from 'azle/test/property/arbitraries/http/response_arb';
-import { Api } from 'azle/test/property/arbitraries/types';
+} from 'azle/_internal/test/property/arbitraries/canister_arb';
+import { QueryMethod } from 'azle/_internal/test/property/arbitraries/canister_methods/query_method_arb';
+import { UpdateMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/update_method_arb';
+import { HttpRequestArb } from 'azle/_internal/test/property/arbitraries/http/request_arb';
+import { HttpResponseArb } from 'azle/_internal/test/property/arbitraries/http/response_arb';
+import { Api } from 'azle/_internal/test/property/arbitraries/types';
+import { HttpRequest } from 'azle/experimental';
 import fc from 'fast-check';
 
 import { generateBody } from './generate_body';

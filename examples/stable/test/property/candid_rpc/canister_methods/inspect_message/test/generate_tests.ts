@@ -1,9 +1,13 @@
 import { Agent } from '@dfinity/agent';
-import { getActor, Named } from 'azle/test/property';
-import { CandidReturnType } from 'azle/test/property/arbitraries/candid/candid_return_type_arb';
-import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
-import { AzleResult, Test, testEquality } from 'azle/test/property/test';
+import { getActor, Named } from 'azle/_internal/test/property';
+import { CandidReturnType } from 'azle/_internal/test/property/arbitraries/candid/candid_return_type_arb';
+import { CandidValueAndMeta } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from 'azle/_internal/test/property/arbitraries/candid/corresponding_js_type';
+import {
+    AzleResult,
+    Test,
+    testEquality
+} from 'azle/_internal/test/property/test';
 
 import { InspectMessageBehavior } from './test';
 

@@ -8,7 +8,7 @@ const currentDirectory = path.basename(process.cwd());
 
 // Lines to add at the top of the file
 const importLines = [
-    "import { linkAndInstallPatch } from 'azle/test/jest_link';",
+    "import { linkAndInstallPatch } from 'azle/_internal/test/jest_link';",
     "import { join } from 'path';"
 ];
 

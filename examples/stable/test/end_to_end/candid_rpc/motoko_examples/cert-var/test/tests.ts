@@ -12,7 +12,7 @@ import {
     getCanisterActor,
     it,
     Test
-} from 'azle/test';
+} from 'azle/_internal/test';
 import fc from 'fast-check';
 
 import { findLookupValueOrThrow } from './certificate';

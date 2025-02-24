@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { describe } from '@jest/globals';
-import { expect, it, Test } from 'azle/test';
+import { expect, it, Test } from 'azle/_internal/test';
 import { readFileSync } from 'fs';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects

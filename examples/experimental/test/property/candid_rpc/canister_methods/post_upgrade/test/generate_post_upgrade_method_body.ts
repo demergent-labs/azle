@@ -1,7 +1,7 @@
-import { Named } from 'azle/test/property';
-import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
-import { areParamsCorrectlyOrdered } from 'azle/test/property/are_params_correctly_ordered';
+import { Named } from 'azle/_internal/test/property';
+import { CandidValueAndMeta } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from 'azle/_internal/test/property/arbitraries/candid/corresponding_js_type';
+import { areParamsCorrectlyOrdered } from 'azle/_internal/test/property/are_params_correctly_ordered';
 
 import { globalPostUpgradeVarName } from './global_var_name';
 
