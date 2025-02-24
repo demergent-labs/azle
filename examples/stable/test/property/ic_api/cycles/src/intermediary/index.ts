@@ -6,7 +6,10 @@ import {
     query,
     update
 } from 'azle';
-import { AssertType, NotAnyAndExact } from 'azle/type_tests/assert_type';
+import {
+    AssertType,
+    NotAnyAndExact
+} from 'azle/_internal/type_tests/assert_type';
 
 import { CyclesResult } from '../types';
 
