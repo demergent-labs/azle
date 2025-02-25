@@ -1,0 +1,25 @@
+// Taken from https://dashboard.internetcomputer.org/canister/w36hm-eqaaa-aaaal-qr76a-cai
+// TODO for now assuming a license like this one: https://github.com/dfinity/llm/blob/main/LICENSE
+// TODO my understanding is that the LLM canister code will be open sourced at a later date
+
+type role = variant {
+  assistant;
+  system;
+  user;
+};
+
+type chat_message = record {
+  role: role;
+  content: text;
+};
+
+type chat_request = record {
+  // Valid values: "llama3.1:8b"
+  model: text;
+  messages: vec chat_message;
+};
+
+service: {
+  v0_chat: (chat_request) -> (text);
+}
+
