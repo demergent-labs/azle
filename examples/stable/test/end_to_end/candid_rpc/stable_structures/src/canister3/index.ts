@@ -62,8 +62,8 @@ export default class {
         return this.stableMap10.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap10Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap10Len(): number {
         return this.stableMap10.len();
     }
 
@@ -124,8 +124,8 @@ export default class {
         return this.stableMap11.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap11Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap11Len(): number {
         return this.stableMap11.len();
     }
 
@@ -186,8 +186,8 @@ export default class {
         return this.stableMap12.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap12Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap12Len(): number {
         return this.stableMap12.len();
     }
 
@@ -248,8 +248,8 @@ export default class {
         return this.stableMap13.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap13Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap13Len(): number {
         return this.stableMap13.len();
     }
 
@@ -310,8 +310,8 @@ export default class {
         return this.stableMap14.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap14Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap14Len(): number {
         return this.stableMap14.len();
     }
 
@@ -372,8 +372,8 @@ export default class {
         return this.stableMap15.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap15Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap15Len(): number {
         return this.stableMap15.len();
     }
 
@@ -436,8 +436,8 @@ export default class {
         return this.stableMap16.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap16Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap16Len(): number {
         return this.stableMap16.len();
     }
 
@@ -500,8 +500,8 @@ export default class {
         return this.stableMap17.keys().map((key) => JSON.stringify(key));
     }
 
-    @query([], IDL.Nat64)
-    stableMap17Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap17Len(): number {
         return this.stableMap17.len();
     }
 
