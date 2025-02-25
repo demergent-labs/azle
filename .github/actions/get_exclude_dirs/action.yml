@@ -36,7 +36,6 @@ runs:
               examples/experimental/test/end_to_end/http_server/open_value_sharing
               examples/experimental/test/end_to_end/http_server/sqlite_drizzle
               examples/experimental/test/property/candid_rpc/opt
-              examples/experimental/test/property/candid_rpc/stable_b_tree_map
               ') }}"
 
               SLOW_EXCLUSIONS="${{ format('
@@ -53,6 +52,7 @@ runs:
               examples/experimental/test/end_to_end/candid_rpc/stable_structures
               examples/experimental/test/end_to_end/http_server/autoreload
               examples/experimental/test/end_to_end/http_server/large_files
+              examples/experimental/test/property/candid_rpc/stable_b_tree_map
               ') }}"
 
               EXCLUDE_DIRS=""
