@@ -1,5 +1,6 @@
 import {
     bool,
+    nat32,
     nat64,
     None,
     Opt,
@@ -42,7 +43,7 @@ export const stableMap6Methods = {
     stableMap6Keys: query([], Vec(Vec(nat64)), () => {
         return stableMap6.keys();
     }),
-    stableMap6Len: query([], nat64, () => {
+    stableMap6Len: query([], nat32, () => {
         return stableMap6.len();
     }),
     stableMap6Remove: update([Vec(nat64)], Opt(bool), (key) => {

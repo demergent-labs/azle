@@ -1,7 +1,7 @@
 import {
     bool,
     float64,
-    nat64,
+    nat32,
     None,
     Opt,
     query,
@@ -48,7 +48,7 @@ export const stableMap5Methods = {
     stableMap5Keys: query([], Vec(Opt(text)), () => {
         return stableMap5.keys();
     }),
-    stableMap5Len: query([], nat64, () => {
+    stableMap5Len: query([], nat32, () => {
         return stableMap5.len();
     }),
     stableMap5Remove: update([Opt(text)], Opt(float64), (key) => {

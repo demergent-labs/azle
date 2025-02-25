@@ -1,6 +1,6 @@
 import {
     bool,
-    nat64,
+    nat32,
     None,
     Opt,
     query,
@@ -45,7 +45,7 @@ export const stableMap15Methods = {
     stableMap15Keys: query([], Vec(Callback), () => {
         return stableMap15.keys();
     }),
-    stableMap15Len: query([], nat64, () => {
+    stableMap15Len: query([], nat32, () => {
         return stableMap15.len();
     }),
     stableMap15Remove: update([Callback], Opt(text), (key) => {

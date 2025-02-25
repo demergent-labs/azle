@@ -1,6 +1,6 @@
 import {
     bool,
-    nat64,
+    nat32,
     None,
     Opt,
     query,
@@ -45,7 +45,7 @@ export const stableMap17Methods = {
     stableMap17Keys: query([], Vec(text), () => {
         return stableMap17.keys().map((key) => JSON.stringify(key));
     }),
-    stableMap17Len: query([], nat64, () => {
+    stableMap17Len: query([], nat32, () => {
         return stableMap17.len();
     }),
     stableMap17Remove: update([text], Opt(text), (key) => {

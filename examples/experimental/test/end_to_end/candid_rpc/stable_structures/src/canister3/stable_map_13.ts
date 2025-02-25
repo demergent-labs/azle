@@ -1,6 +1,6 @@
 import {
     bool,
-    nat64,
+    nat32,
     None,
     Opt,
     Principal,
@@ -48,7 +48,7 @@ export const stableMap13Methods = {
     stableMap13Keys: query([], Vec(text), () => {
         return stableMap13.keys();
     }),
-    stableMap13Len: query([], nat64, () => {
+    stableMap13Len: query([], nat32, () => {
         return stableMap13.len();
     }),
     stableMap13Remove: update([text], Opt(Principal), (key) => {

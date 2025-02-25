@@ -1,7 +1,7 @@
 import {
     bool,
     float32,
-    nat64,
+    nat32,
     None,
     Opt,
     query,
@@ -47,7 +47,7 @@ export const stableMap10Methods = {
     stableMap10Keys: query([], Vec(float32), () => {
         return stableMap10.keys();
     }),
-    stableMap10Len: query([], nat64, () => {
+    stableMap10Len: query([], nat32, () => {
         return stableMap10.len();
     }),
     stableMap10Remove: update([float32], Opt(Opt(bool)), (key) => {

@@ -1,6 +1,6 @@
 import {
     bool,
-    nat64,
+    nat32,
     None,
     Null,
     Opt,
@@ -44,7 +44,7 @@ export const stableMap8Methods = {
     stableMap8Keys: query([], Vec(bool), () => {
         return stableMap8.keys();
     }),
-    stableMap8Len: query([], nat64, () => {
+    stableMap8Len: query([], nat32, () => {
         return stableMap8.len();
     }),
     stableMap8Remove: update([bool], Opt(Null), (key) => {
