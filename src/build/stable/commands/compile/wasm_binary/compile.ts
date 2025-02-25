@@ -9,7 +9,7 @@ export function compile(
     ioType: IOType
 ): void {
     execSyncPretty(
-        `CARGO_TARGET_DIR=${AZLE_CARGO_TARGET_DIR} cargo build --target wasm32-wasip1 --manifest-path ${manifestPath} --release`,
+        `CARGO_TARGET_DIR=${AZLE_CARGO_TARGET_DIR} cargo build --target wasm32-wasip1 --manifest-path ${manifestPath} --release --locked`,
         ioType
     );
 
