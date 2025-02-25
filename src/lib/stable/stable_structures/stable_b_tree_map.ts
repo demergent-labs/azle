@@ -1,3 +1,4 @@
+import { validateUnsignedInteger } from '../error';
 import { stableJson } from './stable_json';
 
 /**
@@ -226,8 +227,12 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
-        validateStartIndex(startIndex);
-        validateLength(length);
+        validateUnsignedInteger(
+            'StableBTreeMap.items startIndex',
+            32,
+            startIndex ?? 0
+        );
+        validateUnsignedInteger('StableBTreeMap.items length', 32, length ?? 0);
 
         const encodedItems =
             globalThis._azleIcExperimental !== undefined
@@ -274,8 +279,12 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
-        validateStartIndex(startIndex);
-        validateLength(length);
+        validateUnsignedInteger(
+            'StableBTreeMap.keys startIndex',
+            32,
+            startIndex ?? 0
+        );
+        validateUnsignedInteger('StableBTreeMap.keys length', 32, length ?? 0);
 
         const encodedKeys =
             globalThis._azleIcExperimental !== undefined
@@ -378,8 +387,16 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
-        validateStartIndex(startIndex);
-        validateLength(length);
+        validateUnsignedInteger(
+            'StableBTreeMap.values startIndex',
+            32,
+            startIndex ?? 0
+        );
+        validateUnsignedInteger(
+            'StableBTreeMap.values length',
+            32,
+            length ?? 0
+        );
 
         const encodedValues =
             globalThis._azleIcExperimental !== undefined
@@ -401,37 +418,5 @@ export class StableBTreeMap<Key = any, Value = any> {
                     : new Uint8Array(encodedValue)
             );
         });
-    }
-}
-
-function validateStartIndex(startIndex?: number): void {
-    if (startIndex === undefined) {
-        return;
-    }
-
-    if (startIndex < 0) {
-        throw new Error('StableBTreeMap.values startIndex cannot be negative');
-    }
-
-    if (startIndex > 2 ** 32 - 1) {
-        throw new Error(
-            'StableBTreeMap.values startIndex cannot be greater than 4_294_967_295 (2^32 - 1)'
-        );
-    }
-}
-
-function validateLength(length?: number): void {
-    if (length === undefined) {
-        return;
-    }
-
-    if (length < 0) {
-        throw new Error('StableBTreeMap.values length cannot be negative');
-    }
-
-    if (length > 2 ** 32 - 1) {
-        throw new Error(
-            'StableBTreeMap.values length cannot be greater than 4_294_967_295 (2^32 - 1)'
-        );
     }
 }

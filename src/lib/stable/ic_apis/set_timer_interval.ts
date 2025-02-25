@@ -1,7 +1,9 @@
+import { validateUnsignedInteger } from '../error';
+
 /**
  * Sets a callback to be executed periodically every specified interval.
  *
- * @param interval - The time between executions, in seconds. Represented as a u64 (max size 2^64 - 1)
+ * @param interval - The time between executions, in seconds. Maximum size 2^53 - 1
  * @param callback - The callback to execute. Can be async
  *
  * @returns The timer ID (used with `clearTimer` to cancel the timer)
@@ -37,6 +39,8 @@ export function setTimerInterval(
     ) {
         return 0n;
     }
+
+    validateUnsignedInteger('setTimer interval', 53, interval);
 
     const timerId =
         globalThis._azleIcExperimental !== undefined
