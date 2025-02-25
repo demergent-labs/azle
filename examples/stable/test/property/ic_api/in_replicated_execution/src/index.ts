@@ -104,8 +104,7 @@ export default class {
     @inspectMessage
     inspectMessage(methodName: string): boolean {
         if (methodName === 'getInspectMessageIsInReplicatedExecution') {
-            if (inReplicatedExecution() === true) {
-                // TODO for https://github.com/demergent-labs/azle/issues/2539
+            if (inReplicatedExecution() === false) {
                 return true;
             }
 
