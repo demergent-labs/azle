@@ -34,7 +34,7 @@ export type TestKeys = AssertType<
 >;
 
 export type TestLen = AssertType<
-    NotAnyAndExact<typeof _mapText.len, () => bigint>
+    NotAnyAndExact<typeof _mapText.len, () => number>
 >;
 
 export type TestRemove = AssertType<
