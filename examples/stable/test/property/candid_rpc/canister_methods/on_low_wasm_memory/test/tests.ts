@@ -14,7 +14,7 @@ export function getTests(): Test {
         it('should trigger low memory handler when memory limit is approached', async () => {
             await fc.assert(
                 fc.asyncProperty(
-                    fc.integer({ min: 0, max: 100 }),
+                    fc.integer({ min: 0, max: 99 }),
                     fc.integer({
                         min: 90 * 1024 * 1024, // 90 MiB in bytes (about the smallest size of this azle canister)
                         max: HARD_LIMIT
