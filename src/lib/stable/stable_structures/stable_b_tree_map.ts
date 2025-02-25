@@ -44,9 +44,7 @@ export class StableBTreeMap<Key = any, Value = any> {
         valueSerializable: Serializable = stableJson
     ) {
         if (memoryId < 0) {
-            throw new Error(
-                'StableBTreeMap memoryId cannot be less than 0 (must be positive)'
-            );
+            throw new Error('StableBTreeMap memoryId cannot be negative');
         }
 
         if (memoryId > 253) {
@@ -229,12 +227,17 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
-        validateUnsignedInteger(
-            'StableBTreeMap.items startIndex',
-            32,
-            startIndex ?? 0
-        );
-        validateUnsignedInteger('StableBTreeMap.items length', 32, length ?? 0);
+        if (startIndex !== undefined) {
+            validateUnsignedInteger(
+                'StableBTreeMap.items startIndex',
+                32,
+                startIndex
+            );
+        }
+
+        if (length !== undefined) {
+            validateUnsignedInteger('StableBTreeMap.items length', 32, length);
+        }
 
         const encodedItems =
             globalThis._azleIcExperimental !== undefined
@@ -281,12 +284,17 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
-        validateUnsignedInteger(
-            'StableBTreeMap.keys startIndex',
-            32,
-            startIndex ?? 0
-        );
-        validateUnsignedInteger('StableBTreeMap.keys length', 32, length ?? 0);
+        if (startIndex !== undefined) {
+            validateUnsignedInteger(
+                'StableBTreeMap.keys startIndex',
+                32,
+                startIndex
+            );
+        }
+
+        if (length !== undefined) {
+            validateUnsignedInteger('StableBTreeMap.keys length', 32, length);
+        }
 
         const encodedKeys =
             globalThis._azleIcExperimental !== undefined
@@ -389,16 +397,17 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
-        validateUnsignedInteger(
-            'StableBTreeMap.values startIndex',
-            32,
-            startIndex ?? 0
-        );
-        validateUnsignedInteger(
-            'StableBTreeMap.values length',
-            32,
-            length ?? 0
-        );
+        if (startIndex !== undefined) {
+            validateUnsignedInteger(
+                'StableBTreeMap.values startIndex',
+                32,
+                startIndex
+            );
+        }
+
+        if (length !== undefined) {
+            validateUnsignedInteger('StableBTreeMap.values length', 32, length);
+        }
 
         const encodedValues =
             globalThis._azleIcExperimental !== undefined
