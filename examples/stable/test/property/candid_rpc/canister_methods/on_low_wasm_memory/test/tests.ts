@@ -20,6 +20,8 @@ export function getTests(): Test {
                         max: HARD_LIMIT
                     }),
                     async (wasmMemoryThresholdPercentage, wasmMemoryLimit) => {
+                        // eslint-disable-next-line no-param-reassign
+                        wasmMemoryThresholdPercentage = 0; // TODO remove after https://github.com/demergent-labs/azle/issues/2613 is resolved
                         // Calculate actual threshold based on percentage
                         const wasmMemoryThreshold = Math.floor(
                             wasmMemoryLimit *
