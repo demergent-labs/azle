@@ -2,7 +2,7 @@ import {
     blob,
     bool,
     nat16,
-    nat64,
+    nat32,
     None,
     Opt,
     query,
@@ -44,7 +44,7 @@ export const stableMap1Methods = {
     stableMap1Keys: query([], Vec(nat16), () => {
         return Uint16Array.from(stableMap1.keys());
     }),
-    stableMap1Len: query([], nat64, () => {
+    stableMap1Len: query([], nat32, () => {
         return stableMap1.len();
     }),
     stableMap1Remove: update([nat16], Opt(blob), (key) => {

@@ -2,7 +2,6 @@ import {
     bool,
     nat,
     nat32,
-    nat64,
     None,
     Opt,
     query,
@@ -44,7 +43,7 @@ export const stableMap2Methods = {
     stableMap2Keys: query([], Vec(nat32), () => {
         return Uint32Array.from(stableMap2.keys());
     }),
-    stableMap2Len: query([], nat64, () => {
+    stableMap2Len: query([], nat32, () => {
         return stableMap2.len();
     }),
     stableMap2Remove: update([nat32], Opt(nat), (key) => {

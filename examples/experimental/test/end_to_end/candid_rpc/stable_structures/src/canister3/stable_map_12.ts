@@ -1,7 +1,7 @@
 import {
     blob,
     bool,
-    nat64,
+    nat32,
     None,
     Opt,
     query,
@@ -45,7 +45,7 @@ export const stableMap12Methods = {
     stableMap12Keys: query([], Vec(blob), () => {
         return stableMap12.keys();
     }),
-    stableMap12Len: query([], nat64, () => {
+    stableMap12Len: query([], nat32, () => {
         return stableMap12.len();
     }),
     stableMap12Remove: update([blob], Opt(Reaction), (key) => {

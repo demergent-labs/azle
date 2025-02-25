@@ -1,3 +1,4 @@
+import { validateUnsignedInteger } from '../error';
 import { stableJson } from './stable_json';
 
 /**
@@ -22,7 +23,7 @@ export interface Serializable {
  * @typeParam Key - The type of keys stored in the map
  * @typeParam Value - The type of values stored in the map
  *
- * @param memoryId - Unique identifier for this map's memory (must be between 0 and 253 inclusive, 254 is reserved for Azle internal use)
+ * @param memoryId - Unique identifier for this map's memory. Must be a number between 0 and 253 inclusive (254 and 255 are reserved by Azle and ic-stable-structures respectively)
  * @param keySerializable - Serializable for converting keys to/from bytes. Defaults to an ICP-enabled `stableJson`
  * @param valueSerializable - Serializable for converting values to/from bytes. Defaults to an ICP-enabled `stableJson`
  *
@@ -42,6 +43,16 @@ export class StableBTreeMap<Key = any, Value = any> {
         keySerializable: Serializable = stableJson,
         valueSerializable: Serializable = stableJson
     ) {
+        if (memoryId < 0) {
+            throw new Error('StableBTreeMap memoryId cannot be negative');
+        }
+
+        if (memoryId > 253) {
+            throw new Error(
+                'StableBTreeMap memoryId cannot be greater than 253 (memoryId 254 and 255 are reserved by Azle and ic-stable-structures respectively'
+            );
+        }
+
         this.memoryId = memoryId;
         this.keySerializable = keySerializable;
         this.valueSerializable = valueSerializable;
@@ -203,8 +214,8 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Retrieves the items in the map in byte-level (not based on the JavaScript runtime value) sorted order by key.
      *
-     * @param startIndex - Optional index at which to start retrieving items (inclusive)
-     * @param length - Optional maximum number of items to retrieve
+     * @param startIndex - Optional index at which to start retrieving items (inclusive). Represented as a u32 (max size 2^32 - 1)
+     * @param length - Optional maximum number of items to retrieve. Represented as a u32 (max size 2^32 - 1)
      *
      * @returns Array of key-value pair tuples, in byte-level (not based on the JavaScript runtime value) sorted order by key
      */
@@ -216,6 +227,18 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
+        if (startIndex !== undefined) {
+            validateUnsignedInteger(
+                'StableBTreeMap.items startIndex',
+                32,
+                startIndex
+            );
+        }
+
+        if (length !== undefined) {
+            validateUnsignedInteger('StableBTreeMap.items length', 32, length);
+        }
+
         const encodedItems =
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapItems(
@@ -225,8 +248,8 @@ export class StableBTreeMap<Key = any, Value = any> {
                   )
                 : globalThis._azleIcStable.stableBTreeMapItems(
                       this.memoryId,
-                      startIndex ?? 0,
-                      length ?? -1
+                      startIndex,
+                      length
                   );
 
         return encodedItems.map(([encodedKey, encodedValue]) => {
@@ -248,8 +271,8 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Retrieves the keys in the map in byte-level (not based on the JavaScript runtime value) sorted order.
      *
-     * @param startIndex - Optional index at which to start retrieving keys (inclusive)
-     * @param length - Optional maximum number of keys to retrieve
+     * @param startIndex - Optional index at which to start retrieving keys (inclusive). Represented as a u32 (max size 2^32 - 1)
+     * @param length - Optional maximum number of keys to retrieve. Represented as a u32 (max size 2^32 - 1)
      *
      * @returns Array of keys in byte-level (not based on the JavaScript runtime value) sorted order
      */
@@ -261,6 +284,18 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
+        if (startIndex !== undefined) {
+            validateUnsignedInteger(
+                'StableBTreeMap.keys startIndex',
+                32,
+                startIndex
+            );
+        }
+
+        if (length !== undefined) {
+            validateUnsignedInteger('StableBTreeMap.keys length', 32, length);
+        }
+
         const encodedKeys =
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapKeys(
@@ -270,8 +305,8 @@ export class StableBTreeMap<Key = any, Value = any> {
                   )
                 : globalThis._azleIcStable.stableBTreeMapKeys(
                       this.memoryId,
-                      startIndex ?? 0,
-                      length ?? -1
+                      startIndex,
+                      length
                   );
 
         return encodedKeys.map((encodedKey) => {
@@ -286,9 +321,9 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Returns the number of key-value pairs in the map.
      *
-     * @returns The number of key-value pairs in the map
+     * @returns The number of key-value pairs in the map. Represented as a u32 (max size 2^32 - 1)
      */
-    len(): bigint {
+    len(): number {
         if (
             globalThis._azleIcStable === undefined &&
             globalThis._azleIcExperimental === undefined
@@ -297,7 +332,7 @@ export class StableBTreeMap<Key = any, Value = any> {
         }
 
         if (globalThis._azleIcExperimental !== undefined) {
-            return BigInt(
+            return Number(
                 globalThis._azleIcExperimental.stableBTreeMapLen(
                     this.memoryId.toString()
                 )
@@ -350,8 +385,8 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Retrieves the values in the map in byte-level (not based on the JavaScript runtime value) sorted order by key.
      *
-     * @param startIndex - Optional index at which to start retrieving values (inclusive)
-     * @param length - Optional maximum number of values to retrieve
+     * @param startIndex - Optional index at which to start retrieving values (inclusive). Represented as a u32 (max size 2^32 - 1)
+     * @param length - Optional maximum number of values to retrieve. Represented as a u32 (max size 2^32 - 1)
      * @returns Array of values, in byte-level (not based on the JavaScript runtime value) sorted order by key
      */
     values(startIndex?: number, length?: number): Value[] {
@@ -360,6 +395,18 @@ export class StableBTreeMap<Key = any, Value = any> {
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined as any;
+        }
+
+        if (startIndex !== undefined) {
+            validateUnsignedInteger(
+                'StableBTreeMap.values startIndex',
+                32,
+                startIndex
+            );
+        }
+
+        if (length !== undefined) {
+            validateUnsignedInteger('StableBTreeMap.values length', 32, length);
         }
 
         const encodedValues =
@@ -371,8 +418,8 @@ export class StableBTreeMap<Key = any, Value = any> {
                   )
                 : globalThis._azleIcStable.stableBTreeMapValues(
                       this.memoryId,
-                      startIndex ?? 0,
-                      length ?? -1
+                      startIndex,
+                      length
                   );
 
         return encodedValues.map((encodedValue) => {

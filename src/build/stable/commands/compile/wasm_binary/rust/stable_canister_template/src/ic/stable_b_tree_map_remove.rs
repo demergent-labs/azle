@@ -9,9 +9,10 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             with_stable_b_tree_map_mut(ctx.clone(), memory_id, |stable_b_tree_map| {
                 let key_slice: &[u8] = key_typed_array.as_ref();
                 let key: Vec<u8> = key_slice.to_vec();
+                let azle_sable_b_tree_map_key = AzleStableBTreeMapKey { bytes: key };
 
                 stable_b_tree_map
-                    .remove(&AzleStableBTreeMapKey { bytes: key })
+                    .remove(&azle_sable_b_tree_map_key)
                     .map(|value| TypedArray::new(ctx.clone(), value.bytes))
                     .transpose()
             })?

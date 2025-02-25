@@ -1,9 +1,9 @@
-import { v4 } from 'uuid';
+import { validateUnsignedInteger } from '../error';
 
 /**
  * Sets a one-time callback to be executed after a specified delay.
  *
- * @param delay - The time to wait before execution, in seconds. Represented as a u64 (max size 2^64 - 1)
+ * @param delay - The time to wait before execution, in seconds. Maximum size 2^53 - 1
  * @param callback - The callback to execute. Can be async
  *
  * @returns The timer ID (used with `clearTimer` to cancel the timer before it executes)
@@ -30,7 +30,7 @@ import { v4 } from 'uuid';
  *   - after an unsuccessful inter-canister await
  */
 export function setTimer(
-    delay: bigint,
+    delay: number,
     callback: () => void | Promise<void>
 ): bigint {
     if (
@@ -40,29 +40,28 @@ export function setTimer(
         return 0n;
     }
 
-    const timerCallbackId = `_timer_${v4()}`;
+    validateUnsignedInteger('setTimer delay', 53, delay);
 
     const timerId =
         globalThis._azleIcExperimental !== undefined
-            ? globalThis._azleIcExperimental.setTimer(
-                  delay.toString(),
-                  timerCallbackId
-              )
-            : globalThis._azleIcStable.setTimer(
-                  delay.toString(),
-                  timerCallbackId
-              );
+            ? BigInt(globalThis._azleIcExperimental.setTimer(delay.toString()))
+            : globalThis._azleIcStable.setTimer(delay);
 
-    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
+    globalThis._azleTimerCallbacks[timerId.toString()] = (): void => {
+        // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
+        // We immediately create another timer with a delay of 0 seconds
+        // to ensure that globalThis._azleTimerCallbacks is deleted even if the
+        // timer callback traps
+        setTimer(0, () => {
+            deleteGlobalTimerCallbacks(timerId);
+        });
 
-    globalThis._azleTimerCallbacks[timerCallbackId] = (): void => {
-        try {
-            callback();
-        } finally {
-            delete globalThis._azleIcTimers[timerId.toString()];
-            delete globalThis._azleTimerCallbacks[timerCallbackId];
-        }
+        callback();
     };
 
-    return BigInt(timerId);
+    return timerId;
+}
+
+export function deleteGlobalTimerCallbacks(timerId: bigint): void {
+    delete globalThis._azleTimerCallbacks[timerId.toString()];
 }

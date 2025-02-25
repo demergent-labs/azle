@@ -18,11 +18,11 @@ export function LenTestArb(
             > => {
                 const imports = new Set([
                     ...stableBTreeMap.imports,
-                    'nat64',
+                    'nat32',
                     'query'
                 ]);
 
-                const returnTypeObject = `nat64`;
+                const returnTypeObject = `nat32`;
                 const body = generateBody(stableBTreeMap.name);
 
                 const tests = generateTests(functionName);
@@ -57,7 +57,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return testEquality(result, 1n);
+                    return testEquality(result, 1);
                 }
             }
         ],
@@ -69,7 +69,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return testEquality(result, 1n);
+                    return testEquality(result, 1);
                 }
             }
         ],
@@ -81,7 +81,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return testEquality(result, 0n);
+                    return testEquality(result, 0);
                 }
             }
         ]

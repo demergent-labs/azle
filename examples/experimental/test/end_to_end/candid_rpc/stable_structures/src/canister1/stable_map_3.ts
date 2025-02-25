@@ -1,7 +1,7 @@
 import {
     bool,
     int,
-    nat64,
+    nat32,
     None,
     Opt,
     query,
@@ -45,7 +45,7 @@ export const stableMap3Methods = {
     stableMap3Keys: query([], Vec(Reaction), () => {
         return stableMap3.keys();
     }),
-    stableMap3Len: query([], nat64, () => {
+    stableMap3Len: query([], nat32, () => {
         return stableMap3.len();
     }),
     stableMap3Remove: update([Reaction], Opt(int), (key) => {

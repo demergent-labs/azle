@@ -56,8 +56,8 @@ export default class {
         return Uint8Array.from(this.stableMap0.keys());
     }
 
-    @query([], IDL.Nat64)
-    stableMap0Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap0Len(): number {
         return this.stableMap0.len();
     }
 
@@ -118,8 +118,8 @@ export default class {
         return this.stableMap1.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap1Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap1Len(): number {
         return this.stableMap1.len();
     }
 
@@ -180,8 +180,8 @@ export default class {
         return this.stableMap2.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap2Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap2Len(): number {
         return this.stableMap2.len();
     }
 
@@ -242,8 +242,8 @@ export default class {
         return this.stableMap3.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap3Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap3Len(): number {
         return this.stableMap3.len();
     }
 
@@ -304,8 +304,8 @@ export default class {
         return this.stableMap4.keys();
     }
 
-    @query([], IDL.Nat64)
-    stableMap4Len(): bigint {
+    @query([], IDL.Nat32)
+    stableMap4Len(): number {
         return this.stableMap4.len();
     }
 

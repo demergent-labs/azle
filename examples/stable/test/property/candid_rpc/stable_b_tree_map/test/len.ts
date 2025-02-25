@@ -22,8 +22,8 @@ export function LenTestArb(
                     'query'
                 ]);
 
-                const returnTypeObject = `IDL.Nat64`;
-                const returnTypeAnnotation = `bigint`;
+                const returnTypeObject = `IDL.Nat32`;
+                const returnTypeAnnotation = `number`;
                 const body = generateBody(stableBTreeMap.name);
 
                 const tests = generateTests(functionName);
@@ -59,7 +59,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return testEquality(result, 1n);
+                    return testEquality(result, 1);
                 }
             }
         ],
@@ -71,7 +71,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return testEquality(result, 1n);
+                    return testEquality(result, 1);
                 }
             }
         ],
@@ -83,7 +83,7 @@ function generateTests(functionName: string): Test[][] {
 
                     const result = await actor[functionName]();
 
-                    return testEquality(result, 0n);
+                    return testEquality(result, 0);
                 }
             }
         ]

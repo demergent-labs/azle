@@ -17,3 +17,21 @@ export function handleUncaughtError(rawError: any): never {
         trap(`Uncaught: ${error.message}\n${error.stack}`);
     }
 }
+
+export function validateUnsignedInteger(
+    errorPrefix: string,
+    size: number,
+    number: number
+): void {
+    if (number < 0) {
+        throw new Error(`${errorPrefix} cannot be negative`);
+    }
+
+    const maxUnsignedInteger = Math.pow(2, size) - 1;
+
+    if (number > maxUnsignedInteger) {
+        throw new Error(
+            `${errorPrefix} cannot be greater than ${maxUnsignedInteger} (2^${size} - 1)`
+        );
+    }
+}

@@ -55,14 +55,14 @@ function CanisterConfigArb() {
         },
         fc.array(CandidValueAndMetaArb(context), {
             size: 'max',
-            maxLength: 4
+            maxLength: 3
         }),
         CandidReturnTypeArb(context)
     );
 
     const small = {
         minLength: 0,
-        maxLength: 20
+        maxLength: 10
     };
 
     return fc

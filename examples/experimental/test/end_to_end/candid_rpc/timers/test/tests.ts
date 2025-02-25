@@ -31,7 +31,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('sets timers', async () => {
-            timerIds = await timersCanister.setTimers(10n, 5n);
+            timerIds = await timersCanister.setTimers(10, 5);
 
             expect(true).toBe(true);
         });

@@ -9,8 +9,7 @@ import {
     nat,
     nat8,
     nat16,
-    nat32,
-    nat64
+    nat32
 } from 'azle/experimental';
 import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
@@ -184,7 +183,7 @@ export function preRedeployTests(
         describe.each(range)('initial tests', (index) => {
             getReturnsEmpty(canister, index);
             isEmptyReturns(true, 'before insert', canister, index);
-            lenReturns(0n, 'before insert', canister, index);
+            lenReturns(0, 'before insert', canister, index);
             containsKeyReturns(false, 'before insert', canister, index);
             keysIsLength(0, 'before insert', canister, index);
             valuesIsLength(0, 'before insert', canister, index);
@@ -194,7 +193,7 @@ export function preRedeployTests(
 
             containsKeyReturns(true, 'after insert', canister, index);
             isEmptyReturns(false, 'after insert', canister, index);
-            lenReturns(1n, 'after insert', canister, index);
+            lenReturns(1, 'after insert', canister, index);
             getReturnsExpectedValue('after insert', canister, index);
             keysIsLength(1, 'after insert', canister, index);
             valuesIsLength(1, 'after insert', canister, index);
@@ -358,7 +357,7 @@ function keysIsLength(
 }
 
 function lenReturns(
-    expectedLen: nat64,
+    expectedLen: nat32,
     suffix: string,
     stableStructuresCanister: ActorSubclass<_SERVICE>,
     index: number

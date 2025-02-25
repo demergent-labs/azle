@@ -4,6 +4,7 @@ import {
     bool,
     Canister,
     int8,
+    nat32,
     nat64,
     query,
     Record,
@@ -46,7 +47,7 @@ export default Canister({
         clearTimer(timerId);
         console.info(`timer ${timerId} cancelled`);
     }),
-    setTimers: update([nat64, nat64], TimerIds, (delay, interval) => {
+    setTimers: update([nat32, nat32], TimerIds, (delay, interval) => {
         const capturedValue = '🚩';
 
         const singleId = setTimer(delay, oneTimeTimerCallback);
