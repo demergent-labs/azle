@@ -1,6 +1,6 @@
 import { describe } from '@jest/globals';
-import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { runTests } from 'azle/_internal/test';
 
 import { createActor as createComplexActor } from './dfx_generated/complex_init';
 import { createActor as createRecActor } from './dfx_generated/rec_init';

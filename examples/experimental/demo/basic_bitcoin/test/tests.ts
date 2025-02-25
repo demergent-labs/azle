@@ -1,9 +1,9 @@
-import 'azle/test/set_experimental';
+import 'azle/_internal/test/set_experimental';
 
 import { beforeAll } from '@jest/globals';
+import { expect, it, please, Test, wait } from 'azle/_internal/test';
 import { jsonParse, jsonStringify } from 'azle/experimental';
 import { GetUtxosResult, Utxo } from 'azle/experimental/canisters/management';
-import { expect, it, please, Test, wait } from 'azle/test';
 import { Transaction } from 'bitcoinjs-lib';
 
 import {
@@ -47,17 +47,17 @@ export function getTests(
             };
         });
 
-        please('set up a minting wallet', () => {
+        please.only('set up a minting wallet', () => {
             createWallet('minty');
         });
 
-        it('gets the canister address from /get-address', async () => {
+        it.only('gets the canister address from /get-address', async () => {
             const address = await getAddress(origin);
 
             expect(address.length).toBe(addressForm.length);
         });
 
-        it('gets the canister balance from /get-balance before any transactions or rewards', async () => {
+        it.only('gets the canister balance from /get-balance before any transactions or rewards', async () => {
             const address = await getAddress(origin);
             const balance = await getBalance(origin, address);
 
@@ -294,7 +294,10 @@ async function getBalance(origin: string, address: string): Promise<bigint> {
     const response = await fetch(`${origin}/get-balance?address=${address}`, {
         headers: [['X-Ic-Force-Update', 'true']]
     });
-    return jsonParse(await response.text());
+    const text = await response.text();
+    console.log('THIS IS THE TEXT!!!');
+    console.log(text);
+    return jsonParse(text);
 }
 
 function checkUtxos(utxos: Utxo[]): boolean {

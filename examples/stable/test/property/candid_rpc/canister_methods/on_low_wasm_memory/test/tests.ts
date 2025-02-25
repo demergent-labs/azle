@@ -1,6 +1,6 @@
 import { Principal } from 'azle';
-import { getCanisterId } from 'azle/dfx';
-import { defaultPropTestParams, expect, it, Test } from 'azle/test';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { defaultPropTestParams, expect, it, Test } from 'azle/_internal/test';
 import fc from 'fast-check';
 
 import { deployFreshCanister, getCanisterStatus } from './dfx';

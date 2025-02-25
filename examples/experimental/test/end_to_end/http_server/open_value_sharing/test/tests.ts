@@ -1,7 +1,7 @@
 import { HttpAgent } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { getCanisterId } from 'azle/dfx';
-import { expect, it, please, Test, wait } from 'azle/test';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { expect, it, please, Test, wait } from 'azle/_internal/test';
 
 import {
     _SERVICE as ConsumerActor,
