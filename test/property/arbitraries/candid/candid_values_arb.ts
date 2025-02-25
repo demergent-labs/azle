@@ -153,7 +153,7 @@ export function CandidValueArb(
         return VoidValueArb();
     }
     if (candidType === 'Func') {
-        return FuncValueArb({ ...context, constraints: {} });
+        return FuncValueArb();
     }
     if (candidType === 'Principal') {
         return PrincipalValueArb();

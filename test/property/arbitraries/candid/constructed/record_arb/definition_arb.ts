@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Record } from '../../../../../../src/lib/experimental';
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_function_name_arb';
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
@@ -27,7 +27,7 @@ export function RecordDefinitionArb(
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            fc.uniqueArray(fc.tuple(JsFunctionNameArb, fieldCandidDefArb), {
+            fc.uniqueArray(fc.tuple(JsPropertyNameArb, fieldCandidDefArb), {
                 selector: ([name, _]) => name,
                 minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
                 // https://github.com/demergent-labs/azle/issues/1453
@@ -40,9 +40,13 @@ export function RecordDefinitionArb(
                 fieldsAndShapes,
                 useTypeDeclaration
             ]): WithShapes<RecordCandidDefinition> => {
-                const fields = fieldsAndShapes.map(
-                    (field): Field => [field[0], field[1].definition]
-                );
+                const fields = fieldsAndShapes.map((field): Field => {
+                    const escapedFieldName = field[0].startsWith('"')
+                        ? `"${field[0].slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                        : field[0];
+
+                    return [escapedFieldName, field[1].definition];
+                });
                 const recursiveShapes = fieldsAndShapes.reduce(
                     (acc, field): RecursiveShapes => {
                         return { ...acc, ...field[1].recursiveShapes };

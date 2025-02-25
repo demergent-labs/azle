@@ -5,7 +5,7 @@ import {
     update
 } from '../../../../../../src/lib/experimental/canister_methods/methods';
 import { CanisterMethodInfo } from '../../../../../../src/lib/experimental/canister_methods/types/canister_method_info';
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_function_name_arb';
 import { Context } from '../../../types';
 import {
     CandidDefinition,
@@ -32,7 +32,7 @@ export function ServiceMethodArb(
 ): WithShapesArb<ServiceMethodDefinition> {
     return fc
         .tuple(
-            JsFunctionNameArb,
+            JsPropertyNameArb,
             fc.constantFrom<Mode>('query', 'update'),
             fc.array(candidDefArb),
             fc.oneof(candidDefArb, VoidDefinitionArb(context))

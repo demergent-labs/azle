@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { CandidType, Variant } from '../../../../../../src/lib/experimental';
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_function_name_arb';
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
@@ -45,9 +45,12 @@ export function VariantDefinitionArb(
                     (constraints.forceInline === undefined ||
                         constraints.forceInline === false) &&
                     useTypeDeclarationChance;
-                const fields = fieldsAndShapes.map(
-                    (field): Field => [field[0], field[1].definition]
-                );
+                const fields = fieldsAndShapes.map((field): Field => {
+                    const escapedFieldName = field[0].startsWith('"')
+                        ? `"${field[0].slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                        : field[0];
+                    return [escapedFieldName, field[1].definition];
+                });
                 const recursiveShapes = fieldsAndShapes.reduce(
                     (acc, field): RecursiveShapes => {
                         return { ...acc, ...field[1].recursiveShapes };
@@ -108,7 +111,7 @@ function VariantFieldsArb(
     // an empty object.
     const VARIANT_MIN_FIELD_COUNT = 1;
     return fc
-        .uniqueArray(JsFunctionNameArb, {
+        .uniqueArray(JsPropertyNameArb, {
             minLength: VARIANT_MIN_FIELD_COUNT
         })
         .chain((fieldsNames) =>
