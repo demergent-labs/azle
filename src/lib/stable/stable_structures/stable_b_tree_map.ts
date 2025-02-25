@@ -23,7 +23,7 @@ export interface Serializable {
  * @typeParam Key - The type of keys stored in the map
  * @typeParam Value - The type of values stored in the map
  *
- * @param memoryId - Unique identifier for this map's memory. Must be between 0 and 253 inclusive (254 and 255 are reserved by Azle and ic-stable-structures respectively)
+ * @param memoryId - Unique identifier for this map's memory. Must be a number between 0 and 253 inclusive (254 and 255 are reserved by Azle and ic-stable-structures respectively)
  * @param keySerializable - Serializable for converting keys to/from bytes. Defaults to an ICP-enabled `stableJson`
  * @param valueSerializable - Serializable for converting values to/from bytes. Defaults to an ICP-enabled `stableJson`
  *
@@ -216,8 +216,8 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Retrieves the items in the map in byte-level (not based on the JavaScript runtime value) sorted order by key.
      *
-     * @param startIndex - Optional index at which to start retrieving items (inclusive). Maximum size 2^32 - 1
-     * @param length - Optional maximum number of items to retrieve. Maximum size 2^32 - 1
+     * @param startIndex - Optional index at which to start retrieving items (inclusive). Represented as a u32 (max size 2^32 - 1)
+     * @param length - Optional maximum number of items to retrieve. Represented as a u32 (max size 2^32 - 1)
      *
      * @returns Array of key-value pair tuples, in byte-level (not based on the JavaScript runtime value) sorted order by key
      */
@@ -268,8 +268,8 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Retrieves the keys in the map in byte-level (not based on the JavaScript runtime value) sorted order.
      *
-     * @param startIndex - Optional index at which to start retrieving keys (inclusive). Maximum size 2^32 - 1
-     * @param length - Optional maximum number of keys to retrieve. Maximum size 2^32 - 1
+     * @param startIndex - Optional index at which to start retrieving keys (inclusive). Represented as a u32 (max size 2^32 - 1)
+     * @param length - Optional maximum number of keys to retrieve. Represented as a u32 (max size 2^32 - 1)
      *
      * @returns Array of keys in byte-level (not based on the JavaScript runtime value) sorted order
      */
@@ -313,7 +313,7 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Returns the number of key-value pairs in the map.
      *
-     * @returns The number of key-value pairs in the map. Maximum size 2^32 - 1
+     * @returns The number of key-value pairs in the map. Represented as a u32 (max size 2^32 - 1)
      */
     len(): number {
         if (
@@ -377,8 +377,8 @@ export class StableBTreeMap<Key = any, Value = any> {
     /**
      * Retrieves the values in the map in byte-level (not based on the JavaScript runtime value) sorted order by key.
      *
-     * @param startIndex - Optional index at which to start retrieving values (inclusive). Maximum size 2^32 - 1
-     * @param length - Optional maximum number of values to retrieve. Maximum size 2^32 - 1
+     * @param startIndex - Optional index at which to start retrieving values (inclusive). Represented as a u32 (max size 2^32 - 1)
+     * @param length - Optional maximum number of values to retrieve. Represented as a u32 (max size 2^32 - 1)
      * @returns Array of values, in byte-level (not based on the JavaScript runtime value) sorted order by key
      */
     values(startIndex?: number, length?: number): Value[] {
