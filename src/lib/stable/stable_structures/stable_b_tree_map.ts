@@ -42,6 +42,16 @@ export class StableBTreeMap<Key = any, Value = any> {
         keySerializable: Serializable = stableJson,
         valueSerializable: Serializable = stableJson
     ) {
+        if (memoryId < 0) {
+            throw new Error('StableBTreeMap memoryId cannot be negative');
+        }
+
+        if (memoryId > 253) {
+            throw new Error(
+                'StableBTreeMap memoryId cannot be greater than 253 (2^8 - 1 - 1, the second 1 representing the reserved memoryId 254)'
+            );
+        }
+
         this.memoryId = memoryId;
         this.keySerializable = keySerializable;
         this.valueSerializable = valueSerializable;
@@ -216,6 +226,9 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
+        validateStartIndex(startIndex);
+        validateLength(length);
+
         const encodedItems =
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapItems(
@@ -260,6 +273,9 @@ export class StableBTreeMap<Key = any, Value = any> {
         ) {
             return undefined as any;
         }
+
+        validateStartIndex(startIndex);
+        validateLength(length);
 
         const encodedKeys =
             globalThis._azleIcExperimental !== undefined
@@ -362,6 +378,9 @@ export class StableBTreeMap<Key = any, Value = any> {
             return undefined as any;
         }
 
+        validateStartIndex(startIndex);
+        validateLength(length);
+
         const encodedValues =
             globalThis._azleIcExperimental !== undefined
                 ? globalThis._azleIcExperimental.stableBTreeMapValues(
@@ -382,5 +401,37 @@ export class StableBTreeMap<Key = any, Value = any> {
                     : new Uint8Array(encodedValue)
             );
         });
+    }
+}
+
+function validateStartIndex(startIndex?: number): void {
+    if (startIndex === undefined) {
+        return;
+    }
+
+    if (startIndex < 0) {
+        throw new Error('StableBTreeMap.values startIndex cannot be negative');
+    }
+
+    if (startIndex > 2 ** 32 - 1) {
+        throw new Error(
+            'StableBTreeMap.values startIndex cannot be greater than 4_294_967_295 (2^32 - 1)'
+        );
+    }
+}
+
+function validateLength(length?: number): void {
+    if (length === undefined) {
+        return;
+    }
+
+    if (length < 0) {
+        throw new Error('StableBTreeMap.values length cannot be negative');
+    }
+
+    if (length > 2 ** 32 - 1) {
+        throw new Error(
+            'StableBTreeMap.values length cannot be greater than 4_294_967_295 (2^32 - 1)'
+        );
     }
 }
