@@ -15,7 +15,7 @@ pub struct WasmData {
 }
 
 #[inline(never)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 extern "C" fn init_js_passive_data(js_vec_location: i32) {
     // Without something like this to make the function bodies different,
     // the init_js_passive_data and init_wasm_data_passive_data functions
@@ -33,7 +33,7 @@ extern "C" fn init_js_passive_data(js_vec_location: i32) {
 static JS_PASSIVE_DATA_SIZE: usize = 0;
 
 #[inline(never)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 extern "C" fn js_passive_data_size() -> usize {
     // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
     unsafe { read_volatile(&JS_PASSIVE_DATA_SIZE) }
@@ -55,7 +55,7 @@ pub fn get_js_code() -> Result<Vec<u8>, Box<dyn Error>> {
 }
 
 #[inline(never)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: i32) {
     // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
     unsafe { read_volatile(&wasm_data_vec_location) };
@@ -67,7 +67,7 @@ extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: i32) {
 static WASM_DATA_PASSIVE_DATA_SIZE: usize = 0;
 
 #[inline(never)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 extern "C" fn wasm_data_passive_data_size() -> usize {
     // This is used to prevent compiler optimizations that interfere with the Wasm binary manipulation
     unsafe { read_volatile(&WASM_DATA_PASSIVE_DATA_SIZE) }

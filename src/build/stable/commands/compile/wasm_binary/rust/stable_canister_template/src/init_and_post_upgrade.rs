@@ -6,16 +6,16 @@ use ic_wasi_polyfill::init_with_memory;
 use rquickjs::{Context, Module, Object, Runtime};
 
 use crate::{
+    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
     error::handle_promise_error,
     execute_method_js::execute_method_js,
     ic::register,
     quickjs_with_ctx,
-    wasm_binary_manipulation::{get_js_code, get_wasm_data, WasmData},
-    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
+    wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
 
 #[inline(never)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn init(function_index: i32) {
     // Without something like this to make the function bodies different,
     // the init and post_upgrade functions
@@ -29,7 +29,7 @@ pub extern "C" fn init(function_index: i32) {
 }
 
 #[inline(never)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn post_upgrade(function_index: i32) {
     if let Err(e) = initialize(false, function_index) {
         trap(&format!("Azle PostUpgradeError: {}", e));

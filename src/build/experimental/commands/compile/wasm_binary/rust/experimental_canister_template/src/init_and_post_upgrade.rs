@@ -2,16 +2,15 @@ use ic_stable_structures::memory_manager::MemoryId;
 use wasmedge_quickjs::AsObject;
 
 use crate::{
-    execute_method_js, ic, run_event_loop,
+    MEMORY_MANAGER_REF_CELL, RUNTIME, WASM_DATA_REF_CELL, execute_method_js, ic, run_event_loop,
     wasm_binary_manipulation::get_wasm_data,
-    wasm_binary_manipulation::{get_js_code, WasmData},
-    MEMORY_MANAGER_REF_CELL, RUNTIME, WASM_DATA_REF_CELL,
+    wasm_binary_manipulation::{WasmData, get_js_code},
 };
 
 use crate::{upload_file, web_assembly};
 
 #[inline(never)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn init(function_index: i32) {
     // Without something like this the init and post_upgrade functions
     // seem to be optimized into the same function in the Wasm binary
@@ -24,7 +23,7 @@ pub extern "C" fn init(function_index: i32) {
 }
 
 #[inline(never)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn post_upgrade(function_index: i32) {
     initialize(false, function_index);
 }
