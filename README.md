@@ -37,7 +37,7 @@ This mode is intended for developers who are willing to accept the risk of using
 
 ## Get Started
 
-The quickest way to get started is through the [hello_world Candid RPC example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world) or the [hello_world HTTP Server example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world_http_server).
+The quickest way to get started is through the [hello_world Candid RPC example](https://github.com/demergent-labs/azle/tree/main/examples/stable/demo/hello_world) or the [hello_world HTTP Server example](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/hello_world_http_server).
 
 You can create the hello_world Candid RPC example locally like this:
 

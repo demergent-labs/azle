@@ -27,8 +27,6 @@ runs:
 
               UNSTABLE_EXCLUSIONS="${{ format('
               examples/experimental/demo/bitcoin_psbt
-              examples/stable/test/end_to_end/candid_rpc/multi_deploy
-              examples/stable/test/property/ic_api/performance_counter
               examples/experimental/test/end_to_end/http_server/ethers_base
               examples/experimental/test/end_to_end/http_server/http_outcall_fetch
               examples/experimental/test/end_to_end/http_server/ic_evm_rpc
@@ -36,6 +34,10 @@ runs:
               examples/experimental/test/end_to_end/http_server/open_value_sharing
               examples/experimental/test/end_to_end/http_server/sqlite_drizzle
               examples/experimental/test/property/candid_rpc/opt
+              examples/experimental/test/property/candid_rpc/stable_b_tree_map
+              examples/stable/test/end_to_end/candid_rpc/multi_deploy
+              examples/stable/test/end_to_end/candid_rpc/vec
+              examples/stable/test/property/ic_api/performance_counter
               ') }}"
 
               SLOW_EXCLUSIONS="${{ format('
@@ -52,7 +54,6 @@ runs:
               examples/experimental/test/end_to_end/candid_rpc/stable_structures
               examples/experimental/test/end_to_end/http_server/autoreload
               examples/experimental/test/end_to_end/http_server/large_files
-              examples/experimental/test/property/candid_rpc/stable_b_tree_map
               ') }}"
 
               EXCLUDE_DIRS=""
