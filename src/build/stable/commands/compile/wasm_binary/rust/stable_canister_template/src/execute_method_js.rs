@@ -4,11 +4,11 @@ use ic_cdk::{api::performance_counter, trap};
 use rquickjs::{Function, Object};
 
 use crate::{
-    benchmarking::record_benchmark, error::quickjs_call_with_error_handling, quickjs_with_ctx,
-    WASM_DATA_REF_CELL,
+    WASM_DATA_REF_CELL, benchmarking::record_benchmark, error::quickjs_call_with_error_handling,
+    quickjs_with_ctx,
 };
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 #[allow(unused)]
 pub extern "C" fn execute_method_js(function_index: i32) {
     let function_name = function_index.to_string();

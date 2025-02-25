@@ -1,7 +1,7 @@
-use crate::{benchmarking::record_benchmark, run_event_loop, RUNTIME, WASM_DATA_REF_CELL};
+use crate::{RUNTIME, WASM_DATA_REF_CELL, benchmarking::record_benchmark, run_event_loop};
 use wasmedge_quickjs::{AsObject, JsValue};
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 #[allow(unused)]
 pub extern "C" fn execute_method_js(function_index: i32) {
     let function_name = function_index.to_string();

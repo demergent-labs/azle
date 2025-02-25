@@ -1,13 +1,12 @@
 use wasmedge_quickjs::AsObject;
 
 use crate::{
-    ic, run_event_loop,
+    RUNTIME, ic, run_event_loop,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
-    RUNTIME,
 };
 
 // Heavily inspired by https://stackoverflow.com/a/47676844
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
     std::panic::set_hook(Box::new(|panic_info| {
         let msg = match panic_info.payload().downcast_ref::<&str>() {

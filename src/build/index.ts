@@ -180,6 +180,8 @@ async function handleTemplateCommand(ioType: IOType): Promise<void> {
 async function handleInstallGlobalDependenciesCommand(): Promise<void> {
     const node = process.argv.includes('--node');
     const dfx = process.argv.includes('--dfx');
+    // Rust must come before any other dependencies that use the Rust compiler
+    // to ensure that they are compiled with the latest version of Rust
     const rust = process.argv.includes('--rust');
     const wasi2ic = process.argv.includes('--wasi2ic');
 
