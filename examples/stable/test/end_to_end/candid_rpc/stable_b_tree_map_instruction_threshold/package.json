@@ -4,7 +4,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.26.0",
+        "azle": "0.27.0-rc.0",
         "uuid": "^9.0.1"
     },
     "devDependencies": {
