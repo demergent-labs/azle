@@ -61,14 +61,18 @@ export async function deployFreshCanister<T>(
     execSync(`dfx canister delete ${canisterName} --no-withdrawal || true`, {
         stdio: 'inherit'
     });
-    const wasmMemoryThresholdArg = wasmMemoryThreshold
-        ? `--wasm-memory-threshold ${wasmMemoryThreshold}`
-        : '';
-    const wasmMemoryLimitArg = wasmMemoryLimit
-        ? `--wasm-memory-limit ${wasmMemoryLimit}`
-        : '';
+    const wasmMemoryThresholdArg =
+        wasmMemoryThreshold !== undefined
+            ? `--wasm-memory-threshold ${wasmMemoryThreshold}`
+            : '';
+    const wasmMemoryLimitArg =
+        wasmMemoryLimit !== undefined
+            ? `--wasm-memory-limit ${wasmMemoryLimit}`
+            : '';
     const noWalletArg =
-        wasmMemoryLimit || wasmMemoryThreshold ? '--no-wallet' : '';
+        wasmMemoryLimit !== undefined || wasmMemoryThreshold !== undefined
+            ? '--no-wallet'
+            : '';
     execSync(
         `dfx canister create ${canisterName} ${noWalletArg} ${wasmMemoryThresholdArg} ${wasmMemoryLimitArg}`,
         {
