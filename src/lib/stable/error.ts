@@ -24,9 +24,7 @@ export function validateUnsignedInteger(
     number: number
 ): void {
     if (number < 0) {
-        throw new Error(
-            `${errorPrefix} cannot be less than 0 (must be positive)`
-        );
+        throw new Error(`${errorPrefix} cannot be negative`);
     }
 
     const maxUnsignedInteger = Math.pow(2, size) - 1;
