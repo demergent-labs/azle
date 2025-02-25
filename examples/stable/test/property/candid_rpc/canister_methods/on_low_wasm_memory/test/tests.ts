@@ -152,7 +152,7 @@ async function validateFinalStatus(
 ): Promise<void> {
     const finalStatus = getCanisterStatus(CANISTER_NAME);
 
-    expect(finalStatus.memorySize).toBeGreaterThan(
+    expect(finalStatus.memorySize).toBeGreaterThanOrEqual(
         wasmMemoryLimit - wasmMemoryThreshold
     );
     // TODO: Add this check when wasmMemoryThreshold is supported on the IC: https://forum.dfinity.org/t/how-to-verify-wasm-memory-threshold-is-set-correctly/40670

@@ -5,6 +5,7 @@ import { execSync } from 'child_process';
 export type CanisterStatus = {
     memorySize: number;
     wasmMemoryLimit: number;
+    wasmMemoryThreshold: number;
 };
 
 /**
@@ -18,18 +19,28 @@ export function getCanisterStatus(canisterName: string): CanisterStatus {
         encoding: 'utf-8'
     });
 
-    const memorySizeMatch = output.match(/Memory Size: Nat\((\d+)\)/);
+    const memorySizeMatch = output.match(/Memory Size: ([0-9_]+) Bytes/);
     const wasmMemoryLimitMatch = output.match(
         /Wasm memory limit: ([0-9_]+) Bytes/
     );
+    const wasmMemoryThresholdMatch = output.match(
+        /Wasm memory threshold: ([0-9_]+) Bytes/
+    );
 
-    if (memorySizeMatch === null || wasmMemoryLimitMatch === null) {
+    if (
+        memorySizeMatch === null ||
+        wasmMemoryLimitMatch === null ||
+        wasmMemoryThresholdMatch === null
+    ) {
         throw new Error('Failed to parse canister status output');
     }
 
     return {
-        memorySize: parseInt(memorySizeMatch[1]),
-        wasmMemoryLimit: parseInt(wasmMemoryLimitMatch[1].replace(/_/g, ''))
+        memorySize: parseInt(memorySizeMatch[1].replace(/_/g, '')),
+        wasmMemoryLimit: parseInt(wasmMemoryLimitMatch[1].replace(/_/g, '')),
+        wasmMemoryThreshold: parseInt(
+            wasmMemoryThresholdMatch[1].replace(/_/g, '')
+        )
     };
 }
 
@@ -41,7 +52,7 @@ export function getCanisterStatus(canisterName: string): CanisterStatus {
  */
 export async function deployFreshCanister<T>(
     canisterName: string,
-    _wasmMemoryThreshold?: string | number,
+    wasmMemoryThreshold?: string | number,
     wasmMemoryLimit?: string | number
 ): Promise<ActorSubclass<T>> {
     execSync(`dfx canister stop ${canisterName} || true`, {
@@ -50,14 +61,16 @@ export async function deployFreshCanister<T>(
     execSync(`dfx canister delete ${canisterName} --no-withdrawal || true`, {
         stdio: 'inherit'
     });
-    // TODO: Add wasmMemoryThreshold when it is supported on the IC: https://forum.dfinity.org/t/how-to-verify-wasm-memory-threshold-is-set-correctly/40670
-    // ${
-    //     wasmMemoryThreshold
-    //         ? `--wasm-memory-threshold ${wasmMemoryThreshold}`
-    //         : ''
-    // }
+    const wasmMemoryThresholdArg = wasmMemoryThreshold
+        ? `--wasm-memory-threshold ${wasmMemoryThreshold}`
+        : '';
+    const wasmMemoryLimitArg = wasmMemoryLimit
+        ? `--wasm-memory-limit ${wasmMemoryLimit}`
+        : '';
+    const noWalletArg =
+        wasmMemoryLimit || wasmMemoryThreshold ? '--no-wallet' : '';
     execSync(
-        `dfx canister create ${canisterName} --no-wallet ${wasmMemoryLimit ? `--wasm-memory-limit ${wasmMemoryLimit}` : ''}`,
+        `dfx canister create ${canisterName} ${noWalletArg} ${wasmMemoryThresholdArg} ${wasmMemoryLimitArg}`,
         {
             stdio: 'inherit'
         }
