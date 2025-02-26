@@ -1,6 +1,6 @@
 import { ActorSubclass, Agent, HttpAgent } from '@dfinity/agent';
 
-import { getCanisterId } from '../../dfx';
+import { getCanisterId } from '../../_internal/dfx';
 
 /**
  * Creates an actor instance with require (not ES module) cache clearing functionality

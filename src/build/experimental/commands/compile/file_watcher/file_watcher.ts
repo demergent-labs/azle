@@ -2,7 +2,7 @@ import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 import { watch } from 'chokidar';
 import { outputFile } from 'fs-extra';
 
-import { createAuthenticatedAgent } from '../../../../../../dfx';
+import { createAuthenticatedAgent } from '../../../../../../_internal/dfx';
 import { generateUploaderIdentity } from '../../upload_assets/uploader_identity';
 import { compile as compileJavaScript } from '../javascript';
 

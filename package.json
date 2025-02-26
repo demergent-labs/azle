@@ -30,7 +30,7 @@
         "./experimental/canisters/management/bitcoin": "./experimental/canisters/management/bitcoin.ts",
         "./experimental/canisters/icrc": "./experimental/canisters/icrc/index.ts",
         "./experimental/canisters/ledger": "./experimental/canisters/ledger/index.ts",
-        "./experimental/http_client": "./http_client/index.ts",
+        "./experimental/http_client": "./experimental/http_client/index.ts",
         "./_internal/globals": "./src/lib/stable/globals.ts",
         "./_internal/experimental/globals": "./src/lib/experimental/globals.ts",
         "./_internal/test": "./test/index.ts",
@@ -55,8 +55,7 @@
         "./_internal/test/set_experimental": "./test/set_experimental.ts",
         "./_internal/type_tests/assert_type": "./type_tests/assert_type.ts",
         "./_internal": "./_internal/index.ts",
-        "./_internal/dfx": "./dfx/index.ts",
-        "./_internal/hash_file_by_parts": "./scripts/hash_file_by_parts/index.ts"
+        "./_internal/dfx": "./_internal/dfx/index.ts"
     },
     "repository": {
         "type": "git",
