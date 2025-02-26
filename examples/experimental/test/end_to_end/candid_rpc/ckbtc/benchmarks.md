@@ -1,6 +1,22 @@
 # Benchmarks for wallet_backend
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
+
+| Id  | Method Name       | Instructions | Cycles     | USD           | USD/Million Calls | Change                                |
+| --- | ----------------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | getBalance        | 80_245_769   | 32_688_307 | $0.0000434647 | $43.46            | <font color="green">-723_860</font>   |
+| 1   | getBalance        | 80_151_243   | 32_650_497 | $0.0000434144 | $43.41            | <font color="green">-811_149</font>   |
+| 2   | getDepositAddress | 103_605_813  | 42_032_325 | $0.0000558891 | $55.88            | <font color="green">-1_186_963</font> |
+| 3   | getDepositAddress | 103_588_151  | 42_025_260 | $0.0000558797 | $55.87            | <font color="green">-1_073_092</font> |
+| 4   | updateBalance     | 103_502_462  | 41_990_984 | $0.0000558342 | $55.83            | <font color="green">-1_135_395</font> |
+| 5   | updateBalance     | 103_649_391  | 42_049_756 | $0.0000559123 | $55.91            | <font color="green">-1_091_530</font> |
+| 6   | getBalance        | 80_177_149   | 32_660_859 | $0.0000434282 | $43.42            | <font color="green">-810_237</font>   |
+| 7   | getBalance        | 80_214_097   | 32_675_638 | $0.0000434478 | $43.44            | <font color="green">-808_608</font>   |
+| 8   | transfer          | 88_533_934   | 36_003_573 | $0.0000478729 | $47.87            | <font color="green">-856_474</font>   |
+| 9   | getBalance        | 80_210_136   | 32_674_054 | $0.0000434457 | $43.44            | <font color="green">-829_233</font>   |
+| 10  | getBalance        | 80_245_201   | 32_688_080 | $0.0000434644 | $43.46            | <font color="green">-801_797</font>   |
+
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name       | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------------- | ------------ | ---------- | ------------- | ----------------- |
@@ -15,10 +31,6 @@
 | 8   | transfer          | 89_390_408   | 36_346_163 | $0.0000483284 | $48.32            |
 | 9   | getBalance        | 81_039_369   | 33_005_747 | $0.0000438868 | $43.88            |
 | 10  | getBalance        | 81_046_998   | 33_008_799 | $0.0000438908 | $43.89            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

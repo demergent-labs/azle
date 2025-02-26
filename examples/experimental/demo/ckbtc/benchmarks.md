@@ -1,6 +1,22 @@
 # Benchmarks for wallet_backend
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
+
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | 0           | 5_378_763    | 2_741_505 | $0.0000036453 | $3.64             | <font color="green">-7_116</font>  |
+| 1   | 0           | 5_331_088    | 2_722_435 | $0.0000036199 | $3.61             | <font color="green">-3_973</font>  |
+| 2   | 2           | 5_652_672    | 2_851_068 | $0.0000037910 | $3.79             | <font color="red">+2_233</font>    |
+| 3   | 2           | 5_661_938    | 2_854_775 | $0.0000037959 | $3.79             | <font color="red">+3_946</font>    |
+| 4   | 1           | 5_661_484    | 2_854_593 | $0.0000037957 | $3.79             | <font color="red">+6_918</font>    |
+| 5   | 1           | 5_645_486    | 2_848_194 | $0.0000037872 | $3.78             | <font color="green">-9_441</font>  |
+| 6   | 0           | 5_326_940    | 2_720_776 | $0.0000036177 | $3.61             | <font color="green">-3_039</font>  |
+| 7   | 0           | 5_322_866    | 2_719_146 | $0.0000036156 | $3.61             | <font color="green">-4_142</font>  |
+| 8   | 3           | 13_735_375   | 6_084_150 | $0.0000080899 | $8.08             | <font color="green">-27_449</font> |
+| 9   | 0           | 5_325_703    | 2_720_281 | $0.0000036171 | $3.61             | <font color="red">+765</font>      |
+| 10  | 0           | 5_325_444    | 2_720_177 | $0.0000036169 | $3.61             | <font color="green">-1_858</font>  |
+
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
@@ -15,10 +31,6 @@
 | 8   | 3           | 13_762_824   | 6_095_129 | $0.0000081045 | $8.10             |
 | 9   | 0           | 5_324_938    | 2_719_975 | $0.0000036167 | $3.61             |
 | 10  | 0           | 5_327_302    | 2_720_920 | $0.0000036179 | $3.61             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

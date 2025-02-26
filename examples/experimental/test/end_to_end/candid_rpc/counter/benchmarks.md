@@ -1,20 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
-| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
-| --- | -------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | incrementCount | 1_481_192    | 1_182_476 | $0.0000015723 | $1.57             | <font color="red">+12_690</font> |
-| 1   | incrementCount | 1_459_534    | 1_173_813 | $0.0000015608 | $1.56             | <font color="red">+1_448</font>  |
-| 2   | incrementCount | 1_460_446    | 1_174_178 | $0.0000015613 | $1.56             | <font color="red">+3_810</font>  |
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | incrementCount | 1_479_065    | 1_181_626 | $0.0000015712 | $1.57             | <font color="green">-2_127</font> |
+| 1   | incrementCount | 1_457_304    | 1_172_921 | $0.0000015596 | $1.55             | <font color="green">-2_230</font> |
+| 2   | incrementCount | 1_461_483    | 1_174_593 | $0.0000015618 | $1.56             | <font color="red">+1_037</font>   |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | incrementCount | 1_468_502    | 1_177_400 | $0.0000015656 | $1.56             |
-| 1   | incrementCount | 1_458_086    | 1_173_234 | $0.0000015600 | $1.56             |
-| 2   | incrementCount | 1_456_636    | 1_172_654 | $0.0000015592 | $1.55             |
+| 0   | incrementCount | 1_481_192    | 1_182_476 | $0.0000015723 | $1.57             |
+| 1   | incrementCount | 1_459_534    | 1_173_813 | $0.0000015608 | $1.56             |
+| 2   | incrementCount | 1_460_446    | 1_174_178 | $0.0000015613 | $1.56             |
 
 ---
 

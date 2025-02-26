@@ -1,56 +1,6 @@
 {
     "factorial": {
         "previous": {
-            "version": "0.25.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1247366"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1736543874361478487"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1254925"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1736543874626578768"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1719146"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1736543874889036368"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2963897"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1736543875170766957"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5510962"
-                    },
-                    "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1736543875432175638"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -96,6 +46,56 @@
                     "method_name": "fac",
                     "timestamp": {
                         "__bigint__": "1739923750400575135"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1253058"
+                    },
+                    "method_name": "fac",
+                    "timestamp": {
+                        "__bigint__": "1740531187520315399"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1252577"
+                    },
+                    "method_name": "fac",
+                    "timestamp": {
+                        "__bigint__": "1740531187766375195"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1712755"
+                    },
+                    "method_name": "fac",
+                    "timestamp": {
+                        "__bigint__": "1740531188032525685"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2949356"
+                    },
+                    "method_name": "fac",
+                    "timestamp": {
+                        "__bigint__": "1740531188501644948"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5464574"
+                    },
+                    "method_name": "fac",
+                    "timestamp": {
+                        "__bigint__": "1740531188744366063"
                     }
                 }
             ]

@@ -1,18 +1,18 @@
 # Benchmarks for threshold_ecdsa
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | publicKey   | 159_552_034  | 64_410_813 | $0.0000856451 | $85.64            | <font color="red">+19_831</font>   |
-| 1   | sign        | 159_587_010  | 64_424_804 | $0.0000856637 | $85.66            | <font color="green">-53_574</font> |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                                |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | publicKey   | 157_808_613  | 63_713_445 | $0.0000847179 | $84.71            | <font color="green">-1_743_421</font> |
+| 1   | sign        | 157_945_525  | 63_768_210 | $0.0000847907 | $84.79            | <font color="green">-1_641_485</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | publicKey   | 159_532_203  | 64_402_881 | $0.0000856346 | $85.63            |
-| 1   | sign        | 159_640_584  | 64_446_233 | $0.0000856922 | $85.69            |
+| 0   | publicKey   | 159_552_034  | 64_410_813 | $0.0000856451 | $85.64            |
+| 1   | sign        | 159_587_010  | 64_424_804 | $0.0000856637 | $85.66            |
 
 ---
 

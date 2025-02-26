@@ -1,20 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
-| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                           |
-| --- | ----------- | ------------ | ------- | ------------- | ----------------- | -------------------------------- |
-| 0   | set         | 1_000_686    | 990_274 | $0.0000013167 | $1.31             | <font color="red">+10_822</font> |
-| 1   | inc         | 856_277      | 932_510 | $0.0000012399 | $1.23             | <font color="red">+2_839</font>  |
-| 2   | inc         | 856_277      | 932_510 | $0.0000012399 | $1.23             | <font color="red">+1_980</font>  |
+| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | ------- | ------------- | ----------------- | --------------------------------- |
+| 0   | set         | 997_029      | 988_811 | $0.0000013148 | $1.31             | <font color="green">-3_657</font> |
+| 1   | inc         | 854_821      | 931_928 | $0.0000012392 | $1.23             | <font color="green">-1_456</font> |
+| 2   | inc         | 854_907      | 931_962 | $0.0000012392 | $1.23             | <font color="green">-1_370</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ------- | ------------- | ----------------- |
-| 0   | set         | 989_864      | 985_945 | $0.0000013110 | $1.31             |
-| 1   | inc         | 853_438      | 931_375 | $0.0000012384 | $1.23             |
-| 2   | inc         | 854_297      | 931_718 | $0.0000012389 | $1.23             |
+| 0   | set         | 1_000_686    | 990_274 | $0.0000013167 | $1.31             |
+| 1   | inc         | 856_277      | 932_510 | $0.0000012399 | $1.23             |
+| 2   | inc         | 856_277      | 932_510 | $0.0000012399 | $1.23             |
 
 ---
 

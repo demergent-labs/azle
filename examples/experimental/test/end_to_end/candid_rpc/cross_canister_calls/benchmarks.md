@@ -1,6 +1,24 @@
 # Benchmarks for canister1
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
+
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | balance          | 14_273_803   | 6_299_521 | $0.0000083763 | $8.37             | <font color="green">-250_804</font> |
+| 1   | account          | 15_640_009   | 6_846_003 | $0.0000091029 | $9.10             | <font color="green">-251_956</font> |
+| 2   | balance          | 14_184_180   | 6_263_672 | $0.0000083286 | $8.32             | <font color="green">-252_981</font> |
+| 3   | account          | 15_643_116   | 6_847_246 | $0.0000091046 | $9.10             | <font color="green">-250_752</font> |
+| 4   | accounts         | 13_673_780   | 6_059_512 | $0.0000080572 | $8.05             | <font color="green">-240_829</font> |
+| 5   | transfer         | 15_685_961   | 6_864_384 | $0.0000091274 | $9.12             | <font color="green">-267_008</font> |
+| 6   | balance          | 14_191_115   | 6_266_446 | $0.0000083323 | $8.33             | <font color="green">-248_537</font> |
+| 7   | account          | 15_644_944   | 6_847_977 | $0.0000091055 | $9.10             | <font color="green">-238_601</font> |
+| 8   | balance          | 14_178_684   | 6_261_473 | $0.0000083257 | $8.32             | <font color="green">-252_537</font> |
+| 9   | account          | 15_628_985   | 6_841_594 | $0.0000090971 | $9.09             | <font color="green">-271_135</font> |
+| 10  | accounts         | 13_682_878   | 6_063_151 | $0.0000080620 | $8.06             | <font color="green">-239_183</font> |
+| 11  | trap             | 13_301_118   | 5_910_447 | $0.0000078589 | $7.85             | <font color="green">-242_334</font> |
+| 12  | sendNotification | 2_826_301    | 1_720_520 | $0.0000022877 | $2.28             | <font color="red">+806</font>       |
+
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
@@ -18,22 +36,21 @@
 | 11  | trap             | 13_543_452   | 6_007_380 | $0.0000079878 | $7.98             |
 | 12  | sendNotification | 2_825_495    | 1_720_198 | $0.0000022873 | $2.28             |
 
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
-
 # Benchmarks for canister2
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
+
+| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | transfer            | 2_234_944    | 1_483_977 | $0.0000019732 | $1.97             | <font color="green">-15_554</font> |
+| 1   | receiveNotification | 1_399_583    | 1_149_833 | $0.0000015289 | $1.52             | <font color="green">-7_124</font>  |
+
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- |
 | 0   | transfer            | 2_250_498    | 1_490_199 | $0.0000019815 | $1.98             |
 | 1   | receiveNotification | 1_406_707    | 1_152_682 | $0.0000015327 | $1.53             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

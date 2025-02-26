@@ -1,10 +1,6 @@
 {
     "wallet_backend": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -104,6 +100,110 @@
                     "method_name": "getBalance",
                     "timestamp": {
                         "__bigint__": "1739923937143409670"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "80245769"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531302132655601"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "80151243"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531302596093469"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "103605813"
+                    },
+                    "method_name": "getDepositAddress",
+                    "timestamp": {
+                        "__bigint__": "1740531303112331416"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "103588151"
+                    },
+                    "method_name": "getDepositAddress",
+                    "timestamp": {
+                        "__bigint__": "1740531303599009688"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "103502462"
+                    },
+                    "method_name": "updateBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531364121359417"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "103649391"
+                    },
+                    "method_name": "updateBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531364590657262"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "80177149"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531364860664191"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "80214097"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531365334806046"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "88533934"
+                    },
+                    "method_name": "transfer",
+                    "timestamp": {
+                        "__bigint__": "1740531365802798330"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "80210136"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531366099971832"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "80245201"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531366572514596"
                     }
                 }
             ]

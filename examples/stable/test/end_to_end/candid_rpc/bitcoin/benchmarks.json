@@ -1,10 +1,6 @@
 {
     "bitcoin": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -50,6 +46,56 @@
                     "method_name": "getCurrentFeePercentiles",
                     "timestamp": {
                         "__bigint__": "1739924004065353623"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "9155736"
+                    },
+                    "method_name": "getBalance",
+                    "timestamp": {
+                        "__bigint__": "1740531383339492580"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "11258270"
+                    },
+                    "method_name": "getUtxos",
+                    "timestamp": {
+                        "__bigint__": "1740531383808496121"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5465299"
+                    },
+                    "method_name": "getCurrentFeePercentiles",
+                    "timestamp": {
+                        "__bigint__": "1740531384278287647"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "7090150"
+                    },
+                    "method_name": "sendTransaction",
+                    "timestamp": {
+                        "__bigint__": "1740531384801182657"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5418032"
+                    },
+                    "method_name": "getCurrentFeePercentiles",
+                    "timestamp": {
+                        "__bigint__": "1740531461405696965"
                     }
                 }
             ]

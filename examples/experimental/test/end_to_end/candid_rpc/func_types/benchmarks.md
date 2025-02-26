@@ -1,18 +1,18 @@
 # Benchmarks for func_types
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
-| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
-| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | init                             | 4_857_745_882 | 3_543_688_352 | $0.0047119361 | $4_711.93         | <font color="green">-642_748_438</font> |
-| 1   | getNotifierFromNotifiersCanister | 10_650_397    | 4_850_158     | $0.0000064491 | $6.44             | <font color="green">-894_828</font>     |
+| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
+| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init                             | 4_855_760_318 | 3_542_894_127 | $0.0047108800 | $4_710.88         | <font color="green">-1_985_564</font> |
+| 1   | getNotifierFromNotifiersCanister | 10_528_235    | 4_801_294     | $0.0000063841 | $6.38             | <font color="green">-122_162</font>   |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                             | 5_500_494_320 | 4_200_787_728 | $0.0055856614 | $5_585.66         |
-| 1   | getNotifierFromNotifiersCanister | 11_545_225    | 5_208_090     | $0.0000069250 | $6.92             |
+| 0   | init                             | 4_857_745_882 | 3_543_688_352 | $0.0047119361 | $4_711.93         |
+| 1   | getNotifierFromNotifiersCanister | 10_650_397    | 4_850_158     | $0.0000064491 | $6.44             |
 
 ---
 
