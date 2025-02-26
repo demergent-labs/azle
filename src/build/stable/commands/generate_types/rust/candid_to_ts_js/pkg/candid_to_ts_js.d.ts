@@ -3,7 +3,7 @@
 /**
  * Converts a Candid service string to its corresponding TypeScript types and JavaScript IDL types.
  *
- * These types can be used with `@query`/`@update` and other method decorators and for inter-canister calls using the `call` function.
+ * These types can be used with `@query`/`@update`/other method decorators and for inter-canister calls using the `call` function.
  *
  * # Parameters
  *
