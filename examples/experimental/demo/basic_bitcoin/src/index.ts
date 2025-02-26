@@ -1,5 +1,5 @@
+import { bitcoin_network } from 'azle/canisters/management/idl';
 import { jsonParse, jsonStringify } from 'azle/experimental';
-import { BitcoinNetwork } from 'azle/experimental/canisters/management';
 import express, { Request } from 'express';
 
 import * as bitcoinApi from './bitcoin_api';
@@ -10,7 +10,7 @@ import * as bitcoinWallet from './bitcoin_wallet';
 // When developing locally this should be `Regtest`.
 // When deploying to the IC this should be `Testnet`.
 // `Mainnet` is currently unsupported.
-const NETWORK: BitcoinNetwork = determineNetwork(
+const NETWORK: bitcoin_network = determineNetwork(
     process.env.BITCOIN_NETWORK
 ) ?? {
     testnet: null
@@ -94,12 +94,12 @@ app.post('/send', async (req, res) => {
 
 app.listen();
 
-export function determineKeyName(network: BitcoinNetwork): string {
-    if (network.mainnet === null) {
+export function determineKeyName(network: bitcoin_network): string {
+    if ('mainnet' in network && network.mainnet === null) {
         return 'test_key_1';
-    } else if (network.testnet === null) {
+    } else if ('testnet' in network && network.testnet === null) {
         return 'test_key_1';
-    } else if (network.regtest === null) {
+    } else if ('regtest' in network && network.regtest === null) {
         return 'dfx_test_key';
     }
     throw new Error('Invalid Bitcoin Network');
@@ -107,7 +107,7 @@ export function determineKeyName(network: BitcoinNetwork): string {
 
 export function determineNetwork(
     networkName?: string
-): BitcoinNetwork | undefined {
+): bitcoin_network | undefined {
     if (networkName === undefined) {
         return undefined;
     }
