@@ -24,6 +24,7 @@
         "./canisters/icrc_7/idl": "./canisters/icrc_7/idl/index.ts",
         "./canisters/icrc_10/idl": "./canisters/icrc_10/idl/index.ts",
         "./canisters/icrc_37/idl": "./canisters/icrc_37/idl/index.ts",
+        "./canisters/llm/idl": "./canisters/llm/idl/index.ts",
         "./experimental": "./src/lib/experimental/index.ts",
         "./experimental/canisters/management": "./experimental/canisters/management/index.ts",
         "./experimental/canisters/management/bitcoin": "./experimental/canisters/management/bitcoin.ts",
