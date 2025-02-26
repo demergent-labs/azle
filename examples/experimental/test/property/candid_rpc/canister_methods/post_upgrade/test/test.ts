@@ -1,9 +1,4 @@
 import { runPropTests } from 'azle/_internal/test/property';
-import { candidDefinitionArb } from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb';
-import {
-    CandidDefinition,
-    WithShapes
-} from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb/types';
 import { CandidReturnTypeArb } from 'azle/_internal/test/property/arbitraries/candid/candid_return_type_arb';
 import {
     CandidValueAndMeta,
@@ -25,6 +20,11 @@ import {
 import { UpdateMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/update_method_arb';
 import { DEFAULT_VALUE_MAX_DEPTH } from 'azle/_internal/test/property/arbitraries/config';
 import { Api } from 'azle/_internal/test/property/arbitraries/types';
+import { candidDefinitionArb } from 'azle/_internal/test/property/candid_definition_arb';
+import {
+    CandidDefinition,
+    WithShapes
+} from 'azle/_internal/test/property/candid_definition_arb/types';
 import fc from 'fast-check';
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';

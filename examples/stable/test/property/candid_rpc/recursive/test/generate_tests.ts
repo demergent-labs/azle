@@ -1,6 +1,6 @@
 import { getActor, Named } from 'azle/_internal/test/property';
 import { CandidValueAndMeta } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { Recursive } from 'azle/_internal/test/property/arbitraries/candid/recursive';
+import { Recursive } from 'azle/_internal/test/property/recursive';
 import {
     AzleResult,
     Test,

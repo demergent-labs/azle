@@ -3,13 +3,13 @@ globalThis._azleExperimental = true;
 import { ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { defaultPropTestParams, expect, it, Test } from 'azle/_internal/test';
-import { candidDefinitionArb } from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb';
 import { CandidValueAndMetaArbGenerator } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';
 import {
     CandidValueArb,
     CandidValueConstraints
 } from 'azle/_internal/test/property/arbitraries/candid/candid_values_arb';
 import { Context } from 'azle/_internal/test/property/arbitraries/types';
+import { candidDefinitionArb } from 'azle/_internal/test/property/candid_definition_arb';
 import fc from 'fast-check';
 import { cp, mkdir, rm, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
