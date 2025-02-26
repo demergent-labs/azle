@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { Unit } from 'azle/scripts/file_generator';
+import { Unit } from 'azle/_internal';
 import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { join } from 'path';
