@@ -4,7 +4,7 @@ members = [
     "src/build/experimental/commands/compile/wasm_binary/rust/experimental_canister_template",
     "src/build/experimental/commands/compile/wasm_binary/rust/open_value_sharing",
     "src/build/stable/commands/compile/wasm_binary/rust/stable_canister_template",
-    "src/build/stable/commands/generate/rust/candid_to_ts_js",
+    "src/build/stable/commands/generate_types/rust/candid_to_ts_js",
 ]
 
 [profile.release]

@@ -11,4 +11,4 @@ static_canister_template_licenses.yml
 dfx_generated
 .bitcoin
 licenses.yml
-src/build/stable/commands/generate/rust/candid_to_ts_js/pkg
+src/build/stable/commands/generate_types/rust/candid_to_ts_js/pkg
