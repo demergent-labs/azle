@@ -1,668 +1,6 @@
 {
     "robust_imports": {
         "previous": {
-            "version": "0.25.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "5748205696"
-                    },
-                    "method_name": "separateArilsFromPith",
-                    "timestamp": {
-                        "__bigint__": "1736543886333052973"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8910522"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543886374832678"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8893870"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543886599311965"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8893848"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543889643622385"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8893870"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543889867173998"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8889206"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890090479717"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8889199"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890110789320"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8889173"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890131318998"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8889200"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890354215585"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8887875"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890374897780"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8887929"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890398837676"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8887906"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890625885895"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8887905"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890648877763"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8887930"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890675692208"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8887960"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890697009404"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8906355"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890923270302"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8904621"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890960588032"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8913916"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543890985198286"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8923294"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891210204035"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8918520"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891239328630"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8917033"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891260796120"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8915146"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891485840617"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8928895"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891507153784"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8915477"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891531726046"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8929712"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891755060362"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8915393"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891776681303"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8927712"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543891798300726"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8914641"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892022323908"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8927828"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892044150095"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8918792"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892067152230"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8911448"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892307244468"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2062268"
-                    },
-                    "method_name": "setStable",
-                    "timestamp": {
-                        "__bigint__": "1736543892328573514"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8920631"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892348889946"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8920738"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892369698127"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8920324"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892594368750"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8920268"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892616694189"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8920582"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892639169541"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8919646"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892864417296"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8921245"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892885761601"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8920110"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543892907522015"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8919249"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893131565349"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8918723"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893156063220"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8898836"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893188556207"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8897909"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893214892002"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8898484"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893455701400"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8897836"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893482808230"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8861864"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893519099293"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8893992"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893749880421"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8910563"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893778018011"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8906682"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893822009711"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8906341"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543893856304830"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8903401"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894084042004"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8905429"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894136022532"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8905337"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894174214555"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8908620"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894412426524"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8907272"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894439175282"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8909738"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894467562658"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8910032"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894702469688"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8873974"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894728017796"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8869854"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543894768246792"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8900869"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895006540541"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8901735"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895041542946"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8902124"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895073467041"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8901875"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895109022104"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8901492"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895346180841"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8899963"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895370553232"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8902794"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895396213183"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8905857"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895638285554"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8893848"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895665967928"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8907420"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895703682958"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8894490"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895743884086"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8900820"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543895981763438"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8898264"
-                    },
-                    "method_name": "buyHoneydew",
-                    "timestamp": {
-                        "__bigint__": "1736543896020936569"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -1356,6 +694,488 @@
                     "method_name": "buyHoneydew",
                     "timestamp": {
                         "__bigint__": "1739923784374921004"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5090844298"
+                    },
+                    "method_name": "separateArilsFromPith",
+                    "timestamp": {
+                        "__bigint__": "1740531196949204631"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8864199"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531197198027171"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8872262"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531200650769760"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8872287"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531200874654334"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8872263"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531200896128670"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8872172"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201120369572"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8872106"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201144681889"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8872132"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201369963348"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8872106"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201396401779"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8871911"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201622530320"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8871886"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201644613458"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8883828"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201877078803"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909125"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201913711884"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909151"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531201939664715"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909125"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202167542953"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909150"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202192468302"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909125"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202420424345"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909442"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202445792956"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909418"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202671899317"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909442"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202698408700"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909418"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202923465899"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909442"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202948844147"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909419"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531202976824706"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909444"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531203221476706"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2048703"
+                    },
+                    "method_name": "setStable",
+                    "timestamp": {
+                        "__bigint__": "1740531203245036644"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8894632"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531203470731983"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909418"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531203494661903"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909394"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531203720708563"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909418"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531203744057777"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909395"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531203971472187"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909419"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531203994739527"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909394"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531204018200380"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909418"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531204247655685"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909394"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531204283169159"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909418"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531204516590575"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909395"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531204545561714"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909419"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531204779346485"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909394"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531204817917523"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909422"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531205045702524"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909396"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531205073360647"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909420"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531205304605119"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909394"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531205330476057"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909420"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531205567801844"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909394"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531205589352734"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909418"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531205816863372"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909395"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531205847113215"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909418"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531206083470279"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909396"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531206132449119"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909395"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531206369622834"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909419"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531206402133131"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909394"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531206634463654"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909419"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531206672480114"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8909449"
+                    },
+                    "method_name": "buyHoneydew",
+                    "timestamp": {
+                        "__bigint__": "1740531206915623400"
                     }
                 }
             ]

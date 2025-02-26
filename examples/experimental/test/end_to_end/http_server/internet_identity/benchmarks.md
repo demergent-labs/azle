@@ -1,16 +1,16 @@
 # Benchmarks for backend
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                  |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | init        | 7_520_507_847 | 5_808_793_138 | $0.0077237780 | $7_723.77         | <font color="green">-754_082_716</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init        | 7_516_856_051 | 5_807_332_420 | $0.0077218357 | $7_721.83         | <font color="green">-3_651_796</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init        | 8_274_590_563 | 6_510_426_225 | $0.0086567184 | $8_656.71         |
+| 0   | init        | 7_520_507_847 | 5_808_793_138 | $0.0077237780 | $7_723.77         |
 
 ---
 

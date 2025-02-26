@@ -1,7 +1,7 @@
 {
-    "optional_types": {
+    "agent": {
         "previous": {
-            "version": "0.26.0",
+            "version": "No previous benchmarks",
             "benchmarks": []
         },
         "current": {

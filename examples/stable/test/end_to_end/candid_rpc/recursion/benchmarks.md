@@ -1,30 +1,30 @@
 # Benchmarks for recursion
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
 | Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ------------------ | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | testRecServiceCall | 6_508_698    | 3_193_479 | $0.0000042463 | $4.24             | <font color="green">-86_233</font> |
+| 0   | testRecServiceCall | 6_469_294    | 3_177_717 | $0.0000042253 | $4.22             | <font color="green">-39_404</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------ | ------------ | --------- | ------------- | ----------------- |
-| 0   | testRecServiceCall | 6_594_931    | 3_227_972 | $0.0000042921 | $4.29             |
+| 0   | testRecServiceCall | 6_508_698    | 3_193_479 | $0.0000042463 | $4.24             |
 
 # Benchmarks for recursive_canister
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
-| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                                 |
-| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | -------------------------------------- |
-| 0   | init        | 992_199_552  | 397_469_820 | $0.0005285037 | $528.50           | <font color="green">-14_797_194</font> |
+| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                                |
+| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init        | 986_893_842  | 395_347_536 | $0.0005256818 | $525.68           | <font color="green">-5_305_710</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
-| Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls |
-| --- | ----------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | init        | 1_006_996_746 | 803_388_698 | $0.0010682419 | $1_068.24         |
+| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls |
+| --- | ----------- | ------------ | ----------- | ------------- | ----------------- |
+| 0   | init        | 992_199_552  | 397_469_820 | $0.0005285037 | $528.50           |
 
 ---
 
