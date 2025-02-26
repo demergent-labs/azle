@@ -1,6 +1,16 @@
 # Benchmarks for bitcoin
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
+
+| Id  | Method Name              | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ------------------------ | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | getBalance               | 9_155_736    | 4_252_294 | $0.0000056541 | $5.65             | <font color="green">-27_967</font> |
+| 1   | getUtxos                 | 11_258_270   | 5_093_308 | $0.0000067724 | $6.77             | <font color="green">-57_341</font> |
+| 2   | getCurrentFeePercentiles | 5_465_299    | 2_776_119 | $0.0000036913 | $3.69             | <font color="red">+18_346</font>   |
+| 3   | sendTransaction          | 7_090_150    | 3_426_060 | $0.0000045555 | $4.55             | <font color="red">+8_627</font>    |
+| 4   | getCurrentFeePercentiles | 5_418_032    | 2_757_212 | $0.0000036662 | $3.66             | <font color="green">-38_972</font> |
+
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name              | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------------ | ------------ | --------- | ------------- | ----------------- |
@@ -9,10 +19,6 @@
 | 2   | getCurrentFeePercentiles | 5_446_953    | 2_768_781 | $0.0000036816 | $3.68             |
 | 3   | sendTransaction          | 7_081_523    | 3_422_609 | $0.0000045509 | $4.55             |
 | 4   | getCurrentFeePercentiles | 5_457_004    | 2_772_801 | $0.0000036869 | $3.68             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

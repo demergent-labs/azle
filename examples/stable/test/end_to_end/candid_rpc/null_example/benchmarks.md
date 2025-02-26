@@ -1,20 +1,20 @@
 # Benchmarks for null_example
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | setPartiallyNullRecord | 6_027_439    | 3_000_975 | $0.0000039903 | $3.99             | <font color="green">-63_336</font> |
-| 1   | setSmallNullRecord     | 4_373_239    | 2_339_295 | $0.0000031105 | $3.11             | <font color="green">-41_074</font> |
-| 2   | setLargeNullRecord     | 5_704_050    | 2_871_620 | $0.0000038183 | $3.81             | <font color="green">-55_296</font> |
+| 0   | setPartiallyNullRecord | 5_994_495    | 2_987_798 | $0.0000039728 | $3.97             | <font color="green">-32_944</font> |
+| 1   | setSmallNullRecord     | 4_348_018    | 2_329_207 | $0.0000030971 | $3.09             | <font color="green">-25_221</font> |
+| 2   | setLargeNullRecord     | 5_662_936    | 2_855_174 | $0.0000037964 | $3.79             | <font color="green">-41_114</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | setPartiallyNullRecord | 6_090_775    | 3_026_310 | $0.0000040240 | $4.02             |
-| 1   | setSmallNullRecord     | 4_414_313    | 2_355_725 | $0.0000031323 | $3.13             |
-| 2   | setLargeNullRecord     | 5_759_346    | 2_893_738 | $0.0000038477 | $3.84             |
+| 0   | setPartiallyNullRecord | 6_027_439    | 3_000_975 | $0.0000039903 | $3.99             |
+| 1   | setSmallNullRecord     | 4_373_239    | 2_339_295 | $0.0000031105 | $3.11             |
+| 2   | setLargeNullRecord     | 5_704_050    | 2_871_620 | $0.0000038183 | $3.81             |
 
 ---
 
