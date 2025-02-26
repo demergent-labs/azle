@@ -4,7 +4,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.26.0"
+        "azle": "0.27.0"
     },
     "devDependencies": {
         "notify_raw_end_to_end_test_functional_syntax": "file:../../../../../experimental/test/end_to_end/candid_rpc/notify_raw"
