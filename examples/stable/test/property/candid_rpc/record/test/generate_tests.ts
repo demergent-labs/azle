@@ -1,6 +1,6 @@
 import { getActor, Named } from 'azle/_internal/test/property';
 import { CandidValueAndMeta } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { Record } from 'azle/_internal/test/property/arbitraries/candid/constructed/record_arb';
+import { Record } from 'azle/_internal/test/property/record_arb';
 import {
     AzleResult,
     Test,

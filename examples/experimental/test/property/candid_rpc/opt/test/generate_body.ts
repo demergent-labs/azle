@@ -1,7 +1,7 @@
 import { Named } from 'azle/_internal/test/property';
 import { CandidValueAndMeta } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { Opt } from 'azle/_internal/test/property/arbitraries/candid/constructed/opt_arb';
 import { areParamsCorrectlyOrdered } from 'azle/_internal/test/property/are_params_correctly_ordered';
+import { Opt } from 'azle/_internal/test/property/opt_arb';
 
 export function generateBody(
     namedParamOpts: Named<CandidValueAndMeta<Opt>>[],

@@ -2,13 +2,13 @@ import {
     defaultArrayConstraints,
     runPropTests
 } from 'azle/_internal/test/property';
-import { TupleArb } from 'azle/_internal/test/property/arbitraries/candid/constructed/tuple_arb';
 import {
     CanisterArb,
     CanisterConfig
 } from 'azle/_internal/test/property/arbitraries/canister_arb';
 import { QueryMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/query_method_arb';
 import { Api } from 'azle/_internal/test/property/arbitraries/types';
+import { TupleArb } from 'azle/_internal/test/property/tuple_arb';
 import fc from 'fast-check';
 
 import { generateBody } from './generate_body';

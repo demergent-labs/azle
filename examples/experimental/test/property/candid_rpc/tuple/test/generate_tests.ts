@@ -1,14 +1,11 @@
 import { getActor, Named } from 'azle/_internal/test/property';
 import { CandidValueAndMeta } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
 import {
-    ReturnTuple,
-    Tuple
-} from 'azle/_internal/test/property/arbitraries/candid/constructed/tuple_arb';
-import {
     AzleResult,
     Test,
     testEquality
 } from 'azle/_internal/test/property/test';
+import { ReturnTuple, Tuple } from 'azle/_internal/test/property/tuple_arb';
 
 export function generateTests(
     functionName: string,

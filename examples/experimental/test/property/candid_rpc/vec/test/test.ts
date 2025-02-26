@@ -2,13 +2,13 @@ import {
     defaultArrayConstraints,
     runPropTests
 } from 'azle/_internal/test/property';
-import { VecArb } from 'azle/_internal/test/property/arbitraries/candid/constructed/vec_arb';
 import {
     CanisterArb,
     CanisterConfig
 } from 'azle/_internal/test/property/arbitraries/canister_arb';
 import { QueryMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/query_method_arb';
 import { Api } from 'azle/_internal/test/property/arbitraries/types';
+import { VecArb } from 'azle/_internal/test/property/vec_arb';
 import fc from 'fast-check';
 
 import { generateBody } from './generate_body';

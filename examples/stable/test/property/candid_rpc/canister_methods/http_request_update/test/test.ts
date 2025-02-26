@@ -1,5 +1,4 @@
 import { runPropTests } from 'azle/_internal/test/property';
-import { RecordArb } from 'azle/_internal/test/property/arbitraries/candid/constructed/record_arb';
 import {
     CanisterArb,
     CanisterConfig
@@ -9,6 +8,7 @@ import { UpdateMethodArb } from 'azle/_internal/test/property/arbitraries/canist
 import { HttpRequestArb } from 'azle/_internal/test/property/arbitraries/http/request_arb';
 import { HttpResponseArb } from 'azle/_internal/test/property/arbitraries/http/response_arb';
 import { Api } from 'azle/_internal/test/property/arbitraries/types';
+import { RecordArb } from 'azle/_internal/test/property/record_arb';
 import { HttpRequest } from 'azle/experimental';
 import fc from 'fast-check';
 

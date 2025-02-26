@@ -1,7 +1,7 @@
 import { Named } from 'azle/_internal/test/property';
 import { CandidValueAndMeta } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { Func } from 'azle/_internal/test/property/arbitraries/candid/reference/func_arb';
 import { areParamsCorrectlyOrdered } from 'azle/_internal/test/property/are_params_correctly_ordered';
+import { Func } from 'azle/_internal/test/property/func_arb';
 
 export function generateBody(
     namedParamFuncs: Named<CandidValueAndMeta<Func>>[],
