@@ -34,11 +34,13 @@ const StatusCodeArb = fc
         },
         { arbitrary: fc.integer({ min: 200, max: 599 }), weight: 1 } // The ic replica doesn't support returning status codes in the 1xx range.
     )
-    .filter((status) => status !== 407 && status !== 421);
+    .filter((status) => status !== 407 && status !== 421 && status !== 206);
 // TODO Node's fetch doesn't handle 407 the same as other status, so we're filtering it out until we can figure out why
 // TODO https://github.com/demergent-labs/azle/pull/1652
 // TODO same applies to 421 status see https://github.com/demergent-labs/fourZeroSeven for more details
 // TODO https://github.com/nodejs/help/issues/4345
+// TODO Status 206 needs Content-Range header to work so we're filtering it out until we support that header in our arbitraries
+// TODO https://github.com/demergent-labs/azle/issues/2768
 
 export function HttpResponseValueArb<T>(): fc.Arbitrary<HttpResponse<T>> {
     return fc
