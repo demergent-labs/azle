@@ -3,3 +3,4 @@
 dfx_generated
 node_modules
 src/idl/management.ts
+src/idl/management_no_workaround.ts
