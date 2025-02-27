@@ -1,20 +1,6 @@
 {
     "hello_world": {
         "previous": {
-            "version": "0.25.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1413015"
-                    },
-                    "method_name": "setMessage",
-                    "timestamp": {
-                        "__bigint__": "1736543852914553346"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -24,6 +10,20 @@
                     "method_name": "setMessage",
                     "timestamp": {
                         "__bigint__": "1739923652300998351"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1406588"
+                    },
+                    "method_name": "setMessage",
+                    "timestamp": {
+                        "__bigint__": "1740531110580680255"
                     }
                 }
             ]

@@ -1,20 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | incrementCount | 1_611_849    | 1_234_739 | $0.0000016418 | $1.64             | <font color="red">+1_732</font>    |
-| 1   | incrementCount | 1_565_108    | 1_216_043 | $0.0000016169 | $1.61             | <font color="green">-10_515</font> |
-| 2   | incrementCount | 1_562_114    | 1_214_845 | $0.0000016153 | $1.61             | <font color="green">-11_365</font> |
+| 0   | incrementCount | 1_599_898    | 1_229_959 | $0.0000016354 | $1.63             | <font color="green">-11_951</font> |
+| 1   | incrementCount | 1_552_755    | 1_211_102 | $0.0000016104 | $1.61             | <font color="green">-12_353</font> |
+| 2   | incrementCount | 1_552_555    | 1_211_022 | $0.0000016103 | $1.61             | <font color="green">-9_559</font>  |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | incrementCount | 1_610_117    | 1_234_046 | $0.0000016409 | $1.64             |
-| 1   | incrementCount | 1_575_623    | 1_220_249 | $0.0000016225 | $1.62             |
-| 2   | incrementCount | 1_573_479    | 1_219_391 | $0.0000016214 | $1.62             |
+| 0   | incrementCount | 1_611_849    | 1_234_739 | $0.0000016418 | $1.64             |
+| 1   | incrementCount | 1_565_108    | 1_216_043 | $0.0000016169 | $1.61             |
+| 2   | incrementCount | 1_562_114    | 1_214_845 | $0.0000016153 | $1.61             |
 
 ---
 

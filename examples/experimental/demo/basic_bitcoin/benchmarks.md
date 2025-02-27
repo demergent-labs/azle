@@ -1,6 +1,33 @@
 # Benchmarks for basic_bitcoin
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
+
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init                | 7_988_936_465 | 5_996_164_586 | $0.0079729202 | $7_972.92         | <font color="green">-3_860_032</font> |
+| 1   | http_request_update | 172_019_343   | 69_397_737    | $0.0000922761 | $92.27            | <font color="green">-1_777_456</font> |
+| 2   | http_request_update | 171_929_314   | 69_361_725    | $0.0000922282 | $92.22            | <font color="green">-1_827_364</font> |
+| 3   | http_request_update | 172_359_558   | 69_533_823    | $0.0000924570 | $92.45            | <font color="green">-1_923_276</font> |
+| 4   | http_request_update | 172_036_442   | 69_404_576    | $0.0000922852 | $92.28            | <font color="green">-1_817_117</font> |
+| 5   | http_request_update | 172_027_828   | 69_401_131    | $0.0000922806 | $92.28            | <font color="green">-1_766_886</font> |
+| 6   | http_request_update | 172_412_833   | 69_555_133    | $0.0000924854 | $92.48            | <font color="green">-1_970_991</font> |
+| 7   | http_request_update | 171_896_414   | 69_348_565    | $0.0000922107 | $92.21            | <font color="green">-2_091_377</font> |
+| 8   | http_request_update | 174_419_238   | 70_357_695    | $0.0000935525 | $93.55            | <font color="green">-1_726_895</font> |
+| 9   | http_request_update | 170_766_167   | 68_896_466    | $0.0000916096 | $91.60            | <font color="green">-1_803_771</font> |
+| 10  | http_request_update | 172_441_122   | 69_566_448    | $0.0000925004 | $92.50            | <font color="green">-1_965_408</font> |
+| 11  | http_request_update | 179_111_694   | 72_234_677    | $0.0000960483 | $96.04            | <font color="green">-2_137_722</font> |
+| 12  | http_request_update | 172_323_308   | 69_519_323    | $0.0000924378 | $92.43            | <font color="green">-1_728_362</font> |
+| 13  | http_request_update | 171_937_763   | 69_365_105    | $0.0000922327 | $92.23            | <font color="green">-1_928_840</font> |
+| 14  | http_request_update | 172_303_781   | 69_511_512    | $0.0000924274 | $92.42            | <font color="green">-1_970_705</font> |
+| 15  | http_request_update | 170_704_701   | 68_871_880    | $0.0000915769 | $91.57            | <font color="green">-1_791_840</font> |
+| 16  | http_request_update | 173_054_521   | 69_811_808    | $0.0000928267 | $92.82            | <font color="green">-1_779_031</font> |
+| 17  | http_request_update | 172_470_419   | 69_578_167    | $0.0000925160 | $92.51            | <font color="green">-1_943_975</font> |
+| 18  | http_request_update | 172_097_127   | 69_428_850    | $0.0000923175 | $92.31            | <font color="green">-1_856_223</font> |
+| 19  | http_request_update | 172_535_440   | 69_604_176    | $0.0000925506 | $92.55            | <font color="green">-2_077_622</font> |
+| 20  | http_request_update | 170_743_101   | 68_887_240    | $0.0000915973 | $91.59            | <font color="green">-2_000_478</font> |
+| 21  | http_request_update | 170_666_134   | 68_856_453    | $0.0000915564 | $91.55            | <font color="green">-2_014_651</font> |
+
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
@@ -26,10 +53,6 @@
 | 19  | http_request_update | 174_613_062   | 70_435_224    | $0.0000936556 | $93.65            |
 | 20  | http_request_update | 172_743_579   | 69_687_431    | $0.0000926613 | $92.66            |
 | 21  | http_request_update | 172_680_785   | 69_662_314    | $0.0000926279 | $92.62            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

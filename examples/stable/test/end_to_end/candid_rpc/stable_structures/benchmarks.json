@@ -1,10 +1,6 @@
 {
     "canister1": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -53,14 +49,60 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "2155887"
+                    },
+                    "method_name": "stableMap0Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531306664376861"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2812381"
+                    },
+                    "method_name": "stableMap1Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531307132252418"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2137810"
+                    },
+                    "method_name": "stableMap2Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531307377014940"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "3264090"
+                    },
+                    "method_name": "stableMap3Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531307620892964"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5074027"
+                    },
+                    "method_name": "stableMap4Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531308112728467"
+                    }
+                }
+            ]
         }
     },
     "canister2": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -109,14 +151,60 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "2335182"
+                    },
+                    "method_name": "stableMap5Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531308384310022"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "3901893"
+                    },
+                    "method_name": "stableMap6Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531308849027542"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1818951"
+                    },
+                    "method_name": "stableMap7Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531309345872280"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1843885"
+                    },
+                    "method_name": "stableMap8Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531309584688175"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "3078481"
+                    },
+                    "method_name": "stableMap9Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531309822759939"
+                    }
+                }
+            ]
         }
     },
     "canister3": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -189,6 +277,83 @@
                     "method_name": "stableMap17Remove",
                     "timestamp": {
                         "__bigint__": "1739923857161405699"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "2548439"
+                    },
+                    "method_name": "stableMap10Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531310062004177"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "7192686"
+                    },
+                    "method_name": "stableMap11Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531310301129285"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "4606794"
+                    },
+                    "method_name": "stableMap12Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531310800381468"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2873965"
+                    },
+                    "method_name": "stableMap13Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531311038466235"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "7415106"
+                    },
+                    "method_name": "stableMap14Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531311276532852"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "4545179"
+                    },
+                    "method_name": "stableMap15Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531311518276969"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "3174137"
+                    },
+                    "method_name": "stableMap16Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531311996705177"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "3332042"
+                    },
+                    "method_name": "stableMap17Remove",
+                    "timestamp": {
+                        "__bigint__": "1740531312253798935"
                     }
                 }
             ]

@@ -1,29 +1,6 @@
 {
     "ic_api": {
         "previous": {
-            "version": "0.25.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1753200"
-                    },
-                    "method_name": "dataCertificateNull",
-                    "timestamp": {
-                        "__bigint__": "1736543953066190677"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1289593"
-                    },
-                    "method_name": "setCertifiedData",
-                    "timestamp": {
-                        "__bigint__": "1736543953335381288"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -42,6 +19,29 @@
                     "method_name": "setCertifiedData",
                     "timestamp": {
                         "__bigint__": "1739923869617281383"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1746714"
+                    },
+                    "method_name": "dataCertificateNull",
+                    "timestamp": {
+                        "__bigint__": "1740531332523582137"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1239616"
+                    },
+                    "method_name": "setCertifiedData",
+                    "timestamp": {
+                        "__bigint__": "1740531332768492378"
                     }
                 }
             ]

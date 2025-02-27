@@ -1,16 +1,16 @@
 # Benchmarks for inspect_message
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | accessible  | 1_593_676    | 1_227_470 | $0.0000016321 | $1.63             | <font color="red">+540_707</font> |
+| 0   | accessible  | 1_586_639    | 1_224_655 | $0.0000016284 | $1.62             | <font color="green">-7_037</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | accessible  | 1_052_969    | 1_011_187 | $0.0000013445 | $1.34             |
+| 0   | accessible  | 1_593_676    | 1_227_470 | $0.0000016321 | $1.63             |
 
 ---
 

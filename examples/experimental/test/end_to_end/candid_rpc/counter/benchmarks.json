@@ -1,38 +1,6 @@
 {
     "counter": {
         "previous": {
-            "version": "0.25.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1468502"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1736543872219074851"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1458086"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1736543872498046698"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1456636"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1736543872766174374"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.26.0",
             "benchmarks": [
                 {
@@ -60,6 +28,38 @@
                     "method_name": "incrementCount",
                     "timestamp": {
                         "__bigint__": "1739923742846202023"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.27.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1479065"
+                    },
+                    "method_name": "incrementCount",
+                    "timestamp": {
+                        "__bigint__": "1740531170131929435"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1457304"
+                    },
+                    "method_name": "incrementCount",
+                    "timestamp": {
+                        "__bigint__": "1740531170375105266"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1461483"
+                    },
+                    "method_name": "incrementCount",
+                    "timestamp": {
+                        "__bigint__": "1740531170617182245"
                     }
                 }
             ]

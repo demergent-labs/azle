@@ -1,16 +1,16 @@
 # Benchmarks for hello_world
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | setMessage  | 1_414_669    | 1_155_867 | $0.0000015369 | $1.53             | <font color="red">+1_654</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | setMessage  | 1_406_588    | 1_152_635 | $0.0000015326 | $1.53             | <font color="green">-8_081</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | setMessage  | 1_413_015    | 1_155_206 | $0.0000015360 | $1.53             |
+| 0   | setMessage  | 1_414_669    | 1_155_867 | $0.0000015369 | $1.53             |
 
 ---
 

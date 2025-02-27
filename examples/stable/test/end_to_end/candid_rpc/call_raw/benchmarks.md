@@ -1,18 +1,18 @@
 # Benchmarks for call_raw
 
-## Current benchmarks Azle version: 0.26.0
+## Current benchmarks Azle version: 0.27.0
 
-| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
-| --- | -------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | executeCallRaw | 1_621_726    | 1_238_690 | $0.0000016470 | $1.64             | <font color="red">+1_622</font>    |
-| 1   | executeCallRaw | 2_076_413    | 1_420_565 | $0.0000018889 | $1.88             | <font color="green">-11_719</font> |
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | executeCallRaw | 1_612_553    | 1_235_021 | $0.0000016422 | $1.64             | <font color="green">-9_173</font> |
+| 1   | executeCallRaw | 2_066_452    | 1_416_580 | $0.0000018836 | $1.88             | <font color="green">-9_961</font> |
 
-## Baseline benchmarks Azle version: 0.25.0
+## Baseline benchmarks Azle version: 0.26.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | executeCallRaw | 1_620_104    | 1_238_041 | $0.0000016462 | $1.64             |
-| 1   | executeCallRaw | 2_088_132    | 1_425_252 | $0.0000018951 | $1.89             |
+| 0   | executeCallRaw | 1_621_726    | 1_238_690 | $0.0000016470 | $1.64             |
+| 1   | executeCallRaw | 2_076_413    | 1_420_565 | $0.0000018889 | $1.88             |
 
 ---
 
