@@ -2,4 +2,4 @@
 .dfx
 dfx_generated
 node_modules
-src/idl
+src/idl/management.ts
