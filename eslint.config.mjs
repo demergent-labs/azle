@@ -23,7 +23,8 @@ export default tseslint.config(
             '**/node_modules/**',
             '**/run_time_errors/**',
             '**/target/**',
-            '**/webpack.config.js'
+            '**/webpack.config.js',
+            'src/build/stable/commands/generate_types/rust/candid_to_ts_js/pkg'
         ]
     },
     {

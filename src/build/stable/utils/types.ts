@@ -37,7 +37,8 @@ export type Command =
     | 'upload-assets'
     | '--version'
     | 'clean'
-    | 'new';
+    | 'new'
+    | 'generate-types';
 
 export type DfxJson = {
     canisters?: {
