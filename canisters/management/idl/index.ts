@@ -274,6 +274,9 @@ export interface provisional_top_up_canister_args {
 export type raw_rand_result = Uint8Array | number[];
 export type satoshi = bigint;
 export type schnorr_algorithm = { ed25519: null } | { bip340secp256k1: null };
+export type schnorr_aux = {
+    bip341: { merkle_root_hash: Uint8Array | number[] };
+};
 export interface schnorr_public_key_args {
     key_id: { algorithm: schnorr_algorithm; name: string };
     canister_id: [] | [canister_id];
@@ -292,6 +295,7 @@ export interface sign_with_ecdsa_result {
     signature: Uint8Array | number[];
 }
 export interface sign_with_schnorr_args {
+    aux: [] | [schnorr_aux];
     key_id: { algorithm: schnorr_algorithm; name: string };
     derivation_path: Array<Uint8Array | number[]>;
     message: Uint8Array | number[];
@@ -745,7 +749,11 @@ export const sign_with_ecdsa_args = IDL.Record({
 export const sign_with_ecdsa_result = IDL.Record({
     signature: IDL.Vec(IDL.Nat8)
 });
+export const schnorr_aux = IDL.Variant({
+    bip341: IDL.Record({ merkle_root_hash: IDL.Vec(IDL.Nat8) })
+});
 export const sign_with_schnorr_args = IDL.Record({
+    aux: IDL.Opt(schnorr_aux),
     key_id: IDL.Record({ algorithm: schnorr_algorithm, name: IDL.Text }),
     derivation_path: IDL.Vec(IDL.Vec(IDL.Nat8)),
     message: IDL.Vec(IDL.Nat8)
@@ -1086,7 +1094,11 @@ export const idlFactory: idlFactory = ({ IDL }) => {
     const sign_with_ecdsa_result = IDL.Record({
         signature: IDL.Vec(IDL.Nat8)
     });
+    const schnorr_aux = IDL.Variant({
+        bip341: IDL.Record({ merkle_root_hash: IDL.Vec(IDL.Nat8) })
+    });
     const sign_with_schnorr_args = IDL.Record({
+        aux: IDL.Opt(schnorr_aux),
         key_id: IDL.Record({
             algorithm: schnorr_algorithm,
             name: IDL.Text
