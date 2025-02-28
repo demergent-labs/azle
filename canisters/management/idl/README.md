@@ -3,7 +3,7 @@
 
 # How to update the IDL and TypeScript types
 
-1. Go to the URL above
+1. Go to the URL above, but at the latest commit
 2. Find the Candid on that page and copy it
 3. Paste the Candid into `ic.did`
 4. Look at the `git diff` and manually apply custom changes again
