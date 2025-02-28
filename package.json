@@ -15,7 +15,7 @@
     },
     "exports": {
         ".": "./src/lib/stable/index.ts",
-        "./canisters/*": "./canisters/*.ts",
+        "./canisters/*": "./azle_exports/canisters/*.ts",
         "./experimental": "./azle_exports/experimental/index.ts",
         "./experimental/*": "./azle_exports/experimental/*.ts",
         "./_internal/globals": "./src/lib/stable/globals.ts",
