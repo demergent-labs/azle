@@ -2,7 +2,7 @@ import {
     defaultArrayConstraints,
     runPropTests
 } from 'azle/_internal/test/property';
-import { NullArb } from 'azle/_internal/test/property/arbitraries/candid/primitive/null';
+import { NullArb } from 'azle/_internal/test/property/arbitraries/candid/primitive/null_arb';
 import {
     CanisterArb,
     CanisterConfig

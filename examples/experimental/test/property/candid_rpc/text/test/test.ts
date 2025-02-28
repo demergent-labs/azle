@@ -2,7 +2,7 @@ import {
     defaultArrayConstraints,
     runPropTests
 } from 'azle/_internal/test/property';
-import { TextArb } from 'azle/_internal/test/property/arbitraries/candid/primitive/text';
+import { TextArb } from 'azle/_internal/test/property/arbitraries/candid/primitive/text_arb';
 import {
     CanisterArb,
     CanisterConfig

@@ -2,7 +2,7 @@ import {
     defaultArrayConstraints,
     runPropTests
 } from 'azle/_internal/test/property';
-import { BoolArb } from 'azle/_internal/test/property/arbitraries/candid/primitive/bool';
+import { BoolArb } from 'azle/_internal/test/property/arbitraries/candid/primitive/bool_arb';
 import {
     CanisterArb,
     CanisterConfig

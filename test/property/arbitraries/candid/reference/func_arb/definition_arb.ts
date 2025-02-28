@@ -10,7 +10,7 @@ import {
     WithShapes,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { VoidDefinitionArb } from '../../primitive/void';
+import { VoidDefinitionArb } from '../../primitive/void_arb';
 
 type Mode = 'query' | 'update' | 'oneway';
 
