@@ -17,7 +17,7 @@ import {
     CanisterConfig
 } from 'azle/_internal/test/property/arbitraries/canister_arb';
 import { InitMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/init_method_arb';
-import { PostUpgradeMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/post_upgrade_arb';
+import { PostUpgradeMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/post_upgrade_method_arb';
 import {
     QueryMethod,
     QueryMethodArb

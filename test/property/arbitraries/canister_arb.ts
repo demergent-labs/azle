@@ -5,7 +5,7 @@ import { CliStringVisitor } from '../visitors/cli-string-visitor';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
 import { InitMethod } from './canister_methods/init_method_arb';
 import { InspectMessageMethod } from './canister_methods/inspect_message_method_arb';
-import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
+import { PostUpgradeMethod } from './canister_methods/post_upgrade_method_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { UpdateMethod } from './canister_methods/update_method_arb';
