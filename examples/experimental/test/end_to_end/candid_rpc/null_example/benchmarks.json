@@ -1,38 +1,6 @@
 {
     "null_example": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "8997329"
-                    },
-                    "method_name": "setPartiallyNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1739923766420337469"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5387316"
-                    },
-                    "method_name": "setSmallNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1739923766704959403"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "8699686"
-                    },
-                    "method_name": "setLargeNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1739923766947653185"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -60,6 +28,38 @@
                     "method_name": "setLargeNullRecord",
                     "timestamp": {
                         "__bigint__": "1740531190300408135"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "8978449"
+                    },
+                    "method_name": "setPartiallyNullRecord",
+                    "timestamp": {
+                        "__bigint__": "1740776196733214383"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5383464"
+                    },
+                    "method_name": "setSmallNullRecord",
+                    "timestamp": {
+                        "__bigint__": "1740776197000297848"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "8695348"
+                    },
+                    "method_name": "setLargeNullRecord",
+                    "timestamp": {
+                        "__bigint__": "1740776197470766707"
                     }
                 }
             ]

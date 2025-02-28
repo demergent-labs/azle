@@ -1,20 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | set         | 1_085_785    | 1_024_314 | $0.0000013620 | $1.36             | <font color="green">-6_324</font> |
-| 1   | inc         | 946_063      | 968_425   | $0.0000012877 | $1.28             | <font color="green">-4_110</font> |
-| 2   | inc         | 941_568      | 966_627   | $0.0000012853 | $1.28             | <font color="green">-9_455</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
+| 0   | set         | 1_085_785    | 1_024_314 | $0.0000013620 | $1.36             | <font color="red">0</font> |
+| 1   | inc         | 946_063      | 968_425   | $0.0000012877 | $1.28             | <font color="red">0</font> |
+| 2   | inc         | 941_568      | 966_627   | $0.0000012853 | $1.28             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | set         | 1_092_109    | 1_026_843 | $0.0000013654 | $1.36             |
-| 1   | inc         | 950_173      | 970_069   | $0.0000012899 | $1.28             |
-| 2   | inc         | 951_023      | 970_409   | $0.0000012903 | $1.29             |
+| 0   | set         | 1_085_785    | 1_024_314 | $0.0000013620 | $1.36             |
+| 1   | inc         | 946_063      | 968_425   | $0.0000012877 | $1.28             |
+| 2   | inc         | 941_568      | 966_627   | $0.0000012853 | $1.28             |
 
 ---
 

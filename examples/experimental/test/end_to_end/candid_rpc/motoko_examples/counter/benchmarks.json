@@ -1,38 +1,6 @@
 {
     "counter": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1000686"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1739923747343267872"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "856277"
-                    },
-                    "method_name": "inc",
-                    "timestamp": {
-                        "__bigint__": "1739923747606275179"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "856277"
-                    },
-                    "method_name": "inc",
-                    "timestamp": {
-                        "__bigint__": "1739923747887078148"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -60,6 +28,38 @@
                     "method_name": "inc",
                     "timestamp": {
                         "__bigint__": "1740531188006552849"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "998544"
+                    },
+                    "method_name": "set",
+                    "timestamp": {
+                        "__bigint__": "1740776198069575142"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "855460"
+                    },
+                    "method_name": "inc",
+                    "timestamp": {
+                        "__bigint__": "1740776198312000587"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "855982"
+                    },
+                    "method_name": "inc",
+                    "timestamp": {
+                        "__bigint__": "1740776198554968876"
                     }
                 }
             ]

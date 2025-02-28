@@ -1,18 +1,18 @@
 # Benchmarks for func_types
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                                |
-| --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init                             | 1_011_438_855 | 805_165_542 | $0.0010706045 | $1_070.60         | <font color="green">-5_193_096</font> |
-| 1   | getNotifierFromNotifiersCanister | 1_302_969     | 1_111_187   | $0.0000014775 | $1.47             | <font color="green">-8_783</font>     |
+| Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                       |
+| --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | ---------------------------- |
+| 0   | init                             | 1_011_438_855 | 805_165_542 | $0.0010706045 | $1_070.60         | <font color="red">0</font>   |
+| 1   | getNotifierFromNotifiersCanister | 1_303_018     | 1_111_207   | $0.0000014775 | $1.47             | <font color="red">+49</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | init                             | 1_016_631_951 | 807_242_780 | $0.0010733665 | $1_073.36         |
-| 1   | getNotifierFromNotifiersCanister | 1_311_752     | 1_114_700   | $0.0000014822 | $1.48             |
+| 0   | init                             | 1_011_438_855 | 805_165_542 | $0.0010706045 | $1_070.60         |
+| 1   | getNotifierFromNotifiersCanister | 1_302_969     | 1_111_187   | $0.0000014775 | $1.47             |
 
 ---
 

@@ -1,20 +1,20 @@
 # Benchmarks for backend
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init                | 7_518_008_140 | 5_807_793_256 | $0.0077224485 | $7_722.44         | <font color="green">-3_744_064</font> |
-| 1   | http_request_update | 57_137_382    | 23_444_952    | $0.0000311740 | $31.17            | <font color="green">-97_083</font>    |
-| 2   | http_request_update | 50_762_104    | 20_894_841    | $0.0000277832 | $27.78            | <font color="green">-118_737</font>   |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                             |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | init                | 7_518_009_241 | 5_807_793_696 | $0.0077224490 | $7_722.44         | <font color="red">+1_101</font>    |
+| 1   | http_request_update | 57_152_267    | 23_450_906    | $0.0000311820 | $31.18            | <font color="red">+14_885</font>   |
+| 2   | http_request_update | 50_746_477    | 20_888_590    | $0.0000277749 | $27.77            | <font color="green">-15_627</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                | 7_521_752_204 | 5_809_290_881 | $0.0077244398 | $7_724.43         |
-| 1   | http_request_update | 57_234_465    | 23_483_786    | $0.0000312257 | $31.22            |
-| 2   | http_request_update | 50_880_841    | 20_942_336    | $0.0000278464 | $27.84            |
+| 0   | init                | 7_518_008_140 | 5_807_793_256 | $0.0077224485 | $7_722.44         |
+| 1   | http_request_update | 57_137_382    | 23_444_952    | $0.0000311740 | $31.17            |
+| 2   | http_request_update | 50_762_104    | 20_894_841    | $0.0000277832 | $27.78            |
 
 ---
 

@@ -1,24 +1,24 @@
 # Benchmarks for audio_recorder
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
-| --- | --------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | createUser      | 12_164_500   | 5_455_800  | $0.0000072544 | $7.25             | <font color="green">-25_370</font> |
-| 1   | createRecording | 34_208_289   | 14_273_315 | $0.0000189788 | $18.97            | <font color="green">-38_729</font> |
-| 2   | deleteRecording | 48_332_560   | 19_923_024 | $0.0000264910 | $26.49            | <font color="green">-45_469</font> |
-| 3   | createRecording | 34_028_751   | 14_201_500 | $0.0000188833 | $18.88            | <font color="green">-45_459</font> |
-| 4   | deleteUser      | 32_933_670   | 13_763_468 | $0.0000183009 | $18.30            | <font color="green">-25_460</font> |
+| Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                           |
+| --- | --------------- | ------------ | ---------- | ------------- | ----------------- | -------------------------------- |
+| 0   | createUser      | 12_170_147   | 5_458_058  | $0.0000072574 | $7.25             | <font color="red">+5_647</font>  |
+| 1   | createRecording | 34_225_188   | 14_280_075 | $0.0000189878 | $18.98            | <font color="red">+16_899</font> |
+| 2   | deleteRecording | 48_359_700   | 19_933_880 | $0.0000265055 | $26.50            | <font color="red">+27_140</font> |
+| 3   | createRecording | 34_042_454   | 14_206_981 | $0.0000188906 | $18.89            | <font color="red">+13_703</font> |
+| 4   | deleteUser      | 32_949_146   | 13_769_658 | $0.0000183091 | $18.30            | <font color="red">+15_476</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | --------------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | createUser      | 12_189_870   | 5_465_948  | $0.0000072679 | $7.26             |
-| 1   | createRecording | 34_247_018   | 14_288_807 | $0.0000189994 | $18.99            |
-| 2   | deleteRecording | 48_378_029   | 19_941_211 | $0.0000265152 | $26.51            |
-| 3   | createRecording | 34_074_210   | 14_219_684 | $0.0000189075 | $18.90            |
-| 4   | deleteUser      | 32_959_130   | 13_773_652 | $0.0000183144 | $18.31            |
+| 0   | createUser      | 12_164_500   | 5_455_800  | $0.0000072544 | $7.25             |
+| 1   | createRecording | 34_208_289   | 14_273_315 | $0.0000189788 | $18.97            |
+| 2   | deleteRecording | 48_332_560   | 19_923_024 | $0.0000264910 | $26.49            |
+| 3   | createRecording | 34_028_751   | 14_201_500 | $0.0000188833 | $18.88            |
+| 4   | deleteUser      | 32_933_670   | 13_763_468 | $0.0000183009 | $18.30            |
 
 ---
 

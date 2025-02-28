@@ -1,22 +1,22 @@
 # Benchmarks for proxy
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
 | Id  | Method Name         | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
 | --- | ------------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | icrc1_transfer      | 95_144_527   | 38_647_810 | $0.0000513888 | $51.38            | <font color="green">-951_101</font> |
-| 1   | icrc2_approve       | 102_777_230  | 41_700_892 | $0.0000554484 | $55.44            | <font color="green">-870_813</font> |
-| 2   | icrc2_transfer_from | 100_372_373  | 40_738_949 | $0.0000541694 | $54.16            | <font color="green">-967_275</font> |
-| 3   | icrc2_allowance     | 86_704_427   | 35_271_770 | $0.0000468998 | $46.89            | <font color="green">-916_330</font> |
+| 0   | icrc1_transfer      | 95_132_295   | 38_642_918 | $0.0000513823 | $51.38            | <font color="green">-12_232</font>  |
+| 1   | icrc2_approve       | 102_700_183  | 41_670_073 | $0.0000554074 | $55.40            | <font color="green">-77_047</font>  |
+| 2   | icrc2_transfer_from | 100_252_542  | 40_691_016 | $0.0000541056 | $54.10            | <font color="green">-119_831</font> |
+| 3   | icrc2_allowance     | 86_620_187   | 35_238_074 | $0.0000468550 | $46.85            | <font color="green">-84_240</font>  |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name         | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ------------------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | icrc1_transfer      | 96_095_628   | 39_028_251 | $0.0000518947 | $51.89            |
-| 1   | icrc2_approve       | 103_648_043  | 42_049_217 | $0.0000559116 | $55.91            |
-| 2   | icrc2_transfer_from | 101_339_648  | 41_125_859 | $0.0000546838 | $54.68            |
-| 3   | icrc2_allowance     | 87_620_757   | 35_638_302 | $0.0000473872 | $47.38            |
+| 0   | icrc1_transfer      | 95_144_527   | 38_647_810 | $0.0000513888 | $51.38            |
+| 1   | icrc2_approve       | 102_777_230  | 41_700_892 | $0.0000554484 | $55.44            |
+| 2   | icrc2_transfer_from | 100_372_373  | 40_738_949 | $0.0000541694 | $54.16            |
+| 3   | icrc2_allowance     | 86_704_427   | 35_271_770 | $0.0000468998 | $46.89            |
 
 ---
 

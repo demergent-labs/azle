@@ -1,20 +1,6 @@
 {
     "inspect_message": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1593676"
-                    },
-                    "method_name": "accessible",
-                    "timestamp": {
-                        "__bigint__": "1739923744725033596"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -24,6 +10,20 @@
                     "method_name": "accessible",
                     "timestamp": {
                         "__bigint__": "1740531186337545282"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1587307"
+                    },
+                    "method_name": "accessible",
+                    "timestamp": {
+                        "__bigint__": "1740776192890121731"
                     }
                 }
             ]

@@ -1,29 +1,6 @@
 {
     "func_types": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "4857745882"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1739923778664837476"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "10650397"
-                    },
-                    "method_name": "getNotifierFromNotifiersCanister",
-                    "timestamp": {
-                        "__bigint__": "1739923794342405039"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -42,6 +19,29 @@
                     "method_name": "getNotifierFromNotifiersCanister",
                     "timestamp": {
                         "__bigint__": "1740531223439095391"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4855814774"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1740776219371467670"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "10520910"
+                    },
+                    "method_name": "getNotifierFromNotifiersCanister",
+                    "timestamp": {
+                        "__bigint__": "1740776232448040134"
                     }
                 }
             ]
