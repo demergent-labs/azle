@@ -1,1 +1,1 @@
-export * from '../../../../../test/property/arbitraries/candid/constructed/variant_arb';
+export * from '../../../../../../../test/property/arbitraries/candid/constructed/variant_arb';
