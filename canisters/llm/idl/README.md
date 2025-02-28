@@ -1,4 +1,4 @@
-- `index.did` manual Candid source: https://dashboard.internetcomputer.org/canister/rwlgt-iiaaa-aaaaa-aaaaa-cai
+- `index.did` manual Candid source: https://dashboard.internetcomputer.org/canister/w36hm-eqaaa-aaaal-qr76a-cai
 - Licensing is assumed to be that described in ../../NOTICE
 
 # How to update the IDL and TypeScript types

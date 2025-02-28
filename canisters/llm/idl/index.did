@@ -1,7 +1,3 @@
-// Taken from https://dashboard.internetcomputer.org/canister/w36hm-eqaaa-aaaal-qr76a-cai
-// TODO for now assuming a license like this one: https://github.com/dfinity/llm/blob/main/LICENSE
-// TODO my understanding is that the LLM canister code will be open sourced at a later date
-
 type role = variant {
   assistant;
   system;
