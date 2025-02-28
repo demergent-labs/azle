@@ -12,7 +12,7 @@
         },
         "evm_rpc": {
             "specified_id": "be2us-64aaa-aaaaa-qaabq-cai",
-            "init_arg": "(record { nodesInSubnet = 28 })",
+            "init_arg": "(record { nodesInSubnet = opt 28 })",
             "type": "custom",
             "candid": "https://github.com/dfinity/evm-rpc-canister/releases/latest/download/evm_rpc.did",
             "wasm": "https://github.com/dfinity/evm-rpc-canister/releases/latest/download/evm_rpc.wasm.gz",
