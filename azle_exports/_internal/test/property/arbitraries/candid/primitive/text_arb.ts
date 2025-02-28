@@ -1,1 +1,1 @@
-export * from '../../../../../test/property/arbitraries/candid/primitive/text_arb';
+export * from '../../../../../../../test/property/arbitraries/candid/primitive/text_arb';
