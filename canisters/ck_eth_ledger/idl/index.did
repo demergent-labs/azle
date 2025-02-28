@@ -1,0 +1,289 @@
+type Account = record { owner : principal; subaccount : opt blob };
+type Allowance = record { allowance : nat; expires_at : opt nat64 };
+type AllowanceArgs = record { account : Account; spender : Account };
+type Approve = record {
+  fee : opt nat;
+  from : Account;
+  memo : opt blob;
+  created_at_time : opt nat64;
+  amount : nat;
+  expected_allowance : opt nat;
+  expires_at : opt nat64;
+  spender : Account;
+};
+type ApproveArgs = record {
+  fee : opt nat;
+  memo : opt blob;
+  from_subaccount : opt blob;
+  created_at_time : opt nat64;
+  amount : nat;
+  expected_allowance : opt nat;
+  expires_at : opt nat64;
+  spender : Account;
+};
+type ApproveError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  Duplicate : record { duplicate_of : nat };
+  BadFee : record { expected_fee : nat };
+  AllowanceChanged : record { current_allowance : nat };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  Expired : record { ledger_time : nat64 };
+  InsufficientFunds : record { balance : nat };
+};
+type ArchiveInfo = record {
+  block_range_end : nat;
+  canister_id : principal;
+  block_range_start : nat;
+};
+type ArchiveOptions = record {
+  num_blocks_to_archive : nat64;
+  max_transactions_per_response : opt nat64;
+  trigger_threshold : nat64;
+  more_controller_ids : opt vec principal;
+  max_message_size_bytes : opt nat64;
+  cycles_for_archive_creation : opt nat64;
+  node_max_memory_size_bytes : opt nat64;
+  controller_id : principal;
+};
+type ArchivedBlocks = record {
+  args : vec GetBlocksRequest;
+  callback : func (vec GetBlocksRequest) -> (GetBlocksResult) query;
+};
+type ArchivedRange = record {
+  callback : func (GetBlocksRequest) -> (BlockRange) query;
+  start : nat;
+  length : nat;
+};
+type ArchivedRange_1 = record {
+  callback : func (GetBlocksRequest) -> (TransactionRange) query;
+  start : nat;
+  length : nat;
+};
+type BlockRange = record { blocks : vec Value };
+type BlockWithId = record { id : nat; block : ICRC3Value };
+type Burn = record {
+  from : Account;
+  memo : opt blob;
+  created_at_time : opt nat64;
+  amount : nat;
+  spender : opt Account;
+};
+type ChangeArchiveOptions = record {
+  num_blocks_to_archive : opt nat64;
+  max_transactions_per_response : opt nat64;
+  trigger_threshold : opt nat64;
+  more_controller_ids : opt vec principal;
+  max_message_size_bytes : opt nat64;
+  cycles_for_archive_creation : opt nat64;
+  node_max_memory_size_bytes : opt nat64;
+  controller_id : opt principal;
+};
+type ChangeFeeCollector = variant { SetTo : Account; Unset };
+type ConsentInfo = record {
+  metadata : ConsentMessageMetadata;
+  consent_message : ConsentMessage;
+};
+type ConsentMessage = variant {
+  LineDisplayMessage : record { pages : vec LineDisplayPage };
+  GenericDisplayMessage : text;
+};
+type ConsentMessageMetadata = record {
+  utc_offset_minutes : opt int16;
+  language : text;
+};
+type ConsentMessageRequest = record {
+  arg : blob;
+  method : text;
+  user_preferences : ConsentMessageSpec;
+};
+type ConsentMessageSpec = record {
+  metadata : ConsentMessageMetadata;
+  device_spec : opt DisplayMessageType;
+};
+type DataCertificate = record { certificate : opt blob; hash_tree : blob };
+type DisplayMessageType = variant {
+  GenericDisplay;
+  LineDisplay : record { characters_per_line : nat16; lines_per_page : nat16 };
+};
+type ErrorInfo = record { description : text };
+type FeatureFlags = record { icrc2 : bool };
+type GetArchivesArgs = record { from : opt principal };
+type GetBlocksRequest = record { start : nat; length : nat };
+type GetBlocksResponse = record {
+  certificate : opt blob;
+  first_index : nat;
+  blocks : vec Value;
+  chain_length : nat64;
+  archived_blocks : vec ArchivedRange;
+};
+type GetBlocksResult = record {
+  log_length : nat;
+  blocks : vec BlockWithId;
+  archived_blocks : vec ArchivedBlocks;
+};
+type GetTransactionsResponse = record {
+  first_index : nat;
+  log_length : nat;
+  transactions : vec Transaction;
+  archived_transactions : vec ArchivedRange_1;
+};
+type ICRC3ArchiveInfo = record {
+  end : nat;
+  canister_id : principal;
+  start : nat;
+};
+type ICRC3DataCertificate = record { certificate : blob; hash_tree : blob };
+type ICRC3Value = variant {
+  Int : int;
+  Map : vec record { text; ICRC3Value };
+  Nat : nat;
+  Blob : blob;
+  Text : text;
+  Array : vec ICRC3Value;
+};
+type Icrc21Error = variant {
+  GenericError : record { description : text; error_code : nat };
+  InsufficientPayment : ErrorInfo;
+  UnsupportedCanisterCall : ErrorInfo;
+  ConsentMessageUnavailable : ErrorInfo;
+};
+type InitArgs = record {
+  decimals : opt nat8;
+  token_symbol : text;
+  transfer_fee : nat;
+  metadata : vec record { text; MetadataValue };
+  minting_account : Account;
+  initial_balances : vec record { Account; nat };
+  fee_collector_account : opt Account;
+  archive_options : ArchiveOptions;
+  max_memo_length : opt nat16;
+  token_name : text;
+  feature_flags : opt FeatureFlags;
+};
+type LedgerArgument = variant { Upgrade : opt UpgradeArgs; Init : InitArgs };
+type LineDisplayPage = record { lines : vec text };
+type MetadataValue = variant { Int : int; Nat : nat; Blob : blob; Text : text };
+type Mint = record {
+  to : Account;
+  memo : opt blob;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type Result = variant { Ok : nat; Err : TransferError };
+type Result_1 = variant { Ok : ConsentInfo; Err : Icrc21Error };
+type Result_2 = variant { Ok : nat; Err : ApproveError };
+type Result_3 = variant { Ok : nat; Err : TransferFromError };
+type StandardRecord = record { url : text; name : text };
+type SupportedBlockType = record { url : text; block_type : text };
+type Transaction = record {
+  burn : opt Burn;
+  kind : text;
+  mint : opt Mint;
+  approve : opt Approve;
+  timestamp : nat64;
+  transfer : opt Transfer;
+};
+type TransactionRange = record { transactions : vec Transaction };
+type Transfer = record {
+  to : Account;
+  fee : opt nat;
+  from : Account;
+  memo : opt blob;
+  created_at_time : opt nat64;
+  amount : nat;
+  spender : opt Account;
+};
+type TransferArg = record {
+  to : Account;
+  fee : opt nat;
+  memo : opt blob;
+  from_subaccount : opt blob;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type TransferError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  BadBurn : record { min_burn_amount : nat };
+  Duplicate : record { duplicate_of : nat };
+  BadFee : record { expected_fee : nat };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  InsufficientFunds : record { balance : nat };
+};
+type TransferFromArgs = record {
+  to : Account;
+  fee : opt nat;
+  spender_subaccount : opt blob;
+  from : Account;
+  memo : opt blob;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type TransferFromError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  InsufficientAllowance : record { allowance : nat };
+  BadBurn : record { min_burn_amount : nat };
+  Duplicate : record { duplicate_of : nat };
+  BadFee : record { expected_fee : nat };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  InsufficientFunds : record { balance : nat };
+};
+type UpgradeArgs = record {
+  change_archive_options : opt ChangeArchiveOptions;
+  token_symbol : opt text;
+  transfer_fee : opt nat;
+  metadata : opt vec record { text; MetadataValue };
+  change_fee_collector : opt ChangeFeeCollector;
+  max_memo_length : opt nat16;
+  token_name : opt text;
+  feature_flags : opt FeatureFlags;
+};
+type Value = variant {
+  Int : int;
+  Map : vec record { text; Value };
+  Nat : nat;
+  Nat64 : nat64;
+  Blob : blob;
+  Text : text;
+  Array : Vec;
+};
+type Vec = vec variant {
+  Int : int;
+  Map : vec record { text; Value };
+  Nat : nat;
+  Nat64 : nat64;
+  Blob : blob;
+  Text : text;
+  Array : Vec;
+};
+service : (LedgerArgument) -> {
+  archives : () -> (vec ArchiveInfo) query;
+  get_blocks : (GetBlocksRequest) -> (GetBlocksResponse) query;
+  get_data_certificate : () -> (DataCertificate) query;
+  get_transactions : (GetBlocksRequest) -> (GetTransactionsResponse) query;
+  icrc10_supported_standards : () -> (vec StandardRecord) query;
+  icrc1_balance_of : (Account) -> (nat) query;
+  icrc1_decimals : () -> (nat8) query;
+  icrc1_fee : () -> (nat) query;
+  icrc1_metadata : () -> (vec record { text; MetadataValue }) query;
+  icrc1_minting_account : () -> (opt Account) query;
+  icrc1_name : () -> (text) query;
+  icrc1_supported_standards : () -> (vec StandardRecord) query;
+  icrc1_symbol : () -> (text) query;
+  icrc1_total_supply : () -> (nat) query;
+  icrc1_transfer : (TransferArg) -> (Result);
+  icrc21_canister_call_consent_message : (ConsentMessageRequest) -> (Result_1);
+  icrc2_allowance : (AllowanceArgs) -> (Allowance) query;
+  icrc2_approve : (ApproveArgs) -> (Result_2);
+  icrc2_transfer_from : (TransferFromArgs) -> (Result_3);
+  icrc3_get_archives : (GetArchivesArgs) -> (vec ICRC3ArchiveInfo) query;
+  icrc3_get_blocks : (vec GetBlocksRequest) -> (GetBlocksResult) query;
+  icrc3_get_tip_certificate : () -> (opt ICRC3DataCertificate) query;
+  icrc3_supported_block_types : () -> (vec SupportedBlockType) query;
+  is_ledger_ready : () -> (bool) query;
+}

@@ -347,10 +347,17 @@ type schnorr_public_key_result = record {
     chain_code : blob;
 };
 
+type schnorr_aux = variant {
+    bip341: record {
+      merkle_root_hash: blob;
+   }
+};
+
 type sign_with_schnorr_args = record {
     message : blob;
     derivation_path : vec blob;
     key_id : record { algorithm : schnorr_algorithm; name : text };
+    aux: opt schnorr_aux;
 };
 
 type sign_with_schnorr_result = record {

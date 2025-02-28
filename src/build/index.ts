@@ -13,6 +13,7 @@ import {
 } from './experimental/utils/experimental_message';
 import { runCommand as runCleanCommand } from './stable/commands/clean';
 import { runCommand as runStableCompileCommand } from './stable/commands/compile';
+import { runCommand as runGenerateTypesCommand } from './stable/commands/generate_types';
 import { runCommand as runInstallDfxExtensionCommand } from './stable/commands/install_dfx_extension';
 import { runCommand as runInstallGlobalDependenciesCommand } from './stable/commands/install_global_dependencies';
 import { runCommand as runNewCommand } from './stable/commands/new';
@@ -105,6 +106,12 @@ async function build(): Promise<void> {
 
     if (command === 'new') {
         await handleNewCommand();
+
+        return;
+    }
+
+    if (command === 'generate-types') {
+        await handleGenerateTypesCommand();
 
         return;
     }
@@ -231,6 +238,12 @@ async function handleNewCommand(): Promise<void> {
 
         await runNewCommand(azleVersion, templatePath, httpServer === true);
     }
+}
+
+async function handleGenerateTypesCommand(): Promise<void> {
+    const candidPath = process.argv[3];
+
+    await runGenerateTypesCommand(candidPath);
 }
 
 function checkForExperimentalDfxJsonFields(

@@ -1,0 +1,11 @@
+{
+  "name": "candid-to-ts-js",
+  "version": "0.0.0",
+  "files": [
+    "candid_to_ts_js_bg.wasm",
+    "candid_to_ts_js.js",
+    "candid_to_ts_js.d.ts"
+  ],
+  "main": "candid_to_ts_js.js",
+  "types": "candid_to_ts_js.d.ts"
+}

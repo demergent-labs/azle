@@ -1,21 +1,20 @@
 import { call, IDL, Principal, query, update } from 'azle';
 import {
-    AccountBalanceArgs,
+    AccountIdentifierByteBuf,
     Archives,
     binaryAddressFromAddress,
-    DecimalsResult,
+    Decimals,
     GetBlocksArgs,
     hexAddressFromPrincipal,
-    NameResult,
+    Name,
     QueryBlocksResponse,
-    SymbolResult,
+    Result_6 as TransferResult,
+    Symbol,
     TimeStamp,
     Tokens,
     TransferArgs,
-    TransferFee,
-    TransferFeeArg,
-    TransferResult
-} from 'azle/canisters/icp/idl';
+    TransferFee
+} from 'azle/canisters/nns_icp_ledger/idl';
 
 export default class {
     icpCanisterPrincipal = getIcpCanisterPrincipal();
@@ -60,11 +59,11 @@ export default class {
 
     @update([IDL.Text], Tokens)
     async getAccountBalance(address: string): Promise<Tokens> {
-        return await call<[AccountBalanceArgs], Tokens>(
+        return await call<[AccountIdentifierByteBuf], Tokens>(
             this.icpCanisterPrincipal,
             'account_balance',
             {
-                paramIdlTypes: [AccountBalanceArgs],
+                paramIdlTypes: [AccountIdentifierByteBuf],
                 returnIdlType: Tokens,
                 args: [
                     {
@@ -77,11 +76,12 @@ export default class {
 
     @update([], TransferFee)
     async getTransferFee(): Promise<TransferFee> {
-        return await call<[TransferFeeArg], TransferFee>(
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        return await call<[{}], TransferFee>(
             this.icpCanisterPrincipal,
             'transfer_fee',
             {
-                paramIdlTypes: [TransferFeeArg],
+                paramIdlTypes: [IDL.Record({})],
                 returnIdlType: TransferFee,
                 args: [{}]
             }
@@ -105,11 +105,11 @@ export default class {
 
     @update([], IDL.Text)
     async getSymbol(): Promise<string> {
-        const symbolResult = await call<undefined, SymbolResult>(
+        const symbolResult = await call<undefined, Symbol>(
             this.icpCanisterPrincipal,
             'symbol',
             {
-                returnIdlType: SymbolResult
+                returnIdlType: Symbol
             }
         );
 
@@ -118,11 +118,11 @@ export default class {
 
     @update([], IDL.Text)
     async getName(): Promise<string> {
-        const nameResult = await call<undefined, NameResult>(
+        const nameResult = await call<undefined, Name>(
             this.icpCanisterPrincipal,
             'name',
             {
-                returnIdlType: NameResult
+                returnIdlType: Name
             }
         );
 
@@ -131,10 +131,10 @@ export default class {
 
     @update([], IDL.Nat32)
     async getDecimals(): Promise<number> {
-        const decimalsResult = await call<undefined, DecimalsResult>(
+        const decimalsResult = await call<undefined, Decimals>(
             this.icpCanisterPrincipal,
             'decimals',
-            { returnIdlType: DecimalsResult }
+            { returnIdlType: Decimals }
         );
 
         return decimalsResult.decimals;

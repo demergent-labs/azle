@@ -1,0 +1,272 @@
+type Account = record { owner : principal; subaccount : opt vec nat8 };
+type Allowance = record { allowance : nat; expires_at : opt nat64 };
+type AllowanceArgs = record { account : Account; spender : Account };
+type ApproveArgs = record {
+  fee : opt nat;
+  memo : opt vec nat8;
+  from_subaccount : opt vec nat8;
+  created_at_time : opt nat64;
+  amount : nat;
+  expected_allowance : opt nat;
+  expires_at : opt nat64;
+  spender : Account;
+};
+type ApproveError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  Duplicate : record { duplicate_of : nat };
+  BadFee : record { expected_fee : nat };
+  AllowanceChanged : record { current_allowance : nat };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  Expired : record { ledger_time : nat64 };
+  InsufficientFunds : record { balance : nat };
+};
+type BlockIndex = nat;
+type CanisterSettings = record {
+  freezing_threshold : opt nat;
+  controllers : opt vec principal;
+  reserved_cycles_limit : opt nat;
+  memory_allocation : opt nat;
+  compute_allocation : opt nat;
+};
+type ChangeIndexId = variant { SetTo : principal; Unset };
+type CmcCreateCanisterArgs = record {
+  subnet_selection : opt SubnetSelection;
+  settings : opt CanisterSettings;
+};
+type CreateCanisterArgs = record {
+  from_subaccount : opt vec nat8;
+  created_at_time : opt nat64;
+  amount : nat;
+  creation_args : opt CmcCreateCanisterArgs;
+};
+type CreateCanisterError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  Duplicate : record { duplicate_of : nat; canister_id : opt principal };
+  CreatedInFuture : record { ledger_time : nat64 };
+  FailedToCreate : record {
+    error : text;
+    refund_block : opt BlockIndex;
+    fee_block : opt BlockIndex;
+  };
+  TooOld;
+  InsufficientFunds : record { balance : nat };
+};
+type CreateCanisterFromArgs = record {
+  spender_subaccount : opt vec nat8;
+  from : Account;
+  created_at_time : opt nat64;
+  amount : nat;
+  creation_args : opt CmcCreateCanisterArgs;
+};
+type CreateCanisterFromError = variant {
+  FailedToCreateFrom : record {
+    create_from_block : opt BlockIndex;
+    rejection_code : RejectionCode;
+    refund_block : opt BlockIndex;
+    approval_refund_block : opt BlockIndex;
+    rejection_reason : text;
+  };
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  InsufficientAllowance : record { allowance : nat };
+  Duplicate : record { duplicate_of : nat; canister_id : opt principal };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  InsufficientFunds : record { balance : nat };
+};
+type CreateCanisterSuccess = record {
+  block_id : BlockIndex;
+  canister_id : principal;
+};
+type DataCertificate = record { certificate : vec nat8; hash_tree : vec nat8 };
+type DepositArgs = record { to : Account; memo : opt vec nat8 };
+type DepositResult = record { balance : nat; block_index : BlockIndex };
+type GetArchivesArgs = record { from : opt principal };
+type GetArchivesResult = vec record {
+  end : nat;
+  canister_id : principal;
+  start : nat;
+};
+type GetBlocksArgs = vec record { start : nat; length : nat };
+type GetBlocksResult = record {
+  log_length : nat;
+  blocks : vec record { id : nat; block : Value };
+  archived_blocks : vec record {
+    args : GetBlocksArgs;
+    callback : func (GetBlocksArgs) -> (GetBlocksResult) query;
+  };
+};
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : vec nat8;
+  headers : vec record { text; text };
+};
+type HttpResponse = record {
+  body : vec nat8;
+  headers : vec record { text; text };
+  status_code : nat16;
+};
+type InitArgs = record {
+  index_id : opt principal;
+  max_blocks_per_request : nat64;
+};
+type LedgerArgs = variant { Upgrade : opt UpgradeArgs; Init : InitArgs };
+type MetadataValue = variant {
+  Int : int;
+  Nat : nat;
+  Blob : vec nat8;
+  Text : text;
+};
+type RejectionCode = variant {
+  NoError;
+  CanisterError;
+  SysTransient;
+  DestinationInvalid;
+  Unknown;
+  SysFatal;
+  CanisterReject;
+};
+type SubnetFilter = record { subnet_type : opt text };
+type SubnetSelection = variant {
+  Filter : SubnetFilter;
+  Subnet : record { subnet : principal };
+};
+type SupportedBlockType = record { url : text; block_type : text };
+type SupportedStandard = record { url : text; name : text };
+type TransferArgs = record {
+  to : Account;
+  fee : opt nat;
+  memo : opt vec nat8;
+  from_subaccount : opt vec nat8;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type TransferError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  BadBurn : record { min_burn_amount : nat };
+  Duplicate : record { duplicate_of : nat };
+  BadFee : record { expected_fee : nat };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  InsufficientFunds : record { balance : nat };
+};
+type TransferFromArgs = record {
+  to : Account;
+  fee : opt nat;
+  spender_subaccount : opt vec nat8;
+  from : Account;
+  memo : opt vec nat8;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type TransferFromError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  InsufficientAllowance : record { allowance : nat };
+  BadBurn : record { min_burn_amount : nat };
+  Duplicate : record { duplicate_of : nat };
+  BadFee : record { expected_fee : nat };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  InsufficientFunds : record { balance : nat };
+};
+type UpgradeArgs = record {
+  change_index_id : opt ChangeIndexId;
+  max_blocks_per_request : opt nat64;
+};
+type Value = variant {
+  Int : int;
+  Map : vec record { text; Value };
+  Nat : nat;
+  Nat64 : nat64;
+  Blob : vec nat8;
+  Text : text;
+  Array : vec Value;
+};
+type WithdrawArgs = record {
+  to : principal;
+  from_subaccount : opt vec nat8;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type WithdrawError = variant {
+  FailedToWithdraw : record {
+    rejection_code : RejectionCode;
+    fee_block : opt nat;
+    rejection_reason : text;
+  };
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  Duplicate : record { duplicate_of : nat };
+  BadFee : record { expected_fee : nat };
+  InvalidReceiver : record { receiver : principal };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  InsufficientFunds : record { balance : nat };
+};
+type WithdrawFromArgs = record {
+  to : principal;
+  spender_subaccount : opt vec nat8;
+  from : Account;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type WithdrawFromError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  InsufficientAllowance : record { allowance : nat };
+  Duplicate : record { duplicate_of : BlockIndex };
+  InvalidReceiver : record { receiver : principal };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  FailedToWithdrawFrom : record {
+    withdraw_from_block : opt nat;
+    rejection_code : RejectionCode;
+    refund_block : opt nat;
+    approval_refund_block : opt nat;
+    rejection_reason : text;
+  };
+  InsufficientFunds : record { balance : nat };
+};
+service : {
+  create_canister : (CreateCanisterArgs) -> (
+      variant { Ok : CreateCanisterSuccess; Err : CreateCanisterError },
+    );
+  create_canister_from : (CreateCanisterFromArgs) -> (
+      variant { Ok : CreateCanisterSuccess; Err : CreateCanisterFromError },
+    );
+  deposit : (DepositArgs) -> (DepositResult);
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  icrc1_balance_of : (Account) -> (nat) query;
+  icrc1_decimals : () -> (nat8) query;
+  icrc1_fee : () -> (nat) query;
+  icrc1_metadata : () -> (vec record { text; MetadataValue }) query;
+  icrc1_minting_account : () -> (opt Account) query;
+  icrc1_name : () -> (text) query;
+  icrc1_supported_standards : () -> (vec SupportedStandard) query;
+  icrc1_symbol : () -> (text) query;
+  icrc1_total_supply : () -> (nat) query;
+  icrc1_transfer : (TransferArgs) -> (
+      variant { Ok : BlockIndex; Err : TransferError },
+    );
+  icrc2_allowance : (AllowanceArgs) -> (Allowance) query;
+  icrc2_approve : (ApproveArgs) -> (variant { Ok : nat; Err : ApproveError });
+  icrc2_transfer_from : (TransferFromArgs) -> (
+      variant { Ok : nat; Err : TransferFromError },
+    );
+  icrc3_get_archives : (GetArchivesArgs) -> (GetArchivesResult) query;
+  icrc3_get_blocks : (GetBlocksArgs) -> (GetBlocksResult) query;
+  icrc3_get_tip_certificate : () -> (opt DataCertificate) query;
+  icrc3_supported_block_types : () -> (vec SupportedBlockType) query;
+  withdraw : (WithdrawArgs) -> (
+      variant { Ok : BlockIndex; Err : WithdrawError },
+    );
+  withdraw_from : (WithdrawFromArgs) -> (
+      variant { Ok : BlockIndex; Err : WithdrawFromError },
+    );
+}

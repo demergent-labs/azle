@@ -1,18 +1,17 @@
-import { call } from 'azle';
+import { call, IDL } from 'azle';
 import {
-    AccountBalanceArgs,
+    AccountIdentifierByteBuf,
     Archives,
-    DecimalsResult,
+    Decimals,
     GetBlocksArgs,
-    NameResult,
+    Name,
     QueryBlocksResponse,
-    SymbolResult,
+    Result_6 as TransferResult,
+    Symbol,
     Tokens,
     TransferArgs,
-    TransferFee,
-    TransferFeeArg,
-    TransferResult
-} from 'azle/canisters/icp/idl';
+    TransferFee
+} from 'azle/canisters/nns_icp_ledger/idl';
 import {
     Canister,
     nat32,
@@ -96,7 +95,7 @@ export default Canister({
         async (address) => {
             const icpCanisterPrincipal = getIcpCanisterPrincipal();
 
-            const arg: AccountBalanceArgs = {
+            const arg: AccountIdentifierByteBuf = {
                 account: binaryAddressFromAddress(address)
             };
 
@@ -113,11 +112,11 @@ export default Canister({
 
                 return await response.json();
             } else {
-                return await call<[AccountBalanceArgs], Tokens>(
+                return await call<[AccountIdentifierByteBuf], Tokens>(
                     icpCanisterPrincipal,
                     'account_balance',
                     {
-                        paramIdlTypes: [AccountBalanceArgs],
+                        paramIdlTypes: [AccountIdentifierByteBuf],
                         returnIdlType: Tokens,
                         args: [arg]
                     }
@@ -128,7 +127,7 @@ export default Canister({
     getTransferFee: update([], TransferFeeExperimental, async () => {
         const icpCanisterPrincipal = getIcpCanisterPrincipal();
 
-        const arg: TransferFeeArg = {};
+        const arg = {};
 
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -143,11 +142,12 @@ export default Canister({
 
             return await response.json();
         } else {
-            return await call<[TransferFeeArg], TransferFee>(
+            // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+            return await call<[{}], TransferFee>(
                 icpCanisterPrincipal,
                 'transfer_fee',
                 {
-                    paramIdlTypes: [TransferFeeArg],
+                    paramIdlTypes: [IDL.Record({})],
                     returnIdlType: TransferFee,
                     args: [arg]
                 }
@@ -255,11 +255,11 @@ export default Canister({
 
             return (await response.json()).symbol;
         } else {
-            const result = await call<undefined, SymbolResult>(
+            const result = await call<undefined, Symbol>(
                 icpCanisterPrincipal,
                 'symbol',
                 {
-                    returnIdlType: SymbolResult
+                    returnIdlType: Symbol
                 }
             );
 
@@ -278,11 +278,11 @@ export default Canister({
 
             return (await response.json()).name;
         } else {
-            const result = await call<undefined, NameResult>(
+            const result = await call<undefined, Name>(
                 icpCanisterPrincipal,
                 'name',
                 {
-                    returnIdlType: NameResult
+                    returnIdlType: Name
                 }
             );
 
@@ -304,11 +304,11 @@ export default Canister({
 
             return (await response.json()).decimals;
         } else {
-            const result = await call<undefined, DecimalsResult>(
+            const result = await call<undefined, Decimals>(
                 icpCanisterPrincipal,
                 'decimals',
                 {
-                    returnIdlType: DecimalsResult
+                    returnIdlType: Decimals
                 }
             );
 
