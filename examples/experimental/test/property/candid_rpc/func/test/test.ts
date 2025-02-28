@@ -2,7 +2,6 @@ import {
     defaultArrayConstraints,
     runPropTests
 } from 'azle/_internal/test/property';
-import { FuncArb } from 'azle/_internal/test/property/arbitraries/candid/reference/func_arb';
 import {
     CanisterArb,
     CanisterConfig
