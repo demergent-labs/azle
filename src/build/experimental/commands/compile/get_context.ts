@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { getCanisterId } from '../../../../../_internal/dfx';
+import { getCanisterId } from '../../../../../azle_exports/_internal/dfx';
 import { getContext as getStableContext } from '../../../stable/commands/compile/get_context';
 import { AZLE_PACKAGE_PATH } from '../../../stable/utils/global_paths';
 import { CanisterConfig } from '../../../stable/utils/types';
