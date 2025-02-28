@@ -1,6 +1,6 @@
 import { ActorSubclass, Agent, HttpAgent } from '@dfinity/agent';
 
-import { getCanisterId } from '../../azle_exports/_internal/dfx';
+import { getCanisterId } from '#dfx';
 
 /**
  * Creates an actor instance with require (not ES module) cache clearing functionality

@@ -3,7 +3,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Agent } from '@dfinity/agent';
 import { join } from 'path';
 
-import { getCanisterId } from '../azle_exports/_internal/dfx';
+import { getCanisterId } from '#dfx';
 
 type GetCanisterActorOptions = {
     /** Optional identity for authentication */
