@@ -4,7 +4,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.27.0"
+        "azle": "0.28.0-rc.0"
     },
     "devDependencies": {
         "simple_erc20_end_to_end_test_functional_syntax": "file:../../../../../experimental/test/end_to_end/candid_rpc/simple_erc20"
