@@ -18,8 +18,6 @@
         "./canisters/*": "./azle_exports/canisters/*.ts",
         "./experimental": "./azle_exports/experimental/index.ts",
         "./experimental/*": "./azle_exports/experimental/*.ts",
-        "./_internal/globals": "./src/lib/stable/globals.ts",
-        "./_internal/experimental/globals": "./src/lib/experimental/globals.ts",
         "./_internal": "./azle_exports/_internal/index.ts",
         "./_internal/*": "./azle_exports/_internal/*.ts"
     },
