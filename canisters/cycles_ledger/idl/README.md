@@ -1,0 +1,2 @@
+- `index.did` manual Candid source: https://dashboard.internetcomputer.org/canister/um5iw-rqaaa-aaaaq-qaaba-cai
+- Licensing is assumed to be that described in ../../NOTICE
