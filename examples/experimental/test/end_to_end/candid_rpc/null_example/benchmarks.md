@@ -1,20 +1,20 @@
 # Benchmarks for null_example
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
-| --- | ---------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | setPartiallyNullRecord | 8_965_712    | 4_176_284 | $0.0000055531 | $5.55             | <font color="green">-31_617</font> |
-| 1   | setSmallNullRecord     | 5_381_365    | 2_742_546 | $0.0000036467 | $3.64             | <font color="green">-5_951</font>  |
-| 2   | setLargeNullRecord     | 8_682_925    | 4_063_170 | $0.0000054027 | $5.40             | <font color="green">-16_761</font> |
+| Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ---------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | setPartiallyNullRecord | 8_978_449    | 4_181_379 | $0.0000055599 | $5.55             | <font color="red">+12_737</font> |
+| 1   | setSmallNullRecord     | 5_383_464    | 2_743_385 | $0.0000036478 | $3.64             | <font color="red">+2_099</font>  |
+| 2   | setLargeNullRecord     | 8_695_348    | 4_068_139 | $0.0000054093 | $5.40             | <font color="red">+12_423</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | setPartiallyNullRecord | 8_997_329    | 4_188_931 | $0.0000055699 | $5.56             |
-| 1   | setSmallNullRecord     | 5_387_316    | 2_744_926 | $0.0000036498 | $3.64             |
-| 2   | setLargeNullRecord     | 8_699_686    | 4_069_874 | $0.0000054116 | $5.41             |
+| 0   | setPartiallyNullRecord | 8_965_712    | 4_176_284 | $0.0000055531 | $5.55             |
+| 1   | setSmallNullRecord     | 5_381_365    | 2_742_546 | $0.0000036467 | $3.64             |
+| 2   | setLargeNullRecord     | 8_682_925    | 4_063_170 | $0.0000054027 | $5.40             |
 
 ---
 

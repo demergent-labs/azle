@@ -1,16 +1,16 @@
 # Benchmarks for web_assembly
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init        | 7_587_780_699 | 5_835_702_279 | $0.0077595582 | $7_759.55         | <font color="green">-3_882_841</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
+| 0   | init        | 7_587_957_026 | 5_835_772_810 | $0.0077596520 | $7_759.65         | <font color="red">+176_327</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init        | 7_591_663_540 | 5_837_255_416 | $0.0077616234 | $7_761.62         |
+| 0   | init        | 7_587_780_699 | 5_835_702_279 | $0.0077595582 | $7_759.55         |
 
 ---
 

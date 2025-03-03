@@ -1,11 +1,11 @@
 {
     "tuple_types": {
         "previous": {
-            "version": "0.26.0",
+            "version": "0.27.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.27.0",
+            "version": "0.28.0",
             "benchmarks": []
         }
     }

@@ -1,20 +1,6 @@
 {
     "apollo_server": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "11090105770"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1739923725363630539"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -24,6 +10,20 @@
                     "method_name": "init",
                     "timestamp": {
                         "__bigint__": "1740531118766179859"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "11085082528"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1740776277219571521"
                     }
                 }
             ]

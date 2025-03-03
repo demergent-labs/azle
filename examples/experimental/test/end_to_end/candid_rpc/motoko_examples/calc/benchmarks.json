@@ -1,65 +1,6 @@
 {
     "calc": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1276456"
-                    },
-                    "method_name": "add",
-                    "timestamp": {
-                        "__bigint__": "1739923747232927900"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1255895"
-                    },
-                    "method_name": "sub",
-                    "timestamp": {
-                        "__bigint__": "1739923747478762976"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1255459"
-                    },
-                    "method_name": "mul",
-                    "timestamp": {
-                        "__bigint__": "1739923747746669013"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1621125"
-                    },
-                    "method_name": "div",
-                    "timestamp": {
-                        "__bigint__": "1739923748036091062"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "855601"
-                    },
-                    "method_name": "clearall",
-                    "timestamp": {
-                        "__bigint__": "1739923748304569383"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1252050"
-                    },
-                    "method_name": "add",
-                    "timestamp": {
-                        "__bigint__": "1739923748570667297"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -114,6 +55,65 @@
                     "method_name": "add",
                     "timestamp": {
                         "__bigint__": "1740531186996046704"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1275491"
+                    },
+                    "method_name": "add",
+                    "timestamp": {
+                        "__bigint__": "1740776193456827432"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1252203"
+                    },
+                    "method_name": "sub",
+                    "timestamp": {
+                        "__bigint__": "1740776193701152264"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1251733"
+                    },
+                    "method_name": "mul",
+                    "timestamp": {
+                        "__bigint__": "1740776193991094039"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1618358"
+                    },
+                    "method_name": "div",
+                    "timestamp": {
+                        "__bigint__": "1740776194462022678"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "853576"
+                    },
+                    "method_name": "clearall",
+                    "timestamp": {
+                        "__bigint__": "1740776194704959562"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1249229"
+                    },
+                    "method_name": "add",
+                    "timestamp": {
+                        "__bigint__": "1740776194947952867"
                     }
                 }
             ]

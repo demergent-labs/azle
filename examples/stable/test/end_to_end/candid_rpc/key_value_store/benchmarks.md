@@ -1,18 +1,18 @@
 # Benchmarks for key_value_store
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | set         | 1_510_109    | 1_194_043 | $0.0000015877 | $1.58             | <font color="green">-8_063</font> |
-| 1   | set         | 1_451_500    | 1_170_600 | $0.0000015565 | $1.55             | <font color="green">-8_138</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
+| 0   | set         | 1_510_109    | 1_194_043 | $0.0000015877 | $1.58             | <font color="red">0</font> |
+| 1   | set         | 1_451_500    | 1_170_600 | $0.0000015565 | $1.55             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | set         | 1_518_172    | 1_197_268 | $0.0000015920 | $1.59             |
-| 1   | set         | 1_459_638    | 1_173_855 | $0.0000015608 | $1.56             |
+| 0   | set         | 1_510_109    | 1_194_043 | $0.0000015877 | $1.58             |
+| 1   | set         | 1_451_500    | 1_170_600 | $0.0000015565 | $1.55             |
 
 ---
 

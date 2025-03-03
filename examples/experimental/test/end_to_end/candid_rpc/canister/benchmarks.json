@@ -1,38 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "6919085"
-                    },
-                    "method_name": "canisterNestedReturnType",
-                    "timestamp": {
-                        "__bigint__": "1739923825487713209"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "7997427"
-                    },
-                    "method_name": "canisterList",
-                    "timestamp": {
-                        "__bigint__": "1739923825752320482"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "12063787"
-                    },
-                    "method_name": "canisterCrossCanisterCall",
-                    "timestamp": {
-                        "__bigint__": "1739923826055916256"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -60,6 +28,38 @@
                     "method_name": "canisterCrossCanisterCall",
                     "timestamp": {
                         "__bigint__": "1740531242931755969"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "6911423"
+                    },
+                    "method_name": "canisterNestedReturnType",
+                    "timestamp": {
+                        "__bigint__": "1740776251159331560"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "7999416"
+                    },
+                    "method_name": "canisterList",
+                    "timestamp": {
+                        "__bigint__": "1740776251407236113"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "11976774"
+                    },
+                    "method_name": "canisterCrossCanisterCall",
+                    "timestamp": {
+                        "__bigint__": "1740776251927049878"
                     }
                 }
             ]

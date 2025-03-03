@@ -1,80 +1,80 @@
 # Benchmarks for canister1
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | ---------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | postUpgrade      | 4_889_693_520 | 3_556_467_408 | $0.0047289280 | $4_728.92         | <font color="green">-2_052_426</font> |
-| 1   | stableMap0Remove | 2_050_520     | 1_410_208     | $0.0000018751 | $1.87             | <font color="green">-7_569</font>     |
-| 2   | stableMap1Remove | 2_724_337     | 1_679_734     | $0.0000022335 | $2.23             | <font color="green">-17_239</font>    |
-| 3   | stableMap2Remove | 2_051_314     | 1_410_525     | $0.0000018755 | $1.87             | <font color="green">-11_894</font>    |
-| 4   | stableMap3Remove | 3_551_868     | 2_010_747     | $0.0000026736 | $2.67             | <font color="green">-16_869</font>    |
-| 5   | stableMap4Remove | 5_472_244     | 2_778_897     | $0.0000036950 | $3.69             | <font color="green">-26_690</font>    |
+| Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
+| --- | ---------------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
+| 0   | postUpgrade      | 4_889_698_126 | 3_556_469_250 | $0.0047289305 | $4_728.93         | <font color="red">+4_606</font>   |
+| 1   | stableMap0Remove | 2_045_971     | 1_408_388     | $0.0000018727 | $1.87             | <font color="green">-4_549</font> |
+| 2   | stableMap1Remove | 2_720_475     | 1_678_190     | $0.0000022314 | $2.23             | <font color="green">-3_862</font> |
+| 3   | stableMap2Remove | 2_050_384     | 1_410_153     | $0.0000018750 | $1.87             | <font color="green">-930</font>   |
+| 4   | stableMap3Remove | 3_553_935     | 2_011_574     | $0.0000026747 | $2.67             | <font color="red">+2_067</font>   |
+| 5   | stableMap4Remove | 5_464_231     | 2_775_692     | $0.0000036908 | $3.69             | <font color="green">-8_013</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ---------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | postUpgrade      | 4_891_745_946 | 3_557_288_378 | $0.0047300196 | $4_730.01         |
-| 1   | stableMap0Remove | 2_058_089     | 1_413_235     | $0.0000018791 | $1.87             |
-| 2   | stableMap1Remove | 2_741_576     | 1_686_630     | $0.0000022427 | $2.24             |
-| 3   | stableMap2Remove | 2_063_208     | 1_415_283     | $0.0000018819 | $1.88             |
-| 4   | stableMap3Remove | 3_568_737     | 2_017_494     | $0.0000026826 | $2.68             |
-| 5   | stableMap4Remove | 5_498_934     | 2_789_573     | $0.0000037092 | $3.70             |
+| 0   | postUpgrade      | 4_889_693_520 | 3_556_467_408 | $0.0047289280 | $4_728.92         |
+| 1   | stableMap0Remove | 2_050_520     | 1_410_208     | $0.0000018751 | $1.87             |
+| 2   | stableMap1Remove | 2_724_337     | 1_679_734     | $0.0000022335 | $2.23             |
+| 3   | stableMap2Remove | 2_051_314     | 1_410_525     | $0.0000018755 | $1.87             |
+| 4   | stableMap3Remove | 3_551_868     | 2_010_747     | $0.0000026736 | $2.67             |
+| 5   | stableMap4Remove | 5_472_244     | 2_778_897     | $0.0000036950 | $3.69             |
 
 # Benchmarks for canister2
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | ---------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | postUpgrade      | 4_880_125_148 | 3_552_640_059 | $0.0047238389 | $4_723.83         | <font color="green">-1_542_173</font> |
-| 1   | stableMap5Remove | 2_350_696     | 1_530_278     | $0.0000020348 | $2.03             | <font color="green">-12_759</font>    |
-| 2   | stableMap6Remove | 3_635_354     | 2_044_141     | $0.0000027180 | $2.71             | <font color="green">-17_202</font>    |
-| 3   | stableMap7Remove | 1_876_094     | 1_340_437     | $0.0000017823 | $1.78             | <font color="green">-13_811</font>    |
-| 4   | stableMap8Remove | 1_915_174     | 1_356_069     | $0.0000018031 | $1.80             | <font color="green">-14_409</font>    |
-| 5   | stableMap9Remove | 2_961_035     | 1_774_414     | $0.0000023594 | $2.35             | <font color="green">-13_328</font>    |
+| Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
+| --- | ---------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade      | 4_879_912_853 | 3_552_555_141 | $0.0047237260 | $4_723.72         | <font color="green">-212_295</font> |
+| 1   | stableMap5Remove | 2_350_159     | 1_530_063     | $0.0000020345 | $2.03             | <font color="green">-537</font>     |
+| 2   | stableMap6Remove | 3_637_381     | 2_044_952     | $0.0000027191 | $2.71             | <font color="red">+2_027</font>     |
+| 3   | stableMap7Remove | 1_879_432     | 1_341_772     | $0.0000017841 | $1.78             | <font color="red">+3_338</font>     |
+| 4   | stableMap8Remove | 1_919_617     | 1_357_846     | $0.0000018055 | $1.80             | <font color="red">+4_443</font>     |
+| 5   | stableMap9Remove | 2_963_635     | 1_775_454     | $0.0000023608 | $2.36             | <font color="red">+2_600</font>     |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ---------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | postUpgrade      | 4_881_667_321 | 3_553_256_928 | $0.0047246591 | $4_724.65         |
-| 1   | stableMap5Remove | 2_363_455     | 1_535_382     | $0.0000020416 | $2.04             |
-| 2   | stableMap6Remove | 3_652_556     | 2_051_022     | $0.0000027272 | $2.72             |
-| 3   | stableMap7Remove | 1_889_905     | 1_345_962     | $0.0000017897 | $1.78             |
-| 4   | stableMap8Remove | 1_929_583     | 1_361_833     | $0.0000018108 | $1.81             |
-| 5   | stableMap9Remove | 2_974_363     | 1_779_745     | $0.0000023665 | $2.36             |
+| 0   | postUpgrade      | 4_880_125_148 | 3_552_640_059 | $0.0047238389 | $4_723.83         |
+| 1   | stableMap5Remove | 2_350_696     | 1_530_278     | $0.0000020348 | $2.03             |
+| 2   | stableMap6Remove | 3_635_354     | 2_044_141     | $0.0000027180 | $2.71             |
+| 3   | stableMap7Remove | 1_876_094     | 1_340_437     | $0.0000017823 | $1.78             |
+| 4   | stableMap8Remove | 1_915_174     | 1_356_069     | $0.0000018031 | $1.80             |
+| 5   | stableMap9Remove | 2_961_035     | 1_774_414     | $0.0000023594 | $2.35             |
 
 # Benchmarks for canister3
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name       | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | ----------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | postUpgrade       | 4_941_727_252 | 3_577_280_900 | $0.0047566031 | $4_756.60         | <font color="green">-2_228_659</font> |
-| 1   | stableMap10Remove | 2_540_115     | 1_606_046     | $0.0000021355 | $2.13             | <font color="green">-15_831</font>    |
-| 2   | stableMap11Remove | 7_455_861     | 3_572_344     | $0.0000047500 | $4.75             | <font color="green">-38_492</font>    |
-| 3   | stableMap12Remove | 4_859_001     | 2_533_600     | $0.0000033689 | $3.36             | <font color="green">-26_253</font>    |
-| 4   | stableMap13Remove | 2_757_092     | 1_692_836     | $0.0000022509 | $2.25             | <font color="green">-15_712</font>    |
-| 5   | stableMap14Remove | 7_588_654     | 3_625_461     | $0.0000048207 | $4.82             | <font color="green">-53_373</font>    |
-| 6   | stableMap15Remove | 4_831_234     | 2_522_493     | $0.0000033541 | $3.35             | <font color="green">-24_716</font>    |
-| 7   | stableMap16Remove | 2_987_060     | 1_784_824     | $0.0000023732 | $2.37             | <font color="green">-14_382</font>    |
-| 8   | stableMap17Remove | 3_119_016     | 1_837_606     | $0.0000024434 | $2.44             | <font color="green">-19_687</font>    |
+| Id  | Method Name       | Instructions  | Cycles        | USD           | USD/Million Calls | Change                             |
+| --- | ----------------- | ------------- | ------------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | postUpgrade       | 4_941_696_348 | 3_577_268_539 | $0.0047565867 | $4_756.58         | <font color="green">-30_904</font> |
+| 1   | stableMap10Remove | 2_544_030     | 1_607_612     | $0.0000021376 | $2.13             | <font color="red">+3_915</font>    |
+| 2   | stableMap11Remove | 7_460_785     | 3_574_314     | $0.0000047527 | $4.75             | <font color="red">+4_924</font>    |
+| 3   | stableMap12Remove | 4_873_668     | 2_539_467     | $0.0000033767 | $3.37             | <font color="red">+14_667</font>   |
+| 4   | stableMap13Remove | 2_764_616     | 1_695_846     | $0.0000022549 | $2.25             | <font color="red">+7_524</font>    |
+| 5   | stableMap14Remove | 7_594_807     | 3_627_922     | $0.0000048239 | $4.82             | <font color="red">+6_153</font>    |
+| 6   | stableMap15Remove | 4_841_485     | 2_526_594     | $0.0000033595 | $3.35             | <font color="red">+10_251</font>   |
+| 7   | stableMap16Remove | 2_990_914     | 1_786_365     | $0.0000023753 | $2.37             | <font color="red">+3_854</font>    |
+| 8   | stableMap17Remove | 3_126_961     | 1_840_784     | $0.0000024476 | $2.44             | <font color="red">+7_945</font>    |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name       | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | postUpgrade       | 4_943_955_911 | 3_578_172_364 | $0.0047577884 | $4_757.78         |
-| 1   | stableMap10Remove | 2_555_946     | 1_612_378     | $0.0000021439 | $2.14             |
-| 2   | stableMap11Remove | 7_494_353     | 3_587_741     | $0.0000047705 | $4.77             |
-| 3   | stableMap12Remove | 4_885_254     | 2_544_101     | $0.0000033828 | $3.38             |
-| 4   | stableMap13Remove | 2_772_804     | 1_699_121     | $0.0000022593 | $2.25             |
-| 5   | stableMap14Remove | 7_642_027     | 3_646_810     | $0.0000048491 | $4.84             |
-| 6   | stableMap15Remove | 4_855_950     | 2_532_380     | $0.0000033672 | $3.36             |
-| 7   | stableMap16Remove | 3_001_442     | 1_790_576     | $0.0000023809 | $2.38             |
-| 8   | stableMap17Remove | 3_138_703     | 1_845_481     | $0.0000024539 | $2.45             |
+| 0   | postUpgrade       | 4_941_727_252 | 3_577_280_900 | $0.0047566031 | $4_756.60         |
+| 1   | stableMap10Remove | 2_540_115     | 1_606_046     | $0.0000021355 | $2.13             |
+| 2   | stableMap11Remove | 7_455_861     | 3_572_344     | $0.0000047500 | $4.75             |
+| 3   | stableMap12Remove | 4_859_001     | 2_533_600     | $0.0000033689 | $3.36             |
+| 4   | stableMap13Remove | 2_757_092     | 1_692_836     | $0.0000022509 | $2.25             |
+| 5   | stableMap14Remove | 7_588_654     | 3_625_461     | $0.0000048207 | $4.82             |
+| 6   | stableMap15Remove | 4_831_234     | 2_522_493     | $0.0000033541 | $3.35             |
+| 7   | stableMap16Remove | 2_987_060     | 1_784_824     | $0.0000023732 | $2.37             |
+| 8   | stableMap17Remove | 3_119_016     | 1_837_606     | $0.0000024434 | $2.44             |
 
 ---
 

@@ -1,20 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | ------- | ------------- | ----------------- | --------------------------------- |
-| 0   | set         | 997_029      | 988_811 | $0.0000013148 | $1.31             | <font color="green">-3_657</font> |
-| 1   | inc         | 854_821      | 931_928 | $0.0000012392 | $1.23             | <font color="green">-1_456</font> |
-| 2   | inc         | 854_907      | 931_962 | $0.0000012392 | $1.23             | <font color="green">-1_370</font> |
+| Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                          |
+| --- | ----------- | ------------ | ------- | ------------- | ----------------- | ------------------------------- |
+| 0   | set         | 998_544      | 989_417 | $0.0000013156 | $1.31             | <font color="red">+1_515</font> |
+| 1   | inc         | 855_460      | 932_184 | $0.0000012395 | $1.23             | <font color="red">+639</font>   |
+| 2   | inc         | 855_982      | 932_392 | $0.0000012398 | $1.23             | <font color="red">+1_075</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ------- | ------------- | ----------------- |
-| 0   | set         | 1_000_686    | 990_274 | $0.0000013167 | $1.31             |
-| 1   | inc         | 856_277      | 932_510 | $0.0000012399 | $1.23             |
-| 2   | inc         | 856_277      | 932_510 | $0.0000012399 | $1.23             |
+| 0   | set         | 997_029      | 988_811 | $0.0000013148 | $1.31             |
+| 1   | inc         | 854_821      | 931_928 | $0.0000012392 | $1.23             |
+| 2   | inc         | 854_907      | 931_962 | $0.0000012392 | $1.23             |
 
 ---
 

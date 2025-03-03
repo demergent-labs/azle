@@ -1,5 +1,92 @@
 # Benchmarks
 
+## Version `0.28.0`
+
+<table>
+    <tr>
+        <th></th>
+        <th colspan="2">Stable</th>
+        <th colspan="2">Experimental</th>
+    </tr>
+    <tr>
+        <th>Metric</th>
+        <th>Score</th>
+        <th>Change</th>
+        <th>Score</th>
+        <th>Change</th>
+    </tr>
+    <tr>
+        <td>Baseline Weighted Efficiency</td>
+        <td>14_467_835</td>
+        <td><span style="color: green">-5.15%</span></td>
+        <td>155_210_552</td>
+        <td><span style="color: red">16.81%</span></td>
+    </tr>
+    <tr>
+        <td colspan="5">&nbsp;</td>
+    </tr>
+    <tr>
+        <th></th>
+        <th>Count</th>
+        <th></th>
+        <th>Count</th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>Method Executions</td>
+        <td>508</td>
+        <td><span style="color: red">6.28%</span></td>
+        <td>734</td>
+        <td><span style="color: red">1.80%</span></td>
+    </tr>
+    <tr>
+        <td colspan="5">&nbsp;</td>
+    </tr>
+    <tr>
+        <th></th>
+        <th>Number of Instructions</th>
+        <th></th>
+        <th>Number of Instructions</th>
+        <th></th>
+    </tr>
+    	<tr>
+        <td>Mean</td>
+        <td>140_719_129</td>
+        <td><span style="color: green">-5.68%</span></td>
+        <td>1_319_100_223</td>
+        <td><span style="color: red">13.00%</span></td>
+    </tr>
+	<tr>
+        <td>Median</td>
+        <td>985_857</td>
+        <td><span style="color: red">25.90%</span></td>
+        <td>77_516_650</td>
+        <td><span style="color: red">44.48%</span></td>
+    </tr>
+	<tr>
+        <td>Standard Deviation</td>
+        <td>1_531_246_550</td>
+        <td><span style="color: green">-2.99%</span></td>
+        <td>3_192_665_803</td>
+        <td><span style="color: red">5.28%</span></td>
+    </tr>
+	<tr>
+        <td>Min</td>
+        <td>166_942</td>
+        <td>0.00%</td>
+        <td>75_892</td>
+        <td><span style="color: red">0.02%</span></td>
+    </tr>
+	<tr>
+        <td>Max</td>
+        <td>21_001_607_396</td>
+        <td><span style="color: red">0.01%</span></td>
+        <td>18_469_948_920</td>
+        <td><span style="color: red">0.01%</span></td>
+    </tr>
+
+</table>
+
 ## Version `0.27.0`
 
 <table>
