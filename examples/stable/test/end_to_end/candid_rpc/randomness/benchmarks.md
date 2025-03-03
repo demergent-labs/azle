@@ -1,26 +1,26 @@
 # Benchmarks for randomness
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name  | Instructions | Cycles      | USD           | USD/Million Calls | Change                                |
-| --- | ------------ | ------------ | ----------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | postUpgrade  | 985_874_576  | 394_939_830 | $0.0005251396 | $525.13           | <font color="green">-5_312_526</font> |
-| 1   | randomNumber | 1_122_981    | 1_039_192   | $0.0000013818 | $1.38             | <font color="green">-8_224</font>     |
-| 2   | randomNumber | 1_100_860    | 1_030_344   | $0.0000013700 | $1.37             | <font color="green">-7_991</font>     |
-| 3   | randomNumber | 1_104_698    | 1_031_879   | $0.0000013721 | $1.37             | <font color="green">-5_191</font>     |
-| 4   | randomNumber | 1_101_917    | 1_030_766   | $0.0000013706 | $1.37             | <font color="green">-7_163</font>     |
-| 5   | randomNumber | 1_102_030    | 1_030_812   | $0.0000013706 | $1.37             | <font color="green">-6_778</font>     |
+| Id  | Method Name  | Instructions | Cycles      | USD           | USD/Million Calls | Change                     |
+| --- | ------------ | ------------ | ----------- | ------------- | ----------------- | -------------------------- |
+| 0   | postUpgrade  | 985_874_576  | 394_939_830 | $0.0005251396 | $525.13           | <font color="red">0</font> |
+| 1   | randomNumber | 1_122_981    | 1_039_192   | $0.0000013818 | $1.38             | <font color="red">0</font> |
+| 2   | randomNumber | 1_100_860    | 1_030_344   | $0.0000013700 | $1.37             | <font color="red">0</font> |
+| 3   | randomNumber | 1_104_698    | 1_031_879   | $0.0000013721 | $1.37             | <font color="red">0</font> |
+| 4   | randomNumber | 1_101_917    | 1_030_766   | $0.0000013706 | $1.37             | <font color="red">0</font> |
+| 5   | randomNumber | 1_102_030    | 1_030_812   | $0.0000013706 | $1.37             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name  | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ------------ | ------------ | ----------- | ------------- | ----------------- |
-| 0   | postUpgrade  | 991_187_102  | 397_064_840 | $0.0005279652 | $527.96           |
-| 1   | randomNumber | 1_131_205    | 1_042_482   | $0.0000013862 | $1.38             |
-| 2   | randomNumber | 1_108_851    | 1_033_540   | $0.0000013743 | $1.37             |
-| 3   | randomNumber | 1_109_889    | 1_033_955   | $0.0000013748 | $1.37             |
-| 4   | randomNumber | 1_109_080    | 1_033_632   | $0.0000013744 | $1.37             |
-| 5   | randomNumber | 1_108_808    | 1_033_523   | $0.0000013742 | $1.37             |
+| 0   | postUpgrade  | 985_874_576  | 394_939_830 | $0.0005251396 | $525.13           |
+| 1   | randomNumber | 1_122_981    | 1_039_192   | $0.0000013818 | $1.38             |
+| 2   | randomNumber | 1_100_860    | 1_030_344   | $0.0000013700 | $1.37             |
+| 3   | randomNumber | 1_104_698    | 1_031_879   | $0.0000013721 | $1.37             |
+| 4   | randomNumber | 1_101_917    | 1_030_766   | $0.0000013706 | $1.37             |
+| 5   | randomNumber | 1_102_030    | 1_030_812   | $0.0000013706 | $1.37             |
 
 ---
 

@@ -1,20 +1,20 @@
 # Benchmarks for hidden_methods
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | updateUndefined   | 1_670_175    | 1_258_070 | $0.0000016728 | $1.67             | <font color="green">-5_975</font> |
-| 1   | updateHiddenFalse | 1_563_102    | 1_215_240 | $0.0000016159 | $1.61             | <font color="green">-8_045</font> |
-| 2   | updateHiddenTrue  | 1_549_744    | 1_209_897 | $0.0000016088 | $1.60             | <font color="green">-6_209</font> |
+| Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
+| --- | ----------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
+| 0   | updateUndefined   | 1_670_175    | 1_258_070 | $0.0000016728 | $1.67             | <font color="red">0</font> |
+| 1   | updateHiddenFalse | 1_563_102    | 1_215_240 | $0.0000016159 | $1.61             | <font color="red">0</font> |
+| 2   | updateHiddenTrue  | 1_549_744    | 1_209_897 | $0.0000016088 | $1.60             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | updateUndefined   | 1_676_150    | 1_260_460 | $0.0000016760 | $1.67             |
-| 1   | updateHiddenFalse | 1_571_147    | 1_218_458 | $0.0000016201 | $1.62             |
-| 2   | updateHiddenTrue  | 1_555_953    | 1_212_381 | $0.0000016121 | $1.61             |
+| 0   | updateUndefined   | 1_670_175    | 1_258_070 | $0.0000016728 | $1.67             |
+| 1   | updateHiddenFalse | 1_563_102    | 1_215_240 | $0.0000016159 | $1.61             |
+| 2   | updateHiddenTrue  | 1_549_744    | 1_209_897 | $0.0000016088 | $1.60             |
 
 ---
 

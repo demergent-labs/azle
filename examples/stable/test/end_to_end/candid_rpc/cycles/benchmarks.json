@@ -1,38 +1,6 @@
 {
     "cycles": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1629501"
-                    },
-                    "method_name": "receiveCycles",
-                    "timestamp": {
-                        "__bigint__": "1739923797987883889"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1618691"
-                    },
-                    "method_name": "receiveCycles",
-                    "timestamp": {
-                        "__bigint__": "1739923798257466526"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1616822"
-                    },
-                    "method_name": "receiveCycles",
-                    "timestamp": {
-                        "__bigint__": "1739923798528751231"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -63,33 +31,42 @@
                     }
                 }
             ]
-        }
-    },
-    "intermediary": {
-        "previous": {
-            "version": "0.26.0",
+        },
+        "current": {
+            "version": "0.28.0",
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1368066"
+                        "__bigint__": "1609613"
                     },
-                    "method_name": "sendCycles",
+                    "method_name": "receiveCycles",
                     "timestamp": {
-                        "__bigint__": "1739923798257466526"
+                        "__bigint__": "1740776220664260725"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1731473"
+                        "__bigint__": "1606409"
                     },
-                    "method_name": "sendCyclesNotify",
+                    "method_name": "receiveCycles",
                     "timestamp": {
-                        "__bigint__": "1739923798528751231"
+                        "__bigint__": "1740776220906852233"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1608339"
+                    },
+                    "method_name": "receiveCycles",
+                    "timestamp": {
+                        "__bigint__": "1740776221150786079"
                     }
                 }
             ]
-        },
-        "current": {
+        }
+    },
+    "intermediary": {
+        "previous": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -108,6 +85,29 @@
                     "method_name": "sendCyclesNotify",
                     "timestamp": {
                         "__bigint__": "1740531258386258617"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1360820"
+                    },
+                    "method_name": "sendCycles",
+                    "timestamp": {
+                        "__bigint__": "1740776220906852233"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1720120"
+                    },
+                    "method_name": "sendCyclesNotify",
+                    "timestamp": {
+                        "__bigint__": "1740776221150786079"
                     }
                 }
             ]

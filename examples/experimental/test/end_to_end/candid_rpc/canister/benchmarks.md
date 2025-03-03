@@ -1,20 +1,20 @@
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.27.0
+## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name               | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
-| --- | ------------------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | canisterNestedReturnType  | 6_898_574    | 3_349_429 | $0.0000044536 | $4.45             | <font color="green">-20_511</font>  |
-| 1   | canisterList              | 7_989_730    | 3_785_892 | $0.0000050340 | $5.03             | <font color="green">-7_697</font>   |
-| 2   | canisterCrossCanisterCall | 11_961_136   | 5_374_454 | $0.0000071463 | $7.14             | <font color="green">-102_651</font> |
+| Id  | Method Name               | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ------------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | canisterNestedReturnType  | 6_911_423    | 3_354_569 | $0.0000044605 | $4.46             | <font color="red">+12_849</font> |
+| 1   | canisterList              | 7_999_416    | 3_789_766 | $0.0000050391 | $5.03             | <font color="red">+9_686</font>  |
+| 2   | canisterCrossCanisterCall | 11_976_774   | 5_380_709 | $0.0000071546 | $7.15             | <font color="red">+15_638</font> |
 
-## Baseline benchmarks Azle version: 0.26.0
+## Baseline benchmarks Azle version: 0.27.0
 
 | Id  | Method Name               | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | canisterNestedReturnType  | 6_919_085    | 3_357_634 | $0.0000044645 | $4.46             |
-| 1   | canisterList              | 7_997_427    | 3_788_970 | $0.0000050381 | $5.03             |
-| 2   | canisterCrossCanisterCall | 12_063_787   | 5_415_514 | $0.0000072008 | $7.20             |
+| 0   | canisterNestedReturnType  | 6_898_574    | 3_349_429 | $0.0000044536 | $4.45             |
+| 1   | canisterList              | 7_989_730    | 3_785_892 | $0.0000050340 | $5.03             |
+| 2   | canisterCrossCanisterCall | 11_961_136   | 5_374_454 | $0.0000071463 | $7.14             |
 
 ---
 

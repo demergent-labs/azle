@@ -1,20 +1,6 @@
 {
     "complex_init": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "4826156185"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1739923735720865575"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -27,24 +13,24 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4824200965"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1740776181424425959"
+                    }
+                }
+            ]
         }
     },
     "rec_init": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "4824289748"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1739923748879234635"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -54,6 +40,20 @@
                     "method_name": "init",
                     "timestamp": {
                         "__bigint__": "1740531172726679910"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4822880923"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1740776193819592686"
                     }
                 }
             ]

@@ -1,65 +1,6 @@
 {
     "canister1": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "4891745946"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1739923820489216496"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2058089"
-                    },
-                    "method_name": "stableMap0Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923836030155719"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2741576"
-                    },
-                    "method_name": "stableMap1Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923836591496054"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2063208"
-                    },
-                    "method_name": "stableMap2Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923836862627327"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3568737"
-                    },
-                    "method_name": "stableMap3Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923837426857150"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5498934"
-                    },
-                    "method_name": "stableMap4Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923837695858011"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -117,69 +58,69 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4889698126"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1740776248991249349"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2045971"
+                    },
+                    "method_name": "stableMap0Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776265555555066"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2720475"
+                    },
+                    "method_name": "stableMap1Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776265813852705"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2050384"
+                    },
+                    "method_name": "stableMap2Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776266054976376"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "3553935"
+                    },
+                    "method_name": "stableMap3Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776266294194281"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5464231"
+                    },
+                    "method_name": "stableMap4Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776266805622334"
+                    }
+                }
+            ]
         }
     },
     "canister2": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "4881667321"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1739923823856248904"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2363455"
-                    },
-                    "method_name": "stableMap5Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923838260028064"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3652556"
-                    },
-                    "method_name": "stableMap6Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923838531703667"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1889905"
-                    },
-                    "method_name": "stableMap7Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923839097484446"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1929583"
-                    },
-                    "method_name": "stableMap8Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923839367413818"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2974363"
-                    },
-                    "method_name": "stableMap9Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923839709665815"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -237,96 +178,69 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4879912853"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1740776252871245133"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2350159"
+                    },
+                    "method_name": "stableMap5Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776267066691857"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "3637381"
+                    },
+                    "method_name": "stableMap6Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776267530118452"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1879432"
+                    },
+                    "method_name": "stableMap7Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776267769154557"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1919617"
+                    },
+                    "method_name": "stableMap8Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776268250079449"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2963635"
+                    },
+                    "method_name": "stableMap9Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776268490842604"
+                    }
+                }
+            ]
         }
     },
     "canister3": {
         "previous": {
-            "version": "0.26.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "4943955911"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1739923830324602367"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2555946"
-                    },
-                    "method_name": "stableMap10Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923840202803074"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "7494353"
-                    },
-                    "method_name": "stableMap11Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923840775936780"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "4885254"
-                    },
-                    "method_name": "stableMap12Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923841048955788"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2772804"
-                    },
-                    "method_name": "stableMap13Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923841607430249"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "7642027"
-                    },
-                    "method_name": "stableMap14Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923841881095424"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "4855950"
-                    },
-                    "method_name": "stableMap15Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923842227860882"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3001442"
-                    },
-                    "method_name": "stableMap16Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923842722975545"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3138703"
-                    },
-                    "method_name": "stableMap17Remove",
-                    "timestamp": {
-                        "__bigint__": "1739923843270514737"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.27.0",
             "benchmarks": [
                 {
@@ -408,6 +322,92 @@
                     "method_name": "stableMap17Remove",
                     "timestamp": {
                         "__bigint__": "1740531260942973405"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.28.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4941696348"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1740776259463160676"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2544030"
+                    },
+                    "method_name": "stableMap10Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776268730439454"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "7460785"
+                    },
+                    "method_name": "stableMap11Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776268969603647"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "4873668"
+                    },
+                    "method_name": "stableMap12Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776269209290333"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2764616"
+                    },
+                    "method_name": "stableMap13Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776269693594789"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "7594807"
+                    },
+                    "method_name": "stableMap14Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776269956635263"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "4841485"
+                    },
+                    "method_name": "stableMap15Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776270421437317"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2990914"
+                    },
+                    "method_name": "stableMap16Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776270904527678"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "3126961"
+                    },
+                    "method_name": "stableMap17Remove",
+                    "timestamp": {
+                        "__bigint__": "1740776271390239808"
                     }
                 }
             ]
