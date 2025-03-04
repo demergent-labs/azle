@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { getCanisterActor } from 'azle/test';
+import { getCanisterActor } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 export type CanisterStatus = {

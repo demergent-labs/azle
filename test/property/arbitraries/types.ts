@@ -2,7 +2,7 @@ import { PrimitiveDefinitionWeights } from './candid/candid_definition_arb/simpl
 import { DefinitionConstraints } from './candid/candid_definition_arb/types';
 import { Float32Constraints } from './candid/primitive/floats/float32_arb';
 import { Float64Constraints } from './candid/primitive/floats/float64_arb';
-import { TextConstraints } from './candid/primitive/text';
+import { TextConstraints } from './candid/primitive/text_arb';
 import {
     CanisterMethodConstraints,
     QueryOrUpdateConstraints

@@ -4,7 +4,7 @@ import { Named } from '../..';
 import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
-import { VoidArb } from '../candid/primitive/void';
+import { VoidArb } from '../candid/primitive/void_arb';
 import { Api, Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {

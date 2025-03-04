@@ -1,4 +1,5 @@
-import { getCanisterId } from '../../../../../../dfx';
+import { getCanisterId } from '#dfx';
+
 import { generateUploaderIdentity } from '../uploader_identity';
 import { expandPaths } from './expand_paths';
 import { onBeforeExit } from './on_before_exit';

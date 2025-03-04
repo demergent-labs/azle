@@ -1,4 +1,10 @@
-import { expect, getCanisterActor, it, please, Test } from 'azle/test';
+import {
+    expect,
+    getCanisterActor,
+    it,
+    please,
+    Test
+} from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';

@@ -19,7 +19,7 @@ import { TupleValuesArb } from './constructed/tuple_arb/values_arbs';
 import { VariantValuesArb } from './constructed/variant_arb/values_arb';
 import { VecValuesArb } from './constructed/vec_arb/values_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
-import { BoolValueArb } from './primitive/bool';
+import { BoolValueArb } from './primitive/bool_arb';
 import {
     Float32Constraints,
     Float32ValueArb
@@ -38,9 +38,9 @@ import { Nat8ValueArb } from './primitive/nats/nat8_arb';
 import { Nat16ValueArb } from './primitive/nats/nat16_arb';
 import { Nat32ValueArb } from './primitive/nats/nat32_arb';
 import { Nat64ValueArb } from './primitive/nats/nat64_arb';
-import { NullValueArb } from './primitive/null';
-import { TextConstraints, TextValueArb } from './primitive/text';
-import { VoidValueArb } from './primitive/void';
+import { NullValueArb } from './primitive/null_arb';
+import { TextConstraints, TextValueArb } from './primitive/text_arb';
+import { VoidValueArb } from './primitive/void_arb';
 import { RecursiveShapes } from './recursive';
 import { RecursiveNameValuesArb } from './recursive/values_arb';
 import { FuncValueArb } from './reference/func_arb/values_arb';

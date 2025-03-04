@@ -1,8 +1,8 @@
 import { ActorSubclass, SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
-import { getCanisterId } from 'azle/dfx';
-import { expect, it, please, Test } from 'azle/test';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects

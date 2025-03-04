@@ -1,4 +1,4 @@
-import { expect, getCanisterActor, it, Test } from 'azle/test';
+import { expect, getCanisterActor, it, Test } from 'azle/_internal/test';
 
 import { _SERVICE as Actor } from './dfx_generated/caller/caller.did';
 

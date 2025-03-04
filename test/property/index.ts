@@ -77,12 +77,9 @@ export async function runPropTests(
                             process.env.AZLE_PROPTEST_QUIET === 'true'
                         );
 
-                        execSync(
-                            `tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
-                            {
-                                stdio: 'inherit'
-                            }
-                        );
+                        execSync(`tsc`, {
+                            stdio: 'inherit'
+                        });
 
                         clearUniquePrimitiveArb();
 

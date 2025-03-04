@@ -1,5 +1,5 @@
-import { getCanisterActor } from 'azle/test';
-import { defaultPropTestParams, expect, it, Test } from 'azle/test';
+import { getCanisterActor } from 'azle/_internal/test';
+import { defaultPropTestParams, expect, it, Test } from 'azle/_internal/test';
 import fc from 'fast-check';
 
 import { CyclesResult } from '../src/types';

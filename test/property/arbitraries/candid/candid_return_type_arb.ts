@@ -6,7 +6,7 @@ import {
     CandidValueAndMetaArb
 } from './candid_value_and_meta_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
-import { VoidArb } from './primitive/void';
+import { VoidArb } from './primitive/void_arb';
 
 export type CandidReturnType = CorrespondingJSType | undefined;
 

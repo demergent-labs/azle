@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { Test } from '../../test';
-import { BoolArb } from '../candid/primitive/bool';
+import { BoolArb } from '../candid/primitive/bool_arb';
 import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {

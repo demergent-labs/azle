@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, Test } from 'azle/test';
+import { expect, it, Test } from 'azle/_internal/test';
 
 import { Post, Reaction, Thread, User } from '../src/candid_types';
 // @ts-ignore this path may not exist when these tests are imported into other test projects

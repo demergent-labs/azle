@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { Context } from '../../types';
-import { BoolDefinitionArb } from '../primitive/bool';
+import { BoolDefinitionArb } from '../primitive/bool_arb';
 import { Float32DefinitionArb } from '../primitive/floats/float32_arb';
 import { Float64DefinitionArb } from '../primitive/floats/float64_arb';
 import { IntDefinitionArb } from '../primitive/ints/int_arb';
@@ -14,8 +14,8 @@ import { Nat8DefinitionArb } from '../primitive/nats/nat8_arb';
 import { Nat16DefinitionArb } from '../primitive/nats/nat16_arb';
 import { Nat32DefinitionArb } from '../primitive/nats/nat32_arb';
 import { Nat64DefinitionArb } from '../primitive/nats/nat64_arb';
-import { NullDefinitionArb } from '../primitive/null';
-import { TextDefinitionArb } from '../primitive/text';
+import { NullDefinitionArb } from '../primitive/null_arb';
+import { TextDefinitionArb } from '../primitive/text_arb';
 import { PrincipalDefinitionArb } from '../reference/principal_arb';
 import { PrimitiveDefinition, WithShapesArb } from './types';
 
