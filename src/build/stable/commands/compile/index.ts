@@ -14,6 +14,7 @@ export async function runCommand(
     canisterConfig: CanisterConfig,
     ioType: IOType
 ): Promise<void> {
+    console.log('hello from current azle');
     const { main, canisterPath, candidPath, wasmBinaryPath, wasmData } =
         getContext(canisterName, canisterConfig);
 
