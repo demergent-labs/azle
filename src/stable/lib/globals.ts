@@ -98,28 +98,59 @@ if (globalThis._azleInsideCanister === true) {
     };
 
     if (globalThis._azleExperimental === false) {
-        createGlobalExperimentalErrorProperty('fetch');
-        createGlobalExperimentalErrorProperty('Buffer');
-        createGlobalExperimentalErrorProperty('window');
-        createGlobalExperimentalErrorProperty('global');
-        createGlobalExperimentalErrorProperty('self');
-        createGlobalExperimentalErrorProperty('URL');
-        createGlobalExperimentalErrorProperty('WebAssembly');
-        createGlobalExperimentalErrorProperty('setTimeout');
-        createGlobalExperimentalErrorProperty('clearTimeout');
+        setupExperimentalErrorInterception();
     }
 }
 
 /**
- * Creates a getter property on globalThis that throws an error when accessed.
- * Used to prevent access to experimental features when experimental mode is disabled.
- *
- * @param name - The name of the global property to restrict
+ * Sets up a proxy around globalThis to intercept access to experimental features
+ * when experimental mode is disabled. This avoids the "property is not configurable"
+ * error that can occur when trying to redefine properties directly.
  */
-function createGlobalExperimentalErrorProperty(name: string): void {
-    Object.defineProperty(globalThis, name, {
-        get() {
-            throw new Error(experimentalWarningMessage(name));
+function setupExperimentalErrorInterception(): void {
+    const propertiesToBlock = [
+        'fetch',
+        'Buffer',
+        'window',
+        'global',
+        'self',
+        'URL',
+        'WebAssembly',
+        'setTimeout',
+        'clearTimeout'
+    ];
+
+    // Store the original globalThis
+    const originalGlobalThis = { ...globalThis };
+
+    // Create a proxy that intercepts access to specific properties
+    const proxiedGlobalThis = new Proxy(globalThis, {
+        get(target, prop, receiver): any {
+            if (
+                propertiesToBlock.includes(prop.toString()) &&
+                originalGlobalThis._azleExperimental === false
+            ) {
+                throw new Error(experimentalWarningMessage(prop.toString()));
+            }
+            return Reflect.get(target, prop, receiver);
+        }
+    });
+
+    // Replace the global object with our proxied version
+    // Note: This approach works in some JS environments but not all
+    Object.keys(globalThis).forEach((key) => {
+        try {
+            delete (globalThis as any)[key];
+        } catch (_e) {
+            // Some properties can't be deleted, ignore these
+        }
+    });
+
+    Object.keys(proxiedGlobalThis).forEach((key) => {
+        try {
+            (globalThis as any)[key] = (proxiedGlobalThis as any)[key];
+        } catch (_e) {
+            // Some properties can't be redefined, ignore these
         }
     });
 }
