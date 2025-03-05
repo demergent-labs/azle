@@ -3,6 +3,10 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
+import { getCanisterConfig } from '#utils/get_canister_config';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { CanisterConfig, Command } from '#utils/types';
+
 import { version as azleVersion } from '../../package.json';
 import { runCommand as runExperimentalCompileCommand } from './experimental/commands/compile';
 import { runCommand as runExperimentalTemplateCommand } from './experimental/commands/template';
@@ -19,9 +23,6 @@ import { runCommand as runInstallGlobalDependenciesCommand } from './stable/comm
 import { runCommand as runNewCommand } from './stable/commands/new';
 import { runCommand as runStableTemplateCommand } from './stable/commands/template';
 import { runCommand as runVersionCommand } from './stable/commands/version';
-import { getCanisterConfig } from './stable/utils/get_canister_config';
-import { AZLE_PACKAGE_PATH } from './stable/utils/global_paths';
-import { CanisterConfig, Command } from './stable/utils/types';
 
 process.on('uncaughtException', (error: Error) => {
     const prefix = 'Azle BuildError';

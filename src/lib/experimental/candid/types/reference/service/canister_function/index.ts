@@ -2,10 +2,8 @@ import '../../../../../experimental';
 
 import { IDL } from '@dfinity/candid';
 
-import {
-    Method,
-    MethodMeta
-} from '../../../../../../../build/stable/utils/types';
+import { Method, MethodMeta } from '#utils/types';
+
 import { CanisterMethodMode } from '../../../../../../stable/execute_with_candid_serde';
 import { call } from '../../../../../../stable/ic_apis';
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';

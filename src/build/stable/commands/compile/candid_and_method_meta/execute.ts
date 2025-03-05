@@ -1,4 +1,4 @@
-import { CandidAndMethodMeta } from '../../../utils/types';
+import { CandidAndMethodMeta } from '#utils/types';
 
 export async function execute(
     wasmBinary: Uint8Array

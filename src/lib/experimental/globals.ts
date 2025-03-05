@@ -8,7 +8,8 @@ import * as process from 'process';
 import { URL } from 'url';
 import { v4 } from 'uuid';
 
-import { MethodMeta } from '../../build/stable/utils/types';
+import { MethodMeta } from '#utils/types';
+
 import { azleFetch } from './fetch';
 
 export type Callbacks = {

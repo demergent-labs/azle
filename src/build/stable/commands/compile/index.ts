@@ -3,7 +3,8 @@ import { rm } from 'fs/promises';
 import { outputFile } from 'fs-extra';
 import { join } from 'path';
 
-import { CanisterConfig } from '../../utils/types';
+import { CanisterConfig } from '#utils/types';
+
 import { getCandidAndMethodMeta } from './candid_and_method_meta';
 import { getContext } from './get_context';
 import { compile as compileJavaScript } from './javascript';

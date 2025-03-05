@@ -1,7 +1,7 @@
 import binaryen from 'binaryen';
 import { readFile } from 'fs/promises';
 
-import { MethodMeta } from '../../../utils/types';
+import { MethodMeta } from '#utils/types';
 
 // TODO can we make the start function just load the passive segment into memory?
 export async function manipulateWasmBinary<T extends Record<string, unknown>>(

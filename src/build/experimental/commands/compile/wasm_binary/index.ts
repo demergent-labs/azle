@@ -1,10 +1,11 @@
 import { IOType } from 'child_process';
 import { existsSync } from 'fs';
 
+import { WasmData } from '#experimental/utils/types';
+import { MethodMeta } from '#utils/types';
+
 import { manipulateWasmBinary } from '../../../../stable/commands/compile/wasm_binary/manipulate';
-import { MethodMeta } from '../../../../stable/utils/types';
 import { EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
-import { WasmData } from '../../../utils/types';
 import { runCommand as runTemplateCommand } from '../../template';
 
 export async function getWasmBinary(

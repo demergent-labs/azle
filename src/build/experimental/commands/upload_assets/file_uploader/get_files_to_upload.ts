@@ -1,4 +1,4 @@
-import { getCanisterConfig } from '../../../../stable/utils/get_canister_config';
+import { getCanisterConfig } from '#utils/get_canister_config';
 
 export async function getFilesToUpload(
     canisterName: string,

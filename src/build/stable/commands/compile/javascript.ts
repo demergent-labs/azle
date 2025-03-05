@@ -3,7 +3,7 @@ import esbuildPluginTsc from 'esbuild-plugin-tsc';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '../../utils/global_paths';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 
 export async function compile(main: string): Promise<string> {
     const prelude = getPrelude(main);

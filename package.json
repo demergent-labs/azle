@@ -22,7 +22,9 @@
         "./experimental/*": "./azle_exports/experimental/*.ts"
     },
     "imports": {
-        "#dfx": "./azle_exports/_internal/dfx.ts"
+        "#dfx": "./azle_exports/_internal/dfx.ts",
+        "#utils/*": "./src/build/stable/utils/*.ts",
+        "#experimental/utils/*": "./src/build/experimental/utils/*.ts"
     },
     "repository": {
         "type": "git",

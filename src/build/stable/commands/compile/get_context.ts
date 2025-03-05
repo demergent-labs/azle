@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { CanisterConfig, Context, EnvVars, WasmData } from '../../utils/types';
+import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
 export function getContext(
     canisterName: string,

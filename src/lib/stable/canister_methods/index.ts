@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
-import { MethodMeta } from '../../../build/stable/utils/types';
+import { MethodMeta } from '#utils/types';
+
 import { idlToString } from '../did_file';
 import { handleUncaughtError } from '../error';
 import {

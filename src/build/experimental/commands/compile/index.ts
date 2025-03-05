@@ -3,9 +3,10 @@ import { rm } from 'fs/promises';
 import { outputFile } from 'fs-extra';
 import { join } from 'path';
 
-import { execSyncPretty } from '../../../stable/utils/exec_sync_pretty';
-import { CanisterConfig } from '../../../stable/utils/types';
-import { logSuccess } from '../../utils/log_success';
+import { logSuccess } from '#experimental/utils/log_success';
+import { execSyncPretty } from '#utils/exec_sync_pretty';
+import { CanisterConfig } from '#utils/types';
+
 import { getCandidAndMethodMeta } from './candid_and_method_meta';
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
 import { getContext } from './get_context';

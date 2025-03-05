@@ -2,11 +2,11 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { getCanisterId } from '#dfx';
+import { Context, WasmData } from '#experimental/utils/types';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { CanisterConfig } from '#utils/types';
 
 import { getContext as getStableContext } from '../../../stable/commands/compile/get_context';
-import { AZLE_PACKAGE_PATH } from '../../../stable/utils/global_paths';
-import { CanisterConfig } from '../../../stable/utils/types';
-import { Context, WasmData } from '../../utils/types';
 import { getConsumer } from './open_value_sharing/consumer';
 
 export async function getContext(

@@ -1,7 +1,7 @@
 import { IOType } from 'child_process';
 
-import { execSyncPretty } from '../../../utils/exec_sync_pretty';
-import { AZLE_CARGO_TARGET_DIR } from '../../../utils/global_paths';
+import { execSyncPretty } from '#utils/exec_sync_pretty';
+import { AZLE_CARGO_TARGET_DIR } from '#utils/global_paths';
 
 export function compile(
     manifestPath: string,

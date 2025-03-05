@@ -1,4 +1,4 @@
-import { execSyncPretty } from '../../stable/utils/exec_sync_pretty';
+import { execSyncPretty } from '#utils/exec_sync_pretty';
 
 export function logSuccess(canisterName: string, canisterId: string): void {
     const replicaWebServerPort = execSyncPretty(`dfx info webserver-port`)

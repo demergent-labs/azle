@@ -1,7 +1,8 @@
 import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '../../src/build/stable/utils/global_paths';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+
 import { generateMarkdownReport } from './markdown';
 import { Statistics } from './statistics';
 

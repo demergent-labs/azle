@@ -1,7 +1,8 @@
 import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 
-import { CandidAndMethodMeta, CandidGen, WasmData } from '../../../utils/types';
+import { CandidAndMethodMeta, CandidGen, WasmData } from '#utils/types';
+
 import { getWasmBinary } from '../wasm_binary';
 import { execute } from './execute';
 

@@ -2,14 +2,15 @@ import { BuildOptions } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 import { join } from 'path';
 
+import { WASMEDGE_QUICKJS_PATH } from '#experimental/utils/global_paths';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+
 import {
     bundle,
     getBuildOptions as getStableBuildOptions,
     getTsConfigPath,
     handleClassApiCanister
 } from '../../../stable/commands/compile/javascript';
-import { AZLE_PACKAGE_PATH } from '../../../stable/utils/global_paths';
-import { WASMEDGE_QUICKJS_PATH } from '../../utils/global_paths';
 
 export async function compile(
     main: string,

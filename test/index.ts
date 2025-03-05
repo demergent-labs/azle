@@ -3,7 +3,7 @@ dns.setDefaultResultOrder('ipv4first');
 
 import { describe, expect, test } from '@jest/globals';
 
-import { execSyncPretty } from '../src/build/stable/utils/exec_sync_pretty';
+import { execSyncPretty } from '#utils/exec_sync_pretty';
 
 export { expect } from '@jest/globals';
 

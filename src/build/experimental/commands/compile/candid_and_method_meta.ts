@@ -2,14 +2,11 @@ import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
+import { WasmData } from '#experimental/utils/types';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { CandidAndMethodMeta, CandidGen, MethodMeta } from '#utils/types';
+
 import { execute } from '../../../stable/commands/compile/candid_and_method_meta/execute';
-import { AZLE_PACKAGE_PATH } from '../../../stable/utils/global_paths';
-import {
-    CandidAndMethodMeta,
-    CandidGen,
-    MethodMeta
-} from '../../../stable/utils/types';
-import { WasmData } from '../../utils/types';
 import { getWasmBinary } from './wasm_binary';
 
 export async function getCandidAndMethodMeta(

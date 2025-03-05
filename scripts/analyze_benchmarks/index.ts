@@ -1,7 +1,8 @@
 import { join } from 'path';
 
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+
 import { version as currentAzleVersion } from '../../package.json';
-import { AZLE_PACKAGE_PATH } from '../../src/build/stable/utils/global_paths';
 import { extractBenchmarksEntriesFromFiles } from './extractor';
 import { findBenchmarkFiles } from './file_finder';
 import { reportResults, StableAndExperimentalStatistics } from './reporter';

@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 
-import { AZLE_PACKAGE_PATH } from '../../src/build/stable/utils/global_paths';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+
 import { findBenchmarkFiles } from './file_finder';
 
 type BenchmarkIssue = {

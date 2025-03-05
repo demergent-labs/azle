@@ -3,7 +3,7 @@ import { CuzzConfig } from 'cuzz';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { DfxJson } from '../src/build/stable/utils/types';
+import { DfxJson } from '#utils/types';
 
 export async function runFuzzTests(): Promise<void> {
     const dfxJson = await getDfxJson();

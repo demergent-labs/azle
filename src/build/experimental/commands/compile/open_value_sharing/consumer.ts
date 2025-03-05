@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import { readFile } from 'fs/promises';
 import { glob } from 'glob';
 
-import { CanisterConfig } from '../../../../stable/utils/types';
+import { CanisterConfig } from '#utils/types';
 
 const DEFAULT_KILL_SWITCH: Consumer['killSwitch'] = true;
 const DEFAULT_PLATFORMS = ['icp'];

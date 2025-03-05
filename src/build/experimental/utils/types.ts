@@ -1,7 +1,8 @@
 import {
     Context as StableContext,
     WasmData as StableWasmData
-} from '../../stable/utils/types';
+} from '#utils/types';
+
 import { Consumer } from '../commands/compile/open_value_sharing/consumer';
 
 export type Context = {

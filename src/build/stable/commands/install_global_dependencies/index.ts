@@ -1,6 +1,7 @@
+import { execSyncPretty } from '#utils/exec_sync_pretty';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+
 import { azle } from '../../../../../package.json';
-import { execSyncPretty } from '../../utils/exec_sync_pretty';
-import { AZLE_PACKAGE_PATH } from '../../utils/global_paths';
 
 type DependencyName = 'node' | 'dfx' | 'rust' | 'wasi2ic';
 

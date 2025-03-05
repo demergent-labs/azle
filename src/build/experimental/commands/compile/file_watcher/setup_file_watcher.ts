@@ -1,8 +1,8 @@
 import { spawn } from 'child_process';
 import { join } from 'path';
 
-import { execSyncPretty } from '../../../../stable/utils/exec_sync_pretty';
-import { AZLE_PACKAGE_PATH } from '../../../../stable/utils/global_paths';
+import { execSyncPretty } from '#utils/exec_sync_pretty';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 
 export function setupFileWatcher(
     reloadedJsPath: string,

@@ -1,8 +1,9 @@
 import { IOType } from 'child_process';
 import { existsSync } from 'fs';
 
-import { STABLE_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
-import { MethodMeta, WasmData } from '../../../utils/types';
+import { STABLE_STATIC_CANISTER_TEMPLATE_PATH } from '#utils/global_paths';
+import { MethodMeta, WasmData } from '#utils/types';
+
 import { runCommand as runTemplateCommand } from '../../template';
 import { manipulateWasmBinary } from './manipulate';
 
