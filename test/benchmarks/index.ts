@@ -4,7 +4,7 @@ import { getCanisterId, whoami } from '#utils/dfx';
 
 // @ts-ignore We would have to add "resolveJsonModule": true to every test tsconfig.json file
 import { version } from '../../package.json';
-import { jsonParse, jsonStringify } from '../../src/lib/stable';
+import { jsonParse, jsonStringify } from '../../src/stable/lib';
 import { createActor } from './actor';
 
 type BenchmarkEntry = {

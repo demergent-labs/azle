@@ -1,1 +1,1 @@
-import '../../src/lib/stable/globals';
+import '../../src/stable/lib/globals';

@@ -2,9 +2,9 @@
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
 import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
-import { jsonReplacer } from '../stable/stable_structures/stable_json';
 import { ExportedCanisterClass } from './canister_methods';
 import { AzleIcStable } from './ic_apis/azle_ic_stable';
+import { jsonReplacer } from './stable_structures/stable_json';
 
 declare global {
     // eslint-disable-next-line no-var
