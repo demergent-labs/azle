@@ -11,7 +11,7 @@
     },
     "type": "module",
     "bin": {
-        "azle": "./src/build/index.ts"
+        "azle": "./src/build.ts"
     },
     "exports": {
         ".": "./src/lib/stable/index.ts",
@@ -22,8 +22,10 @@
         "./experimental/*": "./azle_exports/experimental/*.ts"
     },
     "imports": {
-        "#utils/*": "./src/build/stable/utils/*.ts",
-        "#experimental/utils/*": "./src/build/experimental/utils/*.ts"
+        "#utils/*": "./src/stable/build/utils/*.ts",
+        "#experimental/utils/*": "./src/experimental/build/utils/*.ts",
+        "#commands/*": "./src/stable/build/commands/*.ts",
+        "#experimental/commands/*": "./src/experimental/build/commands/*.ts"
     },
     "repository": {
         "type": "git",

@@ -1,1 +1,1 @@
-export * from '../../src/build/stable/utils/dfx';
+export * from '../../src/stable/build/utils/dfx';

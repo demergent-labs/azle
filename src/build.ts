@@ -3,26 +3,26 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
+import { runCommand as runCleanCommand } from '#commands/clean';
+import { runCommand as runStableCompileCommand } from '#commands/compile/index';
+import { runCommand as runGenerateTypesCommand } from '#commands/generate_types/index';
+import { runCommand as runInstallDfxExtensionCommand } from '#commands/install_dfx_extension';
+import { runCommand as runInstallGlobalDependenciesCommand } from '#commands/install_global_dependencies/index';
+import { runCommand as runNewCommand } from '#commands/new';
+import { runCommand as runStableTemplateCommand } from '#commands/template';
+import { runCommand as runVersionCommand } from '#commands/version';
+import { runCommand as runExperimentalCompileCommand } from '#experimental/commands/compile/index';
+import { runCommand as runExperimentalTemplateCommand } from '#experimental/commands/template';
+import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
+import {
+    experimentalMessageCli,
+    experimentalMessageDfxJson
+} from '#experimental/utils/experimental_message';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 import { CanisterConfig, Command } from '#utils/types';
 
-import { version as azleVersion } from '../../package.json';
-import { runCommand as runExperimentalCompileCommand } from './experimental/commands/compile';
-import { runCommand as runExperimentalTemplateCommand } from './experimental/commands/template';
-import { runCommand as runUploadAssetsCommand } from './experimental/commands/upload_assets';
-import {
-    experimentalMessageCli,
-    experimentalMessageDfxJson
-} from './experimental/utils/experimental_message';
-import { runCommand as runCleanCommand } from './stable/commands/clean';
-import { runCommand as runStableCompileCommand } from './stable/commands/compile';
-import { runCommand as runGenerateTypesCommand } from './stable/commands/generate_types';
-import { runCommand as runInstallDfxExtensionCommand } from './stable/commands/install_dfx_extension';
-import { runCommand as runInstallGlobalDependenciesCommand } from './stable/commands/install_global_dependencies';
-import { runCommand as runNewCommand } from './stable/commands/new';
-import { runCommand as runStableTemplateCommand } from './stable/commands/template';
-import { runCommand as runVersionCommand } from './stable/commands/version';
+import { version as azleVersion } from '../package.json';
 
 process.on('uncaughtException', (error: Error) => {
     const prefix = 'Azle BuildError';

@@ -16,8 +16,8 @@ export async function runCommand(ioType: IOType): Promise<void> {
         join(
             AZLE_PACKAGE_PATH,
             'src',
-            'build',
             'stable',
+            'build',
             'commands',
             'compile',
             'wasm_binary',
