@@ -39,7 +39,7 @@ export async function compile(
 export function getPrelude(main: string): string {
     return /*TS*/ `
         import 'azle/_internal/globals';
-        import 'azle/_internal/experimental/globals';
+        import 'azle/experimental/_internal/globals';
 
         import 'reflect-metadata';
 
