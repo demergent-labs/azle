@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'fs/promises';
 
-import { getCanisterId, whoami } from '#dfx';
+import { getCanisterId, whoami } from '#utils/dfx';
 
 // @ts-ignore We would have to add "resolveJsonModule": true to every test tsconfig.json file
 import { version } from '../../package.json';

@@ -1,8 +1,8 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { getCanisterId } from '#dfx';
 import { Context, WasmData } from '#experimental/utils/types';
+import { getCanisterId } from '#utils/dfx';
 import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 import { CanisterConfig } from '#utils/types';
 
