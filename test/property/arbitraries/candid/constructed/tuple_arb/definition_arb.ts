@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
-import { CandidType, Tuple } from '../../../../../../src/lib/experimental';
+import { CandidType, Tuple } from '#experimental/lib';
+
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {

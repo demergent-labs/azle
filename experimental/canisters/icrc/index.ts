@@ -1,4 +1,4 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
 import {
     Canister,
@@ -11,7 +11,8 @@ import {
     Tuple,
     update,
     Vec
-} from '../../';
+} from '#experimental/lib/index';
+
 import { Account, TransferArgs, TransferResult, Value } from './icrc_1';
 import {
     AllowanceArgs,

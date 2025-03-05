@@ -1,5 +1,6 @@
-import { float32 } from '../../../../src/lib/experimental';
-import { TypeMapping } from '../../../../src/lib/experimental/candid/type_mapping';
+import { float32 } from '#experimental/lib';
+import { TypeMapping } from '#experimental/lib/candid/type_mapping';
+
 import {
     AssertType,
     NotAnyAndExact,

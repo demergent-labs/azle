@@ -18,7 +18,8 @@ import {
     Principal,
     text,
     Void
-} from '../../../../../src/lib/experimental';
+} from '#experimental/lib';
+
 import { SimpleCandidType } from '../candid_type';
 
 export function candidTypeToRuntimeTypeObject(

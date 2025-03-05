@@ -1,8 +1,9 @@
 // TODO we aren't really testing that Func only accepts CandidType
 // TODO we aren't really testing the params and return type
 
-import { Func, Principal, Void } from '../../../src/lib/experimental';
-import { TypeMapping } from '../../../src/lib/experimental/candid/type_mapping';
+import { Func, Principal, Void } from '#experimental/lib';
+import { TypeMapping } from '#experimental/lib/candid/type_mapping';
+
 import {
     AssertType,
     NotAnyAndExact,

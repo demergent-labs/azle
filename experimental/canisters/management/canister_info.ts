@@ -1,18 +1,19 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
 // JS docs licensed under:
 //
 // - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
 //
 // Some documentation changed from original work.
-import { Opt } from '../../../src/lib/experimental/candid/types/constructed/opt';
-import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
-import { Variant } from '../../../src/lib/experimental/candid/types/constructed/variant';
-import { Vec } from '../../../src/lib/experimental/candid/types/constructed/vec';
-import { nat8 } from '../../../src/lib/experimental/candid/types/primitive/nats/nat8';
-import { nat64 } from '../../../src/lib/experimental/candid/types/primitive/nats/nat64';
-import { Null } from '../../../src/lib/experimental/candid/types/primitive/null';
-import { Principal } from '../../../src/lib/experimental/candid/types/reference/principal';
+import { Opt } from '#experimental/lib/candid/types/constructed/opt';
+import { Record } from '#experimental/lib/candid/types/constructed/record';
+import { Variant } from '#experimental/lib/candid/types/constructed/variant';
+import { Vec } from '#experimental/lib/candid/types/constructed/vec';
+import { nat8 } from '#experimental/lib/candid/types/primitive/nats/nat8';
+import { nat64 } from '#experimental/lib/candid/types/primitive/nats/nat64';
+import { Null } from '#experimental/lib/candid/types/primitive/null';
+import { Principal } from '#experimental/lib/candid/types/reference/principal';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { managementCanister } from '.'; // Used for links in comments
 

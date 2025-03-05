@@ -1,4 +1,4 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
 import {
     blob,
@@ -11,7 +11,8 @@ import {
     Record,
     text,
     Variant
-} from '../../';
+} from '#experimental/lib/index';
+
 import {
     BadBurn,
     BadFee,

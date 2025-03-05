@@ -1,16 +1,17 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
 // Some JS docs licensed under:
 //
 // - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
 //
 // Some documentation changed from original work.
-import { blob } from '../../../src/lib/experimental/candid/types/constructed/blob';
-import { Vec } from '../../../src/lib/experimental/candid/types/constructed/vec';
-import { Void } from '../../../src/lib/experimental/candid/types/primitive/void';
-import { Principal } from '../../../src/lib/experimental/candid/types/reference/principal';
-import { Canister } from '../../../src/lib/experimental/candid/types/reference/service';
-import { update } from '../../../src/lib/experimental/canister_methods/methods/update';
+import { blob } from '#experimental/lib/candid/types/constructed/blob';
+import { Vec } from '#experimental/lib/candid/types/constructed/vec';
+import { Void } from '#experimental/lib/candid/types/primitive/void';
+import { Principal } from '#experimental/lib/candid/types/reference/principal';
+import { Canister } from '#experimental/lib/candid/types/reference/service/index';
+import { update } from '#experimental/lib/canister_methods/methods/update';
+
 import {
     GetBalanceArgs,
     GetCurrentFeePercentilesArgs,

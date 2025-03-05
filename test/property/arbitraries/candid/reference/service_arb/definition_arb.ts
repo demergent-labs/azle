@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
-import { Canister } from '../../../../../../src/lib/experimental/candid/types/reference/service';
+import { Canister } from '#experimental/lib/candid/types/reference/service';
+
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {

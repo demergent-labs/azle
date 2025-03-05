@@ -5,7 +5,8 @@
 // TODO it seems to have an IDL function, even though the type says it shouldn't
 // TODO we probably need to rework Service/Canister a bit
 
-import { Canister } from '../../../src/lib/experimental';
+import { Canister } from '#experimental/lib';
+
 import { testCandidType } from '../../assert_type';
 
 const TestCanister = Canister({});

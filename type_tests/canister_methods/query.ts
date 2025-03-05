@@ -10,7 +10,8 @@ import {
     RequireExactlyOne,
     text,
     Variant
-} from '../../src/lib/experimental';
+} from '#experimental/lib';
+
 import { AssertType, NotAnyAndExact } from '../assert_type';
 
 const User = Record({

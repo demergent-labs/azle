@@ -1,10 +1,8 @@
 import fc from 'fast-check';
 
-import {
-    query,
-    update
-} from '../../../../../../src/lib/experimental/canister_methods/methods';
-import { CanisterMethodInfo } from '../../../../../../src/lib/experimental/canister_methods/types/canister_method_info';
+import { query, update } from '#experimental/lib/canister_methods/methods';
+import { CanisterMethodInfo } from '#experimental/lib/canister_methods/types/canister_method_info';
+
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Context } from '../../../types';
 import {

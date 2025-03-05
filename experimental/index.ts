@@ -1,3 +1,3 @@
-import '../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
-export * from '../src/lib/experimental';
+export * from '#experimental/lib/index';

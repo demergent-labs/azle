@@ -25,7 +25,9 @@
         "#utils/*": "./src/stable/build/utils/*.ts",
         "#experimental/utils/*": "./src/experimental/build/utils/*.ts",
         "#commands/*": "./src/stable/build/commands/*.ts",
-        "#experimental/commands/*": "./src/experimental/build/commands/*.ts"
+        "#experimental/commands/*": "./src/experimental/build/commands/*.ts",
+        "#lib/*": "./src/stable/lib/*.ts",
+        "#experimental/lib/*": "./src/experimental/lib/*.ts"
     },
     "repository": {
         "type": "git",

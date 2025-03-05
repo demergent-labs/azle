@@ -1,10 +1,11 @@
-import '../../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
 import { Principal } from '@dfinity/principal';
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import { sha224 } from 'js-sha256';
 
-import { blob } from '../../../../src/lib/experimental/candid/types/constructed/blob';
+import { blob } from '#experimental/lib/candid/types/constructed/blob';
+
 import { Address } from '../index';
 
 /**

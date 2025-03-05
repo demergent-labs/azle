@@ -1,7 +1,8 @@
 import fc from 'fast-check';
 
-import { CandidType } from '../../../../../../src/lib/experimental/candid/candid_type';
-import { Func } from '../../../../../../src/lib/experimental/candid/types/reference/func';
+import { CandidType } from '#experimental/lib/candid/candid_type';
+import { Func } from '#experimental/lib/candid/types/reference/func';
+
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {

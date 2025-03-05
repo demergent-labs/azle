@@ -1,4 +1,4 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
 import {
     blob,
@@ -10,7 +10,7 @@ import {
     Record,
     Variant,
     Vec
-} from '../../';
+} from '#experimental/lib/index';
 
 /**
  * @deprecated since Azle v0.26.0 - this will be removed in a future major release.

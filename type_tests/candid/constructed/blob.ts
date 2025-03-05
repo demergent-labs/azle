@@ -1,5 +1,6 @@
-import { blob } from '../../../src/lib/experimental';
-import { TypeMapping } from '../../../src/lib/experimental/candid/type_mapping';
+import { blob } from '#experimental/lib';
+import { TypeMapping } from '#experimental/lib/candid/type_mapping';
+
 import {
     AssertType,
     NotAnyAndExact,

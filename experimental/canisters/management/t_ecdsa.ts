@@ -1,13 +1,13 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
-import { blob } from '../../../src/lib/experimental/candid/types/constructed/blob';
-import { Opt } from '../../../src/lib/experimental/candid/types/constructed/opt';
-import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
-import { Variant } from '../../../src/lib/experimental/candid/types/constructed/variant';
-import { Vec } from '../../../src/lib/experimental/candid/types/constructed/vec';
-import { Null } from '../../../src/lib/experimental/candid/types/primitive/null';
-import { text } from '../../../src/lib/experimental/candid/types/primitive/text';
-import { Principal } from '../../../src/lib/experimental/candid/types/reference/principal';
+import { blob } from '#experimental/lib/candid/types/constructed/blob';
+import { Opt } from '#experimental/lib/candid/types/constructed/opt';
+import { Record } from '#experimental/lib/candid/types/constructed/record';
+import { Variant } from '#experimental/lib/candid/types/constructed/variant';
+import { Vec } from '#experimental/lib/candid/types/constructed/vec';
+import { Null } from '#experimental/lib/candid/types/primitive/null';
+import { text } from '#experimental/lib/candid/types/primitive/text';
+import { Principal } from '#experimental/lib/candid/types/reference/principal';
 
 /**
  * @deprecated since Azle v0.26.0 - this will be removed in a future major release.

@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
-import { CandidType, Recursive } from '../../../../../src/lib/experimental';
+import { CandidType, Recursive } from '#experimental/lib';
+
 import { Api, Context } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {

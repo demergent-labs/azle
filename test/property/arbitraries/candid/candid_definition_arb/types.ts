@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 
-import { CandidType as RuntimeCandidType } from '../../../../../src/lib/experimental/candid/candid_type';
+import { CandidType as RuntimeCandidType } from '#experimental/lib/candid/candid_type';
+
 import { Context } from '../../types';
 import { CandidType } from '../candid_type';
 import { RecursiveShapes } from '../recursive';

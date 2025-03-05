@@ -1,4 +1,4 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
 // TODO I am thinking we should use the same names as ic-btc-types
 import {
@@ -11,7 +11,7 @@ import {
     text,
     Variant,
     Vec
-} from '../../';
+} from '#experimental/lib/index';
 
 /**
  * @deprecated since Azle v0.26.0 - this will be removed in a future major release.

@@ -1,8 +1,8 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
-import { Record } from '../../../src/lib/experimental/candid/types/constructed/record';
-import { nat } from '../../../src/lib/experimental/candid/types/primitive/nats/nat';
-import { text } from '../../../src/lib/experimental/candid/types/primitive/text';
+import { Record } from '#experimental/lib/candid/types/constructed/record';
+import { nat } from '#experimental/lib/candid/types/primitive/nats/nat';
+import { text } from '#experimental/lib/candid/types/primitive/text';
 
 /**
  * @deprecated since Azle v0.26.0 - this will be removed in a future major release.

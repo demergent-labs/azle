@@ -1,4 +1,5 @@
-import { StableBTreeMap, text } from '../../src/lib/experimental';
+import { StableBTreeMap, text } from '#experimental/lib';
+
 import { AssertType, NotAnyAndExact } from '../assert_type';
 
 // TODO we would need to test all of the types for StableBTreeMap

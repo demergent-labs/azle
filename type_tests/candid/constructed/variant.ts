@@ -17,7 +17,8 @@ import {
     reserved,
     text,
     Variant
-} from '../../../src/lib/experimental';
+} from '#experimental/lib';
+
 import { testCandidType, testSerializable } from '../../assert_type';
 
 export const ExampleVariant = Variant({

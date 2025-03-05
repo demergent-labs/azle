@@ -1,4 +1,4 @@
-import '../../../src/lib/experimental/experimental';
+import '#experimental/lib/experimental';
 
 // Some JS docs licensed under:
 //
@@ -25,7 +25,8 @@ import {
     update,
     Variant,
     Vec
-} from '../../';
+} from '#experimental/lib/index';
+
 import * as icrc from '../icrc';
 
 /**
