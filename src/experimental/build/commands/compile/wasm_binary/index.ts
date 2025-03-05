@@ -4,7 +4,7 @@ import { existsSync } from 'fs';
 import { WasmData } from '#experimental/utils/types';
 import { MethodMeta } from '#utils/types';
 
-import { manipulateWasmBinary } from '../../../../stable/commands/compile/wasm_binary/manipulate';
+import { manipulateWasmBinary } from '../../../../../build/stable/commands/compile/wasm_binary/manipulate';
 import { EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
 import { runCommand as runTemplateCommand } from '../../template';
 

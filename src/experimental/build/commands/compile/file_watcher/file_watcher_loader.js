@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
 import 'tsx';
-import('./file_watcher.ts');
+import('./file_watcher.js');

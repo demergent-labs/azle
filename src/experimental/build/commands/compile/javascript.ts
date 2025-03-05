@@ -10,7 +10,7 @@ import {
     getBuildOptions as getStableBuildOptions,
     getTsConfigPath,
     handleClassApiCanister
-} from '../../../stable/commands/compile/javascript';
+} from '../../../../build/stable/commands/compile/javascript';
 
 export async function compile(
     main: string,

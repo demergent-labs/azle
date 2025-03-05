@@ -6,7 +6,7 @@ import { getCanisterId } from '#utils/dfx';
 import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 import { CanisterConfig } from '#utils/types';
 
-import { getContext as getStableContext } from '../../../stable/commands/compile/get_context';
+import { getContext as getStableContext } from '../../../../build/stable/commands/compile/get_context';
 import { getConsumer } from './open_value_sharing/consumer';
 
 export async function getContext(

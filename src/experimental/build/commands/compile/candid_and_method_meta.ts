@@ -6,7 +6,7 @@ import { WasmData } from '#experimental/utils/types';
 import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 import { CandidAndMethodMeta, CandidGen, MethodMeta } from '#utils/types';
 
-import { execute } from '../../../stable/commands/compile/candid_and_method_meta/execute';
+import { execute } from '../../../../build/stable/commands/compile/candid_and_method_meta/execute';
 import { getWasmBinary } from './wasm_binary';
 
 export async function getCandidAndMethodMeta(
