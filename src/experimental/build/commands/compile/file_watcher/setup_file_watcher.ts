@@ -34,8 +34,8 @@ export function setupFileWatcher(
             join(
                 AZLE_PACKAGE_PATH,
                 'src',
-                'build',
                 'experimental',
+                'build',
                 'commands',
                 'compile',
                 'file_watcher',

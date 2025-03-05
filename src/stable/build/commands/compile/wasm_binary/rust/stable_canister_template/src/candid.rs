@@ -4,11 +4,11 @@ use ic_cdk::trap;
 use rquickjs::{Context, Function, Module, Object, Runtime};
 
 use crate::{
-    CONTEXT_REF_CELL,
     error::{handle_promise_error, quickjs_call_with_error_handling},
     ic::register,
     quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
+    CONTEXT_REF_CELL,
 };
 
 type CCharPtr = *mut c_char;
