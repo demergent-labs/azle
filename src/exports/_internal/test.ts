@@ -1,1 +1,1 @@
-export * from '../../stable/test';
+export * from '#test/index';

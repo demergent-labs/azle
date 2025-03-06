@@ -33,6 +33,7 @@
         "#experimental/test/property/*": "./src/experimental/test/property/*.ts",
         "#experimental/utils/*": "./src/experimental/build/utils/*.ts",
         "#lib/*": "./src/stable/lib/*.ts",
+        "#test/*": "./src/stable/test/*.ts",
         "#test/property/*": "./src/stable/test/property/*.ts",
         "#test/type/*": "./src/stable/test/type/*.ts",
         "#utils/*": "./src/stable/build/utils/*.ts"
