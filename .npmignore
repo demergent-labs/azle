@@ -3,23 +3,10 @@
 
 # Whitelist
 !canister_templates/**
-!canisters/**
-!dfx/**
-!src/stable/build/dfx_extension/**
 !examples/stable/demo/hello_world/**
 !examples/experimental/demo/hello_world_http_server/**
-!experimental/**
-!http_client/**
-!property_tests/arbitraries/**
-!property_tests/test/**
-!property_tests/visitors/**
-!property_tests/are_params_correctly_ordered.ts
-!property_tests/get_actor.ts
-!property_tests/index.ts
 !.scripts/**
 !src/**
-!test/**
-!type_tests/**
 !.openvaluesharing.json
 !bin.mjs
 !install_script.sh
@@ -29,5 +16,4 @@
 !package-lock.json
 !package.json
 !README.md
-!src/experimental/lib/server.did
 !tsconfig.dev.json
