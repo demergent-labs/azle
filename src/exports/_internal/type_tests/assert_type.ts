@@ -1,1 +1,1 @@
-export * from '../../../../type_tests/assert_type';
+export * from '#test/type/assert_type';
