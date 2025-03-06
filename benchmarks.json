@@ -101,22 +101,22 @@
     },
     "0.28.0": {
         "stable": {
-            "count": 508,
-            "mean": 140719129.17716536,
-            "median": 985857,
-            "standardDeviation": 1531246550.501176,
-            "min": 166942,
-            "max": 21001607396,
-            "baselineWeightedEfficiencyScore": 14467835.217716537
+            "count": 510,
+            "mean": 140182384.04509804,
+            "median": 985070,
+            "standardDeviation": 1528436873.7347004,
+            "min": 166750,
+            "max": 21003608874,
+            "baselineWeightedEfficiencyScore": 14413809.404509805
         },
         "experimental": {
-            "count": 734,
-            "mean": 1319100223.920981,
-            "median": 77516650,
-            "standardDeviation": 3192665803.164833,
-            "min": 75892,
-            "max": 18469948920,
-            "baselineWeightedEfficiencyScore": 155210552.5920981
+            "count": 736,
+            "mean": 1322100465.8220108,
+            "median": 70639400,
+            "standardDeviation": 3216499914.560653,
+            "min": 75900,
+            "max": 18464957634,
+            "baselineWeightedEfficiencyScore": 153447406.58220106
         }
     }
 }
