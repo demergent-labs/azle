@@ -29,6 +29,7 @@ export async function getContext(
                 AZLE_PACKAGE_PATH,
                 'src',
                 'stable',
+                'lib',
                 'canisters',
                 'management',
                 'idl',
