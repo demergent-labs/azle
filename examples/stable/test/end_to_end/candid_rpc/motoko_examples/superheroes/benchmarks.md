@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
-| 0   | create      | 3_745_198    | 2_088_079 | $0.0000027765 | $2.77             | <font color="red">0</font> |
-| 1   | create      | 4_808_919    | 2_513_567 | $0.0000033422 | $3.34             | <font color="red">0</font> |
-| 2   | update      | 5_157_897    | 2_653_158 | $0.0000035278 | $3.52             | <font color="red">0</font> |
-| 3   | update      | 3_598_766    | 2_029_506 | $0.0000026986 | $2.69             | <font color="red">0</font> |
-| 4   | deleteHero  | 1_277_105    | 1_100_842 | $0.0000014638 | $1.46             | <font color="red">0</font> |
-| 5   | deleteHero  | 1_263_823    | 1_095_529 | $0.0000014567 | $1.45             | <font color="red">0</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | create      | 3_738_382    | 2_085_352 | $0.0000027728 | $2.77             | <font color="green">-6_816</font> |
+| 1   | create      | 4_815_056    | 2_516_022 | $0.0000033455 | $3.34             | <font color="red">+6_137</font>   |
+| 2   | update      | 5_159_286    | 2_653_714 | $0.0000035286 | $3.52             | <font color="red">+1_389</font>   |
+| 3   | update      | 3_608_077    | 2_033_230 | $0.0000027035 | $2.70             | <font color="red">+9_311</font>   |
+| 4   | deleteHero  | 1_277_431    | 1_100_972 | $0.0000014639 | $1.46             | <font color="red">+326</font>     |
+| 5   | deleteHero  | 1_263_579    | 1_095_431 | $0.0000014566 | $1.45             | <font color="green">-244</font>   |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

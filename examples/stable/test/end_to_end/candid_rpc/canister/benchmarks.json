@@ -37,29 +37,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "6506869"
+                        "__bigint__": "6507210"
                     },
                     "method_name": "canisterNestedReturnType",
                     "timestamp": {
-                        "__bigint__": "1740776234759138230"
+                        "__bigint__": "1741299878883688720"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "6949737"
+                        "__bigint__": "6957466"
                     },
                     "method_name": "canisterList",
                     "timestamp": {
-                        "__bigint__": "1740776235006996503"
+                        "__bigint__": "1741299879127070074"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2136552"
+                        "__bigint__": "2134869"
                     },
                     "method_name": "canisterCrossCanisterCall",
                     "timestamp": {
-                        "__bigint__": "1740776235522371052"
+                        "__bigint__": "1741299879369795927"
                     }
                 }
             ]

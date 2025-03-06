@@ -64,56 +64,56 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "4819760287"
+                        "__bigint__": "4819302143"
                     },
                     "method_name": "postUpgrade",
                     "timestamp": {
-                        "__bigint__": "1740776209006061094"
+                        "__bigint__": "1741299822438487966"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1040397"
+                        "__bigint__": "1043710"
                     },
                     "method_name": "randomNumber",
                     "timestamp": {
-                        "__bigint__": "1740776214994277499"
+                        "__bigint__": "1741299825813479674"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1026933"
+                        "__bigint__": "1030422"
                     },
                     "method_name": "randomNumber",
                     "timestamp": {
-                        "__bigint__": "1740776215239338277"
+                        "__bigint__": "1741299826116042384"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1025955"
+                        "__bigint__": "1029803"
                     },
                     "method_name": "randomNumber",
                     "timestamp": {
-                        "__bigint__": "1740776215484781948"
+                        "__bigint__": "1741299826599474837"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1026933"
+                        "__bigint__": "1029803"
                     },
                     "method_name": "randomNumber",
                     "timestamp": {
-                        "__bigint__": "1740776215728934629"
+                        "__bigint__": "1741299826847457275"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1025915"
+                        "__bigint__": "1029803"
                     },
                     "method_name": "randomNumber",
                     "timestamp": {
-                        "__bigint__": "1740776215973193947"
+                        "__bigint__": "1741299827094515209"
                     }
                 }
             ]

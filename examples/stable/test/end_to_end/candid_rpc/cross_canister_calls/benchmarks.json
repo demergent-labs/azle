@@ -127,119 +127,119 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "2461194"
+                        "__bigint__": "2465227"
                     },
                     "method_name": "balance",
                     "timestamp": {
-                        "__bigint__": "1740776214140769259"
+                        "__bigint__": "1741299863186633726"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "3829744"
+                        "__bigint__": "3833471"
                     },
                     "method_name": "account",
                     "timestamp": {
-                        "__bigint__": "1740776214384575252"
+                        "__bigint__": "1741299863651508364"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2389592"
+                        "__bigint__": "2396146"
                     },
                     "method_name": "balance",
                     "timestamp": {
-                        "__bigint__": "1740776214628715213"
+                        "__bigint__": "1741299863895701782"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "3808876"
+                        "__bigint__": "3821010"
                     },
                     "method_name": "account",
                     "timestamp": {
-                        "__bigint__": "1740776214872875780"
+                        "__bigint__": "1741299864143412142"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1295935"
+                        "__bigint__": "1299685"
                     },
                     "method_name": "accounts",
                     "timestamp": {
-                        "__bigint__": "1740776215117438812"
+                        "__bigint__": "1741299864410072021"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "3796109"
+                        "__bigint__": "3798701"
                     },
                     "method_name": "transfer",
                     "timestamp": {
-                        "__bigint__": "1740776215403010147"
+                        "__bigint__": "1741299864877152638"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2390972"
+                        "__bigint__": "2400421"
                     },
                     "method_name": "balance",
                     "timestamp": {
-                        "__bigint__": "1740776215871015562"
+                        "__bigint__": "1741299865123252476"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "3812184"
+                        "__bigint__": "3820213"
                     },
                     "method_name": "account",
                     "timestamp": {
-                        "__bigint__": "1740776216114195067"
+                        "__bigint__": "1741299865367019127"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2393648"
+                        "__bigint__": "2392346"
                     },
                     "method_name": "balance",
                     "timestamp": {
-                        "__bigint__": "1740776216360481811"
+                        "__bigint__": "1741299865654911340"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "3815491"
+                        "__bigint__": "3818256"
                     },
                     "method_name": "account",
                     "timestamp": {
-                        "__bigint__": "1740776216625587788"
+                        "__bigint__": "1741299866123177484"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1296350"
+                        "__bigint__": "1297388"
                     },
                     "method_name": "accounts",
                     "timestamp": {
-                        "__bigint__": "1740776217093253054"
+                        "__bigint__": "1741299866371427467"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1280113"
+                        "__bigint__": "1281159"
                     },
                     "method_name": "trap",
                     "timestamp": {
-                        "__bigint__": "1740776217343786448"
+                        "__bigint__": "1741299866616283263"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2910789"
+                        "__bigint__": "2916192"
                     },
                     "method_name": "sendNotification",
                     "timestamp": {
-                        "__bigint__": "1740776217589550925"
+                        "__bigint__": "1741299867106148294"
                     }
                 }
             ]
@@ -274,20 +274,20 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "2310516"
+                        "__bigint__": "2303795"
                     },
                     "method_name": "transfer",
                     "timestamp": {
-                        "__bigint__": "1740776215403010147"
+                        "__bigint__": "1741299864877152638"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1504966"
+                        "__bigint__": "1510028"
                     },
                     "method_name": "receiveNotification",
                     "timestamp": {
-                        "__bigint__": "1740776217589550925"
+                        "__bigint__": "1741299867106148294"
                     }
                 }
             ]

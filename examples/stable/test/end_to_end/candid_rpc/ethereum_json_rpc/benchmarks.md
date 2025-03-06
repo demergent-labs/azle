@@ -4,13 +4,13 @@
 
 | Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls | Change                             |
 | --- | ------------------- | ------------- | ----------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | init                | 1_106_086_014 | 843_024_405 | $0.0011209443 | $1_120.94         | <font color="red">+552_787</font>  |
-| 1   | ethGetBalance       | 28_573_783    | 12_019_513  | $0.0000159820 | $15.98            | <font color="green">-11_459</font> |
-| 2   | ethGetBalance       | 28_502_126    | 11_990_850  | $0.0000159439 | $15.94            | <font color="red">+9_112</font>    |
-| 3   | ethGetBalance       | 28_514_772    | 11_995_908  | $0.0000159506 | $15.95            | <font color="green">-16_335</font> |
-| 4   | ethGetBlockByNumber | 27_305_797    | 11_512_318  | $0.0000153076 | $15.30            | <font color="green">-4_227</font>  |
-| 5   | ethGetBlockByNumber | 27_295_902    | 11_508_360  | $0.0000153023 | $15.30            | <font color="red">+9_596</font>    |
-| 6   | ethGetBlockByNumber | 27_296_761    | 11_508_704  | $0.0000153028 | $15.30            | <font color="green">-3_543</font>  |
+| 0   | init                | 1_106_459_989 | 843_173_995 | $0.0011211432 | $1_121.14         | <font color="red">+926_762</font>  |
+| 1   | ethGetBalance       | 28_591_992    | 12_026_796  | $0.0000159917 | $15.99            | <font color="red">+6_750</font>    |
+| 2   | ethGetBalance       | 28_504_957    | 11_991_982  | $0.0000159454 | $15.94            | <font color="red">+11_943</font>   |
+| 3   | ethGetBalance       | 28_501_316    | 11_990_526  | $0.0000159434 | $15.94            | <font color="green">-29_791</font> |
+| 4   | ethGetBlockByNumber | 27_318_113    | 11_517_245  | $0.0000153141 | $15.31            | <font color="red">+8_089</font>    |
+| 5   | ethGetBlockByNumber | 27_343_910    | 11_527_564  | $0.0000153279 | $15.32            | <font color="red">+57_604</font>   |
+| 6   | ethGetBlockByNumber | 27_320_065    | 11_518_026  | $0.0000153152 | $15.31            | <font color="red">+19_761</font>   |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

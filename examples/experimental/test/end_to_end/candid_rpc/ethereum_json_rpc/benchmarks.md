@@ -4,13 +4,13 @@
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init                | 5_092_822_610 | 4_037_719_044 | $0.0053688339 | $5_368.83         | <font color="red">+1_753_773</font> |
-| 1   | ethGetBalance       | 180_891_236   | 72_946_494    | $0.0000969948 | $96.99            | <font color="red">+1_162_605</font> |
-| 2   | ethGetBalance       | 180_797_213   | 72_908_885    | $0.0000969448 | $96.94            | <font color="red">+856_238</font>   |
-| 3   | ethGetBalance       | 180_766_003   | 72_896_401    | $0.0000969282 | $96.92            | <font color="red">+1_014_072</font> |
-| 4   | ethGetBlockByNumber | 179_830_878   | 72_522_351    | $0.0000964308 | $96.43            | <font color="red">+1_210_501</font> |
-| 5   | ethGetBlockByNumber | 179_688_833   | 72_465_533    | $0.0000963552 | $96.35            | <font color="red">+1_175_712</font> |
-| 6   | ethGetBlockByNumber | 179_679_226   | 72_461_690    | $0.0000963501 | $96.35            | <font color="red">+989_871</font>   |
+| 0   | init                | 5_092_783_385 | 4_037_703_354 | $0.0053688130 | $5_368.81         | <font color="red">+1_714_548</font> |
+| 1   | ethGetBalance       | 180_938_296   | 72_965_318    | $0.0000970198 | $97.01            | <font color="red">+1_209_665</font> |
+| 2   | ethGetBalance       | 180_845_327   | 72_928_130    | $0.0000969703 | $96.97            | <font color="red">+904_352</font>   |
+| 3   | ethGetBalance       | 180_889_929   | 72_945_971    | $0.0000969941 | $96.99            | <font color="red">+1_137_998</font> |
+| 4   | ethGetBlockByNumber | 179_657_910   | 72_453_164    | $0.0000963388 | $96.33            | <font color="red">+1_037_533</font> |
+| 5   | ethGetBlockByNumber | 179_634_673   | 72_443_869    | $0.0000963264 | $96.32            | <font color="red">+1_121_552</font> |
+| 6   | ethGetBlockByNumber | 179_691_416   | 72_466_566    | $0.0000963566 | $96.35            | <font color="red">+1_002_061</font> |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

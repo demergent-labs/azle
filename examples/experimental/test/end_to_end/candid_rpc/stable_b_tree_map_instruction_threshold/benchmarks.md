@@ -2,11 +2,11 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                               |
-| --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | ------------------------------------ |
-| 0   | insertSmallRecord  | 17_851_344_576 | 13_941_127_830 | $0.0185370994 | $18_537.09        | <font color="red">+18_339_856</font> |
-| 1   | insertMediumRecord | 16_043_937_026 | 12_818_164_810 | $0.0170439292 | $17_043.92        | <font color="red">+4_166_097</font>  |
-| 2   | insertLargeRecord  | 18_469_948_920 | 14_588_569_568 | $0.0193979833 | $19_397.98        | <font color="red">+2_636_335</font>  |
+| Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                 |
+| --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | -------------------------------------- |
+| 0   | insertSmallRecord  | 17_816_550_930 | 13_927_210_372 | $0.0185185938 | $18_518.59        | <font color="green">-16_453_790</font> |
+| 1   | insertMediumRecord | 16_029_632_084 | 12_812_442_833 | $0.0170363209 | $17_036.32        | <font color="green">-10_138_845</font> |
+| 2   | insertLargeRecord  | 18_464_957_634 | 14_586_573_053 | $0.0193953286 | $19_395.32        | <font color="green">-2_354_951</font>  |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

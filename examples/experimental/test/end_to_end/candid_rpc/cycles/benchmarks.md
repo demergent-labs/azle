@@ -4,9 +4,9 @@
 
 | Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
 | --- | ------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | receiveCycles | 1_144_745    | 1_047_898 | $0.0000013934 | $1.39             | <font color="red">+1_503</font> |
-| 1   | receiveCycles | 1_229_796    | 1_081_918 | $0.0000014386 | $1.43             | <font color="red">+305</font>   |
-| 2   | receiveCycles | 1_232_229    | 1_082_891 | $0.0000014399 | $1.43             | <font color="red">+2_114</font> |
+| 0   | receiveCycles | 1_146_114    | 1_048_445 | $0.0000013941 | $1.39             | <font color="red">+2_872</font> |
+| 1   | receiveCycles | 1_230_393    | 1_082_157 | $0.0000014389 | $1.43             | <font color="red">+902</font>   |
+| 2   | receiveCycles | 1_230_757    | 1_082_302 | $0.0000014391 | $1.43             | <font color="red">+642</font>   |
 
 ## Baseline benchmarks Azle version: 0.27.0
 
@@ -20,10 +20,10 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | sendCycles       | 10_584_784   | 4_823_913 | $0.0000064142 | $6.41             | <font color="green">-3_066</font> |
-| 1   | sendCyclesNotify | 1_719_849    | 1_277_939 | $0.0000016992 | $1.69             | <font color="red">+4_098</font>   |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | sendCycles       | 10_570_418   | 4_818_167 | $0.0000064066 | $6.40             | <font color="green">-17_432</font> |
+| 1   | sendCyclesNotify | 1_715_012    | 1_276_004 | $0.0000016967 | $1.69             | <font color="green">-739</font>    |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

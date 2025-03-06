@@ -4,20 +4,20 @@
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | manualUpdate   | 677_590      | 861_036   | $0.0000011449 | $1.14             | <font color="green">-953</font>    |
-| 1   | manualUpdate   | 1_583_129    | 1_223_251 | $0.0000016265 | $1.62             | <font color="green">-7_055</font>  |
-| 2   | updateBlob     | 1_451_879    | 1_170_751 | $0.0000015567 | $1.55             | <font color="green">-4_760</font>  |
-| 3   | updateFloat32  | 999_783      | 989_913   | $0.0000013163 | $1.31             | <font color="green">-6_484</font>  |
-| 4   | updateInt8     | 1_092_985    | 1_027_194 | $0.0000013658 | $1.36             | <font color="green">-7_021</font>  |
-| 5   | updateNat      | 1_486_216    | 1_184_486 | $0.0000015750 | $1.57             | <font color="green">-13_112</font> |
-| 6   | updateNull     | 986_318      | 984_527   | $0.0000013091 | $1.30             | <font color="green">-6_045</font>  |
-| 7   | updateVoid     | 843_475      | 927_390   | $0.0000012331 | $1.23             | <font color="green">-5_145</font>  |
-| 8   | updateRecord   | 16_531_050   | 7_202_420 | $0.0000095768 | $9.57             | <font color="red">+37_255</font>   |
-| 9   | updateReserved | 984_599      | 983_839   | $0.0000013082 | $1.30             | <font color="green">-7_284</font>  |
-| 10  | updateString   | 1_241_669    | 1_086_667 | $0.0000014449 | $1.44             | <font color="green">-6_226</font>  |
-| 11  | updateVariant  | 4_293_953    | 2_307_581 | $0.0000030683 | $3.06             | <font color="green">-15_513</font> |
-| 12  | updateFloat32  | 997_231      | 988_892   | $0.0000013149 | $1.31             | <font color="green">-7_398</font>  |
-| 13  | replyRaw       | 459_505      | 773_802   | $0.0000010289 | $1.02             | <font color="green">-684</font>    |
+| 0   | manualUpdate   | 677_444      | 860_977   | $0.0000011448 | $1.14             | <font color="green">-1_099</font>  |
+| 1   | manualUpdate   | 1_583_680    | 1_223_472 | $0.0000016268 | $1.62             | <font color="green">-6_504</font>  |
+| 2   | updateBlob     | 1_448_059    | 1_169_223 | $0.0000015547 | $1.55             | <font color="green">-8_580</font>  |
+| 3   | updateFloat32  | 999_822      | 989_928   | $0.0000013163 | $1.31             | <font color="green">-6_445</font>  |
+| 4   | updateInt8     | 1_092_806    | 1_027_122 | $0.0000013657 | $1.36             | <font color="green">-7_200</font>  |
+| 5   | updateNat      | 1_485_333    | 1_184_133 | $0.0000015745 | $1.57             | <font color="green">-13_995</font> |
+| 6   | updateNull     | 986_305      | 984_522   | $0.0000013091 | $1.30             | <font color="green">-6_058</font>  |
+| 7   | updateVoid     | 843_930      | 927_572   | $0.0000012334 | $1.23             | <font color="green">-4_690</font>  |
+| 8   | updateRecord   | 16_537_869   | 7_205_147 | $0.0000095805 | $9.58             | <font color="red">+44_074</font>   |
+| 9   | updateReserved | 985_598      | 984_239   | $0.0000013087 | $1.30             | <font color="green">-6_285</font>  |
+| 10  | updateString   | 1_241_763    | 1_086_705 | $0.0000014450 | $1.44             | <font color="green">-6_132</font>  |
+| 11  | updateVariant  | 4_295_328    | 2_308_131 | $0.0000030691 | $3.06             | <font color="green">-14_138</font> |
+| 12  | updateFloat32  | 997_668      | 989_067   | $0.0000013151 | $1.31             | <font color="green">-6_961</font>  |
+| 13  | replyRaw       | 459_519      | 773_807   | $0.0000010289 | $1.02             | <font color="green">-670</font>    |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

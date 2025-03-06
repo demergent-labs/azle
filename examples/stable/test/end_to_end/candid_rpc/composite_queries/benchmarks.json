@@ -19,11 +19,11 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1352290"
+                        "__bigint__": "1358187"
                     },
                     "method_name": "simpleUpdate",
                     "timestamp": {
-                        "__bigint__": "1740776222234078307"
+                        "__bigint__": "1741299877778915177"
                     }
                 }
             ]

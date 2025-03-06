@@ -37,29 +37,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1609613"
+                        "__bigint__": "1611010"
                     },
                     "method_name": "receiveCycles",
                     "timestamp": {
-                        "__bigint__": "1740776220664260725"
+                        "__bigint__": "1741299862707783502"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1606409"
+                        "__bigint__": "1606592"
                     },
                     "method_name": "receiveCycles",
                     "timestamp": {
-                        "__bigint__": "1740776220906852233"
+                        "__bigint__": "1741299862950403384"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1608339"
+                        "__bigint__": "1605147"
                     },
                     "method_name": "receiveCycles",
                     "timestamp": {
-                        "__bigint__": "1740776221150786079"
+                        "__bigint__": "1741299863193706393"
                     }
                 }
             ]
@@ -94,20 +94,20 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1360820"
+                        "__bigint__": "1359391"
                     },
                     "method_name": "sendCycles",
                     "timestamp": {
-                        "__bigint__": "1740776220906852233"
+                        "__bigint__": "1741299862950403384"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1720120"
+                        "__bigint__": "1719103"
                     },
                     "method_name": "sendCyclesNotify",
                     "timestamp": {
-                        "__bigint__": "1740776221150786079"
+                        "__bigint__": "1741299863193706393"
                     }
                 }
             ]

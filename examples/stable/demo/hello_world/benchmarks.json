@@ -19,11 +19,11 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1406588"
+                        "__bigint__": "1411760"
                     },
                     "method_name": "setMessage",
                     "timestamp": {
-                        "__bigint__": "1740776318783239692"
+                        "__bigint__": "1741299830215277891"
                     }
                 }
             ]

@@ -2,10 +2,10 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | initializeSupply | 2_185_336    | 1_464_134 | $0.0000019468 | $1.94             | <font color="red">+3_539</font>  |
-| 1   | transfer         | 1_809_499    | 1_313_799 | $0.0000017469 | $1.74             | <font color="red">+11_496</font> |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | initializeSupply | 2_186_197    | 1_464_478 | $0.0000019473 | $1.94             | <font color="red">+4_400</font> |
+| 1   | transfer         | 1_801_000    | 1_310_400 | $0.0000017424 | $1.74             | <font color="red">+2_997</font> |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

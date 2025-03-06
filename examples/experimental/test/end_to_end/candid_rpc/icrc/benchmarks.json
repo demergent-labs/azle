@@ -46,38 +46,38 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "95132295"
+                        "__bigint__": "95215963"
                     },
                     "method_name": "icrc1_transfer",
                     "timestamp": {
-                        "__bigint__": "1740776222946610349"
+                        "__bigint__": "1741299839592054718"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "102700183"
+                        "__bigint__": "102811397"
                     },
                     "method_name": "icrc2_approve",
                     "timestamp": {
-                        "__bigint__": "1740776223421769884"
+                        "__bigint__": "1741299839864181168"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "100252542"
+                        "__bigint__": "100370179"
                     },
                     "method_name": "icrc2_transfer_from",
                     "timestamp": {
-                        "__bigint__": "1740776223894677309"
+                        "__bigint__": "1741299840537587874"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "86620187"
+                        "__bigint__": "86620767"
                     },
                     "method_name": "icrc2_allowance",
                     "timestamp": {
-                        "__bigint__": "1740776224166659854"
+                        "__bigint__": "1741299840811793282"
                     }
                 }
             ]

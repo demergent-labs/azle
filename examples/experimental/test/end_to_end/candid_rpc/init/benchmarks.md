@@ -2,9 +2,9 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
-| 0   | init        | 4_826_695_179 | 3_531_268_071 | $0.0046954212 | $4_695.42         | <font color="red">+329_816</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                           |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | -------------------------------- |
+| 0   | init        | 4_826_427_221 | 3_531_160_888 | $0.0046952787 | $4_695.27         | <font color="red">+61_858</font> |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

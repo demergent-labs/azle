@@ -55,47 +55,47 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1256550"
+                        "__bigint__": "1255707"
                     },
                     "method_name": "fac",
                     "timestamp": {
-                        "__bigint__": "1740776193490535586"
+                        "__bigint__": "1741299813568266132"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1257741"
+                        "__bigint__": "1258074"
                     },
                     "method_name": "fac",
                     "timestamp": {
-                        "__bigint__": "1740776193954525612"
+                        "__bigint__": "1741299813815493652"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1718018"
+                        "__bigint__": "1723010"
                     },
                     "method_name": "fac",
                     "timestamp": {
-                        "__bigint__": "1740776194197812596"
+                        "__bigint__": "1741299814062340759"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2967599"
+                        "__bigint__": "2985281"
                     },
                     "method_name": "fac",
                     "timestamp": {
-                        "__bigint__": "1740776194439958818"
+                        "__bigint__": "1741299814308829053"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "5520424"
+                        "__bigint__": "5518637"
                     },
                     "method_name": "fac",
                     "timestamp": {
-                        "__bigint__": "1740776194725547628"
+                        "__bigint__": "1741299814554827632"
                     }
                 }
             ]

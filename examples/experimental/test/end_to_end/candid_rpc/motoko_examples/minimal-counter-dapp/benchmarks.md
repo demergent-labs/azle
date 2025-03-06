@@ -2,12 +2,12 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | count       | 1_129_314    | 1_041_725 | $0.0000013852 | $1.38             | <font color="red">+1_106</font> |
-| 1   | count       | 1_098_863    | 1_029_545 | $0.0000013690 | $1.36             | <font color="red">+772</font>   |
-| 2   | reset       | 1_098_134    | 1_029_253 | $0.0000013686 | $1.36             | <font color="red">+1_173</font> |
-| 3   | count       | 1_104_509    | 1_031_803 | $0.0000013720 | $1.37             | <font color="red">+1_381</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | count       | 1_126_680    | 1_040_672 | $0.0000013838 | $1.38             | <font color="green">-1_528</font> |
+| 1   | count       | 1_097_302    | 1_028_920 | $0.0000013681 | $1.36             | <font color="green">-789</font>   |
+| 2   | reset       | 1_096_921    | 1_028_768 | $0.0000013679 | $1.36             | <font color="green">-40</font>    |
+| 3   | count       | 1_103_243    | 1_031_297 | $0.0000013713 | $1.37             | <font color="red">+115</font>     |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

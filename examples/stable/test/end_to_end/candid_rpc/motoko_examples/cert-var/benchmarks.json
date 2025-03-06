@@ -127,119 +127,119 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "2079078"
+                        "__bigint__": "2072835"
                     },
                     "method_name": "set",
                     "timestamp": {
-                        "__bigint__": "1740776210131526588"
+                        "__bigint__": "1741299850655279746"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2309960"
+                        "__bigint__": "2306512"
                     },
                     "method_name": "inc",
                     "timestamp": {
-                        "__bigint__": "1740776210652294055"
+                        "__bigint__": "1741299852320404817"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2048501"
+                        "__bigint__": "2048937"
                     },
                     "method_name": "set",
                     "timestamp": {
-                        "__bigint__": "1740776210894466498"
+                        "__bigint__": "1741299852580533933"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2308540"
+                        "__bigint__": "2305137"
                     },
                     "method_name": "inc",
                     "timestamp": {
-                        "__bigint__": "1740776211383475744"
+                        "__bigint__": "1741299853043907052"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2052269"
+                        "__bigint__": "2048640"
                     },
                     "method_name": "set",
                     "timestamp": {
-                        "__bigint__": "1740776211625430734"
+                        "__bigint__": "1741299853284986048"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2312547"
+                        "__bigint__": "2308378"
                     },
                     "method_name": "inc",
                     "timestamp": {
-                        "__bigint__": "1740776211867808452"
+                        "__bigint__": "1741299853526158104"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2046388"
+                        "__bigint__": "2047337"
                     },
                     "method_name": "set",
                     "timestamp": {
-                        "__bigint__": "1740776212110674456"
+                        "__bigint__": "1741299854030577069"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2307346"
+                        "__bigint__": "2310084"
                     },
                     "method_name": "inc",
                     "timestamp": {
-                        "__bigint__": "1740776212624238445"
+                        "__bigint__": "1741299854271620696"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2048219"
+                        "__bigint__": "2049240"
                     },
                     "method_name": "set",
                     "timestamp": {
-                        "__bigint__": "1740776212866369698"
+                        "__bigint__": "1741299854513551058"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2309934"
+                        "__bigint__": "2308937"
                     },
                     "method_name": "inc",
                     "timestamp": {
-                        "__bigint__": "1740776213108752250"
+                        "__bigint__": "1741299854755633792"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2050154"
+                        "__bigint__": "2047686"
                     },
                     "method_name": "set",
                     "timestamp": {
-                        "__bigint__": "1740776213350906831"
+                        "__bigint__": "1741299854996233225"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2309221"
+                        "__bigint__": "2307199"
                     },
                     "method_name": "inc",
                     "timestamp": {
-                        "__bigint__": "1740776213863781549"
+                        "__bigint__": "1741299855483049299"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2090778"
+                        "__bigint__": "2088690"
                     },
                     "method_name": "set",
                     "timestamp": {
-                        "__bigint__": "1740776214105535779"
+                        "__bigint__": "1741299855724848185"
                     }
                 }
             ]

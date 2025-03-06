@@ -2,12 +2,12 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name                  | Instructions | Cycles  | USD           | USD/Million Calls | Change                         |
-| --- | ---------------------------- | ------------ | ------- | ------------- | ----------------- | ------------------------------ |
-| 0   | getRandomnessDirectly        | 986_462      | 984_584 | $0.0000013092 | $1.30             | <font color="green">-42</font> |
-| 1   | getRandomnessIndirectly      | 929_381      | 961_752 | $0.0000012788 | $1.27             | <font color="red">+49</font>   |
-| 2   | getRandomnessSuperIndirectly | 967_148      | 976_859 | $0.0000012989 | $1.29             | <font color="green">-70</font> |
-| 3   | returnPromiseVoid            | 916_095      | 956_438 | $0.0000012717 | $1.27             | <font color="green">-42</font> |
+| Id  | Method Name                  | Instructions | Cycles  | USD           | USD/Million Calls | Change                          |
+| --- | ---------------------------- | ------------ | ------- | ------------- | ----------------- | ------------------------------- |
+| 0   | getRandomnessDirectly        | 987_827      | 985_130 | $0.0000013099 | $1.30             | <font color="red">+1_323</font> |
+| 1   | getRandomnessIndirectly      | 933_187      | 963_274 | $0.0000012808 | $1.28             | <font color="red">+3_855</font> |
+| 2   | getRandomnessSuperIndirectly | 967_333      | 976_933 | $0.0000012990 | $1.29             | <font color="red">+115</font>   |
+| 3   | returnPromiseVoid            | 918_237      | 957_294 | $0.0000012729 | $1.27             | <font color="red">+2_100</font> |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

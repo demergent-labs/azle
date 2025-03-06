@@ -64,56 +64,56 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "2082599"
+                        "__bigint__": "2082472"
                     },
                     "method_name": "addTodo",
                     "timestamp": {
-                        "__bigint__": "1740776224627877420"
+                        "__bigint__": "1741299861089847521"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1787426"
+                        "__bigint__": "1784447"
                     },
                     "method_name": "addTodo",
                     "timestamp": {
-                        "__bigint__": "1740776225129276080"
+                        "__bigint__": "1741299861333393714"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1055357"
+                        "__bigint__": "1055651"
                     },
                     "method_name": "completeTodo",
                     "timestamp": {
-                        "__bigint__": "1740776225390407420"
+                        "__bigint__": "1741299861816513627"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "985252"
+                        "__bigint__": "985876"
                     },
                     "method_name": "clearCompleted",
                     "timestamp": {
-                        "__bigint__": "1740776225634457808"
+                        "__bigint__": "1741299862058685320"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1050439"
+                        "__bigint__": "1047920"
                     },
                     "method_name": "completeTodo",
                     "timestamp": {
-                        "__bigint__": "1740776225885375861"
+                        "__bigint__": "1741299862302516367"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "969826"
+                        "__bigint__": "970308"
                     },
                     "method_name": "clearCompleted",
                     "timestamp": {
-                        "__bigint__": "1740776226381047821"
+                        "__bigint__": "1741299862544739789"
                     }
                 }
             ]

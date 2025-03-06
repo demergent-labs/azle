@@ -2,59 +2,63 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name           | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | --------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | separateArilsFromPith | 5_090_938_030 | 4_036_965_212 | $0.0053678315 | $5_367.83         | <font color="red">+93_732</font>      |
-| 1   | buyHoneydew           | 8_869_431     | 4_137_772     | $0.0000055019 | $5.50             | <font color="red">+5_232</font>       |
-| 2   | buyHoneydew           | 8_871_479     | 4_138_591     | $0.0000055030 | $5.50             | <font color="green">-783</font>       |
-| 3   | buyHoneydew           | 8_871_504     | 4_138_601     | $0.0000055030 | $5.50             | <font color="green">-783</font>       |
-| 4   | buyHoneydew           | 8_871_480     | 4_138_592     | $0.0000055030 | $5.50             | <font color="green">-783</font>       |
-| 5   | buyHoneydew           | 8_871_504     | 4_138_601     | $0.0000055030 | $5.50             | <font color="green">-668</font>       |
-| 6   | buyHoneydew           | 8_871_480     | 4_138_592     | $0.0000055030 | $5.50             | <font color="green">-626</font>       |
-| 7   | buyHoneydew           | 8_871_506     | 4_138_602     | $0.0000055030 | $5.50             | <font color="green">-626</font>       |
-| 8   | buyHoneydew           | 8_871_480     | 4_138_592     | $0.0000055030 | $5.50             | <font color="green">-626</font>       |
-| 9   | buyHoneydew           | 8_871_504     | 4_138_601     | $0.0000055030 | $5.50             | <font color="green">-407</font>       |
-| 10  | buyHoneydew           | 8_871_479     | 4_138_591     | $0.0000055030 | $5.50             | <font color="green">-407</font>       |
-| 11  | buyHoneydew           | 8_883_421     | 4_143_368     | $0.0000055093 | $5.50             | <font color="green">-407</font>       |
-| 12  | buyHoneydew           | 8_909_008     | 4_153_603     | $0.0000055229 | $5.52             | <font color="green">-117</font>       |
-| 13  | buyHoneydew           | 8_909_034     | 4_153_613     | $0.0000055229 | $5.52             | <font color="green">-117</font>       |
-| 14  | buyHoneydew           | 8_909_008     | 4_153_603     | $0.0000055229 | $5.52             | <font color="green">-117</font>       |
-| 15  | buyHoneydew           | 8_909_033     | 4_153_613     | $0.0000055229 | $5.52             | <font color="green">-117</font>       |
-| 16  | buyHoneydew           | 8_909_008     | 4_153_603     | $0.0000055229 | $5.52             | <font color="green">-117</font>       |
-| 17  | buyHoneydew           | 8_909_321     | 4_153_728     | $0.0000055231 | $5.52             | <font color="green">-121</font>       |
-| 18  | buyHoneydew           | 8_909_297     | 4_153_718     | $0.0000055231 | $5.52             | <font color="green">-121</font>       |
-| 19  | buyHoneydew           | 8_909_321     | 4_153_728     | $0.0000055231 | $5.52             | <font color="green">-121</font>       |
-| 20  | buyHoneydew           | 8_909_297     | 4_153_718     | $0.0000055231 | $5.52             | <font color="green">-121</font>       |
-| 21  | buyHoneydew           | 8_909_321     | 4_153_728     | $0.0000055231 | $5.52             | <font color="green">-121</font>       |
-| 22  | setStable             | 2_051_074     | 1_410_429     | $0.0000018754 | $1.87             | <font color="green">-6_858_345</font> |
-| 23  | buyHoneydew           | 8_908_989     | 4_153_595     | $0.0000055229 | $5.52             | <font color="green">-455</font>       |
-| 24  | buyHoneydew           | 8_908_938     | 4_153_575     | $0.0000055229 | $5.52             | <font color="red">+6_860_235</font>   |
-| 25  | buyHoneydew           | 8_908_912     | 4_153_564     | $0.0000055229 | $5.52             | <font color="red">+14_280</font>      |
-| 26  | buyHoneydew           | 8_908_935     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 27  | buyHoneydew           | 8_908_911     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 28  | buyHoneydew           | 8_908_935     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 29  | buyHoneydew           | 8_908_912     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 30  | buyHoneydew           | 8_908_936     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 31  | buyHoneydew           | 8_908_911     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 32  | buyHoneydew           | 8_908_935     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 33  | buyHoneydew           | 8_908_911     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 34  | buyHoneydew           | 8_908_935     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 35  | buyHoneydew           | 8_908_912     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 36  | buyHoneydew           | 8_908_936     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 37  | buyHoneydew           | 8_908_911     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 38  | buyHoneydew           | 8_908_939     | 4_153_575     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 39  | buyHoneydew           | 8_908_913     | 4_153_565     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 40  | buyHoneydew           | 8_908_937     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 41  | buyHoneydew           | 8_908_911     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 42  | buyHoneydew           | 8_908_937     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 43  | buyHoneydew           | 8_908_911     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 44  | buyHoneydew           | 8_908_935     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 45  | buyHoneydew           | 8_908_912     | 4_153_564     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 46  | buyHoneydew           | 8_908_935     | 4_153_574     | $0.0000055229 | $5.52             | <font color="green">-483</font>       |
-| 47  | buyHoneydew           | 8_908_958     | 4_153_583     | $0.0000055229 | $5.52             | <font color="green">-438</font>       |
-| 48  | buyHoneydew           | 8_909_217     | 4_153_686     | $0.0000055230 | $5.52             | <font color="green">-178</font>       |
-| 49  | buyHoneydew           | 8_909_216     | 4_153_686     | $0.0000055230 | $5.52             | <font color="green">-203</font>       |
-| 50  | buyHoneydew           | 8_909_751     | 4_153_900     | $0.0000055233 | $5.52             | <font color="red">+357</font>         |
+| Id  | Method Name           | Instructions  | Cycles        | USD           | USD/Million Calls | Change                             |
+| --- | --------------------- | ------------- | ------------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | separateArilsFromPith | 5_090_818_456 | 4_036_917_382 | $0.0053677679 | $5_367.76         | <font color="green">-25_842</font> |
+| 1   | buyHoneydew           | 8_871_615     | 4_138_646     | $0.0000055030 | $5.50             | <font color="red">+7_416</font>    |
+| 2   | buyHoneydew           | 8_871_589     | 4_138_635     | $0.0000055030 | $5.50             | <font color="green">-673</font>    |
+| 3   | buyHoneydew           | 8_871_614     | 4_138_645     | $0.0000055030 | $5.50             | <font color="green">-673</font>    |
+| 4   | buyHoneydew           | 8_871_590     | 4_138_636     | $0.0000055030 | $5.50             | <font color="green">-673</font>    |
+| 5   | buyHoneydew           | 8_871_632     | 4_138_652     | $0.0000055030 | $5.50             | <font color="green">-540</font>    |
+| 6   | buyHoneydew           | 8_871_554     | 4_138_621     | $0.0000055030 | $5.50             | <font color="green">-552</font>    |
+| 7   | buyHoneydew           | 8_871_580     | 4_138_632     | $0.0000055030 | $5.50             | <font color="green">-552</font>    |
+| 8   | buyHoneydew           | 8_871_554     | 4_138_621     | $0.0000055030 | $5.50             | <font color="green">-552</font>    |
+| 9   | buyHoneydew           | 8_870_954     | 4_138_381     | $0.0000055027 | $5.50             | <font color="green">-957</font>    |
+| 10  | buyHoneydew           | 8_882_837     | 4_143_134     | $0.0000055090 | $5.50             | <font color="red">+10_951</font>   |
+| 11  | buyHoneydew           | 8_907_895     | 4_153_158     | $0.0000055223 | $5.52             | <font color="red">+24_067</font>   |
+| 12  | buyHoneydew           | 8_907_871     | 4_153_148     | $0.0000055223 | $5.52             | <font color="green">-1_254</font>  |
+| 13  | buyHoneydew           | 8_907_895     | 4_153_158     | $0.0000055223 | $5.52             | <font color="green">-1_256</font>  |
+| 14  | buyHoneydew           | 8_907_871     | 4_153_148     | $0.0000055223 | $5.52             | <font color="green">-1_254</font>  |
+| 15  | buyHoneydew           | 8_907_896     | 4_153_158     | $0.0000055223 | $5.52             | <font color="green">-1_254</font>  |
+| 16  | buyHoneydew           | 8_907_872     | 4_153_148     | $0.0000055223 | $5.52             | <font color="green">-1_253</font>  |
+| 17  | buyHoneydew           | 8_908_541     | 4_153_416     | $0.0000055227 | $5.52             | <font color="green">-901</font>    |
+| 18  | buyHoneydew           | 8_908_497     | 4_153_398     | $0.0000055226 | $5.52             | <font color="green">-921</font>    |
+| 19  | buyHoneydew           | 8_908_521     | 4_153_408     | $0.0000055227 | $5.52             | <font color="green">-921</font>    |
+| 20  | buyHoneydew           | 8_908_495     | 4_153_398     | $0.0000055226 | $5.52             | <font color="green">-923</font>    |
+| 21  | buyHoneydew           | 8_908_520     | 4_153_408     | $0.0000055227 | $5.52             | <font color="green">-922</font>    |
+| 22  | buyHoneydew           | 8_908_496     | 4_153_398     | $0.0000055226 | $5.52             | <font color="green">-923</font>    |
+| 23  | buyHoneydew           | 8_908_521     | 4_153_408     | $0.0000055227 | $5.52             | <font color="green">-923</font>    |
+| 24  | setStable             | 2_056_689     | 1_412_675     | $0.0000018784 | $1.87             | <font color="red">+7_986</font>    |
+| 25  | buyHoneydew           | 8_906_591     | 4_152_636     | $0.0000055216 | $5.52             | <font color="red">+11_959</font>   |
+| 26  | buyHoneydew           | 8_905_968     | 4_152_387     | $0.0000055213 | $5.52             | <font color="green">-3_450</font>  |
+| 27  | buyHoneydew           | 8_905_942     | 4_152_376     | $0.0000055213 | $5.52             | <font color="green">-3_452</font>  |
+| 28  | buyHoneydew           | 8_905_967     | 4_152_386     | $0.0000055213 | $5.52             | <font color="green">-3_451</font>  |
+| 29  | buyHoneydew           | 8_905_942     | 4_152_376     | $0.0000055213 | $5.52             | <font color="green">-3_453</font>  |
+| 30  | buyHoneydew           | 8_905_966     | 4_152_386     | $0.0000055213 | $5.52             | <font color="green">-3_453</font>  |
+| 31  | buyHoneydew           | 8_905_943     | 4_152_377     | $0.0000055213 | $5.52             | <font color="green">-3_451</font>  |
+| 32  | buyHoneydew           | 8_905_968     | 4_152_387     | $0.0000055213 | $5.52             | <font color="green">-3_450</font>  |
+| 33  | buyHoneydew           | 8_905_943     | 4_152_377     | $0.0000055213 | $5.52             | <font color="green">-3_451</font>  |
+| 34  | buyHoneydew           | 8_905_967     | 4_152_386     | $0.0000055213 | $5.52             | <font color="green">-3_451</font>  |
+| 35  | buyHoneydew           | 8_905_942     | 4_152_376     | $0.0000055213 | $5.52             | <font color="green">-3_453</font>  |
+| 36  | buyHoneydew           | 8_905_967     | 4_152_386     | $0.0000055213 | $5.52             | <font color="green">-3_452</font>  |
+| 37  | buyHoneydew           | 8_905_943     | 4_152_377     | $0.0000055213 | $5.52             | <font color="green">-3_451</font>  |
+| 38  | buyHoneydew           | 8_905_968     | 4_152_387     | $0.0000055213 | $5.52             | <font color="green">-3_454</font>  |
+| 39  | buyHoneydew           | 8_905_989     | 4_152_395     | $0.0000055213 | $5.52             | <font color="green">-3_407</font>  |
+| 40  | buyHoneydew           | 8_906_764     | 4_152_705     | $0.0000055217 | $5.52             | <font color="green">-2_656</font>  |
+| 41  | buyHoneydew           | 8_908_772     | 4_153_508     | $0.0000055228 | $5.52             | <font color="green">-622</font>    |
+| 42  | buyHoneydew           | 8_907_054     | 4_152_821     | $0.0000055219 | $5.52             | <font color="green">-2_366</font>  |
+| 43  | buyHoneydew           | 8_907_674     | 4_153_069     | $0.0000055222 | $5.52             | <font color="green">-1_720</font>  |
+| 44  | buyHoneydew           | 8_909_517     | 4_153_806     | $0.0000055232 | $5.52             | <font color="red">+99</font>       |
+| 45  | buyHoneydew           | 8_909_990     | 4_153_996     | $0.0000055234 | $5.52             | <font color="red">+595</font>      |
+| 46  | buyHoneydew           | 8_910_463     | 4_154_185     | $0.0000055237 | $5.52             | <font color="red">+1_045</font>    |
+| 47  | buyHoneydew           | 8_910_292     | 4_154_116     | $0.0000055236 | $5.52             | <font color="red">+896</font>      |
+| 48  | buyHoneydew           | 8_910_202     | 4_154_080     | $0.0000055236 | $5.52             | <font color="red">+807</font>      |
+| 49  | buyHoneydew           | 8_913_626     | 4_155_450     | $0.0000055254 | $5.52             | <font color="red">+4_207</font>    |
+| 50  | buyHoneydew           | 8_914_029     | 4_155_611     | $0.0000055256 | $5.52             | <font color="red">+4_635</font>    |
+| 51  | buyHoneydew           | 8_914_065     | 4_155_626     | $0.0000055256 | $5.52             | <font color="red">+4_646</font>    |
+| 52  | buyHoneydew           | 8_914_402     | 4_155_760     | $0.0000055258 | $5.52             | <font color="red">+4_953</font>    |
+| 53  | buyHoneydew           | 8_914_318     | 4_155_727     | $0.0000055257 | $5.52             |                                    |
+| 54  | buyHoneydew           | 8_914_628     | 4_155_851     | $0.0000055259 | $5.52             |                                    |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

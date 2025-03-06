@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                     |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | -------------------------- |
-| 0   | getBytes    | 2_018_969    | 1_397_587  | $0.0000018583 | $1.85             | <font color="red">0</font> |
-| 1   | getBytes    | 2_608_628    | 1_633_451  | $0.0000021720 | $2.17             | <font color="red">0</font> |
-| 2   | getBytes    | 9_250_613    | 4_290_245  | $0.0000057046 | $5.70             | <font color="red">0</font> |
-| 3   | getBytes    | 74_947_784   | 30_569_113 | $0.0000406468 | $40.64            | <font color="red">0</font> |
-| 4   | getBytes    | 147_941_233  | 59_766_493 | $0.0000794697 | $79.46            | <font color="red">0</font> |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
+| 0   | getBytes    | 2_012_202    | 1_394_880  | $0.0000018547 | $1.85             | <font color="green">-6_767</font> |
+| 1   | getBytes    | 2_607_143    | 1_632_857  | $0.0000021712 | $2.17             | <font color="green">-1_485</font> |
+| 2   | getBytes    | 9_253_456    | 4_291_382  | $0.0000057061 | $5.70             | <font color="red">+2_843</font>   |
+| 3   | getBytes    | 74_945_429   | 30_568_171 | $0.0000406456 | $40.64            | <font color="green">-2_355</font> |
+| 4   | getBytes    | 147_942_969  | 59_767_187 | $0.0000794706 | $79.47            | <font color="red">+1_736</font>   |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

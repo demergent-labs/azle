@@ -2,12 +2,12 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name         | Instructions | Cycles     | USD           | USD/Million Calls | Change                              |
-| --- | ------------------- | ------------ | ---------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | icrc1_transfer      | 95_132_295   | 38_642_918 | $0.0000513823 | $51.38            | <font color="green">-12_232</font>  |
-| 1   | icrc2_approve       | 102_700_183  | 41_670_073 | $0.0000554074 | $55.40            | <font color="green">-77_047</font>  |
-| 2   | icrc2_transfer_from | 100_252_542  | 40_691_016 | $0.0000541056 | $54.10            | <font color="green">-119_831</font> |
-| 3   | icrc2_allowance     | 86_620_187   | 35_238_074 | $0.0000468550 | $46.85            | <font color="green">-84_240</font>  |
+| Id  | Method Name         | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
+| --- | ------------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | icrc1_transfer      | 95_215_963   | 38_676_385 | $0.0000514268 | $51.42            | <font color="red">+71_436</font>   |
+| 1   | icrc2_approve       | 102_811_397  | 41_714_558 | $0.0000554666 | $55.46            | <font color="red">+34_167</font>   |
+| 2   | icrc2_transfer_from | 100_370_179  | 40_738_071 | $0.0000541682 | $54.16            | <font color="green">-2_194</font>  |
+| 3   | icrc2_allowance     | 86_620_767   | 35_238_306 | $0.0000468553 | $46.85            | <font color="green">-83_660</font> |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

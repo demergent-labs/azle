@@ -2,10 +2,10 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
-| --- | ------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
-| 0   | dataCertificateNull | 1_746_714    | 1_288_685 | $0.0000017135 | $1.71             | <font color="red">0</font> |
-| 1   | setCertifiedData    | 1_239_616    | 1_085_846 | $0.0000014438 | $1.44             | <font color="red">0</font> |
+| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ------------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | dataCertificateNull | 1_745_609    | 1_288_243 | $0.0000017129 | $1.71             | <font color="green">-1_105</font> |
+| 1   | setCertifiedData    | 1_242_667    | 1_087_066 | $0.0000014454 | $1.44             | <font color="red">+3_051</font>   |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

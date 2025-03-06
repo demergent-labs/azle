@@ -37,29 +37,29 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "17851344576"
+                        "__bigint__": "17816550930"
                     },
                     "method_name": "insertSmallRecord",
                     "timestamp": {
-                        "__bigint__": "1740776196446845070"
+                        "__bigint__": "1741299823639004061"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "16043937026"
+                        "__bigint__": "16029632084"
                     },
                     "method_name": "insertMediumRecord",
                     "timestamp": {
-                        "__bigint__": "1740776202626938357"
+                        "__bigint__": "1741299829884997189"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "18469948920"
+                        "__bigint__": "18464957634"
                     },
                     "method_name": "insertLargeRecord",
                     "timestamp": {
-                        "__bigint__": "1740776207876913491"
+                        "__bigint__": "1741299835351883624"
                     }
                 }
             ]

@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | getRejectCodeNoError            | 10_241_259   | 4_686_503 | $0.0000062315 | $6.23             | <font color="red">+8_911</font>   |
-| 1   | getRejectCodeDestinationInvalid | 9_399_698    | 4_349_879 | $0.0000057839 | $5.78             | <font color="red">+9_258</font>   |
-| 2   | getRejectCodeCanisterReject     | 10_565_498   | 4_816_199 | $0.0000064040 | $6.40             | <font color="green">-2_380</font> |
-| 3   | getRejectCodeCanisterError      | 10_051_131   | 4_610_452 | $0.0000061304 | $6.13             | <font color="green">-1_882</font> |
-| 4   | getRejectMessage                | 11_247_276   | 5_088_910 | $0.0000067666 | $6.76             | <font color="green">-3_200</font> |
+| Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | getRejectCodeNoError            | 10_239_148   | 4_685_659 | $0.0000062304 | $6.23             | <font color="red">+6_800</font>  |
+| 1   | getRejectCodeDestinationInvalid | 9_397_857    | 4_349_142 | $0.0000057829 | $5.78             | <font color="red">+7_417</font>  |
+| 2   | getRejectCodeCanisterReject     | 10_567_037   | 4_816_814 | $0.0000064048 | $6.40             | <font color="green">-841</font>  |
+| 3   | getRejectCodeCanisterError      | 10_055_444   | 4_612_177 | $0.0000061327 | $6.13             | <font color="red">+2_431</font>  |
+| 4   | getRejectMessage                | 11_263_411   | 5_095_364 | $0.0000067752 | $6.77             | <font color="red">+12_935</font> |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

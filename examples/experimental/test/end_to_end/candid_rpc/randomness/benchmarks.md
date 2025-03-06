@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
-| --- | ------------ | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
-| 0   | postUpgrade  | 4_819_760_287 | 3_528_494_114 | $0.0046917328 | $4_691.73         | <font color="red">+113_493</font> |
-| 1   | randomNumber | 1_040_397     | 1_006_158     | $0.0000013379 | $1.33             | <font color="green">-2_184</font> |
-| 2   | randomNumber | 1_026_933     | 1_000_773     | $0.0000013307 | $1.33             | <font color="green">-3_196</font> |
-| 3   | randomNumber | 1_025_955     | 1_000_382     | $0.0000013302 | $1.33             | <font color="green">-4_174</font> |
-| 4   | randomNumber | 1_026_933     | 1_000_773     | $0.0000013307 | $1.33             | <font color="green">-3_196</font> |
-| 5   | randomNumber | 1_025_915     | 1_000_366     | $0.0000013302 | $1.33             | <font color="green">-4_184</font> |
+| Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
+| --- | ------------ | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade  | 4_819_302_143 | 3_528_310_857 | $0.0046914891 | $4_691.48         | <font color="green">-344_651</font> |
+| 1   | randomNumber | 1_043_710     | 1_007_484     | $0.0000013396 | $1.33             | <font color="red">+1_129</font>     |
+| 2   | randomNumber | 1_030_422     | 1_002_168     | $0.0000013326 | $1.33             | <font color="red">+293</font>       |
+| 3   | randomNumber | 1_029_803     | 1_001_921     | $0.0000013322 | $1.33             | <font color="green">-326</font>     |
+| 4   | randomNumber | 1_029_803     | 1_001_921     | $0.0000013322 | $1.33             | <font color="green">-326</font>     |
+| 5   | randomNumber | 1_029_803     | 1_001_921     | $0.0000013322 | $1.33             | <font color="green">-296</font>     |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

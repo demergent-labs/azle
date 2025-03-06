@@ -2,13 +2,13 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                |
-| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init                | 9_392_411_742  | 7_357_554_696  | $0.0097831198 | $9_783.11         | <font color="red">+52_287</font>      |
-| 1   | http_request_update | 1_101_618_257  | 841_237_302    | $0.0011185680 | $1_118.56         | <font color="red">+219_898</font>     |
-| 2   | http_request_update | 11_469_489_983 | 8_988_385_993  | $0.0119515872 | $11_951.58        | <font color="red">+23_112_720</font>  |
-| 3   | http_request_update | 13_953_938_770 | 10_782_165_508 | $0.0143367220 | $14_336.72        | <font color="red">+151_489_650</font> |
-| 4   | http_request_update | 12_501_375_674 | 9_801_140_269  | $0.0130322822 | $13_032.28        | <font color="red">+40_757_043</font>  |
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | init                | 9_392_250_430  | 7_357_490_172  | $0.0097830340 | $9_783.03         | <font color="green">-109_025</font>     |
+| 1   | http_request_update | 1_101_330_555  | 841_122_222    | $0.0011184150 | $1_118.41         | <font color="green">-67_804</font>      |
+| 2   | http_request_update | 11_619_135_428 | 9_048_244_171  | $0.0120311788 | $12_031.17        | <font color="red">+172_758_165</font>   |
+| 3   | http_request_update | 13_875_343_553 | 10_750_727_421 | $0.0142949197 | $14_294.91        | <font color="red">+72_894_433</font>    |
+| 4   | http_request_update | 17_293_806_237 | 13_718_112_494 | $0.0182405626 | $18_240.56        | <font color="red">+4_833_187_606</font> |
 
 ## Baseline benchmarks Azle version: 0.27.0
 

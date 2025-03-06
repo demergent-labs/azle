@@ -28,20 +28,20 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1011438855"
+                        "__bigint__": "1011734863"
                     },
                     "method_name": "init",
                     "timestamp": {
-                        "__bigint__": "1740776211988635900"
+                        "__bigint__": "1741299853769188546"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1303018"
+                        "__bigint__": "1303024"
                     },
                     "method_name": "getNotifierFromNotifiersCanister",
                     "timestamp": {
-                        "__bigint__": "1740776221443208508"
+                        "__bigint__": "1741299863043505298"
                     }
                 }
             ]

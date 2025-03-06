@@ -46,38 +46,38 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "7531184754"
+                        "__bigint__": "7530512734"
                     },
                     "method_name": "init",
                     "timestamp": {
-                        "__bigint__": "1740776275642321290"
+                        "__bigint__": "1741299852936814008"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "53635148"
+                        "__bigint__": "53623532"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1740776290558004155"
+                        "__bigint__": "1741299868382574047"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "47211720"
+                        "__bigint__": "47224576"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1740776290800608498"
+                        "__bigint__": "1741299868629132585"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "44231205"
+                        "__bigint__": "44236481"
                     },
                     "method_name": "http_request_update",
                     "timestamp": {
-                        "__bigint__": "1740776291312028533"
+                        "__bigint__": "1741299868875018740"
                     }
                 }
             ]

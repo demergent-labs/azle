@@ -55,47 +55,47 @@
             "benchmarks": [
                 {
                     "instructions": {
-                        "__bigint__": "1361427"
+                        "__bigint__": "1358178"
                     },
                     "method_name": "getRejectCodeNoError",
                     "timestamp": {
-                        "__bigint__": "1740776234017909599"
+                        "__bigint__": "1741299872381890875"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1278929"
+                        "__bigint__": "1282121"
                     },
                     "method_name": "getRejectCodeDestinationInvalid",
                     "timestamp": {
-                        "__bigint__": "1740776234264185080"
+                        "__bigint__": "1741299872627506793"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2218290"
+                        "__bigint__": "2216258"
                     },
                     "method_name": "getRejectCodeCanisterReject",
                     "timestamp": {
-                        "__bigint__": "1740776234752549394"
+                        "__bigint__": "1741299873118100387"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "1281553"
+                        "__bigint__": "1283146"
                     },
                     "method_name": "getRejectCodeCanisterError",
                     "timestamp": {
-                        "__bigint__": "1740776235018916072"
+                        "__bigint__": "1741299873613526631"
                     }
                 },
                 {
                     "instructions": {
-                        "__bigint__": "2957051"
+                        "__bigint__": "2962270"
                     },
                     "method_name": "getRejectMessage",
                     "timestamp": {
-                        "__bigint__": "1740776235486927493"
+                        "__bigint__": "1741299873861582618"
                     }
                 }
             ]

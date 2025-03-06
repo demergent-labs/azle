@@ -2,14 +2,14 @@
 
 ## Current benchmarks Azle version: 0.28.0
 
-| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
-| --- | -------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
-| 0   | addTodo        | 2_082_599    | 1_423_039 | $0.0000018922 | $1.89             | <font color="red">0</font> |
-| 1   | addTodo        | 1_787_426    | 1_304_970 | $0.0000017352 | $1.73             | <font color="red">0</font> |
-| 2   | completeTodo   | 1_055_357    | 1_012_142 | $0.0000013458 | $1.34             | <font color="red">0</font> |
-| 3   | clearCompleted | 985_252      | 984_100   | $0.0000013085 | $1.30             | <font color="red">0</font> |
-| 4   | completeTodo   | 1_050_439    | 1_010_175 | $0.0000013432 | $1.34             | <font color="red">0</font> |
-| 5   | clearCompleted | 969_826      | 977_930   | $0.0000013003 | $1.30             | <font color="red">0</font> |
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | addTodo        | 2_082_472    | 1_422_988 | $0.0000018921 | $1.89             | <font color="green">-127</font>   |
+| 1   | addTodo        | 1_784_447    | 1_303_778 | $0.0000017336 | $1.73             | <font color="green">-2_979</font> |
+| 2   | completeTodo   | 1_055_651    | 1_012_260 | $0.0000013460 | $1.34             | <font color="red">+294</font>     |
+| 3   | clearCompleted | 985_876      | 984_350   | $0.0000013089 | $1.30             | <font color="red">+624</font>     |
+| 4   | completeTodo   | 1_047_920    | 1_009_168 | $0.0000013419 | $1.34             | <font color="green">-2_519</font> |
+| 5   | clearCompleted | 970_308      | 978_123   | $0.0000013006 | $1.30             | <font color="red">+482</font>     |
 
 ## Baseline benchmarks Azle version: 0.27.0
 
