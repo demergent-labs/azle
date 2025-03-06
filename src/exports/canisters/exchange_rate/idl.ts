@@ -1,1 +1,1 @@
-export * from '#canisters/exchange_rate/idl/index';
+export * from '#lib/canisters/exchange_rate/idl/index';

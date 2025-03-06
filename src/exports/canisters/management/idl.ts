@@ -1,1 +1,1 @@
-export * from '#canisters/management/idl/index';
+export * from '#lib/canisters/management/idl/index';

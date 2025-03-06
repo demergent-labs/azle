@@ -22,7 +22,6 @@
         "./experimental/*": "./src/exports/experimental/*.ts"
     },
     "imports": {
-        "#canisters/*": "./src/stable/lib/canisters/*.ts",
         "#commands/*": "./src/stable/build/commands/*.ts",
         "#experimental/canisters/*": "./src/experimental/lib/canisters/*.ts",
         "#experimental/commands/*": "./src/experimental/build/commands/*.ts",

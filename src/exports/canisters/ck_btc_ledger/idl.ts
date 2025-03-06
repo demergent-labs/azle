@@ -1,1 +1,1 @@
-export * from '#canisters/ck_btc_ledger/idl/index';
+export * from '#lib/canisters/ck_btc_ledger/idl/index';

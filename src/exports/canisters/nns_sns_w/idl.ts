@@ -1,1 +1,1 @@
-export * from '#canisters/nns_sns_w/idl/index';
+export * from '#lib/canisters/nns_sns_w/idl/index';

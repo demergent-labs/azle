@@ -1,1 +1,1 @@
-export * from '#canisters/ck_eth_ledger/idl/index';
+export * from '#lib/canisters/ck_eth_ledger/idl/index';
