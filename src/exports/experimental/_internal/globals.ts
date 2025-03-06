@@ -1,1 +1,1 @@
-import '../../../experimental/lib/globals';
+import '#experimental/lib/globals';
