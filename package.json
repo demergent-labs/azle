@@ -22,18 +22,18 @@
         "./experimental/*": "./src/exports/experimental/*.ts"
     },
     "imports": {
-        "#utils/*": "./src/stable/build/utils/*.ts",
-        "#experimental/utils/*": "./src/experimental/build/utils/*.ts",
+        "#canisters/*": "./src/stable/canisters/*.ts",
         "#commands/*": "./src/stable/build/commands/*.ts",
+        "#experimental/canisters/*": "./src/experimental/canisters/*.ts",
         "#experimental/commands/*": "./src/experimental/build/commands/*.ts",
-        "#lib/*": "./src/stable/lib/*.ts",
+        "#experimental/http_client*": "./src/experimental/http_client/*.ts",
         "#experimental/lib/*": "./src/experimental/lib/*.ts",
+        "#experimental/test/property/*": "./src/experimental/test/property/*.ts",
+        "#experimental/utils/*": "./src/experimental/build/utils/*.ts",
+        "#lib/*": "./src/stable/lib/*.ts",
         "#test/types/*": "./type_tests/*.ts",
         "#test/property/*": "./src/stable/test/property/*.ts",
-        "#experimental/test/property/*": "./src/experimental/test/property/*.ts",
-        "#canisters/*": "./src/stable/canisters/*.ts",
-        "#experimental/canisters/*": "./src/experimental/canisters/*.ts",
-        "#experimental/http_client*": "./src/experimental/http_client/*.ts"
+        "#utils/*": "./src/stable/build/utils/*.ts"
     },
     "repository": {
         "type": "git",
