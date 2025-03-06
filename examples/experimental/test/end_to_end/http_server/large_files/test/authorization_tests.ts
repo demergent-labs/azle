@@ -1,6 +1,6 @@
-import { createActor } from 'azle/_internal';
 import { generateIdentity, getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, please, Test } from 'azle/_internal/test';
+import { createActor } from 'azle/experimental/_internal';
 import { v4 } from 'uuid';
 
 export function getAuthorizationTests(): Test {

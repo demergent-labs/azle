@@ -1,12 +1,12 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import {
     AZLE_UPLOADER_IDENTITY_NAME,
     createActor,
     hashFileByParts,
     Unit
-} from 'azle/_internal';
-import { getCanisterId } from 'azle/_internal/dfx';
-import { expect, it, please, Test } from 'azle/_internal/test';
+} from 'azle/experimental/_internal';
 import { execSync } from 'child_process';
 import { readdir, rm } from 'fs/promises';
 import { join } from 'path';
