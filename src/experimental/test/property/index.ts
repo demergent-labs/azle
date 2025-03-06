@@ -4,9 +4,9 @@ import { execSync } from 'child_process';
 import fc from 'fast-check';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
+import { defaultPropTestParams } from '../../../stable/test/property/default_prop_test_params';
 import { Canister } from './arbitraries/canister_arb';
 import { clear as clearUniquePrimitiveArb } from './arbitraries/unique_primitive_arb';
-import { defaultPropTestParams } from './default_prop_test_params';
 import { runTests } from './test';
 
 export type Named<T> = {
