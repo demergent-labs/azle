@@ -1,10 +1,7 @@
 import { TypeMapping } from '#experimental/lib/candid/type_mapping';
 import { Manual, text } from '#experimental/lib/index';
-import {
-    AssertType,
-    NotAnyAndExact,
-    testCandidType
-} from '#experimental/test/types/assert_type';
+import { testCandidType } from '#experimental/test/types/assert_type';
+import { AssertType, NotAnyAndExact } from '#test/type/assert_type';
 
 testCandidType(Manual(text));
 
