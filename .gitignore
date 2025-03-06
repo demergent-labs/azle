@@ -4,5 +4,6 @@
 .vscode/*
 !.vscode/extensions.json
 dist
+!/dist
 node_modules
 target

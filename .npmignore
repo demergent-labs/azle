@@ -2,7 +2,7 @@
 *
 
 # Whitelist
-!canister_templates/**
+!dist/canister_templates/**
 !examples/stable/demo/hello_world/**
 !examples/experimental/demo/hello_world_http_server/**
 !.scripts/**

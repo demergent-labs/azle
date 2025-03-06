@@ -5,7 +5,7 @@ dist
 node_modules
 target
 /the_azle_book/book
-/docs
+/dist/docs
 static_canister_template_licenses.yml
 .azle
 dfx_generated

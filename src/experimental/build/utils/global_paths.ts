@@ -5,6 +5,7 @@ import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 
 export const EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH = join(
     AZLE_PACKAGE_PATH,
+    'dist',
     'canister_templates',
     'experimental.wasm'
 );
