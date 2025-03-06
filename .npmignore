@@ -5,7 +5,7 @@
 !canister_templates/**
 !canisters/**
 !dfx/**
-!dfx_extension/**
+!src/stable/build/dfx_extension/**
 !examples/stable/demo/hello_world/**
 !examples/experimental/demo/hello_world_http_server/**
 !experimental/**

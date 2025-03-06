@@ -26,7 +26,7 @@ BRANCH="release--$VERSION"
 git switch -c "$BRANCH"
 
 sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
-sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
+sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" src/stable/build/dfx_extension/extension.json
 
 npm install
 

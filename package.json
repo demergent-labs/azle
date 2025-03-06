@@ -6,7 +6,7 @@
         "typecheck": "tsc",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --cache --fix; else eslint . --cache; fi",
         "prepare": "husky",
-        "install": "cd dfx_extension && ./install.sh",
+        "install": "cd src/stable/build/dfx_extension && ./install.sh",
         "test": "echo 'test'"
     },
     "type": "module",
