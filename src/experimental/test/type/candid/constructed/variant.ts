@@ -21,7 +21,7 @@ import {
 import {
     testCandidType,
     testSerializable
-} from '#experimental/test/types/assert_type';
+} from '#experimental/test/type/assert_type';
 
 export const ExampleVariant = Variant({
     bool: Null,

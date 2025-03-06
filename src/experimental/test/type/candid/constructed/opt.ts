@@ -13,7 +13,7 @@ import {
 import {
     testCandidType,
     testSerializable
-} from '#experimental/test/types/assert_type';
+} from '#experimental/test/type/assert_type';
 import { AssertType, NotAnyAndExact } from '#test/type/assert_type';
 testCandidType(Opt(float32));
 testSerializable(Opt(float32));
