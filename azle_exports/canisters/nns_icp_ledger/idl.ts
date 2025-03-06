@@ -1,1 +1,1 @@
-export * from '../../../canisters/nns_icp_ledger/idl';
+export * from '#canisters/nns_icp_ledger/idl/index';

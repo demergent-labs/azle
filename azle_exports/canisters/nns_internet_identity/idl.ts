@@ -1,1 +1,1 @@
-export * from '../../../canisters/nns_internet_identity/idl';
+export * from '#canisters/nns_internet_identity/idl/index';

@@ -1,1 +1,1 @@
-export * from '../../../canisters/exchange_rate/idl';
+export * from '#canisters/exchange_rate/idl/index';

@@ -1,1 +1,1 @@
-export * from '../../../canisters/icrc_37/idl';
+export * from '#canisters/icrc_37/idl/index';
