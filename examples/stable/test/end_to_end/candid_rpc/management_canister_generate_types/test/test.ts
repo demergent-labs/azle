@@ -27,7 +27,7 @@ runTests(() => {
         );
 
         const referenceContent = readFileSync(
-            '../../../../../../canisters/management/idl/index.ts',
+            '../../../../../../src/stable/canisters/management/idl/index.ts',
             'utf-8'
         );
 
