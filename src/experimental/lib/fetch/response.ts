@@ -1,4 +1,4 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 // TODO We currently do not have an implementation of ReadableStream
 // TODO thus our body is done with Uint8Array or Buffer

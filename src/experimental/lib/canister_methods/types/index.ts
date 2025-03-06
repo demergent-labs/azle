@@ -1,4 +1,4 @@
-import '../../experimental';
+import '#experimental/lib/experimental';
 
 export * from './callback';
 export * from './canister_method_info';

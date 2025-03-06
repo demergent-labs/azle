@@ -1,4 +1,4 @@
-import { RejectCode } from '../../stable/ic_apis/msg_reject_code';
+import { RejectCode } from '#lib/ic_apis/msg_reject_code';
 
 /**
  * The interface for our rust methods it slightly different than the interface

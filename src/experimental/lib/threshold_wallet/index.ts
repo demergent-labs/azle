@@ -1,4 +1,4 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 export * from './calculate_rsv_for_tecdsa';
 export * from './ecdsa_public_key';

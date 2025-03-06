@@ -1,7 +1,8 @@
 // @ts-ignore
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
-import { AzleIcExperimental } from '../experimental/ic/azle_ic_experimental';
+import { AzleIcExperimental } from '#experimental/lib/ic/azle_ic_experimental';
+
 import { ExportedCanisterClass } from './canister_methods';
 import { AzleIcStable } from './ic_apis/azle_ic_stable';
 import { jsonReplacer } from './stable_structures/stable_json';

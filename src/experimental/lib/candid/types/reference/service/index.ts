@@ -1,4 +1,4 @@
-import '../../../../experimental';
+import '#experimental/lib/experimental';
 
 import { CanisterMethodInfo } from '../../../../canister_methods/types/canister_method_info';
 import { CandidType, TypeMapping } from '../../../index';

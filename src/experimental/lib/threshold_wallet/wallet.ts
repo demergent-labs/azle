@@ -1,4 +1,4 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 import './register_get_url';
 
 import { Principal } from '@dfinity/principal';

@@ -1,8 +1,9 @@
-import '../../../../../experimental';
+import '#experimental/lib/experimental';
 
 import { IDL } from '@dfinity/candid';
 
-import { idlToString } from '../../../../../../stable/did_file/idl_to_string';
+import { idlToString } from '#lib/did_file/idl_to_string';
+
 import { Parent, toIdlTypeArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { CanisterOptions, ServiceFunctionInfo } from '.';

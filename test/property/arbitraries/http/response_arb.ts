@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { HttpResponse, None } from '#experimental/lib';
+import { HttpResponse, None } from '#experimental/lib/index';
 
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';

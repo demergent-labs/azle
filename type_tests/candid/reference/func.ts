@@ -1,15 +1,14 @@
 // TODO we aren't really testing that Func only accepts CandidType
 // TODO we aren't really testing the params and return type
 
-import { Func, Principal, Void } from '#experimental/lib';
 import { TypeMapping } from '#experimental/lib/candid/type_mapping';
-
+import { Func, Principal, Void } from '#experimental/lib/index';
 import {
     AssertType,
     NotAnyAndExact,
     testCandidType,
     testSerializable
-} from '../../assert_type';
+} from '#test/types/assert_type';
 
 const TestFunc = Func([], Void, 'query');
 

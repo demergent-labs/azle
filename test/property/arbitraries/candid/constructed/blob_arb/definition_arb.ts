@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { blob } from '#experimental/lib';
+import { blob } from '#experimental/lib/index';
 
 import { Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';

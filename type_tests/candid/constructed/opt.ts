@@ -1,6 +1,7 @@
 // TODO These tests are just for one type, float32
 // TODO it will take a lot of effort (not that much though) to get all types tested with Vec
 
+import { TypeMapping } from '#experimental/lib/candid/type_mapping';
 import {
     float32,
     int16,
@@ -8,15 +9,13 @@ import {
     Record,
     RequireExactlyOne,
     text
-} from '#experimental/lib';
-import { TypeMapping } from '#experimental/lib/candid/type_mapping';
-
+} from '#experimental/lib/index';
 import {
     AssertType,
     NotAnyAndExact,
     testCandidType,
     testSerializable
-} from '../../assert_type';
+} from '#test/types/assert_type';
 
 testCandidType(Opt(float32));
 testSerializable(Opt(float32));

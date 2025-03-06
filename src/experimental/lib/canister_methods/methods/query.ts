@@ -1,4 +1,4 @@
-import '../../experimental';
+import '#experimental/lib/experimental';
 
 import { CandidType } from '../../candid/candid_type';
 import { TypeMapping } from '../../candid/type_mapping';

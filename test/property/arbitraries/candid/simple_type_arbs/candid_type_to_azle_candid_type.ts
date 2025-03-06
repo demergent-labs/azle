@@ -18,7 +18,7 @@ import {
     Principal,
     text,
     Void
-} from '#experimental/lib';
+} from '#experimental/lib/index';
 
 import { SimpleCandidType } from '../candid_type';
 

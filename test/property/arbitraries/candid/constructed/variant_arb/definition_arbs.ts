@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { CandidType, Variant } from '#experimental/lib';
+import { CandidType, Variant } from '#experimental/lib/index';
 
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Api, Context } from '../../../types';

@@ -1,4 +1,4 @@
-import '../../../../experimental';
+import '#experimental/lib/experimental';
 
 import { IDL } from '@dfinity/candid';
 

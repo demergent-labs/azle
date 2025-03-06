@@ -1,4 +1,4 @@
-import '../../experimental';
+import '#experimental/lib/experimental';
 
 import { Void } from '../../candid/types/primitive/void';
 import { executeMethod } from '../execute_method';

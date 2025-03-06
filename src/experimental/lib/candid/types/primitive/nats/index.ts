@@ -1,4 +1,4 @@
-import '../../../../experimental';
+import '#experimental/lib/experimental';
 
 export * from './nat';
 export * from './nat8';

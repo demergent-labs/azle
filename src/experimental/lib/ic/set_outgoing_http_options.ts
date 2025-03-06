@@ -1,4 +1,4 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 export function setOutgoingHttpOptions(options: {
     maxResponseBytes?: bigint;

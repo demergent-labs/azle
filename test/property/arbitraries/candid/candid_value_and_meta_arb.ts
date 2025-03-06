@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { CandidType as RuntimeCandidType } from '#experimental/lib';
+import { CandidType as RuntimeCandidType } from '#experimental/lib/index';
 
 import { Context } from '../types';
 import { CandidValueConstraints } from './candid_values_arb';

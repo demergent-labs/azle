@@ -1,9 +1,10 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 
-import { call } from '../../stable/ic_apis';
+import { call } from '#lib/ic_apis/index';
+
 import { ic } from '../ic';
 import { getUrl } from './url';
 

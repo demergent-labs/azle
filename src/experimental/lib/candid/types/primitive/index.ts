@@ -1,4 +1,4 @@
-import '../../../experimental';
+import '#experimental/lib/experimental';
 
 export * from './bool';
 export * from './empty';

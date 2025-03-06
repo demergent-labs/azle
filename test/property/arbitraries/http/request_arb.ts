@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { HttpRequest, None, Some } from '#experimental/lib';
+import { HttpRequest, None, Some } from '#experimental/lib/index';
 
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';

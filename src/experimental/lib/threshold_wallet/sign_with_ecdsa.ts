@@ -1,4 +1,4 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 import { serialize } from '../fetch';
 import { ThresholdKeyInfo } from './wallet';

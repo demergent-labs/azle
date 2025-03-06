@@ -1,4 +1,4 @@
-import './experimental';
+import '#experimental/lib/experimental';
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
@@ -10,8 +10,9 @@ import { IncomingMessageForServer } from 'http';
 // @ts-ignore
 import httpMessageParser from 'http-message-parser';
 
-import { idlEncode } from '../stable/execute_with_candid_serde';
-import { msgReply } from '../stable/ic_apis';
+import { idlEncode } from '#lib/execute_with_candid_serde';
+import { msgReply } from '#lib/ic_apis/index';
+
 import { CandidType } from './candid/candid_type';
 import { Manual } from './candid/manual';
 import { blob } from './candid/types/constructed/blob';

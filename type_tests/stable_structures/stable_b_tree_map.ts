@@ -1,6 +1,5 @@
-import { StableBTreeMap, text } from '#experimental/lib';
-
-import { AssertType, NotAnyAndExact } from '../assert_type';
+import { StableBTreeMap, text } from '#experimental/lib/index';
+import { AssertType, NotAnyAndExact } from '#test/types/assert_type';
 
 // TODO we would need to test all of the types for StableBTreeMap
 // TODO maybe we should just do it for the primitive types, and for opt and vec as well?

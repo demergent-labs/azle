@@ -1,6 +1,7 @@
-import '../../experimental';
+import '#experimental/lib/experimental';
 
-import { trap } from '../../../stable/ic_apis';
+import { trap } from '#lib/ic_apis/index';
+
 import { Void } from '../../candid/types/primitive/void';
 import { isAsync } from '../is_async';
 import { CanisterMethodInfo } from '../types/canister_method_info';

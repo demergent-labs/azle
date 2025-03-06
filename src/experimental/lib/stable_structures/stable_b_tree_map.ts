@@ -1,4 +1,4 @@
-import { stableJson } from '../../stable/stable_structures/stable_json';
+import { stableJson } from '#lib/stable_structures/stable_json';
 
 /**
  * @deprecated since Azle v0.26.0 - this will be removed in a future major release.

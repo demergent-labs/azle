@@ -2,10 +2,10 @@ import '#experimental/lib/experimental';
 
 import { IDL } from '@dfinity/candid';
 
+import { CanisterMethodMode } from '#lib/execute_with_candid_serde';
+import { call } from '#lib/ic_apis/index';
 import { Method, MethodMeta } from '#utils/types';
 
-import { CanisterMethodMode } from '../../../../../../stable/execute_with_candid_serde';
-import { call } from '../../../../../../stable/ic_apis';
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { Callbacks } from '../../../../../globals';
 import { CandidType, Parent, toIdlTypeArray } from '../../../../index';

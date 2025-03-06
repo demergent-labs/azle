@@ -1,4 +1,4 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 import { CandidType } from './candid_type';
 import { AzleVoid } from './types/primitive/void';

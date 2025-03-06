@@ -1,9 +1,10 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 import { inflate } from 'pako';
 
+import { canisterSelf } from '#lib/ic_apis/canister_self';
+
 import { http_transform } from '../../../../canisters/management/idl';
-import { canisterSelf } from '../../stable/ic_apis/canister_self';
 import { azleFetch, serialize } from '.';
 import { AzleFetchResponse } from './response';
 import { getUrl } from './url';

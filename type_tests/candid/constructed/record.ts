@@ -21,9 +21,8 @@ import {
     reserved,
     text,
     Void
-} from '#experimental/lib';
-
-import { testCandidType, testSerializable } from '../../assert_type';
+} from '#experimental/lib/index';
+import { testCandidType, testSerializable } from '#test/types/assert_type';
 
 export const ExampleRecord = Record({
     bool: bool,

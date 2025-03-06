@@ -1,5 +1,6 @@
+import { stableJson } from '#lib/stable_structures/stable_json';
+
 import { validateUnsignedInteger } from '../error';
-import { stableJson } from './stable_json';
 
 /**
  * Interface used by `StableBTreeMap` to store and retrieve keys and values as bytes in stable memory.

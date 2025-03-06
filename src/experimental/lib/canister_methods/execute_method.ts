@@ -1,7 +1,8 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
-import { handleUncaughtError } from '../../stable/error';
-import { msgArgData, msgReply, performanceCounter } from '../../stable/ic_apis';
+import { handleUncaughtError } from '#lib/error';
+import { msgArgData, msgReply, performanceCounter } from '#lib/ic_apis/index';
+
 import { CandidType } from '../candid/candid_type';
 import { decode } from '../candid/serde/decode';
 import { encode } from '../candid/serde/encode';

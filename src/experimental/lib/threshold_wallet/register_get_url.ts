@@ -1,4 +1,4 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 // TODO unfortunately this is highly unlikely to work in production because
 // TODO of the headers...we need a good transform

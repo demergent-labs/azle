@@ -1,4 +1,4 @@
-import '../../experimental';
+import '#experimental/lib/experimental';
 
 /**
  * @deprecated since Azle v0.26.0 - this will be removed in a future major release.

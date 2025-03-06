@@ -1,4 +1,4 @@
-import '../experimental';
+import '#experimental/lib/experimental';
 
 // TODO this is meant to be basic for now
 export class AzleFetchHeaders {

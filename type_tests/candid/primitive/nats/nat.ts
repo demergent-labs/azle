@@ -1,12 +1,11 @@
-import { nat } from '#experimental/lib';
 import { TypeMapping } from '#experimental/lib/candid/type_mapping';
-
+import { nat } from '#experimental/lib/index';
 import {
     AssertType,
     NotAnyAndExact,
     testCandidType,
     testSerializable
-} from '../../../assert_type';
+} from '#test/types/assert_type';
 
 testCandidType(nat);
 testSerializable(nat);
