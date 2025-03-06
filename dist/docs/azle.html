@@ -1,0 +1,348 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Azle (Beta) - The Azle Book</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Azle Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="azle-beta"><a class="header" href="#azle-beta">Azle (Beta)</a></h1>
+<p>Azle is a <a href="https://www.typescriptlang.org/">TypeScript</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a> <a href="https://internetcomputer.org/docs/current/developer-docs/backend/choosing-language">Canister Development Kit</a> (CDK) for the <a href="https://internetcomputer.org/">Internet Computer</a> (IC). In other words, it's a TypeScript/JavaScript runtime for building applications (<a href="https://internetcomputer.org/docs/current/concepts/canisters-code">canisters</a>) on the IC.</p>
+<ul>
+<li><a href="https://www.npmjs.com/package/azle">npm package</a></li>
+<li><a href="https://github.com/demergent-labs/azle">GitHub repo</a></li>
+<li><a href="https://discord.gg/5Hb6rM2QUM">Discord channel</a></li>
+</ul>
+<h2 id="disclaimer"><a class="header" href="#disclaimer">Disclaimer</a></h2>
+<p>Azle stable mode is continuously subjected to <a href="https://github.com/demergent-labs/azle/actions">intense scrutiny and testing</a>, however it does not yet have multiple independent security reviews/audits.</p>
+<h2 id="stable-mode"><a class="header" href="#stable-mode">Stable Mode</a></h2>
+<p>Azle runs in stable mode by default.</p>
+<p>This mode is intended for production use after Azle's 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.</p>
+<h2 id="experimental-mode"><a class="header" href="#experimental-mode">Experimental Mode</a></h2>
+<p>Azle runs in experimental mode through explicitly enabling a flag in <code>dfx.json</code> or certain CLI commands.</p>
+<p>This mode is intended for developers who are willing to accept the risk of using an alpha or beta project. Its focus is on quickly enabling new features and functionality without requiring the time and other resources necessary to advance them to the stable mode. The Node.js standard libary, npm ecosystem, and HTTP server functionality are also major areas of focus.</p>
+<blockquote>
+<p>NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.</p>
+</blockquote>
+<h2 id="demergent-labs"><a class="header" href="#demergent-labs">Demergent Labs</a></h2>
+<p>Azle is currently developed by <a href="https://github.com/demergent-labs">Demergent Labs</a>, a for-profit company with a <a href="https://dfinity.org/grants">grant</a> from <a href="https://dfinity.org/">DFINITY</a>.</p>
+<p>Demergent Labs' <a href="https://github.com/demergent-labs/blog/blob/main/demergent-labs-grand-plan-part-1.md">vision</a> is to accelerate the adoption of Web3, the Internet Computer, and sustainable open source.</p>
+<h2 id="benefits-and-drawbacks"><a class="header" href="#benefits-and-drawbacks">Benefits and drawbacks</a></h2>
+<p>Azle and the IC provide unique benefits and drawbacks, and both are not currently suitable for all application use-cases.</p>
+<p>The following information will help you to determine when Azle and the IC might be beneficial for your use-case.</p>
+<h3 id="benefits"><a class="header" href="#benefits">Benefits</a></h3>
+<p>Azle intends to be a full TypeScript and JavaScript environment for the IC (a decentralized cloud platform), with support for all of the TypeScript and JavaScript language and as many relevant environment APIs as possible. These environment APIs will be similar to those available in the Node.js and web browser environments.</p>
+<p>One of the core benefits of Azle is that it allows web developers to bring their TypeScript or JavaScript skills to the IC. For example, Azle allows the use of various npm packages and VS Code intellisense.</p>
+<p>As for the IC, we believe its main benefits can be broken down into the following categories:</p>
+<ul>
+<li><a href="#ownership">Ownership</a></li>
+<li><a href="#security">Security</a></li>
+<li><a href="#developer-experience">Developer Experience</a></li>
+</ul>
+<p>Most of these benefits stem from the decentralized nature of the IC, though the IC is best thought of as a progressively decentralizing cloud platform. As opposed to traditional cloud platforms, its goal is to be owned and controlled by many independent entities.</p>
+<h4 id="ownership"><a class="header" href="#ownership">Ownership</a></h4>
+<ul>
+<li><a href="#full-stack-group-ownership">Full-stack group ownership</a></li>
+<li><a href="#autonomous-ownership">Autonomous ownership</a></li>
+<li><a href="#permanent-apis">Permanent APIs</a></li>
+<li><a href="#credible-neutrality">Credible neutrality</a></li>
+<li><a href="#reduced-platform-risk">Reduced platform risk</a></li>
+</ul>
+<h5 id="full-stack-group-ownership"><a class="header" href="#full-stack-group-ownership">Full-stack group ownership</a></h5>
+<p>The IC allows you to build applications that are controlled directly and only (with some caveats) by a group of people. This is in opposition to most cloud applications written today, which must be under the control of a very limited number of people and often a single legal entity that answers directly to a cloud provider, which itself is a single legal entity.</p>
+<p>In the blockchain world, group-owned applications are known as <a href="https://en.wikipedia.org/wiki/Decentralized_autonomous_organization">DAOs</a>. As opposed to DAOs built on most blockchains, the IC allows full-stack applications to be controlled by groups. This means that the group fully controls the running instances of the frontend and the backend code.</p>
+<h5 id="autonomous-ownership"><a class="header" href="#autonomous-ownership">Autonomous ownership</a></h5>
+<p>In addition to allowing applications to be owned by groups of people, the IC also allows applications to be owned by no one. This essentially creates autonomous applications or everlasting processes that execute indefinitely. The IC will essentially allow such an application to run indefinitely, unless it depletes its balance of cycles, or the <a href="https://internetcomputer.org/nns">NNS</a> votes to shut it down, neither of which is inevitable.</p>
+<h5 id="permanent-apis"><a class="header" href="#permanent-apis">Permanent APIs</a></h5>
+<p>Because most web APIs are owned and operated by individual entities, their fate is tied to that of their owners. If their owners go out of business, then those APIs may cease to exist. If their owners decide that they do not like or agree with certain users, they may restrict their access. In the end, they may decide to shut down or restrict access for arbitrary reasons.</p>
+<p>Because the IC allows for group and autonomous ownership of cloud software, the IC is able to produce potentially permanent web APIs. A decentralized group of independent entities will find it difficult to censor API consumers or shut down an API. An autonomous API would take those difficulties to the extreme, as it would continue operating as long as consumers were willing to pay for it.</p>
+<h5 id="credible-neutrality"><a class="header" href="#credible-neutrality">Credible neutrality</a></h5>
+<p>Group and autonomous ownership makes it possible to build neutral cloud software on the IC. This type of software would allow independent parties to coordinate with reduced trust in each other or a single third-party coordinator.</p>
+<p>This removes the risk of the third-party coordinator acting in its own self-interest against the interests of the coordinating participants. The coordinating participants would also find it difficult to implement changes that would benefit themselves to the detriment of other participants.</p>
+<p>Examples could include mobile app stores, ecommerce marketplaces, and podcast directories.</p>
+<h5 id="reduced-platform-risk"><a class="header" href="#reduced-platform-risk">Reduced platform risk</a></h5>
+<p>Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is reduced. This is in opposition to most cloud platforms, where the cloud provider itself generally has the power to arbitrarily remove users from its platform. While deplatforming can still occur on the IC, the only endogenous means of forcefully taking down an application is through an NNS vote.</p>
+<h4 id="security"><a class="header" href="#security">Security</a></h4>
+<ul>
+<li><a href="#built-in-replication">Built-in replication</a></li>
+<li><a href="#built-in-authentication">Built-in authentication</a></li>
+<li><a href="#built-in-firewallport-management">Built-in firewall/port management</a></li>
+<li><a href="#built-in-sandboxing">Built-in sandboxing</a></li>
+<li><a href="#threshold-protocols">Threshold protocols</a></li>
+<li><a href="#verifiable-source-code">Verifiable source code</a></li>
+<li><a href="#blockchain-integration">Blockchain integration</a></li>
+</ul>
+<h5 id="built-in-replication"><a class="header" href="#built-in-replication">Built-in replication</a></h5>
+<p>Replication has many benefits that stem from reducing various central points of failure.</p>
+<p>The IC is at its core a <a href="https://en.wikipedia.org/wiki/Byzantine_fault">Byzantine Fault Tolerant</a> replicated compute environment. Applications are deployed to subnets which are composed of nodes running replicas. Each replica is an independent replicated state machine that executes an application's state transitions (usually initiated with HTTP requests) and persists the results.</p>
+<p>This replication provides a high level of security out-of-the-box. It is also the foundation of a number of protocols that provide threshold cryptographic operations to IC applications.</p>
+<h5 id="built-in-authentication"><a class="header" href="#built-in-authentication">Built-in authentication</a></h5>
+<p>IC client tooling makes it easy to sign and send messages to the IC, and <a href="https://internetcomputer.org/docs/current/tokenomics/identity-auth/what-is-ic-identity">Internet Identity</a> provides a novel approach to self-custody of private keys. The IC automatically authenticates messages with the public key of the signer, and provides a compact representation of that public key, called a principal, to the application. The principal can be used for authorization purposes. This removes many authentication concerns from the developer.</p>
+<h5 id="built-in-firewallport-management"><a class="header" href="#built-in-firewallport-management">Built-in firewall/port management</a></h5>
+<p>The concept of ports and various other low-level network infrastructure on the IC is abstracted away from the developer. This can greatly reduce application complexity thus minimizing the chance of introducing vulnerabilities through incorrect configurations. Canisters expose endpoints through various methods, usually query or update methods. Because authentication is also built-in, much of the remaining vulnerability surface area is minimized to implementing correct authorization rules in the canister method endpoints.</p>
+<h5 id="built-in-sandboxing"><a class="header" href="#built-in-sandboxing">Built-in sandboxing</a></h5>
+<p>Canisters have at least two layers of sandboxing to protect colocated canisters from each other. All canisters are at their core Wasm modules and thus inherit the built-in Wasm sandbox. In case there is any bug in the underlying implementation of the Wasm execution environment (or a vulnerability in the imported host functionality), there is also an OS-level sandbox. Developers need not do anything to take advantage of these sandboxes.</p>
+<h5 id="threshold-protocols"><a class="header" href="#threshold-protocols">Threshold protocols</a></h5>
+<p>The IC provides a number of threshold protocols that allow groups of independent nodes to perform cryptographic operations. These protocols remove central points of failure while providing familiar and useful cryptographic operations to developers. Included are <a href="https://internetcomputer.org/docs/current/developer-docs/integrations/t-ecdsa">ECDSA</a>, <a href="https://internetcomputer.org/how-it-works/response-certification/">BLS</a>, <a href="https://internetcomputer.org/how-it-works/chain-key-technology/">VRF-like</a>, and in the future <a href="https://forum.dfinity.org/t/threshold-key-derivation-privacy-on-the-ic/16560">threshold key derivation</a>.</p>
+<h5 id="verifiable-source-code"><a class="header" href="#verifiable-source-code">Verifiable source code</a></h5>
+<p>IC applications (canisters) are compiled into Wasm and deployed to the IC as Wasm modules. The IC hashes each canister's Wasm binary and stores it for public retrieval. The Wasm binary hash can be retrieved and compared with the hash of an independently compiled Wasm binary derived from available source code. If the hashes match, then one can know with a high degree of certainty that the application is executing the Wasm binary that was compiled from that source code.</p>
+<h5 id="blockchain-integration"><a class="header" href="#blockchain-integration">Blockchain integration</a></h5>
+<p>When compared with web APIs built for the same purpose, the IC provides a high degree of security when integrating with various other blockchains. It has a direct client integration with Bitcoin, allowing applications to query its state with BFT guarantees. A similar integration is coming for Ethereum.</p>
+<p>In addition to these blockchain client integrations, a <a href="https://internetcomputer.org/docs/current/developer-docs/integrations/t-ecdsa/">threshold ECDSA protocol</a> (tECDSA) allows the IC to create keys and sign transactions on various <a href="http://ethanfast.com/top-crypto.html">ECDSA chains</a>. These chains include Bitcoin and Ethereum, and in the future the protocol may be extended to allow interaction with various <a href="http://ethanfast.com/top-crypto.html">EdDSA chains</a>. These direct integrations combined with tECDSA provide a much more secure way to provide blockchain functionality to end users than creating and storing their private keys on traditional cloud infrastructure.</p>
+<h4 id="developer-experience"><a class="header" href="#developer-experience">Developer experience</a></h4>
+<ul>
+<li><a href="#built-in-devops">Built-in devops</a></li>
+<li><a href="#orthogonal-persistence">Orthogonal persistence</a></li>
+</ul>
+<h5 id="built-in-devops"><a class="header" href="#built-in-devops">Built-in devops</a></h5>
+<p>The IC provides many devops benefits automatically. Though currently limited in its scalability, the protocol attempts to remove the need for developers to concern themselves with concepts such as autoscaling, load balancing, uptime, sandboxing, and firewalls/port management.</p>
+<p>Correctly constructed canisters have a simple deploy process and automatically inherit these devops capabilities up unto the current scaling limits of the IC. DFINITY engineers are constantly working to remove scalability bottlenecks.</p>
+<h5 id="orthogonal-persistence"><a class="header" href="#orthogonal-persistence">Orthogonal persistence</a></h5>
+<p>The IC automatically persists its heap. This creates an extremely convenient way for developers to store application state, by simply writing into global variables in their programming language of choice. This is a great way to get started.</p>
+<p>If a canister upgrades its code, swapping out its Wasm binary, then the heap must be cleared. To overcome this limitation, there is a special area of memory called stable memory that persists across these canister upgrades. Special stable data structures provide a familiar API that allows writing into stable memory directly.</p>
+<p>All of this together provides the foundation for a very simple persistence experience for the developer. The persistence tools now available and coming to the IC may be simpler than their equivalents on traditional cloud infrastructure.</p>
+<h3 id="drawbacks"><a class="header" href="#drawbacks">Drawbacks</a></h3>
+<p>It's important to note that both Azle and the IC are early-stage projects. The IC officially launched in May of 2021, and Azle reached beta in April of 2022.</p>
+<h4 id="azle"><a class="header" href="#azle">Azle</a></h4>
+<p>Some of Azle's main drawbacks can be summarized as follows:</p>
+<ul>
+<li><a href="#beta">Beta</a></li>
+<li><a href="#security-risks">Security risks</a></li>
+<li><a href="#missing-apis">Missing APIs</a></li>
+</ul>
+<h5 id="beta"><a class="header" href="#beta">Beta</a></h5>
+<p>Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:</p>
+<ul>
+<li>Extensive automated property test coverage</li>
+<li>Multiple independent security reviews/audits</li>
+<li>Broad npm package support</li>
+</ul>
+<h5 id="security-risks"><a class="header" href="#security-risks">Security risks</a></h5>
+<p>As discussed earlier, these are some things to keep in mind:</p>
+<ul>
+<li>Azle does not yet have extensive automated property tests</li>
+<li>Azle does not yet have multiple independent security reviews/audits</li>
+<li>Azle does not yet have many live, successful, continuously operating applications deployed to the IC</li>
+</ul>
+<h5 id="missing-apis"><a class="header" href="#missing-apis">Missing APIs</a></h5>
+<p>Azle is not Node.js nor is it V8 running in a web browser. It is using a JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.</p>
+<h4 id="ic"><a class="header" href="#ic">IC</a></h4>
+<p>Some of the IC's main drawbacks can be summarized as follows:</p>
+<ul>
+<li><a href="#early">Early</a></li>
+<li><a href="#high-latencies">High latencies</a></li>
+<li><a href="#limited-and-expensive-compute-resources">Limited and expensive compute resources</a></li>
+<li><a href="#limited-scalability">Limited scalability</a></li>
+<li><a href="#lack-of-privacy">Lack of privacy</a></li>
+<li><a href="#nns-risk">NNS risk</a></li>
+</ul>
+<h5 id="early"><a class="header" href="#early">Early</a></h5>
+<p>The IC launched officially in May of 2021. As a relatively new project with an extremely ambitious vision, you can expect a small community, immature tooling, and an unproven track record. Much has been delivered, but many promises are yet to be fulfilled.</p>
+<h5 id="high-latencies"><a class="header" href="#high-latencies">High latencies</a></h5>
+<p>Any requests that change state on the IC must go through consensus, thus you can expect latencies of a few seconds for these types of requests. When canisters need to communicate with each other across subnets or under heavy load, these latencies can be even longer. Under these circumstances, in the worst case latencies will build up linearly. For example, if canister A calls canister B calls canister C, and these canisters are all on different subnets or under heavy load, then you might need to multiply the latency by the total number of calls.</p>
+<h5 id="limited-and-expensive-compute-resources"><a class="header" href="#limited-and-expensive-compute-resources">Limited and expensive compute resources</a></h5>
+<p>CPU usage, data storage, and network usage may be more expensive than the equivalent usage on traditional cloud platforms. Combining these costs with the high latencies explained above, it becomes readily apparent that the IC is currently not built for high-performance computing.</p>
+<h5 id="limited-scalability"><a class="header" href="#limited-scalability">Limited scalability</a></h5>
+<p>The IC might not be able to scale to the needs of your application. It is constantly seeking to improve scalability bottlenecks, but it will probably not be able to onboard millions of users to your traditional web application.</p>
+<h5 id="lack-of-privacy"><a class="header" href="#lack-of-privacy">Lack of privacy</a></h5>
+<p>You should assume that all of your application data (unless it is end-to-end encrypted) is accessible to multiple third-parties with no direct relationship and limited commitment to you. Currently all canister state sits unencrypted on node operator's machines. Application-layer access controls for data are possible, but motivated node operators will have an easy time getting access to your data.</p>
+<h5 id="nns-risk"><a class="header" href="#nns-risk">NNS risk</a></h5>
+<p>The NNS has the ability to uninstall any canister and can generally change anything about the IC protocol. The NNS uses a simple liquid democracy based on coin/token voting and follower relationships. At the time of this writing most of the voting power on the NNS follows DFINITY for protocol changes, effectively giving DFINITY write control to the protocol while those follower relationships remain in place. The NNS must mature and decentralize to provide practical and realistic protections to canisters and their users.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="candid_based_documentation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="internet_computer_overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="candid_based_documentation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="internet_computer_overview.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

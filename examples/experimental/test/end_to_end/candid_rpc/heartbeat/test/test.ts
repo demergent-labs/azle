@@ -1,5 +1,5 @@
-import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { runTests } from 'azle/_internal/test';
 
 import { createActor as createActorHeartbeatAsync } from './dfx_generated/heartbeat_async';
 import { createActor as createActorHeartbeatSync } from './dfx_generated/heartbeat_sync';

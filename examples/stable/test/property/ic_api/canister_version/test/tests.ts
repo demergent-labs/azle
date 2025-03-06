@@ -4,7 +4,7 @@ import {
     getCanisterActor,
     it,
     Test
-} from 'azle/test';
+} from 'azle/_internal/test';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 

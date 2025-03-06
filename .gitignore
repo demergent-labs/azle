@@ -1,9 +1,9 @@
-.agents
 .dfx
 .DS_Store
 .eslintcache
 .vscode/*
 !.vscode/extensions.json
 dist
+!/dist
 node_modules
 target

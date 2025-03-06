@@ -1,7 +1,11 @@
-import { getActor, Named } from 'azle/test/property';
-import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { Func } from 'azle/test/property/arbitraries/candid/reference/func_arb';
-import { AzleResult, Test, testEquality } from 'azle/test/property/test';
+import { getActor, Named } from 'azle/experimental/_internal/test/property';
+import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { Func } from 'azle/experimental/_internal/test/property/arbitraries/candid/reference/func_arb';
+import {
+    AzleResult,
+    Test,
+    testEquality
+} from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
     functionName: string,

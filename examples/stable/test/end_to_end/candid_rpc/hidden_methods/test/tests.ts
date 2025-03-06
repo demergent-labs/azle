@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, please, Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { join } from 'path';

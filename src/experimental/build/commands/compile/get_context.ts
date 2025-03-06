@@ -1,0 +1,55 @@
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+
+import { getContext as getStableContext } from '#commands/compile/get_context';
+import { Context, WasmData } from '#experimental/utils/types';
+import { getCanisterId } from '#utils/dfx';
+import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { CanisterConfig } from '#utils/types';
+
+import { getConsumer } from './open_value_sharing/consumer';
+
+export async function getContext(
+    canisterName: string,
+    canisterConfig: CanisterConfig
+): Promise<Context> {
+    const stableContext = getStableContext(canisterName, canisterConfig);
+
+    const canisterId = getCanisterId(canisterName);
+
+    const esmAliases = canisterConfig.custom?.esm_aliases ?? {};
+    const esmExternals = canisterConfig.custom?.esm_externals ?? [];
+
+    const reloadedJsPath = join('.azle', canisterName, 'main_reloaded.js');
+
+    const consumer = await getConsumer(canisterConfig);
+    const managementDid = (
+        await readFile(
+            join(
+                AZLE_PACKAGE_PATH,
+                'src',
+                'stable',
+                'lib',
+                'canisters',
+                'management',
+                'idl',
+                'ic.did'
+            )
+        )
+    ).toString();
+    const wasmData: WasmData = {
+        ...stableContext.wasmData,
+        consumer,
+        managementDid,
+        recordBenchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
+    };
+
+    return {
+        ...stableContext,
+        canisterId,
+        esmAliases,
+        esmExternals,
+        reloadedJsPath,
+        wasmData
+    };
+}

@@ -1,6 +1,6 @@
 import { describe } from '@jest/globals';
-import { Unit } from 'azle/scripts/file_generator';
-import { please, Test } from 'azle/test';
+import { please, Test } from 'azle/_internal/test';
+import { Unit } from 'azle/experimental/_internal';
 import { join } from 'path';
 
 import { generateTestFileOfSize } from './generate_test_files';

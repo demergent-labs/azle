@@ -3,7 +3,7 @@ import {
     BitcoinNetwork,
     GetUtxosResult,
     MillisatoshiPerByte
-} from 'azle/experimental/canisters/management/bitcoin';
+} from 'azle/experimental/canisters/management';
 
 // The fees for the various bitcoin endpoints.
 const GET_BALANCE_COST_CYCLES: bigint = 100_000_000n;

@@ -8,7 +8,7 @@ mdbook serve --open
 ```bash
 # For deployment
 cd the_azle_book
-mdbook build --dest-dir ../docs
+mdbook build --dest-dir ../dist/docs
 
 # Then commit the changes to git and merge into main on GitHub
 ```

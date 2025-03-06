@@ -1,9 +1,9 @@
-import 'azle/test/set_experimental';
+import 'azle/experimental/_internal/test/set_experimental';
 
 import { beforeAll } from '@jest/globals';
+import { expect, it, please, Test, wait } from 'azle/_internal/test';
 import { jsonParse, jsonStringify } from 'azle/experimental';
 import { GetUtxosResult, Utxo } from 'azle/experimental/canisters/management';
-import { expect, it, please, Test, wait } from 'azle/test';
 import { Transaction } from 'bitcoinjs-lib';
 
 import {

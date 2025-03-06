@@ -1,30 +1,30 @@
-import { runPropTests } from 'azle/test/property';
-import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
+import { runPropTests } from 'azle/experimental/_internal/test/property';
+import { candidDefinitionArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb';
 import {
     CandidDefinition,
     WithShapes
-} from 'azle/test/property/arbitraries/candid/candid_definition_arb/types';
-import { CandidReturnTypeArb } from 'azle/test/property/arbitraries/candid/candid_return_type_arb';
+} from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb/types';
+import { CandidReturnTypeArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_return_type_arb';
 import {
     CandidValueAndMeta,
     CandidValueAndMetaArb
-} from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { definitionAndValueToValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';
-import { CandidValueArb } from 'azle/test/property/arbitraries/candid/candid_values_arb';
-import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
+} from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { definitionAndValueToValueAndMeta } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';
+import { CandidValueArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_values_arb';
+import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/arbitraries/candid/corresponding_js_type';
 import {
     CanisterArb,
     CanisterConfig
-} from 'azle/test/property/arbitraries/canister_arb';
-import { InitMethodArb } from 'azle/test/property/arbitraries/canister_methods/init_method_arb';
-import { PostUpgradeMethodArb } from 'azle/test/property/arbitraries/canister_methods/post_upgrade_arb';
+} from 'azle/experimental/_internal/test/property/arbitraries/canister_arb';
+import { InitMethodArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/init_method_arb';
+import { PostUpgradeMethodArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/post_upgrade_method_arb';
 import {
     QueryMethod,
     QueryMethodArb
-} from 'azle/test/property/arbitraries/canister_methods/query_method_arb';
-import { UpdateMethodArb } from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
-import { DEFAULT_VALUE_MAX_DEPTH } from 'azle/test/property/arbitraries/config';
-import { Api } from 'azle/test/property/arbitraries/types';
+} from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/query_method_arb';
+import { UpdateMethodArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/update_method_arb';
+import { DEFAULT_VALUE_MAX_DEPTH } from 'azle/experimental/_internal/test/property/arbitraries/config';
+import { Api } from 'azle/experimental/_internal/test/property/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';

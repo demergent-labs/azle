@@ -6,14 +6,35 @@
         "typecheck": "tsc",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --cache --fix; else eslint . --cache; fi",
         "prepare": "husky",
-        "install": "cd dfx_extension && ./install.sh",
+        "install": "cd src/stable/build/dfx_extension && ./install.sh",
         "test": "echo 'test'"
     },
     "type": "module",
     "bin": {
-        "azle": "./src/build/index.ts"
+        "azle": "./src/build.ts"
     },
-    "main": "./src/lib/stable/index.ts",
+    "exports": {
+        ".": "./src/stable/lib/index.ts",
+        "./_internal": "./src/exports/_internal.ts",
+        "./_internal/*": "./src/exports/_internal/*.ts",
+        "./canisters/*": "./src/exports/canisters/*.ts",
+        "./experimental": "./src/exports/experimental.ts",
+        "./experimental/*": "./src/exports/experimental/*.ts"
+    },
+    "imports": {
+        "#commands/*": "./src/stable/build/commands/*.ts",
+        "#experimental/commands/*": "./src/experimental/build/commands/*.ts",
+        "#experimental/lib/*": "./src/experimental/lib/*.ts",
+        "#experimental/test/*": "./src/experimental/test/*.ts",
+        "#experimental/test/property/*": "./src/experimental/test/property/*.ts",
+        "#experimental/test/type/*": "./src/experimental/test/type/*.ts",
+        "#experimental/utils/*": "./src/experimental/build/utils/*.ts",
+        "#lib/*": "./src/stable/lib/*.ts",
+        "#test/*": "./src/stable/test/*.ts",
+        "#test/property/*": "./src/stable/test/property/*.ts",
+        "#test/type/*": "./src/stable/test/type/*.ts",
+        "#utils/*": "./src/stable/build/utils/*.ts"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/demergent-labs/azle.git"

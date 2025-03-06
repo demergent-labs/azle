@@ -1,6 +1,6 @@
 import { getTests } from 'async_await_end_to_end_test_functional_syntax/test/tests';
-import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { runTests } from 'azle/_internal/test';
 
 import { createActor } from './dfx_generated/async_await';
 

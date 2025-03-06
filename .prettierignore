@@ -5,10 +5,10 @@ dist
 node_modules
 target
 /the_azle_book/book
-/docs
+/dist/docs
 static_canister_template_licenses.yml
 .azle
 dfx_generated
 .bitcoin
 licenses.yml
-src/build/stable/commands/generate_types/rust/candid_to_ts_js/pkg
+src/stable/build/commands/generate_types/rust/candid_to_ts_js/pkg

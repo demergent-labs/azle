@@ -1,9 +1,9 @@
-import { runPropTests } from 'azle/test/property';
-import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
-import { CanisterArb } from 'azle/test/property/arbitraries/canister_arb';
-import { UpdateMethod } from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
-import { StableBTreeMapArb } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
-import { Context } from 'azle/test/property/arbitraries/types';
+import { runPropTests } from 'azle/experimental/_internal/test/property';
+import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/arbitraries/candid/corresponding_js_type';
+import { CanisterArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_arb';
+import { UpdateMethod } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/update_method_arb';
+import { StableBTreeMapArb } from 'azle/experimental/_internal/test/property/arbitraries/stable_b_tree_map_arb';
+import { Context } from 'azle/experimental/_internal/test/property/arbitraries/types';
 import fc from 'fast-check';
 
 import { ContainsKeyTestArb } from './contains_key';

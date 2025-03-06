@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { expect, it, please, Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 const USERS_BATCH_AMOUNT = 499;

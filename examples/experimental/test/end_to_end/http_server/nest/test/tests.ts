@@ -1,4 +1,4 @@
-import { expect, it, Test } from 'azle/test';
+import { expect, it, Test } from 'azle/_internal/test';
 
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.raw.localhost:8000`;

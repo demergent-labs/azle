@@ -1,6 +1,5 @@
-import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
-import { expect, it } from 'azle/test';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { expect, it, runTests } from 'azle/_internal/test';
 import { readFileSync } from 'fs';
 import { getTests } from 'management_canister_end_to_end_test_functional_syntax/test/tests';
 
@@ -28,7 +27,7 @@ runTests(() => {
         );
 
         const referenceContent = readFileSync(
-            '../../../../../../canisters/management/idl/index.ts',
+            '../../../../../../src/stable/lib/canisters/management/idl/index.ts',
             'utf-8'
         );
 

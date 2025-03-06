@@ -1,6 +1,6 @@
 globalThis._azleExperimental = true;
 
-import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/stable';
+import { DidVisitor, getDefaultVisitorData } from 'azle/_internal';
 import {
     defaultPropTestParams,
     expect,
@@ -8,9 +8,9 @@ import {
     it,
     please,
     Test
-} from 'azle/test';
-import { candidDefinitionArb } from 'azle/test/property/arbitraries/candid/candid_definition_arb';
-import { DefinitionConstraints } from 'azle/test/property/arbitraries/candid/candid_definition_arb/types';
+} from 'azle/_internal/test';
+import { candidDefinitionArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb';
+import { DefinitionConstraints } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb/types';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 

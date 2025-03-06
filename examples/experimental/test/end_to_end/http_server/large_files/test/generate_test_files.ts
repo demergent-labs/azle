@@ -1,4 +1,4 @@
-import { generateFileOfSize, toBytes, Unit } from 'azle/scripts/file_generator';
+import { generateFileOfSize, toBytes, Unit } from 'azle/experimental/_internal';
 import { join } from 'path';
 
 export async function generateTestFileOfSize(

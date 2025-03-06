@@ -1,4 +1,4 @@
-import { linkAndInstallPatch } from 'azle/test/jest_link';
+import { linkAndInstallPatch } from 'azle/_internal/test/jest_link';
 import { execSync } from 'child_process';
 import { lstatSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
@@ -21,7 +21,7 @@ function pretest(): void {
 
     // We generate this file without the workaroundForMultipleIDLPathsProblem so that we can do an exact comparison with the azle/canisters/management/idl/index.ts file
     execSync(
-        `npm exec --offline azle generate-types ../../../../../../canisters/management/idl/ic.did > src/idl/management_no_workaround.ts`,
+        `npm exec --offline azle generate-types ../../../../../../src/stable/lib/canisters/management/idl/ic.did > src/idl/management_no_workaround.ts`,
         {
             stdio: 'inherit'
         }
@@ -35,7 +35,7 @@ function pretest(): void {
     );
 
     execSync(
-        `npm exec --offline azle generate-types ../../../../../../canisters/management/idl/ic.did > src/idl/management.ts`,
+        `npm exec --offline azle generate-types ../../../../../../src/stable/lib/canisters/management/idl/ic.did > src/idl/management.ts`,
         {
             stdio: 'inherit'
         }

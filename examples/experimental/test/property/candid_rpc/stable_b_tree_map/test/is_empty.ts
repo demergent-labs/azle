@@ -1,9 +1,13 @@
-import { getActor } from 'azle/test/property';
-import { CorrespondingJSType } from 'azle/test/property/arbitraries/candid/corresponding_js_type';
-import { UpdateMethod } from 'azle/test/property/arbitraries/canister_methods/update_method_arb';
-import { StableBTreeMap } from 'azle/test/property/arbitraries/stable_b_tree_map_arb';
-import { UniqueIdentifierArb } from 'azle/test/property/arbitraries/unique_identifier_arb';
-import { AzleResult, Test, testEquality } from 'azle/test/property/test';
+import { getActor } from 'azle/experimental/_internal/test/property';
+import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/arbitraries/candid/corresponding_js_type';
+import { UpdateMethod } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/update_method_arb';
+import { StableBTreeMap } from 'azle/experimental/_internal/test/property/arbitraries/stable_b_tree_map_arb';
+import { UniqueIdentifierArb } from 'azle/experimental/_internal/test/property/arbitraries/unique_identifier_arb';
+import {
+    AzleResult,
+    Test,
+    testEquality
+} from 'azle/experimental/_internal/test/property/test';
 import fc from 'fast-check';
 
 export function IsEmptyTestArb(

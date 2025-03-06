@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { getCanisterId } from 'azle/dfx';
-import { expect, it, Test } from 'azle/test';
+import { getCanisterId } from 'azle/_internal/dfx';
+import { expect, it, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 import {

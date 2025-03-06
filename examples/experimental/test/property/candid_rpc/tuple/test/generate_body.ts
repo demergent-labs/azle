@@ -1,10 +1,10 @@
-import { Named } from 'azle/test/property';
-import { CandidValueAndMeta } from 'azle/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { Named } from 'azle/experimental/_internal/test/property';
+import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
 import {
     ReturnTuple,
     Tuple
-} from 'azle/test/property/arbitraries/candid/constructed/tuple_arb';
-import { areParamsCorrectlyOrdered } from 'azle/test/property/are_params_correctly_ordered';
+} from 'azle/experimental/_internal/test/property/arbitraries/candid/constructed/tuple_arb';
+import { areParamsCorrectlyOrdered } from 'azle/experimental/_internal/test/property/are_params_correctly_ordered';
 
 export function generateBody(
     namedParamTuples: Named<CandidValueAndMeta<Tuple, ReturnTuple>>[],

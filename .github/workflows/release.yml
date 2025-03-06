@@ -4,11 +4,12 @@ on:
         inputs:
             release-version:
                 required: true
+                description: 'Release version'
             signing-key-id:
                 required: true
                 type: string
                 default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-
+                description: 'Signing key ID'
 jobs:
     create-branch-prefix:
         uses: ./.github/workflows/create_branch_prefix.yml
@@ -55,7 +56,7 @@ jobs:
               run: |
                   VERSION=${{ inputs.release-version }}
                   sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
-                  sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" dfx_extension/extension.json
+                  sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" src/stable/build/dfx_extension/extension.json
 
             - uses: ./.github/actions/retry_command
               with:
