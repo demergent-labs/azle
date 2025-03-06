@@ -29,5 +29,5 @@
 !package-lock.json
 !package.json
 !README.md
-!server.did
+!src/experimental/lib/server.did
 !tsconfig.dev.json

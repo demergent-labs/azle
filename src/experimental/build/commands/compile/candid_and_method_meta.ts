@@ -59,7 +59,9 @@ async function handleAutomaticAndCustom(
 
 async function handleHttp(): Promise<CandidAndMethodMeta> {
     const candid = (
-        await readFile(join(AZLE_PACKAGE_PATH, 'server.did'))
+        await readFile(
+            join(AZLE_PACKAGE_PATH, 'src', 'experimental', 'lib', 'server.did')
+        )
     ).toString();
 
     const methodMeta: MethodMeta = {
