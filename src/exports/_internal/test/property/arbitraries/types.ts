@@ -1,1 +1,1 @@
-export * from '../../../../../../test/property/arbitraries/types';
+export * from '#experimental/test/property/arbitraries/types';

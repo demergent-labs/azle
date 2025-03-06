@@ -1,1 +1,1 @@
-export * from '../../../../../../test/property/arbitraries/canister_methods';
+export * from '#experimental/test/property/arbitraries/canister_methods/index';

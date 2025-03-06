@@ -4,7 +4,7 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const deepEqual = require('deep-is');
 
-import { jsonStringify } from '../../../src/stable/lib/json';
+import { jsonStringify } from '#lib/json';
 
 export type Test<> = {
     name: string;

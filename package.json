@@ -30,6 +30,7 @@
         "#experimental/lib/*": "./src/experimental/lib/*.ts",
         "#test/types/*": "./type_tests/*.ts",
         "#test/property/*": "./src/stable/test/property/*.ts",
+        "#experimental/test/property/*": "./src/experimental/test/property/*.ts",
         "#canisters/*": "./src/stable/canisters/*.ts",
         "#experimental/canisters/*": "./src/experimental/canisters/*.ts",
         "#experimental/http_client*": "./src/experimental/http_client/*.ts"

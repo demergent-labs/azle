@@ -1,1 +1,1 @@
-export * from '../../../../../../../test/property/arbitraries/candid/candid_value_and_meta_arb_generator';
+export * from '#experimental/test/property/arbitraries/candid/candid_value_and_meta_arb_generator';

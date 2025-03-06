@@ -1,1 +1,1 @@
-export * from '../../../../../test/property/are_params_correctly_ordered';
+export * from '#experimental/test/property/are_params_correctly_ordered';

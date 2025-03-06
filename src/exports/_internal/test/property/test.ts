@@ -1,1 +1,1 @@
-export * from '../../../../../test/property/test';
+export * from '#experimental/test/property/test/index';
