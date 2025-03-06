@@ -1,1 +1,3 @@
-export * from '../../experimental/index';
+import '#experimental/lib/experimental';
+
+export * from '#experimental/lib/index';
