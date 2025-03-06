@@ -29,7 +29,8 @@
         "#lib/*": "./src/stable/lib/*.ts",
         "#experimental/lib/*": "./src/experimental/lib/*.ts",
         "#test/types/*": "./type_tests/*.ts",
-        "#canisters/*": "./src/stable/canisters/*.ts"
+        "#canisters/*": "./src/stable/canisters/*.ts",
+        "#experimental/canisters/*": "./src/experimental/canisters/*.ts"
     },
     "repository": {
         "type": "git",
