@@ -1,4 +1,4 @@
-import 'azle/_internal/test/set_experimental';
+import 'azle/experimental/_internal/test/set_experimental';
 
 import { expect, it, Test, wait } from 'azle/_internal/test';
 // TODO These tests must be from from dfx --start to generate fresh addresses

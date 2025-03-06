@@ -1,4 +1,4 @@
-import 'azle/_internal/test/set_experimental';
+import 'azle/experimental/_internal/test/set_experimental';
 
 import { beforeAll } from '@jest/globals';
 import { expect, it, please, Test, wait } from 'azle/_internal/test';
