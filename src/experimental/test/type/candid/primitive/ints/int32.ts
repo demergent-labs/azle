@@ -5,7 +5,7 @@ import {
     NotAnyAndExact,
     testCandidType,
     testSerializable
-} from '#test/types/assert_type';
+} from '#experimental/test/types/assert_type';
 
 testCandidType(int32);
 testSerializable(int32);

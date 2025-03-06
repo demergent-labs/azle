@@ -8,7 +8,10 @@ import {
     text,
     Variant
 } from '#experimental/lib/index';
-import { AssertType, NotAnyAndExact } from '#test/types/assert_type';
+import {
+    AssertType,
+    NotAnyAndExact
+} from '#experimental/test/types/assert_type';
 
 const User = Record({
     id: text

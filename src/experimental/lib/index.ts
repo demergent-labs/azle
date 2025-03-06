@@ -12,4 +12,4 @@ export * from '#experimental/lib/threshold_wallet/index';
 export * from '#lib/json';
 export * from '#lib/stable_structures/stable_json';
 
-import '#test/types/index';
+import '#experimental/test/types/index';

@@ -28,10 +28,10 @@
         "#experimental/commands/*": "./src/experimental/build/commands/*.ts",
         "#experimental/http_client*": "./src/experimental/http_client/*.ts",
         "#experimental/lib/*": "./src/experimental/lib/*.ts",
+        "#experimental/test/types/*": "./src/experimental/test/type/*.ts",
         "#experimental/test/property/*": "./src/experimental/test/property/*.ts",
         "#experimental/utils/*": "./src/experimental/build/utils/*.ts",
         "#lib/*": "./src/stable/lib/*.ts",
-        "#test/types/*": "./src/experimental/test/type/*.ts",
         "#test/property/*": "./src/stable/test/property/*.ts",
         "#utils/*": "./src/stable/build/utils/*.ts"
     },

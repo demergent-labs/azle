@@ -6,7 +6,7 @@
 // TODO we probably need to rework Service/Canister a bit
 
 import { Canister } from '#experimental/lib/index';
-import { testCandidType } from '#test/types/assert_type';
+import { testCandidType } from '#experimental/test/types/assert_type';
 
 const TestCanister = Canister({});
 

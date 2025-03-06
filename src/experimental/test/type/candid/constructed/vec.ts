@@ -21,7 +21,7 @@ import {
     NotAnyAndExact,
     testCandidType,
     testSerializable
-} from '#test/types/assert_type';
+} from '#experimental/test/types/assert_type';
 
 // test float32
 

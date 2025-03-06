@@ -18,7 +18,10 @@ import {
     text,
     Variant
 } from '#experimental/lib/index';
-import { testCandidType, testSerializable } from '#test/types/assert_type';
+import {
+    testCandidType,
+    testSerializable
+} from '#experimental/test/types/assert_type';
 
 export const ExampleVariant = Variant({
     bool: Null,

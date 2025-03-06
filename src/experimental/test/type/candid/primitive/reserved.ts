@@ -5,7 +5,7 @@ import {
     IsAny,
     testCandidType,
     testSerializable
-} from '#test/types/assert_type';
+} from '#experimental/test/types/assert_type';
 
 testCandidType(reserved);
 testSerializable(reserved);
