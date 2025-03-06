@@ -10,12 +10,12 @@ import {
     please,
     Test
 } from 'azle/_internal/test';
-import { candidDefinitionArb } from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb';
+import { candidDefinitionArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb';
 import {
     CandidDefinition,
     DefinitionConstraints,
     WithShapes
-} from 'azle/_internal/test/property/arbitraries/candid/candid_definition_arb/types';
+} from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb/types';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 import { mkdir, writeFile } from 'fs/promises';

@@ -1,15 +1,15 @@
 import {
     defaultArrayConstraints,
     runPropTests
-} from 'azle/_internal/test/property';
-import { CandidReturnTypeArb } from 'azle/_internal/test/property/arbitraries/candid/candid_return_type_arb';
-import { CandidValueAndMetaArb } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
+} from 'azle/experimental/_internal/test/property';
+import { CandidReturnTypeArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_return_type_arb';
+import { CandidValueAndMetaArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
 import {
     CanisterArb,
     CanisterConfig
-} from 'azle/_internal/test/property/arbitraries/canister_arb';
-import { QueryMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/query_method_arb';
-import { Api } from 'azle/_internal/test/property/arbitraries/types';
+} from 'azle/experimental/_internal/test/property/arbitraries/canister_arb';
+import { QueryMethodArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/query_method_arb';
+import { Api } from 'azle/experimental/_internal/test/property/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody } from './generate_body';

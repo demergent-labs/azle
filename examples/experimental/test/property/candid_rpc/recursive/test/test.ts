@@ -2,15 +2,15 @@ import {
     defaultArrayConstraints,
     runPropTests,
     shortArrayConstraints
-} from 'azle/_internal/test/property';
-import { RecursiveArb } from 'azle/_internal/test/property/arbitraries/candid/recursive';
+} from 'azle/experimental/_internal/test/property';
+import { RecursiveArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/recursive';
 import {
     CanisterArb,
     CanisterConfig
-} from 'azle/_internal/test/property/arbitraries/canister_arb';
-import { QueryMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/query_method_arb';
-import { UpdateMethodArb } from 'azle/_internal/test/property/arbitraries/canister_methods/update_method_arb';
-import { Api } from 'azle/_internal/test/property/arbitraries/types';
+} from 'azle/experimental/_internal/test/property/arbitraries/canister_arb';
+import { QueryMethodArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/query_method_arb';
+import { UpdateMethodArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/update_method_arb';
+import { Api } from 'azle/experimental/_internal/test/property/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody } from './generate_body';

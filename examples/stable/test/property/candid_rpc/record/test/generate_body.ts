@@ -1,7 +1,7 @@
-import { Named } from 'azle/_internal/test/property';
-import { CandidValueAndMeta } from 'azle/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
-import { Record } from 'azle/_internal/test/property/arbitraries/candid/constructed/record_arb';
-import { areParamsCorrectlyOrdered } from 'azle/_internal/test/property/are_params_correctly_ordered';
+import { Named } from 'azle/experimental/_internal/test/property';
+import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
+import { Record } from 'azle/experimental/_internal/test/property/arbitraries/candid/constructed/record_arb';
+import { areParamsCorrectlyOrdered } from 'azle/experimental/_internal/test/property/are_params_correctly_ordered';
 
 export function generateBody(
     namedParamRecords: Named<CandidValueAndMeta<Record>>[],

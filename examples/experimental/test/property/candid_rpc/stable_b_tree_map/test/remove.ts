@@ -1,13 +1,13 @@
-import { getActor } from 'azle/_internal/test/property';
-import { CorrespondingJSType } from 'azle/_internal/test/property/arbitraries/candid/corresponding_js_type';
-import { UpdateMethod } from 'azle/_internal/test/property/arbitraries/canister_methods/update_method_arb';
-import { StableBTreeMap } from 'azle/_internal/test/property/arbitraries/stable_b_tree_map_arb';
-import { UniqueIdentifierArb } from 'azle/_internal/test/property/arbitraries/unique_identifier_arb';
+import { getActor } from 'azle/experimental/_internal/test/property';
+import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/arbitraries/candid/corresponding_js_type';
+import { UpdateMethod } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/update_method_arb';
+import { StableBTreeMap } from 'azle/experimental/_internal/test/property/arbitraries/stable_b_tree_map_arb';
+import { UniqueIdentifierArb } from 'azle/experimental/_internal/test/property/arbitraries/unique_identifier_arb';
 import {
     AzleResult,
     Test,
     testEquality
-} from 'azle/_internal/test/property/test';
+} from 'azle/experimental/_internal/test/property/test';
 import fc from 'fast-check';
 
 export function RemoveTestArb(
