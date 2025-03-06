@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 /*
  * The VisitorData gives us js_data which is the data that is about to be

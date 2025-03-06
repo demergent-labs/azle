@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 import { blob } from '#experimental/lib/candid/types/constructed/blob';
 import { Opt } from '#experimental/lib/candid/types/constructed/opt';

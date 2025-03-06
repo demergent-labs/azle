@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';

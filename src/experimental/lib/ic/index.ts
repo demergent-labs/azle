@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 import { acceptMessage } from './accept_message';
 import { candidCompiler } from './candid_compiler';

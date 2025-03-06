@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO we do not support Request yet, same as the frontend fetch
 // TODO we probably could as wasmedge-quickjs has a Request class in http

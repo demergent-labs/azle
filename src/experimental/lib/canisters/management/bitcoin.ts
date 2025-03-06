@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO I am thinking we should use the same names as ic-btc-types
 import {

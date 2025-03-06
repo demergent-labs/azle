@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 import { AzleResult, Result } from '../system_types';
 import { AzleBlob, blob } from './types/constructed/blob';

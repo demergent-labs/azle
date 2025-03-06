@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 import './register_get_url';
 
 import { Principal } from '@dfinity/principal';

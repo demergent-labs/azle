@@ -1,4 +1,4 @@
-import './experimental';
+import '#experimental/lib/assert_experimental';
 import '#lib/globals'; // We import this to remove type errors having to do with the stable and experimental globals
 
 // @ts-ignore

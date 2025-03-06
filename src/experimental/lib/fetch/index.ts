@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO what happens if you have a bunch of fetches in your dependencies, all in a row?
 // TODO how would you set options for each individually?

@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 import { handleUncaughtError } from '#lib/error';
 import { msgArgData, msgReply, performanceCounter } from '#lib/ic_apis/index';

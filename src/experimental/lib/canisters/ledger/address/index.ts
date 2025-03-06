@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 import { Principal } from '@dfinity/principal';
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';

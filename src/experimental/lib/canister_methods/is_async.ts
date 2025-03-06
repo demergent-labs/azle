@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 export function isAsync(originalFunction: any): boolean {
     if (originalFunction[Symbol.toStringTag] === 'AsyncFunction') {

@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 import '#experimental/lib/globals';
 
 export * from '#experimental/lib/candid/index';

@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 export function setOutgoingHttpOptions(options: {
     maxResponseBytes?: bigint;

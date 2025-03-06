@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 /* eslint-disable @typescript-eslint/explicit-function-return-type */

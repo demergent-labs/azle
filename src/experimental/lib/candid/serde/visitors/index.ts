@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 export { DecodeVisitor } from './decode_visitor';
 export { EncodeVisitor } from './encode_visitor';

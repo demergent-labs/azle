@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 import { Record } from '#experimental/lib/candid/types/constructed/record';
 import { nat } from '#experimental/lib/candid/types/primitive/nats/nat';

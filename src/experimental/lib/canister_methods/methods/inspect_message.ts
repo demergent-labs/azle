@@ -1,4 +1,4 @@
-import '#experimental/lib/experimental';
+import '#experimental/lib/assert_experimental';
 
 import { Void } from '../../candid/types/primitive/void';
 import { executeMethod } from '../execute_method';
