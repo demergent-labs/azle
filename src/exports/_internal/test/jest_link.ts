@@ -1,1 +1,1 @@
-export * from '../../../../test/jest_link';
+export * from '../../../stable/test/jest_link';

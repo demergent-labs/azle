@@ -4,7 +4,7 @@ import { join, resolve } from 'path';
 // TODO remove linkAndInstallPatch after https://github.com/demergent-labs/azle/issues/1807 is resolved
 export function linkAndInstallPatch(pathRelativeToAzle: string): void {
     const examplesDir =
-        process.env.GITHUB_WORKSPACE ?? resolve(__dirname, '..');
+        process.env.GITHUB_WORKSPACE ?? resolve(__dirname, '..', '..', '..');
 
     execSync(`cd ${join(examplesDir, pathRelativeToAzle)} && npm install`);
 

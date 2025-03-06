@@ -1,10 +1,10 @@
 import { readFile, writeFile } from 'fs/promises';
 
+import { jsonParse, jsonStringify } from '#lib/index';
 import { getCanisterId, whoami } from '#utils/dfx';
 
 // @ts-ignore We would have to add "resolveJsonModule": true to every test tsconfig.json file
-import { version } from '../../package.json';
-import { jsonParse, jsonStringify } from '../../src/stable/lib';
+import { version } from '../../../../package.json';
 import { createActor } from './actor';
 
 type BenchmarkEntry = {

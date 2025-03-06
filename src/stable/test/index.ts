@@ -13,7 +13,6 @@ import { runFuzzTests } from './fuzz';
 export type Test = () => void;
 
 export { getCanisterActor } from './get_canister_actor';
-export { defaultPropTestParams } from './property/default_prop_test_params';
 
 export function runTests(
     tests: Test,
