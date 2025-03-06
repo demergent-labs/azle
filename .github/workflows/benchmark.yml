@@ -19,6 +19,7 @@ on:
                 type: boolean
                 default: false
             signing-key-id:
+                description: 'Signing key ID'
                 required: true
                 type: string
                 default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0

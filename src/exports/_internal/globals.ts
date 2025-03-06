@@ -1,0 +1,1 @@
+import '../../stable/lib/globals';

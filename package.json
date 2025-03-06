@@ -15,11 +15,11 @@
     },
     "exports": {
         ".": "./src/stable/lib/index.ts",
-        "./_internal": "./azle_exports/_internal.ts",
-        "./_internal/*": "./azle_exports/_internal/*.ts",
-        "./canisters/*": "./azle_exports/canisters/*.ts",
-        "./experimental": "./azle_exports/experimental.ts",
-        "./experimental/*": "./azle_exports/experimental/*.ts"
+        "./_internal": "./src/exports/_internal.ts",
+        "./_internal/*": "./src/exports/_internal/*.ts",
+        "./canisters/*": "./src/exports/canisters/*.ts",
+        "./experimental": "./src/exports/experimental.ts",
+        "./experimental/*": "./src/exports/experimental/*.ts"
     },
     "imports": {
         "#utils/*": "./src/stable/build/utils/*.ts",
