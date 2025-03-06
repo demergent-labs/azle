@@ -5,10 +5,10 @@
  * that contain more than one line of actual content, excluding trailing newlines.
  *
  * Usage:
- *   npx tsx scripts/find_multiline_files.ts <directory_path>
+ *   npx tsx .scripts/find_multiline_files.ts <directory_path>
  *
  * @example
- *   npx tsx scripts/find_multiline_files.ts azle_exports
+ *   npx tsx .scripts/find_multiline_files.ts azle_exports
  */
 
 import * as fs from 'fs';

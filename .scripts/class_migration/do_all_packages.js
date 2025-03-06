@@ -12,7 +12,7 @@ const updateScriptPath = process.argv[2];
 
 if (!updateScriptPath) {
     console.error(
-        'Please provide the path to the script as a command-line argument.\nFor example: node ../scripts/class_migration/do_all_packages.js ../scripts/class_migration/name_package.js'
+        'Please provide the path to the script as a command-line argument.\nFor example: node ../.scripts/class_migration/do_all_packages.js ../.scripts/class_migration/name_package.js'
     );
     process.exit(1);
 }

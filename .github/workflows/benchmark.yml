@@ -156,7 +156,7 @@ jobs:
                   command: 'npm install'
 
             - name: Analyze benchmarks
-              run: npx tsx scripts/analyze_benchmarks/index.ts
+              run: npx tsx .scripts/analyze_benchmarks/index.ts
 
             - uses: ./.github/actions/commit_and_push
               with:

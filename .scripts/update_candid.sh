@@ -3,9 +3,9 @@
 # Usage:
 # Start up your own replica on port 8000: dfx start --clean --host 127.0.0.1:8000
 # cd examples
-# ../scripts/update_candid.sh
+# ../.scripts/update_candid.sh
 # cd motoko_examples
-# ../../scripts/update_candid.sh
+# ../../.scripts/update_candid.sh
 
 upgrade_candid()
 {
@@ -20,7 +20,7 @@ upgrade_all()
 
 for dir in */; do
 
-  # You can use this part to skip directories  
+  # You can use this part to skip directories
   # first_char=${dir:0:1}
   # if [[ "$first_char" < "t" ]]; then
   #     echo "Skipping directory: $dir"
