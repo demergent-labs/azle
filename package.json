@@ -14,7 +14,7 @@
         "azle": "./src/build.ts"
     },
     "exports": {
-        ".": "./src/lib/stable/index.ts",
+        ".": "./src/stable/lib/index.ts",
         "./_internal": "./azle_exports/_internal.ts",
         "./_internal/*": "./azle_exports/_internal/*.ts",
         "./canisters/*": "./azle_exports/canisters/*.ts",

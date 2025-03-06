@@ -1,5 +1,5 @@
 import './experimental';
-import '../stable/globals'; // We import this to remove type errors having to do with the stable and experimental globals
+import '#lib/globals'; // We import this to remove type errors having to do with the stable and experimental globals
 
 // @ts-ignore
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
@@ -42,7 +42,7 @@ globalThis._azleInsideCanister =
         : true;
 
 if (globalThis._azleInsideCanister === true) {
-    // Even though these are set in stable/globals
+    // Even though these are set in #lib/globals
     // we must set them again here because importing the url module above
     // seemingly resets globalThis.TextDecoder and globalThis.TextEncoder
     // to the wasmedge-quickjs versions which break with a RangeError: The "ascii" encoding is not supported
