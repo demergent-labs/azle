@@ -23,9 +23,7 @@
     },
     "imports": {
         "#commands/*": "./src/stable/build/commands/*.ts",
-        "#experimental/canisters/*": "./src/experimental/lib/canisters/*.ts",
         "#experimental/commands/*": "./src/experimental/build/commands/*.ts",
-        "#experimental/http_client*": "./src/experimental/http_client/*.ts",
         "#experimental/lib/*": "./src/experimental/lib/*.ts",
         "#experimental/test/*": "./src/experimental/test/*.ts",
         "#experimental/test/property/*": "./src/experimental/test/property/*.ts",

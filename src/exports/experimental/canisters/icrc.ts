@@ -1,1 +1,1 @@
-export * from '#experimental/canisters/icrc/index';
+export * from '#experimental/lib/canisters/icrc/index';

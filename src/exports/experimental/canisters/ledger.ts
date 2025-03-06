@@ -1,1 +1,1 @@
-export * from '#experimental/canisters/ledger/index';
+export * from '#experimental/lib/canisters/ledger/index';
