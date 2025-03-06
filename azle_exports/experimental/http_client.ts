@@ -1,1 +1,1 @@
-export * from '../../experimental/http_client';
+export * from '#experimental/http_client/index';
