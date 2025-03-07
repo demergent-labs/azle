@@ -4,18 +4,19 @@ import { readFile } from 'fs/promises';
 import { CanisterConfig, DfxJson } from './types';
 
 export async function getCanisterConfig(
-    canisterName: string
+    canisterName: string,
+    dfxJsonPath: string = 'dfx.json'
 ): Promise<CanisterConfig> {
     const dfxJsonExample = getDfxJsonExample(canisterName);
 
-    if (!existsSync(`dfx.json`)) {
+    if (!existsSync(dfxJsonPath)) {
         throw new Error(
             `Create a dfx.json file in the current directory with the following format:\n\n${dfxJsonExample}`
         );
     }
 
     const dfxJson: DfxJson = JSON.parse(
-        (await readFile('dfx.json')).toString()
+        (await readFile(dfxJsonPath)).toString()
     );
     const canisterConfig = dfxJson.canisters?.[canisterName];
 

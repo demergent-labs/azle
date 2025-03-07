@@ -147,8 +147,8 @@ async function handleUploadAssetsCommand(): Promise<void> {
 
 async function handleCompileCommand(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
-    const canisterConfig = await getCanisterConfig(canisterName);
-
+    const dfxJsonPath = process.argv[4];
+    const canisterConfig = await getCanisterConfig(canisterName, dfxJsonPath);
     const experimental =
         canisterConfig?.custom?.experimental === true ||
         process.env.AZLE_EXPERIMENTAL === 'true';
