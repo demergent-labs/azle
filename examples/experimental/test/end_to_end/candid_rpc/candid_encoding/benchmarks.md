@@ -1,10 +1,10 @@
 # Benchmarks for candid_encoding
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 No benchmarks reported
 

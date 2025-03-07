@@ -1,6 +1,6 @@
 # Benchmarks for wallet
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -18,7 +18,7 @@
 | 11  | wallet_receive   | 1_776_081    | 1_300_432 | $0.0000017291 | $1.72             | <font color="red">0</font> |
 | 12  | wallet_receive   | 1_772_660    | 1_299_064 | $0.0000017273 | $1.72             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |

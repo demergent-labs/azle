@@ -1,6 +1,6 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -8,7 +8,7 @@
 | 1   | incrementCount | 1_552_755    | 1_211_102 | $0.0000016104 | $1.61             | <font color="red">0</font> |
 | 2   | incrementCount | 1_552_555    | 1_211_022 | $0.0000016103 | $1.61             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |

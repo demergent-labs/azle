@@ -1,6 +1,6 @@
 # Benchmarks for simple_to_do
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -11,7 +11,7 @@
 | 4   | completeTodo   | 1_050_439    | 1_010_175 | $0.0000013432 | $1.34             | <font color="red">0</font> |
 | 5   | clearCompleted | 969_826      | 977_930   | $0.0000013003 | $1.30             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |

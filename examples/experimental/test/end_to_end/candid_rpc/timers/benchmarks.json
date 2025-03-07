@@ -1,38 +1,6 @@
 {
     "timers": {
         "previous": {
-            "version": "0.27.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "15890331"
-                    },
-                    "method_name": "setTimers",
-                    "timestamp": {
-                        "__bigint__": "1740531231356705089"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1181179"
-                    },
-                    "method_name": "clearTimer",
-                    "timestamp": {
-                        "__bigint__": "1740531243737628363"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1181732"
-                    },
-                    "method_name": "clearTimer",
-                    "timestamp": {
-                        "__bigint__": "1740531243737628363"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.28.0",
             "benchmarks": [
                 {
@@ -60,6 +28,38 @@
                     "method_name": "clearTimer",
                     "timestamp": {
                         "__bigint__": "1740776250946913139"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.29.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "15899962"
+                    },
+                    "method_name": "setTimers",
+                    "timestamp": {
+                        "__bigint__": "1741369014692387440"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1191588"
+                    },
+                    "method_name": "clearTimer",
+                    "timestamp": {
+                        "__bigint__": "1741369027096815980"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1192829"
+                    },
+                    "method_name": "clearTimer",
+                    "timestamp": {
+                        "__bigint__": "1741369027096815980"
                     }
                 }
             ]

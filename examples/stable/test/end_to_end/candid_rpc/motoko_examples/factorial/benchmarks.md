@@ -1,6 +1,6 @@
 # Benchmarks for factorial
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -10,7 +10,7 @@
 | 3   | fac         | 3_080_377    | 1_822_150 | $0.0000024229 | $2.42             | <font color="red">0</font> |
 | 4   | fac         | 5_686_067    | 2_864_426 | $0.0000038087 | $3.80             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |

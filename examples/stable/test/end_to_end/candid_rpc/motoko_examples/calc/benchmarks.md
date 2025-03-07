@@ -1,6 +1,6 @@
 # Benchmarks for calc
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -11,7 +11,7 @@
 | 4   | clearall    | 941_127      | 966_450   | $0.0000012851 | $1.28             | <font color="red">0</font> |
 | 5   | add         | 1_309_604    | 1_113_841 | $0.0000014810 | $1.48             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |

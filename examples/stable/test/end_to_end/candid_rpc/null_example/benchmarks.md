@@ -1,6 +1,6 @@
 # Benchmarks for null_example
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -8,7 +8,7 @@
 | 1   | setSmallNullRecord     | 4_348_018    | 2_329_207 | $0.0000030971 | $3.09             | <font color="red">0</font> |
 | 2   | setLargeNullRecord     | 5_662_936    | 2_855_174 | $0.0000037964 | $3.79             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- |

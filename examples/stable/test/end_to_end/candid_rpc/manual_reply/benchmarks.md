@@ -1,6 +1,6 @@
 # Benchmarks for manual_reply
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -19,7 +19,7 @@
 | 12  | updateFloat32  | 781_642      | 902_656   | $0.0000012002 | $1.20             | <font color="red">0</font> |
 | 13  | replyRaw       | 206_209      | 672_483   | $0.0000008942 | $0.89             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- |

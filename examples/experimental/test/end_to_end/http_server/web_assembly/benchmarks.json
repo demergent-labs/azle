@@ -1,20 +1,6 @@
 {
     "web_assembly": {
         "previous": {
-            "version": "0.27.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7587780699"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1740531114471546503"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.28.0",
             "benchmarks": [
                 {
@@ -24,6 +10,20 @@
                     "method_name": "init",
                     "timestamp": {
                         "__bigint__": "1740776274313007477"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.29.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "7587916655"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1741368969235343274"
                     }
                 }
             ]

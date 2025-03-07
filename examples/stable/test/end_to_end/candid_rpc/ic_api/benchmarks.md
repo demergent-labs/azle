@@ -1,13 +1,13 @@
 # Benchmarks for ic_api
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
 | 0   | dataCertificateNull | 1_746_714    | 1_288_685 | $0.0000017135 | $1.71             | <font color="red">0</font> |
 | 1   | setCertifiedData    | 1_239_616    | 1_085_846 | $0.0000014438 | $1.44             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- |

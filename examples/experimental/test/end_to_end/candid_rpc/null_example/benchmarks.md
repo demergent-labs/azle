@@ -1,20 +1,20 @@
 # Benchmarks for null_example
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | setPartiallyNullRecord | 8_978_449    | 4_181_379 | $0.0000055599 | $5.55             | <font color="red">+12_737</font> |
-| 1   | setSmallNullRecord     | 5_383_464    | 2_743_385 | $0.0000036478 | $3.64             | <font color="red">+2_099</font>  |
-| 2   | setLargeNullRecord     | 8_695_348    | 4_068_139 | $0.0000054093 | $5.40             | <font color="red">+12_423</font> |
+| 0   | setPartiallyNullRecord | 8_994_814    | 4_187_925 | $0.0000055686 | $5.56             | <font color="red">+16_365</font> |
+| 1   | setSmallNullRecord     | 5_389_440    | 2_745_776 | $0.0000036510 | $3.65             | <font color="red">+5_976</font>  |
+| 2   | setLargeNullRecord     | 8_705_269    | 4_072_107 | $0.0000054146 | $5.41             | <font color="red">+9_921</font>  |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | setPartiallyNullRecord | 8_965_712    | 4_176_284 | $0.0000055531 | $5.55             |
-| 1   | setSmallNullRecord     | 5_381_365    | 2_742_546 | $0.0000036467 | $3.64             |
-| 2   | setLargeNullRecord     | 8_682_925    | 4_063_170 | $0.0000054027 | $5.40             |
+| 0   | setPartiallyNullRecord | 8_978_449    | 4_181_379 | $0.0000055599 | $5.55             |
+| 1   | setSmallNullRecord     | 5_383_464    | 2_743_385 | $0.0000036478 | $3.64             |
+| 2   | setLargeNullRecord     | 8_695_348    | 4_068_139 | $0.0000054093 | $5.40             |
 
 ---
 

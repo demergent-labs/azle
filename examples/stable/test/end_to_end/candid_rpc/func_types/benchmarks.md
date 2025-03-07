@@ -1,18 +1,18 @@
 # Benchmarks for func_types
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
-| Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                       |
-| --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | ---------------------------- |
-| 0   | init                             | 1_011_438_855 | 805_165_542 | $0.0010706045 | $1_070.60         | <font color="red">0</font>   |
-| 1   | getNotifierFromNotifiersCanister | 1_303_018     | 1_111_207   | $0.0000014775 | $1.47             | <font color="red">+49</font> |
+| Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls | Change                         |
+| --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- | ------------------------------ |
+| 0   | init                             | 1_011_438_855 | 805_165_542 | $0.0010706045 | $1_070.60         | <font color="red">0</font>     |
+| 1   | getNotifierFromNotifiersCanister | 1_302_997     | 1_111_198   | $0.0000014775 | $1.47             | <font color="green">-21</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name                      | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | -------------------------------- | ------------- | ----------- | ------------- | ----------------- |
 | 0   | init                             | 1_011_438_855 | 805_165_542 | $0.0010706045 | $1_070.60         |
-| 1   | getNotifierFromNotifiersCanister | 1_302_969     | 1_111_187   | $0.0000014775 | $1.47             |
+| 1   | getNotifierFromNotifiersCanister | 1_303_018     | 1_111_207   | $0.0000014775 | $1.47             |
 
 ---
 

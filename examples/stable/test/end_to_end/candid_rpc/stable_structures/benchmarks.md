@@ -1,6 +1,6 @@
 # Benchmarks for canister1
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -10,7 +10,7 @@
 | 3   | stableMap3Remove | 3_264_090    | 1_895_636 | $0.0000025206 | $2.52             | <font color="red">0</font> |
 | 4   | stableMap4Remove | 5_074_027    | 2_619_610 | $0.0000034832 | $3.48             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
@@ -22,7 +22,7 @@
 
 # Benchmarks for canister2
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -32,7 +32,7 @@
 | 3   | stableMap8Remove | 1_843_885    | 1_327_554 | $0.0000017652 | $1.76             | <font color="red">0</font> |
 | 4   | stableMap9Remove | 3_078_481    | 1_821_392 | $0.0000024219 | $2.42             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
@@ -44,7 +44,7 @@
 
 # Benchmarks for canister3
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -57,7 +57,7 @@
 | 6   | stableMap16Remove | 3_174_137    | 1_859_654 | $0.0000024727 | $2.47             | <font color="red">0</font> |
 | 7   | stableMap17Remove | 3_332_042    | 1_922_816 | $0.0000025567 | $2.55             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- |

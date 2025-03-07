@@ -1,28 +1,28 @@
 # Benchmarks for ethereum_json_rpc
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init                | 5_092_822_610 | 4_037_719_044 | $0.0053688339 | $5_368.83         | <font color="red">+1_753_773</font> |
-| 1   | ethGetBalance       | 180_891_236   | 72_946_494    | $0.0000969948 | $96.99            | <font color="red">+1_162_605</font> |
-| 2   | ethGetBalance       | 180_797_213   | 72_908_885    | $0.0000969448 | $96.94            | <font color="red">+856_238</font>   |
-| 3   | ethGetBalance       | 180_766_003   | 72_896_401    | $0.0000969282 | $96.92            | <font color="red">+1_014_072</font> |
-| 4   | ethGetBlockByNumber | 179_830_878   | 72_522_351    | $0.0000964308 | $96.43            | <font color="red">+1_210_501</font> |
-| 5   | ethGetBlockByNumber | 179_688_833   | 72_465_533    | $0.0000963552 | $96.35            | <font color="red">+1_175_712</font> |
-| 6   | ethGetBlockByNumber | 179_679_226   | 72_461_690    | $0.0000963501 | $96.35            | <font color="red">+989_871</font>   |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                             |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | init                | 5_093_307_813 | 4_037_913_125 | $0.0053690919 | $5_369.09         | <font color="red">+485_203</font>  |
+| 1   | ethGetBalance       | 180_864_067   | 72_935_626    | $0.0000969803 | $96.98            | <font color="green">-27_169</font> |
+| 2   | ethGetBalance       | 180_805_797   | 72_912_318    | $0.0000969493 | $96.94            | <font color="red">+8_584</font>    |
+| 3   | ethGetBalance       | 180_739_809   | 72_885_923    | $0.0000969142 | $96.91            | <font color="green">-26_194</font> |
+| 4   | ethGetBlockByNumber | 179_779_272   | 72_501_708    | $0.0000964033 | $96.40            | <font color="green">-51_606</font> |
+| 5   | ethGetBlockByNumber | 179_709_358   | 72_473_743    | $0.0000963662 | $96.36            | <font color="red">+20_525</font>   |
+| 6   | ethGetBlockByNumber | 179_715_724   | 72_476_289    | $0.0000963695 | $96.36            | <font color="red">+36_498</font>   |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                | 5_091_068_837 | 4_037_017_534 | $0.0053679011 | $5_367.90         |
-| 1   | ethGetBalance       | 179_728_631   | 72_481_452    | $0.0000963764 | $96.37            |
-| 2   | ethGetBalance       | 179_940_975   | 72_566_390    | $0.0000964894 | $96.48            |
-| 3   | ethGetBalance       | 179_751_931   | 72_490_772    | $0.0000963888 | $96.38            |
-| 4   | ethGetBlockByNumber | 178_620_377   | 72_038_150    | $0.0000957870 | $95.78            |
-| 5   | ethGetBlockByNumber | 178_513_121   | 71_995_248    | $0.0000957299 | $95.72            |
-| 6   | ethGetBlockByNumber | 178_689_355   | 72_065_742    | $0.0000958237 | $95.82            |
+| 0   | init                | 5_092_822_610 | 4_037_719_044 | $0.0053688339 | $5_368.83         |
+| 1   | ethGetBalance       | 180_891_236   | 72_946_494    | $0.0000969948 | $96.99            |
+| 2   | ethGetBalance       | 180_797_213   | 72_908_885    | $0.0000969448 | $96.94            |
+| 3   | ethGetBalance       | 180_766_003   | 72_896_401    | $0.0000969282 | $96.92            |
+| 4   | ethGetBlockByNumber | 179_830_878   | 72_522_351    | $0.0000964308 | $96.43            |
+| 5   | ethGetBlockByNumber | 179_688_833   | 72_465_533    | $0.0000963552 | $96.35            |
+| 6   | ethGetBlockByNumber | 179_679_226   | 72_461_690    | $0.0000963501 | $96.35            |
 
 ---
 

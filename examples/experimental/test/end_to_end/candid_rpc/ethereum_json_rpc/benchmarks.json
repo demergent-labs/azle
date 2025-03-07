@@ -1,74 +1,6 @@
 {
     "ethereum_json_rpc": {
         "previous": {
-            "version": "0.27.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "5091068837"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1740531187620310049"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "179728631"
-                    },
-                    "method_name": "ethGetBalance",
-                    "timestamp": {
-                        "__bigint__": "1740531194563237287"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "179940975"
-                    },
-                    "method_name": "ethGetBalance",
-                    "timestamp": {
-                        "__bigint__": "1740531195543299590"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "179751931"
-                    },
-                    "method_name": "ethGetBalance",
-                    "timestamp": {
-                        "__bigint__": "1740531196769748589"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "178620377"
-                    },
-                    "method_name": "ethGetBlockByNumber",
-                    "timestamp": {
-                        "__bigint__": "1740531197976889746"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "178513121"
-                    },
-                    "method_name": "ethGetBlockByNumber",
-                    "timestamp": {
-                        "__bigint__": "1740531199206256659"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "178689355"
-                    },
-                    "method_name": "ethGetBlockByNumber",
-                    "timestamp": {
-                        "__bigint__": "1740531200210329809"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.28.0",
             "benchmarks": [
                 {
@@ -132,6 +64,74 @@
                     "method_name": "ethGetBlockByNumber",
                     "timestamp": {
                         "__bigint__": "1740776221621243031"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.29.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5093307813"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1741368986215631519"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "180864067"
+                    },
+                    "method_name": "ethGetBalance",
+                    "timestamp": {
+                        "__bigint__": "1741368993447013643"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "180805797"
+                    },
+                    "method_name": "ethGetBalance",
+                    "timestamp": {
+                        "__bigint__": "1741368994663046324"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "180739809"
+                    },
+                    "method_name": "ethGetBalance",
+                    "timestamp": {
+                        "__bigint__": "1741368995903995942"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "179779272"
+                    },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": {
+                        "__bigint__": "1741368997169917539"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "179709358"
+                    },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": {
+                        "__bigint__": "1741368998392999662"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "179715724"
+                    },
+                    "method_name": "ethGetBlockByNumber",
+                    "timestamp": {
+                        "__bigint__": "1741368999634481623"
                     }
                 }
             ]

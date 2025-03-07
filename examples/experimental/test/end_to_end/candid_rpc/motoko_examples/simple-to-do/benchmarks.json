@@ -1,65 +1,6 @@
 {
     "simple_to_do": {
         "previous": {
-            "version": "0.27.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1925836"
-                    },
-                    "method_name": "addTodo",
-                    "timestamp": {
-                        "__bigint__": "1740531193881071706"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1676699"
-                    },
-                    "method_name": "addTodo",
-                    "timestamp": {
-                        "__bigint__": "1740531194590652567"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "992737"
-                    },
-                    "method_name": "completeTodo",
-                    "timestamp": {
-                        "__bigint__": "1740531194834123882"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "899648"
-                    },
-                    "method_name": "clearCompleted",
-                    "timestamp": {
-                        "__bigint__": "1740531195078058256"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "987389"
-                    },
-                    "method_name": "completeTodo",
-                    "timestamp": {
-                        "__bigint__": "1740531195565722600"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "885854"
-                    },
-                    "method_name": "clearCompleted",
-                    "timestamp": {
-                        "__bigint__": "1740531195807219052"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.28.0",
             "benchmarks": [
                 {
@@ -114,6 +55,65 @@
                     "method_name": "clearCompleted",
                     "timestamp": {
                         "__bigint__": "1740776196516005148"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.29.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1927446"
+                    },
+                    "method_name": "addTodo",
+                    "timestamp": {
+                        "__bigint__": "1741368975412169521"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1680035"
+                    },
+                    "method_name": "addTodo",
+                    "timestamp": {
+                        "__bigint__": "1741368975910181664"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "992424"
+                    },
+                    "method_name": "completeTodo",
+                    "timestamp": {
+                        "__bigint__": "1741368976152538432"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "903417"
+                    },
+                    "method_name": "clearCompleted",
+                    "timestamp": {
+                        "__bigint__": "1741368976401120942"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "990704"
+                    },
+                    "method_name": "completeTodo",
+                    "timestamp": {
+                        "__bigint__": "1741368976645475363"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "888134"
+                    },
+                    "method_name": "clearCompleted",
+                    "timestamp": {
+                        "__bigint__": "1741368977131326273"
                     }
                 }
             ]

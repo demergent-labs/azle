@@ -1,47 +1,6 @@
 {
     "proxy": {
         "previous": {
-            "version": "0.27.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "15448016"
-                    },
-                    "method_name": "icrc1_transfer",
-                    "timestamp": {
-                        "__bigint__": "1740531252679682501"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "19061665"
-                    },
-                    "method_name": "icrc2_approve",
-                    "timestamp": {
-                        "__bigint__": "1740531253157304685"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "17991657"
-                    },
-                    "method_name": "icrc2_transfer_from",
-                    "timestamp": {
-                        "__bigint__": "1740531253647858700"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "10434728"
-                    },
-                    "method_name": "icrc2_allowance",
-                    "timestamp": {
-                        "__bigint__": "1740531253890700731"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.28.0",
             "benchmarks": [
                 {
@@ -78,6 +37,47 @@
                     "method_name": "icrc2_allowance",
                     "timestamp": {
                         "__bigint__": "1740776218350032059"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.29.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "15466180"
+                    },
+                    "method_name": "icrc1_transfer",
+                    "timestamp": {
+                        "__bigint__": "1741368990735219431"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "19056468"
+                    },
+                    "method_name": "icrc2_approve",
+                    "timestamp": {
+                        "__bigint__": "1741368990983896474"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "18008904"
+                    },
+                    "method_name": "icrc2_transfer_from",
+                    "timestamp": {
+                        "__bigint__": "1741368991256708563"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "10434741"
+                    },
+                    "method_name": "icrc2_allowance",
+                    "timestamp": {
+                        "__bigint__": "1741368991731767437"
                     }
                 }
             ]

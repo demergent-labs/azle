@@ -1,6 +1,6 @@
 # Benchmarks for hidden_methods
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -8,7 +8,7 @@
 | 1   | updateHiddenFalse | 1_563_102    | 1_215_240 | $0.0000016159 | $1.61             | <font color="red">0</font> |
 | 2   | updateHiddenTrue  | 1_549_744    | 1_209_897 | $0.0000016088 | $1.60             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- |
