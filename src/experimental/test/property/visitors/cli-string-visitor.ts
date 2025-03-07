@@ -1,5 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
+import { quoteCandidName } from '#lib/did_file/visitor/quote_candid_name';
+
 export type VisitorData = { value: any };
 
 /**
@@ -21,6 +23,11 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
     }
     visitText(_t: IDL.TextClass, data: VisitorData): string {
         return `"${escapeForBash(data.value)}"`;
+    }
+    visitFunc(t: IDL.FuncClass, data: VisitorData): string {
+        const [principal, funcName] = data.value;
+        const quotedFuncName = quoteCandidName(funcName);
+        return `func "${principal.toString()}".${quotedFuncName}`;
     }
     visitOpt<T>(
         _t: IDL.OptClass<T>,
@@ -49,7 +56,8 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
             const value = fieldType.accept(this, {
                 value: data.value[fieldName]
             });
-            return `${fieldName} = ${value}`;
+            // TODO is this needed?
+            return `${quoteCandidName(fieldName)} = ${value}`;
         });
         return `record {${fieldStrings.join('; ')}}`;
     }
@@ -74,9 +82,11 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
             if (Object.prototype.hasOwnProperty.call(data.value, name)) {
                 const value = type.accept(this, { value: data.value[name] });
                 if (value === 'null') {
-                    return `variant {${name}}`;
+                    // TODO is this needed?
+                    return `variant {${quoteCandidName(name)}}`;
                 } else {
-                    return `variant {${name}=${value}}`;
+                    // TODO is this needed?
+                    return `variant {${quoteCandidName(name)}=${value}}`;
                 }
             }
         }

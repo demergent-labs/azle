@@ -26,7 +26,56 @@ export function generateTests(
                 test: async (): Promise<AzleResult> => {
                     const actor = await getActor(__dirname);
 
-                    const result = await actor[functionName](...paramValues);
+                    const actualActorName = '\\>bind\\ubin';
+                    const problematicActorName = '"\\\\>bind\\\\ubin"';
+
+                    const thing = actor['\\>bind\\ubin'];
+                    console.log('thing', thing);
+                    const thing2 = actor["'\\>bind\\ubin'"];
+                    console.log('thing2', thing2);
+                    const thing3 = actor['"\\>bind\\ubin"'];
+                    console.log('thing3', thing3);
+                    const thing4 = actor[actualActorName];
+                    console.log('thing4', thing4);
+
+                    console.log(
+                        "functionName === '\\>bind\\ubin'",
+                        functionName === '\\>bind\\ubin'
+                    );
+                    console.log(
+                        'functionName === "\'\\>bind\\ubin\'"',
+                        functionName === "'\\>bind\\ubin'"
+                    );
+                    console.log(
+                        'functionName === \'"\\>bind\\ubin"\'',
+                        functionName === '"\\>bind\\ubin"'
+                    );
+                    console.log(
+                        'functionName.startsWith(""")',
+                        functionName.startsWith('"')
+                    );
+                    console.log(
+                        `functionName === '${actualActorName}'`,
+                        functionName === actualActorName
+                    );
+                    console.log(
+                        `functionName === '${problematicActorName}'`,
+                        functionName === problematicActorName
+                    );
+
+                    for (const char of functionName) {
+                        console.log('char', char);
+                    }
+
+                    for (const char of actualActorName) {
+                        console.log('actual char', char);
+                    }
+
+                    const result = await actor[
+                        functionName.startsWith('"')
+                            ? functionName.slice(1, -1)
+                            : functionName
+                    ](...paramValues);
 
                     return testEquality(result, expectedResult);
                 }

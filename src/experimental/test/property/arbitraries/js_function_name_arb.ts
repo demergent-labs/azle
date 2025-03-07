@@ -147,9 +147,50 @@ const jsKeywords = [
 // This breaks rust but it doesn't seem to be a rust keyword
 const otherKeywords = ['drop'];
 
-export const JsFunctionNameArb = fc
+const unquotedFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)
     .filter((sample) => !rustKeywords.includes(sample))
     .filter((sample) => !jsKeywords.includes(sample))
     .filter((sample) => !otherKeywords.includes(sample))
     .filter((sample) => !azleKeywords.includes(sample));
+
+const quotedFunctionNameArb = fc
+    // .stringMatching(/^"([^"\\]|\\.)+"$/)
+    .stringMatching(/^"[^"\\]*(?:\\.[^"\\]*)*"$/)
+    .map((s: string): string => {
+        // Remove the leading and trailing quotes
+        const inner = s.slice(1, -1);
+        // TODO hard code inner to be something from each of those lists and make sure it works
+        if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(inner)) {
+            if (
+                azleKeywords.includes(inner) ||
+                jsKeywords.includes(inner) ||
+                rustKeywords.includes(inner) ||
+                otherKeywords.includes(inner)
+            ) {
+                return `"${inner}"`;
+            }
+            return inner;
+        }
+        // Escape backslashes and double quotes in the inner part only
+        // const escapedInnerOld = inner
+        //     .replace(/\\/g, '\\\\')
+        //     .replace(/"/g, '\\"');
+        const escapedInner = inner;
+
+        // Reassemble the string with its leading and trailing quotes intact
+        console.log(
+            "What happens if this manages to make something without need for quotes, those quotes will clear out. I be that's what is happening"
+        );
+        console.log('escapedInner', escapedInner);
+        return `"${escapedInner}"`;
+    });
+
+export const JsIdentifierNameArb = fc.oneof(unquotedFunctionNameArb);
+
+export const JsPropertyNameArb = fc.oneof(
+    unquotedFunctionNameArb,
+    quotedFunctionNameArb
+);
+
+// TODO rename to JsNameArbs or something?

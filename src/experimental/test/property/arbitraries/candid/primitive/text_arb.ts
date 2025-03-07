@@ -1,6 +1,5 @@
 import fc, { StringSharedConstraints } from 'fast-check';
 
-import { JsFunctionNameArb } from '../../js_function_name_arb';
 import { Context } from '../../types';
 import {
     TextCandidDefinition,
@@ -16,7 +15,6 @@ import { stringToSrcLiteral } from '../to_src_literal/string';
 
 export interface TextConstraints extends StringSharedConstraints {
     canStartWithDigit?: boolean;
-    isJsFunctionName?: boolean;
 }
 
 export function TextArb(
@@ -42,11 +40,8 @@ export function TextValueArb(
 ): fc.Arbitrary<CandidValues<string>> {
     const constraints = context.constraints;
     const canStartWithDigit = constraints?.canStartWithDigit ?? true;
-    const isJSName = constraints?.isJsFunctionName ?? false;
-    const textArb = isJSName
-        ? JsFunctionNameArb
-        : fc
-              .string(constraints)
-              .filter((string) => canStartWithDigit || /^\d/.test(string));
+    const textArb = fc
+        .string(constraints)
+        .filter((string) => canStartWithDigit || /^\d/.test(string));
     return SimpleCandidValuesArb(textArb, stringToSrcLiteral);
 }
