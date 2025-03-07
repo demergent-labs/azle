@@ -1,24 +1,24 @@
 # Benchmarks for audio_recorder
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
 | --- | --------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | createUser      | 14_149_317   | 6_249_726  | $0.0000083101 | $8.31             | <font color="red">+1_086</font>    |
-| 1   | createRecording | 34_560_159   | 14_414_063 | $0.0000191659 | $19.16            | <font color="green">-32_168</font> |
-| 2   | deleteRecording | 48_468_444   | 19_977_377 | $0.0000265633 | $26.56            | <font color="red">+1_990</font>    |
-| 3   | createRecording | 34_397_789   | 14_349_115 | $0.0000190796 | $19.07            | <font color="red">+13_894</font>   |
-| 4   | deleteUser      | 34_029_991   | 14_201_996 | $0.0000188840 | $18.88            | <font color="green">-39_066</font> |
+| 0   | createUser      | 14_143_821   | 6_247_528  | $0.0000083072 | $8.30             | <font color="green">-5_496</font>  |
+| 1   | createRecording | 34_571_008   | 14_418_403 | $0.0000191717 | $19.17            | <font color="red">+10_849</font>   |
+| 2   | deleteRecording | 48_449_751   | 19_969_900 | $0.0000265534 | $26.55            | <font color="green">-18_693</font> |
+| 3   | createRecording | 34_376_581   | 14_340_632 | $0.0000190683 | $19.06            | <font color="green">-21_208</font> |
+| 4   | deleteUser      | 34_028_122   | 14_201_248 | $0.0000188830 | $18.88            | <font color="green">-1_869</font>  |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | --------------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | createUser      | 14_148_231   | 6_249_292  | $0.0000083095 | $8.30             |
-| 1   | createRecording | 34_592_327   | 14_426_930 | $0.0000191831 | $19.18            |
-| 2   | deleteRecording | 48_466_454   | 19_976_581 | $0.0000265623 | $26.56            |
-| 3   | createRecording | 34_383_895   | 14_343_558 | $0.0000190722 | $19.07            |
-| 4   | deleteUser      | 34_069_057   | 14_217_622 | $0.0000189047 | $18.90            |
+| 0   | createUser      | 14_149_317   | 6_249_726  | $0.0000083101 | $8.31             |
+| 1   | createRecording | 34_560_159   | 14_414_063 | $0.0000191659 | $19.16            |
+| 2   | deleteRecording | 48_468_444   | 19_977_377 | $0.0000265633 | $26.56            |
+| 3   | createRecording | 34_397_789   | 14_349_115 | $0.0000190796 | $19.07            |
+| 4   | deleteUser      | 34_029_991   | 14_201_996 | $0.0000188840 | $18.88            |
 
 ---
 

@@ -1,6 +1,6 @@
 # Benchmarks for superheroes
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -11,7 +11,7 @@
 | 4   | deleteHero  | 1_277_105    | 1_100_842 | $0.0000014638 | $1.46             | <font color="red">0</font> |
 | 5   | deleteHero  | 1_263_823    | 1_095_529 | $0.0000014567 | $1.45             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |

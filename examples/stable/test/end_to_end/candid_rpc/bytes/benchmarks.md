@@ -1,6 +1,6 @@
 # Benchmarks for bytes_canister
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                     |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- | -------------------------- |
@@ -10,7 +10,7 @@
 | 3   | getBytes    | 74_947_784   | 30_569_113 | $0.0000406468 | $40.64            | <font color="red">0</font> |
 | 4   | getBytes    | 147_941_233  | 59_766_493 | $0.0000794697 | $79.46            | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |

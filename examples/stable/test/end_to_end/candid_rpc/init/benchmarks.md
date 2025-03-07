@@ -1,12 +1,12 @@
 # Benchmarks for init
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                     |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- | -------------------------- |
 | 0   | init        | 988_262_761  | 395_895_104 | $0.0005264098 | $526.40           | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- |

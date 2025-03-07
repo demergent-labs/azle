@@ -1,26 +1,26 @@
 # Benchmarks for recursion
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
-| Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                         |
-| --- | ------------------ | ------------ | --------- | ------------- | ----------------- | ------------------------------ |
-| 0   | testRecServiceCall | 6_469_266    | 3_177_706 | $0.0000042253 | $4.22             | <font color="green">-28</font> |
+| Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                       |
+| --- | ------------------ | ------------ | --------- | ------------- | ----------------- | ---------------------------- |
+| 0   | testRecServiceCall | 6_469_357    | 3_177_742 | $0.0000042253 | $4.22             | <font color="red">+91</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------ | ------------ | --------- | ------------- | ----------------- |
-| 0   | testRecServiceCall | 6_469_294    | 3_177_717 | $0.0000042253 | $4.22             |
+| 0   | testRecServiceCall | 6_469_266    | 3_177_706 | $0.0000042253 | $4.22             |
 
 # Benchmarks for recursive_canister
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                     |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- | -------------------------- |
 | 0   | init        | 986_893_842  | 395_347_536 | $0.0005256818 | $525.68           | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- |

@@ -1,18 +1,18 @@
 # Benchmarks for backend
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
-| 0   | init                | 7_516_737_828 | 5_807_285_131 | $0.0077217728 | $7_721.77         | <font color="red">+47_334</font>  |
-| 1   | http_request_update | 53_320_981    | 21_918_392    | $0.0000291442 | $29.14            | <font color="green">-9_374</font> |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                             |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | init                | 7_516_766_936 | 5_807_296_774 | $0.0077217883 | $7_721.78         | <font color="red">+29_108</font>   |
+| 1   | http_request_update | 53_309_725    | 21_913_890    | $0.0000291382 | $29.13            | <font color="green">-11_256</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                | 7_516_690_494 | 5_807_266_197 | $0.0077217476 | $7_721.74         |
-| 1   | http_request_update | 53_330_355    | 21_922_142    | $0.0000291492 | $29.14            |
+| 0   | init                | 7_516_737_828 | 5_807_285_131 | $0.0077217728 | $7_721.77         |
+| 1   | http_request_update | 53_320_981    | 21_918_392    | $0.0000291442 | $29.14            |
 
 ---
 

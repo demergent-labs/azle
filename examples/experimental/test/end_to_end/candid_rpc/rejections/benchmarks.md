@@ -1,24 +1,24 @@
 # Benchmarks for rejections
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | getRejectCodeNoError            | 10_241_259   | 4_686_503 | $0.0000062315 | $6.23             | <font color="red">+8_911</font>   |
-| 1   | getRejectCodeDestinationInvalid | 9_399_698    | 4_349_879 | $0.0000057839 | $5.78             | <font color="red">+9_258</font>   |
-| 2   | getRejectCodeCanisterReject     | 10_565_498   | 4_816_199 | $0.0000064040 | $6.40             | <font color="green">-2_380</font> |
-| 3   | getRejectCodeCanisterError      | 10_051_131   | 4_610_452 | $0.0000061304 | $6.13             | <font color="green">-1_882</font> |
-| 4   | getRejectMessage                | 11_247_276   | 5_088_910 | $0.0000067666 | $6.76             | <font color="green">-3_200</font> |
+| 0   | getRejectCodeNoError            | 10_239_031   | 4_685_612 | $0.0000062303 | $6.23             | <font color="green">-2_228</font> |
+| 1   | getRejectCodeDestinationInvalid | 9_397_232    | 4_348_892 | $0.0000057826 | $5.78             | <font color="green">-2_466</font> |
+| 2   | getRejectCodeCanisterReject     | 10_562_325   | 4_814_930 | $0.0000064023 | $6.40             | <font color="green">-3_173</font> |
+| 3   | getRejectCodeCanisterError      | 10_065_291   | 4_616_116 | $0.0000061379 | $6.13             | <font color="red">+14_160</font>  |
+| 4   | getRejectMessage                | 11_268_406   | 5_097_362 | $0.0000067778 | $6.77             | <font color="red">+21_130</font>  |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | getRejectCodeNoError            | 10_232_348   | 4_682_939 | $0.0000062268 | $6.22             |
-| 1   | getRejectCodeDestinationInvalid | 9_390_440    | 4_346_176 | $0.0000057790 | $5.77             |
-| 2   | getRejectCodeCanisterReject     | 10_567_878   | 4_817_151 | $0.0000064052 | $6.40             |
-| 3   | getRejectCodeCanisterError      | 10_053_013   | 4_611_205 | $0.0000061314 | $6.13             |
-| 4   | getRejectMessage                | 11_250_476   | 5_090_190 | $0.0000067683 | $6.76             |
+| 0   | getRejectCodeNoError            | 10_241_259   | 4_686_503 | $0.0000062315 | $6.23             |
+| 1   | getRejectCodeDestinationInvalid | 9_399_698    | 4_349_879 | $0.0000057839 | $5.78             |
+| 2   | getRejectCodeCanisterReject     | 10_565_498   | 4_816_199 | $0.0000064040 | $6.40             |
+| 3   | getRejectCodeCanisterError      | 10_051_131   | 4_610_452 | $0.0000061304 | $6.13             |
+| 4   | getRejectMessage                | 11_247_276   | 5_088_910 | $0.0000067666 | $6.76             |
 
 ---
 

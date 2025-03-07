@@ -1,6 +1,6 @@
 # Benchmarks for minimal_dapp
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -9,7 +9,7 @@
 | 2   | reset       | 1_179_527    | 1_061_810 | $0.0000014119 | $1.41             | <font color="red">0</font> |
 | 3   | count       | 1_186_035    | 1_064_414 | $0.0000014153 | $1.41             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |

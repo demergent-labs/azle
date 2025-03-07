@@ -1,20 +1,20 @@
 # Benchmarks for counter
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls | Change                          |
 | --- | ----------- | ------------ | ------- | ------------- | ----------------- | ------------------------------- |
-| 0   | set         | 998_544      | 989_417 | $0.0000013156 | $1.31             | <font color="red">+1_515</font> |
-| 1   | inc         | 855_460      | 932_184 | $0.0000012395 | $1.23             | <font color="red">+639</font>   |
-| 2   | inc         | 855_982      | 932_392 | $0.0000012398 | $1.23             | <font color="red">+1_075</font> |
+| 0   | set         | 998_556      | 989_422 | $0.0000013156 | $1.31             | <font color="red">+12</font>    |
+| 1   | inc         | 856_548      | 932_619 | $0.0000012401 | $1.24             | <font color="red">+1_088</font> |
+| 2   | inc         | 856_679      | 932_671 | $0.0000012401 | $1.24             | <font color="red">+697</font>   |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name | Instructions | Cycles  | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ------- | ------------- | ----------------- |
-| 0   | set         | 997_029      | 988_811 | $0.0000013148 | $1.31             |
-| 1   | inc         | 854_821      | 931_928 | $0.0000012392 | $1.23             |
-| 2   | inc         | 854_907      | 931_962 | $0.0000012392 | $1.23             |
+| 0   | set         | 998_544      | 989_417 | $0.0000013156 | $1.31             |
+| 1   | inc         | 855_460      | 932_184 | $0.0000012395 | $1.23             |
+| 2   | inc         | 855_982      | 932_392 | $0.0000012398 | $1.23             |
 
 ---
 

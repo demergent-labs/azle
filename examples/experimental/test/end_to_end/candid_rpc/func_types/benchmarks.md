@@ -1,18 +1,18 @@
 # Benchmarks for func_types
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
-| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                            |
-| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | --------------------------------- |
-| 0   | init                             | 4_855_814_774 | 3_542_915_909 | $0.0047109090 | $4_710.90         | <font color="red">+54_456</font>  |
-| 1   | getNotifierFromNotifiersCanister | 10_520_910    | 4_798_364     | $0.0000063802 | $6.38             | <font color="green">-7_325</font> |
+| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                             |
+| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | init                             | 4_855_798_620 | 3_542_909_448 | $0.0047109004 | $4_710.90         | <font color="green">-16_154</font> |
+| 1   | getNotifierFromNotifiersCanister | 10_532_215    | 4_802_886     | $0.0000063863 | $6.38             | <font color="red">+11_305</font>   |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                             | 4_855_760_318 | 3_542_894_127 | $0.0047108800 | $4_710.88         |
-| 1   | getNotifierFromNotifiersCanister | 10_528_235    | 4_801_294     | $0.0000063841 | $6.38             |
+| 0   | init                             | 4_855_814_774 | 3_542_915_909 | $0.0047109090 | $4_710.90         |
+| 1   | getNotifierFromNotifiersCanister | 10_520_910    | 4_798_364     | $0.0000063802 | $6.38             |
 
 ---
 

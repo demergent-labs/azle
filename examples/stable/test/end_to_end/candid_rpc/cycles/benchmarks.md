@@ -1,6 +1,6 @@
 # Benchmarks for cycles
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
 | Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
 | --- | ------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
@@ -8,7 +8,7 @@
 | 1   | receiveCycles | 1_606_409    | 1_232_563 | $0.0000016389 | $1.63             | <font color="red">0</font> |
 | 2   | receiveCycles | 1_608_339    | 1_233_335 | $0.0000016399 | $1.63             | <font color="red">0</font> |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------- | ------------ | --------- | ------------- | ----------------- |
@@ -18,14 +18,14 @@
 
 # Benchmarks for intermediary
 
-## Current benchmarks Azle version: 0.28.0
+## Current benchmarks Azle version: 0.29.0
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
-| 0   | sendCycles       | 1_360_820    | 1_134_328 | $0.0000015083 | $1.50             | <font color="red">0</font> |
-| 1   | sendCyclesNotify | 1_720_120    | 1_278_048 | $0.0000016994 | $1.69             | <font color="red">0</font> |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                       |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------- |
+| 0   | sendCycles       | 1_360_862    | 1_134_344 | $0.0000015083 | $1.50             | <font color="red">+42</font> |
+| 1   | sendCyclesNotify | 1_720_120    | 1_278_048 | $0.0000016994 | $1.69             | <font color="red">0</font>   |
 
-## Baseline benchmarks Azle version: 0.27.0
+## Baseline benchmarks Azle version: 0.28.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
