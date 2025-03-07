@@ -47,7 +47,21 @@ const CANDID_KEYWORDS = [
  * quoteCandidName('myField')  // returns 'myField'
  */
 export function quoteCandidName(key: string): string {
-    console.log('name to quote', key);
+    // Candid name is either an id or a text
+    // <name> ::= <id> | <text>
+
+    // Check if the key is an id
+    // <id>   ::= (A..Z|a..z|_)(A..Z|a..z|_|0..9)*
+    if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) {
+        if (CANDID_KEYWORDS.includes(key)) {
+            return `"${key}"`;
+        }
+        return key;
+    }
+
+    // Key is text
+    // <text> ::= "<char>*"
+
     // Escape double quotes and backslashes
     if (['"', '\\'].some((ch: string) => key.includes(ch))) {
         const escapedKey: string = key.replace(
@@ -56,14 +70,6 @@ export function quoteCandidName(key: string): string {
         );
         return `"${escapedKey}"`;
     }
-    // Quote if the name is a reserved Candid keyword
-    if (CANDID_KEYWORDS.includes(key)) {
-        return `"${key}"`;
-    }
-    // Quote if the name contains any character that is not alphanumeric or underscore
-    if (/[^A-Za-z0-9_]/.test(key)) {
-        return `"${key}"`;
-    }
-    console.log('name does not need quoting', key);
-    return key;
+
+    return `"${key}"`;
 }
