@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    class="light sidebar-visible"
+    dir="ltr"
+>
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8" />
+        <title>Query Methods - The Azle Book</title>
+
+        <!-- Custom HTML head -->
+
+        <meta
+            name="description"
+            content=""
+        />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+        />
+        <meta
+            name="theme-color"
+            content="#ffffff"
+        />
+
+        <link
+            rel="icon"
+            href="favicon.svg"
+        />
+        <link
+            rel="shortcut icon"
+            href="favicon.png"
+        />
+        <link
+            rel="stylesheet"
+            href="css/variables.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/general.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/chrome.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/print.css"
+            media="print"
+        />
+
+        <!-- Fonts -->
+        <link
+            rel="stylesheet"
+            href="FontAwesome/css/font-awesome.css"
+        />
+        <link
+            rel="stylesheet"
+            href="fonts/fonts.css"
+        />
+
+        <!-- Highlight.js Stylesheets -->
+        <link
+            rel="stylesheet"
+            href="highlight.css"
+        />
+        <link
+            rel="stylesheet"
+            href="tomorrow-night.css"
+        />
+        <link
+            rel="stylesheet"
+            href="ayu-highlight.css"
+        />
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = '';
+            var default_theme = window.matchMedia(
+                '(prefers-color-scheme: dark)'
+            ).matches
+                ? 'navy'
+                : 'light';
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+        <div id="body-container">
+            <!-- Work around some values being stored in localStorage wrapped in quotes -->
+            <script>
+                try {
+                    var theme = localStorage.getItem('mdbook-theme');
+                    var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                    if (theme.startsWith('"') && theme.endsWith('"')) {
+                        localStorage.setItem(
+                            'mdbook-theme',
+                            theme.slice(1, theme.length - 1)
+                        );
+                    }
+
+                    if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                        localStorage.setItem(
+                            'mdbook-sidebar',
+                            sidebar.slice(1, sidebar.length - 1)
+                        );
+                    }
+                } catch (e) {}
+            </script>
+
+            <!-- Set the theme before any content is loaded, prevents flash -->
+            <script>
+                var theme;
+                try {
+                    theme = localStorage.getItem('mdbook-theme');
+                } catch (e) {}
+                if (theme === null || theme === undefined) {
+                    theme = default_theme;
+                }
+                const html = document.documentElement;
+                html.classList.remove('light');
+                html.classList.add(theme);
+                html.classList.add('js');
+            </script>
+
+            <input
+                type="checkbox"
+                id="sidebar-toggle-anchor"
+                class="hidden"
+            />
+
+            <!-- Hide / unhide sidebar before it is displayed -->
+            <script>
+                var sidebar = null;
+                var sidebar_toggle = document.getElementById(
+                    'sidebar-toggle-anchor'
+                );
+                if (document.body.clientWidth >= 1080) {
+                    try {
+                        sidebar = localStorage.getItem('mdbook-sidebar');
+                    } catch (e) {}
+                    sidebar = sidebar || 'visible';
+                } else {
+                    sidebar = 'hidden';
+                }
+                sidebar_toggle.checked = sidebar === 'visible';
+                html.classList.remove('sidebar-visible');
+                html.classList.add('sidebar-' + sidebar);
+            </script>
+
+            <nav
+                id="sidebar"
+                class="sidebar"
+                aria-label="Table of contents"
+            >
+                <!-- populated by js -->
+                <mdbook-sidebar-scrollbox
+                    class="sidebar-scrollbox"
+                ></mdbook-sidebar-scrollbox>
+                <noscript>
+                    <iframe
+                        class="sidebar-iframe-outer"
+                        src="toc.html"
+                    ></iframe>
+                </noscript>
+                <div
+                    id="sidebar-resize-handle"
+                    class="sidebar-resize-handle"
+                >
+                    <div class="sidebar-resize-indicator"></div>
+                </div>
+            </nav>
+
+            <div
+                id="page-wrapper"
+                class="page-wrapper"
+            >
+                <div class="page">
+                    <div id="menu-bar-hover-placeholder"></div>
+                    <div
+                        id="menu-bar"
+                        class="menu-bar sticky"
+                    >
+                        <div class="left-buttons">
+                            <label
+                                id="sidebar-toggle"
+                                class="icon-button"
+                                for="sidebar-toggle-anchor"
+                                title="Toggle Table of Contents"
+                                aria-label="Toggle Table of Contents"
+                                aria-controls="sidebar"
+                            >
+                                <i class="fa fa-bars"></i>
+                            </label>
+                            <button
+                                id="theme-toggle"
+                                class="icon-button"
+                                type="button"
+                                title="Change theme"
+                                aria-label="Change theme"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                aria-controls="theme-list"
+                            >
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul
+                                id="theme-list"
+                                class="theme-popup"
+                                aria-label="Themes"
+                                role="menu"
+                            >
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="light"
+                                    >
+                                        Light
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="rust"
+                                    >
+                                        Rust
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="coal"
+                                    >
+                                        Coal
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="navy"
+                                    >
+                                        Navy
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="ayu"
+                                    >
+                                        Ayu
+                                    </button>
+                                </li>
+                            </ul>
+                            <button
+                                id="search-toggle"
+                                class="icon-button"
+                                type="button"
+                                title="Search. (Shortkey: s)"
+                                aria-label="Toggle Searchbar"
+                                aria-expanded="false"
+                                aria-keyshortcuts="S"
+                                aria-controls="searchbar"
+                            >
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+
+                        <h1 class="menu-title">The Azle Book</h1>
+
+                        <div class="right-buttons">
+                            <a
+                                href="print.html"
+                                title="Print this book"
+                                aria-label="Print this book"
+                            >
+                                <i
+                                    id="print-button"
+                                    class="fa fa-print"
+                                ></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div
+                        id="search-wrapper"
+                        class="hidden"
+                    >
+                        <form
+                            id="searchbar-outer"
+                            class="searchbar-outer"
+                        >
+                            <input
+                                type="search"
+                                id="searchbar"
+                                name="searchbar"
+                                placeholder="Search this book ..."
+                                aria-controls="searchresults-outer"
+                                aria-describedby="searchresults-header"
+                            />
+                        </form>
+                        <div
+                            id="searchresults-outer"
+                            class="searchresults-outer hidden"
+                        >
+                            <div
+                                id="searchresults-header"
+                                class="searchresults-header"
+                            ></div>
+                            <ul id="searchresults"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                    <script>
+                        document
+                            .getElementById('sidebar-toggle')
+                            .setAttribute(
+                                'aria-expanded',
+                                sidebar === 'visible'
+                            );
+                        document
+                            .getElementById('sidebar')
+                            .setAttribute('aria-hidden', sidebar !== 'visible');
+                        Array.from(
+                            document.querySelectorAll('#sidebar a')
+                        ).forEach(function (link) {
+                            link.setAttribute(
+                                'tabIndex',
+                                sidebar === 'visible' ? 0 : -1
+                            );
+                        });
+                    </script>
+
+                    <div
+                        id="content"
+                        class="content"
+                    >
+                        <main>
+                            <h1 id="query-methods">
+                                <a
+                                    class="header"
+                                    href="#query-methods"
+                                    >Query Methods</a
+                                >
+                            </h1>
+                            <h2 id="tldr">
+                                <a
+                                    class="header"
+                                    href="#tldr"
+                                    >TL;DR</a
+                                >
+                            </h2>
+                            <ul>
+                                <li>
+                                    Created with the <code>query</code> function
+                                </li>
+                                <li>Read-only</li>
+                                <li>Executed on a single node</li>
+                                <li>No consensus</li>
+                                <li>
+                                    Latency on the order of ~100 milliseconds
+                                </li>
+                                <li>
+                                    <a
+                                        href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits"
+                                        >5 billion Wasm instruction limit</a
+                                    >
+                                </li>
+                                <li>4 GiB heap limit</li>
+                                <li>
+                                    <a
+                                        href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6"
+                                        >~32k queries per second per canister</a
+                                    >
+                                </li>
+                            </ul>
+                            <p>
+                                The most basic way to expose your canister's
+                                functionality publicly is through a query
+                                method. Here's an example of a simple query
+                                method named <code>getString</code>:
+                            </p>
+                            <pre><code class="language-typescript">import { Canister, query, text } from 'azle/experimental';
+
+export default Canister({
+    getString: query([], text, () =&gt; {
+        return 'This is a query method!';
+    })
+});
+</code></pre>
+                            <p>
+                                Query methods are defined inside of a call to
+                                <code>Canister</code> using the
+                                <code>query</code> function.
+                            </p>
+                            <p>
+                                The first parameter to <code>query</code> is an
+                                array of <code>CandidType</code> objects that
+                                will be used to decode the Candid bytes of the
+                                arguments sent from the client when calling your
+                                query method.
+                            </p>
+                            <p>
+                                The second parameter to <code>query</code> is a
+                                <code>CandidType</code> object used to encode
+                                the return value of your function to Candid
+                                bytes to then be sent back to the client.
+                            </p>
+                            <p>
+                                The third parameter to <code>query</code> is the
+                                function that receives the decoded arguments,
+                                performs some computation, and then returns a
+                                value to be encoded. The TypeScript signature of
+                                this function (parameter and return types) will
+                                be inferred from the
+                                <code>CandidType</code> arguments in the first
+                                and second parameters to <code>query</code>.
+                            </p>
+                            <p>
+                                <code>getString</code> can be called from the
+                                outside world through the IC's HTTP API. You'll
+                                usually invoke this API from the
+                                <a
+                                    href="./deployment.html#interacting-with-your-canister"
+                                    ><code>dfx command line</code>,
+                                    <code>dfx web UI</code>, or an agent</a
+                                >.
+                            </p>
+                            <p>
+                                From the <code>dfx command line</code> you can
+                                call it like this:
+                            </p>
+                            <pre><code class="language-bash">dfx canister call my_canister getString
+</code></pre>
+                            <p>
+                                Query methods are read-only. They do not persist
+                                any state changes. Take a look at the following
+                                example:
+                            </p>
+                            <pre><code class="language-typescript">import { Canister, query, text, Void } from 'azle/experimental';
+
+let db: {
+    [key: string]: string;
+} = {};
+
+export default Canister({
+    set: query([text, text], Void, (key, value) =&gt; {
+        db[key] = value;
+    })
+});
+</code></pre>
+                            <p>
+                                Calling <code>set</code> will perform the
+                                operation of setting the
+                                <code>key</code> property on the
+                                <code>db</code> object to <code>value</code>,
+                                but after the call finishes that change will be
+                                discarded.
+                            </p>
+                            <p>
+                                This is because query methods are executed on a
+                                single node machine and do not go through
+                                <a
+                                    href="https://internetcomputer.org/how-it-works/consensus/"
+                                    >consensus</a
+                                >. This results in lower latencies, perhaps on
+                                the order of 100 milliseconds.
+                            </p>
+                            <p>
+                                There is a limit to how much computation can be
+                                done in a single call to a query method. The
+                                current query call limit is
+                                <a
+                                    href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits"
+                                    >5 billion Wasm instructions</a
+                                >. Here's an example of a query method that runs
+                                the risk of reaching the limit:
+                            </p>
+                            <pre><code class="language-typescript">import { Canister, nat32, query, text } from 'azle/experimental';
+
+export default Canister({
+    pyramid: query([nat32], text, (levels) =&gt; {
+        return new Array(levels).fill(0).reduce((acc, _, index) =&gt; {
+            const asterisks = new Array(index + 1).fill('*').join('');
+            return `${acc}${asterisks}\n`;
+        }, '');
+    })
+});
+</code></pre>
+                            <p>
+                                From the <code>dfx command line</code> you can
+                                call <code>pyramid</code> like this:
+                            </p>
+                            <pre><code class="language-bash">dfx canister call my_canister pyramid '(1_000)'
+</code></pre>
+                            <p>
+                                With an argument of <code>1_000</code>,
+                                <code>pyramid</code> will fail with an error
+                                <code
+                                    >...exceeded the instruction limit for
+                                    single message execution</code
+                                >.
+                            </p>
+                            <p>
+                                Keep in mind that each query method invocation
+                                has up to 4 GiB of heap available.
+                            </p>
+                            <p>
+                                In terms of query scalability, an individual
+                                canister
+                                <a
+                                    href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6"
+                                    >likely has an upper bound of ~36k queries
+                                    per second</a
+                                >.
+                            </p>
+                        </main>
+
+                        <nav
+                            class="nav-wrapper"
+                            aria-label="Page navigation"
+                        >
+                            <!-- Mobile navigation buttons -->
+                            <a
+                                rel="prev"
+                                href="examples.html"
+                                class="mobile-nav-chapters previous"
+                                title="Previous chapter"
+                                aria-label="Previous chapter"
+                                aria-keyshortcuts="Left"
+                            >
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a
+                                rel="next prefetch"
+                                href="update_methods.html"
+                                class="mobile-nav-chapters next"
+                                title="Next chapter"
+                                aria-label="Next chapter"
+                                aria-keyshortcuts="Right"
+                            >
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                            <div style="clear: both"></div>
+                        </nav>
+                    </div>
+                </div>
+
+                <nav
+                    class="nav-wide-wrapper"
+                    aria-label="Page navigation"
+                >
+                    <a
+                        rel="prev"
+                        href="examples.html"
+                        class="nav-chapters previous"
+                        title="Previous chapter"
+                        aria-label="Previous chapter"
+                        aria-keyshortcuts="Left"
+                    >
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a
+                        rel="next prefetch"
+                        href="update_methods.html"
+                        class="nav-chapters next"
+                        title="Next chapter"
+                        aria-label="Next chapter"
+                        aria-keyshortcuts="Right"
+                    >
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </nav>
+            </div>
+
+            <script>
+                window.playground_copyable = true;
+            </script>
+
+            <script src="elasticlunr.min.js"></script>
+            <script src="mark.min.js"></script>
+            <script src="searcher.js"></script>
+
+            <script src="clipboard.min.js"></script>
+            <script src="highlight.js"></script>
+            <script src="book.js"></script>
+
+            <!-- Custom JS scripts -->
+        </div>
+    </body>
+</html>

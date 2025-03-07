@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    class="light sidebar-visible"
+    dir="ltr"
+>
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8" />
+        <title>HTTP - The Azle Book</title>
+
+        <!-- Custom HTML head -->
+
+        <meta
+            name="description"
+            content=""
+        />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+        />
+        <meta
+            name="theme-color"
+            content="#ffffff"
+        />
+
+        <link
+            rel="icon"
+            href="favicon.svg"
+        />
+        <link
+            rel="shortcut icon"
+            href="favicon.png"
+        />
+        <link
+            rel="stylesheet"
+            href="css/variables.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/general.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/chrome.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/print.css"
+            media="print"
+        />
+
+        <!-- Fonts -->
+        <link
+            rel="stylesheet"
+            href="FontAwesome/css/font-awesome.css"
+        />
+        <link
+            rel="stylesheet"
+            href="fonts/fonts.css"
+        />
+
+        <!-- Highlight.js Stylesheets -->
+        <link
+            rel="stylesheet"
+            href="highlight.css"
+        />
+        <link
+            rel="stylesheet"
+            href="tomorrow-night.css"
+        />
+        <link
+            rel="stylesheet"
+            href="ayu-highlight.css"
+        />
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = '';
+            var default_theme = window.matchMedia(
+                '(prefers-color-scheme: dark)'
+            ).matches
+                ? 'navy'
+                : 'light';
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+        <div id="body-container">
+            <!-- Work around some values being stored in localStorage wrapped in quotes -->
+            <script>
+                try {
+                    var theme = localStorage.getItem('mdbook-theme');
+                    var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                    if (theme.startsWith('"') && theme.endsWith('"')) {
+                        localStorage.setItem(
+                            'mdbook-theme',
+                            theme.slice(1, theme.length - 1)
+                        );
+                    }
+
+                    if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                        localStorage.setItem(
+                            'mdbook-sidebar',
+                            sidebar.slice(1, sidebar.length - 1)
+                        );
+                    }
+                } catch (e) {}
+            </script>
+
+            <!-- Set the theme before any content is loaded, prevents flash -->
+            <script>
+                var theme;
+                try {
+                    theme = localStorage.getItem('mdbook-theme');
+                } catch (e) {}
+                if (theme === null || theme === undefined) {
+                    theme = default_theme;
+                }
+                const html = document.documentElement;
+                html.classList.remove('light');
+                html.classList.add(theme);
+                html.classList.add('js');
+            </script>
+
+            <input
+                type="checkbox"
+                id="sidebar-toggle-anchor"
+                class="hidden"
+            />
+
+            <!-- Hide / unhide sidebar before it is displayed -->
+            <script>
+                var sidebar = null;
+                var sidebar_toggle = document.getElementById(
+                    'sidebar-toggle-anchor'
+                );
+                if (document.body.clientWidth >= 1080) {
+                    try {
+                        sidebar = localStorage.getItem('mdbook-sidebar');
+                    } catch (e) {}
+                    sidebar = sidebar || 'visible';
+                } else {
+                    sidebar = 'hidden';
+                }
+                sidebar_toggle.checked = sidebar === 'visible';
+                html.classList.remove('sidebar-visible');
+                html.classList.add('sidebar-' + sidebar);
+            </script>
+
+            <nav
+                id="sidebar"
+                class="sidebar"
+                aria-label="Table of contents"
+            >
+                <!-- populated by js -->
+                <mdbook-sidebar-scrollbox
+                    class="sidebar-scrollbox"
+                ></mdbook-sidebar-scrollbox>
+                <noscript>
+                    <iframe
+                        class="sidebar-iframe-outer"
+                        src="toc.html"
+                    ></iframe>
+                </noscript>
+                <div
+                    id="sidebar-resize-handle"
+                    class="sidebar-resize-handle"
+                >
+                    <div class="sidebar-resize-indicator"></div>
+                </div>
+            </nav>
+
+            <div
+                id="page-wrapper"
+                class="page-wrapper"
+            >
+                <div class="page">
+                    <div id="menu-bar-hover-placeholder"></div>
+                    <div
+                        id="menu-bar"
+                        class="menu-bar sticky"
+                    >
+                        <div class="left-buttons">
+                            <label
+                                id="sidebar-toggle"
+                                class="icon-button"
+                                for="sidebar-toggle-anchor"
+                                title="Toggle Table of Contents"
+                                aria-label="Toggle Table of Contents"
+                                aria-controls="sidebar"
+                            >
+                                <i class="fa fa-bars"></i>
+                            </label>
+                            <button
+                                id="theme-toggle"
+                                class="icon-button"
+                                type="button"
+                                title="Change theme"
+                                aria-label="Change theme"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                aria-controls="theme-list"
+                            >
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul
+                                id="theme-list"
+                                class="theme-popup"
+                                aria-label="Themes"
+                                role="menu"
+                            >
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="light"
+                                    >
+                                        Light
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="rust"
+                                    >
+                                        Rust
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="coal"
+                                    >
+                                        Coal
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="navy"
+                                    >
+                                        Navy
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="ayu"
+                                    >
+                                        Ayu
+                                    </button>
+                                </li>
+                            </ul>
+                            <button
+                                id="search-toggle"
+                                class="icon-button"
+                                type="button"
+                                title="Search. (Shortkey: s)"
+                                aria-label="Toggle Searchbar"
+                                aria-expanded="false"
+                                aria-keyshortcuts="S"
+                                aria-controls="searchbar"
+                            >
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+
+                        <h1 class="menu-title">The Azle Book</h1>
+
+                        <div class="right-buttons">
+                            <a
+                                href="print.html"
+                                title="Print this book"
+                                aria-label="Print this book"
+                            >
+                                <i
+                                    id="print-button"
+                                    class="fa fa-print"
+                                ></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div
+                        id="search-wrapper"
+                        class="hidden"
+                    >
+                        <form
+                            id="searchbar-outer"
+                            class="searchbar-outer"
+                        >
+                            <input
+                                type="search"
+                                id="searchbar"
+                                name="searchbar"
+                                placeholder="Search this book ..."
+                                aria-controls="searchresults-outer"
+                                aria-describedby="searchresults-header"
+                            />
+                        </form>
+                        <div
+                            id="searchresults-outer"
+                            class="searchresults-outer hidden"
+                        >
+                            <div
+                                id="searchresults-header"
+                                class="searchresults-header"
+                            ></div>
+                            <ul id="searchresults"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                    <script>
+                        document
+                            .getElementById('sidebar-toggle')
+                            .setAttribute(
+                                'aria-expanded',
+                                sidebar === 'visible'
+                            );
+                        document
+                            .getElementById('sidebar')
+                            .setAttribute('aria-hidden', sidebar !== 'visible');
+                        Array.from(
+                            document.querySelectorAll('#sidebar a')
+                        ).forEach(function (link) {
+                            link.setAttribute(
+                                'tabIndex',
+                                sidebar === 'visible' ? 0 : -1
+                            );
+                        });
+                    </script>
+
+                    <div
+                        id="content"
+                        class="content"
+                    >
+                        <main>
+                            <h1 id="http">
+                                <a
+                                    class="header"
+                                    href="#http"
+                                    >HTTP</a
+                                >
+                            </h1>
+                            <p>This chapter is a work in progress.</p>
+                            <h2 id="incoming-http-requests">
+                                <a
+                                    class="header"
+                                    href="#incoming-http-requests"
+                                    >Incoming HTTP requests</a
+                                >
+                            </h2>
+                            <p>Examples:</p>
+                            <ul>
+                                <li>
+                                    <a
+                                        href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/http_counter"
+                                        >http_counter</a
+                                    >
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import {
+    blob,
+    bool,
+    Canister,
+    Func,
+    nat16,
+    None,
+    Opt,
+    query,
+    Record,
+    text,
+    Tuple,
+    Variant,
+    Vec
+} from 'azle/experimental';
+
+const Token = Record({
+    // add whatever fields you'd like
+    arbitrary_data: text
+});
+
+const StreamingCallbackHttpResponse = Record({
+    body: blob,
+    token: Opt(Token)
+});
+
+export const Callback = Func([text], StreamingCallbackHttpResponse, 'query');
+
+const CallbackStrategy = Record({
+    callback: Callback,
+    token: Token
+});
+
+const StreamingStrategy = Variant({
+    Callback: CallbackStrategy
+});
+
+type HeaderField = [text, text];
+const HeaderField = Tuple(text, text);
+
+const HttpResponse = Record({
+    status_code: nat16,
+    headers: Vec(HeaderField),
+    body: blob,
+    streaming_strategy: Opt(StreamingStrategy),
+    upgrade: Opt(bool)
+});
+
+const HttpRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob,
+    certificate_version: Opt(nat16)
+});
+
+export default Canister({
+    http_request: query([HttpRequest], HttpResponse, (req) =&gt; {
+        return {
+            status_code: 200,
+            headers: [],
+            body: Buffer.from('hello'),
+            streaming_strategy: None,
+            upgrade: None
+        };
+    })
+});
+</code></pre>
+                            <h2 id="outgoing-http-requests">
+                                <a
+                                    class="header"
+                                    href="#outgoing-http-requests"
+                                    >Outgoing HTTP requests</a
+                                >
+                            </h2>
+                            <p>Examples:</p>
+                            <ul>
+                                <li>
+                                    <a
+                                        href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc"
+                                        >ethereum_json_rpc</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests"
+                                        >outgoing_http_requests</a
+                                    >
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import {
+    Canister,
+    ic,
+    init,
+    nat32,
+    Principal,
+    query,
+    Some,
+    StableBTreeMap,
+    text,
+    update
+} from 'azle/experimental';
+import {
+    HttpResponse,
+    HttpTransformArgs,
+    managementCanister
+} from 'azle/canisters/management';
+
+let stableStorage = StableBTreeMap&lt;text, text&gt;(0);
+
+export default Canister({
+    init: init([text], (ethereumUrl) =&gt; {
+        stableStorage.insert('ethereumUrl', ethereumUrl);
+    }),
+    ethGetBalance: update([text], text, async (ethereumAddress) =&gt; {
+        const urlOpt = stableStorage.get('ethereumUrl');
+
+        if ('None' in urlOpt) {
+            throw new Error('ethereumUrl is not defined');
+        }
+
+        const url = urlOpt.Some;
+
+        const httpResponse = await ic.call(managementCanister.http_request, {
+            args: [
+                {
+                    url,
+                    max_response_bytes: Some(2_000n),
+                    method: {
+                        post: null
+                    },
+                    headers: [],
+                    body: Some(
+                        Buffer.from(
+                            JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'eth_getBalance',
+                                params: [ethereumAddress, 'earliest'],
+                                id: 1
+                            }),
+                            'utf-8'
+                        )
+                    ),
+                    transform: Some({
+                        function: [ic.id(), 'ethTransform'] as [
+                            Principal,
+                            string
+                        ],
+                        context: Uint8Array.from([])
+                    })
+                }
+            ],
+            cycles: 50_000_000n
+        });
+
+        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+    }),
+    ethGetBlockByNumber: update([nat32], text, async (number) =&gt; {
+        const urlOpt = stableStorage.get('ethereumUrl');
+
+        if ('None' in urlOpt) {
+            throw new Error('ethereumUrl is not defined');
+        }
+
+        const url = urlOpt.Some;
+
+        const httpResponse = await ic.call(managementCanister.http_request, {
+            args: [
+                {
+                    url,
+                    max_response_bytes: Some(2_000n),
+                    method: {
+                        post: null
+                    },
+                    headers: [],
+                    body: Some(
+                        Buffer.from(
+                            JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'eth_getBlockByNumber',
+                                params: [`0x${number.toString(16)}`, false],
+                                id: 1
+                            }),
+                            'utf-8'
+                        )
+                    ),
+                    transform: Some({
+                        function: [ic.id(), 'ethTransform'] as [
+                            Principal,
+                            string
+                        ],
+                        context: Uint8Array.from([])
+                    })
+                }
+            ],
+            cycles: 50_000_000n
+        });
+
+        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+    }),
+    ethTransform: query([HttpTransformArgs], HttpResponse, (args) =&gt; {
+        return {
+            ...args.response,
+            headers: []
+        };
+    })
+});
+</code></pre>
+                        </main>
+
+                        <nav
+                            class="nav-wrapper"
+                            aria-label="Page navigation"
+                        >
+                            <!-- Mobile navigation buttons -->
+                            <a
+                                rel="prev"
+                                href="cross_canister.html"
+                                class="mobile-nav-chapters previous"
+                                title="Previous chapter"
+                                aria-label="Previous chapter"
+                                aria-keyshortcuts="Left"
+                            >
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a
+                                rel="next prefetch"
+                                href="management_canister.html"
+                                class="mobile-nav-chapters next"
+                                title="Next chapter"
+                                aria-label="Next chapter"
+                                aria-keyshortcuts="Right"
+                            >
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                            <div style="clear: both"></div>
+                        </nav>
+                    </div>
+                </div>
+
+                <nav
+                    class="nav-wide-wrapper"
+                    aria-label="Page navigation"
+                >
+                    <a
+                        rel="prev"
+                        href="cross_canister.html"
+                        class="nav-chapters previous"
+                        title="Previous chapter"
+                        aria-label="Previous chapter"
+                        aria-keyshortcuts="Left"
+                    >
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a
+                        rel="next prefetch"
+                        href="management_canister.html"
+                        class="nav-chapters next"
+                        title="Next chapter"
+                        aria-label="Next chapter"
+                        aria-keyshortcuts="Right"
+                    >
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </nav>
+            </div>
+
+            <script>
+                window.playground_copyable = true;
+            </script>
+
+            <script src="elasticlunr.min.js"></script>
+            <script src="mark.min.js"></script>
+            <script src="searcher.js"></script>
+
+            <script src="clipboard.min.js"></script>
+            <script src="highlight.js"></script>
+            <script src="book.js"></script>
+
+            <!-- Custom JS scripts -->
+        </div>
+    </body>
+</html>

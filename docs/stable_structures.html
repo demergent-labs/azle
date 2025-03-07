@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    class="light sidebar-visible"
+    dir="ltr"
+>
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8" />
+        <title>Stable Structures - The Azle Book</title>
+
+        <!-- Custom HTML head -->
+
+        <meta
+            name="description"
+            content=""
+        />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+        />
+        <meta
+            name="theme-color"
+            content="#ffffff"
+        />
+
+        <link
+            rel="icon"
+            href="favicon.svg"
+        />
+        <link
+            rel="shortcut icon"
+            href="favicon.png"
+        />
+        <link
+            rel="stylesheet"
+            href="css/variables.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/general.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/chrome.css"
+        />
+        <link
+            rel="stylesheet"
+            href="css/print.css"
+            media="print"
+        />
+
+        <!-- Fonts -->
+        <link
+            rel="stylesheet"
+            href="FontAwesome/css/font-awesome.css"
+        />
+        <link
+            rel="stylesheet"
+            href="fonts/fonts.css"
+        />
+
+        <!-- Highlight.js Stylesheets -->
+        <link
+            rel="stylesheet"
+            href="highlight.css"
+        />
+        <link
+            rel="stylesheet"
+            href="tomorrow-night.css"
+        />
+        <link
+            rel="stylesheet"
+            href="ayu-highlight.css"
+        />
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = '';
+            var default_theme = window.matchMedia(
+                '(prefers-color-scheme: dark)'
+            ).matches
+                ? 'navy'
+                : 'light';
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+        <div id="body-container">
+            <!-- Work around some values being stored in localStorage wrapped in quotes -->
+            <script>
+                try {
+                    var theme = localStorage.getItem('mdbook-theme');
+                    var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                    if (theme.startsWith('"') && theme.endsWith('"')) {
+                        localStorage.setItem(
+                            'mdbook-theme',
+                            theme.slice(1, theme.length - 1)
+                        );
+                    }
+
+                    if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                        localStorage.setItem(
+                            'mdbook-sidebar',
+                            sidebar.slice(1, sidebar.length - 1)
+                        );
+                    }
+                } catch (e) {}
+            </script>
+
+            <!-- Set the theme before any content is loaded, prevents flash -->
+            <script>
+                var theme;
+                try {
+                    theme = localStorage.getItem('mdbook-theme');
+                } catch (e) {}
+                if (theme === null || theme === undefined) {
+                    theme = default_theme;
+                }
+                const html = document.documentElement;
+                html.classList.remove('light');
+                html.classList.add(theme);
+                html.classList.add('js');
+            </script>
+
+            <input
+                type="checkbox"
+                id="sidebar-toggle-anchor"
+                class="hidden"
+            />
+
+            <!-- Hide / unhide sidebar before it is displayed -->
+            <script>
+                var sidebar = null;
+                var sidebar_toggle = document.getElementById(
+                    'sidebar-toggle-anchor'
+                );
+                if (document.body.clientWidth >= 1080) {
+                    try {
+                        sidebar = localStorage.getItem('mdbook-sidebar');
+                    } catch (e) {}
+                    sidebar = sidebar || 'visible';
+                } else {
+                    sidebar = 'hidden';
+                }
+                sidebar_toggle.checked = sidebar === 'visible';
+                html.classList.remove('sidebar-visible');
+                html.classList.add('sidebar-' + sidebar);
+            </script>
+
+            <nav
+                id="sidebar"
+                class="sidebar"
+                aria-label="Table of contents"
+            >
+                <!-- populated by js -->
+                <mdbook-sidebar-scrollbox
+                    class="sidebar-scrollbox"
+                ></mdbook-sidebar-scrollbox>
+                <noscript>
+                    <iframe
+                        class="sidebar-iframe-outer"
+                        src="toc.html"
+                    ></iframe>
+                </noscript>
+                <div
+                    id="sidebar-resize-handle"
+                    class="sidebar-resize-handle"
+                >
+                    <div class="sidebar-resize-indicator"></div>
+                </div>
+            </nav>
+
+            <div
+                id="page-wrapper"
+                class="page-wrapper"
+            >
+                <div class="page">
+                    <div id="menu-bar-hover-placeholder"></div>
+                    <div
+                        id="menu-bar"
+                        class="menu-bar sticky"
+                    >
+                        <div class="left-buttons">
+                            <label
+                                id="sidebar-toggle"
+                                class="icon-button"
+                                for="sidebar-toggle-anchor"
+                                title="Toggle Table of Contents"
+                                aria-label="Toggle Table of Contents"
+                                aria-controls="sidebar"
+                            >
+                                <i class="fa fa-bars"></i>
+                            </label>
+                            <button
+                                id="theme-toggle"
+                                class="icon-button"
+                                type="button"
+                                title="Change theme"
+                                aria-label="Change theme"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                aria-controls="theme-list"
+                            >
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul
+                                id="theme-list"
+                                class="theme-popup"
+                                aria-label="Themes"
+                                role="menu"
+                            >
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="light"
+                                    >
+                                        Light
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="rust"
+                                    >
+                                        Rust
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="coal"
+                                    >
+                                        Coal
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="navy"
+                                    >
+                                        Navy
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button
+                                        role="menuitem"
+                                        class="theme"
+                                        id="ayu"
+                                    >
+                                        Ayu
+                                    </button>
+                                </li>
+                            </ul>
+                            <button
+                                id="search-toggle"
+                                class="icon-button"
+                                type="button"
+                                title="Search. (Shortkey: s)"
+                                aria-label="Toggle Searchbar"
+                                aria-expanded="false"
+                                aria-keyshortcuts="S"
+                                aria-controls="searchbar"
+                            >
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+
+                        <h1 class="menu-title">The Azle Book</h1>
+
+                        <div class="right-buttons">
+                            <a
+                                href="print.html"
+                                title="Print this book"
+                                aria-label="Print this book"
+                            >
+                                <i
+                                    id="print-button"
+                                    class="fa fa-print"
+                                ></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div
+                        id="search-wrapper"
+                        class="hidden"
+                    >
+                        <form
+                            id="searchbar-outer"
+                            class="searchbar-outer"
+                        >
+                            <input
+                                type="search"
+                                id="searchbar"
+                                name="searchbar"
+                                placeholder="Search this book ..."
+                                aria-controls="searchresults-outer"
+                                aria-describedby="searchresults-header"
+                            />
+                        </form>
+                        <div
+                            id="searchresults-outer"
+                            class="searchresults-outer hidden"
+                        >
+                            <div
+                                id="searchresults-header"
+                                class="searchresults-header"
+                            ></div>
+                            <ul id="searchresults"></ul>
+                        </div>
+                    </div>
+
+                    <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                    <script>
+                        document
+                            .getElementById('sidebar-toggle')
+                            .setAttribute(
+                                'aria-expanded',
+                                sidebar === 'visible'
+                            );
+                        document
+                            .getElementById('sidebar')
+                            .setAttribute('aria-hidden', sidebar !== 'visible');
+                        Array.from(
+                            document.querySelectorAll('#sidebar a')
+                        ).forEach(function (link) {
+                            link.setAttribute(
+                                'tabIndex',
+                                sidebar === 'visible' ? 0 : -1
+                            );
+                        });
+                    </script>
+
+                    <div
+                        id="content"
+                        class="content"
+                    >
+                        <main>
+                            <h1 id="stable-structures">
+                                <a
+                                    class="header"
+                                    href="#stable-structures"
+                                    >Stable Structures</a
+                                >
+                            </h1>
+                            <h2 id="tldr">
+                                <a
+                                    class="header"
+                                    href="#tldr"
+                                    >TL;DR</a
+                                >
+                            </h2>
+                            <ul>
+                                <li>96 GiB of stable memory</li>
+                                <li>Persistent across upgrades</li>
+                                <li>Familiar API</li>
+                                <li>Must specify memory id</li>
+                                <li>No migrations per memory id</li>
+                            </ul>
+                            <p>
+                                Stable structures are data structures with
+                                familiar APIs that allow write and read access
+                                to stable memory. Stable memory is a separate
+                                memory location from the heap that currently
+                                allows up to 96 GiB of binary storage. Stable
+                                memory persists automatically across upgrades.
+                            </p>
+                            <p>
+                                Persistence on the Internet Computer (IC) is
+                                very important to understand. When a canister is
+                                upgraded (its code is changed after being
+                                initially deployed) its heap is wiped. This
+                                includes all global variables.
+                            </p>
+                            <p>
+                                On the other hand, anything stored in stable
+                                memory will be preserved. Writing and reading to
+                                and from stable memory can be done with a
+                                <a
+                                    href="./reference/stable_memory/stable_memory.html"
+                                    >low-level API</a
+                                >, but it is generally easier and preferable to
+                                use stable structures.
+                            </p>
+                            <p>
+                                Azle currently provides one stable structure
+                                called <code>StableBTreeMap</code>. It's similar
+                                to a
+                                <a
+                                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"
+                                    >JavaScript Map</a
+                                >
+                                and has most of the common operations you'd
+                                expect such as reading, inserting, and removing
+                                values.
+                            </p>
+                            <p>
+                                Here's how to define a simple
+                                <code>StableBTreeMap</code>:
+                            </p>
+                            <pre><code class="language-typescript">import { nat8, StableBTreeMap, text } from 'azle/experimental';
+
+let map = StableBTreeMap&lt;nat8, text&gt;(0);
+</code></pre>
+                            <p>
+                                This is a <code>StableBTreeMap</code> with a key
+                                of type <code>nat8</code> and a value of type
+                                <code>text</code>. Unless you want a default
+                                type of <code>any</code> for your
+                                <code>key</code> and <code>value</code>, then
+                                you must explicitly type your
+                                <code>StableBTreeMap</code> with type arguments.
+                            </p>
+                            <p>
+                                <code>StableBTreeMap</code> works by encoding
+                                and decoding values under-the-hood, storing and
+                                retrieving these values in bytes in stable
+                                memory. When writing to and reading from a
+                                <code>StableBTreeMap</code>, by default the
+                                <code>stableJson</code>
+                                <code>Serializable object</code> is used to
+                                encode JS values into bytes and to decode JS
+                                values from bytes. <code>stableJson</code> uses
+                                <code>JSON.stringify</code> and
+                                <code>JSON.parse</code> with a custom
+                                <code>replacer</code> and
+                                <code>reviver</code> to handle many
+                                <code>Candid</code> and other values that you
+                                will most likely use in your canisters.
+                            </p>
+                            <p>
+                                You may use other
+                                <code>Serializable objects</code> besides
+                                <code>stableJson</code>, and you can even create
+                                your own. Simply pass in a
+                                <code>Serializable object</code> as the second
+                                and third parameters to your
+                                <code>StableBTreeMap</code>. The second
+                                parameter is the <code>key</code>
+                                <code>Serializable object</code> and the third
+                                parameter is the <code>value</code>
+                                <code>Serializable object</code>. For example,
+                                the following <code>StableBTreeMap</code> uses
+                                the <code>nat8</code> and <code>text</code>
+                                <code>CandidType objects</code> from Azle as
+                                <code>Serializable objects</code>. These
+                                <code>Serializable objects</code> will encode
+                                and decode to and from Candid bytes:
+                            </p>
+                            <pre><code class="language-typescript">import { nat8, StableBTreeMap, text } from 'azle/experimental';
+
+let map = StableBTreeMap&lt;nat8, text&gt;(0, nat8, text);
+</code></pre>
+                            <p>
+                                All <code>CandidType</code> objects imported
+                                from <code>azle</code> are
+                                <code>Serializable objects</code>.
+                            </p>
+                            <p>
+                                A <code>Serializable object</code> simply has a
+                                <code>toBytes</code> method that takes a JS
+                                value and returns a <code>Uint8Array</code>, and
+                                a <code>fromBytes</code> method that takes a
+                                <code>Uint8Array</code> and returns a JS value.
+                            </p>
+                            <p>
+                                Here's an example of how to create your own
+                                simple <code>JSON</code>
+                                <code>Serializable</code>:
+                            </p>
+                            <pre><code class="language-typescript">export interface Serializable {
+    toBytes: (data: any) =&gt; Uint8Array;
+    fromBytes: (bytes: Uint8Array) =&gt; any;
+}
+
+export function StableSimpleJson(): Serializable {
+    return {
+        toBytes(data: any) {
+            const result = JSON.stringify(data);
+            return Uint8Array.from(Buffer.from(result));
+        },
+        fromBytes(bytes: Uint8Array) {
+            return JSON.parse(Buffer.from(bytes).toString());
+        }
+    };
+}
+</code></pre>
+                            <p>
+                                This <code>StableBTreeMap</code> also has a
+                                <code>memory id</code> of <code>0</code>. Each
+                                <code>StableBTreeMap</code> instance must have a
+                                unique <code>memory id</code> between
+                                <code>0</code> and <code>254</code>. Once a
+                                <code>memory id</code> is allocated, it cannot
+                                be used with a different
+                                <code>StableBTreeMap</code>. This means you
+                                can't create another
+                                <code>StableBTreeMap</code> using the same
+                                <code>memory id</code>, and you can't change the
+                                key or value types of an existing
+                                <code>StableBTreeMap</code>.
+                                <a
+                                    href="https://github.com/demergent-labs/azle/issues/843"
+                                    >This problem will be addressed to some
+                                    extent</a
+                                >.
+                            </p>
+                            <p>
+                                Here's an example showing all of the basic
+                                <code>StableBTreeMap</code> operations:
+                            </p>
+                            <pre><code class="language-typescript">import {
+    bool,
+    Canister,
+    nat64,
+    nat8,
+    Opt,
+    query,
+    StableBTreeMap,
+    text,
+    Tuple,
+    update,
+    Vec
+} from 'azle/experimental';
+
+const Key = nat8;
+type Key = typeof Key.tsType;
+
+const Value = text;
+type Value = typeof Value.tsType;
+
+let map = StableBTreeMap&lt;Key, Value&gt;(0);
+
+export default Canister({
+    containsKey: query([Key], bool, (key) =&gt; {
+        return map.containsKey(key);
+    }),
+
+    get: query([Key], Opt(Value), (key) =&gt; {
+        return map.get(key);
+    }),
+
+    insert: update([Key, Value], Opt(Value), (key, value) =&gt; {
+        return map.insert(key, value);
+    }),
+
+    isEmpty: query([], bool, () =&gt; {
+        return map.isEmpty();
+    }),
+
+    items: query([], Vec(Tuple(Key, Value)), () =&gt; {
+        return map.items();
+    }),
+
+    keys: query([], Vec(Key), () =&gt; {
+        return Uint8Array.from(map.keys());
+    }),
+
+    len: query([], nat64, () =&gt; {
+        return map.len();
+    }),
+
+    remove: update([Key], Opt(Value), (key) =&gt; {
+        return map.remove(key);
+    }),
+
+    values: query([], Vec(Value), () =&gt; {
+        return map.values();
+    })
+});
+</code></pre>
+                            <p>
+                                With these basic operations you can build more
+                                complex CRUD database applications:
+                            </p>
+                            <pre><code class="language-typescript">import {
+    blob,
+    Canister,
+    ic,
+    Err,
+    nat64,
+    Ok,
+    Opt,
+    Principal,
+    query,
+    Record,
+    Result,
+    StableBTreeMap,
+    text,
+    update,
+    Variant,
+    Vec
+} from 'azle/experimental';
+
+const User = Record({
+    id: Principal,
+    createdAt: nat64,
+    recordingIds: Vec(Principal),
+    username: text
+});
+type User = typeof User.tsType;
+
+const Recording = Record({
+    id: Principal,
+    audio: blob,
+    createdAt: nat64,
+    name: text,
+    userId: Principal
+});
+type Recording = typeof Recording.tsType;
+
+const AudioRecorderError = Variant({
+    RecordingDoesNotExist: Principal,
+    UserDoesNotExist: Principal
+});
+type AudioRecorderError = typeof AudioRecorderError.tsType;
+
+let users = StableBTreeMap&lt;Principal, User&gt;(0);
+let recordings = StableBTreeMap&lt;Principal, Recording&gt;(1);
+
+export default Canister({
+    createUser: update([text], User, (username) =&gt; {
+        const id = generateId();
+        const user: User = {
+            id,
+            createdAt: ic.time(),
+            recordingIds: [],
+            username
+        };
+
+        users.insert(user.id, user);
+
+        return user;
+    }),
+    readUsers: query([], Vec(User), () =&gt; {
+        return users.values();
+    }),
+    readUserById: query([Principal], Opt(User), (id) =&gt; {
+        return users.get(id);
+    }),
+    deleteUser: update([Principal], Result(User, AudioRecorderError), (id) =&gt; {
+        const userOpt = users.get(id);
+
+        if ('None' in userOpt) {
+            return Err({
+                UserDoesNotExist: id
+            });
+        }
+
+        const user = userOpt.Some;
+
+        user.recordingIds.forEach((recordingId) =&gt; {
+            recordings.remove(recordingId);
+        });
+
+        users.remove(user.id);
+
+        return Ok(user);
+    }),
+    createRecording: update(
+        [blob, text, Principal],
+        Result(Recording, AudioRecorderError),
+        (audio, name, userId) =&gt; {
+            const userOpt = users.get(userId);
+
+            if ('None' in userOpt) {
+                return Err({
+                    UserDoesNotExist: userId
+                });
+            }
+
+            const user = userOpt.Some;
+
+            const id = generateId();
+            const recording: Recording = {
+                id,
+                audio,
+                createdAt: ic.time(),
+                name,
+                userId
+            };
+
+            recordings.insert(recording.id, recording);
+
+            const updatedUser: User = {
+                ...user,
+                recordingIds: [...user.recordingIds, recording.id]
+            };
+
+            users.insert(updatedUser.id, updatedUser);
+
+            return Ok(recording);
+        }
+    ),
+    readRecordings: query([], Vec(Recording), () =&gt; {
+        return recordings.values();
+    }),
+    readRecordingById: query([Principal], Opt(Recording), (id) =&gt; {
+        return recordings.get(id);
+    }),
+    deleteRecording: update(
+        [Principal],
+        Result(Recording, AudioRecorderError),
+        (id) =&gt; {
+            const recordingOpt = recordings.get(id);
+
+            if ('None' in recordingOpt) {
+                return Err({ RecordingDoesNotExist: id });
+            }
+
+            const recording = recordingOpt.Some;
+
+            const userOpt = users.get(recording.userId);
+
+            if ('None' in userOpt) {
+                return Err({
+                    UserDoesNotExist: recording.userId
+                });
+            }
+
+            const user = userOpt.Some;
+
+            const updatedUser: User = {
+                ...user,
+                recordingIds: user.recordingIds.filter(
+                    (recordingId) =&gt;
+                        recordingId.toText() !== recording.id.toText()
+                )
+            };
+
+            users.insert(updatedUser.id, updatedUser);
+
+            recordings.remove(id);
+
+            return Ok(recording);
+        }
+    )
+});
+
+function generateId(): Principal {
+    const randomBytes = new Array(29)
+        .fill(0)
+        .map((_) =&gt; Math.floor(Math.random() * 256));
+
+    return Principal.fromUint8Array(Uint8Array.from(randomBytes));
+}
+</code></pre>
+                            <p>
+                                The example above shows a very basic audio
+                                recording backend application. There are two
+                                types of entities that need to be stored,
+                                <code>User</code> and <code>Recording</code>.
+                                These are represented as
+                                <code>Candid</code> records.
+                            </p>
+                            <p>
+                                Each entity gets its own
+                                <code>StableBTreeMap</code>:
+                            </p>
+                            <pre><code class="language-typescript">import {
+    blob,
+    Canister,
+    ic,
+    Err,
+    nat64,
+    Ok,
+    Opt,
+    Principal,
+    query,
+    Record,
+    Result,
+    StableBTreeMap,
+    text,
+    update,
+    Variant,
+    Vec
+} from 'azle/experimental';
+
+const User = Record({
+    id: Principal,
+    createdAt: nat64,
+    recordingIds: Vec(Principal),
+    username: text
+});
+type User = typeof User.tsType;
+
+const Recording = Record({
+    id: Principal,
+    audio: blob,
+    createdAt: nat64,
+    name: text,
+    userId: Principal
+});
+type Recording = typeof Recording.tsType;
+
+const AudioRecorderError = Variant({
+    RecordingDoesNotExist: Principal,
+    UserDoesNotExist: Principal
+});
+type AudioRecorderError = typeof AudioRecorderError.tsType;
+
+let users = StableBTreeMap&lt;Principal, User&gt;(0);
+let recordings = StableBTreeMap&lt;Principal, Recording&gt;(1);
+</code></pre>
+                            <p>
+                                Notice that each <code>StableBTreeMap</code> has
+                                a unique <code>memory id</code>. You can begin
+                                to create basic database CRUD functionality by
+                                creating one <code>StableBTreeMap</code> per
+                                entity. It's up to you to create functionality
+                                for querying, filtering, and relations.
+                                <code>StableBTreeMap</code> is not a
+                                full-featured database solution, but a
+                                fundamental building block that may enable you
+                                to achieve more advanced database functionality.
+                            </p>
+                            <p>
+                                Demergent Labs plans to deeply explore database
+                                solutions on the IC in the future.
+                            </p>
+                            <h2 id="caveats">
+                                <a
+                                    class="header"
+                                    href="#caveats"
+                                    >Caveats</a
+                                >
+                            </h2>
+                            <h3 id="float64-values">
+                                <a
+                                    class="header"
+                                    href="#float64-values"
+                                    >float64 values</a
+                                >
+                            </h3>
+                            <p>
+                                It seems to be only some
+                                <code>float64</code> values cannot be
+                                successfully stored and retrieved with a
+                                <code>StableBTreeMap</code> using
+                                <code>stableJson</code> because of this bug with
+                                <code>JSON.parse</code>:
+                                https://github.com/bellard/quickjs/issues/206
+                            </p>
+                            <h3 id="candidtype-performance">
+                                <a
+                                    class="header"
+                                    href="#candidtype-performance"
+                                    >CandidType Performance</a
+                                >
+                            </h3>
+                            <p>
+                                Azle's Candid encoding/decoding implementation
+                                is currently not well optimized, and Candid may
+                                not be the most optimal encoding format overall,
+                                so you may experience heavy instruction usage
+                                when performing many
+                                <code>StableBTreeMap</code> operations in
+                                succession. A rough idea of the overhead from
+                                our preliminary testing is probably 1-2 million
+                                instructions for a full Candid encoding and
+                                decoding of values per
+                                <code>StableBTreeMap</code> operation.
+                            </p>
+                            <p>
+                                For these reasons we recommend using the
+                                <code>stableJson</code>
+                                <code>Serializable object</code> (the default)
+                                instead of <code>CandidType</code>
+                                <code>Serializable objects</code>.
+                            </p>
+                            <h3 id="migrations">
+                                <a
+                                    class="header"
+                                    href="#migrations"
+                                    >Migrations</a
+                                >
+                            </h3>
+                            <p>
+                                Migrations must be performed manually by reading
+                                the values out of one
+                                <code>StableBTreeMap</code> and writing them
+                                into another. Once a
+                                <code>StableBTreeMap</code> is initialized to a
+                                specific <code>memory id</code>, that
+                                <code>memory id</code> cannot be changed unless
+                                the canister is completely wiped and initialized
+                                again.
+                            </p>
+                            <h3 id="canister">
+                                <a
+                                    class="header"
+                                    href="#canister"
+                                    >Canister</a
+                                >
+                            </h3>
+                            <p>
+                                <code>Canister</code> values do not currently
+                                work with the default
+                                <code>stableJson</code> implementation. If you
+                                must persist <code>Canister</code>s, consider
+                                using the <code>Canister</code>
+                                <code>CandidType object</code> as your
+                                <code>Serializable object</code> in your
+                                <code>StableBTreeMap</code>, or create a custom
+                                <code>replacer</code> or
+                                <code>reviver</code> for
+                                <code>stableJson</code> that handles
+                                <code>Canister</code>.
+                            </p>
+                        </main>
+
+                        <nav
+                            class="nav-wrapper"
+                            aria-label="Page navigation"
+                        >
+                            <!-- Mobile navigation buttons -->
+                            <a
+                                rel="prev"
+                                href="candid.html"
+                                class="mobile-nav-chapters previous"
+                                title="Previous chapter"
+                                aria-label="Previous chapter"
+                                aria-keyshortcuts="Left"
+                            >
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a
+                                rel="next prefetch"
+                                href="cross_canister.html"
+                                class="mobile-nav-chapters next"
+                                title="Next chapter"
+                                aria-label="Next chapter"
+                                aria-keyshortcuts="Right"
+                            >
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                            <div style="clear: both"></div>
+                        </nav>
+                    </div>
+                </div>
+
+                <nav
+                    class="nav-wide-wrapper"
+                    aria-label="Page navigation"
+                >
+                    <a
+                        rel="prev"
+                        href="candid.html"
+                        class="nav-chapters previous"
+                        title="Previous chapter"
+                        aria-label="Previous chapter"
+                        aria-keyshortcuts="Left"
+                    >
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a
+                        rel="next prefetch"
+                        href="cross_canister.html"
+                        class="nav-chapters next"
+                        title="Next chapter"
+                        aria-label="Next chapter"
+                        aria-keyshortcuts="Right"
+                    >
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </nav>
+            </div>
+
+            <script>
+                window.playground_copyable = true;
+            </script>
+
+            <script src="elasticlunr.min.js"></script>
+            <script src="mark.min.js"></script>
+            <script src="searcher.js"></script>
+
+            <script src="clipboard.min.js"></script>
+            <script src="highlight.js"></script>
+            <script src="book.js"></script>
+
+            <!-- Custom JS scripts -->
+        </div>
+    </body>
+</html>
