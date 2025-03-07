@@ -1,5 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
+import { quoteCandidName } from '../../../src/lib/stable/did_file/visitor/quote_candid_name';
+
 export type VisitorData = { value: any };
 
 /**
@@ -21,6 +23,11 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
     }
     visitText(_t: IDL.TextClass, data: VisitorData): string {
         return `"${escapeForBash(data.value)}"`;
+    }
+    visitFunc(t: IDL.FuncClass, data: VisitorData): string {
+        const [principal, funcName] = data.value;
+        const quotedFuncName = quoteCandidName(funcName);
+        return `func "${principal.toString()}".${quotedFuncName}`;
     }
     visitOpt<T>(
         _t: IDL.OptClass<T>,
