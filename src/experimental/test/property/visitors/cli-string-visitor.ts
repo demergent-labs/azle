@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { quoteCandidName } from '../../../src/lib/stable/did_file/visitor/quote_candid_name';
+import { quoteCandidName } from '#lib/did_file/visitor/quote_candid_name';
 
 export type VisitorData = { value: any };
 
