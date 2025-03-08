@@ -1,10 +1,10 @@
 use std::cell::RefCell;
 
-use benchmarking::{BenchmarkEntry, BENCHMARKS_REF_CELL};
+use benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry};
 use guards::guard_against_non_controllers;
 use ic_stable_structures::{
-    memory_manager::{MemoryManager, VirtualMemory},
     DefaultMemoryImpl,
+    memory_manager::{MemoryManager, VirtualMemory},
 };
 use quickjs_with_ctx::quickjs_with_ctx;
 use rquickjs::Context;
@@ -30,10 +30,10 @@ thread_local! {
     static WASM_DATA_REF_CELL: RefCell<Option<WasmData>> = RefCell::new(None);
 }
 
-#[ic_cdk_macros::update]
+#[ic_cdk::update]
 pub fn _azle_chunk() {}
 
-#[ic_cdk_macros::query(guard = guard_against_non_controllers)]
+#[ic_cdk::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
     BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| benchmarks_ref_cell.borrow().clone())
 }
