@@ -71,7 +71,13 @@ function generateTest(
                 }
 
                 if (behavior === 'THROW') {
-                    const expectedError = `Method \\"${functionName}\\" not allowed`;
+                    const normalizedFunctionName = functionName.startsWith('"')
+                        ? functionName
+                              .slice(1, -1)
+                              .replace(/\\/g, '\\\\')
+                              .replace(/"/g, '\\"')
+                        : functionName;
+                    const expectedError = `Method \\"${normalizedFunctionName}\\" not allowed`;
                     return testEquality(
                         error.message.includes(expectedError),
                         true
