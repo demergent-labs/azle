@@ -97,6 +97,24 @@ pub fn initialize_js(
 
         globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
 
+        // let action = Object::new(ctx.clone())?;
+
+        // action.set("type", "SET_AZLE_CANISTER_METHOD_NAME")?;
+        // action.set("payload", Object::new(ctx.clone())?)?;
+
+        // let location = Object::new(ctx.clone())?;
+
+        // location.set("filepath", "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/init_and_post_upgrade.rs")?;
+        // location.set("functionName", "initialize_js")?;
+
+        // action.set("location", location)?;
+
+        // quickjs_call_with_error_handling(
+        //     ctx.clone(),
+        //     ctx.globals().get("_azleDispatch").unwrap(),
+        //     (action,),
+        // )?;
+
         globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
 
         globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
