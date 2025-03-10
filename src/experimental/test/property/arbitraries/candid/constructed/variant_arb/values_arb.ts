@@ -65,8 +65,15 @@ export function VariantValuesArb(
 function generateValue(field: Field, returned: boolean = false): Variant {
     const [fieldName, { agentArgumentValue, agentResponseValue }] = field;
 
+    const normalizedFieldName =
+        fieldName.startsWith('"') && fieldName.endsWith('"')
+            ? fieldName.slice(1, -1)
+            : fieldName;
+
     return {
-        [fieldName]: returned ? agentResponseValue : agentArgumentValue
+        [normalizedFieldName]: returned
+            ? agentResponseValue
+            : agentArgumentValue
     };
 }
 
@@ -74,6 +81,10 @@ function generateValueLiteral(field: Field): string {
     const [fieldName, fieldValue] = field;
 
     return `{
-        ${fieldName}: ${fieldValue.valueLiteral}
+        ${
+            fieldName.startsWith('"')
+                ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : fieldName
+        }: ${fieldValue.valueLiteral}
     }`;
 }

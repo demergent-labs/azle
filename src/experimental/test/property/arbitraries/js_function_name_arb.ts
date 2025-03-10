@@ -179,10 +179,6 @@ const quotedFunctionNameArb = fc
         const escapedInner = inner;
 
         // Reassemble the string with its leading and trailing quotes intact
-        console.log(
-            "What happens if this manages to make something without need for quotes, those quotes will clear out. I be that's what is happening"
-        );
-        console.log('escapedInner', escapedInner);
         return `"${escapedInner}"`;
     });
 
