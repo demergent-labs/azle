@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 import { quoteCandidName } from '#lib/did_file/visitor/quote_candid_name';
+import { jsonStringify } from '#lib/json';
 
 export type VisitorData = { value: any };
 
@@ -53,11 +54,17 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         data: VisitorData
     ): string {
         const fieldStrings = fields.map(([fieldName, fieldType]) => {
+            const normalizedFieldName =
+                fieldName.startsWith('"') && fieldName.endsWith('"')
+                    ? fieldName.slice(1, -1)
+                    : fieldName;
             const value = fieldType.accept(this, {
-                value: data.value[fieldName]
+                value: data.value[normalizedFieldName]
             });
-            // TODO is this needed?
-            return `${quoteCandidName(fieldName)} = ${value}`;
+            const key = fieldName.startsWith('"')
+                ? quoteCandidName(fieldName.slice(1, -1))
+                : fieldName;
+            return `${key} = ${value}`;
         });
         return `record {${fieldStrings.join('; ')}}`;
     }
@@ -79,18 +86,30 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         data: VisitorData
     ): string {
         for (const [name, type] of fields) {
-            if (Object.prototype.hasOwnProperty.call(data.value, name)) {
-                const value = type.accept(this, { value: data.value[name] });
+            const normalizedFieldName =
+                name.startsWith('"') && name.endsWith('"')
+                    ? name.slice(1, -1)
+                    : name;
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    data.value,
+                    normalizedFieldName
+                )
+            ) {
+                const value = type.accept(this, {
+                    value: data.value[normalizedFieldName]
+                });
+                const key = name.startsWith('"')
+                    ? quoteCandidName(name.slice(1, -1))
+                    : name;
                 if (value === 'null') {
-                    // TODO is this needed?
-                    return `variant {${quoteCandidName(name)}}`;
+                    return `variant {${key}}`;
                 } else {
-                    // TODO is this needed?
-                    return `variant {${quoteCandidName(name)}=${value}}`;
+                    return `variant {${key}=${value}}`;
                 }
             }
         }
-        throw new Error(`Variant has no data: ${data.value}`);
+        throw new Error(`Variant has no data: ${jsonStringify(data.value)}`);
     }
     visitVec<T>(
         _t: IDL.VecClass<T>,
