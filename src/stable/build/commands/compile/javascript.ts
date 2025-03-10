@@ -182,7 +182,7 @@ function handleBenchmarking(): string {
         if (globalThis._azleRecordBenchmarks === true) {
             const methodMeta = exportedCanisterClassInstance._azleMethodMeta;
 
-            globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
+            const canisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
                 if (value === undefined) {
                     return acc;
                 }
@@ -198,6 +198,15 @@ function handleBenchmarking(): string {
                     return { ...acc, [indexString]: value.name };
                 }
             }, {});
+
+            globalThis._azleDispatch({
+                type: 'SET_AZLE_CANISTER_METHOD_NAME',
+                payload: canisterMethodNames,
+                location: {
+                    filepath: 'azle/src/build/commands/compile/javascript.ts',
+                    functionName: 'handleBenchmarking'
+                }
+            });
         }
     `;
 }
