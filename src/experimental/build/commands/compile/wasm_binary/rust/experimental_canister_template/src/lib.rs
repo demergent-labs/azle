@@ -3,8 +3,8 @@ use std::cell::RefCell;
 #[allow(unused)]
 use guards::guard_against_non_controllers;
 use ic_stable_structures::{
-    memory_manager::{MemoryManager, VirtualMemory},
     DefaultMemoryImpl,
+    memory_manager::{MemoryManager, VirtualMemory},
 };
 
 mod autoreload;
@@ -43,10 +43,10 @@ pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
 }
 
 // TODO will this work for queries as well?
-#[ic_cdk_macros::update]
+#[ic_cdk::update]
 pub fn _azle_chunk() {}
 
-#[ic_cdk_macros::update(guard = guard_against_non_controllers)]
+#[ic_cdk::update(guard = guard_against_non_controllers)]
 fn _azle_reload_js(
     timestamp: u64,
     chunk_number: u64,
@@ -57,7 +57,7 @@ fn _azle_reload_js(
     autoreload::reload_js(timestamp, chunk_number, js_bytes, total_len, function_index);
 }
 
-#[ic_cdk_macros::update(guard = guard_against_non_controllers)]
+#[ic_cdk::update(guard = guard_against_non_controllers)]
 pub async fn _azle_upload_file_chunk(
     dest_path: String,
     timestamp: u64,
@@ -75,17 +75,17 @@ pub async fn _azle_upload_file_chunk(
     .await
 }
 
-#[ic_cdk_macros::update(guard = guard_against_non_controllers)]
+#[ic_cdk::update(guard = guard_against_non_controllers)]
 pub fn _azle_clear_file_and_info(path: String) {
     upload_file::reset_for_new_upload(&path, 0).unwrap()
 }
 
-#[ic_cdk_macros::query(guard = guard_against_non_controllers)]
+#[ic_cdk::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_file_hash(path: String) -> Option<String> {
     upload_file::get_file_hash(path)
 }
 
-#[ic_cdk_macros::query(guard = guard_against_non_controllers)]
+#[ic_cdk::query(guard = guard_against_non_controllers)]
 pub fn _azle_get_benchmarks() -> Vec<benchmarking::BenchmarkEntry> {
     benchmarking::BENCHMARKS_REF_CELL
         .with(|benchmarks_ref_cell| benchmarks_ref_cell.borrow().clone())
