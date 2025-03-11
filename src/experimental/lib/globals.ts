@@ -41,7 +41,10 @@ globalThis._azleIcpReplicaWasmEnvironment =
         ? false
         : true;
 
-if (globalThis._azleIcpReplicaWasmEnvironment === true) {
+if (
+    globalThis._azleIcpReplicaWasmEnvironment === true ||
+    globalThis._azleNodeWasmEnvironment === true
+) {
     // Even though these are set in #lib/globals
     // we must set them again here because importing the url module above
     // seemingly resets globalThis.TextDecoder and globalThis.TextEncoder
