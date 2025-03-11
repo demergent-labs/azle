@@ -54,9 +54,16 @@ export async function runPropTests(
                             i === 0
                                 ? canister.initArgs
                                 : canister.postUpgradeArgs;
+
+                        // Escape arguments for bash
+                        const escapedArgs =
+                            args !== undefined
+                                ? args.map((arg) => escapeSingleQuotes(arg))
+                                : [];
+
                         const argumentsString =
                             args !== undefined && args.length > 0
-                                ? `--argument '(${args.join(', ')})'`
+                                ? `--argument '(${escapedArgs.join(', ')})'`
                                 : '';
 
                         execSync(
@@ -118,3 +125,15 @@ export const shortArrayConstraints = {
     minLength: 5,
     maxLength: 20
 };
+
+/**
+ * Escapes a string for safe use in bash command line arguments enclosed in single quotes.
+ * This properly handles special characters in the arguments.
+ * @param input The input string to escape
+ * @returns The escaped string
+ */
+function escapeSingleQuotes(input: string): string {
+    // The bash way to escape a single quote inside a single-quoted string
+    // is to close the single quote, insert an escaped single quote, and then reopen the single quote
+    return input.replace(/'/g, "'\\''");
+}
