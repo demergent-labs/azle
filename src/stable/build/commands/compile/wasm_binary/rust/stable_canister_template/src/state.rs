@@ -49,11 +49,7 @@ pub fn dispatch_action<'a>(
 
     action.set("location", location)?;
 
-    quickjs_call_with_error_handling(
-        ctx.clone(),
-        ctx.globals().get("_azleDispatch").unwrap(),
-        (action,),
-    )?;
+    quickjs_call_with_error_handling(ctx.clone(), ctx.globals().get("_azleDispatch")?, (action,))?;
 
     Ok(())
 }
