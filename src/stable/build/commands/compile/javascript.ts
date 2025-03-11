@@ -101,7 +101,7 @@ export function handleClassApiCanister(main: string): string {
                 }
             }
 
-            return globalThis._azleWebAssembly;
+            return globalThis._azleExportedCanisterClassInstance;
         }
     `;
 }
