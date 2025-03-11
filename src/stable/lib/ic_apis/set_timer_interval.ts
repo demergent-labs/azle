@@ -42,7 +42,20 @@ export function setTimerInterval(
 
     validateUnsignedInteger('setTimer interval', 53, interval);
 
-    const timerId = getTimerId(interval);
+    const timerId =
+        globalThis._azleIcExperimental !== undefined
+            ? BigInt(
+                  globalThis._azleIcExperimental.setTimerInterval(
+                      interval.toString()
+                  )
+              )
+            : globalThis._azleIcStable !== undefined
+              ? globalThis._azleIcStable.setTimerInterval(interval)
+              : ((): never => {
+                    throw new Error(
+                        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                    );
+                })();
 
     // We don't call deleteGlobalTimerCallbacks here because the callback
     // still needs to exist for the next interval callback execution
@@ -61,20 +74,4 @@ export function setTimerInterval(
     });
 
     return timerId;
-}
-
-function getTimerId(interval: number): bigint {
-    if (globalThis._azleIcExperimental !== undefined) {
-        return BigInt(
-            globalThis._azleIcExperimental.setTimerInterval(interval.toString())
-        );
-    }
-
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.setTimerInterval(interval);
-    }
-
-    throw new Error(
-        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
-    );
 }

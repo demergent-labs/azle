@@ -42,7 +42,16 @@ export function setTimer(
 
     validateUnsignedInteger('setTimer delay', 53, delay);
 
-    const timerId = getTimerId(delay);
+    const timerId =
+        globalThis._azleIcExperimental !== undefined
+            ? BigInt(globalThis._azleIcExperimental.setTimer(delay.toString()))
+            : globalThis._azleIcStable !== undefined
+              ? globalThis._azleIcStable.setTimer(delay)
+              : ((): never => {
+                    throw new Error(
+                        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                    );
+                })();
 
     globalThis._azleDispatch({
         type: 'SET_AZLE_TIMER_CALLBACK',
@@ -67,22 +76,6 @@ export function setTimer(
     });
 
     return timerId;
-}
-
-function getTimerId(delay: number): bigint {
-    if (globalThis._azleIcExperimental !== undefined) {
-        return BigInt(
-            globalThis._azleIcExperimental.setTimer(delay.toString())
-        );
-    }
-
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.setTimer(delay);
-    }
-
-    throw new Error(
-        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
-    );
 }
 
 export function deleteGlobalTimerCallbacks(timerId: bigint): void {
