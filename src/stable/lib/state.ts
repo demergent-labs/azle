@@ -1,15 +1,13 @@
-// TODO should we completely abstract away globalThis and just use an imported state object and dispatches?
-
 export type Action =
-    | SET_AZLE_CANISTER_METHOD_NAME
+    | DELETE_AZLE_REJECT_CALLBACK
+    | DELETE_AZLE_RESOLVE_CALLBACK
+    | DELETE_AZLE_TIMER_CALLBACK
+    | SET_AZLE_CANISTER_METHOD_NAMES
     | SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE
     | SET_AZLE_ICP_REPLICA_WASM_ENVIRONMENT
     | SET_AZLE_REJECT_CALLBACK
     | SET_AZLE_RESOLVE_CALLBACK
-    | DELETE_AZLE_RESOLVE_CALLBACK
-    | DELETE_AZLE_REJECT_CALLBACK
-    | SET_AZLE_TIMER_CALLBACK
-    | DELETE_AZLE_TIMER_CALLBACK;
+    | SET_AZLE_TIMER_CALLBACK;
 
 interface ActionShape {
     type: string;
@@ -20,8 +18,35 @@ interface ActionShape {
     };
 }
 
-interface SET_AZLE_CANISTER_METHOD_NAME extends ActionShape {
-    type: 'SET_AZLE_CANISTER_METHOD_NAME';
+interface DELETE_AZLE_REJECT_CALLBACK extends ActionShape {
+    type: 'DELETE_AZLE_REJECT_CALLBACK';
+    payload: string;
+    location: {
+        filepath: string;
+        functionName: string;
+    };
+}
+
+interface DELETE_AZLE_RESOLVE_CALLBACK extends ActionShape {
+    type: 'DELETE_AZLE_RESOLVE_CALLBACK';
+    payload: string;
+    location: {
+        filepath: string;
+        functionName: string;
+    };
+}
+
+interface DELETE_AZLE_TIMER_CALLBACK extends ActionShape {
+    type: 'DELETE_AZLE_TIMER_CALLBACK';
+    payload: bigint;
+    location: {
+        filepath: string;
+        functionName: string;
+    };
+}
+
+interface SET_AZLE_CANISTER_METHOD_NAMES extends ActionShape {
+    type: 'SET_AZLE_CANISTER_METHOD_NAMES';
     payload: typeof globalThis._azleCanisterMethodNames;
     location: {
         filepath: string;
@@ -59,30 +84,12 @@ interface SET_AZLE_REJECT_CALLBACK extends ActionShape {
     };
 }
 
-interface DELETE_AZLE_REJECT_CALLBACK extends ActionShape {
-    type: 'DELETE_AZLE_REJECT_CALLBACK';
-    payload: string;
-    location: {
-        filepath: string;
-        functionName: string;
-    };
-}
-
 interface SET_AZLE_RESOLVE_CALLBACK extends ActionShape {
     type: 'SET_AZLE_RESOLVE_CALLBACK';
     payload: {
         globalResolveId: string;
         resolveCallback: (typeof globalThis._azleResolveCallbacks)[string];
     };
-    location: {
-        filepath: string;
-        functionName: string;
-    };
-}
-
-interface DELETE_AZLE_RESOLVE_CALLBACK extends ActionShape {
-    type: 'DELETE_AZLE_RESOLVE_CALLBACK';
-    payload: string;
     location: {
         filepath: string;
         functionName: string;
@@ -101,21 +108,12 @@ interface SET_AZLE_TIMER_CALLBACK extends ActionShape {
     };
 }
 
-interface DELETE_AZLE_TIMER_CALLBACK extends ActionShape {
-    type: 'DELETE_AZLE_TIMER_CALLBACK';
-    payload: bigint;
-    location: {
-        filepath: string;
-        functionName: string;
-    };
-}
-
 globalThis._azleDispatch = (action: Action): void => {
     if (globalThis._azleLogActions === true) {
         console.log('dispatch', action);
     }
 
-    if (action.type === 'SET_AZLE_CANISTER_METHOD_NAME') {
+    if (action.type === 'SET_AZLE_CANISTER_METHOD_NAMES') {
         globalThis._azleCanisterMethodNames = action.payload;
         return;
     }

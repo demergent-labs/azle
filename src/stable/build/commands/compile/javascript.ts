@@ -200,7 +200,7 @@ function handleBenchmarking(): string {
             }, {});
 
             globalThis._azleDispatch({
-                type: 'SET_AZLE_CANISTER_METHOD_NAME',
+                type: 'SET_AZLE_CANISTER_METHOD_NAMES',
                 payload: canisterMethodNames,
                 location: {
                     filepath: 'azle/src/stable/build/commands/compile/javascript.ts',
