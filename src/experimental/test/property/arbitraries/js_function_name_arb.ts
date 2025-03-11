@@ -80,6 +80,7 @@ const azleKeywords = [
 ];
 
 const jsKeywords = [
+    '__proto__',
     'any',
     'await',
     'break',
@@ -147,6 +148,9 @@ const jsKeywords = [
 // This breaks rust but it doesn't seem to be a rust keyword
 const otherKeywords = ['drop'];
 
+// These words still don't work even if quoted
+const cantBeQuoted = ['__proto__'];
+
 const unquotedFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)
     .filter((sample) => !rustKeywords.includes(sample))
@@ -156,6 +160,7 @@ const unquotedFunctionNameArb = fc
 
 const quotedFunctionNameArb = fc
     .stringMatching(/^"[^"\\]+(?:\\.[^"\\]*)*"$/)
+    .filter((sample) => !cantBeQuoted.includes(sample.slice(1, -1)))
     .map((s: string): string => {
         // Remove the leading and trailing quotes
         const inner = s.slice(1, -1);
