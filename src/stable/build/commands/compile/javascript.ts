@@ -101,7 +101,7 @@ export function handleClassApiCanister(main: string): string {
                 }
             }
 
-            return globalThis._azleExportedCanisterClassInstance;
+            return globalThis._azleWebAssembly;
         }
     `;
 }
@@ -203,7 +203,7 @@ function handleBenchmarking(): string {
                 type: 'SET_AZLE_CANISTER_METHOD_NAME',
                 payload: canisterMethodNames,
                 location: {
-                    filepath: 'azle/src/build/commands/compile/javascript.ts',
+                    filepath: 'azle/src/stable/build/commands/compile/javascript.ts',
                     functionName: 'handleBenchmarking'
                 }
             });
