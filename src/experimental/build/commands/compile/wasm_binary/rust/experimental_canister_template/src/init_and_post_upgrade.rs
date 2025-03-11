@@ -112,6 +112,11 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
             .get_global()
             .set("_azleCanisterMethodNames", context.new_object().into());
 
+        context.get_global().set(
+            "_azleIcpReplicaWasmEnvironment",
+            wasmedge_quickjs::JsValue::Bool(true),
+        );
+
         context
             .get_global()
             .set("_azleTimerCallbacks", context.new_object().into());

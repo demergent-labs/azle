@@ -3,7 +3,7 @@ use std::{env, error::Error, str};
 use ic_cdk::trap;
 use ic_stable_structures::memory_manager::MemoryId;
 use ic_wasi_polyfill::init_with_memory;
-use rquickjs::{Context, Module, Object, Runtime};
+use rquickjs::{Context, Module, Object, Runtime, Undefined};
 
 use crate::{
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
@@ -77,55 +77,32 @@ pub fn initialize_js(
     quickjs_with_ctx(|ctx| -> Result<(), Box<dyn Error>> {
         let globals = ctx.globals();
 
-        let env = Object::new(ctx.clone())?;
-
-        for (key, value) in env::vars() {
-            env.set(key, value)?;
-        }
-
-        let process = Object::new(ctx.clone())?;
-
-        process.set("env", env)?;
-
-        globals.set("process", process)?;
-
-        globals.set("_azleNodeWasmEnvironment", false)?;
-
-        globals.set("exports", Object::new(ctx.clone())?)?;
+        globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
 
         globals.set("_azleExperimental", false)?;
 
-        globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
+        globals.set("_azleExportedCanisterClassInstance", Undefined)?;
 
-        // let action = Object::new(ctx.clone())?;
+        globals.set("_azleIcExperimental", Undefined)?;
 
-        // action.set("type", "SET_AZLE_CANISTER_METHOD_NAME")?;
-        // action.set("payload", Object::new(ctx.clone())?)?;
+        globals.set("_azleIcpReplicaWasmEnvironment", true)?;
 
-        // let location = Object::new(ctx.clone())?;
-
-        // location.set("filepath", "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/init_and_post_upgrade.rs")?;
-        // location.set("functionName", "initialize_js")?;
-
-        // action.set("location", location)?;
-
-        // quickjs_call_with_error_handling(
-        //     ctx.clone(),
-        //     ctx.globals().get("_azleDispatch").unwrap(),
-        //     (action,),
-        // )?;
-
-        globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
-
-        globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
-
-        globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;
+        // initializes globalThis._azleIcStable
+        register(ctx.clone())?;
 
         if init {
             globals.set("_azleInitCalled", true)?;
-            globals.set("_azlePostUpgradeCalled", false)?;
         } else {
             globals.set("_azleInitCalled", false)?;
+        }
+
+        globals.set("_azleLogActions", false)?;
+
+        globals.set("_azleNodeWasmEnvironment", false)?;
+
+        if init {
+            globals.set("_azlePostUpgradeCalled", false)?;
+        } else {
             globals.set("_azlePostUpgradeCalled", true)?;
         }
 
@@ -137,7 +114,25 @@ pub fn initialize_js(
 
         globals.set("_azleRecordBenchmarks", record_benchmarks)?;
 
-        register(ctx.clone())?;
+        globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
+
+        globals.set("exports", Object::new(ctx.clone())?)?;
+
+        let env = Object::new(ctx.clone())?;
+
+        for (key, value) in env::vars() {
+            env.set(key, value)?;
+        }
+
+        let process = Object::new(ctx.clone())?;
+
+        process.set("env", env)?;
+
+        globals.set("process", process)?;
 
         let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
 

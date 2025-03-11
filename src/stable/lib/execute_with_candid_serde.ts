@@ -120,9 +120,20 @@ async function getUnencodedResult(
         );
 
         if (result === true) {
+            if (
+                globalThis._azleIcStable === undefined &&
+                globalThis._azleIcExperimental === undefined
+            ) {
+                throw new Error(
+                    'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                );
+            }
+
             if (globalThis._azleIcStable !== undefined) {
                 globalThis._azleIcStable.acceptMessage();
-            } else {
+            }
+
+            if (globalThis._azleIcExperimental !== undefined) {
                 globalThis._azleIcExperimental.acceptMessage();
             }
         }

@@ -18,15 +18,15 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleExperimental: boolean;
     // eslint-disable-next-line no-var
-    var _azleExportedCanisterClassInstance: ExportedCanisterClass;
+    var _azleExportedCanisterClassInstance: ExportedCanisterClass | undefined;
     // eslint-disable-next-line no-var
-    var _azleIcExperimental: AzleIcExperimental;
+    var _azleIcExperimental: AzleIcExperimental | undefined;
     // eslint-disable-next-line no-var
-    var _azleIcStable: AzleIcStable;
+    var _azleIcpReplicaWasmEnvironment: boolean;
+    // eslint-disable-next-line no-var
+    var _azleIcStable: AzleIcStable | undefined;
     // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
-    // eslint-disable-next-line no-var
-    var _azleInsideCanister: boolean;
     // eslint-disable-next-line no-var
     var _azleLogActions: boolean;
     // eslint-disable-next-line no-var
@@ -36,25 +36,22 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleRecordBenchmarks: boolean;
     // eslint-disable-next-line no-var
-    var _azleRejectCallbacks: { [key: string]: (err: any) => void };
+    var _azleRejectCallbacks: { [globalRejectId: string]: (err: any) => void };
     // eslint-disable-next-line no-var
     var _azleResolveCallbacks: {
-        [key: string]: (buf: Uint8Array | ArrayBuffer) => void;
+        [globalResolveId: string]: (buf: Uint8Array | ArrayBuffer) => void;
     };
     // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [timerId: string]: () => void };
 }
 
-globalThis._azleInsideCanister =
-    globalThis._azleIcStable === undefined &&
-    globalThis._azleIcExperimental === undefined
-        ? false
-        : true;
-
 // TODO do we need to disable setTimeout, setInterval, etc?
 // TODO do we need to disable any other wasmedge-quickjs globals
 // TODO that we don't think are stable yet?
-if (globalThis._azleInsideCanister === true) {
+if (
+    globalThis._azleIcpReplicaWasmEnvironment === true ||
+    globalThis._azleNodeWasmEnvironment === true
+) {
     globalThis.TextDecoder = TextDecoder;
     globalThis.TextEncoder = TextEncoder;
 

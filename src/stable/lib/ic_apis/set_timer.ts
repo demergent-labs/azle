@@ -42,26 +42,56 @@ export function setTimer(
 
     validateUnsignedInteger('setTimer delay', 53, delay);
 
-    const timerId =
-        globalThis._azleIcExperimental !== undefined
-            ? BigInt(globalThis._azleIcExperimental.setTimer(delay.toString()))
-            : globalThis._azleIcStable.setTimer(delay);
+    const timerId = getTimerId(delay);
 
-    globalThis._azleTimerCallbacks[timerId.toString()] = (): void => {
-        // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
-        // We immediately create another timer with a delay of 0 seconds
-        // to ensure that globalThis._azleTimerCallbacks is deleted even if the
-        // timer callback traps
-        setTimer(0, () => {
-            deleteGlobalTimerCallbacks(timerId);
-        });
+    globalThis._azleDispatch({
+        type: 'SET_AZLE_TIMER_CALLBACK',
+        payload: {
+            timerId,
+            timerCallback: (): void => {
+                // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
+                // We immediately create another timer with a delay of 0 seconds
+                // to ensure that globalThis._azleTimerCallbacks is deleted even if the
+                // timer callback traps
+                setTimer(0, () => {
+                    deleteGlobalTimerCallbacks(timerId);
+                });
 
-        callback();
-    };
+                callback();
+            }
+        },
+        location: {
+            filepath: 'azle/src/stable/lib/ic_apis/set_timer.ts',
+            functionName: 'setTimer'
+        }
+    });
 
     return timerId;
 }
 
+function getTimerId(delay: number): bigint {
+    if (globalThis._azleIcExperimental !== undefined) {
+        return BigInt(
+            globalThis._azleIcExperimental.setTimer(delay.toString())
+        );
+    }
+
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.setTimer(delay);
+    }
+
+    throw new Error(
+        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+    );
+}
+
 export function deleteGlobalTimerCallbacks(timerId: bigint): void {
-    delete globalThis._azleTimerCallbacks[timerId.toString()];
+    globalThis._azleDispatch({
+        type: 'DELETE_AZLE_TIMER_CALLBACK',
+        payload: timerId,
+        location: {
+            filepath: 'azle/src/stable/lib/ic_apis/set_timer.ts',
+            functionName: 'deleteGlobalTimerCallbacks'
+        }
+    });
 }

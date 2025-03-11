@@ -30,7 +30,9 @@ export function clearTimer(timerId: bigint): void {
 
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.clearTimer(timerId.toString());
-    } else {
+    }
+
+    if (globalThis._azleIcStable !== undefined) {
         globalThis._azleIcStable.clearTimer(timerId.toString());
     }
 

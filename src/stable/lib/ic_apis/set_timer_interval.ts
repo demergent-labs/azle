@@ -42,20 +42,39 @@ export function setTimerInterval(
 
     validateUnsignedInteger('setTimer interval', 53, interval);
 
-    const timerId =
-        globalThis._azleIcExperimental !== undefined
-            ? BigInt(
-                  globalThis._azleIcExperimental.setTimerInterval(
-                      interval.toString()
-                  )
-              )
-            : globalThis._azleIcStable.setTimerInterval(interval);
+    const timerId = getTimerId(interval);
 
     // We don't call deleteGlobalTimerCallbacks here because the callback
     // still needs to exist for the next interval callback execution
     // Deletion of globalThis._azleTimerCallbacks in the context of setTimerInterval
     // only occurs through calling clearTimer or manual manipulation of globalThis._azleTimerCallbacks
-    globalThis._azleTimerCallbacks[timerId.toString()] = callback;
+    globalThis._azleDispatch({
+        type: 'SET_AZLE_TIMER_CALLBACK',
+        payload: {
+            timerId,
+            timerCallback: callback
+        },
+        location: {
+            filepath: 'azle/src/stable/lib/ic_apis/set_timer_interval.ts',
+            functionName: 'setTimerInterval'
+        }
+    });
 
     return timerId;
+}
+
+function getTimerId(interval: number): bigint {
+    if (globalThis._azleIcExperimental !== undefined) {
+        return BigInt(
+            globalThis._azleIcExperimental.setTimerInterval(interval.toString())
+        );
+    }
+
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.setTimerInterval(interval);
+    }
+
+    throw new Error(
+        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+    );
 }

@@ -2,14 +2,14 @@ use std::error::Error;
 
 use candid::Principal;
 use ic_cdk::{
-    api::call::{call_raw128, RejectionCode},
+    api::call::{RejectionCode, call_raw128},
     spawn, trap,
 };
 use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
 };
 
-use crate::{error::quickjs_call_with_error_handling, ic::throw_error};
+use crate::{error::quickjs_call_with_error_handling, ic::throw_error, state::dispatch_action};
 
 pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
     // We use a raw pointer here to deal with already borrowed issues
@@ -89,13 +89,21 @@ fn cleanup(
     global_resolve_id: &str,
     global_reject_id: &str,
 ) -> Result<(), Box<dyn Error>> {
-    let globals = ctx.clone().globals();
+    dispatch_action(
+        ctx.clone(),
+        "DELETE_AZLE_RESOLVE_CALLBACK",
+        global_resolve_id.into_js(&ctx)?,
+        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
+        "cleanup",
+    )?;
 
-    let resolve_callbacks = globals.get::<_, Object>("_azleResolveCallbacks")?;
-    let reject_callbacks = globals.get::<_, Object>("_azleRejectCallbacks")?;
-
-    resolve_callbacks.remove(global_resolve_id)?;
-    reject_callbacks.remove(global_reject_id)?;
+    dispatch_action(
+        ctx.clone(),
+        "DELETE_AZLE_REJECT_CALLBACK",
+        global_reject_id.into_js(&ctx)?,
+        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
+        "cleanup",
+    )?;
 
     Ok(())
 }

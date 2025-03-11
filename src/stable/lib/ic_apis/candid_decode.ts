@@ -10,13 +10,6 @@
  *   - any
  */
 export function candidDecode(candidBytes: Uint8Array): string {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return '';
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.candidDecode(
             candidBytes.buffer instanceof ArrayBuffer
@@ -25,5 +18,9 @@ export function candidDecode(candidBytes: Uint8Array): string {
         );
     }
 
-    return globalThis._azleIcStable.candidDecode(candidBytes);
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.candidDecode(candidBytes);
+    }
+
+    return '';
 }

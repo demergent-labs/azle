@@ -20,18 +20,15 @@
  *   - after an unsuccessful inter-canister await from a composite query
  */
 export function msgReply(data: Uint8Array): void {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return undefined;
+    if (globalThis._azleIcExperimental !== undefined) {
+        globalThis._azleIcExperimental.msgReply(
+            data.buffer instanceof ArrayBuffer
+                ? data.buffer
+                : new Uint8Array(data).buffer
+        );
     }
 
-    return globalThis._azleIcExperimental !== undefined
-        ? globalThis._azleIcExperimental.msgReply(
-              data.buffer instanceof ArrayBuffer
-                  ? data.buffer
-                  : new Uint8Array(data).buffer
-          )
-        : globalThis._azleIcStable.msgReply(data);
+    if (globalThis._azleIcStable !== undefined) {
+        globalThis._azleIcStable.msgReply(data);
+    }
 }

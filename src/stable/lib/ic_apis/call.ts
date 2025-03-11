@@ -88,6 +88,13 @@ export async function call<
     method: string,
     options?: CallOptions<Args>
 ): Promise<Return> {
+    if (
+        globalThis._azleIcExperimental === undefined &&
+        globalThis._azleIcStable === undefined
+    ) {
+        return undefined as Return;
+    }
+
     if (typeof options?.timeout === 'number') {
         throw new Error('timeout is not yet implemented');
     }
@@ -170,6 +177,15 @@ function handleOneWay<Return>(
     argsRaw: Uint8Array,
     cyclesString: string
 ): Promise<Return> {
+    if (
+        globalThis._azleIcExperimental === undefined &&
+        globalThis._azleIcStable === undefined
+    ) {
+        throw new Error(
+            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+        );
+    }
+
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.notifyRaw(
             canisterIdBytes.buffer instanceof ArrayBuffer
@@ -181,7 +197,9 @@ function handleOneWay<Return>(
                 : new Uint8Array(argsRaw).buffer,
             cyclesString
         );
-    } else {
+    }
+
+    if (globalThis._azleIcStable !== undefined) {
         globalThis._azleIcStable.notifyRaw(
             canisterIdBytes,
             method,
@@ -214,6 +232,15 @@ function handleTwoWay<Return>(
         );
         createRejectCallback(globalRejectId, reject);
 
+        if (
+            globalThis._azleIcExperimental === undefined &&
+            globalThis._azleIcStable === undefined
+        ) {
+            throw new Error(
+                'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+            );
+        }
+
         if (globalThis._azleIcExperimental !== undefined) {
             globalThis._azleIcExperimental.callRaw(
                 globalResolveId,
@@ -227,7 +254,9 @@ function handleTwoWay<Return>(
                     : new Uint8Array(argsRaw).buffer,
                 cyclesString
             );
-        } else {
+        }
+
+        if (globalThis._azleIcStable !== undefined) {
             globalThis._azleIcStable.callRaw(
                 globalResolveId,
                 globalRejectId,
@@ -246,35 +275,51 @@ function createResolveCallback<Return>(
     raw: boolean,
     returnIdlType?: IDL.Type
 ): void {
-    globalThis._azleResolveCallbacks[globalResolveId] = (
-        result: Uint8Array | ArrayBuffer
-    ): void => {
-        if (raw === true) {
-            resolve(
-                (result instanceof Uint8Array
-                    ? result
-                    : new Uint8Array(result)) as Return
-            );
-        } else {
-            resolve(
-                idlDecode(
-                    returnIdlType === undefined ? [] : [returnIdlType],
-                    result instanceof Uint8Array
-                        ? result
-                        : new Uint8Array(result)
-                )[0] as Return
-            );
+    globalThis._azleDispatch({
+        type: 'SET_AZLE_RESOLVE_CALLBACK',
+        payload: {
+            globalResolveId,
+            resolveCallback: (result: Uint8Array | ArrayBuffer): void => {
+                if (raw === true) {
+                    resolve(
+                        (result instanceof Uint8Array
+                            ? result
+                            : new Uint8Array(result)) as Return
+                    );
+                } else {
+                    resolve(
+                        idlDecode(
+                            returnIdlType === undefined ? [] : [returnIdlType],
+                            result instanceof Uint8Array
+                                ? result
+                                : new Uint8Array(result)
+                        )[0] as Return
+                    );
+                }
+            }
+        },
+        location: {
+            filepath: 'azle/src/stable/lib/ic_apis/call.ts',
+            functionName: 'createResolveCallback'
         }
-    };
+    });
 }
 
 function createRejectCallback(
     globalRejectId: string,
     reject: (reason?: any) => void
 ): void {
-    globalThis._azleRejectCallbacks[globalRejectId] = (
-        error: unknown
-    ): void => {
-        reject(error);
-    };
+    globalThis._azleDispatch({
+        type: 'SET_AZLE_REJECT_CALLBACK',
+        payload: {
+            globalRejectId,
+            rejectCallback: (error: unknown): void => {
+                reject(error);
+            }
+        },
+        location: {
+            filepath: 'azle/src/stable/lib/ic_apis/call.ts',
+            functionName: 'createRejectCallback'
+        }
+    });
 }

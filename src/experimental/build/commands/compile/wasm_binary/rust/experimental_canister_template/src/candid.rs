@@ -37,6 +37,11 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
                 .get_global()
                 .set("_azleCanisterMethodNames", context.new_object().into());
 
+            context.get_global().set(
+                "_azleIcpReplicaWasmEnvironment",
+                wasmedge_quickjs::JsValue::Bool(false),
+            );
+
             context
                 .get_global()
                 .set("_azleTimerCallbacks", context.new_object().into());

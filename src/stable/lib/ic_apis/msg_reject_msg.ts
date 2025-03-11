@@ -12,16 +12,13 @@
  *   - after an unsuccessful inter-canister await from a composite query
  */
 export function msgRejectMsg(): string {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return '';
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.msgRejectMsg();
     }
 
-    return globalThis._azleIcStable.msgRejectMsg();
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.msgRejectMsg();
+    }
+
+    return '';
 }

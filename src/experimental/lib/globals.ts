@@ -35,13 +35,13 @@ declare global {
     var _azleWebAssembly: any;
 }
 
-globalThis._azleInsideCanister =
+globalThis._azleIcpReplicaWasmEnvironment =
     globalThis._azleIcExperimental === undefined &&
     globalThis._azleIcStable === undefined
         ? false
         : true;
 
-if (globalThis._azleInsideCanister === true) {
+if (globalThis._azleIcpReplicaWasmEnvironment === true) {
     // Even though these are set in #lib/globals
     // we must set them again here because importing the url module above
     // seemingly resets globalThis.TextDecoder and globalThis.TextEncoder
