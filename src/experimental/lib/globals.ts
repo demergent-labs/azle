@@ -35,12 +35,6 @@ declare global {
     var _azleWebAssembly: any;
 }
 
-globalThis._azleIcpReplicaWasmEnvironment =
-    globalThis._azleIcExperimental === undefined &&
-    globalThis._azleIcStable === undefined
-        ? false
-        : true;
-
 if (
     globalThis._azleIcpReplicaWasmEnvironment === true ||
     globalThis._azleNodeWasmEnvironment === true
