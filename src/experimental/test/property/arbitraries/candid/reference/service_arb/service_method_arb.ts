@@ -64,7 +64,7 @@ export function ServiceMethodArb(
                     returnType.candidMeta.variableAliasDeclarations
                 );
 
-                const src = `${name}: ${mode}([${paramTypeObjects}], ${returnType.candidMeta.typeObject})`;
+                const src = `${name.startsWith('"') ? `"${name.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"` : name}: ${mode}([${paramTypeObjects}], ${returnType.candidMeta.typeObject})`;
                 const idl = `${name.startsWith('"') ? `"${name.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"` : name}: IDL.Func([${paramTypeObjects}], [${
                     returnType.candidMeta.typeObject
                 }], ${mode === 'query' ? '["query"]' : 'undefined'})`;
