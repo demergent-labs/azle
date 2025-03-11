@@ -171,8 +171,11 @@ const quotedFunctionNameArb = fc
             return inner;
         }
 
+        // Properly escape any backslashes and quotes in the inner content
+        const escapedInner = inner.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
         // Reassemble the string with its leading and trailing quotes intact
-        return `"${inner}"`;
+        return `"${escapedInner}"`;
     });
 
 export const JsIdentifierNameArb = fc.oneof(unquotedFunctionNameArb);
