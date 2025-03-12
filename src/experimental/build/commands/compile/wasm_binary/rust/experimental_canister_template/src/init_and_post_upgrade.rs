@@ -147,10 +147,6 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
         context.eval_global_str(format!("globalThis._azleExperimental = true;"));
-        context.eval_global_str(format!(
-            "globalThis._azleRecordBenchmarks = {};",
-            wasm_data.record_benchmarks
-        ));
 
         context.eval_module_str(js.to_string(), &wasm_data.main_js_path);
 

@@ -70,5 +70,4 @@ export type MethodMeta = {
 export type WasmData = {
     envVars: EnvVars;
     mainJsPath: string;
-    recordBenchmarks: boolean;
 };

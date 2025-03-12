@@ -1,5 +1,8 @@
-use crate::{RUNTIME, WASM_DATA_REF_CELL, benchmarking::record_benchmark, run_event_loop};
+use std::env::var;
+
 use wasmedge_quickjs::{AsObject, JsValue};
+
+use crate::{RUNTIME, benchmarking::record_benchmark, run_event_loop};
 
 #[unsafe(no_mangle)]
 #[allow(unused)]
@@ -36,15 +39,11 @@ pub extern "C" fn execute_method_js(function_index: i32) {
                 _ => run_event_loop(context),
             };
 
-            if WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
-                wasm_data_ref_cell
-                    .borrow()
-                    .as_ref()
-                    .unwrap()
-                    .record_benchmarks
-            }) {
-                let instructions = ic_cdk::api::performance_counter(1);
-                record_benchmark(context, &function_name, instructions);
+            if let Ok(azle_record_benchmarks) = var("AZLE_RECORD_BENCHMARKS") {
+                if azle_record_benchmarks == "true" {
+                    let instructions = ic_cdk::api::performance_counter(1);
+                    record_benchmark(context, &function_name, instructions);
+                }
             }
         });
     });

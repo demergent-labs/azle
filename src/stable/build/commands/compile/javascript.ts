@@ -179,7 +179,7 @@ function experimentalMessage(importName: string): string {
 
 function handleBenchmarking(): string {
     return /*TS*/ `
-        if (globalThis._azleRecordBenchmarks === true) {
+        if (globalThis.process !== undefined && globalThis.process.env.AZLE_RECORD_BENCHMARKS === 'true') {
             const methodMeta = exportedCanisterClassInstance._azleMethodMeta;
 
             const canisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {

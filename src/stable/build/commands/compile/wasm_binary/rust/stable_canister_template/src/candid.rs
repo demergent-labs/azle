@@ -55,8 +55,6 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
 
         globals.set("_azlePostUpgradeCalled", false)?;
 
-        globals.set("_azleRecordBenchmarks", false)?;
-
         globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
 
         globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;

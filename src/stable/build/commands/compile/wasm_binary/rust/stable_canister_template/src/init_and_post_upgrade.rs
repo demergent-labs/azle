@@ -1,4 +1,4 @@
-use std::{env, error::Error, str};
+use std::{env::vars, error::Error, str};
 
 use ic_cdk::trap;
 use ic_stable_structures::memory_manager::MemoryId;
@@ -106,14 +106,6 @@ pub fn initialize_js(
             globals.set("_azlePostUpgradeCalled", true)?;
         }
 
-        let record_benchmarks = WASM_DATA_REF_CELL
-            .with(|wasm_data_ref_cell| wasm_data_ref_cell.borrow().clone())
-            .as_ref()
-            .ok_or("could not convert wasm_data_ref_cell to ref")?
-            .record_benchmarks;
-
-        globals.set("_azleRecordBenchmarks", record_benchmarks)?;
-
         globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
 
         globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;
@@ -124,7 +116,7 @@ pub fn initialize_js(
 
         let env = Object::new(ctx.clone())?;
 
-        for (key, value) in env::vars() {
+        for (key, value) in vars() {
             env.set(key, value)?;
         }
 

@@ -27,8 +27,7 @@ export function getContext(
     const envVars = getEnvVars(canisterConfig);
     const wasmData: WasmData = {
         envVars,
-        mainJsPath: join(canisterPath, `main.js`),
-        recordBenchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
+        mainJsPath: join(canisterPath, `main.js`)
     };
 
     return {

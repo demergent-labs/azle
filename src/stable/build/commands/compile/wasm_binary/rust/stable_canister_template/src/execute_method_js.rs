@@ -1,11 +1,10 @@
-use std::error::Error;
+use std::{env::var, error::Error};
 
 use ic_cdk::{api::performance_counter, trap};
 use rquickjs::{Function, Object};
 
 use crate::{
-    WASM_DATA_REF_CELL, benchmarking::record_benchmark, error::quickjs_call_with_error_handling,
-    quickjs_with_ctx,
+    benchmarking::record_benchmark, error::quickjs_call_with_error_handling, quickjs_with_ctx,
 };
 
 #[unsafe(no_mangle)]
@@ -47,15 +46,11 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
         Ok(())
     })?;
 
-    let record_benchmarks = WASM_DATA_REF_CELL
-        .with(|wasm_data_ref_cell| wasm_data_ref_cell.borrow().clone())
-        .as_ref()
-        .ok_or("Could not convert wasm_data_ref_cell to ref")?
-        .record_benchmarks;
-
-    if record_benchmarks {
-        let instructions = performance_counter(1);
-        record_benchmark(&function_name, instructions)?;
+    if let Ok(azle_record_benchmarks) = var("AZLE_RECORD_BENCHMARKS") {
+        if azle_record_benchmarks == "true" {
+            let instructions = performance_counter(1);
+            record_benchmark(&function_name, instructions)?;
+        }
     }
 
     Ok(())
