@@ -2,9 +2,11 @@ use std::error::Error;
 
 use rquickjs::{Array, Object, Value};
 
-use crate::benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry};
-use crate::guards::guard_against_non_controllers;
-use crate::quickjs_with_ctx::quickjs_with_ctx;
+use crate::{
+    benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry},
+    guards::guard_against_non_controllers,
+    quickjs_with_ctx::quickjs_with_ctx,
+};
 
 #[ic_cdk::update]
 fn _azle_chunk() {}
