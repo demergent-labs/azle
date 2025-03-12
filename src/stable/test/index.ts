@@ -54,24 +54,15 @@ export function runTests(
         });
     }
 
-    // TODO is there a better way to get the canister name?
-    // TODO get it from the dfx.json...but we should only do it for azle canisters right?
     if (shouldCheckGlobalState === true) {
         describe(`global state checks`, () => {
             it('checks that the _azle global state variables are empty, and optionally that actions are not growing', async () => {
                 const canisterNames = await getCanisterNames();
 
                 for (const canisterName of canisterNames) {
-                    console.log('canisterName', canisterName);
-
                     const azleRejectCallbacksLen = execSync(
                         `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`
                     ).toString();
-
-                    console.log(
-                        'azleRejectCallbacksLen',
-                        azleRejectCallbacksLen
-                    );
 
                     expect(Number(azleRejectCallbacksLen)).toEqual(0);
 
@@ -79,18 +70,11 @@ export function runTests(
                         `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`
                     ).toString();
 
-                    console.log(
-                        'azleResolveCallbacksLen',
-                        azleResolveCallbacksLen
-                    );
-
                     expect(Number(azleResolveCallbacksLen)).toEqual(0);
 
                     const azleTimerCallbacksLen = execSync(
                         `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`
                     ).toString();
-
-                    console.log('azleTimerCallbacksLen', azleTimerCallbacksLen);
 
                     expect(Number(azleTimerCallbacksLen)).toEqual(0);
 
@@ -98,23 +82,17 @@ export function runTests(
                         `dfx canister call ${canisterName} _azle_actions_len --output json`
                     ).toString();
 
-                    console.log('azleActionsLen0', azleActionsLen0);
-
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
                     const azleActionsLen1 = execSync(
                         `dfx canister call ${canisterName} _azle_actions_len --output json`
                     ).toString();
 
-                    console.log('azleActionsLen1', azleActionsLen1);
-
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
                     const azleActionsLen2 = execSync(
                         `dfx canister call ${canisterName} _azle_actions_len --output json`
                     ).toString();
-
-                    console.log('azleActionsLen2', azleActionsLen2);
 
                     expect(azleActionsLen0).toEqual(azleActionsLen1);
                     expect(azleActionsLen0).toEqual(azleActionsLen2);
