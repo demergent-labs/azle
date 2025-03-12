@@ -135,5 +135,7 @@ export const shortArrayConstraints = {
 function escapeSingleQuotes(input: string): string {
     // The bash way to escape a single quote inside a single-quoted string
     // is to close the single quote, insert an escaped single quote, and then reopen the single quote
+    // We're handling just the top-level single quotes here since embedded text values
+    // are already properly escaped by CliStringVisitor
     return input.replace(/'/g, "'\\''");
 }

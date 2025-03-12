@@ -127,8 +127,10 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
 }
 
 function escapeForBash(input: string): string {
+    // For text values inside double quotes, we need different escaping than for the entire string
+    // When text is wrapped in double quotes in bash, we need to escape: backslashes and double quotes
+    // But single quotes can remain as-is since they don't have special meaning in double-quoted strings
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
-        .replace(/'/g, "'\\''") // Escape single quotes
         .replace(/"/g, '\\"'); // Escape double quotes
 }

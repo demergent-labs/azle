@@ -88,6 +88,7 @@ const jsKeywords = [
     'catch',
     'class',
     'const',
+    'constructor',
     'continue',
     'debugger',
     'default',
@@ -149,7 +150,7 @@ const jsKeywords = [
 const otherKeywords = ['drop'];
 
 // These words still don't work even if quoted
-const cantBeQuoted = ['__proto__'];
+const cantBeQuoted = ['__proto__', 'constructor'];
 
 const unquotedFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)
