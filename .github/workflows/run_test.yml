@@ -129,9 +129,10 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --host 127.0.0.1:8000
 
-            - name: Calculate number of test runs
-              id: calc-runs
+            - name: Test configuration
+              id: test-configuration
               run: |
+                  LOG_ACTIONS='true'
                   RUNS=1
 
                   if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" == "true" ]]; then
@@ -143,6 +144,7 @@ jobs:
                   fi
 
                   if [[ "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
+                      LOG_ACTIONS='false'
                       RUNS=10
                   fi
 
@@ -162,9 +164,10 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               shell: bash -l {0}
               env:
-                  AZLE_PROPTEST_NUM_RUNS: ${{ steps.calc-runs.outputs.runs }}
-                  AZLE_PROPTEST_VERBOSE: true
                   AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
                   AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}
                   AZLE_FUZZ_TIME_LIMIT: ${{ inputs.time-limit }}
+                  AZLE_LOG_ACTIONS: ${{ steps.test-configuration.outputs.log_actions }}
+                  AZLE_PROPTEST_NUM_RUNS: ${{ steps.test-configuration.outputs.runs }}
+                  AZLE_PROPTEST_VERBOSE: true

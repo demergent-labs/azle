@@ -31,7 +31,8 @@ import { validateUnsignedInteger } from '../error';
  */
 export function setTimer(
     delay: number,
-    callback: () => void | Promise<void>
+    callback: () => void | Promise<void>,
+    cleanup: boolean = true
 ): bigint {
     if (
         globalThis._azleIcStable === undefined &&
@@ -58,15 +59,27 @@ export function setTimer(
         payload: {
             timerId,
             timerCallback: (): void => {
-                // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
-                // We immediately create another timer with a delay of 0 seconds
-                // to ensure that globalThis._azleTimerCallbacks is deleted even if the
-                // timer callback traps
-                setTimer(0, () => {
-                    deleteGlobalTimerCallbacks(timerId);
-                });
+                if (cleanup === true) {
+                    // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
+                    // We immediately create another timer with a delay of 0 seconds
+                    // to ensure that globalThis._azleTimerCallbacks is deleted even if the
+                    // timer callback traps
+                    setTimer(
+                        0,
+                        () => {
+                            deleteGlobalTimerCallbacks(timerId);
+                        },
+                        false
+                    );
+                }
 
                 callback();
+
+                // Though we are already calling cleanup above, we want to make increase our chances
+                // of deletion of the global timer callbacks. I feel it is not impossible for the cleanup
+                // timer callback to trap, thus we ensure that if the timer callback above does not trap,
+                // then we still clean up within the same update call here.
+                deleteGlobalTimerCallbacks(timerId);
             }
         },
         location: {

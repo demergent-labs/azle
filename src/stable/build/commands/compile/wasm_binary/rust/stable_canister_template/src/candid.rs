@@ -1,7 +1,7 @@
 use std::{error::Error, ffi::CString, os::raw::c_char, str};
 
 use ic_cdk::trap;
-use rquickjs::{Context, Function, Module, Object, Runtime, Undefined};
+use rquickjs::{Array, Context, Function, Module, Object, Runtime, Undefined};
 
 use crate::{
     CONTEXT_REF_CELL,
@@ -34,6 +34,8 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
     quickjs_with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
         let globals = ctx.globals();
 
+        globals.set("_azleActions", Array::new(ctx.clone()))?;
+
         globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
 
         globals.set("_azleExperimental", false)?;
@@ -48,8 +50,6 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
         register(ctx.clone())?;
 
         globals.set("_azleInitCalled", false)?;
-
-        globals.set("_azleLogActions", false)?;
 
         globals.set("_azleNodeWasmEnvironment", true)?;
 

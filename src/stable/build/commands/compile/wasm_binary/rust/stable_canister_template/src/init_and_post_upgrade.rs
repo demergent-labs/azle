@@ -3,7 +3,7 @@ use std::{env, error::Error, str};
 use ic_cdk::trap;
 use ic_stable_structures::memory_manager::MemoryId;
 use ic_wasi_polyfill::init_with_memory;
-use rquickjs::{Context, Module, Object, Runtime, Undefined};
+use rquickjs::{Array, Context, Module, Object, Runtime, Undefined};
 
 use crate::{
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
@@ -77,6 +77,8 @@ pub fn initialize_js(
     quickjs_with_ctx(|ctx| -> Result<(), Box<dyn Error>> {
         let globals = ctx.globals();
 
+        globals.set("_azleActions", Array::new(ctx.clone()))?;
+
         globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
 
         globals.set("_azleExperimental", false)?;
@@ -95,8 +97,6 @@ pub fn initialize_js(
         } else {
             globals.set("_azleInitCalled", false)?;
         }
-
-        globals.set("_azleLogActions", false)?;
 
         globals.set("_azleNodeWasmEnvironment", false)?;
 

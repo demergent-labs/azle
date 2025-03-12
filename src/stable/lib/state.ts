@@ -108,9 +108,26 @@ interface SET_AZLE_TIMER_CALLBACK extends ActionShape {
     };
 }
 
+/**
+ * Dispatches an action to the Azle JavaScript runtime.
+ *
+ * This function processes action objects with the provided type and payload,
+ * along with location information (filepath and function name), to perform
+ * important global state changes in Azle. Actions are used to manage global state
+ * like inter-canister callbacks and timer callbacks.
+ *
+ * @param action - The action object to dispatch, containing:
+ *   - type: String identifying the action type
+ *   - payload: Data relevant to the action
+ *   - location: Object containing filepath and functionName for debugging
+ */
 globalThis._azleDispatch = (action: Action): void => {
-    if (globalThis._azleLogActions === true) {
-        console.log('dispatch', action);
+    if (
+        globalThis.process !== undefined &&
+        globalThis.process.env.AZLE_LOG_ACTIONS === 'true'
+    ) {
+        console.info(action);
+        globalThis._azleActions.push(action);
     }
 
     if (action.type === 'SET_AZLE_CANISTER_METHOD_NAMES') {

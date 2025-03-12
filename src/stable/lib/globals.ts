@@ -12,6 +12,8 @@ import { Action } from './state';
 
 declare global {
     // eslint-disable-next-line no-var
+    var _azleActions: Action[];
+    // eslint-disable-next-line no-var
     var _azleCanisterMethodNames: { [key: string]: string };
     // eslint-disable-next-line no-var
     var _azleDispatch: (action: Action) => void;
@@ -27,8 +29,6 @@ declare global {
     var _azleIcStable: AzleIcStable | undefined;
     // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
-    // eslint-disable-next-line no-var
-    var _azleLogActions: boolean;
     // eslint-disable-next-line no-var
     var _azleNodeWasmEnvironment: boolean;
     // eslint-disable-next-line no-var

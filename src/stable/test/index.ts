@@ -7,6 +7,8 @@ import { execSyncPretty } from '#utils/exec_sync_pretty';
 
 export { expect } from '@jest/globals';
 
+import { execSync } from 'node:child_process';
+
 import { runBenchmarksForCanisters } from './benchmarks';
 import { runFuzzTests } from './fuzz';
 
@@ -24,7 +26,8 @@ export function runTests(
         shouldRunTests,
         shouldRunTypeChecks,
         shouldRecordBenchmarks,
-        shouldFuzz
+        shouldFuzz,
+        shouldCheckGlobalState
     } = processEnvVars();
 
     if (shouldRunTests === true) {
@@ -41,6 +44,71 @@ export function runTests(
                     expect('Type checking failed').toBe(
                         'Type checking to pass'
                     );
+                }
+            });
+        });
+    }
+
+    // TODO is there a better way to get the canister name?
+    // TODO get it from the dfx.json...but we should only do it for azle canisters right?
+    if (shouldCheckGlobalState === true) {
+        describe(`global state checks`, () => {
+            it('checks that the _azle global state variables are empty, and optionally that actions are not growing', async () => {
+                for (const _canisterName of canisterNames ?? []) {
+                    const azleRejectCallbacksLen = execSync(
+                        `dfx canister call timers _azle_reject_callbacks_len --output json`
+                    ).toString();
+
+                    console.log(
+                        'azleRejectCallbacksLen',
+                        azleRejectCallbacksLen
+                    );
+
+                    expect(Number(azleRejectCallbacksLen)).toEqual(0);
+
+                    const azleResolveCallbacksLen = execSync(
+                        `dfx canister call timers _azle_resolve_callbacks_len --output json`
+                    ).toString();
+
+                    console.log(
+                        'azleResolveCallbacksLen',
+                        azleResolveCallbacksLen
+                    );
+
+                    expect(Number(azleResolveCallbacksLen)).toEqual(0);
+
+                    const azleTimerCallbacksLen = execSync(
+                        `dfx canister call timers _azle_timer_callbacks_len --output json`
+                    ).toString();
+
+                    console.log('azleTimerCallbacksLen', azleTimerCallbacksLen);
+
+                    expect(Number(azleTimerCallbacksLen)).toEqual(0);
+
+                    const azleActionsLen0 = execSync(
+                        `dfx canister call timers _azle_actions_len --output json`
+                    ).toString();
+
+                    console.log('azleActionsLen0', azleActionsLen0);
+
+                    await new Promise((resolve) => setTimeout(resolve, 2_000));
+
+                    const azleActionsLen1 = execSync(
+                        `dfx canister call timers _azle_actions_len --output json`
+                    ).toString();
+
+                    console.log('azleActionsLen1', azleActionsLen1);
+
+                    await new Promise((resolve) => setTimeout(resolve, 2_000));
+
+                    const azleActionsLen2 = execSync(
+                        `dfx canister call timers _azle_actions_len --output json`
+                    ).toString();
+
+                    console.log('azleActionsLen2', azleActionsLen2);
+
+                    expect(azleActionsLen0).toEqual(azleActionsLen1);
+                    expect(azleActionsLen0).toEqual(azleActionsLen2);
                 }
             });
         });
@@ -96,19 +164,24 @@ function processEnvVars(): {
     shouldRunTypeChecks: boolean;
     shouldRecordBenchmarks: boolean;
     shouldFuzz: boolean;
+    shouldCheckGlobalState: boolean;
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
     const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
     const fuzz = process.env.AZLE_FUZZ ?? 'false';
+    const checkGlobalState = process.env.AZLE_CHECK_GLOBAL_STATE ?? 'true';
 
-    const hasOnly = [runTests, runTypeChecks, fuzz].includes('only');
+    const hasOnly = [runTests, runTypeChecks, fuzz, checkGlobalState].includes(
+        'only'
+    );
 
     return {
         shouldRunTests: shouldRun(runTests, hasOnly, true),
         shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly, true),
         shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly,
-        shouldFuzz: shouldRun(fuzz, hasOnly, false)
+        shouldFuzz: shouldRun(fuzz, hasOnly, false),
+        shouldCheckGlobalState: shouldRun(checkGlobalState, hasOnly, true)
     };
 }
 
