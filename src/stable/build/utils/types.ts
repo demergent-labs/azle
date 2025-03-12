@@ -8,6 +8,7 @@ export type CandidAndMethodMeta = {
 export type CandidGen = 'automatic' | 'custom' | 'http';
 
 export type CanisterConfig = {
+    type?: 'azle';
     main?: string;
     custom?: {
         assets?: [string, string][];

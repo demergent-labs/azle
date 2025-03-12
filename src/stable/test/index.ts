@@ -8,6 +8,10 @@ import { execSyncPretty } from '#utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
 
 import { execSync } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
+import { DfxJson } from '#utils/types';
 
 import { runBenchmarksForCanisters } from './benchmarks';
 import { runFuzzTests } from './fuzz';
@@ -17,9 +21,10 @@ export type Test = () => void;
 export { getCanisterActor } from './get_canister_actor';
 export { defaultPropTestParams } from '#test/property/default_prop_test_params';
 
+// TODO I think we can go and remove the second parameter from all of the tests now
 export function runTests(
     tests: Test,
-    canisterNames: string | string[] | undefined = undefined,
+    _canisterNames: string | string[] | undefined = undefined,
     _cwd: string = process.cwd()
 ): void {
     const {
@@ -54,9 +59,13 @@ export function runTests(
     if (shouldCheckGlobalState === true) {
         describe(`global state checks`, () => {
             it('checks that the _azle global state variables are empty, and optionally that actions are not growing', async () => {
-                for (const _canisterName of canisterNames ?? []) {
+                const canisterNames = await getCanisterNames();
+
+                for (const canisterName of canisterNames) {
+                    console.log('canisterName', canisterName);
+
                     const azleRejectCallbacksLen = execSync(
-                        `dfx canister call timers _azle_reject_callbacks_len --output json`
+                        `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`
                     ).toString();
 
                     console.log(
@@ -67,7 +76,7 @@ export function runTests(
                     expect(Number(azleRejectCallbacksLen)).toEqual(0);
 
                     const azleResolveCallbacksLen = execSync(
-                        `dfx canister call timers _azle_resolve_callbacks_len --output json`
+                        `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`
                     ).toString();
 
                     console.log(
@@ -78,7 +87,7 @@ export function runTests(
                     expect(Number(azleResolveCallbacksLen)).toEqual(0);
 
                     const azleTimerCallbacksLen = execSync(
-                        `dfx canister call timers _azle_timer_callbacks_len --output json`
+                        `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`
                     ).toString();
 
                     console.log('azleTimerCallbacksLen', azleTimerCallbacksLen);
@@ -86,7 +95,7 @@ export function runTests(
                     expect(Number(azleTimerCallbacksLen)).toEqual(0);
 
                     const azleActionsLen0 = execSync(
-                        `dfx canister call timers _azle_actions_len --output json`
+                        `dfx canister call ${canisterName} _azle_actions_len --output json`
                     ).toString();
 
                     console.log('azleActionsLen0', azleActionsLen0);
@@ -94,7 +103,7 @@ export function runTests(
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
                     const azleActionsLen1 = execSync(
-                        `dfx canister call timers _azle_actions_len --output json`
+                        `dfx canister call ${canisterName} _azle_actions_len --output json`
                     ).toString();
 
                     console.log('azleActionsLen1', azleActionsLen1);
@@ -102,7 +111,7 @@ export function runTests(
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
                     const azleActionsLen2 = execSync(
-                        `dfx canister call timers _azle_actions_len --output json`
+                        `dfx canister call ${canisterName} _azle_actions_len --output json`
                     ).toString();
 
                     console.log('azleActionsLen2', azleActionsLen2);
@@ -114,14 +123,12 @@ export function runTests(
         });
     }
 
-    if (shouldRecordBenchmarks === true && canisterNames !== undefined) {
-        const canisterNamesArray = Array.isArray(canisterNames)
-            ? canisterNames
-            : [canisterNames];
-
+    if (shouldRecordBenchmarks === true) {
         describe(`benchmarks`, () => {
-            it('runs benchmarks for all canisters', () =>
-                runBenchmarksForCanisters(canisterNamesArray));
+            it('runs benchmarks for all canisters', async () => {
+                const canisterNames = await getCanisterNames();
+                runBenchmarksForCanisters(canisterNames);
+            });
         });
     }
 
@@ -216,4 +223,30 @@ function createWait(name: string, delay: number): () => Promise<void> {
             setTimeout(resolve, delay);
         });
     };
+}
+
+export async function getCanisterNames(
+    onlyAzle: boolean = true
+): Promise<string[]> {
+    const dfxJson = await getDfxJson();
+
+    if (dfxJson.canisters === undefined) {
+        throw new Error('No canisters found in dfx.json');
+    }
+
+    return Object.entries(dfxJson.canisters)
+        .filter(([_, value]) => {
+            if (onlyAzle === false) {
+                return true;
+            }
+
+            return value?.type === 'azle';
+        })
+        .map(([key, _]) => key);
+}
+
+async function getDfxJson(): Promise<DfxJson> {
+    const dfxFile = await readFile(join(process.cwd(), 'dfx.json'), 'utf-8');
+
+    return JSON.parse(dfxFile);
 }
