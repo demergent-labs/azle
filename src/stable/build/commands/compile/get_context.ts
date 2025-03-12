@@ -42,8 +42,7 @@ export function getContext(
 function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
     const devEnv = canisterConfig.custom?.env ?? [];
 
-    // TODO should we put the record benchmarks environment variable in here as well?
-    const env = [...devEnv, 'AZLE_LOG_ACTIONS'];
+    const env = [...devEnv, 'AZLE_LOG_ACTIONS', 'AZLE_RECORD_BENCHMARKS'];
 
     return env
         .filter((envVarName) => process.env[envVarName] !== undefined)
