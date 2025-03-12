@@ -62,6 +62,10 @@ export function quoteCandidName(key: string): string {
     // Key is text
     // <text> ::= "<char>*"
 
+    // TODO: The bellow code enables developers to use method and field names
+    // TODO: that contain "text". We don't currently have a good way to test
+    // TODO: this. See https://github.com/demergent-labs/azle/issues/2823 for
+    // TODO: more details.
     // Escape double quotes and backslashes
     if (['"', '\\'].some((ch: string) => key.includes(ch))) {
         const escapedKey: string = key.replace(

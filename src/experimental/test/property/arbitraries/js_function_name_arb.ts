@@ -186,9 +186,10 @@ const quotedFunctionNameArb = fc
 
 export const JsIdentifierNameArb = fc.oneof(unquotedFunctionNameArb);
 
+// TODO: disable quoted function names for now: https://github.com/demergent-labs/azle/issues/2823
 export const JsPropertyNameArb = fc.oneof(
-    unquotedFunctionNameArb,
-    quotedFunctionNameArb
+    { weight: 1, arbitrary: unquotedFunctionNameArb },
+    { weight: 0, arbitrary: quotedFunctionNameArb }
 );
 
 // TODO rename to JsNameArbs or something?
