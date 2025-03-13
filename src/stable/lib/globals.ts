@@ -120,7 +120,8 @@ function createGlobalExperimentalErrorProperty(name: string): void {
     Object.defineProperty(globalThis, name, {
         get() {
             throw new Error(experimentalWarningMessage(name));
-        }
+        },
+        configurable: true
     });
 }
 
