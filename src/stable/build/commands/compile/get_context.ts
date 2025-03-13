@@ -42,6 +42,8 @@ export function getContext(
 function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
     const devEnv = canisterConfig.custom?.env ?? [];
 
+    // We add our own environment variables that we don't want to force
+    // the developer to define in their dfx.json
     const env = [...devEnv, 'AZLE_LOG_ACTIONS', 'AZLE_RECORD_BENCHMARKS'];
 
     return env

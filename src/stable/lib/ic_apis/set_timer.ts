@@ -75,10 +75,11 @@ export function setTimer(
 
                 callback();
 
-                // Though we are already calling cleanup above, we want to make increase our chances
+                // Though we are already calling cleanup above, we want to increase our chances
                 // of deletion of the global timer callbacks. I feel it is not impossible for the cleanup
                 // timer callback to trap, thus we ensure that if the timer callback above does not trap,
                 // then we still clean up within the same update call here.
+                // This also serves to delete the global timer callback created if cleanup is true
                 deleteGlobalTimerCallbacks(timerId);
             }
         },
