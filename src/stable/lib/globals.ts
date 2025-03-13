@@ -43,31 +43,52 @@ declare global {
     var _azleTimerCallbacks: { [timerId: string]: () => void };
 }
 
-// TODO do we need to disable setTimeout, setInterval, etc?
 // TODO do we need to disable any other wasmedge-quickjs globals
 // TODO that we don't think are stable yet?
 if (
     globalThis._azleIcpReplicaWasmEnvironment === true ||
     globalThis._azleNodeWasmEnvironment === true
 ) {
-    globalThis.TextDecoder = TextDecoder;
-    globalThis.TextEncoder = TextEncoder;
+    globalThis._azleDispatch({
+        type: 'SET_TEXT_DECODER',
+        payload: TextDecoder,
+        location: {
+            filepath: 'azle/src/stable/lib/global.ts',
+            functionName: ''
+        }
+    });
+
+    globalThis._azleDispatch({
+        type: 'SET_TEXT_ENCODER',
+        payload: TextEncoder,
+        location: {
+            filepath: 'azle/src/stable/lib/global.ts',
+            functionName: ''
+        }
+    });
 
     // TODO be careful we are using a random seed of 0 I think
     // TODO the randomness is predictable
-    globalThis.crypto = {
-        ...globalThis.crypto,
-        getRandomValues: ((array: Uint8Array) => {
-            // TODO the type is wrong of array
-            // TODO this could possibly be any kind of TypedArray
+    globalThis._azleDispatch({
+        type: 'SET_CRYPTO',
+        payload: {
+            ...globalThis.crypto,
+            getRandomValues: ((array: Uint8Array) => {
+                // TODO the type is wrong of array
+                // TODO this could possibly be any kind of TypedArray
 
-            for (let i = 0; i < array.length; i++) {
-                array[i] = Math.floor(Math.random() * 256);
-            }
+                for (let i = 0; i < array.length; i++) {
+                    array[i] = Math.floor(Math.random() * 256);
+                }
 
-            return array;
-        }) as any
-    };
+                return array;
+            }) as any
+        },
+        location: {
+            filepath: 'azle/src/stable/lib/global.ts',
+            functionName: ''
+        }
+    });
 
     const log = (...args: any[]): void => {
         const jsonStringifiedArgs = args
@@ -91,59 +112,101 @@ if (
         throw new Error(`No global debugPrint implementation found`);
     };
 
-    globalThis.console = {
-        ...globalThis.console,
-        log,
-        error: log,
-        warn: log,
-        info: log
-    };
-
-    if (globalThis._azleExperimental === false) {
-        createGlobalExperimentalErrorProperty('fetch');
-        createGlobalExperimentalErrorProperty('Buffer');
-        createGlobalExperimentalErrorProperty('window');
-        createGlobalExperimentalErrorProperty('global');
-        createGlobalExperimentalErrorProperty('self');
-        createGlobalExperimentalErrorProperty('URL');
-        createGlobalExperimentalErrorProperty('WebAssembly');
-        createGlobalExperimentalErrorProperty('setTimeout');
-        createGlobalExperimentalErrorProperty('clearTimeout');
-    }
-}
-
-/**
- * Creates a getter property on globalThis that throws an error when accessed.
- * Used to prevent access to experimental features when experimental mode is disabled.
- *
- * @param name - The name of the global property to restrict
- */
-function createGlobalExperimentalErrorProperty(name: string): void {
-    Object.defineProperty(globalThis, name, {
-        get() {
-            throw new Error(experimentalWarningMessage(name));
+    globalThis._azleDispatch({
+        type: 'SET_CONSOLE',
+        payload: {
+            ...globalThis.console,
+            log,
+            error: log,
+            warn: log,
+            info: log
+        },
+        location: {
+            filepath: 'azle/src/stable/lib/global.ts',
+            functionName: ''
         }
     });
-}
 
-/**
- * Generates an error message explaining how to enable experimental mode for a given feature.
- *
- * @param name - The name of the experimental feature
- * @returns A formatted error message with dfx.json configuration instructions
- */
-function experimentalWarningMessage(name: string): string {
-    return `Azle: experimental mode must be enabled to use global ${name}. You can enable experimental mode in your dfx.json file like this:
-{
-    "canisters": {
-        "canisterName": {
-            "type": "azle",
-            "main": "index.ts",
-            "custom": {
-                "experimental": true
+    if (globalThis._azleExperimental === false) {
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'fetch',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
             }
-        }
+        });
+
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'Buffer',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
+
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'window',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
+
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'global',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
+
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'self',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
+
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'URL',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
+
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'WebAssembly',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
+
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'setTimeout',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
+
+        globalThis._azleDispatch({
+            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+            payload: 'clearTimeout',
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
     }
-}
-`;
 }
