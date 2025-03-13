@@ -23,7 +23,11 @@ export function generateTests(
                     const params = namedParamVecs.map(
                         (param) => param.value.value.agentArgumentValue
                     );
-                    const result = await actor[functionName](...params);
+                    const result = await actor[
+                        functionName.startsWith('"')
+                            ? functionName.slice(1, -1)
+                            : functionName
+                    ](...params);
 
                     return testEquality(result, expectedResult);
                 }
