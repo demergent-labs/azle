@@ -44,7 +44,12 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
 
     // We add our own environment variables that we don't want to force
     // the developer to define in their dfx.json
-    const env = [...devEnv, 'AZLE_LOG_ACTIONS', 'AZLE_RECORD_BENCHMARKS'];
+    const env = [
+        ...devEnv,
+        'AZLE_LOG_ACTIONS',
+        'AZLE_RECORD_ACTIONS',
+        'AZLE_RECORD_BENCHMARKS'
+    ];
 
     return env
         .filter((envVarName) => process.env[envVarName] !== undefined)

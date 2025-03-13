@@ -96,6 +96,25 @@ export function runTests(
 
                     expect(azleActionsLen0).toEqual(azleActionsLen1);
                     expect(azleActionsLen0).toEqual(azleActionsLen2);
+
+                    console.info(
+                        'azleRejectCallbacksLen',
+                        azleRejectCallbacksLen
+                    );
+
+                    console.info(
+                        'azleResolveCallbacksLen',
+                        azleResolveCallbacksLen
+                    );
+
+                    console.info(
+                        'azleTimerCallbacksLen',
+                        azleTimerCallbacksLen
+                    );
+
+                    console.info('azleActionsLen0', azleActionsLen0);
+                    console.info('azleActionsLen1', azleActionsLen1);
+                    console.info('azleActionsLen2', azleActionsLen2);
                 }
             });
         });

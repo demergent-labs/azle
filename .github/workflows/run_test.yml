@@ -132,7 +132,7 @@ jobs:
             - name: Test configuration
               id: test-configuration
               run: |
-                  LOG_ACTIONS='true'
+                  RECORD_ACTIONS='true'
                   RUNS=1
 
                   if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" == "true" ]]; then
@@ -144,7 +144,7 @@ jobs:
                   fi
 
                   if [[ "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
-                      LOG_ACTIONS='false'
+                      RECORD_ACTIONS='false'
                       RUNS=10
                   fi
 
@@ -159,7 +159,7 @@ jobs:
                   echo "Running tests $RUNS times"
 
                   echo "runs=$RUNS" >> $GITHUB_OUTPUT
-                  echo "log_actions=$LOG_ACTIONS" >> $GITHUB_OUTPUT
+                  echo "record_actions=$RECORD_ACTIONS" >> $GITHUB_OUTPUT
 
             - name: Run tests
               run: npm test
@@ -170,6 +170,6 @@ jobs:
                   AZLE_FUZZ: ${{ inputs.fuzz }}
                   AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}
                   AZLE_FUZZ_TIME_LIMIT: ${{ inputs.time-limit }}
-                  AZLE_LOG_ACTIONS: ${{ steps.test-configuration.outputs.log_actions }}
+                  AZLE_RECORD_ACTIONS: ${{ steps.test-configuration.outputs.record_actions }}
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.test-configuration.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true

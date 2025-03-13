@@ -127,6 +127,12 @@ globalThis._azleDispatch = (action: Action): void => {
         globalThis.process.env.AZLE_LOG_ACTIONS === 'true'
     ) {
         console.info(action);
+    }
+
+    if (
+        globalThis.process !== undefined &&
+        globalThis.process.env.AZLE_RECORD_ACTIONS === 'true'
+    ) {
         globalThis._azleActions.push(action);
     }
 
