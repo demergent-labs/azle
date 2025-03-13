@@ -3,7 +3,8 @@ import {
     expect,
     getCanisterActor,
     it,
-    Test
+    Test,
+    wait
 } from 'azle/_internal/test';
 import fc from 'fast-check';
 
@@ -102,5 +103,7 @@ export function getTests(): Test {
                 defaultPropTestParams()
             );
         });
+
+        wait('for all timer inter-canister chunk calls to finish', 5_000);
     };
 }
