@@ -40,7 +40,7 @@ declare global {
         [globalResolveId: string]: (buf: Uint8Array | ArrayBuffer) => void;
     };
     // eslint-disable-next-line no-var
-    var _azleTimerCallbacks: { [timerId: string]: () => void };
+    var _azleTimerCallbacks: { [timerId: string]: () => Promise<void> };
 }
 
 // TODO do we need to disable any other wasmedge-quickjs globals
@@ -89,28 +89,6 @@ if (
             functionName: ''
         }
     });
-
-    const log = (...args: any[]): void => {
-        const jsonStringifiedArgs = args
-            .map((arg) => {
-                if (arg instanceof Error) {
-                    return `${arg.name}: ${arg.message} at ${arg.stack}`;
-                } else {
-                    return JSON.stringify(arg, jsonReplacer, 4);
-                }
-            })
-            .join(' ');
-
-        if (globalThis._azleIcStable !== undefined) {
-            return globalThis._azleIcStable.debugPrint(jsonStringifiedArgs);
-        } else if (globalThis._azleIcExperimental !== undefined) {
-            return globalThis._azleIcExperimental.debugPrint(
-                jsonStringifiedArgs
-            );
-        }
-
-        throw new Error(`No global debugPrint implementation found`);
-    };
 
     globalThis._azleDispatch({
         type: 'SET_CONSOLE',
@@ -209,4 +187,24 @@ if (
             }
         });
     }
+}
+
+export function log(...args: any[]): void {
+    const jsonStringifiedArgs = args
+        .map((arg) => {
+            if (arg instanceof Error) {
+                return `${arg.name}: ${arg.message} at ${arg.stack}`;
+            } else {
+                return JSON.stringify(arg, jsonReplacer, 4);
+            }
+        })
+        .join(' ');
+
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.debugPrint(jsonStringifiedArgs);
+    } else if (globalThis._azleIcExperimental !== undefined) {
+        return globalThis._azleIcExperimental.debugPrint(jsonStringifiedArgs);
+    }
+
+    throw new Error(`No global debugPrint implementation found`);
 }

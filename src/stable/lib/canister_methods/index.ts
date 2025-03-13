@@ -361,7 +361,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                         options?.manual ?? false,
                         exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes
                     );
-                } catch (error: unknown) {
+                } catch (error) {
                     handleUncaughtError(error);
                 }
             };

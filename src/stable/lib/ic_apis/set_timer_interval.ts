@@ -1,4 +1,4 @@
-import { validateUnsignedInteger } from '../error';
+import { handleUncaughtError, validateUnsignedInteger } from '../error';
 
 /**
  * Sets a callback to be executed periodically every specified interval.
@@ -65,7 +65,13 @@ export function setTimerInterval(
         type: 'SET_AZLE_TIMER_CALLBACK',
         payload: {
             timerId,
-            timerCallback: callback
+            timerCallback: async (): Promise<void> => {
+                try {
+                    await callback();
+                } catch (error) {
+                    handleUncaughtError(error);
+                }
+            }
         },
         location: {
             filepath: 'azle/src/stable/lib/ic_apis/set_timer_interval.ts',

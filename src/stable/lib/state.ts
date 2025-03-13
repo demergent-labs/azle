@@ -1,3 +1,5 @@
+import { log } from './globals';
+
 export type Action =
     | DELETE_AZLE_REJECT_CALLBACK
     | DELETE_AZLE_RESOLVE_CALLBACK
@@ -176,7 +178,7 @@ globalThis._azleDispatch = (action: Action): void => {
         globalThis.process !== undefined &&
         globalThis.process.env.AZLE_LOG_ACTIONS === 'true'
     ) {
-        console.info(action);
+        log(action);
     }
 
     if (

@@ -1,4 +1,4 @@
-import { validateUnsignedInteger } from '../error';
+import { handleUncaughtError, validateUnsignedInteger } from '../error';
 
 /**
  * Sets a one-time callback to be executed after a specified delay.
@@ -32,7 +32,7 @@ import { validateUnsignedInteger } from '../error';
 export function setTimer(
     delay: number,
     callback: () => void | Promise<void>,
-    cleanup: boolean = true
+    asyncCleanup: boolean = true
 ): bigint {
     if (
         globalThis._azleIcStable === undefined &&
@@ -58,29 +58,36 @@ export function setTimer(
         type: 'SET_AZLE_TIMER_CALLBACK',
         payload: {
             timerId,
-            timerCallback: (): void => {
-                if (cleanup === true) {
-                    // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
-                    // We immediately create another timer with a delay of 0 seconds
-                    // to ensure that globalThis._azleTimerCallbacks is deleted even if the
-                    // timer callback traps
-                    setTimer(
-                        0,
-                        () => {
-                            deleteGlobalTimerCallbacks(timerId);
-                        },
-                        false
-                    );
+            timerCallback: async (): Promise<void> => {
+                try {
+                    if (asyncCleanup === true) {
+                        // TODO it would be really nice to have a more elegant solution to this problem like inter-canister call's cleanup callback
+                        // We immediately create another timer with a delay of 0 seconds
+                        // to ensure that globalThis._azleTimerCallbacks is deleted even if the
+                        // timer callback traps
+                        setTimer(
+                            0,
+                            () => {
+                                deleteGlobalTimerCallbacks(timerId);
+                            },
+                            false
+                        );
+                    }
+
+                    // Though we are already calling cleanup above, we want to increase our chances
+                    // of deletion of the global timer callbacks. I feel it is not impossible for the cleanup
+                    // timer callback to trap, thus we ensure that if the timer callback above does not trap,
+                    // then we still clean up within the same update call here.
+                    // This also serves to delete the global timer callback created if cleanup is true
+                    // This is above the call to callback to ensure that even if errors are thrown
+                    // that the global timer callback is deleted, though this will not work if the thrown error ends in a trap,
+                    // thus we have the asyncCleanup above
+                    deleteGlobalTimerCallbacks(timerId);
+
+                    await callback();
+                } catch (error) {
+                    handleUncaughtError(error);
                 }
-
-                callback();
-
-                // Though we are already calling cleanup above, we want to increase our chances
-                // of deletion of the global timer callbacks. I feel it is not impossible for the cleanup
-                // timer callback to trap, thus we ensure that if the timer callback above does not trap,
-                // then we still clean up within the same update call here.
-                // This also serves to delete the global timer callback created if cleanup is true
-                deleteGlobalTimerCallbacks(timerId);
             }
         },
         location: {
