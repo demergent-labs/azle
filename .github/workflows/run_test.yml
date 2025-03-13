@@ -157,7 +157,9 @@ jobs:
                   fi
 
                   echo "Running tests $RUNS times"
+
                   echo "runs=$RUNS" >> $GITHUB_OUTPUT
+                  echo "log_actions=$LOG_ACTIONS" >> $GITHUB_OUTPUT
 
             - name: Run tests
               run: npm test
