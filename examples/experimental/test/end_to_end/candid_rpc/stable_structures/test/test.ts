@@ -46,10 +46,5 @@ runTests(
         stableStructuresCanister1,
         stableStructuresCanister2,
         stableStructuresCanister3
-    ),
-    [
-        stableStructuresCanister1Name,
-        stableStructuresCanister2Name,
-        stableStructuresCanister3Name
-    ]
+    )
 );

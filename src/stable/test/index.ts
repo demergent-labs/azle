@@ -21,12 +21,7 @@ export type Test = () => void;
 export { getCanisterActor } from './get_canister_actor';
 export { defaultPropTestParams } from '#test/property/default_prop_test_params';
 
-// TODO I think we can go and remove the second parameter from all of the tests now
-export function runTests(
-    tests: Test,
-    _canisterNames: string | string[] | undefined = undefined,
-    _cwd: string = process.cwd()
-): void {
+export function runTests(tests: Test): void {
     const {
         shouldRunTests,
         shouldRunTypeChecks,

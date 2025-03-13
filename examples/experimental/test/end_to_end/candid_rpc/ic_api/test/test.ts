@@ -12,4 +12,4 @@ const icApiCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(icApiCanister as any), canisterName);
+runTests(getTests(icApiCanister as any));

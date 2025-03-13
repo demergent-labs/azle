@@ -12,4 +12,4 @@ const audioRecorderCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(audioRecorderCanister), canisterName);
+runTests(getTests(audioRecorderCanister));

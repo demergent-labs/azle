@@ -15,4 +15,4 @@ const stableBTreeMapInstructionThresholdCanister = createActor(
     }
 );
 
-runTests(getTests(stableBTreeMapInstructionThresholdCanister), canisterName);
+runTests(getTests(stableBTreeMapInstructionThresholdCanister));

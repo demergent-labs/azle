@@ -12,4 +12,4 @@ const robustImportsCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(robustImportsCanister), canisterName);
+runTests(getTests(robustImportsCanister));

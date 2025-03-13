@@ -13,4 +13,4 @@ const quicksortCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(quicksortCanister), canisterName);
+runTests(getTests(quicksortCanister));

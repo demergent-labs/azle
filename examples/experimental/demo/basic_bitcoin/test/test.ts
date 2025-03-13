@@ -23,4 +23,4 @@ runTests(() => {
         'runs basic bitcoin tests while bitcoin daemon is running',
         getTests(canisterId, getP2pkhAddress, P2PKH_ADDRESS_FORM)
     );
-}, canisterName);
+});

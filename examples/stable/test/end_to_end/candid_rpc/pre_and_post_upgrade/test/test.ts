@@ -12,4 +12,4 @@ const preAndPostUpgradeCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(preAndPostUpgradeCanister), canisterName);
+runTests(getTests(preAndPostUpgradeCanister));

@@ -33,4 +33,4 @@ runTests(() => {
         'recursive canister tests',
         getRecursiveCanisterTests(recursiveCanister)
     );
-}, [recursionName, recursiveCanisterName]);
+});

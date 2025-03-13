@@ -27,4 +27,4 @@ runTests(() => {
         'runs bitcoin psbt tests while bitcoin daemon is running',
         getTests(canisterId, getP2wpkhAddress, P2WPKH_ADDRESS_FORM)
     );
-}, canisterName);
+});

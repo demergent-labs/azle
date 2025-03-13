@@ -12,4 +12,4 @@ const asyncAwaitCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(asyncAwaitCanister), canisterName);
+runTests(getTests(asyncAwaitCanister));

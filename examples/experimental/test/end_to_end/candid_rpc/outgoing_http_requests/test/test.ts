@@ -12,4 +12,4 @@ const outgoingHttpRequestsCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(outgoingHttpRequestsCanister), canisterName);
+runTests(getTests(outgoingHttpRequestsCanister));

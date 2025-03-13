@@ -12,4 +12,4 @@ const dateCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(dateCanister), canisterName);
+runTests(getTests(dateCanister));
