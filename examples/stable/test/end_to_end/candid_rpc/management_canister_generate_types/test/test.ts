@@ -33,4 +33,4 @@ runTests(() => {
 
         expect(generatedContent).toBe(referenceContent);
     });
-}, canisterName);
+});

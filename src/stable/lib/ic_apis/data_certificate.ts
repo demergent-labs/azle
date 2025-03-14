@@ -14,13 +14,6 @@
  *   - any besides start
  */
 export function dataCertificate(): Uint8Array | undefined {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return undefined;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         const result = globalThis._azleIcExperimental.dataCertificate();
 
@@ -31,5 +24,7 @@ export function dataCertificate(): Uint8Array | undefined {
         return new Uint8Array(result);
     }
 
-    return globalThis._azleIcStable.dataCertificate();
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.dataCertificate();
+    }
 }

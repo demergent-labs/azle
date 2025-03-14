@@ -21,16 +21,13 @@
  *   - any besides start
  */
 export function canisterVersion(): bigint {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return 0n;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return BigInt(globalThis._azleIcExperimental.canisterVersion());
     }
 
-    return globalThis._azleIcStable.canisterVersion();
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.canisterVersion();
+    }
+
+    return 0n;
 }

@@ -18,18 +18,15 @@
  *   - after an unsuccessful inter-canister await
  */
 export function cyclesBurn(amount: bigint): bigint {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return 0n;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return BigInt(
             globalThis._azleIcExperimental.cyclesBurn(amount.toString())
         );
     }
 
-    return BigInt(globalThis._azleIcStable.cyclesBurn(amount.toString()));
+    if (globalThis._azleIcStable !== undefined) {
+        return BigInt(globalThis._azleIcStable.cyclesBurn(amount.toString()));
+    }
+
+    return 0n;
 }

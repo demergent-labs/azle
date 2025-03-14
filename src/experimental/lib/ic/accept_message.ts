@@ -11,17 +11,9 @@
  *   - \@inspectMessage
  */
 export function acceptMessage(): void {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
+    if (globalThis._azleIcExperimental === undefined) {
         return;
     }
 
-    if (globalThis._azleIcExperimental !== undefined) {
-        globalThis._azleIcExperimental.acceptMessage();
-        return;
-    }
-
-    globalThis._azleIcStable.acceptMessage();
+    globalThis._azleIcExperimental.acceptMessage();
 }

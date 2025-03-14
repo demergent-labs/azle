@@ -14,16 +14,13 @@
  *   - any besides start
  */
 export function time(): bigint {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return 0n;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return BigInt(globalThis._azleIcExperimental.time());
     }
 
-    return globalThis._azleIcStable.time();
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.time();
+    }
+
+    return 0n;
 }

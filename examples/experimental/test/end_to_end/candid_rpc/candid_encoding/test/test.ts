@@ -12,4 +12,4 @@ const candidEncodingCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(candidEncodingCanister), canisterName);
+runTests(getTests(candidEncodingCanister));

@@ -12,4 +12,4 @@ const keyValueStoreCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(keyValueStoreCanister), canisterName);
+runTests(getTests(keyValueStoreCanister));

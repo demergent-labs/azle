@@ -86,6 +86,15 @@ function decodeArgs(
     if (mode === 'inspectMessage') {
         const methodName = msgMethodName();
 
+        if (
+            methodName === '_azle_reject_callbacks_len' ||
+            methodName === '_azle_resolve_callbacks_len' ||
+            methodName === '_azle_timer_callbacks_len' ||
+            methodName === '_azle_actions_len'
+        ) {
+            return [];
+        }
+
         const paramIdlTypes =
             canisterMethodIdlParamTypes?.[methodName]?.argTypes;
 
@@ -120,9 +129,20 @@ async function getUnencodedResult(
         );
 
         if (result === true) {
+            if (
+                globalThis._azleIcStable === undefined &&
+                globalThis._azleIcExperimental === undefined
+            ) {
+                throw new Error(
+                    'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                );
+            }
+
             if (globalThis._azleIcStable !== undefined) {
                 globalThis._azleIcStable.acceptMessage();
-            } else {
+            }
+
+            if (globalThis._azleIcExperimental !== undefined) {
                 globalThis._azleIcExperimental.acceptMessage();
             }
         }

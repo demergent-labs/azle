@@ -1,14 +1,14 @@
 use std::{error::Error, ffi::CString, os::raw::c_char, str};
 
 use ic_cdk::trap;
-use rquickjs::{Context, Function, Module, Object, Runtime};
+use rquickjs::{Array, Context, Function, Module, Object, Runtime, Undefined};
 
 use crate::{
+    CONTEXT_REF_CELL,
     error::{handle_promise_error, quickjs_call_with_error_handling},
     ic::register,
     quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
-    CONTEXT_REF_CELL,
 };
 
 type CCharPtr = *mut c_char;
@@ -34,21 +34,34 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
     quickjs_with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
         let globals = ctx.globals();
 
-        globals.set("_azleNodeWasmEnvironment", true)?;
-
-        globals.set("exports", Object::new(ctx.clone())?)?;
-
-        globals.set("_azleExperimental", false)?;
+        globals.set("_azleActions", Array::new(ctx.clone()))?;
 
         globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
 
-        globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
+        globals.set("_azleExperimental", false)?;
+
+        globals.set("_azleExportedCanisterClassInstance", Undefined)?;
+
+        globals.set("_azleIcExperimental", Undefined)?;
+
+        globals.set("_azleIcpReplicaWasmEnvironment", false)?;
+
+        // initializes globalThis._azleIcStable
+        register(ctx.clone())?;
+
+        globals.set("_azleInitCalled", false)?;
+
+        globals.set("_azleNodeWasmEnvironment", true)?;
+
+        globals.set("_azlePostUpgradeCalled", false)?;
 
         globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
 
         globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;
 
-        register(ctx.clone())?;
+        globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
+
+        globals.set("exports", Object::new(ctx.clone())?)?;
 
         let wasm_data = get_wasm_data()?;
         let js = get_js_code()?;

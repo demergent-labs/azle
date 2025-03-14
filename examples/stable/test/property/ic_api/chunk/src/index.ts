@@ -14,6 +14,10 @@ export default class {
 
     @update([IDL.Nat32, IDL.Bool])
     measureSumTimer(loops: number, shouldChunk: boolean): void {
+        this.timerStarted = false;
+        this.timerEnded = false;
+        this.timerInstructions = 0n;
+
         setTimer(0, async () => {
             this.timerStarted = true;
 

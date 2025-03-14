@@ -15,4 +15,4 @@ const ledgerCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(ledgerCanister), canisterName);
+runTests(getTests(ledgerCanister));

@@ -21,21 +21,15 @@
  *   - after an unsuccessful inter-canister await
  */
 export function setCertifiedData(data: Uint8Array): void {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.setCertifiedData(
             data.buffer instanceof ArrayBuffer
                 ? data.buffer
                 : new Uint8Array(data).buffer
         );
-        return;
     }
 
-    globalThis._azleIcStable.setCertifiedData(data);
+    if (globalThis._azleIcStable !== undefined) {
+        globalThis._azleIcStable.setCertifiedData(data);
+    }
 }

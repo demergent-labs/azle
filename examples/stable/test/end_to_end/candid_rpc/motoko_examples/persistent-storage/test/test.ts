@@ -12,4 +12,4 @@ const persistentStorageCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(persistentStorageCanister), canisterName);
+runTests(getTests(persistentStorageCanister));

@@ -14,4 +14,4 @@ const complexTypesCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(complexTypesCanister), canisterName);
+runTests(getTests(complexTypesCanister));

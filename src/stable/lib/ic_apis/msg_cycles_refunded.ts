@@ -13,16 +13,13 @@
  *   - after an unsuccessful inter-canister await
  */
 export function msgCyclesRefunded(): bigint {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return 0n;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return BigInt(globalThis._azleIcExperimental.msgCyclesRefunded());
     }
 
-    return BigInt(globalThis._azleIcStable.msgCyclesRefunded());
+    if (globalThis._azleIcStable !== undefined) {
+        return BigInt(globalThis._azleIcStable.msgCyclesRefunded());
+    }
+
+    return 0n;
 }

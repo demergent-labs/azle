@@ -13,13 +13,6 @@ import { Principal } from '@dfinity/principal';
  *   - any
  */
 export function isController(principal: Principal): boolean {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return false;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         const principalBytes = principal.toUint8Array();
 
@@ -30,5 +23,9 @@ export function isController(principal: Principal): boolean {
         );
     }
 
-    return globalThis._azleIcStable.isController(principal.toUint8Array());
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.isController(principal.toUint8Array());
+    }
+
+    return false;
 }

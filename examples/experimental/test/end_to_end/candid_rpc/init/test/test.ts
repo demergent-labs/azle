@@ -12,4 +12,4 @@ const init_canister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(init_canister), canisterName);
+runTests(getTests(init_canister));
