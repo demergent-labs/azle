@@ -15,9 +15,7 @@ export function getTests(): Test {
         it('should burn the cycles', async () => {
             await fc.assert(
                 fc.asyncProperty(
-                    fc.bigUint({
-                        max: 1_000_000_000_000_000n
-                    }),
+                    fc.bigInt(0n, 1_000_000_000_000_000n),
                     async (amount) => {
                         execSync(
                             `dfx ledger fabricate-cycles --canister canister --cycles 1000000000000000`,
