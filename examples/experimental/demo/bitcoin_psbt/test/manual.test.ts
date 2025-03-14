@@ -11,7 +11,4 @@ const canisterId = getCanisterId(canisterName);
 // automatically. That is to say you will need to start and stop the Bitcoin
 // daemon manually. Great for running cli commands after or during the tests to
 // check the state of the test network
-runTests(
-    getTests(canisterId, getP2wpkhAddress, P2WPKH_ADDRESS_FORM),
-    canisterName
-);
+runTests(getTests(canisterId, getP2wpkhAddress, P2WPKH_ADDRESS_FORM));
