@@ -60,6 +60,8 @@ pub fn register(ctx: Ctx) -> Result<()> {
         canister_cycle_balance::get_function(ctx.clone()),
     )?;
 
+    ic.set("canisterSelf", canister_self::get_function(ctx.clone()))?;
+
     ic.set(
         "canisterVersion",
         canister_version::get_function(ctx.clone()),
@@ -76,16 +78,12 @@ pub fn register(ctx: Ctx) -> Result<()> {
 
     ic.set("debugPrint", debug_print::get_function(ctx.clone()))?;
 
-    ic.set("canisterSelf", canister_self::get_function(ctx.clone()))?;
-
     ic.set(
         "inReplicatedExecution",
         in_replicated_execution::get_function(ctx.clone()),
     )?;
 
     ic.set("isController", is_controller::get_function(ctx.clone()))?;
-
-    ic.set("msgMethodName", msg_method_name::get_function(ctx.clone()))?;
 
     ic.set("msgArgData", msg_arg_data::get_function(ctx.clone()))?;
 
@@ -106,6 +104,16 @@ pub fn register(ctx: Ctx) -> Result<()> {
         msg_cycles_refunded::get_function(ctx.clone()),
     )?;
 
+    ic.set("msgMethodName", msg_method_name::get_function(ctx.clone()))?;
+
+    ic.set("msgRejectCode", msg_reject_code::get_function(ctx.clone()))?;
+
+    ic.set("msgRejectMsg", msg_reject_msg::get_function(ctx.clone()))?;
+
+    ic.set("msgReject", msg_reject::get_function(ctx.clone()))?;
+
+    ic.set("msgReply", msg_reply::get_function(ctx.clone()))?;
+
     ic.set("notifyRaw", notify_raw::get_function(ctx.clone()))?;
 
     ic.set(
@@ -113,25 +121,17 @@ pub fn register(ctx: Ctx) -> Result<()> {
         performance_counter::get_function(ctx.clone()),
     )?;
 
-    ic.set("msgReject", msg_reject::get_function(ctx.clone()))?;
-
-    ic.set("msgRejectCode", msg_reject_code::get_function(ctx.clone()))?;
-
-    ic.set("msgRejectMsg", msg_reject_msg::get_function(ctx.clone()))?;
-
-    ic.set("msgReply", msg_reply::get_function(ctx.clone()))?;
-
     ic.set(
         "setCertifiedData",
         set_certified_data::get_function(ctx.clone()),
     )?;
 
-    ic.set("setTimer", set_timer::get_function(ctx.clone()))?;
-
     ic.set(
         "setTimerInterval",
         set_timer_interval::get_function(ctx.clone()),
     )?;
+
+    ic.set("setTimer", set_timer::get_function(ctx.clone()))?;
 
     ic.set(
         "stableBTreeMapContainsKey",

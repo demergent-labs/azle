@@ -1,11 +1,11 @@
 import { RejectCode } from './msg_reject_code';
 
 /**
- * The interface for our rust methods it slightly different than the interface
- * we expose to the users. This is the interface for the rust functions.
+ * The interface for our Rust functions is slightly different than the interface
+ * we expose to the users. This is the interface for the Rust functions.
  */
 export type AzleIcStable = {
-    msgArgData: () => Uint8Array;
+    acceptMessage: () => void;
     callRaw: (
         globalResolveId: string,
         globalRejectId: string,
@@ -14,20 +14,27 @@ export type AzleIcStable = {
         argsRaw: Uint8Array,
         cyclesString: string
     ) => void;
-    msgCaller: () => Uint8Array;
     candidDecode: (candidBytes: Uint8Array) => string;
     candidEncode: (candidString: string) => Uint8Array;
     canisterCycleBalance: () => string;
+    canisterSelf: () => Uint8Array;
     canisterVersion: () => bigint;
     clearTimer: (timerId: string) => void;
     cyclesBurn: (amountString: string) => string;
     dataCertificate: () => Uint8Array | undefined;
-    canisterSelf: () => Uint8Array;
+    debugPrint: (...args: any) => void;
     inReplicatedExecution: () => boolean;
     isController: (principalBytes: Uint8Array) => boolean;
+    msgArgData: () => Uint8Array;
+    msgCaller: () => Uint8Array;
     msgCyclesAccept: (maxAmountString: string) => string;
     msgCyclesAvailable: () => string;
     msgCyclesRefunded: () => string;
+    msgMethodName: () => string;
+    msgRejectCode: () => RejectCode;
+    msgRejectMsg: () => string;
+    msgReject: (message: string) => void;
+    msgReply: (bytes: Uint8Array) => void;
     notifyRaw: (
         canisterIdBytes: Uint8Array,
         method: string,
@@ -35,24 +42,9 @@ export type AzleIcStable = {
         cyclesString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
-    msgRejectCode: () => RejectCode;
-    msgReply: (bytes: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
-    setTimer: (delay: number) => bigint;
     setTimerInterval: (interval: number) => bigint;
-    time: () => bigint;
-    // These calls aren't intercepted by our IC object, they go right to the
-    // rust version and come out. Since they don't need to be intercepted I am
-    // assuming that their types are the same as the types declared by our
-    // interceptor.
-    acceptMessage: () => void;
-    msgMethodName: () => string;
-    debugPrint: (...args: any) => void;
-    msgReject: (message: string) => void;
-    msgRejectMsg: () => string;
-    trap: (message: string) => never;
-    // Stable B Tree Map Functions
-    stableBTreeMapInit: (memoryId: number) => void;
+    setTimer: (delay: number) => bigint;
     stableBTreeMapContainsKey: (
         memoryId: number,
         encodedKey: Uint8Array
@@ -61,6 +53,7 @@ export type AzleIcStable = {
         memoryId: number,
         encodedKey: Uint8Array
     ) => Uint8Array | undefined;
+    stableBTreeMapInit: (memoryId: number) => void;
     stableBTreeMapInsert: (
         memoryId: number,
         encodedKey: Uint8Array,
@@ -87,4 +80,6 @@ export type AzleIcStable = {
         startIndex?: number,
         length?: number
     ) => Uint8Array[];
+    time: () => bigint;
+    trap: (message: string) => never;
 };
