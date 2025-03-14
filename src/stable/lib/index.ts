@@ -14,3 +14,5 @@ export * from './stable_structures/stable_b_tree_map';
 export * from './stable_structures/stable_json';
 export * from '@dfinity/candid';
 export * from '@dfinity/principal';
+
+export const ic0 = globalThis._azleIc0;

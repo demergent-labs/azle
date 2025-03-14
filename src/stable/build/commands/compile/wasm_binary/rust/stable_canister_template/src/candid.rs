@@ -7,6 +7,7 @@ use crate::{
     CONTEXT_REF_CELL,
     error::{handle_promise_error, quickjs_call_with_error_handling},
     ic::register,
+    ic0::register as registerIc0,
     quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
@@ -48,6 +49,9 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
 
         // initializes globalThis._azleIcStable
         register(ctx.clone())?;
+
+        // initializes globalThis._azleIc0
+        registerIc0(ctx.clone())?;
 
         globals.set("_azleInitCalled", false)?;
 

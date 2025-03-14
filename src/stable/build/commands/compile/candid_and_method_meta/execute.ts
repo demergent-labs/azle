@@ -17,6 +17,7 @@ export async function execute(
             canister_cycle_balance128: (): void => {},
             canister_self_copy: (): void => {},
             canister_self_size: (): void => {},
+            canister_status: (): void => {},
             canister_version: (): void => {},
             cycles_burn128: (): void => {},
             certified_data_set: (): void => {},

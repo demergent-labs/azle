@@ -9,7 +9,8 @@ use crate::{
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
     error::handle_promise_error,
     execute_method_js::execute_method_js,
-    ic::register,
+    ic::register as registerIc,
+    ic0::register as registerIc0,
     quickjs_with_ctx,
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
@@ -90,7 +91,10 @@ pub fn initialize_js(
         globals.set("_azleIcpReplicaWasmEnvironment", true)?;
 
         // initializes globalThis._azleIcStable
-        register(ctx.clone())?;
+        registerIc(ctx.clone())?;
+
+        // initializes globalThis._azleIc0
+        registerIc0(ctx.clone())?;
 
         if init {
             globals.set("_azleInitCalled", true)?;

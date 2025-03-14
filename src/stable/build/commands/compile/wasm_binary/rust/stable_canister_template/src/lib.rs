@@ -14,6 +14,7 @@ mod error;
 mod execute_method_js;
 mod guards;
 mod ic;
+mod ic0;
 mod init_and_post_upgrade;
 mod internal_canister_methods;
 mod quickjs_with_ctx;

@@ -7,6 +7,7 @@ import { AzleIcExperimental } from '#experimental/lib/ic/azle_ic_experimental';
 
 import { ExportedCanisterClass } from './canister_methods';
 import { AzleIcStable } from './ic_apis/azle_ic_stable';
+import { AzleIc0 } from './ic_apis/azle_ic0';
 import { jsonReplacer } from './stable_structures/stable_json';
 import { Action } from './state';
 
@@ -21,6 +22,8 @@ declare global {
     var _azleExperimental: boolean;
     // eslint-disable-next-line no-var
     var _azleExportedCanisterClassInstance: ExportedCanisterClass | undefined;
+    // eslint-disable-next-line no-var
+    var _azleIc0: AzleIc0;
     // eslint-disable-next-line no-var
     var _azleIcExperimental: AzleIcExperimental | undefined;
     // eslint-disable-next-line no-var
