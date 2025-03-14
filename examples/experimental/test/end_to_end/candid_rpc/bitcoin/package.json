@@ -9,6 +9,6 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.29.0"
+        "azle": "0.30.0-rc.0"
     }
 }
