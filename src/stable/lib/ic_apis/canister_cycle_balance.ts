@@ -16,16 +16,13 @@
  *   - any besides start
  */
 export function canisterCycleBalance(): bigint {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return 0n;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return BigInt(globalThis._azleIcExperimental.canisterCycleBalance());
     }
 
-    return BigInt(globalThis._azleIcStable.canisterCycleBalance());
+    if (globalThis._azleIcStable !== undefined) {
+        return BigInt(globalThis._azleIcStable.canisterCycleBalance());
+    }
+
+    return 0n;
 }

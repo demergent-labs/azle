@@ -96,9 +96,15 @@ export class StableBTreeMap<Key = any, Value = any> {
             );
         }
 
-        return globalThis._azleIcStable.stableBTreeMapContainsKey(
-            this.memoryId,
-            encodedKey
+        if (globalThis._azleIcStable !== undefined) {
+            return globalThis._azleIcStable.stableBTreeMapContainsKey(
+                this.memoryId,
+                encodedKey
+            );
+        }
+
+        throw new Error(
+            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
         );
     }
 
@@ -126,10 +132,16 @@ export class StableBTreeMap<Key = any, Value = any> {
                           ? encodedKey.buffer
                           : new Uint8Array(encodedKey).buffer
                   )
-                : globalThis._azleIcStable.stableBTreeMapGet(
-                      this.memoryId,
-                      encodedKey
-                  );
+                : globalThis._azleIcStable !== undefined
+                  ? globalThis._azleIcStable.stableBTreeMapGet(
+                        this.memoryId,
+                        encodedKey
+                    )
+                  : ((): never => {
+                        throw new Error(
+                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                        );
+                    })();
 
         if (encodedResult === undefined) {
             return encodedResult;
@@ -173,11 +185,17 @@ export class StableBTreeMap<Key = any, Value = any> {
                           ? encodedValue.buffer
                           : new Uint8Array(encodedValue).buffer
                   )
-                : globalThis._azleIcStable.stableBTreeMapInsert(
-                      this.memoryId,
-                      encodedKey,
-                      encodedValue
-                  );
+                : globalThis._azleIcStable !== undefined
+                  ? globalThis._azleIcStable.stableBTreeMapInsert(
+                        this.memoryId,
+                        encodedKey,
+                        encodedValue
+                    )
+                  : ((): never => {
+                        throw new Error(
+                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                        );
+                    })();
 
         if (encodedResult === undefined) {
             return encodedResult;
@@ -209,7 +227,15 @@ export class StableBTreeMap<Key = any, Value = any> {
             );
         }
 
-        return globalThis._azleIcStable.stableBTreeMapIsEmpty(this.memoryId);
+        if (globalThis._azleIcStable !== undefined) {
+            return globalThis._azleIcStable.stableBTreeMapIsEmpty(
+                this.memoryId
+            );
+        }
+
+        throw new Error(
+            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+        );
     }
 
     /**
@@ -247,11 +273,17 @@ export class StableBTreeMap<Key = any, Value = any> {
                       startIndex?.toString() ?? '0',
                       length?.toString() ?? 'NOT_SET'
                   )
-                : globalThis._azleIcStable.stableBTreeMapItems(
-                      this.memoryId,
-                      startIndex,
-                      length
-                  );
+                : globalThis._azleIcStable !== undefined
+                  ? globalThis._azleIcStable.stableBTreeMapItems(
+                        this.memoryId,
+                        startIndex,
+                        length
+                    )
+                  : ((): never => {
+                        throw new Error(
+                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                        );
+                    })();
 
         return encodedItems.map(([encodedKey, encodedValue]) => {
             return [
@@ -304,11 +336,17 @@ export class StableBTreeMap<Key = any, Value = any> {
                       startIndex?.toString() ?? '0',
                       length?.toString() ?? 'NOT_SET'
                   )
-                : globalThis._azleIcStable.stableBTreeMapKeys(
-                      this.memoryId,
-                      startIndex,
-                      length
-                  );
+                : globalThis._azleIcStable !== undefined
+                  ? globalThis._azleIcStable.stableBTreeMapKeys(
+                        this.memoryId,
+                        startIndex,
+                        length
+                    )
+                  : ((): never => {
+                        throw new Error(
+                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                        );
+                    })();
 
         return encodedKeys.map((encodedKey) => {
             return this.keySerializable.fromBytes(
@@ -340,7 +378,13 @@ export class StableBTreeMap<Key = any, Value = any> {
             );
         }
 
-        return globalThis._azleIcStable.stableBTreeMapLen(this.memoryId);
+        if (globalThis._azleIcStable !== undefined) {
+            return globalThis._azleIcStable.stableBTreeMapLen(this.memoryId);
+        }
+
+        throw new Error(
+            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+        );
     }
 
     /**
@@ -367,10 +411,16 @@ export class StableBTreeMap<Key = any, Value = any> {
                           ? encodedKey.buffer
                           : new Uint8Array(encodedKey).buffer
                   )
-                : globalThis._azleIcStable.stableBTreeMapRemove(
-                      this.memoryId,
-                      encodedKey
-                  );
+                : globalThis._azleIcStable !== undefined
+                  ? globalThis._azleIcStable.stableBTreeMapRemove(
+                        this.memoryId,
+                        encodedKey
+                    )
+                  : ((): never => {
+                        throw new Error(
+                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                        );
+                    })();
 
         if (encodedValue === undefined) {
             return undefined;
@@ -417,11 +467,17 @@ export class StableBTreeMap<Key = any, Value = any> {
                       startIndex?.toString() ?? '0',
                       length?.toString() ?? 'NOT_SET'
                   )
-                : globalThis._azleIcStable.stableBTreeMapValues(
-                      this.memoryId,
-                      startIndex,
-                      length
-                  );
+                : globalThis._azleIcStable !== undefined
+                  ? globalThis._azleIcStable.stableBTreeMapValues(
+                        this.memoryId,
+                        startIndex,
+                        length
+                    )
+                  : ((): never => {
+                        throw new Error(
+                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                        );
+                    })();
 
         return encodedValues.map((encodedValue) => {
             return this.valueSerializable.fromBytes(

@@ -8,16 +8,13 @@
  *   - any
  */
 export function inReplicatedExecution(): boolean {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return false;
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.inReplicatedExecution();
     }
 
-    return globalThis._azleIcStable.inReplicatedExecution();
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.inReplicatedExecution();
+    }
+
+    return false;
 }

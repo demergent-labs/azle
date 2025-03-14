@@ -12,4 +12,4 @@ const inspectMessageCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(inspectMessageCanister), canisterName);
+runTests(getTests(inspectMessageCanister));

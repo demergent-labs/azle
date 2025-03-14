@@ -12,4 +12,4 @@ const phoneBookCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(phoneBookCanister), canisterName);
+runTests(getTests(phoneBookCanister));

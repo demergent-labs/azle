@@ -23,7 +23,11 @@ export default class {
 
         if (
             methodName === 'accessible' ||
-            methodName === '_azle_get_benchmarks'
+            methodName === '_azle_get_benchmarks' ||
+            methodName === '_azle_reject_callbacks_len' ||
+            methodName === '_azle_resolve_callbacks_len' ||
+            methodName === '_azle_timer_callbacks_len' ||
+            methodName === '_azle_actions_len'
         ) {
             return true;
         }

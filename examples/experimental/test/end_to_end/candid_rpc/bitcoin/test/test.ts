@@ -29,4 +29,4 @@ runTests(() => {
         'runs bitcoin tests while bitcoin daemon is running',
         getTests(bitcoinCanister)
     );
-}, canisterName);
+});

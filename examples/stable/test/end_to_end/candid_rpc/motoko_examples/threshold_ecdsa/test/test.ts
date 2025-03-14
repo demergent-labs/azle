@@ -16,4 +16,4 @@ const tEcdsaCanister = createActor(getCanisterId(canisterName), {
 // any tecdsa requests, so we are skipping these tests until we can think of
 // an elegant way to run these tests only after the replica is ready to process
 // them, when we are no longer skipping the tests we can remove the dummy test
-runTests(getTests(tEcdsaCanister), canisterName);
+runTests(getTests(tEcdsaCanister));

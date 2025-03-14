@@ -13,4 +13,4 @@ const counterCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(counterCanister), canisterName);
+runTests(getTests(counterCanister));

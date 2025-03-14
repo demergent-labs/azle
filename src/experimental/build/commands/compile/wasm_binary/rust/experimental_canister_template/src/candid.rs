@@ -28,6 +28,10 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
         let mut runtime = wasmedge_quickjs::Runtime::new();
 
         runtime.run_with_context(|context| {
+            context
+                .get_global()
+                .set("_azleActions", context.new_array().into());
+
             context.get_global().set(
                 "_azleNodeWasmEnvironment",
                 wasmedge_quickjs::JsValue::Bool(true),
@@ -36,6 +40,11 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
             context
                 .get_global()
                 .set("_azleCanisterMethodNames", context.new_object().into());
+
+            context.get_global().set(
+                "_azleIcpReplicaWasmEnvironment",
+                wasmedge_quickjs::JsValue::Bool(false),
+            );
 
             context
                 .get_global()

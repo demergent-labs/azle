@@ -12,4 +12,4 @@ const proxyCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(proxyCanister), canisterName);
+runTests(getTests(proxyCanister));

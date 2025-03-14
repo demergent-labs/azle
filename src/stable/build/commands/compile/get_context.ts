@@ -27,8 +27,7 @@ export function getContext(
     const envVars = getEnvVars(canisterConfig);
     const wasmData: WasmData = {
         envVars,
-        mainJsPath: join(canisterPath, `main.js`),
-        recordBenchmarks: process.env.AZLE_RECORD_BENCHMARKS === 'true'
+        mainJsPath: join(canisterPath, `main.js`)
     };
 
     return {
@@ -41,7 +40,16 @@ export function getContext(
 }
 
 function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
-    const env = canisterConfig.custom?.env ?? [];
+    const devEnv = canisterConfig.custom?.env ?? [];
+
+    // We add our own environment variables that we don't want to force
+    // the developer to define in their dfx.json
+    const env = [
+        ...devEnv,
+        'AZLE_LOG_ACTIONS',
+        'AZLE_RECORD_ACTIONS',
+        'AZLE_RECORD_BENCHMARKS'
+    ];
 
     return env
         .filter((envVarName) => process.env[envVarName] !== undefined)

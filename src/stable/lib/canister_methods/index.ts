@@ -361,7 +361,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                         options?.manual ?? false,
                         exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes
                     );
-                } catch (error: unknown) {
+                } catch (error) {
                     handleUncaughtError(error);
                 }
             };
@@ -371,8 +371,14 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                 true &&
             globalThis._azleExportedCanisterClassInstance === undefined
         ) {
-            globalThis._azleExportedCanisterClassInstance =
-                exportedCanisterClassInstance;
+            globalThis._azleDispatch({
+                type: 'SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE',
+                payload: exportedCanisterClassInstance,
+                location: {
+                    filepath: 'azle/src/stable/lib/canister_methods/index.ts',
+                    functionName: 'decoratorImplementation'
+                }
+            });
         }
     });
 }

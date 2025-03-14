@@ -12,4 +12,4 @@ const randomnessCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(randomnessCanister), canisterName);
+runTests(getTests(randomnessCanister));

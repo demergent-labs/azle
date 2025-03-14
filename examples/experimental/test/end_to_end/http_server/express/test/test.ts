@@ -6,4 +6,4 @@ import { getTests } from './tests';
 const canisterName = 'express';
 const canisterId = getCanisterId(canisterName);
 
-runTests(getTests(canisterId), canisterName);
+runTests(getTests(canisterId));

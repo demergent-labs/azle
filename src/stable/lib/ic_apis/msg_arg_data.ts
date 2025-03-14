@@ -16,16 +16,13 @@
  *   - after a successful inter-canister await from a composite query
  */
 export function msgArgData(): Uint8Array {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return new Uint8Array();
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return new Uint8Array(globalThis._azleIcExperimental.msgArgData());
     }
 
-    return globalThis._azleIcStable.msgArgData();
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.msgArgData();
+    }
+
+    return new Uint8Array();
 }

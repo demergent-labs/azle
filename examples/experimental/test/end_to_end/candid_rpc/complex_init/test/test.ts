@@ -28,4 +28,4 @@ const recInitCanister = createRecActor(getCanisterId(recInitCanisterName), {
 runTests(() => {
     describe('complex init canister', getTests(complexInitCanister));
     describe('rec init canister', getRecTests(recInitCanister));
-}, [complexInitCanisterName, recInitCanisterName]);
+});

@@ -12,4 +12,4 @@ const superheroesCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(superheroesCanister), canisterName);
+runTests(getTests(superheroesCanister));

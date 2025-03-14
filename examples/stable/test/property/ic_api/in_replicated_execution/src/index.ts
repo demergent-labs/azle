@@ -116,7 +116,11 @@ export default class {
 
         const acceptableMethods = [
             'getQueryInReplicatedModeIsInReplicatedExecution',
-            'getUpdateIsInReplicatedExecution'
+            'getUpdateIsInReplicatedExecution',
+            '_azle_reject_callbacks_len',
+            '_azle_resolve_callbacks_len',
+            '_azle_timer_callbacks_len',
+            '_azle_actions_len'
         ];
 
         if (acceptableMethods.includes(methodName)) {

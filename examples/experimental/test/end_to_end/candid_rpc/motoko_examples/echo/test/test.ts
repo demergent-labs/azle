@@ -13,4 +13,4 @@ const echoCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(echoCanister), canisterName);
+runTests(getTests(echoCanister));

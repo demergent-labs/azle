@@ -61,7 +61,7 @@ export function getPrelude(main: string): string {
             // behave in all async situations
             setTimeout(() => {
                 const canister = Canister.default !== undefined ? Canister.default() : Server(() => globalThis._azleNodeServer)();
-                if (globalThis._azleRecordBenchmarks === true) {
+                if (globalThis.process !== undefined && globalThis.process.env.AZLE_RECORD_BENCHMARKS === 'true') {
                     const methodMeta = canister.methodMeta;
 
                     globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {

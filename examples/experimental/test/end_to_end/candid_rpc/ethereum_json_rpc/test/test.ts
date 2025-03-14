@@ -20,4 +20,4 @@ const ethereumJsonRpcCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(ethereumJsonRpcCanister), canisterName);
+runTests(getTests(ethereumJsonRpcCanister));
