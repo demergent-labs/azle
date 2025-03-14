@@ -1,3 +1,5 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 ⚠️ **WARNING: Benchmark process failed for version 0.29.0**
 
 ⚠️ **WARNING: Benchmark process failed for version 0.28.0**

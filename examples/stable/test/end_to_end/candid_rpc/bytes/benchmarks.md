@@ -1,16 +1,18 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for bytes_canister
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                     |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | -------------------------- |
-| 0   | getBytes    | 2_018_969    | 1_397_587  | $0.0000018583 | $1.85             | <font color="red">0</font> |
-| 1   | getBytes    | 2_608_628    | 1_633_451  | $0.0000021720 | $2.17             | <font color="red">0</font> |
-| 2   | getBytes    | 9_250_613    | 4_290_245  | $0.0000057046 | $5.70             | <font color="red">0</font> |
-| 3   | getBytes    | 74_947_784   | 30_569_113 | $0.0000406468 | $40.64            | <font color="red">0</font> |
-| 4   | getBytes    | 147_941_233  | 59_766_493 | $0.0000794697 | $79.46            | <font color="red">0</font> |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                          |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------- |
+| 0   | getBytes    | 2_021_637    | 1_398_654  | $0.0000018597 | $1.85             | <font color="red">+2_668</font> |
+| 1   | getBytes    | 2_616_661    | 1_636_664  | $0.0000021762 | $2.17             | <font color="red">+8_033</font> |
+| 2   | getBytes    | 9_255_623    | 4_292_249  | $0.0000057073 | $5.70             | <font color="red">+5_010</font> |
+| 3   | getBytes    | 74_949_145   | 30_569_658 | $0.0000406476 | $40.64            | <font color="red">+1_361</font> |
+| 4   | getBytes    | 147_941_940  | 59_766_776 | $0.0000794701 | $79.47            | <font color="red">+707</font>   |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |

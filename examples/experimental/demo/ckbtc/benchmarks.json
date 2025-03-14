@@ -1,110 +1,6 @@
 {
     "wallet_backend": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "5374362"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1740776177190876279"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5322293"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1740776177664187699"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5655328"
-                    },
-                    "method_name": "2",
-                    "timestamp": {
-                        "__bigint__": "1740776177958453605"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5659716"
-                    },
-                    "method_name": "2",
-                    "timestamp": {
-                        "__bigint__": "1740776178673837063"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5655783"
-                    },
-                    "method_name": "1",
-                    "timestamp": {
-                        "__bigint__": "1740776239172984993"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5655235"
-                    },
-                    "method_name": "1",
-                    "timestamp": {
-                        "__bigint__": "1740776239419300130"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5332246"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1740776239714046261"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5319180"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1740776240186412785"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "13752348"
-                    },
-                    "method_name": "3",
-                    "timestamp": {
-                        "__bigint__": "1740776240434004877"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5331560"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1740776240939062321"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5329810"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1740776241186349354"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -204,6 +100,110 @@
                     "method_name": "0",
                     "timestamp": {
                         "__bigint__": "1741369080958286102"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "5429095"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1741977101308277160"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5379625"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1741977101556144820"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5714310"
+                    },
+                    "method_name": "2",
+                    "timestamp": {
+                        "__bigint__": "1741977102074778047"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5709440"
+                    },
+                    "method_name": "2",
+                    "timestamp": {
+                        "__bigint__": "1741977102572623784"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5709271"
+                    },
+                    "method_name": "1",
+                    "timestamp": {
+                        "__bigint__": "1741977162977624274"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5702601"
+                    },
+                    "method_name": "1",
+                    "timestamp": {
+                        "__bigint__": "1741977163476378236"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5374133"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1741977163723380807"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5366560"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1741977163971438774"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "13793965"
+                    },
+                    "method_name": "3",
+                    "timestamp": {
+                        "__bigint__": "1741977164220615310"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5375821"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1741977164723536456"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "5385033"
+                    },
+                    "method_name": "0",
+                    "timestamp": {
+                        "__bigint__": "1741977164973564857"
                     }
                 }
             ]

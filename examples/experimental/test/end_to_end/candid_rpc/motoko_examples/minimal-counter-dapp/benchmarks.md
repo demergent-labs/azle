@@ -1,22 +1,24 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for minimal_dapp
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | count       | 1_130_864    | 1_042_345 | $0.0000013860 | $1.38             | <font color="red">+1_550</font> |
-| 1   | count       | 1_100_523    | 1_030_209 | $0.0000013698 | $1.36             | <font color="red">+1_660</font> |
-| 2   | reset       | 1_101_219    | 1_030_487 | $0.0000013702 | $1.37             | <font color="red">+3_085</font> |
-| 3   | count       | 1_106_353    | 1_032_541 | $0.0000013729 | $1.37             | <font color="red">+1_844</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | count       | 1_132_228    | 1_042_891 | $0.0000013867 | $1.38             | <font color="red">+1_364</font>   |
+| 1   | count       | 1_101_605    | 1_030_642 | $0.0000013704 | $1.37             | <font color="red">+1_082</font>   |
+| 2   | reset       | 1_100_008    | 1_030_003 | $0.0000013696 | $1.36             | <font color="green">-1_211</font> |
+| 3   | count       | 1_107_332    | 1_032_932 | $0.0000013735 | $1.37             | <font color="red">+979</font>     |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | count       | 1_129_314    | 1_041_725 | $0.0000013852 | $1.38             |
-| 1   | count       | 1_098_863    | 1_029_545 | $0.0000013690 | $1.36             |
-| 2   | reset       | 1_098_134    | 1_029_253 | $0.0000013686 | $1.36             |
-| 3   | count       | 1_104_509    | 1_031_803 | $0.0000013720 | $1.37             |
+| 0   | count       | 1_130_864    | 1_042_345 | $0.0000013860 | $1.38             |
+| 1   | count       | 1_100_523    | 1_030_209 | $0.0000013698 | $1.36             |
+| 2   | reset       | 1_101_219    | 1_030_487 | $0.0000013702 | $1.37             |
+| 3   | count       | 1_106_353    | 1_032_541 | $0.0000013729 | $1.37             |
 
 ---
 

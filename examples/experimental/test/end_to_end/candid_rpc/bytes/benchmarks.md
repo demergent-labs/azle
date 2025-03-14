@@ -1,24 +1,26 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for bytes_canister
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------- |
-| 0   | getBytes    | 1_976_244    | 1_380_497  | $0.0000018356 | $1.83             | <font color="red">+2_974</font> |
-| 1   | getBytes    | 2_653_339    | 1_651_335  | $0.0000021957 | $2.19             | <font color="red">+2_764</font> |
-| 2   | getBytes    | 9_736_130    | 4_484_452  | $0.0000059628 | $5.96             | <font color="red">+4_205</font> |
-| 3   | getBytes    | 79_935_767   | 32_564_306 | $0.0000432998 | $43.29            | <font color="red">+3_688</font> |
-| 4   | getBytes    | 157_930_484  | 63_762_193 | $0.0000847827 | $84.78            | <font color="red">+3_830</font> |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
+| 0   | getBytes    | 1_976_327    | 1_380_530  | $0.0000018356 | $1.83             | <font color="red">+83</font>      |
+| 1   | getBytes    | 2_649_397    | 1_649_758  | $0.0000021936 | $2.19             | <font color="green">-3_942</font> |
+| 2   | getBytes    | 9_732_042    | 4_482_816  | $0.0000059607 | $5.96             | <font color="green">-4_088</font> |
+| 3   | getBytes    | 79_931_734   | 32_562_693 | $0.0000432976 | $43.29            | <font color="green">-4_033</font> |
+| 4   | getBytes    | 157_926_309  | 63_760_523 | $0.0000847805 | $84.78            | <font color="green">-4_175</font> |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | getBytes    | 1_973_270    | 1_379_308  | $0.0000018340 | $1.83             |
-| 1   | getBytes    | 2_650_575    | 1_650_230  | $0.0000021943 | $2.19             |
-| 2   | getBytes    | 9_731_925    | 4_482_770  | $0.0000059606 | $5.96             |
-| 3   | getBytes    | 79_932_079   | 32_562_831 | $0.0000432978 | $43.29            |
-| 4   | getBytes    | 157_926_654  | 63_760_661 | $0.0000847806 | $84.78            |
+| 0   | getBytes    | 1_976_244    | 1_380_497  | $0.0000018356 | $1.83             |
+| 1   | getBytes    | 2_653_339    | 1_651_335  | $0.0000021957 | $2.19             |
+| 2   | getBytes    | 9_736_130    | 4_484_452  | $0.0000059628 | $5.96             |
+| 3   | getBytes    | 79_935_767   | 32_564_306 | $0.0000432998 | $43.29            |
+| 4   | getBytes    | 157_930_484  | 63_762_193 | $0.0000847827 | $84.78            |
 
 ---
 

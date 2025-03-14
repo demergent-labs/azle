@@ -1,20 +1,6 @@
 {
     "canister1": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1788383"
-                    },
-                    "method_name": "sendNotification",
-                    "timestamp": {
-                        "__bigint__": "1740776228030942734"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -24,6 +10,20 @@
                     "method_name": "sendNotification",
                     "timestamp": {
                         "__bigint__": "1741368996085083016"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1788346"
+                    },
+                    "method_name": "sendNotification",
+                    "timestamp": {
+                        "__bigint__": "1741977080021656451"
                     }
                 }
             ]
@@ -31,20 +31,6 @@
     },
     "canister2": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "980058"
-                    },
-                    "method_name": "receiveNotification",
-                    "timestamp": {
-                        "__bigint__": "1740776228030942734"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -54,6 +40,20 @@
                     "method_name": "receiveNotification",
                     "timestamp": {
                         "__bigint__": "1741368996085083016"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "983291"
+                    },
+                    "method_name": "receiveNotification",
+                    "timestamp": {
+                        "__bigint__": "1741977080021656451"
                     }
                 }
             ]

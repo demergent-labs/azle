@@ -1,56 +1,6 @@
 {
     "sqlite": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "11915802200"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1740776305484817703"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "160378060"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1740776310943292175"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "75101221"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1740776311187751008"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "144092188"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1740776311433567422"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "83208309"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1740776311677263321"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -96,6 +46,56 @@
                     "method_name": "http_request_update",
                     "timestamp": {
                         "__bigint__": "1741368998178843331"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "11918545946"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1741977033112757740"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "147602751"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1741977042004911803"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "74729495"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1741977042497348672"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "143701782"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1741977042767743295"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "83026377"
+                    },
+                    "method_name": "http_request_update",
+                    "timestamp": {
+                        "__bigint__": "1741977043012595642"
                     }
                 }
             ]
