@@ -76,11 +76,10 @@ const CanisterConfigArb = fc
         fc
             .array(HeterogeneousQueryMethodArb, small)
             .chain((queryMethods) =>
-                fc.constant(
-                    [generateGetPreUpgradeExecutedCanisterMethod()].concat(
-                        queryMethods
-                    )
-                )
+                fc.constant<QueryMethod[]>([
+                    generateGetPreUpgradeExecutedCanisterMethod(),
+                    ...queryMethods
+                ])
             ),
         fc.array(HeterogeneousUpdateMethodArb, small)
     )
