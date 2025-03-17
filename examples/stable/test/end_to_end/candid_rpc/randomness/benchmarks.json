@@ -1,65 +1,6 @@
 {
     "randomness": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "985874576"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1740776232633596963"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1122981"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1740776235141763136"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1100860"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1740776235386472921"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1104698"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1740776235630980694"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1101917"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1740776235899192405"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1102030"
-                    },
-                    "method_name": "randomNumber",
-                    "timestamp": {
-                        "__bigint__": "1740776236374001669"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -114,6 +55,65 @@
                     "method_name": "randomNumber",
                     "timestamp": {
                         "__bigint__": "1741369003071735612"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "988556415"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1741977077165853086"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1125578"
+                    },
+                    "method_name": "randomNumber",
+                    "timestamp": {
+                        "__bigint__": "1741977081007459173"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1102137"
+                    },
+                    "method_name": "randomNumber",
+                    "timestamp": {
+                        "__bigint__": "1741977081251403107"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1101821"
+                    },
+                    "method_name": "randomNumber",
+                    "timestamp": {
+                        "__bigint__": "1741977081495987280"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1100865"
+                    },
+                    "method_name": "randomNumber",
+                    "timestamp": {
+                        "__bigint__": "1741977081738804768"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1104787"
+                    },
+                    "method_name": "randomNumber",
+                    "timestamp": {
+                        "__bigint__": "1741977082002839950"
                     }
                 }
             ]
