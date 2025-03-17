@@ -6,8 +6,8 @@ import {
     DidVisitor,
     VisitorData
 } from '../did_visitor';
+import { escapeCandidName } from '../escape_candid_name';
 import { extractCandid } from '../extract_candid';
-import { escapeCandidName } from '../quote_candid_name';
 
 /**
  * @internal

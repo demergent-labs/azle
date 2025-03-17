@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { escapeCandidName } from '#lib/did_file/visitor/quote_candid_name';
+import { escapeCandidName } from '#lib/did_file/visitor/escape_candid_name';
 import { jsonStringify } from '#lib/json';
 
 export type VisitorData = { value: any };

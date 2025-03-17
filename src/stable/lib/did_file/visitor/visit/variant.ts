@@ -1,8 +1,8 @@
 import { IDL } from '@dfinity/candid';
 
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
+import { escapeCandidName } from '../escape_candid_name';
 import { extractCandid } from '../extract_candid';
-import { escapeCandidName } from '../quote_candid_name';
 
 /**
  * @internal
