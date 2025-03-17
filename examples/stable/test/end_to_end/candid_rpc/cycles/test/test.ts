@@ -26,7 +26,4 @@ const intermediaryCanister = createIntermediaryActor(
     }
 );
 
-runTests(getTests(cyclesCanister, intermediaryCanister), [
-    cyclesCanisterName,
-    intermediaryCanisterName
-]);
+runTests(getTests(cyclesCanister, intermediaryCanister));

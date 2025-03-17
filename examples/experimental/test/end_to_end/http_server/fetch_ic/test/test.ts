@@ -4,4 +4,4 @@ import { getTests } from './tests';
 
 const canisterName = 'backend';
 
-runTests(getTests(canisterName), canisterName);
+runTests(getTests(canisterName));

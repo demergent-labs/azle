@@ -1,16 +1,18 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for simple_user_accounts
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | createUser  | 3_942_808    | 2_167_123 | $0.0000028816 | $2.88             | <font color="red">+5_371</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | createUser  | 3_940_777    | 2_166_310 | $0.0000028805 | $2.88             | <font color="green">-2_031</font> |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | createUser  | 3_937_437    | 2_164_974 | $0.0000028787 | $2.87             |
+| 0   | createUser  | 3_942_808    | 2_167_123 | $0.0000028816 | $2.88             |
 
 ---
 

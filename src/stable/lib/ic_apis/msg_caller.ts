@@ -18,18 +18,15 @@ import { Principal } from '@dfinity/principal';
  *   - any besides start
  */
 export function msgCaller(): Principal {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return Principal.fromHex('04'); // the anonymous principal
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return Principal.fromUint8Array(
             new Uint8Array(globalThis._azleIcExperimental.msgCaller())
         );
     }
 
-    return Principal.fromUint8Array(globalThis._azleIcStable.msgCaller());
+    if (globalThis._azleIcStable !== undefined) {
+        return Principal.fromUint8Array(globalThis._azleIcStable.msgCaller());
+    }
+
+    return Principal.fromHex('04'); // the anonymous principal
 }

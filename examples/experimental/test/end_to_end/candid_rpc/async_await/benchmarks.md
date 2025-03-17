@@ -1,22 +1,24 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for async_await
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name                  | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
-| --- | ---------------------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | getRandomnessDirectly        | 150_287_275  | 60_704_910 | $0.0000807175 | $80.71            | <font color="green">-14_385</font> |
-| 1   | getRandomnessIndirectly      | 150_333_459  | 60_723_383 | $0.0000807421 | $80.74            | <font color="green">-12_045</font> |
-| 2   | getRandomnessSuperIndirectly | 150_321_408  | 60_718_563 | $0.0000807357 | $80.73            | <font color="green">-72_091</font> |
-| 3   | returnPromiseVoid            | 150_461_015  | 60_774_406 | $0.0000808099 | $80.80            | <font color="red">+134_487</font>  |
+| Id  | Method Name                  | Instructions | Cycles  | USD           | USD/Million Calls | Change                                  |
+| --- | ---------------------------- | ------------ | ------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | getRandomnessDirectly        | 1_010_184    | 994_073 | $0.0000013218 | $1.32             | <font color="green">-149_277_091</font> |
+| 1   | getRandomnessIndirectly      | 978_251      | 981_300 | $0.0000013048 | $1.30             | <font color="green">-149_355_208</font> |
+| 2   | getRandomnessSuperIndirectly | 1_019_018    | 997_607 | $0.0000013265 | $1.32             | <font color="green">-149_302_390</font> |
+| 3   | returnPromiseVoid            | 963_575      | 975_430 | $0.0000012970 | $1.29             | <font color="green">-149_497_440</font> |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name                  | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ---------------------------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | getRandomnessDirectly        | 150_301_660  | 60_710_664 | $0.0000807251 | $80.72            |
-| 1   | getRandomnessIndirectly      | 150_345_504  | 60_728_201 | $0.0000807485 | $80.74            |
-| 2   | getRandomnessSuperIndirectly | 150_393_499  | 60_747_399 | $0.0000807740 | $80.77            |
-| 3   | returnPromiseVoid            | 150_326_528  | 60_720_611 | $0.0000807384 | $80.73            |
+| 0   | getRandomnessDirectly        | 150_287_275  | 60_704_910 | $0.0000807175 | $80.71            |
+| 1   | getRandomnessIndirectly      | 150_333_459  | 60_723_383 | $0.0000807421 | $80.74            |
+| 2   | getRandomnessSuperIndirectly | 150_321_408  | 60_718_563 | $0.0000807357 | $80.73            |
+| 3   | returnPromiseVoid            | 150_461_015  | 60_774_406 | $0.0000808099 | $80.80            |
 
 ---
 

@@ -39,7 +39,7 @@ runTests(() => {
         'run ckbtc tests while bitcoin daemon is running',
         getTests(configs)
     );
-}, canisterName);
+});
 
 async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     if (existsSync(`.bitcoin/regtest`)) {

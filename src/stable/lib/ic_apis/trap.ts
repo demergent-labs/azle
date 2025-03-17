@@ -15,16 +15,15 @@
  *   - any
  */
 export function trap(message: string): never {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        throw new Error('IC API not available');
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.trap(message);
     }
 
-    return globalThis._azleIcStable.trap(message);
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.trap(message);
+    }
+
+    throw new Error(
+        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+    );
 }

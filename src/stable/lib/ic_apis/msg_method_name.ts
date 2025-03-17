@@ -9,16 +9,13 @@
  *   - \@inspectMessage
  */
 export function msgMethodName(): string {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return '';
-    }
-
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.msgMethodName();
     }
 
-    return globalThis._azleIcStable.msgMethodName();
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.msgMethodName();
+    }
+
+    return '';
 }

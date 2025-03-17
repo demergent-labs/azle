@@ -3,23 +3,16 @@ import { CuzzConfig } from 'cuzz';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { DfxJson } from '#utils/types';
+import { getCanisterNames } from '.';
 
 export async function runFuzzTests(): Promise<void> {
-    const dfxJson = await getDfxJson();
     const cuzzConfig = await getCuzzConfig();
-    const canisterNames = getCanisterNames(dfxJson);
+    const canisterNames = await getCanisterNames();
     const callDelay = getCallDelay(cuzzConfig);
 
     for (const canisterName of canisterNames) {
         fuzzTestCanister(canisterName, callDelay);
     }
-}
-
-async function getDfxJson(): Promise<DfxJson> {
-    const dfxFile = await readFile(join(process.cwd(), 'dfx.json'), 'utf-8');
-
-    return JSON.parse(dfxFile);
 }
 
 async function getCuzzConfig(): Promise<CuzzConfig> {
@@ -33,14 +26,6 @@ async function getCuzzConfig(): Promise<CuzzConfig> {
     } catch {
         return {};
     }
-}
-
-function getCanisterNames(dfxJson: DfxJson): string[] {
-    if (dfxJson.canisters === undefined) {
-        throw new Error('No canisters found in dfx.json');
-    }
-
-    return Object.keys(dfxJson.canisters);
 }
 
 function getCallDelay(cuzzConfig: CuzzConfig): string {

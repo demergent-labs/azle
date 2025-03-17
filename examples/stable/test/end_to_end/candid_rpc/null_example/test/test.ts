@@ -12,4 +12,4 @@ const nullExampleCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(nullExampleCanister), canisterName);
+runTests(getTests(nullExampleCanister));

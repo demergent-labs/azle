@@ -33,14 +33,13 @@ export type RejectCode = 0 | 1 | 2 | 3 | 4 | 5 | 6;
  *   - after an unsuccessful inter-canister await from a composite query
  */
 export function msgRejectCode(): RejectCode {
-    if (
-        globalThis._azleIcStable === undefined &&
-        globalThis._azleIcExperimental === undefined
-    ) {
-        return 6;
+    if (globalThis._azleIcExperimental !== undefined) {
+        return globalThis._azleIcExperimental.msgRejectCode();
     }
 
-    return globalThis._azleIcExperimental !== undefined
-        ? globalThis._azleIcExperimental.msgRejectCode()
-        : globalThis._azleIcStable.msgRejectCode();
+    if (globalThis._azleIcStable !== undefined) {
+        return globalThis._azleIcStable.msgRejectCode();
+    }
+
+    return 6;
 }

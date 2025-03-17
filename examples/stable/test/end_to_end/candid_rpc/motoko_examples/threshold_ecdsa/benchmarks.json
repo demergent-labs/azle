@@ -1,29 +1,6 @@
 {
     "threshold_ecdsa": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "9268609"
-                    },
-                    "method_name": "publicKey",
-                    "timestamp": {
-                        "__bigint__": "1740776224219429316"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "9369067"
-                    },
-                    "method_name": "sign",
-                    "timestamp": {
-                        "__bigint__": "1740776224709732512"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -42,6 +19,29 @@
                     "method_name": "sign",
                     "timestamp": {
                         "__bigint__": "1741368989991377830"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "9323171"
+                    },
+                    "method_name": "publicKey",
+                    "timestamp": {
+                        "__bigint__": "1741977073620860508"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "9416263"
+                    },
+                    "method_name": "sign",
+                    "timestamp": {
+                        "__bigint__": "1741977074107128039"
                     }
                 }
             ]

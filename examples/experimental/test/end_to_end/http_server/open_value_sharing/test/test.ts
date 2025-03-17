@@ -14,4 +14,4 @@ const walletActor = createWalletActor(canisterId, {
     }
 });
 
-runTests(getTests(consumerActor, walletActor, agent), canisterName);
+runTests(getTests(consumerActor, walletActor, agent));

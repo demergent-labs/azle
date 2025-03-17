@@ -12,4 +12,4 @@ const tupleTypesCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(tupleTypesCanister), canisterName);
+runTests(getTests(tupleTypesCanister));

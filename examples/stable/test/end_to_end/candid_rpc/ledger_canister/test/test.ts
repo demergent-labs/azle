@@ -16,4 +16,4 @@ const ledgerCanister = createActor(getCanisterId(canisterName), {
 // TODO and move the tests into ledger_canister
 // TODO The error comes from generating the IDL types with the experimental canister APIs
 // TODO which I assume are out of date or incompatible with the newest version of dfx 0.25.0
-runTests(getTests(ledgerCanister as any), canisterName);
+runTests(getTests(ledgerCanister as any));

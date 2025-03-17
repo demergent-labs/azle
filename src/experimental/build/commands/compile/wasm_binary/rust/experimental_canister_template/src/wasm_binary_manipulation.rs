@@ -13,8 +13,6 @@ pub struct WasmData {
     pub main_js_path: String,
     #[serde(rename = "managementDid")]
     pub management_did: String,
-    #[serde(rename = "recordBenchmarks")]
-    pub record_benchmarks: bool,
 }
 
 #[inline(never)]

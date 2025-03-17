@@ -14,12 +14,20 @@ export default Canister({
     inspectMessage: inspectMessage(() => {
         console.info('inspectMessage called');
 
-        if (msgMethodName() === 'accessible') {
+        const methodName = msgMethodName();
+
+        if (
+            methodName === 'accessible' ||
+            methodName === '_azle_reject_callbacks_len' ||
+            methodName === '_azle_resolve_callbacks_len' ||
+            methodName === '_azle_timer_callbacks_len' ||
+            methodName === '_azle_actions_len'
+        ) {
             ic.acceptMessage();
             return;
         }
 
-        if (msgMethodName() === 'inaccessible') {
+        if (methodName === 'inaccessible') {
             return;
         }
 

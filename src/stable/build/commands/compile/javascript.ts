@@ -179,10 +179,10 @@ function experimentalMessage(importName: string): string {
 
 function handleBenchmarking(): string {
     return /*TS*/ `
-        if (globalThis._azleRecordBenchmarks === true) {
+        if (globalThis.process !== undefined && globalThis.process.env.AZLE_RECORD_BENCHMARKS === 'true') {
             const methodMeta = exportedCanisterClassInstance._azleMethodMeta;
 
-            globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
+            const canisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
                 if (value === undefined) {
                     return acc;
                 }
@@ -198,6 +198,15 @@ function handleBenchmarking(): string {
                     return { ...acc, [indexString]: value.name };
                 }
             }, {});
+
+            globalThis._azleDispatch({
+                type: 'SET_AZLE_CANISTER_METHOD_NAMES',
+                payload: canisterMethodNames,
+                location: {
+                    filepath: 'azle/src/stable/build/commands/compile/javascript.ts',
+                    functionName: 'handleBenchmarking'
+                }
+            });
         }
     `;
 }

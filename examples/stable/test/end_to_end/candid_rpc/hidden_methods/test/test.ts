@@ -12,4 +12,4 @@ const hiddenMethodsCanister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(hiddenMethodsCanister), canisterName);
+runTests(getTests(hiddenMethodsCanister));

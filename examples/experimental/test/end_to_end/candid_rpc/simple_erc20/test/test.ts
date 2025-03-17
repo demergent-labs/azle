@@ -12,4 +12,4 @@ const simpleErc20Canister = createActor(getCanisterId(canisterName), {
     }
 });
 
-runTests(getTests(simpleErc20Canister), canisterName);
+runTests(getTests(simpleErc20Canister));
