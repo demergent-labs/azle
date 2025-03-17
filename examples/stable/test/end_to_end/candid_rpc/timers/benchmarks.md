@@ -1,20 +1,22 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for timers
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | setTimers   | 9_748_416    | 4_489_366 | $0.0000059694 | $5.96             | <font color="red">0</font>      |
-| 1   | clearTimer  | 1_243_898    | 1_087_559 | $0.0000014461 | $1.44             | <font color="red">+58</font>    |
-| 2   | clearTimer  | 1_245_349    | 1_088_139 | $0.0000014469 | $1.44             | <font color="red">+1_434</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | setTimers   | 9_929_640    | 4_561_856 | $0.0000060658 | $6.06             | <font color="red">+181_224</font> |
+| 1   | clearTimer  | 1_259_807    | 1_093_922 | $0.0000014546 | $1.45             | <font color="red">+15_909</font>  |
+| 2   | clearTimer  | 1_259_982    | 1_093_992 | $0.0000014546 | $1.45             | <font color="red">+14_633</font>  |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
 | 0   | setTimers   | 9_748_416    | 4_489_366 | $0.0000059694 | $5.96             |
-| 1   | clearTimer  | 1_243_840    | 1_087_536 | $0.0000014461 | $1.44             |
-| 2   | clearTimer  | 1_243_915    | 1_087_566 | $0.0000014461 | $1.44             |
+| 1   | clearTimer  | 1_243_898    | 1_087_559 | $0.0000014461 | $1.44             |
+| 2   | clearTimer  | 1_245_349    | 1_088_139 | $0.0000014469 | $1.44             |
 
 ---
 

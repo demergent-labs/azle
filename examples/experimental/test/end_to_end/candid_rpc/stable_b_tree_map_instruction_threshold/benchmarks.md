@@ -1,20 +1,22 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for stable_b_tree_map_instruction_threshold
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                 |
-| --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | -------------------------------------- |
-| 0   | insertSmallRecord  | 17_812_934_077 | 13_925_763_630 | $0.0185166701 | $18_516.67        | <font color="green">-38_410_499</font> |
-| 1   | insertMediumRecord | 16_031_612_821 | 12_813_235_128 | $0.0170373744 | $17_037.37        | <font color="green">-12_324_205</font> |
-| 2   | insertLargeRecord  | 18_460_391_789 | 14_584_746_715 | $0.0193929002 | $19_392.90        | <font color="green">-9_557_131</font>  |
+| Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | insertSmallRecord  | 17_371_073_974 | 13_749_019_589 | $0.0182816589 | $18_281.65        | <font color="green">-441_860_103</font> |
+| 1   | insertMediumRecord | 15_761_043_697 | 12_305_007_478 | $0.0163615993 | $16_361.59        | <font color="green">-270_569_124</font> |
+| 2   | insertLargeRecord  | 18_333_390_745 | 14_533_946_298 | $0.0193253524 | $19_325.35        | <font color="green">-127_001_044</font> |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls |
 | --- | ------------------ | -------------- | -------------- | ------------- | ----------------- |
-| 0   | insertSmallRecord  | 17_851_344_576 | 13_941_127_830 | $0.0185370994 | $18_537.09        |
-| 1   | insertMediumRecord | 16_043_937_026 | 12_818_164_810 | $0.0170439292 | $17_043.92        |
-| 2   | insertLargeRecord  | 18_469_948_920 | 14_588_569_568 | $0.0193979833 | $19_397.98        |
+| 0   | insertSmallRecord  | 17_812_934_077 | 13_925_763_630 | $0.0185166701 | $18_516.67        |
+| 1   | insertMediumRecord | 16_031_612_821 | 12_813_235_128 | $0.0170373744 | $17_037.37        |
+| 2   | insertLargeRecord  | 18_460_391_789 | 14_584_746_715 | $0.0193929002 | $19_392.90        |
 
 ---
 

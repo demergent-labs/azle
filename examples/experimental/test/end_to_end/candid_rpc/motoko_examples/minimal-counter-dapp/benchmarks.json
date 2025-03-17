@@ -1,47 +1,6 @@
 {
     "minimal_dapp": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1129314"
-                    },
-                    "method_name": "count",
-                    "timestamp": {
-                        "__bigint__": "1740776201905566872"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1098863"
-                    },
-                    "method_name": "count",
-                    "timestamp": {
-                        "__bigint__": "1740776202153091067"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1098134"
-                    },
-                    "method_name": "reset",
-                    "timestamp": {
-                        "__bigint__": "1740776202442456142"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1104509"
-                    },
-                    "method_name": "count",
-                    "timestamp": {
-                        "__bigint__": "1740776202914608142"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -78,6 +37,47 @@
                     "method_name": "count",
                     "timestamp": {
                         "__bigint__": "1741368970568289688"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1132228"
+                    },
+                    "method_name": "count",
+                    "timestamp": {
+                        "__bigint__": "1741977036521081471"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1101605"
+                    },
+                    "method_name": "count",
+                    "timestamp": {
+                        "__bigint__": "1741977036767780193"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1100008"
+                    },
+                    "method_name": "reset",
+                    "timestamp": {
+                        "__bigint__": "1741977037036109943"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1107332"
+                    },
+                    "method_name": "count",
+                    "timestamp": {
+                        "__bigint__": "1741977037506577745"
                     }
                 }
             ]
