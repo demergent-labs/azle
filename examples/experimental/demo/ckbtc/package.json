@@ -28,6 +28,6 @@
         "azle": "0.30.0"
     },
     "devDependencies": {
-        "@azle/ckbtc_end_to_end_test_functional_syntax": "1.0.0"
+        "@azle/ckbtc_end_to_end_test_functional_syntax": "file:../../test/end_to_end/candid_rpc/ckbtc"
     }
 }
