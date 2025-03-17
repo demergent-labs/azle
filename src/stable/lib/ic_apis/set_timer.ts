@@ -5,6 +5,7 @@ import { handleUncaughtError, validateUnsignedInteger } from '../error';
  *
  * @param delay - The time to wait before execution, in seconds. Maximum size 2^53 - 1
  * @param callback - The callback to execute. Can be async
+ * @param asyncCleanup - If `true` (the default), another timer will be set with delay `0` to delete the global state created internally by Azle for this timer invocation. If your timer's callback does not trap, the extra timer is technically unnecessary. This is set to `true` by default for extra safety. This was designed for Azle's internal use, and you most likely should not attempt to change it
  *
  * @returns The timer ID (used with `clearTimer` to cancel the timer before it executes)
  *
