@@ -1,17 +1,19 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for randomness
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name  | Instructions | Cycles      | USD           | USD/Million Calls | Change                     |
-| --- | ------------ | ------------ | ----------- | ------------- | ----------------- | -------------------------- |
-| 0   | postUpgrade  | 985_874_576  | 394_939_830 | $0.0005251396 | $525.13           | <font color="red">0</font> |
-| 1   | randomNumber | 1_122_981    | 1_039_192   | $0.0000013818 | $1.38             | <font color="red">0</font> |
-| 2   | randomNumber | 1_100_860    | 1_030_344   | $0.0000013700 | $1.37             | <font color="red">0</font> |
-| 3   | randomNumber | 1_104_698    | 1_031_879   | $0.0000013721 | $1.37             | <font color="red">0</font> |
-| 4   | randomNumber | 1_101_917    | 1_030_766   | $0.0000013706 | $1.37             | <font color="red">0</font> |
-| 5   | randomNumber | 1_102_030    | 1_030_812   | $0.0000013706 | $1.37             | <font color="red">0</font> |
+| Id  | Method Name  | Instructions | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ------------ | ------------ | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade  | 988_556_415  | 396_012_566 | $0.0005265660 | $526.56           | <font color="red">+2_681_839</font> |
+| 1   | randomNumber | 1_125_578    | 1_040_231   | $0.0000013832 | $1.38             | <font color="red">+2_597</font>     |
+| 2   | randomNumber | 1_102_137    | 1_030_854   | $0.0000013707 | $1.37             | <font color="red">+1_277</font>     |
+| 3   | randomNumber | 1_101_821    | 1_030_728   | $0.0000013705 | $1.37             | <font color="green">-2_877</font>   |
+| 4   | randomNumber | 1_100_865    | 1_030_346   | $0.0000013700 | $1.37             | <font color="green">-1_052</font>   |
+| 5   | randomNumber | 1_104_787    | 1_031_914   | $0.0000013721 | $1.37             | <font color="red">+2_757</font>     |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name  | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ------------ | ------------ | ----------- | ------------- | ----------------- |
