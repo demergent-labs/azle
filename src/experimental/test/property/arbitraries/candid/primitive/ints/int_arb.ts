@@ -30,7 +30,7 @@ export function IntDefinitionArb(
 
 export function IntValueArb(): fc.Arbitrary<CandidValues<bigint>> {
     return SimpleCandidValuesArb(
-        fc.bigInt(-1000000000000000000n, 1000000000000000000n), // TODO Remove min and max once https://github.com/second-state/wasmedge-quickjs/issues/125
+        fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n), // TODO Remove min and max once https://github.com/second-state/wasmedge-quickjs/issues/125
         bigintToSrcLiteral
     );
 }

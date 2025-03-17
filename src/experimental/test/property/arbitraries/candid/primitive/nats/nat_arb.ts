@@ -30,7 +30,7 @@ export function NatDefinitionArb(
 
 export function NatValueArb(): fc.Arbitrary<CandidValues<bigint>> {
     return SimpleCandidValuesArb(
-        fc.bigUint(1000000000000000000n), // TODO Remove max once https://github.com/second-state/wasmedge-quickjs/issues/125
+        fc.bigInt(0n, 1_000_000_000_000_000_000n), // TODO Remove max once https://github.com/second-state/wasmedge-quickjs/issues/125
         bigintToSrcLiteral
     );
 }

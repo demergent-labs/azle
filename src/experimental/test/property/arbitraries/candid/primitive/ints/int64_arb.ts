@@ -29,5 +29,11 @@ export function Int64DefinitionArb(
 }
 
 export function Int64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {
-    return SimpleCandidValuesArb(fc.bigIntN(60), bigintToSrcLiteral); // TODO set back to 64 once https://github.com/second-state/wasmedge-quickjs/issues/125
+    return SimpleCandidValuesArb(
+        fc.bigInt({
+            min: -(2n ** BigInt(59)),
+            max: 2n ** BigInt(59) - 1n
+        }),
+        bigintToSrcLiteral
+    ); // TODO set back to 63 once https://github.com/second-state/wasmedge-quickjs/issues/125
 }
