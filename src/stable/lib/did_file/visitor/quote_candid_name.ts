@@ -3,7 +3,7 @@
  *
  * Internal list of Candid language keywords that need to be escaped in identifiers.
  *
- * These keywords cannot be used as raw identifiers in Candid and must be quoted when used as field names.
+ * These keywords cannot be used as raw identifiers in Candid and must be escaped when used as field names.
  */
 const CANDID_KEYWORDS = [
     'blob',
@@ -35,39 +35,53 @@ const CANDID_KEYWORDS = [
 /**
  * @internal
  *
- * Internal helper that quotes Candid names if they are reserved keywords or contain special characters.
+ * Internal helper that escapes Candid names if they are reserved keywords or contain special characters.
  *
- * These names cannot be used as raw identifiers in Candid and must be quoted when used as names.
+ * These names cannot be used as raw identifiers in Candid and must be escaped when used as names.
  *
- * @param key - The name to potentially quote
- * @returns The name, quoted if it's a reserved Candid keyword or contains special characters.
+ * @param key - The name to potentially escape
+ * @returns The name, escaped if it's a reserved Candid keyword or contains special characters.
  *
  * @example
- * quoteCandidName('text')     // returns '"text"'
- * quoteCandidName('myField')  // returns 'myField'
+ * escapeCandidName('text')     // returns '"text"'
+ * escapeCandidName('myField')  // returns 'myField'
+ * escapeCandidName('3nameWithNumber')  // returns '"3nameWithNumber"'
+ * escapeCandidName('nameWith(Parentheses)')  // returns '"nameWith(Parentheses)"'
+ * escapeCandidName('nameWith"Quotes"')  // returns '"nameWith\\"Quotes\\""'
  */
-export function quoteCandidName(key: string): string {
+export function escapeCandidName(key: string): string {
     // Candid name is either an id or a text
     // <name> ::= <id> | <text>
 
-    // Check if the key is an id
     // <id>   ::= (A..Z|a..z|_)(A..Z|a..z|_|0..9)*
-    if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) {
-        if (CANDID_KEYWORDS.includes(key)) {
-            return `"${key}"`;
-        }
-        return key;
+    const isId = /^[A-Za-z_][A-Za-z0-9_]*$/.test(key);
+    if (isId === true) {
+        return escapeId(key);
     }
 
     // Key is text
     // <text> ::= "<char>*"
+    return escapeText(key);
+}
 
+function escapeId(key: string): string {
+    if (CANDID_KEYWORDS.includes(key) === true) {
+        return `"${key}"`;
+    }
+    return key;
+}
+
+function escapeText(key: string): string {
     // TODO: The bellow code enables developers to use method and field names
     // TODO: that contain "text". We don't currently have a good way to test
     // TODO: this. See https://github.com/demergent-labs/azle/issues/2823 for
     // TODO: more details.
+
     // Escape double quotes and backslashes
-    if (['"', '\\'].some((ch: string) => key.includes(ch))) {
+    const containsBackslashOrQuote = ['"', '\\'].some((ch: string) =>
+        key.includes(ch)
+    );
+    if (containsBackslashOrQuote === true) {
         const escapedKey: string = key.replace(
             /[\\"]/g,
             (match: string): string => `\\${match}`

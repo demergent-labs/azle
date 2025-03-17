@@ -2,7 +2,7 @@ import { IDL } from '@dfinity/candid';
 
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 import { extractCandid } from '../extract_candid';
-import { quoteCandidName } from '../quote_candid_name';
+import { escapeCandidName } from '../quote_candid_name';
 
 /**
  * @internal
@@ -18,7 +18,7 @@ export function visitRecord(
     );
     const candid = extractCandid(candidFields);
     const field_strings = fields.map(
-        ([key, _value], index) => `${quoteCandidName(key)}:${candid[0][index]}`
+        ([key, _value], index) => `${escapeCandidName(key)}:${candid[0][index]}`
     );
     return [`record {${field_strings.join('; ')}}`, candid[1]];
 }

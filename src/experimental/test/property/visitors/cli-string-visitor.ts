@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { quoteCandidName } from '#lib/did_file/visitor/quote_candid_name';
+import { escapeCandidName } from '#lib/did_file/visitor/quote_candid_name';
 import { jsonStringify } from '#lib/json';
 
 export type VisitorData = { value: any };
@@ -27,7 +27,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): string {
         const [principal, funcName] = data.value;
-        const quotedFuncName = quoteCandidName(funcName);
+        const quotedFuncName = escapeCandidName(funcName);
         return `func "${principal.toString()}".${quotedFuncName}`;
     }
     visitOpt<T>(
@@ -62,7 +62,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
                 value: data.value[normalizedFieldName]
             });
             const key = fieldName.startsWith('"')
-                ? quoteCandidName(fieldName.slice(1, -1))
+                ? escapeCandidName(fieldName.slice(1, -1))
                 : fieldName;
             return `${key} = ${value}`;
         });
@@ -100,7 +100,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
                     value: data.value[normalizedFieldName]
                 });
                 const key = name.startsWith('"')
-                    ? quoteCandidName(name.slice(1, -1))
+                    ? escapeCandidName(name.slice(1, -1))
                     : name;
                 if (value === 'null') {
                     return `variant {${key}}`;
