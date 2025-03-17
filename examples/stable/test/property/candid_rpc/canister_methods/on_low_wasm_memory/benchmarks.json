@@ -1,0 +1,112 @@
+{
+    "canister": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1206987"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977016971406180"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1138446"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977021170167991"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1139811"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977024440526139"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1140641"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977027914102847"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1140932"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977031584477344"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1137561"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977035470865612"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1140374"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977039777563849"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1137659"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977044331225615"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1138193"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977048635069271"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1137162"
+                    },
+                    "method_name": "addRandomBytes",
+                    "timestamp": {
+                        "__bigint__": "1741977053560584984"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "99500"
+                    },
+                    "method_name": "onLowWasmMemory",
+                    "timestamp": {
+                        "__bigint__": "1741977056176410765"
+                    }
+                }
+            ]
+        }
+    }
+}

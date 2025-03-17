@@ -1,0 +1,31 @@
+{
+    "canister": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1006061"
+                    },
+                    "method_name": "measureSum",
+                    "timestamp": {
+                        "__bigint__": "1741977022221673108"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1247269"
+                    },
+                    "method_name": "measureSumTimer",
+                    "timestamp": {
+                        "__bigint__": "1741977139952874204"
+                    }
+                }
+            ]
+        }
+    }
+}

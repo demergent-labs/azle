@@ -1,17 +1,19 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for calc
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                     |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------- |
-| 0   | add         | 1_361_575    | 1_134_630 | $0.0000015087 | $1.50             | <font color="red">0</font> |
-| 1   | sub         | 1_316_656    | 1_116_662 | $0.0000014848 | $1.48             | <font color="red">0</font> |
-| 2   | mul         | 1_312_212    | 1_114_884 | $0.0000014824 | $1.48             | <font color="red">0</font> |
-| 3   | div         | 1_660_785    | 1_254_314 | $0.0000016678 | $1.66             | <font color="red">0</font> |
-| 4   | clearall    | 941_127      | 966_450   | $0.0000012851 | $1.28             | <font color="red">0</font> |
-| 5   | add         | 1_309_604    | 1_113_841 | $0.0000014810 | $1.48             | <font color="red">0</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | add         | 1_359_409    | 1_133_763 | $0.0000015075 | $1.50             | <font color="green">-2_166</font> |
+| 1   | sub         | 1_316_661    | 1_116_664 | $0.0000014848 | $1.48             | <font color="red">+5</font>       |
+| 2   | mul         | 1_317_374    | 1_116_949 | $0.0000014852 | $1.48             | <font color="red">+5_162</font>   |
+| 3   | div         | 1_662_341    | 1_254_936 | $0.0000016687 | $1.66             | <font color="red">+1_556</font>   |
+| 4   | clearall    | 941_111      | 966_444   | $0.0000012851 | $1.28             | <font color="green">-16</font>    |
+| 5   | add         | 1_311_956    | 1_114_782 | $0.0000014823 | $1.48             | <font color="red">+2_352</font>   |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |

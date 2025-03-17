@@ -1,29 +1,6 @@
 {
     "func_types": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "4855814774"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1740776219371467670"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "10520910"
-                    },
-                    "method_name": "getNotifierFromNotifiersCanister",
-                    "timestamp": {
-                        "__bigint__": "1740776232448040134"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -45,6 +22,39 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "4860848380"
+                    },
+                    "method_name": "init",
+                    "timestamp": {
+                        "__bigint__": "1741977030032689095"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1423155"
+                    },
+                    "method_name": "getNotifierFromNotifiersCanister",
+                    "timestamp": {
+                        "__bigint__": "1741977048822471398"
+                    }
+                }
+            ]
+        }
+    },
+    "notifiers": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": []
         }
     }
 }
