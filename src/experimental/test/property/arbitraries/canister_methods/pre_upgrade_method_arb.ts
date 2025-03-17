@@ -30,7 +30,7 @@ export function PreUpgradeMethodArb(
     const constraints = context.constraints;
     return fc
         .tuple(
-            UniqueIdentifierArb('canisterProperties'),
+            UniqueIdentifierArb('canisterProperties', 'property'),
             VoidArb({ ...context, constraints: {} }),
             MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
@@ -68,14 +68,18 @@ export function PreUpgradeMethodArb(
                         ? [methodImplementation]
                         : [];
 
+                const escapedFunctionName = functionName.startsWith('"')
+                    ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                    : functionName;
+
                 const sourceCode =
                     api === 'functional'
-                        ? `${functionName}: preUpgrade(${
+                        ? `${escapedFunctionName}: preUpgrade(${
                               methodImplementationLocation === 'STANDALONE'
                                   ? methodName
                                   : methodImplementation
                           })`
-                        : `@preUpgrade\n${functionName}${methodImplementation}`;
+                        : `@preUpgrade\n${escapedFunctionName}${methodImplementation}`;
 
                 const tests = generator.generateTests(
                     functionName,

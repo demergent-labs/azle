@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { JsFunctionNameArb } from './js_function_name_arb';
+import { JsIdentifierNameArb, JsPropertyNameArb } from './js_function_name_arb';
 
 type IdentifiersMap = {
     [key: string]: Set<string>;
@@ -15,15 +15,22 @@ let identifiers: IdentifiersMap = {};
  * @param key the grouping in which to keep this identifier unique
  * @returns an arbitrary identifier string
  */
-export function UniqueIdentifierArb(key: string): fc.Arbitrary<string> {
+export function UniqueIdentifierArb(
+    key: string,
+    identifierOrProperty: 'identifier' | 'property' = 'identifier'
+): fc.Arbitrary<string> {
     if (!(key in identifiers)) {
         identifiers[key] = new Set();
     }
 
-    return JsFunctionNameArb.filter(
-        (sample) => !identifiers[key].has(sample)
-    ).map((sample) => {
-        identifiers[key].add(sample);
-        return sample;
-    });
+    return (
+        identifierOrProperty === 'identifier'
+            ? JsIdentifierNameArb
+            : JsPropertyNameArb
+    )
+        .filter((sample) => !identifiers[key].has(sample))
+        .map((sample) => {
+            identifiers[key].add(sample);
+            return sample;
+        });
 }
