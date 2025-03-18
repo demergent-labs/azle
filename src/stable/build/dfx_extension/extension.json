@@ -9,8 +9,8 @@
     "canister_type": {
         "defaults": {
             "candid": ".azle/{{canister_name}}/{{canister_name}}.did",
-            "build": "npm --prefix={{main}} exec azle compile {{canister_name}}",
-            "post_install": "npm --prefix={{main}} exec azle upload-assets {{canister_name}}",
+            "build": "npm --offline --prefix={{main}} exec azle compile {{canister_name}}",
+            "post_install": "npm --offline --prefix={{main}} exec azle upload-assets {{canister_name}}",
             "wasm": ".azle/{{canister_name}}/{{canister_name}}.wasm",
             "gzip": true,
             "metadata": [
