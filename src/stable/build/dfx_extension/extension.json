@@ -9,8 +9,8 @@
     "canister_type": {
         "defaults": {
             "candid": ".azle/{{canister_name}}/{{canister_name}}.did",
-            "build": "{{canister.custom_azle.azle_bin}} compile {{canister_name}}",
-            "post_install": "{{canister.custom_azle.azle_bin}} upload-assets {{canister_name}}",
+            "build": "npm --prefix={{main}} exec azle compile {{canister_name}}",
+            "post_install": "npm --prefix={{main}} exec azle upload-assets {{canister_name}}",
             "wasm": ".azle/{{canister_name}}/{{canister_name}}.wasm",
             "gzip": true,
             "metadata": [
@@ -30,9 +30,6 @@
                     "typescript": {},
                     "javascript": {}
                 }
-            },
-            "custom_azle": {
-                "azle_bin": "node_modules/.bin/azle"
             }
         }
     }
