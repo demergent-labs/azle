@@ -46,12 +46,18 @@ export async function executeAndReplyWithCandidSerde(
         paramIdlTypes,
         canisterMethodIdlParamTypes
     );
+
+    console.log('decodedArgs');
+
     const unencodedResult = await getUnencodedResult(
         mode,
         manual,
         decodedArgs,
         callback
     );
+
+    console.log('unencodedResult', unencodedResult);
+
     encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }
 
@@ -174,6 +180,8 @@ function encodeResultAndReply(
         [...(returnIdlType !== undefined ? [returnIdlType] : [])],
         [...(unencodedResult !== undefined ? [unencodedResult] : [])]
     );
+
+    console.log('encodedResult', encodedResult);
 
     msgReply(encodedResult);
 }

@@ -2,10 +2,10 @@ use std::error::Error;
 
 use ic_cdk::trap;
 use rquickjs::{
-    function::IntoArgs, promise::PromiseState, Ctx, Exception, Function, Promise, Value,
+    Ctx, Exception, Function, Promise, Value, function::IntoArgs, promise::PromiseState,
 };
 
-use crate::quickjs_with_ctx::run_event_loop;
+// use crate::quickjs_with_ctx::run_event_loop;
 
 pub fn quickjs_call_with_error_handling<'a>(
     ctx: Ctx<'a>,
@@ -18,7 +18,7 @@ pub fn quickjs_call_with_error_handling<'a>(
     };
 
     // TODO we run the event loop here and also in handle_promise_error, is that a problem?
-    run_event_loop(ctx.clone());
+    // run_event_loop(ctx.clone());
 
     if result.is_promise() {
         let promise: Promise = result
@@ -43,7 +43,7 @@ fn trap_on_last_exception<T>(ctx: Ctx) -> Result<T, Box<dyn Error>> {
 }
 
 pub fn handle_promise_error(ctx: Ctx, promise: Promise) -> Result<(), Box<dyn Error>> {
-    run_event_loop(ctx.clone());
+    // run_event_loop(ctx.clone());
 
     match promise.state() {
         PromiseState::Rejected => {

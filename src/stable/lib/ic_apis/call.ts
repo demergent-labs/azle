@@ -1,11 +1,10 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { v4 } from 'uuid';
 
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
 
-type CallOptions<Args extends any[] | Uint8Array | undefined> = {
+export type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     /**
      * Candid types for encoding the arguments
      */
@@ -88,10 +87,7 @@ export async function call<
     method: string,
     options?: CallOptions<Args>
 ): Promise<Return> {
-    if (
-        globalThis._azleIcExperimental === undefined &&
-        globalThis._azleIcStable === undefined
-    ) {
+    if (globalThis._azleIcStable === undefined) {
         return undefined as Return;
     }
 
@@ -171,32 +167,15 @@ function getCyclesString<Args extends any[] | Uint8Array | undefined>(
     return cycles.toString();
 }
 
+// TODO should I resolve the Promise in Rust in notifyRaw?
 function handleOneWay<Return>(
     canisterIdBytes: Uint8Array,
     method: string,
     argsRaw: Uint8Array,
     cyclesString: string
 ): Promise<Return> {
-    if (
-        globalThis._azleIcExperimental === undefined &&
-        globalThis._azleIcStable === undefined
-    ) {
-        throw new Error(
-            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
-        );
-    }
-
-    if (globalThis._azleIcExperimental !== undefined) {
-        globalThis._azleIcExperimental.notifyRaw(
-            canisterIdBytes.buffer instanceof ArrayBuffer
-                ? canisterIdBytes.buffer
-                : new Uint8Array(canisterIdBytes).buffer,
-            method,
-            argsRaw.buffer instanceof ArrayBuffer
-                ? argsRaw.buffer
-                : new Uint8Array(argsRaw).buffer,
-            cyclesString
-        );
+    if (globalThis._azleIcStable === undefined) {
+        throw new Error('globalThis._azleIcStable is not defined');
     }
 
     if (globalThis._azleIcStable !== undefined) {
@@ -211,7 +190,8 @@ function handleOneWay<Return>(
     return Promise.resolve(undefined as Return);
 }
 
-function handleTwoWay<Return>(
+// TODO should Return be different somehow?
+async function handleTwoWay<Return>(
     canisterIdBytes: Uint8Array,
     method: string,
     argsRaw: Uint8Array,
@@ -219,107 +199,23 @@ function handleTwoWay<Return>(
     raw: boolean,
     returnIdlType?: IDL.Type
 ): Promise<Return> {
-    return new Promise((resolve, reject) => {
-        const promiseId = v4();
-        const globalResolveId = `_resolve_${promiseId}`;
-        const globalRejectId = `_reject_${promiseId}`;
-
-        createResolveCallback<Return>(
-            globalResolveId,
-            resolve,
-            raw,
-            returnIdlType
+    if (globalThis._azleIcStable !== undefined) {
+        const result = await globalThis._azleIcStable.callRaw(
+            canisterIdBytes,
+            method,
+            argsRaw,
+            cyclesString
         );
-        createRejectCallback(globalRejectId, reject);
 
-        if (
-            globalThis._azleIcExperimental === undefined &&
-            globalThis._azleIcStable === undefined
-        ) {
-            throw new Error(
-                'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
-            );
+        if (raw === true) {
+            return result as Return;
+        } else {
+            return idlDecode(
+                returnIdlType === undefined ? [] : [returnIdlType],
+                result
+            )[0] as Return;
         }
+    }
 
-        if (globalThis._azleIcExperimental !== undefined) {
-            globalThis._azleIcExperimental.callRaw(
-                globalResolveId,
-                globalRejectId,
-                canisterIdBytes.buffer instanceof ArrayBuffer
-                    ? canisterIdBytes.buffer
-                    : new Uint8Array(canisterIdBytes).buffer,
-                method,
-                argsRaw.buffer instanceof ArrayBuffer
-                    ? argsRaw.buffer
-                    : new Uint8Array(argsRaw).buffer,
-                cyclesString
-            );
-        }
-
-        if (globalThis._azleIcStable !== undefined) {
-            globalThis._azleIcStable.callRaw(
-                globalResolveId,
-                globalRejectId,
-                canisterIdBytes,
-                method,
-                argsRaw,
-                cyclesString
-            );
-        }
-    });
-}
-
-function createResolveCallback<Return>(
-    globalResolveId: string,
-    resolve: (value: Return | PromiseLike<Return>) => void,
-    raw: boolean,
-    returnIdlType?: IDL.Type
-): void {
-    globalThis._azleDispatch({
-        type: 'SET_AZLE_RESOLVE_CALLBACK',
-        payload: {
-            globalResolveId,
-            resolveCallback: (result: Uint8Array | ArrayBuffer): void => {
-                if (raw === true) {
-                    resolve(
-                        (result instanceof Uint8Array
-                            ? result
-                            : new Uint8Array(result)) as Return
-                    );
-                } else {
-                    resolve(
-                        idlDecode(
-                            returnIdlType === undefined ? [] : [returnIdlType],
-                            result instanceof Uint8Array
-                                ? result
-                                : new Uint8Array(result)
-                        )[0] as Return
-                    );
-                }
-            }
-        },
-        location: {
-            filepath: 'azle/src/stable/lib/ic_apis/call.ts',
-            functionName: 'createResolveCallback'
-        }
-    });
-}
-
-function createRejectCallback(
-    globalRejectId: string,
-    reject: (reason?: any) => void
-): void {
-    globalThis._azleDispatch({
-        type: 'SET_AZLE_REJECT_CALLBACK',
-        payload: {
-            globalRejectId,
-            rejectCallback: (error: unknown): void => {
-                reject(error);
-            }
-        },
-        location: {
-            filepath: 'azle/src/stable/lib/ic_apis/call.ts',
-            functionName: 'createRejectCallback'
-        }
-    });
+    throw new Error('globalThis._azleIcStable is not defined');
 }

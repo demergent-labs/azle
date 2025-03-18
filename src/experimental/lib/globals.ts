@@ -32,6 +32,12 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
     // eslint-disable-next-line no-var
+    var _azleRejectCallbacks: { [globalRejectId: string]: (err: any) => void };
+    // eslint-disable-next-line no-var
+    var _azleResolveCallbacks: {
+        [globalResolveId: string]: (buf: ArrayBuffer) => void;
+    };
+    // eslint-disable-next-line no-var
     var _azleWebAssembly: any;
 }
 

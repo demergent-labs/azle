@@ -6,7 +6,8 @@ use ic_cdk::{
     spawn, trap,
 };
 use rquickjs::{
-    Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
+    AsyncContext, AsyncRuntime, Ctx, Exception, Function, IntoJs, Object, Promise,
+    Result as QuickJsResult, TypedArray, Value, async_with,
 };
 
 use crate::{error::quickjs_call_with_error_handling, ic::throw_error, state::dispatch_action};
@@ -34,8 +35,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
               canister_id_bytes: TypedArray<u8>,
               method: String,
               args_raw: TypedArray<u8>,
-              cycles_string: String|
-              -> QuickJsResult<()> {
+              cycles_string: String| {
             let canister_id = Principal::from_slice(canister_id_bytes.as_ref());
             let args_raw = args_raw
                 .as_bytes()
@@ -48,38 +48,102 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            spawn(async move {
+            Promise::wrap_future(&ctx, async move {
+                // let call_result = call_raw128(
+                //     Principal::from_text("aaaaa-aa").unwrap(),
+                //     "raw_rand",
+                //     [68, 73, 68, 76, 0, 0],
+                //     0,
+                // )
+                // .await
+                // .unwrap();
+
+                // // TypedArray::<u8>::new(ctx.clone(), call_result.clone())
+                // //     .into_js(&ctx_cloned)
+                // //     .unwrap()
+                // call_result
+
+                let bytes = call_raw128(canister_id, &method, args_raw, payment)
+                    .await
+                    .unwrap();
+
                 let ctx = unsafe { Ctx::from_raw(ctx_ptr) };
 
-                // My understanding of how this works
-                // scopeguard will execute its closure at the end of the scope
-                // After a successful or unsuccessful cross-canister call (await point)
-                // the closure will run, cleaning up the global promise callbacks
-                // Even during a trap, the IC will ensure that the closure runs in its own call
-                // thus allowing us to recover from a trap and persist that state
-                let _cleanup = scopeguard::guard((), |_| {
-                    let result = cleanup(ctx.clone(), &global_resolve_id, &global_reject_id);
+                TypedArray::<u8>::new(ctx.clone(), bytes)
+            })
 
-                    if let Err(e) = result {
-                        trap(&format!("Azle CallRawCleanupError: {e}"));
-                    }
-                });
+            // spawn(async move {
+            //     let async_runtime = AsyncRuntime::new().unwrap();
+            //     let async_context = AsyncContext::full(&async_runtime).await.unwrap();
 
-                let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
+            //     async_with!(async_context => |ctx| {
+            //         let result: u32 = ctx.eval("100").unwrap();
 
-                let result = resolve_or_reject(
-                    ctx.clone(),
-                    &call_result,
-                    &global_resolve_id,
-                    &global_reject_id,
-                );
+            //         ic_cdk::println!("result: {}", result);
 
-                if let Err(e) = result {
-                    trap(&format!("Azle CallRawError: {e}"));
-                }
-            });
+            //         let call_result = call_raw128(
+            //             Principal::from_text("aaaaa-aa").unwrap(),
+            //             "raw_rand",
+            //             [68, 73, 68, 76, 0, 0],
+            //             0,
+            //         )
+            //         .await;
 
-            Ok(())
+            //         ic_cdk::println!("call_result: {:?}", call_result);
+            //     })
+            //     .await;
+
+            //     // async_context
+            //     //     .with(|ctx| {
+            //     //         // Module::evaluate(ctx.clone(), "", js_cloned).unwrap();
+
+            //     //         let result: u32 = ctx.eval("10").unwrap();
+
+            //     //         ic_cdk::println!("result: {}", result);
+
+            //     //         let call_result = call_raw128(
+            //     //             Principal::from_text("aaaa-aa").unwrap(),
+            //     //             "raw_rand",
+            //     //             [],
+            //     //             0,
+            //     //         )
+            //     //         .await;
+            //     //     })
+            //     //     .await;
+
+            //     async_runtime.idle().await;
+
+            //     let ctx = unsafe { Ctx::from_raw(ctx_ptr) };
+
+            //     // My understanding of how this works
+            //     // scopeguard will execute its closure at the end of the scope
+            //     // After a successful or unsuccessful cross-canister call (await point)
+            //     // the closure will run, cleaning up the global promise callbacks
+            //     // Even during a trap, the IC will ensure that the closure runs in its own call
+            //     // thus allowing us to recover from a trap and persist that state
+            //     let _cleanup = scopeguard::guard((), |_| {
+            //         let result = cleanup(ctx.clone(), &global_resolve_id, &global_reject_id);
+
+            //         if let Err(e) = result {
+            //             trap(&format!("Azle CallRawCleanupError: {e}"));
+            //         }
+            //     });
+
+            //     let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
+
+            //     let result = resolve_or_reject(
+            //         ctx.clone(),
+            //         &call_result,
+            //         &global_resolve_id,
+            //         &global_reject_id,
+            //     );
+
+            //     if let Err(e) = result {
+            //         trap(&format!("Azle CallRawError: {e}"));
+            //     }
+            // });
+
+            // Ok(())
         },
     )
 }

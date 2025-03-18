@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 /**
  * Accepts an ingress message during message inspection.
  *

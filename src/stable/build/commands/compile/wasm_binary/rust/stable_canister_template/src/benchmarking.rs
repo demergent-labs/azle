@@ -17,8 +17,13 @@ thread_local! {
     pub static BENCHMARKS_REF_CELL: RefCell<Vec<BenchmarkEntry>> = RefCell::new(Vec::new());
 }
 
-pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Box<dyn Error>> {
-    quickjs_with_ctx(|ctx| {
+pub async fn record_benchmark(
+    function_name: &str,
+    instructions: u64,
+) -> Result<(), Box<dyn Error>> {
+    let function_name = function_name.to_string();
+
+    quickjs_with_ctx(move |ctx| {
         let timestamp = time();
 
         let method_names: Object = ctx
@@ -27,8 +32,12 @@ pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Bo
             .get("_azleCanisterMethodNames")
             .map_err(|e| format!("Failed to get globalThis._azleCanisterMethodNames: {e}"))?;
 
+        let function_name_cloned = function_name.clone();
+
         let method_name: String = method_names.get(function_name).map_err(|e| {
-            format!("Failed to get globalThis._azleCanisterMethodNames[{function_name}]: {e}")
+            format!(
+                "Failed to get globalThis._azleCanisterMethodNames[{function_name_cloned}]: {e}"
+            )
         })?;
 
         BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| {
@@ -42,4 +51,5 @@ pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Bo
 
         Ok(())
     })
+    .await
 }

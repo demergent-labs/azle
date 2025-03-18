@@ -5,7 +5,7 @@ use ic_stable_structures::{
     memory_manager::{MemoryManager, VirtualMemory},
 };
 use quickjs_with_ctx::quickjs_with_ctx;
-use rquickjs::Context;
+use rquickjs::{AsyncContext, Context};
 use wasm_binary_manipulation::WasmData;
 
 mod benchmarking;
@@ -25,7 +25,8 @@ mod wasm_binary_manipulation;
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 
 thread_local! {
-    static CONTEXT_REF_CELL: RefCell<Option<Context>> = RefCell::new(None);
+    static CONTEXT_REF_CELL: RefCell<Option<AsyncContext>> = RefCell::new(None);
+    static CONTEXT_CANDID_REF_CELL: RefCell<Option<Context>> = RefCell::new(None);
     pub static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
     static WASM_DATA_REF_CELL: RefCell<Option<WasmData>> = RefCell::new(None);
 }

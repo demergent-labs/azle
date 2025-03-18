@@ -7,13 +7,11 @@ import { RejectCode } from './msg_reject_code';
 export type AzleIcStable = {
     acceptMessage: () => void;
     callRaw: (
-        globalResolveId: string,
-        globalRejectId: string,
         canisterIdBytes: Uint8Array,
         method: string,
         argsRaw: Uint8Array,
         cyclesString: string
-    ) => void;
+    ) => Promise<Uint8Array>;
     candidDecode: (candidBytes: Uint8Array) => string;
     candidEncode: (candidString: string) => Uint8Array;
     canisterCycleBalance: () => string;

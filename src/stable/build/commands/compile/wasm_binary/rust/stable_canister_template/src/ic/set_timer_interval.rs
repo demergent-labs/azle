@@ -2,7 +2,7 @@ use core::time::Duration;
 use std::{cell::RefCell, rc::Rc};
 
 use ic_cdk::trap;
-use ic_cdk_timers::{set_timer_interval, TimerId};
+use ic_cdk_timers::{TimerId, set_timer_interval};
 use rquickjs::{BigInt, Ctx, Function, Object, Result};
 use slotmap::Key;
 
@@ -16,29 +16,31 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
         let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
 
         let closure = move || {
-            let result = quickjs_with_ctx(|ctx| {
-                let timer_id = timer_id_u64_rc_cloned
-                    .borrow()
-                    .ok_or("TimerId not found in reference-counting pointer")?;
+            // let result = quickjs_with_ctx(|ctx| {
+            //     let timer_id = timer_id_u64_rc_cloned
+            //         .borrow()
+            //         .ok_or("TimerId not found in reference-counting pointer")?;
 
-                let globals = ctx.globals();
+            //     let globals = ctx.globals();
 
-                let timer_callbacks: Object = globals
-                    .get("_azleTimerCallbacks")
-                    .map_err(|e| format!("Failed to get globalThis._azleTimerCallbacks: {e}"))?;
-                let timer_callback: Function =
-                    timer_callbacks.get(timer_id.to_string()).map_err(|e| {
-                        format!("Failed to get globalThis._azleTimerCallbacks['{timer_id}']: {e}")
-                    })?;
+            //     let timer_callbacks: Object = globals
+            //         .get("_azleTimerCallbacks")
+            //         .map_err(|e| format!("Failed to get globalThis._azleTimerCallbacks: {e}"))?;
+            //     let timer_callback: Function =
+            //         timer_callbacks.get(timer_id.to_string()).map_err(|e| {
+            //             format!("Failed to get globalThis._azleTimerCallbacks['{timer_id}']: {e}")
+            //         })?;
 
-                quickjs_call_with_error_handling(ctx, timer_callback, ())?;
+            //     quickjs_call_with_error_handling(ctx, timer_callback, ())?;
 
-                Ok(())
-            });
+            //     Ok(())
+            // });
 
-            if let Err(e) = result {
-                trap(&format!("Azle TimerIntervalError: {e}"));
-            }
+            // if let Err(e) = result {
+            //     trap(&format!("Azle TimerIntervalError: {e}"));
+            // }
+
+            ic_cdk::println!("Timer callback executed, not implemented yet");
         };
 
         let timer_id: TimerId = set_timer_interval(interval_duration, closure);

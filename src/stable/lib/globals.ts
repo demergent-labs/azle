@@ -34,12 +34,6 @@ declare global {
     // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
     // eslint-disable-next-line no-var
-    var _azleRejectCallbacks: { [globalRejectId: string]: (err: any) => void };
-    // eslint-disable-next-line no-var
-    var _azleResolveCallbacks: {
-        [globalResolveId: string]: (buf: Uint8Array | ArrayBuffer) => void;
-    };
-    // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [timerId: string]: () => Promise<void> };
 }
 
