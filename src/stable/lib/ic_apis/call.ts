@@ -125,13 +125,13 @@ export async function call<
     }
 }
 
-function getCanisterIdBytes(canisterId: Principal | string): Uint8Array {
+export function getCanisterIdBytes(canisterId: Principal | string): Uint8Array {
     return typeof canisterId === 'string'
         ? Principal.fromText(canisterId).toUint8Array()
         : canisterId.toUint8Array();
 }
 
-function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
+export function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
     callOptions?: CallOptions<Args>
 ): Uint8Array {
     if (callOptions?.raw === true) {
@@ -167,7 +167,7 @@ function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
     }
 }
 
-function getCyclesString<Args extends any[] | Uint8Array | undefined>(
+export function getCyclesString<Args extends any[] | Uint8Array | undefined>(
     options?: CallOptions<Args>
 ): string {
     const cycles = options?.cycles ?? 0n;
