@@ -55,6 +55,11 @@ build();
 async function build(): Promise<void> {
     const command = process.argv[2] as Command | undefined;
 
+    console.log(
+        'At the top of the build command this is the cwd',
+        process.cwd()
+    );
+
     if (command === undefined) {
         throw new Error(
             `No command found when running azle. Running azle should start like this: azle [commandName]`

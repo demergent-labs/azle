@@ -9,6 +9,9 @@ export async function getCanisterConfig(
 ): Promise<CanisterConfig> {
     const dfxJsonExample = getDfxJsonExample(canisterName);
 
+    console.log('dfxJsonPath', dfxJsonPath);
+    console.log(process.cwd());
+
     if (!existsSync(dfxJsonPath)) {
         throw new Error(
             `Create a dfx.json file in the current directory with the following format:\n\n${dfxJsonExample}`

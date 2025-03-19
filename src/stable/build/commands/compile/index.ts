@@ -21,9 +21,13 @@ export async function runCommand(
 
     await rm(canisterPath, { recursive: true, force: true });
 
+    console.log('before compileJavaScript');
     const javaScript = await compileJavaScript(main);
+    console.log('after compileJavaScript');
 
+    console.log('before outputFile');
     await outputFile(join(canisterPath, 'main.js'), javaScript);
+    console.log('after outputFile');
 
     const { candid, methodMeta } = await getCandidAndMethodMeta(
         canisterConfig.custom?.candid_gen,
