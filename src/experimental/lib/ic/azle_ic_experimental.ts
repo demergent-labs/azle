@@ -13,7 +13,7 @@ export type AzleIcExperimental = {
         method: string,
         argsRaw: ArrayBuffer,
         paymentString: string
-    ) => Promise<ArrayBuffer>;
+    ) => void;
     msgCaller: () => ArrayBuffer;
     candidCompiler: (candidPath: string) => string;
     candidDecode: (candidBytes: ArrayBuffer) => string;
