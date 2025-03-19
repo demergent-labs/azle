@@ -18,7 +18,6 @@ mod init_and_post_upgrade;
 mod internal_canister_methods;
 mod quickjs_with_ctx;
 mod stable_b_tree_map;
-mod state;
 mod wasm_binary_manipulation;
 
 #[allow(unused)]

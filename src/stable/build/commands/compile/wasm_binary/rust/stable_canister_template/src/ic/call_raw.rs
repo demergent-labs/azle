@@ -1,16 +1,8 @@
-use std::error::Error;
-
 use candid::Principal;
-use ic_cdk::{
-    api::call::{RejectionCode, call_raw128},
-    spawn, trap,
-};
-use rquickjs::{
-    AsyncContext, AsyncRuntime, Ctx, Exception, Function, IntoJs, Object, Promise,
-    Result as QuickJsResult, TypedArray, Value, async_with,
-};
+use ic_cdk::api::call::call_raw128;
+use rquickjs::{Ctx, Function, Promise, Result as QuickJsResult, TypedArray};
 
-use crate::{error::quickjs_call_with_error_handling, ic::throw_error, state::dispatch_action};
+use crate::ic::throw_error;
 
 pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
     // We use a raw pointer here to deal with already borrowed issues
@@ -30,9 +22,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
     Function::new(
         ctx.clone(),
-        move |global_resolve_id: String,
-              global_reject_id: String,
-              canister_id_bytes: TypedArray<u8>,
+        move |canister_id_bytes: TypedArray<u8>,
               method: String,
               args_raw: TypedArray<u8>,
               cycles_string: String| {
@@ -49,20 +39,6 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
             Promise::wrap_future(&ctx, async move {
-                // let call_result = call_raw128(
-                //     Principal::from_text("aaaaa-aa").unwrap(),
-                //     "raw_rand",
-                //     [68, 73, 68, 76, 0, 0],
-                //     0,
-                // )
-                // .await
-                // .unwrap();
-
-                // // TypedArray::<u8>::new(ctx.clone(), call_result.clone())
-                // //     .into_js(&ctx_cloned)
-                // //     .unwrap()
-                // call_result
-
                 let bytes = call_raw128(canister_id, &method, args_raw, payment)
                     .await
                     .unwrap();
@@ -71,179 +47,6 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
                 TypedArray::<u8>::new(ctx.clone(), bytes)
             })
-
-            // spawn(async move {
-            //     let async_runtime = AsyncRuntime::new().unwrap();
-            //     let async_context = AsyncContext::full(&async_runtime).await.unwrap();
-
-            //     async_with!(async_context => |ctx| {
-            //         let result: u32 = ctx.eval("100").unwrap();
-
-            //         ic_cdk::println!("result: {}", result);
-
-            //         let call_result = call_raw128(
-            //             Principal::from_text("aaaaa-aa").unwrap(),
-            //             "raw_rand",
-            //             [68, 73, 68, 76, 0, 0],
-            //             0,
-            //         )
-            //         .await;
-
-            //         ic_cdk::println!("call_result: {:?}", call_result);
-            //     })
-            //     .await;
-
-            //     // async_context
-            //     //     .with(|ctx| {
-            //     //         // Module::evaluate(ctx.clone(), "", js_cloned).unwrap();
-
-            //     //         let result: u32 = ctx.eval("10").unwrap();
-
-            //     //         ic_cdk::println!("result: {}", result);
-
-            //     //         let call_result = call_raw128(
-            //     //             Principal::from_text("aaaa-aa").unwrap(),
-            //     //             "raw_rand",
-            //     //             [],
-            //     //             0,
-            //     //         )
-            //     //         .await;
-            //     //     })
-            //     //     .await;
-
-            //     async_runtime.idle().await;
-
-            //     let ctx = unsafe { Ctx::from_raw(ctx_ptr) };
-
-            //     // My understanding of how this works
-            //     // scopeguard will execute its closure at the end of the scope
-            //     // After a successful or unsuccessful cross-canister call (await point)
-            //     // the closure will run, cleaning up the global promise callbacks
-            //     // Even during a trap, the IC will ensure that the closure runs in its own call
-            //     // thus allowing us to recover from a trap and persist that state
-            //     let _cleanup = scopeguard::guard((), |_| {
-            //         let result = cleanup(ctx.clone(), &global_resolve_id, &global_reject_id);
-
-            //         if let Err(e) = result {
-            //             trap(&format!("Azle CallRawCleanupError: {e}"));
-            //         }
-            //     });
-
-            //     let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
-
-            //     let result = resolve_or_reject(
-            //         ctx.clone(),
-            //         &call_result,
-            //         &global_resolve_id,
-            //         &global_reject_id,
-            //     );
-
-            //     if let Err(e) = result {
-            //         trap(&format!("Azle CallRawError: {e}"));
-            //     }
-            // });
-
-            // Ok(())
         },
     )
-}
-
-fn cleanup(
-    ctx: Ctx,
-    global_resolve_id: &str,
-    global_reject_id: &str,
-) -> Result<(), Box<dyn Error>> {
-    dispatch_action(
-        ctx.clone(),
-        "DELETE_AZLE_RESOLVE_CALLBACK",
-        global_resolve_id.into_js(&ctx)?,
-        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
-        "cleanup",
-    )?;
-
-    dispatch_action(
-        ctx.clone(),
-        "DELETE_AZLE_REJECT_CALLBACK",
-        global_reject_id.into_js(&ctx)?,
-        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
-        "cleanup",
-    )?;
-
-    Ok(())
-}
-
-fn resolve_or_reject<'a>(
-    ctx: Ctx<'a>,
-    call_result: &Result<Vec<u8>, (RejectionCode, String)>,
-    global_resolve_id: &str,
-    global_reject_id: &str,
-) -> Result<(), Box<dyn Error>> {
-    let (should_resolve, js_value) = prepare_js_value(ctx.clone(), &call_result)?;
-    let callback = get_callback(
-        ctx.clone(),
-        should_resolve,
-        global_resolve_id,
-        global_reject_id,
-    )?;
-
-    quickjs_call_with_error_handling(ctx.clone(), callback, (js_value,))?;
-
-    Ok(())
-}
-
-fn prepare_js_value<'a>(
-    ctx: Ctx<'a>,
-    call_result: &Result<Vec<u8>, (RejectionCode, String)>,
-) -> Result<(bool, Value<'a>), Box<dyn Error>> {
-    match call_result {
-        Ok(candid_bytes) => {
-            let candid_bytes_js_value =
-                TypedArray::<u8>::new(ctx.clone(), candid_bytes.clone()).into_js(&ctx)?;
-
-            Ok((true, candid_bytes_js_value))
-        }
-        Err(err) => {
-            let err_js_object = Exception::from_message(
-                ctx.clone(),
-                &format!(
-                    "The inter-canister call failed with reject code {}: {}",
-                    err.0 as i32, &err.1
-                ),
-            )?;
-
-            err_js_object.set("rejectCode", err.0 as i32)?;
-            err_js_object.set("rejectMessage", &err.1)?;
-
-            Ok((false, err_js_object.into_js(&ctx)?))
-        }
-    }
-}
-
-fn get_callback<'a>(
-    ctx: Ctx<'a>,
-    should_resolve: bool,
-    global_resolve_id: &str,
-    global_reject_id: &str,
-) -> Result<Function<'a>, Box<dyn Error>> {
-    let global_object = get_resolve_or_reject_global_object(ctx.clone(), should_resolve)?;
-    let callback_name = if should_resolve {
-        global_resolve_id
-    } else {
-        global_reject_id
-    };
-
-    Ok(global_object.get(callback_name)?)
-}
-
-fn get_resolve_or_reject_global_object(
-    ctx: Ctx,
-    should_resolve: bool,
-) -> Result<Object, Box<dyn Error>> {
-    let globals = ctx.globals();
-
-    if should_resolve {
-        Ok(globals.get("_azleResolveCallbacks")?)
-    } else {
-        Ok(globals.get("_azleRejectCallbacks")?)
-    }
 }

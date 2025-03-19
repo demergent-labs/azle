@@ -7,7 +7,7 @@ import { v4 } from 'uuid';
 import { idlDecode, idlEncode } from '#lib/execute_with_candid_serde';
 import { CallOptions } from '#lib/ic_apis/call';
 
-// TODO can we somehow reuse the JSDocs from stable as well?
+// TODO can we somehow reuse the JSDocs from stable as well
 /**
  * Makes an inter-canister call to a method on another canister.
  *
@@ -163,6 +163,10 @@ function handleTwoWay<Return>(
     returnIdlType?: IDL.Type
 ): Promise<Return> {
     return new Promise((resolve, reject) => {
+        if (globalThis._azleIcExperimental === undefined) {
+            throw new Error('globalThis._azleIcExperimental is not defined');
+        }
+
         const promiseId = v4();
         const globalResolveId = `_resolve_${promiseId}`;
         const globalRejectId = `_reject_${promiseId}`;
@@ -174,10 +178,6 @@ function handleTwoWay<Return>(
             returnIdlType
         );
         createRejectCallback(globalRejectId, reject);
-
-        if (globalThis._azleIcExperimental === undefined) {
-            throw new Error('globalThis._azleIcExperimental is not defined');
-        }
 
         if (globalThis._azleIcExperimental !== undefined) {
             globalThis._azleIcExperimental.callRaw(
@@ -202,45 +202,29 @@ function createResolveCallback<Return>(
     raw: boolean,
     returnIdlType?: IDL.Type
 ): void {
-    globalThis._azleDispatch({
-        type: 'SET_AZLE_RESOLVE_CALLBACK',
-        payload: {
-            globalResolveId,
-            resolveCallback: (result: ArrayBuffer): void => {
-                if (raw === true) {
-                    resolve(new Uint8Array(result) as Return);
-                } else {
-                    resolve(
-                        idlDecode(
-                            returnIdlType === undefined ? [] : [returnIdlType],
-                            new Uint8Array(result)
-                        )[0] as Return
-                    );
-                }
-            }
-        },
-        location: {
-            filepath: 'azle/src/experimental/lib/ic/call.ts',
-            functionName: 'createResolveCallback'
+    globalThis._azleResolveCallbacks[globalResolveId] = (
+        result: ArrayBuffer
+    ): void => {
+        if (raw === true) {
+            resolve(new Uint8Array(result) as Return);
+        } else {
+            resolve(
+                idlDecode(
+                    returnIdlType === undefined ? [] : [returnIdlType],
+                    new Uint8Array(result)
+                )[0] as Return
+            );
         }
-    });
+    };
 }
 
 function createRejectCallback(
     globalRejectId: string,
     reject: (reason?: any) => void
 ): void {
-    globalThis._azleDispatch({
-        type: 'SET_AZLE_REJECT_CALLBACK',
-        payload: {
-            globalRejectId,
-            rejectCallback: (error: unknown): void => {
-                reject(error);
-            }
-        },
-        location: {
-            filepath: 'azle/src/experimental/lib/ic/call.ts',
-            functionName: 'createRejectCallback'
-        }
-    });
+    globalThis._azleRejectCallbacks[globalRejectId] = (
+        error: unknown
+    ): void => {
+        reject(error);
+    };
 }

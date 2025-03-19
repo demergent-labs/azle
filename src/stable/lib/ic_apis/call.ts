@@ -87,6 +87,13 @@ export async function call<
     method: string,
     options?: CallOptions<Args>
 ): Promise<Return> {
+    if (globalThis._azleExperimental === true) {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { call: callExperimental } = require('#experimental/lib/ic/call');
+
+        return await callExperimental(canisterId, method, options);
+    }
+
     if (globalThis._azleIcStable === undefined) {
         return undefined as Return;
     }
