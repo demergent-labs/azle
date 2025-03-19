@@ -1,25 +1,23 @@
 import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
 
+import { AZLE_DFX_JSON_PATH } from '#utils/local_paths';
+
 import { CanisterConfig, DfxJson } from './types';
 
 export async function getCanisterConfig(
-    canisterName: string,
-    dfxJsonPath: string = 'dfx.json'
+    canisterName: string
 ): Promise<CanisterConfig> {
     const dfxJsonExample = getDfxJsonExample(canisterName);
 
-    console.log('dfxJsonPath', dfxJsonPath);
-    console.log(process.cwd());
-
-    if (!existsSync(dfxJsonPath)) {
+    if (!existsSync(AZLE_DFX_JSON_PATH)) {
         throw new Error(
             `Create a dfx.json file in the current directory with the following format:\n\n${dfxJsonExample}`
         );
     }
 
     const dfxJson: DfxJson = JSON.parse(
-        (await readFile(dfxJsonPath)).toString()
+        (await readFile(AZLE_DFX_JSON_PATH)).toString()
     );
     const canisterConfig = dfxJson.canisters?.[canisterName];
 

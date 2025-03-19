@@ -1,6 +1,7 @@
 import { existsSync, statSync } from 'fs';
 import { dirname, join, relative } from 'path';
 
+import { AZLE_DFX_JSON_DIR } from '#utils/local_paths';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
 /**
@@ -72,7 +73,7 @@ export function getContext(
         );
     }
 
-    const canisterPath = join('.azle', canisterName);
+    const canisterPath = join(AZLE_DFX_JSON_DIR, '.azle', canisterName);
 
     const candidPath = process.env.CANISTER_CANDID_PATH;
 
@@ -88,15 +89,12 @@ export function getContext(
         mainJsPath: join(canisterPath, `main.js`)
     };
 
-    // Construct paths relative to different directories
-    // dfx.json is required to be in the cwd
-    const dfxJsonPath = join(process.cwd(), 'dfx.json');
     // package.json should be in the correct npm prefix directory
     const packageJsonPath = join(baseDir, 'package.json');
 
     // Transform main path to be relative to package.json location instead of dfx.json location
     // First get the absolute path (relative to cwd where dfx.json is)
-    const absoluteMainPath = join(process.cwd(), main);
+    const absoluteMainPath = join(AZLE_DFX_JSON_DIR, main);
     // Then make it relative to baseDir (where package.json is)
     const relativeMainPath = relative(baseDir, absoluteMainPath);
 
@@ -113,7 +111,6 @@ export function getContext(
     return {
         canisterPath,
         candidPath,
-        dfxJsonPath,
         main: transformedMain,
         packageJsonPath,
         wasmBinaryPath,
