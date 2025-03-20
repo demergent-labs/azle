@@ -4,6 +4,7 @@ import { dirname, join, relative } from 'path';
 import { AZLE_DFX_JSON_DIR } from '#utils/global_paths';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
+// TODO this needs some love
 /**
  * Finds the correct working directory that should match where npm is executing the script
  * when running with --prefix option
@@ -62,9 +63,6 @@ export function getContext(
     canisterName: string,
     canisterConfig: CanisterConfig
 ): Context {
-    // Find the correct working directory that should be used for all path resolutions
-    const baseDir = findCorrectWorkingDirectory();
-
     const main = canisterConfig?.main;
 
     if (main === undefined) {
@@ -89,6 +87,9 @@ export function getContext(
         mainJsPath: join(canisterPath, `main.js`)
     };
 
+    // Find the correct working directory that should be used for all path resolutions
+    const baseDir = findCorrectWorkingDirectory();
+
     // package.json should be in the correct npm prefix directory
     const packageJsonPath = join(baseDir, 'package.json');
 
@@ -100,13 +101,6 @@ export function getContext(
 
     // Use the transformed main path in the context
     const transformedMain = relativeMainPath;
-
-    console.log(`Original main path (relative to dfx.json): ${main}`);
-    console.log(`Absolute main path: ${absoluteMainPath}`);
-    console.log(`Base directory (package.json location): ${baseDir}`);
-    console.log(
-        `Transformed main path (relative to package.json): ${transformedMain}`
-    );
 
     return {
         canisterPath,

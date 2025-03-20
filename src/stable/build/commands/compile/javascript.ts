@@ -8,13 +8,9 @@ import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 import { findCorrectWorkingDirectory } from './get_context';
 
 export async function compile(main: string): Promise<string> {
-    console.log('before getPrelude');
     const prelude = getPrelude(main);
-    console.log('after getPrelude');
     const buildOptions = getBuildOptions(prelude);
-    console.log('before bundle');
     const bundled = await bundle(buildOptions);
-    console.log('after bundle');
 
     return bundled;
 }
@@ -113,9 +109,7 @@ export function handleClassApiCanister(main: string): string {
 }
 
 export async function bundle(buildOptions: BuildOptions): Promise<string> {
-    console.log('before build');
     const buildResult = await build(buildOptions);
-    console.log('after build');
 
     if (buildResult.outputFiles === undefined) {
         throw new Error(
@@ -123,11 +117,8 @@ export async function bundle(buildOptions: BuildOptions): Promise<string> {
         );
     }
 
-    console.log('before bundleArray');
     const bundleArray = buildResult.outputFiles[0].contents;
-    console.log('after bundleArray');
     const bundleString = Buffer.from(bundleArray).toString('utf-8');
-    console.log('after bundleString');
 
     return bundleString;
 }
@@ -135,9 +126,6 @@ export async function bundle(buildOptions: BuildOptions): Promise<string> {
 // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
 export function getBuildOptions(ts: string): BuildOptions {
     const correctDir = findCorrectWorkingDirectory();
-    console.log(
-        `Using correct directory for resolveDir: ${correctDir} (cwd: ${process.cwd()})`
-    );
     return {
         stdin: {
             contents: ts,

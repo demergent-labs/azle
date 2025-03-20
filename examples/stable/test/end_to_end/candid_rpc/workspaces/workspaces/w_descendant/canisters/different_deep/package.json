@@ -3,6 +3,6 @@
         "azle": "latest"
     },
     "scripts": {
-        "deploy": "cd dfx/deeper && dfx deploy w_descendant_deeper_different"
+        "deploy": "cd dfx/deeper && dfx deploy w_descendant_different_deep"
     }
 }
