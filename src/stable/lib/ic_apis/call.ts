@@ -4,7 +4,7 @@ import { Principal } from '@dfinity/principal';
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
 
-export type CallOptions<Args extends any[] | Uint8Array | undefined> = {
+type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     /**
      * Candid types for encoding the arguments
      */
@@ -87,15 +87,11 @@ export async function call<
     method: string,
     options?: CallOptions<Args>
 ): Promise<Return> {
-    if (globalThis._azleIcStable === undefined) {
+    if (
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
+    ) {
         return undefined as Return;
-    }
-
-    if (globalThis._azleExperimental === true) {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { call: callExperimental } = require('#experimental/lib/ic/call');
-
-        return await callExperimental(canisterId, method, options);
     }
 
     if (typeof options?.timeout === 'number') {
@@ -125,13 +121,13 @@ export async function call<
     }
 }
 
-export function getCanisterIdBytes(canisterId: Principal | string): Uint8Array {
+function getCanisterIdBytes(canisterId: Principal | string): Uint8Array {
     return typeof canisterId === 'string'
         ? Principal.fromText(canisterId).toUint8Array()
         : canisterId.toUint8Array();
 }
 
-export function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
+function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
     callOptions?: CallOptions<Args>
 ): Uint8Array {
     if (callOptions?.raw === true) {
@@ -167,7 +163,7 @@ export function getArgsRaw<Args extends any[] | Uint8Array | undefined>(
     }
 }
 
-export function getCyclesString<Args extends any[] | Uint8Array | undefined>(
+function getCyclesString<Args extends any[] | Uint8Array | undefined>(
     options?: CallOptions<Args>
 ): string {
     const cycles = options?.cycles ?? 0n;
@@ -180,16 +176,29 @@ function handleOneWay(
     argsRaw: Uint8Array,
     cyclesString: string
 ): void {
-    if (globalThis._azleIcStable === undefined) {
-        throw new Error('globalThis._azleIcStable is not defined');
-    }
-
-    globalThis._azleIcStable.notifyRaw(
-        canisterIdBytes,
-        method,
-        argsRaw,
-        cyclesString
-    );
+    return globalThis._azleIcStable !== undefined
+        ? globalThis._azleIcStable.notifyRaw(
+              canisterIdBytes,
+              method,
+              argsRaw,
+              cyclesString
+          )
+        : globalThis._azleIcExperimental !== undefined
+          ? globalThis._azleIcExperimental.notifyRaw(
+                canisterIdBytes.buffer instanceof ArrayBuffer
+                    ? canisterIdBytes.buffer
+                    : new Uint8Array(canisterIdBytes).buffer,
+                method,
+                argsRaw.buffer instanceof ArrayBuffer
+                    ? argsRaw.buffer
+                    : new Uint8Array(argsRaw).buffer,
+                cyclesString
+            )
+          : ((): never => {
+                throw new Error(
+                    'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                );
+            })();
 }
 
 // TODO should Return be different somehow?
@@ -201,23 +210,39 @@ async function handleTwoWay<Return>(
     raw: boolean,
     returnIdlType?: IDL.Type
 ): Promise<Return> {
-    if (globalThis._azleIcStable === undefined) {
-        throw new Error('globalThis._azleIcStable is not defined');
-    }
-
-    const result = await globalThis._azleIcStable.callRaw(
-        canisterIdBytes,
-        method,
-        argsRaw,
-        cyclesString
-    );
+    const result =
+        globalThis._azleIcStable !== undefined
+            ? await globalThis._azleIcStable.callRaw(
+                  canisterIdBytes,
+                  method,
+                  argsRaw,
+                  cyclesString
+              )
+            : globalThis._azleIcExperimental !== undefined
+              ? await globalThis._azleIcExperimental.callRaw(
+                    canisterIdBytes.buffer instanceof ArrayBuffer
+                        ? canisterIdBytes.buffer
+                        : new Uint8Array(canisterIdBytes).buffer,
+                    method,
+                    argsRaw.buffer instanceof ArrayBuffer
+                        ? argsRaw.buffer
+                        : new Uint8Array(argsRaw).buffer,
+                    cyclesString
+                )
+              : ((): never => {
+                    throw new Error(
+                        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                    );
+                })();
 
     if (raw === true) {
-        return result as Return;
+        return (
+            result instanceof Uint8Array ? result : new Uint8Array(result)
+        ) as Return;
     } else {
         return idlDecode(
             returnIdlType === undefined ? [] : [returnIdlType],
-            result
+            result instanceof Uint8Array ? result : new Uint8Array(result)
         )[0] as Return;
     }
 }

@@ -7,13 +7,11 @@ import { RejectCode } from '#lib/ic_apis/msg_reject_code';
 export type AzleIcExperimental = {
     msgArgData: () => ArrayBuffer;
     callRaw: (
-        globalResolveId: string,
-        globalRejectId: string,
         canisterIdBytes: ArrayBuffer,
         method: string,
         argsRaw: ArrayBuffer,
         paymentString: string
-    ) => void;
+    ) => Promise<ArrayBuffer>;
     msgCaller: () => ArrayBuffer;
     candidCompiler: (candidPath: string) => string;
     candidDecode: (candidBytes: ArrayBuffer) => string;
