@@ -41,8 +41,11 @@ export type AzleIcStable = {
     ) => void;
     performanceCounter: (counterType: number) => bigint;
     setCertifiedData: (dataBytes: Uint8Array) => void;
-    setTimerInterval: (interval: number) => bigint;
-    setTimer: (delay: number) => bigint;
+    setTimerInterval: (
+        interval: number,
+        callback: () => void | Promise<void>
+    ) => bigint;
+    setTimer: (delay: number, callback: () => void | Promise<void>) => bigint;
     stableBTreeMapContainsKey: (
         memoryId: number,
         encodedKey: Uint8Array

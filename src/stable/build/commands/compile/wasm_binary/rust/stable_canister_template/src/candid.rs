@@ -1,12 +1,13 @@
 use std::{error::Error, ffi::CString, os::raw::c_char, str};
 
 use ic_cdk::trap;
-use rquickjs::{Array, Context, Function, Module, Object, Runtime, Undefined};
+use rquickjs::{Array, Context, Ctx, Function, Module, Object, Runtime, Undefined};
 
 use crate::{
-    CONTEXT_CANDID_REF_CELL,
+    CONTEXT_REF_CELL,
     error::{handle_promise_error, quickjs_call_with_error_handling},
     ic::register,
+    quickjs_with_ctx::quickjs_with_ctx,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
 
@@ -26,7 +27,13 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
     let runtime = Runtime::new()?;
     let context = Context::full(&runtime)?;
 
-    let result = context.with(|ctx| {
+    CONTEXT_REF_CELL.with(|context_ref_cell| {
+        *context_ref_cell.borrow_mut() = Some(context);
+    });
+
+    quickjs_with_ctx(|ctx| {
+        let ctx = unsafe { std::mem::transmute::<Ctx<'_>, Ctx<'static>>(ctx) };
+
         let globals = ctx.globals();
 
         globals.set("_azleActions", Array::new(ctx.clone()))?;
@@ -82,11 +89,5 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
         let c_char_ptr = c_string.into_raw();
 
         Ok(c_char_ptr)
-    });
-
-    CONTEXT_CANDID_REF_CELL.with(|context_ref_cell| {
-        *context_ref_cell.borrow_mut() = Some(context);
-    });
-
-    result
+    })
 }

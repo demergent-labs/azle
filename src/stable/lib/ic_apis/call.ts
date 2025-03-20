@@ -87,15 +87,15 @@ export async function call<
     method: string,
     options?: CallOptions<Args>
 ): Promise<Return> {
+    if (globalThis._azleIcStable === undefined) {
+        return undefined as Return;
+    }
+
     if (globalThis._azleExperimental === true) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const { call: callExperimental } = require('#experimental/lib/ic/call');
 
         return await callExperimental(canisterId, method, options);
-    }
-
-    if (globalThis._azleIcStable === undefined) {
-        return undefined as Return;
     }
 
     if (typeof options?.timeout === 'number') {
@@ -107,12 +107,12 @@ export async function call<
     const cyclesString = getCyclesString(options);
 
     if (options?.oneway === true) {
-        return handleOneWay<Return>(
+        return handleOneWay(
             canisterIdBytes,
             method,
             argsRaw,
             cyclesString
-        );
+        ) as Return;
     } else {
         return handleTwoWay<Return>(
             canisterIdBytes,
@@ -174,27 +174,22 @@ export function getCyclesString<Args extends any[] | Uint8Array | undefined>(
     return cycles.toString();
 }
 
-// TODO should I resolve the Promise in Rust in notifyRaw?
-function handleOneWay<Return>(
+function handleOneWay(
     canisterIdBytes: Uint8Array,
     method: string,
     argsRaw: Uint8Array,
     cyclesString: string
-): Promise<Return> {
+): void {
     if (globalThis._azleIcStable === undefined) {
         throw new Error('globalThis._azleIcStable is not defined');
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        globalThis._azleIcStable.notifyRaw(
-            canisterIdBytes,
-            method,
-            argsRaw,
-            cyclesString
-        );
-    }
-
-    return Promise.resolve(undefined as Return);
+    globalThis._azleIcStable.notifyRaw(
+        canisterIdBytes,
+        method,
+        argsRaw,
+        cyclesString
+    );
 }
 
 // TODO should Return be different somehow?
@@ -206,23 +201,23 @@ async function handleTwoWay<Return>(
     raw: boolean,
     returnIdlType?: IDL.Type
 ): Promise<Return> {
-    if (globalThis._azleIcStable !== undefined) {
-        const result = await globalThis._azleIcStable.callRaw(
-            canisterIdBytes,
-            method,
-            argsRaw,
-            cyclesString
-        );
-
-        if (raw === true) {
-            return result as Return;
-        } else {
-            return idlDecode(
-                returnIdlType === undefined ? [] : [returnIdlType],
-                result
-            )[0] as Return;
-        }
+    if (globalThis._azleIcStable === undefined) {
+        throw new Error('globalThis._azleIcStable is not defined');
     }
 
-    throw new Error('globalThis._azleIcStable is not defined');
+    const result = await globalThis._azleIcStable.callRaw(
+        canisterIdBytes,
+        method,
+        argsRaw,
+        cyclesString
+    );
+
+    if (raw === true) {
+        return result as Return;
+    } else {
+        return idlDecode(
+            returnIdlType === undefined ? [] : [returnIdlType],
+            result
+        )[0] as Return;
+    }
 }

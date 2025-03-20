@@ -25,12 +25,7 @@ export const call: typeof callStable = (canisterId, method, options) => {
     const cyclesString = getCyclesString(options);
 
     if (options?.oneway === true) {
-        return handleOneWay<any>(
-            canisterIdBytes,
-            method,
-            argsRaw,
-            cyclesString
-        );
+        return handleOneWay(canisterIdBytes, method, argsRaw, cyclesString);
     } else {
         return handleTwoWay<any>(
             canisterIdBytes,
@@ -43,30 +38,26 @@ export const call: typeof callStable = (canisterId, method, options) => {
     }
 };
 
-function handleOneWay<Return>(
+function handleOneWay(
     canisterIdBytes: Uint8Array,
     method: string,
     argsRaw: Uint8Array,
     cyclesString: string
-): Promise<Return> {
+): void {
     if (globalThis._azleIcExperimental === undefined) {
         throw new Error('globalThis._azleIcExperimental is not defined');
     }
 
-    if (globalThis._azleIcExperimental !== undefined) {
-        globalThis._azleIcExperimental.notifyRaw(
-            canisterIdBytes.buffer instanceof ArrayBuffer
-                ? canisterIdBytes.buffer
-                : new Uint8Array(canisterIdBytes).buffer,
-            method,
-            argsRaw.buffer instanceof ArrayBuffer
-                ? argsRaw.buffer
-                : new Uint8Array(argsRaw).buffer,
-            cyclesString
-        );
-    }
-
-    return Promise.resolve(undefined as Return);
+    globalThis._azleIcExperimental.notifyRaw(
+        canisterIdBytes.buffer instanceof ArrayBuffer
+            ? canisterIdBytes.buffer
+            : new Uint8Array(canisterIdBytes).buffer,
+        method,
+        argsRaw.buffer instanceof ArrayBuffer
+            ? argsRaw.buffer
+            : new Uint8Array(argsRaw).buffer,
+        cyclesString
+    );
 }
 
 function handleTwoWay<Return>(
@@ -94,20 +85,18 @@ function handleTwoWay<Return>(
         );
         createRejectCallback(globalRejectId, reject);
 
-        if (globalThis._azleIcExperimental !== undefined) {
-            globalThis._azleIcExperimental.callRaw(
-                globalResolveId,
-                globalRejectId,
-                canisterIdBytes.buffer instanceof ArrayBuffer
-                    ? canisterIdBytes.buffer
-                    : new Uint8Array(canisterIdBytes).buffer,
-                method,
-                argsRaw.buffer instanceof ArrayBuffer
-                    ? argsRaw.buffer
-                    : new Uint8Array(argsRaw).buffer,
-                cyclesString
-            );
-        }
+        globalThis._azleIcExperimental.callRaw(
+            globalResolveId,
+            globalRejectId,
+            canisterIdBytes.buffer instanceof ArrayBuffer
+                ? canisterIdBytes.buffer
+                : new Uint8Array(canisterIdBytes).buffer,
+            method,
+            argsRaw.buffer instanceof ArrayBuffer
+                ? argsRaw.buffer
+                : new Uint8Array(argsRaw).buffer,
+            cyclesString
+        );
     });
 }
 

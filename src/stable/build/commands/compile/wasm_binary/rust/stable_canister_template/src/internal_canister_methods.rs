@@ -17,7 +17,7 @@ fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
 }
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
-async fn _azle_reject_callbacks_len() -> u32 {
+fn _azle_reject_callbacks_len() -> u32 {
     let result = quickjs_with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
@@ -25,14 +25,13 @@ async fn _azle_reject_callbacks_len() -> u32 {
 
         Ok(_azle_reject_callbacks.keys::<Value>().len() as u32)
     })
-    .await
     .unwrap();
 
     result
 }
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
-async fn _azle_resolve_callbacks_len() -> u32 {
+fn _azle_resolve_callbacks_len() -> u32 {
     let result = quickjs_with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
@@ -40,14 +39,13 @@ async fn _azle_resolve_callbacks_len() -> u32 {
 
         Ok(_azle_resolve_callbacks.keys::<Value>().len() as u32)
     })
-    .await
     .unwrap();
 
     result
 }
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
-async fn _azle_timer_callbacks_len() -> u32 {
+fn _azle_timer_callbacks_len() -> u32 {
     let result = quickjs_with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
@@ -55,14 +53,13 @@ async fn _azle_timer_callbacks_len() -> u32 {
 
         Ok(_azle_timer_callbacks.keys::<Value>().len() as u32)
     })
-    .await
     .unwrap();
 
     result
 }
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
-async fn _azle_actions_len() -> u32 {
+fn _azle_actions_len() -> u32 {
     let result = quickjs_with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
@@ -70,7 +67,6 @@ async fn _azle_actions_len() -> u32 {
 
         Ok(_azle_actions.len() as u32)
     })
-    .await
     .unwrap();
 
     result

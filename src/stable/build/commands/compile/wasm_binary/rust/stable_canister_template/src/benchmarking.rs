@@ -17,10 +17,7 @@ thread_local! {
     pub static BENCHMARKS_REF_CELL: RefCell<Vec<BenchmarkEntry>> = RefCell::new(Vec::new());
 }
 
-pub async fn record_benchmark(
-    function_name: &str,
-    instructions: u64,
-) -> Result<(), Box<dyn Error>> {
+pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Box<dyn Error>> {
     let function_name = function_name.to_string();
 
     quickjs_with_ctx(move |ctx| {
@@ -51,5 +48,4 @@ pub async fn record_benchmark(
 
         Ok(())
     })
-    .await
 }

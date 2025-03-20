@@ -5,8 +5,6 @@ use rquickjs::{
     Ctx, Exception, Function, Promise, Value, function::IntoArgs, promise::PromiseState,
 };
 
-// use crate::quickjs_with_ctx::run_event_loop;
-
 pub fn quickjs_call_with_error_handling<'a>(
     ctx: Ctx<'a>,
     function: Function<'a>,
@@ -16,9 +14,6 @@ pub fn quickjs_call_with_error_handling<'a>(
         Ok(value) => value,
         Err(_) => trap_on_last_exception(ctx.clone())?,
     };
-
-    // TODO we run the event loop here and also in handle_promise_error, is that a problem?
-    // run_event_loop(ctx.clone());
 
     if result.is_promise() {
         let promise: Promise = result

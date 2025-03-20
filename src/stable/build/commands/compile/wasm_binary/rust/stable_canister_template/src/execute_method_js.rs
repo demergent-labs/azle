@@ -1,6 +1,6 @@
 use std::{env::var, error::Error};
 
-use ic_cdk::{api::performance_counter, spawn, trap};
+use ic_cdk::{api::performance_counter, trap};
 use rquickjs::{Function, Object};
 
 use crate::{
@@ -10,27 +10,17 @@ use crate::{
 #[unsafe(no_mangle)]
 #[allow(unused)]
 pub extern "C" fn execute_method_js(function_index: i32) {
-    ic_cdk::println!("function_index: {}", function_index);
+    let function_name = function_index.to_string();
 
-    spawn(async move {
-        let function_name = function_index.to_string();
+    let result = execute_method_js_with_result(function_name);
 
-        ic_cdk::println!("function_name: {}", function_name);
-
-        let result = execute_method_js_with_result(function_name).await;
-
-        ic_cdk::println!("result: {:?}", result);
-
-        if let Err(e) = result {
-            trap(&format!("Azle CanisterMethodError: {}", e));
-        }
-    });
+    if let Err(e) = result {
+        trap(&format!("Azle CanisterMethodError: {}", e));
+    }
 }
 
-async fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Error>> {
-    let function_name_cloned = function_name.clone();
-
-    quickjs_with_ctx(move |ctx| {
+fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Error>> {
+    quickjs_with_ctx(|ctx| {
         let exported_canister_class_instance: Object = ctx
             .clone()
             .globals()
@@ -54,13 +44,12 @@ async fn execute_method_js_with_result(function_name: String) -> Result<(), Box<
         quickjs_call_with_error_handling(ctx.clone(), method_callback, ())?;
 
         Ok(())
-    })
-    .await?;
+    })?;
 
     if let Ok(azle_record_benchmarks) = var("AZLE_RECORD_BENCHMARKS") {
         if azle_record_benchmarks == "true" {
             let instructions = performance_counter(1);
-            record_benchmark(&function_name_cloned, instructions).await?;
+            record_benchmark(&function_name, instructions)?;
         }
     }
 

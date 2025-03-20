@@ -1,10 +1,12 @@
 use candid::Principal;
 use ic_cdk::api::call::call_raw128;
-use rquickjs::{Ctx, Function, Promise, Result as QuickJsResult, TypedArray};
+use rquickjs::{Ctx, Exception, Function, Promise, Result, Result as QuickJsResult, TypedArray};
 
-use crate::ic::throw_error;
+use crate::{
+    error::quickjs_call_with_error_handling, ic::throw_error, quickjs_with_ctx::run_event_loop,
+};
 
-pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
+pub fn get_function(ctx: Ctx<'static>) -> QuickJsResult<Function<'static>> {
     // We use a raw pointer here to deal with already borrowed issues
     // using quickjs_with_ctx after a cross-canister call (await point)
     // Sometimes the await point won't actually behave like a full await point
@@ -25,7 +27,8 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
         move |canister_id_bytes: TypedArray<u8>,
               method: String,
               args_raw: TypedArray<u8>,
-              cycles_string: String| {
+              cycles_string: String|
+              -> Result<Promise> {
             let canister_id = Principal::from_slice(canister_id_bytes.as_ref());
             let args_raw = args_raw
                 .as_bytes()
@@ -38,15 +41,45 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            Promise::wrap_future(&ctx, async move {
-                let bytes = call_raw128(canister_id, &method, args_raw, payment)
-                    .await
-                    .unwrap();
+            let (promise, resolve, reject) = ctx.promise().unwrap();
 
+            ic_cdk::spawn(async move {
+                // TODO let's crush this ctx pointer
                 let ctx = unsafe { Ctx::from_raw(ctx_ptr) };
 
-                TypedArray::<u8>::new(ctx.clone(), bytes)
-            })
+                let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
+
+                match call_result {
+                    Ok(candid_bytes) => {
+                        quickjs_call_with_error_handling(
+                            ctx.clone(),
+                            resolve,
+                            (TypedArray::<u8>::new(ctx.clone(), candid_bytes),),
+                        )
+                        .unwrap();
+                    }
+                    Err(err) => {
+                        let err_js_object = Exception::from_message(
+                            ctx.clone(),
+                            &format!(
+                                "The inter-canister call failed with reject code {}: {}",
+                                err.0 as i32, &err.1
+                            ),
+                        )
+                        .unwrap();
+
+                        err_js_object.set("rejectCode", err.0 as i32).unwrap();
+                        err_js_object.set("rejectMessage", &err.1).unwrap();
+
+                        quickjs_call_with_error_handling(ctx.clone(), reject, (err_js_object,))
+                            .unwrap();
+                    }
+                };
+
+                run_event_loop(ctx.clone());
+            });
+
+            Ok(promise)
         },
     )
 }

@@ -1,4 +1,4 @@
-import { handleUncaughtError, validateUnsignedInteger } from '../error';
+import { validateUnsignedInteger } from '../error';
 
 /**
  * Sets a callback to be executed periodically every specified interval.
@@ -50,34 +50,12 @@ export function setTimerInterval(
                   )
               )
             : globalThis._azleIcStable !== undefined
-              ? globalThis._azleIcStable.setTimerInterval(interval)
+              ? globalThis._azleIcStable.setTimerInterval(interval, callback)
               : ((): never => {
                     throw new Error(
                         'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
                     );
                 })();
-
-    // We don't call deleteGlobalTimerCallbacks here because the callback
-    // still needs to exist for the next interval callback execution
-    // Deletion of globalThis._azleTimerCallbacks in the context of setTimerInterval
-    // only occurs through calling clearTimer or manual manipulation of globalThis._azleTimerCallbacks
-    globalThis._azleDispatch({
-        type: 'SET_AZLE_TIMER_CALLBACK',
-        payload: {
-            timerId,
-            timerCallback: async (): Promise<void> => {
-                try {
-                    await callback();
-                } catch (error) {
-                    handleUncaughtError(error);
-                }
-            }
-        },
-        location: {
-            filepath: 'azle/src/stable/lib/ic_apis/set_timer_interval.ts',
-            functionName: 'setTimerInterval'
-        }
-    });
 
     return timerId;
 }

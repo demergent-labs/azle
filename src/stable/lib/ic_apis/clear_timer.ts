@@ -1,5 +1,3 @@
-import { deleteGlobalTimerCallbacks } from './set_timer';
-
 /**
  * Cancels a timer previously created with `setTimer` or `setTimerInterval`.
  *
@@ -35,6 +33,4 @@ export function clearTimer(timerId: bigint): void {
     if (globalThis._azleIcStable !== undefined) {
         globalThis._azleIcStable.clearTimer(timerId.toString());
     }
-
-    deleteGlobalTimerCallbacks(timerId);
 }
