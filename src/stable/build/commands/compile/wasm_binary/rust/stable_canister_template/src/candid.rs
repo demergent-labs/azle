@@ -1,7 +1,7 @@
 use std::{error::Error, ffi::CString, os::raw::c_char, str};
 
 use ic_cdk::trap;
-use rquickjs::{Array, Context, Ctx, Function, Module, Object, Runtime, Undefined};
+use rquickjs::{Array, Context, Function, Module, Object, Runtime, Undefined};
 
 use crate::{
     CONTEXT_REF_CELL,
@@ -32,8 +32,6 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
     });
 
     quickjs_with_ctx(|ctx| {
-        let ctx = unsafe { std::mem::transmute::<Ctx<'_>, Ctx<'static>>(ctx) };
-
         let globals = ctx.globals();
 
         globals.set("_azleActions", Array::new(ctx.clone()))?;
