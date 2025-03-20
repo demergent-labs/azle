@@ -38,8 +38,6 @@ fn trap_on_last_exception<T>(ctx: Ctx) -> Result<T, Box<dyn Error>> {
 }
 
 pub fn handle_promise_error(ctx: Ctx, promise: Promise) -> Result<(), Box<dyn Error>> {
-    // run_event_loop(ctx.clone());
-
     match promise.state() {
         PromiseState::Rejected => {
             promise.result::<Value>();
