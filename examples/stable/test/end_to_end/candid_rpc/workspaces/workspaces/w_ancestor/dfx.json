@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "w_ancestor_current": {
+            "type": "azle",
+            "main": "canisters/current/src/index.ts"
+        },
+        "w_ancestor_old": {
+            "type": "azle",
+            "main": "canisters/old/src/index.ts"
+        }
+    }
+}
