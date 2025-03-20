@@ -1,0 +1,8 @@
+{
+    "canisters": {
+        "descendant_same": {
+            "type": "azle",
+            "main": "index.ts"
+        }
+    }
+}
