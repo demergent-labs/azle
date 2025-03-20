@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL, JsonValue } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
@@ -110,14 +110,14 @@ export async function call<
             cyclesString
         ) as Return;
     } else {
-        return handleTwoWay<Return>(
+        return handleTwoWay(
             canisterIdBytes,
             method,
             argsRaw,
             cyclesString,
             options?.raw ?? false,
             options?.returnIdlType
-        );
+        ) as Return;
     }
 }
 
@@ -201,15 +201,14 @@ function handleOneWay(
             })();
 }
 
-// TODO should Return be different somehow?
-async function handleTwoWay<Return>(
+async function handleTwoWay(
     canisterIdBytes: Uint8Array,
     method: string,
     argsRaw: Uint8Array,
     cyclesString: string,
     raw: boolean,
     returnIdlType?: IDL.Type
-): Promise<Return> {
+): Promise<Uint8Array | JsonValue> {
     const result =
         globalThis._azleIcStable !== undefined
             ? await globalThis._azleIcStable.callRaw(
@@ -236,13 +235,11 @@ async function handleTwoWay<Return>(
                 })();
 
     if (raw === true) {
-        return (
-            result instanceof Uint8Array ? result : new Uint8Array(result)
-        ) as Return;
+        return result instanceof Uint8Array ? result : new Uint8Array(result);
     } else {
         return idlDecode(
             returnIdlType === undefined ? [] : [returnIdlType],
             result instanceof Uint8Array ? result : new Uint8Array(result)
-        )[0] as Return;
+        )[0];
     }
 }
