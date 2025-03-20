@@ -1,11 +1,9 @@
 import { log } from './globals';
 
 export type Action =
-    | DELETE_AZLE_TIMER_CALLBACK
     | SET_AZLE_CANISTER_METHOD_NAMES
     | SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE
     | SET_AZLE_ICP_REPLICA_WASM_ENVIRONMENT
-    | SET_AZLE_TIMER_CALLBACK
     | SET_CONSOLE
     | SET_CRYPTO
     | SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY
@@ -15,15 +13,6 @@ export type Action =
 interface ActionShape {
     type: string;
     payload: any;
-    location: {
-        filepath: string;
-        functionName: string;
-    };
-}
-
-interface DELETE_AZLE_TIMER_CALLBACK extends ActionShape {
-    type: 'DELETE_AZLE_TIMER_CALLBACK';
-    payload: bigint;
     location: {
         filepath: string;
         functionName: string;
@@ -51,18 +40,6 @@ interface SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE extends ActionShape {
 interface SET_AZLE_ICP_REPLICA_WASM_ENVIRONMENT extends ActionShape {
     type: 'SET_AZLE_ICP_REPLICA_WASM_ENVIRONMENT';
     payload: typeof globalThis._azleIcpReplicaWasmEnvironment;
-    location: {
-        filepath: string;
-        functionName: string;
-    };
-}
-
-interface SET_AZLE_TIMER_CALLBACK extends ActionShape {
-    type: 'SET_AZLE_TIMER_CALLBACK';
-    payload: {
-        timerId: bigint;
-        timerCallback: (typeof globalThis._azleTimerCallbacks)[string];
-    };
     location: {
         filepath: string;
         functionName: string;
@@ -142,11 +119,6 @@ globalThis._azleDispatch = (action: Action): void => {
         globalThis._azleActions.push(action);
     }
 
-    if (action.type === 'DELETE_AZLE_TIMER_CALLBACK') {
-        delete globalThis._azleTimerCallbacks[action.payload.toString()];
-        return;
-    }
-
     if (action.type === 'SET_AZLE_CANISTER_METHOD_NAMES') {
         globalThis._azleCanisterMethodNames = action.payload;
         return;
@@ -159,12 +131,6 @@ globalThis._azleDispatch = (action: Action): void => {
 
     if (action.type === 'SET_AZLE_ICP_REPLICA_WASM_ENVIRONMENT') {
         globalThis._azleIcpReplicaWasmEnvironment = action.payload;
-        return;
-    }
-
-    if (action.type === 'SET_AZLE_TIMER_CALLBACK') {
-        globalThis._azleTimerCallbacks[action.payload.timerId.toString()] =
-            action.payload.timerCallback;
         return;
     }
 

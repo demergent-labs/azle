@@ -56,57 +56,6 @@ pub fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
 }
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
-fn _azle_reject_callbacks_len() -> i32 {
-    RUNTIME.with(|runtime| {
-        let mut runtime = runtime.borrow_mut();
-        let runtime = runtime.as_mut().unwrap();
-
-        runtime.run_with_context(|context| {
-            match context
-                .eval_global_str("Object.keys(globalThis._azleRejectCallbacks).length".to_string())
-            {
-                JsValue::Int(length) => length,
-                _ => panic!("Could not convert JsValue to i32"),
-            }
-        })
-    })
-}
-
-#[ic_cdk::query(guard = guard_against_non_controllers)]
-fn _azle_resolve_callbacks_len() -> i32 {
-    RUNTIME.with(|runtime| {
-        let mut runtime = runtime.borrow_mut();
-        let runtime = runtime.as_mut().unwrap();
-
-        runtime.run_with_context(|context| {
-            match context
-                .eval_global_str("Object.keys(globalThis._azleResolveCallbacks).length".to_string())
-            {
-                JsValue::Int(length) => length,
-                _ => panic!("Could not convert JsValue to i32"),
-            }
-        })
-    })
-}
-
-#[ic_cdk::query(guard = guard_against_non_controllers)]
-fn _azle_timer_callbacks_len() -> i32 {
-    RUNTIME.with(|runtime| {
-        let mut runtime = runtime.borrow_mut();
-        let runtime = runtime.as_mut().unwrap();
-
-        runtime.run_with_context(|context| {
-            match context
-                .eval_global_str("Object.keys(globalThis._azleTimerCallbacks).length".to_string())
-            {
-                JsValue::Int(length) => length,
-                _ => panic!("Could not convert JsValue to i32"),
-            }
-        })
-    })
-}
-
-#[ic_cdk::query(guard = guard_against_non_controllers)]
 fn _azle_actions_len() -> i32 {
     RUNTIME.with(|runtime| {
         let mut runtime = runtime.borrow_mut();

@@ -33,8 +33,6 @@ declare global {
     var _azleNodeWasmEnvironment: boolean;
     // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
-    // eslint-disable-next-line no-var
-    var _azleTimerCallbacks: { [timerId: string]: () => Promise<void> };
 }
 
 // TODO do we need to disable any other wasmedge-quickjs globals

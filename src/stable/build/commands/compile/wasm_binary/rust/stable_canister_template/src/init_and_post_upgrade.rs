@@ -106,12 +106,6 @@ pub fn initialize_js(
             globals.set("_azlePostUpgradeCalled", true)?;
         }
 
-        globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
-
-        globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;
-
-        globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
-
         globals.set("exports", Object::new(ctx.clone())?)?;
 
         let env = Object::new(ctx.clone())?;

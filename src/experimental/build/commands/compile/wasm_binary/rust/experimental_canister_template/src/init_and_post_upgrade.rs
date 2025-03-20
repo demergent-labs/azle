@@ -123,18 +123,6 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
 
         context
             .get_global()
-            .set("_azleTimerCallbacks", context.new_object().into());
-
-        context
-            .get_global()
-            .set("_azleRejectCallbacks", context.new_object().into());
-
-        context
-            .get_global()
-            .set("_azleResolveCallbacks", context.new_object().into());
-
-        context
-            .get_global()
             .set("_azleCallbacks", context.new_object().into());
 
         context.get_global().set("_azleMethodMeta", {
