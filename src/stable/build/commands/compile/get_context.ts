@@ -1,7 +1,7 @@
 import { existsSync, statSync } from 'fs';
 import { dirname, join, relative } from 'path';
 
-import { AZLE_DFX_JSON_DIR } from '#utils/local_paths';
+import { AZLE_DFX_JSON_DIR } from '#utils/global_paths';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
 /**

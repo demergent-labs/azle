@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
 
-import { AZLE_DFX_JSON_PATH } from '#utils/local_paths';
+import { AZLE_DFX_JSON_PATH } from '#utils/global_paths';
 
 import { CanisterConfig, DfxJson } from './types';
 
