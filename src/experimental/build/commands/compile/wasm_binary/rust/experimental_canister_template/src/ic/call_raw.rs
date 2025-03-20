@@ -32,12 +32,12 @@ impl JsFn for NativeFunction {
         };
         let payment: u128 = payment_string.parse().unwrap();
 
-        let mut context_clone = context.clone();
-
         let (promise, resolve, reject) = context.new_promise();
 
         let resolve_function = resolve.to_function().unwrap();
         let reject_function = reject.to_function().unwrap();
+
+        let mut context_clone = context.clone();
 
         ic_cdk::spawn(async move {
             let call_result =
