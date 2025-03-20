@@ -20,13 +20,13 @@ where
             let result = callback(ctx.clone())
                 .map_err(|e| format!("QuickJS callback execution failed: {e}"))?;
 
-            run_event_loop(ctx);
+            run_event_loop(&ctx);
 
             Ok(result)
         })
     })
 }
 
-pub fn run_event_loop(ctx: Ctx) {
+pub fn run_event_loop(ctx: &Ctx) {
     while ctx.execute_pending_job() {}
 }

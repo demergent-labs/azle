@@ -13,9 +13,8 @@ pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
         move |delay: u64, callback: Function<'static>| -> Result<BigInt> {
             let delay_duration = Duration::new(delay, 0);
             let closure = move || {
-                let result = quickjs_with_ctx(|ctx| {
-                    quickjs_call_with_error_handling(ctx.clone(), &callback, ())
-                });
+                let result =
+                    quickjs_with_ctx(|ctx| quickjs_call_with_error_handling(&ctx, &callback, ()));
 
                 if let Err(e) = result {
                     trap(&format!("Azle TimerError: {e}"));

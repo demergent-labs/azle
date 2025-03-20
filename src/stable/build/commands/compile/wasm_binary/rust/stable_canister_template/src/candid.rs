@@ -70,7 +70,7 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
             .map_err(|e| format!("Failed to get globalThis._azleGetCandidAndMethodMeta: {e}"))?;
 
         let candid_and_method_meta_js_value =
-            quickjs_call_with_error_handling(ctx.clone(), &get_candid_and_method_meta, ())?;
+            quickjs_call_with_error_handling(&ctx, &get_candid_and_method_meta, ())?;
 
         let candid_and_method_meta: String = candid_and_method_meta_js_value
             .as_string()
