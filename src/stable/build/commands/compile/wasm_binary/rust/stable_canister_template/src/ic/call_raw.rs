@@ -1,5 +1,5 @@
 use candid::Principal;
-use ic_cdk::api::call::call_raw128;
+use ic_cdk::{api::call::call_raw128, spawn};
 use rquickjs::{Ctx, Exception, Function, Promise, Result, Result as QuickJsResult, TypedArray};
 
 use crate::{
@@ -43,7 +43,7 @@ pub fn get_function(ctx: Ctx<'static>) -> QuickJsResult<Function<'static>> {
 
             let (promise, resolve, reject) = ctx.promise().unwrap();
 
-            ic_cdk::spawn(async move {
+            spawn(async move {
                 // TODO let's crush this ctx pointer
                 let ctx = unsafe { Ctx::from_raw(ctx_ptr) };
 

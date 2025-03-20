@@ -1,5 +1,6 @@
 use core::time::Duration;
 
+use ic_cdk::trap;
 use ic_cdk_timers::{TimerId, set_timer_interval};
 use rquickjs::{BigInt, Ctx, Function, Result};
 use slotmap::Key;
@@ -13,12 +14,14 @@ pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
             let interval_duration = Duration::new(interval, 0);
             let closure = move || {
                 let callback_clone = callback.clone();
-                quickjs_with_ctx(|ctx| {
-                    quickjs_call_with_error_handling(ctx.clone(), callback_clone, ()).unwrap();
 
-                    Ok(())
-                })
-                .unwrap();
+                let result = quickjs_with_ctx(|ctx| {
+                    quickjs_call_with_error_handling(ctx.clone(), callback_clone, ())
+                });
+
+                if let Err(e) = result {
+                    trap(&format!("Azle TimerError: {e}"));
+                }
             };
 
             let timer_id: TimerId = set_timer_interval(interval_duration, closure);
