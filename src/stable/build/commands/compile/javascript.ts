@@ -5,6 +5,8 @@ import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 
+import { findCorrectWorkingDirectory } from './get_context';
+
 export async function compile(main: string): Promise<string> {
     const prelude = getPrelude(main);
     const buildOptions = getBuildOptions(prelude);
@@ -123,10 +125,11 @@ export async function bundle(buildOptions: BuildOptions): Promise<string> {
 
 // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
 export function getBuildOptions(ts: string): BuildOptions {
+    const correctDir = findCorrectWorkingDirectory();
     return {
         stdin: {
             contents: ts,
-            resolveDir: process.cwd()
+            resolveDir: correctDir
         },
         format: 'esm',
         bundle: true,
@@ -155,8 +158,11 @@ export function getBuildOptions(ts: string): BuildOptions {
 }
 
 export function getTsConfigPath(): string {
-    if (existsSync('tsconfig.json')) {
-        return 'tsconfig.json';
+    const correctDir = findCorrectWorkingDirectory();
+    const tsConfigPath = join(correctDir, 'tsconfig.json');
+
+    if (existsSync(tsConfigPath)) {
+        return tsConfigPath;
     }
     return join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json');
 }

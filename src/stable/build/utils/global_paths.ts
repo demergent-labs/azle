@@ -17,3 +17,21 @@ export const STABLE_STATIC_CANISTER_TEMPLATE_PATH = join(
     'canister_templates',
     'stable.wasm'
 );
+
+/**
+ * The directory containing the dfx.json file.
+ * @throws {Error} If AZLE_DFX_JSON_DIR environment variable is not defined
+ */
+export const AZLE_DFX_JSON_DIR = ((): string => {
+    const envDir = process.env.AZLE_DFX_JSON_DIR;
+
+    if (envDir === undefined) {
+        throw new Error(
+            'AZLE_DFX_JSON_DIR environment variable must be defined'
+        );
+    }
+
+    return envDir;
+})();
+
+export const AZLE_DFX_JSON_PATH = join(AZLE_DFX_JSON_DIR, 'dfx.json');

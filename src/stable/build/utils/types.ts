@@ -22,10 +22,12 @@ export type CanisterConfig = {
     };
 };
 
+// TODO: I'm not sure that packageJsonPath is needed.
 export type Context = {
     canisterPath: string;
     candidPath: string;
     main: string;
+    packageJsonPath: string;
     wasmBinaryPath: string;
     wasmData: WasmData;
 };

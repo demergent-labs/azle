@@ -1,0 +1,10 @@
+{
+    "private": true,
+    "workspaces": [
+        "canisters/current",
+        "canisters/old"
+    ],
+    "scripts": {
+        "deploy": "dfx deploy"
+    }
+}
