@@ -43,14 +43,15 @@ export function setTimerInterval(
     validateUnsignedInteger('setTimer interval', 53, interval);
 
     const timerId =
-        globalThis._azleIcExperimental !== undefined
-            ? BigInt(
-                  globalThis._azleIcExperimental.setTimerInterval(
-                      interval.toString()
-                  )
-              )
-            : globalThis._azleIcStable !== undefined
-              ? globalThis._azleIcStable.setTimerInterval(interval, callback)
+        globalThis._azleIcStable !== undefined
+            ? globalThis._azleIcStable.setTimerInterval(interval, callback)
+            : globalThis._azleIcExperimental !== undefined
+              ? BigInt(
+                    globalThis._azleIcExperimental.setTimerInterval(
+                        interval.toString(),
+                        callback
+                    )
+                )
               : ((): never => {
                     throw new Error(
                         'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
