@@ -7,7 +7,7 @@ use rquickjs::{
 
 pub fn quickjs_call_with_error_handling<'a>(
     ctx: Ctx<'a>,
-    function: Function<'a>,
+    function: &Function<'a>,
     args: impl IntoArgs<'a>,
 ) -> Result<Value<'a>, Box<dyn Error>> {
     let result: Value = match function.call(args) {

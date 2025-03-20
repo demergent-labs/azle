@@ -13,10 +13,8 @@ pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
         move |interval: u64, callback: Function<'static>| -> Result<BigInt> {
             let interval_duration = Duration::new(interval, 0);
             let closure = move || {
-                let callback_clone = callback.clone();
-
                 let result = quickjs_with_ctx(|ctx| {
-                    quickjs_call_with_error_handling(ctx.clone(), callback_clone, ())
+                    quickjs_call_with_error_handling(ctx.clone(), &callback, ())
                 });
 
                 if let Err(e) = result {

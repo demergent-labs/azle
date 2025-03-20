@@ -14,7 +14,7 @@ pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
             let delay_duration = Duration::new(delay, 0);
             let closure = move || {
                 let result = quickjs_with_ctx(|ctx| {
-                    quickjs_call_with_error_handling(ctx.clone(), callback, ())
+                    quickjs_call_with_error_handling(ctx.clone(), &callback, ())
                 });
 
                 if let Err(e) = result {

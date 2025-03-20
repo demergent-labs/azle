@@ -53,7 +53,7 @@ pub fn get_function(ctx: Ctx<'static>) -> QuickJsResult<Function<'static>> {
                     Ok(candid_bytes) => {
                         quickjs_call_with_error_handling(
                             ctx.clone(),
-                            resolve,
+                            &resolve,
                             (TypedArray::<u8>::new(ctx.clone(), candid_bytes),),
                         )
                         .unwrap();
@@ -71,7 +71,7 @@ pub fn get_function(ctx: Ctx<'static>) -> QuickJsResult<Function<'static>> {
                         err_js_object.set("rejectCode", err.0 as i32).unwrap();
                         err_js_object.set("rejectMessage", &err.1).unwrap();
 
-                        quickjs_call_with_error_handling(ctx.clone(), reject, (err_js_object,))
+                        quickjs_call_with_error_handling(ctx.clone(), &reject, (err_js_object,))
                             .unwrap();
                     }
                 };
