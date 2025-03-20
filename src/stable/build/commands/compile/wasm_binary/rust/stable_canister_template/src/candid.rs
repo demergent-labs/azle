@@ -31,7 +31,7 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
         *context_ref_cell.borrow_mut() = Some(context);
     });
 
-    quickjs_with_ctx(|ctx| {
+    quickjs_with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
         let globals = ctx.globals();
 
         globals.set("_azleActions", Array::new(ctx.clone()))?;
