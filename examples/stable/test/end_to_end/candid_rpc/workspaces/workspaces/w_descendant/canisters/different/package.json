@@ -1,0 +1,8 @@
+{
+    "dependencies": {
+        "azle": "latest"
+    },
+    "scripts": {
+        "deploy": "cd dfx && dfx deploy w_descendant_deep_different"
+    }
+}

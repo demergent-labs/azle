@@ -1,0 +1,8 @@
+{
+    "canisters": {
+        "descendant_different": {
+            "type": "azle",
+            "main": "../src/index.ts"
+        }
+    }
+}

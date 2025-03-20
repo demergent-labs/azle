@@ -1,0 +1,12 @@
+{
+    "private": true,
+    "workspaces": [
+        "canisters/deep_different",
+        "canisters/deep_same",
+        "canisters/deeper_different",
+        "canisters/deeper_same"
+    ],
+    "scripts": {
+        "deploy": "npm run deploy --workspaces"
+    }
+}
