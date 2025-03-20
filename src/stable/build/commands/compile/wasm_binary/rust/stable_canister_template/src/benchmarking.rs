@@ -18,9 +18,7 @@ thread_local! {
 }
 
 pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Box<dyn Error>> {
-    let function_name = function_name.to_string();
-
-    quickjs_with_ctx(move |ctx| {
+    quickjs_with_ctx(|ctx| {
         let timestamp = time();
 
         let method_names: Object = ctx
@@ -29,12 +27,8 @@ pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Bo
             .get("_azleCanisterMethodNames")
             .map_err(|e| format!("Failed to get globalThis._azleCanisterMethodNames: {e}"))?;
 
-        let function_name_cloned = function_name.clone();
-
         let method_name: String = method_names.get(function_name).map_err(|e| {
-            format!(
-                "Failed to get globalThis._azleCanisterMethodNames[{function_name_cloned}]: {e}"
-            )
+            format!("Failed to get globalThis._azleCanisterMethodNames[{function_name}]: {e}")
         })?;
 
         BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| {
