@@ -1,5 +1,6 @@
 use std::error::Error;
 
+use ic_cdk::trap;
 use rquickjs::Array;
 
 use crate::{
@@ -18,14 +19,14 @@ fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
 fn _azle_actions_len() -> u32 {
-    let result = quickjs_with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
+    match quickjs_with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
         let _azle_actions: Array = globals.get("_azleActions")?;
 
         Ok(_azle_actions.len() as u32)
-    })
-    .unwrap();
-
-    result
+    }) {
+        Ok(len) => len,
+        Err(e) => trap(&format!("Azle ActionsLenError: {}", e)),
+    }
 }
