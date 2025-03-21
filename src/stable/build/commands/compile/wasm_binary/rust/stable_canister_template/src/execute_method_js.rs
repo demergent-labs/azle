@@ -5,7 +5,7 @@ use rquickjs::{Function, Object};
 
 use crate::{
     benchmarking::record_benchmark,
-    quickjs::{call_with_error_handling, with_ctx},
+    rquickjs_utils::{call_with_error_handling, with_ctx},
 };
 
 #[unsafe(no_mangle)]

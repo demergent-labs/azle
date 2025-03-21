@@ -15,7 +15,7 @@ mod guards;
 mod ic;
 mod init_and_post_upgrade;
 mod internal_canister_methods;
-mod quickjs;
+mod rquickjs_utils;
 mod stable_b_tree_map;
 mod wasm_binary_manipulation;
 

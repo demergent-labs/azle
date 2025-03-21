@@ -4,7 +4,7 @@ use candid::CandidType;
 use ic_cdk::api::time;
 use rquickjs::Object;
 
-use crate::quickjs::with_ctx;
+use crate::rquickjs_utils::with_ctx;
 
 #[derive(CandidType, Debug, Clone)]
 pub struct BenchmarkEntry {

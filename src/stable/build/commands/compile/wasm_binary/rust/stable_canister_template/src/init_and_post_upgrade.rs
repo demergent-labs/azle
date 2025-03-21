@@ -10,7 +10,7 @@ use crate::{
     error::handle_promise_error,
     execute_method_js::execute_method_js,
     ic::register,
-    quickjs::{run_event_loop, with_ctx},
+    rquickjs_utils::{run_event_loop, with_ctx},
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
 

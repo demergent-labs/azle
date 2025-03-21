@@ -6,7 +6,7 @@ use rquickjs::Array;
 use crate::{
     benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry},
     guards::guard_against_non_controllers,
-    quickjs::with_ctx,
+    rquickjs_utils::with_ctx,
 };
 
 #[ic_cdk::update]
