@@ -5,7 +5,7 @@ use ic_cdk_timers::{TimerId, set_timer_interval};
 use rquickjs::{BigInt, Ctx, Function, Result};
 use slotmap::Key;
 
-use crate::{error::quickjs_call_with_error_handling, quickjs_with_ctx};
+use crate::{quickjs_call_with_error_handling::quickjs_call_with_error_handling, quickjs_with_ctx};
 
 pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
     Function::new(

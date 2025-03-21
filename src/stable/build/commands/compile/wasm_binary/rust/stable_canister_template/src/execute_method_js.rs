@@ -4,7 +4,8 @@ use ic_cdk::{api::performance_counter, trap};
 use rquickjs::{Function, Object};
 
 use crate::{
-    benchmarking::record_benchmark, error::quickjs_call_with_error_handling, quickjs_with_ctx,
+    benchmarking::record_benchmark,
+    quickjs_call_with_error_handling::quickjs_call_with_error_handling, quickjs_with_ctx,
 };
 
 #[unsafe(no_mangle)]

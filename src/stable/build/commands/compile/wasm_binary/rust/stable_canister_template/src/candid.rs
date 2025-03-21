@@ -5,8 +5,9 @@ use rquickjs::{Array, Context, Function, Module, Object, Runtime, Undefined};
 
 use crate::{
     CONTEXT_REF_CELL,
-    error::{handle_promise_error, quickjs_call_with_error_handling},
+    error::handle_promise_error,
     ic::register,
+    quickjs_call_with_error_handling::quickjs_call_with_error_handling,
     quickjs_with_ctx::{quickjs_with_ctx, run_event_loop},
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };

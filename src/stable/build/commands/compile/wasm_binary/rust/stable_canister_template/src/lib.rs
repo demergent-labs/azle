@@ -16,6 +16,7 @@ mod guards;
 mod ic;
 mod init_and_post_upgrade;
 mod internal_canister_methods;
+mod quickjs_call_with_error_handling;
 mod quickjs_with_ctx;
 mod stable_b_tree_map;
 mod wasm_binary_manipulation;

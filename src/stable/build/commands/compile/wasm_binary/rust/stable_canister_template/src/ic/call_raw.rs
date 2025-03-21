@@ -7,7 +7,7 @@ use ic_cdk::{
 };
 use rquickjs::{Ctx, Exception, Function, Promise, Result as RQuickJsResult, TypedArray, Value};
 
-use crate::{error::quickjs_call_with_error_handling, ic::throw_error};
+use crate::{ic::throw_error, quickjs_call_with_error_handling::quickjs_call_with_error_handling};
 
 pub fn get_function(ctx: Ctx<'static>) -> RQuickJsResult<Function<'static>> {
     Function::new(
