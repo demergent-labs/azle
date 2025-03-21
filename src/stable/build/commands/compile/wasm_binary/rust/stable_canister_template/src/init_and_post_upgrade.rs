@@ -7,10 +7,9 @@ use rquickjs::{Array, Context, Module, Object, Runtime, Undefined};
 
 use crate::{
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
-    error::handle_promise_error,
     execute_method_js::execute_method_js,
     ic::register,
-    rquickjs_utils::{run_event_loop, with_ctx},
+    rquickjs_utils::{handle_promise_error, run_event_loop, with_ctx},
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
 

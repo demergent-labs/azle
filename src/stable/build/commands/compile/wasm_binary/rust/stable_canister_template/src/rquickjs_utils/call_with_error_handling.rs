@@ -2,9 +2,7 @@ use std::error::Error;
 
 use rquickjs::{Ctx, Function, Promise, Value, function::IntoArgs};
 
-use crate::error::{handle_promise_error, trap_on_last_exception};
-
-use super::run_event_loop;
+use crate::rquickjs_utils::{handle_promise_error, run_event_loop, trap_on_last_exception};
 
 // TODO it seems like this function should have its own file
 // TODO also, I'm wondering if it's actually in here
