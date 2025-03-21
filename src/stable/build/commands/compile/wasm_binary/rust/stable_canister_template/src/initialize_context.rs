@@ -14,7 +14,7 @@ pub fn initialize_context(
     wasm_data: &WasmData,
     icp_replica_wasm_environment: bool,
     node_wasm_environment: bool,
-    init_option: Option<bool>,
+    init: Option<bool>,
 ) -> Result<(), Box<dyn Error>> {
     let runtime = Runtime::new()?;
     let context = Context::full(&runtime)?;
@@ -44,31 +44,17 @@ pub fn initialize_context(
         // initializes globalThis._azleIcStable
         register(ctx.clone())?;
 
-        // TODO is there a better way to handle init?
-        if let Some(init) = init_option {
-            if init {
-                globals.set("_azleInitCalled", true)?;
-            } else {
-                globals.set("_azleInitCalled", false)?;
-            }
-        } else {
-            globals.set("_azleInitCalled", false)?;
-        }
+        globals.set("_azleInitCalled", init == Some(true))?;
 
         globals.set("_azleNodeWasmEnvironment", node_wasm_environment)?;
 
-        if let Some(init) = init_option {
-            if init {
-                globals.set("_azlePostUpgradeCalled", false)?;
-            } else {
-                globals.set("_azlePostUpgradeCalled", true)?;
-            }
-        } else {
-            globals.set("_azlePostUpgradeCalled", false)?;
-        }
+        globals.set("_azlePostUpgradeCalled", init == Some(false))?;
 
         globals.set("exports", Object::new(ctx.clone())?)?;
 
+        // This is here for future compatability only
+        // There are currently no environment variables because
+        // ic_wasi_polyfill does not work in the Node Wasm environment
         let env = Object::new(ctx.clone())?;
 
         for (key, value) in vars() {
