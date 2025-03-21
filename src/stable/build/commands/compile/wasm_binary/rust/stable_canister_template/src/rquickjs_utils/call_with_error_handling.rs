@@ -15,7 +15,7 @@ pub fn call_with_error_handling<'a>(
         Err(_) => trap_on_last_exception(ctx)?,
     };
 
-    // We should handle the promise error before run_event_loop
+    // We should handle the promise error before drain_microtasks
     // as all JavaScript microtasks queued from the macrotask execution
     // will be discarded if there is a trap
     if result.is_promise() {
@@ -23,7 +23,7 @@ pub fn call_with_error_handling<'a>(
             .clone()
             .into_promise()
             .ok_or("Failed to convert function call return JS value to promise")?;
-        handle_promise_error(ctx, promise)?;
+        handle_promise_error(ctx, &promise)?;
     }
 
     // We consider the function.call above to be a JavaScript macrotask,

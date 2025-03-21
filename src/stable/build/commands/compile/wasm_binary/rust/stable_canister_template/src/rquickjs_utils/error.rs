@@ -3,7 +3,7 @@ use std::error::Error;
 use ic_cdk::trap;
 use rquickjs::{Ctx, Exception, Promise, Value, promise::PromiseState};
 
-pub fn handle_promise_error(ctx: &Ctx, promise: Promise) -> Result<(), Box<dyn Error>> {
+pub fn handle_promise_error(ctx: &Ctx, promise: &Promise) -> Result<(), Box<dyn Error>> {
     match promise.state() {
         PromiseState::Rejected => {
             promise.result::<Value>();

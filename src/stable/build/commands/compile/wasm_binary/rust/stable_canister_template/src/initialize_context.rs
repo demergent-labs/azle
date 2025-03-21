@@ -76,10 +76,10 @@ pub fn initialize_context(
         // JavaScript macrotask
         let promise = Module::evaluate(ctx.clone(), main_js_path, js)?;
 
-        // We should handle the promise error before run_event_loop
+        // We should handle the promise error before drain_microtasks
         // as all microtasks queued from the macrotask execution
         // will be discarded if there is a trap
-        handle_promise_error(&ctx, promise)?;
+        handle_promise_error(&ctx, &promise)?;
 
         // We consider the Module::evaluate above to be a macrotask,
         // thus we drain all microtasks queued during its execution

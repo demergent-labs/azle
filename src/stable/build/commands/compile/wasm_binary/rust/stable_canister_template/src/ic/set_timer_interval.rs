@@ -16,7 +16,7 @@ pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
                 let result = with_ctx(|ctx| call_with_error_handling(&ctx, &callback, ()));
 
                 if let Err(e) = result {
-                    trap(&format!("Azle TimerError: {e}"));
+                    trap(&format!("Azle TimerIntervalError: {e}"));
                 }
             };
 
