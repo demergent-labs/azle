@@ -9,7 +9,7 @@ use crate::{
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
     execute_method_js::execute_method_js,
     ic::register,
-    rquickjs_utils::{handle_promise_error, run_event_loop, with_ctx},
+    rquickjs_utils::{drain_microtasks, handle_promise_error, with_ctx},
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
 
@@ -119,17 +119,17 @@ pub fn initialize_js(
 
         globals.set("process", process)?;
 
-        // JavaScript macro task
+        // JavaScript macrotask
         let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
 
         // We should handle the promise error before run_event_loop
-        // as all micro tasks queued from the macro task execution
+        // as all microtasks queued from the macrotask execution
         // will be discarded if there is a trap
         handle_promise_error(&ctx, promise)?;
 
-        // We consider the Module::evaluate above to be a macro task,
-        // thus we drain all micro tasks queued during its execution
-        run_event_loop(&ctx);
+        // We consider the Module::evaluate above to be a macrotask,
+        // thus we drain all microtasks queued during its execution
+        drain_microtasks(&ctx);
 
         Ok(())
     })?;
