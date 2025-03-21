@@ -5,7 +5,7 @@ use ic_cdk::{
     api::call::{CallResult, call_raw128},
     spawn, trap,
 };
-use rquickjs::{Ctx, Exception, Function, Promise, Result as RQuickJsResult, TypedArray, Value};
+use rquickjs::{Ctx, Exception, Function, Promise, Result as RQuickJsResult, TypedArray};
 
 use crate::{ic::throw_error, rquickjs_utils::call_with_error_handling};
 
@@ -54,13 +54,17 @@ fn resolve_or_reject<'a>(
     resolve: &Function<'a>,
     reject: &Function<'a>,
     call_result: CallResult<Vec<u8>>,
-) -> Result<Value<'a>, Box<dyn Error>> {
+) -> Result<(), Box<dyn Error>> {
     match call_result {
-        Ok(candid_bytes) => call_with_error_handling(
-            ctx,
-            resolve,
-            (TypedArray::<u8>::new(ctx.clone(), candid_bytes),),
-        ),
+        Ok(candid_bytes) => {
+            call_with_error_handling(
+                ctx,
+                resolve,
+                (TypedArray::<u8>::new(ctx.clone(), candid_bytes),),
+            )?;
+
+            Ok(())
+        }
         Err(err) => {
             let err_js_object = Exception::from_message(
                 ctx.clone(),
@@ -73,7 +77,9 @@ fn resolve_or_reject<'a>(
             err_js_object.set("rejectCode", err.0 as i32)?;
             err_js_object.set("rejectMessage", &err.1)?;
 
-            call_with_error_handling(ctx, reject, (err_js_object,))
+            call_with_error_handling(ctx, reject, (err_js_object,))?;
+
+            Ok(())
         }
     }
 }
