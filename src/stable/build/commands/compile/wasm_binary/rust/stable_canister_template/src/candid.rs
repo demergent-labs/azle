@@ -7,8 +7,7 @@ use crate::{
     CONTEXT_REF_CELL,
     error::handle_promise_error,
     ic::register,
-    quickjs_call_with_error_handling::quickjs_call_with_error_handling,
-    quickjs_with_ctx::{quickjs_with_ctx, run_event_loop},
+    quickjs::{call_with_error_handling, run_event_loop, with_ctx},
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
 
@@ -33,7 +32,7 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
         *context_ref_cell.borrow_mut() = Some(context);
     });
 
-    quickjs_with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
+    with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
         let globals = ctx.globals();
 
         globals.set("_azleActions", Array::new(ctx.clone()))?;
@@ -80,7 +79,7 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
             .map_err(|e| format!("Failed to get globalThis._azleGetCandidAndMethodMeta: {e}"))?;
 
         let candid_and_method_meta_js_value =
-            quickjs_call_with_error_handling(&ctx, &get_candid_and_method_meta, ())?;
+            call_with_error_handling(&ctx, &get_candid_and_method_meta, ())?;
 
         let candid_and_method_meta: String = candid_and_method_meta_js_value
             .as_string()

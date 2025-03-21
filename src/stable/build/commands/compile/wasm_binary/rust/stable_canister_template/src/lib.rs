@@ -4,7 +4,6 @@ use ic_stable_structures::{
     DefaultMemoryImpl,
     memory_manager::{MemoryManager, VirtualMemory},
 };
-use quickjs_with_ctx::quickjs_with_ctx;
 use rquickjs::Context;
 use wasm_binary_manipulation::WasmData;
 
@@ -16,8 +15,7 @@ mod guards;
 mod ic;
 mod init_and_post_upgrade;
 mod internal_canister_methods;
-mod quickjs_call_with_error_handling;
-mod quickjs_with_ctx;
+mod quickjs;
 mod stable_b_tree_map;
 mod wasm_binary_manipulation;
 

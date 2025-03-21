@@ -5,7 +5,7 @@ use ic_cdk_timers::{TimerId, set_timer_interval};
 use rquickjs::{BigInt, Ctx, Function, Result};
 use slotmap::Key;
 
-use crate::{quickjs_call_with_error_handling::quickjs_call_with_error_handling, quickjs_with_ctx};
+use crate::quickjs::{call_with_error_handling, with_ctx};
 
 pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
     Function::new(
@@ -13,8 +13,7 @@ pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
         move |interval: u64, callback: Function<'static>| -> Result<BigInt> {
             let interval_duration = Duration::new(interval, 0);
             let closure = move || {
-                let result =
-                    quickjs_with_ctx(|ctx| quickjs_call_with_error_handling(&ctx, &callback, ()));
+                let result = with_ctx(|ctx| call_with_error_handling(&ctx, &callback, ()));
 
                 if let Err(e) = result {
                     trap(&format!("Azle TimerError: {e}"));

@@ -6,7 +6,7 @@ use rquickjs::Array;
 use crate::{
     benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry},
     guards::guard_against_non_controllers,
-    quickjs_with_ctx::quickjs_with_ctx,
+    quickjs::with_ctx,
 };
 
 #[ic_cdk::update]
@@ -19,7 +19,7 @@ fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
 fn _azle_actions_len() -> u32 {
-    match quickjs_with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
+    match with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
         let _azle_actions: Array = globals.get("_azleActions")?;

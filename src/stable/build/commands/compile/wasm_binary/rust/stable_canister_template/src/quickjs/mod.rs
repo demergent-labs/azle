@@ -3,9 +3,40 @@ use std::error::Error;
 use rquickjs::{Ctx, Function, Promise, Value, function::IntoArgs};
 
 use crate::{
+    CONTEXT_REF_CELL,
     error::{handle_promise_error, trap_on_last_exception},
-    quickjs_with_ctx::run_event_loop,
 };
+
+// TODO rename to rquickjs_with_ctx
+pub fn with_ctx<F, R>(callback: F) -> Result<R, Box<dyn Error>>
+where
+    F: FnOnce(Ctx<'static>) -> Result<R, Box<dyn Error>>,
+{
+    CONTEXT_REF_CELL.with(|context_ref_cell| {
+        let context_ref = context_ref_cell.borrow();
+        let context = context_ref
+            .as_ref()
+            .ok_or("QuickJS context not initialized")?;
+
+        context.with(|ctx| {
+            let ctx = unsafe { std::mem::transmute::<Ctx<'_>, Ctx<'static>>(ctx) };
+
+            let result = callback(ctx.clone())
+                .map_err(|e| format!("QuickJS callback execution failed: {e}"))?;
+
+            Ok(result)
+        })
+    })
+}
+
+// TODO I feel like we should move this to its own file and rename it to rquickjs_run_event_loop
+// TODO improve this comment
+// Drain all micro tasks currently queued
+// Essentially this will drive all queue
+// Promise.then, Promise.catch, and async/await after await-points to completion
+pub fn run_event_loop(ctx: &Ctx) {
+    while ctx.execute_pending_job() {}
+}
 
 // TODO it seems like this function should have its own file
 // TODO also, I'm wondering if it's actually in here
@@ -13,7 +44,7 @@ use crate::{
 // TODO it seems like we might be able to treat each function.call
 // TODO as a macro task. This macro task will queue up promises (micro tasks)
 // TODO and then once it is fully complete, we should drain the micro task queue
-pub fn quickjs_call_with_error_handling<'a>(
+pub fn call_with_error_handling<'a>(
     ctx: &Ctx<'a>,
     function: &Function<'a>,
     args: impl IntoArgs<'a>,

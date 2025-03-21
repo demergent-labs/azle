@@ -5,7 +5,7 @@ use rquickjs::{Function, Object};
 
 use crate::{
     benchmarking::record_benchmark,
-    quickjs_call_with_error_handling::quickjs_call_with_error_handling, quickjs_with_ctx,
+    quickjs::{call_with_error_handling, with_ctx},
 };
 
 #[unsafe(no_mangle)]
@@ -21,7 +21,7 @@ pub extern "C" fn execute_method_js(function_index: i32) {
 }
 
 fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Error>> {
-    quickjs_with_ctx(|ctx| {
+    with_ctx(|ctx| {
         let exported_canister_class_instance: Object = ctx
             .clone()
             .globals()
@@ -42,7 +42,7 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
             )
         })?;
 
-        quickjs_call_with_error_handling(&ctx, &method_callback, ())?;
+        call_with_error_handling(&ctx, &method_callback, ())?;
 
         Ok(())
     })?;

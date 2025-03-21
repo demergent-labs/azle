@@ -10,7 +10,7 @@ use crate::{
     error::handle_promise_error,
     execute_method_js::execute_method_js,
     ic::register,
-    quickjs_with_ctx::{quickjs_with_ctx, run_event_loop},
+    quickjs::{run_event_loop, with_ctx},
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
 
@@ -74,7 +74,7 @@ pub fn initialize_js(
         *context_ref_cell.borrow_mut() = Some(context);
     });
 
-    quickjs_with_ctx(|ctx| -> Result<(), Box<dyn Error>> {
+    with_ctx(|ctx| -> Result<(), Box<dyn Error>> {
         let globals = ctx.globals();
 
         globals.set("_azleActions", Array::new(ctx.clone()))?;

@@ -7,7 +7,7 @@ use ic_cdk::{
 };
 use rquickjs::{Ctx, Exception, Function, Promise, Result as RQuickJsResult, TypedArray, Value};
 
-use crate::{ic::throw_error, quickjs_call_with_error_handling::quickjs_call_with_error_handling};
+use crate::{ic::throw_error, quickjs::call_with_error_handling};
 
 pub fn get_function(ctx: Ctx<'static>) -> RQuickJsResult<Function<'static>> {
     Function::new(
@@ -56,7 +56,7 @@ fn resolve_or_reject<'a>(
     call_result: CallResult<Vec<u8>>,
 ) -> Result<Value<'a>, Box<dyn Error>> {
     match call_result {
-        Ok(candid_bytes) => quickjs_call_with_error_handling(
+        Ok(candid_bytes) => call_with_error_handling(
             ctx,
             resolve,
             (TypedArray::<u8>::new(ctx.clone(), candid_bytes),),
@@ -73,7 +73,7 @@ fn resolve_or_reject<'a>(
             err_js_object.set("rejectCode", err.0 as i32)?;
             err_js_object.set("rejectMessage", &err.1)?;
 
-            quickjs_call_with_error_handling(ctx, reject, (err_js_object,))
+            call_with_error_handling(ctx, reject, (err_js_object,))
         }
     }
 }
