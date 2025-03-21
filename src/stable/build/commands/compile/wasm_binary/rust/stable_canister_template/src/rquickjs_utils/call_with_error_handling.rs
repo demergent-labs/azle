@@ -4,12 +4,6 @@ use rquickjs::{Ctx, Function, Promise, Value, function::IntoArgs};
 
 use crate::rquickjs_utils::{handle_promise_error, run_event_loop, trap_on_last_exception};
 
-// TODO it seems like this function should have its own file
-// TODO also, I'm wondering if it's actually in here
-// TODO that we should be calling run_event_loop
-// TODO it seems like we might be able to treat each function.call
-// TODO as a macro task. This macro task will queue up promises (micro tasks)
-// TODO and then once it is fully complete, we should drain the micro task queue
 pub fn call_with_error_handling<'a>(
     ctx: &Ctx<'a>,
     function: &Function<'a>,
@@ -18,7 +12,7 @@ pub fn call_with_error_handling<'a>(
     // JavaScript macro task
     let result: Value = match function.call(args) {
         Ok(value) => value,
-        Err(_) => trap_on_last_exception(ctx.clone())?,
+        Err(_) => trap_on_last_exception(ctx)?,
     };
 
     // We should handle the promise error before run_event_loop
@@ -29,7 +23,7 @@ pub fn call_with_error_handling<'a>(
             .clone()
             .into_promise()
             .ok_or("Failed to convert function call return JS value to promise")?;
-        handle_promise_error(ctx.clone(), promise)?;
+        handle_promise_error(ctx, promise)?;
     }
 
     // We consider the function.call above to be a JavaScript macro task,

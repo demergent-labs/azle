@@ -125,7 +125,7 @@ pub fn initialize_js(
         // We should handle the promise error before run_event_loop
         // as all micro tasks queued from the macro task execution
         // will be discarded if there is a trap
-        handle_promise_error(ctx.clone(), promise)?;
+        handle_promise_error(&ctx, promise)?;
 
         // We consider the Module::evaluate above to be a macro task,
         // thus we drain all micro tasks queued during its execution
