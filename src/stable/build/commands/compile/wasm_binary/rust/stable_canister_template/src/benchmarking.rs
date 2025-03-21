@@ -4,7 +4,7 @@ use candid::CandidType;
 use ic_cdk::api::time;
 use rquickjs::Object;
 
-use crate::quickjs_with_ctx;
+use crate::rquickjs_utils::with_ctx;
 
 #[derive(CandidType, Debug, Clone)]
 pub struct BenchmarkEntry {
@@ -18,7 +18,7 @@ thread_local! {
 }
 
 pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Box<dyn Error>> {
-    quickjs_with_ctx(|ctx| {
+    with_ctx(|ctx| {
         let timestamp = time();
 
         let method_names: Object = ctx

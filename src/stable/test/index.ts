@@ -55,24 +55,6 @@ export function runTests(tests: Test): void {
                 const canisterNames = await getCanisterNames();
 
                 for (const canisterName of canisterNames) {
-                    const azleRejectCallbacksLen0 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`
-                        ).toString()
-                    );
-
-                    const azleResolveCallbacksLen0 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`
-                        ).toString()
-                    );
-
-                    const azleTimerCallbacksLen0 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`
-                        ).toString()
-                    );
-
                     const azleActionsLen0 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`
@@ -80,24 +62,6 @@ export function runTests(tests: Test): void {
                     );
 
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
-
-                    const azleRejectCallbacksLen1 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`
-                        ).toString()
-                    );
-
-                    const azleResolveCallbacksLen1 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`
-                        ).toString()
-                    );
-
-                    const azleTimerCallbacksLen1 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`
-                        ).toString()
-                    );
 
                     const azleActionsLen1 = Number(
                         execSync(
@@ -107,84 +71,17 @@ export function runTests(tests: Test): void {
 
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
-                    const azleRejectCallbacksLen2 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`
-                        ).toString()
-                    );
-
-                    const azleResolveCallbacksLen2 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`
-                        ).toString()
-                    );
-
-                    const azleTimerCallbacksLen2 = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`
-                        ).toString()
-                    );
-
                     const azleActionsLen2 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`
                         ).toString()
                     );
 
-                    console.info(
-                        'azleRejectCallbacksLen0',
-                        azleRejectCallbacksLen0
-                    );
-                    console.info(
-                        'azleResolveCallbacksLen0',
-                        azleResolveCallbacksLen0
-                    );
-                    console.info(
-                        'azleTimerCallbacksLen0',
-                        azleTimerCallbacksLen0
-                    );
                     console.info('azleActionsLen0', azleActionsLen0);
-
-                    console.info(
-                        'azleRejectCallbacksLen1',
-                        azleRejectCallbacksLen1
-                    );
-                    console.info(
-                        'azleResolveCallbacksLen1',
-                        azleResolveCallbacksLen1
-                    );
-                    console.info(
-                        'azleTimerCallbacksLen1',
-                        azleTimerCallbacksLen1
-                    );
                     console.info('azleActionsLen1', azleActionsLen1);
-
-                    console.info(
-                        'azleRejectCallbacksLen2',
-                        azleRejectCallbacksLen2
-                    );
-                    console.info(
-                        'azleResolveCallbacksLen2',
-                        azleResolveCallbacksLen2
-                    );
-                    console.info(
-                        'azleTimerCallbacksLen2',
-                        azleTimerCallbacksLen2
-                    );
                     console.info('azleActionsLen2', azleActionsLen2);
 
-                    expect(azleRejectCallbacksLen0).toEqual(0);
-                    expect(azleResolveCallbacksLen0).toEqual(0);
-                    expect(azleTimerCallbacksLen0).toEqual(0);
-
-                    expect(azleRejectCallbacksLen1).toEqual(0);
-                    expect(azleResolveCallbacksLen1).toEqual(0);
-                    expect(azleTimerCallbacksLen1).toEqual(0);
                     expect(azleActionsLen0).toEqual(azleActionsLen1);
-
-                    expect(azleRejectCallbacksLen2).toEqual(0);
-                    expect(azleResolveCallbacksLen2).toEqual(0);
-                    expect(azleTimerCallbacksLen2).toEqual(0);
                     expect(azleActionsLen0).toEqual(azleActionsLen2);
                 }
             });

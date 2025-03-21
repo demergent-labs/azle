@@ -1,6 +1,5 @@
-import { IDL } from '@dfinity/candid';
+import { IDL, JsonValue } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { v4 } from 'uuid';
 
 import { idlDecode, idlEncode } from '../execute_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
@@ -89,8 +88,8 @@ export async function call<
     options?: CallOptions<Args>
 ): Promise<Return> {
     if (
-        globalThis._azleIcExperimental === undefined &&
-        globalThis._azleIcStable === undefined
+        globalThis._azleIcStable === undefined &&
+        globalThis._azleIcExperimental === undefined
     ) {
         return undefined as Return;
     }
@@ -104,21 +103,21 @@ export async function call<
     const cyclesString = getCyclesString(options);
 
     if (options?.oneway === true) {
-        return handleOneWay<Return>(
+        return handleOneWay(
             canisterIdBytes,
             method,
             argsRaw,
             cyclesString
-        );
+        ) as Return;
     } else {
-        return handleTwoWay<Return>(
+        return handleTwoWay(
             canisterIdBytes,
             method,
             argsRaw,
             cyclesString,
             options?.raw ?? false,
             options?.returnIdlType
-        );
+        ) as Return;
     }
 }
 
@@ -171,80 +170,21 @@ function getCyclesString<Args extends any[] | Uint8Array | undefined>(
     return cycles.toString();
 }
 
-function handleOneWay<Return>(
+function handleOneWay(
     canisterIdBytes: Uint8Array,
     method: string,
     argsRaw: Uint8Array,
     cyclesString: string
-): Promise<Return> {
-    if (
-        globalThis._azleIcExperimental === undefined &&
-        globalThis._azleIcStable === undefined
-    ) {
-        throw new Error(
-            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
-        );
-    }
-
-    if (globalThis._azleIcExperimental !== undefined) {
-        globalThis._azleIcExperimental.notifyRaw(
-            canisterIdBytes.buffer instanceof ArrayBuffer
-                ? canisterIdBytes.buffer
-                : new Uint8Array(canisterIdBytes).buffer,
-            method,
-            argsRaw.buffer instanceof ArrayBuffer
-                ? argsRaw.buffer
-                : new Uint8Array(argsRaw).buffer,
-            cyclesString
-        );
-    }
-
-    if (globalThis._azleIcStable !== undefined) {
-        globalThis._azleIcStable.notifyRaw(
-            canisterIdBytes,
-            method,
-            argsRaw,
-            cyclesString
-        );
-    }
-
-    return Promise.resolve(undefined as Return);
-}
-
-function handleTwoWay<Return>(
-    canisterIdBytes: Uint8Array,
-    method: string,
-    argsRaw: Uint8Array,
-    cyclesString: string,
-    raw: boolean,
-    returnIdlType?: IDL.Type
-): Promise<Return> {
-    return new Promise((resolve, reject) => {
-        const promiseId = v4();
-        const globalResolveId = `_resolve_${promiseId}`;
-        const globalRejectId = `_reject_${promiseId}`;
-
-        createResolveCallback<Return>(
-            globalResolveId,
-            resolve,
-            raw,
-            returnIdlType
-        );
-        createRejectCallback(globalRejectId, reject);
-
-        if (
-            globalThis._azleIcExperimental === undefined &&
-            globalThis._azleIcStable === undefined
-        ) {
-            throw new Error(
-                'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
-            );
-        }
-
-        if (globalThis._azleIcExperimental !== undefined) {
-            globalThis._azleIcExperimental.callRaw(
-                globalResolveId,
-                globalRejectId,
+): void {
+    return globalThis._azleIcStable !== undefined
+        ? globalThis._azleIcStable.notifyRaw(
+              canisterIdBytes,
+              method,
+              argsRaw,
+              cyclesString
+          )
+        : globalThis._azleIcExperimental !== undefined
+          ? globalThis._azleIcExperimental.notifyRaw(
                 canisterIdBytes.buffer instanceof ArrayBuffer
                     ? canisterIdBytes.buffer
                     : new Uint8Array(canisterIdBytes).buffer,
@@ -253,73 +193,53 @@ function handleTwoWay<Return>(
                     ? argsRaw.buffer
                     : new Uint8Array(argsRaw).buffer,
                 cyclesString
-            );
-        }
-
-        if (globalThis._azleIcStable !== undefined) {
-            globalThis._azleIcStable.callRaw(
-                globalResolveId,
-                globalRejectId,
-                canisterIdBytes,
-                method,
-                argsRaw,
-                cyclesString
-            );
-        }
-    });
+            )
+          : ((): never => {
+                throw new Error(
+                    'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                );
+            })();
 }
 
-function createResolveCallback<Return>(
-    globalResolveId: string,
-    resolve: (value: Return | PromiseLike<Return>) => void,
+async function handleTwoWay(
+    canisterIdBytes: Uint8Array,
+    method: string,
+    argsRaw: Uint8Array,
+    cyclesString: string,
     raw: boolean,
     returnIdlType?: IDL.Type
-): void {
-    globalThis._azleDispatch({
-        type: 'SET_AZLE_RESOLVE_CALLBACK',
-        payload: {
-            globalResolveId,
-            resolveCallback: (result: Uint8Array | ArrayBuffer): void => {
-                if (raw === true) {
-                    resolve(
-                        (result instanceof Uint8Array
-                            ? result
-                            : new Uint8Array(result)) as Return
+): Promise<Uint8Array | JsonValue> {
+    const result =
+        globalThis._azleIcStable !== undefined
+            ? await globalThis._azleIcStable.callRaw(
+                  canisterIdBytes,
+                  method,
+                  argsRaw,
+                  cyclesString
+              )
+            : globalThis._azleIcExperimental !== undefined
+              ? await globalThis._azleIcExperimental.callRaw(
+                    canisterIdBytes.buffer instanceof ArrayBuffer
+                        ? canisterIdBytes.buffer
+                        : new Uint8Array(canisterIdBytes).buffer,
+                    method,
+                    argsRaw.buffer instanceof ArrayBuffer
+                        ? argsRaw.buffer
+                        : new Uint8Array(argsRaw).buffer,
+                    cyclesString
+                )
+              : ((): never => {
+                    throw new Error(
+                        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
                     );
-                } else {
-                    resolve(
-                        idlDecode(
-                            returnIdlType === undefined ? [] : [returnIdlType],
-                            result instanceof Uint8Array
-                                ? result
-                                : new Uint8Array(result)
-                        )[0] as Return
-                    );
-                }
-            }
-        },
-        location: {
-            filepath: 'azle/src/stable/lib/ic_apis/call.ts',
-            functionName: 'createResolveCallback'
-        }
-    });
-}
+                })();
 
-function createRejectCallback(
-    globalRejectId: string,
-    reject: (reason?: any) => void
-): void {
-    globalThis._azleDispatch({
-        type: 'SET_AZLE_REJECT_CALLBACK',
-        payload: {
-            globalRejectId,
-            rejectCallback: (error: unknown): void => {
-                reject(error);
-            }
-        },
-        location: {
-            filepath: 'azle/src/stable/lib/ic_apis/call.ts',
-            functionName: 'createRejectCallback'
-        }
-    });
+    if (raw === true) {
+        return result instanceof Uint8Array ? result : new Uint8Array(result);
+    } else {
+        return idlDecode(
+            returnIdlType === undefined ? [] : [returnIdlType],
+            result instanceof Uint8Array ? result : new Uint8Array(result)
+        )[0];
+    }
 }

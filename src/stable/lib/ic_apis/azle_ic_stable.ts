@@ -7,13 +7,11 @@ import { RejectCode } from './msg_reject_code';
 export type AzleIcStable = {
     acceptMessage: () => void;
     callRaw: (
-        globalResolveId: string,
-        globalRejectId: string,
         canisterIdBytes: Uint8Array,
         method: string,
         argsRaw: Uint8Array,
         cyclesString: string
-    ) => void;
+    ) => Promise<Uint8Array>;
     candidDecode: (candidBytes: Uint8Array) => string;
     candidEncode: (candidString: string) => Uint8Array;
     canisterCycleBalance: () => string;
@@ -43,8 +41,11 @@ export type AzleIcStable = {
     ) => void;
     performanceCounter: (counterType: number) => bigint;
     setCertifiedData: (dataBytes: Uint8Array) => void;
-    setTimerInterval: (interval: number) => bigint;
-    setTimer: (delay: number) => bigint;
+    setTimerInterval: (
+        interval: number,
+        callback: () => void | Promise<void>
+    ) => bigint;
+    setTimer: (delay: number, callback: () => void | Promise<void>) => bigint;
     stableBTreeMapContainsKey: (
         memoryId: number,
         encodedKey: Uint8Array

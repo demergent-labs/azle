@@ -7,13 +7,11 @@ import { RejectCode } from '#lib/ic_apis/msg_reject_code';
 export type AzleIcExperimental = {
     msgArgData: () => ArrayBuffer;
     callRaw: (
-        globalResolveId: string,
-        globalRejectId: string,
         canisterIdBytes: ArrayBuffer,
         method: string,
         argsRaw: ArrayBuffer,
         paymentString: string
-    ) => void;
+    ) => Promise<ArrayBuffer>;
     msgCaller: () => ArrayBuffer;
     candidCompiler: (candidPath: string) => string;
     candidDecode: (candidBytes: ArrayBuffer) => string;
@@ -39,8 +37,14 @@ export type AzleIcExperimental = {
     msgRejectCode: () => RejectCode;
     msgReply: (bytes: ArrayBuffer) => void;
     setCertifiedData: (dataBytes: ArrayBuffer) => void;
-    setTimer: (delayString: string) => string;
-    setTimerInterval: (intervalString: string) => string;
+    setTimer: (
+        delayString: string,
+        callback: () => void | Promise<void>
+    ) => string;
+    setTimerInterval: (
+        intervalString: string,
+        callback: () => void | Promise<void>
+    ) => string;
     time: () => string;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am

@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "pretest": "ETHEREUM_URL=https://rpc.ankr.com/eth tsx test/pretest.ts",
-        "test": "ETHEREUM_URL=https://rpc.ankr.com/eth jest"
+        "pretest": "ETHEREUM_URL=https://ethereum.publicnode.com tsx test/pretest.ts",
+        "test": "ETHEREUM_URL=https://ethereum.publicnode.com jest"
     },
     "dependencies": {
         "azle": "0.30.0"
