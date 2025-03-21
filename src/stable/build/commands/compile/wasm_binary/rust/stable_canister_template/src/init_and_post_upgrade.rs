@@ -1,16 +1,14 @@
-use std::{env::vars, error::Error};
+use std::error::Error;
 
 use ic_cdk::trap;
 use ic_stable_structures::memory_manager::MemoryId;
 use ic_wasi_polyfill::init_with_memory;
-use rquickjs::{Array, Context, Module, Object, Runtime, Undefined};
 
 use crate::{
-    CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
+    MEMORY_MANAGER_REF_CELL,
     execute_method_js::execute_method_js,
-    ic::register,
-    rquickjs_utils::{drain_microtasks, handle_promise_error, with_ctx},
-    wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
+    initialize_context::initialize_context,
+    wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
 
 #[inline(never)]
@@ -36,11 +34,9 @@ pub extern "C" fn post_upgrade(function_index: i32) {
 }
 
 fn initialize(init: bool, function_index: i32) -> Result<(), Box<dyn Error>> {
-    let wasm_data = get_wasm_data()?;
+    let js = get_js_code()?;
 
-    WASM_DATA_REF_CELL.with(|wasm_data_ref_cell| {
-        *wasm_data_ref_cell.borrow_mut() = Some(wasm_data.clone());
-    });
+    let wasm_data = get_wasm_data()?;
 
     let env_vars: Vec<(&str, &str)> = wasm_data
         .env_vars
@@ -53,86 +49,7 @@ fn initialize(init: bool, function_index: i32) -> Result<(), Box<dyn Error>> {
 
     init_with_memory(&[], &env_vars, polyfill_memory);
 
-    let js = get_js_code()?;
-
-    initialize_js(&wasm_data, js, init, function_index)?;
-
-    Ok(())
-}
-
-pub fn initialize_js(
-    wasm_data: &WasmData,
-    js: Vec<u8>,
-    init: bool,
-    function_index: i32,
-) -> Result<(), Box<dyn Error>> {
-    let runtime = Runtime::new()?;
-    let context = Context::full(&runtime)?;
-
-    CONTEXT_REF_CELL.with(|context_ref_cell| {
-        *context_ref_cell.borrow_mut() = Some(context);
-    });
-
-    with_ctx(|ctx| -> Result<(), Box<dyn Error>> {
-        let globals = ctx.globals();
-
-        globals.set("_azleActions", Array::new(ctx.clone()))?;
-
-        globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
-
-        globals.set("_azleExperimental", false)?;
-
-        globals.set("_azleExportedCanisterClassInstance", Undefined)?;
-
-        globals.set("_azleIcExperimental", Undefined)?;
-
-        globals.set("_azleIcpReplicaWasmEnvironment", true)?;
-
-        // initializes globalThis._azleIcStable
-        register(ctx.clone())?;
-
-        if init {
-            globals.set("_azleInitCalled", true)?;
-        } else {
-            globals.set("_azleInitCalled", false)?;
-        }
-
-        globals.set("_azleNodeWasmEnvironment", false)?;
-
-        if init {
-            globals.set("_azlePostUpgradeCalled", false)?;
-        } else {
-            globals.set("_azlePostUpgradeCalled", true)?;
-        }
-
-        globals.set("exports", Object::new(ctx.clone())?)?;
-
-        let env = Object::new(ctx.clone())?;
-
-        for (key, value) in vars() {
-            env.set(key, value)?;
-        }
-
-        let process = Object::new(ctx.clone())?;
-
-        process.set("env", env)?;
-
-        globals.set("process", process)?;
-
-        // JavaScript macrotask
-        let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
-
-        // We should handle the promise error before run_event_loop
-        // as all microtasks queued from the macrotask execution
-        // will be discarded if there is a trap
-        handle_promise_error(&ctx, promise)?;
-
-        // We consider the Module::evaluate above to be a macrotask,
-        // thus we drain all microtasks queued during its execution
-        drain_microtasks(&ctx);
-
-        Ok(())
-    })?;
+    initialize_context(js, &wasm_data, true, false, Some(init))?;
 
     execute_developer_init_or_post_upgrade(function_index);
 

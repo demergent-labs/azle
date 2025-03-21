@@ -1,12 +1,11 @@
 use std::{error::Error, ffi::CString, os::raw::c_char};
 
 use ic_cdk::trap;
-use rquickjs::{Array, Context, Function, Module, Object, Runtime, Undefined};
+use rquickjs::Function;
 
 use crate::{
-    CONTEXT_REF_CELL,
-    ic::register,
-    rquickjs_utils::{call_with_error_handling, drain_microtasks, handle_promise_error, with_ctx},
+    initialize_context::initialize_context,
+    rquickjs_utils::{call_with_error_handling, with_ctx},
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
 
@@ -22,56 +21,13 @@ pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
     }
 }
 
-// TODO we need to not be repeating this code, let's move it somewhere
 fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
-    let runtime = Runtime::new()?;
-    let context = Context::full(&runtime)?;
+    let js = get_js_code()?;
+    let wasm_data = get_wasm_data()?;
 
-    CONTEXT_REF_CELL.with(|context_ref_cell| {
-        *context_ref_cell.borrow_mut() = Some(context);
-    });
+    initialize_context(js, &wasm_data, false, true, None)?;
 
-    with_ctx(|ctx| -> Result<CCharPtr, Box<dyn Error>> {
-        let globals = ctx.globals();
-
-        globals.set("_azleActions", Array::new(ctx.clone()))?;
-
-        globals.set("_azleCanisterMethodNames", Object::new(ctx.clone())?)?;
-
-        globals.set("_azleExperimental", false)?;
-
-        globals.set("_azleExportedCanisterClassInstance", Undefined)?;
-
-        globals.set("_azleIcExperimental", Undefined)?;
-
-        globals.set("_azleIcpReplicaWasmEnvironment", false)?;
-
-        // initializes globalThis._azleIcStable
-        register(ctx.clone())?;
-
-        globals.set("_azleInitCalled", false)?;
-
-        globals.set("_azleNodeWasmEnvironment", true)?;
-
-        globals.set("_azlePostUpgradeCalled", false)?;
-
-        globals.set("exports", Object::new(ctx.clone())?)?;
-
-        let wasm_data = get_wasm_data()?;
-        let js = get_js_code()?;
-
-        // JavaScript macrotask
-        let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
-
-        // We should handle the promise error before run_event_loop
-        // as all microtasks queued from the macrotask execution
-        // will be discarded if there is a trap
-        handle_promise_error(&ctx, promise)?;
-
-        // We consider the Module::evaluate above to be a macrotask,
-        // thus we drain all microtasks queued during its execution
-        drain_microtasks(&ctx);
-
+    with_ctx(|ctx| {
         let get_candid_and_method_meta: Function = ctx
             .globals()
             .get("_azleGetCandidAndMethodMeta")

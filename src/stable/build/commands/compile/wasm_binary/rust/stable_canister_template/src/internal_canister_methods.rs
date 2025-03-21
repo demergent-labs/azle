@@ -1,5 +1,3 @@
-use std::error::Error;
-
 use ic_cdk::trap;
 use rquickjs::Array;
 
@@ -19,7 +17,7 @@ fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
 fn _azle_actions_len() -> u32 {
-    match with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
+    match with_ctx(|ctx| {
         let globals = ctx.globals();
 
         let _azle_actions: Array = globals.get("_azleActions")?;
