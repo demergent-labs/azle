@@ -1,4 +1,4 @@
-use std::{env::vars, error::Error, str};
+use std::{env::vars, error::Error};
 
 use ic_cdk::trap;
 use ic_stable_structures::memory_manager::MemoryId;
@@ -10,7 +10,7 @@ use crate::{
     error::handle_promise_error,
     execute_method_js::execute_method_js,
     ic::register,
-    quickjs_with_ctx,
+    quickjs_with_ctx::{quickjs_with_ctx, run_event_loop},
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
 
@@ -56,14 +56,14 @@ fn initialize(init: bool, function_index: i32) -> Result<(), Box<dyn Error>> {
 
     let js = get_js_code()?;
 
-    initialize_js(&wasm_data, str::from_utf8(&js)?, init, function_index)?;
+    initialize_js(&wasm_data, js, init, function_index)?;
 
     Ok(())
 }
 
 pub fn initialize_js(
     wasm_data: &WasmData,
-    js: &str,
+    js: Vec<u8>,
     init: bool,
     function_index: i32,
 ) -> Result<(), Box<dyn Error>> {
@@ -120,9 +120,17 @@ pub fn initialize_js(
 
         globals.set("process", process)?;
 
+        // JavaScript macro task
         let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
 
+        // We should handle the promise error before run_event_loop
+        // as all micro tasks queued from the macro task execution
+        // will be discarded if there is a trap
         handle_promise_error(ctx.clone(), promise)?;
+
+        // We consider the Module::evaluate above to be a macro task,
+        // thus we drain all micro tasks queued during its execution
+        run_event_loop(&ctx);
 
         Ok(())
     })?;

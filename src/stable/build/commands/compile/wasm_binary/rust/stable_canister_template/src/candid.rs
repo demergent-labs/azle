@@ -1,4 +1,4 @@
-use std::{error::Error, ffi::CString, os::raw::c_char, str};
+use std::{error::Error, ffi::CString, os::raw::c_char};
 
 use ic_cdk::trap;
 use rquickjs::{Array, Context, Function, Module, Object, Runtime, Undefined};
@@ -7,7 +7,7 @@ use crate::{
     CONTEXT_REF_CELL,
     error::{handle_promise_error, quickjs_call_with_error_handling},
     ic::register,
-    quickjs_with_ctx,
+    quickjs_with_ctx::{quickjs_with_ctx, run_event_loop},
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
 
@@ -23,6 +23,7 @@ pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
     }
 }
 
+// TODO we need to not be repeating this code, let's move it somewhere
 fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
     let runtime = Runtime::new()?;
     let context = Context::full(&runtime)?;
@@ -60,9 +61,17 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
         let wasm_data = get_wasm_data()?;
         let js = get_js_code()?;
 
-        let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path, str::from_utf8(&js)?)?;
+        // JavaScript macro task
+        let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
 
+        // We should handle the promise error before run_event_loop
+        // as all micro tasks queued from the macro task execution
+        // will be discarded if there is a trap
         handle_promise_error(ctx.clone(), promise)?;
+
+        // We consider the Module::evaluate above to be a macro task,
+        // thus we drain all micro tasks queued during its execution
+        run_event_loop(&ctx);
 
         let get_candid_and_method_meta: Function = ctx
             .globals()

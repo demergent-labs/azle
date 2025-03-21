@@ -7,9 +7,7 @@ use ic_cdk::{
 };
 use rquickjs::{Ctx, Exception, Function, Promise, Result as RQuickJsResult, TypedArray, Value};
 
-use crate::{
-    error::quickjs_call_with_error_handling, ic::throw_error, quickjs_with_ctx::run_event_loop,
-};
+use crate::{error::quickjs_call_with_error_handling, ic::throw_error};
 
 pub fn get_function(ctx: Ctx<'static>) -> RQuickJsResult<Function<'static>> {
     Function::new(
@@ -44,8 +42,6 @@ pub fn get_function(ctx: Ctx<'static>) -> RQuickJsResult<Function<'static>> {
                 if let Err(e) = resolve_or_reject_result {
                     trap(&format!("Azle CallRawError: {e}"));
                 }
-
-                run_event_loop(&ctx_for_spawn);
             });
 
             Ok(promise)
