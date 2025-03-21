@@ -4,7 +4,7 @@ use ic_cdk::trap;
 use rquickjs::Function;
 
 use crate::{
-    initialize_context::initialize_context,
+    initialize_context::{WasmEnvironment, initialize_context},
     rquickjs_utils::{call_with_error_handling, with_ctx},
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
@@ -25,7 +25,7 @@ fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
     let js = get_js_code()?;
     let wasm_data = get_wasm_data()?;
 
-    initialize_context(js, &wasm_data, false, true, None)?;
+    initialize_context(js, &wasm_data.main_js_path, WasmEnvironment::Nodejs, None)?;
 
     with_ctx(|ctx| {
         let get_candid_and_method_meta: Function = ctx

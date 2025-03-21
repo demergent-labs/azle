@@ -6,14 +6,17 @@ use crate::{
     CONTEXT_REF_CELL,
     ic::register,
     rquickjs_utils::{drain_microtasks, handle_promise_error, with_ctx},
-    wasm_binary_manipulation::WasmData,
 };
+
+pub enum WasmEnvironment {
+    IcpReplica,
+    Nodejs,
+}
 
 pub fn initialize_context(
     js: Vec<u8>,
-    wasm_data: &WasmData,
-    icp_replica_wasm_environment: bool,
-    node_wasm_environment: bool,
+    main_js_path: &str,
+    wasm_environment: WasmEnvironment,
     init: Option<bool>,
 ) -> Result<(), Box<dyn Error>> {
     let runtime = Runtime::new()?;
@@ -23,7 +26,7 @@ pub fn initialize_context(
         *context_ref_cell.borrow_mut() = Some(context);
     });
 
-    with_ctx(|ctx| -> Result<(), Box<dyn Error>> {
+    with_ctx(|ctx| {
         let globals = ctx.globals();
 
         globals.set("_azleActions", Array::new(ctx.clone()))?;
@@ -38,7 +41,7 @@ pub fn initialize_context(
 
         globals.set(
             "_azleIcpReplicaWasmEnvironment",
-            icp_replica_wasm_environment,
+            matches!(wasm_environment, WasmEnvironment::IcpReplica),
         )?;
 
         // initializes globalThis._azleIcStable
@@ -46,7 +49,10 @@ pub fn initialize_context(
 
         globals.set("_azleInitCalled", init == Some(true))?;
 
-        globals.set("_azleNodeWasmEnvironment", node_wasm_environment)?;
+        globals.set(
+            "_azleNodejsWasmEnvironment",
+            matches!(wasm_environment, WasmEnvironment::Nodejs),
+        )?;
 
         globals.set("_azlePostUpgradeCalled", init == Some(false))?;
 
@@ -68,7 +74,7 @@ pub fn initialize_context(
         globals.set("process", process)?;
 
         // JavaScript macrotask
-        let promise = Module::evaluate(ctx.clone(), wasm_data.main_js_path.clone(), js)?;
+        let promise = Module::evaluate(ctx.clone(), main_js_path, js)?;
 
         // We should handle the promise error before run_event_loop
         // as all microtasks queued from the macrotask execution

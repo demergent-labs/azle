@@ -108,7 +108,7 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
             .set("_azleActions", context.new_array().into());
 
         context.get_global().set(
-            "_azleNodeWasmEnvironment",
+            "_azleNodejsWasmEnvironment",
             wasmedge_quickjs::JsValue::Bool(false),
         );
 

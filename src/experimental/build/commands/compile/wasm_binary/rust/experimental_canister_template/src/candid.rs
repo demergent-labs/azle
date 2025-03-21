@@ -33,7 +33,7 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
                 .set("_azleActions", context.new_array().into());
 
             context.get_global().set(
-                "_azleNodeWasmEnvironment",
+                "_azleNodejsWasmEnvironment",
                 wasmedge_quickjs::JsValue::Bool(true),
             );
 
