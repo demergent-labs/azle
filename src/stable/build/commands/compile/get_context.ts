@@ -5,6 +5,8 @@ import { dirname, join, parse } from 'path';
 import { getDfxJsonDirPath } from '#utils/global_paths';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
+import { version } from '../../../../../package.json';
+
 export async function getContext(
     canisterName: string,
     canisterConfig: CanisterConfig
@@ -57,12 +59,21 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
         ...devEnv,
         'AZLE_LOG_ACTIONS',
         'AZLE_RECORD_ACTIONS',
-        'AZLE_RECORD_BENCHMARKS'
+        'AZLE_RECORD_BENCHMARKS',
+        'AZLE_AZLE_VERSION'
     ];
 
     return env
-        .filter((envVarName) => process.env[envVarName] !== undefined)
+        .filter(
+            (envVarName) =>
+                envVarName === 'AZLE_AZLE_VERSION' ||
+                process.env[envVarName] !== undefined
+        )
         .map((envVarName) => {
+            if (envVarName === 'AZLE_AZLE_VERSION') {
+                return [envVarName, version];
+            }
+
             const envVarValue = process.env[envVarName];
 
             if (envVarValue === undefined) {
