@@ -1,5 +1,5 @@
 {
     "dependencies": {
-        "azle": "latest"
+        "azle": "file:../../test/test_packages/azle-999.999.999-descendant-same.tgz"
     }
 }

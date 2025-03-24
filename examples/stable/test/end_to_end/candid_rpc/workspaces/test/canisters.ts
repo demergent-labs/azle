@@ -1,107 +1,94 @@
 type Canister = {
     name: string;
+    packageSuffix: string;
     dfxDir: string;
-    packageJsonDir: string;
-    expectedBin: string;
+    nodeModulesLocation: string;
     method: string;
-    result: string;
 };
 
 export const CANISTERS: Canister[] = [
     {
         name: 'ancestor_current',
+        packageSuffix: 'ancestor-current',
         dfxDir: 'workspaces/ancestor',
-        packageJsonDir: 'workspaces/ancestor/canisters/current',
-        expectedBin: 'workspaces/ancestor/canisters/current',
-        method: 'getAzleVersionFromAncestorCurrent',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/ancestor/canisters/current',
+        method: 'getAzleVersionFromAncestorCurrent'
     },
     {
         name: 'ancestor_old',
+        packageSuffix: 'ancestor-old',
         dfxDir: 'workspaces/ancestor',
-        packageJsonDir: 'workspaces/ancestor/canisters/old',
-        expectedBin: 'workspaces/ancestor/canisters/old',
-        method: 'getAzleVersionFromAncestorOld',
-        result: '0.29.0'
+        nodeModulesLocation: 'workspaces/ancestor/canisters/old',
+        method: 'getAzleVersionFromAncestorOld'
     },
     {
         name: 'descendant_different',
+        packageSuffix: 'descendant-different',
         dfxDir: 'workspaces/descendant_different/dfx',
-        packageJsonDir: 'workspaces/descendant_different',
-        expectedBin: 'workspaces/descendant_different',
-        method: 'getAzleVersionFromDescendantDifferent',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/descendant_different',
+        method: 'getAzleVersionFromDescendantDifferent'
     },
     {
         name: 'descendant_same',
+        packageSuffix: 'descendant-same',
         dfxDir: 'workspaces/descendant_same/src',
-        packageJsonDir: 'workspaces/descendant_same',
-        expectedBin: 'workspaces/descendant_same',
-        method: 'getAzleVersionFromDescendantSame',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/descendant_same',
+        method: 'getAzleVersionFromDescendantSame'
     },
     {
         name: 'sibling',
+        packageSuffix: 'sibling',
         dfxDir: 'workspaces/siblings',
-        packageJsonDir: 'workspaces/siblings',
-        expectedBin: 'workspaces/siblings',
-        method: 'getAzleVersionFromSibling',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/siblings',
+        method: 'getAzleVersionFromSibling'
     },
     {
         name: 'w_ancestor_current',
+        packageSuffix: 'w-ancestor-current',
         dfxDir: 'workspaces/w_ancestor',
-        packageJsonDir: 'workspaces/w_ancestor/canisters/current',
-        expectedBin: 'workspaces/w_ancestor',
-        method: 'getAzleVersionFromWAncestorCurrent',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/w_ancestor',
+        method: 'getAzleVersionFromWAncestorCurrent'
     },
     {
         name: 'w_ancestor_old',
+        packageSuffix: 'w-ancestor-old',
         dfxDir: 'workspaces/w_ancestor',
-        packageJsonDir: 'workspaces/w_ancestor/canisters/old',
-        expectedBin: 'workspaces/w_ancestor/canisters/old',
-        method: 'getAzleVersionFromWAncestorOld',
-        result: '0.29.0'
+        nodeModulesLocation: 'workspaces/w_ancestor/canisters/old',
+        method: 'getAzleVersionFromWAncestorOld'
     },
     {
         name: 'w_descendant_different',
+        packageSuffix: 'w-descendant',
         dfxDir: 'workspaces/w_descendant/canisters/different/dfx',
-        packageJsonDir: 'workspaces/w_descendant/canisters/different',
-        expectedBin: 'workspaces/w_descendant',
-        method: 'getAzleVersionFromWDescendantDifferent',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/w_descendant',
+        method: 'getAzleVersionFromWDescendantDifferent'
     },
     {
         name: 'w_descendant_different_deep',
+        packageSuffix: 'w-descendant',
         dfxDir: 'workspaces/w_descendant/canisters/different_deep/dfx/deeper',
-        packageJsonDir: 'workspaces/w_descendant/canisters/different_deep',
-        expectedBin: 'workspaces/w_descendant',
-        method: 'getAzleVersionFromWDescendantDifferentDeep',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/w_descendant',
+        method: 'getAzleVersionFromWDescendantDifferentDeep'
     },
     {
         name: 'w_descendant_same',
+        packageSuffix: 'w-descendant',
         dfxDir: 'workspaces/w_descendant/canisters/same/src',
-        packageJsonDir: 'workspaces/w_descendant/canisters/same',
-        expectedBin: 'workspaces/w_descendant',
-        method: 'getAzleVersionFromWDescendantSame',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/w_descendant',
+        method: 'getAzleVersionFromWDescendantSame'
     },
     {
         name: 'w_descendant_same_deep',
+        packageSuffix: 'w-descendant',
         dfxDir: 'workspaces/w_descendant/canisters/same_deep/src/dfx',
-        packageJsonDir: 'workspaces/w_descendant/canisters/same_deep',
-        expectedBin: 'workspaces/w_descendant',
-        method: 'getAzleVersionFromWDescendantSameDeep',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/w_descendant',
+        method: 'getAzleVersionFromWDescendantSameDeep'
     },
     {
         name: 'w_sibling',
+        packageSuffix: 'w-sibling',
         dfxDir: 'workspaces/w_siblings/w_sibling',
-        packageJsonDir: 'workspaces/w_siblings/w_sibling',
-        expectedBin: 'workspaces/w_siblings',
-        method: 'getAzleVersionFromWSibling',
-        result: '0.30.0'
+        nodeModulesLocation: 'workspaces/w_siblings',
+        method: 'getAzleVersionFromWSibling'
     }
 ];

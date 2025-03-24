@@ -1,6 +1,6 @@
 {
     "dependencies": {
-        "azle": "latest"
+        "azle": "file:../../../../test/test_packages/azle-999.999.999-w-descendant.tgz"
     },
     "scripts": {
         "deploy": "cd dfx && dfx deploy w_descendant_different"
