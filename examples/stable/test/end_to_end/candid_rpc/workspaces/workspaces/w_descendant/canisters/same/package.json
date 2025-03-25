@@ -3,6 +3,6 @@
         "azle": "latest"
     },
     "scripts": {
-        "deploy": "cd src && dfx deploy w_descendant_deep_same"
+        "deploy": "cd src && dfx deploy w_descendant_same"
     }
 }
