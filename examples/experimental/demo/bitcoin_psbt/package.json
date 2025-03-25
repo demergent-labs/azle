@@ -1,4 +1,6 @@
 {
+    "name": "@azle/bitcoin_psbt_demo",
+    "version": "0.1.0",
     "scripts": {
         "bitcoin": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
         "clean": "rm -rf .bitcoin/data/regtest",
@@ -18,7 +20,7 @@
     "dependencies": {
         "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
         "azle": "0.30.0",
-        "basic_bitcoin": "file:../basic_bitcoin",
+        "@azle/basic_bitcoin_demo": "0.1.0",
         "bitcoinjs-lib": "^6.1.5",
         "express": "^4.18.2",
         "tiny-secp256k1": "^2.2.3"

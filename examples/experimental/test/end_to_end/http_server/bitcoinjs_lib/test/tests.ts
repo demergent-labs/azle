@@ -1,6 +1,6 @@
+import { getTests as getBitcoinTests } from '@azle/bitcore_lib_end_to_end_test/test/tests';
 import { describe } from '@jest/globals';
 import { expect, it, Test } from 'azle/_internal/test';
-import { getTests as getBitcoinTests } from 'bitcore_lib_example/test/tests';
 
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.raw.localhost:8000`;
