@@ -26,6 +26,7 @@ export type Context = {
     canisterPath: string;
     candidPath: string;
     main: string;
+    projectRoot: string;
     wasmBinaryPath: string;
     wasmData: WasmData;
 };

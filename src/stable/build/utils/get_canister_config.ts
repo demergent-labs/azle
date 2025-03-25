@@ -1,6 +1,8 @@
 import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
 
+import { getDfxJsonPath } from '#utils/global_paths';
+
 import { CanisterConfig, DfxJson } from './types';
 
 export async function getCanisterConfig(
@@ -8,14 +10,14 @@ export async function getCanisterConfig(
 ): Promise<CanisterConfig> {
     const dfxJsonExample = getDfxJsonExample(canisterName);
 
-    if (!existsSync(`dfx.json`)) {
+    if (!existsSync(getDfxJsonPath())) {
         throw new Error(
             `Create a dfx.json file in the current directory with the following format:\n\n${dfxJsonExample}`
         );
     }
 
     const dfxJson: DfxJson = JSON.parse(
-        (await readFile('dfx.json')).toString()
+        (await readFile(getDfxJsonPath())).toString()
     );
     const canisterConfig = dfxJson.canisters?.[canisterName];
 

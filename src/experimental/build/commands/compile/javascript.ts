@@ -13,11 +13,17 @@ import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 
 export async function compile(
     main: string,
+    projectRoot: string,
     esmAliases: Record<string, string>,
     esmExternals: string[]
 ): Promise<string> {
     const prelude = getPrelude(main);
-    const buildOptions = getBuildOptions(prelude, esmAliases, esmExternals);
+    const buildOptions = getBuildOptions(
+        prelude,
+        projectRoot,
+        esmAliases,
+        esmExternals
+    );
     const bundled = await bundle(buildOptions);
 
     return bundled
@@ -49,7 +55,7 @@ export function getPrelude(main: string): string {
 
         import { getDefaultVisitorData, IDL, idlToString } from 'azle';
         export { Principal } from '@dfinity/principal';
-        import * as Canister from './${main}';
+        import * as Canister from '${main}';
 
         if (isClassSyntaxExport(Canister)) {
             ${handleClassApiCanister(main)}
@@ -111,6 +117,7 @@ export function getPrelude(main: string): string {
 
 export function getBuildOptions(
     ts: string,
+    projectRoot: string,
     esmAliases: Record<string, string>,
     esmExternals: string[]
 ): BuildOptions {
@@ -147,7 +154,7 @@ export function getBuildOptions(
         'custom_js_modules'
     );
 
-    const stableBuildOptions = getStableBuildOptions(ts);
+    const stableBuildOptions = getStableBuildOptions(ts, projectRoot);
 
     return {
         ...stableBuildOptions,
@@ -189,6 +196,8 @@ export function getBuildOptions(
             ...esmAliases
         },
         external: [...externalImplemented, ...externalNotImplemented],
-        plugins: [esbuildPluginTsc({ tsconfigPath: getTsConfigPath() })]
+        plugins: [
+            esbuildPluginTsc({ tsconfigPath: getTsConfigPath(projectRoot) })
+        ]
     };
 }

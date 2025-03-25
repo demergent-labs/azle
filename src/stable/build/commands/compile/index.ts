@@ -15,12 +15,18 @@ export async function runCommand(
     canisterConfig: CanisterConfig,
     ioType: IOType
 ): Promise<void> {
-    const { main, canisterPath, candidPath, wasmBinaryPath, wasmData } =
-        getContext(canisterName, canisterConfig);
+    const {
+        main,
+        canisterPath,
+        candidPath,
+        wasmBinaryPath,
+        wasmData,
+        projectRoot
+    } = await getContext(canisterName, canisterConfig);
 
     await rm(canisterPath, { recursive: true, force: true });
 
-    const javaScript = await compileJavaScript(main);
+    const javaScript = await compileJavaScript(main, projectRoot);
 
     await outputFile(join(canisterPath, 'main.js'), javaScript);
 
