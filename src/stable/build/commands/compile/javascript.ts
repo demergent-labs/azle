@@ -5,9 +5,12 @@ import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 
-export async function compile(main: string): Promise<string> {
+export async function compile(
+    main: string,
+    projectRoot: string
+): Promise<string> {
     const prelude = getPrelude(main);
-    const buildOptions = getBuildOptions(prelude);
+    const buildOptions = getBuildOptions(prelude, projectRoot);
     const bundled = await bundle(buildOptions);
 
     return bundled;
@@ -19,7 +22,7 @@ function getPrelude(main: string): string {
 
             import { getDefaultVisitorData, IDL, idlToString } from 'azle';
 
-            import * as Canister from './${main}';
+            import * as Canister from '${main}';
 
             ${handleClassApiCanister(main)}
 
@@ -122,11 +125,11 @@ export async function bundle(buildOptions: BuildOptions): Promise<string> {
 }
 
 // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
-export function getBuildOptions(ts: string): BuildOptions {
+export function getBuildOptions(ts: string, projectRoot: string): BuildOptions {
     return {
         stdin: {
             contents: ts,
-            resolveDir: process.cwd()
+            resolveDir: projectRoot
         },
         format: 'esm',
         bundle: true,
@@ -149,14 +152,16 @@ export function getBuildOptions(ts: string): BuildOptions {
                     );
                 }
             },
-            esbuildPluginTsc({ tsconfigPath: getTsConfigPath() })
+            esbuildPluginTsc({ tsconfigPath: getTsConfigPath(projectRoot) })
         ]
     };
 }
 
-export function getTsConfigPath(): string {
-    if (existsSync('tsconfig.json')) {
-        return 'tsconfig.json';
+export function getTsConfigPath(projectRoot: string): string {
+    const tsConfigPath = join(projectRoot, 'tsconfig.json');
+
+    if (existsSync(tsConfigPath)) {
+        return tsConfigPath;
     }
     return join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json');
 }
