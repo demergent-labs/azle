@@ -78,8 +78,8 @@
         "wasmedge_quickjs": "github:demergent-labs/wasmedge-quickjs#3b3b0ee91248ccf9cd954ffafbac7e024648af92"
     },
     "devDependencies": {
-        "@eslint/js": "^9.23.0",
         "@dfinity/identity": "^2.4.0",
+        "@eslint/js": "^9.23.0",
         "@types/deep-equal": "^1.0.4",
         "@types/fs-extra": "11.0.4",
         "@types/pako": "^2.0.3",
