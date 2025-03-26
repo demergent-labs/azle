@@ -2,9 +2,11 @@ import { HttpAgent } from '@dfinity/agent';
 import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
 import { execSync } from 'child_process';
 
+import { getDfxJsonDirPath } from '#utils/global_paths';
+
 export function getCanisterId(canisterName: string): string {
     return execSync(
-        `dfx canister --network ${
+        `cd ${getDfxJsonDirPath()} && dfx canister --network ${
             process.env.DFX_NETWORK ?? 'local'
         } id ${canisterName}`
     )
@@ -96,11 +98,15 @@ export function createAuthenticatedAgentSync(
 }
 
 export function whoami(): string {
-    return execSync(`dfx identity whoami`).toString().trim();
+    return execSync(`cd ${getDfxJsonDirPath()} && dfx identity whoami`)
+        .toString()
+        .trim();
 }
 
 export function whoamiPrincipal(): string {
-    return execSync(`dfx identity get-principal`).toString().trim();
+    return execSync(`cd ${getDfxJsonDirPath()} && dfx identity get-principal`)
+        .toString()
+        .trim();
 }
 
 type StorageMode = 'keyring' | 'password-protected' | 'plaintext';
@@ -112,17 +118,23 @@ export function generateIdentity(name: string): Buffer {
     if (storageMode === undefined) {
         console.info(`You may be prompted to create a password for ${name}`);
         console.info();
-        return execSync(`dfx identity new ${name}`, {
-            stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
-        });
+        return execSync(
+            `cd ${getDfxJsonDirPath()} && dfx identity new ${name}`,
+            {
+                stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
+            }
+        );
     }
     if (storageMode === 'password-protected') {
         console.info(`You will be prompted to create a password for ${name}`);
         console.info();
     }
-    return execSync(`dfx identity new ${name} --storage-mode ${storageMode}`, {
-        stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
-    });
+    return execSync(
+        `cd ${getDfxJsonDirPath()} && dfx identity new ${name} --storage-mode ${storageMode}`,
+        {
+            stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
+        }
+    );
 }
 
 function determineStorageMode(): StorageMode | undefined {
@@ -141,7 +153,9 @@ function determineStorageMode(): StorageMode | undefined {
 }
 
 export function getIdentities(): string[] {
-    const list = execSync(`dfx identity list`).toString().trim();
+    const list = execSync(`cd ${getDfxJsonDirPath()} && dfx identity list`)
+        .toString()
+        .trim();
     const identities = list.split('\n');
 
     return identities;
@@ -157,7 +171,7 @@ export function getPemKey(identityName: string): string {
     console.info(`Exporting PEM key for ${identityName}`);
     console.info(`You may be prompted for ${identityName}'s password`);
     console.info();
-    const cmd = `dfx identity export ${identityName}`;
+    const cmd = `cd ${getDfxJsonDirPath()} && dfx identity export ${identityName}`;
     const result = execSync(cmd, {
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
     })
@@ -177,7 +191,7 @@ export function getPrincipal(identityName: string): string {
     console.info(`Getting principal for ${identityName}`);
     console.info(`You may be prompted for ${identityName}'s password`);
     console.info();
-    const cmd = `dfx identity get-principal --identity ${identityName}`;
+    const cmd = `cd ${getDfxJsonDirPath()} && dfx identity get-principal --identity ${identityName}`;
     return execSync(cmd, {
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
     })
@@ -195,6 +209,6 @@ export function addController(
     console.info(`Adding ${identityName} as a controller for ${canisterName}`);
     console.info(`You may be prompted for ${currentIdentity}'s password`);
     console.info();
-    const cmd = `dfx canister update-settings ${canisterName} --add-controller ${principal}`;
+    const cmd = `cd ${getDfxJsonDirPath()} && dfx canister update-settings ${canisterName} --add-controller ${principal}`;
     return execSync(cmd, { stdio: ['inherit', 'pipe', 'inherit'] }); // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
 }
