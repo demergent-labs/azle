@@ -1,5 +1,4 @@
 import { existsSync } from 'fs';
-import { stat } from 'fs/promises';
 import { dirname, join, parse } from 'path';
 
 import { getDfxJsonDirPath } from '#utils/global_paths';
@@ -98,42 +97,49 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
  */
 async function findProjectRoot(): Promise<string> {
     // Method 1: Check if the script was called with an explicit prefix
-    if (process.env.npm_config_prefix) {
-        let prefixPath = process.env.npm_config_prefix;
+    if (process.env.npm_config_prefix !== undefined) {
+        const prefixPath = process.env.npm_config_prefix;
 
-        // Check if the prefix is a file rather than a directory
-        try {
-            const stats = await stat(prefixPath);
+        const projectRoot = findNearestProjectRoot(prefixPath);
 
-            // If it's a file, use its parent directory
-            if (!stats.isDirectory()) {
-                return dirname(prefixPath);
-            } else {
-                return prefixPath;
-            }
-        } catch {
-            // If path doesn't exist, just keep the original path
-            // This will be handled by other methods
+        if (projectRoot !== undefined) {
+            return projectRoot;
         }
     }
 
     // Method 2: Try to use npm_package_json which points to package.json
-    if (process.env.npm_package_json) {
-        return dirname(process.env.npm_package_json);
+    if (process.env.npm_package_json !== undefined) {
+        if (existsSync(process.env.npm_package_json)) {
+            return dirname(process.env.npm_package_json);
+        }
     }
 
     // Method 3: Check for presence of expected files/directories in ancestor directories
     // Look for package.json in parent directories
-    let currentDir = process.cwd();
-    const rootDir = parse(currentDir).root;
+    const projectRoot = findNearestProjectRoot(process.cwd());
 
-    while (currentDir !== rootDir) {
-        if (existsSync(join(currentDir, 'package.json'))) {
-            return currentDir;
-        }
-        currentDir = dirname(currentDir);
+    if (projectRoot !== undefined) {
+        return projectRoot;
     }
 
     // Fall back to current working directory
     return process.cwd();
+}
+
+/**
+ * Finds the nearest directory containing a package.json file by traversing up the directory tree.
+ * @param startPath - Path to start the search from (file or directory)
+ * @returns The directory containing package.json, or undefined if not found
+ */
+function findNearestProjectRoot(startPath: string): string | undefined {
+    if (existsSync(join(startPath, 'package.json'))) {
+        return startPath;
+    }
+
+    const rootDir = parse(startPath).root;
+    if (startPath === rootDir) {
+        return undefined;
+    }
+
+    return findNearestProjectRoot(dirname(startPath));
 }
