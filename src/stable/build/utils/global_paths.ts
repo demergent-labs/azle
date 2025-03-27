@@ -1,3 +1,4 @@
+import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -23,13 +24,17 @@ export const STABLE_STATIC_CANISTER_TEMPLATE_PATH = join(
  * @throws {Error} If AZLE_DFX_JSON_DIR environment variable is not defined
  */
 export function getDfxJsonDirPath(): string {
-    const envDir = process.env.AZLE_DFX_JSON_DIR;
-
-    if (envDir !== undefined) {
-        return envDir;
+    if (process.env.AZLE_DFX_JSON_DIR !== undefined) {
+        return process.env.AZLE_DFX_JSON_DIR;
     }
 
-    throw new Error('AZLE_DFX_JSON_DIR environment variable must be defined');
+    if (existsSync(join(process.cwd(), 'dfx.json'))) {
+        return process.cwd();
+    }
+
+    throw new Error(
+        'Unable to locate the dfx.json file. AZLE_DFX_JSON_DIR environment variable must be defined'
+    );
 }
 
 export function getDfxJsonPath(): string {
