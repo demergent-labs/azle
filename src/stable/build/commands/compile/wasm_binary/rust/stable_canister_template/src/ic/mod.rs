@@ -44,7 +44,7 @@ mod time;
 mod trap;
 
 #[allow(unused)]
-pub fn register(ctx: Ctx<'static>) -> Result<()> {
+pub fn register(ctx: Ctx) -> Result<()> {
     let ic = Object::new(ctx.clone())?;
 
     ic.set("acceptMessage", accept_message::get_function(ctx.clone()))?;

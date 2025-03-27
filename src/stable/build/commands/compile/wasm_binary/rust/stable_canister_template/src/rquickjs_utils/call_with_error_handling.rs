@@ -9,6 +9,7 @@ pub fn call_with_error_handling<'a>(
     function: &Function<'a>,
     args: impl IntoArgs<'a>,
 ) -> Result<Value<'a>, Box<dyn Error>> {
+    // TODO I don't think we can consider this always a macrotask...think about this
     // JavaScript macrotask
     let result: Value = match function.call(args) {
         Ok(value) => value,

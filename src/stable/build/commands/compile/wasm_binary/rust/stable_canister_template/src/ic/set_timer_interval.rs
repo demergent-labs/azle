@@ -7,17 +7,17 @@ use slotmap::Key;
 
 use crate::rquickjs_utils::{call_with_error_handling, with_ctx};
 
-pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
+pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(
         ctx.clone(),
-        move |interval: u64, callback: Function<'static>| -> Result<BigInt> {
+        move |interval: u64, callback: Function| -> Result<BigInt> {
             let interval_duration = Duration::new(interval, 0);
             let closure = move || {
-                let result = with_ctx(|ctx| call_with_error_handling(&ctx, &callback, ()));
+                // let result = with_ctx(|ctx| call_with_error_handling(&ctx, &callback, ()));
 
-                if let Err(e) = result {
-                    trap(&format!("Azle TimerIntervalError: {e}"));
-                }
+                // if let Err(e) = result {
+                //     trap(&format!("Azle TimerIntervalError: {e}"));
+                // }
             };
 
             let timer_id: TimerId = set_timer_interval(interval_duration, closure);

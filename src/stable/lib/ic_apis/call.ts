@@ -110,14 +110,14 @@ export async function call<
             cyclesString
         ) as Return;
     } else {
-        return handleTwoWay(
+        return (await handleTwoWay(
             canisterIdBytes,
             method,
             argsRaw,
             cyclesString,
             options?.raw ?? false,
             options?.returnIdlType
-        ) as Return;
+        )) as Return;
     }
 }
 

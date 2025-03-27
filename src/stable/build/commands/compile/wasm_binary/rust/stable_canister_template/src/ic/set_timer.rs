@@ -7,17 +7,19 @@ use slotmap::Key;
 
 use crate::rquickjs_utils::{call_with_error_handling, with_ctx};
 
-pub fn get_function(ctx: Ctx<'static>) -> Result<Function<'static>> {
+// TODO could we use Persistent here?
+// TODO we don't have the synchronous await point problem here
+pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(
         ctx.clone(),
-        move |delay: u64, callback: Function<'static>| -> Result<BigInt> {
+        move |delay: u64, callback: Function| -> Result<BigInt> {
             let delay_duration = Duration::new(delay, 0);
             let closure = move || {
-                let result = with_ctx(|ctx| call_with_error_handling(&ctx, &callback, ()));
+                // let result = with_ctx(|ctx| call_with_error_handling(&ctx, &callback, ()));
 
-                if let Err(e) = result {
-                    trap(&format!("Azle TimerError: {e}"));
-                }
+                // if let Err(e) = result {
+                //     trap(&format!("Azle TimerError: {e}"));
+                // }
             };
 
             let timer_id: TimerId = set_timer(delay_duration, closure);

@@ -3,13 +3,13 @@ use std::error::Error;
 use candid::Principal;
 use ic_cdk::{
     api::call::{CallResult, call_raw128},
-    spawn, trap,
+    trap,
 };
 use rquickjs::{Ctx, Exception, Function, Promise, Result as RQuickJsResult, TypedArray};
 
 use crate::{ic::throw_error, rquickjs_utils::call_with_error_handling};
 
-pub fn get_function(ctx: Ctx<'static>) -> RQuickJsResult<Function<'static>> {
+pub fn get_function(ctx: Ctx) -> RQuickJsResult<Function> {
     Function::new(
         ctx.clone(),
         move |canister_id_bytes: TypedArray<u8>,
@@ -33,13 +33,12 @@ pub fn get_function(ctx: Ctx<'static>) -> RQuickJsResult<Function<'static>> {
 
             let ctx_for_spawn = ctx.clone();
 
-            spawn(async move {
+            ctx.spawn(async move {
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
-                let resolve_or_reject_result =
-                    resolve_or_reject(&ctx_for_spawn, &resolve, &reject, call_result);
+                let settle_result = settle(&ctx_for_spawn, &resolve, &reject, call_result);
 
-                if let Err(e) = resolve_or_reject_result {
+                if let Err(e) = settle_result {
                     trap(&format!("Azle CallRawError: {e}"));
                 }
             });
@@ -49,7 +48,7 @@ pub fn get_function(ctx: Ctx<'static>) -> RQuickJsResult<Function<'static>> {
     )
 }
 
-fn resolve_or_reject<'a>(
+fn settle<'a>(
     ctx: &Ctx<'a>,
     resolve: &Function<'a>,
     reject: &Function<'a>,

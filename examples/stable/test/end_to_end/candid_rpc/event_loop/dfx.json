@@ -1,0 +1,18 @@
+{
+    "canisters": {
+        "event_loop": {
+            "specified_id": "bkyz2-fmaaa-aaaaa-qaaaq-cai",
+            "type": "azle",
+            "main": "src/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/event_loop",
+                "node_compatibility": true
+            }
+        },
+        "mock": {
+            "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai",
+            "type": "azle",
+            "main": "src/mock.ts"
+        }
+    }
+}

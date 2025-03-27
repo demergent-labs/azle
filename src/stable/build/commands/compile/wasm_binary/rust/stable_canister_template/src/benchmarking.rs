@@ -17,7 +17,10 @@ thread_local! {
     pub static BENCHMARKS_REF_CELL: RefCell<Vec<BenchmarkEntry>> = RefCell::new(Vec::new());
 }
 
-pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Box<dyn Error>> {
+pub async fn record_benchmark(
+    function_name: &str,
+    instructions: u64,
+) -> Result<(), Box<dyn Error>> {
     with_ctx(|ctx| {
         let timestamp = time();
 
@@ -42,4 +45,5 @@ pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Bo
 
         Ok(())
     })
+    .await
 }

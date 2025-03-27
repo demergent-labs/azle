@@ -16,14 +16,16 @@ fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
 }
 
 #[ic_cdk::query(guard = guard_against_non_controllers)]
-fn _azle_actions_len() -> u32 {
+async fn _azle_actions_len() -> u32 {
     match with_ctx(|ctx| {
         let globals = ctx.globals();
 
         let _azle_actions: Array = globals.get("_azleActions")?;
 
         Ok(_azle_actions.len() as u32)
-    }) {
+    })
+    .await
+    {
         Ok(len) => len,
         Err(e) => trap(&format!("Azle ActionsLenError: {}", e)),
     }
