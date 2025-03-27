@@ -5,7 +5,7 @@
     },
     "dependencies": {
         "@tensorflow/tfjs": "^4.17.0",
-        "azle": "0.30.0",
+        "azle": "0.30.1-rc.1",
         "express": "^4.18.2"
     },
     "devDependencies": {
