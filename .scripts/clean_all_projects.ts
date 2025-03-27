@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
  *
  * @param directory - The directory to search in
  */
-const cleanProjects = async (directory: string): Promise<void> => {
+async function cleanProjects(directory: string): Promise<void> {
     try {
         // Check if this directory is a Node.js project
         const isNodeProject = existsSync(path.join(directory, 'package.json'));
@@ -57,7 +57,7 @@ const cleanProjects = async (directory: string): Promise<void> => {
             `Error processing directory ${directory}: ${error instanceof Error ? error.message : String(error)}`
         );
     }
-};
+}
 
 async function main(): Promise<void> {
     // Get the starting directory from command line or use examples directory relative to script location
