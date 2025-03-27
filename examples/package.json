@@ -14,7 +14,6 @@
         "experimental/test/end_to_end/http_server/bitcore_lib"
     ],
     "scripts": {
-        "test": "npm run test --workspaces",
         "IMPORTANT": "echo This package.json is used to test npm workspaces and link tests that depend on each other. It is not intended to be used to run tests, nor is it a representation of all of the available examples."
     }
 }
