@@ -25,6 +25,7 @@ export async function runCommand(
         esmAliases,
         esmExternals,
         main,
+        projectRoot,
         reloadedJsPath,
         wasmBinaryPath,
         wasmData
@@ -32,7 +33,12 @@ export async function runCommand(
 
     await rm(canisterPath, { recursive: true, force: true });
 
-    const javaScript = await compileJavaScript(main, esmAliases, esmExternals);
+    const javaScript = await compileJavaScript(
+        main,
+        projectRoot,
+        esmAliases,
+        esmExternals
+    );
 
     await outputFile(join(canisterPath, 'main.js'), javaScript);
 
@@ -61,6 +67,7 @@ export async function runCommand(
         reloadedJsPath,
         canisterId,
         main,
+        projectRoot,
         esmAliases,
         esmExternals,
         canisterName,

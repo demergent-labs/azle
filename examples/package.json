@@ -1,0 +1,19 @@
+{
+    "private": true,
+    "workspaces": [
+        "stable/test/end_to_end/candid_rpc/async_await",
+        "experimental/test/end_to_end/candid_rpc/async_await",
+        "experimental/test/end_to_end/http_server/sqlite_typeorm",
+        "experimental/test/end_to_end/http_server/sqlite_drizzle",
+        "experimental/test/end_to_end/http_server/sqlite",
+        "experimental/test/end_to_end/candid_rpc/ckbtc",
+        "experimental/demo/ckbtc",
+        "experimental/demo/basic_bitcoin",
+        "experimental/demo/bitcoin_psbt",
+        "experimental/test/end_to_end/http_server/bitcoinjs_lib",
+        "experimental/test/end_to_end/http_server/bitcore_lib"
+    ],
+    "scripts": {
+        "IMPORTANT": "echo This package.json is used to test npm workspaces and link tests that depend on each other. It is not intended to be used to run tests, nor is it a representation of all of the available examples."
+    }
+}
