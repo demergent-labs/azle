@@ -1,7 +1,10 @@
+import {
+    determineKeyName,
+    determineNetwork
+} from '@azle/basic_bitcoin_demo/src';
+import * as bitcoinApi from '@azle/basic_bitcoin_demo/src/bitcoin_api';
 import { jsonParse, jsonStringify } from 'azle';
 import { bitcoin_network } from 'azle/canisters/management/idl';
-import { determineKeyName, determineNetwork } from 'basic_bitcoin/src';
-import * as bitcoinApi from 'basic_bitcoin/src/bitcoin_api';
 import express, { Request } from 'express';
 
 import * as bitcoinWallet from './bitcoin_wallet';
