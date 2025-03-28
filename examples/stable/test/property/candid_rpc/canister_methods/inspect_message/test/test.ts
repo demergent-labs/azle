@@ -95,6 +95,13 @@ function CanisterConfigArb() {
 
 runPropTests(CanisterArb(context, CanisterConfigArb()));
 
+function escapeMethodName(methodName: string): string {
+    if (methodName.startsWith('"') && methodName.endsWith('"')) {
+        return `"${methodName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+    }
+    return `"${methodName}"`;
+}
+
 function generateInspectMessageMethodBody(
     updateMethods: UpdateMethod<CorrespondingJSType, CorrespondingJSType>[]
 ): string {
@@ -104,9 +111,9 @@ function generateInspectMessageMethodBody(
 
     return `
         const expectedArgs: {
-            ${updateMethods.map((updateMethod) => `'${updateMethod.methodName}': [${updateMethod.paramTypes.map((paramType) => paramType.src.typeAnnotation).join(', ')}]`).join(',\n')}
+            ${updateMethods.map((updateMethod) => `${escapeMethodName(updateMethod.methodName)}: [${updateMethod.paramTypes.map((paramType) => paramType.src.typeAnnotation).join(', ')}]`).join(',\n')}
         } = {
-            ${updateMethods.map((updateMethod) => `'${updateMethod.methodName}': [${updateMethod.paramTypes.map((paramType) => paramType.src.valueLiteral).join(', ')}]`).join(',\n')}
+            ${updateMethods.map((updateMethod) => `${escapeMethodName(updateMethod.methodName)}: [${updateMethod.paramTypes.map((paramType) => paramType.src.valueLiteral).join(', ')}]`).join(',\n')}
         };
 
         if (deepEqual(args, expectedArgs[methodName as keyof typeof expectedArgs]) !== true) {

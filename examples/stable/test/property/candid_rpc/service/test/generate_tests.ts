@@ -29,8 +29,20 @@ export function generateTests(
                         )
                         .join();
 
+                    const escapedFunctionName = functionName.startsWith('"')
+                        ? `'${functionName.slice(1, -1).replace(/'/g, "'\\''")}'`
+                        : functionName;
+
+                    // Check if the function name starts with a dash, we need to use -- to prevent it from being treated as an option
+                    const dashPrefix =
+                        escapedFunctionName.startsWith('-') ||
+                        (escapedFunctionName.startsWith("'") &&
+                            escapedFunctionName.charAt(1) === '-')
+                            ? '-- '
+                            : '';
+
                     const result = execSync(
-                        `dfx canister call canister ${functionName} '(${paramsString})'`
+                        `dfx canister call canister ${dashPrefix}${escapedFunctionName} '(${paramsString})'`
                     )
                         .toString()
                         .trim();

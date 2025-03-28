@@ -1,5 +1,8 @@
 import { IDL } from '@dfinity/candid';
 
+import { escapeCandidName } from '#lib/did_file/visitor/escape_candid_name';
+import { jsonStringify } from '#lib/json';
+
 export type VisitorData = { value: any };
 
 /**
@@ -21,6 +24,11 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
     }
     visitText(_t: IDL.TextClass, data: VisitorData): string {
         return `"${escapeForBash(data.value)}"`;
+    }
+    visitFunc(t: IDL.FuncClass, data: VisitorData): string {
+        const [principal, funcName] = data.value;
+        const quotedFuncName = escapeCandidName(funcName);
+        return `func "${principal.toString()}".${quotedFuncName}`;
     }
     visitOpt<T>(
         _t: IDL.OptClass<T>,
@@ -46,10 +54,17 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         data: VisitorData
     ): string {
         const fieldStrings = fields.map(([fieldName, fieldType]) => {
+            const normalizedFieldName =
+                fieldName.startsWith('"') && fieldName.endsWith('"')
+                    ? fieldName.slice(1, -1)
+                    : fieldName;
             const value = fieldType.accept(this, {
-                value: data.value[fieldName]
+                value: data.value[normalizedFieldName]
             });
-            return `${fieldName} = ${value}`;
+            const key = fieldName.startsWith('"')
+                ? escapeCandidName(fieldName.slice(1, -1))
+                : fieldName;
+            return `${key} = ${value}`;
         });
         return `record {${fieldStrings.join('; ')}}`;
     }
@@ -71,16 +86,30 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         data: VisitorData
     ): string {
         for (const [name, type] of fields) {
-            if (Object.prototype.hasOwnProperty.call(data.value, name)) {
-                const value = type.accept(this, { value: data.value[name] });
+            const normalizedFieldName =
+                name.startsWith('"') && name.endsWith('"')
+                    ? name.slice(1, -1)
+                    : name;
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    data.value,
+                    normalizedFieldName
+                )
+            ) {
+                const value = type.accept(this, {
+                    value: data.value[normalizedFieldName]
+                });
+                const key = name.startsWith('"')
+                    ? escapeCandidName(name.slice(1, -1))
+                    : name;
                 if (value === 'null') {
-                    return `variant {${name}}`;
+                    return `variant {${key}}`;
                 } else {
-                    return `variant {${name}=${value}}`;
+                    return `variant {${key}=${value}}`;
                 }
             }
         }
-        throw new Error(`Variant has no data: ${data.value}`);
+        throw new Error(`Variant has no data: ${jsonStringify(data.value)}`);
     }
     visitVec<T>(
         _t: IDL.VecClass<T>,
@@ -98,8 +127,10 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
 }
 
 function escapeForBash(input: string): string {
+    // For text values inside double quotes, we need different escaping than for the entire string
+    // When text is wrapped in double quotes in bash, we need to escape: backslashes and double quotes
+    // But single quotes can remain as-is since they don't have special meaning in double-quoted strings
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
-        .replace(/'/g, "'\\''") // Escape single quotes
         .replace(/"/g, '\\"'); // Escape double quotes
 }
