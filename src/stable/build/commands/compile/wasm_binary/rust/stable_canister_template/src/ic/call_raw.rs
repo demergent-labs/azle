@@ -36,10 +36,17 @@ pub fn get_function(ctx: Ctx) -> RQuickJsResult<Function> {
             ctx.spawn(async move {
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
-                let settle_result = settle(&ctx_for_spawn, &resolve, &reject, call_result);
+                if call_result.is_err() && call_result.as_ref().err().unwrap().1 == "cleanup" {
+                    // TODO so what happens to the promise? Will it ever get garbage collected?
+                    // TODO what happens in the code that is currently live? What happens to the promise?
+                    drop(resolve);
+                    drop(reject);
+                } else {
+                    let settle_result = settle(&ctx_for_spawn, &resolve, &reject, call_result);
 
-                if let Err(e) = settle_result {
-                    trap(&format!("Azle CallRawError: {e}"));
+                    if let Err(e) = settle_result {
+                        trap(&format!("Azle CallRawError: {e}"));
+                    }
                 }
             });
 
