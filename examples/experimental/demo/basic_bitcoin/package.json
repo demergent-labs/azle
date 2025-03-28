@@ -1,5 +1,6 @@
 {
-    "name": "basic_bitcoin",
+    "name": "@azle/basic_bitcoin_demo",
+    "version": "0.1.0",
     "scripts": {
         "install": "./scripts/install.sh",
         "pretest": "tsx test/pretest.ts",

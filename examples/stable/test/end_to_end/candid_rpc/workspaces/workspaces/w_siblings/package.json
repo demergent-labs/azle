@@ -1,0 +1,9 @@
+{
+    "private": true,
+    "workspaces": [
+        "w_sibling"
+    ],
+    "scripts": {
+        "deploy": "npm run deploy --workspaces"
+    }
+}

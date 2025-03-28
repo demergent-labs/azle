@@ -13,7 +13,7 @@ export async function getContext(
     canisterName: string,
     canisterConfig: CanisterConfig
 ): Promise<Context> {
-    const stableContext = getStableContext(canisterName, canisterConfig);
+    const stableContext = await getStableContext(canisterName, canisterConfig);
 
     const canisterId = getCanisterId(canisterName);
 
