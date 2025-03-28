@@ -16,8 +16,6 @@ import { ValuesTestArb } from './values';
 
 const context: Context = { api: 'functional', constraints: {} };
 
-// TODO change this to context
-
 const StableBTreeMapTestArb = fc
     .array(
         StableBTreeMapArb(context).chain((stableBTreeMap) => {
