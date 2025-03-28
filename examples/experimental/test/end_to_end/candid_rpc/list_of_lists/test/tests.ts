@@ -82,8 +82,6 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toStrictEqual(expectedResult);
         });
 
-        // TODO we don't know we this just started breaking
-        // https://github.com/demergent-labs/azle/issues/1453
         it('listOfNull test', async () => {
             const expectedResult = [
                 [[null], [null]],
