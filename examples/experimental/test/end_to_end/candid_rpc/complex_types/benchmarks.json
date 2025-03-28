@@ -1,47 +1,6 @@
 {
     "complex_types": {
         "previous": {
-            "version": "0.28.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "80449837"
-                    },
-                    "method_name": "createUser",
-                    "timestamp": {
-                        "__bigint__": "1740776198441112450"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "163693267"
-                    },
-                    "method_name": "createThread",
-                    "timestamp": {
-                        "__bigint__": "1740776198927149839"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "86537994"
-                    },
-                    "method_name": "createPost",
-                    "timestamp": {
-                        "__bigint__": "1740776199170140168"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "172531507"
-                    },
-                    "method_name": "createReaction",
-                    "timestamp": {
-                        "__bigint__": "1740776199415585382"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.29.0",
             "benchmarks": [
                 {
@@ -78,6 +37,47 @@
                     "method_name": "createReaction",
                     "timestamp": {
                         "__bigint__": "1741368982000994910"
+                    }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "80457991"
+                    },
+                    "method_name": "createUser",
+                    "timestamp": {
+                        "__bigint__": "1741977025986655845"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "163805648"
+                    },
+                    "method_name": "createThread",
+                    "timestamp": {
+                        "__bigint__": "1741977026231381841"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "86503832"
+                    },
+                    "method_name": "createPost",
+                    "timestamp": {
+                        "__bigint__": "1741977026721686925"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "172484585"
+                    },
+                    "method_name": "createReaction",
+                    "timestamp": {
+                        "__bigint__": "1741977026962295230"
                     }
                 }
             ]

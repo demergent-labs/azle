@@ -1,10 +1,10 @@
 {
     "scripts": {
-        "pretest": "ETHEREUM_URL=https://rpc.ankr.com/eth tsx test/pretest.ts",
-        "test": "ETHEREUM_URL=https://rpc.ankr.com/eth jest"
+        "pretest": "ETHEREUM_URL=https://ethereum.publicnode.com tsx test/pretest.ts",
+        "test": "ETHEREUM_URL=https://ethereum.publicnode.com jest"
     },
     "dependencies": {
-        "azle": "0.29.0"
+        "azle": "0.30.0"
     },
     "devDependencies": {
         "ethereum_json_rpc_end_to_end_test_functional_syntax": "file:../../../../../experimental/test/end_to_end/candid_rpc/ethereum_json_rpc"

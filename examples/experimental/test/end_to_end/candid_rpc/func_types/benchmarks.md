@@ -1,18 +1,30 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for func_types
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                             |
-| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | init                             | 4_855_798_620 | 3_542_909_448 | $0.0047109004 | $4_710.90         | <font color="green">-16_154</font> |
-| 1   | getNotifierFromNotifiersCanister | 10_532_215    | 4_802_886     | $0.0000063863 | $6.38             | <font color="red">+11_305</font>   |
+| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
+| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init                             | 4_860_848_380 | 3_544_929_352 | $0.0047135862 | $4_713.58         | <font color="red">+5_049_760</font>   |
+| 1   | getNotifierFromNotifiersCanister | 1_423_155     | 1_159_262     | $0.0000015414 | $1.54             | <font color="green">-9_109_060</font> |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                             | 4_855_814_774 | 3_542_915_909 | $0.0047109090 | $4_710.90         |
-| 1   | getNotifierFromNotifiersCanister | 10_520_910    | 4_798_364     | $0.0000063802 | $6.38             |
+| 0   | init                             | 4_855_798_620 | 3_542_909_448 | $0.0047109004 | $4_710.90         |
+| 1   | getNotifierFromNotifiersCanister | 10_532_215    | 4_802_886     | $0.0000063863 | $6.38             |
+
+# Benchmarks for notifiers
+
+## Current benchmarks Azle version: 0.30.0
+
+No benchmarks reported
+
+## Baseline benchmarks Azle version: No previous benchmarks
+
+No benchmarks reported
 
 ---
 

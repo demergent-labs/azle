@@ -1,12 +1,14 @@
+⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+
 # Benchmarks for complex_init
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                     |
-| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | -------------------------- |
-| 0   | init        | 986_859_735  | 395_333_894 | $0.0005256636 | $525.66           | <font color="red">0</font> |
+| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | init        | 988_736_444  | 396_084_577 | $0.0005266618 | $526.66           | <font color="red">+1_876_709</font> |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- |
@@ -14,13 +16,13 @@
 
 # Benchmarks for rec_init
 
-## Current benchmarks Azle version: 0.29.0
+## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                     |
-| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | -------------------------- |
-| 0   | init        | 986_533_460  | 395_203_384 | $0.0005254901 | $525.49           | <font color="red">0</font> |
+| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | init        | 989_241_692  | 396_286_676 | $0.0005269305 | $526.93           | <font color="red">+2_708_232</font> |
 
-## Baseline benchmarks Azle version: 0.28.0
+## Baseline benchmarks Azle version: 0.29.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- |

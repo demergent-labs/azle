@@ -1,0 +1,112 @@
+{
+    "canister": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.30.0",
+            "benchmarks": [
+                {
+                    "instructions": {
+                        "__bigint__": "1114786498"
+                    },
+                    "method_name": "postUpgrade",
+                    "timestamp": {
+                        "__bigint__": "1741977099931929404"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "2022926"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977109249936398"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1992359"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977109740617430"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1971823"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977109986772244"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1989938"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977110230561152"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1991610"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977110475786094"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1963870"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977110971121150"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1991211"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977111217329978"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1990287"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977111462468908"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1990662"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977111707523328"
+                    }
+                },
+                {
+                    "instructions": {
+                        "__bigint__": "1993453"
+                    },
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": {
+                        "__bigint__": "1741977112227048402"
+                    }
+                }
+            ]
+        }
+    }
+}
