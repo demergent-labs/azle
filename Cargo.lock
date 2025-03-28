@@ -2547,9 +2547,9 @@ dependencies = [
 
 [[package]]
 name = "wasmi"
-version = "0.42.0"
+version = "0.43.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d48bb443a1dd0d01069484581d072f39fa4ae944e3e328161abd9f71d1d4f13a"
+checksum = "60160ffa66a3f95ae969aaf9cac28591b919a677d68faf29810c4989d5b0cad8"
 dependencies = [
  "arrayvec 0.7.6",
  "multi-stash",
@@ -2564,18 +2564,18 @@ dependencies = [
 
 [[package]]
 name = "wasmi_collections"
-version = "0.42.0"
+version = "0.43.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf61082fb7a2fc57da664cbc39156b6593df77c662d57d5c14ef76a03c7f7d90"
+checksum = "e38a962e32f510cd9732dc24308658bccbfe636df813bf53e798073c16c5ab8d"
 dependencies = [
  "string-interner",
 ]
 
 [[package]]
 name = "wasmi_core"
-version = "0.42.0"
+version = "0.43.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd26411b079cea63dda892f5194e62709b4b2608fb6d9a5ec745836f827b2e76"
+checksum = "eae83f6d1e9344c25ab2defb563a65c3bcfad6fbd910c342367a15222b9e9525"
 dependencies = [
  "downcast-rs",
  "libm",
@@ -2583,9 +2583,9 @@ dependencies = [
 
 [[package]]
 name = "wasmi_ir"
-version = "0.42.0"
+version = "0.43.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5eab82bfba2b510fec0960470741a7950d54f600905c90a0fd6da0b74ca86d62"
+checksum = "a9306bd1b4aa21dbfa9e4fc472d51cd40548c34add184e5ac38c3adf4214c356"
 dependencies = [
  "wasmi_core",
 ]
