@@ -30,24 +30,16 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
-    var _azleNodeWasmEnvironment: boolean;
+    var _azleNodejsWasmEnvironment: boolean;
     // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
-    // eslint-disable-next-line no-var
-    var _azleRejectCallbacks: { [globalRejectId: string]: (err: any) => void };
-    // eslint-disable-next-line no-var
-    var _azleResolveCallbacks: {
-        [globalResolveId: string]: (buf: Uint8Array | ArrayBuffer) => void;
-    };
-    // eslint-disable-next-line no-var
-    var _azleTimerCallbacks: { [timerId: string]: () => Promise<void> };
 }
 
 // TODO do we need to disable any other wasmedge-quickjs globals
 // TODO that we don't think are stable yet?
 if (
     globalThis._azleIcpReplicaWasmEnvironment === true ||
-    globalThis._azleNodeWasmEnvironment === true
+    globalThis._azleNodejsWasmEnvironment === true
 ) {
     globalThis._azleDispatch({
         type: 'SET_TEXT_DECODER',

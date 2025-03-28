@@ -1,51 +1,31 @@
 use core::time::Duration;
-use std::{cell::RefCell, rc::Rc};
 
 use ic_cdk::trap;
-use ic_cdk_timers::{set_timer, TimerId};
-use rquickjs::{BigInt, Ctx, Function, Object, Result};
+use ic_cdk_timers::{TimerId, set_timer};
+use rquickjs::{BigInt, Ctx, Function, Result};
 use slotmap::Key;
 
-use crate::{error::quickjs_call_with_error_handling, quickjs_with_ctx};
+use crate::rquickjs_utils::{call_with_error_handling, with_ctx};
 
+// TODO could we use Persistent here?
+// TODO we don't have the synchronous await point problem here
 pub fn get_function(ctx: Ctx) -> Result<Function> {
-    Function::new(ctx.clone(), move |delay: u64| -> Result<BigInt> {
-        let delay_duration = Duration::new(delay, 0);
+    Function::new(
+        ctx.clone(),
+        move |delay: u64, callback: Function| -> Result<BigInt> {
+            let delay_duration = Duration::new(delay, 0);
+            let closure = move || {
+                // let result = with_ctx(|ctx| call_with_error_handling(&ctx, &callback, ()));
 
-        let timer_id_u64_rc: Rc<RefCell<Option<u64>>> = Rc::new(RefCell::new(None));
-        let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
+                // if let Err(e) = result {
+                //     trap(&format!("Azle TimerError: {e}"));
+                // }
+            };
 
-        let closure = move || {
-            let result = quickjs_with_ctx(|ctx| {
-                let timer_id = timer_id_u64_rc_cloned
-                    .borrow()
-                    .ok_or("TimerId not found in reference-counting pointer")?;
+            let timer_id: TimerId = set_timer(delay_duration, closure);
+            let timer_id_u64: u64 = timer_id.data().as_ffi();
 
-                let globals = ctx.globals();
-
-                let timer_callbacks: Object = globals
-                    .get("_azleTimerCallbacks")
-                    .map_err(|e| format!("Failed to get globalThis._azleTimerCallbacks: {e}"))?;
-                let timer_callback: Function =
-                    timer_callbacks.get(timer_id.to_string()).map_err(|e| {
-                        format!("Failed to get globalThis._azleTimerCallbacks['{timer_id}']: {e}")
-                    })?;
-
-                quickjs_call_with_error_handling(ctx, timer_callback, ())?;
-
-                Ok(())
-            });
-
-            if let Err(e) = result {
-                trap(&format!("Azle TimerError: {e}"));
-            }
-        };
-
-        let timer_id: TimerId = set_timer(delay_duration, closure);
-        let timer_id_u64: u64 = timer_id.data().as_ffi();
-
-        *timer_id_u64_rc.borrow_mut() = Some(timer_id_u64);
-
-        Ok(BigInt::from_u64(ctx.clone(), timer_id_u64)?)
-    })
+            Ok(BigInt::from_u64(ctx.clone(), timer_id_u64)?)
+        },
+    )
 }

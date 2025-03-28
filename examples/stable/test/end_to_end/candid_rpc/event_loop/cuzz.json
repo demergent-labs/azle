@@ -1,0 +1,9 @@
+{
+    "expectedErrors": ["Uncaught Error: will this cause a memory leak?"],
+    "size": {
+        "blob": {
+            "min": 2000000,
+            "max": 2000000
+        }
+    }
+}
