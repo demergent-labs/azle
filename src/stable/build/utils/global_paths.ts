@@ -37,7 +37,7 @@ export function getDfxJsonDirPath(): string {
     }
 
     throw new Error(
-        'Unable to locate the dfx.json file. AZLE_DFX_JSON_DIR environment variable must be defined'
+        'Unable to locate the dfx.json file. There must be a dfx.json file in the current working directory or the AZLE_DFX_JSON_DIR environment variable must be defined'
     );
 }
 
