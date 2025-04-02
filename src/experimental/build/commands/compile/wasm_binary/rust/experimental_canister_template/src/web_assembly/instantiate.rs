@@ -108,7 +108,7 @@ impl JsFn for NativeFunction {
                                             {
                                                 float
                                             } else {
-                                                panic!("conversion from JsValue to f32 failed")
+                                                panic!("conversion from JsValue to f64 failed")
                                             };
 
                                             wasmi::Val::F32((*param_f64 as f32).into())
