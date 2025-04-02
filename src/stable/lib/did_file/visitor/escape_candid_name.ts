@@ -78,10 +78,7 @@ function escapeText(key: string): string {
     // TODO: more details.
 
     // Escape double quotes and backslashes
-    const containsBackslashOrQuote = ['"', '\\'].some((ch: string) =>
-        key.includes(ch)
-    );
-    if (containsBackslashOrQuote === true) {
+    if (containsBackslashOrQuote(key) === true) {
         const escapedKey: string = key.replace(
             /[\\"]/g,
             (match: string): string => `\\${match}`
@@ -90,4 +87,8 @@ function escapeText(key: string): string {
     }
 
     return `"${key}"`;
+}
+
+function containsBackslashOrQuote(key: string): boolean {
+    return ['"', '\\'].some((ch: string) => key.includes(ch) === true);
 }
