@@ -1,6 +1,6 @@
 {
     "name": "@azle/ckbtc_end_to_end_test_functional_syntax",
-    "version": "0.1.0",
+    "version": "0.0.0",
     "scripts": {
         "bitcoin": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
         "ic": "dfx start --clean --host 127.0.0.1:8000 --enable-bitcoin",

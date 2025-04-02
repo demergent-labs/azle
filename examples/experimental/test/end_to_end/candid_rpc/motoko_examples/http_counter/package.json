@@ -1,6 +1,6 @@
 {
     "name": "http_counter",
-    "version": "0.1.0",
+    "version": "0.0.0",
     "description": "Reimplementation of the [Motoko Http Counter example](https://github.com/dfinity/examples/tree/master/motoko/http_counter)",
     "keywords": [
         "Internet Computer",

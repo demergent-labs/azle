@@ -1,6 +1,6 @@
 {
     "name": "@azle/async_await_end_to_end_test_functional_syntax",
-    "version": "0.1.0",
+    "version": "0.0.0",
     "scripts": {
         "pre_tests": "tsx test/pretest.ts",
         "tests": "npm run pre_tests && jest",
