@@ -68,7 +68,7 @@ export function UpdateMethodArb<
     const constraints = context.constraints;
     return fc
         .tuple(
-            UniqueIdentifierArb('canisterProperties'),
+            UniqueIdentifierArb('canisterProperties', 'property'),
             paramTypeArrayArb,
             returnTypeArb,
             MethodImplementationLocationArb,
@@ -176,9 +176,13 @@ function generateSourceCode<
 
     const returnTypeObject = returnType.src.typeObject;
 
+    const escapedFunctionName = functionName.startsWith('"')
+        ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+        : functionName;
+
     if (api === 'functional') {
-        return `${functionName}: update([${paramTypeObjects}], ${returnTypeObject}, ${methodImplementation})`;
+        return `${escapedFunctionName}: update([${paramTypeObjects}], ${returnTypeObject}, ${methodImplementation})`;
     } else {
-        return `@update([${paramTypeObjects}], ${returnTypeObject})\n${functionName}${methodImplementation}`;
+        return `@update([${paramTypeObjects}], ${returnTypeObject})\n${escapedFunctionName}${methodImplementation}`;
     }
 }

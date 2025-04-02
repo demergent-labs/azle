@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Record } from '#experimental/lib/index';
 
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_name_arb';
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
@@ -28,7 +28,7 @@ export function RecordDefinitionArb(
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            fc.uniqueArray(fc.tuple(JsFunctionNameArb, fieldCandidDefArb), {
+            fc.uniqueArray(fc.tuple(JsPropertyNameArb, fieldCandidDefArb), {
                 selector: ([name, _]) => name,
                 minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
                 // https://github.com/demergent-labs/azle/issues/1453
@@ -146,10 +146,12 @@ function generateCandidTypeAnnotation(
     }
 
     return `{${fields
-        .map(
-            ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`
-        )
+        .map(([fieldName, fieldDefinition]) => {
+            const escapedFieldName = fieldName.startsWith('"')
+                ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : fieldName;
+            return `${escapedFieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`;
+        })
         .join(',')}}`;
 }
 
@@ -164,10 +166,12 @@ function generateTypeObject(
     }
 
     const fieldsAsString = fields
-        .map(
-            ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.typeObject}`
-        )
+        .map(([fieldName, fieldDefinition]) => {
+            const escapedFieldName = fieldName.startsWith('"')
+                ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : fieldName;
+            return `${escapedFieldName}: ${fieldDefinition.candidMeta.typeObject}`;
+        })
         .join(',');
 
     if (api === 'class') {

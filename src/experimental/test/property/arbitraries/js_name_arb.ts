@@ -80,6 +80,7 @@ const azleKeywords = [
 ];
 
 const jsKeywords = [
+    '__proto__',
     'any',
     'await',
     'break',
@@ -87,6 +88,7 @@ const jsKeywords = [
     'catch',
     'class',
     'const',
+    'constructor',
     'continue',
     'debugger',
     'default',
@@ -147,9 +149,47 @@ const jsKeywords = [
 // This breaks rust but it doesn't seem to be a rust keyword
 const otherKeywords = ['drop'];
 
-export const JsFunctionNameArb = fc
+// These words still don't work even if quoted
+const cantBeQuoted = ['__proto__', 'constructor'];
+
+const unquotedFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)
     .filter((sample) => !rustKeywords.includes(sample))
     .filter((sample) => !jsKeywords.includes(sample))
     .filter((sample) => !otherKeywords.includes(sample))
     .filter((sample) => !azleKeywords.includes(sample));
+
+const quotedFunctionNameArb = fc
+    .stringMatching(/^"[^"\\]+(?:\\.[^"\\]*)*"$/)
+    .filter((sample) => !cantBeQuoted.includes(sample.slice(1, -1)))
+    .map((s: string): string => {
+        // Remove the leading and trailing quotes
+        const inner = s.slice(1, -1);
+        if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(inner)) {
+            if (
+                azleKeywords.includes(inner) ||
+                jsKeywords.includes(inner) ||
+                rustKeywords.includes(inner) ||
+                otherKeywords.includes(inner)
+            ) {
+                return `"${inner}"`;
+            }
+            return inner;
+        }
+
+        // Properly escape any backslashes and quotes in the inner content
+        const escapedInner = inner.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
+        // Reassemble the string with its leading and trailing quotes intact
+        return `"${escapedInner}"`;
+    });
+
+export const JsIdentifierNameArb = fc.oneof(unquotedFunctionNameArb);
+
+// TODO: disable quoted function names for now: https://github.com/demergent-labs/azle/issues/2823
+export const JsPropertyNameArb = fc.oneof(
+    { weight: 1, arbitrary: unquotedFunctionNameArb },
+    { weight: 0, arbitrary: quotedFunctionNameArb }
+);
+
+// TODO rename to JsNameArbs or something?

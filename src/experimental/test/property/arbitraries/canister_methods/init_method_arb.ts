@@ -52,7 +52,7 @@ export function InitMethodArb<
     const constraints = context.constraints;
     return fc
         .tuple(
-            UniqueIdentifierArb('canisterProperties'),
+            UniqueIdentifierArb('canisterProperties', 'property'),
             paramTypeArrayArb,
             VoidArb({ ...context, constraints: {} }),
             MethodImplementationLocationArb,
@@ -148,9 +148,13 @@ function generateSourceCode<
         .map((param) => param.src.typeObject)
         .join(', ');
 
+    const escapedFunctionName = functionName.startsWith('"')
+        ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+        : functionName;
+
     if (api === 'functional') {
-        return `${functionName}: init([${paramTypeObjects}], ${methodImplementation})`;
+        return `${escapedFunctionName}: init([${paramTypeObjects}], ${methodImplementation})`;
     } else {
-        return `@init([${paramTypeObjects}])\n${functionName}${methodImplementation}`;
+        return `@init([${paramTypeObjects}])\n${escapedFunctionName}${methodImplementation}`;
     }
 }

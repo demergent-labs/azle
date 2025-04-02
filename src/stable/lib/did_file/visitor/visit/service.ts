@@ -6,7 +6,7 @@ import {
     DidVisitor,
     VisitorData
 } from '../did_visitor';
-import { escapeCandidKeywords } from '../escape_candid_keywords';
+import { escapeCandidName } from '../escape_candid_name';
 import { extractCandid } from '../extract_candid';
 
 /**
@@ -50,9 +50,7 @@ function serviceToCandidString(
 
     const funcStrings = canisterMethodCandidStrings
         .map((value, index) => {
-            return `${tab}${escapeCandidKeywords(
-                t._fields[index][0]
-            )}: ${value};`;
+            return `${tab}${escapeCandidName(t._fields[index][0])}: ${value};`;
         })
         .join(func_separator);
 

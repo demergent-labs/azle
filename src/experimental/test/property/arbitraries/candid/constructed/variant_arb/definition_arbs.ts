@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Variant } from '#experimental/lib/index';
 
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_name_arb';
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
@@ -109,7 +109,7 @@ function VariantFieldsArb(
     // an empty object.
     const VARIANT_MIN_FIELD_COUNT = 1;
     return fc
-        .uniqueArray(JsFunctionNameArb, {
+        .uniqueArray(JsPropertyNameArb, {
             minLength: VARIANT_MIN_FIELD_COUNT
         })
         .chain((fieldsNames) =>
@@ -223,10 +223,12 @@ function generateCandidTypeAnnotation(
 
     if (api === 'class') {
         return fields
-            .map(
-                ([fieldName, fieldDataType]) =>
-                    `{${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}}`
-            )
+            .map(([fieldName, fieldDataType]) => {
+                const escapedFieldName = fieldName.startsWith('"')
+                    ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                    : fieldName;
+                return `{${escapedFieldName}: ${fieldDataType.candidMeta.typeAnnotation}}`;
+            })
             .join('|');
     }
 
@@ -249,10 +251,12 @@ function generateTypeObject(
     }
 
     const fieldsAsString = fields
-        .map(
-            ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.typeObject}`
-        )
+        .map(([fieldName, fieldDefinition]) => {
+            const escapedFieldName = fieldName.startsWith('"')
+                ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : fieldName;
+            return `${escapedFieldName}: ${fieldDefinition.candidMeta.typeObject}`;
+        })
         .join(',');
     if (api === 'class') {
         return `IDL.Variant({${fieldsAsString}})`;
