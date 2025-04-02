@@ -108,10 +108,10 @@ impl JsFn for NativeFunction {
                                             {
                                                 float
                                             } else {
-                                                panic!("conversion from JsValue to i32 failed")
+                                                panic!("conversion from JsValue to f64 failed")
                                             };
 
-                                            wasmi::Val::F32((*param_f64 as u32).into())
+                                            wasmi::Val::F32((*param_f64 as f32).into())
                                         }
                                         wasmi::core::ValType::F64 => {
                                             let param_f64 = if let JsValue::Float(float) =
@@ -119,13 +119,14 @@ impl JsFn for NativeFunction {
                                             {
                                                 float
                                             } else {
-                                                panic!("conversion from JsValue to i32 failed")
+                                                panic!("conversion from JsValue to f64 failed")
                                             };
 
-                                            wasmi::Val::F64((*param_f64 as u64).into())
+                                            wasmi::Val::F64((*param_f64).into())
                                         }
                                         wasmi::core::ValType::FuncRef => todo!(),
                                         wasmi::core::ValType::ExternRef => todo!(),
+                                        wasmi::core::ValType::V128 => todo!(),
                                     })
                                     .collect();
 
@@ -155,17 +156,18 @@ impl JsFn for NativeFunction {
                                         // TODO should this not be a bigint?
                                     }
                                     wasmi::core::ValType::F32 => {
-                                        let u32: u32 = buf.get(0).unwrap().f32().unwrap().into();
-
-                                        JsValue::Float(u32 as f64)
+                                        let f32_val = buf.get(0).unwrap().f32().unwrap();
+                                        let native_f32: f32 = f32_val.into();
+                                        JsValue::Float(f64::from(native_f32))
                                     }
                                     wasmi::core::ValType::F64 => {
-                                        let u64: u64 = buf.get(0).unwrap().f64().unwrap().into();
+                                        let f64_val = buf.get(0).unwrap().f64().unwrap();
 
-                                        JsValue::Float(u64 as f64)
+                                        JsValue::Float(f64_val.into())
                                     }
                                     wasmi::core::ValType::FuncRef => todo!(),
                                     wasmi::core::ValType::ExternRef => todo!(),
+                                    wasmi::core::ValType::V128 => todo!(),
                                 }
                             })
                         },
