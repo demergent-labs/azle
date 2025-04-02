@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { JsIdentifierNameArb, JsPropertyNameArb } from './js_function_name_arb';
+import { JsIdentifierNameArb, JsPropertyNameArb } from './js_name_arb';
 
 type IdentifiersMap = {
     [key: string]: Set<string>;

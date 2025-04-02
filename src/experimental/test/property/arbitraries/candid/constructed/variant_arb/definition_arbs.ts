@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { CandidType, Variant } from '#experimental/lib/index';
 
-import { JsPropertyNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_name_arb';
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {

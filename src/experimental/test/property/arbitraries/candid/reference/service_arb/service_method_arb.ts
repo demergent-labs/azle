@@ -6,7 +6,7 @@ import {
 } from '#experimental/lib/canister_methods/methods/index';
 import { CanisterMethodInfo } from '#experimental/lib/canister_methods/types/canister_method_info';
 
-import { JsPropertyNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_name_arb';
 import { Context } from '../../../types';
 import {
     CandidDefinition,

@@ -5,9 +5,4 @@ export default class {
     simpleQuery(): string {
         return 'This is a query function';
     }
-
-    @query([], IDL.Text)
-    '\\simpleQ"uery'(): string {
-        return 'This is a query function';
-    }
 }

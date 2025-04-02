@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import fc from 'fast-check';
 
-import { JsPropertyNameArb } from '../../../js_function_name_arb';
+import { JsPropertyNameArb } from '../../../js_name_arb';
 import { CandidValues } from '../../candid_values_arb';
 import { PrincipalValueArb } from '../principal_arb';
 import { Func } from '.';
