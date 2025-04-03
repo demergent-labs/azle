@@ -55,7 +55,7 @@ export function getPrelude(main: string): string {
 
         import { getDefaultVisitorData, IDL, idlToString } from 'azle';
         export { Principal } from '@dfinity/principal';
-        import * as Canister from '${main}';
+        import * as Canister from './${main}';
 
         if (isClassSyntaxExport(Canister)) {
             ${handleClassApiCanister(main)}

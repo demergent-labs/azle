@@ -25,7 +25,10 @@ export type CanisterConfig = {
 export type Context = {
     canisterPath: string;
     candidPath: string;
-    main: string;
+    main: {
+        pathRelativeToDfxRoot: string;
+        pathRelativeToProjectRoot: string;
+    };
     projectRoot: string;
     wasmBinaryPath: string;
     wasmData: WasmData;

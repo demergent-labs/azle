@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import { dirname, join, parse } from 'path';
+import { dirname, join, parse, relative } from 'path';
 
 import { getDfxJsonDirPath } from '#utils/global_paths';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
@@ -36,13 +36,19 @@ export async function getContext(
 
     const projectRoot = await findProjectRoot();
 
-    // Get absolute path of main
-    const absoluteMainPath = join(getDfxJsonDirPath(), main);
+    const pathRelativeToDfxRoot = relative(getDfxJsonDirPath(), main);
+    const pathRelativeToProjectRoot = relative(
+        projectRoot,
+        pathRelativeToDfxRoot
+    );
 
     return {
         canisterPath,
         candidPath,
-        main: absoluteMainPath,
+        main: {
+            pathRelativeToDfxRoot,
+            pathRelativeToProjectRoot
+        },
         projectRoot,
         wasmBinaryPath,
         wasmData
@@ -59,17 +65,17 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
         'AZLE_LOG_ACTIONS',
         'AZLE_RECORD_ACTIONS',
         'AZLE_RECORD_BENCHMARKS',
-        'AZLE_AZLE_VERSION'
+        'AZLE_VERSION'
     ];
 
     return env
         .filter(
             (envVarName) =>
-                envVarName === 'AZLE_AZLE_VERSION' ||
+                envVarName === 'AZLE_VERSION' ||
                 process.env[envVarName] !== undefined
         )
         .map((envVarName) => {
-            if (envVarName === 'AZLE_AZLE_VERSION') {
+            if (envVarName === 'AZLE_VERSION') {
                 return [envVarName, version];
             }
 
@@ -86,14 +92,18 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
 }
 
 /**
- * Finds the project root directory through multiple fallback methods.
- * @returns The determined project root directory path
+ * Finds the project root directory (the directory containing the package.json file)
+ * by checking common environment variables and searching parent directories.
+ * @returns The absolute path to the project root directory.
+ * @throws Throws an error if a `package.json` file cannot be found using any of the attempted methods.
  *
  * @remarks
- * First tries using npm_config_prefix (if script called with --prefix),
- * then attempts to use npm_package_json environment variable,
- * then searches for package.json in parent directories,
- * and finally falls back to the current working directory if all else fails.
+ * The function attempts to locate the project root using the following methods in order:
+ * 1. If the `npm_config_prefix` environment variable is set, it searches upwards from that path for the nearest directory containing `package.json`.
+ * 2. If the `npm_package_json` environment variable is set and points to an existing `package.json` file, it returns the directory containing that file.
+ * 3. It searches upwards from the current working directory (`process.cwd()`) for the nearest directory containing `package.json`.
+ *
+ * If none of these methods succeed in finding a `package.json` file, the function throws an error indicating that it could not determine the project root.
  */
 async function findProjectRoot(): Promise<string> {
     // Method 1: Check if the script was called with an explicit prefix
@@ -114,16 +124,16 @@ async function findProjectRoot(): Promise<string> {
         }
     }
 
-    // Method 3: Check for presence of expected files/directories in ancestor directories
-    // Look for package.json in parent directories
+    // Method 3: Look for package.json in parent directories
     const projectRoot = findNearestProjectRoot(process.cwd());
 
     if (projectRoot !== undefined) {
         return projectRoot;
     }
 
-    // Fall back to current working directory
-    return process.cwd();
+    throw new Error(
+        `Could not find a package.json file in the current directory or any parent directory.\nPlease ensure you are running this command from within a valid Azle project.`
+    );
 }
 
 /**
