@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
-import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'fs/promises';
+import { copyFile, mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { join, resolve } from 'path';
 
 const TEST_PACKAGE_DIR = join(__dirname, 'test_packages');
@@ -14,16 +14,7 @@ type PackageJson = Record<string, unknown>;
  * Removes all previously created test packages from the test package directory.
  */
 export async function cleanTestPackages(): Promise<void> {
-    // Clean any previous test packages
-    const existingPackages = await readdir(TEST_PACKAGE_DIR);
-    await Promise.all(
-        existingPackages.map((file) =>
-            rm(join(TEST_PACKAGE_DIR, file), {
-                recursive: true,
-                force: true
-            })
-        )
-    );
+    await rm(TEST_PACKAGE_DIR, { recursive: true, force: true });
 }
 
 /**

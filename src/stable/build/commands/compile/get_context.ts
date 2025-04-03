@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { dirname, join, parse, relative } from 'path';
 
-import { getDfxJsonDirPath } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/global_paths';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
 import { version } from '../../../../../package.json';
@@ -18,7 +18,7 @@ export async function getContext(
         );
     }
 
-    const canisterPath = join(getDfxJsonDirPath(), '.azle', canisterName);
+    const canisterPath = join(getDfxRoot(), '.azle', canisterName);
 
     const candidPath = process.env.CANISTER_CANDID_PATH;
 
@@ -36,7 +36,7 @@ export async function getContext(
 
     const projectRoot = await findProjectRoot();
 
-    const pathRelativeToDfxRoot = relative(getDfxJsonDirPath(), main);
+    const pathRelativeToDfxRoot = relative(getDfxRoot(), main);
     const pathRelativeToProjectRoot = relative(
         projectRoot,
         pathRelativeToDfxRoot

@@ -1,6 +1,9 @@
 import { describe } from '@jest/globals';
 import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
+import { existsSync } from 'fs';
+import { rm } from 'fs/promises';
+import { join } from 'path';
 
 import { CANISTERS } from './canisters';
 import { cleanTestPackages, prepareTestPackage } from './prepare_test_package';
@@ -27,7 +30,7 @@ export function getTests(): Test {
         describe.each(CANISTERS)('Npm install', (canister) => {
             please(`npm install for ${canister.name}`, async () => {
                 execSync(`npm install`, {
-                    cwd: canister.nodeModulesLocation
+                    cwd: canister.projectRoot
                 });
             });
         });
@@ -35,7 +38,7 @@ export function getTests(): Test {
         describe.each(CANISTERS)('Testing canister: $name', (canister) => {
             please(`deploy ${canister.name}`, async () => {
                 execSync(`dfx deploy ${canister.name}`, {
-                    cwd: canister.dfxDir
+                    cwd: canister.dfxRoot
                 });
             });
 
@@ -45,7 +48,7 @@ export function getTests(): Test {
                         `dfx canister call ${canister.name} ${canister.method} --output json`,
                         {
                             encoding: 'utf-8',
-                            cwd: canister.dfxDir
+                            cwd: canister.dfxRoot
                         }
                     )
                 );
@@ -58,5 +61,50 @@ export function getTests(): Test {
         please.skip('clean test packages', () => {
             cleanTestPackages();
         });
+
+        describe.each(CANISTERS)(
+            'Remove package-lock.json file',
+            (canister) => {
+                please(
+                    `remove package-lock.json and node_modules for ${canister.name}`,
+                    async () => {
+                        await clean(canister.projectRoot, canister.name);
+
+                        if (canister.workspaceRoot) {
+                            await clean(canister.workspaceRoot, canister.name);
+                        }
+                    }
+                );
+            }
+        );
     };
+}
+
+/**
+ * Cleans up package-lock.json and node_modules directory at a given directory.
+ * @param dir The directory path to clean.
+ * @param canisterName The name of the canister for logging purposes.
+ */
+async function clean(dir: string, canisterName: string): Promise<void> {
+    const packageLockPath = join(dir, 'package-lock.json');
+    const nodeModulesPath = join(dir, 'node_modules');
+
+    if (existsSync(packageLockPath)) {
+        console.log(
+            `Removing package-lock.json for ${canisterName}: ${packageLockPath}`
+        );
+        await rm(packageLockPath, {
+            force: true
+        });
+    }
+
+    if (existsSync(nodeModulesPath)) {
+        console.log(
+            `Removing node_modules for ${canisterName}: ${nodeModulesPath}`
+        );
+        await rm(nodeModulesPath, {
+            recursive: true,
+            force: true
+        });
+    }
 }

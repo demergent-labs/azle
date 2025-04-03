@@ -2,18 +2,18 @@ import { HttpAgent } from '@dfinity/agent';
 import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
 import { execSync } from 'child_process';
 
-import { getDfxJsonDirPath } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/global_paths';
 
 export function getCanisterId(canisterName: string): string {
     return execSync(
         `dfx canister --network ${process.env.DFX_NETWORK ?? 'local'} id ${canisterName}`,
-        { cwd: getDfxJsonDirPath(), encoding: 'utf-8' }
+        { cwd: getDfxRoot(), encoding: 'utf-8' }
     ).trim();
 }
 
 export function getWebServerPort(): string {
     return execSync(`dfx info webserver-port`, {
-        cwd: getDfxJsonDirPath(),
+        cwd: getDfxRoot(),
         encoding: 'utf-8'
     }).trim();
 }
@@ -99,14 +99,14 @@ export function createAuthenticatedAgentSync(
 
 export function whoami(): string {
     return execSync(`dfx identity whoami`, {
-        cwd: getDfxJsonDirPath(),
+        cwd: getDfxRoot(),
         encoding: 'utf-8'
     }).trim();
 }
 
 export function whoamiPrincipal(): string {
     return execSync(`dfx identity get-principal`, {
-        cwd: getDfxJsonDirPath(),
+        cwd: getDfxRoot(),
         encoding: 'utf-8'
     }).trim();
 }
@@ -121,7 +121,7 @@ export function generateIdentity(name: string): Buffer {
         console.info(`You may be prompted to create a password for ${name}`);
         console.info();
         return execSync(`dfx identity new ${name}`, {
-            cwd: getDfxJsonDirPath(),
+            cwd: getDfxRoot(),
             stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
         });
     }
@@ -130,7 +130,7 @@ export function generateIdentity(name: string): Buffer {
         console.info();
     }
     return execSync(`dfx identity new ${name} --storage-mode ${storageMode}`, {
-        cwd: getDfxJsonDirPath(),
+        cwd: getDfxRoot(),
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
     });
 }
@@ -152,7 +152,7 @@ function determineStorageMode(): StorageMode | undefined {
 
 export function getIdentities(): string[] {
     const list = execSync(`dfx identity list`, {
-        cwd: getDfxJsonDirPath(),
+        cwd: getDfxRoot(),
         encoding: 'utf-8'
     }).trim();
     const identities = list.split('\n');
@@ -172,7 +172,7 @@ export function getPemKey(identityName: string): string {
     console.info();
     const cmd = `dfx identity export ${identityName}`;
     const result = execSync(cmd, {
-        cwd: getDfxJsonDirPath(),
+        cwd: getDfxRoot(),
         encoding: 'utf-8',
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
     }).trim();
@@ -192,7 +192,7 @@ export function getPrincipal(identityName: string): string {
     console.info();
     const cmd = `dfx identity get-principal --identity ${identityName}`;
     return execSync(cmd, {
-        cwd: getDfxJsonDirPath(),
+        cwd: getDfxRoot(),
         encoding: 'utf-8',
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
     }).trim();
@@ -210,7 +210,7 @@ export function addController(
     console.info();
     const cmd = `dfx canister update-settings ${canisterName} --add-controller ${principal}`;
     return execSync(cmd, {
-        cwd: getDfxJsonDirPath(),
+        cwd: getDfxRoot(),
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
     });
 }

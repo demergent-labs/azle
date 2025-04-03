@@ -1,8 +1,9 @@
 type Canister = {
     name: string;
     packageSuffix: string;
-    dfxDir: string;
-    nodeModulesLocation: string;
+    dfxRoot: string;
+    projectRoot: string;
+    workspaceRoot?: string;
     method: string;
 };
 
@@ -10,85 +11,92 @@ export const CANISTERS: Canister[] = [
     {
         name: 'ancestor_current',
         packageSuffix: 'ancestor-current',
-        dfxDir: 'workspaces/ancestor',
-        nodeModulesLocation: 'workspaces/ancestor/canisters/current',
+        dfxRoot: 'workspaces/ancestor',
+        projectRoot: 'workspaces/ancestor/canisters/current',
         method: 'getAzleVersionFromAncestorCurrent'
     },
     {
         name: 'ancestor_old',
         packageSuffix: 'ancestor-old',
-        dfxDir: 'workspaces/ancestor',
-        nodeModulesLocation: 'workspaces/ancestor/canisters/old',
+        dfxRoot: 'workspaces/ancestor',
+        projectRoot: 'workspaces/ancestor/canisters/old',
         method: 'getAzleVersionFromAncestorOld'
     },
     {
         name: 'descendant_different',
         packageSuffix: 'descendant-different',
-        dfxDir: 'workspaces/descendant_different/dfx',
-        nodeModulesLocation: 'workspaces/descendant_different',
+        dfxRoot: 'workspaces/descendant_different/dfx',
+        projectRoot: 'workspaces/descendant_different',
         method: 'getAzleVersionFromDescendantDifferent'
     },
     {
         name: 'descendant_same',
         packageSuffix: 'descendant-same',
-        dfxDir: 'workspaces/descendant_same/src',
-        nodeModulesLocation: 'workspaces/descendant_same',
+        dfxRoot: 'workspaces/descendant_same/src',
+        projectRoot: 'workspaces/descendant_same',
         method: 'getAzleVersionFromDescendantSame'
     },
     {
         name: 'sibling',
         packageSuffix: 'sibling',
-        dfxDir: 'workspaces/siblings',
-        nodeModulesLocation: 'workspaces/siblings',
+        dfxRoot: 'workspaces/siblings',
+        projectRoot: 'workspaces/siblings',
         method: 'getAzleVersionFromSibling'
     },
     {
         name: 'w_ancestor_current',
         packageSuffix: 'w-ancestor-current',
-        dfxDir: 'workspaces/w_ancestor',
-        nodeModulesLocation: 'workspaces/w_ancestor',
+        dfxRoot: 'workspaces/w_ancestor',
+        projectRoot: 'workspaces/w_ancestor/canisters/current',
+        workspaceRoot: 'workspaces/w_ancestor',
         method: 'getAzleVersionFromWAncestorCurrent'
     },
     {
         name: 'w_ancestor_old',
         packageSuffix: 'w-ancestor-old',
-        dfxDir: 'workspaces/w_ancestor',
-        nodeModulesLocation: 'workspaces/w_ancestor/canisters/old',
+        dfxRoot: 'workspaces/w_ancestor',
+        projectRoot: 'workspaces/w_ancestor/canisters/old',
+        workspaceRoot: 'workspaces/w_ancestor',
         method: 'getAzleVersionFromWAncestorOld'
     },
     {
         name: 'w_descendant_different',
         packageSuffix: 'w-descendant',
-        dfxDir: 'workspaces/w_descendant/canisters/different/dfx',
-        nodeModulesLocation: 'workspaces/w_descendant',
+        dfxRoot: 'workspaces/w_descendant/canisters/different/dfx',
+        projectRoot: 'workspaces/w_descendant/canisters/different',
+        workspaceRoot: 'workspaces/w_descendant',
         method: 'getAzleVersionFromWDescendantDifferent'
     },
     {
         name: 'w_descendant_different_deep',
         packageSuffix: 'w-descendant',
-        dfxDir: 'workspaces/w_descendant/canisters/different_deep/dfx/deeper',
-        nodeModulesLocation: 'workspaces/w_descendant',
+        dfxRoot: 'workspaces/w_descendant/canisters/different_deep/dfx/deeper',
+        projectRoot: 'workspaces/w_descendant/canisters/different_deep',
+        workspaceRoot: 'workspaces/w_descendant',
         method: 'getAzleVersionFromWDescendantDifferentDeep'
     },
     {
         name: 'w_descendant_same',
         packageSuffix: 'w-descendant',
-        dfxDir: 'workspaces/w_descendant/canisters/same/src',
-        nodeModulesLocation: 'workspaces/w_descendant',
+        dfxRoot: 'workspaces/w_descendant/canisters/same/src',
+        projectRoot: 'workspaces/w_descendant/canisters/same',
+        workspaceRoot: 'workspaces/w_descendant',
         method: 'getAzleVersionFromWDescendantSame'
     },
     {
         name: 'w_descendant_same_deep',
         packageSuffix: 'w-descendant',
-        dfxDir: 'workspaces/w_descendant/canisters/same_deep/src/dfx',
-        nodeModulesLocation: 'workspaces/w_descendant',
+        dfxRoot: 'workspaces/w_descendant/canisters/same_deep/src/dfx',
+        projectRoot: 'workspaces/w_descendant/canisters/same_deep',
+        workspaceRoot: 'workspaces/w_descendant',
         method: 'getAzleVersionFromWDescendantSameDeep'
     },
     {
         name: 'w_sibling',
         packageSuffix: 'w-sibling',
-        dfxDir: 'workspaces/w_siblings/w_sibling',
-        nodeModulesLocation: 'workspaces/w_siblings',
+        dfxRoot: 'workspaces/w_siblings/w_sibling',
+        projectRoot: 'workspaces/w_siblings/w_sibling',
+        workspaceRoot: 'workspaces/w_siblings',
         method: 'getAzleVersionFromWSibling'
     }
-].filter((canister) => canister.name === 'w_sibling');
+];

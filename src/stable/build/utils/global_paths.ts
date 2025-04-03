@@ -20,14 +20,14 @@ export const STABLE_STATIC_CANISTER_TEMPLATE_PATH = join(
 );
 
 /**
- * Determines the directory containing the dfx.json file.
+ * Determines the dfx root (directory containing the dfx.json file) for the current project.
  * First checks the AZLE_DFX_JSON_DIR environment variable.
  * If not defined, looks for dfx.json in the current working directory.
  *
  * @returns {string} The absolute path to the directory containing the dfx.json file
  * @throws {Error} If AZLE_DFX_JSON_DIR environment variable is not defined and dfx.json is not found in the current directory
  */
-export function getDfxJsonDirPath(): string {
+export function getDfxRoot(): string {
     if (process.env.AZLE_DFX_JSON_DIR !== undefined) {
         return process.env.AZLE_DFX_JSON_DIR;
     }
@@ -45,8 +45,8 @@ export function getDfxJsonDirPath(): string {
  * Gets the absolute path to the dfx.json file.
  *
  * @returns {string} The absolute path to the dfx.json file
- * @throws {Error} If the dfx.json directory cannot be determined (inherited from getDfxJsonDirPath)
+ * @throws {Error} If the dfx.json directory cannot be determined (inherited from getDfxRoot)
  */
 export function getDfxJsonPath(): string {
-    return join(getDfxJsonDirPath(), 'dfx.json');
+    return join(getDfxRoot(), 'dfx.json');
 }
