@@ -1,20 +1,17 @@
 // TODO add tests that we can use for fuzzing and have acceptance tests
 // TODO for traps after awaits and in timers
 
-import { call, IDL, setTimer, update } from 'azle';
+import { call, IDL, update } from 'azle';
 
 export default class {
-    @update
-    test(): void {}
+    // @update([IDL.Vec(IDL.Nat8)])
+    // testTimerFailure(bytes: Uint8Array): void {
+    //     setTimer(0, () => {
+    //         bytes.reverse();
 
-    @update([IDL.Vec(IDL.Nat8)])
-    testTimerFailure(bytes: Uint8Array): void {
-        setTimer(0, () => {
-            bytes.reverse();
-
-            throw new Error(`will this cause a memory leak? ${new Date()}`);
-        });
-    }
+    //         throw new Error(`will this cause a memory leak? ${new Date()}`);
+    //     });
+    // }
 
     @update([IDL.Vec(IDL.Nat8)], IDL.Vec(IDL.Nat8))
     async test0(bytes: Uint8Array): Promise<Uint8Array> {
@@ -28,8 +25,7 @@ export default class {
             }
         );
 
-        console.log('***********************about to throw and thus trap');
-        throw new Error('will this cause a memory leak?');
+        // throw new Error('will this cause a memory leak?');
 
         return Uint8Array.from([...bytes, ...randomness]);
     }

@@ -1,6 +1,6 @@
 use std::{env::var, error::Error};
 
-use ic_cdk::{api::performance_counter, spawn, trap};
+use ic_cdk::{api::performance_counter, futures::spawn, trap};
 use rquickjs::{Function, Object};
 
 use crate::{
@@ -11,14 +11,16 @@ use crate::{
 #[unsafe(no_mangle)]
 #[allow(unused)]
 pub extern "C" fn execute_method_js(function_index: i32) {
-    spawn(async move {
-        let function_name = function_index.to_string();
+    ic_cdk::futures::in_executor_context(|| {
+        spawn(async move {
+            let function_name = function_index.to_string();
 
-        let result = execute_method_js_with_result(function_name).await;
+            let result = execute_method_js_with_result(function_name).await;
 
-        if let Err(e) = result {
-            trap(&format!("Azle CanisterMethodError: {}", e));
-        }
+            if let Err(e) = result {
+                trap(&format!("Azle CanisterMethodError: {}", e));
+            }
+        });
     });
 }
 

@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use ic_cdk::{spawn, trap};
+use ic_cdk::{futures::spawn, trap};
 use ic_stable_structures::memory_manager::MemoryId;
 use ic_wasi_polyfill::init_with_memory;
 
@@ -14,16 +14,18 @@ use crate::{
 #[inline(never)]
 #[unsafe(no_mangle)]
 pub extern "C" fn init(function_index: i32) {
-    spawn(async move {
-        // Without something like this to make the function bodies different,
-        // the init and post_upgrade functions
-        // seem to be optimized into the same function in the Wasm binary
-        // This causes problems during Wasm binary manipulation
-        let _ = format!("prevent init and post_upgrade optimization");
+    ic_cdk::futures::in_executor_context(|| {
+        spawn(async move {
+            // Without something like this to make the function bodies different,
+            // the init and post_upgrade functions
+            // seem to be optimized into the same function in the Wasm binary
+            // This causes problems during Wasm binary manipulation
+            let _ = format!("prevent init and post_upgrade optimization");
 
-        if let Err(e) = initialize(true, function_index).await {
-            trap(&format!("Azle InitError: {}", e));
-        }
+            if let Err(e) = initialize(true, function_index).await {
+                trap(&format!("Azle InitError: {}", e));
+            }
+        });
     });
 }
 

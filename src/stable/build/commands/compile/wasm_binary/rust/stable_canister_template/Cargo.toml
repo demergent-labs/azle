@@ -7,9 +7,11 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
+async-channel = "2.3.1"
 candid = "0.10.13"
 candid_parser = "0.1.2"
-ic-cdk = "0.17.1"
+# ic-cdk = "0.18.0-alpha.2"
+ic-cdk = { git = "https://github.com/dfinity/cdk-rs.git", rev = "d51b64dcd8619ce025bd67a0c0fd6f5eb502c122" }
 ic-cdk-timers = "0.11.0"
 ic-stable-structures = "0.6.8"
 ic-wasi-polyfill = "0.8.1"

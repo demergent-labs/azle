@@ -4,6 +4,8 @@ use rquickjs::{Ctx, async_with};
 
 use crate::{CONTEXT_REF_CELL, CONTEXT_REF_CELL_SYNC};
 
+use super::drain_microtasks;
+
 pub async fn with_ctx<F, R>(callback: F) -> Result<R, Box<dyn Error>>
 where
     F: FnOnce(Ctx) -> Result<R, Box<dyn Error>>,
@@ -27,11 +29,16 @@ where
             // Process any pending QuickJS jobs (e.g., promises triggered by the callback)
             // while ctx.execute_pending_job() {}
             // Return the callback's result
+            // drain_microtasks(&ctx);
+
             result
         })
         .await;
 
-        context.runtime().idle().await;
+        // TODO something seems wrong, as if the canister is awaiting when it shouldn't
+        // context.runtime().idle().await;
+
+        context.runtime().drive().await;
 
         result
     }

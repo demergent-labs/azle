@@ -33,21 +33,41 @@ pub fn get_function(ctx: Ctx) -> RQuickJsResult<Function> {
 
             let ctx_for_spawn = ctx.clone();
 
-            ctx.spawn(async move {
+            let (s, r) = async_channel::unbounded::<CallResult<Vec<u8>>>();
+
+            ic_cdk::futures::spawn(async move {
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
-                if call_result.is_err() && call_result.as_ref().err().unwrap().1 == "cleanup" {
-                    // TODO so what happens to the promise? Will it ever get garbage collected?
-                    // TODO what happens in the code that is currently live? What happens to the promise?
-                    drop(resolve);
-                    drop(reject);
-                } else {
-                    let settle_result = settle(&ctx_for_spawn, &resolve, &reject, call_result);
-
-                    if let Err(e) = settle_result {
-                        trap(&format!("Azle CallRawError: {e}"));
+                match s.send(call_result).await {
+                    Ok(_) => {
+                        ic_cdk::println!("channel send successful");
                     }
-                }
+                    Err(_) => {
+                        ic_cdk::println!("channel send failed");
+                    }
+                };
+
+                s.close();
+            });
+
+            ctx.spawn(async move {
+                match r.recv().await {
+                    Ok(call_result) => {
+                        let settle_result = settle(&ctx_for_spawn, &resolve, &reject, call_result);
+
+                        ic_cdk::println!("settling complete");
+
+                        if let Err(e) = settle_result {
+                            trap(&format!("Azle CallRawError: {e}"));
+                        }
+                    }
+                    Err(_) => {
+                        ic_cdk::println!(
+                            "a trap was detected in the continuation of the inter-canister await"
+                        );
+                        // trap("done");
+                    }
+                };
             });
 
             Ok(promise)
@@ -61,8 +81,12 @@ fn settle<'a>(
     reject: &Function<'a>,
     call_result: CallResult<Vec<u8>>,
 ) -> Result<(), Box<dyn Error>> {
+    ic_cdk::println!("about to settle");
+
     match call_result {
         Ok(candid_bytes) => {
+            ic_cdk::println!("resolving");
+
             call_with_error_handling(
                 ctx,
                 resolve,
@@ -82,6 +106,8 @@ fn settle<'a>(
 
             err_js_object.set("rejectCode", err.0 as i32)?;
             err_js_object.set("rejectMessage", &err.1)?;
+
+            ic_cdk::println!("rejecting");
 
             call_with_error_handling(ctx, reject, (err_js_object,))?;
 
