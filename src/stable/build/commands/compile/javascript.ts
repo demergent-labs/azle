@@ -1,12 +1,12 @@
 import { build, BuildOptions } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 import { existsSync } from 'fs';
-import { join } from 'path';
+import { join, relative } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_PACKAGE_PATH, getDfxRoot } from '#utils/global_paths';
 
 export async function compile(
-    main: { pathRelativeToDfxRoot: string; pathRelativeToProjectRoot: string },
+    main: string,
     projectRoot: string
 ): Promise<string> {
     const prelude = getPrelude(main);
@@ -16,26 +16,22 @@ export async function compile(
     return bundled;
 }
 
-function getPrelude(main: {
-    pathRelativeToDfxRoot: string;
-    pathRelativeToProjectRoot: string;
-}): string {
+function getPrelude(main: string): string {
     return /*TS*/ `
             import 'azle/_internal/globals';
 
             import { getDefaultVisitorData, IDL, idlToString } from 'azle';
 
-            import * as Canister from './${main.pathRelativeToProjectRoot}';
+            import * as Canister from '${main}';
 
-            ${handleClassApiCanister(main.pathRelativeToDfxRoot)}
+            ${handleClassApiCanister(main)}
 
             ${handleBenchmarking()}
         `;
 }
 
-export function handleClassApiCanister(
-    mainPathRelativeToDfxRoot: string
-): string {
+export function handleClassApiCanister(main: string): string {
+    const mainPath = relative(getDfxRoot(), main);
     return /*TS*/ `
         const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
@@ -94,7 +90,7 @@ export function handleClassApiCanister(
             try {
                 if (Canister.default === undefined) {
                     throw new Error(
-                        'Your canister class must be the default export of ${mainPathRelativeToDfxRoot}'
+                        'Your canister class must be the default export of ${mainPath}'
                     );
                 }
                 Canister.default.prototype._azleShouldRegisterCanisterMethods = true;

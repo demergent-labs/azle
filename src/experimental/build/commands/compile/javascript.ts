@@ -12,10 +12,7 @@ import { WASMEDGE_QUICKJS_PATH } from '#experimental/utils/global_paths';
 import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 
 export async function compile(
-    main: {
-        pathRelativeToDfxRoot: string;
-        pathRelativeToProjectRoot: string;
-    },
+    main: string,
     projectRoot: string,
     esmAliases: Record<string, string>,
     esmExternals: string[]
@@ -44,10 +41,7 @@ export async function compile(
         );
 }
 
-export function getPrelude(main: {
-    pathRelativeToDfxRoot: string;
-    pathRelativeToProjectRoot: string;
-}): string {
+export function getPrelude(main: string): string {
     return /*TS*/ `
         import 'azle/_internal/globals';
         import 'azle/experimental/_internal/globals';
@@ -61,10 +55,10 @@ export function getPrelude(main: {
 
         import { getDefaultVisitorData, IDL, idlToString } from 'azle';
         export { Principal } from '@dfinity/principal';
-        import * as Canister from './${main.pathRelativeToProjectRoot}';
+        import * as Canister from '${main}';
 
         if (isClassSyntaxExport(Canister)) {
-            ${handleClassApiCanister(main.pathRelativeToDfxRoot)}
+            ${handleClassApiCanister(main)}
         }
         else {
             // TODO This setTimeout is here to allow asynchronous operations during canister initialization

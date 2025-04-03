@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import { dirname, join, parse, relative } from 'path';
+import { dirname, join, parse } from 'path';
 
 import { getDfxRoot } from '#utils/global_paths';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
@@ -36,19 +36,12 @@ export async function getContext(
 
     const projectRoot = await findProjectRoot();
 
-    const pathRelativeToDfxRoot = relative(getDfxRoot(), main);
-    const pathRelativeToProjectRoot = relative(
-        projectRoot,
-        pathRelativeToDfxRoot
-    );
+    const absoluteMainPath = join(getDfxRoot(), main);
 
     return {
         canisterPath,
         candidPath,
-        main: {
-            pathRelativeToDfxRoot,
-            pathRelativeToProjectRoot
-        },
+        main: absoluteMainPath,
         projectRoot,
         wasmBinaryPath,
         wasmData
