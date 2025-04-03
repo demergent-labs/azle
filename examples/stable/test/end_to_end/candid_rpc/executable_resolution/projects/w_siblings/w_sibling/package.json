@@ -1,8 +1,0 @@
-{
-    "dependencies": {
-        "azle": "file:../../../test/test_packages/azle-999.999.999-w-sibling.tgz"
-    },
-    "scripts": {
-        "deploy": "dfx deploy w_sibling"
-    }
-}

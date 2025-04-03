@@ -37,8 +37,8 @@ export const CANISTERS: Canister[] = [
         method: 'getAzleVersionFromDescendantSame'
     },
     {
-        name: 'sibling',
-        packageSuffix: 'sibling',
+        name: 'siblings',
+        packageSuffix: 'siblings',
         dfxRoot: 'projects/siblings',
         projectRoot: 'projects/siblings',
         method: 'getAzleVersionFromSibling'
@@ -92,11 +92,11 @@ export const CANISTERS: Canister[] = [
         method: 'getAzleVersionFromWDescendantSameDeep'
     },
     {
-        name: 'w_sibling',
-        packageSuffix: 'w-sibling',
-        dfxRoot: 'projects/w_siblings/w_sibling',
-        projectRoot: 'projects/w_siblings/w_sibling',
+        name: 'w_siblings',
+        packageSuffix: 'w-siblings',
+        dfxRoot: 'projects/w_siblings/w_siblings',
+        projectRoot: 'projects/w_siblings/w_siblings',
         workspaceRoot: 'projects/w_siblings',
-        method: 'getAzleVersionFromWSibling'
+        method: 'getAzleVersionFromWSiblings'
     }
 ];
