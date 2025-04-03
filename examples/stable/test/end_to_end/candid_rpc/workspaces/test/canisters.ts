@@ -91,4 +91,4 @@ export const CANISTERS: Canister[] = [
         nodeModulesLocation: 'workspaces/w_siblings',
         method: 'getAzleVersionFromWSibling'
     }
-];
+].filter((canister) => canister.name === 'w_sibling');

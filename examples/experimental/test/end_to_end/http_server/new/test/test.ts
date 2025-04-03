@@ -10,11 +10,13 @@ function pretest(): void {
         }
     );
 
-    execSync(`cd hello_world && npm install`, {
+    execSync(`npm install`, {
+        cwd: 'hello_world',
         stdio: 'inherit'
     });
 
-    execSync(`cd hello_world && npm test`, {
+    execSync(`npm test`, {
+        cwd: 'hello_world',
         stdio: 'inherit'
     });
 }

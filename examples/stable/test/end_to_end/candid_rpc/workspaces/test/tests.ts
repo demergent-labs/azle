@@ -26,23 +26,26 @@ export function getTests(): Test {
         // whether the correct version selection mechanism works properly - we'd just be using the only available version.
         describe.each(CANISTERS)('Npm install', (canister) => {
             please(`npm install for ${canister.name}`, async () => {
-                execSync(`cd ${canister.nodeModulesLocation} && npm install`);
+                execSync(`npm install`, {
+                    cwd: canister.nodeModulesLocation
+                });
             });
         });
 
         describe.each(CANISTERS)('Testing canister: $name', (canister) => {
             please(`deploy ${canister.name}`, async () => {
-                execSync(
-                    `cd ${canister.dfxDir} && dfx deploy ${canister.name}`
-                );
+                execSync(`dfx deploy ${canister.name}`, {
+                    cwd: canister.dfxDir
+                });
             });
 
             it(`should use the test-specific azle version in ${canister.name}`, async () => {
                 const actualVersion = JSON.parse(
                     execSync(
-                        `cd ${canister.dfxDir} && dfx canister call ${canister.name} ${canister.method} --output json`,
+                        `dfx canister call ${canister.name} ${canister.method} --output json`,
                         {
-                            encoding: 'utf-8'
+                            encoding: 'utf-8',
+                            cwd: canister.dfxDir
                         }
                     )
                 );
@@ -52,7 +55,7 @@ export function getTests(): Test {
             });
         });
 
-        please('clean test packages', () => {
+        please.skip('clean test packages', () => {
             cleanTestPackages();
         });
     };

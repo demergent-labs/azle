@@ -100,7 +100,7 @@ async function getOriginalPackageJson(): Promise<PackageJson> {
  * The resulting package is saved to the test package directory.
  */
 function npmPack(): void {
-    execSync(
-        `cd ${AZLE_ROOT} && npm pack --pack-destination ${TEST_PACKAGE_DIR}`
-    );
+    execSync(`npm pack --pack-destination ${TEST_PACKAGE_DIR}`, {
+        cwd: AZLE_ROOT
+    });
 }

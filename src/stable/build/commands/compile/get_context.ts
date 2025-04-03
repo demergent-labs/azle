@@ -68,6 +68,9 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
         'AZLE_VERSION'
     ];
 
+    console.log(
+        '>>>>>>>>>>>>>>>>>>>>>>>>>> We are going to start going over the env vars'
+    );
     return env
         .filter(
             (envVarName) =>
@@ -75,6 +78,7 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
                 process.env[envVarName] !== undefined
         )
         .map((envVarName) => {
+            console.log(envVarName);
             if (envVarName === 'AZLE_VERSION') {
                 return [envVarName, version];
             }

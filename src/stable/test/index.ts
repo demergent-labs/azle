@@ -39,7 +39,9 @@ export function runTests(tests: Test): void {
             it('checks types', async () => {
                 const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
                 try {
-                    execSyncPretty(typeCheckCommand, 'inherit');
+                    execSyncPretty(typeCheckCommand, {
+                        stdio: 'inherit'
+                    });
                 } catch {
                     expect('Type checking failed').toBe(
                         'Type checking to pass'
