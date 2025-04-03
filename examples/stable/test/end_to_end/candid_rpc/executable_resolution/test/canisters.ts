@@ -9,18 +9,18 @@ type Canister = {
 
 export const CANISTERS: Canister[] = [
     {
-        name: 'ancestor_current',
-        packageSuffix: 'ancestor-current',
+        name: 'ancestor_multi_version_one',
+        packageSuffix: 'ancestor-multi-version-one',
         dfxRoot: 'projects/ancestor',
-        projectRoot: 'projects/ancestor/canisters/current',
-        method: 'getAzleVersionFromAncestorCurrent'
+        projectRoot: 'projects/ancestor/canisters/multi_version_one',
+        method: 'getAzleVersionFromAncestorMultiVersionOne'
     },
     {
-        name: 'ancestor_old',
-        packageSuffix: 'ancestor-old',
+        name: 'ancestor_multi_version_two',
+        packageSuffix: 'ancestor-multi-version-two',
         dfxRoot: 'projects/ancestor',
-        projectRoot: 'projects/ancestor/canisters/old',
-        method: 'getAzleVersionFromAncestorOld'
+        projectRoot: 'projects/ancestor/canisters/multi_version_two',
+        method: 'getAzleVersionFromAncestorMultiVersionTwo'
     },
     {
         name: 'descendant_different',
@@ -44,20 +44,20 @@ export const CANISTERS: Canister[] = [
         method: 'getAzleVersionFromSibling'
     },
     {
-        name: 'w_ancestor_current',
-        packageSuffix: 'w-ancestor-current',
+        name: 'w_ancestor_multi_version_one',
+        packageSuffix: 'w-ancestor-multi-version-one',
         dfxRoot: 'projects/w_ancestor',
-        projectRoot: 'projects/w_ancestor/canisters/current',
+        projectRoot: 'projects/w_ancestor/canisters/multi_version_one',
         workspaceRoot: 'projects/w_ancestor',
-        method: 'getAzleVersionFromWAncestorCurrent'
+        method: 'getAzleVersionFromWAncestorMultiVersionOne'
     },
     {
-        name: 'w_ancestor_old',
-        packageSuffix: 'w-ancestor-old',
+        name: 'w_ancestor_multi_version_two',
+        packageSuffix: 'w-ancestor-multi-version-two',
         dfxRoot: 'projects/w_ancestor',
-        projectRoot: 'projects/w_ancestor/canisters/old',
+        projectRoot: 'projects/w_ancestor/canisters/multi_version_two',
         workspaceRoot: 'projects/w_ancestor',
-        method: 'getAzleVersionFromWAncestorOld'
+        method: 'getAzleVersionFromWAncestorMultiVersionTwo'
     },
     {
         name: 'w_descendant_different',
