@@ -16,12 +16,12 @@ export async function runCommand(
     ioType: IOType
 ): Promise<void> {
     const {
-        main,
-        canisterPath,
         candidPath,
+        canisterPath,
+        main,
+        projectRoot,
         wasmBinaryPath,
-        wasmData,
-        projectRoot
+        wasmData
     } = await getContext(canisterName, canisterConfig);
 
     await rm(canisterPath, { recursive: true, force: true });
