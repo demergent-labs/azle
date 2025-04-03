@@ -7,7 +7,10 @@ import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
 export function setupFileWatcher(
     reloadedJsPath: string,
     canisterId: string,
-    mainPath: string,
+    mainPath: {
+        pathRelativeToDfxRoot: string;
+        pathRelativeToProjectRoot: string;
+    },
     projectRoot: string,
     esmAliases: Record<string, string>,
     esmExternals: string[],
@@ -44,7 +47,8 @@ export function setupFileWatcher(
             ),
             reloadedJsPath,
             canisterId,
-            mainPath,
+            mainPath.pathRelativeToDfxRoot,
+            mainPath.pathRelativeToProjectRoot,
             projectRoot,
             JSON.stringify(esmAliases),
             JSON.stringify(esmExternals),
