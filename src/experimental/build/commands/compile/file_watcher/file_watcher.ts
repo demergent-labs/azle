@@ -22,11 +22,10 @@ let actor: ActorReloadJs | undefined;
 const reloadedJsPath = process.argv[2];
 const canisterId = process.argv[3];
 const mainPath = process.argv[4];
-const projectRoot = process.argv[5];
-const esmAliases = JSON.parse(process.argv[6]);
-const esmExternals = JSON.parse(process.argv[7]);
-const canisterName = process.argv[8];
-const postUpgradeIndex = Number(process.argv[9]);
+const esmAliases = JSON.parse(process.argv[5]);
+const esmExternals = JSON.parse(process.argv[6]);
+const canisterName = process.argv[7];
+const postUpgradeIndex = Number(process.argv[8]);
 
 // TODO https://github.com/demergent-labs/azle/issues/1664
 const watcher = watch('.', {
@@ -62,7 +61,7 @@ watcher.on('all', async (event, path) => {
 
     if (event === 'change' || event === 'add') {
         try {
-            await reloadJs(actor, reloadedJsPath, mainPath, projectRoot);
+            await reloadJs(actor, reloadedJsPath, mainPath);
         } catch (error) {
             console.error(error);
         }
@@ -72,12 +71,10 @@ watcher.on('all', async (event, path) => {
 async function reloadJs(
     actor: ActorReloadJs,
     reloadedJsPath: string,
-    mainPath: string,
-    projectRoot: string
+    mainPath: string
 ): Promise<void> {
     const javaScript = await compileJavaScript(
         mainPath,
-        projectRoot,
         esmAliases,
         esmExternals
     );

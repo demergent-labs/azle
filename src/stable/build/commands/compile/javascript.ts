@@ -1,16 +1,11 @@
 import { build, BuildOptions } from 'esbuild';
-import esbuildPluginTsc from 'esbuild-plugin-tsc';
-import { existsSync } from 'fs';
-import { join, relative } from 'path';
+import { dirname, join, relative } from 'path';
 
-import { AZLE_PACKAGE_PATH, getDfxRoot } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/global_paths';
 
-export async function compile(
-    main: string,
-    projectRoot: string
-): Promise<string> {
+export async function compile(main: string): Promise<string> {
     const prelude = getPrelude(main);
-    const buildOptions = getBuildOptions(prelude, projectRoot);
+    const buildOptions = getBuildOptions(prelude, main);
     const bundled = await bundle(buildOptions);
 
     return bundled;
@@ -129,11 +124,11 @@ export async function bundle(buildOptions: BuildOptions): Promise<string> {
 }
 
 // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
-export function getBuildOptions(ts: string, projectRoot: string): BuildOptions {
+export function getBuildOptions(ts: string, main: string): BuildOptions {
     return {
         stdin: {
             contents: ts,
-            resolveDir: projectRoot
+            resolveDir: dirname(join(getDfxRoot(), main))
         },
         format: 'esm',
         bundle: true,
@@ -155,19 +150,9 @@ export function getBuildOptions(ts: string, projectRoot: string): BuildOptions {
                         }
                     );
                 }
-            },
-            esbuildPluginTsc({ tsconfigPath: getTsConfigPath(projectRoot) })
+            }
         ]
     };
-}
-
-export function getTsConfigPath(projectRoot: string): string {
-    const tsConfigPath = join(projectRoot, 'tsconfig.json');
-
-    if (existsSync(tsConfigPath)) {
-        return tsConfigPath;
-    }
-    return join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json');
 }
 
 function experimentalMessage(importName: string): string {

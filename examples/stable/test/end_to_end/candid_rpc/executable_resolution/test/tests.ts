@@ -68,10 +68,10 @@ export function getTests(): Test {
                 please(
                     `remove package-lock.json and node_modules for ${canister.name}`,
                     async () => {
-                        await clean(canister.projectRoot, canister.name);
+                        await clean(canister.projectRoot);
 
                         if (canister.workspaceRoot) {
-                            await clean(canister.workspaceRoot, canister.name);
+                            await clean(canister.workspaceRoot);
                         }
                     }
                 );
@@ -83,25 +83,18 @@ export function getTests(): Test {
 /**
  * Cleans up package-lock.json and node_modules directory at a given directory.
  * @param dir The directory path to clean.
- * @param canisterName The name of the canister for logging purposes.
  */
-async function clean(dir: string, canisterName: string): Promise<void> {
+async function clean(dir: string): Promise<void> {
     const packageLockPath = join(dir, 'package-lock.json');
     const nodeModulesPath = join(dir, 'node_modules');
 
     if (existsSync(packageLockPath)) {
-        console.log(
-            `Removing package-lock.json for ${canisterName}: ${packageLockPath}`
-        );
         await rm(packageLockPath, {
             force: true
         });
     }
 
     if (existsSync(nodeModulesPath)) {
-        console.log(
-            `Removing node_modules for ${canisterName}: ${nodeModulesPath}`
-        );
         await rm(nodeModulesPath, {
             recursive: true,
             force: true
