@@ -7,18 +7,15 @@ import { getDfxJsonDirPath } from '#utils/global_paths';
 export function getCanisterId(canisterName: string): string {
     return execSync(
         `dfx canister --network ${process.env.DFX_NETWORK ?? 'local'} id ${canisterName}`,
-        { cwd: getDfxJsonDirPath() }
-    )
-        .toString()
-        .trim();
+        { cwd: getDfxJsonDirPath(), encoding: 'utf-8' }
+    ).trim();
 }
 
 export function getWebServerPort(): string {
     return execSync(`dfx info webserver-port`, {
-        cwd: getDfxJsonDirPath()
-    })
-        .toString()
-        .trim();
+        cwd: getDfxJsonDirPath(),
+        encoding: 'utf-8'
+    }).trim();
 }
 
 export function getCanisterOrigin(canisterName: string): string {
@@ -104,14 +101,14 @@ export function whoami(): string {
     return execSync(`dfx identity whoami`, {
         cwd: getDfxJsonDirPath(),
         encoding: 'utf-8'
-    });
+    }).trim();
 }
 
 export function whoamiPrincipal(): string {
     return execSync(`dfx identity get-principal`, {
         cwd: getDfxJsonDirPath(),
         encoding: 'utf-8'
-    });
+    }).trim();
 }
 
 type StorageMode = 'keyring' | 'password-protected' | 'plaintext';
@@ -157,7 +154,7 @@ export function getIdentities(): string[] {
     const list = execSync(`dfx identity list`, {
         cwd: getDfxJsonDirPath(),
         encoding: 'utf-8'
-    });
+    }).trim();
     const identities = list.split('\n');
 
     return identities;
@@ -178,7 +175,7 @@ export function getPemKey(identityName: string): string {
         cwd: getDfxJsonDirPath(),
         encoding: 'utf-8',
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
-    });
+    }).trim();
     return result;
 }
 
@@ -198,7 +195,7 @@ export function getPrincipal(identityName: string): string {
         cwd: getDfxJsonDirPath(),
         encoding: 'utf-8',
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but pipe will cause this command to fail immediately
-    });
+    }).trim();
 }
 
 export function addController(
