@@ -36,12 +36,10 @@ export async function getContext(
 
     const projectRoot = await findProjectRoot();
 
-    const absoluteMainPath = join(getDfxRoot(), main);
-
     return {
         canisterPath,
         candidPath,
-        main: absoluteMainPath,
+        main,
         projectRoot,
         wasmBinaryPath,
         wasmData

@@ -9,7 +9,7 @@ import {
     handleClassApiCanister
 } from '#commands/compile/javascript';
 import { WASMEDGE_QUICKJS_PATH } from '#experimental/utils/global_paths';
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_PACKAGE_PATH, getDfxRoot } from '#utils/global_paths';
 
 export async function compile(
     main: string,
@@ -42,6 +42,7 @@ export async function compile(
 }
 
 export function getPrelude(main: string): string {
+    const absoluteMainPath = join(getDfxRoot(), main);
     return /*TS*/ `
         import 'azle/_internal/globals';
         import 'azle/experimental/_internal/globals';
@@ -55,7 +56,7 @@ export function getPrelude(main: string): string {
 
         import { getDefaultVisitorData, IDL, idlToString } from 'azle';
         export { Principal } from '@dfinity/principal';
-        import * as Canister from '${main}';
+        import * as Canister from '${absoluteMainPath}';
 
         if (isClassSyntaxExport(Canister)) {
             ${handleClassApiCanister(main)}

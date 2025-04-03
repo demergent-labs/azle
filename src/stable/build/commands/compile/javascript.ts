@@ -17,12 +17,13 @@ export async function compile(
 }
 
 function getPrelude(main: string): string {
+    const absoluteMainPath = join(getDfxRoot(), main);
     return /*TS*/ `
             import 'azle/_internal/globals';
 
             import { getDefaultVisitorData, IDL, idlToString } from 'azle';
 
-            import * as Canister from '${main}';
+            import * as Canister from '${absoluteMainPath}';
 
             ${handleClassApiCanister(main)}
 
