@@ -3,7 +3,7 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "vite": "^4.5.9"
+        "vite": "^4.5.12"
     },
     "dependencies": {
         "@dfinity/auth-client": "^2.4.0",
