@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import { copyFile, mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { join, resolve } from 'path';
 
-const TEST_PACKAGE_DIR = join(__dirname, 'test_packages');
+const TEST_PACKAGES_DIR = join(__dirname, 'test_packages');
 const AZLE_ROOT = resolve(__dirname, '..', '..', '..', '..', '..', '..', '..');
 const ORIG_PACKAGE_JSON_PATH = join(AZLE_ROOT, 'package.json');
 const BACKUP_PACKAGE_JSON_PATH = join(AZLE_ROOT, 'package.json.bak');
@@ -14,7 +14,7 @@ type PackageJson = Record<string, unknown>;
  * Removes all previously created test packages from the test package directory.
  */
 export async function cleanTestPackages(): Promise<void> {
-    await rm(TEST_PACKAGE_DIR, { recursive: true, force: true });
+    await rm(TEST_PACKAGES_DIR, { recursive: true, force: true });
 }
 
 /**
@@ -39,8 +39,8 @@ export async function prepareTestPackage(version: string): Promise<void> {
  * Ensures that the test package directory exists, creating it if necessary.
  */
 async function ensureTestPackageDir(): Promise<void> {
-    if (!existsSync(TEST_PACKAGE_DIR)) {
-        await mkdir(TEST_PACKAGE_DIR, { recursive: true });
+    if (!existsSync(TEST_PACKAGES_DIR)) {
+        await mkdir(TEST_PACKAGES_DIR, { recursive: true });
     }
 }
 
@@ -91,7 +91,7 @@ async function getOriginalPackageJson(): Promise<PackageJson> {
  * The resulting package is saved to the test package directory.
  */
 function npmPack(): void {
-    execSync(`npm pack --pack-destination ${TEST_PACKAGE_DIR}`, {
+    execSync(`npm pack --pack-destination ${TEST_PACKAGES_DIR}`, {
         cwd: AZLE_ROOT
     });
 }

@@ -37,6 +37,20 @@ export const CANISTERS: Canister[] = [
         method: 'getAzleVersionFromDescendantSame'
     },
     {
+        name: 'descendant_different_deep',
+        packageSuffix: 'descendant-different-deep',
+        dfxRoot: 'projects/descendant_different_deep/dfx/deeper',
+        projectRoot: 'projects/descendant_different_deep',
+        method: 'getAzleVersionFromDescendantDifferentDeep'
+    },
+    {
+        name: 'descendant_same_deep',
+        packageSuffix: 'descendant-same-deep',
+        dfxRoot: 'projects/descendant_same_deep/src/deeper',
+        projectRoot: 'projects/descendant_same_deep',
+        method: 'getAzleVersionFromDescendantSameDeep'
+    },
+    {
         name: 'siblings',
         packageSuffix: 'siblings',
         dfxRoot: 'projects/siblings',

@@ -1,12 +1,12 @@
 {
     "canisters": {
-        "w_ancestor_current": {
+        "w_ancestor_multi_version_one": {
             "type": "azle",
-            "main": "canisters/current/src/index.ts"
+            "main": "canisters/multi_version_one/src/index.ts"
         },
-        "w_ancestor_old": {
+        "w_ancestor_multi_version_two": {
             "type": "azle",
-            "main": "canisters/old/src/index.ts"
+            "main": "canisters/multi_version_two/src/index.ts"
         }
     }
 }

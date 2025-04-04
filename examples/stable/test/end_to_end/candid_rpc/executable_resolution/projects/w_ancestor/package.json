@@ -1,8 +1,8 @@
 {
     "private": true,
     "workspaces": [
-        "canisters/current",
-        "canisters/old"
+        "canisters/multi_version_one",
+        "canisters/multi_version_two"
     ],
     "scripts": {
         "deploy": "dfx deploy"
