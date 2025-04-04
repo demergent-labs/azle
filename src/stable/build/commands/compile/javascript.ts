@@ -1,5 +1,5 @@
 import { build, BuildOptions } from 'esbuild';
-import { dirname, join, relative } from 'path';
+import { dirname, join } from 'path';
 
 import { getDfxRoot } from '#utils/global_paths';
 
@@ -20,6 +20,9 @@ function getPrelude(main: string): string {
 
             import * as Canister from '${absoluteMainPath}';
 
+            // IMPORTANT: We don't want to use the absolute path here for two reasons:
+            // 1. So that no information about the developer's file system is leaked and
+            // 2. So that error message from handleClassApiCanister gives the same path as in the dfx.json file.
             ${handleClassApiCanister(main)}
 
             ${handleBenchmarking()}
@@ -27,7 +30,6 @@ function getPrelude(main: string): string {
 }
 
 export function handleClassApiCanister(main: string): string {
-    const mainPath = relative(getDfxRoot(), main);
     return /*TS*/ `
         const exportedCanisterClassInstance = getExportedCanisterClassInstance();
 
@@ -86,7 +88,7 @@ export function handleClassApiCanister(main: string): string {
             try {
                 if (Canister.default === undefined) {
                     throw new Error(
-                        'Your canister class must be the default export of ${mainPath}'
+                        'Your canister class must be the default export of ${main}'
                     );
                 }
                 Canister.default.prototype._azleShouldRegisterCanisterMethods = true;
