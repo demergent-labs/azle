@@ -1,7 +1,7 @@
 import { expect, it, Test } from 'azle/_internal/test';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.raw.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:4943`;
 
     // TODO https://github.com/demergent-labs/azle/issues/1806
     return () => {

@@ -4,7 +4,7 @@ import { createHash } from 'crypto';
 import { readFile } from 'fs/promises';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.raw.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:4943`;
 
     return () => {
         it('has the same binary between builds', async () => {

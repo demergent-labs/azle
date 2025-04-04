@@ -3,7 +3,7 @@ import { describe } from '@jest/globals';
 import { expect, it, Test } from 'azle/_internal/test';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.raw.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:4943`;
     return () => {
         describe(
             'run tests common with bitcore_lib_example',

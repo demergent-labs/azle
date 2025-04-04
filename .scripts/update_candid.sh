@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Usage:
-# Start up your own replica on port 8000: dfx start --clean --host 127.0.0.1:8000
+# Start up your own replica on port 4943: dfx start --clean
 # cd examples
 # ../.scripts/update_candid.sh
 # cd motoko_examples

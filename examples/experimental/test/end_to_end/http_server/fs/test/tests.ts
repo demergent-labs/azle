@@ -5,7 +5,7 @@ import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.raw.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:4943`;
 
     return () => {
         it('executes `fs.writeFileSync` from a canister', async () => {

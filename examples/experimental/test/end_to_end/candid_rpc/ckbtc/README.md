@@ -43,7 +43,7 @@ npm run deploy
 
 1. Create an Internet Identity
 
-    Go to the `wallet_frontend` URL `http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000`.
+    Go to the `wallet_frontend` URL `http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:4943`.
 
     ```bash
     npm run frontend

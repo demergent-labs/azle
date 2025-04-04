@@ -7,7 +7,7 @@ import { getTests } from './tests';
 const canisterName = 'pre_and_post_upgrade';
 const preAndPostUpgradeCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000',
+        host: 'http://127.0.0.1:4943',
         shouldFetchRootKey: true
     }
 });

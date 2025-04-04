@@ -11,7 +11,7 @@ let callerAddress: string;
 let canisterAddress: string;
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.raw.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:4943`;
 
     return () => {
         it("gets the caller's address using ethers and tECDSA", async () => {

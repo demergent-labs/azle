@@ -8,7 +8,7 @@ import {
 } from './server_source';
 
 export function getTests(canisterId: string): Test {
-    const origin = `http://${canisterId}.raw.localhost:8000`;
+    const origin = `http://${canisterId}.raw.localhost:4943`;
 
     return () => {
         it('loads the original canister', async () => {

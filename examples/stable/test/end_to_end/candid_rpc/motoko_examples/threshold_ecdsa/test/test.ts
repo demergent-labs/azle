@@ -7,7 +7,7 @@ import { createActor } from './dfx_generated/threshold_ecdsa';
 const canisterName = 'threshold_ecdsa';
 const tEcdsaCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000',
+        host: 'http://127.0.0.1:4943',
         shouldFetchRootKey: true
     }
 });

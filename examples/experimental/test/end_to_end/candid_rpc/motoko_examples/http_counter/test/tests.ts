@@ -45,7 +45,7 @@ function getCanisterID(): string {
 
 function getUrl(): string {
     const canister_id = getCanisterID();
-    return `http://${canister_id}.raw.localhost:8000/`;
+    return `http://${canister_id}.raw.localhost:4943/`;
 }
 
 async function count(): Promise<string> {

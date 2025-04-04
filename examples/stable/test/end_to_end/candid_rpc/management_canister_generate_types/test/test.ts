@@ -8,7 +8,7 @@ import { createActor } from './dfx_generated/management_canister';
 const canisterName = 'management_canister';
 const managementCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000',
+        host: 'http://127.0.0.1:4943',
         shouldFetchRootKey: true
     }
 });

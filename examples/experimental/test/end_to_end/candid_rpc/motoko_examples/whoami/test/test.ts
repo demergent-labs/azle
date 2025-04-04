@@ -6,7 +6,7 @@ import { callingIdentity, canisterId, getTests } from './tests';
 const canisterName = 'whoami';
 const whoamiCanister = createActor(canisterId, {
     agentOptions: {
-        host: 'http://127.0.0.1:8000',
+        host: 'http://127.0.0.1:4943',
         shouldFetchRootKey: true,
 
         identity: callingIdentity

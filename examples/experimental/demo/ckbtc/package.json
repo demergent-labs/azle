@@ -1,7 +1,7 @@
 {
     "scripts": {
         "bitcoin": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
-        "ic": "dfx start --clean --host 127.0.0.1:8000 --enable-bitcoin",
+        "ic": "dfx start --clean --enable-bitcoin",
         "install": "./scripts/install/all.sh",
         "install:bitcoin": "./scripts/install/bitcoin.sh",
         "install:ckbtc": "curl -o ./ckbtc/ledger.wasm.gz https://download.dfinity.systems/ic/d6d395a480cd6986b4788f4aafffc5c03a07e46e/canisters/ic-icrc1-ledger.wasm.gz",
@@ -16,7 +16,7 @@
         "deploy:minter": "./scripts/deploy/minter.sh",
         "deploy:wallet_backend": "./scripts/deploy/wallet_backend.sh",
         "deploy:wallet_frontend": "dfx deploy wallet_frontend --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai",
-        "frontend": "npx open-cli http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000/",
+        "frontend": "npx open-cli http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:4943/",
         "mint": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 $npm_config_address",
         "build": "cd wallet/frontend && npm run build",
         "pretest": "tsx test/pretest.ts",
