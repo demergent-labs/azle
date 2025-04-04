@@ -20,9 +20,6 @@ function getPrelude(main: string): string {
 
             import * as Canister from '${absoluteMainPath}';
 
-            // IMPORTANT: We don't want to use the absolute path here for two reasons:
-            // 1. So that no information about the developer's file system is leaked and
-            // 2. So that error message from handleClassApiCanister gives the same path as in the dfx.json file.
             ${handleClassApiCanister(main)}
 
             ${handleBenchmarking()}
