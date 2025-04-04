@@ -10,3 +10,14 @@ members = [
 [profile.release]
 lto = true
 codegen-units = 1
+
+# We are hardcoding the "abort" strategy for now, even though it is currently the default
+# If Rust ever changes the default to "unwind", we want to keep "abort"
+# "abort" is the simplest choice, and has been the default choice on ICP for a long time
+# "unwind" would probably lead to larger binaries, more cycle execution, and generally more complexity
+# A potential change from "abort" to "unwind" should only ever be done after a thorough investigation
+# As of rustc 1.85.0, apparently unwinding doesn't even work
+# You can see that the default panic strategy for the wasm32-wasip1 target is currently set to "abort"
+# wasm base settings: https://github.com/rust-lang/rust/blob/1.85.0/compiler/rustc_target/src/spec/base/wasm.rs#L77
+# wasm32-wasip1 settings use the wasm base settings: https://github.com/rust-lang/rust/blob/1.85.0/compiler/rustc_target/src/spec/targets/wasm32_wasip1.rs#L16 
+panic = "abort"

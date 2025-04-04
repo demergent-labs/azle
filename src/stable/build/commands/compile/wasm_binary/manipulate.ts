@@ -59,6 +59,9 @@ export async function getModule(
     wasmBinaryPath: string
 ): Promise<binaryen.Module> {
     const originalWasm = await readFile(wasmBinaryPath);
+    // TODO we should toggle this once dfx turns off canister backtraces in response to no name section being present
+    // TODO see this issue: https://github.com/demergent-labs/azle/issues/2873
+    binaryen.setDebugInfo(true);
     const module = binaryen.readBinary(originalWasm);
 
     return module;
