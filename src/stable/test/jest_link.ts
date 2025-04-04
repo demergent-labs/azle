@@ -6,11 +6,11 @@ export function linkAndInstallPatch(pathRelativeToAzle: string): void {
     const examplesDir =
         process.env.GITHUB_WORKSPACE ?? resolve(__dirname, '..', '..', '..');
 
-    execSync(`cd ${join(examplesDir, pathRelativeToAzle)} && npm install`);
+    execSync(`npm install`, { cwd: join(examplesDir, pathRelativeToAzle) });
 
     if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {
-        execSync(
-            `cd ${join(examplesDir, pathRelativeToAzle)} && npm link azle`
-        );
+        execSync(`npm link azle`, {
+            cwd: join(examplesDir, pathRelativeToAzle)
+        });
     }
 }

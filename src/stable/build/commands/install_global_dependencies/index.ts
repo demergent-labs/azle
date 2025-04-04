@@ -26,6 +26,8 @@ function installDependency(dependency: DependencyName): void {
     const script = `install_${dependency}.sh`;
     execSyncPretty(
         `${AZLE_PACKAGE_PATH}/src/stable/build/commands/install_global_dependencies/${script} ${version}`,
-        'inherit'
+        {
+            stdio: 'inherit'
+        }
     );
 }

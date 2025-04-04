@@ -1,0 +1,8 @@
+{
+    "canisters": {
+        "w_siblings": {
+            "type": "azle",
+            "main": "src/index.ts"
+        }
+    }
+}

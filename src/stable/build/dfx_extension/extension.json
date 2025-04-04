@@ -9,8 +9,8 @@
     "canister_type": {
         "defaults": {
             "candid": ".azle/{{canister_name}}/{{canister_name}}.did",
-            "build": "node_modules/.bin/azle compile {{canister_name}}",
-            "post_install": "node_modules/.bin/azle upload-assets {{canister_name}}",
+            "build": "AZLE_DFX_JSON_DIR=$(pwd) npm --offline --prefix={{canister.main}} exec azle compile {{canister_name}}",
+            "post_install": "bash -c 'AZLE_DFX_JSON_DIR=$(pwd) npm --offline --prefix={{canister.main}} exec azle upload-assets {{canister_name}}'",
             "wasm": ".azle/{{canister_name}}/{{canister_name}}.wasm",
             "gzip": true,
             "metadata": [

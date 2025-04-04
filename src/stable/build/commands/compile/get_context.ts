@@ -1,11 +1,14 @@
 import { join } from 'path';
 
+import { getDfxRoot } from '#utils/global_paths';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
-export function getContext(
+import { version } from '../../../../../package.json';
+
+export async function getContext(
     canisterName: string,
     canisterConfig: CanisterConfig
-): Context {
+): Promise<Context> {
     const main = canisterConfig?.main;
 
     if (main === undefined) {
@@ -14,7 +17,7 @@ export function getContext(
         );
     }
 
-    const canisterPath = join('.azle', canisterName);
+    const canisterPath = join(getDfxRoot(), '.azle', canisterName);
 
     const candidPath = process.env.CANISTER_CANDID_PATH;
 
@@ -48,12 +51,21 @@ function getEnvVars(canisterConfig: CanisterConfig): EnvVars {
         ...devEnv,
         'AZLE_LOG_ACTIONS',
         'AZLE_RECORD_ACTIONS',
-        'AZLE_RECORD_BENCHMARKS'
+        'AZLE_RECORD_BENCHMARKS',
+        'AZLE_VERSION'
     ];
 
     return env
-        .filter((envVarName) => process.env[envVarName] !== undefined)
+        .filter(
+            (envVarName) =>
+                envVarName === 'AZLE_VERSION' ||
+                process.env[envVarName] !== undefined
+        )
         .map((envVarName) => {
+            if (envVarName === 'AZLE_VERSION') {
+                return [envVarName, version];
+            }
+
             const envVarValue = process.env[envVarName];
 
             if (envVarValue === undefined) {
