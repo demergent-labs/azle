@@ -58,7 +58,7 @@ export function getTests(): Test {
             });
         });
 
-        please.skip('clean test packages', () => {
+        please('clean test packages', () => {
             cleanTestPackages();
         });
 
