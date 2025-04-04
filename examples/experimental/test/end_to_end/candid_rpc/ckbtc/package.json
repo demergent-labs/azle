@@ -26,6 +26,6 @@
         "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
-        "azle": "0.30.0"
+        "azle": "0.30.1-rc.3"
     }
 }
