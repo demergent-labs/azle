@@ -55,7 +55,7 @@ export const CANISTERS: Canister[] = [
         packageSuffix: 'siblings',
         dfxRoot: 'projects/siblings',
         projectRoot: 'projects/siblings',
-        method: 'getAzleVersionFromSibling'
+        method: 'getAzleVersionFromSiblings'
     },
     {
         name: 'w_ancestor_multi_version_one',

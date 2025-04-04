@@ -2,7 +2,7 @@ import { IDL, query } from 'azle';
 
 export default class {
     @query([], IDL.Text)
-    getAzleVersionFromSibling(): string {
+    getAzleVersionFromSiblings(): string {
         if (process.env.AZLE_VERSION !== undefined) {
             return process.env.AZLE_VERSION;
         }

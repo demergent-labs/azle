@@ -70,6 +70,7 @@ async function writeTempPackageJson(version: string): Promise<void> {
 
     // Create a temporary package.json with our test version
     const tempPackageJson = { ...originalPackageJson, version };
+    // TODO: Future work https://github.com/demergent-labs/azle/issues/2902
     await writeFile(
         ORIG_PACKAGE_JSON_PATH,
         JSON.stringify(tempPackageJson, null, 4),
