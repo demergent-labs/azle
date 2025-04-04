@@ -1,25 +1,24 @@
 import { build, BuildOptions } from 'esbuild';
-import esbuildPluginTsc from 'esbuild-plugin-tsc';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { dirname, join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/global_paths';
 
 export async function compile(main: string): Promise<string> {
     const prelude = getPrelude(main);
-    const buildOptions = getBuildOptions(prelude);
+    const buildOptions = getBuildOptions(prelude, main);
     const bundled = await bundle(buildOptions);
 
     return bundled;
 }
 
 function getPrelude(main: string): string {
+    const absoluteMainPath = join(getDfxRoot(), main);
     return /*TS*/ `
             import 'azle/_internal/globals';
 
             import { getDefaultVisitorData, IDL, idlToString } from 'azle';
 
-            import * as Canister from './${main}';
+            import * as Canister from '${absoluteMainPath}';
 
             ${handleClassApiCanister(main)}
 
@@ -85,7 +84,9 @@ export function handleClassApiCanister(main: string): string {
         function getExportedCanisterClassInstance() {
             try {
                 if (Canister.default === undefined) {
-                    throw new Error('Your canister class must be the default export of ${main}');
+                    throw new Error(
+                        'Your canister class must be the default export of ${main}'
+                    );
                 }
                 Canister.default.prototype._azleShouldRegisterCanisterMethods = true;
                 new Canister.default();
@@ -122,11 +123,11 @@ export async function bundle(buildOptions: BuildOptions): Promise<string> {
 }
 
 // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
-export function getBuildOptions(ts: string): BuildOptions {
+export function getBuildOptions(ts: string, main: string): BuildOptions {
     return {
         stdin: {
             contents: ts,
-            resolveDir: process.cwd()
+            resolveDir: dirname(join(getDfxRoot(), main))
         },
         format: 'esm',
         bundle: true,
@@ -148,17 +149,9 @@ export function getBuildOptions(ts: string): BuildOptions {
                         }
                     );
                 }
-            },
-            esbuildPluginTsc({ tsconfigPath: getTsConfigPath() })
+            }
         ]
     };
-}
-
-export function getTsConfigPath(): string {
-    if (existsSync('tsconfig.json')) {
-        return 'tsconfig.json';
-    }
-    return join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json');
 }
 
 function experimentalMessage(importName: string): string {

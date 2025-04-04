@@ -9,7 +9,6 @@
 !src/**
 !.openvaluesharing.json
 !bin.mjs
-!install_script.sh
 !LICENSE
 !LICENSE_EXTENSION.md
 !NOTICE

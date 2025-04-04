@@ -77,6 +77,8 @@ function buildAssets(canisterConfig: CanisterConfig, ioType: IOType): void {
         canisterConfig.custom?.build_assets !== undefined &&
         canisterConfig.custom?.build_assets !== null
     ) {
-        execSyncPretty(canisterConfig.custom.build_assets, ioType);
+        execSyncPretty(canisterConfig.custom.build_assets, {
+            stdio: ioType
+        });
     }
 }

@@ -13,8 +13,11 @@ export function runCommand(ioType: IOType): void {
         'dfx_extension'
     );
     execSyncPretty(
-        `cd ${dfxExtensionDirectoryPath} && ./install.sh`,
-        ioType,
+        `./install.sh`,
+        {
+            stdio: ioType,
+            cwd: dfxExtensionDirectoryPath
+        },
         'dfx extension installation script execution failed'
     );
 }
