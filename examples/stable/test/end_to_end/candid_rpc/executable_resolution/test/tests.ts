@@ -63,7 +63,7 @@ export function getTests(): Test {
         });
 
         describe.each(CANISTERS)(
-            'Remove package-lock.json file',
+            'Remove package-lock.json file and node_modules directory',
             (canister) => {
                 please(
                     `remove package-lock.json and node_modules for ${canister.name}`,
