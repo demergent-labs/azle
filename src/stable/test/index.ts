@@ -11,6 +11,7 @@ import { execSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { getDfxRoot } from '#utils/global_paths';
 import { DfxJson } from '#utils/types';
 
 import { runBenchmarksForCanisters } from './benchmarks';
@@ -59,78 +60,126 @@ export function runTests(tests: Test): void {
                 for (const canisterName of canisterNames) {
                     const azleRejectCallbacksLen0 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleResolveCallbacksLen0 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleTimerCallbacksLen0 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleActionsLen0 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_actions_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_actions_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
                     const azleRejectCallbacksLen1 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleResolveCallbacksLen1 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleTimerCallbacksLen1 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleActionsLen1 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_actions_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_actions_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
                     const azleRejectCallbacksLen2 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_reject_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleResolveCallbacksLen2 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleTimerCallbacksLen2 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     const azleActionsLen2 = Number(
                         execSync(
-                            `dfx canister call ${canisterName} _azle_actions_len --output json`
-                        ).toString()
+                            `dfx canister call ${canisterName} _azle_actions_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
                     );
 
                     console.info(
@@ -316,7 +365,7 @@ export async function getCanisterNames(
 }
 
 async function getDfxJson(): Promise<DfxJson> {
-    const dfxFile = await readFile(join(process.cwd(), 'dfx.json'), 'utf-8');
+    const dfxFile = await readFile(join(getDfxRoot(), 'dfx.json'), 'utf-8');
 
     return JSON.parse(dfxFile);
 }
