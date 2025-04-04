@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "multiple_canister_method_classes": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/multiple_canister_method_classes",
+                "node_compatibility": true
+            }
+        }
+    }
+}
