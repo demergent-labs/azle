@@ -2,6 +2,7 @@
 
 - [Installation](#installation)
 - [Deployment](#deployment)
+- [Testing](#testing)
 
 Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
@@ -19,18 +20,18 @@ This mode is intended for production use after Azle's 1.0 release. Its focus is 
 
 You will need [Node.js 22](#nodejs-22) and [dfx](#dfx) to develop ICP applications with Azle:
 
-### Node.js 22
+### Node.js
 
-It's recommended to use nvm to install Node.js 22:
+It's recommended to use nvm to install the latest LTS version of Node.js:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
 ```
 
 Restart your terminal and then run:
 
 ```bash
-nvm install 22
+nvm install --lts
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -44,7 +45,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.24.3 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+DFX_VERSION=0.25.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -78,4 +79,19 @@ In a separate terminal in the `hello_world` directory:
 ```bash
 # deploy your canister
 dfx deploy
+```
+
+## Testing
+
+If you would like to run the included test suite:
+
+```bash
+# start up a local ICP replica
+dfx start --clean
+```
+
+In a separate terminal in the `hello_world` directory:
+
+```bash
+npm test
 ```

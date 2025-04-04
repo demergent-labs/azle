@@ -2,6 +2,7 @@
 
 - [Installation](#installation)
 - [Deployment](#deployment)
+- [Testing](#testing)
 
 Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
@@ -19,20 +20,20 @@ This mode is intended for developers who are willing to accept the risk of using
 
 > Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-You will need [Node.js 22](#nodejs-22) and [dfx](#dfx) to develop ICP applications with Azle:
+You will need [Node.js](#nodejs) and [dfx](#dfx) to develop ICP applications with Azle:
 
-### Node.js 22
+### Node.js
 
-It's recommended to use nvm to install Node.js 22:
+It's recommended to use nvm to install the latest LTS version of Node.js:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
 ```
 
 Restart your terminal and then run:
 
 ```bash
-nvm install 22
+nvm install --lts
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -46,7 +47,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.24.3 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+DFX_VERSION=0.25.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -88,7 +89,7 @@ If you would like your canister to autoreload on file changes:
 AZLE_AUTORELOAD=true dfx deploy
 ```
 
-View your frontend in a web browser at `http://[canisterId].raw.localhost:8000`.
+View your frontend in a web browser at `http://[canisterId].raw.localhost:4943`.
 
 To obtain your application's [canisterId]:
 
@@ -99,6 +100,21 @@ dfx canister id backend
 Communicate with your canister using any HTTP client library, for example using `curl`:
 
 ```bash
-curl http://[canisterId].raw.localhost:8000/db
-curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].raw.localhost:8000/db/update
+curl http://[canisterId].raw.localhost:4943/db
+curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].raw.localhost:4943/db/update
+```
+
+## Testing
+
+If you would like to run the included test suite:
+
+```bash
+# start up a local ICP replica
+dfx start --clean
+```
+
+In a separate terminal in the `hello_world` directory:
+
+```bash
+npm test
 ```
