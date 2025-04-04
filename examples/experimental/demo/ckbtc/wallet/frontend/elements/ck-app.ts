@@ -50,7 +50,7 @@ export class CkApp extends LitElement {
         } else {
             await authClient.login({
                 identityProvider:
-                    'http://4duc2-jqaaa-aaaaa-aabiq-cai.localhost:8000',
+                    'http://4duc2-jqaaa-aaaaa-aabiq-cai.localhost:4943',
                 maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000),
                 onSuccess: () => {
                     this.identity = authClient.getIdentity();

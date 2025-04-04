@@ -92,7 +92,7 @@ jobs:
 
             - name: Start dfx with artificial delay 0
               working-directory: ${{ matrix.test.path }}
-              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+              run: dfx start --clean --background --artificial-delay 0
 
             - name: Run npm test (continue on error)
               id: record-benchmarks

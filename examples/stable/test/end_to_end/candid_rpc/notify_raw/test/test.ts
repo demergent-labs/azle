@@ -10,14 +10,14 @@ const canister2Name = 'canister2';
 
 const canister1 = createActorCanister1(getCanisterId(canister1Name), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000',
+        host: 'http://127.0.0.1:4943',
         shouldFetchRootKey: true
     }
 });
 
 const canister2 = createActorCanister2(getCanisterId(canister2Name), {
     agentOptions: {
-        host: 'http://127.0.0.1:8000',
+        host: 'http://127.0.0.1:4943',
         shouldFetchRootKey: true
     }
 });

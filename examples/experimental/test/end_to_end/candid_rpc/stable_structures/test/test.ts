@@ -13,7 +13,7 @@ const stableStructuresCanister1 = createActorCanister1(
     getCanisterId(stableStructuresCanister1Name),
     {
         agentOptions: {
-            host: 'http://127.0.0.1:8000',
+            host: 'http://127.0.0.1:4943',
             shouldFetchRootKey: true
         }
     }
@@ -24,7 +24,7 @@ const stableStructuresCanister2 = createActorCanister2(
     getCanisterId(stableStructuresCanister2Name),
     {
         agentOptions: {
-            host: 'http://127.0.0.1:8000',
+            host: 'http://127.0.0.1:4943',
             shouldFetchRootKey: true
         }
     }
@@ -35,7 +35,7 @@ const stableStructuresCanister3 = createActorCanister3(
     getCanisterId(stableStructuresCanister3Name),
     {
         agentOptions: {
-            host: 'http://127.0.0.1:8000',
+            host: 'http://127.0.0.1:4943',
             shouldFetchRootKey: true
         }
     }

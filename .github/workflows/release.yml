@@ -127,7 +127,7 @@ jobs:
 
             - name: Start dfx with artificial delay 0
               working-directory: ${{ matrix.test.path }}
-              run: dfx start --clean --background --host 127.0.0.1:8000 --artificial-delay 0
+              run: dfx start --clean --background --artificial-delay 0
 
             # TODO we would like to also update the Candid files
             # TODO what we should do is detect if there is a Candid file to generate

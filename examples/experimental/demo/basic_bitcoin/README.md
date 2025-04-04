@@ -28,7 +28,7 @@ fi
 
 ```bash
 # Do this in its own terminal
-dfx start --clean --host 127.0.0.1:8000
+dfx start --clean
 ```
 
 ## basic_bitcoin
@@ -39,7 +39,7 @@ BITCOIN_NETWORK=regtest dfx deploy'
 
 # Usage
 
-After setting up your local Bitcoin node and deploying the canister locally, you can interact with your canister from the command-line or from the browser. To interact with your canister from the browser, use the URL displayed in the terminal after deploy, which will look something like this: `http://127.0.0.1:8000/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai&id=bkyz2-fmaaa-aaaaa-qaaaq-cai`
+After setting up your local Bitcoin node and deploying the canister locally, you can interact with your canister from the command-line or from the browser. To interact with your canister from the browser, use the URL displayed in the terminal after deploy, which will look something like this: `http://127.0.0.1:4943/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai&id=bkyz2-fmaaa-aaaaa-qaaaq-cai`
 
 This example provides 5 functions to call: `getBalance`, `getUtxos`, `getCurrentFeePercentiles`, `getP2PKHAddress`, and `send`.
 

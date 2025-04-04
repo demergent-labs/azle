@@ -29,7 +29,7 @@ export async function getActor<T>(
         agent:
             agent ??
             (await HttpAgent.create({
-                host: 'http://127.0.0.1:8000',
+                host: 'http://127.0.0.1:4943',
                 shouldFetchRootKey: true
             }))
     });

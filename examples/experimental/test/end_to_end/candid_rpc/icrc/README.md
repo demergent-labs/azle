@@ -17,7 +17,7 @@ cd canisters/ICRC-1/test
 
 # Change canisters/ICRC-1/test/suite/lib.rs test_burn assert_balance(&env, tmp_account, 0).await?; to assert_balance(&env, tmp_account, 10_000).await?;
 
-# cargo run -- -u http://127.0.0.1:8000 -c r7inp-6aaaa-aaaaa-aaabq-cai -s /home/lastmjs/.config/dfx/identity/test/identity.pem
+# cargo run -- -u http://127.0.0.1:4943 -c r7inp-6aaaa-aaaaa-aaabq-cai -s /home/lastmjs/.config/dfx/identity/test/identity.pem
 
-cargo run --bin runner -- -u http://127.0.0.1:8000 -c r7inp-6aaaa-aaaaa-aaabq-cai -s /home/lastmjs/.config/dfx/identity/test_unencrypted/identity.pem
+cargo run --bin runner -- -u http://127.0.0.1:4943 -c r7inp-6aaaa-aaaaa-aaabq-cai -s /home/lastmjs/.config/dfx/identity/test_unencrypted/identity.pem
 ```
