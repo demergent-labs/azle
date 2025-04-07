@@ -81,7 +81,7 @@ async function build(): Promise<void> {
         const subCommand = process.argv[3];
 
         if (subCommand === 'setup') {
-            handleInstallGlobalDependenciesCommand();
+            handleSetupCommand();
 
             return;
         }
@@ -193,7 +193,7 @@ async function handleTemplateCommand(ioType: IOType): Promise<void> {
     }
 }
 
-async function handleInstallGlobalDependenciesCommand(): Promise<void> {
+async function handleSetupCommand(): Promise<void> {
     const node = process.argv.includes('--node');
     const dfx = process.argv.includes('--dfx');
     // Rust must come before any other dependencies that use the Rust compiler
