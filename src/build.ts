@@ -6,7 +6,7 @@ import { join } from 'path';
 import { runCommand as runCleanCommand } from '#commands/clean';
 import { runCommand as runStableCompileCommand } from '#commands/compile/index';
 import { runCommand as runGenerateCommand } from '#commands/generate/index';
-import { runCommand as runInstallDfxExtensionCommand } from '#commands/install_dfx_extension';
+import { runCommand as runInstallExtensionCommand } from '#commands/install_dfx_extension';
 import { runCommand as runInstallGlobalDependenciesCommand } from '#commands/install_global_dependencies/index';
 import { runCommand as runNewCommand } from '#commands/new';
 import { runCommand as runStableTemplateCommand } from '#commands/template';
@@ -63,10 +63,14 @@ async function build(): Promise<void> {
 
     const ioType = process.env.AZLE_VERBOSE === 'true' ? 'inherit' : 'pipe';
 
-    if (command === 'install-dfx-extension') {
-        handleInstallDfxExtensionCommand(ioType);
+    if (command === 'extension') {
+        const subCommand = process.argv[3];
 
-        return;
+        if (subCommand === 'install') {
+            handleInstallExtensionCommand(ioType);
+
+            return;
+        }
     }
 
     if (command === 'install-global-dependencies') {
@@ -122,8 +126,8 @@ async function build(): Promise<void> {
     );
 }
 
-function handleInstallDfxExtensionCommand(ioType: IOType): void {
-    runInstallDfxExtensionCommand(ioType);
+function handleInstallExtensionCommand(ioType: IOType): void {
+    runInstallExtensionCommand(ioType);
 }
 
 async function handleUploadAssetsCommand(): Promise<void> {

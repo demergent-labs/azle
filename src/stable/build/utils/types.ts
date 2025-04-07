@@ -32,7 +32,7 @@ export type Context = {
 
 export type Command =
     | 'compile'
-    | 'install-dfx-extension'
+    | 'extension'
     | 'install-global-dependencies'
     | 'template'
     | 'upload-assets'
