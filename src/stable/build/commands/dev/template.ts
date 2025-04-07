@@ -7,7 +7,7 @@ import {
 } from '#utils/global_paths';
 import { logGlobalDependencies } from '#utils/log_global_dependencies';
 
-import { compile } from './build/wasm_binary/compile';
+import { compile } from '../build/wasm_binary/compile';
 
 export async function runCommand(ioType: IOType): Promise<void> {
     await logGlobalDependencies();

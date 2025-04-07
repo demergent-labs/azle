@@ -6,7 +6,7 @@ import { WasmData } from '#experimental/utils/types';
 import { MethodMeta } from '#utils/types';
 
 import { EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH } from '../../../utils/global_paths';
-import { runCommand as runTemplateCommand } from '../../template';
+import { runCommand as runTemplateCommand } from '../../dev/template';
 
 export async function getWasmBinary(
     ioType: IOType,
