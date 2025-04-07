@@ -50,7 +50,7 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  AZLE_VERBOSE=true npx azle install-global-dependencies --rust --wasi2ic
+                  AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic
 
             - name: Update version
               run: |

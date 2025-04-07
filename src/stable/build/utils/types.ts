@@ -31,15 +31,13 @@ export type Context = {
 };
 
 export type Command =
-    | 'compile'
-    | 'extension'
-    | 'install-global-dependencies'
-    | 'template'
-    | 'upload-assets'
-    | '--version'
+    | 'build'
     | 'clean'
+    | 'dev'
+    | 'extension'
+    | 'generate'
     | 'new'
-    | 'generate';
+    | '--version';
 
 export type DfxJson = {
     canisters?: {

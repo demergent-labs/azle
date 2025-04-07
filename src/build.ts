@@ -4,23 +4,24 @@ import { IOType } from 'child_process';
 import { join } from 'path';
 
 import { runCommand as runCleanCommand } from '#commands/clean';
-import { runCommand as runStableCompileCommand } from '#commands/compile/index';
+import { runCommand as runStableBuildCommand } from '#commands/compile/index';
 import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runInstallExtensionCommand } from '#commands/install_dfx_extension';
 import { runCommand as runInstallGlobalDependenciesCommand } from '#commands/install_global_dependencies/index';
 import { runCommand as runNewCommand } from '#commands/new';
 import { runCommand as runStableTemplateCommand } from '#commands/template';
 import { runCommand as runVersionCommand } from '#commands/version';
-import { runCommand as runExperimentalCompileCommand } from '#experimental/commands/compile/index';
+import { runCommand as runExperimentalBuildCommand } from '#experimental/commands/compile/index';
 import { runCommand as runExperimentalTemplateCommand } from '#experimental/commands/template';
 import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
 import {
     experimentalMessageCli,
     experimentalMessageDfxJson
 } from '#experimental/utils/experimental_message';
+import { Command as ExperimentalCommand } from '#experimental/utils/types';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
-import { CanisterConfig, Command } from '#utils/types';
+import { CanisterConfig, Command as StableCommand } from '#utils/types';
 
 import { version as azleVersion } from '../package.json';
 
@@ -53,7 +54,10 @@ process.on('unhandledRejection', (reason: any) => {
 build();
 
 async function build(): Promise<void> {
-    const command = process.argv[2] as Command | undefined;
+    const command = process.argv[2] as
+        | StableCommand
+        | ExperimentalCommand
+        | undefined;
 
     if (command === undefined) {
         throw new Error(
@@ -73,10 +77,20 @@ async function build(): Promise<void> {
         }
     }
 
-    if (command === 'install-global-dependencies') {
-        handleInstallGlobalDependenciesCommand();
+    if (command === 'dev') {
+        const subCommand = process.argv[3];
 
-        return;
+        if (subCommand === 'setup') {
+            handleInstallGlobalDependenciesCommand();
+
+            return;
+        }
+
+        if (subCommand === 'template') {
+            await handleTemplateCommand('inherit');
+
+            return;
+        }
     }
 
     if (command === 'upload-assets') {
@@ -85,14 +99,8 @@ async function build(): Promise<void> {
         return;
     }
 
-    if (command === 'compile') {
-        await handleCompileCommand(ioType);
-
-        return;
-    }
-
-    if (command === 'template') {
-        await handleTemplateCommand('inherit');
+    if (command === 'build') {
+        await handleBuildCommand(ioType);
 
         return;
     }
@@ -149,7 +157,7 @@ async function handleUploadAssetsCommand(): Promise<void> {
     }
 }
 
-async function handleCompileCommand(ioType: IOType): Promise<void> {
+async function handleBuildCommand(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
@@ -160,13 +168,9 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
     if (experimental === false) {
         checkForExperimentalDfxJsonFields(canisterConfig);
 
-        await runStableCompileCommand(canisterName, canisterConfig, ioType);
+        await runStableBuildCommand(canisterName, canisterConfig, ioType);
     } else {
-        await runExperimentalCompileCommand(
-            canisterName,
-            canisterConfig,
-            ioType
-        );
+        await runExperimentalBuildCommand(canisterName, canisterConfig, ioType);
     }
 }
 
