@@ -19,7 +19,7 @@ export async function runCommand(ioType: IOType): Promise<void> {
             'stable',
             'build',
             'commands',
-            'compile',
+            'build',
             'wasm_binary',
             'rust',
             'stable_canister_template',

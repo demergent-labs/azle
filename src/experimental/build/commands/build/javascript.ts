@@ -150,7 +150,7 @@ export async function getBuildOptions(
         'experimental',
         'build',
         'commands',
-        'compile',
+        'build',
         'custom_js_modules'
     );
 

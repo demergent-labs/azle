@@ -17,7 +17,7 @@ runs:
         - name: Install dfx
           uses: ./.github/actions/retry_command
           with:
-              command: src/stable/build/commands/install_global_dependencies/install_dfx.sh "${{ steps.get-dfx-version.outputs.dfx-version }}"
+              command: src/stable/build/commands/dev/setup/install_dfx.sh "${{ steps.get-dfx-version.outputs.dfx-version }}"
 
         - run: echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
           shell: bash

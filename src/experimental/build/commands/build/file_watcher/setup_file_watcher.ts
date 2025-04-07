@@ -37,7 +37,7 @@ export function setupFileWatcher(
                 'experimental',
                 'build',
                 'commands',
-                'compile',
+                'build',
                 'file_watcher',
                 'file_watcher_loader.js'
             ),
