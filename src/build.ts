@@ -21,7 +21,12 @@ import {
 import { Command as ExperimentalCommand } from '#experimental/utils/types';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
-import { CanisterConfig, Command as StableCommand } from '#utils/types';
+import {
+    CanisterConfig,
+    Command as StableCommand,
+    DevCommand,
+    ExtensionCommand
+} from '#utils/types';
 
 import { version as azleVersion } from '../package.json';
 
