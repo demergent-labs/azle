@@ -246,7 +246,7 @@ export function runTests(tests: Test): void {
         describe(`benchmarks`, () => {
             it('runs benchmarks for all canisters', async () => {
                 const canisterNames = await getCanisterNames();
-                runBenchmarksForCanisters(canisterNames);
+                await runBenchmarksForCanisters(canisterNames);
             });
         });
     }

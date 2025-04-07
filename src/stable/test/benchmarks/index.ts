@@ -1,16 +1,17 @@
+import { execSync } from 'child_process';
 import { readFile, writeFile } from 'fs/promises';
 
 import { jsonParse, jsonStringify } from '#lib/index';
-import { getCanisterId, whoami } from '#utils/dfx';
+import { getCanisterId } from '#utils/dfx';
+import { AZLE_ROOT, getDfxRoot } from '#utils/global_paths';
 
 // @ts-ignore We would have to add "resolveJsonModule": true to every test tsconfig.json file
 import { version } from '../../../../package.json';
-import { createActor } from './actor';
 
 type BenchmarkEntry = {
     method_name: string;
-    instructions: bigint;
-    timestamp: bigint;
+    instructions: bigint | number;
+    timestamp: bigint | number;
 };
 
 type CanisterBenchmark = {
@@ -46,8 +47,15 @@ async function updateBenchmarksForCanisters(
     return canisterNames.reduce(async (accPromise, canisterName) => {
         const acc = await accPromise;
         const canisterId = getCanisterId(canisterName);
-        const actor = await createActor(canisterId, whoami());
-        const currentBenchmarks = await actor._azle_get_benchmarks();
+        const currentBenchmarks = JSON.parse(
+            execSync(
+                `dfx canister call ${canisterId} _azle_get_benchmarks --output json --candid ${AZLE_ROOT}/src/stable/test/benchmarks/_azle_get_benchmarks.did`,
+                {
+                    cwd: getDfxRoot(),
+                    encoding: 'utf-8'
+                }
+            )
+        );
 
         const previousCurrentVersion = acc[canisterName]?.current.version;
         const shouldUpdatePrevious = previousCurrentVersion !== version;
@@ -185,7 +193,7 @@ function createTableRow(
 ): string {
     const executionNumber = index;
     const methodName = currentBenchmark.method_name;
-    const instructions = currentBenchmark.instructions;
+    const instructions = BigInt(currentBenchmark.instructions);
     const cycles = calculateCycles(instructions);
     const usd = calculateUSD(cycles);
     const usdPerMillion = usd * 1_000_000;
@@ -201,7 +209,7 @@ function createTableRow(
     }
 
     const change = previousBenchmark
-        ? calculateChange(instructions, previousBenchmark.instructions)
+        ? calculateChange(instructions, BigInt(previousBenchmark.instructions))
         : '';
 
     return `${baseRow} | ${change} |`;
