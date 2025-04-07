@@ -1,4 +1,4 @@
-import { ConsumerConfig } from '#experimental/commands/compile/open_value_sharing/consumer';
+import { ConsumerConfig } from '#experimental/commands/build/open_value_sharing/consumer';
 
 export type CandidAndMethodMeta = {
     candid: string;

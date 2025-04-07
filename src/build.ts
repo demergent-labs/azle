@@ -3,15 +3,15 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
+import { runCommand as runStableBuildCommand } from '#commands/build/index';
 import { runCommand as runCleanCommand } from '#commands/clean';
-import { runCommand as runStableBuildCommand } from '#commands/compile/index';
 import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runInstallExtensionCommand } from '#commands/install_dfx_extension';
 import { runCommand as runInstallGlobalDependenciesCommand } from '#commands/install_global_dependencies/index';
 import { runCommand as runNewCommand } from '#commands/new';
 import { runCommand as runStableTemplateCommand } from '#commands/template';
 import { runCommand as runVersionCommand } from '#commands/version';
-import { runCommand as runExperimentalBuildCommand } from '#experimental/commands/compile/index';
+import { runCommand as runExperimentalBuildCommand } from '#experimental/commands/build/index';
 import { runCommand as runExperimentalTemplateCommand } from '#experimental/commands/template';
 import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
 import {

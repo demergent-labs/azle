@@ -1,7 +1,7 @@
 import { IOType } from 'child_process';
 import { existsSync } from 'fs';
 
-import { manipulateWasmBinary } from '#commands/compile/wasm_binary/manipulate';
+import { manipulateWasmBinary } from '#commands/build/wasm_binary/manipulate';
 import { WasmData } from '#experimental/utils/types';
 import { MethodMeta } from '#utils/types';
 

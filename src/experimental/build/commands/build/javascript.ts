@@ -7,7 +7,7 @@ import {
     bundle,
     getBuildOptions as getStableBuildOptions,
     handleClassApiCanister
-} from '#commands/compile/javascript';
+} from '#commands/build/javascript';
 import { WASMEDGE_QUICKJS_PATH } from '#experimental/utils/global_paths';
 import { AZLE_ROOT, getDfxRoot } from '#utils/global_paths';
 

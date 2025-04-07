@@ -1,7 +1,7 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
-import { compile } from '#experimental/commands/compile/wasm_binary/compile';
+import { compile } from '#experimental/commands/build/wasm_binary/compile';
 import { EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH } from '#experimental/utils/global_paths';
 import { AZLE_ROOT } from '#utils/global_paths';
 import { logGlobalDependencies } from '#utils/log_global_dependencies';

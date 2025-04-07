@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { getContext as getStableContext } from '#commands/compile/get_context';
+import { getContext as getStableContext } from '#commands/build/get_context';
 import { Context, WasmData } from '#experimental/utils/types';
 import { getCanisterId } from '#utils/dfx';
 import { AZLE_ROOT } from '#utils/global_paths';
