@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 
 import { findBenchmarkFiles } from './file_finder';
 
@@ -177,7 +177,7 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
-    const benchmarkFilePaths = await findBenchmarkFiles(AZLE_PACKAGE_PATH);
+    const benchmarkFilePaths = await findBenchmarkFiles(AZLE_ROOT);
     const issues = await validateBenchmarkVersions(
         benchmarkFilePaths,
         currentVersion,

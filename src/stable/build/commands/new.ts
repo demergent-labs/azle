@@ -4,7 +4,7 @@ import { outputFile } from 'fs-extra';
 import { copy } from 'fs-extra/esm';
 import { join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 
 import { devDependencies } from '../../../../package.json';
 
@@ -40,7 +40,7 @@ export async function runCommand(
     );
 
     let tsConfig = JSON.parse(
-        await readFile(join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json'), {
+        await readFile(join(AZLE_ROOT, 'tsconfig.dev.json'), {
             encoding: 'utf-8'
         })
     );

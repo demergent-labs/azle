@@ -4,7 +4,7 @@ import { join } from 'path';
 
 import { execute } from '#commands/compile/candid_and_method_meta/execute';
 import { WasmData } from '#experimental/utils/types';
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 import { CandidAndMethodMeta, CandidGen, MethodMeta } from '#utils/types';
 
 import { getWasmBinary } from './wasm_binary';
@@ -60,7 +60,7 @@ async function handleAutomaticAndCustom(
 async function handleHttp(): Promise<CandidAndMethodMeta> {
     const candid = (
         await readFile(
-            join(AZLE_PACKAGE_PATH, 'src', 'experimental', 'lib', 'server.did')
+            join(AZLE_ROOT, 'src', 'experimental', 'lib', 'server.did')
         )
     ).toString();
 

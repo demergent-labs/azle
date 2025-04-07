@@ -19,7 +19,7 @@ import {
     experimentalMessageDfxJson
 } from '#experimental/utils/experimental_message';
 import { getCanisterConfig } from '#utils/get_canister_config';
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 import { CanisterConfig, Command } from '#utils/types';
 
 import { version as azleVersion } from '../package.json';
@@ -217,7 +217,7 @@ async function handleNewCommand(): Promise<void> {
         }
 
         const templatePath = join(
-            AZLE_PACKAGE_PATH,
+            AZLE_ROOT,
             'examples',
             'stable',
             'demo',
@@ -230,7 +230,7 @@ async function handleNewCommand(): Promise<void> {
             httpServer === true ? 'hello_world_http_server' : 'hello_world';
 
         const templatePath = join(
-            AZLE_PACKAGE_PATH,
+            AZLE_ROOT,
             'examples',
             httpServer === true ? 'experimental' : 'stable',
             'demo',

@@ -4,7 +4,7 @@ import { join } from 'path';
 import { getContext as getStableContext } from '#commands/compile/get_context';
 import { Context, WasmData } from '#experimental/utils/types';
 import { getCanisterId } from '#utils/dfx';
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 import { CanisterConfig } from '#utils/types';
 
 import { getConsumer } from './open_value_sharing/consumer';
@@ -26,7 +26,7 @@ export async function getContext(
     const managementDid = (
         await readFile(
             join(
-                AZLE_PACKAGE_PATH,
+                AZLE_ROOT,
                 'src',
                 'stable',
                 'lib',

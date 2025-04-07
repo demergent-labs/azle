@@ -1,5 +1,5 @@
 import { execSyncPretty } from '#utils/exec_sync_pretty';
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 
 import { azle } from '../../../../../package.json';
 
@@ -25,7 +25,7 @@ function installDependency(dependency: DependencyName): void {
     const version = azle.globalDependencies[dependency];
     const script = `install_${dependency}.sh`;
     execSyncPretty(
-        `${AZLE_PACKAGE_PATH}/src/stable/build/commands/install_global_dependencies/${script} ${version}`,
+        `${AZLE_ROOT}/src/stable/build/commands/install_global_dependencies/${script} ${version}`,
         {
             stdio: 'inherit'
         }
