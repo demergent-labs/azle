@@ -39,6 +39,10 @@ export type Command =
     | 'new'
     | '--version';
 
+export type ExtensionCommand = 'install';
+
+export type DevCommand = 'setup' | 'template';
+
 export type DfxJson = {
     canisters?: {
         [key: string]: CanisterConfig | undefined;

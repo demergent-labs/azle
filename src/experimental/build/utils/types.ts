@@ -18,4 +18,4 @@ export type WasmData = {
     managementDid: string;
 } & StableWasmData;
 
-export type Command = 'upload-assets' | 'build' | 'template';
+export type Command = 'upload-assets' | 'build' | 'dev';

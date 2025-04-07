@@ -5,15 +5,15 @@ import { join } from 'path';
 
 import { runCommand as runStableBuildCommand } from '#commands/build/index';
 import { runCommand as runCleanCommand } from '#commands/clean';
-import { runCommand as runInstallGlobalDependenciesCommand } from '#commands/dev/setup/index';
-import { runCommand as runStableTemplateCommand } from '#commands/dev/template';
-import { runCommand as runInstallExtensionCommand } from '#commands/extension/install';
+import { runCommand as runDevSetupCommand } from '#commands/dev/setup/index';
+import { runCommand as runDevTemplateCommand } from '#commands/dev/template';
+import { runCommand as runExtensionInstallCommand } from '#commands/extension/install';
 import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runNewCommand } from '#commands/new';
 import { runCommand as runVersionCommand } from '#commands/version';
 import { runCommand as runExperimentalBuildCommand } from '#experimental/commands/build/index';
 import { runCommand as runExperimentalTemplateCommand } from '#experimental/commands/dev/template';
-import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
+import { runCommand as runExperimentalUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
 import {
     experimentalMessageCli,
     experimentalMessageDfxJson
@@ -68,29 +68,15 @@ async function build(): Promise<void> {
     const ioType = process.env.AZLE_VERBOSE === 'true' ? 'inherit' : 'pipe';
 
     if (command === 'extension') {
-        const subCommand = process.argv[3];
+        await handleExtensionCommand(ioType);
 
-        if (subCommand === 'install') {
-            handleInstallExtensionCommand(ioType);
-
-            return;
-        }
+        return;
     }
 
     if (command === 'dev') {
-        const subCommand = process.argv[3];
+        await handleDevCommand();
 
-        if (subCommand === 'setup') {
-            handleSetupCommand();
-
-            return;
-        }
-
-        if (subCommand === 'template') {
-            await handleTemplateCommand('inherit');
-
-            return;
-        }
+        return;
     }
 
     if (command === 'upload-assets') {
@@ -129,13 +115,17 @@ async function build(): Promise<void> {
         return;
     }
 
+    throwIfInvalidCommand(command);
+}
+
+function throwIfInvalidCommand(command: string): void {
     throw new Error(
         `Invalid command found when running azle. Running azle ${command} is not valid`
     );
 }
 
-function handleInstallExtensionCommand(ioType: IOType): void {
-    runInstallExtensionCommand(ioType);
+function handleExtensionInstallCommand(ioType: IOType): void {
+    runExtensionInstallCommand(ioType);
 }
 
 async function handleUploadAssetsCommand(): Promise<void> {
@@ -153,7 +143,7 @@ async function handleUploadAssetsCommand(): Promise<void> {
             );
         }
     } else {
-        await runUploadAssetsCommand();
+        await runExperimentalUploadAssetsCommand();
     }
 }
 
@@ -174,11 +164,41 @@ async function handleBuildCommand(ioType: IOType): Promise<void> {
     }
 }
 
-async function handleTemplateCommand(ioType: IOType): Promise<void> {
+async function handleDevCommand(): Promise<void> {
+    const subCommand = process.argv[3] as DevCommand;
+
+    if (subCommand === 'setup') {
+        handleDevSetupCommand();
+
+        return;
+    }
+
+    if (subCommand === 'template') {
+        await handleDevTemplateCommand('inherit');
+
+        return;
+    }
+
+    throwIfInvalidCommand(`dev ${subCommand}`);
+}
+
+async function handleExtensionCommand(ioType: IOType): Promise<void> {
+    const subCommand = process.argv[3] as ExtensionCommand;
+
+    if (subCommand === 'install') {
+        handleExtensionInstallCommand(ioType);
+
+        return;
+    }
+
+    throwIfInvalidCommand(`extension ${subCommand}`);
+}
+
+async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
     const all = process.argv.includes('--all');
 
     if (all === true) {
-        await runStableTemplateCommand(ioType);
+        await runDevTemplateCommand(ioType);
         await runExperimentalTemplateCommand(ioType);
     } else {
         const experimental =
@@ -186,14 +206,14 @@ async function handleTemplateCommand(ioType: IOType): Promise<void> {
             process.env.AZLE_EXPERIMENTAL === 'true';
 
         if (experimental === false) {
-            await runStableTemplateCommand(ioType);
+            await runDevTemplateCommand(ioType);
         } else {
             await runExperimentalTemplateCommand(ioType);
         }
     }
 }
 
-async function handleSetupCommand(): Promise<void> {
+async function handleDevSetupCommand(): Promise<void> {
     const node = process.argv.includes('--node');
     const dfx = process.argv.includes('--dfx');
     // Rust must come before any other dependencies that use the Rust compiler
@@ -202,14 +222,14 @@ async function handleSetupCommand(): Promise<void> {
     const wasi2ic = process.argv.includes('--wasi2ic');
 
     if (!node && !dfx && !rust && !wasi2ic) {
-        await runInstallGlobalDependenciesCommand({
+        await runDevSetupCommand({
             dfx: true,
             node: true,
             rust: true,
             wasi2ic: true
         });
     } else {
-        await runInstallGlobalDependenciesCommand({ dfx, node, rust, wasi2ic });
+        await runDevSetupCommand({ dfx, node, rust, wasi2ic });
     }
 }
 

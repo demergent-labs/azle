@@ -4,10 +4,12 @@ import { join } from 'path';
 import { getDfxRoot } from '#utils/global_paths';
 
 export async function runCommand(): Promise<void> {
-    await rm(join(getDfxRoot(), '.azle'), {
+    const dotAzlePath = join(getDfxRoot(), '.azle');
+
+    await rm(dotAzlePath, {
         recursive: true,
         force: true
     });
 
-    console.info(`${join(getDfxRoot(), '.azle')} directory deleted`);
+    console.info(`${dotAzlePath} directory deleted`);
 }
