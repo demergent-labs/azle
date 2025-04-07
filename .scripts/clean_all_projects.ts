@@ -3,6 +3,7 @@
 import { execSync } from 'child_process';
 import { existsSync, statSync } from 'fs'; // Keep some sync methods for simplicity
 import * as fs from 'fs/promises';
+import { rm } from 'fs/promises';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -25,6 +26,19 @@ async function cleanProjects(directory: string): Promise<void> {
                     cwd: directory,
                     stdio: 'inherit' // Show output in console
                 });
+                await rm('.dfx', {
+                    recursive: true,
+                    force: true
+                });
+
+                console.info(`./.dfx directory deleted`);
+
+                await rm('node_modules', {
+                    recursive: true,
+                    force: true
+                });
+
+                console.info(`./node_modules directory deleted`);
                 console.info(`Successfully cleaned project in ${directory}`);
             } catch (error) {
                 console.error(
