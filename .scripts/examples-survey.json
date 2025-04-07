@@ -175,7 +175,7 @@
                     "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/ledger_canister",
                     "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/list_of_lists",
                     "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/management_canister",
-                    "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/management_canister_generate_types",
+                    "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/management_canister_generate",
                     "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/manual_reply",
                     "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/motoko_examples/calc",
                     "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/motoko_examples/cert-var",
@@ -468,7 +468,7 @@
                 "count": 2,
                 "projects": [
                     "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/management_canister",
-                    "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/management_canister_generate_types"
+                    "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/management_canister_generate"
                 ]
             },
             {
@@ -4060,7 +4060,7 @@
             "size": 314626
         },
         {
-            "path": "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/management_canister_generate_types",
+            "path": "/home/bdemann/code/demergent_labs/azle/examples/stable/test/end_to_end/candid_rpc/management_canister_generate",
             "category": "stable",
             "subcategory": "test",
             "packageJson": {

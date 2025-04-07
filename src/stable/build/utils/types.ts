@@ -39,7 +39,7 @@ export type Command =
     | '--version'
     | 'clean'
     | 'new'
-    | 'generate-types';
+    | 'generate';
 
 export type DfxJson = {
     canisters?: {

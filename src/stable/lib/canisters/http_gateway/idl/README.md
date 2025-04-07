@@ -6,4 +6,4 @@
 1. Go to the URL above, but at the latest commit
 2. Find the Candid on that page and copy it
 3. Paste the Candid into `http-gateway.did`
-4. From this directory run `npx azle generate-types http-gateway.did > index.ts`
+4. From this directory run `npx azle generate http-gateway.did > index.ts`

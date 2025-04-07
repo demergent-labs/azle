@@ -5,7 +5,7 @@ import { join } from 'path';
 
 import { runCommand as runCleanCommand } from '#commands/clean';
 import { runCommand as runStableCompileCommand } from '#commands/compile/index';
-import { runCommand as runGenerateTypesCommand } from '#commands/generate_types/index';
+import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runInstallDfxExtensionCommand } from '#commands/install_dfx_extension';
 import { runCommand as runInstallGlobalDependenciesCommand } from '#commands/install_global_dependencies/index';
 import { runCommand as runNewCommand } from '#commands/new';
@@ -111,8 +111,8 @@ async function build(): Promise<void> {
         return;
     }
 
-    if (command === 'generate-types') {
-        await handleGenerateTypesCommand();
+    if (command === 'generate') {
+        await handleGenerateCommand();
 
         return;
     }
@@ -241,10 +241,10 @@ async function handleNewCommand(): Promise<void> {
     }
 }
 
-async function handleGenerateTypesCommand(): Promise<void> {
+async function handleGenerateCommand(): Promise<void> {
     const candidPath = process.argv[3];
 
-    await runGenerateTypesCommand(candidPath);
+    await runGenerateCommand(candidPath);
 }
 
 function checkForExperimentalDfxJsonFields(
