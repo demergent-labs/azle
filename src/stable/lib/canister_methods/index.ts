@@ -313,7 +313,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                 try {
                     await executeAndReplyWithCandidSerde(
                         canisterMethodMode,
-                        originalMethod.bind(canisterClassMethodInfo as This),
+                        originalMethod.bind(this),
                         paramIdlTypes ?? [],
                         returnIdlType,
                         options?.manual ?? false,

@@ -98,6 +98,16 @@ export function handleClassApiCanister(main: string): string {
             //     throw new Error('You did not provide a default export for your canister method class');
             // }
 
+            console.log('Canister.default', Canister.default);
+            console.log('typeof Canister.default', typeof Canister.default);
+            console.log('Object.keys(Canister.default)', Object.keys(Canister.default));
+            console.log('Canister.default.toString()', Canister.default.toString());
+
+            // TODO if they just deploy an empty file, should that be valid?
+            // if (!Array.isArray(Canister.default) && typeof Canister.default !== 'function' && !Canister.default.toString().startsWith('class') ) {
+            //     throw new Error('A class or an array of classes must be the default export from ${main}');
+            // }
+
             const canisterMethodClassInfo = getCanisterMethodClassInfo(Array.isArray(Canister.default) ? Canister.default : [Canister.default]);
 
             globalThis._azleExportedCanisterClassInstance = canisterMethodClassInfo;
