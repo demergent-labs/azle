@@ -15,7 +15,7 @@ export async function getWasmBinary(
     methodMeta?: MethodMeta
 ): Promise<Uint8Array> {
     if (
-        process.env.AZLE_TEMPLATE === 'true' ||
+        process.env.AZLE_DEV_TEMPLATE === 'true' ||
         !existsSync(EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH)
     ) {
         await runDevTemplateCommand(ioType);
