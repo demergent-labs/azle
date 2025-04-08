@@ -13,8 +13,8 @@ export function msgMethodName(): string {
         return globalThis._azleIcExperimental.msgMethodName();
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.msgMethodName();
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.msgMethodName();
     }
 
     return '';

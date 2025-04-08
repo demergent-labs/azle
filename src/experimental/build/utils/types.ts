@@ -3,7 +3,7 @@ import {
     WasmData as StableWasmData
 } from '#utils/types';
 
-import { Consumer } from '../commands/compile/open_value_sharing/consumer';
+import { Consumer } from '../commands/build/open_value_sharing/consumer';
 
 export type Context = {
     canisterId: string;
@@ -17,3 +17,5 @@ export type WasmData = {
     consumer: Consumer;
     managementDid: string;
 } & StableWasmData;
+
+export type Command = 'upload-assets';

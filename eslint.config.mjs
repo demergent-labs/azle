@@ -24,7 +24,7 @@ export default tseslint.config(
             '**/run_time_errors/**',
             '**/target/**',
             '**/webpack.config.js',
-            'src/stable/build/commands/generate_types/rust/candid_to_ts_js/pkg',
+            'src/stable/build/commands/generate/rust/candid_to_ts_js/pkg',
             'src/stable/lib/canisters/**/idl/*'
         ]
     },

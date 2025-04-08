@@ -18,8 +18,8 @@ export function candidDecode(candidBytes: Uint8Array): string {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.candidDecode(candidBytes);
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.candidDecode(candidBytes);
     }
 
     return '';

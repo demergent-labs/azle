@@ -17,10 +17,8 @@ export function canisterSelf(): Principal {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return Principal.fromUint8Array(
-            globalThis._azleIcStable.canisterSelf()
-        );
+    if (globalThis._azleIc !== undefined) {
+        return Principal.fromUint8Array(globalThis._azleIc.canisterSelf());
     }
 
     return Principal.fromHex('04');

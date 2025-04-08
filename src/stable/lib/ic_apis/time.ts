@@ -18,8 +18,8 @@ export function time(): bigint {
         return BigInt(globalThis._azleIcExperimental.time());
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.time();
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.time();
     }
 
     return 0n;

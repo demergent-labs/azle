@@ -29,7 +29,7 @@ export function setCertifiedData(data: Uint8Array): void {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        globalThis._azleIcStable.setCertifiedData(data);
+    if (globalThis._azleIc !== undefined) {
+        globalThis._azleIc.setCertifiedData(data);
     }
 }

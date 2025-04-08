@@ -24,8 +24,8 @@ export function msgCaller(): Principal {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return Principal.fromUint8Array(globalThis._azleIcStable.msgCaller());
+    if (globalThis._azleIc !== undefined) {
+        return Principal.fromUint8Array(globalThis._azleIc.msgCaller());
     }
 
     return Principal.fromHex('04'); // the anonymous principal

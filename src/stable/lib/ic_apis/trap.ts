@@ -19,11 +19,11 @@ export function trap(message: string): never {
         return globalThis._azleIcExperimental.trap(message);
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.trap(message);
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.trap(message);
     }
 
     throw new Error(
-        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+        'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
     );
 }

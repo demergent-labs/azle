@@ -36,7 +36,7 @@ export function setTimer(
     asyncCleanup: boolean = true
 ): bigint {
     if (
-        globalThis._azleIcStable === undefined &&
+        globalThis._azleIc === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
         return 0n;
@@ -47,11 +47,11 @@ export function setTimer(
     const timerId =
         globalThis._azleIcExperimental !== undefined
             ? BigInt(globalThis._azleIcExperimental.setTimer(delay.toString()))
-            : globalThis._azleIcStable !== undefined
-              ? globalThis._azleIcStable.setTimer(delay)
+            : globalThis._azleIc !== undefined
+              ? globalThis._azleIc.setTimer(delay)
               : ((): never => {
                     throw new Error(
-                        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                        'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                     );
                 })();
 

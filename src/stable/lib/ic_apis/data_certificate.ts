@@ -24,7 +24,7 @@ export function dataCertificate(): Uint8Array | undefined {
         return new Uint8Array(result);
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.dataCertificate();
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.dataCertificate();
     }
 }

@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from './global_paths';
+import { AZLE_ROOT } from './global_paths';
 import { getLocalDfxVersion } from './versions/dfx';
 import { getLocalNodeVersion } from './versions/node';
 import { getLocalRustVersion } from './versions/rust';
@@ -20,7 +20,7 @@ export async function logGlobalDependencies(): Promise<void> {
         dfx: dfxVersion
     };
 
-    const packageJsonPath = join(AZLE_PACKAGE_PATH, 'package.json');
+    const packageJsonPath = join(AZLE_ROOT, 'package.json');
 
     const packageJsonContent = await readFile(packageJsonPath, 'utf-8');
     const packageJson = JSON.parse(packageJsonContent);

@@ -3,24 +3,25 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
+import { runCommand as runBuildCommand } from '#commands/build/index';
 import { runCommand as runCleanCommand } from '#commands/clean';
-import { runCommand as runStableCompileCommand } from '#commands/compile/index';
-import { runCommand as runGenerateTypesCommand } from '#commands/generate_types/index';
-import { runCommand as runInstallDfxExtensionCommand } from '#commands/install_dfx_extension';
-import { runCommand as runInstallGlobalDependenciesCommand } from '#commands/install_global_dependencies/index';
+import { runCommand as runDevSetupCommand } from '#commands/dev/setup/index';
+import { runCommand as runDevTemplateCommand } from '#commands/dev/template';
+import { runCommand as runExtensionInstallCommand } from '#commands/extension/install';
+import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runNewCommand } from '#commands/new';
-import { runCommand as runStableTemplateCommand } from '#commands/template';
 import { runCommand as runVersionCommand } from '#commands/version';
-import { runCommand as runExperimentalCompileCommand } from '#experimental/commands/compile/index';
-import { runCommand as runExperimentalTemplateCommand } from '#experimental/commands/template';
-import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
+import { runCommand as runExperimentalBuildCommand } from '#experimental/commands/build/index';
+import { runCommand as runExperimentalDevTemplateCommand } from '#experimental/commands/dev/template';
+import { runCommand as runExperimentalUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
 import {
     experimentalMessageCli,
     experimentalMessageDfxJson
 } from '#experimental/utils/experimental_message';
+import { Command as ExperimentalCommand } from '#experimental/utils/types';
 import { getCanisterConfig } from '#utils/get_canister_config';
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
-import { CanisterConfig, Command } from '#utils/types';
+import { AZLE_ROOT } from '#utils/global_paths';
+import { CanisterConfig, Command, SubCommand } from '#utils/types';
 
 import { version as azleVersion } from '../package.json';
 
@@ -53,7 +54,10 @@ process.on('unhandledRejection', (reason: any) => {
 build();
 
 async function build(): Promise<void> {
-    const command = process.argv[2] as Command | undefined;
+    const command = process.argv[2] as
+        | Command
+        | ExperimentalCommand
+        | undefined;
 
     if (command === undefined) {
         throw new Error(
@@ -63,14 +67,14 @@ async function build(): Promise<void> {
 
     const ioType = process.env.AZLE_VERBOSE === 'true' ? 'inherit' : 'pipe';
 
-    if (command === 'install-dfx-extension') {
-        handleInstallDfxExtensionCommand(ioType);
+    if (command === 'extension') {
+        await handleExtensionCommand(ioType);
 
         return;
     }
 
-    if (command === 'install-global-dependencies') {
-        handleInstallGlobalDependenciesCommand();
+    if (command === 'dev') {
+        await handleDevCommand();
 
         return;
     }
@@ -81,14 +85,8 @@ async function build(): Promise<void> {
         return;
     }
 
-    if (command === 'compile') {
-        await handleCompileCommand(ioType);
-
-        return;
-    }
-
-    if (command === 'template') {
-        await handleTemplateCommand('inherit');
+    if (command === 'build') {
+        await handleBuildCommand(ioType);
 
         return;
     }
@@ -111,19 +109,92 @@ async function build(): Promise<void> {
         return;
     }
 
-    if (command === 'generate-types') {
-        await handleGenerateTypesCommand();
+    if (command === 'generate') {
+        await handleGenerateCommand();
 
         return;
     }
 
+    throwIfInvalidCommand(command);
+}
+
+function throwIfInvalidCommand(command: string): void {
     throw new Error(
         `Invalid command found when running azle. Running azle ${command} is not valid`
     );
 }
 
-function handleInstallDfxExtensionCommand(ioType: IOType): void {
-    runInstallDfxExtensionCommand(ioType);
+async function handleExtensionCommand(ioType: IOType): Promise<void> {
+    const subCommand = process.argv[3] as SubCommand['extension'];
+
+    if (subCommand === 'install') {
+        handleExtensionInstallCommand(ioType);
+
+        return;
+    }
+
+    throwIfInvalidCommand(`extension ${subCommand}`);
+}
+
+function handleExtensionInstallCommand(ioType: IOType): void {
+    runExtensionInstallCommand(ioType);
+}
+
+async function handleDevCommand(): Promise<void> {
+    const subCommand = process.argv[3] as SubCommand['dev'];
+
+    if (subCommand === 'setup') {
+        handleDevSetupCommand();
+
+        return;
+    }
+
+    if (subCommand === 'template') {
+        await handleDevTemplateCommand('inherit');
+
+        return;
+    }
+
+    throwIfInvalidCommand(`dev ${subCommand}`);
+}
+
+async function handleDevSetupCommand(): Promise<void> {
+    const node = process.argv.includes('--node');
+    const dfx = process.argv.includes('--dfx');
+    // Rust must come before any other dependencies that use the Rust compiler
+    // to ensure that they are compiled with the latest version of Rust
+    const rust = process.argv.includes('--rust');
+    const wasi2ic = process.argv.includes('--wasi2ic');
+
+    if (!node && !dfx && !rust && !wasi2ic) {
+        await runDevSetupCommand({
+            dfx: true,
+            node: true,
+            rust: true,
+            wasi2ic: true
+        });
+    } else {
+        await runDevSetupCommand({ dfx, node, rust, wasi2ic });
+    }
+}
+
+async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
+    const all = process.argv.includes('--all');
+
+    if (all === true) {
+        await runDevTemplateCommand(ioType);
+        await runExperimentalDevTemplateCommand(ioType);
+    } else {
+        const experimental =
+            process.argv.includes('--experimental') ||
+            process.env.AZLE_EXPERIMENTAL === 'true';
+
+        if (experimental === false) {
+            await runDevTemplateCommand(ioType);
+        } else {
+            await runExperimentalDevTemplateCommand(ioType);
+        }
+    }
 }
 
 async function handleUploadAssetsCommand(): Promise<void> {
@@ -141,11 +212,11 @@ async function handleUploadAssetsCommand(): Promise<void> {
             );
         }
     } else {
-        await runUploadAssetsCommand();
+        await runExperimentalUploadAssetsCommand();
     }
 }
 
-async function handleCompileCommand(ioType: IOType): Promise<void> {
+async function handleBuildCommand(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
@@ -156,52 +227,9 @@ async function handleCompileCommand(ioType: IOType): Promise<void> {
     if (experimental === false) {
         checkForExperimentalDfxJsonFields(canisterConfig);
 
-        await runStableCompileCommand(canisterName, canisterConfig, ioType);
+        await runBuildCommand(canisterName, canisterConfig, ioType);
     } else {
-        await runExperimentalCompileCommand(
-            canisterName,
-            canisterConfig,
-            ioType
-        );
-    }
-}
-
-async function handleTemplateCommand(ioType: IOType): Promise<void> {
-    const all = process.argv.includes('--all');
-
-    if (all === true) {
-        await runStableTemplateCommand(ioType);
-        await runExperimentalTemplateCommand(ioType);
-    } else {
-        const experimental =
-            process.argv.includes('--experimental') ||
-            process.env.AZLE_EXPERIMENTAL === 'true';
-
-        if (experimental === false) {
-            await runStableTemplateCommand(ioType);
-        } else {
-            await runExperimentalTemplateCommand(ioType);
-        }
-    }
-}
-
-async function handleInstallGlobalDependenciesCommand(): Promise<void> {
-    const node = process.argv.includes('--node');
-    const dfx = process.argv.includes('--dfx');
-    // Rust must come before any other dependencies that use the Rust compiler
-    // to ensure that they are compiled with the latest version of Rust
-    const rust = process.argv.includes('--rust');
-    const wasi2ic = process.argv.includes('--wasi2ic');
-
-    if (!node && !dfx && !rust && !wasi2ic) {
-        await runInstallGlobalDependenciesCommand({
-            dfx: true,
-            node: true,
-            rust: true,
-            wasi2ic: true
-        });
-    } else {
-        await runInstallGlobalDependenciesCommand({ dfx, node, rust, wasi2ic });
+        await runExperimentalBuildCommand(canisterName, canisterConfig, ioType);
     }
 }
 
@@ -217,7 +245,7 @@ async function handleNewCommand(): Promise<void> {
         }
 
         const templatePath = join(
-            AZLE_PACKAGE_PATH,
+            AZLE_ROOT,
             'examples',
             'stable',
             'demo',
@@ -230,7 +258,7 @@ async function handleNewCommand(): Promise<void> {
             httpServer === true ? 'hello_world_http_server' : 'hello_world';
 
         const templatePath = join(
-            AZLE_PACKAGE_PATH,
+            AZLE_ROOT,
             'examples',
             httpServer === true ? 'experimental' : 'stable',
             'demo',
@@ -241,10 +269,10 @@ async function handleNewCommand(): Promise<void> {
     }
 }
 
-async function handleGenerateTypesCommand(): Promise<void> {
+async function handleGenerateCommand(): Promise<void> {
     const candidPath = process.argv[3];
 
-    await runGenerateTypesCommand(candidPath);
+    await runGenerateCommand(candidPath);
 }
 
 function checkForExperimentalDfxJsonFields(

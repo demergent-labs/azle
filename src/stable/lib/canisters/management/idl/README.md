@@ -7,4 +7,4 @@
 2. Find the Candid on that page and copy it
 3. Paste the Candid into `ic.did`
 4. Look at the `git diff` and manually apply custom changes again
-5. From this directory run `npx azle generate-types ic.did > index.ts`
+5. From this directory run `npx azle generate ic.did > index.ts`

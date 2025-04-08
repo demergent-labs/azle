@@ -37,8 +37,8 @@ export function msgRejectCode(): RejectCode {
         return globalThis._azleIcExperimental.msgRejectCode();
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.msgRejectCode();
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.msgRejectCode();
     }
 
     return 6;
