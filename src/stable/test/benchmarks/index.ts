@@ -47,7 +47,7 @@ async function updateBenchmarksForCanisters(
     return canisterNames.reduce(async (accPromise, canisterName) => {
         const acc = await accPromise;
         const canisterId = getCanisterId(canisterName);
-        const currentBenchmarks = JSON.parse(
+        const currentBenchmarks: BenchmarkEntry[] = JSON.parse(
             execSync(
                 `dfx canister call ${canisterId} _azle_get_benchmarks --output json --candid ${AZLE_ROOT}/src/stable/test/benchmarks/_azle_get_benchmarks.did`,
                 {
