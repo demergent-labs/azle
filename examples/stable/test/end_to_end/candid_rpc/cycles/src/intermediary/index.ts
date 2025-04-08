@@ -1,13 +1,11 @@
 import { call, canisterCycleBalance, IDL, query, update } from 'azle';
 
 export default class {
-    cyclesPrincipal = getCyclesPrincipal();
-
     // Reports the number of cycles returned from the Cycles canister
     @update([], IDL.Nat64)
     async sendCycles(): Promise<bigint> {
         return await call<undefined, bigint>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'receiveCycles',
             {
                 returnIdlType: IDL.Nat64,
@@ -19,7 +17,7 @@ export default class {
     @update
     async sendCyclesNotify(): Promise<void> {
         return await call<undefined, void>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'receiveCycles',
             {
                 cycles: 1_000_000n,

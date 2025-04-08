@@ -16,12 +16,10 @@ import {
 } from 'azle/canisters/icrc_2/idl';
 
 export default class {
-    icrcPrincipal = getIcrcPrincipal();
-
     @query([], IDL.Vec(IDL.Tuple(IDL.Text, Value)), { composite: true })
     async icrc1_metadata(): Promise<[Text, Value][]> {
         return await call<undefined, [Text, Value][]>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc1_metadata',
             {
                 returnIdlType: IDL.Vec(IDL.Tuple(IDL.Text, Value))
@@ -31,7 +29,7 @@ export default class {
 
     @query([], IDL.Text, { composite: true })
     async icrc1_name(): Promise<string> {
-        return await call<undefined, string>(this.icrcPrincipal, 'icrc1_name', {
+        return await call<undefined, string>(getIcrcPrincipal(), 'icrc1_name', {
             returnIdlType: IDL.Text
         });
     }
@@ -39,7 +37,7 @@ export default class {
     @query([], IDL.Nat8, { composite: true })
     async icrc1_decimals(): Promise<number> {
         return await call<undefined, number>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc1_decimals',
             {
                 returnIdlType: IDL.Nat8
@@ -50,7 +48,7 @@ export default class {
     @query([], IDL.Text, { composite: true })
     async icrc1_symbol(): Promise<string> {
         return await call<undefined, string>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc1_symbol',
             {
                 returnIdlType: IDL.Text
@@ -60,7 +58,7 @@ export default class {
 
     @query([], IDL.Nat, { composite: true })
     async icrc1_fee(): Promise<bigint> {
-        return await call<undefined, bigint>(this.icrcPrincipal, 'icrc1_fee', {
+        return await call<undefined, bigint>(getIcrcPrincipal(), 'icrc1_fee', {
             returnIdlType: IDL.Nat
         });
     }
@@ -68,7 +66,7 @@ export default class {
     @query([], IDL.Nat, { composite: true })
     async icrc1_total_supply(): Promise<bigint> {
         return await call<undefined, bigint>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc1_total_supply',
             {
                 returnIdlType: IDL.Nat
@@ -79,7 +77,7 @@ export default class {
     @query([], IDL.Opt(Account), { composite: true })
     async icrc1_minting_account(): Promise<[Account] | []> {
         return await call<undefined, [Account] | []>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc1_minting_account',
             {
                 returnIdlType: IDL.Opt(Account)
@@ -90,7 +88,7 @@ export default class {
     @query([Account], IDL.Nat, { composite: true })
     async icrc1_balance_of(account: Account): Promise<bigint> {
         return await call<[Account], bigint>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc1_balance_of',
             {
                 paramIdlTypes: [Account],
@@ -103,7 +101,7 @@ export default class {
     @update([TransferArgs], TransferResult)
     async icrc1_transfer(transferArgs: TransferArgs): Promise<TransferResult> {
         return await call<[TransferArgs], TransferResult>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc1_transfer',
             {
                 paramIdlTypes: [TransferArgs],
@@ -116,7 +114,7 @@ export default class {
     @query([], IDL.Vec(SupportedStandard), { composite: true })
     async icrc1_supported_standards(): Promise<SupportedStandard[]> {
         return await call<undefined, SupportedStandard[]>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc1_supported_standards',
             {
                 returnIdlType: IDL.Vec(SupportedStandard)
@@ -127,7 +125,7 @@ export default class {
     @update([ApproveArgs], ApproveResult)
     async icrc2_approve(approveArgs: ApproveArgs): Promise<ApproveResult> {
         return await call<[ApproveArgs], ApproveResult>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc2_approve',
             {
                 paramIdlTypes: [ApproveArgs],
@@ -142,7 +140,7 @@ export default class {
         transferFromArgs: TransferFromArgs
     ): Promise<TransferFromResult> {
         return await call<[TransferFromArgs], TransferFromResult>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc2_transfer_from',
             {
                 paramIdlTypes: [TransferFromArgs],
@@ -157,7 +155,7 @@ export default class {
         allowanceArgs: AllowanceArgs
     ): Promise<AllowanceResult> {
         return await call<[AllowanceArgs], AllowanceResult>(
-            this.icrcPrincipal,
+            getIcrcPrincipal(),
             'icrc2_allowance',
             {
                 paramIdlTypes: [AllowanceArgs],
