@@ -137,13 +137,6 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
             .get_global()
             .set("_azleCallbacks", context.new_object().into());
 
-        context.get_global().set("_azleMethodMeta", {
-            let mut method_meta = context.new_object();
-            method_meta.set("queries", context.new_array().into());
-            method_meta.set("updates", context.new_array().into());
-            method_meta.into()
-        });
-
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());
         context.eval_global_str(format!("globalThis._azleExperimental = true;"));

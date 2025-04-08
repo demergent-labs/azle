@@ -27,17 +27,7 @@ export type CanisterClassMeta = {
     canisterMethodIdlParamTypes: { [key: string]: IDL.FuncClass };
     canisterMethodsIndex: number;
     initAndPostUpgradeIdlTypes: IDL.Type[];
-    definedSystemMethods: DefinedSystemMethods;
     methodMeta: MethodMeta;
-};
-
-type DefinedSystemMethods = {
-    init: boolean;
-    postUpgrade: boolean;
-    preUpgrade: boolean;
-    inspectMessage: boolean;
-    heartbeat: boolean;
-    onLowWasmMemory: boolean;
 };
 
 export type MethodType<This, Args extends unknown[], Return> = (
@@ -165,14 +155,6 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
             canisterMethodIdlParamTypes: {},
             canisterMethodsIndex: 0,
             initAndPostUpgradeIdlTypes: [],
-            definedSystemMethods: {
-                init: false,
-                postUpgrade: false,
-                preUpgrade: false,
-                heartbeat: false,
-                inspectMessage: false,
-                onLowWasmMemory: false
-            },
             methodMeta: {
                 queries: [],
                 updates: []
@@ -189,6 +171,13 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         const indexString = index.toString();
 
         if (canisterMethodMode === 'query') {
+            throwIfMethodAlreadyDefined(
+                name,
+                canisterClassMethodInfo.methodMeta.queries?.find(
+                    (queryMethod) => queryMethod.name === name
+                ) !== undefined
+            );
+
             canisterClassMethodInfo.methodMeta.queries?.push({
                 name,
                 index,
@@ -205,6 +194,13 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         }
 
         if (canisterMethodMode === 'update') {
+            throwIfMethodAlreadyDefined(
+                name,
+                canisterClassMethodInfo.methodMeta.updates?.find(
+                    (updateMethod) => updateMethod.name === name
+                ) !== undefined
+            );
+
             canisterClassMethodInfo.methodMeta.updates?.push({
                 name,
                 index,
@@ -221,17 +217,16 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'init') {
             throwIfMethodAlreadyDefined(
                 'init',
-                canisterClassMethodInfo.definedSystemMethods.init
+                canisterClassMethodInfo.methodMeta.init !== undefined
             );
 
-            canisterClassMethodInfo.definedSystemMethods.init = true;
             canisterClassMethodInfo.methodMeta.init = {
                 name,
                 index
             };
 
             const postUpgradeDefined =
-                canisterClassMethodInfo.definedSystemMethods.postUpgrade;
+                canisterClassMethodInfo.methodMeta.post_upgrade !== undefined;
 
             if (postUpgradeDefined === true) {
                 verifyInitAndPostUpgradeHaveTheSameParams(
@@ -247,17 +242,16 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'postUpgrade') {
             throwIfMethodAlreadyDefined(
                 'postUpgrade',
-                canisterClassMethodInfo.definedSystemMethods.postUpgrade
+                canisterClassMethodInfo.methodMeta.post_upgrade !== undefined
             );
 
-            canisterClassMethodInfo.definedSystemMethods.postUpgrade = true;
             canisterClassMethodInfo.methodMeta.post_upgrade = {
                 name,
                 index
             };
 
             const initDefined =
-                canisterClassMethodInfo.definedSystemMethods.init;
+                canisterClassMethodInfo.methodMeta.init !== undefined;
 
             if (initDefined === true) {
                 verifyInitAndPostUpgradeHaveTheSameParams(
@@ -273,10 +267,9 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'preUpgrade') {
             throwIfMethodAlreadyDefined(
                 'preUpgrade',
-                canisterClassMethodInfo.definedSystemMethods.preUpgrade
+                canisterClassMethodInfo.methodMeta.pre_upgrade !== undefined
             );
 
-            canisterClassMethodInfo.definedSystemMethods.preUpgrade = true;
             canisterClassMethodInfo.methodMeta.pre_upgrade = {
                 name,
                 index
@@ -286,10 +279,9 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'inspectMessage') {
             throwIfMethodAlreadyDefined(
                 'inspectMessage',
-                canisterClassMethodInfo.definedSystemMethods.inspectMessage
+                canisterClassMethodInfo.methodMeta.inspect_message !== undefined
             );
 
-            canisterClassMethodInfo.definedSystemMethods.inspectMessage = true;
             canisterClassMethodInfo.methodMeta.inspect_message = {
                 name,
                 index
@@ -299,10 +291,9 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'heartbeat') {
             throwIfMethodAlreadyDefined(
                 'heartbeat',
-                canisterClassMethodInfo.definedSystemMethods.heartbeat
+                canisterClassMethodInfo.methodMeta.heartbeat !== undefined
             );
 
-            canisterClassMethodInfo.definedSystemMethods.heartbeat = true;
             canisterClassMethodInfo.methodMeta.heartbeat = {
                 name,
                 index
@@ -312,10 +303,10 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'onLowWasmMemory') {
             throwIfMethodAlreadyDefined(
                 'onLowWasmMemory',
-                canisterClassMethodInfo.definedSystemMethods.onLowWasmMemory
+                canisterClassMethodInfo.methodMeta.on_low_wasm_memory !==
+                    undefined
             );
 
-            canisterClassMethodInfo.definedSystemMethods.onLowWasmMemory = true;
             canisterClassMethodInfo.methodMeta.on_low_wasm_memory = {
                 name,
                 index
@@ -403,12 +394,12 @@ function verifyInitAndPostUpgradeHaveTheSameParams(
  * @throws {Error} If the method is already defined
  */
 function throwIfMethodAlreadyDefined(
-    methodName: keyof DefinedSystemMethods,
+    methodName: string,
     isDefined: boolean
 ): void {
     if (isDefined === true) {
         throw new Error(
-            `'@${methodName}' method can only have one definition in a canister class`
+            `'${methodName}' method can only have one definition in the canister`
         );
     }
 }

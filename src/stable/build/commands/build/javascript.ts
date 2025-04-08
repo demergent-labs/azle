@@ -40,21 +40,21 @@ export function handleClassApiCanister(main: string): string {
         });
 
         const visibleMethodIdlParamTypes = Object.fromEntries(
-            Object.entries(canisterClassMeta._azleCanisterMethodIdlParamTypes)
-                .filter(([methodName]) => isMethodVisible(methodName, canisterClassMeta._azleMethodMeta))
+            Object.entries(canisterClassMeta.canisterMethodIdlParamTypes)
+                .filter(([methodName]) => isMethodVisible(methodName, canisterClassMeta.methodMeta))
         );
 
         const canisterIdlType = IDL.Service(visibleMethodIdlParamTypes);
         const candid = idlToString(canisterIdlType, {
             ...getDefaultVisitorData(),
             isFirstService: true,
-            initAndPostUpgradeParamIdlTypes: canisterClassMeta._azleInitAndPostUpgradeIdlTypes
+            initAndPostUpgradeParamIdlTypes: canisterClassMeta.initAndPostUpgradeIdlTypes
         });
 
         globalThis._azleGetCandidAndMethodMeta = () => {
             return JSON.stringify({
                 candid,
-                methodMeta: canisterClassMeta._azleMethodMeta
+                methodMeta: canisterClassMeta.methodMeta
             });
         };
 
@@ -80,14 +80,6 @@ export function handleClassApiCanister(main: string): string {
                 canisterMethodIdlParamTypes: {},
                 canisterMethodsIndex: 0,
                 initAndPostUpgradeIdlTypes: [],
-                definedSystemMethods: {
-                    init: false,
-                    postUpgrade: false,
-                    preUpgrade: false,
-                    heartbeat: false,
-                    inspectMessage: false,
-                    onLowWasmMemory: false
-                },
                 methodMeta: {
                     queries: [],
                     updates: []
@@ -186,7 +178,7 @@ function experimentalMessage(importName: string): string {
 function handleBenchmarking(): string {
     return /*TS*/ `
         if (globalThis.process !== undefined && globalThis.process.env.AZLE_RECORD_BENCHMARKS === 'true') {
-            const methodMeta = canisterClassMeta._azleMethodMeta;
+            const methodMeta = canisterClassMeta.methodMeta;
 
             const canisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
                 if (value === undefined) {

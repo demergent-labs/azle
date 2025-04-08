@@ -38,7 +38,7 @@ export async function executeAndReplyWithCandidSerde(
     paramIdlTypes: IDL.Type[],
     returnIdlType: IDL.Type | undefined,
     manual: boolean,
-    canisterMethodIdlParamTypes: CanisterClassMeta['_azleCanisterMethodIdlParamTypes']
+    canisterMethodIdlParamTypes: CanisterClassMeta['canisterMethodIdlParamTypes']
 ): Promise<void> {
     const decodedArgs = decodeArgs(
         mode,
@@ -68,7 +68,7 @@ function decodeArgs(
     mode: CanisterMethodMode,
     manual: boolean,
     paramIdlTypes: IDL.Type[],
-    canisterMethodIdlParamTypes: CanisterClassMeta['_azleCanisterMethodIdlParamTypes']
+    canisterMethodIdlParamTypes: CanisterClassMeta['canisterMethodIdlParamTypes']
 ): JsonValue[] {
     if (manual === true) {
         return [];

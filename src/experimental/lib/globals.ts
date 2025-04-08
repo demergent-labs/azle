@@ -8,8 +8,6 @@ import * as process from 'process';
 import { URL } from 'url';
 import { v4 } from 'uuid';
 
-import { MethodMeta } from '#utils/types';
-
 import { azleFetch } from './fetch';
 
 export type Callbacks = {
@@ -19,8 +17,6 @@ export type Callbacks = {
 declare global {
     // eslint-disable-next-line no-var
     var _azleCallbacks: Callbacks;
-    // eslint-disable-next-line no-var
-    var _azleMethodMeta: MethodMeta;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
     // eslint-disable-next-line no-var
