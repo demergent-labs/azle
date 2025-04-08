@@ -34,8 +34,8 @@ export function handleClassApiCanister(main: string): string {
             type: 'SET_AZLE_CANISTER_CLASS_META',
             payload: canisterClassMeta,
             location: {
-                filepath: 'azle/src/stable/build/commands/compile/javascript.ts',
-                functionName: 'getCanisterClassMeta'
+                filepath: 'azle/src/stable/build/commands/build/javascript.ts',
+                functionName: 'handleClassApiCanister'
             }
         });
 
@@ -59,17 +59,14 @@ export function handleClassApiCanister(main: string): string {
         };
 
         function getCanisterClassMeta() {
-            const defaultExportIsUndefined = Canister.default === undefined;
-            const defaultExportIsNotAnArray = Array.isArray(Canister.default) === false;
-            const defaultExportIsNotAFunction = typeof Canister.default !== 'function';
-            const defaultExportToStringDoesNotStartWithClass = defaultExportIsUndefined === false && Canister.default.toString().startsWith('class') === false;
-            const defaultExportIsNotAClass = defaultExportIsNotAFunction && defaultExportToStringDoesNotStartWithClass;
-
             if (
-                defaultExportIsUndefined ||
-                (
-                    defaultExportIsNotAnArray &&
-                    defaultExportIsNotAClass
+                Canister.default === undefined ||
+                Canister.default === null || (
+                    Array.isArray(Canister.default) === false &&
+                    isClass(Canister.default) === false
+                ) || (
+                    Array.isArray(Canister.default) === true &&
+                    Canister.default.every((canisterClass) => isClass(canisterClass) === true) === false
                 )
             ) {
                 throw new Error('A class or an array of classes must be the default export from ${main}');
@@ -79,11 +76,11 @@ export function handleClassApiCanister(main: string): string {
 
             // TODO this is terribly mutative...can we do this in a more functional way?
             let canisterClassMeta = {
-                _azleCallbacks: {},
-                _azleCanisterMethodIdlParamTypes: {},
-                _azleCanisterMethodsIndex: 0,
-                _azleInitAndPostUpgradeIdlTypes: [],
-                _azleDefinedSystemMethods: {
+                callbacks: {},
+                canisterMethodIdlParamTypes: {},
+                canisterMethodsIndex: 0,
+                initAndPostUpgradeIdlTypes: [],
+                definedSystemMethods: {
                     init: false,
                     postUpgrade: false,
                     preUpgrade: false,
@@ -91,7 +88,7 @@ export function handleClassApiCanister(main: string): string {
                     inspectMessage: false,
                     onLowWasmMemory: false
                 },
-                _azleMethodMeta: {
+                methodMeta: {
                     queries: [],
                     updates: []
                 }
@@ -103,6 +100,10 @@ export function handleClassApiCanister(main: string): string {
             });
 
             return canisterClassMeta;
+        }
+
+        function isClass(value) {
+            return value !== undefined && value !== null && typeof value === 'function' && value.toString().startsWith('class');
         }
 
         /**

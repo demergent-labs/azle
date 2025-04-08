@@ -14,16 +14,22 @@ import { PostUpgradeOptions } from './post_upgrade';
 import { QueryOptions } from './query';
 import { UpdateOptions } from './update';
 
-export interface CanisterClassMeta {
-    _azleCallbacks: {
+type CanisterClass = {
+    constructor: (new () => unknown) & {
+        _azleCanisterClassMeta: CanisterClassMeta;
+    };
+};
+
+export type CanisterClassMeta = {
+    callbacks: {
         [key: string]: () => Promise<void>;
     };
-    _azleCanisterMethodIdlParamTypes: { [key: string]: IDL.FuncClass };
-    _azleCanisterMethodsIndex: number;
-    _azleInitAndPostUpgradeIdlTypes: IDL.Type[];
-    _azleDefinedSystemMethods: DefinedSystemMethods;
-    _azleMethodMeta: MethodMeta;
-}
+    canisterMethodIdlParamTypes: { [key: string]: IDL.FuncClass };
+    canisterMethodsIndex: number;
+    initAndPostUpgradeIdlTypes: IDL.Type[];
+    definedSystemMethods: DefinedSystemMethods;
+    methodMeta: MethodMeta;
+};
 
 type DefinedSystemMethods = {
     init: boolean;
@@ -154,13 +160,12 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         // decorators, but not exporting that class from the main defined in dfx.json
         // We only ever want canister methods to be registered if they were exported
         // from the main defined in dfx.json
-        let canisterClassMethodInfo = ((this as any).constructor
-            ._azleCanisterClassMeta as CanisterClassMeta) ?? {
-            _azleCallbacks: {},
-            _azleCanisterMethodIdlParamTypes: {},
-            _azleCanisterMethodsIndex: 0,
-            _azleInitAndPostUpgradeIdlTypes: [],
-            _azleDefinedSystemMethods: {
+        let defaultCanisterClassMeta: CanisterClassMeta = {
+            callbacks: {},
+            canisterMethodIdlParamTypes: {},
+            canisterMethodsIndex: 0,
+            initAndPostUpgradeIdlTypes: [],
+            definedSystemMethods: {
                 init: false,
                 postUpgrade: false,
                 preUpgrade: false,
@@ -168,26 +173,30 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                 inspectMessage: false,
                 onLowWasmMemory: false
             },
-            _azleMethodMeta: {
+            methodMeta: {
                 queries: [],
                 updates: []
             }
         };
 
+        let canisterClassMethodInfo =
+            (this as CanisterClass).constructor._azleCanisterClassMeta ??
+            defaultCanisterClassMeta;
+
         const name = context.name as string;
 
-        const index = canisterClassMethodInfo._azleCanisterMethodsIndex++;
+        const index = canisterClassMethodInfo.canisterMethodsIndex++;
         const indexString = index.toString();
 
         if (canisterMethodMode === 'query') {
-            canisterClassMethodInfo._azleMethodMeta.queries?.push({
+            canisterClassMethodInfo.methodMeta.queries?.push({
                 name,
                 index,
                 composite: (options as QueryOptions)?.composite ?? false,
                 hidden: (options as QueryOptions)?.hidden ?? false
             });
 
-            canisterClassMethodInfo._azleCanisterMethodIdlParamTypes[name] =
+            canisterClassMethodInfo.canisterMethodIdlParamTypes[name] =
                 IDL.Func(
                     paramIdlTypes ?? [],
                     returnIdlType === undefined ? [] : [returnIdlType],
@@ -196,13 +205,13 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         }
 
         if (canisterMethodMode === 'update') {
-            canisterClassMethodInfo._azleMethodMeta.updates?.push({
+            canisterClassMethodInfo.methodMeta.updates?.push({
                 name,
                 index,
                 hidden: (options as UpdateOptions)?.hidden ?? false
             });
 
-            canisterClassMethodInfo._azleCanisterMethodIdlParamTypes[name] =
+            canisterClassMethodInfo.canisterMethodIdlParamTypes[name] =
                 IDL.Func(
                     paramIdlTypes ?? [],
                     returnIdlType === undefined ? [] : [returnIdlType]
@@ -212,25 +221,25 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'init') {
             throwIfMethodAlreadyDefined(
                 'init',
-                canisterClassMethodInfo._azleDefinedSystemMethods.init
+                canisterClassMethodInfo.definedSystemMethods.init
             );
 
-            canisterClassMethodInfo._azleDefinedSystemMethods.init = true;
-            canisterClassMethodInfo._azleMethodMeta.init = {
+            canisterClassMethodInfo.definedSystemMethods.init = true;
+            canisterClassMethodInfo.methodMeta.init = {
                 name,
                 index
             };
 
             const postUpgradeDefined =
-                canisterClassMethodInfo._azleDefinedSystemMethods.postUpgrade;
+                canisterClassMethodInfo.definedSystemMethods.postUpgrade;
 
             if (postUpgradeDefined === true) {
                 verifyInitAndPostUpgradeHaveTheSameParams(
                     paramIdlTypes ?? [],
-                    canisterClassMethodInfo._azleInitAndPostUpgradeIdlTypes
+                    canisterClassMethodInfo.initAndPostUpgradeIdlTypes
                 );
             } else {
-                canisterClassMethodInfo._azleInitAndPostUpgradeIdlTypes =
+                canisterClassMethodInfo.initAndPostUpgradeIdlTypes =
                     paramIdlTypes ?? [];
             }
         }
@@ -238,26 +247,25 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'postUpgrade') {
             throwIfMethodAlreadyDefined(
                 'postUpgrade',
-                canisterClassMethodInfo._azleDefinedSystemMethods.postUpgrade
+                canisterClassMethodInfo.definedSystemMethods.postUpgrade
             );
 
-            canisterClassMethodInfo._azleDefinedSystemMethods.postUpgrade =
-                true;
-            canisterClassMethodInfo._azleMethodMeta.post_upgrade = {
+            canisterClassMethodInfo.definedSystemMethods.postUpgrade = true;
+            canisterClassMethodInfo.methodMeta.post_upgrade = {
                 name,
                 index
             };
 
             const initDefined =
-                canisterClassMethodInfo._azleDefinedSystemMethods.init;
+                canisterClassMethodInfo.definedSystemMethods.init;
 
             if (initDefined === true) {
                 verifyInitAndPostUpgradeHaveTheSameParams(
                     paramIdlTypes ?? [],
-                    canisterClassMethodInfo._azleInitAndPostUpgradeIdlTypes
+                    canisterClassMethodInfo.initAndPostUpgradeIdlTypes
                 );
             } else {
-                canisterClassMethodInfo._azleInitAndPostUpgradeIdlTypes =
+                canisterClassMethodInfo.initAndPostUpgradeIdlTypes =
                     paramIdlTypes ?? [];
             }
         }
@@ -265,11 +273,11 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'preUpgrade') {
             throwIfMethodAlreadyDefined(
                 'preUpgrade',
-                canisterClassMethodInfo._azleDefinedSystemMethods.preUpgrade
+                canisterClassMethodInfo.definedSystemMethods.preUpgrade
             );
 
-            canisterClassMethodInfo._azleDefinedSystemMethods.preUpgrade = true;
-            canisterClassMethodInfo._azleMethodMeta.pre_upgrade = {
+            canisterClassMethodInfo.definedSystemMethods.preUpgrade = true;
+            canisterClassMethodInfo.methodMeta.pre_upgrade = {
                 name,
                 index
             };
@@ -278,12 +286,11 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'inspectMessage') {
             throwIfMethodAlreadyDefined(
                 'inspectMessage',
-                canisterClassMethodInfo._azleDefinedSystemMethods.inspectMessage
+                canisterClassMethodInfo.definedSystemMethods.inspectMessage
             );
 
-            canisterClassMethodInfo._azleDefinedSystemMethods.inspectMessage =
-                true;
-            canisterClassMethodInfo._azleMethodMeta.inspect_message = {
+            canisterClassMethodInfo.definedSystemMethods.inspectMessage = true;
+            canisterClassMethodInfo.methodMeta.inspect_message = {
                 name,
                 index
             };
@@ -292,11 +299,11 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'heartbeat') {
             throwIfMethodAlreadyDefined(
                 'heartbeat',
-                canisterClassMethodInfo._azleDefinedSystemMethods.heartbeat
+                canisterClassMethodInfo.definedSystemMethods.heartbeat
             );
 
-            canisterClassMethodInfo._azleDefinedSystemMethods.heartbeat = true;
-            canisterClassMethodInfo._azleMethodMeta.heartbeat = {
+            canisterClassMethodInfo.definedSystemMethods.heartbeat = true;
+            canisterClassMethodInfo.methodMeta.heartbeat = {
                 name,
                 index
             };
@@ -305,19 +312,17 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'onLowWasmMemory') {
             throwIfMethodAlreadyDefined(
                 'onLowWasmMemory',
-                canisterClassMethodInfo._azleDefinedSystemMethods
-                    .onLowWasmMemory
+                canisterClassMethodInfo.definedSystemMethods.onLowWasmMemory
             );
 
-            canisterClassMethodInfo._azleDefinedSystemMethods.onLowWasmMemory =
-                true;
-            canisterClassMethodInfo._azleMethodMeta.on_low_wasm_memory = {
+            canisterClassMethodInfo.definedSystemMethods.onLowWasmMemory = true;
+            canisterClassMethodInfo.methodMeta.on_low_wasm_memory = {
                 name,
                 index
             };
         }
 
-        canisterClassMethodInfo._azleCallbacks[indexString] =
+        canisterClassMethodInfo.callbacks[indexString] =
             async (): Promise<void> => {
                 try {
                     await executeAndReplyWithCandidSerde(
@@ -326,7 +331,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                         paramIdlTypes ?? [],
                         returnIdlType,
                         options?.manual ?? false,
-                        canisterClassMethodInfo._azleCanisterMethodIdlParamTypes
+                        canisterClassMethodInfo.canisterMethodIdlParamTypes
                     );
                 } catch (error) {
                     handleUncaughtError(error);

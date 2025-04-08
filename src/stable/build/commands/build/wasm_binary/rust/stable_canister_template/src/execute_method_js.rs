@@ -27,13 +27,13 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
             .get("_azleCanisterClassMeta")
             .map_err(|e| format!("Failed to get globalThis._azleCanisterClassMeta: {e}"))?;
 
-        let callbacks: Object = canister_class_meta.get("_azleCallbacks").map_err(|e| {
-            format!("Failed to get globalThis._azleCanisterClassMeta._azleCallbacks: {e}")
+        let callbacks: Object = canister_class_meta.get("callbacks").map_err(|e| {
+            format!("Failed to get globalThis._azleCanisterClassMeta.callbacks: {e}")
         })?;
 
         let method_callback: Function = callbacks.get(&function_name).map_err(|e| {
             format!(
-                "Failed to get globalThis._azleCanisterClassMeta._azleCallbacks[{function_name}]: {e}"
+                "Failed to get globalThis._azleCanisterClassMeta.callbacks[{function_name}]: {e}"
             )
         })?;
 
