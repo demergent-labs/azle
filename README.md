@@ -27,6 +27,12 @@ Azle runs in stable mode by default.
 
 This mode is intended for production use after Azle's 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.
 
+To install only the dependencies required for stable mode, run:
+
+```bash
+npm install azle --omit=optional
+```
+
 ## Experimental Mode
 
 Azle runs in experimental mode through explicitly enabling a flag in `dfx.json` or certain CLI commands.
@@ -34,6 +40,12 @@ Azle runs in experimental mode through explicitly enabling a flag in `dfx.json` 
 This mode is intended for developers who are willing to accept the risk of using an alpha or beta project. Its focus is on quickly enabling new features and functionality without requiring the time and other resources necessary to advance them to the stable mode. The Node.js standard libary, npm ecosystem, and HTTP server functionality are also major areas of focus.
 
 > NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.
+
+To install Azle including the optional dependencies required for experimental features (like Node.js APIs and HTTP servers), run:
+
+```bash
+npm install azle
+```
 
 ## Get Started
 
