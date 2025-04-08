@@ -1,6 +1,5 @@
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
-import { createAuthenticatedAgent, whoami } from 'azle/_internal/dfx';
 import {
     defaultPropTestParams,
     expect,
@@ -9,6 +8,10 @@ import {
     please,
     Test
 } from 'azle/_internal/test';
+import {
+    createAuthenticatedAgent,
+    whoami
+} from 'azle/experimental/_internal/dfx';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 

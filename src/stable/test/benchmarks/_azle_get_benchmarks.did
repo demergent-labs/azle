@@ -1,0 +1,9 @@
+type benchmark_entry = record {
+    method_name: text;
+    instructions: nat64;
+    timestamp: nat64;
+};
+
+service: () -> {
+    _azle_get_benchmarks: () -> (vec benchmark_entry) query;
+}

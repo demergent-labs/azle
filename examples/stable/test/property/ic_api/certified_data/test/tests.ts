@@ -1,11 +1,7 @@
 import { ActorSubclass, Certificate, HttpAgent } from '@dfinity/agent';
 import { IDL, lebDecode, PipeArrayBuffer } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import {
-    createAuthenticatedAgent,
-    getCanisterId,
-    whoami
-} from 'azle/_internal/dfx';
+import { getCanisterId } from 'azle/_internal/dfx';
 import {
     defaultPropTestParams,
     expect,
@@ -13,6 +9,10 @@ import {
     it,
     Test
 } from 'azle/_internal/test';
+import {
+    createAuthenticatedAgent,
+    whoami
+} from 'azle/experimental/_internal/dfx';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
