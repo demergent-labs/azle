@@ -21,12 +21,7 @@ import {
 import { Command as ExperimentalCommand } from '#experimental/utils/types';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
-import {
-    CanisterConfig,
-    Command,
-    DevCommand,
-    ExtensionCommand
-} from '#utils/types';
+import { CanisterConfig, Command, SubCommand } from '#utils/types';
 
 import { version as azleVersion } from '../package.json';
 
@@ -170,7 +165,7 @@ async function handleBuildCommand(ioType: IOType): Promise<void> {
 }
 
 async function handleDevCommand(): Promise<void> {
-    const subCommand = process.argv[3] as DevCommand;
+    const subCommand = process.argv[3] as SubCommand['dev'];
 
     if (subCommand === 'setup') {
         handleDevSetupCommand();
@@ -188,7 +183,7 @@ async function handleDevCommand(): Promise<void> {
 }
 
 async function handleExtensionCommand(ioType: IOType): Promise<void> {
-    const subCommand = process.argv[3] as ExtensionCommand;
+    const subCommand = process.argv[3] as SubCommand['extension'];
 
     if (subCommand === 'install') {
         handleExtensionInstallCommand(ioType);

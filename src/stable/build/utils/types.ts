@@ -39,9 +39,15 @@ export type Command =
     | 'new'
     | '--version';
 
-export type ExtensionCommand = 'install';
+type DevSubCommands = {
+    [K in Extract<Command, 'dev'>]: 'setup' | 'template';
+};
 
-export type DevCommand = 'setup' | 'template';
+type ExtensionSubCommands = {
+    [K in Extract<Command, 'extension'>]: 'install';
+};
+
+export type SubCommand = DevSubCommands & ExtensionSubCommands;
 
 export type DfxJson = {
     canisters?: {
