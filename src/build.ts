@@ -124,8 +124,77 @@ function throwIfInvalidCommand(command: string): void {
     );
 }
 
+async function handleExtensionCommand(ioType: IOType): Promise<void> {
+    const subCommand = process.argv[3] as SubCommand['extension'];
+
+    if (subCommand === 'install') {
+        handleExtensionInstallCommand(ioType);
+
+        return;
+    }
+
+    throwIfInvalidCommand(`extension ${subCommand}`);
+}
+
 function handleExtensionInstallCommand(ioType: IOType): void {
     runExtensionInstallCommand(ioType);
+}
+
+async function handleDevCommand(): Promise<void> {
+    const subCommand = process.argv[3] as SubCommand['dev'];
+
+    if (subCommand === 'setup') {
+        handleDevSetupCommand();
+
+        return;
+    }
+
+    if (subCommand === 'template') {
+        await handleDevTemplateCommand('inherit');
+
+        return;
+    }
+
+    throwIfInvalidCommand(`dev ${subCommand}`);
+}
+
+async function handleDevSetupCommand(): Promise<void> {
+    const node = process.argv.includes('--node');
+    const dfx = process.argv.includes('--dfx');
+    // Rust must come before any other dependencies that use the Rust compiler
+    // to ensure that they are compiled with the latest version of Rust
+    const rust = process.argv.includes('--rust');
+    const wasi2ic = process.argv.includes('--wasi2ic');
+
+    if (!node && !dfx && !rust && !wasi2ic) {
+        await runDevSetupCommand({
+            dfx: true,
+            node: true,
+            rust: true,
+            wasi2ic: true
+        });
+    } else {
+        await runDevSetupCommand({ dfx, node, rust, wasi2ic });
+    }
+}
+
+async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
+    const all = process.argv.includes('--all');
+
+    if (all === true) {
+        await runDevTemplateCommand(ioType);
+        await runExperimentalDevTemplateCommand(ioType);
+    } else {
+        const experimental =
+            process.argv.includes('--experimental') ||
+            process.env.AZLE_EXPERIMENTAL === 'true';
+
+        if (experimental === false) {
+            await runDevTemplateCommand(ioType);
+        } else {
+            await runExperimentalDevTemplateCommand(ioType);
+        }
+    }
 }
 
 async function handleUploadAssetsCommand(): Promise<void> {
@@ -161,75 +230,6 @@ async function handleBuildCommand(ioType: IOType): Promise<void> {
         await runBuildCommand(canisterName, canisterConfig, ioType);
     } else {
         await runExperimentalBuildCommand(canisterName, canisterConfig, ioType);
-    }
-}
-
-async function handleDevCommand(): Promise<void> {
-    const subCommand = process.argv[3] as SubCommand['dev'];
-
-    if (subCommand === 'setup') {
-        handleDevSetupCommand();
-
-        return;
-    }
-
-    if (subCommand === 'template') {
-        await handleDevTemplateCommand('inherit');
-
-        return;
-    }
-
-    throwIfInvalidCommand(`dev ${subCommand}`);
-}
-
-async function handleExtensionCommand(ioType: IOType): Promise<void> {
-    const subCommand = process.argv[3] as SubCommand['extension'];
-
-    if (subCommand === 'install') {
-        handleExtensionInstallCommand(ioType);
-
-        return;
-    }
-
-    throwIfInvalidCommand(`extension ${subCommand}`);
-}
-
-async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
-    const all = process.argv.includes('--all');
-
-    if (all === true) {
-        await runDevTemplateCommand(ioType);
-        await runExperimentalDevTemplateCommand(ioType);
-    } else {
-        const experimental =
-            process.argv.includes('--experimental') ||
-            process.env.AZLE_EXPERIMENTAL === 'true';
-
-        if (experimental === false) {
-            await runDevTemplateCommand(ioType);
-        } else {
-            await runExperimentalDevTemplateCommand(ioType);
-        }
-    }
-}
-
-async function handleDevSetupCommand(): Promise<void> {
-    const node = process.argv.includes('--node');
-    const dfx = process.argv.includes('--dfx');
-    // Rust must come before any other dependencies that use the Rust compiler
-    // to ensure that they are compiled with the latest version of Rust
-    const rust = process.argv.includes('--rust');
-    const wasi2ic = process.argv.includes('--wasi2ic');
-
-    if (!node && !dfx && !rust && !wasi2ic) {
-        await runDevSetupCommand({
-            dfx: true,
-            node: true,
-            rust: true,
-            wasi2ic: true
-        });
-    } else {
-        await runDevSetupCommand({ dfx, node, rust, wasi2ic });
     }
 }
 
