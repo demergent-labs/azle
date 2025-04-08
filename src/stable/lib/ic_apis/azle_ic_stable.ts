@@ -4,7 +4,7 @@ import { RejectCode } from './msg_reject_code';
  * The interface for our Rust functions is slightly different than the interface
  * we expose to the users. This is the interface for the Rust functions.
  */
-export type AzleIcStable = {
+export type AzleIc = {
     acceptMessage: () => void;
     callRaw: (
         globalResolveId: string,

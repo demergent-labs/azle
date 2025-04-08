@@ -6,7 +6,7 @@ import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 import { AzleIcExperimental } from '#experimental/lib/ic/azle_ic_experimental';
 
 import { CanisterMethodClassInfo } from './canister_methods';
-import { AzleIcStable } from './ic_apis/azle_ic_stable';
+import { AzleIc } from './ic_apis/azle_ic_stable';
 import { jsonReplacer } from './stable_structures/stable_json';
 import { Action } from './state';
 
@@ -26,7 +26,7 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleIcpReplicaWasmEnvironment: boolean;
     // eslint-disable-next-line no-var
-    var _azleIcStable: AzleIcStable | undefined;
+    var _azleIc: AzleIc | undefined;
     // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
@@ -200,8 +200,8 @@ export function log(...args: any[]): void {
         })
         .join(' ');
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.debugPrint(jsonStringifiedArgs);
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.debugPrint(jsonStringifiedArgs);
     } else if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.debugPrint(jsonStringifiedArgs);
     }

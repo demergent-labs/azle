@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import { join } from 'path';
 
 import { execSyncPretty } from '#utils/exec_sync_pretty';
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 
 export function setupFileWatcher(
     reloadedJsPath: string,
@@ -32,12 +32,12 @@ export function setupFileWatcher(
         'node',
         [
             join(
-                AZLE_PACKAGE_PATH,
+                AZLE_ROOT,
                 'src',
                 'experimental',
                 'build',
                 'commands',
-                'compile',
+                'build',
                 'file_watcher',
                 'file_watcher_loader.js'
             ),

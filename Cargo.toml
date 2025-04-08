@@ -1,10 +1,10 @@
 [workspace]
 resolver = "2"
 members = [
-    "src/experimental/build/commands/compile/wasm_binary/rust/experimental_canister_template",
-    "src/experimental/build/commands/compile/wasm_binary/rust/open_value_sharing",
-    "src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template",
-    "src/stable/build/commands/generate_types/rust/candid_to_ts_js",
+    "src/experimental/build/commands/build/wasm_binary/rust/experimental_canister_template",
+    "src/experimental/build/commands/build/wasm_binary/rust/open_value_sharing",
+    "src/stable/build/commands/build/wasm_binary/rust/stable_canister_template",
+    "src/stable/build/commands/generate/rust/candid_to_ts_js",
 ]
 
 [profile.release]
@@ -19,5 +19,5 @@ codegen-units = 1
 # As of rustc 1.85.0, apparently unwinding doesn't even work
 # You can see that the default panic strategy for the wasm32-wasip1 target is currently set to "abort"
 # wasm base settings: https://github.com/rust-lang/rust/blob/1.85.0/compiler/rustc_target/src/spec/base/wasm.rs#L77
-# wasm32-wasip1 settings use the wasm base settings: https://github.com/rust-lang/rust/blob/1.85.0/compiler/rustc_target/src/spec/targets/wasm32_wasip1.rs#L16 
+# wasm32-wasip1 settings use the wasm base settings: https://github.com/rust-lang/rust/blob/1.85.0/compiler/rustc_target/src/spec/targets/wasm32_wasip1.rs#L16
 panic = "abort"

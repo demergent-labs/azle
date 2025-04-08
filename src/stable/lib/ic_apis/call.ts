@@ -90,7 +90,7 @@ export async function call<
 ): Promise<Return> {
     if (
         globalThis._azleIcExperimental === undefined &&
-        globalThis._azleIcStable === undefined
+        globalThis._azleIc === undefined
     ) {
         return undefined as Return;
     }
@@ -179,10 +179,10 @@ function handleOneWay<Return>(
 ): Promise<Return> {
     if (
         globalThis._azleIcExperimental === undefined &&
-        globalThis._azleIcStable === undefined
+        globalThis._azleIc === undefined
     ) {
         throw new Error(
-            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
         );
     }
 
@@ -199,8 +199,8 @@ function handleOneWay<Return>(
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        globalThis._azleIcStable.notifyRaw(
+    if (globalThis._azleIc !== undefined) {
+        globalThis._azleIc.notifyRaw(
             canisterIdBytes,
             method,
             argsRaw,
@@ -234,10 +234,10 @@ function handleTwoWay<Return>(
 
         if (
             globalThis._azleIcExperimental === undefined &&
-            globalThis._azleIcStable === undefined
+            globalThis._azleIc === undefined
         ) {
             throw new Error(
-                'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
             );
         }
 
@@ -256,8 +256,8 @@ function handleTwoWay<Return>(
             );
         }
 
-        if (globalThis._azleIcStable !== undefined) {
-            globalThis._azleIcStable.callRaw(
+        if (globalThis._azleIc !== undefined) {
+            globalThis._azleIc.callRaw(
                 globalResolveId,
                 globalRejectId,
                 canisterIdBytes,

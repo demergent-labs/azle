@@ -23,8 +23,8 @@ export function performanceCounter(counterType: number): bigint {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.performanceCounter(counterType);
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.performanceCounter(counterType);
     }
 
     return 0n;

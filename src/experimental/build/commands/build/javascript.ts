@@ -7,9 +7,9 @@ import {
     bundle,
     getBuildOptions as getStableBuildOptions,
     handleClassApiCanister
-} from '#commands/compile/javascript';
+} from '#commands/build/javascript';
 import { WASMEDGE_QUICKJS_PATH } from '#experimental/utils/global_paths';
-import { AZLE_PACKAGE_PATH, getDfxRoot } from '#utils/global_paths';
+import { AZLE_ROOT, getDfxRoot } from '#utils/global_paths';
 
 export async function compile(
     main: string,
@@ -145,12 +145,12 @@ export async function getBuildOptions(
     ];
 
     const customJsModulesPath = join(
-        AZLE_PACKAGE_PATH,
+        AZLE_ROOT,
         'src',
         'experimental',
         'build',
         'commands',
-        'compile',
+        'build',
         'custom_js_modules'
     );
 
@@ -206,7 +206,7 @@ export async function getTsConfigPath(): Promise<string> {
     if (existsSync(tsConfigPath)) {
         return tsConfigPath;
     }
-    return join(AZLE_PACKAGE_PATH, 'tsconfig.dev.json');
+    return join(AZLE_ROOT, 'tsconfig.dev.json');
 }
 
 /**

@@ -28,7 +28,7 @@ export function msgReply(data: Uint8Array): void {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        globalThis._azleIcStable.msgReply(data);
+    if (globalThis._azleIc !== undefined) {
+        globalThis._azleIc.msgReply(data);
     }
 }

@@ -1,4 +1,4 @@
-import { ConsumerConfig } from '#experimental/commands/compile/open_value_sharing/consumer';
+import { ConsumerConfig } from '#experimental/commands/build/open_value_sharing/consumer';
 
 export type CandidAndMethodMeta = {
     candid: string;
@@ -31,15 +31,23 @@ export type Context = {
 };
 
 export type Command =
-    | 'compile'
-    | 'install-dfx-extension'
-    | 'install-global-dependencies'
-    | 'template'
-    | 'upload-assets'
-    | '--version'
+    | 'build'
     | 'clean'
+    | 'dev'
+    | 'extension'
+    | 'generate'
     | 'new'
-    | 'generate-types';
+    | '--version';
+
+type DevSubCommands = {
+    [K in Extract<Command, 'dev'>]: 'setup' | 'template';
+};
+
+type ExtensionSubCommands = {
+    [K in Extract<Command, 'extension'>]: 'install';
+};
+
+export type SubCommand = DevSubCommands & ExtensionSubCommands;
 
 export type DfxJson = {
     canisters?: {

@@ -187,7 +187,7 @@ pub fn register(ctx: Ctx) -> Result<()> {
 
     ic.set("trap", trap::get_function(ctx.clone()))?;
 
-    ctx.globals().set("_azleIcStable", ic)?;
+    ctx.globals().set("_azleIc", ic)?;
 
     Ok(())
 }

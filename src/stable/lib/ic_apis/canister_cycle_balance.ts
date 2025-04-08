@@ -20,8 +20,8 @@ export function canisterCycleBalance(): bigint {
         return BigInt(globalThis._azleIcExperimental.canisterCycleBalance());
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return BigInt(globalThis._azleIcStable.canisterCycleBalance());
+    if (globalThis._azleIc !== undefined) {
+        return BigInt(globalThis._azleIc.canisterCycleBalance());
     }
 
     return 0n;

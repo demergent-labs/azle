@@ -89,7 +89,7 @@ pub fn initialize_js(
 
         globals.set("_azleIcpReplicaWasmEnvironment", true)?;
 
-        // initializes globalThis._azleIcStable
+        // initializes globalThis._azleIc
         register(ctx.clone())?;
 
         if init {

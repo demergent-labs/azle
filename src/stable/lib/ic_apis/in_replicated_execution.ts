@@ -12,8 +12,8 @@ export function inReplicatedExecution(): boolean {
         return globalThis._azleIcExperimental.inReplicatedExecution();
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.inReplicatedExecution();
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.inReplicatedExecution();
     }
 
     return false;

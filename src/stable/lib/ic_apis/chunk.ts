@@ -25,7 +25,7 @@ import { canisterSelf } from './canister_self';
  */
 export async function chunk(): Promise<void> {
     if (
-        globalThis._azleIcStable === undefined &&
+        globalThis._azleIc === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
         return undefined;

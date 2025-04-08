@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 
 import { generateMarkdownReport } from './markdown';
 import { Statistics } from './statistics';
@@ -12,7 +12,7 @@ export type StableAndExperimentalStatistics = {
     experimental: Statistics;
 };
 
-const RESULTS_FILE = join(AZLE_PACKAGE_PATH, 'benchmarks.json');
+const RESULTS_FILE = join(AZLE_ROOT, 'benchmarks.json');
 const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
 
 /**

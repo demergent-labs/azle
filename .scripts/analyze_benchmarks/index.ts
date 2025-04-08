@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { AZLE_PACKAGE_PATH } from '#utils/global_paths';
+import { AZLE_ROOT } from '#utils/global_paths';
 
 import { version as currentAzleVersion } from '../../package.json';
 import { extractBenchmarksEntriesFromFiles } from './extractor';
@@ -17,10 +17,10 @@ async function analyzeBenchmarksForVersion(
     targetVersion: string
 ): Promise<StableAndExperimentalStatistics> {
     const stableBenchmarkFilePaths = await findBenchmarkFiles(
-        join(AZLE_PACKAGE_PATH, 'examples', 'stable')
+        join(AZLE_ROOT, 'examples', 'stable')
     );
     const experimentalBenchmarkFilePaths = await findBenchmarkFiles(
-        join(AZLE_PACKAGE_PATH, 'examples', 'experimental')
+        join(AZLE_ROOT, 'examples', 'experimental')
     );
 
     const stableBenchmarkEntriesByVersion =
