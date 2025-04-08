@@ -23,8 +23,8 @@ export function isController(principal: Principal): boolean {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.isController(principal.toUint8Array());
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.isController(principal.toUint8Array());
     }
 
     return false;

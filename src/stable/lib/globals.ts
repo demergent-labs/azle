@@ -26,7 +26,7 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleIcpReplicaWasmEnvironment: boolean;
     // eslint-disable-next-line no-var
-    var _azleIcStable: AzleIcStable | undefined;
+    var _azleIc: AzleIcStable | undefined;
     // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
@@ -200,8 +200,8 @@ export function log(...args: any[]): void {
         })
         .join(' ');
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.debugPrint(jsonStringifiedArgs);
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.debugPrint(jsonStringifiedArgs);
     } else if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.debugPrint(jsonStringifiedArgs);
     }

@@ -34,7 +34,7 @@ export function setTimerInterval(
     callback: () => void | Promise<void>
 ): bigint {
     if (
-        globalThis._azleIcStable === undefined &&
+        globalThis._azleIc === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
         return 0n;
@@ -49,11 +49,11 @@ export function setTimerInterval(
                       interval.toString()
                   )
               )
-            : globalThis._azleIcStable !== undefined
-              ? globalThis._azleIcStable.setTimerInterval(interval)
+            : globalThis._azleIc !== undefined
+              ? globalThis._azleIc.setTimerInterval(interval)
               : ((): never => {
                     throw new Error(
-                        'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                        'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                     );
                 })();
 

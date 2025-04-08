@@ -22,7 +22,7 @@ export function msgReject(message: string): void {
         globalThis._azleIcExperimental.msgReject(message);
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        globalThis._azleIcStable.msgReject(message);
+    if (globalThis._azleIc !== undefined) {
+        globalThis._azleIc.msgReject(message);
     }
 }

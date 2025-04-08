@@ -22,7 +22,7 @@ import { deleteGlobalTimerCallbacks } from './set_timer';
  */
 export function clearTimer(timerId: bigint): void {
     if (
-        globalThis._azleIcStable === undefined &&
+        globalThis._azleIc === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
         return;
@@ -32,8 +32,8 @@ export function clearTimer(timerId: bigint): void {
         globalThis._azleIcExperimental.clearTimer(timerId.toString());
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        globalThis._azleIcStable.clearTimer(timerId.toString());
+    if (globalThis._azleIc !== undefined) {
+        globalThis._azleIc.clearTimer(timerId.toString());
     }
 
     deleteGlobalTimerCallbacks(timerId);

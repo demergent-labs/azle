@@ -19,8 +19,8 @@ export function candidEncode(candidString: string): Uint8Array {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.candidEncode(candidString);
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.candidEncode(candidString);
     }
 
     return new Uint8Array();

@@ -3,7 +3,7 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
-import { runCommand as runStableBuildCommand } from '#commands/build/index';
+import { runCommand as runBuildCommand } from '#commands/build/index';
 import { runCommand as runCleanCommand } from '#commands/clean';
 import { runCommand as runDevSetupCommand } from '#commands/dev/setup/index';
 import { runCommand as runDevTemplateCommand } from '#commands/dev/template';
@@ -12,7 +12,7 @@ import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runNewCommand } from '#commands/new';
 import { runCommand as runVersionCommand } from '#commands/version';
 import { runCommand as runExperimentalBuildCommand } from '#experimental/commands/build/index';
-import { runCommand as runExperimentalTemplateCommand } from '#experimental/commands/dev/template';
+import { runCommand as runExperimentalDevTemplateCommand } from '#experimental/commands/dev/template';
 import { runCommand as runExperimentalUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
 import {
     experimentalMessageCli,
@@ -23,7 +23,7 @@ import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
 import {
     CanisterConfig,
-    Command as StableCommand,
+    Command,
     DevCommand,
     ExtensionCommand
 } from '#utils/types';
@@ -60,7 +60,7 @@ build();
 
 async function build(): Promise<void> {
     const command = process.argv[2] as
-        | StableCommand
+        | Command
         | ExperimentalCommand
         | undefined;
 
@@ -163,7 +163,7 @@ async function handleBuildCommand(ioType: IOType): Promise<void> {
     if (experimental === false) {
         checkForExperimentalDfxJsonFields(canisterConfig);
 
-        await runStableBuildCommand(canisterName, canisterConfig, ioType);
+        await runBuildCommand(canisterName, canisterConfig, ioType);
     } else {
         await runExperimentalBuildCommand(canisterName, canisterConfig, ioType);
     }
@@ -204,7 +204,7 @@ async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
 
     if (all === true) {
         await runDevTemplateCommand(ioType);
-        await runExperimentalTemplateCommand(ioType);
+        await runExperimentalDevTemplateCommand(ioType);
     } else {
         const experimental =
             process.argv.includes('--experimental') ||
@@ -213,7 +213,7 @@ async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
         if (experimental === false) {
             await runDevTemplateCommand(ioType);
         } else {
-            await runExperimentalTemplateCommand(ioType);
+            await runExperimentalDevTemplateCommand(ioType);
         }
     }
 }

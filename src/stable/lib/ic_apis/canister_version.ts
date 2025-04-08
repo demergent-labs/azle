@@ -25,8 +25,8 @@ export function canisterVersion(): bigint {
         return BigInt(globalThis._azleIcExperimental.canisterVersion());
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.canisterVersion();
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.canisterVersion();
     }
 
     return 0n;

@@ -20,8 +20,8 @@ export function msgArgData(): Uint8Array {
         return new Uint8Array(globalThis._azleIcExperimental.msgArgData());
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.msgArgData();
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.msgArgData();
     }
 
     return new Uint8Array();

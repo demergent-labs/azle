@@ -2,8 +2,7 @@
 
 import { execSync } from 'child_process';
 import { existsSync, statSync } from 'fs'; // Keep some sync methods for simplicity
-import * as fs from 'fs/promises';
-import { rm } from 'fs/promises';
+import { readdir, rm } from 'fs/promises';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -48,7 +47,7 @@ async function cleanProjects(directory: string): Promise<void> {
         }
 
         // Read all entries in the current directory
-        const entries = await fs.readdir(directory);
+        const entries = await readdir(directory);
 
         // Process subdirectories
         for (const entry of entries) {

@@ -19,10 +19,8 @@ export function msgCyclesAccept(maxAmount: bigint): bigint {
         );
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return BigInt(
-            globalThis._azleIcStable.msgCyclesAccept(maxAmount.toString())
-        );
+    if (globalThis._azleIc !== undefined) {
+        return BigInt(globalThis._azleIc.msgCyclesAccept(maxAmount.toString()));
     }
 
     return 0n;

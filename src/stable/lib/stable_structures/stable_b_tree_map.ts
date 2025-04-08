@@ -65,8 +65,8 @@ export class StableBTreeMap<Key = any, Value = any> {
                 );
             }
 
-            if (globalThis._azleIcStable !== undefined) {
-                globalThis._azleIcStable.stableBTreeMapInit(memoryId);
+            if (globalThis._azleIc !== undefined) {
+                globalThis._azleIc.stableBTreeMapInit(memoryId);
             }
         }
     }
@@ -79,7 +79,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     containsKey(key: Key): boolean {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined as any;
@@ -96,15 +96,15 @@ export class StableBTreeMap<Key = any, Value = any> {
             );
         }
 
-        if (globalThis._azleIcStable !== undefined) {
-            return globalThis._azleIcStable.stableBTreeMapContainsKey(
+        if (globalThis._azleIc !== undefined) {
+            return globalThis._azleIc.stableBTreeMapContainsKey(
                 this.memoryId,
                 encodedKey
             );
         }
 
         throw new Error(
-            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
         );
     }
 
@@ -116,7 +116,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     get(key: Key): Value | undefined {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined;
@@ -132,14 +132,14 @@ export class StableBTreeMap<Key = any, Value = any> {
                           ? encodedKey.buffer
                           : new Uint8Array(encodedKey).buffer
                   )
-                : globalThis._azleIcStable !== undefined
-                  ? globalThis._azleIcStable.stableBTreeMapGet(
+                : globalThis._azleIc !== undefined
+                  ? globalThis._azleIc.stableBTreeMapGet(
                         this.memoryId,
                         encodedKey
                     )
                   : ((): never => {
                         throw new Error(
-                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                         );
                     })();
 
@@ -165,7 +165,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     insert(key: Key, value: Value): Value | undefined {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined;
@@ -185,15 +185,15 @@ export class StableBTreeMap<Key = any, Value = any> {
                           ? encodedValue.buffer
                           : new Uint8Array(encodedValue).buffer
                   )
-                : globalThis._azleIcStable !== undefined
-                  ? globalThis._azleIcStable.stableBTreeMapInsert(
+                : globalThis._azleIc !== undefined
+                  ? globalThis._azleIc.stableBTreeMapInsert(
                         this.memoryId,
                         encodedKey,
                         encodedValue
                     )
                   : ((): never => {
                         throw new Error(
-                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                         );
                     })();
 
@@ -215,7 +215,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     isEmpty(): boolean {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined as any;
@@ -227,14 +227,12 @@ export class StableBTreeMap<Key = any, Value = any> {
             );
         }
 
-        if (globalThis._azleIcStable !== undefined) {
-            return globalThis._azleIcStable.stableBTreeMapIsEmpty(
-                this.memoryId
-            );
+        if (globalThis._azleIc !== undefined) {
+            return globalThis._azleIc.stableBTreeMapIsEmpty(this.memoryId);
         }
 
         throw new Error(
-            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
         );
     }
 
@@ -248,7 +246,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     items(startIndex?: number, length?: number): [Key, Value][] {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined as any;
@@ -273,15 +271,15 @@ export class StableBTreeMap<Key = any, Value = any> {
                       startIndex?.toString() ?? '0',
                       length?.toString() ?? 'NOT_SET'
                   )
-                : globalThis._azleIcStable !== undefined
-                  ? globalThis._azleIcStable.stableBTreeMapItems(
+                : globalThis._azleIc !== undefined
+                  ? globalThis._azleIc.stableBTreeMapItems(
                         this.memoryId,
                         startIndex,
                         length
                     )
                   : ((): never => {
                         throw new Error(
-                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                         );
                     })();
 
@@ -311,7 +309,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     keys(startIndex?: number, length?: number): Key[] {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined as any;
@@ -336,15 +334,15 @@ export class StableBTreeMap<Key = any, Value = any> {
                       startIndex?.toString() ?? '0',
                       length?.toString() ?? 'NOT_SET'
                   )
-                : globalThis._azleIcStable !== undefined
-                  ? globalThis._azleIcStable.stableBTreeMapKeys(
+                : globalThis._azleIc !== undefined
+                  ? globalThis._azleIc.stableBTreeMapKeys(
                         this.memoryId,
                         startIndex,
                         length
                     )
                   : ((): never => {
                         throw new Error(
-                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                         );
                     })();
 
@@ -364,7 +362,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     len(): number {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined as any;
@@ -378,12 +376,12 @@ export class StableBTreeMap<Key = any, Value = any> {
             );
         }
 
-        if (globalThis._azleIcStable !== undefined) {
-            return globalThis._azleIcStable.stableBTreeMapLen(this.memoryId);
+        if (globalThis._azleIc !== undefined) {
+            return globalThis._azleIc.stableBTreeMapLen(this.memoryId);
         }
 
         throw new Error(
-            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
         );
     }
 
@@ -395,7 +393,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     remove(key: Key): Value | undefined {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined;
@@ -411,14 +409,14 @@ export class StableBTreeMap<Key = any, Value = any> {
                           ? encodedKey.buffer
                           : new Uint8Array(encodedKey).buffer
                   )
-                : globalThis._azleIcStable !== undefined
-                  ? globalThis._azleIcStable.stableBTreeMapRemove(
+                : globalThis._azleIc !== undefined
+                  ? globalThis._azleIc.stableBTreeMapRemove(
                         this.memoryId,
                         encodedKey
                     )
                   : ((): never => {
                         throw new Error(
-                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                         );
                     })();
 
@@ -442,7 +440,7 @@ export class StableBTreeMap<Key = any, Value = any> {
      */
     values(startIndex?: number, length?: number): Value[] {
         if (
-            globalThis._azleIcStable === undefined &&
+            globalThis._azleIc === undefined &&
             globalThis._azleIcExperimental === undefined
         ) {
             return undefined as any;
@@ -467,15 +465,15 @@ export class StableBTreeMap<Key = any, Value = any> {
                       startIndex?.toString() ?? '0',
                       length?.toString() ?? 'NOT_SET'
                   )
-                : globalThis._azleIcStable !== undefined
-                  ? globalThis._azleIcStable.stableBTreeMapValues(
+                : globalThis._azleIc !== undefined
+                  ? globalThis._azleIc.stableBTreeMapValues(
                         this.memoryId,
                         startIndex,
                         length
                     )
                   : ((): never => {
                         throw new Error(
-                            'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                         );
                     })();
 

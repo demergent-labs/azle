@@ -16,8 +16,8 @@ export function msgRejectMsg(): string {
         return globalThis._azleIcExperimental.msgRejectMsg();
     }
 
-    if (globalThis._azleIcStable !== undefined) {
-        return globalThis._azleIcStable.msgRejectMsg();
+    if (globalThis._azleIc !== undefined) {
+        return globalThis._azleIc.msgRejectMsg();
     }
 
     return '';
