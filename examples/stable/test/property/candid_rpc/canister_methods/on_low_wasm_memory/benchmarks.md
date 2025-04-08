@@ -1,22 +1,17 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name     | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | --------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | addRandomBytes  | 1_206_987    | 1_072_794 | $0.0000014265 | $1.42             |
-| 1   | addRandomBytes  | 1_138_446    | 1_045_378 | $0.0000013900 | $1.39             |
-| 2   | addRandomBytes  | 1_139_811    | 1_045_924 | $0.0000013907 | $1.39             |
-| 3   | addRandomBytes  | 1_140_641    | 1_046_256 | $0.0000013912 | $1.39             |
-| 4   | addRandomBytes  | 1_140_932    | 1_046_372 | $0.0000013913 | $1.39             |
-| 5   | addRandomBytes  | 1_137_561    | 1_045_024 | $0.0000013895 | $1.38             |
-| 6   | addRandomBytes  | 1_140_374    | 1_046_149 | $0.0000013910 | $1.39             |
-| 7   | addRandomBytes  | 1_137_659    | 1_045_063 | $0.0000013896 | $1.38             |
-| 8   | addRandomBytes  | 1_138_193    | 1_045_277 | $0.0000013899 | $1.38             |
-| 9   | addRandomBytes  | 1_137_162    | 1_044_864 | $0.0000013893 | $1.38             |
-| 10  | onLowWasmMemory | 99_500       | 629_800   | $0.0000008374 | $0.83             |
+| 0   | addRandomBytes  | 1_206_245    | 1_072_498 | $0.0000014261 | $1.42             |
+| 1   | addRandomBytes  | 1_136_095    | 1_044_438 | $0.0000013888 | $1.38             |
+| 2   | addRandomBytes  | 1_137_376    | 1_044_950 | $0.0000013894 | $1.38             |
+| 3   | addRandomBytes  | 1_141_370    | 1_046_548 | $0.0000013916 | $1.39             |
+| 4   | addRandomBytes  | 1_139_106    | 1_045_642 | $0.0000013904 | $1.39             |
+| 5   | addRandomBytes  | 1_138_581    | 1_045_432 | $0.0000013901 | $1.39             |
+| 6   | addRandomBytes  | 1_139_888    | 1_045_955 | $0.0000013908 | $1.39             |
+| 7   | onLowWasmMemory | 100_506      | 630_202   | $0.0000008380 | $0.83             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

@@ -1,18 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name                        | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ---------------------------------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | postUpgrade                        | 1_000_477_124 | 800_780_849 | $0.0010647743 | $1_064.77         |
-| 1   | getDataCertificateInUpdate         | 1_709_705     | 1_273_882   | $0.0000016938 | $1.69             |
-| 2   | setData                            | 1_238_515     | 1_085_406   | $0.0000014432 | $1.44             |
-| 3   | getDataCertificateInUpdate         | 1_689_371     | 1_265_748   | $0.0000016830 | $1.68             |
-| 4   | setData                            | 1_235_167     | 1_084_066   | $0.0000014415 | $1.44             |
-| 5   | assertDataCertificateTypesInUpdate | 1_116_748     | 1_036_699   | $0.0000013785 | $1.37             |
-| 6   | assertSetCertifiedDataTypes        | 1_409_218     | 1_153_687   | $0.0000015340 | $1.53             |
+| 0   | postUpgrade                        | 1_003_651_225 | 802_050_490 | $0.0010664625 | $1_066.46         |
+| 1   | getDataCertificateInUpdate         | 1_710_957     | 1_274_382   | $0.0000016945 | $1.69             |
+| 2   | setData                            | 1_239_370     | 1_085_748   | $0.0000014437 | $1.44             |
+| 3   | getDataCertificateInUpdate         | 1_690_286     | 1_266_114   | $0.0000016835 | $1.68             |
+| 4   | setData                            | 1_241_822     | 1_086_728   | $0.0000014450 | $1.44             |
+| 5   | assertDataCertificateTypesInUpdate | 1_112_914     | 1_035_165   | $0.0000013764 | $1.37             |
+| 6   | assertSetCertifiedDataTypes        | 1_409_523     | 1_153_809   | $0.0000015342 | $1.53             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

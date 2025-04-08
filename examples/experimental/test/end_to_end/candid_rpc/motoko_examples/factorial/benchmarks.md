@@ -1,16 +1,14 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for factorial
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | fac         | 1_252_001    | 1_090_800 | $0.0000014504 | $1.45             | <font color="red">+207</font>     |
-| 1   | fac         | 1_253_110    | 1_091_244 | $0.0000014510 | $1.45             | <font color="red">+2_427</font>   |
-| 2   | fac         | 1_710_324    | 1_274_129 | $0.0000016942 | $1.69             | <font color="red">+2_470</font>   |
-| 3   | fac         | 2_948_775    | 1_769_510 | $0.0000023529 | $2.35             | <font color="red">+7_840</font>   |
-| 4   | fac         | 5_462_998    | 2_775_199 | $0.0000036901 | $3.69             | <font color="green">-4_588</font> |
+| 0   | fac         | 1_253_584    | 1_091_433 | $0.0000014512 | $1.45             | <font color="red">+1_790</font>   |
+| 1   | fac         | 1_255_034    | 1_092_013 | $0.0000014520 | $1.45             | <font color="red">+4_351</font>   |
+| 2   | fac         | 1_712_024    | 1_274_809 | $0.0000016951 | $1.69             | <font color="red">+4_170</font>   |
+| 3   | fac         | 2_945_331    | 1_768_132 | $0.0000023510 | $2.35             | <font color="red">+4_396</font>   |
+| 4   | fac         | 5_465_355    | 2_776_142 | $0.0000036914 | $3.69             | <font color="green">-2_231</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

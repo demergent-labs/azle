@@ -8,13 +8,9 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1435450"
-                    },
+                    "instructions": "6714086",
                     "method_name": "alwaysReplyUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977013153117334"
-                    }
+                    "timestamp": "1744140130797971021"
                 }
             ]
         }

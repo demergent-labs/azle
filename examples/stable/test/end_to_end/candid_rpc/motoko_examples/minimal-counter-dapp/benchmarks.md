@@ -1,15 +1,13 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for minimal_dapp
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | count       | 1_234_382    | 1_083_752 | $0.0000014410 | $1.44             | <font color="red">+2_263</font> |
-| 1   | count       | 1_179_137    | 1_061_654 | $0.0000014116 | $1.41             | <font color="red">+2_111</font> |
-| 2   | reset       | 1_180_317    | 1_062_126 | $0.0000014123 | $1.41             | <font color="red">+790</font>   |
-| 3   | count       | 1_188_649    | 1_065_459 | $0.0000014167 | $1.41             | <font color="red">+2_614</font> |
+| 0   | count       | 1_236_202    | 1_084_480 | $0.0000014420 | $1.44             | <font color="red">+4_083</font> |
+| 1   | count       | 1_179_885    | 1_061_954 | $0.0000014120 | $1.41             | <font color="red">+2_859</font> |
+| 2   | reset       | 1_179_620    | 1_061_848 | $0.0000014119 | $1.41             | <font color="red">+93</font>    |
+| 3   | count       | 1_187_436    | 1_064_974 | $0.0000014161 | $1.41             | <font color="red">+1_401</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

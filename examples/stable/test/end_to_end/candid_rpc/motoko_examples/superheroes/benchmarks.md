@@ -1,17 +1,15 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for superheroes
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | create      | 3_744_152    | 2_087_660 | $0.0000027759 | $2.77             | <font color="green">-1_046</font> |
-| 1   | create      | 4_809_998    | 2_513_999 | $0.0000033428 | $3.34             | <font color="red">+1_079</font>   |
-| 2   | update      | 5_159_014    | 2_653_605 | $0.0000035284 | $3.52             | <font color="red">+1_117</font>   |
-| 3   | update      | 3_609_145    | 2_033_658 | $0.0000027041 | $2.70             | <font color="red">+10_379</font>  |
-| 4   | deleteHero  | 1_279_671    | 1_101_868 | $0.0000014651 | $1.46             | <font color="red">+2_566</font>   |
-| 5   | deleteHero  | 1_264_361    | 1_095_744 | $0.0000014570 | $1.45             | <font color="red">+538</font>     |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | create      | 3_746_979    | 2_088_791 | $0.0000027774 | $2.77             | <font color="red">+1_781</font>  |
+| 1   | create      | 4_826_786    | 2_520_714 | $0.0000033517 | $3.35             | <font color="red">+17_867</font> |
+| 2   | update      | 5_175_364    | 2_660_145 | $0.0000035371 | $3.53             | <font color="red">+17_467</font> |
+| 3   | update      | 3_601_586    | 2_030_634 | $0.0000027001 | $2.70             | <font color="red">+2_820</font>  |
+| 4   | deleteHero  | 1_276_901    | 1_100_760 | $0.0000014636 | $1.46             | <font color="green">-204</font>  |
+| 5   | deleteHero  | 1_264_311    | 1_095_724 | $0.0000014570 | $1.45             | <font color="red">+488</font>    |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

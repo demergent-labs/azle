@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for recursion
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ------------------ | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | testRecServiceCall | 6_515_107    | 3_196_042 | $0.0000042497 | $4.24             | <font color="red">+45_750</font> |
+| 0   | testRecServiceCall | 6_525_192    | 3_200_076 | $0.0000042550 | $4.25             | <font color="red">+55_835</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 
@@ -20,7 +18,7 @@
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                              |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 989_597_239  | 396_428_895 | $0.0005271196 | $527.11           | <font color="red">+2_703_397</font> |
+| 0   | init        | 992_290_795  | 397_506_318 | $0.0005285522 | $528.55           | <font color="red">+5_396_953</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

@@ -63,58 +63,34 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "2079885"
-                    },
+                    "instructions": "2081672",
                     "method_name": "addTodo",
-                    "timestamp": {
-                        "__bigint__": "1741977070320914005"
-                    }
+                    "timestamp": "1744140149802721329"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1787765"
-                    },
+                    "instructions": "1789043",
                     "method_name": "addTodo",
-                    "timestamp": {
-                        "__bigint__": "1741977070805326485"
-                    }
+                    "timestamp": "1744140150045755216"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1055932"
-                    },
+                    "instructions": "1057794",
                     "method_name": "completeTodo",
-                    "timestamp": {
-                        "__bigint__": "1741977071046879326"
-                    }
+                    "timestamp": "1744140150541276602"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "988737"
-                    },
+                    "instructions": "988058",
                     "method_name": "clearCompleted",
-                    "timestamp": {
-                        "__bigint__": "1741977071290136745"
-                    }
+                    "timestamp": "1744140150784941173"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1048851"
-                    },
+                    "instructions": "1049381",
                     "method_name": "completeTodo",
-                    "timestamp": {
-                        "__bigint__": "1741977071531626376"
-                    }
+                    "timestamp": "1744140151030763123"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "970064"
-                    },
+                    "instructions": "969971",
                     "method_name": "clearCompleted",
-                    "timestamp": {
-                        "__bigint__": "1741977071795749672"
-                    }
+                    "timestamp": "1744140151276761712"
                 }
             ]
         }

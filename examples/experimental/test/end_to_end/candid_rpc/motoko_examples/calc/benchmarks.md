@@ -1,17 +1,15 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for calc
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | add         | 1_273_338    | 1_099_335 | $0.0000014618 | $1.46             | <font color="green">-2_353</font> |
-| 1   | sub         | 1_249_748    | 1_089_899 | $0.0000014492 | $1.44             | <font color="green">-4_339</font> |
-| 2   | mul         | 1_249_278    | 1_089_711 | $0.0000014490 | $1.44             | <font color="green">-4_339</font> |
-| 3   | div         | 1_614_239    | 1_235_695 | $0.0000016431 | $1.64             | <font color="red">+695</font>     |
-| 4   | clearall    | 853_238      | 931_295   | $0.0000012383 | $1.23             | <font color="green">-1_749</font> |
-| 5   | add         | 1_249_214    | 1_089_685 | $0.0000014489 | $1.44             | <font color="green">-4_644</font> |
+| 0   | add         | 1_272_747    | 1_099_098 | $0.0000014614 | $1.46             | <font color="green">-2_944</font> |
+| 1   | sub         | 1_248_557    | 1_089_422 | $0.0000014486 | $1.44             | <font color="green">-5_530</font> |
+| 2   | mul         | 1_248_087    | 1_089_234 | $0.0000014483 | $1.44             | <font color="green">-5_530</font> |
+| 3   | div         | 1_608_894    | 1_233_557 | $0.0000016402 | $1.64             | <font color="green">-4_650</font> |
+| 4   | clearall    | 853_323      | 931_329   | $0.0000012384 | $1.23             | <font color="green">-1_664</font> |
+| 5   | add         | 1_247_564    | 1_089_025 | $0.0000014480 | $1.44             | <font color="green">-6_294</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

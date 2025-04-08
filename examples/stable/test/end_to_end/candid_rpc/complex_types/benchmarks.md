@@ -1,15 +1,13 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for complex_types
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
 | --- | -------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | createUser     | 19_639_864   | 8_445_945  | $0.0000112303 | $11.23            | <font color="green">-2_094</font>  |
-| 1   | createThread   | 20_869_080   | 8_937_632  | $0.0000118841 | $11.88            | <font color="green">-14_117</font> |
-| 2   | createPost     | 23_397_714   | 9_949_085  | $0.0000132290 | $13.22            | <font color="red">+7_927</font>    |
-| 3   | createReaction | 26_446_089   | 11_168_435 | $0.0000148503 | $14.85            | <font color="green">-32_109</font> |
+| 0   | createUser     | 19_618_970   | 8_437_588  | $0.0000112192 | $11.21            | <font color="green">-22_988</font> |
+| 1   | createThread   | 20_841_289   | 8_926_515  | $0.0000118693 | $11.86            | <font color="green">-41_908</font> |
+| 2   | createPost     | 23_372_688   | 9_939_075  | $0.0000132157 | $13.21            | <font color="green">-17_099</font> |
+| 3   | createReaction | 26_459_286   | 11_173_714 | $0.0000148574 | $14.85            | <font color="green">-18_912</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

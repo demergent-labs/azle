@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for complex_init
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 4_829_178_798 | 3_532_261_519 | $0.0046967422 | $4_696.74         | <font color="red">+4_686_780</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init        | 4_864_458_074 | 3_546_373_229 | $0.0047155061 | $4_715.50         | <font color="red">+39_966_056</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 
@@ -18,9 +16,9 @@
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 4_827_652_047 | 3_531_650_818 | $0.0046959301 | $4_695.93         | <font color="red">+4_777_442</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init        | 4_862_865_989 | 3_545_736_395 | $0.0047146593 | $4_714.65         | <font color="red">+39_991_384</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

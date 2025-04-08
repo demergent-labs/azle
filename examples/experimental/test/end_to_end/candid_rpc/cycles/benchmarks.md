@@ -1,14 +1,12 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for cycles
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | receiveCycles | 1_144_098    | 1_047_639 | $0.0000013930 | $1.39             | <font color="green">-668</font>   |
-| 1   | receiveCycles | 1_229_078    | 1_081_631 | $0.0000014382 | $1.43             | <font color="green">-1_184</font> |
-| 2   | receiveCycles | 1_229_850    | 1_081_940 | $0.0000014386 | $1.43             | <font color="green">-1_831</font> |
+| Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | receiveCycles | 1_147_115    | 1_048_846 | $0.0000013946 | $1.39             | <font color="red">+2_349</font> |
+| 1   | receiveCycles | 1_232_428    | 1_082_971 | $0.0000014400 | $1.43             | <font color="red">+2_166</font> |
+| 2   | receiveCycles | 1_234_081    | 1_083_632 | $0.0000014409 | $1.44             | <font color="red">+2_400</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 
@@ -22,10 +20,10 @@
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                                |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | sendCycles       | 1_400_683    | 1_150_273 | $0.0000015295 | $1.52             | <font color="green">-9_179_719</font> |
-| 1   | sendCyclesNotify | 1_719_943    | 1_277_977 | $0.0000016993 | $1.69             | <font color="green">-159</font>       |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | sendCycles       | 10_588_504   | 4_825_401 | $0.0000064162 | $6.41             | <font color="red">+8_102</font> |
+| 1   | sendCyclesNotify | 1_724_111    | 1_279_644 | $0.0000017015 | $1.70             | <font color="red">+4_009</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

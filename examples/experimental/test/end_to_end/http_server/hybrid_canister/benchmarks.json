@@ -36,31 +36,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "7520606220"
-                    },
+                    "instructions": "7576244651",
                     "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977036998929435"
-                    }
+                    "timestamp": "1744140164690368071"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "44304985"
-                    },
+                    "instructions": "44432270",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977069616296753"
-                    }
+                    "timestamp": "1744140198825379518"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1431620"
-                    },
+                    "instructions": "1431318",
                     "method_name": "candidUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977070287166181"
-                    }
+                    "timestamp": "1744140199062775544"
                 }
             ]
         }
@@ -102,31 +90,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "7545439431"
-                    },
+                    "instructions": "7599485638",
                     "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977077951175640"
-                    }
+                    "timestamp": "1744140207434386227"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "44707782"
-                    },
+                    "instructions": "44930136",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977084671068993"
-                    }
+                    "timestamp": "1744140214564803641"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1805006"
-                    },
+                    "instructions": "1798919",
                     "method_name": "candidUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977084931125133"
-                    }
+                    "timestamp": "1744140214803913509"
                 }
             ]
         }
@@ -168,31 +144,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "7524057042"
-                    },
+                    "instructions": "7578068352",
                     "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977021878534389"
-                    }
+                    "timestamp": "1744140148658786180"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "44335645"
-                    },
+                    "instructions": "44466750",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977053032445927"
-                    }
+                    "timestamp": "1744140181654244405"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1459721"
-                    },
+                    "instructions": "1458820",
                     "method_name": "candidUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977053534602071"
-                    }
+                    "timestamp": "1744140182157293779"
                 }
             ]
         }
@@ -234,31 +198,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "7547403955"
-                    },
+                    "instructions": "7601138452",
                     "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977061530415021"
-                    }
+                    "timestamp": "1744140190831526097"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "44707632"
-                    },
+                    "instructions": "44941009",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977068542990711"
-                    }
+                    "timestamp": "1744140198349008227"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1827281"
-                    },
+                    "instructions": "1817862",
                     "method_name": "candidUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977069342422791"
-                    }
+                    "timestamp": "1744140198586466862"
                 }
             ]
         }

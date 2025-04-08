@@ -99,94 +99,54 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "48829943787"
-                    },
+                    "instructions": "48897840679",
                     "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977016006570188"
-                    }
+                    "timestamp": "1744140150391389907"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "54819530"
-                    },
+                    "instructions": "55013286",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977033174076673"
-                    }
+                    "timestamp": "1744140168659796768"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "936613531"
-                    },
+                    "instructions": "939659454",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977033417613777"
-                    }
+                    "timestamp": "1744140168906430746"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "6811987126"
-                    },
+                    "instructions": "6822927817",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977033884857805"
-                    }
+                    "timestamp": "1744140169372053854"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "6659054864"
-                    },
+                    "instructions": "6669391296",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977035429058825"
-                    }
+                    "timestamp": "1744140170913428630"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "12390944716"
-                    },
+                    "instructions": "12391535250",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977036980845897"
-                    }
+                    "timestamp": "1744140172453120878"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "936641176"
-                    },
+                    "instructions": "939597027",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977039627164116"
-                    }
+                    "timestamp": "1744140174843148227"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "3341137015"
-                    },
+                    "instructions": "3341472350",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977040097872251"
-                    }
+                    "timestamp": "1744140175309985720"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "11327962576"
-                    },
+                    "instructions": "11328048745",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977040996894052"
-                    }
+                    "timestamp": "1744140176205051320"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "11334381276"
-                    },
+                    "instructions": "11334842542",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977043193550452"
-                    }
+                    "timestamp": "1744140178602733594"
                 }
             ]
         }

@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for update
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
 | --- | ------------ | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | simpleUpdate | 1_423_897    | 1_159_558 | $0.0000015418 | $1.54             | <font color="red">+3_636</font> |
+| 0   | simpleUpdate | 1_421_889    | 1_158_755 | $0.0000015408 | $1.54             | <font color="red">+1_628</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

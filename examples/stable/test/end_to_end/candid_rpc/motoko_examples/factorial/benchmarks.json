@@ -54,49 +54,29 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1332805"
-                    },
+                    "instructions": "1337382",
                     "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977065151170134"
-                    }
+                    "timestamp": "1744140150011831353"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1313310"
-                    },
+                    "instructions": "1317213",
                     "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977065412198411"
-                    }
+                    "timestamp": "1744140150258456875"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1791407"
-                    },
+                    "instructions": "1796978",
                     "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977065874967174"
-                    }
+                    "timestamp": "1744140150530123769"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "3077880"
-                    },
+                    "instructions": "3082586",
                     "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977066117107775"
-                    }
+                    "timestamp": "1744140150999760012"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "5717206"
-                    },
+                    "instructions": "5699156",
                     "method_name": "fac",
-                    "timestamp": {
-                        "__bigint__": "1741977066358718458"
-                    }
+                    "timestamp": "1744140151246271742"
                 }
             ]
         }

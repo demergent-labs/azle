@@ -8,103 +8,44 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1206987"
-                    },
+                    "instructions": "1206245",
                     "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977016971406180"
-                    }
+                    "timestamp": "1744140126041490457"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1138446"
-                    },
+                    "instructions": "1136095",
                     "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977021170167991"
-                    }
+                    "timestamp": "1744140129946941106"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1139811"
-                    },
+                    "instructions": "1137376",
                     "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977024440526139"
-                    }
+                    "timestamp": "1744140133249160988"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1140641"
-                    },
+                    "instructions": "1141370",
                     "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977027914102847"
-                    }
+                    "timestamp": "1744140136761697868"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1140932"
-                    },
+                    "instructions": "1139106",
                     "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977031584477344"
-                    }
+                    "timestamp": "1744140140520826425"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1137561"
-                    },
+                    "instructions": "1138581",
                     "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977035470865612"
-                    }
+                    "timestamp": "1744140144425324904"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1140374"
-                    },
+                    "instructions": "1139888",
                     "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977039777563849"
-                    }
+                    "timestamp": "1744140148731344046"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1137659"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977044331225615"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1138193"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977048635069271"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1137162"
-                    },
-                    "method_name": "addRandomBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977053560584984"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "99500"
-                    },
+                    "instructions": "100506",
                     "method_name": "onLowWasmMemory",
-                    "timestamp": {
-                        "__bigint__": "1741977056176410765"
-                    }
+                    "timestamp": "1744140151350576409"
                 }
             ]
         }

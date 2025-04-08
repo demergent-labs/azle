@@ -1,17 +1,15 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for randomness
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ------------ | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | postUpgrade  | 4_823_974_004 | 3_530_179_601 | $0.0046939739 | $4_693.97         | <font color="red">+4_788_635</font> |
-| 1   | randomNumber | 1_041_941     | 1_006_776     | $0.0000013387 | $1.33             | <font color="green">-966</font>     |
-| 2   | randomNumber | 1_028_310     | 1_001_324     | $0.0000013314 | $1.33             | <font color="green">-1_295</font>   |
-| 3   | randomNumber | 1_028_148     | 1_001_259     | $0.0000013313 | $1.33             | <font color="green">-1_457</font>   |
-| 4   | randomNumber | 1_028_148     | 1_001_259     | $0.0000013313 | $1.33             | <font color="green">-1_457</font>   |
-| 5   | randomNumber | 1_027_870     | 1_001_148     | $0.0000013312 | $1.33             | <font color="green">-1_735</font>   |
+| Id  | Method Name  | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ------------ | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | postUpgrade  | 4_858_365_655 | 3_543_936_262 | $0.0047122657 | $4_712.26         | <font color="red">+39_180_286</font> |
+| 1   | randomNumber | 1_039_695     | 1_005_878     | $0.0000013375 | $1.33             | <font color="green">-3_212</font>    |
+| 2   | randomNumber | 1_027_546     | 1_001_018     | $0.0000013310 | $1.33             | <font color="green">-2_059</font>    |
+| 3   | randomNumber | 1_027_546     | 1_001_018     | $0.0000013310 | $1.33             | <font color="green">-2_059</font>    |
+| 4   | randomNumber | 1_027_546     | 1_001_018     | $0.0000013310 | $1.33             | <font color="green">-2_059</font>    |
+| 5   | randomNumber | 1_026_967     | 1_000_786     | $0.0000013307 | $1.33             | <font color="green">-2_638</font>    |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

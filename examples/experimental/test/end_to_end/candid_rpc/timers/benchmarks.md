@@ -1,14 +1,12 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for timers
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | setTimers   | 16_020_445   | 6_998_178 | $0.0000093053 | $9.30             | <font color="red">+120_483</font> |
-| 1   | clearTimer  | 1_189_582    | 1_065_832 | $0.0000014172 | $1.41             | <font color="green">-2_006</font> |
-| 2   | clearTimer  | 1_189_715    | 1_065_886 | $0.0000014173 | $1.41             | <font color="green">-3_114</font> |
+| 0   | setTimers   | 16_039_236   | 7_005_694 | $0.0000093153 | $9.31             | <font color="red">+139_274</font> |
+| 1   | clearTimer  | 1_188_955    | 1_065_582 | $0.0000014169 | $1.41             | <font color="green">-2_633</font> |
+| 2   | clearTimer  | 1_189_892    | 1_065_956 | $0.0000014174 | $1.41             | <font color="green">-2_937</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

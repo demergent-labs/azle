@@ -1,22 +1,20 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls |
-| --- | ------------------- | ------------- | ----------- | ------------- | ----------------- |
-| 0   | postUpgrade         | 1_114_786_498 | 846_504_599 | $0.0011255718 | $1_125.57         |
-| 1   | getUpdateMsgArgData | 2_022_926     | 1_399_170   | $0.0000018604 | $1.86             |
-| 2   | getUpdateMsgArgData | 1_992_359     | 1_386_943   | $0.0000018442 | $1.84             |
-| 3   | getUpdateMsgArgData | 1_971_823     | 1_378_729   | $0.0000018333 | $1.83             |
-| 4   | getUpdateMsgArgData | 1_989_938     | 1_385_975   | $0.0000018429 | $1.84             |
-| 5   | getUpdateMsgArgData | 1_991_610     | 1_386_644   | $0.0000018438 | $1.84             |
-| 6   | getUpdateMsgArgData | 1_963_870     | 1_375_548   | $0.0000018290 | $1.82             |
-| 7   | getUpdateMsgArgData | 1_991_211     | 1_386_484   | $0.0000018436 | $1.84             |
-| 8   | getUpdateMsgArgData | 1_990_287     | 1_386_114   | $0.0000018431 | $1.84             |
-| 9   | getUpdateMsgArgData | 1_990_662     | 1_386_264   | $0.0000018433 | $1.84             |
-| 10  | getUpdateMsgArgData | 1_993_453     | 1_387_381   | $0.0000018448 | $1.84             |
+| Id  | Method Name         | Instructions | Cycles      | USD           | USD/Million Calls |
+| --- | ------------------- | ------------ | ----------- | ------------- | ----------------- |
+| 0   | postUpgrade         | 995_071_568  | 398_618_627 | $0.0005300312 | $530.03           |
+| 1   | getUpdateMsgArgData | 1_654_997    | 1_251_998   | $0.0000016647 | $1.66             |
+| 2   | getUpdateMsgArgData | 1_627_264    | 1_240_905   | $0.0000016500 | $1.64             |
+| 3   | getUpdateMsgArgData | 1_624_929    | 1_239_971   | $0.0000016488 | $1.64             |
+| 4   | getUpdateMsgArgData | 1_625_720    | 1_240_288   | $0.0000016492 | $1.64             |
+| 5   | getUpdateMsgArgData | 1_629_205    | 1_241_682   | $0.0000016510 | $1.65             |
+| 6   | getUpdateMsgArgData | 1_627_222    | 1_240_888   | $0.0000016500 | $1.64             |
+| 7   | getUpdateMsgArgData | 1_626_928    | 1_240_771   | $0.0000016498 | $1.64             |
+| 8   | getUpdateMsgArgData | 1_623_080    | 1_239_232   | $0.0000016478 | $1.64             |
+| 9   | getUpdateMsgArgData | 1_631_541    | 1_242_616   | $0.0000016523 | $1.65             |
+| 10  | getUpdateMsgArgData | 1_626_891    | 1_240_756   | $0.0000016498 | $1.64             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

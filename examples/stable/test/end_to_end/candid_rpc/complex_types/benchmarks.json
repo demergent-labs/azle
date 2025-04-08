@@ -45,40 +45,24 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "19639864"
-                    },
+                    "instructions": "19618970",
                     "method_name": "createUser",
-                    "timestamp": {
-                        "__bigint__": "1741977059471503062"
-                    }
+                    "timestamp": "1744140140957172656"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "20869080"
-                    },
+                    "instructions": "20841289",
                     "method_name": "createThread",
-                    "timestamp": {
-                        "__bigint__": "1741977059712653580"
-                    }
+                    "timestamp": "1744140141198157308"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "23397714"
-                    },
+                    "instructions": "23372688",
                     "method_name": "createPost",
-                    "timestamp": {
-                        "__bigint__": "1741977059954083080"
-                    }
+                    "timestamp": "1744140141440765080"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "26446089"
-                    },
+                    "instructions": "26459286",
                     "method_name": "createReaction",
-                    "timestamp": {
-                        "__bigint__": "1741977060195029567"
-                    }
+                    "timestamp": "1744140141684350341"
                 }
             ]
         }

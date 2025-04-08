@@ -1,16 +1,14 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for audio_recorder
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
-| --- | --------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | createUser      | 14_127_299   | 6_240_919  | $0.0000082984 | $8.29             | <font color="green">-16_522</font> |
-| 1   | createRecording | 34_544_959   | 14_407_983 | $0.0000191579 | $19.15            | <font color="green">-26_049</font> |
-| 2   | deleteRecording | 48_432_454   | 19_962_981 | $0.0000265442 | $26.54            | <font color="green">-17_297</font> |
-| 3   | createRecording | 34_351_059   | 14_330_423 | $0.0000190547 | $19.05            | <font color="green">-25_522</font> |
-| 4   | deleteUser      | 33_996_747   | 14_188_698 | $0.0000188663 | $18.86            | <font color="green">-31_375</font> |
+| Id  | Method Name     | Instructions | Cycles     | USD           | USD/Million Calls | Change                           |
+| --- | --------------- | ------------ | ---------- | ------------- | ----------------- | -------------------------------- |
+| 0   | createUser      | 14_157_291   | 6_252_916  | $0.0000083143 | $8.31             | <font color="red">+13_470</font> |
+| 1   | createRecording | 34_583_248   | 14_423_299 | $0.0000191782 | $19.17            | <font color="red">+12_240</font> |
+| 2   | deleteRecording | 48_517_016   | 19_996_806 | $0.0000265892 | $26.58            | <font color="red">+67_265</font> |
+| 3   | createRecording | 34_405_726   | 14_352_290 | $0.0000190838 | $19.08            | <font color="red">+29_145</font> |
+| 4   | deleteUser      | 34_051_859   | 14_210_743 | $0.0000188956 | $18.89            | <font color="red">+23_737</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

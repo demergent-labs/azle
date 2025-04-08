@@ -1,14 +1,12 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for hidden_methods
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | updateUndefined   | 1_669_679    | 1_257_871 | $0.0000016726 | $1.67             | <font color="green">-496</font> |
-| 1   | updateHiddenFalse | 1_562_846    | 1_215_138 | $0.0000016157 | $1.61             | <font color="green">-256</font> |
-| 2   | updateHiddenTrue  | 1_553_047    | 1_211_218 | $0.0000016105 | $1.61             | <font color="red">+3_303</font> |
+| 0   | updateUndefined   | 1_674_026    | 1_259_610 | $0.0000016749 | $1.67             | <font color="red">+3_851</font> |
+| 1   | updateHiddenFalse | 1_564_396    | 1_215_758 | $0.0000016166 | $1.61             | <font color="red">+1_294</font> |
+| 2   | updateHiddenTrue  | 1_555_293    | 1_212_117 | $0.0000016117 | $1.61             | <font color="red">+5_549</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

@@ -36,31 +36,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "5998617"
-                    },
+                    "instructions": "5999010",
                     "method_name": "setPartiallyNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1741977072535892039"
-                    }
+                    "timestamp": "1744140150206504227"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "4344671"
-                    },
+                    "instructions": "4355934",
                     "method_name": "setSmallNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1741977072780904799"
-                    }
+                    "timestamp": "1744140150449808052"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "5671762"
-                    },
+                    "instructions": "5677275",
                     "method_name": "setLargeNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1741977073024620853"
-                    }
+                    "timestamp": "1744140150695296197"
                 }
             ]
         }

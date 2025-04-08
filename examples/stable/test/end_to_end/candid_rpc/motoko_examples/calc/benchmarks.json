@@ -63,58 +63,34 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1359409"
-                    },
+                    "instructions": "1361861",
                     "method_name": "add",
-                    "timestamp": {
-                        "__bigint__": "1741977065714542258"
-                    }
+                    "timestamp": "1744140147586177940"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1316661"
-                    },
+                    "instructions": "1316627",
                     "method_name": "sub",
-                    "timestamp": {
-                        "__bigint__": "1741977065956144138"
-                    }
+                    "timestamp": "1744140147832931999"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1317374"
-                    },
+                    "instructions": "1314281",
                     "method_name": "mul",
-                    "timestamp": {
-                        "__bigint__": "1741977066237231616"
-                    }
+                    "timestamp": "1744140148076084672"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1662341"
-                    },
+                    "instructions": "1660636",
                     "method_name": "div",
-                    "timestamp": {
-                        "__bigint__": "1741977066700853739"
-                    }
+                    "timestamp": "1744140148344289517"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "941111"
-                    },
+                    "instructions": "941943",
                     "method_name": "clearall",
-                    "timestamp": {
-                        "__bigint__": "1741977066942413340"
-                    }
+                    "timestamp": "1744140148819029584"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1311956"
-                    },
+                    "instructions": "1312036",
                     "method_name": "add",
-                    "timestamp": {
-                        "__bigint__": "1741977067186186216"
-                    }
+                    "timestamp": "1744140149069505969"
                 }
             ]
         }

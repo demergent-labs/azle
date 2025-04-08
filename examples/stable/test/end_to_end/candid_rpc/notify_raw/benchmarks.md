@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister1
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                         |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------ |
-| 0   | sendNotification | 1_788_346    | 1_305_338 | $0.0000017357 | $1.73             | <font color="green">-37</font> |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | sendNotification | 1_792_361    | 1_306_944 | $0.0000017378 | $1.73             | <font color="red">+3_978</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 
@@ -20,7 +18,7 @@
 
 | Id  | Method Name         | Instructions | Cycles  | USD           | USD/Million Calls | Change                          |
 | --- | ------------------- | ------------ | ------- | ------------- | ----------------- | ------------------------------- |
-| 0   | receiveNotification | 983_291      | 983_316 | $0.0000013075 | $1.30             | <font color="red">+3_233</font> |
+| 0   | receiveNotification | 979_647      | 981_858 | $0.0000013055 | $1.30             | <font color="green">-411</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

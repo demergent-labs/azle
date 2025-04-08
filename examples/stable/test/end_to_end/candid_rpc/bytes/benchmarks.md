@@ -1,16 +1,14 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for bytes_canister
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------- |
-| 0   | getBytes    | 2_021_637    | 1_398_654  | $0.0000018597 | $1.85             | <font color="red">+2_668</font> |
-| 1   | getBytes    | 2_616_661    | 1_636_664  | $0.0000021762 | $2.17             | <font color="red">+8_033</font> |
-| 2   | getBytes    | 9_255_623    | 4_292_249  | $0.0000057073 | $5.70             | <font color="red">+5_010</font> |
-| 3   | getBytes    | 74_949_145   | 30_569_658 | $0.0000406476 | $40.64            | <font color="red">+1_361</font> |
-| 4   | getBytes    | 147_941_940  | 59_766_776 | $0.0000794701 | $79.47            | <font color="red">+707</font>   |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------- |
+| 0   | getBytes    | 2_016_348    | 1_396_539  | $0.0000018569 | $1.85             | <font color="green">-2_621</font> |
+| 1   | getBytes    | 2_614_027    | 1_635_610  | $0.0000021748 | $2.17             | <font color="red">+5_399</font>   |
+| 2   | getBytes    | 9_255_159    | 4_292_063  | $0.0000057070 | $5.70             | <font color="red">+4_546</font>   |
+| 3   | getBytes    | 74_950_958   | 30_570_383 | $0.0000406485 | $40.64            | <font color="red">+3_174</font>   |
+| 4   | getBytes    | 147_946_053  | 59_768_421 | $0.0000794723 | $79.47            | <font color="red">+4_820</font>   |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

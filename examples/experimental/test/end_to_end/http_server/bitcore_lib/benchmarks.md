@@ -1,16 +1,14 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for bitcore_lib
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                    |
-| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ----------------------------------------- |
-| 0   | init                | 9_397_168_537  | 7_359_457_414  | $0.0097856497 | $9_785.64         | <font color="red">+5_015_285</font>       |
-| 1   | http_request_update | 1_100_746_578  | 840_888_631    | $0.0011181044 | $1_118.10         | <font color="green">-618_939</font>       |
-| 2   | http_request_update | 11_433_099_631 | 8_973_829_852  | $0.0119322323 | $11_932.23        | <font color="red">+4_765_618_637</font>   |
-| 3   | http_request_update | 11_623_543_637 | 9_050_007_454  | $0.0120335234 | $12_033.52        | <font color="green">-2_163_778_676</font> |
-| 4   | http_request_update | 17_187_080_665 | 13_675_422_266 | $0.0181837987 | $18_183.79        | <font color="red">+4_763_492_547</font>   |
+| Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | init                | 9_469_251_275  | 7_388_290_510  | $0.0098239882 | $9_823.98         | <font color="red">+77_098_023</font>    |
+| 1   | http_request_update | 1_106_041_367  | 843_006_546    | $0.0011209205 | $1_120.92         | <font color="red">+4_675_850</font>     |
+| 2   | http_request_update | 11_538_400_437 | 9_015_950_174  | $0.0119882385 | $11_988.23        | <font color="red">+4_870_919_443</font> |
+| 3   | http_request_update | 14_059_348_710 | 11_224_329_484 | $0.0149246542 | $14_924.65        | <font color="red">+272_026_397</font>   |
+| 4   | http_request_update | 12_546_315_832 | 9_819_116_332  | $0.0130561844 | $13_056.18        | <font color="red">+122_727_714</font>   |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

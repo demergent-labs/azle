@@ -1,16 +1,14 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for rejections
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | getRejectCodeNoError            | 1_410_418    | 1_154_167 | $0.0000015347 | $1.53             | <font color="red">+48_907</font> |
-| 1   | getRejectCodeDestinationInvalid | 1_329_774    | 1_121_909 | $0.0000014918 | $1.49             | <font color="red">+50_915</font> |
-| 2   | getRejectCodeCanisterReject     | 2_273_094    | 1_499_237 | $0.0000019935 | $1.99             | <font color="red">+54_713</font> |
-| 3   | getRejectCodeCanisterError      | 1_338_521    | 1_125_408 | $0.0000014964 | $1.49             | <font color="red">+57_017</font> |
-| 4   | getRejectMessage                | 3_008_973    | 1_793_589 | $0.0000023849 | $2.38             | <font color="red">+51_873</font> |
+| 0   | getRejectCodeNoError            | 1_403_185    | 1_151_274 | $0.0000015308 | $1.53             | <font color="red">+41_674</font> |
+| 1   | getRejectCodeDestinationInvalid | 1_330_477    | 1_122_190 | $0.0000014921 | $1.49             | <font color="red">+51_618</font> |
+| 2   | getRejectCodeCanisterReject     | 2_267_026    | 1_496_810 | $0.0000019903 | $1.99             | <font color="red">+48_645</font> |
+| 3   | getRejectCodeCanisterError      | 1_332_932    | 1_123_172 | $0.0000014934 | $1.49             | <font color="red">+51_428</font> |
+| 4   | getRejectMessage                | 3_012_107    | 1_794_842 | $0.0000023865 | $2.38             | <font color="red">+55_007</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

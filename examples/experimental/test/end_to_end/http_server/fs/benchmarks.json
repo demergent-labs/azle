@@ -90,85 +90,49 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "7526605981"
-                    },
+                    "instructions": "7574340108",
                     "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741976998614648304"
-                    }
+                    "timestamp": "1744140128924552324"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "54389592"
-                    },
+                    "instructions": "54435059",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977010615057903"
-                    }
+                    "timestamp": "1744140141380346309"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "48334790"
-                    },
+                    "instructions": "48316449",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977010862557187"
-                    }
+                    "timestamp": "1744140141850021748"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "47198910"
-                    },
+                    "instructions": "47689954",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977011129409271"
-                    }
+                    "timestamp": "1744140142344470868"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "46280785"
-                    },
+                    "instructions": "46353943",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977011811708987"
-                    }
+                    "timestamp": "1744140142589424882"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "46782101"
-                    },
+                    "instructions": "46903067",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977012307991614"
-                    }
+                    "timestamp": "1744140142834986688"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "46328252"
-                    },
+                    "instructions": "46394084",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977012554124601"
-                    }
+                    "timestamp": "1744140143304890714"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "46337797"
-                    },
+                    "instructions": "46456528",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977012803333897"
-                    }
+                    "timestamp": "1744140143551449171"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "45735584"
-                    },
+                    "instructions": "45738198",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977013301285838"
-                    }
+                    "timestamp": "1744140143800919824"
                 }
             ]
         }

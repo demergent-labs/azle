@@ -1,16 +1,14 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for rejections
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls | Change                                |
-| --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | getRejectCodeNoError            | 1_395_770    | 1_148_308 | $0.0000015269 | $1.52             | <font color="green">-8_843_261</font> |
-| 1   | getRejectCodeDestinationInvalid | 1_341_527    | 1_126_610 | $0.0000014980 | $1.49             | <font color="green">-8_055_705</font> |
-| 2   | getRejectCodeCanisterReject     | 2_232_397    | 1_482_958 | $0.0000019718 | $1.97             | <font color="green">-8_329_928</font> |
-| 3   | getRejectCodeCanisterError      | 1_349_665    | 1_129_866 | $0.0000015023 | $1.50             | <font color="green">-8_715_626</font> |
-| 4   | getRejectMessage                | 2_927_694    | 1_761_077 | $0.0000023417 | $2.34             | <font color="green">-8_340_712</font> |
+| Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | getRejectCodeNoError            | 10_244_754   | 4_687_901 | $0.0000062334 | $6.23             | <font color="red">+5_723</font>  |
+| 1   | getRejectCodeDestinationInvalid | 9_404_384    | 4_351_753 | $0.0000057864 | $5.78             | <font color="red">+7_152</font>  |
+| 2   | getRejectCodeCanisterReject     | 10_587_726   | 4_825_090 | $0.0000064158 | $6.41             | <font color="red">+25_401</font> |
+| 3   | getRejectCodeCanisterError      | 10_080_778   | 4_622_311 | $0.0000061461 | $6.14             | <font color="red">+15_487</font> |
+| 4   | getRejectMessage                | 11_287_647   | 5_105_058 | $0.0000067880 | $6.78             | <font color="red">+19_241</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

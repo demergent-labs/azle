@@ -1,13 +1,11 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for ic_api
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | dataCertificateNull | 1_681_901    | 1_262_760 | $0.0000016791 | $1.67             | <font color="red">+1_342</font> |
-| 1   | setCertifiedData    | 1_217_709    | 1_077_083 | $0.0000014322 | $1.43             | <font color="red">+3_911</font> |
+| 0   | dataCertificateNull | 1_684_172    | 1_263_668 | $0.0000016803 | $1.68             | <font color="red">+3_613</font> |
+| 1   | setCertifiedData    | 1_221_449    | 1_078_579 | $0.0000014342 | $1.43             | <font color="red">+7_651</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

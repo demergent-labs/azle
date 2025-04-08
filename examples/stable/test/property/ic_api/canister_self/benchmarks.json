@@ -8,13 +8,9 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "998385825"
-                    },
+                    "instructions": "1001501456",
                     "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977023369901339"
-                    }
+                    "timestamp": "1744140142278872558"
                 }
             ]
         }

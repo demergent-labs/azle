@@ -54,49 +54,29 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "11918545946"
-                    },
+                    "instructions": "11988770518",
                     "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977033112757740"
-                    }
+                    "timestamp": "1744140194287313831"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "147602751"
-                    },
+                    "instructions": "148017434",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977042004911803"
-                    }
+                    "timestamp": "1744140203972171518"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "74729495"
-                    },
+                    "instructions": "75263416",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977042497348672"
-                    }
+                    "timestamp": "1744140204444803153"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "143701782"
-                    },
+                    "instructions": "143974325",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977042767743295"
-                    }
+                    "timestamp": "1744140204718258458"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "83026377"
-                    },
+                    "instructions": "83233993",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977043012595642"
-                    }
+                    "timestamp": "1744140204963367809"
                 }
             ]
         }

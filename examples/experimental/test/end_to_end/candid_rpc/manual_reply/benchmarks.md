@@ -1,25 +1,23 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for manual_reply
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
-| --- | -------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | manualUpdate   | 676_914      | 860_765   | $0.0000011445 | $1.14             | <font color="green">-2_186</font>  |
-| 1   | manualUpdate   | 1_584_936    | 1_223_974 | $0.0000016275 | $1.62             | <font color="green">-4_728</font>  |
-| 2   | updateBlob     | 1_452_056    | 1_170_822 | $0.0000015568 | $1.55             | <font color="green">-5_100</font>  |
-| 3   | updateFloat32  | 999_840      | 989_936   | $0.0000013163 | $1.31             | <font color="green">-4_315</font>  |
-| 4   | updateInt8     | 1_093_921    | 1_027_568 | $0.0000013663 | $1.36             | <font color="green">-5_201</font>  |
-| 5   | updateNat      | 1_491_947    | 1_186_778 | $0.0000015780 | $1.57             | <font color="green">-13_530</font> |
-| 6   | updateNull     | 986_744      | 984_697   | $0.0000013093 | $1.30             | <font color="green">-6_891</font>  |
-| 7   | updateVoid     | 843_537      | 927_414   | $0.0000012332 | $1.23             | <font color="green">-5_422</font>  |
-| 8   | updateRecord   | 16_518_625   | 7_197_450 | $0.0000095702 | $9.57             | <font color="red">+3_454</font>    |
-| 9   | updateReserved | 987_021      | 984_808   | $0.0000013095 | $1.30             | <font color="green">-5_065</font>  |
-| 10  | updateString   | 1_243_947    | 1_087_578 | $0.0000014461 | $1.44             | <font color="green">-5_602</font>  |
-| 11  | updateVariant  | 4_304_490    | 2_311_796 | $0.0000030739 | $3.07             | <font color="green">-4_074</font>  |
-| 12  | updateFloat32  | 1_000_243    | 990_097   | $0.0000013165 | $1.31             | <font color="green">-3_551</font>  |
-| 13  | replyRaw       | 457_665      | 773_066   | $0.0000010279 | $1.02             | <font color="green">-2_950</font>  |
+| Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | manualUpdate   | 678_455      | 861_382   | $0.0000011454 | $1.14             | <font color="green">-645</font>   |
+| 1   | manualUpdate   | 1_590_163    | 1_226_065 | $0.0000016303 | $1.63             | <font color="red">+499</font>     |
+| 2   | updateBlob     | 1_453_607    | 1_171_442 | $0.0000015576 | $1.55             | <font color="green">-3_549</font> |
+| 3   | updateFloat32  | 1_005_960    | 992_384   | $0.0000013195 | $1.31             | <font color="red">+1_805</font>   |
+| 4   | updateInt8     | 1_099_304    | 1_029_721 | $0.0000013692 | $1.36             | <font color="red">+182</font>     |
+| 5   | updateNat      | 1_498_144    | 1_189_257 | $0.0000015813 | $1.58             | <font color="green">-7_333</font> |
+| 6   | updateNull     | 992_124      | 986_849   | $0.0000013122 | $1.31             | <font color="green">-1_511</font> |
+| 7   | updateVoid     | 848_865      | 929_546   | $0.0000012360 | $1.23             | <font color="green">-94</font>    |
+| 8   | updateRecord   | 16_523_334   | 7_199_333 | $0.0000095727 | $9.57             | <font color="red">+8_163</font>   |
+| 9   | updateReserved | 992_442      | 986_976   | $0.0000013124 | $1.31             | <font color="red">+356</font>     |
+| 10  | updateString   | 1_249_156    | 1_089_662 | $0.0000014489 | $1.44             | <font color="green">-393</font>   |
+| 11  | updateVariant  | 4_305_803    | 2_312_321 | $0.0000030746 | $3.07             | <font color="green">-2_761</font> |
+| 12  | updateFloat32  | 1_003_960    | 991_584   | $0.0000013185 | $1.31             | <font color="red">+166</font>     |
+| 13  | replyRaw       | 458_804      | 773_521   | $0.0000010285 | $1.02             | <font color="green">-1_811</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

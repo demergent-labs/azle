@@ -1,14 +1,12 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for stable_b_tree_map_instruction_threshold
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                  |
 | --- | ------------------ | -------------- | -------------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | insertSmallRecord  | 17_371_073_974 | 13_749_019_589 | $0.0182816589 | $18_281.65        | <font color="green">-441_860_103</font> |
-| 1   | insertMediumRecord | 15_761_043_697 | 12_305_007_478 | $0.0163615993 | $16_361.59        | <font color="green">-270_569_124</font> |
-| 2   | insertLargeRecord  | 18_333_390_745 | 14_533_946_298 | $0.0193253524 | $19_325.35        | <font color="green">-127_001_044</font> |
+| 0   | insertSmallRecord  | 17_376_830_383 | 13_751_322_153 | $0.0182847205 | $18_284.72        | <font color="green">-436_103_694</font> |
+| 1   | insertMediumRecord | 15_801_864_246 | 12_321_335_698 | $0.0163833104 | $16_383.31        | <font color="green">-229_748_575</font> |
+| 2   | insertLargeRecord  | 18_358_331_887 | 14_543_922_754 | $0.0193386178 | $19_338.61        | <font color="green">-102_059_902</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

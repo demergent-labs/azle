@@ -1,18 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for cycles
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name                   | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
 | --- | ----------------------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | receiveAllCycles              | 10_159_108   | 4_653_643 | $0.0000061878 | $6.18             | <font color="green">-2_953</font>   |
-| 1   | receiveVariableCycles         | 10_338_132   | 4_725_252 | $0.0000062830 | $6.28             | <font color="red">+12_050</font>    |
-| 2   | receiveNoCycles               | 10_061_664   | 4_614_665 | $0.0000061360 | $6.13             | <font color="green">-47_872</font>  |
-| 3   | receiveCyclesByChunk          | 10_385_202   | 4_744_080 | $0.0000063081 | $6.30             | <font color="green">-324_706</font> |
-| 4   | assertMsgCyclesAcceptTypes    | 1_345_942    | 1_128_376 | $0.0000015004 | $1.50             | <font color="green">-126</font>     |
-| 5   | assertMsgCyclesAvailableTypes | 1_118_779    | 1_037_511 | $0.0000013795 | $1.37             | <font color="green">-3_329</font>   |
-| 6   | assertMsgCyclesAcceptTypes    | 1_346_442    | 1_128_576 | $0.0000015006 | $1.50             | <font color="red">+452</font>       |
+| 0   | receiveAllCycles              | 10_167_053   | 4_656_821 | $0.0000061920 | $6.19             | <font color="red">+4_992</font>     |
+| 1   | receiveVariableCycles         | 10_354_404   | 4_731_761 | $0.0000062917 | $6.29             | <font color="red">+28_322</font>    |
+| 2   | receiveNoCycles               | 10_105_909   | 4_632_363 | $0.0000061595 | $6.15             | <font color="green">-3_627</font>   |
+| 3   | receiveCyclesByChunk          | 10_561_794   | 4_814_717 | $0.0000064020 | $6.40             | <font color="green">-148_114</font> |
+| 4   | assertMsgCyclesAcceptTypes    | 1_348_828    | 1_129_531 | $0.0000015019 | $1.50             | <font color="red">+2_760</font>     |
+| 5   | assertMsgCyclesAvailableTypes | 1_121_981    | 1_038_792 | $0.0000013813 | $1.38             | <font color="green">-127</font>     |
+| 6   | assertMsgCyclesAcceptTypes    | 1_350_574    | 1_130_229 | $0.0000015028 | $1.50             | <font color="red">+4_584</font>     |
 
 ## Baseline benchmarks Azle version: 0.29.0
 
@@ -32,13 +30,13 @@
 
 | Id  | Method Name                   | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ----------------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | sendAllCycles                 | 1_629_215    | 1_241_686 | $0.0000016510 | $1.65             | <font color="red">+47_698</font> |
-| 1   | sendVariableCycles            | 2_884_439    | 1_743_775 | $0.0000023186 | $2.31             | <font color="red">+49_225</font> |
-| 2   | sendNoCycles                  | 1_558_610    | 1_213_444 | $0.0000016135 | $1.61             | <font color="red">+42_613</font> |
-| 3   | sendCyclesByChunk             | 2_885_399    | 1_744_159 | $0.0000023192 | $2.31             | <font color="red">+47_204</font> |
-| 4   | assertMsgCyclesAcceptTypes    | 2_653_627    | 1_651_450 | $0.0000021959 | $2.19             | <font color="red">+50_839</font> |
-| 5   | assertMsgCyclesAvailableTypes | 1_334_296    | 1_123_718 | $0.0000014942 | $1.49             | <font color="red">+51_569</font> |
-| 6   | assertMsgCyclesRefundedTypes  | 2_651_253    | 1_650_501 | $0.0000021946 | $2.19             | <font color="red">+51_477</font> |
+| 0   | sendAllCycles                 | 1_629_104    | 1_241_641 | $0.0000016510 | $1.65             | <font color="red">+47_587</font> |
+| 1   | sendVariableCycles            | 2_914_391    | 1_755_756 | $0.0000023346 | $2.33             | <font color="red">+79_177</font> |
+| 2   | sendNoCycles                  | 1_566_361    | 1_216_544 | $0.0000016176 | $1.61             | <font color="red">+50_364</font> |
+| 3   | sendCyclesByChunk             | 2_889_536    | 1_745_814 | $0.0000023214 | $2.32             | <font color="red">+51_341</font> |
+| 4   | assertMsgCyclesAcceptTypes    | 2_651_215    | 1_650_486 | $0.0000021946 | $2.19             | <font color="red">+48_427</font> |
+| 5   | assertMsgCyclesAvailableTypes | 1_335_455    | 1_124_182 | $0.0000014948 | $1.49             | <font color="red">+52_728</font> |
+| 6   | assertMsgCyclesRefundedTypes  | 2_646_108    | 1_648_443 | $0.0000021919 | $2.19             | <font color="red">+46_332</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

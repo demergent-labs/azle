@@ -8,31 +8,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1317794"
-                    },
+                    "instructions": "1319025",
                     "method_name": "updateIsController",
-                    "timestamp": {
-                        "__bigint__": "1741977018045497442"
-                    }
+                    "timestamp": "1744140133872775287"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1268716"
-                    },
+                    "instructions": "1271389",
                     "method_name": "updateIsController",
-                    "timestamp": {
-                        "__bigint__": "1741977018788225478"
-                    }
+                    "timestamp": "1744140134858929820"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1271892"
-                    },
+                    "instructions": "1271860",
                     "method_name": "updateIsController",
-                    "timestamp": {
-                        "__bigint__": "1741977019510076997"
-                    }
+                    "timestamp": "1744140135618373766"
                 }
             ]
         }

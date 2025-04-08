@@ -8,103 +8,59 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1114786498"
-                    },
+                    "instructions": "995071568",
                     "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977099931929404"
-                    }
+                    "timestamp": "1744140235382461604"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "2022926"
-                    },
+                    "instructions": "1654997",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977109249936398"
-                    }
+                    "timestamp": "1744140245016239826"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1992359"
-                    },
+                    "instructions": "1627264",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977109740617430"
-                    }
+                    "timestamp": "1744140245255105469"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1971823"
-                    },
+                    "instructions": "1624929",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977109986772244"
-                    }
+                    "timestamp": "1744140245494078435"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1989938"
-                    },
+                    "instructions": "1625720",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977110230561152"
-                    }
+                    "timestamp": "1744140245995231321"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1991610"
-                    },
+                    "instructions": "1629205",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977110475786094"
-                    }
+                    "timestamp": "1744140246234458327"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1963870"
-                    },
+                    "instructions": "1627222",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977110971121150"
-                    }
+                    "timestamp": "1744140246474278727"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1991211"
-                    },
+                    "instructions": "1626928",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977111217329978"
-                    }
+                    "timestamp": "1744140246714604037"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1990287"
-                    },
+                    "instructions": "1623080",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977111462468908"
-                    }
+                    "timestamp": "1744140246954853535"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1990662"
-                    },
+                    "instructions": "1631541",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977111707523328"
-                    }
+                    "timestamp": "1744140247443114421"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1993453"
-                    },
+                    "instructions": "1626891",
                     "method_name": "getUpdateMsgArgData",
-                    "timestamp": {
-                        "__bigint__": "1741977112227048402"
-                    }
+                    "timestamp": "1744140247685109467"
                 }
             ]
         }

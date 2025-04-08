@@ -1,13 +1,11 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for func_types
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
-| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | init                             | 4_860_848_380 | 3_544_929_352 | $0.0047135862 | $4_713.58         | <font color="red">+5_049_760</font>   |
-| 1   | getNotifierFromNotifiersCanister | 1_423_155     | 1_159_262     | $0.0000015414 | $1.54             | <font color="green">-9_109_060</font> |
+| Id  | Method Name                      | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | -------------------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init                             | 4_895_015_147 | 3_558_596_058 | $0.0047317584 | $4_731.75         | <font color="red">+39_216_527</font> |
+| 1   | getNotifierFromNotifiersCanister | 10_535_749    | 4_804_299     | $0.0000063881 | $6.38             | <font color="red">+3_534</font>      |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

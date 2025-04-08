@@ -27,22 +27,14 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1681901"
-                    },
+                    "instructions": "1684172",
                     "method_name": "dataCertificateNull",
-                    "timestamp": {
-                        "__bigint__": "1741977111771412725"
-                    }
+                    "timestamp": "1744140192774012307"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1217709"
-                    },
+                    "instructions": "1221449",
                     "method_name": "setCertifiedData",
-                    "timestamp": {
-                        "__bigint__": "1741977112276064947"
-                    }
+                    "timestamp": "1744140193046229886"
                 }
             ]
         }

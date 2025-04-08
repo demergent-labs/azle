@@ -18,13 +18,9 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "990679055"
-                    },
+                    "instructions": "993599800",
                     "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977055689380089"
-                    }
+                    "timestamp": "1744140138780539305"
                 }
             ]
         }

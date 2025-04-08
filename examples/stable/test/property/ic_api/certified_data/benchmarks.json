@@ -8,67 +8,39 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1000477124"
-                    },
+                    "instructions": "1003651225",
                     "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977060864362739"
-                    }
+                    "timestamp": "1744140179639957502"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1709705"
-                    },
+                    "instructions": "1710957",
                     "method_name": "getDataCertificateInUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977063649148629"
-                    }
+                    "timestamp": "1744140182105869484"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1238515"
-                    },
+                    "instructions": "1239370",
                     "method_name": "setData",
-                    "timestamp": {
-                        "__bigint__": "1741977063888590402"
-                    }
+                    "timestamp": "1744140182363871351"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1689371"
-                    },
+                    "instructions": "1690286",
                     "method_name": "getDataCertificateInUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977064132053960"
-                    }
+                    "timestamp": "1744140182826906163"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1235167"
-                    },
+                    "instructions": "1241822",
                     "method_name": "setData",
-                    "timestamp": {
-                        "__bigint__": "1741977064610881256"
-                    }
+                    "timestamp": "1744140183307792657"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1116748"
-                    },
+                    "instructions": "1112914",
                     "method_name": "assertDataCertificateTypesInUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977065816944028"
-                    }
+                    "timestamp": "1744140184530540724"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1409218"
-                    },
+                    "instructions": "1409523",
                     "method_name": "assertSetCertifiedDataTypes",
-                    "timestamp": {
-                        "__bigint__": "1741977066302008659"
-                    }
+                    "timestamp": "1744140184771117555"
                 }
             ]
         }

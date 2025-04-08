@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for apollo_server
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions   | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | -------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 11_090_433_633 | 8_836_763_453 | $0.0117499793 | $11_749.97        | <font color="red">+5_533_813</font> |
+| Id  | Method Name | Instructions   | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | -------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init        | 11_160_833_299 | 8_864_923_319 | $0.0117874226 | $11_787.42        | <font color="red">+75_933_479</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for pre_and_post_upgrade
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | postUpgrade | 4_835_315_780 | 3_534_716_312 | $0.0047000062 | $4_700.00         | <font color="red">+4_824_815</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | postUpgrade | 4_873_980_723 | 3_550_182_289 | $0.0047205709 | $4_720.57         | <font color="red">+43_489_758</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

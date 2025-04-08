@@ -1,5 +1,3 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for tuple_types
 
 ## Current benchmarks Azle version: 0.30.0

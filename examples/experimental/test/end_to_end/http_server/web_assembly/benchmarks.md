@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for web_assembly
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 7_593_699_696 | 5_838_069_878 | $0.0077627064 | $7_762.70         | <font color="red">+5_783_041</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init        | 7_645_542_051 | 5_858_806_820 | $0.0077902797 | $7_790.27         | <font color="red">+57_625_396</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

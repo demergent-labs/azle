@@ -36,31 +36,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1669679"
-                    },
+                    "instructions": "1674026",
                     "method_name": "updateUndefined",
-                    "timestamp": {
-                        "__bigint__": "1741977051718995027"
-                    }
+                    "timestamp": "1744140134725917714"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1562846"
-                    },
+                    "instructions": "1564396",
                     "method_name": "updateHiddenFalse",
-                    "timestamp": {
-                        "__bigint__": "1741977053506317548"
-                    }
+                    "timestamp": "1744140134974055912"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1553047"
-                    },
+                    "instructions": "1555293",
                     "method_name": "updateHiddenTrue",
-                    "timestamp": {
-                        "__bigint__": "1741977054239983143"
-                    }
+                    "timestamp": "1744140135465372213"
                 }
             ]
         }

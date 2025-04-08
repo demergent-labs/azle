@@ -63,58 +63,34 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "3744152"
-                    },
+                    "instructions": "3746979",
                     "method_name": "create",
-                    "timestamp": {
-                        "__bigint__": "1741977068897766626"
-                    }
+                    "timestamp": "1744140150762457493"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "4809998"
-                    },
+                    "instructions": "4826786",
                     "method_name": "create",
-                    "timestamp": {
-                        "__bigint__": "1741977069366010549"
-                    }
+                    "timestamp": "1744140151004929536"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "5159014"
-                    },
+                    "instructions": "5175364",
                     "method_name": "update",
-                    "timestamp": {
-                        "__bigint__": "1741977069609966125"
-                    }
+                    "timestamp": "1744140151248039586"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "3609145"
-                    },
+                    "instructions": "3601586",
                     "method_name": "update",
-                    "timestamp": {
-                        "__bigint__": "1741977069856369741"
-                    }
+                    "timestamp": "1744140151490999783"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1279671"
-                    },
+                    "instructions": "1276901",
                     "method_name": "deleteHero",
-                    "timestamp": {
-                        "__bigint__": "1741977070109987598"
-                    }
+                    "timestamp": "1744140151757439031"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1264361"
-                    },
+                    "instructions": "1264311",
                     "method_name": "deleteHero",
-                    "timestamp": {
-                        "__bigint__": "1741977070355153969"
-                    }
+                    "timestamp": "1744140152234719875"
                 }
             ]
         }

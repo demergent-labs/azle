@@ -54,49 +54,29 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "12169590"
-                    },
+                    "instructions": "12162821",
                     "method_name": "createUser",
-                    "timestamp": {
-                        "__bigint__": "1741977076484991719"
-                    }
+                    "timestamp": "1744140154485562233"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "34225463"
-                    },
+                    "instructions": "34169472",
                     "method_name": "createRecording",
-                    "timestamp": {
-                        "__bigint__": "1741977076998318695"
-                    }
+                    "timestamp": "1744140154995301500"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "48330761"
-                    },
+                    "instructions": "48303396",
                     "method_name": "deleteRecording",
-                    "timestamp": {
-                        "__bigint__": "1741977077494258264"
-                    }
+                    "timestamp": "1744140155484921320"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "33982691"
-                    },
+                    "instructions": "33967070",
                     "method_name": "createRecording",
-                    "timestamp": {
-                        "__bigint__": "1741977077736910674"
-                    }
+                    "timestamp": "1744140155728499193"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "32916158"
-                    },
+                    "instructions": "32926951",
                     "method_name": "deleteUser",
-                    "timestamp": {
-                        "__bigint__": "1741977078225708308"
-                    }
+                    "timestamp": "1744140156237517257"
                 }
             ]
         }

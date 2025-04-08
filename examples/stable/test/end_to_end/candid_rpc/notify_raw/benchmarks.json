@@ -18,13 +18,9 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1788346"
-                    },
+                    "instructions": "1792361",
                     "method_name": "sendNotification",
-                    "timestamp": {
-                        "__bigint__": "1741977080021656451"
-                    }
+                    "timestamp": "1744140155892359086"
                 }
             ]
         }
@@ -48,13 +44,9 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "983291"
-                    },
+                    "instructions": "979647",
                     "method_name": "receiveNotification",
-                    "timestamp": {
-                        "__bigint__": "1741977080021656451"
-                    }
+                    "timestamp": "1744140155892359086"
                 }
             ]
         }

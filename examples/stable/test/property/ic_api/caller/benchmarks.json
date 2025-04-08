@@ -8,40 +8,24 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "998348106"
-                    },
+                    "instructions": "1001302886",
                     "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741977016818550674"
-                    }
+                    "timestamp": "1744140135704097874"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1283849"
-                    },
+                    "instructions": "1283975",
                     "method_name": "getUpdateCaller",
-                    "timestamp": {
-                        "__bigint__": "1741977019505307295"
-                    }
+                    "timestamp": "1744140140038702293"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "954701"
-                    },
+                    "instructions": "952127",
                     "method_name": "setInspectMessageCaller",
-                    "timestamp": {
-                        "__bigint__": "1741977019749762676"
-                    }
+                    "timestamp": "1744140140280219426"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1259188"
-                    },
+                    "instructions": "1261343",
                     "method_name": "getUpdateCaller",
-                    "timestamp": {
-                        "__bigint__": "1741977020019124266"
-                    }
+                    "timestamp": "1744140140770226895"
                 }
             ]
         }

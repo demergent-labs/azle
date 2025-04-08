@@ -54,49 +54,29 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1976327"
-                    },
+                    "instructions": "1978977",
                     "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977051250035493"
-                    }
+                    "timestamp": "1744140117553670909"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "2649397"
-                    },
+                    "instructions": "2653040",
                     "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977051495420396"
-                    }
+                    "timestamp": "1744140117794530221"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "9732042"
-                    },
+                    "instructions": "9734595",
                     "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977052007502696"
-                    }
+                    "timestamp": "1744140118279743783"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "79931734"
-                    },
+                    "instructions": "79935018",
                     "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977053528935659"
-                    }
+                    "timestamp": "1744140119999640436"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "157926309"
-                    },
+                    "instructions": "157929868",
                     "method_name": "getBytes",
-                    "timestamp": {
-                        "__bigint__": "1741977059961582796"
-                    }
+                    "timestamp": "1744140126462067987"
                 }
             ]
         }

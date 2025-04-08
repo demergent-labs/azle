@@ -8,22 +8,14 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1006061"
-                    },
+                    "instructions": "1005302",
                     "method_name": "measureSum",
-                    "timestamp": {
-                        "__bigint__": "1741977022221673108"
-                    }
+                    "timestamp": "1744140139623543544"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1247269"
-                    },
+                    "instructions": "1244102",
                     "method_name": "measureSumTimer",
-                    "timestamp": {
-                        "__bigint__": "1741977139952874204"
-                    }
+                    "timestamp": "1744140257388873418"
                 }
             ]
         }

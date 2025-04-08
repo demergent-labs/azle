@@ -8,31 +8,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "997411727"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977017449438720"
-                    }
+                    "instructions": "1001599571",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1744140145782529523"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "961465"
-                    },
+                    "instructions": "955026",
                     "method_name": "setInspectMessageCanisterVersion",
-                    "timestamp": {
-                        "__bigint__": "1741977021334171768"
-                    }
+                    "timestamp": "1744140148276339726"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1575880"
-                    },
+                    "instructions": "1575588",
                     "method_name": "getUpdateCanisterVersion",
-                    "timestamp": {
-                        "__bigint__": "1741977021855292328"
-                    }
+                    "timestamp": "1744140148523326284"
                 }
             ]
         }

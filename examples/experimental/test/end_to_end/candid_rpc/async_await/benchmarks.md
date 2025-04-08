@@ -1,15 +1,13 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for async_await
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name                  | Instructions | Cycles  | USD           | USD/Million Calls | Change                                  |
-| --- | ---------------------------- | ------------ | ------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | getRandomnessDirectly        | 1_010_184    | 994_073 | $0.0000013218 | $1.32             | <font color="green">-149_277_091</font> |
-| 1   | getRandomnessIndirectly      | 978_251      | 981_300 | $0.0000013048 | $1.30             | <font color="green">-149_355_208</font> |
-| 2   | getRandomnessSuperIndirectly | 1_019_018    | 997_607 | $0.0000013265 | $1.32             | <font color="green">-149_302_390</font> |
-| 3   | returnPromiseVoid            | 963_575      | 975_430 | $0.0000012970 | $1.29             | <font color="green">-149_497_440</font> |
+| Id  | Method Name                  | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
+| --- | ---------------------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | getRandomnessDirectly        | 150_437_277  | 60_764_910 | $0.0000807973 | $80.79            | <font color="red">+150_002</font>  |
+| 1   | getRandomnessIndirectly      | 150_462_546  | 60_775_018 | $0.0000808107 | $80.81            | <font color="red">+129_087</font>  |
+| 2   | getRandomnessSuperIndirectly | 150_448_178  | 60_769_271 | $0.0000808031 | $80.80            | <font color="red">+126_770</font>  |
+| 3   | returnPromiseVoid            | 150_368_540  | 60_737_416 | $0.0000807607 | $80.76            | <font color="green">-92_475</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

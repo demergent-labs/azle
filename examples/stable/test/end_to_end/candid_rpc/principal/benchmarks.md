@@ -1,5 +1,3 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for principal
 
 ## Current benchmarks Azle version: 0.30.0

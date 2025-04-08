@@ -1,15 +1,13 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for express
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init                | 7_534_986_941 | 5_814_584_776 | $0.0077314789 | $7_731.47         | <font color="red">+4_085_230</font> |
-| 1   | http_request_update | 53_627_375    | 22_040_950    | $0.0000293072 | $29.30            | <font color="green">-50_989</font>  |
-| 2   | http_request_update | 47_159_155    | 19_453_662    | $0.0000258670 | $25.86            | <font color="green">-63_072</font>  |
-| 3   | http_request_update | 44_190_864    | 18_266_345    | $0.0000242882 | $24.28            | <font color="green">-36_918</font>  |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init                | 7_584_773_193 | 5_834_499_277 | $0.0077579587 | $7_757.95         | <font color="red">+53_871_482</font> |
+| 1   | http_request_update | 53_705_776    | 22_072_310    | $0.0000293489 | $29.34            | <font color="red">+27_412</font>     |
+| 2   | http_request_update | 47_269_140    | 19_497_656    | $0.0000259254 | $25.92            | <font color="red">+46_913</font>     |
+| 3   | http_request_update | 44_358_318    | 18_333_327    | $0.0000243773 | $24.37            | <font color="red">+130_536</font>    |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

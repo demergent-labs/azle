@@ -1,14 +1,12 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for counter
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | set         | 1_087_730    | 1_025_092 | $0.0000013630 | $1.36             | <font color="red">+1_945</font>   |
-| 1   | inc         | 944_400      | 967_760   | $0.0000012868 | $1.28             | <font color="green">-1_663</font> |
-| 2   | inc         | 944_047      | 967_618   | $0.0000012866 | $1.28             | <font color="red">+2_479</font>   |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | set         | 1_087_091    | 1_024_836 | $0.0000013627 | $1.36             | <font color="red">+1_306</font> |
+| 1   | inc         | 946_374      | 968_549   | $0.0000012879 | $1.28             | <font color="red">+311</font>   |
+| 2   | inc         | 944_878      | 967_951   | $0.0000012871 | $1.28             | <font color="red">+3_310</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

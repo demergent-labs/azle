@@ -45,40 +45,24 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1037598"
-                    },
+                    "instructions": "1036000",
                     "method_name": "getRandomnessDirectly",
-                    "timestamp": {
-                        "__bigint__": "1741977077398441592"
-                    }
+                    "timestamp": "1744140188322306525"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "979450"
-                    },
+                    "instructions": "977393",
                     "method_name": "getRandomnessIndirectly",
-                    "timestamp": {
-                        "__bigint__": "1741977077889148949"
-                    }
+                    "timestamp": "1744140188812775283"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1016490"
-                    },
+                    "instructions": "1015597",
                     "method_name": "getRandomnessSuperIndirectly",
-                    "timestamp": {
-                        "__bigint__": "1741977078381147127"
-                    }
+                    "timestamp": "1744140189301513437"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "967404"
-                    },
+                    "instructions": "964868",
                     "method_name": "returnPromiseVoid",
-                    "timestamp": {
-                        "__bigint__": "1741977079369980592"
-                    }
+                    "timestamp": "1744140190296892913"
                 }
             ]
         }

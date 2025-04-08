@@ -1,13 +1,11 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for key_value_store
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | set         | 1_420_397    | 1_158_158 | $0.0000015400 | $1.53             | <font color="green">-1_822</font> |
-| 1   | set         | 1_390_077    | 1_146_030 | $0.0000015238 | $1.52             | <font color="green">-3_179</font> |
+| 0   | set         | 1_418_107    | 1_157_242 | $0.0000015387 | $1.53             | <font color="green">-4_112</font> |
+| 1   | set         | 1_388_119    | 1_145_247 | $0.0000015228 | $1.52             | <font color="green">-5_137</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

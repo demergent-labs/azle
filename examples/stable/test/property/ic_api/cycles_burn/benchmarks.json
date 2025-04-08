@@ -8,22 +8,14 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1848152"
-                    },
+                    "instructions": "1842798",
                     "method_name": "updateCyclesBurn",
-                    "timestamp": {
-                        "__bigint__": "1741977013083083708"
-                    }
+                    "timestamp": "1744140130446360962"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1229693"
-                    },
+                    "instructions": "1230802",
                     "method_name": "assertCyclesBurnTypes",
-                    "timestamp": {
-                        "__bigint__": "1741977013354206179"
-                    }
+                    "timestamp": "1744140130691594917"
                 }
             ]
         }

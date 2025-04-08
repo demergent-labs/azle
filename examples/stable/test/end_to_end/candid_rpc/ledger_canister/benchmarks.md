@@ -1,26 +1,24 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for ledger_canister
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | getAccountBalance | 5_301_465    | 2_710_586 | $0.0000036042 | $3.60             | <font color="red">+64_326</font> |
-| 1   | getTransferFee    | 2_368_375    | 1_537_350 | $0.0000020442 | $2.04             | <font color="red">+50_620</font> |
-| 2   | executeTransfer   | 14_192_971   | 6_267_188 | $0.0000083333 | $8.33             | <font color="red">+92_593</font> |
-| 3   | executeTransfer   | 14_207_523   | 6_273_009 | $0.0000083410 | $8.34             | <font color="red">+96_308</font> |
-| 4   | getBlocks         | 6_146_891    | 3_048_756 | $0.0000040538 | $4.05             | <font color="red">+53_562</font> |
-| 5   | getSymbol         | 1_338_518    | 1_125_407 | $0.0000014964 | $1.49             | <font color="red">+50_843</font> |
-| 6   | getName           | 1_335_984    | 1_124_393 | $0.0000014951 | $1.49             | <font color="red">+49_322</font> |
-| 7   | getDecimals       | 1_329_616    | 1_121_846 | $0.0000014917 | $1.49             | <font color="red">+46_684</font> |
-| 8   | getArchives       | 1_333_328    | 1_123_331 | $0.0000014937 | $1.49             | <font color="red">+50_406</font> |
-| 9   | executeTransfer   | 14_198_537   | 6_269_414 | $0.0000083363 | $8.33             | <font color="red">+91_719</font> |
-| 10  | getAccountBalance | 5_221_558    | 2_678_623 | $0.0000035617 | $3.56             | <font color="red">+62_470</font> |
-| 11  | executeTransfer   | 14_133_647   | 6_243_458 | $0.0000083017 | $8.30             | <font color="red">+42_344</font> |
-| 12  | executeTransfer   | 14_173_701   | 6_259_480 | $0.0000083230 | $8.32             | <font color="red">+65_562</font> |
-| 13  | executeTransfer   | 15_009_774   | 6_593_909 | $0.0000087677 | $8.76             | <font color="red">+69_403</font> |
-| 14  | executeTransfer   | 15_030_253   | 6_602_101 | $0.0000087786 | $8.77             | <font color="red">+74_458</font> |
+| 0   | getAccountBalance | 5_298_308    | 2_709_323 | $0.0000036025 | $3.60             | <font color="red">+61_169</font> |
+| 1   | getTransferFee    | 2_366_875    | 1_536_750 | $0.0000020434 | $2.04             | <font color="red">+49_120</font> |
+| 2   | executeTransfer   | 14_170_705   | 6_258_282 | $0.0000083214 | $8.32             | <font color="red">+70_327</font> |
+| 3   | executeTransfer   | 14_165_256   | 6_256_102 | $0.0000083186 | $8.31             | <font color="red">+54_041</font> |
+| 4   | getBlocks         | 6_136_856    | 3_044_742 | $0.0000040485 | $4.04             | <font color="red">+43_527</font> |
+| 5   | getSymbol         | 1_332_026    | 1_122_810 | $0.0000014930 | $1.49             | <font color="red">+44_351</font> |
+| 6   | getName           | 1_334_293    | 1_123_717 | $0.0000014942 | $1.49             | <font color="red">+47_631</font> |
+| 7   | getDecimals       | 1_331_880    | 1_122_752 | $0.0000014929 | $1.49             | <font color="red">+48_948</font> |
+| 8   | getArchives       | 1_328_360    | 1_121_344 | $0.0000014910 | $1.49             | <font color="red">+45_438</font> |
+| 9   | executeTransfer   | 14_163_794   | 6_255_517 | $0.0000083178 | $8.31             | <font color="red">+56_976</font> |
+| 10  | getAccountBalance | 5_203_598    | 2_671_439 | $0.0000035521 | $3.55             | <font color="red">+44_510</font> |
+| 11  | executeTransfer   | 14_138_242   | 6_245_296 | $0.0000083042 | $8.30             | <font color="red">+46_939</font> |
+| 12  | executeTransfer   | 14_194_692   | 6_267_876 | $0.0000083342 | $8.33             | <font color="red">+86_553</font> |
+| 13  | executeTransfer   | 14_994_530   | 6_587_812 | $0.0000087596 | $8.75             | <font color="red">+54_159</font> |
+| 14  | executeTransfer   | 14_992_974   | 6_587_189 | $0.0000087588 | $8.75             | <font color="red">+37_179</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

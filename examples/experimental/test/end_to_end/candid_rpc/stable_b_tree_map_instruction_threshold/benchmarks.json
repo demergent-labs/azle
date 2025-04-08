@@ -36,31 +36,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "17371073974"
-                    },
+                    "instructions": "17376830383",
                     "method_name": "insertSmallRecord",
-                    "timestamp": {
-                        "__bigint__": "1741977051632354730"
-                    }
+                    "timestamp": "1744140130467298690"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "15761043697"
-                    },
+                    "instructions": "15801864246",
                     "method_name": "insertMediumRecord",
-                    "timestamp": {
-                        "__bigint__": "1741977057858614702"
-                    }
+                    "timestamp": "1744140137399908297"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "18333390745"
-                    },
+                    "instructions": "18358331887",
                     "method_name": "insertLargeRecord",
-                    "timestamp": {
-                        "__bigint__": "1741977063296891315"
-                    }
+                    "timestamp": "1744140143654358567"
                 }
             ]
         }

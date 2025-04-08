@@ -1,13 +1,11 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for outgoing_http_requests
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                           |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- | -------------------------------- |
-| 0   | xkcd        | 25_227_994   | 10_681_197 | $0.0000142025 | $14.20            | <font color="red">+55_944</font> |
-| 1   | xkcdRaw     | 1_237_528    | 1_085_011  | $0.0000014427 | $1.44             | <font color="red">+44_809</font> |
+| 0   | xkcd        | 25_250_838   | 10_690_335 | $0.0000142146 | $14.21            | <font color="red">+78_788</font> |
+| 1   | xkcdRaw     | 1_243_289    | 1_087_315  | $0.0000014458 | $1.44             | <font color="red">+50_570</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

@@ -8,22 +8,14 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "721199"
-                    },
+                    "instructions": "693064",
                     "method_name": "alwaysRejectUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977009702644529"
-                    }
+                    "timestamp": "1744140132910078992"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "552773"
-                    },
+                    "instructions": "1397253",
                     "method_name": "evenOrRejectUpdate",
-                    "timestamp": {
-                        "__bigint__": "1741977010167487752"
-                    }
+                    "timestamp": "1744140133155201550"
                 }
             ]
         }

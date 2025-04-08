@@ -27,22 +27,14 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "4860848380"
-                    },
+                    "instructions": "4895015147",
                     "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741977030032689095"
-                    }
+                    "timestamp": "1744140147368575640"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1423155"
-                    },
+                    "instructions": "10535749",
                     "method_name": "getNotifierFromNotifiersCanister",
-                    "timestamp": {
-                        "__bigint__": "1741977048822471398"
-                    }
+                    "timestamp": "1744140165729024453"
                 }
             ]
         }

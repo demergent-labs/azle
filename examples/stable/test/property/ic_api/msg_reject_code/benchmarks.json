@@ -8,40 +8,24 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1430900"
-                    },
+                    "instructions": "1429817",
                     "method_name": "getRejectCodeCanisterThrowError",
-                    "timestamp": {
-                        "__bigint__": "1741977030515031815"
-                    }
+                    "timestamp": "1744140138549650272"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1362386"
-                    },
+                    "instructions": "1359800",
                     "method_name": "getRejectCodeCanisterReject",
-                    "timestamp": {
-                        "__bigint__": "1741977030756184990"
-                    }
+                    "timestamp": "1744140138794963843"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1357068"
-                    },
+                    "instructions": "1361120",
                     "method_name": "getRejectNoError",
-                    "timestamp": {
-                        "__bigint__": "1741977030997444604"
-                    }
+                    "timestamp": "1744140139040303565"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1347306"
-                    },
+                    "instructions": "1348790",
                     "method_name": "assertTypes",
-                    "timestamp": {
-                        "__bigint__": "1741977031482891175"
-                    }
+                    "timestamp": "1744140139284659080"
                 }
             ]
         }

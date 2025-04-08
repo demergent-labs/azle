@@ -1,14 +1,12 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name               | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ------------------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | canisterNestedReturnType  | 6_499_983    | 3_189_993 | $0.0000042416 | $4.24             | <font color="green">-6_886</font> |
-| 1   | canisterList              | 6_959_568    | 3_373_827 | $0.0000044861 | $4.48             | <font color="red">+9_831</font>   |
-| 2   | canisterCrossCanisterCall | 2_188_149    | 1_465_259 | $0.0000019483 | $1.94             | <font color="red">+51_555</font>  |
+| 0   | canisterNestedReturnType  | 6_501_056    | 3_190_422 | $0.0000042422 | $4.24             | <font color="green">-5_813</font> |
+| 1   | canisterList              | 6_956_451    | 3_372_580 | $0.0000044844 | $4.48             | <font color="red">+6_714</font>   |
+| 2   | canisterCrossCanisterCall | 2_190_532    | 1_466_212 | $0.0000019496 | $1.94             | <font color="red">+53_938</font>  |
 
 ## Baseline benchmarks Azle version: 0.29.0
 
@@ -24,7 +22,7 @@
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | update1     | 1_632_436    | 1_242_974 | $0.0000016527 | $1.65             |
+| 0   | update1     | 1_626_995    | 1_240_798 | $0.0000016499 | $1.64             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

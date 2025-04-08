@@ -27,22 +27,14 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1661901"
-                    },
+                    "instructions": "1664104",
                     "method_name": "executeCallRaw",
-                    "timestamp": {
-                        "__bigint__": "1741977077831955443"
-                    }
+                    "timestamp": "1744140151407867480"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "2114152"
-                    },
+                    "instructions": "2118346",
                     "method_name": "executeCallRaw",
-                    "timestamp": {
-                        "__bigint__": "1741977078314558058"
-                    }
+                    "timestamp": "1744140151898140648"
                 }
             ]
         }

@@ -36,31 +36,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "7522732774"
-                    },
+                    "instructions": "7576068366",
                     "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741976998393169764"
-                    }
+                    "timestamp": "1744140128582058211"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "57103023"
-                    },
+                    "instructions": "57122173",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977014856024149"
-                    }
+                    "timestamp": "1744140146032682844"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "50682911"
-                    },
+                    "instructions": "50729449",
                     "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741977015350193197"
-                    }
+                    "timestamp": "1744140146277275785"
                 }
             ]
         }

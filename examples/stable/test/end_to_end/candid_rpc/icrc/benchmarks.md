@@ -1,15 +1,13 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for proxy
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | icrc1_transfer      | 15_513_113   | 6_795_245 | $0.0000090354 | $9.03             | <font color="red">+46_933</font> |
-| 1   | icrc2_approve       | 19_111_569   | 8_234_627 | $0.0000109493 | $10.94            | <font color="red">+55_101</font> |
-| 2   | icrc2_transfer_from | 18_039_468   | 7_805_787 | $0.0000103791 | $10.37            | <font color="red">+30_564</font> |
-| 3   | icrc2_allowance     | 10_472_843   | 4_779_137 | $0.0000063547 | $6.35             | <font color="red">+38_102</font> |
+| 0   | icrc1_transfer      | 15_504_669   | 6_791_867 | $0.0000090309 | $9.03             | <font color="red">+38_489</font> |
+| 1   | icrc2_approve       | 19_094_665   | 8_227_866 | $0.0000109403 | $10.94            | <font color="red">+38_197</font> |
+| 2   | icrc2_transfer_from | 18_061_778   | 7_814_711 | $0.0000103910 | $10.39            | <font color="red">+52_874</font> |
+| 3   | icrc2_allowance     | 10_484_162   | 4_783_664 | $0.0000063607 | $6.36             | <font color="red">+49_421</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

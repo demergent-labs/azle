@@ -1,13 +1,11 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
 ## Current benchmarks Azle version: 0.30.0
 
-| Id  | Method Name        | Instructions | Cycles  | USD           | USD/Million Calls |
-| --- | ------------------ | ------------ | ------- | ------------- | ----------------- |
-| 0   | alwaysRejectUpdate | 721_199      | 878_479 | $0.0000011681 | $1.16             |
-| 1   | evenOrRejectUpdate | 552_773      | 811_109 | $0.0000010785 | $1.07             |
+| Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls |
+| --- | ------------------ | ------------ | --------- | ------------- | ----------------- |
+| 0   | alwaysRejectUpdate | 693_064      | 867_225   | $0.0000011531 | $1.15             |
+| 1   | evenOrRejectUpdate | 1_397_253    | 1_148_901 | $0.0000015277 | $1.52             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

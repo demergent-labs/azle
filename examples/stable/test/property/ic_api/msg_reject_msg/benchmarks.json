@@ -8,22 +8,14 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "2565049"
-                    },
+                    "instructions": "2590390",
                     "method_name": "echoThroughReject",
-                    "timestamp": {
-                        "__bigint__": "1741977017926973516"
-                    }
+                    "timestamp": "1744140135039886308"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "2412286"
-                    },
+                    "instructions": "2410911",
                     "method_name": "assertTypes",
-                    "timestamp": {
-                        "__bigint__": "1741977018172124887"
-                    }
+                    "timestamp": "1744140135525325724"
                 }
             ]
         }

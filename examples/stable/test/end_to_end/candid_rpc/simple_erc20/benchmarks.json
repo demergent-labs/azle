@@ -27,22 +27,14 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "2240451"
-                    },
+                    "instructions": "2237825",
                     "method_name": "initializeSupply",
-                    "timestamp": {
-                        "__bigint__": "1741977086177119461"
-                    }
+                    "timestamp": "1744140152875096894"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1831001"
-                    },
+                    "instructions": "1830350",
                     "method_name": "transfer",
-                    "timestamp": {
-                        "__bigint__": "1741977086418381429"
-                    }
+                    "timestamp": "1744140153119645906"
                 }
             ]
         }

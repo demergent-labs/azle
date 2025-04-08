@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for inspect_message
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | accessible  | 1_698_247    | 1_269_298 | $0.0000016877 | $1.68             | <font color="green">-5_615</font> |
+| 0   | accessible  | 1_699_355    | 1_269_742 | $0.0000016883 | $1.68             | <font color="green">-4_507</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

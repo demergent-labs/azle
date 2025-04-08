@@ -1,13 +1,11 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for caller
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name       | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | echoThroughReject | 2_565_049    | 1_616_019 | $0.0000021488 | $2.14             |
-| 1   | assertTypes       | 2_412_286    | 1_554_914 | $0.0000020675 | $2.06             |
+| 0   | echoThroughReject | 2_590_390    | 1_626_156 | $0.0000021623 | $2.16             |
+| 1   | assertTypes       | 2_410_911    | 1_554_364 | $0.0000020668 | $2.06             |
 
 ## Baseline benchmarks Azle version: No previous benchmarks
 

@@ -1,17 +1,15 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for simple_to_do
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name    | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
 | --- | -------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | addTodo        | 1_923_771    | 1_359_508 | $0.0000018077 | $1.80             | <font color="green">-3_675</font> |
-| 1   | addTodo        | 1_676_025    | 1_260_410 | $0.0000016759 | $1.67             | <font color="green">-4_010</font> |
-| 2   | completeTodo   | 990_525      | 986_210   | $0.0000013113 | $1.31             | <font color="green">-1_899</font> |
-| 3   | clearCompleted | 899_238      | 949_695   | $0.0000012628 | $1.26             | <font color="green">-4_179</font> |
-| 4   | completeTodo   | 985_349      | 984_139   | $0.0000013086 | $1.30             | <font color="green">-5_355</font> |
-| 5   | clearCompleted | 883_922      | 943_568   | $0.0000012546 | $1.25             | <font color="green">-4_212</font> |
+| 0   | addTodo        | 1_928_124    | 1_361_249 | $0.0000018100 | $1.81             | <font color="red">+678</font>     |
+| 1   | addTodo        | 1_680_359    | 1_262_143 | $0.0000016782 | $1.67             | <font color="red">+324</font>     |
+| 2   | completeTodo   | 993_405      | 987_362   | $0.0000013129 | $1.31             | <font color="red">+981</font>     |
+| 3   | clearCompleted | 902_450      | 950_980   | $0.0000012645 | $1.26             | <font color="green">-967</font>   |
+| 4   | completeTodo   | 986_719      | 984_687   | $0.0000013093 | $1.30             | <font color="green">-3_985</font> |
+| 5   | clearCompleted | 884_749      | 943_899   | $0.0000012551 | $1.25             | <font color="green">-3_385</font> |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

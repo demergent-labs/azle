@@ -36,31 +36,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "6499983"
-                    },
+                    "instructions": "6501056",
                     "method_name": "canisterNestedReturnType",
-                    "timestamp": {
-                        "__bigint__": "1741977088455690537"
-                    }
+                    "timestamp": "1744140163033079174"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "6959568"
-                    },
+                    "instructions": "6956451",
                     "method_name": "canisterList",
-                    "timestamp": {
-                        "__bigint__": "1741977088699543959"
-                    }
+                    "timestamp": "1744140163503247902"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "2188149"
-                    },
+                    "instructions": "2190532",
                     "method_name": "canisterCrossCanisterCall",
-                    "timestamp": {
-                        "__bigint__": "1741977088941737054"
-                    }
+                    "timestamp": "1744140163746067441"
                 }
             ]
         }
@@ -74,13 +62,9 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "1632436"
-                    },
+                    "instructions": "1626995",
                     "method_name": "update1",
-                    "timestamp": {
-                        "__bigint__": "1741977088941737054"
-                    }
+                    "timestamp": "1744140163746067441"
                 }
             ]
         }

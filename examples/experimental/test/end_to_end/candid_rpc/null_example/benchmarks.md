@@ -1,14 +1,12 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for null_example
 
 ## Current benchmarks Azle version: 0.30.0
 
 | Id  | Method Name            | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
 | --- | ---------------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | setPartiallyNullRecord | 8_983_835    | 4_183_534 | $0.0000055627 | $5.56             | <font color="green">-10_979</font> |
-| 1   | setSmallNullRecord     | 5_374_876    | 2_739_950 | $0.0000036432 | $3.64             | <font color="green">-14_564</font> |
-| 2   | setLargeNullRecord     | 8_685_211    | 4_064_084 | $0.0000054039 | $5.40             | <font color="green">-20_058</font> |
+| 0   | setPartiallyNullRecord | 8_981_371    | 4_182_548 | $0.0000055614 | $5.56             | <font color="green">-13_443</font> |
+| 1   | setSmallNullRecord     | 5_385_685    | 2_744_274 | $0.0000036490 | $3.64             | <font color="green">-3_755</font>  |
+| 2   | setLargeNullRecord     | 8_698_331    | 4_069_332 | $0.0000054109 | $5.41             | <font color="green">-6_938</font>  |
 
 ## Baseline benchmarks Azle version: 0.29.0
 

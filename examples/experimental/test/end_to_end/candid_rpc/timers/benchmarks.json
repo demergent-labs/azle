@@ -36,31 +36,19 @@
             "version": "0.30.0",
             "benchmarks": [
                 {
-                    "instructions": {
-                        "__bigint__": "16020445"
-                    },
+                    "instructions": "16039236",
                     "method_name": "setTimers",
-                    "timestamp": {
-                        "__bigint__": "1741977048337986143"
-                    }
+                    "timestamp": "1744140162318638522"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1189582"
-                    },
+                    "instructions": "1188955",
                     "method_name": "clearTimer",
-                    "timestamp": {
-                        "__bigint__": "1741977060710113394"
-                    }
+                    "timestamp": "1744140174718672514"
                 },
                 {
-                    "instructions": {
-                        "__bigint__": "1189715"
-                    },
+                    "instructions": "1189892",
                     "method_name": "clearTimer",
-                    "timestamp": {
-                        "__bigint__": "1741977060710113394"
-                    }
+                    "timestamp": "1744140174718672514"
                 }
             ]
         }
