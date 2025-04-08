@@ -4,7 +4,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.30.0"
+        "azle": "0.30.1-rc.4"
     },
     "devDependencies": {
         "func_types_end_to_end_test_functional_syntax": "file:../../../../../experimental/test/end_to_end/candid_rpc/func_types"
