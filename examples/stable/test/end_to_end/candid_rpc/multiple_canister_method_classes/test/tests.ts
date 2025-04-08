@@ -1,53 +1,110 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/_internal/test';
+import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/multiple_canister_method_classes/multiple_canister_method_classes.did';
 
 export function getTests(canister: ActorSubclass<_SERVICE>): Test {
     return () => {
-        it('methods1Text returns correct string', async () => {
-            const result = await canister.methods1Text();
-            expect(result).toStrictEqual('methods1Text');
+        it('returns correct string for methods1Text', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods1Text`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods1Text'");
+        });
+        it('returns correct bigint for methods1Nat', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods1Nat`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods1Nat'");
+        });
+        it('returns correct Principal for methods1Principal', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods1Principal`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods1Principal'");
         });
 
-        it('methods1Nat returns correct bigint', async () => {
-            const result = await canister.methods1Nat();
-            expect(result).toStrictEqual(1n);
-        });
-
-        it('methods1Principal returns correct Principal', async () => {
-            const result = await canister.methods1Principal();
-            expect(result.toUint8Array()).toEqual(new Uint8Array([1]));
-        });
-
-        it('methods2Text returns correct string', async () => {
+        it('returns correct string for methods2Text', async () => {
             const result = await canister.methods2Text();
             expect(result).toStrictEqual('methods2Text');
         });
-
-        it('methods2Nat returns correct bigint', async () => {
+        it('returns correct bigint for methods2Nat', async () => {
             const result = await canister.methods2Nat();
             expect(result).toStrictEqual(2n);
         });
-
-        it('methods2Principal returns correct Principal', async () => {
+        it('returns correct Principal for methods2Principal', async () => {
             const result = await canister.methods2Principal();
             expect(result.toUint8Array()).toEqual(new Uint8Array([2]));
         });
 
-        it('methods3Text returns correct string', async () => {
+        it('returns correct string for methods3Text', async () => {
             const result = await canister.methods3Text();
             expect(result).toStrictEqual('methods3Text');
         });
-
-        it('methods3Nat returns correct bigint', async () => {
+        it('returns correct bigint for methods3Nat', async () => {
             const result = await canister.methods3Nat();
             expect(result).toStrictEqual(3n);
         });
-
-        it('methods3Principal returns correct Principal', async () => {
+        it('returns correct Principal for methods3Principal', async () => {
             const result = await canister.methods3Principal();
             expect(result.toUint8Array()).toEqual(new Uint8Array([3]));
+        });
+
+        it('returns correct string for methods4Text', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods4Text`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods4Text'");
+        });
+        it('returns correct bigint for methods4Nat', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods4Nat`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods4Nat'");
+        });
+        it('returns correct Principal for methods4Principal', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods4Principal`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods4Principal'");
+        });
+
+        it('returns correct string for methods5Text', async () => {
+            const result = await canister.methods5Text();
+            expect(result).toStrictEqual('methods5Text');
+        });
+        it('returns correct bigint for methods5Nat', async () => {
+            const result = await canister.methods5Nat();
+            expect(result).toStrictEqual(5n);
+        });
+        it('returns correct Principal for methods5Principal', async () => {
+            const result = await canister.methods5Principal();
+            expect(result.toUint8Array()).toEqual(new Uint8Array([5]));
         });
     };
 }
