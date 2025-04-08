@@ -6,7 +6,7 @@ import { _SERVICE } from './dfx_generated/multiple_canister_method_classes/multi
 
 export function getTests(canister: ActorSubclass<_SERVICE>): Test {
     return () => {
-        it('returns correct string for methods1Text', async () => {
+        it('has no update method methods1Text', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods1Text`,
@@ -16,7 +16,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 )
             ).toThrow("Canister has no update method 'methods1Text'");
         });
-        it('returns correct bigint for methods1Nat', async () => {
+        it('has no update method methods1Nat', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods1Nat`,
@@ -26,7 +26,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 )
             ).toThrow("Canister has no update method 'methods1Nat'");
         });
-        it('returns correct Principal for methods1Principal', async () => {
+        it('has no update method methods1Principal', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods1Principal`,
@@ -63,7 +63,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
             expect(result.toUint8Array()).toEqual(new Uint8Array([3]));
         });
 
-        it('returns correct string for methods4Text', async () => {
+        it('has no update method methods4Text', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods4Text`,
@@ -73,7 +73,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 )
             ).toThrow("Canister has no update method 'methods4Text'");
         });
-        it('returns correct bigint for methods4Nat', async () => {
+        it('has no update method methods4Nat', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods4Nat`,
@@ -83,7 +83,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 )
             ).toThrow("Canister has no update method 'methods4Nat'");
         });
-        it('returns correct Principal for methods4Principal', async () => {
+        it('has no update method methods4Principal', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods4Principal`,
@@ -107,7 +107,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
             expect(result.toUint8Array()).toEqual(new Uint8Array([5]));
         });
 
-        it('returns correct string for methods6Text', async () => {
+        it('has no update method methods6Text', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods6Text`,
@@ -117,7 +117,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 )
             ).toThrow("Canister has no update method 'methods6Text'");
         });
-        it('returns correct bigint for methods6Nat', async () => {
+        it('has no update method methods6Nat', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods6Nat`,
@@ -127,7 +127,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 )
             ).toThrow("Canister has no update method 'methods6Nat'");
         });
-        it('returns correct Principal for methods6Principal', async () => {
+        it('has no update method methods6Principal', async () => {
             expect(() =>
                 execSync(
                     `dfx canister call multiple_canister_method_classes methods6Principal`,
