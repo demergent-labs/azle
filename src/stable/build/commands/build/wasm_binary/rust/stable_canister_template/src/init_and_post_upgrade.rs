@@ -83,7 +83,7 @@ pub fn initialize_js(
 
         globals.set("_azleExperimental", false)?;
 
-        globals.set("_azleExportedCanisterClassInstance", Undefined)?;
+        globals.set("_azleCanisterClassMeta", Undefined)?;
 
         globals.set("_azleIcExperimental", Undefined)?;
 

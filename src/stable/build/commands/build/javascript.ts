@@ -28,40 +28,37 @@ function getPrelude(main: string): string {
 
 export function handleClassApiCanister(main: string): string {
     return /*TS*/ `
-        const exportedCanisterClassInstance = getExportedCanisterClassInstance();
+        const canisterClassMeta = getCanisterClassMeta();
+
+        globalThis._azleDispatch({
+            type: 'SET_AZLE_CANISTER_CLASS_META',
+            payload: canisterClassMeta,
+            location: {
+                filepath: 'azle/src/stable/build/commands/compile/javascript.ts',
+                functionName: 'getCanisterClassMeta'
+            }
+        });
 
         const visibleMethodIdlParamTypes = Object.fromEntries(
-            Object.entries(exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes)
-                .filter(([methodName]) => isMethodVisible(methodName, exportedCanisterClassInstance._azleMethodMeta))
+            Object.entries(canisterClassMeta._azleCanisterMethodIdlParamTypes)
+                .filter(([methodName]) => isMethodVisible(methodName, canisterClassMeta._azleMethodMeta))
         );
 
         const canisterIdlType = IDL.Service(visibleMethodIdlParamTypes);
         const candid = idlToString(canisterIdlType, {
             ...getDefaultVisitorData(),
             isFirstService: true,
-            initAndPostUpgradeParamIdlTypes: exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+            initAndPostUpgradeParamIdlTypes: canisterClassMeta._azleInitAndPostUpgradeIdlTypes
         });
 
         globalThis._azleGetCandidAndMethodMeta = () => {
             return JSON.stringify({
                 candid,
-                methodMeta: exportedCanisterClassInstance._azleMethodMeta
+                methodMeta: canisterClassMeta._azleMethodMeta
             });
         };
 
-        /**
-         * @internal
-         *
-         * Determines if a method should be visible in Candid based on its hidden status
-         */
-        function isMethodVisible(methodName, methodMeta) {
-            const { queries = [], updates = [] } = methodMeta;
-            const allMethods = [...queries, ...updates];
-            const method = allMethods.find(m => m.name === methodName);
-            return method?.hidden === false;
-        }
-
-        function getExportedCanisterClassInstance() {
+        function getCanisterClassMeta() {
             const defaultExportIsUndefined = Canister.default === undefined;
             const defaultExportIsNotAnArray = Array.isArray(Canister.default) === false;
             const defaultExportIsNotAFunction = typeof Canister.default !== 'function';
@@ -78,18 +75,14 @@ export function handleClassApiCanister(main: string): string {
                 throw new Error('A class or an array of classes must be the default export from ${main}');
             }
 
-            const canisterMethodClassInfo = getCanisterMethodClassInfo(Array.isArray(Canister.default) ? Canister.default : [Canister.default]);
+            const canisterClasses = Array.isArray(Canister.default) ? Canister.default : [Canister.default];
 
-            globalThis._azleExportedCanisterClassInstance = canisterMethodClassInfo;
-        
-            // TODO dispatch an action, maybe at the caller
-            return globalThis._azleExportedCanisterClassInstance;
-        }
-
-        function getCanisterMethodClassInfo(canisterMethodClasses) {
             // TODO this is terribly mutative...can we do this in a more functional way?
-            let canisterMethodClassInfo = {
+            let canisterClassMeta = {
+                _azleCallbacks: {},
+                _azleCanisterMethodIdlParamTypes: {},
                 _azleCanisterMethodsIndex: 0,
+                _azleInitAndPostUpgradeIdlTypes: [],
                 _azleDefinedSystemMethods: {
                     init: false,
                     postUpgrade: false,
@@ -98,22 +91,30 @@ export function handleClassApiCanister(main: string): string {
                     inspectMessage: false,
                     onLowWasmMemory: false
                 },
-                _azleCanisterMethodIdlParamTypes: {},
-                _azleInitAndPostUpgradeIdlTypes: [],
                 _azleMethodMeta: {
                     queries: [],
                     updates: []
-                },
-                _azleCallbacks: {}
+                }
             };
 
-            canisterMethodClasses.forEach((canisterMethodClass) => {
-                canisterMethodClass._azleCanisterMethodClassInfo = canisterMethodClassInfo;
-
-                new canisterMethodClass();
+            canisterClasses.forEach((canisterClass) => {
+                canisterClass._azleCanisterClassMeta = canisterClassMeta;
+                new canisterClass();
             });
 
-            return canisterMethodClassInfo;
+            return canisterClassMeta;
+        }
+
+        /**
+         * @internal
+         *
+         * Determines if a method should be visible in Candid based on its hidden status
+         */
+        function isMethodVisible(methodName, methodMeta) {
+            const { queries = [], updates = [] } = methodMeta;
+            const allMethods = [...queries, ...updates];
+            const method = allMethods.find(m => m.name === methodName);
+            return method?.hidden === false;
         }
     `;
 }
@@ -184,7 +185,7 @@ function experimentalMessage(importName: string): string {
 function handleBenchmarking(): string {
     return /*TS*/ `
         if (globalThis.process !== undefined && globalThis.process.env.AZLE_RECORD_BENCHMARKS === 'true') {
-            const methodMeta = exportedCanisterClassInstance._azleMethodMeta;
+            const methodMeta = canisterClassMeta._azleMethodMeta;
 
             const canisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
                 if (value === undefined) {

@@ -14,7 +14,7 @@ import { PostUpgradeOptions } from './post_upgrade';
 import { QueryOptions } from './query';
 import { UpdateOptions } from './update';
 
-export interface CanisterMethodClassInfo {
+export interface CanisterClassMeta {
     _azleCallbacks: {
         [key: string]: () => Promise<void>;
     };
@@ -147,16 +147,19 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
     options?: QueryOptions | UpdateOptions | InitOptions | PostUpgradeOptions
 ): void {
     context.addInitializer(function () {
-        // We either get the somewhat global _azleCanisterMethodClassInfo object from the constructor
+        // We either get the somewhat global _azleCanisterClassMeta object from the constructor
         // as set during Azle's initialization process, or we create
-        // a local _azleCanisterMethodClassInfo object that will essentially be inert
+        // a local _azleCanisterClassMeta object that will essentially be inert
         // This handles the case of the developer instnatiating a class with canister method
         // decorators, but not exporting that class from the main defined in dfx.json
         // We only ever want canister methods to be registered if they were exported
         // from the main defined in dfx.json
         let canisterClassMethodInfo = ((this as any).constructor
-            ._azleCanisterMethodClassInfo as CanisterMethodClassInfo) ?? {
+            ._azleCanisterClassMeta as CanisterClassMeta) ?? {
+            _azleCallbacks: {},
+            _azleCanisterMethodIdlParamTypes: {},
             _azleCanisterMethodsIndex: 0,
+            _azleInitAndPostUpgradeIdlTypes: [],
             _azleDefinedSystemMethods: {
                 init: false,
                 postUpgrade: false,
@@ -165,13 +168,10 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                 inspectMessage: false,
                 onLowWasmMemory: false
             },
-            _azleCanisterMethodIdlParamTypes: {},
-            _azleInitAndPostUpgradeIdlTypes: [],
             _azleMethodMeta: {
                 queries: [],
                 updates: []
-            },
-            _azleCallbacks: {}
+            }
         };
 
         const name = context.name as string;
@@ -403,7 +403,7 @@ function throwIfMethodAlreadyDefined(
 ): void {
     if (isDefined === true) {
         throw new Error(
-            `'@${methodName}' method can only have one definition in the exported canister class`
+            `'@${methodName}' method can only have one definition in a canister class`
         );
     }
 }

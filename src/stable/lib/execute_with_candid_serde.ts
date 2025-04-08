@@ -1,6 +1,6 @@
 import { IDL, JsonValue } from '@dfinity/candid';
 
-import { CanisterMethodClassInfo } from './canister_methods';
+import { CanisterClassMeta } from './canister_methods';
 import { msgArgData } from './ic_apis/msg_arg_data';
 import { msgMethodName } from './ic_apis/msg_method_name';
 import { msgReply } from './ic_apis/msg_reply';
@@ -38,7 +38,7 @@ export async function executeAndReplyWithCandidSerde(
     paramIdlTypes: IDL.Type[],
     returnIdlType: IDL.Type | undefined,
     manual: boolean,
-    canisterMethodIdlParamTypes: CanisterMethodClassInfo['_azleCanisterMethodIdlParamTypes']
+    canisterMethodIdlParamTypes: CanisterClassMeta['_azleCanisterMethodIdlParamTypes']
 ): Promise<void> {
     const decodedArgs = decodeArgs(
         mode,
@@ -68,7 +68,7 @@ function decodeArgs(
     mode: CanisterMethodMode,
     manual: boolean,
     paramIdlTypes: IDL.Type[],
-    canisterMethodIdlParamTypes: CanisterMethodClassInfo['_azleCanisterMethodIdlParamTypes']
+    canisterMethodIdlParamTypes: CanisterClassMeta['_azleCanisterMethodIdlParamTypes']
 ): JsonValue[] {
     if (manual === true) {
         return [];
