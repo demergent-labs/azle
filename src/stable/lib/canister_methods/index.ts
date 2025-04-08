@@ -14,16 +14,30 @@ import { PostUpgradeOptions } from './post_upgrade';
 import { QueryOptions } from './query';
 import { UpdateOptions } from './update';
 
-export interface ExportedCanisterClass {
-    _azleCallbacks?: {
+// TODO I am starting to think that we should have two different implementations of the decorators
+// TODO one is just for running in the node Wasm environment
+// TODO one is for running in the canister environment
+// TODO I wish we could choose a better Suffix besides Info
+export interface CanisterMethodClassInfo {
+    // TODO needed in the canister
+    _azleCallbacks: {
         [key: string]: () => Promise<void>;
     };
-    _azleCanisterMethodIdlParamTypes?: { [key: string]: IDL.FuncClass };
-    _azleCanisterMethodsIndex?: number;
-    _azleInitAndPostUpgradeIdlTypes?: IDL.Type[];
-    _azleDefinedSystemMethods?: DefinedSystemMethods;
-    _azleMethodMeta?: MethodMeta;
-    _azleShouldRegisterCanisterMethods?: boolean;
+    _azleCanisterMethodIdlParamTypes: { [key: string]: IDL.FuncClass };
+
+    // TODO this might need to be global...or actually maybe we do this at the
+    // TODO end of the process once we have all of everything generated
+    // TODO then we can go and assign indexes
+    _azleCanisterMethodsIndex: number;
+    // _azleDefinedSystemMethods?: DefinedSystemMethods;
+    // _azleMethodMeta?: MethodMeta;
+
+    // TODO needed in node wasm for candid file generation
+    _azleInitAndPostUpgradeIdlTypes: IDL.Type[];
+
+    // TODO this is just a helper anyway
+    _azleDefinedSystemMethods: DefinedSystemMethods;
+    _azleMethodMeta: MethodMeta;
 }
 
 type DefinedSystemMethods = {
@@ -148,114 +162,66 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
     options?: QueryOptions | UpdateOptions | InitOptions | PostUpgradeOptions
 ): void {
     context.addInitializer(function () {
-        let exportedCanisterClassInstance = this as ExportedCanisterClass;
-
-        if (
-            exportedCanisterClassInstance._azleCanisterMethodsIndex ===
-            undefined
-        ) {
-            exportedCanisterClassInstance._azleCanisterMethodsIndex = 0;
-        }
-
-        if (
-            exportedCanisterClassInstance._azleDefinedSystemMethods ===
-            undefined
-        ) {
-            exportedCanisterClassInstance._azleDefinedSystemMethods = {
-                init: false,
-                postUpgrade: false,
-                preUpgrade: false,
-                heartbeat: false,
-                inspectMessage: false,
-                onLowWasmMemory: false
-            };
-        }
-
-        if (
-            exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes ===
-            undefined
-        ) {
-            exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes = {};
-        }
-
-        if (
-            exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes ===
-            undefined
-        ) {
-            exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes = [];
-        }
-
-        if (exportedCanisterClassInstance._azleMethodMeta === undefined) {
-            exportedCanisterClassInstance._azleMethodMeta = {
-                queries: [],
-                updates: []
-            };
-        }
-
-        if (exportedCanisterClassInstance._azleCallbacks === undefined) {
-            exportedCanisterClassInstance._azleCallbacks = {};
-        }
+        let canisterClassMethodInfo = (this as any).constructor
+            ._azleCanisterMethodClassInfo as CanisterMethodClassInfo;
 
         const name = context.name as string;
 
-        const index = exportedCanisterClassInstance._azleCanisterMethodsIndex++;
+        const index = canisterClassMethodInfo._azleCanisterMethodsIndex++;
         const indexString = index.toString();
 
         if (canisterMethodMode === 'query') {
-            exportedCanisterClassInstance._azleMethodMeta.queries?.push({
+            canisterClassMethodInfo._azleMethodMeta.queries?.push({
                 name,
                 index,
                 composite: (options as QueryOptions)?.composite ?? false,
                 hidden: (options as QueryOptions)?.hidden ?? false
             });
 
-            exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes[
-                name
-            ] = IDL.Func(
-                paramIdlTypes ?? [],
-                returnIdlType === undefined ? [] : [returnIdlType],
-                ['query']
-            );
+            canisterClassMethodInfo._azleCanisterMethodIdlParamTypes[name] =
+                IDL.Func(
+                    paramIdlTypes ?? [],
+                    returnIdlType === undefined ? [] : [returnIdlType],
+                    ['query']
+                );
         }
 
         if (canisterMethodMode === 'update') {
-            exportedCanisterClassInstance._azleMethodMeta.updates?.push({
+            canisterClassMethodInfo._azleMethodMeta.updates?.push({
                 name,
                 index,
                 hidden: (options as UpdateOptions)?.hidden ?? false
             });
 
-            exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes[
-                name
-            ] = IDL.Func(
-                paramIdlTypes ?? [],
-                returnIdlType === undefined ? [] : [returnIdlType]
-            );
+            canisterClassMethodInfo._azleCanisterMethodIdlParamTypes[name] =
+                IDL.Func(
+                    paramIdlTypes ?? [],
+                    returnIdlType === undefined ? [] : [returnIdlType]
+                );
         }
 
         if (canisterMethodMode === 'init') {
             throwIfMethodAlreadyDefined(
                 'init',
-                exportedCanisterClassInstance._azleDefinedSystemMethods.init
+                canisterClassMethodInfo._azleDefinedSystemMethods.init
             );
 
-            exportedCanisterClassInstance._azleDefinedSystemMethods.init = true;
-            exportedCanisterClassInstance._azleMethodMeta.init = {
+            canisterClassMethodInfo._azleDefinedSystemMethods.init = true;
+            canisterClassMethodInfo._azleMethodMeta.init = {
                 name,
                 index
             };
 
             const postUpgradeDefined =
-                exportedCanisterClassInstance._azleDefinedSystemMethods
-                    .postUpgrade;
+                canisterClassMethodInfo._azleDefinedSystemMethods.postUpgrade;
 
             if (postUpgradeDefined === true) {
                 verifyInitAndPostUpgradeHaveTheSameParams(
                     paramIdlTypes ?? [],
-                    exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+                    canisterClassMethodInfo._azleInitAndPostUpgradeIdlTypes
                 );
             } else {
-                exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes =
+                canisterClassMethodInfo._azleInitAndPostUpgradeIdlTypes =
                     paramIdlTypes ?? [];
             }
         }
@@ -263,27 +229,26 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'postUpgrade') {
             throwIfMethodAlreadyDefined(
                 'postUpgrade',
-                exportedCanisterClassInstance._azleDefinedSystemMethods
-                    .postUpgrade
+                canisterClassMethodInfo._azleDefinedSystemMethods.postUpgrade
             );
 
-            exportedCanisterClassInstance._azleDefinedSystemMethods.postUpgrade =
+            canisterClassMethodInfo._azleDefinedSystemMethods.postUpgrade =
                 true;
-            exportedCanisterClassInstance._azleMethodMeta.post_upgrade = {
+            canisterClassMethodInfo._azleMethodMeta.post_upgrade = {
                 name,
                 index
             };
 
             const initDefined =
-                exportedCanisterClassInstance._azleDefinedSystemMethods.init;
+                canisterClassMethodInfo._azleDefinedSystemMethods.init;
 
             if (initDefined === true) {
                 verifyInitAndPostUpgradeHaveTheSameParams(
                     paramIdlTypes ?? [],
-                    exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes
+                    canisterClassMethodInfo._azleInitAndPostUpgradeIdlTypes
                 );
             } else {
-                exportedCanisterClassInstance._azleInitAndPostUpgradeIdlTypes =
+                canisterClassMethodInfo._azleInitAndPostUpgradeIdlTypes =
                     paramIdlTypes ?? [];
             }
         }
@@ -291,13 +256,11 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'preUpgrade') {
             throwIfMethodAlreadyDefined(
                 'preUpgrade',
-                exportedCanisterClassInstance._azleDefinedSystemMethods
-                    .preUpgrade
+                canisterClassMethodInfo._azleDefinedSystemMethods.preUpgrade
             );
 
-            exportedCanisterClassInstance._azleDefinedSystemMethods.preUpgrade =
-                true;
-            exportedCanisterClassInstance._azleMethodMeta.pre_upgrade = {
+            canisterClassMethodInfo._azleDefinedSystemMethods.preUpgrade = true;
+            canisterClassMethodInfo._azleMethodMeta.pre_upgrade = {
                 name,
                 index
             };
@@ -306,13 +269,12 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'inspectMessage') {
             throwIfMethodAlreadyDefined(
                 'inspectMessage',
-                exportedCanisterClassInstance._azleDefinedSystemMethods
-                    .inspectMessage
+                canisterClassMethodInfo._azleDefinedSystemMethods.inspectMessage
             );
 
-            exportedCanisterClassInstance._azleDefinedSystemMethods.inspectMessage =
+            canisterClassMethodInfo._azleDefinedSystemMethods.inspectMessage =
                 true;
-            exportedCanisterClassInstance._azleMethodMeta.inspect_message = {
+            canisterClassMethodInfo._azleMethodMeta.inspect_message = {
                 name,
                 index
             };
@@ -321,13 +283,11 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'heartbeat') {
             throwIfMethodAlreadyDefined(
                 'heartbeat',
-                exportedCanisterClassInstance._azleDefinedSystemMethods
-                    .heartbeat
+                canisterClassMethodInfo._azleDefinedSystemMethods.heartbeat
             );
 
-            exportedCanisterClassInstance._azleDefinedSystemMethods.heartbeat =
-                true;
-            exportedCanisterClassInstance._azleMethodMeta.heartbeat = {
+            canisterClassMethodInfo._azleDefinedSystemMethods.heartbeat = true;
+            canisterClassMethodInfo._azleMethodMeta.heartbeat = {
                 name,
                 index
             };
@@ -336,50 +296,39 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
         if (canisterMethodMode === 'onLowWasmMemory') {
             throwIfMethodAlreadyDefined(
                 'onLowWasmMemory',
-                exportedCanisterClassInstance._azleDefinedSystemMethods
+                canisterClassMethodInfo._azleDefinedSystemMethods
                     .onLowWasmMemory
             );
 
-            exportedCanisterClassInstance._azleDefinedSystemMethods.onLowWasmMemory =
+            canisterClassMethodInfo._azleDefinedSystemMethods.onLowWasmMemory =
                 true;
-            exportedCanisterClassInstance._azleMethodMeta.on_low_wasm_memory = {
+            canisterClassMethodInfo._azleMethodMeta.on_low_wasm_memory = {
                 name,
                 index
             };
         }
 
-        exportedCanisterClassInstance._azleCallbacks[indexString] =
+        canisterClassMethodInfo._azleCallbacks[indexString] =
             async (): Promise<void> => {
                 try {
                     await executeAndReplyWithCandidSerde(
                         canisterMethodMode,
-                        originalMethod.bind(
-                            exportedCanisterClassInstance as This
-                        ),
+                        originalMethod.bind(canisterClassMethodInfo as This),
                         paramIdlTypes ?? [],
                         returnIdlType,
                         options?.manual ?? false,
-                        exportedCanisterClassInstance._azleCanisterMethodIdlParamTypes
+                        canisterClassMethodInfo._azleCanisterMethodIdlParamTypes
                     );
                 } catch (error) {
                     handleUncaughtError(error);
                 }
             };
 
-        if (
-            exportedCanisterClassInstance._azleShouldRegisterCanisterMethods ===
-                true &&
-            globalThis._azleExportedCanisterClassInstance === undefined
-        ) {
-            globalThis._azleDispatch({
-                type: 'SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE',
-                payload: exportedCanisterClassInstance,
-                location: {
-                    filepath: 'azle/src/stable/lib/canister_methods/index.ts',
-                    functionName: 'decoratorImplementation'
-                }
-            });
-        }
+        // TODO in the node wasm environment through to just get the data needed
+        // TODO otherwise the canister should return normally in the canister wasm environment
+        // if (globalThis._azleNodeWasmEnvironment === true) {
+        //     throw exportedCanisterClassInstance;
+        // }
     });
 }
 

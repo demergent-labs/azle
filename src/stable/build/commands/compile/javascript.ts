@@ -82,27 +82,59 @@ export function handleClassApiCanister(main: string): string {
          * There may be some rare conditions where this scheme will not work, but we believe the likelihood is extremely low.
          */
         function getExportedCanisterClassInstance() {
-            try {
-                if (Canister.default === undefined) {
-                    throw new Error(
-                        'Your canister class must be the default export of ${main}'
-                    );
-                }
-                Canister.default.prototype._azleShouldRegisterCanisterMethods = true;
-                new Canister.default();
-                Canister.default.prototype._azleShouldRegisterCanisterMethods = false;
-            } catch (error) {
-                if (globalThis._azleNodeWasmEnvironment === true) {
-                    if (globalThis._azleExportedCanisterClassInstance === undefined) {
-                        throw error;
-                    }
-                }
-                else {
-                    throw error;
-                }
-            }
+            // TODO I think we can get rid of the _azleShouldRegisterCanisterMethods
+            // TODO I think we should grab the required data off of the instance
+            // TODO if we have multiple canisters, then we create multiple instances, grab the data
+            // TODO and combine it into the final object
+            // TODO what do we do about duplicates?
 
+            // if (Canister.default === undefined) {
+            //     throw new Error(
+            //         'Your canister class must be the default export of ${main}'
+            //     );
+            // }
+
+            // if (Object.keys(Canister.default).length === 0) {
+            //     throw new Error('You did not provide a default export for your canister method class');
+            // }
+
+            const canisterMethodClassInfo = getCanisterMethodClassInfo(Array.isArray(Canister.default) ? Canister.default : [Canister.default]);
+
+            globalThis._azleExportedCanisterClassInstance = canisterMethodClassInfo;
+        
+            // TODO use redux
             return globalThis._azleExportedCanisterClassInstance;
+        }
+
+        function getCanisterMethodClassInfo(canisterMethodClasses) {
+            // TODO this is terribly mutative...can we do this in a more functional way?
+            let canisterMethodClassInfo = {
+                _azleCanisterMethodsIndex: 0,
+                _azleDefinedSystemMethods: {
+                    init: false,
+                    postUpgrade: false,
+                    preUpgrade: false,
+                    heartbeat: false,
+                    inspectMessage: false,
+                    onLowWasmMemory: false
+                },
+                _azleCanisterMethodIdlParamTypes: {},
+                _azleInitAndPostUpgradeIdlTypes: [],
+                _azleMethodMeta: {
+                    queries: [],
+                    updates: []
+                },
+                _azleCallbacks: {}
+            };
+
+            canisterMethodClasses.forEach((canisterMethodClass) => {
+                canisterMethodClass._azleCanisterMethodClassInfo = canisterMethodClassInfo;
+
+                // TODO handle throwing in the node wasm environment
+                new canisterMethodClass();
+            });
+
+            return canisterMethodClassInfo;
         }
     `;
 }
