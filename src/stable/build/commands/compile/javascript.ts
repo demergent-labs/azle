@@ -61,58 +61,28 @@ export function handleClassApiCanister(main: string): string {
             return method?.hidden === false;
         }
 
-        /**
-         * @internal
-         *
-         * This function is designed with a very specific purpose.
-         * We need to get the _azle properties off of this class instance to use in generating the candid
-         * and method meta information. But we can't just set the result of instantiating the class to a local variable.
-         * This is because exceptions might be thrown during the class's instantiation, in the constructor or
-         * property initializers. If this happens, we would not be able to proceed to get those _azle properties out of the local variable.
-         * The likelihood of this happening is very high, since to get the candid and method meta information we must
-         * execute the Wasm module outside of the replica in our Node.js Wasm environment. Though the likelihood of this happening
-         * is high, it is not an issue unless our decorators cannot complete the setting of the _azle properties.
-         * We believe there is a very high likelihood of always being able to set the _azle properties, even if errors
-         * are thrown after this process completes.
-         * This environment is not the true canister environment and may not have certain globals or other APIs.
-         * So we use a try/catch. If there is an exception we check if we're in the Node.js Wasm environment.
-         * If we are, we do not throw an error unless the global _azleExportedCanisterClassInstance is undefined.
-         * If it is not undefined, we assume that the decorators have executed during the context.addInitializer callback.
-         * This callback occurs before the class's constructor or properties are initialized.
-         * There may be some rare conditions where this scheme will not work, but we believe the likelihood is extremely low.
-         */
         function getExportedCanisterClassInstance() {
-            // TODO I think we can get rid of the _azleShouldRegisterCanisterMethods
-            // TODO I think we should grab the required data off of the instance
-            // TODO if we have multiple canisters, then we create multiple instances, grab the data
-            // TODO and combine it into the final object
-            // TODO what do we do about duplicates?
+            const defaultExportIsUndefined = Canister.default === undefined;
+            const defaultExportIsNotAnArray = Array.isArray(Canister.default) === false;
+            const defaultExportIsNotAFunction = typeof Canister.default !== 'function';
+            const defaultExportToStringDoesNotStartWithClass = defaultExportIsUndefined === false && Canister.default.toString().startsWith('class') === false;
+            const defaultExportIsNotAClass = defaultExportIsNotAFunction && defaultExportToStringDoesNotStartWithClass;
 
-            // if (Canister.default === undefined) {
-            //     throw new Error(
-            //         'Your canister class must be the default export of ${main}'
-            //     );
-            // }
-
-            // if (Object.keys(Canister.default).length === 0) {
-            //     throw new Error('You did not provide a default export for your canister method class');
-            // }
-
-            console.log('Canister.default', Canister.default);
-            console.log('typeof Canister.default', typeof Canister.default);
-            console.log('Object.keys(Canister.default)', Object.keys(Canister.default));
-            console.log('Canister.default.toString()', Canister.default.toString());
-
-            // TODO if they just deploy an empty file, should that be valid?
-            // if (!Array.isArray(Canister.default) && typeof Canister.default !== 'function' && !Canister.default.toString().startsWith('class') ) {
-            //     throw new Error('A class or an array of classes must be the default export from ${main}');
-            // }
+            if (
+                defaultExportIsUndefined ||
+                (
+                    defaultExportIsNotAnArray &&
+                    defaultExportIsNotAClass
+                )
+            ) {
+                throw new Error('A class or an array of classes must be the default export from ${main}');
+            }
 
             const canisterMethodClassInfo = getCanisterMethodClassInfo(Array.isArray(Canister.default) ? Canister.default : [Canister.default]);
 
             globalThis._azleExportedCanisterClassInstance = canisterMethodClassInfo;
         
-            // TODO use redux
+            // TODO dispatch an action, maybe at the caller
             return globalThis._azleExportedCanisterClassInstance;
         }
 
@@ -140,7 +110,6 @@ export function handleClassApiCanister(main: string): string {
             canisterMethodClasses.forEach((canisterMethodClass) => {
                 canisterMethodClass._azleCanisterMethodClassInfo = canisterMethodClassInfo;
 
-                // TODO handle throwing in the node wasm environment
                 new canisterMethodClass();
             });
 

@@ -14,28 +14,13 @@ import { PostUpgradeOptions } from './post_upgrade';
 import { QueryOptions } from './query';
 import { UpdateOptions } from './update';
 
-// TODO I am starting to think that we should have two different implementations of the decorators
-// TODO one is just for running in the node Wasm environment
-// TODO one is for running in the canister environment
-// TODO I wish we could choose a better Suffix besides Info
 export interface CanisterMethodClassInfo {
-    // TODO needed in the canister
     _azleCallbacks: {
         [key: string]: () => Promise<void>;
     };
     _azleCanisterMethodIdlParamTypes: { [key: string]: IDL.FuncClass };
-
-    // TODO this might need to be global...or actually maybe we do this at the
-    // TODO end of the process once we have all of everything generated
-    // TODO then we can go and assign indexes
     _azleCanisterMethodsIndex: number;
-    // _azleDefinedSystemMethods?: DefinedSystemMethods;
-    // _azleMethodMeta?: MethodMeta;
-
-    // TODO needed in node wasm for candid file generation
     _azleInitAndPostUpgradeIdlTypes: IDL.Type[];
-
-    // TODO this is just a helper anyway
     _azleDefinedSystemMethods: DefinedSystemMethods;
     _azleMethodMeta: MethodMeta;
 }
@@ -162,8 +147,32 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
     options?: QueryOptions | UpdateOptions | InitOptions | PostUpgradeOptions
 ): void {
     context.addInitializer(function () {
-        let canisterClassMethodInfo = (this as any).constructor
-            ._azleCanisterMethodClassInfo as CanisterMethodClassInfo;
+        // We either get the somewhat global _azleCanisterMethodClassInfo object from the constructor
+        // as set during Azle's initialization process, or we create
+        // a local _azleCanisterMethodClassInfo object that will essentially be inert
+        // This handles the case of the developer instnatiating a class with canister method
+        // decorators, but not exporting that class from the main defined in dfx.json
+        // We only ever want canister methods to be registered if they were exported
+        // from the main defined in dfx.json
+        let canisterClassMethodInfo = ((this as any).constructor
+            ._azleCanisterMethodClassInfo as CanisterMethodClassInfo) ?? {
+            _azleCanisterMethodsIndex: 0,
+            _azleDefinedSystemMethods: {
+                init: false,
+                postUpgrade: false,
+                preUpgrade: false,
+                heartbeat: false,
+                inspectMessage: false,
+                onLowWasmMemory: false
+            },
+            _azleCanisterMethodIdlParamTypes: {},
+            _azleInitAndPostUpgradeIdlTypes: [],
+            _azleMethodMeta: {
+                queries: [],
+                updates: []
+            },
+            _azleCallbacks: {}
+        };
 
         const name = context.name as string;
 
@@ -323,12 +332,6 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
                     handleUncaughtError(error);
                 }
             };
-
-        // TODO in the node wasm environment through to just get the data needed
-        // TODO otherwise the canister should return normally in the canister wasm environment
-        // if (globalThis._azleNodeWasmEnvironment === true) {
-        //     throw exportedCanisterClassInstance;
-        // }
     });
 }
 

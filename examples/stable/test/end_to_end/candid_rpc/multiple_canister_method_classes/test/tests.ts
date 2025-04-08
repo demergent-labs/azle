@@ -106,5 +106,36 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
             const result = await canister.methods5Principal();
             expect(result.toUint8Array()).toEqual(new Uint8Array([5]));
         });
+
+        it('returns correct string for methods6Text', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods6Text`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods6Text'");
+        });
+        it('returns correct bigint for methods6Nat', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods6Nat`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods6Nat'");
+        });
+        it('returns correct Principal for methods6Principal', async () => {
+            expect(() =>
+                execSync(
+                    `dfx canister call multiple_canister_method_classes methods6Principal`,
+                    {
+                        encoding: 'utf-8'
+                    }
+                )
+            ).toThrow("Canister has no update method 'methods6Principal'");
+        });
     };
 }
