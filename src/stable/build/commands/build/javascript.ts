@@ -58,23 +58,42 @@ export function handleClassApiCanister(main: string): string {
             });
         };
 
+        /**
+         * @internal
+         *
+         * This function is used to get the CanisterClassMeta object
+         * that contains all of the information required for Candid file generation,
+         * Wasm binary export manipulation, canister method callback invocation, etc.
+         * Unfortunately for now we must execute the canister in a Node Wasm environment
+         * in order to get some of the CanisterClassMeta information needed to manipulate
+         * the Wasm binary and generate the Candid file before final canister deployment.
+         */
         function getCanisterClassMeta() {
+            const defaultExportNotDefined = Canister.default === undefined || Canister.default === null;
+            const defaultExportNotAnArrayOrClass = Array.isArray(Canister.default) === false && isClass(Canister.default) === false;
+            const defaultExportAnArrayWithNonClasses = Array.isArray(Canister.default) === true && Canister.default.every((canisterClass) => isClass(canisterClass) === true) === false;
+
             if (
-                Canister.default === undefined ||
-                Canister.default === null || (
-                    Array.isArray(Canister.default) === false &&
-                    isClass(Canister.default) === false
-                ) || (
-                    Array.isArray(Canister.default) === true &&
-                    Canister.default.every((canisterClass) => isClass(canisterClass) === true) === false
-                )
+                defaultExportNotDefined === true ||
+                defaultExportNotAnArrayOrClass === true ||
+                defaultExportAnArrayWithNonClasses === true
+
             ) {
                 throw new Error('A class or an array of classes must be the default export from ${main}');
             }
 
             const canisterClasses = Array.isArray(Canister.default) ? Canister.default : [Canister.default];
 
-            // TODO this is terribly mutative...can we do this in a more functional way?
+            // This object WILL BE MUTATED.
+            // This is the original CanisterClassMeta object that we will
+            // pass as a property of the constructor of each exported canister class just before
+            // instantiating it. Each instantiation of an exported canister class
+            // will mutate this same object, as the same reference will be passed along.
+            // After all instantiations are complete, this will be the final CanisterClassMeta object
+            // that we set on globalThis._azleCanisterClassMeta that contains all of the information
+            // required for Candid file generation, Wasm binary export manipulation, and canister method callback invocation.
+            // We may wish to revisit these mutations later on, but it is working very well for now.
+            // We would have to do a large refactor of the decorators to get rid of these mutations.
             let canisterClassMeta = {
                 callbacks: {},
                 canisterMethodIdlParamTypes: {},
@@ -88,12 +107,18 @@ export function handleClassApiCanister(main: string): string {
 
             canisterClasses.forEach((canisterClass) => {
                 canisterClass._azleCanisterClassMeta = canisterClassMeta;
+                // canisterClassMeta WILL BE MUTATED inside of this instantiation
                 new canisterClass();
             });
 
             return canisterClassMeta;
         }
 
+        /**
+         * @internal
+         *
+         * Uses a heuristic to determine if a value is a class or not
+         */
         function isClass(value) {
             return value !== undefined && value !== null && typeof value === 'function' && value.toString().startsWith('class');
         }
