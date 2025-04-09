@@ -62,13 +62,6 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
                 .get_global()
                 .set("_azleCallbacks", context.new_object().into());
 
-            context.get_global().set("_azleMethodMeta", {
-                let mut method_meta = context.new_object();
-                method_meta.set("queries", context.new_array().into());
-                method_meta.set("updates", context.new_array().into());
-                method_meta.into()
-            });
-
             ic::register(context);
 
             let wasm_data = get_wasm_data();

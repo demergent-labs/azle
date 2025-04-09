@@ -14,12 +14,10 @@ import {
 import { CyclesResult } from '../types';
 
 export default class {
-    cyclesPrincipal = getCyclesPrincipal();
-
     @update([IDL.Nat64], CyclesResult)
     async sendAllCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call<undefined, CyclesResult>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'receiveAllCycles',
             {
                 returnIdlType: CyclesResult,
@@ -35,7 +33,7 @@ export default class {
         amountToAccept: bigint
     ): Promise<CyclesResult> {
         const result = await call<[bigint], CyclesResult>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'receiveVariableCycles',
             {
                 paramIdlTypes: [IDL.Nat64],
@@ -50,7 +48,7 @@ export default class {
     @update([IDL.Nat64], CyclesResult)
     async sendNoCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call<undefined, CyclesResult>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'receiveNoCycles',
             {
                 returnIdlType: CyclesResult,
@@ -66,7 +64,7 @@ export default class {
         numChunks: bigint
     ): Promise<CyclesResult> {
         const result = await call<[bigint], CyclesResult>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'receiveCyclesByChunk',
             {
                 paramIdlTypes: [IDL.Nat64],
@@ -89,7 +87,7 @@ export default class {
     @update([IDL.Nat64], IDL.Bool)
     async assertMsgCyclesAcceptTypes(amount: bigint): Promise<boolean> {
         return await call<[bigint], boolean>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'assertMsgCyclesAcceptTypes',
             {
                 paramIdlTypes: [IDL.Nat64],
@@ -102,7 +100,7 @@ export default class {
     @update([], IDL.Bool)
     async assertMsgCyclesAvailableTypes(): Promise<boolean> {
         return await call<undefined, boolean>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'assertMsgCyclesAvailableTypes',
             {
                 returnIdlType: IDL.Bool
@@ -113,7 +111,7 @@ export default class {
     @update([IDL.Nat64], IDL.Bool)
     async assertMsgCyclesRefundedTypes(amount: bigint): Promise<boolean> {
         await call<[bigint], boolean>(
-            this.cyclesPrincipal,
+            getCyclesPrincipal(),
             'assertMsgCyclesAcceptTypes',
             {
                 paramIdlTypes: [IDL.Nat64],

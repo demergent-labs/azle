@@ -5,11 +5,9 @@ import {
 } from 'azle/_internal/type_tests/assert_type';
 
 export default class {
-    rejectorPrincipal = getRejectorPrincipal();
-
     @update([IDL.Text], IDL.Text)
     async echoThroughReject(message: string): Promise<string> {
-        return await getRejectMessage(this.rejectorPrincipal, message);
+        return await getRejectMessage(getRejectorPrincipal(), message);
     }
 
     @update([IDL.Text], IDL.Bool)
@@ -18,7 +16,7 @@ export default class {
             NotAnyAndExact<ReturnType<typeof msgRejectMsg>, string>
         >;
         return (
-            typeof (await getRejectMessage(this.rejectorPrincipal, message)) ===
+            typeof (await getRejectMessage(getRejectorPrincipal(), message)) ===
             'string'
         );
     }

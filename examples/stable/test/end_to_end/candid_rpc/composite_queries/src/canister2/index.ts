@@ -1,7 +1,6 @@
 import { call, IDL, msgReply, query, update } from 'azle';
 
 export default class {
-    canister3Id: string = getCanister3Id();
     counter: bigint = 0n;
 
     @query([], IDL.Nat)
@@ -35,7 +34,7 @@ export default class {
         composite: true
     })
     async deepQuery(): Promise<string> {
-        return await call<undefined, string>(this.canister3Id, 'deepQuery', {
+        return await call<undefined, string>(getCanister3Id(), 'deepQuery', {
             returnIdlType: IDL.Text
         });
     }

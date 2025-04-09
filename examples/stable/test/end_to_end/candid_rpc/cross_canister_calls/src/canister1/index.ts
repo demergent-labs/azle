@@ -3,12 +3,10 @@ import { call, IDL, update } from 'azle';
 import { Account, AccountArgs } from '../canister2/types';
 
 export default class {
-    canister2Id: string = getCanister2Id();
-
     @update([IDL.Text, IDL.Text, IDL.Nat64], IDL.Nat64)
     async transfer(from: string, to: string, amount: bigint): Promise<bigint> {
         return await call<[string, string, bigint], bigint>(
-            this.canister2Id,
+            getCanister2Id(),
             'transfer',
             {
                 paramIdlTypes: [IDL.Text, IDL.Text, IDL.Nat64],
@@ -20,7 +18,7 @@ export default class {
 
     @update([IDL.Text], IDL.Nat64)
     async balance(id: string): Promise<bigint> {
-        return await call<[string], bigint>(this.canister2Id, 'balance', {
+        return await call<[string], bigint>(getCanister2Id(), 'balance', {
             paramIdlTypes: [IDL.Text],
             returnIdlType: IDL.Nat64,
             args: [id]
@@ -30,7 +28,7 @@ export default class {
     @update([AccountArgs], IDL.Opt(Account))
     async account(args: AccountArgs): Promise<[Account] | []> {
         return await call<[AccountArgs], [Account] | []>(
-            this.canister2Id,
+            getCanister2Id(),
             'account',
             {
                 paramIdlTypes: [AccountArgs],
@@ -42,20 +40,20 @@ export default class {
 
     @update([], IDL.Vec(Account))
     async accounts(): Promise<Account[]> {
-        return await call<undefined, Account[]>(this.canister2Id, 'accounts', {
+        return await call<undefined, Account[]>(getCanister2Id(), 'accounts', {
             returnIdlType: IDL.Vec(Account)
         });
     }
 
     @update([], IDL.Empty)
     async trap(): Promise<never> {
-        return await call<undefined, never>(this.canister2Id, 'trap');
+        return await call<undefined, never>(getCanister2Id(), 'trap');
     }
 
     @update
     async sendNotification(): Promise<void> {
         return await call<[string], void>(
-            this.canister2Id,
+            getCanister2Id(),
             'receiveNotification',
             {
                 paramIdlTypes: [IDL.Text],

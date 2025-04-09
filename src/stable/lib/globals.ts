@@ -5,7 +5,7 @@ import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
 import { AzleIcExperimental } from '#experimental/lib/ic/azle_ic_experimental';
 
-import { ExportedCanisterClass } from './canister_methods';
+import { CanisterClassMeta } from './canister_methods';
 import { AzleIc } from './ic_apis/azle_ic_stable';
 import { jsonReplacer } from './stable_structures/stable_json';
 import { Action } from './state';
@@ -14,13 +14,13 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleActions: Action[];
     // eslint-disable-next-line no-var
+    var _azleCanisterClassMeta: CanisterClassMeta | undefined;
+    // eslint-disable-next-line no-var
     var _azleCanisterMethodNames: { [key: string]: string };
     // eslint-disable-next-line no-var
     var _azleDispatch: (action: Action) => void;
     // eslint-disable-next-line no-var
     var _azleExperimental: boolean;
-    // eslint-disable-next-line no-var
-    var _azleExportedCanisterClassInstance: ExportedCanisterClass | undefined;
     // eslint-disable-next-line no-var
     var _azleIcExperimental: AzleIcExperimental | undefined;
     // eslint-disable-next-line no-var

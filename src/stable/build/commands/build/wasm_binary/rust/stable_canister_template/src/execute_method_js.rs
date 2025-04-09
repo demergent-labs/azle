@@ -21,23 +21,19 @@ pub extern "C" fn execute_method_js(function_index: i32) {
 
 fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Error>> {
     quickjs_with_ctx(|ctx| {
-        let exported_canister_class_instance: Object = ctx
+        let canister_class_meta: Object = ctx
             .clone()
             .globals()
-            .get("_azleExportedCanisterClassInstance")
-            .map_err(|e| {
-                format!("Failed to get globalThis._azleExportedCanisterClassInstance: {e}")
-            })?;
+            .get("_azleCanisterClassMeta")
+            .map_err(|e| format!("Failed to get globalThis._azleCanisterClassMeta: {e}"))?;
 
-        let callbacks: Object = exported_canister_class_instance
-            .get("_azleCallbacks")
-            .map_err(|e| {
-                format!("Failed to get exportedCanisterClassInstance._azleCallbacks: {e}")
-            })?;
+        let callbacks: Object = canister_class_meta.get("callbacks").map_err(|e| {
+            format!("Failed to get globalThis._azleCanisterClassMeta.callbacks: {e}")
+        })?;
 
         let method_callback: Function = callbacks.get(&function_name).map_err(|e| {
             format!(
-                "Failed to get exportedCanisterClassInstance._azleCallbacks[{function_name}]: {e}"
+                "Failed to get globalThis._azleCanisterClassMeta.callbacks[{function_name}]: {e}"
             )
         })?;
 

@@ -1,5 +1,12 @@
 import { ReactionType } from './candid_types';
 
+export let state: State = {
+    posts: {},
+    reactions: {},
+    threads: {},
+    users: {}
+};
+
 export type State = {
     posts: {
         [id: string]: StatePost | undefined;

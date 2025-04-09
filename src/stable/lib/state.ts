@@ -4,8 +4,8 @@ export type Action =
     | DELETE_AZLE_REJECT_CALLBACK
     | DELETE_AZLE_RESOLVE_CALLBACK
     | DELETE_AZLE_TIMER_CALLBACK
+    | SET_AZLE_CANISTER_CLASS_META
     | SET_AZLE_CANISTER_METHOD_NAMES
-    | SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE
     | SET_AZLE_ICP_REPLICA_WASM_ENVIRONMENT
     | SET_AZLE_REJECT_CALLBACK
     | SET_AZLE_RESOLVE_CALLBACK
@@ -52,18 +52,18 @@ interface DELETE_AZLE_TIMER_CALLBACK extends ActionShape {
     };
 }
 
-interface SET_AZLE_CANISTER_METHOD_NAMES extends ActionShape {
-    type: 'SET_AZLE_CANISTER_METHOD_NAMES';
-    payload: typeof globalThis._azleCanisterMethodNames;
+interface SET_AZLE_CANISTER_CLASS_META extends ActionShape {
+    type: 'SET_AZLE_CANISTER_CLASS_META';
+    payload: typeof globalThis._azleCanisterClassMeta;
     location: {
         filepath: string;
         functionName: string;
     };
 }
 
-interface SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE extends ActionShape {
-    type: 'SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE';
-    payload: typeof globalThis._azleExportedCanisterClassInstance;
+interface SET_AZLE_CANISTER_METHOD_NAMES extends ActionShape {
+    type: 'SET_AZLE_CANISTER_METHOD_NAMES';
+    payload: typeof globalThis._azleCanisterMethodNames;
     location: {
         filepath: string;
         functionName: string;
@@ -203,13 +203,13 @@ globalThis._azleDispatch = (action: Action): void => {
         return;
     }
 
-    if (action.type === 'SET_AZLE_CANISTER_METHOD_NAMES') {
-        globalThis._azleCanisterMethodNames = action.payload;
+    if (action.type === 'SET_AZLE_CANISTER_CLASS_META') {
+        globalThis._azleCanisterClassMeta = action.payload;
         return;
     }
 
-    if (action.type === 'SET_AZLE_EXPORTED_CANISTER_CLASS_INSTANCE') {
-        globalThis._azleExportedCanisterClassInstance = action.payload;
+    if (action.type === 'SET_AZLE_CANISTER_METHOD_NAMES') {
+        globalThis._azleCanisterMethodNames = action.payload;
         return;
     }
 

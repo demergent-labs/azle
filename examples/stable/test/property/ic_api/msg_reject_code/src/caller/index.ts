@@ -5,21 +5,19 @@ import {
 } from 'azle/_internal/type_tests/assert_type';
 
 export default class {
-    rejectorPrincipal = getRejectorPrincipal();
-
     @update([], IDL.Nat32)
     async getRejectCodeCanisterThrowError(): Promise<number> {
-        return getThrowErrorRejectCode(this.rejectorPrincipal);
+        return getThrowErrorRejectCode(getRejectorPrincipal());
     }
 
     @update([], IDL.Nat32)
     async getRejectCodeCanisterReject(): Promise<number> {
-        return getRejectWithMessageRejectCode(this.rejectorPrincipal);
+        return getRejectWithMessageRejectCode(getRejectorPrincipal());
     }
 
     @update([], IDL.Nat32)
     async getRejectNoError(): Promise<number> {
-        return getNoErrorRejectCode(this.rejectorPrincipal);
+        return getNoErrorRejectCode(getRejectorPrincipal());
     }
 
     @update([], IDL.Bool)
@@ -31,12 +29,12 @@ export default class {
             >
         >;
         const throwErrorRejectCode = await getThrowErrorRejectCode(
-            this.rejectorPrincipal
+            getRejectorPrincipal()
         );
         const rejectWithMessageRejectCode =
-            await getRejectWithMessageRejectCode(this.rejectorPrincipal);
+            await getRejectWithMessageRejectCode(getRejectorPrincipal());
         const noErrorRejectCode = await getNoErrorRejectCode(
-            this.rejectorPrincipal
+            getRejectorPrincipal()
         );
         return (
             isRejectCode(throwErrorRejectCode) &&
