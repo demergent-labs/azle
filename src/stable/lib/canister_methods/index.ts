@@ -176,7 +176,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
         if (canisterMethodMode === 'query') {
             throwIfMethodAlreadyDefined(
-                name,
+                `@query ${name}`,
                 canisterClassMeta.methodMeta.queries?.find(
                     (queryMethod) => queryMethod.name === name
                 ) !== undefined
@@ -198,7 +198,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
         if (canisterMethodMode === 'update') {
             throwIfMethodAlreadyDefined(
-                name,
+                `@update ${name}`,
                 canisterClassMeta.methodMeta.updates?.find(
                     (updateMethod) => updateMethod.name === name
                 ) !== undefined
@@ -218,7 +218,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
         if (canisterMethodMode === 'init') {
             throwIfMethodAlreadyDefined(
-                'init',
+                '@init',
                 canisterClassMeta.methodMeta.init !== undefined
             );
 
@@ -243,7 +243,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
         if (canisterMethodMode === 'postUpgrade') {
             throwIfMethodAlreadyDefined(
-                'postUpgrade',
+                '@postUpgrade',
                 canisterClassMeta.methodMeta.post_upgrade !== undefined
             );
 
@@ -267,7 +267,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
         if (canisterMethodMode === 'preUpgrade') {
             throwIfMethodAlreadyDefined(
-                'preUpgrade',
+                '@preUpgrade',
                 canisterClassMeta.methodMeta.pre_upgrade !== undefined
             );
 
@@ -279,7 +279,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
         if (canisterMethodMode === 'inspectMessage') {
             throwIfMethodAlreadyDefined(
-                'inspectMessage',
+                '@inspectMessage',
                 canisterClassMeta.methodMeta.inspect_message !== undefined
             );
 
@@ -291,7 +291,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
         if (canisterMethodMode === 'heartbeat') {
             throwIfMethodAlreadyDefined(
-                'heartbeat',
+                '@heartbeat',
                 canisterClassMeta.methodMeta.heartbeat !== undefined
             );
 
@@ -303,7 +303,7 @@ function decoratorImplementation<This, Args extends unknown[], Return>(
 
         if (canisterMethodMode === 'onLowWasmMemory') {
             throwIfMethodAlreadyDefined(
-                'onLowWasmMemory',
+                '@onLowWasmMemory',
                 canisterClassMeta.methodMeta.on_low_wasm_memory !== undefined
             );
 
