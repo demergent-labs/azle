@@ -1,72 +1,73 @@
-import Canister from '.';
+import { IDL, query, update } from 'azle';
+
 import { Post } from './candid_types';
 import { getReactionFromStateReaction } from './reactions';
-import { StatePost, StateThread, StateUser } from './state';
+import { state, StatePost, StateThread, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 import { getUserFromStateUser } from './users';
 
-export function createPost(
-    canister: Canister,
-    authorId: string,
-    text: string,
-    threadId: string,
-    joinDepth: number
-): Post {
-    const id = Object.keys(canister.state.posts).length.toString();
+export class Posts {
+    @update([IDL.Text, IDL.Text, IDL.Text, IDL.Nat32], Post)
+    createPost(
+        authorId: string,
+        text: string,
+        threadId: string,
+        joinDepth: number
+    ): Post {
+        const id = Object.keys(state.posts).length.toString();
 
-    const statePost: StatePost = {
-        id,
-        authorId,
-        reactionIds: [],
-        text,
-        threadId
-    };
-    const updatedStateAuthor = getUpdatedStateAuthor(
-        canister,
-        authorId,
-        statePost.id
-    );
-    const updatedStateThread = getUpdatedStateThread(
-        canister,
-        threadId,
-        statePost.id
-    );
+        const statePost: StatePost = {
+            id,
+            authorId,
+            reactionIds: [],
+            text,
+            threadId
+        };
+        const updatedStateAuthor = getUpdatedStateAuthor(
+            authorId,
+            statePost.id
+        );
+        const updatedStateThread = getUpdatedStateThread(
+            threadId,
+            statePost.id
+        );
 
-    canister.state.posts[id] = statePost;
-    canister.state.users[authorId] = updatedStateAuthor;
-    canister.state.threads[threadId] = updatedStateThread;
+        state.posts[id] = statePost;
+        state.users[authorId] = updatedStateAuthor;
+        state.threads[threadId] = updatedStateThread;
 
-    const post = getPostFromStatePost(canister, statePost, joinDepth);
+        const post = getPostFromStatePost(statePost, joinDepth);
 
-    return post;
-}
+        return post;
+    }
 
-export function getAllPosts(canister: Canister, joinDepth: number): Post[] {
-    return Object.values(canister.state.posts).map((statePost) =>
-        getPostFromStatePost(canister, statePost!, joinDepth)
-    );
+    @query([IDL.Nat32], IDL.Vec(Post))
+    getAllPosts(joinDepth: number): Post[] {
+        return Object.values(state.posts).map((statePost) =>
+            getPostFromStatePost(statePost!, joinDepth)
+        );
+    }
 }
 
 export function getPostFromStatePost(
-    canister: Canister,
     statePost: StatePost,
     joinDepth: number
 ): Post {
-    const stateAuthor = canister.state.users[statePost.authorId];
+    const stateAuthor = state.users[statePost.authorId];
 
     if (stateAuthor === undefined) {
         throw new Error('Author not found');
     }
 
-    const author = getUserFromStateUser(canister, stateAuthor, joinDepth);
+    const author = getUserFromStateUser(stateAuthor, joinDepth);
 
-    const stateThread = canister.state.threads[statePost.threadId];
+    const stateThread = state.threads[statePost.threadId];
 
     if (stateThread === undefined) {
         throw new Error('Thread not found');
     }
 
-    const thread = getThreadFromStateThread(canister, stateThread, joinDepth);
+    const thread = getThreadFromStateThread(stateThread, joinDepth);
 
     if (joinDepth === 0) {
         return {
@@ -78,13 +79,9 @@ export function getPostFromStatePost(
         };
     } else {
         const reactions = statePost.reactionIds
-            .map((reactionId) => canister.state.reactions[reactionId])
+            .map((reactionId) => state.reactions[reactionId])
             .map((stateReaction) =>
-                getReactionFromStateReaction(
-                    canister,
-                    stateReaction!,
-                    joinDepth - 1
-                )
+                getReactionFromStateReaction(stateReaction!, joinDepth - 1)
             );
 
         return {
@@ -97,12 +94,8 @@ export function getPostFromStatePost(
     }
 }
 
-function getUpdatedStateAuthor(
-    canister: Canister,
-    authorId: string,
-    postId: string
-): StateUser {
-    const stateAuthor = canister.state.users[authorId];
+function getUpdatedStateAuthor(authorId: string, postId: string): StateUser {
+    const stateAuthor = state.users[authorId];
 
     if (stateAuthor === undefined) {
         throw new Error('Author not found');
@@ -116,12 +109,8 @@ function getUpdatedStateAuthor(
     return updatedStateAuthor;
 }
 
-function getUpdatedStateThread(
-    canister: Canister,
-    threadId: string,
-    postId: string
-): StateThread {
-    const stateThread = canister.state.threads[threadId];
+function getUpdatedStateThread(threadId: string, postId: string): StateThread {
+    const stateThread = state.threads[threadId];
 
     if (stateThread === undefined) {
         throw new Error('Thread not found');
