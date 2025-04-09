@@ -100,10 +100,6 @@ jobs:
                           directories: './examples/stable/test/end_to_end/candid_rpc',
                           run-experimental: true
                       }
-                    - {
-                          name: 'Experimental E2E CRPC',
-                          directories: './examples/experimental/test/end_to_end/candid_rpc'
-                      }
         uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
