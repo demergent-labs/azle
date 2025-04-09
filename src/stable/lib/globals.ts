@@ -69,26 +69,26 @@ if (
 
     // TODO be careful we are using a random seed of 0 I think
     // TODO the randomness is predictable
-    globalThis._azleDispatch({
-        type: 'SET_CRYPTO',
-        payload: {
-            ...globalThis.crypto,
-            getRandomValues: ((array: Uint8Array) => {
-                // TODO the type is wrong of array
-                // TODO this could possibly be any kind of TypedArray
+    // globalThis._azleDispatch({
+    //     type: 'SET_CRYPTO',
+    //     payload: {
+    //         ...globalThis.crypto,
+    //         getRandomValues: ((array: Uint8Array) => {
+    //             // TODO the type is wrong of array
+    //             // TODO this could possibly be any kind of TypedArray
 
-                for (let i = 0; i < array.length; i++) {
-                    array[i] = Math.floor(Math.random() * 256);
-                }
+    //             for (let i = 0; i < array.length; i++) {
+    //                 array[i] = Math.floor(Math.random() * 256);
+    //             }
 
-                return array;
-            }) as any
-        },
-        location: {
-            filepath: 'azle/src/stable/lib/global.ts',
-            functionName: ''
-        }
-    });
+    //             return array;
+    //         }) as any
+    //     },
+    //     location: {
+    //         filepath: 'azle/src/stable/lib/global.ts',
+    //         functionName: ''
+    //     }
+    // });
 
     globalThis._azleDispatch({
         type: 'SET_CONSOLE',

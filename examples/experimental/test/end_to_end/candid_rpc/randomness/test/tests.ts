@@ -1,3 +1,6 @@
+// TODO but do we need to completely reset the canister as well?
+// TODO to make sure that the randomness isn't predictable from the beginning
+
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
