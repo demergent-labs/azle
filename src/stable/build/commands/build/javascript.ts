@@ -67,6 +67,10 @@ export function handleClassApiCanister(main: string): string {
          * Unfortunately for now we must execute the canister in a Node Wasm environment
          * in order to get some of the CanisterClassMeta information needed to manipulate
          * the Wasm binary and generate the Candid file before final canister deployment.
+         * It would be ideal to avoid this extra Node Wasm environment execution,
+         * but we currently don't know how to do this. Possible ideas:
+         * - ICP protocol improvement to allow for dynamic canister method registration
+         * - ICP replica improvement to automatically run Wasm binaries through a similar process as our Node.js Wasm environment
          */
         function getCanisterClassMeta() {
             const defaultExportNotDefined = Canister.default === undefined || Canister.default === null;
