@@ -16,13 +16,10 @@ import {
 // TODO I don't know if we need the minter or ckbtc or icrc canisters anymore?
 
 export default class {
-    ckBtcPrincipal = getCkBtcPrincipal();
-    minterPrincipal = getMinterPrincipal();
-
     @update([], IDL.Nat64)
     async getBalance(): Promise<bigint> {
         return await call<[Account], bigint>(
-            this.ckBtcPrincipal,
+            getCkBtcPrincipal(),
             'icrc1_balance_of',
             {
                 paramIdlTypes: [Account],
@@ -44,7 +41,7 @@ export default class {
         const updateBalanceResult: UpdateBalanceResult = await call<
             [UpdateBalanceArgs],
             UpdateBalanceResult
-        >(this.minterPrincipal, 'update_balance', {
+        >(getMinterPrincipal(), 'update_balance', {
             paramIdlTypes: [UpdateBalanceArgs],
             returnIdlType: UpdateBalanceResult,
             args: [
@@ -63,7 +60,7 @@ export default class {
     @update([], IDL.Text)
     async getDepositAddress(): Promise<string> {
         return await call<[GetBtcAddressArgs], string>(
-            this.minterPrincipal,
+            getMinterPrincipal(),
             'get_btc_address',
             {
                 paramIdlTypes: [GetBtcAddressArgs],
@@ -84,7 +81,7 @@ export default class {
     @update([IDL.Text, IDL.Nat], TransferResult)
     async transfer(to: string, amount: bigint): Promise<TransferResult> {
         return await call<[TransferArgs], TransferResult>(
-            this.ckBtcPrincipal,
+            getCkBtcPrincipal(),
             'icrc1_transfer',
             {
                 paramIdlTypes: [TransferArgs],
