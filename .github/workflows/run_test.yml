@@ -103,7 +103,7 @@ jobs:
 
             - uses: ./.github/actions/retry_command
               with:
-                  command: ${{ inputs.run-experimental == true && 'npm install' || 'npm install --omit=optional' }}
+                  command: 'npm install'
 
             - run: npm link
               if: matrix.azle_source == 'repo'
@@ -112,7 +112,7 @@ jobs:
 
             - uses: ./.github/actions/retry_command
               with:
-                  command: ${{ inputs.run-experimental == true && 'npm install' || 'npm install --omit=optional' }}
+                  command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle
