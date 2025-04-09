@@ -49,10 +49,12 @@
     "dependencies": {
         "@dfinity/agent": "^2.4.0",
         "@dfinity/identity-secp256k1": "^2.4.0",
+        "@sinonjs/text-encoding": "^0.7.3",
         "binaryen": "^116.0.0",
         "cuzz": "^0.0.6",
         "deep-is": "^0.1.4",
         "esbuild": "^0.25.2",
+        "esbuild-plugin-tsc": "^0.5.0",
         "fs-extra": "^11.3.0",
         "jssha": "^3.3.1",
         "tsx": "^4.19.3",
@@ -61,13 +63,11 @@
         "uuid": "^11.1.0"
     },
     "optionalDependencies": {
-        "@sinonjs/text-encoding": "^0.7.3",
         "buffer": "^6.0.3",
         "chokidar": "^4.0.3",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
         "crypto-browserify": "^3.12.0",
-        "esbuild-plugin-tsc": "^0.5.0",
         "ethers": "^6.13.5",
         "glob": "^11.0.1",
         "hash-of-directory": "^1.0.1",
