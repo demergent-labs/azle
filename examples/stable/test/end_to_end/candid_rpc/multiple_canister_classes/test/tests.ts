@@ -3,7 +3,7 @@ import { describe } from '@jest/globals';
 import { expect, it, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
-import { _SERVICE } from './dfx_generated/multiple_canister_method_classes/multiple_canister_method_classes.did';
+import { _SERVICE } from './dfx_generated/multiple_canister_classes/multiple_canister_classes.did';
 
 export function getTests(canister: ActorSubclass<_SERVICE>): Test {
     return () => {
@@ -43,7 +43,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 it(`has no update method methods${canisterClassNumber}Text`, async () => {
                     expect(() =>
                         execSync(
-                            `dfx canister call multiple_canister_method_classes methods${canisterClassNumber}Text`,
+                            `dfx canister call multiple_canister_classes methods${canisterClassNumber}Text`,
                             {
                                 encoding: 'utf-8'
                             }
@@ -56,7 +56,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 it(`has no update method methods${canisterClassNumber}Nat`, async () => {
                     expect(() =>
                         execSync(
-                            `dfx canister call multiple_canister_method_classes methods${canisterClassNumber}Nat`,
+                            `dfx canister call multiple_canister_classes methods${canisterClassNumber}Nat`,
                             {
                                 encoding: 'utf-8'
                             }
@@ -69,7 +69,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
                 it(`has no update method methods${canisterClassNumber}Principal`, async () => {
                     expect(() =>
                         execSync(
-                            `dfx canister call multiple_canister_method_classes methods${canisterClassNumber}Principal`,
+                            `dfx canister call multiple_canister_classes methods${canisterClassNumber}Principal`,
                             {
                                 encoding: 'utf-8'
                             }
