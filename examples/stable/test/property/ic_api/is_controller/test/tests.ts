@@ -1,5 +1,4 @@
 import { Principal } from '@dfinity/principal';
-import { whoamiPrincipal } from 'azle/_internal/dfx';
 import {
     defaultPropTestParams,
     expect,
@@ -7,6 +6,7 @@ import {
     it,
     Test
 } from 'azle/_internal/test';
+import { whoamiPrincipal } from 'azle/experimental/_internal/dfx';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 

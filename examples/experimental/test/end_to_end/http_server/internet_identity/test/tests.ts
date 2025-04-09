@@ -1,6 +1,6 @@
 import { Principal } from '@dfinity/principal';
-import { getCanisterOrigin } from 'azle/_internal/dfx';
 import { expect, it, Test } from 'azle/_internal/test';
+import { getCanisterOrigin } from 'azle/experimental/_internal/dfx';
 import puppeteer, { ElementHandle } from 'puppeteer';
 
 export function getTests(canisterName: string): Test {

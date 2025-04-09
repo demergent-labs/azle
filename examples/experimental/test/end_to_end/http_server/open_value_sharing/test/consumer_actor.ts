@@ -1,10 +1,10 @@
 import { Actor, ActorMethod } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
+import { getCanisterId } from 'azle/_internal/dfx';
 import {
     createAuthenticatedAgentSync,
-    getCanisterId,
     whoami
-} from 'azle/_internal/dfx';
+} from 'azle/experimental/_internal/dfx';
 
 export type PeriodicBatch = {
     time_start: bigint;
