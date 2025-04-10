@@ -22,8 +22,10 @@
         "./experimental/*": "./src/exports/experimental/*.ts"
     },
     "imports": {
+        "#build/*": "./src/stable/build/*.ts",
         "#commands/*": "./src/stable/build/commands/*.ts",
         "#experimental/commands/*": "./src/experimental/build/commands/*.ts",
+        "#experimental/build/*": "./src/experimental/build/*.ts",
         "#experimental/lib/*": "./src/experimental/lib/*.ts",
         "#experimental/test/*": "./src/experimental/test/*.ts",
         "#experimental/test/property/*": "./src/experimental/test/property/*.ts",
