@@ -1,22 +1,27 @@
 import {
+    blob,
     bool,
     Canister,
     float64,
-    postUpgrade,
     query,
     update
 } from 'azle/experimental';
 
-let redeployed = false;
-
 export default Canister({
-    postUpgrade: postUpgrade([], () => {
-        redeployed = true;
+    getInitCalled: query([], bool, () => {
+        return globalThis._azleInitCalled;
     }),
-    getRedeployed: query([], bool, () => {
-        return redeployed;
+    getPostUpgradeCalled: query([], bool, () => {
+        return globalThis._azlePostUpgradeCalled;
     }),
-    randomNumber: update([], float64, () => {
+    mathRandom: update([], float64, () => {
         return Math.random();
+    }),
+    cryptoGetRandomValues: update([], blob, () => {
+        let randomness = new Uint8Array(32);
+
+        crypto.getRandomValues(randomness);
+
+        return randomness;
     })
 });
