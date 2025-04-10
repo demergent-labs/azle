@@ -144,17 +144,31 @@ jobs:
                   command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
+            - name: Install experimental dependencies for experimental tests
+              if: ${{ inputs.run-experimental }}
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install --no-save github:demergent-labs/azle-experimental-deps glob@11.0.1'
+                  working-directory: ${{ matrix.test.path }}
+
             - name: Link Azle source (test dir)
               if: matrix.azle_source == 'link'
               run: npm link azle
               working-directory: ${{ matrix.test.path }}
 
-            - name: Install Azle from packed source
+            - name: Install Azle from packed source for stable
               if: matrix.azle_source == 'pack'
               working-directory: ${{ matrix.test.path }}
               run: |
                   echo "Installing packed file from absolute path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
                   npm install "${{ steps.pack_azle.outputs.packed_file_absolute_path }}" --no-save
+
+            - name: Install Azle from packed source for experimental
+              if: matrix.azle_source == 'pack' && ${{ inputs.run-experimental }}
+              working-directory: ${{ matrix.test.path }}
+              run: |
+                  echo "Installing packed file from absolute path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
+                  npm install "${{ steps.pack_azle.outputs.packed_file_absolute_path }}" github:demergent-labs/azle-experimental-deps --no-save
 
             - name: Start dfx with artificial delay 0
               if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
