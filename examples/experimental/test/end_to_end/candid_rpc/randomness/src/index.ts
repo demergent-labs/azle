@@ -1,10 +1,12 @@
+import { randSeed } from 'azle';
 import {
     blob,
     bool,
     Canister,
     float64,
     query,
-    update
+    update,
+    Void
 } from 'azle/experimental';
 
 export default Canister({
@@ -23,5 +25,8 @@ export default Canister({
         crypto.getRandomValues(randomness);
 
         return randomness;
+    }),
+    seedWith0: update([], Void, () => {
+        randSeed(new Uint8Array(32));
     })
 });

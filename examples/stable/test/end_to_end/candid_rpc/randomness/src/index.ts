@@ -1,4 +1,4 @@
-import { IDL, query, update } from 'azle';
+import { IDL, query, randSeed, update } from 'azle';
 
 export default class {
     @query([], IDL.Bool)
@@ -23,5 +23,10 @@ export default class {
         crypto.getRandomValues(randomness);
 
         return randomness;
+    }
+
+    @update
+    seedWith0(): void {
+        randSeed(new Uint8Array(32));
     }
 }
