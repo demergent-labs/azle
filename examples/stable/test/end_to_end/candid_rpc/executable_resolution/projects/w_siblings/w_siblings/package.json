@@ -1,6 +1,7 @@
 {
     "dependencies": {
-        "azle": "file:../../../test/test_packages/azle-999.999.999-w-siblings.tgz"
+        "azle": "file:../../../test/test_packages/azle-999.999.999-w-siblings.tgz",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps"
     },
     "scripts": {
         "deploy": "dfx deploy w_siblings"

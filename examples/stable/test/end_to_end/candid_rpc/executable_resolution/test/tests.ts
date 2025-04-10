@@ -35,6 +35,27 @@ export function getTests(): Test {
             });
         });
 
+        describe.skip.each(CANISTERS)(
+            'install experimental deps',
+            (canister) => {
+                // TODO: This seems like it would be the ideal way to temporarily install experimental deps. However it doesn't work yet.
+                // TODO: https://github.com/demergent-labs/azle/issues/2958
+                please(
+                    `install experimental deps for ${canister.name}`,
+                    async () => {
+                        if (process.env.AZLE_EXPERIMENTAL === 'true') {
+                            execSync(
+                                `npm install github:demergent-labs/azle-experimental-deps --no-save`,
+                                {
+                                    cwd: canister.projectRoot
+                                }
+                            );
+                        }
+                    }
+                );
+            }
+        );
+
         describe.each(CANISTERS)('Testing canister: $name', (canister) => {
             please(`deploy ${canister.name}`, async () => {
                 execSync(`dfx deploy ${canister.name}`, {

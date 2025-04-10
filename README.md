@@ -35,13 +35,11 @@ This mode is intended for developers who are willing to accept the risk of using
 
 > NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.
 
-To install dependencies required for Azle experimental mode add
+To install dependencies required for Azle experimental mode run
 
 ```
- "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps"
+ npm install github:demergent-labs/azle-experimental-deps
 ```
-
-to your project's package.json
 
 ## Get Started
 
