@@ -3,7 +3,7 @@ use rquickjs::{Ctx, Function, Result, TypedArray};
 use crate::{
     ic::throw_error,
     stable_b_tree_map::{
-        with_stable_b_tree_map_mut, AzleStableBTreeMapKey, AzleStableBTreeMapValue,
+        AzleStableBTreeMapKey, AzleStableBTreeMapValue, with_stable_b_tree_map_mut,
     },
 };
 
@@ -24,7 +24,10 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                 let max_u32 = 2u64.pow(32) - 1;
 
                 if inserting_a_new_item && stable_b_tree_map.len() >= max_u32 {
-                    return Err(throw_error(ctx.clone(), "StableBTreeMap is currently limited to 2^32 - 1 (4_294_967_295) items or fewer"));
+                    return Err(throw_error(
+                        ctx.clone(),
+                        "StableBTreeMap is currently limited to 2^32 - 1 (4_294_967_295) items or fewer",
+                    ));
                 }
 
                 let value_slice: &[u8] = value_typed_array.as_ref();
@@ -33,7 +36,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
 
                 stable_b_tree_map
                     .insert(azle_stable_b_tree_map_key, azle_stable_b_tree_map_value)
-                    .map(|value| TypedArray::new(ctx.clone(), value.bytes))
+                    .map(|value| TypedArray::<u8>::new(ctx.clone(), value.bytes))
                     .transpose()
             })?
         },

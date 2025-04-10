@@ -1,6 +1,8 @@
-use std::{env::vars, error::Error, str};
+use std::{env::vars, error::Error, str, time::Duration};
 
-use ic_cdk::trap;
+use candid::Principal;
+use ic_cdk::{api::call::call, trap};
+use ic_cdk_timers::set_timer;
 use ic_stable_structures::memory_manager::MemoryId;
 use ic_wasi_polyfill::init_with_memory;
 use rquickjs::{Array, Context, Module, Object, Runtime, Undefined};
@@ -9,7 +11,7 @@ use crate::{
     CONTEXT_REF_CELL, MEMORY_MANAGER_REF_CELL, WASM_DATA_REF_CELL,
     error::handle_promise_error,
     execute_method_js::execute_method_js,
-    ic::register,
+    ic::{rand_seed::rand_seed, register},
     quickjs_with_ctx,
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
@@ -57,6 +59,8 @@ fn initialize(init: bool, function_index: i32) -> Result<(), Box<dyn Error>> {
     let js = get_js_code()?;
 
     initialize_js(&wasm_data, str::from_utf8(&js)?, init, function_index)?;
+
+    seed_from_raw_rand();
 
     Ok(())
 }
@@ -142,4 +146,35 @@ fn execute_developer_init_or_post_upgrade(function_index: i32) {
     if function_index != -1 {
         execute_method_js(function_index);
     }
+}
+
+fn seed_from_raw_rand() {
+    set_timer(Duration::new(0, 0), || {
+        ic_cdk::spawn(async {
+            let result: Result<(), Box<dyn Error>> = async {
+                let (randomness,): (Vec<u8>,) =
+                    call(Principal::management_canister(), "raw_rand", ())
+                        .await
+                        .map_err(|(rejection_code, message)| {
+                            format!(
+                                "The inter-canister call failed with reject code: {}: {}",
+                                rejection_code as i32, message
+                            )
+                        })?;
+
+                rand_seed(
+                    randomness
+                        .try_into()
+                        .map_err(|_| "seed must be exactly 32 bytes in length")?,
+                );
+
+                Ok(())
+            }
+            .await;
+
+            if let Err(e) = result {
+                trap(&format!("Azle SeedFromRawRandError: {}", e));
+            }
+        });
+    });
 }

@@ -67,22 +67,56 @@ if (
         }
     });
 
-    // TODO be careful we are using a random seed of 0 I think
-    // TODO the randomness is predictable
     globalThis._azleDispatch({
         type: 'SET_CRYPTO',
         payload: {
             ...globalThis.crypto,
-            getRandomValues: ((array: Uint8Array) => {
-                // TODO the type is wrong of array
-                // TODO this could possibly be any kind of TypedArray
-
-                for (let i = 0; i < array.length; i++) {
-                    array[i] = Math.floor(Math.random() * 256);
+            getRandomValues: (array) => {
+                if (
+                    array instanceof Int8Array === false &&
+                    array instanceof Uint8Array === false &&
+                    array instanceof Uint8ClampedArray === false &&
+                    array instanceof Int16Array === false &&
+                    array instanceof Uint16Array === false &&
+                    array instanceof Int32Array === false &&
+                    array instanceof Uint32Array === false &&
+                    array instanceof BigInt64Array === false &&
+                    array instanceof BigUint64Array === false
+                ) {
+                    throw new TypeError(
+                        'Expected an Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, BigInt64Array, or BigUint64Array'
+                    );
                 }
 
+                const byteLength = array.byteLength;
+
+                if (byteLength === 0) {
+                    return array;
+                }
+
+                if (byteLength > 65_536) {
+                    // TODO does throw new QuoteExceededError work?
+                    throw new Error(
+                        `QuotaExceeded: array cannot be larger than 65_536 bytes`
+                    );
+                }
+
+                const bytes =
+                    globalThis._azleIc !== undefined
+                        ? globalThis._azleIc.randBytes(byteLength)
+                        : ((): never => {
+                              throw new Error(``);
+                          })();
+
+                const targetView = new Uint8Array(
+                    array.buffer,
+                    array.byteOffset,
+                    byteLength
+                );
+                targetView.set(bytes);
+
                 return array;
-            }) as any
+            }
         },
         location: {
             filepath: 'azle/src/stable/lib/global.ts',

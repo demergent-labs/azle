@@ -2056,6 +2056,7 @@ dependencies = [
  "ic-cdk-timers",
  "ic-stable-structures",
  "ic-wasi-polyfill",
+ "rand 0.9.0",
  "rquickjs",
  "scopeguard",
  "serde",
