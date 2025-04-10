@@ -165,6 +165,9 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background
 
+            - name: Install dfx extension
+              run: npx azle extension install
+
             - name: Test configuration
               id: test-configuration
               run: |
