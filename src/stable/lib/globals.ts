@@ -104,9 +104,17 @@ if (
                 const bytes =
                     globalThis._azleIc !== undefined
                         ? globalThis._azleIc.randBytes(byteLength)
-                        : ((): never => {
-                              throw new Error(``);
-                          })();
+                        : globalThis._azleIcExperimental !== undefined
+                          ? new Uint8Array(
+                                globalThis._azleIcExperimental.randBytes(
+                                    byteLength
+                                )
+                            )
+                          : ((): never => {
+                                throw new Error(
+                                    `Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined`
+                                );
+                            })();
 
                 const targetView = new Uint8Array(
                     array.buffer,
