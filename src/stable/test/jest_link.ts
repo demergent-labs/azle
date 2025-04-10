@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import { existsSync } from 'fs';
 import { join } from 'path';
 
 import { AZLE_ROOT } from '#build/utils/global_paths';
@@ -17,6 +18,18 @@ export function linkAndInstallPatch(pathRelativeToAzle: string): void {
 
     if (process.env.AZLE_END_TO_END_TEST_PACK_AZLE === 'true') {
         const distDir = join(azleRoot, 'dist');
+
+        if (!existsSync(distDir)) {
+            throw new Error(
+                `Dist directory does not exist: ${distDir}. Please run 'npm run build' in the root directory to create the dist directory.`
+            );
+        }
+
+        if (!existsSync(join(distDir, 'azle.tgz'))) {
+            throw new Error(
+                `Packed file does not exist: ${join(distDir, 'azle.tgz')}. Please run 'npm run build' in the root directory to create the packed file.`
+            );
+        }
 
         execSync(`npm install ${join(distDir, 'azle.tgz')} --no-save`, {
             cwd: join(azleRoot, pathRelativeToAzle)
