@@ -10,9 +10,10 @@ on:
                 required: false
                 type: string
                 default: ''
-            link-azle:
-                required: true
-                type: boolean
+            azle-source-mode:
+                required: false
+                type: string
+                default: 'link'
             run-experimental:
                 required: false
                 type: boolean
@@ -52,7 +53,7 @@ jobs:
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
-            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
+            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'link' }}
             AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ''
             AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ''
             AZLE_IS_RELEASE_BRANCH_PR: ''
@@ -61,11 +62,11 @@ jobs:
 
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
-            matrix: # spins up one job per combination of test and code source (repo or npm).
+            matrix: # spins up one job per combination of test and the chosen azle source mode.
                 # os: [macos-latest, ubuntu-latest]
                 os: [ubuntu-latest]
                 azle_source:
-                    - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
+                    - ${{ inputs.azle-source-mode }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
         steps:
             - uses: actions/checkout@v4
@@ -105,19 +106,54 @@ jobs:
               with:
                   command: 'npm install'
 
-            - run: npm link
-              if: matrix.azle_source == 'repo'
+            - name: Link Azle source (root)
+              if: matrix.azle_source == 'link'
+              run: npm link
 
             - run: npm run lint
+
+            - name: Pack Azle source
+              if: matrix.azle_source == 'pack'
+              id: pack_azle
+              run: |
+                  # Ensure the dist directory exists
+                  mkdir -p "${{ github.workspace }}/dist"
+
+                  # Pack into the dist directory and capture the original filename
+                  ORIGINAL_PACKED_FILENAME=$(npm pack --pack-destination "${{ github.workspace }}/dist" | tail -n 1)
+                  echo "Original packed filename: ${ORIGINAL_PACKED_FILENAME}"
+
+                  # Define the final target path
+                  TARGET_PACKED_FILE_PATH="${{ github.workspace }}/dist/azle.tgz"
+                  echo "Target packed file path: ${TARGET_PACKED_FILE_PATH}"
+
+                  # Construct the path to the originally created file
+                  ORIGINAL_PACKED_FILE_PATH="${{ github.workspace }}/dist/${ORIGINAL_PACKED_FILENAME}"
+                  echo "Original packed file path: ${ORIGINAL_PACKED_FILE_PATH}"
+
+                  # Rename the packed file to the target name
+                  mv "${ORIGINAL_PACKED_FILE_PATH}" "${TARGET_PACKED_FILE_PATH}"
+                  echo "Renamed packed file to ${TARGET_PACKED_FILE_PATH}"
+
+                  # Output the final absolute path for the installer step
+                  echo "packed_file_absolute_path=${TARGET_PACKED_FILE_PATH}" >> $GITHUB_OUTPUT
 
             - uses: ./.github/actions/retry_command
               with:
                   command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
-            - run: npm link azle
-              if: matrix.azle_source == 'repo'
+            - name: Link Azle source (test dir)
+              if: matrix.azle_source == 'link'
+              run: npm link azle
               working-directory: ${{ matrix.test.path }}
+
+            - name: Install Azle from packed source
+              if: matrix.azle_source == 'pack'
+              working-directory: ${{ matrix.test.path }}
+              run: |
+                  echo "Installing packed file from absolute path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
+                  npm install "${{ steps.pack_azle.outputs.packed_file_absolute_path }}" --no-save
 
             - name: Start dfx with artificial delay 0
               if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
