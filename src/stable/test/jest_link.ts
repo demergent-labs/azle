@@ -6,17 +6,20 @@ import { AZLE_ROOT } from '#build/utils/global_paths';
 
 // TODO remove linkAndInstallPatch after https://github.com/demergent-labs/azle/issues/1807 is resolved
 export function linkAndInstallPatch(pathRelativeToAzle: string): void {
+    console.log(`Linking and installing patch for ${pathRelativeToAzle}`);
     const azleRoot = process.env.GITHUB_WORKSPACE ?? AZLE_ROOT;
 
     execSync(`npm install`, { cwd: join(azleRoot, pathRelativeToAzle) });
 
     if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {
+        console.log(`Linking azle for ${pathRelativeToAzle}`);
         execSync(`npm link azle`, {
             cwd: join(azleRoot, pathRelativeToAzle)
         });
     }
 
     if (process.env.AZLE_END_TO_END_TEST_PACK_AZLE === 'true') {
+        console.log(`Installing packed file for ${pathRelativeToAzle}`);
         const distDir = join(azleRoot, 'dist');
 
         if (!existsSync(distDir)) {
@@ -30,6 +33,10 @@ export function linkAndInstallPatch(pathRelativeToAzle: string): void {
                 `Packed file does not exist: ${join(distDir, 'azle.tgz')}. Please run 'npm run build' in the root directory to create the packed file.`
             );
         }
+
+        console.log(
+            `Installing packed file from ${join(distDir, 'azle.tgz')} in ${join(azleRoot, pathRelativeToAzle)}`
+        );
 
         execSync(`npm install ${join(distDir, 'azle.tgz')} --no-save`, {
             cwd: join(azleRoot, pathRelativeToAzle)
