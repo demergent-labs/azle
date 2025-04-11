@@ -1,6 +1,6 @@
 use rquickjs::{Ctx, Function, Result, TypedArray};
 
-use crate::stable_b_tree_map::{with_stable_b_tree_map, AzleStableBTreeMapKey};
+use crate::stable_b_tree_map::{AzleStableBTreeMapKey, with_stable_b_tree_map};
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(
@@ -13,7 +13,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
 
                 stable_b_tree_map
                     .get(&azle_stable_b_tree_map_key)
-                    .map(|value| TypedArray::new(ctx.clone(), value.bytes))
+                    .map(|value| TypedArray::<u8>::new(ctx.clone(), value.bytes))
                     .transpose()
             })?
         },

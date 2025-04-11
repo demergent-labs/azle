@@ -42,6 +42,9 @@ export type AzleIc = {
         cyclesString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
+    // TODO what are the most appropriate names here?
+    randBytes: (byteLength: number) => Uint8Array;
+    randSeed: (seed: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
     setTimerInterval: (interval: number) => bigint;
     setTimer: (delay: number) => bigint;

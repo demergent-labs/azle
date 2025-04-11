@@ -35,8 +35,8 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                     .take(take_amount)
                     .map(|(key, value)| {
                         Ok(vec![
-                            TypedArray::new(ctx.clone(), key.bytes)?,
-                            TypedArray::new(ctx.clone(), value.bytes)?,
+                            TypedArray::<u8>::new(ctx.clone(), key.bytes)?,
+                            TypedArray::<u8>::new(ctx.clone(), value.bytes)?,
                         ])
                     })
                     .collect::<Result<Vec<Vec<TypedArray<u8>>>>>()?;
