@@ -35,6 +35,22 @@ export function getTests(): Test {
             });
         });
 
+        describe.each(CANISTERS)('install experimental deps', (canister) => {
+            please(
+                `install experimental deps for ${canister.name}`,
+                async () => {
+                    if (process.env.AZLE_EXPERIMENTAL === 'true') {
+                        execSync(
+                            `npm install github:demergent-labs/azle-experimental-deps`,
+                            {
+                                cwd: canister.projectRoot
+                            }
+                        );
+                    }
+                }
+            );
+        });
+
         describe.each(CANISTERS)('Testing canister: $name', (canister) => {
             please(`deploy ${canister.name}`, async () => {
                 execSync(`dfx deploy ${canister.name}`, {

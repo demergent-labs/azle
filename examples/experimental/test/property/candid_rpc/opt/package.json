@@ -3,6 +3,7 @@
         "test": "NODE_OPTIONS=\"--max-old-space-size=32768\" tsx test/test.ts"
     },
     "dependencies": {
-        "azle": "0.30.0"
+        "azle": "0.30.0",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps"
     }
 }
