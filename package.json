@@ -50,7 +50,6 @@
     "homepage": "https://github.com/demergent-labs/azle#readme",
     "dependencies": {
         "@dfinity/agent": "^2.4.1",
-        "@dfinity/identity-secp256k1": "^2.4.1",
         "binaryen": "^116.0.0",
         "cuzz": "^0.0.6",
         "deep-is": "^0.1.4",
