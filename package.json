@@ -99,7 +99,7 @@
         "prettier": "^3.5.3",
         "puppeteer": "^24.6.1",
         "semver": "^7.7.1",
-        "ts-jest": "^29.3.1",
+        "ts-jest": "^29.3.2",
         "typescript-eslint": "^8.29.1"
     },
     "lint-staged": {
