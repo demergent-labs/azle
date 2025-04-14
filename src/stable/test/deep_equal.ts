@@ -1,5 +1,18 @@
 import { jsonStringify } from '#lib/json';
 
+/**
+ * @internal
+ *
+ * Checks if two objects are deeply equal.
+ *
+ * @param obj1 The first object to compare.
+ * @param obj2 The second object to compare.
+ * @returns `true` if the objects are deeply equal, `false` otherwise.
+ *
+ * @remarks
+ * It first serializes both objects using our custom jsonStringify function to handle potential problems with Principal
+ * then parses them back and performs a recursive comparison.
+ */
 export function deepEqual(obj1: any, obj2: any): boolean {
     // We have historically had issues with various deepEqual implementations most tracing back to subtle differences in versions etc that have caused false negatives.
     // Our jsonStringify takes out a lot of the possible oddities by serializing them into a more standard format.

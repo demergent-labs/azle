@@ -32,6 +32,9 @@ process.on('unhandledRejection', (reason: any) => {
 
 build();
 
+/**
+ * Determines if the build should use experimental features and calls the appropriate build function.
+ */
 async function build(): Promise<void> {
     if (await isExperimental()) {
         const { build } = await import('#experimental/build/index');
