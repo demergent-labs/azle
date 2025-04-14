@@ -62,7 +62,11 @@ async function isExperimental(): Promise<boolean> {
         | ExperimentalCommand
         | undefined;
 
-    if (command === 'build' || command === 'upload-assets') {
+    if (
+        command === 'build' ||
+        command === 'post-install' ||
+        command === 'upload-assets'
+    ) {
         const canisterName = process.argv[3];
         const canisterConfig = await getCanisterConfig(canisterName);
 
