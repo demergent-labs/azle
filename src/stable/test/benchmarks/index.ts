@@ -1,10 +1,10 @@
 import { execSync } from 'child_process';
 import { readFile, writeFile } from 'fs/promises';
+import { join } from 'path';
 
 import { jsonParse, jsonStringify } from '#lib/index';
 import { getCanisterId } from '#utils/dfx';
 import { getDfxRoot } from '#utils/dfx_root';
-import { AZLE_ROOT } from '#utils/global_paths';
 
 // @ts-ignore We would have to add "resolveJsonModule": true to every test tsconfig.json file
 import { version } from '../../../../package.json';
@@ -50,7 +50,7 @@ async function updateBenchmarksForCanisters(
         const canisterId = getCanisterId(canisterName);
         const currentBenchmarks: BenchmarkEntry[] = JSON.parse(
             execSync(
-                `dfx canister call ${canisterId} _azle_get_benchmarks --output json --candid ${AZLE_ROOT}/src/stable/test/benchmarks/_azle_get_benchmarks.did`,
+                `dfx canister call ${canisterId} _azle_get_benchmarks --output json --candid ${join(__dirname, '_azle_get_benchmarks.did')}`,
                 {
                     cwd: getDfxRoot(),
                     encoding: 'utf-8'
