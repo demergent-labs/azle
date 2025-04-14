@@ -38,6 +38,12 @@ export async function build(): Promise<void> {
         }
     }
 
+    if (command === 'post-install') {
+        await handlePostInstallCommand();
+
+        return;
+    }
+
     if (command === 'upload-assets') {
         await handleUploadAssetsCommand();
 
@@ -88,6 +94,12 @@ async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
             await runExperimentalDevTemplateCommand(ioType);
         }
     }
+}
+
+async function handlePostInstallCommand(): Promise<void> {
+    // Currently, the only post-install step is uploading assets.
+    // This function can be expanded if more steps are needed in the future.
+    await runExperimentalUploadAssetsCommand();
 }
 
 async function handleUploadAssetsCommand(): Promise<void> {

@@ -74,8 +74,9 @@ export async function build(): Promise<void> {
         return;
     }
 
-    // @ts-ignore stable extension still runs this command TODO prevent that
-    if (command === 'upload-assets') {
+    if (command === 'post-install') {
+        // This block is reserved for future post-install steps.
+        // Currently, no actions are required.
         return;
     }
 
