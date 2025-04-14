@@ -3,7 +3,8 @@ import { readFile, writeFile } from 'fs/promises';
 
 import { jsonParse, jsonStringify } from '#lib/index';
 import { getCanisterId } from '#utils/dfx';
-import { AZLE_ROOT, getDfxRoot } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/dfx_root';
+import { AZLE_ROOT } from '#utils/global_paths';
 
 // @ts-ignore We would have to add "resolveJsonModule": true to every test tsconfig.json file
 import { version } from '../../../../package.json';

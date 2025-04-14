@@ -9,7 +9,8 @@ import {
     handleClassApiCanister
 } from '#commands/build/javascript';
 import { WASMEDGE_QUICKJS_PATH } from '#experimental/utils/global_paths';
-import { AZLE_ROOT, getDfxRoot } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/dfx_root';
+import { AZLE_ROOT } from '#utils/global_paths';
 
 export async function compile(
     main: string,
