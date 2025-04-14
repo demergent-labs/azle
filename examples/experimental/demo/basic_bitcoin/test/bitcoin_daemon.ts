@@ -1,11 +1,12 @@
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
-import { existsSync, rmSync } from 'fs-extra';
+import { existsSync } from 'fs';
+import { rm } from 'fs/promises';
 
 export type BitcoinDaemon = ChildProcessWithoutNullStreams;
 
 export async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     if (existsSync(`.bitcoin/data/regtest`)) {
-        rmSync('.bitcoin/data/regtest', { recursive: true, force: true });
+        await rm('.bitcoin/data/regtest', { recursive: true, force: true });
     }
 
     const bitcoinDaemon = spawn('.bitcoin/bin/bitcoind', [
