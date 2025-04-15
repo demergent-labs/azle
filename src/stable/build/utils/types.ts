@@ -37,6 +37,7 @@ export type Command =
     | 'extension'
     | 'generate'
     | 'new'
+    | 'post-install'
     | '--version';
 
 type DevSubCommands = {

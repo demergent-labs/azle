@@ -1,7 +1,7 @@
 import { build, BuildOptions } from 'esbuild';
 import { dirname, join } from 'path';
 
-import { getDfxRoot } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/dfx_root';
 
 export async function compile(main: string): Promise<string> {
     const prelude = getPrelude(main);

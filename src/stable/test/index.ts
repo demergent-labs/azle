@@ -11,7 +11,7 @@ import { execSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { getDfxRoot } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/dfx_root';
 import { DfxJson } from '#utils/types';
 
 import { runBenchmarksForCanisters } from './benchmarks';

@@ -3,7 +3,7 @@ import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
 import { execSync } from 'child_process';
 
 import { getCanisterId } from '#utils/dfx';
-import { getDfxRoot } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/dfx_root';
 
 type StorageMode = 'keyring' | 'password-protected' | 'plaintext';
 

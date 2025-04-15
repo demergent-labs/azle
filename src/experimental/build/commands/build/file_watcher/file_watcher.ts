@@ -1,6 +1,7 @@
 import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 import { watch } from 'chokidar';
-import { outputFile } from 'fs-extra';
+import { mkdir, writeFile } from 'fs/promises';
+import { dirname } from 'path';
 
 import { createAuthenticatedAgent } from '#experimental/utils/dfx';
 
@@ -115,7 +116,8 @@ async function reloadJs(
         console.info(`Finished uploading chunks`);
     }
 
-    await outputFile(reloadedJsPath, reloadedJs);
+    await mkdir(dirname(reloadedJsPath), { recursive: true });
+    await writeFile(reloadedJsPath, reloadedJs);
 }
 
 async function createActorReloadJs(

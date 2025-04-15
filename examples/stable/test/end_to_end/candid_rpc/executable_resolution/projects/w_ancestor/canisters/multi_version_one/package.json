@@ -1,5 +1,6 @@
 {
     "dependencies": {
-        "azle": "file:../../../../test/test_packages/azle-999.999.999-w-ancestor-multi-version-one.tgz"
+        "azle": "file:../../../../test/test_packages/azle-999.999.999-w-ancestor-multi-version-one.tgz",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps"
     }
 }

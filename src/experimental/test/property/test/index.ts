@@ -1,8 +1,4 @@
-// TODO import deepEqual from 'deep-is' works for some
-// TODO import { deepEqual } from 'deep-is' works for others
-// TODO require seems to work for all of them
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const deepEqual = require('deep-is');
+import { deepEqual } from 'azle/_internal/test/deep_equal';
 
 import { jsonStringify } from '#lib/json';
 
@@ -109,16 +105,11 @@ export async function runTests(
 // TODO is is better test framework conformity to call this assertEqual? I'll hold off for now, it should be easy to search for all testEquality and change it, easier than assertEqual I think
 // TODO so based on this I think I've actually seen this in other testing frameworks, assertEquals will take two and make sure they are equals, and assert will take one boolean. Right now we have test instead of assert but it would be easy to change
 export function testEquality<T = any>(actual: T, expected: T): AzleResult {
-    // We have historically had issues with various deepEqual implementations most tracing back to subtle differences in versions etc that have caused false negatives.
-    // Our jsonStringify takes out a lot of the possible oddities by serializing them into a more standard format.
-    // So until we convert this to jest and use it's various equality functions, this should be good enough.
-    const actualJsonString = jsonStringify(actual);
-    const expectedJsonString = jsonStringify(expected);
-    const actualJson = JSON.parse(actualJsonString);
-    const expectedJson = JSON.parse(expectedJsonString);
-    if (deepEqual(actualJson, expectedJson)) {
+    if (deepEqual(actual, expected)) {
         return { Ok: { isSuccessful: true } };
     } else {
+        const actualJsonString = jsonStringify(actual);
+        const expectedJsonString = jsonStringify(expected);
         const message = `Expected: ${expectedJsonString},\n\n Received: ${actualJsonString}`;
         return { Ok: { isSuccessful: false, message } };
     }

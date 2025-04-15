@@ -1,7 +1,6 @@
 import { IOType } from 'child_process';
-import { rm } from 'fs/promises';
-import { outputFile } from 'fs-extra';
-import { join } from 'path';
+import { mkdir, rm, writeFile } from 'fs/promises';
+import { dirname, join } from 'path';
 
 import { CanisterConfig } from '#utils/types';
 
@@ -22,7 +21,9 @@ export async function runCommand(
 
     const javaScript = await compileJavaScript(main);
 
-    await outputFile(join(canisterPath, 'main.js'), javaScript);
+    const mainJsPath = join(canisterPath, 'main.js');
+    await mkdir(dirname(mainJsPath), { recursive: true });
+    await writeFile(mainJsPath, javaScript);
 
     const { candid, methodMeta } = await getCandidAndMethodMeta(
         canisterConfig.custom?.candid_gen,
@@ -32,7 +33,8 @@ export async function runCommand(
         wasmData
     );
 
-    await outputFile(candidPath, candid);
+    await mkdir(dirname(candidPath), { recursive: true });
+    await writeFile(candidPath, candid);
 
     const wasmBinary = await getWasmBinary(
         ioType,
@@ -41,5 +43,6 @@ export async function runCommand(
         methodMeta
     );
 
-    await outputFile(wasmBinaryPath, wasmBinary);
+    await mkdir(dirname(wasmBinaryPath), { recursive: true });
+    await writeFile(wasmBinaryPath, wasmBinary);
 }

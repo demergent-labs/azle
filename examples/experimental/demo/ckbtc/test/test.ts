@@ -6,7 +6,8 @@ import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
-import { existsSync, rmSync } from 'fs-extra';
+import { existsSync } from 'fs';
+import { rm } from 'fs/promises';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { createActor } from '../wallet/frontend/dfx_generated/wallet_backend';
@@ -37,7 +38,7 @@ runTests(() => {
 
 async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     if (existsSync(`.bitcoin/regtest`)) {
-        rmSync('.bitcoin/regtest', { recursive: true, force: true });
+        await rm('.bitcoin/regtest', { recursive: true, force: true });
     }
     const bitcoinDaemon = spawn('.bitcoin/bin/bitcoind', [
         `-conf=${process.cwd()}/.bitcoin.conf`,
