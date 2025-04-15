@@ -6,7 +6,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.30.0",
+        "azle": "0.31.0-rc.1",
         "bitcore-lib": "^10.0.23",
         "express": "^4.18.2"
     },
