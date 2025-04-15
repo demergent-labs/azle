@@ -133,28 +133,7 @@ jobs:
               id: test-configuration
               run: |
                   RECORD_ACTIONS='true'
-                  RUNS=1
-
-                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" == "true" ]]; then
-                      RUNS=5
-                  fi
-
-                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" ]]; then
-                      RUNS=100
-                  fi
-
-                  if [[ "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
-                      RECORD_ACTIONS='false'
-                      RUNS=10
-                  fi
-
-                  if [[ "${{ steps.set-conditions.outputs.is_feature_branch_pr }}" == "true" ]]; then
-                      RUNS=5
-                  fi
-
-                  if [[ "${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" == "true" ]]; then
-                      RUNS=1
-                  fi
+                  RUNS=10
 
                   echo "Running tests $RUNS times"
 
