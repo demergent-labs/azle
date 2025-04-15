@@ -133,7 +133,7 @@ jobs:
               id: test-configuration
               run: |
                   RECORD_ACTIONS='true'
-                  RUNS=10
+                  RUNS=100
 
                   echo "Running tests $RUNS times"
 
