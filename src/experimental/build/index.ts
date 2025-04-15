@@ -1,26 +1,27 @@
 #!/usr/bin/env -S npx tsx
 
-import { IOType } from 'child_process';
+import { execSync, IOType } from 'child_process';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { build as stableBuild } from '#build/index';
-import { runCommand as runDevTemplateCommand } from '#commands/dev/template';
-import { runCommand as runNewCommand } from '#commands/new';
-import { runCommand as runExperimentalBuildCommand } from '#experimental/commands/build/index';
-import { runCommand as runExperimentalDevTemplateCommand } from '#experimental/commands/dev/template';
-import { runCommand as runExperimentalUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
-import { Command as ExperimentalCommand } from '#experimental/utils/types';
+import { runCommand as runStableDevTemplateCommand } from '#commands/dev/template';
+import { runCommand as runStableNewCommand } from '#commands/new';
+import { findProjectRoot } from '#experimental/build/utils/find_project_root';
+import { runCommand as runBuildCommand } from '#experimental/commands/build/index';
+import { runCommand as runDevTemplateCommand } from '#experimental/commands/dev/template';
+import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
+import { Command } from '#experimental/utils/types';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
-import { Command, SubCommand } from '#utils/types';
+import { Command as StableCommand, SubCommand } from '#utils/types';
 
 import { version as azleVersion } from '../../../package.json';
 
 export async function build(): Promise<void> {
-    const command = process.argv[2] as
-        | Command
-        | ExperimentalCommand
-        | undefined;
+    await assertAzleExperimentalDeps();
+
+    const command = process.argv[2] as StableCommand | Command | undefined;
 
     if (command === undefined) {
         throw new Error(
@@ -81,17 +82,17 @@ async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
     const all = process.argv.includes('--all');
 
     if (all === true) {
+        await runStableDevTemplateCommand(ioType);
         await runDevTemplateCommand(ioType);
-        await runExperimentalDevTemplateCommand(ioType);
     } else {
         const experimental =
             process.argv.includes('--experimental') ||
             process.env.AZLE_EXPERIMENTAL === 'true';
 
         if (experimental === false) {
-            await runDevTemplateCommand(ioType);
+            await runStableDevTemplateCommand(ioType);
         } else {
-            await runExperimentalDevTemplateCommand(ioType);
+            await runDevTemplateCommand(ioType);
         }
     }
 }
@@ -99,18 +100,18 @@ async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
 async function handlePostInstallCommand(): Promise<void> {
     // Currently, the only post-install step is uploading assets.
     // This function can be expanded if more steps are needed in the future.
-    await runExperimentalUploadAssetsCommand();
+    await runUploadAssetsCommand();
 }
 
 async function handleUploadAssetsCommand(): Promise<void> {
-    await runExperimentalUploadAssetsCommand();
+    await runUploadAssetsCommand();
 }
 
 async function handleBuildCommand(ioType: IOType): Promise<void> {
     const canisterName = process.argv[3];
     const canisterConfig = await getCanisterConfig(canisterName);
 
-    await runExperimentalBuildCommand(canisterName, canisterConfig, ioType);
+    await runBuildCommand(canisterName, canisterConfig, ioType);
 }
 
 async function handleNewCommand(): Promise<void> {
@@ -126,5 +127,62 @@ async function handleNewCommand(): Promise<void> {
         projectName
     );
 
-    await runNewCommand(azleVersion, templatePath, httpServer === true);
+    await runStableNewCommand(azleVersion, templatePath, httpServer === true);
+}
+
+async function assertAzleExperimentalDeps(): Promise<void> {
+    const projectRoot = await findProjectRoot();
+    const theirAzleExperimentalDepsVersion =
+        await getAzleExperimentalDepsVersion(projectRoot);
+
+    const ourAzleExperimentalDepsVersion =
+        await getAzleExperimentalDepsVersion(AZLE_ROOT);
+
+    if (ourAzleExperimentalDepsVersion === undefined) {
+        const beChill = true;
+        if (beChill === true) {
+            throw new Error('Unreachable');
+        }
+        throw new Error(
+            'Something has gone horribly wrong. Please open an issue right away, this must be fixed in azle immediately. Reach out to Jordan and tell him that Some How Azle Suffers Total Annihilation. He will know what to do.'
+        );
+    }
+
+    if (theirAzleExperimentalDepsVersion !== ourAzleExperimentalDepsVersion) {
+        installAzleExperimentalDeps(
+            projectRoot,
+            ourAzleExperimentalDepsVersion
+        );
+    }
+}
+
+async function getAzleExperimentalDepsVersion(
+    resolveDir: string
+): Promise<string | undefined> {
+    const packageJsonPath = join(resolveDir, 'package.json');
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'));
+    const packageName = 'azle-experimental-deps';
+    return (
+        packageJson.dependencies[packageName] ??
+        packageJson.devDependencies[packageName]
+    );
+}
+
+function installAzleExperimentalDeps(
+    resolveDir: string,
+    version: string
+): void {
+    try {
+        execSync(`npm install azle-experimental-deps@${version}`, {
+            cwd: resolveDir
+        });
+    } catch (error) {
+        console.error(
+            `Failed to install azle-experimental-deps@${version}:`,
+            error
+        );
+        throw new Error(
+            `Failed to install azle-experimental-deps@${version}. Please check your network connection and try again.`
+        );
+    }
 }
