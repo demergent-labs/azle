@@ -24,6 +24,8 @@ mod msg_reject_msg;
 mod msg_reply;
 mod notify_raw;
 mod performance_counter;
+mod rand_bytes;
+pub mod rand_seed;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
@@ -196,6 +198,18 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         context
             .new_function::<performance_counter::NativeFunction>("")
             .into(),
+    );
+
+    ic.set(
+        "randBytes",
+        context
+            .new_function::<rand_bytes::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "randSeed",
+        context.new_function::<rand_seed::NativeFunction>("").into(),
     );
 
     ic.set(
