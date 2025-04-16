@@ -7,6 +7,7 @@
 // TODO that the values or the same afterwards, like 5 or 10 values...maybe after a deploy and uninstall as well?
 
 import { ActorSubclass } from '@dfinity/agent';
+import { describe } from '@jest/globals';
 import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
@@ -16,222 +17,121 @@ import { _SERVICE } from './dfx_generated/randomness/randomness.did';
 let globalMathResults: Set<string> = new Set();
 let globalCryptoResults: Set<string> = new Set();
 
+type Round = {
+    name: string;
+    expectedMath: number;
+    expectedCrypto: number;
+    doUpgrade?: boolean;
+    doUninstall?: boolean;
+    doRedeploy?: boolean;
+    doSeed?: boolean;
+    doResetCrypto?: boolean;
+};
+
 export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
-        it('first round', async () => {
-            const mathRandomCall0Result = await randomnessCanister.mathRandom();
-            const mathRandomCall1Result = await randomnessCanister.mathRandom();
-            const mathRandomCall2Result = await randomnessCanister.mathRandom();
-            const mathRandomCall3Result = await randomnessCanister.mathRandom();
-            const mathRandomCall4Result = await randomnessCanister.mathRandom();
-
-            const cryptoGetRandomValuesCall0Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall1Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall2Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall3Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall4Result =
-                await randomnessCanister.cryptoGetRandomValues();
-
-            const mathResults = [
-                mathRandomCall0Result.toString(),
-                mathRandomCall1Result.toString(),
-                mathRandomCall2Result.toString(),
-                mathRandomCall3Result.toString(),
-                mathRandomCall4Result.toString()
+        describe('randomness canister rounds', () => {
+            const rounds: Round[] = [
+                { name: 'initial', expectedMath: 5, expectedCrypto: 5 },
+                {
+                    name: 'after upgrade-unchanged',
+                    doUpgrade: true,
+                    expectedMath: 10,
+                    expectedCrypto: 10
+                },
+                {
+                    name: 'after reinstall',
+                    doUninstall: true,
+                    doRedeploy: true,
+                    expectedMath: 15,
+                    expectedCrypto: 15
+                },
+                {
+                    name: 'after seeding 0 (first)',
+                    doSeed: true,
+                    doResetCrypto: true,
+                    expectedMath: 20,
+                    expectedCrypto: 5
+                },
+                {
+                    name: 'after seeding 0 (second)',
+                    doSeed: true,
+                    expectedMath: 25,
+                    expectedCrypto: 5
+                }
             ];
 
-            const cryptoResults = [
-                cryptoGetRandomValuesCall0Result.toString(),
-                cryptoGetRandomValuesCall1Result.toString(),
-                cryptoGetRandomValuesCall2Result.toString(),
-                cryptoGetRandomValuesCall3Result.toString(),
-                cryptoGetRandomValuesCall4Result.toString()
-            ];
+            describe.each(rounds)('round: $name', (round: Round) => {
+                if (round.doUpgrade === true) {
+                    please('deploy with --upgrade-unchanged', async () => {
+                        execSync('dfx deploy --upgrade-unchanged');
+                    });
+                }
 
-            for (const result of mathResults) {
-                globalMathResults.add(result);
-            }
+                if (round.doUninstall === true) {
+                    please('uninstall-code randomness', async () => {
+                        execSync(
+                            'dfx canister uninstall-code randomness || true'
+                        );
+                    });
+                }
 
-            for (const result of cryptoResults) {
-                globalCryptoResults.add(result);
-            }
+                if (round.doRedeploy === true) {
+                    please('deploy randomness', async () => {
+                        execSync('dfx deploy randomness');
+                    });
+                }
 
-            expect(globalMathResults.size).toBe(5);
-            expect(globalCryptoResults.size).toBe(5);
-        });
+                if (round.doSeed === true) {
+                    please('seed with 0', async () => {
+                        await randomnessCanister.seedWith0();
+                    });
+                }
 
-        please('dfx deploy', async () => {
-            execSync('dfx deploy --upgrade-unchanged');
-        });
+                if (round.doResetCrypto === true) {
+                    please('reset crypto results', () => {
+                        globalCryptoResults = new Set();
+                    });
+                }
 
-        it('second round', async () => {
-            const mathRandomCall0Result = await randomnessCanister.mathRandom();
-            const mathRandomCall1Result = await randomnessCanister.mathRandom();
-            const mathRandomCall2Result = await randomnessCanister.mathRandom();
-            const mathRandomCall3Result = await randomnessCanister.mathRandom();
-            const mathRandomCall4Result = await randomnessCanister.mathRandom();
+                it(
+                    `should produce math & crypto unique values ` +
+                        `(math=${round.expectedMath} crypto=${round.expectedCrypto})`,
+                    async () => {
+                        const mathValues = await Promise.all(
+                            Array(5)
+                                .fill(0)
+                                .map(() => randomnessCanister.mathRandom())
+                        );
 
-            const cryptoGetRandomValuesCall0Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall1Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall2Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall3Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall4Result =
-                await randomnessCanister.cryptoGetRandomValues();
+                        mathValues
+                            .map((value) => value.toString())
+                            .forEach((valueString) =>
+                                globalMathResults.add(valueString)
+                            );
 
-            const mathResults = [
-                mathRandomCall0Result.toString(),
-                mathRandomCall1Result.toString(),
-                mathRandomCall2Result.toString(),
-                mathRandomCall3Result.toString(),
-                mathRandomCall4Result.toString()
-            ];
+                        expect(globalMathResults.size).toBe(round.expectedMath);
 
-            const cryptoResults = [
-                cryptoGetRandomValuesCall0Result.toString(),
-                cryptoGetRandomValuesCall1Result.toString(),
-                cryptoGetRandomValuesCall2Result.toString(),
-                cryptoGetRandomValuesCall3Result.toString(),
-                cryptoGetRandomValuesCall4Result.toString()
-            ];
+                        const cryptoValues = await Promise.all(
+                            Array(5)
+                                .fill(0)
+                                .map(() =>
+                                    randomnessCanister.cryptoGetRandomValues()
+                                )
+                        );
 
-            for (const result of mathResults) {
-                globalMathResults.add(result);
-            }
+                        cryptoValues
+                            .map((value) => value.toString())
+                            .forEach((valueString) =>
+                                globalCryptoResults.add(valueString)
+                            );
 
-            for (const result of cryptoResults) {
-                globalCryptoResults.add(result);
-            }
-
-            expect(globalMathResults.size).toBe(10);
-            expect(globalCryptoResults.size).toBe(10);
-        });
-
-        please('dfx canister uninstall-code randomness', async () => {
-            execSync(`dfx canister uninstall-code randomness || true`);
-        });
-
-        please('dfx deploy randomness', async () => {
-            execSync(`dfx deploy randomness`);
-        });
-
-        it('third round', async () => {
-            const mathRandomCall0Result = await randomnessCanister.mathRandom();
-            const mathRandomCall1Result = await randomnessCanister.mathRandom();
-            const mathRandomCall2Result = await randomnessCanister.mathRandom();
-            const mathRandomCall3Result = await randomnessCanister.mathRandom();
-            const mathRandomCall4Result = await randomnessCanister.mathRandom();
-
-            const cryptoGetRandomValuesCall0Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall1Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall2Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall3Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall4Result =
-                await randomnessCanister.cryptoGetRandomValues();
-
-            const mathResults = [
-                mathRandomCall0Result.toString(),
-                mathRandomCall1Result.toString(),
-                mathRandomCall2Result.toString(),
-                mathRandomCall3Result.toString(),
-                mathRandomCall4Result.toString()
-            ];
-
-            const cryptoResults = [
-                cryptoGetRandomValuesCall0Result.toString(),
-                cryptoGetRandomValuesCall1Result.toString(),
-                cryptoGetRandomValuesCall2Result.toString(),
-                cryptoGetRandomValuesCall3Result.toString(),
-                cryptoGetRandomValuesCall4Result.toString()
-            ];
-
-            for (const result of mathResults) {
-                globalMathResults.add(result);
-            }
-
-            for (const result of cryptoResults) {
-                globalCryptoResults.add(result);
-            }
-
-            expect(globalMathResults.size).toBe(15);
-            expect(globalCryptoResults.size).toBe(15);
-        });
-
-        please('seed with 0 the first time', async () => {
-            await randomnessCanister.seedWith0();
-        });
-
-        please('reset globalCryptoResults', () => {
-            globalCryptoResults = new Set();
-        });
-
-        it('fourth round', async () => {
-            const cryptoGetRandomValuesCall0Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall1Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall2Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall3Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall4Result =
-                await randomnessCanister.cryptoGetRandomValues();
-
-            const cryptoResults = [
-                cryptoGetRandomValuesCall0Result.toString(),
-                cryptoGetRandomValuesCall1Result.toString(),
-                cryptoGetRandomValuesCall2Result.toString(),
-                cryptoGetRandomValuesCall3Result.toString(),
-                cryptoGetRandomValuesCall4Result.toString()
-            ];
-
-            for (const result of cryptoResults) {
-                globalCryptoResults.add(result);
-            }
-
-            expect(globalCryptoResults.size).toBe(5);
-        });
-
-        please('seed with 0 the second time', async () => {
-            await randomnessCanister.seedWith0();
-        });
-
-        it('fifth round', async () => {
-            const cryptoGetRandomValuesCall0Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall1Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall2Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall3Result =
-                await randomnessCanister.cryptoGetRandomValues();
-            const cryptoGetRandomValuesCall4Result =
-                await randomnessCanister.cryptoGetRandomValues();
-
-            const cryptoResults = [
-                cryptoGetRandomValuesCall0Result.toString(),
-                cryptoGetRandomValuesCall1Result.toString(),
-                cryptoGetRandomValuesCall2Result.toString(),
-                cryptoGetRandomValuesCall3Result.toString(),
-                cryptoGetRandomValuesCall4Result.toString()
-            ];
-
-            for (const result of cryptoResults) {
-                globalCryptoResults.add(result);
-            }
-
-            expect(globalCryptoResults.size).toBe(5);
+                        expect(globalCryptoResults.size).toBe(
+                            round.expectedCrypto
+                        );
+                    }
+                );
+            });
         });
     };
 }
