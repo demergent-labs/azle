@@ -1,11 +1,3 @@
-// TODO I would also like to create property tests for crypto.getRandomValues and randSeed
-// TODO for the crypto.getRandomValues, we should exhaustly test the different typed arrays
-// TODO with byte lengths that are arbitrary. We should generate 5 or 10 values for each
-// TODO similar to this test, then do deploys and seeding similar to this test
-// TODO I have not yet decided what the randSeed test should look like...actually,
-// TODO we should do an arbitrary seed, and just make sure that every time we call it,
-// TODO that the values or the same afterwards, like 5 or 10 values...maybe after a deploy and uninstall as well?
-
 import { ActorSubclass } from '@dfinity/agent';
 import { describe } from '@jest/globals';
 import { expect, it, please, Test } from 'azle/_internal/test';
