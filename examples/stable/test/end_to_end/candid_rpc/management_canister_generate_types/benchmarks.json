@@ -1,263 +1,6 @@
 {
     "management_canister": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "15920046"
-                    },
-                    "method_name": "executeCreateCanister",
-                    "timestamp": {
-                        "__bigint__": "1741368994844339963"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "17233726"
-                    },
-                    "method_name": "executeUpdateSettings",
-                    "timestamp": {
-                        "__bigint__": "1741368995604327774"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3743081"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741368996094848661"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "29128741"
-                    },
-                    "method_name": "executeInstallCode",
-                    "timestamp": {
-                        "__bigint__": "1741368996852473604"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "4396594"
-                    },
-                    "method_name": "executeUninstallCode",
-                    "timestamp": {
-                        "__bigint__": "1741368997562340201"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3739591"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741368998072710548"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "17920496"
-                    },
-                    "method_name": "executeUploadChunk",
-                    "timestamp": {
-                        "__bigint__": "1741368998813762497"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3051638"
-                    },
-                    "method_name": "getStoredChunks",
-                    "timestamp": {
-                        "__bigint__": "1741368999325002400"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3052005"
-                    },
-                    "method_name": "getStoredChunks",
-                    "timestamp": {
-                        "__bigint__": "1741368999815032629"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "20709957"
-                    },
-                    "method_name": "executeInstallChunkedCode",
-                    "timestamp": {
-                        "__bigint__": "1741369000326290423"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "4400443"
-                    },
-                    "method_name": "executeUninstallCode",
-                    "timestamp": {
-                        "__bigint__": "1741369001046455783"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3046086"
-                    },
-                    "method_name": "executeClearChunkStore",
-                    "timestamp": {
-                        "__bigint__": "1741369001581847447"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3048699"
-                    },
-                    "method_name": "getStoredChunks",
-                    "timestamp": {
-                        "__bigint__": "1741369002292646602"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3737717"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741369003029459139"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3053593"
-                    },
-                    "method_name": "executeDepositCycles",
-                    "timestamp": {
-                        "__bigint__": "1741369003517324117"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3741545"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741369004052736792"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "4392857"
-                    },
-                    "method_name": "executeUninstallCode",
-                    "timestamp": {
-                        "__bigint__": "1741369004769177600"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3740643"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741369005283853366"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3059212"
-                    },
-                    "method_name": "executeStopCanister",
-                    "timestamp": {
-                        "__bigint__": "1741369005996082807"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3757542"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741369006526541595"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3753505"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741369007243943165"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3061546"
-                    },
-                    "method_name": "executeStartCanister",
-                    "timestamp": {
-                        "__bigint__": "1741369007753850403"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3749098"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741369008244456467"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3741795"
-                    },
-                    "method_name": "getCanisterStatus",
-                    "timestamp": {
-                        "__bigint__": "1741369008994002053"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "6627527"
-                    },
-                    "method_name": "getCanisterInfo",
-                    "timestamp": {
-                        "__bigint__": "1741369009485005100"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3044057"
-                    },
-                    "method_name": "executeStopCanister",
-                    "timestamp": {
-                        "__bigint__": "1741369010223585970"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "3045253"
-                    },
-                    "method_name": "executeDeleteCanister",
-                    "timestamp": {
-                        "__bigint__": "1741369010715911842"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "905362"
-                    },
-                    "method_name": "getRawRand",
-                    "timestamp": {
-                        "__bigint__": "1741369011206883798"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -511,6 +254,151 @@
                     "timestamp": {
                         "__bigint__": "1741977091867870446"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "15988702",
+                    "method_name": "executeCreateCanister",
+                    "timestamp": "1744818631736198554"
+                },
+                {
+                    "instructions": "17281679",
+                    "method_name": "executeUpdateSettings",
+                    "timestamp": "1744818632223201826"
+                },
+                {
+                    "instructions": "3798384",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818632712125445"
+                },
+                {
+                    "instructions": "29183154",
+                    "method_name": "executeInstallCode",
+                    "timestamp": "1744818633448667171"
+                },
+                {
+                    "instructions": "4454876",
+                    "method_name": "executeUninstallCode",
+                    "timestamp": "1744818633958566919"
+                },
+                {
+                    "instructions": "3796221",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818634449530491"
+                },
+                {
+                    "instructions": "17974902",
+                    "method_name": "executeUploadChunk",
+                    "timestamp": "1744818635193783815"
+                },
+                {
+                    "instructions": "3097888",
+                    "method_name": "getStoredChunks",
+                    "timestamp": "1744818635688306619"
+                },
+                {
+                    "instructions": "3099087",
+                    "method_name": "getStoredChunks",
+                    "timestamp": "1744818636421891284"
+                },
+                {
+                    "instructions": "20762736",
+                    "method_name": "executeInstallChunkedCode",
+                    "timestamp": "1744818636911839569"
+                },
+                {
+                    "instructions": "4445049",
+                    "method_name": "executeUninstallCode",
+                    "timestamp": "1744818637443375236"
+                },
+                {
+                    "instructions": "3098289",
+                    "method_name": "executeClearChunkStore",
+                    "timestamp": "1744818638158482293"
+                },
+                {
+                    "instructions": "3098554",
+                    "method_name": "getStoredChunks",
+                    "timestamp": "1744818638687658470"
+                },
+                {
+                    "instructions": "3792254",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818639404494054"
+                },
+                {
+                    "instructions": "3105399",
+                    "method_name": "executeDepositCycles",
+                    "timestamp": "1744818639920825045"
+                },
+                {
+                    "instructions": "3794656",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818640412326853"
+                },
+                {
+                    "instructions": "4447205",
+                    "method_name": "executeUninstallCode",
+                    "timestamp": "1744818641151656259"
+                },
+                {
+                    "instructions": "3789846",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818641643237043"
+                },
+                {
+                    "instructions": "3098007",
+                    "method_name": "executeStopCanister",
+                    "timestamp": "1744818642135534760"
+                },
+                {
+                    "instructions": "3795349",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818642647506306"
+                },
+                {
+                    "instructions": "3796235",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818643138333574"
+                },
+                {
+                    "instructions": "3095057",
+                    "method_name": "executeStartCanister",
+                    "timestamp": "1744818643651316456"
+                },
+                {
+                    "instructions": "3795025",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818644368698206"
+                },
+                {
+                    "instructions": "3799466",
+                    "method_name": "getCanisterStatus",
+                    "timestamp": "1744818644882998756"
+                },
+                {
+                    "instructions": "6686230",
+                    "method_name": "getCanisterInfo",
+                    "timestamp": "1744818645603539974"
+                },
+                {
+                    "instructions": "3096127",
+                    "method_name": "executeStopCanister",
+                    "timestamp": "1744818646116155099"
+                },
+                {
+                    "instructions": "3097982",
+                    "method_name": "executeDeleteCanister",
+                    "timestamp": "1744818646835318392"
+                },
+                {
+                    "instructions": "958816",
+                    "method_name": "getRawRand",
+                    "timestamp": "1744818647349529726"
                 }
             ]
         }

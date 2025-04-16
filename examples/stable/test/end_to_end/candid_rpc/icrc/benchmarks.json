@@ -1,47 +1,6 @@
 {
     "proxy": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "15466180"
-                    },
-                    "method_name": "icrc1_transfer",
-                    "timestamp": {
-                        "__bigint__": "1741368990735219431"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "19056468"
-                    },
-                    "method_name": "icrc2_approve",
-                    "timestamp": {
-                        "__bigint__": "1741368990983896474"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "18008904"
-                    },
-                    "method_name": "icrc2_transfer_from",
-                    "timestamp": {
-                        "__bigint__": "1741368991256708563"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "10434741"
-                    },
-                    "method_name": "icrc2_allowance",
-                    "timestamp": {
-                        "__bigint__": "1741368991731767437"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -79,6 +38,31 @@
                     "timestamp": {
                         "__bigint__": "1741977063475373476"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "15540513",
+                    "method_name": "icrc1_transfer",
+                    "timestamp": "1744818629116018719"
+                },
+                {
+                    "instructions": "19121696",
+                    "method_name": "icrc2_approve",
+                    "timestamp": "1744818629618145068"
+                },
+                {
+                    "instructions": "18046837",
+                    "method_name": "icrc2_transfer_from",
+                    "timestamp": "1744818629861994185"
+                },
+                {
+                    "instructions": "10509472",
+                    "method_name": "icrc2_allowance",
+                    "timestamp": "1744818630107159161"
                 }
             ]
         }

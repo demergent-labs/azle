@@ -1,38 +1,6 @@
 {
     "backend": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7518094745"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741368953424700153"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "57140351"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368969297513699"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "50771714"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368969582954356"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -61,6 +29,26 @@
                     "timestamp": {
                         "__bigint__": "1741977015350193197"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "7577165005",
+                    "method_name": "init",
+                    "timestamp": "1744818468796513558"
+                },
+                {
+                    "instructions": "57142774",
+                    "method_name": "http_request_update",
+                    "timestamp": "1744818485594673610"
+                },
+                {
+                    "instructions": "50749158",
+                    "method_name": "http_request_update",
+                    "timestamp": "1744818485847716959"
                 }
             ]
         }

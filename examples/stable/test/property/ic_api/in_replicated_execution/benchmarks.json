@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -762,6 +758,441 @@
                     "timestamp": {
                         "__bigint__": "1741977036392967085"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1012645250",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1744818549152173886"
+                },
+                {
+                    "instructions": "104032",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818549152173886"
+                },
+                {
+                    "instructions": "103194",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818549184153069"
+                },
+                {
+                    "instructions": "102982",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818549412212665"
+                },
+                {
+                    "instructions": "102699",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818549839555766"
+                },
+                {
+                    "instructions": "102699",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818549862521587"
+                },
+                {
+                    "instructions": "102624",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818549886236555"
+                },
+                {
+                    "instructions": "102488",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550120057614"
+                },
+                {
+                    "instructions": "102463",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550142882899"
+                },
+                {
+                    "instructions": "103216",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550375028090"
+                },
+                {
+                    "instructions": "103416",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550400606790"
+                },
+                {
+                    "instructions": "102933",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550626087153"
+                },
+                {
+                    "instructions": "103003",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550646219408"
+                },
+                {
+                    "instructions": "103408",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550871317250"
+                },
+                {
+                    "instructions": "103503",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550899248774"
+                },
+                {
+                    "instructions": "103473",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818550920421775"
+                },
+                {
+                    "instructions": "103678",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818551145399468"
+                },
+                {
+                    "instructions": "103561",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818551169538980"
+                },
+                {
+                    "instructions": "102849",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818551394049371"
+                },
+                {
+                    "instructions": "102846",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818551414659213"
+                },
+                {
+                    "instructions": "102744",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818551637763609"
+                },
+                {
+                    "instructions": "102946",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818551660272179"
+                },
+                {
+                    "instructions": "102985",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818551885549408"
+                },
+                {
+                    "instructions": "103143",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818551908046806"
+                },
+                {
+                    "instructions": "103189",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818552134232394"
+                },
+                {
+                    "instructions": "103198",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818552155254193"
+                },
+                {
+                    "instructions": "103293",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818552385323906"
+                },
+                {
+                    "instructions": "103486",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818552417739331"
+                },
+                {
+                    "instructions": "103012",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818552648354468"
+                },
+                {
+                    "instructions": "102938",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818552676923801"
+                },
+                {
+                    "instructions": "102646",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818552905687631"
+                },
+                {
+                    "instructions": "102746",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818552935785079"
+                },
+                {
+                    "instructions": "102667",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818553169770012"
+                },
+                {
+                    "instructions": "102937",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818553196015535"
+                },
+                {
+                    "instructions": "102563",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818553427707240"
+                },
+                {
+                    "instructions": "103075",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818553457008515"
+                },
+                {
+                    "instructions": "102480",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818553690594824"
+                },
+                {
+                    "instructions": "102187",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818553712893579"
+                },
+                {
+                    "instructions": "102477",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818553940435519"
+                },
+                {
+                    "instructions": "102892",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818553965322815"
+                },
+                {
+                    "instructions": "102544",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818554196405929"
+                },
+                {
+                    "instructions": "102941",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818554233226483"
+                },
+                {
+                    "instructions": "102427",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818554491779862"
+                },
+                {
+                    "instructions": "102790",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818554735892743"
+                },
+                {
+                    "instructions": "102685",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818554980500221"
+                },
+                {
+                    "instructions": "102671",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818555225589022"
+                },
+                {
+                    "instructions": "102570",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818555451362493"
+                },
+                {
+                    "instructions": "102516",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818555474069538"
+                },
+                {
+                    "instructions": "102442",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818555696439644"
+                },
+                {
+                    "instructions": "102312",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818555716515363"
+                },
+                {
+                    "instructions": "102443",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818555938429370"
+                },
+                {
+                    "instructions": "102460",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818555958564939"
+                },
+                {
+                    "instructions": "102717",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818556181898882"
+                },
+                {
+                    "instructions": "102876",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818556202060332"
+                },
+                {
+                    "instructions": "102392",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818556425994206"
+                },
+                {
+                    "instructions": "102860",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818556446738508"
+                },
+                {
+                    "instructions": "102227",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818556671793364"
+                },
+                {
+                    "instructions": "102788",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818556694229935"
+                },
+                {
+                    "instructions": "102694",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818556918421893"
+                },
+                {
+                    "instructions": "103806",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818556938975771"
+                },
+                {
+                    "instructions": "102736",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818557163283050"
+                },
+                {
+                    "instructions": "103503",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818557184364253"
+                },
+                {
+                    "instructions": "102386",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818557430039332"
+                },
+                {
+                    "instructions": "103514",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818557677743955"
+                },
+                {
+                    "instructions": "103448",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818557929612420"
+                },
+                {
+                    "instructions": "102621",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818557950881152"
+                },
+                {
+                    "instructions": "104494",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818558196864047"
+                },
+                {
+                    "instructions": "102884",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818558421266446"
+                },
+                {
+                    "instructions": "104431",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818558442709431"
+                },
+                {
+                    "instructions": "103165",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818558668527856"
+                },
+                {
+                    "instructions": "103109",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818558692000678"
+                },
+                {
+                    "instructions": "102926",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818558918137116"
+                },
+                {
+                    "instructions": "102932",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818558938957149"
+                },
+                {
+                    "instructions": "103622",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818559163479025"
+                },
+                {
+                    "instructions": "104354",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818559185052591"
+                },
+                {
+                    "instructions": "103312",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818559409723498"
+                },
+                {
+                    "instructions": "103612",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818559431795892"
+                },
+                {
+                    "instructions": "104473",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818559656640436"
+                },
+                {
+                    "instructions": "103332",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818559677514760"
+                },
+                {
+                    "instructions": "104356",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818559903206538"
+                },
+                {
+                    "instructions": "103093",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818559926769078"
+                },
+                {
+                    "instructions": "104493",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818560151491825"
+                },
+                {
+                    "instructions": "103572",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818560172580829"
+                },
+                {
+                    "instructions": "104401",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818560418028372"
+                },
+                {
+                    "instructions": "103312",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818560663011062"
+                },
+                {
+                    "instructions": "104356",
+                    "method_name": "heartbeat",
+                    "timestamp": "1744818560906735814"
                 }
             ]
         }

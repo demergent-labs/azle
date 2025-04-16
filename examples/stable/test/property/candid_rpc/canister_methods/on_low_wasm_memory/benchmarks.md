@@ -1,8 +1,22 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
+
+| Id  | Method Name     | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | --------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | addRandomBytes  | 1_201_998    | 1_070_799 | $0.0000014238 | $1.42             | <font color="green">-4_989</font> |
+| 1   | addRandomBytes  | 1_136_692    | 1_044_676 | $0.0000013891 | $1.38             | <font color="green">-1_754</font> |
+| 2   | addRandomBytes  | 1_136_994    | 1_044_797 | $0.0000013892 | $1.38             | <font color="green">-2_817</font> |
+| 3   | addRandomBytes  | 1_140_671    | 1_046_268 | $0.0000013912 | $1.39             | <font color="red">+30</font>      |
+| 4   | addRandomBytes  | 1_140_250    | 1_046_100 | $0.0000013910 | $1.39             | <font color="green">-682</font>   |
+| 5   | addRandomBytes  | 1_135_555    | 1_044_222 | $0.0000013885 | $1.38             | <font color="green">-2_006</font> |
+| 6   | addRandomBytes  | 1_138_314    | 1_045_325 | $0.0000013899 | $1.38             | <font color="green">-2_060</font> |
+| 7   | addRandomBytes  | 1_135_759    | 1_044_303 | $0.0000013886 | $1.38             | <font color="green">-1_900</font> |
+| 8   | addRandomBytes  | 1_132_972    | 1_043_188 | $0.0000013871 | $1.38             | <font color="green">-5_221</font> |
+| 9   | addRandomBytes  | 1_136_073    | 1_044_429 | $0.0000013887 | $1.38             | <font color="green">-1_089</font> |
+| 10  | onLowWasmMemory | 98_223       | 629_289   | $0.0000008367 | $0.83             | <font color="green">-1_277</font> |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name     | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | --------------- | ------------ | --------- | ------------- | ----------------- |
@@ -17,10 +31,6 @@
 | 8   | addRandomBytes  | 1_138_193    | 1_045_277 | $0.0000013899 | $1.38             |
 | 9   | addRandomBytes  | 1_137_162    | 1_044_864 | $0.0000013893 | $1.38             |
 | 10  | onLowWasmMemory | 99_500       | 629_800   | $0.0000008374 | $0.83             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

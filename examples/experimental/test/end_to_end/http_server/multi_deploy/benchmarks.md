@@ -1,16 +1,18 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
+⚠️ **WARNING: Benchmark process failed for version 0.31.0**
 
 # Benchmarks for multi_deploy
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
+
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | postUpgrade | 7_578_047_342 | 5_831_808_936 | $0.0077543814 | $7_754.38         | <font color="red">+53_682_301</font> |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
 | 0   | postUpgrade | 7_524_365_041 | 5_810_336_016 | $0.0077258295 | $7_725.82         |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

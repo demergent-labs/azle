@@ -1,24 +1,22 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for complex_types
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
 
-| Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls | Change                             |
-| --- | -------------- | ------------ | ---------- | ------------- | ----------------- | ---------------------------------- |
-| 0   | createUser     | 19_639_864   | 8_445_945  | $0.0000112303 | $11.23            | <font color="green">-2_094</font>  |
-| 1   | createThread   | 20_869_080   | 8_937_632  | $0.0000118841 | $11.88            | <font color="green">-14_117</font> |
-| 2   | createPost     | 23_397_714   | 9_949_085  | $0.0000132290 | $13.22            | <font color="red">+7_927</font>    |
-| 3   | createReaction | 26_446_089   | 11_168_435 | $0.0000148503 | $14.85            | <font color="green">-32_109</font> |
+| Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls | Change                           |
+| --- | -------------- | ------------ | ---------- | ------------- | ----------------- | -------------------------------- |
+| 0   | createUser     | 19_648_333   | 8_449_333  | $0.0000112348 | $11.23            | <font color="red">+8_469</font>  |
+| 1   | createThread   | 20_888_521   | 8_945_408  | $0.0000118944 | $11.89            | <font color="red">+19_441</font> |
+| 2   | createPost     | 23_400_796   | 9_950_318  | $0.0000132306 | $13.23            | <font color="red">+3_082</font>  |
+| 3   | createReaction | 26_516_038   | 11_196_415 | $0.0000148875 | $14.88            | <font color="red">+69_949</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name    | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | -------------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | createUser     | 19_641_958   | 8_446_783  | $0.0000112314 | $11.23            |
-| 1   | createThread   | 20_883_197   | 8_943_278  | $0.0000118916 | $11.89            |
-| 2   | createPost     | 23_389_787   | 9_945_914  | $0.0000132248 | $13.22            |
-| 3   | createReaction | 26_478_198   | 11_181_279 | $0.0000148674 | $14.86            |
+| 0   | createUser     | 19_639_864   | 8_445_945  | $0.0000112303 | $11.23            |
+| 1   | createThread   | 20_869_080   | 8_937_632  | $0.0000118841 | $11.88            |
+| 2   | createPost     | 23_397_714   | 9_949_085  | $0.0000132290 | $13.22            |
+| 3   | createReaction | 26_446_089   | 11_168_435 | $0.0000148503 | $14.85            |
 
 ---
 

@@ -1,128 +1,6 @@
 {
     "wallet": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1540129"
-                    },
-                    "method_name": "add_to_whitelist",
-                    "timestamp": {
-                        "__bigint__": "1741369034798165128"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1791615"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369076994173009"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1782446"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369076994173009"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1778629"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369076994173009"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1775542"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369076994173009"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1774789"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369076994173009"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1777742"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369076994173009"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1773541"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369137013031870"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1775628"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369137013031870"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1777913"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369137013031870"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1771487"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369137013031870"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1776081"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369137013031870"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1772660"
-                    },
-                    "method_name": "wallet_receive",
-                    "timestamp": {
-                        "__bigint__": "1741369137013031870"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -243,14 +121,80 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1537268",
+                    "method_name": "add_to_whitelist",
+                    "timestamp": "1744818570670215521"
+                },
+                {
+                    "instructions": "1790220",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818611532124500"
+                },
+                {
+                    "instructions": "1780435",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818611532124500"
+                },
+                {
+                    "instructions": "1776895",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818611532124500"
+                },
+                {
+                    "instructions": "1777129",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818611532124500"
+                },
+                {
+                    "instructions": "1775622",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818611532124500"
+                },
+                {
+                    "instructions": "1777931",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818611532124500"
+                },
+                {
+                    "instructions": "1779013",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818671597707937"
+                },
+                {
+                    "instructions": "1778600",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818671597707937"
+                },
+                {
+                    "instructions": "1781006",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818671597707937"
+                },
+                {
+                    "instructions": "1782684",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818671597707937"
+                },
+                {
+                    "instructions": "1779393",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818671597707937"
+                },
+                {
+                    "instructions": "1781212",
+                    "method_name": "wallet_receive",
+                    "timestamp": "1744818671597707937"
+                }
+            ]
         }
     },
     "consumer": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -261,6 +205,16 @@
                     "timestamp": {
                         "__bigint__": "1741976999761463791"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "7581262705",
+                    "method_name": "init",
+                    "timestamp": "1744818491327849663"
                 }
             ]
         }

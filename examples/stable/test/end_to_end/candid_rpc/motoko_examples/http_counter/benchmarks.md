@@ -1,8 +1,15 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for http_counter
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
+
+| Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ------------------- | ------------- | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | init                | 1_015_184_377 | 806_663_750 | $0.0010725966 | $1_072.59         | <font color="red">+5_011_378</font> |
+| 1   | http_request_update | 30_086_912    | 12_624_764  | $0.0000167868 | $16.78            | <font color="red">+40_839</font>    |
+| 2   | http_request_update | 29_991_865    | 12_586_746  | $0.0000167362 | $16.73            | <font color="green">-25_305</font>  |
+| 3   | http_request_update | 30_069_638    | 12_617_855  | $0.0000167776 | $16.77            | <font color="green">-11_487</font>  |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ----------- | ------------- | ----------------- |
@@ -10,10 +17,6 @@
 | 1   | http_request_update | 30_046_073    | 12_608_429  | $0.0000167650 | $16.76            |
 | 2   | http_request_update | 30_017_170    | 12_596_868  | $0.0000167497 | $16.74            |
 | 3   | http_request_update | 30_081_125    | 12_622_450  | $0.0000167837 | $16.78            |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

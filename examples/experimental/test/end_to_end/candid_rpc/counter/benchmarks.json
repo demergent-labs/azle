@@ -1,38 +1,6 @@
 {
     "counter": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1477966"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741368975246183225"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1458071"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741368975747827240"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1459207"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741368975989072617"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -61,6 +29,26 @@
                     "timestamp": {
                         "__bigint__": "1741977029762543956"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1484916",
+                    "method_name": "incrementCount",
+                    "timestamp": "1744818443057962579"
+                },
+                {
+                    "instructions": "1460865",
+                    "method_name": "incrementCount",
+                    "timestamp": "1744818443344303687"
+                },
+                {
+                    "instructions": "1463231",
+                    "method_name": "incrementCount",
+                    "timestamp": "1744818443810449287"
                 }
             ]
         }

@@ -1,56 +1,6 @@
 {
     "rejections": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "10239031"
-                    },
-                    "method_name": "getRejectCodeNoError",
-                    "timestamp": {
-                        "__bigint__": "1741369025621879587"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "9397232"
-                    },
-                    "method_name": "getRejectCodeDestinationInvalid",
-                    "timestamp": {
-                        "__bigint__": "1741369026340414026"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "10562325"
-                    },
-                    "method_name": "getRejectCodeCanisterReject",
-                    "timestamp": {
-                        "__bigint__": "1741369026858719396"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "10065291"
-                    },
-                    "method_name": "getRejectCodeCanisterError",
-                    "timestamp": {
-                        "__bigint__": "1741369027142829735"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "11268406"
-                    },
-                    "method_name": "getRejectMessage",
-                    "timestamp": {
-                        "__bigint__": "1741369027612839419"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -99,15 +49,45 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "10222514",
+                    "method_name": "getRejectCodeNoError",
+                    "timestamp": "1744818534201677880"
+                },
+                {
+                    "instructions": "9389185",
+                    "method_name": "getRejectCodeDestinationInvalid",
+                    "timestamp": "1744818534449600833"
+                },
+                {
+                    "instructions": "10578729",
+                    "method_name": "getRejectCodeCanisterReject",
+                    "timestamp": "1744818534934318611"
+                },
+                {
+                    "instructions": "10064542",
+                    "method_name": "getRejectCodeCanisterError",
+                    "timestamp": "1744818535398470167"
+                },
+                {
+                    "instructions": "11263900",
+                    "method_name": "getRejectMessage",
+                    "timestamp": "1744818535660007195"
+                }
+            ]
         }
     },
     "some_canister": {
         "previous": {
-            "version": "No previous benchmarks",
+            "version": "0.30.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.30.0",
+            "version": "0.31.0",
             "benchmarks": []
         }
     }

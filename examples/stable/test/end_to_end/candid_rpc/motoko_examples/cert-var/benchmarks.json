@@ -1,128 +1,6 @@
 {
     "cert-var": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "2079078"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368978574162065"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2309960"
-                    },
-                    "method_name": "inc",
-                    "timestamp": {
-                        "__bigint__": "1741368979196367581"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2048501"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368980607053496"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2308540"
-                    },
-                    "method_name": "inc",
-                    "timestamp": {
-                        "__bigint__": "1741368980852603166"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2052269"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368981097474626"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2312547"
-                    },
-                    "method_name": "inc",
-                    "timestamp": {
-                        "__bigint__": "1741368981344856931"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2046388"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368981838666798"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2307346"
-                    },
-                    "method_name": "inc",
-                    "timestamp": {
-                        "__bigint__": "1741368982084180499"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2048219"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368982328855601"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2309934"
-                    },
-                    "method_name": "inc",
-                    "timestamp": {
-                        "__bigint__": "1741368982576695715"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2050154"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368982865877885"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2309221"
-                    },
-                    "method_name": "inc",
-                    "timestamp": {
-                        "__bigint__": "1741368983332689536"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "2090778"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368983577988575"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -241,6 +119,76 @@
                     "timestamp": {
                         "__bigint__": "1741977062053703363"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "2068967",
+                    "method_name": "set",
+                    "timestamp": "1744818627616072205"
+                },
+                {
+                    "instructions": "2311400",
+                    "method_name": "inc",
+                    "timestamp": "1744818627911962192"
+                },
+                {
+                    "instructions": "2048174",
+                    "method_name": "set",
+                    "timestamp": "1744818628406105649"
+                },
+                {
+                    "instructions": "2309497",
+                    "method_name": "inc",
+                    "timestamp": "1744818628649325729"
+                },
+                {
+                    "instructions": "2044308",
+                    "method_name": "set",
+                    "timestamp": "1744818628892339756"
+                },
+                {
+                    "instructions": "2312805",
+                    "method_name": "inc",
+                    "timestamp": "1744818629406053567"
+                },
+                {
+                    "instructions": "2044223",
+                    "method_name": "set",
+                    "timestamp": "1744818629650137216"
+                },
+                {
+                    "instructions": "2310011",
+                    "method_name": "inc",
+                    "timestamp": "1744818629891922296"
+                },
+                {
+                    "instructions": "2042138",
+                    "method_name": "set",
+                    "timestamp": "1744818630137949939"
+                },
+                {
+                    "instructions": "2314002",
+                    "method_name": "inc",
+                    "timestamp": "1744818630656464380"
+                },
+                {
+                    "instructions": "2048855",
+                    "method_name": "set",
+                    "timestamp": "1744818630899510657"
+                },
+                {
+                    "instructions": "2308961",
+                    "method_name": "inc",
+                    "timestamp": "1744818631143183244"
+                },
+                {
+                    "instructions": "2089215",
+                    "method_name": "set",
+                    "timestamp": "1744818631392444341"
                 }
             ]
         }

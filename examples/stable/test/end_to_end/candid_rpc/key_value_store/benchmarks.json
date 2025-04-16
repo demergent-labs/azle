@@ -1,29 +1,6 @@
 {
     "key_value_store": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1510109"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368983740261307"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1451500"
-                    },
-                    "method_name": "set",
-                    "timestamp": {
-                        "__bigint__": "1741368983986379143"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -43,6 +20,21 @@
                     "timestamp": {
                         "__bigint__": "1741977060719017498"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1507753",
+                    "method_name": "set",
+                    "timestamp": "1744818630081395729"
+                },
+                {
+                    "instructions": "1452461",
+                    "method_name": "set",
+                    "timestamp": "1744818630547945664"
                 }
             ]
         }

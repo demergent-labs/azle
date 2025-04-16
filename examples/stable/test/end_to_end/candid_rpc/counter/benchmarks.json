@@ -1,38 +1,6 @@
 {
     "counter": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1599898"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741368980920574154"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1552755"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741368981162557348"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1552555"
-                    },
-                    "method_name": "incrementCount",
-                    "timestamp": {
-                        "__bigint__": "1741368981450345370"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -61,6 +29,26 @@
                     "timestamp": {
                         "__bigint__": "1741977056477697950"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1599703",
+                    "method_name": "incrementCount",
+                    "timestamp": "1744818634930939957"
+                },
+                {
+                    "instructions": "1557048",
+                    "method_name": "incrementCount",
+                    "timestamp": "1744818635202630875"
+                },
+                {
+                    "instructions": "1552504",
+                    "method_name": "incrementCount",
+                    "timestamp": "1744818635669136338"
                 }
             ]
         }

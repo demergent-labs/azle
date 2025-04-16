@@ -1,65 +1,6 @@
 {
     "simple_to_do": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "2082599"
-                    },
-                    "method_name": "addTodo",
-                    "timestamp": {
-                        "__bigint__": "1741368987541002371"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1787426"
-                    },
-                    "method_name": "addTodo",
-                    "timestamp": {
-                        "__bigint__": "1741368988038783568"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1055357"
-                    },
-                    "method_name": "completeTodo",
-                    "timestamp": {
-                        "__bigint__": "1741368988283347684"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "985252"
-                    },
-                    "method_name": "clearCompleted",
-                    "timestamp": {
-                        "__bigint__": "1741368988774794936"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1050439"
-                    },
-                    "method_name": "completeTodo",
-                    "timestamp": {
-                        "__bigint__": "1741368989018015426"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "969826"
-                    },
-                    "method_name": "clearCompleted",
-                    "timestamp": {
-                        "__bigint__": "1741368989262444422"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -115,6 +56,41 @@
                     "timestamp": {
                         "__bigint__": "1741977071795749672"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "2080741",
+                    "method_name": "addTodo",
+                    "timestamp": "1744818631677950680"
+                },
+                {
+                    "instructions": "1789230",
+                    "method_name": "addTodo",
+                    "timestamp": "1744818631922730064"
+                },
+                {
+                    "instructions": "1056089",
+                    "method_name": "completeTodo",
+                    "timestamp": "1744818632414340572"
+                },
+                {
+                    "instructions": "984511",
+                    "method_name": "clearCompleted",
+                    "timestamp": "1744818632656728735"
+                },
+                {
+                    "instructions": "1051811",
+                    "method_name": "completeTodo",
+                    "timestamp": "1744818632900358395"
+                },
+                {
+                    "instructions": "972813",
+                    "method_name": "clearCompleted",
+                    "timestamp": "1744818633142972913"
                 }
             ]
         }

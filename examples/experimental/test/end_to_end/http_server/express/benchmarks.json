@@ -1,47 +1,6 @@
 {
     "express": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7530901711"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741368958412030986"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "53678364"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368972568026571"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "47222227"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368973062107184"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "44227782"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368973306235627"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -79,6 +38,31 @@
                     "timestamp": {
                         "__bigint__": "1741977022475238679"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "7586066711",
+                    "method_name": "init",
+                    "timestamp": "1744818483928382571"
+                },
+                {
+                    "instructions": "53776813",
+                    "method_name": "http_request_update",
+                    "timestamp": "1744818499854137179"
+                },
+                {
+                    "instructions": "47305312",
+                    "method_name": "http_request_update",
+                    "timestamp": "1744818500103303888"
+                },
+                {
+                    "instructions": "44420248",
+                    "method_name": "http_request_update",
+                    "timestamp": "1744818500602341858"
                 }
             ]
         }

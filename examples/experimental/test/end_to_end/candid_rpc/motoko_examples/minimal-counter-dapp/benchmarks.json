@@ -1,47 +1,6 @@
 {
     "minimal_dapp": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1130864"
-                    },
-                    "method_name": "count",
-                    "timestamp": {
-                        "__bigint__": "1741368969796777336"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1100523"
-                    },
-                    "method_name": "count",
-                    "timestamp": {
-                        "__bigint__": "1741368970039567258"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1101219"
-                    },
-                    "method_name": "reset",
-                    "timestamp": {
-                        "__bigint__": "1741368970282615245"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1106353"
-                    },
-                    "method_name": "count",
-                    "timestamp": {
-                        "__bigint__": "1741368970568289688"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -79,6 +38,31 @@
                     "timestamp": {
                         "__bigint__": "1741977037506577745"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1128040",
+                    "method_name": "count",
+                    "timestamp": "1744818445876459411"
+                },
+                {
+                    "instructions": "1098960",
+                    "method_name": "count",
+                    "timestamp": "1744818446124215531"
+                },
+                {
+                    "instructions": "1098736",
+                    "method_name": "reset",
+                    "timestamp": "1744818446367071996"
+                },
+                {
+                    "instructions": "1105520",
+                    "method_name": "count",
+                    "timestamp": "1744818446609541075"
                 }
             ]
         }

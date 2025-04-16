@@ -1,36 +1,34 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister1
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
 
-| Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls | Change                                |
-| --- | ------------ | ------------ | --------- | ------------- | ----------------- | ------------------------------------- |
-| 0   | simpleUpdate | 1_393_339    | 1_147_335 | $0.0000015256 | $1.52             | <font color="green">-9_726_482</font> |
+| Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
+| --- | ------------ | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | simpleUpdate | 11_118_714   | 5_037_485 | $0.0000066982 | $6.69             | <font color="red">+9_725_375</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name  | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------ | ------------ | --------- | ------------- | ----------------- |
-| 0   | simpleUpdate | 11_119_821   | 5_037_928 | $0.0000066988 | $6.69             |
+| 0   | simpleUpdate | 1_393_339    | 1_147_335 | $0.0000015256 | $1.52             |
 
 # Benchmarks for canister2
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: No previous benchmarks
+## Baseline benchmarks Azle version: 0.30.0
 
 No benchmarks reported
 
 # Benchmarks for canister3
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: No previous benchmarks
+## Baseline benchmarks Azle version: 0.30.0
 
 No benchmarks reported
 

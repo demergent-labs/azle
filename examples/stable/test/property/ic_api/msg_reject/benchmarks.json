@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -24,6 +20,21 @@
                     "timestamp": {
                         "__bigint__": "1741977010167487752"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "775414",
+                    "method_name": "alwaysRejectUpdate",
+                    "timestamp": "1744818542908841450"
+                },
+                {
+                    "instructions": "1360909",
+                    "method_name": "evenOrRejectUpdate",
+                    "timestamp": "1744818543149645015"
                 }
             ]
         }

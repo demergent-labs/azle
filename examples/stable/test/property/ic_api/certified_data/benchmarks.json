@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -69,6 +65,46 @@
                     "timestamp": {
                         "__bigint__": "1741977066302008659"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1004129264",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1744818589570038632"
+                },
+                {
+                    "instructions": "1709852",
+                    "method_name": "getDataCertificateInUpdate",
+                    "timestamp": "1744818592196150650"
+                },
+                {
+                    "instructions": "1229855",
+                    "method_name": "setData",
+                    "timestamp": "1744818592450755089"
+                },
+                {
+                    "instructions": "1694006",
+                    "method_name": "getDataCertificateInUpdate",
+                    "timestamp": "1744818592909141652"
+                },
+                {
+                    "instructions": "1238048",
+                    "method_name": "setData",
+                    "timestamp": "1744818593392748031"
+                },
+                {
+                    "instructions": "1116257",
+                    "method_name": "assertDataCertificateTypesInUpdate",
+                    "timestamp": "1744818594587990504"
+                },
+                {
+                    "instructions": "1409414",
+                    "method_name": "assertSetCertifiedDataTypes",
+                    "timestamp": "1744818594826388544"
                 }
             ]
         }

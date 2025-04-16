@@ -1,38 +1,6 @@
 {
     "null_example": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "5994495"
-                    },
-                    "method_name": "setPartiallyNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1741368999562127952"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "4348018"
-                    },
-                    "method_name": "setSmallNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1741368999805489307"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5662936"
-                    },
-                    "method_name": "setLargeNullRecord",
-                    "timestamp": {
-                        "__bigint__": "1741369000051258921"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -61,6 +29,26 @@
                     "timestamp": {
                         "__bigint__": "1741977073024620853"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "5988925",
+                    "method_name": "setPartiallyNullRecord",
+                    "timestamp": "1744818634935858572"
+                },
+                {
+                    "instructions": "4351563",
+                    "method_name": "setSmallNullRecord",
+                    "timestamp": "1744818635179655270"
+                },
+                {
+                    "instructions": "5669861",
+                    "method_name": "setLargeNullRecord",
+                    "timestamp": "1744818635425274737"
                 }
             ]
         }

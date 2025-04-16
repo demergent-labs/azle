@@ -1,65 +1,6 @@
 {
     "calc": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "1275691"
-                    },
-                    "method_name": "add",
-                    "timestamp": {
-                        "__bigint__": "1741368968213073052"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1254087"
-                    },
-                    "method_name": "sub",
-                    "timestamp": {
-                        "__bigint__": "1741368968507251565"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1253617"
-                    },
-                    "method_name": "mul",
-                    "timestamp": {
-                        "__bigint__": "1741368968975482517"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1613544"
-                    },
-                    "method_name": "div",
-                    "timestamp": {
-                        "__bigint__": "1741368969223203386"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "854987"
-                    },
-                    "method_name": "clearall",
-                    "timestamp": {
-                        "__bigint__": "1741368969470725725"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1253858"
-                    },
-                    "method_name": "add",
-                    "timestamp": {
-                        "__bigint__": "1741368969742078612"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -115,6 +56,41 @@
                     "timestamp": {
                         "__bigint__": "1741977032117172155"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1274092",
+                    "method_name": "add",
+                    "timestamp": "1744818446583253435"
+                },
+                {
+                    "instructions": "1250865",
+                    "method_name": "sub",
+                    "timestamp": "1744818446825087330"
+                },
+                {
+                    "instructions": "1250395",
+                    "method_name": "mul",
+                    "timestamp": "1744818447109177828"
+                },
+                {
+                    "instructions": "1613392",
+                    "method_name": "div",
+                    "timestamp": "1744818447574370587"
+                },
+                {
+                    "instructions": "852942",
+                    "method_name": "clearall",
+                    "timestamp": "1744818447816617570"
+                },
+                {
+                    "instructions": "1248890",
+                    "method_name": "add",
+                    "timestamp": "1744818448061217477"
                 }
             ]
         }

@@ -1,18 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for ethers
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 7_521_869_435 | 5_809_337_774 | $0.0077245022 | $7_724.50         | <font color="red">+4_696_302</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init        | 7_572_502_535 | 5_829_591_014 | $0.0077514323 | $7_751.43         | <font color="red">+50_633_100</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init        | 7_517_173_133 | 5_807_459_253 | $0.0077220043 | $7_722.00         |
+| 0   | init        | 7_521_869_435 | 5_809_337_774 | $0.0077245022 | $7_724.50         |
 
 ---
 

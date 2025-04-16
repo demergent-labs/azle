@@ -1,10 +1,6 @@
 {
     "multi_deploy": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -15,6 +11,16 @@
                     "timestamp": {
                         "__bigint__": "1741977048555518584"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "7578047342",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1744818528784066471"
                 }
             ]
         }

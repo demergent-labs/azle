@@ -1,8 +1,15 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for caller
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
+
+| Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | getRejectCodeCanisterThrowError | 1_428_391    | 1_161_356 | $0.0000015442 | $1.54             | <font color="green">-2_509</font> |
+| 1   | getRejectCodeCanisterReject     | 1_358_481    | 1_133_392 | $0.0000015070 | $1.50             | <font color="green">-3_905</font> |
+| 2   | getRejectNoError                | 1_357_979    | 1_133_191 | $0.0000015068 | $1.50             | <font color="red">+911</font>     |
+| 3   | assertTypes                     | 1_348_494    | 1_129_397 | $0.0000015017 | $1.50             | <font color="red">+1_188</font>   |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name                     | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------------------- | ------------ | --------- | ------------- | ----------------- |
@@ -11,17 +18,13 @@
 | 2   | getRejectNoError                | 1_357_068    | 1_132_827 | $0.0000015063 | $1.50             |
 | 3   | assertTypes                     | 1_347_306    | 1_128_922 | $0.0000015011 | $1.50             |
 
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
-
 # Benchmarks for rejector
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: No previous benchmarks
+## Baseline benchmarks Azle version: 0.30.0
 
 No benchmarks reported
 

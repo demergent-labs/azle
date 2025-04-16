@@ -1,20 +1,18 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for backend
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
 
-| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init                | 7_522_070_511 | 5_809_418_204 | $0.0077246091 | $7_724.60         | <font color="red">+5_303_575</font> |
-| 1   | http_request_update | 53_315_260    | 21_916_104    | $0.0000291412 | $29.14            | <font color="red">+5_535</font>     |
+| Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls | Change                               |
+| --- | ------------------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------ |
+| 0   | init                | 7_569_248_299 | 5_828_289_319 | $0.0077497015 | $7_749.70         | <font color="red">+47_177_788</font> |
+| 1   | http_request_update | 53_461_109    | 21_974_443    | $0.0000292188 | $29.21            | <font color="red">+145_849</font>    |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name         | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init                | 7_516_766_936 | 5_807_296_774 | $0.0077217883 | $7_721.78         |
-| 1   | http_request_update | 53_309_725    | 21_913_890    | $0.0000291382 | $29.13            |
+| 0   | init                | 7_522_070_511 | 5_809_418_204 | $0.0077246091 | $7_724.60         |
+| 1   | http_request_update | 53_315_260    | 21_916_104    | $0.0000291412 | $29.14            |
 
 ---
 

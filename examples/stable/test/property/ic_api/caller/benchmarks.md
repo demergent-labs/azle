@@ -1,8 +1,15 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
+
+| Id  | Method Name             | Instructions  | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ----------------------- | ------------- | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade             | 1_001_806_119 | 801_312_447 | $0.0010654811 | $1_065.48         | <font color="red">+3_458_013</font> |
+| 1   | getUpdateCaller         | 1_279_617     | 1_101_846   | $0.0000014651 | $1.46             | <font color="green">-4_232</font>   |
+| 2   | setInspectMessageCaller | 953_176       | 971_270     | $0.0000012915 | $1.29             | <font color="green">-1_525</font>   |
+| 3   | getUpdateCaller         | 1_259_698     | 1_093_879   | $0.0000014545 | $1.45             | <font color="red">+510</font>       |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name             | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ----------------------- | ------------ | ----------- | ------------- | ----------------- |
@@ -10,10 +17,6 @@
 | 1   | getUpdateCaller         | 1_283_849    | 1_103_539   | $0.0000014673 | $1.46             |
 | 2   | setInspectMessageCaller | 954_701      | 971_880     | $0.0000012923 | $1.29             |
 | 3   | getUpdateCaller         | 1_259_188    | 1_093_675   | $0.0000014542 | $1.45             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

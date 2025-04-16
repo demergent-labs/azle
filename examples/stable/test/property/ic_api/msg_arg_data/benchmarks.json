@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -105,6 +101,66 @@
                     "timestamp": {
                         "__bigint__": "1741977112227048402"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "996162639",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1744818654984031078"
+                },
+                {
+                    "instructions": "1901558",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818665278904428"
+                },
+                {
+                    "instructions": "2042542",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818665524574971"
+                },
+                {
+                    "instructions": "1886236",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818665768017982"
+                },
+                {
+                    "instructions": "2041859",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818666011241061"
+                },
+                {
+                    "instructions": "2044167",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818666521029205"
+                },
+                {
+                    "instructions": "1883686",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818666764322199"
+                },
+                {
+                    "instructions": "1874232",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818667007326516"
+                },
+                {
+                    "instructions": "2043282",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818667250536471"
+                },
+                {
+                    "instructions": "2040022",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818667762692217"
+                },
+                {
+                    "instructions": "1884033",
+                    "method_name": "getUpdateMsgArgData",
+                    "timestamp": "1744818668006628507"
                 }
             ]
         }

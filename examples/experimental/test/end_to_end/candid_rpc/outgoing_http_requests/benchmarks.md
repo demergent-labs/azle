@@ -1,20 +1,18 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for outgoing_http_requests
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.31.0
 
-| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                                  |
-| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------------- |
-| 0   | xkcd        | 25_009_166   | 10_593_666 | $0.0000140861 | $14.08            | <font color="green">-153_346_673</font> |
-| 1   | xkcdRaw     | 2_199_053    | 1_469_621  | $0.0000019541 | $1.95             | <font color="red">+31_712</font>        |
+| Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls | Change                                |
+| --- | ----------- | ------------ | ---------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | xkcd        | 178_405_454  | 71_952_181 | $0.0000956727 | $95.67            | <font color="red">+153_396_288</font> |
+| 1   | xkcdRaw     | 2_210_439    | 1_474_175  | $0.0000019602 | $1.96             | <font color="red">+11_386</font>      |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles     | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ---------- | ------------- | ----------------- |
-| 0   | xkcd        | 178_355_839  | 71_932_335 | $0.0000956463 | $95.64            |
-| 1   | xkcdRaw     | 2_167_341    | 1_456_936  | $0.0000019372 | $1.93             |
+| 0   | xkcd        | 25_009_166   | 10_593_666 | $0.0000140861 | $14.08            |
+| 1   | xkcdRaw     | 2_199_053    | 1_469_621  | $0.0000019541 | $1.95             |
 
 ---
 
