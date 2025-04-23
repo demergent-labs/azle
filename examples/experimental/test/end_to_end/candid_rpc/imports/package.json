@@ -5,7 +5,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.30.0",
+        "azle": "0.31.0",
         "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps",
         "js-sha256": "0.9.0"
     }
