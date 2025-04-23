@@ -1,6 +1,6 @@
 #!/usr/bin/env -S npx tsx
 
-import { IOType, spawnSync } from 'child_process';
+import { execSync, IOType, spawnSync } from 'child_process';
 import {
     existsSync,
     lstatSync,
@@ -10,7 +10,7 @@ import {
     symlinkSync
 } from 'fs';
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { join, resolve } from 'path';
 
 import { build as stableBuild } from '#build/index';
 import { runCommand as runStableDevTemplateCommand } from '#commands/dev/template';
@@ -142,6 +142,13 @@ async function handleNewCommand(): Promise<void> {
 }
 
 async function assertAzleExperimentalDeps(): Promise<void> {
+    // Skip installing experimental deps when running tarball tests
+    if (process.env.AZLE_SKIP_EXPERIMENTAL_DEPS_INSTALL === 'true') {
+        console.log(
+            'Skipping installation of azle-experimental-deps (AZLE_SKIP_EXPERIMENTAL_DEPS_INSTALL=true)'
+        );
+        return;
+    }
     const projectRoot = await findProjectRoot();
     const theirAzleExperimentalDepsVersion =
         await getAzleExperimentalDepsVersion(projectRoot);
@@ -228,6 +235,18 @@ function installAzleExperimentalDeps(
         ['install', `azle-experimental-deps@${version}`, '--no-prune'],
         { cwd: resolveDir, env: cleanEnv, stdio: 'inherit' }
     );
+
+    // Pack hack for testing
+    const azleRoot =
+        process.env.GITHUB_WORKSPACE ?? resolve(__dirname, '..', '..', '..');
+    const isPackMode = process.env.AZLE_END_TO_END_TEST_PACK_AZLE === 'true';
+    if (isPackMode) {
+        const distDir = join(azleRoot, 'dist');
+        const packPath = join(distDir, 'azle.tgz');
+
+        execSync(`npm install ${packPath} --no-save`, { cwd: resolveDir });
+    }
+
     // Restore any symlinked modules that npm may have unlinked
     for (const mod of linkedModules) {
         try {
