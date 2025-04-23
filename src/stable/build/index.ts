@@ -17,12 +17,20 @@ import { runCommand as runNewCommand } from '#commands/new';
 import { runCommand as runVersionCommand } from '#commands/version';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
-import { CanisterConfig, Command, SubCommand } from '#utils/types';
+import {
+    CanisterConfig,
+    Command,
+    ExperimentalCommand,
+    SubCommand
+} from '#utils/types';
 
 import { version as azleVersion } from '../../../package.json';
 
 export async function build(): Promise<void> {
-    const command = process.argv[2] as Command | undefined;
+    const command = process.argv[2] as
+        | Command
+        | ExperimentalCommand
+        | undefined;
 
     if (command === undefined) {
         throw new Error(
@@ -78,6 +86,10 @@ export async function build(): Promise<void> {
         // This block is reserved for future post-install steps.
         // Currently, no actions are required.
         return;
+    }
+
+    if (command === 'upload-assets') {
+        throw new Error(experimentalMessageCli(`the ${command} command`));
     }
 
     throwIfInvalidCommand(command);

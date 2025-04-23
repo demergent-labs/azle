@@ -40,6 +40,8 @@ export type Command =
     | 'post-install'
     | '--version';
 
+export type ExperimentalCommand = 'upload-assets';
+
 type DevSubCommands = {
     [K in Extract<Command, 'dev'>]: 'setup' | 'template';
 };

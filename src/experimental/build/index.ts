@@ -11,10 +11,13 @@ import { findProjectRoot } from '#experimental/build/utils/find_project_root';
 import { runCommand as runBuildCommand } from '#experimental/commands/build/index';
 import { runCommand as runDevTemplateCommand } from '#experimental/commands/dev/template';
 import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
-import { Command } from '#experimental/utils/types';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
-import { Command as StableCommand, SubCommand } from '#utils/types';
+import {
+    Command as StableCommand,
+    ExperimentalCommand as Command,
+    SubCommand
+} from '#utils/types';
 
 import { version as azleVersion } from '../../../package.json';
 
