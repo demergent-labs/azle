@@ -1,6 +1,14 @@
 #!/usr/bin/env -S npx tsx
 
 import { IOType, spawnSync } from 'child_process';
+import {
+    existsSync,
+    lstatSync,
+    readdirSync,
+    readlinkSync,
+    rmSync,
+    symlinkSync
+} from 'fs';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
@@ -175,6 +183,38 @@ function installAzleExperimentalDeps(
     resolveDir: string,
     version: string
 ): void {
+    // Snapshot existing symlinked top-level modules
+    const modulesDir = join(resolveDir, 'node_modules');
+    const linkedModules: Array<{ path: string; target: string }> = [];
+    if (existsSync(modulesDir)) {
+        for (const name of readdirSync(modulesDir)) {
+            const entryPath = join(modulesDir, name);
+            try {
+                if (lstatSync(entryPath).isSymbolicLink()) {
+                    linkedModules.push({
+                        path: entryPath,
+                        target: readlinkSync(entryPath)
+                    });
+                } else if (
+                    lstatSync(entryPath).isDirectory() &&
+                    name.startsWith('@')
+                ) {
+                    for (const scoped of readdirSync(entryPath)) {
+                        const scopedPath = join(entryPath, scoped);
+                        if (lstatSync(scopedPath).isSymbolicLink()) {
+                            linkedModules.push({
+                                path: scopedPath,
+                                target: readlinkSync(scopedPath)
+                            });
+                        }
+                    }
+                }
+            } catch {
+                // ignore
+            }
+        }
+    }
+
     // Build a minimal environment for the installer
     const cleanEnv: NodeJS.ProcessEnv = Object.fromEntries(
         Object.entries(process.env).filter(
@@ -188,6 +228,15 @@ function installAzleExperimentalDeps(
         ['install', `azle-experimental-deps@${version}`, '--no-prune'],
         { cwd: resolveDir, env: cleanEnv, stdio: 'inherit' }
     );
+    // Restore any symlinked modules that npm may have unlinked
+    for (const mod of linkedModules) {
+        try {
+            rmSync(mod.path, { force: true, recursive: true });
+            symlinkSync(mod.target, mod.path, 'dir');
+        } catch (err) {
+            console.error(`Failed to restore symlink for ${mod.path}:`, err);
+        }
+    }
 
     if (result.error || result.status !== 0) {
         console.error(
