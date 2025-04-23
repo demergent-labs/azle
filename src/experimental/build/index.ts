@@ -185,7 +185,7 @@ function installAzleExperimentalDeps(
     );
     const result = spawnSync(
         'npm',
-        ['install', `azle-experimental-deps@${version}`],
+        ['install', `azle-experimental-deps@${version}`, '--no-prune'],
         { cwd: resolveDir, env: cleanEnv, stdio: 'inherit' }
     );
 
