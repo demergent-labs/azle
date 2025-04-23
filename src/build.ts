@@ -1,8 +1,10 @@
 #!/usr/bin/env -S npx tsx
 
-import { Command as ExperimentalCommand } from '#experimental/utils/types';
 import { getCanisterConfig } from '#utils/get_canister_config';
-import { Command, SubCommand } from '#utils/types';
+import {
+    Command as StableCommand,
+    ExperimentalCommand as Command,
+    SubCommand} from '#utils/types';
 
 process.on('uncaughtException', (error: Error) => {
     const prefix = 'Azle BuildError';
@@ -60,10 +62,7 @@ async function isExperimental(): Promise<boolean> {
         return true;
     }
 
-    const command = process.argv[2] as
-        | Command
-        | ExperimentalCommand
-        | undefined;
+    const command = process.argv[2] as StableCommand | Command | undefined;
 
     if (
         command === 'build' ||
