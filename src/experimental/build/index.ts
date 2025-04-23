@@ -1,6 +1,6 @@
 #!/usr/bin/env -S npx tsx
 
-import { execSync, IOType } from 'child_process';
+import { IOType, spawnSync } from 'child_process';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
@@ -175,14 +175,24 @@ function installAzleExperimentalDeps(
     resolveDir: string,
     version: string
 ): void {
-    try {
-        execSync(`npm install azle-experimental-deps@${version}`, {
-            cwd: resolveDir
-        });
-    } catch (error) {
+    // Build a minimal environment for the installer
+    const cleanEnv: NodeJS.ProcessEnv = Object.fromEntries(
+        Object.entries(process.env).filter(
+            ([key]) =>
+                // whitelist only essential vars
+                key === 'PATH'
+        )
+    );
+    const result = spawnSync(
+        'npm',
+        ['install', `azle-experimental-deps@${version}`],
+        { cwd: resolveDir, env: cleanEnv, stdio: 'inherit' }
+    );
+
+    if (result.error || result.status !== 0) {
         console.error(
             `Failed to install azle-experimental-deps@${version}:`,
-            error
+            result.error ?? `exit code ${result.status}`
         );
         throw new Error(
             `Failed to install azle-experimental-deps@${version}. Please check your network connection and try again.`
