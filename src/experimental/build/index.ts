@@ -166,8 +166,8 @@ async function getAzleExperimentalDepsVersion(
     const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'));
     const packageName = 'azle-experimental-deps';
     return (
-        packageJson.dependencies[packageName] ??
-        packageJson.devDependencies[packageName]
+        packageJson.dependencies?.[packageName] ??
+        packageJson.devDependencies?.[packageName]
     );
 }
 
