@@ -18,7 +18,6 @@ export async function runCommand(
 
     await cp(templatePath, projectName, { recursive: true });
 
-    const packageJsonPath = join(projectName, 'package.json');
     const packageJsonContent = (
         await readFile(join(templatePath, 'package.json'))
     ).toString();
@@ -32,13 +31,13 @@ export async function runCommand(
         'ts-jest': devDependencies['ts-jest']
     };
 
+    const packageJsonPath = join(projectName, 'package.json');
     await mkdir(dirname(packageJsonPath), { recursive: true });
     await writeFile(
         packageJsonPath,
         JSON.stringify(parsedPackageJson, null, 4)
     );
 
-    const tsConfigPath = join(projectName, 'tsconfig.json');
     const tsConfigTemplatePath = join(AZLE_ROOT, 'tsconfig.dev.json');
     let tsConfig = JSON.parse(
         await readFile(tsConfigTemplatePath, {
@@ -51,6 +50,7 @@ export async function runCommand(
             useExperimentalDecorators;
     }
 
+    const tsConfigPath = join(projectName, 'tsconfig.json');
     await mkdir(dirname(tsConfigPath), { recursive: true });
     await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 4));
 

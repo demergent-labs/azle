@@ -1,7 +1,7 @@
 {
     "dependencies": {
         "azle": "file:../../../../test/test_packages/azle-999.999.999-w-descendant.tgz",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps"
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#34cf2e34958e03cae7bf63f77f86ae682eef8a7c"
     },
     "scripts": {
         "deploy": "cd src && dfx deploy w_descendant_same"
