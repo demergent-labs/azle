@@ -50,7 +50,7 @@ function float32(constraints?: Float32Constraints): fc.Arbitrary<number> {
             ...constraints,
             maxLength: 1,
             minLength: 1,
-            min: Number.MAX_VALUE - 1000
+            min: Math.fround(3.4028235e38 - 1000)
         })
         .map((sample) => {
             if (constraints?.noNegativeZero) {
