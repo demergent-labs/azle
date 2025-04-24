@@ -13,18 +13,17 @@ import { runCommand as runDevTemplateCommand } from '#experimental/commands/dev/
 import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
-import {
-    Command as StableCommand,
-    ExperimentalCommand as Command,
-    SubCommand
-} from '#utils/types';
+import { Command, ExperimentalCommand, SubCommand } from '#utils/types';
 
 import { devDependencies, version as azleVersion } from '../../../package.json';
 
 export async function build(): Promise<void> {
     await assertAzleExperimentalDeps();
 
-    const command = process.argv[2] as StableCommand | Command | undefined;
+    const command = process.argv[2] as
+        | Command
+        | ExperimentalCommand
+        | undefined;
 
     if (command === undefined) {
         throw new Error(
