@@ -1,16 +1,8 @@
 #!/usr/bin/env -S npx tsx
 
-import { execSync, IOType, spawnSync } from 'child_process';
-import {
-    existsSync,
-    lstatSync,
-    readdirSync,
-    readlinkSync,
-    rmSync,
-    symlinkSync
-} from 'fs';
+import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
-import { join, resolve } from 'path';
+import { join } from 'path';
 
 import { build as stableBuild } from '#build/index';
 import { runCommand as runStableDevTemplateCommand } from '#commands/dev/template';
@@ -27,6 +19,7 @@ import {
     SubCommand
 } from '#utils/types';
 
+import { devDependencies, version } from '../../../package.json';
 import { version as azleVersion } from '../../../package.json';
 
 export async function build(): Promise<void> {
@@ -142,34 +135,22 @@ async function handleNewCommand(): Promise<void> {
 }
 
 async function assertAzleExperimentalDeps(): Promise<void> {
-    // Skip installing experimental deps when running tarball tests
-    if (process.env.AZLE_SKIP_EXPERIMENTAL_DEPS_INSTALL === 'true') {
-        console.log(
-            'Skipping installation of azle-experimental-deps (AZLE_SKIP_EXPERIMENTAL_DEPS_INSTALL=true)'
-        );
-        return;
-    }
     const projectRoot = await findProjectRoot();
     const theirAzleExperimentalDepsVersion =
         await getAzleExperimentalDepsVersion(projectRoot);
 
-    const ourAzleExperimentalDepsVersion =
-        await getAzleExperimentalDepsVersion(AZLE_ROOT);
+    const azleExperimentalDepsVersion =
+        devDependencies['azle-experimental-deps'];
 
-    if (ourAzleExperimentalDepsVersion === undefined) {
-        const beChill = true;
-        if (beChill === true) {
-            throw new Error('Unreachable');
-        }
+    if (theirAzleExperimentalDepsVersion === undefined) {
         throw new Error(
-            'Something has gone horribly wrong. Please open an issue right away, this must be fixed in azle immediately. Reach out to Jordan and tell him that Some How Azle Suffers Total Annihilation. He will know what to do.'
+            `azle-experimental-deps is not installed. Please run \`npm install azle-experimental-deps@${azleExperimentalDepsVersion}\``
         );
     }
 
-    if (theirAzleExperimentalDepsVersion !== ourAzleExperimentalDepsVersion) {
-        installAzleExperimentalDeps(
-            projectRoot,
-            ourAzleExperimentalDepsVersion
+    if (theirAzleExperimentalDepsVersion !== azleExperimentalDepsVersion) {
+        throw new Error(
+            `The version of azle-experimental-deps installed in your project (${theirAzleExperimentalDepsVersion}) does not match the version of azle-experimental-deps required by azle@${version} (${azleExperimentalDepsVersion}). Please run \`npm install azle-experimental-deps@${azleExperimentalDepsVersion}\` to ensure that the versions match before running azle.`
         );
     }
 }
@@ -182,88 +163,8 @@ async function getAzleExperimentalDepsVersion(
     const packageName = 'azle-experimental-deps';
     return (
         packageJson.dependencies?.[packageName] ??
-        packageJson.devDependencies?.[packageName]
+        packageJson.devDependencies?.[packageName] ??
+        packageJson.peerDependencies?.[packageName] ??
+        packageJson.optionalDependencies?.[packageName]
     );
-}
-
-function installAzleExperimentalDeps(
-    resolveDir: string,
-    version: string
-): void {
-    // Snapshot existing symlinked top-level modules
-    const modulesDir = join(resolveDir, 'node_modules');
-    const linkedModules: Array<{ path: string; target: string }> = [];
-    if (existsSync(modulesDir)) {
-        for (const name of readdirSync(modulesDir)) {
-            const entryPath = join(modulesDir, name);
-            try {
-                if (lstatSync(entryPath).isSymbolicLink()) {
-                    linkedModules.push({
-                        path: entryPath,
-                        target: readlinkSync(entryPath)
-                    });
-                } else if (
-                    lstatSync(entryPath).isDirectory() &&
-                    name.startsWith('@')
-                ) {
-                    for (const scoped of readdirSync(entryPath)) {
-                        const scopedPath = join(entryPath, scoped);
-                        if (lstatSync(scopedPath).isSymbolicLink()) {
-                            linkedModules.push({
-                                path: scopedPath,
-                                target: readlinkSync(scopedPath)
-                            });
-                        }
-                    }
-                }
-            } catch {
-                // ignore
-            }
-        }
-    }
-
-    // Build a minimal environment for the installer
-    const cleanEnv: NodeJS.ProcessEnv = Object.fromEntries(
-        Object.entries(process.env).filter(
-            ([key]) =>
-                // whitelist only essential vars
-                key === 'PATH'
-        )
-    );
-    const result = spawnSync(
-        'npm',
-        ['install', `azle-experimental-deps@${version}`, '--no-prune'],
-        { cwd: resolveDir, env: cleanEnv, stdio: 'inherit' }
-    );
-
-    // Pack hack for testing
-    const azleRoot =
-        process.env.GITHUB_WORKSPACE ?? resolve(__dirname, '..', '..', '..');
-    const isPackMode = process.env.AZLE_END_TO_END_TEST_PACK_AZLE === 'true';
-    if (isPackMode) {
-        const distDir = join(azleRoot, 'dist');
-        const packPath = join(distDir, 'azle.tgz');
-
-        execSync(`npm install ${packPath} --no-save`, { cwd: resolveDir });
-    }
-
-    // Restore any symlinked modules that npm may have unlinked
-    for (const mod of linkedModules) {
-        try {
-            rmSync(mod.path, { force: true, recursive: true });
-            symlinkSync(mod.target, mod.path, 'dir');
-        } catch (err) {
-            console.error(`Failed to restore symlink for ${mod.path}:`, err);
-        }
-    }
-
-    if (result.error || result.status !== 0) {
-        console.error(
-            `Failed to install azle-experimental-deps@${version}:`,
-            result.error ?? `exit code ${result.status}`
-        );
-        throw new Error(
-            `Failed to install azle-experimental-deps@${version}. Please check your network connection and try again.`
-        );
-    }
 }
