@@ -1,7 +1,7 @@
 #!/usr/bin/env -S npx tsx
 
 import { IOType } from 'child_process';
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { build as stableBuild } from '#build/index';
@@ -19,8 +19,7 @@ import {
     SubCommand
 } from '#utils/types';
 
-import { devDependencies, version } from '../../../package.json';
-import { version as azleVersion } from '../../../package.json';
+import { devDependencies, version as azleVersion } from '../../../package.json';
 
 export async function build(): Promise<void> {
     await assertAzleExperimentalDeps();
@@ -132,6 +131,20 @@ async function handleNewCommand(): Promise<void> {
     );
 
     await runStableNewCommand(azleVersion, templatePath, httpServer === true);
+    await installAzleExperimentalDepsForNewProject(projectName);
+}
+
+async function installAzleExperimentalDepsForNewProject(
+    projectName: string
+): Promise<void> {
+    const packageJsonPath = join(projectName, 'package.json');
+    const currentPackageJsonContents = await readFile(packageJsonPath, {
+        encoding: 'utf-8'
+    });
+    let packageJson = JSON.parse(currentPackageJsonContents);
+    packageJson.devDependencies['azle-experimental-deps'] =
+        devDependencies['azle-experimental-deps'];
+    await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
 }
 
 async function assertAzleExperimentalDeps(): Promise<void> {
@@ -150,7 +163,7 @@ async function assertAzleExperimentalDeps(): Promise<void> {
 
     if (theirAzleExperimentalDepsVersion !== azleExperimentalDepsVersion) {
         throw new Error(
-            `The version of azle-experimental-deps installed in your project (${theirAzleExperimentalDepsVersion}) does not match the version of azle-experimental-deps required by azle@${version} (${azleExperimentalDepsVersion}). Please run \`npm install azle-experimental-deps@${azleExperimentalDepsVersion}\` to ensure that the versions match before running azle.`
+            `The version of azle-experimental-deps installed in your project (${theirAzleExperimentalDepsVersion}) does not match the version of azle-experimental-deps required by azle@${azleVersion} (${azleExperimentalDepsVersion}). Please run \`npm install azle-experimental-deps@${azleExperimentalDepsVersion}\` to ensure that the versions match before running azle.`
         );
     }
 }
