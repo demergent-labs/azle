@@ -10,17 +10,12 @@ import { jsonStringify } from '#lib/json';
  * @returns `true` if the objects are deeply equal, `false` otherwise.
  *
  * @remarks
- * It first serializes both objects using our custom jsonStringify function to handle potential problems with Principal
+ * It first serializes both objects using our custom jsonStringify function to handle potential problems with Principal or other complex objects with hard to define equality.
  * then parses them back and performs a recursive comparison.
  */
 export function deepEqual(obj1: any, obj2: any): boolean {
-    // We have historically had issues with various deepEqual implementations most tracing back to subtle differences in versions etc that have caused false negatives.
-    // Our jsonStringify takes out a lot of the possible oddities by serializing them into a more standard format.
-    // So until we convert this to jest and use it's various equality functions, this should be good enough.
-    const obj1JsonString = jsonStringify(obj1);
-    const obj2JsonString = jsonStringify(obj2);
-    const obj1Json = JSON.parse(obj1JsonString);
-    const obj2Json = JSON.parse(obj2JsonString);
+    const obj1Json = normalizeJson(obj1);
+    const obj2Json = normalizeJson(obj2);
 
     // Handle null cases
     if (obj1Json === null || obj2Json === null) {
@@ -32,24 +27,36 @@ export function deepEqual(obj1: any, obj2: any): boolean {
         return obj1Json === obj2Json;
     }
 
-    // Check if they have the same constructor (handles arrays vs objects)
+    // Check if they have the same constructor
     if (obj1Json.constructor !== obj2Json.constructor) {
         return false;
     }
 
-    // Handle arrays specifically
-    if (Array.isArray(obj1Json)) {
-        if (obj1Json.length !== obj2Json.length) {
-            return false;
-        }
-        for (let i = 0; i < obj1Json.length; i++) {
-            if (!deepEqual(obj1Json[i], obj2Json[i])) {
-                return false;
-            }
-        }
-        return true;
+    // Make sure they are both arrays or both objects
+    if (Array.isArray(obj1Json) !== Array.isArray(obj2Json)) {
+        return false;
     }
 
+    if (Array.isArray(obj1Json)) {
+        return areEqualArrays(obj1Json, obj2Json);
+    }
+
+    return areEqualObjects(obj1Json, obj2Json);
+}
+
+function areEqualArrays(obj1Json: any, obj2Json: any): boolean {
+    if (obj1Json.length !== obj2Json.length) {
+        return false;
+    }
+    for (let i = 0; i < obj1Json.length; i++) {
+        if (deepEqual(obj1Json[i], obj2Json[i]) === false) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function areEqualObjects(obj1Json: any, obj2Json: any): boolean {
     // Get keys and compare lengths
     const keys1 = Object.keys(obj1Json);
     const keys2 = Object.keys(obj2Json);
@@ -59,10 +66,32 @@ export function deepEqual(obj1: any, obj2: any): boolean {
 
     // Recursively compare all properties
     for (const key of keys1) {
-        if (!keys2.includes(key) || !deepEqual(obj1Json[key], obj2Json[key])) {
+        if (
+            keys2.includes(key) === false ||
+            deepEqual(obj1Json[key], obj2Json[key]) === false
+        ) {
             return false;
         }
     }
 
     return true;
+}
+
+/**
+ * @internal
+ *
+ * Normalizes a JSON object by serializing it and then parsing it back into an object.
+ * This helps handle potential problems with Principal or other complex objects with hard to define equality.
+ *
+ * @param obj The object to normalize.
+ * @returns The normalized object.
+ *
+ * @remarks
+ * We have historically had issues with various deepEqual implementations most tracing back to subtle differences in versions etc that have caused false negatives.
+ * Our jsonStringify takes out a lot of the possible oddities by serializing them into a more standard format.
+ * So until we convert this to jest and use its various equality functions, this should be good enough.
+ */
+function normalizeJson(obj: any): any {
+    const objJsonString = jsonStringify(obj);
+    return JSON.parse(objJsonString);
 }
