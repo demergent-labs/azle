@@ -148,7 +148,7 @@ jobs:
               if: matrix.azle_source == 'link' && ${{ inputs.run-experimental }}
               uses: ./.github/actions/retry_command
               with:
-                  command: 'npm install --no-save github:demergent-labs/azle-experimental-deps#34cf2e34958e03cae7bf63f77f86ae682eef8a7c'
+                  command: 'npm install github:demergent-labs/azle-experimental-deps#34cf2e34958e03cae7bf63f77f86ae682eef8a7c'
                   working-directory: ${{ matrix.test.path }}
 
             - name: Link Azle source (test dir)
@@ -161,14 +161,14 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               run: |
                   echo "Installing packed file from absolute path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
-                  npm install "${{ steps.pack_azle.outputs.packed_file_absolute_path }}" --no-save
+                  npm install "${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
 
             - name: Install Azle from packed source for experimental
               if: matrix.azle_source == 'pack' && ${{ inputs.run-experimental }}
               working-directory: ${{ matrix.test.path }}
               run: |
                   echo "Installing packed file from absolute path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
-                  npm install "${{ steps.pack_azle.outputs.packed_file_absolute_path }}" github:demergent-labs/azle-experimental-deps#34cf2e34958e03cae7bf63f77f86ae682eef8a7c --no-save
+                  npm install "${{ steps.pack_azle.outputs.packed_file_absolute_path }}" github:demergent-labs/azle-experimental-deps#34cf2e34958e03cae7bf63f77f86ae682eef8a7c
 
             - name: Start dfx with artificial delay 0
               if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
