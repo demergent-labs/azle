@@ -18,32 +18,32 @@ export async function runCommand(
 
     await cp(templatePath, projectName, { recursive: true });
 
-    const packageJsonContent = (
-        await readFile(join(templatePath, 'package.json'))
-    ).toString();
+    const templatePackageJsonString = await readFile(
+        join(templatePath, 'package.json'),
+        {
+            encoding: 'utf-8'
+        }
+    );
 
-    let parsedPackageJson = JSON.parse(packageJsonContent);
+    let packageJson = JSON.parse(templatePackageJsonString);
 
-    parsedPackageJson.dependencies.azle = `^${azleVersion}`;
-    parsedPackageJson.devDependencies = {
-        ...parsedPackageJson.devDependencies,
+    packageJson.dependencies.azle = `^${azleVersion}`;
+    packageJson.devDependencies = {
+        ...packageJson.devDependencies,
         jest: devDependencies.jest,
         'ts-jest': devDependencies['ts-jest']
     };
 
     const packageJsonPath = join(projectName, 'package.json');
     await mkdir(dirname(packageJsonPath), { recursive: true });
-    await writeFile(
-        packageJsonPath,
-        JSON.stringify(parsedPackageJson, null, 4)
+    await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
+
+    const templateTsConfigString = await readFile(
+        join(AZLE_ROOT, 'tsconfig.dev.json'),
+        { encoding: 'utf-8' }
     );
 
-    const tsConfigTemplatePath = join(AZLE_ROOT, 'tsconfig.dev.json');
-    let tsConfig = JSON.parse(
-        await readFile(tsConfigTemplatePath, {
-            encoding: 'utf-8'
-        })
-    );
+    let tsConfig = JSON.parse(templateTsConfigString);
 
     if (useExperimentalDecorators === true) {
         tsConfig.compilerOptions.experimentalDecorators =
