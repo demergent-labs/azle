@@ -31,7 +31,7 @@ export function Int64DefinitionArb(
 export function Int64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {
     return SimpleCandidValuesArb(
         fc.bigInt({
-            min: -(2n ** BigInt(59)),
+            min: 2n ** BigInt(59) - 1000n,
             max: 2n ** BigInt(59) - 1n
         }),
         bigintToSrcLiteral

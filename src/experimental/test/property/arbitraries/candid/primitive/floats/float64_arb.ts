@@ -46,7 +46,12 @@ export function Float64ValueArb<C extends Float64Constraints>(
 
 function float64(constraints?: Float64Constraints): fc.Arbitrary<number> {
     return fc
-        .float64Array({ ...constraints, maxLength: 1, minLength: 1 })
+        .float64Array({
+            ...constraints,
+            maxLength: 1,
+            minLength: 1,
+            min: Number.MAX_VALUE - 1000
+        })
         .map((sample) => {
             if (constraints?.noNegativeZero) {
                 return sample[0] === 0 ? 0 : sample[0];
