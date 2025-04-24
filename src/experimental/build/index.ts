@@ -5,7 +5,6 @@ import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { build as stableBuild } from '#build/index';
-import { runCommand as runStableDevTemplateCommand } from '#commands/dev/template';
 import { runCommand as runStableNewCommand } from '#commands/new';
 import { findProjectRoot } from '#experimental/build/utils/find_project_root';
 import { runCommand as runBuildCommand } from '#experimental/commands/build/index';
@@ -72,31 +71,18 @@ async function handleDevCommand(): Promise<boolean> {
     const subCommand = process.argv[3] as SubCommand['dev'];
 
     if (subCommand === 'template') {
-        await handleDevTemplateCommand('inherit');
-
-        return true;
+        return await handleDevTemplateCommand('inherit');
     }
 
     return false;
 }
 
-async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
-    const all = process.argv.includes('--all');
+async function handleDevTemplateCommand(ioType: IOType): Promise<boolean> {
+    const needsToInstallStable = process.argv.includes('--stable');
 
-    if (all === true) {
-        await runStableDevTemplateCommand(ioType);
-        await runDevTemplateCommand(ioType);
-    } else {
-        const experimental =
-            process.argv.includes('--experimental') ||
-            process.env.AZLE_EXPERIMENTAL === 'true';
-
-        if (experimental === false) {
-            await runStableDevTemplateCommand(ioType);
-        } else {
-            await runDevTemplateCommand(ioType);
-        }
-    }
+    await runDevTemplateCommand(ioType);
+    const done = needsToInstallStable === false;
+    return done;
 }
 
 async function handlePostInstallCommand(): Promise<void> {
