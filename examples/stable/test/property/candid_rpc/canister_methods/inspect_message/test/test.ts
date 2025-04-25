@@ -119,7 +119,7 @@ function generateInspectMessageMethodBody(
             ${updateMethods.map((updateMethod) => `${escapeMethodName(updateMethod.methodName)}: [${updateMethod.paramTypes.map((paramType) => paramType.src.valueLiteral).join(', ')}]`).join(',\n')}
         };
 
-        if (deepEqual(args, expectedArgs[methodName as keyof typeof expectedArgs]) !== true) {
+        if (candidDeepEqual(args, expectedArgs[methodName as keyof typeof expectedArgs]) !== true) {
             throw new Error("Expected @inspectMessage arguments do not match");
         }
 

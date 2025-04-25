@@ -1,4 +1,4 @@
-import { deepEqual } from 'azle/_internal/test/deep_equal';
+import { candidDeepEqual } from 'azle/_internal/test/candid_deep_equal';
 
 import { jsonStringify } from '#lib/json';
 
@@ -116,7 +116,7 @@ export function candidTestEquality<T = any>(
     actual: T,
     expected: T
 ): AzleResult {
-    if (deepEqual(actual, expected)) {
+    if (candidDeepEqual(actual, expected)) {
         return { Ok: { isSuccessful: true } };
     } else {
         const actualJsonString = jsonStringify(actual);

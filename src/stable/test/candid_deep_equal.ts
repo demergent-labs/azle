@@ -13,7 +13,7 @@ import { jsonStringify } from '#lib/json';
  * It first serializes both objects using our custom jsonStringify function to handle potential problems with Principal or other complex objects with hard to define equality.
  * then parses them back and performs a recursive comparison.
  */
-export function deepEqual(obj1: any, obj2: any): boolean {
+export function candidDeepEqual(obj1: any, obj2: any): boolean {
     const obj1Json = normalizeJson(obj1);
     const obj2Json = normalizeJson(obj2);
 
@@ -49,7 +49,7 @@ function areEqualArrays(obj1Json: any, obj2Json: any): boolean {
         return false;
     }
     for (let i = 0; i < obj1Json.length; i++) {
-        if (deepEqual(obj1Json[i], obj2Json[i]) === false) {
+        if (candidDeepEqual(obj1Json[i], obj2Json[i]) === false) {
             return false;
         }
     }
@@ -68,7 +68,7 @@ function areEqualObjects(obj1Json: any, obj2Json: any): boolean {
     for (const key of keys1) {
         if (
             keys2.includes(key) === false ||
-            deepEqual(obj1Json[key], obj2Json[key]) === false
+            candidDeepEqual(obj1Json[key], obj2Json[key]) === false
         ) {
             return false;
         }
@@ -87,7 +87,7 @@ function areEqualObjects(obj1Json: any, obj2Json: any): boolean {
  * @returns The normalized object.
  *
  * @remarks
- * We have historically had issues with various deepEqual implementations most tracing back to subtle differences in versions etc that have caused false negatives.
+ * We have historically had issues with various candidDeepEqual implementations most tracing back to subtle differences in versions etc that have caused false negatives.
  * Our jsonStringify takes out a lot of the possible oddities by serializing them into a more standard format.
  * So until we convert this to jest and use its various equality functions, this should be good enough.
  */
