@@ -78,7 +78,7 @@ async function handleDevCommand(): Promise<boolean> {
 }
 
 async function handleDevTemplateCommand(ioType: IOType): Promise<boolean> {
-    const needsToInstallStable = process.argv.includes('--stable');
+    const needsToInstallStable = process.argv.includes('--all');
 
     await runDevTemplateCommand(ioType);
     const done = needsToInstallStable === false;
