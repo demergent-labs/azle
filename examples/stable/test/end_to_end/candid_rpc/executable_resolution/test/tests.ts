@@ -36,8 +36,6 @@ export function getTests(): Test {
         });
 
         describe.each(CANISTERS)('install experimental deps', (canister) => {
-            // TODO: This seems like it would be the ideal way to temporarily install experimental deps. However it doesn't work yet.
-            // TODO: https://github.com/demergent-labs/azle/issues/2958
             please(
                 `install experimental deps for ${canister.name}`,
                 async () => {
