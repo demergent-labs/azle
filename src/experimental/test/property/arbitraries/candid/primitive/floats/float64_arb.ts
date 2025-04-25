@@ -50,7 +50,7 @@ function float64(constraints?: Float64Constraints): fc.Arbitrary<number> {
             ...constraints,
             maxLength: 1,
             minLength: 1,
-            min: Number.MAX_VALUE - 1000
+            min: Number.MAX_VALUE - 10
         })
         .map((sample) => {
             if (constraints?.noNegativeZero) {

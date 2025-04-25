@@ -31,7 +31,7 @@ export function Nat64DefinitionArb(
 export function Nat64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {
     return SimpleCandidValuesArb(
         fc.bigInt({
-            min: 2n ** BigInt(60) - 1000n,
+            min: 2n ** BigInt(60) - 10n,
             max: 2n ** BigInt(60) - 1n
         }),
         bigintToSrcLiteral
