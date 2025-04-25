@@ -3,9 +3,8 @@ import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/ar
 import { Func } from 'azle/experimental/_internal/test/property/arbitraries/candid/reference/func_arb';
 import {
     AzleResult,
-    Test,
-    testEquality
-} from 'azle/experimental/_internal/test/property/test';
+    candidTestEquality,
+    Test} from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
     functionName: string,
@@ -29,7 +28,7 @@ export function generateTests(
                         )
                     );
 
-                    return testEquality(
+                    return candidTestEquality(
                         result,
                         returnFunc.value.agentResponseValue
                     );

@@ -5,9 +5,8 @@ import { StableBTreeMap } from 'azle/experimental/_internal/test/property/arbitr
 import { UniqueIdentifierArb } from 'azle/experimental/_internal/test/property/arbitraries/unique_identifier_arb';
 import {
     AzleResult,
-    Test,
-    testEquality
-} from 'azle/experimental/_internal/test/property/test';
+    candidTestEquality,
+    Test} from 'azle/experimental/_internal/test/property/test';
 import fc from 'fast-check';
 
 export function LenTestArb(
@@ -68,7 +67,7 @@ function generateTests(functionName: string): Test[][] {
                                 : functionName
                         ]();
 
-                    return testEquality(result, 1);
+                    return candidTestEquality(result, 1);
                 }
             }
         ],
@@ -85,7 +84,7 @@ function generateTests(functionName: string): Test[][] {
                                 : functionName
                         ]();
 
-                    return testEquality(result, 1);
+                    return candidTestEquality(result, 1);
                 }
             }
         ],
@@ -102,7 +101,7 @@ function generateTests(functionName: string): Test[][] {
                                 : functionName
                         ]();
 
-                    return testEquality(result, 0);
+                    return candidTestEquality(result, 0);
                 }
             }
         ]

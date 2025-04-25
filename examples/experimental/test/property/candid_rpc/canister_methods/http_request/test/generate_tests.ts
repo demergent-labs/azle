@@ -4,9 +4,8 @@ import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/ar
 import { HttpResponseAgentResponseValue } from 'azle/experimental/_internal/test/property/arbitraries/http/response_arb';
 import {
     AzleResult,
-    Test,
-    testEquality
-} from 'azle/experimental/_internal/test/property/test';
+    candidTestEquality,
+    Test} from 'azle/experimental/_internal/test/property/test';
 
 import { fletch } from './fletch';
 
@@ -50,7 +49,7 @@ export function generateTests(
                         headers: sortedExpectedHeaders
                     };
 
-                    return testEquality(
+                    return candidTestEquality(
                         processedResponse,
                         processedExpectedResponse
                     );

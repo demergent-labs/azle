@@ -3,9 +3,8 @@ import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/ar
 import { Recursive } from 'azle/experimental/_internal/test/property/arbitraries/candid/recursive';
 import {
     AzleResult,
-    Test,
-    testEquality
-} from 'azle/experimental/_internal/test/property/test';
+    candidTestEquality,
+    Test} from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
     functionName: string,
@@ -29,7 +28,7 @@ export function generateTests(
                             : functionName
                     ](...params);
 
-                    return testEquality(
+                    return candidTestEquality(
                         result,
                         returnRecursive.value.agentResponseValue
                     );

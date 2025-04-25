@@ -3,9 +3,8 @@ import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/ar
 import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/arbitraries/candid/corresponding_js_type';
 import {
     AzleResult,
-    Test,
-    testEquality
-} from 'azle/experimental/_internal/test/property/test';
+    candidTestEquality,
+    Test} from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
     _functionName: string,
@@ -28,7 +27,7 @@ export function generateTests(
                         await actor.getPostUpgradeValues();
                     const isInitCalled = await actor.isInitCalled();
 
-                    return testEquality(
+                    return candidTestEquality(
                         [postUpgradeValues, isInitCalled],
                         [expectedResult, false]
                     );

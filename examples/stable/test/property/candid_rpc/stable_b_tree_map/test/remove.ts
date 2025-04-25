@@ -5,9 +5,8 @@ import { StableBTreeMap } from 'azle/experimental/_internal/test/property/arbitr
 import { UniqueIdentifierArb } from 'azle/experimental/_internal/test/property/arbitraries/unique_identifier_arb';
 import {
     AzleResult,
-    Test,
-    testEquality
-} from 'azle/experimental/_internal/test/property/test';
+    candidTestEquality,
+    Test} from 'azle/experimental/_internal/test/property/test';
 import fc from 'fast-check';
 
 export function RemoveTestArb(
@@ -89,7 +88,7 @@ function generateTests(
                             : functionName
                     ](keySampleAgentArgumentValue);
 
-                    return testEquality(result, [
+                    return candidTestEquality(result, [
                         valueSampleAgentArgumentValue
                     ]);
                 }

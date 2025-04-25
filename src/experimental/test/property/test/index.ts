@@ -102,9 +102,20 @@ export async function runTests(
     return true;
 }
 
-// TODO is is better test framework conformity to call this assertEqual? I'll hold off for now, it should be easy to search for all testEquality and change it, easier than assertEqual I think
+// TODO is is better test framework conformity to call this assertEqual? I'll hold off for now, it should be easy to search for all candidTestEquality and change it, easier than assertEqual I think
 // TODO so based on this I think I've actually seen this in other testing frameworks, assertEquals will take two and make sure they are equals, and assert will take one boolean. Right now we have test instead of assert but it would be easy to change
-export function testEquality<T = any>(actual: T, expected: T): AzleResult {
+/**
+ * @param actual
+ * @param expected
+ * @returns
+ *
+ * @remarks
+ * This function is only designed to work with Candid types.
+ */
+export function candidTestEquality<T = any>(
+    actual: T,
+    expected: T
+): AzleResult {
     if (deepEqual(actual, expected)) {
         return { Ok: { isSuccessful: true } };
     } else {
