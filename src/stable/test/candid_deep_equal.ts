@@ -12,6 +12,8 @@ import { jsonStringify } from '#lib/json';
  * @remarks
  * It first serializes both objects using our custom jsonStringify function to handle potential problems with Principal or other complex objects with hard to define equality.
  * then parses them back and performs a recursive comparison.
+ *
+ * This function is only designed to work with Candid types.
  */
 export function candidDeepEqual(obj1: any, obj2: any): boolean {
     const obj1Json = normalizeJson(obj1);
