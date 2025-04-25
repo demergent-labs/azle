@@ -1,5 +1,3 @@
-#!/usr/bin/env -S npx tsx
-
 import { IOType } from 'child_process';
 import { join } from 'path';
 

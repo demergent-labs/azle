@@ -1,5 +1,3 @@
-#!/usr/bin/env -S npx tsx
-
 import { IOType } from 'child_process';
 import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
@@ -127,7 +125,7 @@ async function installAzleExperimentalDepsForNewProject(
         encoding: 'utf-8'
     });
     let packageJson = JSON.parse(currentPackageJsonContents);
-    packageJson.devDependencies['azle-experimental-deps'] =
+    packageJson.dependencies['azle-experimental-deps'] =
         devDependencies['azle-experimental-deps'];
     await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
 }
