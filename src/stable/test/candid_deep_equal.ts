@@ -46,12 +46,12 @@ export function candidDeepEqual(obj1: any, obj2: any): boolean {
     return areEqualObjects(obj1Json, obj2Json);
 }
 
-function areEqualArrays(obj1Json: any, obj2Json: any): boolean {
-    if (obj1Json.length !== obj2Json.length) {
+function areEqualArrays(arr1: Array<any>, arr2: Array<any>): boolean {
+    if (arr1.length !== arr2.length) {
         return false;
     }
-    for (let i = 0; i < obj1Json.length; i++) {
-        if (candidDeepEqual(obj1Json[i], obj2Json[i]) === false) {
+    for (let i = 0; i < arr1.length; i++) {
+        if (candidDeepEqual(arr1[i], arr2[i]) === false) {
             return false;
         }
     }
