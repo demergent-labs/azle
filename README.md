@@ -35,6 +35,32 @@ This mode is intended for developers who are willing to accept the risk of using
 
 > NOTE: Keep clearly in mind that the experimental mode fundamentally changes the Azle Wasm binary. It is not guaranteed to be secure or stable in API changes or runtime behavior. If you enable the experimental mode, even if you only use APIs from the stable mode, you are accepting a higher risk of bugs, errors, crashes, security exploits, breaking API changes, etc.
 
+### New Experimental Projects
+
+When a new project is create with `npx azle new --experimental` additional dependencies will be added to your project that are needed for running in experimental mode.
+
+### Migration
+
+If you want to use experimental features in an existing stable project, then you will need to migrate your project to experimental mode, by adding the experimental mode flag in the dfx.json:
+
+```json
+"canisters": {
+    "canisterName": {
+        "type": "azle",
+        "main": "index.ts",
+        "custom": {
+            "experimental": true
+        }
+    }
+}
+```
+
+and by installing the azle-experimental-dependencies:
+
+```bash
+npm install https://github.com/demergent-labs/azle-experimental-deps#34cf2e34958e03cae7bf63f77f86ae682eef8a7c
+```
+
 ## Get Started
 
 The quickest way to get started is through the [hello_world Candid RPC example](https://github.com/demergent-labs/azle/tree/main/examples/stable/demo/hello_world) or the [hello_world HTTP Server example](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/hello_world_http_server).

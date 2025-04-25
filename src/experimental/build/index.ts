@@ -138,15 +138,21 @@ async function assertAzleExperimentalDeps(): Promise<void> {
     const azleExperimentalDepsVersion =
         devDependencies['azle-experimental-deps'];
 
+    const azleExperimentalDepsVersionHash = getAzleExperimentalDepsVersionHash(
+        azleExperimentalDepsVersion
+    );
+
+    const installPrompt = `Please run \`npm install https://github.com/demergent-labs/azle-experimental-deps#${azleExperimentalDepsVersionHash}\``;
+
     if (theirAzleExperimentalDepsVersion === undefined) {
         throw new Error(
-            `azle-experimental-deps is not installed. Please run \`npm install azle-experimental-deps@${azleExperimentalDepsVersion}\``
+            `azle-experimental-deps is not installed. ${installPrompt}`
         );
     }
 
     if (theirAzleExperimentalDepsVersion !== azleExperimentalDepsVersion) {
         throw new Error(
-            `The version of azle-experimental-deps installed in your project (${theirAzleExperimentalDepsVersion}) does not match the version of azle-experimental-deps required by azle@${azleVersion} (${azleExperimentalDepsVersion}). Please run \`npm install azle-experimental-deps@${azleExperimentalDepsVersion}\` to ensure that the versions match before running azle.`
+            `The version of azle-experimental-deps installed in your project (${theirAzleExperimentalDepsVersion}) does not match the version of azle-experimental-deps required by azle@${azleVersion} (${azleExperimentalDepsVersion}). ${installPrompt} to ensure that the versions match before running azle.`
         );
     }
 }
@@ -163,4 +169,11 @@ async function getAzleExperimentalDepsVersion(
         packageJson.peerDependencies?.[packageName] ??
         packageJson.optionalDependencies?.[packageName]
     );
+}
+
+function getAzleExperimentalDepsVersionHash(version: string): string {
+    // Extract the hash from the version string by splitting on '#' and taking the last part
+    const parts = version.split('#');
+
+    return parts[1];
 }
