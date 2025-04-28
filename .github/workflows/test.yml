@@ -147,7 +147,7 @@ jobs:
         with:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
-            azle-source-mode: 'pack'
+            link-azle: ${{ needs.workflow-config.outputs.link-azle == 'true' }}
             run-experimental: ${{ matrix.test_group.run-experimental || false }}
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
 
