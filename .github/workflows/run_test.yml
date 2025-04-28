@@ -115,6 +115,13 @@ jobs:
                   command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
+            - name: Install experimental dependencies for stable api tests if running in experimental mode
+              if: ${{ inputs.run-experimental }}
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#34cf2e34958e03cae7bf63f77f86ae682eef8a7c'
+                  working-directory: ${{ matrix.test.path }}
+
             - run: npm link azle
               if: matrix.azle_source == 'repo'
               working-directory: ${{ matrix.test.path }}

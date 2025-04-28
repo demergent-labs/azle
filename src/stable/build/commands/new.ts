@@ -1,8 +1,5 @@
-import { readFile } from 'fs/promises';
-import { outputFile } from 'fs-extra';
-// @ts-ignore
-import { copy } from 'fs-extra/esm';
-import { join } from 'path';
+import { cp, mkdir, readFile, writeFile } from 'fs/promises';
+import { dirname, join } from 'path';
 
 import { AZLE_ROOT } from '#utils/global_paths';
 
@@ -19,41 +16,43 @@ export async function runCommand(
 
     const projectName = process.argv[3];
 
-    await copy(templatePath, projectName);
+    await cp(templatePath, projectName, { recursive: true });
 
-    const packageJson = (
-        await readFile(join(templatePath, 'package.json'))
-    ).toString();
+    const templatePackageJsonString = await readFile(
+        join(templatePath, 'package.json'),
+        {
+            encoding: 'utf-8'
+        }
+    );
 
-    let parsedPackageJson = JSON.parse(packageJson);
+    let packageJson = JSON.parse(templatePackageJsonString);
 
-    parsedPackageJson.dependencies.azle = `^${azleVersion}`;
-    parsedPackageJson.devDependencies = {
-        ...parsedPackageJson.devDependencies,
+    packageJson.dependencies.azle = `^${azleVersion}`;
+    packageJson.devDependencies = {
+        ...packageJson.devDependencies,
         jest: devDependencies.jest,
         'ts-jest': devDependencies['ts-jest']
     };
 
-    await outputFile(
-        join(projectName, 'package.json'),
-        JSON.stringify(parsedPackageJson, null, 4)
+    const packageJsonPath = join(projectName, 'package.json');
+    await mkdir(dirname(packageJsonPath), { recursive: true });
+    await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
+
+    const templateTsConfigString = await readFile(
+        join(AZLE_ROOT, 'tsconfig.dev.json'),
+        { encoding: 'utf-8' }
     );
 
-    let tsConfig = JSON.parse(
-        await readFile(join(AZLE_ROOT, 'tsconfig.dev.json'), {
-            encoding: 'utf-8'
-        })
-    );
+    let tsConfig = JSON.parse(templateTsConfigString);
 
     if (useExperimentalDecorators === true) {
         tsConfig.compilerOptions.experimentalDecorators =
             useExperimentalDecorators;
     }
 
-    await outputFile(
-        join(projectName, 'tsconfig.json'),
-        JSON.stringify(tsConfig, null, 4)
-    );
+    const tsConfigPath = join(projectName, 'tsconfig.json');
+    await mkdir(dirname(tsConfigPath), { recursive: true });
+    await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 4));
 
     console.info(`${projectName} created successfully`);
 }

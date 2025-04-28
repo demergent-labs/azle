@@ -10,7 +10,7 @@
         "defaults": {
             "candid": ".azle/{{canister_name}}/{{canister_name}}.did",
             "build": "AZLE_DFX_ROOT=$(pwd) npm --offline --prefix={{canister.main}} exec azle build {{canister_name}}",
-            "post_install": "bash -c 'AZLE_DFX_ROOT=$(pwd) npm --offline --prefix={{canister.main}} exec azle upload-assets {{canister_name}}'",
+            "post_install": "bash -c 'AZLE_DFX_ROOT=$(pwd) npm --offline --prefix={{canister.main}} exec azle post-install {{canister_name}}'",
             "wasm": ".azle/{{canister_name}}/{{canister_name}}.wasm",
             "gzip": true,
             "metadata": [

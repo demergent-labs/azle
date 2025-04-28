@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { getDfxRoot } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/dfx_root';
 import { CanisterConfig, Context, EnvVars, WasmData } from '#utils/types';
 
 import { version } from '../../../../../package.json';

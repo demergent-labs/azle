@@ -7,7 +7,7 @@ export function areParamsCorrectlyOrdered<T extends CorrespondingJSType>(
 ): string {
     return params
         .map(({ name, value }) => {
-            const areEqual = `deepEqual(
+            const areEqual = `candidDeepEqual(
                 ${name},
                 ${value.src.valueLiteral}
             )`;

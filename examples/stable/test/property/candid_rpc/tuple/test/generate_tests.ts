@@ -6,8 +6,8 @@ import {
 } from 'azle/experimental/_internal/test/property/arbitraries/candid/constructed/tuple_arb';
 import {
     AzleResult,
-    Test,
-    testEquality
+    candidTestEquality,
+    Test
 } from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
@@ -34,7 +34,7 @@ export function generateTests(
                         )
                     );
 
-                    return testEquality(result, expectedResult);
+                    return candidTestEquality(result, expectedResult);
                 }
             }
         ]

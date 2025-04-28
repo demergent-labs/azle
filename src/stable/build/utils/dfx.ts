@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-import { getDfxRoot } from '#utils/global_paths';
+import { getDfxRoot } from '#utils/dfx_root';
 
 export function getCanisterId(canisterName: string): string {
     return execSync(

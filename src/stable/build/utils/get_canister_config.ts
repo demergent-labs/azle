@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { readFile } from 'fs/promises';
 
-import { getDfxJsonPath } from '#utils/global_paths';
+import { getDfxJsonPath } from '#utils/dfx_root';
 
 import { CanisterConfig, DfxJson } from './types';
 
