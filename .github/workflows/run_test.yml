@@ -144,7 +144,7 @@ jobs:
                   command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
-            - name: Install experimental dependencies for stable tests if running in experimental mode
+            - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: matrix.azle_source == 'link' && ${{ inputs.run-experimental }}
               uses: ./.github/actions/retry_command
               with:

@@ -4,7 +4,8 @@ import { Func } from 'azle/experimental/_internal/test/property/arbitraries/cand
 import {
     AzleResult,
     candidTestEquality,
-    Test} from 'azle/experimental/_internal/test/property/test';
+    Test
+} from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
     functionName: string,

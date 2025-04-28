@@ -4,7 +4,8 @@ import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/ar
 import {
     AzleResult,
     candidTestEquality,
-    Test} from 'azle/experimental/_internal/test/property/test';
+    Test
+} from 'azle/experimental/_internal/test/property/test';
 import { execSync } from 'child_process';
 
 export function generateTests(

@@ -6,7 +6,8 @@ import { UniqueIdentifierArb } from 'azle/experimental/_internal/test/property/a
 import {
     AzleResult,
     candidTestEquality,
-    Test} from 'azle/experimental/_internal/test/property/test';
+    Test
+} from 'azle/experimental/_internal/test/property/test';
 import fc from 'fast-check';
 
 export function GetTestArb(

@@ -5,7 +5,8 @@ import { HttpResponseAgentResponseValue } from 'azle/experimental/_internal/test
 import {
     AzleResult,
     candidTestEquality,
-    Test} from 'azle/experimental/_internal/test/property/test';
+    Test
+} from 'azle/experimental/_internal/test/property/test';
 
 import { fletch } from './fletch';
 

@@ -5,7 +5,8 @@ import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/a
 import {
     AzleResult,
     candidTestEquality,
-    Test} from 'azle/experimental/_internal/test/property/test';
+    Test
+} from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
     functionName: string,
