@@ -97,7 +97,7 @@ export function getTests(): Test {
                         );
                     });
 
-                    it.only(`should produce the same random values when using the same seed`, async () => {
+                    it(`should produce the same random values when using the same seed`, async () => {
                         const actor = await getCanisterActor<Actor>('canister');
                         const maxElements = Math.floor(
                             65_536 / bytesPerElement
@@ -177,43 +177,45 @@ async function validateCryptoGetRandomValuesForType(
     bytesPerElement: number,
     length: number,
     numCalls: number,
-    expectedValuesAreUnique: boolean,
-    resetUniqueValues: boolean = false
+    randomResultsShouldBeUnique: boolean,
+    shouldResetRandomResults: boolean = false
 ): Promise<void> {
-    if (resetUniqueValues === true) {
-        resetResults();
+    if (shouldResetRandomResults === true) {
+        resetPastRandomResults();
     }
 
-    const promises = Array(numCalls)
-        .fill(0)
-        .map(() => actor.cryptoGetRandomValuesForType(name, length));
+    const randomResults = await Promise.all(
+        Array(numCalls)
+            .fill(0)
+            .map(() => actor.cryptoGetRandomValuesForType(name, length))
+    );
 
-    const results = await Promise.all(promises);
-
-    results.forEach((result) => {
-        expect(valuesAreUnique(result)).toBe(expectedValuesAreUnique);
+    randomResults.forEach((randomResult) => {
+        expect(randomResultIsUnique(randomResult)).toBe(
+            randomResultsShouldBeUnique
+        );
 
         const expectedByteLength = length * bytesPerElement;
 
-        expect(result.length).toBe(expectedByteLength);
+        expect(randomResult.length).toBe(expectedByteLength);
 
-        for (const byte of result) {
+        for (const byte of randomResult) {
             expect(byte).toBeGreaterThanOrEqual(0);
             expect(byte).toBeLessThanOrEqual(255);
         }
     });
 }
 
-let results: Set<string> = new Set();
+let pastRandomResults: Set<string> = new Set();
 
-function valuesAreUnique(values: Uint8Array | number[]): boolean {
-    const sizeBefore = results.size;
-    results.add(values.toString());
-    const sizeAfter = results.size;
+function randomResultIsUnique(randomResult: Uint8Array | number[]): boolean {
+    const sizeBefore = pastRandomResults.size;
+    pastRandomResults.add(randomResult.toString());
+    const sizeAfter = pastRandomResults.size;
 
     return sizeAfter === sizeBefore + 1;
 }
 
-function resetResults(): void {
-    results = new Set();
+function resetPastRandomResults(): void {
+    pastRandomResults = new Set();
 }

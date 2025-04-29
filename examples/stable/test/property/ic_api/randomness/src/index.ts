@@ -36,6 +36,7 @@ export default class {
         return new Uint8Array(array.buffer);
     }
 
+    // TODO let's split this out into its own test
     @update([IDL.Vec(IDL.Nat8)])
     seed(seed: Uint8Array): void {
         randSeed(seed);
