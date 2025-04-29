@@ -131,6 +131,10 @@ async function validateCryptoGetRandomValues(
 let pastRandomResults: Set<string> = new Set();
 
 function randomResultIsUnique(randomResult: Uint8Array | number[]): boolean {
+    if (randomResult.length === 0) {
+        return true;
+    }
+
     const sizeBefore = pastRandomResults.size;
     pastRandomResults.add(randomResult.toString());
     const sizeAfter = pastRandomResults.size;
