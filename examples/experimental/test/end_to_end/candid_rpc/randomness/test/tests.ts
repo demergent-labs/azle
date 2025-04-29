@@ -93,7 +93,10 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
                         const mathValues = await Promise.all(
                             Array(5)
                                 .fill(0)
-                                .map(() => randomnessCanister.mathRandom())
+                                .map(
+                                    (): Promise<number> =>
+                                        randomnessCanister.mathRandom()
+                                )
                         );
 
                         mathValues
@@ -107,8 +110,9 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
                         const cryptoValues = await Promise.all(
                             Array(5)
                                 .fill(0)
-                                .map(() =>
-                                    randomnessCanister.cryptoGetRandomValues()
+                                .map(
+                                    (): Promise<Uint8Array> =>
+                                        randomnessCanister.cryptoGetRandomValues()
                                 )
                         );
 
