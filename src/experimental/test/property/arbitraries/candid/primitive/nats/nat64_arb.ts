@@ -7,7 +7,7 @@ import {
 } from '../../candid_definition_arb/types';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
-import { CandidValues } from '../../candid_values_arb';
+import { CandidValueConstraints, CandidValues } from '../../candid_values_arb';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
 import { bigintToSrcLiteral } from '../../to_src_literal/bigint';
@@ -28,12 +28,15 @@ export function Nat64DefinitionArb(
     return SimpleCandidDefinitionArb(context, 'nat64');
 }
 
-export function Nat64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {
+export function Nat64ValueArb(
+    context: Context<CandidValueConstraints>
+): fc.Arbitrary<CandidValues<bigint>> {
+    const exponent = context.api === 'class' ? 64 : 59; // TODO set both back to 64 once https://github.com/second-state/wasmedge-quickjs/issues/125
     return SimpleCandidValuesArb(
         fc.bigInt({
             min: 0n,
-            max: 2n ** BigInt(60) - 1n
+            max: 2n ** BigInt(exponent) - 1n
         }),
         bigintToSrcLiteral
-    ); // TODO set back to 64 once https://github.com/second-state/wasmedge-quickjs/issues/125
+    );
 }
