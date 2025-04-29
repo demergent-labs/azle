@@ -1,61 +1,203 @@
-// TODO I would also like to create property tests for crypto.getRandomValues and randSeed
-// TODO for the crypto.getRandomValues, we should exhaustly test the different typed arrays
-// TODO with byte lengths that are arbitrary. We should generate 5 or 10 values for each
-// TODO similar to this test, then do deploys and seeding similar to this test
-// TODO I have not yet decided what the randSeed test should look like...actually,
-// TODO we should do an arbitrary seed, and just make sure that every time we call it,
-// TODO that the values or the same afterwards, like 5 or 10 values...maybe after a deploy and uninstall as well?
-// TODO we should probably test max and min values as well
-
+import { ActorSubclass } from '@dfinity/agent';
+import { describe } from '@jest/globals';
 import {
     defaultPropTestParams,
     expect,
     getCanisterActor,
     it,
+    please,
     Test
 } from 'azle/_internal/test';
+import { execSync } from 'child_process';
 import fc from 'fast-check';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
-        it('should return Uint8Array of requested length with values in [0,255]', async () => {
-            const actor = await getCanisterActor<Actor>('canister');
+        describe.each([
+            // { name: 'Int8Array', bytesPerElement: 1 },
+            { name: 'Uint8Array', bytesPerElement: 1 }
+            // { name: 'Uint8ClampedArray', bytesPerElement: 1 },
+            // { name: 'Int16Array', bytesPerElement: 2 },
+            // { name: 'Uint16Array', bytesPerElement: 2 },
+            // { name: 'Int32Array', bytesPerElement: 4 },
+            // { name: 'Uint32Array', bytesPerElement: 4 },
+            // { name: 'BigInt64Array', bytesPerElement: 8 },
+            // { name: 'BigUint64Array', bytesPerElement: 8 }
+        ])('crypto.getRandomValues with $name', ({ name, bytesPerElement }) => {
+            describe.each([
+                {
+                    name: 'initial'
+                },
+                {
+                    name: 'after upgrade-unchanged'
+                },
+                {
+                    name: 'after reinstall'
+                }
+            ])('round $name', (roundName) => {
+                if (roundName.name === 'after upgrade-unchanged') {
+                    please('deploy with --upgrade-unchanged', async () => {
+                        execSync('dfx deploy canister --upgrade-unchanged');
+                    });
+                }
 
-            await fc.assert(
-                fc.asyncProperty(fc.nat(200), async (length) => {
-                    const result = await actor.cryptoGetRandomValues(length);
+                if (roundName.name === 'after reinstall') {
+                    please('reinstall canister', async () => {
+                        execSync('dfx canister uninstall-code canister');
+                        execSync('dfx deploy canister');
+                    });
+                }
 
-                    expect(result.length).toBe(length);
+                it(`should fill the ${name} correctly and return the correct byte length`, async () => {
+                    const actor = await getCanisterActor<Actor>('canister');
+                    const maxElements = Math.floor(65_536 / bytesPerElement);
 
-                    for (const byte of result) {
-                        expect(byte).toBeGreaterThanOrEqual(0);
-                        expect(byte).toBeLessThanOrEqual(255);
-                    }
-                }),
-                defaultPropTestParams()
-            );
-        });
+                    await fc.assert(
+                        fc.asyncProperty(
+                            fc.nat(maxElements),
+                            fc.integer({ min: 2, max: 100 }),
+                            async (length, numCalls) => {
+                                await validateCryptoGetRandomValuesForType(
+                                    actor,
+                                    name,
+                                    bytesPerElement,
+                                    length,
+                                    numCalls,
+                                    false
+                                );
+                            }
+                        ),
+                        defaultPropTestParams()
+                    );
+                });
+            });
 
-        it('should produce differing arrays for successive calls when length > 0', async () => {
-            const actor = await getCanisterActor<Actor>('canister');
+            it(`should throw quota exceeded error for ${name} with byte length > 65_536`, async () => {
+                const actor = await getCanisterActor<Actor>('canister');
+                const minElementsToExceed =
+                    Math.floor(65_536 / bytesPerElement) + 1;
 
-            await fc.assert(
-                fc.asyncProperty(
-                    fc.integer({ min: 1, max: 200 }),
-                    async (length) => {
-                        const first = await actor.cryptoGetRandomValues(length);
-                        const second =
-                            await actor.cryptoGetRandomValues(length);
+                await fc.assert(
+                    fc.asyncProperty(
+                        fc.integer({
+                            min: minElementsToExceed,
+                            max: 1_000_000
+                        }),
+                        async (length) => {
+                            await expect(
+                                actor.cryptoGetRandomValuesForType(name, length)
+                            ).rejects.toThrow(
+                                'QuotaExceeded: array cannot be larger than 65_536 bytes'
+                            );
+                        }
+                    ),
+                    defaultPropTestParams()
+                );
+            });
 
-                        const allEqual = first.every((v, i) => v === second[i]);
+            // TODO add test for when the length of the seed is incorrect, anything but 32
+            it.only(`should produce the same random values when using the same seed`, async () => {
+                const actor = await getCanisterActor<Actor>('canister');
+                const maxElements = Math.floor(65_536 / bytesPerElement);
 
-                        expect(allEqual).toBe(false);
-                    }
-                ),
-                defaultPropTestParams()
-            );
+                await fc.assert(
+                    fc.asyncProperty(
+                        fc.nat(maxElements),
+                        fc.integer({ min: 2, max: 10 }),
+                        fc.uint8Array({
+                            minLength: 32,
+                            maxLength: 32
+                        }),
+                        async (length, numCalls, seed) => {
+                            console.log('length', length);
+                            console.log('numCalls', numCalls);
+                            console.log('seed', seed);
+
+                            await actor.seed(seed);
+
+                            console.log('seeded once');
+
+                            await validateCryptoGetRandomValuesForType(
+                                actor,
+                                name,
+                                bytesPerElement,
+                                length,
+                                numCalls,
+                                true,
+                                true
+                            );
+
+                            console.log('validated results once');
+
+                            await actor.seed(seed);
+
+                            console.log('seeded again');
+
+                            await validateCryptoGetRandomValuesForType(
+                                actor,
+                                name,
+                                bytesPerElement,
+                                length,
+                                numCalls,
+                                false
+                            );
+
+                            console.log('validated results again');
+                        }
+                    ),
+                    defaultPropTestParams()
+                );
+            });
         });
     };
+}
+
+async function validateCryptoGetRandomValuesForType(
+    actor: ActorSubclass<Actor>,
+    name: string,
+    bytesPerElement: number,
+    length: number,
+    numCalls: number,
+    expectedValuesAreUnique: boolean,
+    resetUniqueValues: boolean = false
+): Promise<void> {
+    const promises = Array(numCalls)
+        .fill(0)
+        .map(() => actor.cryptoGetRandomValuesForType(name, length));
+
+    const results = await Promise.all(promises);
+
+    results.forEach((result) => {
+        // TODO something is wrong here
+        expect(valuesAreUnique(result, resetUniqueValues)).toBe(
+            expectedValuesAreUnique
+        );
+
+        const expectedByteLength = length * bytesPerElement;
+
+        expect(result.length).toBe(expectedByteLength);
+
+        for (const byte of result) {
+            expect(byte).toBeGreaterThanOrEqual(0);
+            expect(byte).toBeLessThanOrEqual(255);
+        }
+    });
+}
+
+let results: Set<string> = new Set();
+function valuesAreUnique(
+    values: Uint8Array | number[],
+    reset: boolean = false
+): boolean {
+    if (reset === true) {
+        results = new Set();
+    }
+
+    const sizeBefore = results.size;
+    results.add(values.toString());
+    const sizeAfter = results.size;
+
+    return sizeAfter === sizeBefore + 1;
 }

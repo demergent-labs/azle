@@ -96,6 +96,7 @@ if (
 
                 if (byteLength > 65_536) {
                     // TODO does throw new QuoteExceededError work?
+                    // TODO we should probably say typed array byte length here instead
                     throw new Error(
                         `QuotaExceeded: array cannot be larger than 65_536 bytes`
                     );
