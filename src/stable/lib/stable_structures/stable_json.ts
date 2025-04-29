@@ -250,5 +250,21 @@ export function jsonReviver(_key: string, value: any): any {
         }
     }
 
+    // Check if the value is an ISO 8601 date string
+    if (typeof value === 'string') {
+        // ISO 8601 regex that matches:
+        // YYYY-MM-DDTHH:mm:ss.sssZ or YYYY-MM-DDTHH:mm:ss.sss+HH:mm or YYYY-MM-DDTHH:mm:ss.sss-HH:mm
+        const iso8601Regex =
+            /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/;
+
+        if (iso8601Regex.test(value)) {
+            const date = new Date(value);
+            // Check if the date is valid
+            if (!isNaN(date.getTime())) {
+                return date;
+            }
+        }
+    }
+
     return value;
 }
