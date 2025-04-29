@@ -1,4 +1,4 @@
-import { IDL, randSeed, update } from 'azle';
+import { IDL, update } from 'azle';
 
 type TypedArrayName =
     | 'Int8Array'
@@ -24,22 +24,16 @@ type TypedArrayConstructor =
 
 export default class {
     @update([IDL.Text, IDL.Nat32], IDL.Vec(IDL.Nat8))
-    cryptoGetRandomValuesForType(
+    cryptoGetRandomValues(
         typedArrayName: TypedArrayName,
         length: number
     ): Uint8Array {
-        const array = createTypedArray(typedArrayName, length);
+        let array = createTypedArray(typedArrayName, length);
 
         crypto.getRandomValues(array);
 
         // Return the underlying buffer as Uint8Array for Candid compatibility
         return new Uint8Array(array.buffer);
-    }
-
-    // TODO let's split this out into its own test
-    @update([IDL.Vec(IDL.Nat8)])
-    seed(seed: Uint8Array): void {
-        randSeed(seed);
     }
 }
 

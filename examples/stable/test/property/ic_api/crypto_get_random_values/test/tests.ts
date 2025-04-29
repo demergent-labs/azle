@@ -57,7 +57,7 @@ export function getTests(): Test {
                                 fc.nat(maxElements),
                                 fc.integer({ min: 2, max: 10 }),
                                 async (length, numCalls) => {
-                                    await validateCryptoGetRandomValuesForType(
+                                    await validateCryptoGetRandomValues(
                                         actor,
                                         name,
                                         bytesPerElement,
@@ -84,81 +84,12 @@ export function getTests(): Test {
                                 }),
                                 async (length) => {
                                     await expect(
-                                        actor.cryptoGetRandomValuesForType(
+                                        actor.cryptoGetRandomValues(
                                             name,
                                             length
                                         )
                                     ).rejects.toThrow(
                                         'QuotaExceeded: array cannot be larger than 65_536 bytes'
-                                    );
-                                }
-                            ),
-                            defaultPropTestParams()
-                        );
-                    });
-
-                    it(`should produce the same random values when using the same seed`, async () => {
-                        const actor = await getCanisterActor<Actor>('canister');
-                        const maxElements = Math.floor(
-                            65_536 / bytesPerElement
-                        );
-
-                        await fc.assert(
-                            fc.asyncProperty(
-                                fc.nat(maxElements),
-                                fc.integer({ min: 2, max: 10 }),
-                                fc.uint8Array({
-                                    minLength: 32,
-                                    maxLength: 32
-                                }),
-                                async (length, numCalls, seed) => {
-                                    await actor.seed(seed);
-
-                                    await validateCryptoGetRandomValuesForType(
-                                        actor,
-                                        name,
-                                        bytesPerElement,
-                                        length,
-                                        numCalls,
-                                        true,
-                                        true
-                                    );
-
-                                    await actor.seed(seed);
-
-                                    await validateCryptoGetRandomValuesForType(
-                                        actor,
-                                        name,
-                                        bytesPerElement,
-                                        length,
-                                        numCalls,
-                                        false
-                                    );
-                                }
-                            ),
-                            defaultPropTestParams()
-                        );
-                    });
-
-                    it(`should throw error for seed length not equal to 32 for ${name}`, async () => {
-                        const actor = await getCanisterActor<Actor>('canister');
-                        await fc.assert(
-                            fc.asyncProperty(
-                                fc.oneof(
-                                    fc.uint8Array({
-                                        minLength: 0,
-                                        maxLength: 31
-                                    }),
-                                    fc.uint8Array({
-                                        minLength: 33,
-                                        maxLength: 1_024
-                                    })
-                                ),
-                                async (seed) => {
-                                    await expect(
-                                        actor.seed(seed)
-                                    ).rejects.toThrow(
-                                        'seed must be exactly 32 bytes in length'
                                     );
                                 }
                             ),
@@ -171,23 +102,23 @@ export function getTests(): Test {
     };
 }
 
-async function validateCryptoGetRandomValuesForType(
+async function validateCryptoGetRandomValues(
     actor: ActorSubclass<Actor>,
     name: string,
     bytesPerElement: number,
     length: number,
     numCalls: number,
     randomResultsShouldBeUnique: boolean,
-    shouldResetRandomResults: boolean = false
+    shouldResetPastRandomResults: boolean = false
 ): Promise<void> {
-    if (shouldResetRandomResults === true) {
+    if (shouldResetPastRandomResults === true) {
         resetPastRandomResults();
     }
 
     const randomResults = await Promise.all(
         Array(numCalls)
             .fill(0)
-            .map(() => actor.cryptoGetRandomValuesForType(name, length))
+            .map(() => actor.cryptoGetRandomValues(name, length))
     );
 
     randomResults.forEach((randomResult) => {
