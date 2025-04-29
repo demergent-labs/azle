@@ -1,22 +1,6 @@
 import { call, IDL, update } from 'azle';
 
 export default class {
-    @update
-    test(): void {
-        globalThis._azleIcExperimental?.debugPrint(
-            JSON.parse('514264568357333960000').toString()
-        );
-        globalThis._azleIcExperimental?.debugPrint(
-            JSON.parse('-97274737924886480000').toString()
-        );
-        globalThis._azleIcExperimental?.debugPrint(
-            JSON.parse('-386699494791093900000').toString()
-        );
-        globalThis._azleIcExperimental?.debugPrint(
-            JSON.parse('945084679698654700000').toString()
-        );
-    }
-
     @update([], IDL.Vec(IDL.Nat8))
     async getRandomnessDirectly(): Promise<Uint8Array> {
         return await call<undefined, Uint8Array>('aaaaa-aa', 'raw_rand', {
