@@ -148,12 +148,6 @@ export function jsonReplacer(_key: string, value: any): any {
         };
     }
 
-    if (value instanceof Date) {
-        return {
-            __date__: value.toISOString()
-        };
-    }
-
     if (value instanceof Map) {
         return {
             __map__: Array.from(value.entries())
@@ -245,10 +239,6 @@ export function jsonReviver(_key: string, value: any): any {
 
         if (typeof value.__float64array__ === 'object') {
             return Float64Array.from(value.__float64array__);
-        }
-
-        if (typeof value.__date__ === 'string') {
-            return new Date(value.__date__);
         }
 
         if (Array.isArray(value.__map__)) {
