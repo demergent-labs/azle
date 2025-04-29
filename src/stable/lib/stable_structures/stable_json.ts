@@ -82,6 +82,12 @@ export function jsonReplacer(_key: string, value: any): any {
         };
     }
 
+    if (typeof value === 'number' && Object.is(value, -0)) {
+        return {
+            __negative_zero__: '__negative_zero__'
+        };
+    }
+
     if (value instanceof Int8Array) {
         return {
             __int8array__: Array.from(value)
@@ -130,6 +136,36 @@ export function jsonReplacer(_key: string, value: any): any {
         };
     }
 
+    if (value instanceof Float32Array) {
+        return {
+            __float32array__: Array.from(value)
+        };
+    }
+
+    if (value instanceof Float64Array) {
+        return {
+            __float64array__: Array.from(value)
+        };
+    }
+
+    if (value instanceof Date) {
+        return {
+            __date__: value.toISOString()
+        };
+    }
+
+    if (value instanceof Map) {
+        return {
+            __map__: Array.from(value.entries())
+        };
+    }
+
+    if (value instanceof Set) {
+        return {
+            __set__: Array.from(value)
+        };
+    }
+
     return value;
 }
 
@@ -167,6 +203,10 @@ export function jsonReviver(_key: string, value: any): any {
             return -Infinity;
         }
 
+        if (value.__negative_zero__ === '__negative_zero__') {
+            return -0;
+        }
+
         if (typeof value.__int8array__ === 'object') {
             return Int8Array.from(value.__int8array__);
         }
@@ -197,6 +237,26 @@ export function jsonReviver(_key: string, value: any): any {
 
         if (typeof value.__biguint64array__ === 'object') {
             return BigUint64Array.from(value.__biguint64array__);
+        }
+
+        if (typeof value.__float32array__ === 'object') {
+            return Float32Array.from(value.__float32array__);
+        }
+
+        if (typeof value.__float64array__ === 'object') {
+            return Float64Array.from(value.__float64array__);
+        }
+
+        if (typeof value.__date__ === 'string') {
+            return new Date(value.__date__);
+        }
+
+        if (Array.isArray(value.__map__)) {
+            return new Map(value.__map__);
+        }
+
+        if (Array.isArray(value.__set__)) {
+            return new Set(value.__set__);
         }
     }
 
