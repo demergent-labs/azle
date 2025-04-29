@@ -3,8 +3,8 @@ import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/ar
 import { Variant } from 'azle/experimental/_internal/test/property/arbitraries/candid/constructed/variant_arb';
 import {
     AzleResult,
-    Test,
-    testEquality
+    candidTestEquality,
+    Test
 } from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
@@ -31,7 +31,7 @@ export function generateTests(
                         )
                     );
 
-                    return testEquality(result, expectedResult);
+                    return candidTestEquality(result, expectedResult);
                 }
             }
         ]

@@ -2,8 +2,8 @@ import { getActor, Named } from 'azle/experimental/_internal/test/property';
 import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
 import {
     AzleResult,
-    Test,
-    testEquality
+    candidTestEquality,
+    Test
 } from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
@@ -28,7 +28,7 @@ export function generateTests(
                         )
                     );
 
-                    return testEquality(result, null);
+                    return candidTestEquality(result, null);
                 }
             }
         ]

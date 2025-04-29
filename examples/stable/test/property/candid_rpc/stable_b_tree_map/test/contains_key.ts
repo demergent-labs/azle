@@ -5,8 +5,8 @@ import { StableBTreeMap } from 'azle/experimental/_internal/test/property/arbitr
 import { UniqueIdentifierArb } from 'azle/experimental/_internal/test/property/arbitraries/unique_identifier_arb';
 import {
     AzleResult,
-    Test,
-    testEquality
+    candidTestEquality,
+    Test
 } from 'azle/experimental/_internal/test/property/test';
 import fc from 'fast-check';
 
@@ -99,7 +99,7 @@ function generateTests(
                             : functionName
                     ](keySampleAgentArgumentValue);
 
-                    return testEquality(result, true);
+                    return candidTestEquality(result, true);
                 }
             }
         ],
@@ -115,7 +115,7 @@ function generateTests(
                             : functionName
                     ](keySampleAgentArgumentValue);
 
-                    return testEquality(result, true);
+                    return candidTestEquality(result, true);
                 }
             }
         ],
@@ -131,7 +131,7 @@ function generateTests(
                             : functionName
                     ](keySampleAgentArgumentValue);
 
-                    return testEquality(result, false);
+                    return candidTestEquality(result, false);
                 }
             }
         ]

@@ -17,5 +17,3 @@ export type WasmData = {
     consumer: Consumer;
     managementDid: string;
 } & StableWasmData;
-
-export type Command = 'upload-assets';

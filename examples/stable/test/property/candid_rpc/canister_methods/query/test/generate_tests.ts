@@ -4,8 +4,8 @@ import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/ar
 import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/arbitraries/candid/corresponding_js_type';
 import {
     AzleResult,
-    Test,
-    testEquality
+    candidTestEquality,
+    Test
 } from 'azle/experimental/_internal/test/property/test';
 
 export function generateTests(
@@ -29,7 +29,7 @@ export function generateTests(
                             ? functionName.slice(1, -1)
                             : functionName
                     ](...paramValues);
-                    return testEquality(result, expectedResult);
+                    return candidTestEquality(result, expectedResult);
                 }
             }
         ]

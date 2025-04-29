@@ -5,8 +5,8 @@ import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/ar
 import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/arbitraries/candid/corresponding_js_type';
 import {
     AzleResult,
-    Test,
-    testEquality
+    candidTestEquality,
+    Test
 } from 'azle/experimental/_internal/test/property/test';
 
 import { InspectMessageBehavior } from './test';
@@ -56,7 +56,7 @@ function generateTest(
                 ](...paramValues);
 
                 if (behavior === 'ACCEPT') {
-                    return testEquality(result, expectedResult);
+                    return candidTestEquality(result, expectedResult);
                 }
 
                 return {
@@ -64,7 +64,7 @@ function generateTest(
                 };
             } catch (error: any) {
                 if (behavior === 'RETURN') {
-                    return testEquality(
+                    return candidTestEquality(
                         error.message.includes('rejected the message'),
                         true
                     );
@@ -78,7 +78,7 @@ function generateTest(
                               .replace(/"/g, '\\"')
                         : functionName;
                     const expectedError = `Method \\"${normalizedFunctionName}\\" not allowed`;
-                    return testEquality(
+                    return candidTestEquality(
                         error.message.includes(expectedError),
                         true
                     );

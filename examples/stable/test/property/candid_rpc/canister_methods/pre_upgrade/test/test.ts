@@ -18,7 +18,7 @@ import { UpdateMethodArb } from 'azle/experimental/_internal/test/property/arbit
 import { Api } from 'azle/experimental/_internal/test/property/arbitraries/types';
 import {
     AzleResult,
-    testEquality
+    candidTestEquality
 } from 'azle/experimental/_internal/test/property/test';
 import fc from 'fast-check';
 
@@ -127,7 +127,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
                         const actor = await getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
-                        return testEquality(result, []);
+                        return candidTestEquality(result, []);
                     }
                 }
             ],
@@ -138,7 +138,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
                         const actor = await getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
-                        return testEquality(result, [true]);
+                        return candidTestEquality(result, [true]);
                     }
                 }
             ]
