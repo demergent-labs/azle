@@ -16,15 +16,15 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 export function getTests(): Test {
     return () => {
         describe.each([
-            // { name: 'Int8Array', bytesPerElement: 1 },
-            { name: 'Uint8Array', bytesPerElement: 1 }
-            // { name: 'Uint8ClampedArray', bytesPerElement: 1 },
-            // { name: 'Int16Array', bytesPerElement: 2 },
-            // { name: 'Uint16Array', bytesPerElement: 2 },
-            // { name: 'Int32Array', bytesPerElement: 4 },
-            // { name: 'Uint32Array', bytesPerElement: 4 },
-            // { name: 'BigInt64Array', bytesPerElement: 8 },
-            // { name: 'BigUint64Array', bytesPerElement: 8 }
+            { name: 'Int8Array', bytesPerElement: 1 },
+            { name: 'Uint8Array', bytesPerElement: 1 },
+            { name: 'Uint8ClampedArray', bytesPerElement: 1 },
+            { name: 'Int16Array', bytesPerElement: 2 },
+            { name: 'Uint16Array', bytesPerElement: 2 },
+            { name: 'Int32Array', bytesPerElement: 4 },
+            { name: 'Uint32Array', bytesPerElement: 4 },
+            { name: 'BigInt64Array', bytesPerElement: 8 },
+            { name: 'BigUint64Array', bytesPerElement: 8 }
         ])('crypto.getRandomValues with $name', ({ name, bytesPerElement }) => {
             describe.each([
                 {
@@ -57,7 +57,7 @@ export function getTests(): Test {
                     await fc.assert(
                         fc.asyncProperty(
                             fc.nat(maxElements),
-                            fc.integer({ min: 2, max: 100 }),
+                            fc.integer({ min: 2, max: 20 }),
                             async (length, numCalls) => {
                                 await validateCryptoGetRandomValuesForType(
                                     actor,
@@ -65,7 +65,7 @@ export function getTests(): Test {
                                     bytesPerElement,
                                     length,
                                     numCalls,
-                                    false
+                                    true
                                 );
                             }
                         ),
@@ -97,27 +97,20 @@ export function getTests(): Test {
                 );
             });
 
-            // TODO add test for when the length of the seed is incorrect, anything but 32
-            it.only(`should produce the same random values when using the same seed`, async () => {
+            it(`should produce the same random values when using the same seed`, async () => {
                 const actor = await getCanisterActor<Actor>('canister');
                 const maxElements = Math.floor(65_536 / bytesPerElement);
 
                 await fc.assert(
                     fc.asyncProperty(
                         fc.nat(maxElements),
-                        fc.integer({ min: 2, max: 10 }),
+                        fc.integer({ min: 2, max: 20 }),
                         fc.uint8Array({
                             minLength: 32,
                             maxLength: 32
                         }),
                         async (length, numCalls, seed) => {
-                            console.log('length', length);
-                            console.log('numCalls', numCalls);
-                            console.log('seed', seed);
-
                             await actor.seed(seed);
-
-                            console.log('seeded once');
 
                             await validateCryptoGetRandomValuesForType(
                                 actor,
@@ -129,11 +122,7 @@ export function getTests(): Test {
                                 true
                             );
 
-                            console.log('validated results once');
-
                             await actor.seed(seed);
-
-                            console.log('seeded again');
 
                             await validateCryptoGetRandomValuesForType(
                                 actor,
@@ -143,8 +132,27 @@ export function getTests(): Test {
                                 numCalls,
                                 false
                             );
+                        }
+                    ),
+                    defaultPropTestParams()
+                );
+            });
 
-                            console.log('validated results again');
+            it(`should throw error for seed length not equal to 32 for ${name}`, async () => {
+                const actor = await getCanisterActor<Actor>('canister');
+                await fc.assert(
+                    fc.asyncProperty(
+                        fc.oneof(
+                            fc.uint8Array({ minLength: 0, maxLength: 31 }),
+                            fc.uint8Array({
+                                minLength: 33,
+                                maxLength: 1_000_000 // TODO this maxLength doesn't seem to be honored
+                            })
+                        ),
+                        async (seed) => {
+                            await expect(actor.seed(seed)).rejects.toThrow(
+                                'seed must be exactly 32 bytes in length'
+                            );
                         }
                     ),
                     defaultPropTestParams()
@@ -163,6 +171,10 @@ async function validateCryptoGetRandomValuesForType(
     expectedValuesAreUnique: boolean,
     resetUniqueValues: boolean = false
 ): Promise<void> {
+    if (resetUniqueValues === true) {
+        resetResults();
+    }
+
     const promises = Array(numCalls)
         .fill(0)
         .map(() => actor.cryptoGetRandomValuesForType(name, length));
@@ -170,10 +182,7 @@ async function validateCryptoGetRandomValuesForType(
     const results = await Promise.all(promises);
 
     results.forEach((result) => {
-        // TODO something is wrong here
-        expect(valuesAreUnique(result, resetUniqueValues)).toBe(
-            expectedValuesAreUnique
-        );
+        expect(valuesAreUnique(result)).toBe(expectedValuesAreUnique);
 
         const expectedByteLength = length * bytesPerElement;
 
@@ -187,17 +196,15 @@ async function validateCryptoGetRandomValuesForType(
 }
 
 let results: Set<string> = new Set();
-function valuesAreUnique(
-    values: Uint8Array | number[],
-    reset: boolean = false
-): boolean {
-    if (reset === true) {
-        results = new Set();
-    }
 
+function valuesAreUnique(values: Uint8Array | number[]): boolean {
     const sizeBefore = results.size;
     results.add(values.toString());
     const sizeAfter = results.size;
 
     return sizeAfter === sizeBefore + 1;
+}
+
+function resetResults(): void {
+    results = new Set();
 }

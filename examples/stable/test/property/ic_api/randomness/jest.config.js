@@ -7,10 +7,7 @@ module.exports = {
         '^.+\\.ts$': [
             'ts-jest',
             {
-                isolatedModules: true,
-                astTransformers: {
-                    before: [{ path: 'ts-jest-mock-import-meta' }]
-                }
+                isolatedModules: true
             }
         ],
         '^.+\\.js$': 'ts-jest'
