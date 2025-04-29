@@ -108,13 +108,8 @@ async function validateCryptoGetRandomValues(
     bytesPerElement: number,
     length: number,
     numCalls: number,
-    randomResultsShouldBeUnique: boolean,
-    shouldResetPastRandomResults: boolean = false
+    randomResultsShouldBeUnique: boolean
 ): Promise<void> {
-    if (shouldResetPastRandomResults === true) {
-        resetPastRandomResults();
-    }
-
     const randomResults = await Promise.all(
         Array(numCalls)
             .fill(0)
@@ -145,8 +140,4 @@ function randomResultIsUnique(randomResult: Uint8Array | number[]): boolean {
     const sizeAfter = pastRandomResults.size;
 
     return sizeAfter === sizeBefore + 1;
-}
-
-function resetPastRandomResults(): void {
-    pastRandomResults = new Set();
 }
