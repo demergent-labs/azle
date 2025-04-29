@@ -62,8 +62,7 @@ export function getTests(): Test {
                                         name,
                                         bytesPerElement,
                                         length,
-                                        numCalls,
-                                        true
+                                        numCalls
                                     );
                                 }
                             ),
@@ -107,8 +106,7 @@ async function validateCryptoGetRandomValues(
     name: string,
     bytesPerElement: number,
     length: number,
-    numCalls: number,
-    randomResultsShouldBeUnique: boolean
+    numCalls: number
 ): Promise<void> {
     const randomResults = await Promise.all(
         Array(numCalls)
@@ -117,9 +115,7 @@ async function validateCryptoGetRandomValues(
     );
 
     randomResults.forEach((randomResult) => {
-        expect(randomResultIsUnique(randomResult)).toBe(
-            randomResultsShouldBeUnique
-        );
+        expect(randomResultIsUnique(randomResult)).toBe(true);
 
         const expectedByteLength = length * bytesPerElement;
 
