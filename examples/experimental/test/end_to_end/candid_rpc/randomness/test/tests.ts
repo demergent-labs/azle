@@ -117,7 +117,7 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
                         );
 
                         cryptoValues
-                            .map((value) => value.toString())
+                            .map((value) => Buffer.from(value).toString('hex'))
                             .forEach((valueString) =>
                                 globalCryptoResults.add(valueString)
                             );

@@ -56,7 +56,12 @@ export function getTests(): Test {
                             fc.asyncProperty(
                                 fc.nat(maxElements),
                                 fc.integer({ min: 2, max: 10 }),
-                                async (length, numCalls) => {
+                                async (length, rawNumCalls) => {
+                                    const numCalls = normalizeNumCalls(
+                                        length,
+                                        rawNumCalls
+                                    );
+
                                     await validateCryptoGetRandomValues(
                                         actor,
                                         name,
@@ -136,8 +141,27 @@ function randomResultIsUnique(randomResult: Uint8Array | number[]): boolean {
     }
 
     const sizeBefore = pastRandomResults.size;
-    pastRandomResults.add(randomResult.toString());
+    pastRandomResults.add(Buffer.from(randomResult).toString('hex'));
     const sizeAfter = pastRandomResults.size;
 
     return sizeAfter === sizeBefore + 1;
+}
+
+/**
+ * Normalize the number of calls to avoid collisions in returned randomness.
+ *
+ * @param length - The length of the random values to generate
+ * @param numCalls - The number of calls to make
+ *
+ * @returns The normalized number of calls.
+ */
+function normalizeNumCalls(length: number, numCalls: number): number {
+    // The hope is that limiting numCalls to 3 for a length of 1 will
+    // make the probability of collisions only 1%, which is hopefully
+    // practically acceptable for these tests
+    if (length === 1) {
+        return numCalls > 3 ? 3 : numCalls;
+    }
+
+    return numCalls;
 }
