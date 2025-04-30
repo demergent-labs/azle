@@ -36,7 +36,7 @@ export function IntValueArb(
         process.env.AZLE_EXPERIMENTAL === 'true';
     return SimpleCandidValuesArb(
         isExperimental
-            ? fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n) // TODO Remove min and max once https://github.com/second-state/wasmedge-quickjs/issues/125
+            ? fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n) // TODO remove once we have completely removed wasmedge-quickjs
             : fc.bigInt(),
         bigintToSrcLiteral
     );

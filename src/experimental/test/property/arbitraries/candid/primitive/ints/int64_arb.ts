@@ -34,7 +34,7 @@ export function Int64ValueArb(
     const isExperimental =
         context.api === 'functional' ||
         process.env.AZLE_EXPERIMENTAL === 'true';
-    const exponent = isExperimental ? 59 : 63; // TODO set both back to 63 once https://github.com/second-state/wasmedge-quickjs/issues/125
+    const exponent = isExperimental ? 59 : 63; // TODO remove once we have completely removed wasmedge-quickjs
     return SimpleCandidValuesArb(
         fc.bigInt({
             min: -(2n ** BigInt(exponent)),
