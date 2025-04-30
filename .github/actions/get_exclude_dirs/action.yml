@@ -38,6 +38,7 @@ runs:
               examples/experimental/test/property/candid_rpc/vec
               examples/stable/test/end_to_end/candid_rpc/multi_deploy
               examples/stable/test/end_to_end/candid_rpc/vec
+              examples/stable/test/property/candid_rpc/vec
               examples/stable/test/property/ic_api/performance_counter
               ') }}"
 
