@@ -34,7 +34,7 @@ export function Nat64ValueArb(
     const isExperimental =
         context.api === 'functional' ||
         process.env.AZLE_EXPERIMENTAL === 'true';
-    const exponent = isExperimental ? 60 : 64; // TODO remove once we have completely removed wasmedge-quickjs
+    const exponent = isExperimental ? 60 : 64; // TODO remove once experimental mode no longer relies on wasmedge-quickjs
     return SimpleCandidValuesArb(
         fc.bigInt({
             min: 0n,

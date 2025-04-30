@@ -36,7 +36,7 @@ export function NatValueArb(
         process.env.AZLE_EXPERIMENTAL === 'true';
     return SimpleCandidValuesArb(
         isExperimental
-            ? fc.bigInt(0n, 1_000_000_000_000_000_000n) // TODO remove once we have completely removed wasmedge-quickjs
+            ? fc.bigInt(0n, 1_000_000_000_000_000_000n) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
             : fc.bigInt({ min: 0n }),
         bigintToSrcLiteral
     );
