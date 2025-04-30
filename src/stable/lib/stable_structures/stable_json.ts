@@ -201,43 +201,43 @@ export function jsonReviver(_key: string, value: any): any {
             return -0;
         }
 
-        if (typeof value.__int8array__ === 'object') {
+        if (Array.isArray(value.__int8array__)) {
             return Int8Array.from(value.__int8array__);
         }
 
-        if (typeof value.__int16array__ === 'object') {
+        if (Array.isArray(value.__int16array__)) {
             return Int16Array.from(value.__int16array__);
         }
 
-        if (typeof value.__int32array__ === 'object') {
+        if (Array.isArray(value.__int32array__)) {
             return Int32Array.from(value.__int32array__);
         }
 
-        if (typeof value.__bigint64array__ === 'object') {
+        if (Array.isArray(value.__bigint64array__)) {
             return BigInt64Array.from(value.__bigint64array__);
         }
 
-        if (typeof value.__uint8array__ === 'object') {
+        if (Array.isArray(value.__uint8array__)) {
             return Uint8Array.from(value.__uint8array__);
         }
 
-        if (typeof value.__uint16array__ === 'object') {
+        if (Array.isArray(value.__uint16array__)) {
             return Uint16Array.from(value.__uint16array__);
         }
 
-        if (typeof value.__uint32array__ === 'object') {
+        if (Array.isArray(value.__uint32array__)) {
             return Uint32Array.from(value.__uint32array__);
         }
 
-        if (typeof value.__biguint64array__ === 'object') {
+        if (Array.isArray(value.__biguint64array__)) {
             return BigUint64Array.from(value.__biguint64array__);
         }
 
-        if (typeof value.__float32array__ === 'object') {
+        if (Array.isArray(value.__float32array__)) {
             return Float32Array.from(value.__float32array__);
         }
 
-        if (typeof value.__float64array__ === 'object') {
+        if (Array.isArray(value.__float64array__)) {
             return Float64Array.from(value.__float64array__);
         }
 
@@ -247,22 +247,6 @@ export function jsonReviver(_key: string, value: any): any {
 
         if (Array.isArray(value.__set__)) {
             return new Set(value.__set__);
-        }
-    }
-
-    // Check if the value is an ISO 8601 date string
-    if (typeof value === 'string') {
-        // ISO 8601 regex that matches:
-        // YYYY-MM-DDTHH:mm:ss.sssZ or YYYY-MM-DDTHH:mm:ss.sss+HH:mm or YYYY-MM-DDTHH:mm:ss.sss-HH:mm
-        const iso8601Regex =
-            /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/;
-
-        if (iso8601Regex.test(value)) {
-            const date = new Date(value);
-            // Check if the date is valid
-            if (!isNaN(date.getTime())) {
-                return date;
-            }
         }
     }
 
