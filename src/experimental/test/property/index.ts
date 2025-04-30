@@ -106,8 +106,8 @@ export async function runPropTests(
             if (error instanceof Error) {
                 const errorLines = error.message.split('\n');
                 const newError = [
-                    ...errorLines.slice(0, 2),
-                    ...errorLines.slice(errorLines.length - 4)
+                    ...errorLines.slice(0, 4),
+                    ...errorLines.slice(errorLines.length - 3)
                 ].join('\n');
                 error.message = newError;
             }

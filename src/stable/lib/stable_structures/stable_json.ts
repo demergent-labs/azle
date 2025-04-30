@@ -82,6 +82,12 @@ export function jsonReplacer(_key: string, value: any): any {
         };
     }
 
+    if (typeof value === 'number' && Object.is(value, -0)) {
+        return {
+            __negative_zero__: '__negative_zero__'
+        };
+    }
+
     if (value instanceof Int8Array) {
         return {
             __int8array__: Array.from(value)
@@ -130,6 +136,30 @@ export function jsonReplacer(_key: string, value: any): any {
         };
     }
 
+    if (value instanceof Float32Array) {
+        return {
+            __float32array__: Array.from(value)
+        };
+    }
+
+    if (value instanceof Float64Array) {
+        return {
+            __float64array__: Array.from(value)
+        };
+    }
+
+    if (value instanceof Map) {
+        return {
+            __map__: Array.from(value.entries())
+        };
+    }
+
+    if (value instanceof Set) {
+        return {
+            __set__: Array.from(value)
+        };
+    }
+
     return value;
 }
 
@@ -167,36 +197,56 @@ export function jsonReviver(_key: string, value: any): any {
             return -Infinity;
         }
 
-        if (typeof value.__int8array__ === 'object') {
+        if (value.__negative_zero__ === '__negative_zero__') {
+            return -0;
+        }
+
+        if (Array.isArray(value.__int8array__)) {
             return Int8Array.from(value.__int8array__);
         }
 
-        if (typeof value.__int16array__ === 'object') {
+        if (Array.isArray(value.__int16array__)) {
             return Int16Array.from(value.__int16array__);
         }
 
-        if (typeof value.__int32array__ === 'object') {
+        if (Array.isArray(value.__int32array__)) {
             return Int32Array.from(value.__int32array__);
         }
 
-        if (typeof value.__bigint64array__ === 'object') {
+        if (Array.isArray(value.__bigint64array__)) {
             return BigInt64Array.from(value.__bigint64array__);
         }
 
-        if (typeof value.__uint8array__ === 'object') {
+        if (Array.isArray(value.__uint8array__)) {
             return Uint8Array.from(value.__uint8array__);
         }
 
-        if (typeof value.__uint16array__ === 'object') {
+        if (Array.isArray(value.__uint16array__)) {
             return Uint16Array.from(value.__uint16array__);
         }
 
-        if (typeof value.__uint32array__ === 'object') {
+        if (Array.isArray(value.__uint32array__)) {
             return Uint32Array.from(value.__uint32array__);
         }
 
-        if (typeof value.__biguint64array__ === 'object') {
+        if (Array.isArray(value.__biguint64array__)) {
             return BigUint64Array.from(value.__biguint64array__);
+        }
+
+        if (Array.isArray(value.__float32array__)) {
+            return Float32Array.from(value.__float32array__);
+        }
+
+        if (Array.isArray(value.__float64array__)) {
+            return Float64Array.from(value.__float64array__);
+        }
+
+        if (Array.isArray(value.__map__)) {
+            return new Map(value.__map__);
+        }
+
+        if (Array.isArray(value.__set__)) {
+            return new Set(value.__set__);
         }
     }
 
