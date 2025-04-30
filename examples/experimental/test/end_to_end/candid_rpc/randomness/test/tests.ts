@@ -111,7 +111,7 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
                             Array(5)
                                 .fill(0)
                                 .map(
-                                    (): Promise<Uint8Array> =>
+                                    (): Promise<Uint8Array | number[]> =>
                                         randomnessCanister.cryptoGetRandomValues()
                                 )
                         );
