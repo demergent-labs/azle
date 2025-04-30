@@ -31,10 +31,13 @@ export function NatDefinitionArb(
 export function NatValueArb(
     context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValues<bigint>> {
+    const isExperimental =
+        context.api === 'functional' ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
     return SimpleCandidValuesArb(
-        context.api === 'class'
-            ? fc.bigInt({ min: 0n })
-            : fc.bigInt(0n, 1_000_000_000_000_000_000n), // TODO Remove max once https://github.com/second-state/wasmedge-quickjs/issues/125
+        isExperimental
+            ? fc.bigInt(0n, 1_000_000_000_000_000_000n) // TODO Remove max once https://github.com/second-state/wasmedge-quickjs/issues/125
+            : fc.bigInt({ min: 0n }),
         bigintToSrcLiteral
     );
 }

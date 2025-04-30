@@ -31,7 +31,10 @@ export function Int64DefinitionArb(
 export function Int64ValueArb(
     context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValues<bigint>> {
-    const exponent = context.api === 'class' ? 63 : 59; // TODO set both back to 63 once https://github.com/second-state/wasmedge-quickjs/issues/125
+    const isExperimental =
+        context.api === 'functional' ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
+    const exponent = isExperimental ? 59 : 63; // TODO set both back to 63 once https://github.com/second-state/wasmedge-quickjs/issues/125
     return SimpleCandidValuesArb(
         fc.bigInt({
             min: -(2n ** BigInt(exponent)),

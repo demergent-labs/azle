@@ -31,7 +31,10 @@ export function Nat64DefinitionArb(
 export function Nat64ValueArb(
     context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValues<bigint>> {
-    const exponent = context.api === 'class' ? 64 : 59; // TODO set both back to 64 once https://github.com/second-state/wasmedge-quickjs/issues/125
+    const isExperimental =
+        context.api === 'functional' ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
+    const exponent = isExperimental ? 59 : 64; // TODO set both back to 64 once https://github.com/second-state/wasmedge-quickjs/issues/125
     return SimpleCandidValuesArb(
         fc.bigInt({
             min: 0n,

@@ -1,5 +1,7 @@
 import * as fc from 'fast-check';
+import { relative } from 'path';
 
+import { AZLE_ROOT } from '#build/utils/global_paths';
 export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
     const baseParams = {
         numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
@@ -7,7 +9,7 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
             const seed = runDetails.seed;
             const path = runDetails.counterexamplePath;
             const reproductionCommand = `AZLE_PROPTEST_SEED=${seed}${path !== null ? ` AZLE_PROPTEST_PATH="${path}"` : ''} AZLE_VERBOSE=true AZLE_DEV_TEMPLATE=true npm test`;
-            const reproductionMessage = `To reproduce this exact test case, run:\n${reproductionCommand}`;
+            const reproductionMessage = `To reproduce this exact test case, run:\ncd ${relative(AZLE_ROOT, process.cwd())}\n${reproductionCommand}`;
             console.info(reproductionMessage);
             if (runDetails.failed) {
                 throw new Error(

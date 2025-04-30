@@ -31,13 +31,13 @@ export function IntDefinitionArb(
 export function IntValueArb(
     context: Context<CandidValueConstraints>
 ): fc.Arbitrary<CandidValues<bigint>> {
+    const isExperimental =
+        context.api === 'functional' ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
     return SimpleCandidValuesArb(
-        context.api === 'class'
-            ? fc.bigInt()
-            : fc.bigInt(
-                  -1_000_000_000_000_000_000n,
-                  1_000_000_000_000_000_000n
-              ), // TODO Remove min and max once https://github.com/second-state/wasmedge-quickjs/issues/125
+        isExperimental
+            ? fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n) // TODO Remove min and max once https://github.com/second-state/wasmedge-quickjs/issues/125
+            : fc.bigInt(),
         bigintToSrcLiteral
     );
 }
