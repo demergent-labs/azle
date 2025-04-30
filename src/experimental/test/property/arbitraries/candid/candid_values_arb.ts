@@ -114,7 +114,7 @@ export function CandidValueArb(
         return Float64ValueArb(context);
     }
     if (candidType === 'int') {
-        return IntValueArb();
+        return IntValueArb(context);
     }
     if (candidType === 'int8') {
         return Int8ValueArb();
@@ -126,10 +126,10 @@ export function CandidValueArb(
         return Int32ValueArb();
     }
     if (candidType === 'int64') {
-        return Int64ValueArb();
+        return Int64ValueArb(context);
     }
     if (candidType === 'nat') {
-        return NatValueArb();
+        return NatValueArb(context);
     }
     if (candidType === 'nat8') {
         return Nat8ValueArb();
@@ -141,7 +141,7 @@ export function CandidValueArb(
         return Nat32ValueArb();
     }
     if (candidType === 'nat64') {
-        return Nat64ValueArb();
+        return Nat64ValueArb(context);
     }
     if (candidType === 'Null') {
         return NullValueArb();
