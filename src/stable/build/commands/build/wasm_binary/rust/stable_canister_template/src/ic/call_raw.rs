@@ -9,7 +9,7 @@ use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
 };
 
-use crate::{error::quickjs_call_with_error_handling, ic::throw_error, state::dispatch_action};
+use crate::{ic::throw_error, rquickjs_utils::call_with_error_handling, state::dispatch_action};
 
 pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
     // We use a raw pointer here to deal with already borrowed issues
@@ -122,7 +122,7 @@ fn resolve_or_reject<'a>(
         global_reject_id,
     )?;
 
-    quickjs_call_with_error_handling(ctx.clone(), callback, (js_value,))?;
+    call_with_error_handling(&ctx, &callback, (js_value,))?;
 
     Ok(())
 }

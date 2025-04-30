@@ -15,7 +15,8 @@ import { Command, ExperimentalCommand, SubCommand } from '#utils/types';
 import { devDependencies, version as azleVersion } from '../../../package.json';
 
 export async function build(): Promise<void> {
-    await assertAzleExperimentalDeps();
+    // TODO remove this before merging, working around this: https://github.com/demergent-labs/azle/issues/2993
+    // await assertAzleExperimentalDeps();
 
     const command = process.argv[2] as
         | Command
@@ -130,7 +131,8 @@ async function installAzleExperimentalDepsForNewProject(
     await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
 }
 
-async function assertAzleExperimentalDeps(): Promise<void> {
+// TODO remove this before merging, working around this: https://github.com/demergent-labs/azle/issues/2993
+async function _assertAzleExperimentalDeps(): Promise<void> {
     const projectRoot = await findProjectRoot();
     const theirAzleExperimentalDepsVersion =
         await getAzleExperimentalDepsVersion(projectRoot);

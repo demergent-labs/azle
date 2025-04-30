@@ -30,7 +30,7 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
-    var _azleNodeWasmEnvironment: boolean;
+    var _azleNodejsWasmEnvironment: boolean;
     // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
     // eslint-disable-next-line no-var
@@ -47,7 +47,7 @@ declare global {
 // TODO that we don't think are stable yet?
 if (
     globalThis._azleIcpReplicaWasmEnvironment === true ||
-    globalThis._azleNodeWasmEnvironment === true
+    globalThis._azleNodejsWasmEnvironment === true
 ) {
     globalThis._azleDispatch({
         type: 'SET_TEXT_DECODER',
