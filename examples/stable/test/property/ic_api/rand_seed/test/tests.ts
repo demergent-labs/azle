@@ -82,9 +82,15 @@ export function getTests(): Test {
                 fc.asyncProperty(
                     fc.integer({ min: 1, max: 100 }),
                     fc.integer({ min: 2, max: 10 }),
-                    fc.uint8Array({ minLength: 32, maxLength: 32 }),
-                    fc.uint8Array({ minLength: 32, maxLength: 32 }),
-                    async (length, rawNumCalls, seed1, seed2) => {
+                    fc
+                        .tuple(
+                            fc.uint8Array({ minLength: 32, maxLength: 32 }),
+                            fc.uint8Array({ minLength: 32, maxLength: 32 })
+                        )
+                        .filter(
+                            ([seed1, seed2]) => sameSeed(seed1, seed2) === false
+                        ),
+                    async (length, rawNumCalls, [seed1, seed2]) => {
                         const numCalls = normalizeNumCalls(length, rawNumCalls);
 
                         await actor.seed(seed1);
@@ -144,12 +150,16 @@ export function getTests(): Test {
  * @returns The normalized number of calls.
  */
 function normalizeNumCalls(length: number, numCalls: number): number {
-    // The hope is that limiting numCalls to 3 for a length of 1 will
-    // make the probability of collisions only 1%, which is hopefully
-    // practically acceptable for these tests
+    // Limit to 3 calls when length === 1 to attempt to keep collision risk ≈1%
     if (length === 1) {
         return numCalls > 3 ? 3 : numCalls;
     }
-
     return numCalls;
+}
+
+function sameSeed(seed1: Uint8Array, seed2: Uint8Array): boolean {
+    return (
+        seed1.length === seed2.length &&
+        seed1.every((item, index) => item === seed2[index]) === true
+    );
 }
