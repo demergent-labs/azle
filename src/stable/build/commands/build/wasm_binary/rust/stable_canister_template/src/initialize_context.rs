@@ -35,7 +35,7 @@ pub fn initialize_context(
 
         globals.set("_azleExperimental", false)?;
 
-        globals.set("_azleExportedCanisterClassInstance", Undefined)?;
+        globals.set("_azleCanisterClassMeta", Undefined)?;
 
         globals.set("_azleIcExperimental", Undefined)?;
 
@@ -44,7 +44,7 @@ pub fn initialize_context(
             matches!(wasm_environment, WasmEnvironment::IcpReplica),
         )?;
 
-        // initializes globalThis._azleIcStable
+        // initializes globalThis._azleIc
         register(ctx.clone())?;
 
         globals.set("_azleInitCalled", init == Some(true))?;
@@ -56,11 +56,14 @@ pub fn initialize_context(
 
         globals.set("_azlePostUpgradeCalled", init == Some(false))?;
 
+        globals.set("_azleRejectCallbacks", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleResolveCallbacks", Object::new(ctx.clone())?)?;
+
+        globals.set("_azleTimerCallbacks", Object::new(ctx.clone())?)?;
+
         globals.set("exports", Object::new(ctx.clone())?)?;
 
-        // This is here for future compatability only
-        // There are currently no environment variables because
-        // ic_wasi_polyfill does not work in the Node Wasm environment
         let env = Object::new(ctx.clone())?;
 
         for (key, value) in vars() {
