@@ -5,7 +5,7 @@ use rquickjs::{Function, Object};
 
 use crate::{
     benchmarking::record_benchmark,
-    ic::call_raw::drain_inter_canister_futures,
+    ic::call_raw::drain_inter_canister_call_futures,
     rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
 };
 
@@ -49,7 +49,7 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
     })?;
 
     // This MUST be called outside of the with_ctx closure
-    drain_inter_canister_futures();
+    drain_inter_canister_call_futures();
 
     if let Ok(azle_record_benchmarks) = var("AZLE_RECORD_BENCHMARKS") {
         if azle_record_benchmarks == "true" {

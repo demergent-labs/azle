@@ -7,7 +7,7 @@ use rquickjs::{BigInt, Ctx, Function, Object, Result};
 use slotmap::Key;
 
 use crate::{
-    ic::call_raw::drain_inter_canister_futures,
+    ic::call_raw::drain_inter_canister_call_futures,
     rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
 };
 
@@ -48,7 +48,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             }
 
             // This MUST be called outside of the with_ctx closure
-            drain_inter_canister_futures();
+            drain_inter_canister_call_futures();
         };
 
         let timer_id: TimerId = set_timer_interval(interval_duration, closure);

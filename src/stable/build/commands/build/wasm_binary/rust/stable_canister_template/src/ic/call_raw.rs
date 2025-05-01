@@ -67,7 +67,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                     }
 
                     // This MUST be called outside of the with_ctx closure
-                    drain_inter_canister_futures();
+                    drain_inter_canister_call_futures();
                 });
 
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
@@ -120,7 +120,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 /// To avoid nested-context errors, each future is queued and executed **after**
 /// a top-level ICP call's `with_ctx` returns.
 ///
-pub fn drain_inter_canister_futures() {
+pub fn drain_inter_canister_call_futures() {
     let inter_canister_call_futures: Vec<InterCanisterCallFuture> = INTER_CANISTER_CALL_FUTURES
         .with(|inter_canister_call_futures_ref_cell| {
             inter_canister_call_futures_ref_cell
