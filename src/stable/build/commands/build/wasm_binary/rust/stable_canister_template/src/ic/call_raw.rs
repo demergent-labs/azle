@@ -9,24 +9,14 @@ use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
 };
 
-use crate::{ic::throw_error, rquickjs_utils::call_with_error_handling, state::dispatch_action};
+use crate::{
+    INTER_CANISTER_CALL_QUEUE,
+    ic::throw_error,
+    rquickjs_utils::{call_with_error_handling, with_ctx},
+    state::dispatch_action,
+};
 
 pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
-    // We use a raw pointer here to deal with already borrowed issues
-    // using quickjs_with_ctx after a cross-canister call (await point)
-    // Sometimes the await point won't actually behave like a full await point
-    // because the cross-canister call returns an error where the callback
-    // is never queued and executed by the IC
-    // In this case the outer quickjs_with_ctx for the original call
-    // will still have borrowed something having to do with the ctx
-    // whereas in a full cross-canister call the outer quickjs_with_ctx
-    // will have completed.
-    // Using a raw pointer overcomes the issue, and I believe it is safe
-    // because we only ever have one Runtime, one Context, we never destroy them
-    // and we are in a single-threaded environment. We will of course
-    // engage in intense testing and review to ensure safety
-    let ctx_ptr = ctx.as_raw();
-
     Function::new(
         ctx.clone(),
         move |global_resolve_id: String,
@@ -48,9 +38,9 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            spawn(async move {
-                let ctx = unsafe { Ctx::from_raw(ctx_ptr) };
-
+            // TODO in addition to this queued futures way of doing it,
+            // TODO I wonder if the new spawn implementation will run everything at the end anyway...
+            let fut = Box::pin(async move {
                 // My understanding of how this works
                 // scopeguard will execute its closure at the end of the scope
                 // After a successful or unsuccessful cross-canister call (await point)
@@ -58,7 +48,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 // Even during a trap, the IC will ensure that the closure runs in its own call
                 // thus allowing us to recover from a trap and persist that state
                 let _cleanup = scopeguard::guard((), |_| {
-                    let result = cleanup(ctx.clone(), &global_resolve_id, &global_reject_id);
+                    let result = cleanup(&global_resolve_id, &global_reject_id);
 
                     if let Err(e) = result {
                         trap(&format!("Azle CallRawCleanupError: {e}"));
@@ -67,45 +57,62 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
-                let result = resolve_or_reject(
-                    ctx.clone(),
-                    &call_result,
-                    &global_resolve_id,
-                    &global_reject_id,
-                );
+                let result = with_ctx(|ctx| {
+                    resolve_or_reject(
+                        ctx.clone(),
+                        &call_result,
+                        &global_resolve_id,
+                        &global_reject_id,
+                    )?;
+
+                    Ok(())
+                });
 
                 if let Err(e) = result {
                     trap(&format!("Azle CallRawError: {e}"));
                 }
+
+                loop {
+                    let batch: Vec<_> =
+                        INTER_CANISTER_CALL_QUEUE.with(|q| q.borrow_mut().drain(..).collect());
+
+                    if batch.is_empty() {
+                        break;
+                    }
+
+                    for fut in batch {
+                        spawn(fut);
+                    }
+                }
             });
+
+            INTER_CANISTER_CALL_QUEUE.with(|queue| queue.borrow_mut().push(fut));
 
             Ok(())
         },
     )
 }
 
-fn cleanup(
-    ctx: Ctx,
-    global_resolve_id: &str,
-    global_reject_id: &str,
-) -> Result<(), Box<dyn Error>> {
-    dispatch_action(
-        ctx.clone(),
-        "DELETE_AZLE_RESOLVE_CALLBACK",
-        global_resolve_id.into_js(&ctx)?,
-        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
-        "cleanup",
-    )?;
+fn cleanup(global_resolve_id: &str, global_reject_id: &str) -> Result<(), Box<dyn Error>> {
+    with_ctx(|ctx| {
+        dispatch_action(
+            ctx.clone(),
+            "DELETE_AZLE_RESOLVE_CALLBACK",
+            global_resolve_id.into_js(&ctx)?,
+            "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
+            "cleanup",
+        )?;
 
-    dispatch_action(
-        ctx.clone(),
-        "DELETE_AZLE_REJECT_CALLBACK",
-        global_reject_id.into_js(&ctx)?,
-        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
-        "cleanup",
-    )?;
+        dispatch_action(
+            ctx.clone(),
+            "DELETE_AZLE_REJECT_CALLBACK",
+            global_reject_id.into_js(&ctx)?,
+            "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
+            "cleanup",
+        )?;
 
-    Ok(())
+        Ok(())
+    })
 }
 
 fn resolve_or_reject<'a>(

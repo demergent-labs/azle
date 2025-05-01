@@ -1,5 +1,6 @@
 {
+    "port": "4943",
     "expectedErrors": [
-        "Uncaught Error: Rejection code 2, Couldn't send message"
+        "Uncaught Error: The inter-canister call failed with reject code 2: Couldn't send message"
     ]
 }

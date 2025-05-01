@@ -1,4 +1,6 @@
 use std::cell::RefCell;
+use std::future::Future;
+use std::pin::Pin;
 
 use ic_stable_structures::{
     DefaultMemoryImpl,
@@ -23,8 +25,11 @@ mod wasm_binary_manipulation;
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 
+type InterCanisterCallFuture = Pin<Box<dyn Future<Output = ()> + 'static>>;
+
 thread_local! {
     static CONTEXT_REF_CELL: RefCell<Option<Context>> = RefCell::new(None);
     static CSPRNG: RefCell<StdRng> = RefCell::new(StdRng::from_seed([0;32]));
     static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+    static INTER_CANISTER_CALL_QUEUE: RefCell<Vec<InterCanisterCallFuture>> = RefCell::new(Vec::new());
 }
