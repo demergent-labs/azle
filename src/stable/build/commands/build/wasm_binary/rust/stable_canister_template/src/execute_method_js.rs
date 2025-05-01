@@ -1,11 +1,11 @@
 use std::{env::var, error::Error};
 
-use ic_cdk::{api::performance_counter, spawn, trap};
+use ic_cdk::{api::performance_counter, trap};
 use rquickjs::{Function, Object};
 
 use crate::{
-    INTER_CANISTER_CALL_QUEUE,
     benchmarking::record_benchmark,
+    drain_inter_canister_futures,
     rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
 };
 
@@ -48,38 +48,8 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
         Ok(())
     })?;
 
-    // INTER_CANISTER_CALL_QUEUE.with(|queue| {
-    //     let mut queued = std::mem::take(&mut *queue.borrow_mut());
-
-    //     ic_cdk::println!("queued length: {}", queued.len());
-
-    //     for fut in queued.drain(..) {
-    //         ic_cdk::println!("about to run spawn");
-
-    //         spawn(fut);
-
-    //         ic_cdk::println!("spawn executed");
-    //     }
-    // });
-
-    // TODO is the outer loop necessary?
-    // TODO make this as simple as possible
-    // TODO I think that we only need one
-    // TODO at the end of every call here in execute_method_js
-    // TODO and after every inter-canister callback
-    // TODO make sure to add a length check to our tests
-    // TODO for the global queue
-    loop {
-        let batch: Vec<_> = INTER_CANISTER_CALL_QUEUE.with(|q| q.borrow_mut().drain(..).collect());
-
-        if batch.is_empty() {
-            break;
-        }
-
-        for fut in batch {
-            spawn(fut);
-        }
-    }
+    // This MUST be called outside of the with_ctx closure
+    drain_inter_canister_futures();
 
     if let Ok(azle_record_benchmarks) = var("AZLE_RECORD_BENCHMARKS") {
         if azle_record_benchmarks == "true" {

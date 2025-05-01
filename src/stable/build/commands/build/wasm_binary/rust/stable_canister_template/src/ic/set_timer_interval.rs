@@ -1,13 +1,13 @@
 use core::time::Duration;
 use std::{cell::RefCell, rc::Rc};
 
-use ic_cdk::{spawn, trap};
+use ic_cdk::trap;
 use ic_cdk_timers::{TimerId, set_timer_interval};
 use rquickjs::{BigInt, Ctx, Function, Object, Result};
 use slotmap::Key;
 
 use crate::{
-    INTER_CANISTER_CALL_QUEUE,
+    drain_inter_canister_futures,
     rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
 };
 
@@ -47,18 +47,8 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                 trap(&format!("Azle TimerError: {e}"));
             }
 
-            loop {
-                let batch: Vec<_> =
-                    INTER_CANISTER_CALL_QUEUE.with(|q| q.borrow_mut().drain(..).collect());
-
-                if batch.is_empty() {
-                    break;
-                }
-
-                for fut in batch {
-                    spawn(fut);
-                }
-            }
+            // This MUST be called outside of the with_ctx closure
+            drain_inter_canister_futures();
         };
 
         let timer_id: TimerId = set_timer_interval(interval_duration, closure);

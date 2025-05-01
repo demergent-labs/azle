@@ -3,14 +3,14 @@ use std::error::Error;
 use candid::Principal;
 use ic_cdk::{
     api::call::{RejectionCode, call_raw128},
-    spawn, trap,
+    trap,
 };
 use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
 };
 
 use crate::{
-    INTER_CANISTER_CALL_QUEUE,
+    INTER_CANISTER_CALL_QUEUE, drain_inter_canister_futures,
     ic::throw_error,
     rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
     state::dispatch_action,
@@ -38,8 +38,6 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            // TODO in addition to this queued futures way of doing it,
-            // TODO I wonder if the new spawn implementation will run everything at the end anyway...
             let fut = Box::pin(async move {
                 // My understanding of how this works
                 // scopeguard will execute its closure at the end of the scope
@@ -78,18 +76,8 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                     trap(&format!("Azle CallRawError: {e}"));
                 }
 
-                loop {
-                    let batch: Vec<_> =
-                        INTER_CANISTER_CALL_QUEUE.with(|q| q.borrow_mut().drain(..).collect());
-
-                    if batch.is_empty() {
-                        break;
-                    }
-
-                    for fut in batch {
-                        spawn(fut);
-                    }
-                }
+                // This MUST be called outside of the with_ctx closure
+                drain_inter_canister_futures();
             });
 
             INTER_CANISTER_CALL_QUEUE.with(|queue| queue.borrow_mut().push(fut));
