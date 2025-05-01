@@ -7,7 +7,7 @@ import {
 } from '../../candid_definition_arb/types';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
-import { CandidValues } from '../../candid_values_arb';
+import { CandidValueConstraints, CandidValues } from '../../candid_values_arb';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
 import { bigintToSrcLiteral } from '../../to_src_literal/bigint';
@@ -28,9 +28,16 @@ export function NatDefinitionArb(
     return SimpleCandidDefinitionArb(context, 'nat');
 }
 
-export function NatValueArb(): fc.Arbitrary<CandidValues<bigint>> {
+export function NatValueArb(
+    context: Context<CandidValueConstraints>
+): fc.Arbitrary<CandidValues<bigint>> {
+    const isExperimental =
+        context.api === 'functional' ||
+        process.env.AZLE_EXPERIMENTAL === 'true';
     return SimpleCandidValuesArb(
-        fc.bigInt(0n, 1_000_000_000_000_000_000n), // TODO Remove max once https://github.com/second-state/wasmedge-quickjs/issues/125
+        isExperimental
+            ? fc.bigInt(0n, 1_000_000_000_000_000_000n) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
+            : fc.bigInt({ min: 0n }),
         bigintToSrcLiteral
     );
 }

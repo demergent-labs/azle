@@ -8,7 +8,7 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
             const path = runDetails.counterexamplePath;
             const experimental = process.env.AZLE_EXPERIMENTAL === 'true';
             const reproductionCommand = `${experimental ? 'AZLE_EXPERIMENTAL=true ' : ''}AZLE_PROPTEST_SEED=${seed}${path !== null ? ` AZLE_PROPTEST_PATH="${path}"` : ''} AZLE_VERBOSE=true AZLE_DEV_TEMPLATE=true npm test`;
-            const reproductionMessage = `To reproduce this exact test case, run:\n${reproductionCommand}`;
+            const reproductionMessage = `To reproduce this exact test case, run:\ncd ${process.cwd()}\n${reproductionCommand}`;
             console.info(reproductionMessage);
             if (runDetails.failed) {
                 throw new Error(
