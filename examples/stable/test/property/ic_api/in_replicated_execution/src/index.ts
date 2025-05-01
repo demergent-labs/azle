@@ -120,7 +120,8 @@ export default class {
             '_azle_reject_callbacks_len',
             '_azle_resolve_callbacks_len',
             '_azle_timer_callbacks_len',
-            '_azle_actions_len'
+            '_azle_actions_len',
+            '_azle_inter_canister_call_futures_len'
         ];
 
         if (acceptableMethods.includes(methodName)) {
