@@ -120,3 +120,9 @@ fn _azle_actions_len() -> i32 {
         })
     })
 }
+
+#[ic_cdk::query(guard = guard_against_non_controllers)]
+fn _azle_inter_canister_call_futures_len() -> u32 {
+    // Hard-coded to 0 because we don't use the inter-canister call futures queue in experimental mode
+    0
+}
