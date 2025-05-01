@@ -1,20 +1,32 @@
-import { IDL, postUpgrade, query, update } from 'azle';
+import { IDL, query, randSeed, update } from 'azle';
 
 export default class {
-    redeployed = false;
-
-    @postUpgrade
-    postUpgrade(): void {
-        this.redeployed = true;
+    @query([], IDL.Bool)
+    getInitCalled(): boolean {
+        return globalThis._azleInitCalled;
     }
 
     @query([], IDL.Bool)
-    getRedeployed(): boolean {
-        return this.redeployed;
+    getPostUpgradeCalled(): boolean {
+        return globalThis._azlePostUpgradeCalled;
     }
 
     @update([], IDL.Float64)
-    randomNumber(): number {
+    mathRandom(): number {
         return Math.random();
+    }
+
+    @update([], IDL.Vec(IDL.Nat8))
+    cryptoGetRandomValues(): Uint8Array {
+        let randomness = new Uint8Array(32);
+
+        crypto.getRandomValues(randomness);
+
+        return randomness;
+    }
+
+    @update
+    seedWith0(): void {
+        randSeed(new Uint8Array(32));
     }
 }

@@ -38,6 +38,8 @@ export type AzleIcExperimental = {
     performanceCounter: (counterType: string) => string;
     msgRejectCode: () => RejectCode;
     msgReply: (bytes: ArrayBuffer) => void;
+    randBytes: (byteLength: number) => ArrayBuffer;
+    randSeed: (seed: ArrayBuffer) => void;
     setCertifiedData: (dataBytes: ArrayBuffer) => void;
     setTimer: (delayString: string) => string;
     setTimerInterval: (intervalString: string) => string;
@@ -48,7 +50,7 @@ export type AzleIcExperimental = {
     // interceptor.
     acceptMessage: () => void;
     msgMethodName: () => string;
-    debugPrint: (...args: any) => void;
+    debugPrint: (message: string) => void;
     msgReject: (message: string) => void;
     msgRejectMsg: () => string;
     trap: (message: string) => never;

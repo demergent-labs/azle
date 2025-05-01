@@ -22,7 +22,7 @@ export type AzleIc = {
     clearTimer: (timerId: string) => void;
     cyclesBurn: (amountString: string) => string;
     dataCertificate: () => Uint8Array | undefined;
-    debugPrint: (...args: any) => void;
+    debugPrint: (message: string) => void;
     inReplicatedExecution: () => boolean;
     isController: (principalBytes: Uint8Array) => boolean;
     msgArgData: () => Uint8Array;
@@ -42,6 +42,8 @@ export type AzleIc = {
         cyclesString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
+    randBytes: (byteLength: number) => Uint8Array;
+    randSeed: (seed: Uint8Array) => void;
     setCertifiedData: (dataBytes: Uint8Array) => void;
     setTimerInterval: (interval: number) => bigint;
     setTimer: (delay: number) => bigint;

@@ -27,6 +27,8 @@ mod msg_reject_msg;
 mod msg_reply;
 mod notify_raw;
 mod performance_counter;
+mod rand_bytes;
+pub mod rand_seed;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
@@ -120,6 +122,10 @@ pub fn register(ctx: Ctx) -> Result<()> {
         "performanceCounter",
         performance_counter::get_function(ctx.clone()),
     )?;
+
+    ic.set("randBytes", rand_bytes::get_function(ctx.clone()))?;
+
+    ic.set("randSeed", rand_seed::get_function(ctx.clone()))?;
 
     ic.set(
         "setCertifiedData",
