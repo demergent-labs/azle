@@ -16,6 +16,12 @@ use crate::{
     state::dispatch_action,
 };
 
+#[derive(Clone, Copy)]
+enum SettleType {
+    Resolve,
+    Reject,
+}
+
 pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
     Function::new(
         ctx.clone(),
@@ -46,7 +52,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 // the closure will run, cleaning up the global promise callbacks.
                 // Even during a trap, the IC will ensure that the closure runs in its own call
                 // thus allowing us to recover from a trap and persist that state
-                let _cleanup = scopeguard::guard((), |_| {
+                let _cleanup_scopeguard = scopeguard::guard((), |_| {
                     let result = with_ctx(|ctx| {
                         // JavaScript code execution: macrotask when running as an ICP cleanup callback
                         // The ICP cleanup callback is executed when an inter-canister call reply or reject callback traps
@@ -80,7 +86,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
                 let result = with_ctx(|ctx| {
                     // JavaScript code execution: macrotask
-                    resolve_or_reject(
+                    settle_promise(
                         ctx.clone(),
                         &call_result,
                         &global_resolve_id,
@@ -147,31 +153,14 @@ fn cleanup(
     inside_cleanup_callback: bool,
 ) -> Result<(), Box<dyn Error>> {
     if inside_cleanup_callback {
-        let reject_callback =
-            get_callback(ctx.clone(), false, global_resolve_id, global_reject_id)?;
-
-        let reject_code = 10_001;
-        let reject_message = "executing within cleanup callback";
-
-        let err_js_object = Exception::from_message(
-            ctx.clone(),
-            &format!(
-                "The inter-canister call's reply or reject callback trapped. Azle reject code {}: {}",
-                reject_code, reject_message
-            ),
-        )?;
-
-        err_js_object.set("rejectCode", reject_code)?;
-        err_js_object.set("rejectMessage", reject_message)?;
-
-        call_with_error_handling(&ctx, &reject_callback, (err_js_object,))?;
+        reject_promise_with_cleanup_callback_error(ctx.clone(), global_reject_id)?;
     }
 
     dispatch_action(
         ctx.clone(),
         "DELETE_AZLE_RESOLVE_CALLBACK",
         global_resolve_id.into_js(&ctx)?,
-        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
+        "azle/src/stable/build/commands/build/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
         "cleanup",
     )?;
 
@@ -179,42 +168,70 @@ fn cleanup(
         ctx.clone(),
         "DELETE_AZLE_REJECT_CALLBACK",
         global_reject_id.into_js(&ctx)?,
-        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
+        "azle/src/stable/build/commands/build/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
         "cleanup",
     )?;
 
     Ok(())
 }
 
-fn resolve_or_reject<'a>(
+fn reject_promise_with_cleanup_callback_error(
+    ctx: Ctx,
+    global_reject_id: &str,
+) -> Result<(), Box<dyn Error>> {
+    let reject_callback = get_settle_callback(ctx.clone(), SettleType::Reject, global_reject_id)?;
+
+    let reject_code = 10_001;
+    let reject_message = "executing within cleanup callback";
+
+    let err_js_object = Exception::from_message(
+        ctx.clone(),
+        &format!(
+            "The inter-canister call's reply or reject callback trapped. Azle reject code {}: {}",
+            reject_code, reject_message
+        ),
+    )?;
+
+    err_js_object.set("rejectCode", reject_code)?;
+    err_js_object.set("rejectMessage", reject_message)?;
+
+    call_with_error_handling(&ctx, &reject_callback, (err_js_object,))?;
+
+    Ok(())
+}
+
+fn settle_promise<'a>(
     ctx: Ctx<'a>,
     call_result: &Result<Vec<u8>, (RejectionCode, String)>,
     global_resolve_id: &str,
     global_reject_id: &str,
 ) -> Result<(), Box<dyn Error>> {
-    let (should_resolve, js_value) = prepare_js_value(ctx.clone(), &call_result)?;
-    let callback = get_callback(
+    let (settle_type, settle_js_value) = prepare_settle_js_value(ctx.clone(), &call_result)?;
+    let settle_callback = get_settle_callback(
         ctx.clone(),
-        should_resolve,
-        global_resolve_id,
-        global_reject_id,
+        settle_type,
+        if matches!(settle_type, SettleType::Resolve) {
+            global_resolve_id
+        } else {
+            global_reject_id
+        },
     )?;
 
-    call_with_error_handling(&ctx, &callback, (js_value,))?;
+    call_with_error_handling(&ctx, &settle_callback, (settle_js_value,))?;
 
     Ok(())
 }
 
-fn prepare_js_value<'a>(
+fn prepare_settle_js_value<'a>(
     ctx: Ctx<'a>,
     call_result: &Result<Vec<u8>, (RejectionCode, String)>,
-) -> Result<(bool, Value<'a>), Box<dyn Error>> {
+) -> Result<(SettleType, Value<'a>), Box<dyn Error>> {
     match call_result {
         Ok(candid_bytes) => {
             let candid_bytes_js_value =
                 TypedArray::<u8>::new(ctx.clone(), candid_bytes.clone()).into_js(&ctx)?;
 
-            Ok((true, candid_bytes_js_value))
+            Ok((SettleType::Resolve, candid_bytes_js_value))
         }
         Err(err) => {
             let err_js_object = Exception::from_message(
@@ -228,38 +245,26 @@ fn prepare_js_value<'a>(
             err_js_object.set("rejectCode", err.0 as i32)?;
             err_js_object.set("rejectMessage", &err.1)?;
 
-            Ok((false, err_js_object.into_js(&ctx)?))
+            Ok((SettleType::Reject, err_js_object.into_js(&ctx)?))
         }
     }
 }
 
-fn get_callback<'a>(
+fn get_settle_callback<'a>(
     ctx: Ctx<'a>,
-    should_resolve: bool,
-    global_resolve_id: &str,
-    global_reject_id: &str,
+    settle_type: SettleType,
+    settle_global_id: &str,
 ) -> Result<Function<'a>, Box<dyn Error>> {
-    let global_object = get_resolve_or_reject_global_object(ctx.clone(), should_resolve)?;
-    let callback_name = if should_resolve {
-        global_resolve_id
-    } else {
-        global_reject_id
-    };
-
-    Ok(global_object.get(callback_name)?)
+    let settle_global_object = get_settle_global_object(ctx.clone(), settle_type)?;
+    Ok(settle_global_object.get(settle_global_id)?)
 }
 
-fn get_resolve_or_reject_global_object(
-    ctx: Ctx,
-    should_resolve: bool,
-) -> Result<Object, Box<dyn Error>> {
+fn get_settle_global_object(ctx: Ctx, settle_type: SettleType) -> Result<Object, Box<dyn Error>> {
     let globals = ctx.globals();
 
-    if should_resolve {
+    if matches!(settle_type, SettleType::Resolve) {
         Ok(globals.get("_azleResolveCallbacks")?)
     } else {
         Ok(globals.get("_azleRejectCallbacks")?)
     }
 }
-
-// TODO I feel like all of this JS stuff could use a nice refactor
