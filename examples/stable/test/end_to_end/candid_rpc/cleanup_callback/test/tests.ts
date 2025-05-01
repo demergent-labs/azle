@@ -1,32 +1,117 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, Test } from 'azle/_internal/test';
+import { expect, it, please, Test } from 'azle/_internal/test';
+import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/cleanup_callback/cleanup_callback.did';
 
-export function getTests(canister: ActorSubclass<_SERVICE>): Test {
+export function getTests(actor: ActorSubclass<_SERVICE>): Test {
     return () => {
-        it('gets randomness when awaited once', async () => {
-            const result = await canister.getRandomnessDirectly();
+        it('should return the initial reject code and message default values', async () => {
+            expect(await actor.getRejectCode()).toStrictEqual(0);
+            expect(await actor.getRejectMessage()).toStrictEqual('no error');
+        });
 
+        it('should return a Uint8Array of length 32 when getRandomness is called', async () => {
+            const result = await actor.getRandomness();
             expect(result).toHaveLength(32);
         });
 
-        it('gets randomness even when there are multiple levels of awaits', async () => {
-            const result = await canister.getRandomnessIndirectly();
-
-            expect(result).toHaveLength(32);
+        it('should reject with trap when getRandomnessWithTrapUncaught is called', async () => {
+            await expect(actor.getRandomnessWithTrapUncaught()).rejects.toThrow(
+                'trapped from getRandomnessWithTrapUncaught'
+            );
         });
 
-        it('gets randomness even when there are multiple awaits in multiple places at multiple levels', async () => {
-            const result = await canister.getRandomnessSuperIndirectly();
-
-            expect(result).toHaveLength(96);
+        it('should still return the initial reject code and message default values', async () => {
+            expect(await actor.getRejectCode()).toStrictEqual(0);
+            expect(await actor.getRejectMessage()).toStrictEqual('no error');
         });
 
-        it('is able to handle Promise<void>', async () => {
-            const result = await canister.returnPromiseVoid();
-
-            expect(result).toBeUndefined();
+        it('should have 0 globalThis._azleRejectCallbacks and 0 globalThis._azleResolveCallbacks', () => {
+            checkGlobalSettleCallbackLengths(0);
         });
+
+        it('should reject with trap when getRandomnessWithTrapCaught is called', async () => {
+            await expect(actor.getRandomnessWithTrapCaught()).rejects.toThrow(
+                'trapped from getRandomnessWithTrapCaught'
+            );
+        });
+
+        it('should return the updated reject code and message after caught trap', async () => {
+            expect(await actor.getRejectCode()).toStrictEqual(10_001);
+            expect(await actor.getRejectMessage()).toStrictEqual(
+                'executing within cleanup callback'
+            );
+        });
+
+        it('should have 0 globalThis._azleRejectCallbacks and 0 globalThis._azleResolveCallbacks', () => {
+            checkGlobalSettleCallbackLengths(0);
+        });
+
+        it('should reject with trap when getRandomnessWithTrapCaughtPromise is called', async () => {
+            await expect(
+                actor.getRandomnessWithTrapCaughtPromise()
+            ).rejects.toThrow(
+                'trapped from getRandomnessWithTrapCaughtPromise'
+            );
+        });
+
+        it('should return the updated reject code and message after caught trap in promise version', async () => {
+            expect(await actor.getRejectCode()).toStrictEqual(10_001);
+            expect(await actor.getRejectMessage()).toStrictEqual(
+                'executing within cleanup callback'
+            );
+        });
+
+        it('should have 0 globalThis._azleRejectCallbacks and 0 globalThis._azleResolveCallbacks', () => {
+            checkGlobalSettleCallbackLengths(0);
+        });
+
+        it('should reject with trap when getRandomnessWithTrapCaughtAndTrapAgain is called', async () => {
+            await expect(
+                actor.getRandomnessWithTrapCaughtAndTrapAgain()
+            ).rejects.toThrow(
+                'trapped from getRandomnessWithTrapCaughtAndTrapAgain'
+            );
+        });
+
+        it('should not return the updated reject code and message after caught trap in promise version', async () => {
+            expect(await actor.getRejectCode()).toStrictEqual(0);
+            expect(await actor.getRejectMessage()).toStrictEqual('no error');
+        });
+
+        it('should have 1 globalThis._azleRejectCallbacks and 1 globalThis._azleResolveCallbacks', () => {
+            checkGlobalSettleCallbackLengths(1);
+        });
+
+        please(
+            'delete the globalThis._azleRejectCallbacks and globalThis._azleResolveCallbacks',
+            async () => {
+                await actor.deleteAzleGlobalSettleCallbacks();
+            }
+        );
     };
+}
+
+function checkGlobalSettleCallbackLengths(expectedLength: number): void {
+    const azleRejectCallbacksLen = Number(
+        execSync(
+            `dfx canister call cleanup_callback _azle_reject_callbacks_len --output json`,
+            {
+                encoding: 'utf-8'
+            }
+        )
+    );
+
+    const azleResolveCallbacksLen = Number(
+        execSync(
+            `dfx canister call cleanup_callback _azle_resolve_callbacks_len --output json`,
+            {
+                encoding: 'utf-8'
+            }
+        )
+    );
+
+    expect(azleRejectCallbacksLen).toStrictEqual(expectedLength);
+    expect(azleResolveCallbacksLen).toStrictEqual(expectedLength);
 }
