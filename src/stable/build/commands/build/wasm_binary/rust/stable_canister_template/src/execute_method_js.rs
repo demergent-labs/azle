@@ -39,6 +39,7 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
             )
         })?;
 
+        // JavaScript macrotask
         call_with_error_handling(&ctx, &method_callback, ())?;
 
         Ok(())

@@ -4,8 +4,6 @@ use rquickjs::Ctx;
 
 use crate::CONTEXT_REF_CELL;
 
-use super::drain_microtasks;
-
 pub fn with_ctx<F, R>(callback: F) -> Result<R, Box<dyn Error>>
 where
     F: FnOnce(Ctx) -> Result<R, Box<dyn Error>>,
@@ -19,8 +17,6 @@ where
         context.with(|ctx| {
             let result = callback(ctx.clone())
                 .map_err(|e| format!("QuickJS callback execution failed: {e}"))?;
-
-            drain_microtasks(&ctx);
 
             Ok(result)
         })

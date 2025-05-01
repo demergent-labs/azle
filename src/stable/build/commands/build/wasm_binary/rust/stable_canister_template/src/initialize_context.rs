@@ -76,18 +76,19 @@ pub fn initialize_context(
 
         globals.set("process", process)?;
 
-        // JavaScript macrotask
+        // JavaScript code execution: macrotask
         let promise = Module::evaluate(ctx.clone(), main_js_path, js)?;
 
         // We should handle the promise error before drain_microtasks
-        // as all microtasks queued from the macrotask execution
+        // as all JavaScript microtasks queued from the JavaScript code execution above
         // will be discarded if there is a trap
         handle_promise_error(&ctx, &promise)?;
 
-        // We consider the Module::evaluate above to be a macrotask,
-        // thus we drain all microtasks queued during its execution
+        // We must drain all microtasks that could have been queued during the JavaScript code execution above
         drain_microtasks(&ctx);
 
         Ok(())
     })
 }
+
+// TODO I am reworking drain_microtasks, I think we should only drain_microtasks after every macrotask execution
