@@ -4,6 +4,7 @@ use ic_cdk::trap;
 use rquickjs::{Array, Object, Value};
 
 use crate::{
+    INTER_CANISTER_CALL_FUTURES,
     benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry},
     guards::guard_against_non_controllers,
     rquickjs_utils::with_ctx,
@@ -79,4 +80,11 @@ fn _azle_actions_len() -> u32 {
         Ok(len) => len,
         Err(e) => trap(&format!("Azle ActionsLenError: {}", e)),
     }
+}
+
+#[ic_cdk::query(guard = guard_against_non_controllers)]
+fn _azle_inter_canister_call_futures_len() -> u32 {
+    INTER_CANISTER_CALL_FUTURES.with(|inter_canister_call_futures_ref_cell| {
+        inter_canister_call_futures_ref_cell.borrow().len() as u32
+    })
 }

@@ -98,6 +98,16 @@ export function runTests(tests: Test): void {
                         )
                     );
 
+                    const azleInterCanisterCallFuturesLen0 = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
                     const azleRejectCallbacksLen1 = Number(
@@ -133,6 +143,16 @@ export function runTests(tests: Test): void {
                     const azleActionsLen1 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+
+                    const azleInterCanisterCallFuturesLen1 = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
                             {
                                 cwd: getDfxRoot(),
                                 encoding: 'utf-8'
@@ -182,6 +202,16 @@ export function runTests(tests: Test): void {
                         )
                     );
 
+                    const azleInterCanisterCallFuturesLen2 = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+
                     console.info(
                         'azleRejectCallbacksLen0',
                         azleRejectCallbacksLen0
@@ -195,6 +225,10 @@ export function runTests(tests: Test): void {
                         azleTimerCallbacksLen0
                     );
                     console.info('azleActionsLen0', azleActionsLen0);
+                    console.info(
+                        'azleInterCanisterCallFuturesLen0',
+                        azleInterCanisterCallFuturesLen0
+                    );
 
                     console.info(
                         'azleRejectCallbacksLen1',
@@ -209,6 +243,10 @@ export function runTests(tests: Test): void {
                         azleTimerCallbacksLen1
                     );
                     console.info('azleActionsLen1', azleActionsLen1);
+                    console.info(
+                        'azleInterCanisterCallFuturesLen1',
+                        azleInterCanisterCallFuturesLen1
+                    );
 
                     console.info(
                         'azleRejectCallbacksLen2',
@@ -223,20 +261,27 @@ export function runTests(tests: Test): void {
                         azleTimerCallbacksLen2
                     );
                     console.info('azleActionsLen2', azleActionsLen2);
+                    console.info(
+                        'azleInterCanisterCallFuturesLen2',
+                        azleInterCanisterCallFuturesLen2
+                    );
 
                     expect(azleRejectCallbacksLen0).toEqual(0);
                     expect(azleResolveCallbacksLen0).toEqual(0);
                     expect(azleTimerCallbacksLen0).toEqual(0);
+                    expect(azleInterCanisterCallFuturesLen0).toEqual(0);
 
                     expect(azleRejectCallbacksLen1).toEqual(0);
                     expect(azleResolveCallbacksLen1).toEqual(0);
                     expect(azleTimerCallbacksLen1).toEqual(0);
                     expect(azleActionsLen0).toEqual(azleActionsLen1);
+                    expect(azleInterCanisterCallFuturesLen1).toEqual(0);
 
                     expect(azleRejectCallbacksLen2).toEqual(0);
                     expect(azleResolveCallbacksLen2).toEqual(0);
                     expect(azleTimerCallbacksLen2).toEqual(0);
                     expect(azleActionsLen0).toEqual(azleActionsLen2);
+                    expect(azleInterCanisterCallFuturesLen2).toEqual(0);
                 }
             });
         });

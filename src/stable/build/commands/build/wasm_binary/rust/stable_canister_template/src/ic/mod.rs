@@ -3,7 +3,7 @@ use std::fmt::Display;
 use rquickjs::{Ctx, Error, Object, Result, String};
 
 mod accept_message;
-mod call_raw;
+pub mod call_raw;
 mod candid_decode;
 mod candid_encode;
 mod canister_cycle_balance;

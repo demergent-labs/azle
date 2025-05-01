@@ -2,7 +2,6 @@ use std::cell::RefCell;
 use std::future::Future;
 use std::pin::Pin;
 
-use drain_inter_canister_futures::drain_inter_canister_futures;
 use ic_stable_structures::{
     DefaultMemoryImpl,
     memory_manager::{MemoryManager, VirtualMemory},
@@ -12,7 +11,6 @@ use rquickjs::Context;
 
 mod benchmarking;
 mod candid;
-mod drain_inter_canister_futures;
 mod execute_method_js;
 mod guards;
 mod ic;

@@ -5,7 +5,7 @@ use rquickjs::{Function, Object};
 
 use crate::{
     benchmarking::record_benchmark,
-    drain_inter_canister_futures,
+    ic::call_raw::drain_inter_canister_futures,
     rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
 };
 

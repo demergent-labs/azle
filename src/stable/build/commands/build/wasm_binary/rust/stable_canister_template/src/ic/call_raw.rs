@@ -3,14 +3,14 @@ use std::error::Error;
 use candid::Principal;
 use ic_cdk::{
     api::call::{RejectionCode, call_raw128},
-    trap,
+    spawn, trap,
 };
 use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
 };
 
 use crate::{
-    INTER_CANISTER_CALL_FUTURES, drain_inter_canister_futures,
+    INTER_CANISTER_CALL_FUTURES, InterCanisterCallFuture,
     ic::throw_error,
     rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
     state::dispatch_action,
@@ -98,6 +98,40 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
             Ok(())
         },
     )
+}
+
+/// Drains and spawns any queued inter-canister call futures.
+///
+/// ## Remarks
+///
+/// Every inter-canister call issued from the JavaScript environment using the `call` API
+/// creates an `InterCanisterCallFuture` and pushes it into the
+/// thread-local `INTER_CANISTER_CALL_FUTURES`.  
+/// When you `.await` such a call, the await can resolve in **two** ways:
+///
+/// 1. **Asynchronously** — the normal case, where the reply arrives later in a
+///    fresh replicated call context (the `reply` or `reject` callback).
+/// 2. **Synchronously** — certain errors (e.g. transient network failures) are
+///    raised immediately, so the `await` resumes *inside* the original
+///    `with_ctx` closure.
+///
+/// In the synchronous path the continuation is already executing within an
+/// outer `with_ctx`; calling `with_ctx` again would panic as `already borrowed`.  
+/// To avoid nested-context errors, each future is queued and executed **after**
+/// a top-level ICP call's `with_ctx` returns.
+///
+pub fn drain_inter_canister_futures() {
+    let inter_canister_call_futures: Vec<InterCanisterCallFuture> = INTER_CANISTER_CALL_FUTURES
+        .with(|inter_canister_call_futures_ref_cell| {
+            inter_canister_call_futures_ref_cell
+                .borrow_mut()
+                .drain(..)
+                .collect()
+        });
+
+    for inter_canister_call_future in inter_canister_call_futures {
+        spawn(inter_canister_call_future);
+    }
 }
 
 fn cleanup(
