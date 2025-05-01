@@ -8,7 +8,15 @@ import { trap } from './ic_apis/trap';
  * @param rawError - The raw error value to handle. Can be an Error object or any other value
  * @returns never - This function always traps and never returns
  */
-export function handleUncaughtError(rawError: any): never {
+export function handleUncaughtError(rawError: any): never | void {
+    const executingWithinCleanupCallback =
+        rawError.rejectCode === 10_001 &&
+        rawError.rejectMessage === 'executing within cleanup callback';
+
+    if (executingWithinCleanupCallback === true) {
+        return;
+    }
+
     if (rawError instanceof Error) {
         const error = rawError;
         trap(`Uncaught ${error.name}: ${error.message}\n${error.stack}`);
