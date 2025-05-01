@@ -1,12 +1,15 @@
 use core::time::Duration;
 use std::{cell::RefCell, rc::Rc};
 
-use ic_cdk::trap;
+use ic_cdk::{spawn, trap};
 use ic_cdk_timers::{TimerId, set_timer_interval};
 use rquickjs::{BigInt, Ctx, Function, Object, Result};
 use slotmap::Key;
 
-use crate::rquickjs_utils::{call_with_error_handling, with_ctx};
+use crate::{
+    INTER_CANISTER_CALL_QUEUE,
+    rquickjs_utils::{call_with_error_handling, with_ctx},
+};
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(ctx.clone(), move |interval: u64| -> Result<BigInt> {
@@ -38,6 +41,19 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
 
             if let Err(e) = result {
                 trap(&format!("Azle TimerIntervalError: {e}"));
+            }
+
+            loop {
+                let batch: Vec<_> =
+                    INTER_CANISTER_CALL_QUEUE.with(|q| q.borrow_mut().drain(..).collect());
+
+                if batch.is_empty() {
+                    break;
+                }
+
+                for fut in batch {
+                    spawn(fut);
+                }
             }
         };
 
