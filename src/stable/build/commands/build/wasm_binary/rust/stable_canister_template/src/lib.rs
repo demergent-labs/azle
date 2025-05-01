@@ -32,6 +32,6 @@ type InterCanisterCallFuture = Pin<Box<dyn Future<Output = ()> + 'static>>;
 thread_local! {
     static CONTEXT_REF_CELL: RefCell<Option<Context>> = RefCell::new(None);
     static CSPRNG: RefCell<StdRng> = RefCell::new(StdRng::from_seed([0;32]));
+    static INTER_CANISTER_CALL_FUTURES: RefCell<Vec<InterCanisterCallFuture>> = RefCell::new(Vec::new());
     static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-    static INTER_CANISTER_CALL_QUEUE: RefCell<Vec<InterCanisterCallFuture>> = RefCell::new(Vec::new());
 }

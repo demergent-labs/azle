@@ -10,7 +10,7 @@ use rquickjs::{
 };
 
 use crate::{
-    INTER_CANISTER_CALL_QUEUE, drain_inter_canister_futures,
+    INTER_CANISTER_CALL_FUTURES, drain_inter_canister_futures,
     ic::throw_error,
     rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
     state::dispatch_action,
@@ -38,7 +38,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            let fut = Box::pin(async move {
+            let inter_canister_call_future = Box::pin(async move {
                 // My understanding of how this works:
                 // scopeguard will execute its closure at the end of the scope.
                 // After a successful or unsuccessful inter-canister call (await point)
@@ -89,7 +89,11 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 }
             });
 
-            INTER_CANISTER_CALL_QUEUE.with(|queue| queue.borrow_mut().push(fut));
+            INTER_CANISTER_CALL_FUTURES.with(|inter_canister_call_futures_ref_cell| {
+                inter_canister_call_futures_ref_cell
+                    .borrow_mut()
+                    .push(inter_canister_call_future)
+            });
 
             Ok(())
         },
