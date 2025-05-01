@@ -90,5 +90,3 @@ pub fn initialize_context(
         Ok(())
     })
 }
-
-// TODO I am reworking drain_microtasks, I think we should only drain_microtasks after every macrotask execution

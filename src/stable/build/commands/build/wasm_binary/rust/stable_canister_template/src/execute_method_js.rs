@@ -6,7 +6,7 @@ use rquickjs::{Function, Object};
 use crate::{
     INTER_CANISTER_CALL_QUEUE,
     benchmarking::record_benchmark,
-    rquickjs_utils::{call_with_error_handling, with_ctx},
+    rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
 };
 
 #[unsafe(no_mangle)]
@@ -39,8 +39,11 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
             )
         })?;
 
-        // JavaScript macrotask
+        // JavaScript code execution: macrotask
         call_with_error_handling(&ctx, &method_callback, ())?;
+
+        // We must drain all microtasks that could have been queued during the JavaScript code execution above
+        drain_microtasks(&ctx);
 
         Ok(())
     })?;

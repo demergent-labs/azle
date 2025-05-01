@@ -12,7 +12,7 @@ use rquickjs::{
 use crate::{
     INTER_CANISTER_CALL_QUEUE,
     ic::throw_error,
-    rquickjs_utils::{call_with_error_handling, with_ctx},
+    rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
     state::dispatch_action,
 };
 
@@ -48,6 +48,8 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 // Even during a trap, the IC will ensure that the closure runs in its own call
                 // thus allowing us to recover from a trap and persist that state
                 let _cleanup = scopeguard::guard((), |_| {
+                    // TODO is this technically a macro task?
+                    // TODO does it need to run microtasks and the spawn queue?
                     let result = cleanup(&global_resolve_id, &global_reject_id);
 
                     if let Err(e) = result {
@@ -58,12 +60,23 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
                 let result = with_ctx(|ctx| {
-                    resolve_or_reject(
+                    // JavaScript code execution: macrotask
+                    let result = resolve_or_reject(
                         ctx.clone(),
                         &call_result,
                         &global_resolve_id,
                         &global_reject_id,
-                    )?;
+                    );
+
+                    // We should handle the resolve_or_reject error before drain_microtasks
+                    // as all JavaScript microtasks queued from the JavaScript code execution above
+                    // will be discarded if there is a trap
+                    if let Err(e) = result {
+                        trap(&format!("Azle CallRawError: {e}"));
+                    }
+
+                    // We must drain all microtasks that could have been queued during the JavaScript code execution above
+                    drain_microtasks(&ctx);
 
                     Ok(())
                 });

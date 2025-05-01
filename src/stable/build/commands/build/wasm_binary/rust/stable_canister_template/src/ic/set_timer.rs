@@ -8,7 +8,7 @@ use slotmap::Key;
 
 use crate::{
     INTER_CANISTER_CALL_QUEUE,
-    rquickjs_utils::{call_with_error_handling, with_ctx},
+    rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
 };
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
@@ -34,7 +34,19 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                         format!("Failed to get globalThis._azleTimerCallbacks['{timer_id}']: {e}")
                     })?;
 
+                // JavaScript code execution: macrotask
                 call_with_error_handling(&ctx, &timer_callback, ())?;
+
+                Ok(())
+            });
+
+            if let Err(e) = result {
+                trap(&format!("Azle TimerError: {e}"));
+            }
+
+            let result = with_ctx(|ctx| {
+                // We must drain all microtasks that could have been queued during the JavaScript code execution above
+                drain_microtasks(&ctx);
 
                 Ok(())
             });
