@@ -37,14 +37,6 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                 // JavaScript code execution: macrotask
                 call_with_error_handling(&ctx, &timer_callback, ())?;
 
-                Ok(())
-            });
-
-            if let Err(e) = result {
-                trap(&format!("Azle TimerIntervalError: {e}"));
-            }
-
-            let result = with_ctx(|ctx| {
                 // We must drain all microtasks that could have been queued during the JavaScript code execution above
                 drain_microtasks(&ctx);
 

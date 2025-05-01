@@ -61,19 +61,12 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
 
                 let result = with_ctx(|ctx| {
                     // JavaScript code execution: macrotask
-                    let result = resolve_or_reject(
+                    resolve_or_reject(
                         ctx.clone(),
                         &call_result,
                         &global_resolve_id,
                         &global_reject_id,
-                    );
-
-                    // We should handle the resolve_or_reject error before drain_microtasks
-                    // as all JavaScript microtasks queued from the JavaScript code execution above
-                    // will be discarded if there is a trap
-                    if let Err(e) = result {
-                        trap(&format!("Azle CallRawError: {e}"));
-                    }
+                    )?;
 
                     // We must drain all microtasks that could have been queued during the JavaScript code execution above
                     drain_microtasks(&ctx);
