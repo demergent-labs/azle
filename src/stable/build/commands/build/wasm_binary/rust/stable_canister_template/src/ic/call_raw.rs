@@ -2,7 +2,7 @@ use std::error::Error;
 
 use candid::Principal;
 use ic_cdk::{
-    api::call::{RejectionCode, call_raw128},
+    api::call::{RejectionCode, call_raw128, is_recovering_from_trap},
     spawn, trap,
 };
 use rquickjs::{
@@ -38,6 +38,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
+            // TODO look into the need for the Box::pin
             let inter_canister_call_future = Box::pin(async move {
                 // My understanding of how this works:
                 // scopeguard will execute its closure at the end of the scope.
@@ -52,7 +53,12 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                         // If the reply or reject callback does not trap, this will run in the same call
                         // as the reply or reject callback, and thus won't be a macrotask, but will still
                         // be a JavaScript execution
-                        cleanup(ctx.clone(), &global_resolve_id, &global_reject_id)?;
+                        cleanup(
+                            ctx.clone(),
+                            &global_resolve_id,
+                            &global_reject_id,
+                            is_recovering_from_trap(),
+                        )?;
 
                         // We must drain all microtasks that could have been queued during previous JavaScript executions
                         // Those executions include the resolve_or_reject macrotask, the cleanup call above as a regular
@@ -138,7 +144,29 @@ fn cleanup(
     ctx: Ctx,
     global_resolve_id: &str,
     global_reject_id: &str,
+    inside_cleanup_callback: bool,
 ) -> Result<(), Box<dyn Error>> {
+    if inside_cleanup_callback {
+        let reject_callback =
+            get_callback(ctx.clone(), false, global_resolve_id, global_reject_id)?;
+
+        let reject_code = 10_001;
+        let reject_message = "executing within cleanup callback";
+
+        let err_js_object = Exception::from_message(
+            ctx.clone(),
+            &format!(
+                "The inter-canister call's reply or reject callback trapped. Azle reject code {}: {}",
+                reject_code, reject_message
+            ),
+        )?;
+
+        err_js_object.set("rejectCode", reject_code)?;
+        err_js_object.set("rejectMessage", reject_message)?;
+
+        call_with_error_handling(&ctx, &reject_callback, (err_js_object,))?;
+    }
+
     dispatch_action(
         ctx.clone(),
         "DELETE_AZLE_RESOLVE_CALLBACK",
@@ -233,3 +261,5 @@ fn get_resolve_or_reject_global_object(
         Ok(globals.get("_azleRejectCallbacks")?)
     }
 }
+
+// TODO I feel like all of this JS stuff could use a nice refactor
