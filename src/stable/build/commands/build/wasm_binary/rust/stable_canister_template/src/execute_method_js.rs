@@ -42,7 +42,7 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
         // JavaScript code execution: macrotask
         call_with_error_handling(&ctx, &method_callback, ())?;
 
-        // We must drain all microtasks that could have been queued during the JavaScript code execution above
+        // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
         drain_microtasks(&ctx);
 
         Ok(())

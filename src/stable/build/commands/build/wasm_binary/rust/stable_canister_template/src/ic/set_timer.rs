@@ -37,7 +37,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                 // JavaScript code execution: macrotask
                 call_with_error_handling(&ctx, &timer_callback, ())?;
 
-                // We must drain all microtasks that could have been queued during the JavaScript code execution above
+                // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
                 drain_microtasks(&ctx);
 
                 Ok(())

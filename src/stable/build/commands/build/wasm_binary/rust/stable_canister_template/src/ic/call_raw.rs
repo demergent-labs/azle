@@ -39,20 +39,35 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
             let fut = Box::pin(async move {
-                // My understanding of how this works
-                // scopeguard will execute its closure at the end of the scope
-                // After a successful or unsuccessful cross-canister call (await point)
-                // the closure will run, cleaning up the global promise callbacks
+                // My understanding of how this works:
+                // scopeguard will execute its closure at the end of the scope.
+                // After a successful or unsuccessful inter-canister call (await point)
+                // the closure will run, cleaning up the global promise callbacks.
                 // Even during a trap, the IC will ensure that the closure runs in its own call
                 // thus allowing us to recover from a trap and persist that state
                 let _cleanup = scopeguard::guard((), |_| {
-                    // TODO is this technically a macro task?
-                    // TODO does it need to run microtasks and the spawn queue?
-                    let result = cleanup(&global_resolve_id, &global_reject_id);
+                    let result = with_ctx(|ctx| {
+                        // JavaScript code execution: macrotask when running as an ICP cleanup callback
+                        // The ICP cleanup callback is executed when an inter-canister call reply or reject callback traps
+                        // If the reply or reject callback does not trap, this will run in the same call
+                        // as the reply or reject callback, and thus won't be a macrotask, but will still
+                        // be a JavaScript execution
+                        cleanup(ctx.clone(), &global_resolve_id, &global_reject_id)?;
+
+                        // We must drain all microtasks that could have been queued during previous JavaScript executions
+                        // Those executions include the resolve_or_reject macrotask, the cleanup call above as a regular
+                        // JavaScript execution, or the cleanup callback above as a macrotask execution
+                        drain_microtasks(&ctx);
+
+                        Ok(())
+                    });
 
                     if let Err(e) = result {
                         trap(&format!("Azle CallRawCleanupError: {e}"));
                     }
+
+                    // This MUST be called outside of the with_ctx closure
+                    drain_inter_canister_futures();
                 });
 
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
@@ -66,18 +81,12 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                         &global_reject_id,
                     )?;
 
-                    // We must drain all microtasks that could have been queued during the JavaScript code execution above
-                    drain_microtasks(&ctx);
-
                     Ok(())
                 });
 
                 if let Err(e) = result {
                     trap(&format!("Azle CallRawError: {e}"));
                 }
-
-                // This MUST be called outside of the with_ctx closure
-                drain_inter_canister_futures();
             });
 
             INTER_CANISTER_CALL_QUEUE.with(|queue| queue.borrow_mut().push(fut));
@@ -87,26 +96,28 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
     )
 }
 
-fn cleanup(global_resolve_id: &str, global_reject_id: &str) -> Result<(), Box<dyn Error>> {
-    with_ctx(|ctx| {
-        dispatch_action(
-            ctx.clone(),
-            "DELETE_AZLE_RESOLVE_CALLBACK",
-            global_resolve_id.into_js(&ctx)?,
-            "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
-            "cleanup",
-        )?;
+fn cleanup(
+    ctx: Ctx,
+    global_resolve_id: &str,
+    global_reject_id: &str,
+) -> Result<(), Box<dyn Error>> {
+    dispatch_action(
+        ctx.clone(),
+        "DELETE_AZLE_RESOLVE_CALLBACK",
+        global_resolve_id.into_js(&ctx)?,
+        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
+        "cleanup",
+    )?;
 
-        dispatch_action(
-            ctx.clone(),
-            "DELETE_AZLE_REJECT_CALLBACK",
-            global_reject_id.into_js(&ctx)?,
-            "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
-            "cleanup",
-        )?;
+    dispatch_action(
+        ctx.clone(),
+        "DELETE_AZLE_REJECT_CALLBACK",
+        global_reject_id.into_js(&ctx)?,
+        "azle/src/stable/build/commands/compile/wasm_binary/rust/stable_canister_template/src/ic/call_raw.rs",
+        "cleanup",
+    )?;
 
-        Ok(())
-    })
+    Ok(())
 }
 
 fn resolve_or_reject<'a>(
