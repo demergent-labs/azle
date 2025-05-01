@@ -230,7 +230,7 @@ function handleBenchmarking(): string {
                 type: 'SET_AZLE_CANISTER_METHOD_NAMES',
                 payload: canisterMethodNames,
                 location: {
-                    filepath: 'azle/src/stable/build/commands/compile/javascript.ts',
+                    filepath: 'azle/src/stable/build/commands/build/javascript.ts',
                     functionName: 'handleBenchmarking'
                 }
             });
