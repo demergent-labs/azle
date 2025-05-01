@@ -28,6 +28,7 @@ const azleKeywords = [
 
 const jsKeywords = [
     '__proto__',
+    'as',
     'any',
     'await',
     'break',
@@ -70,6 +71,7 @@ const jsKeywords = [
     'throw',
     'true',
     'try',
+    'type',
     'typeof',
     'var',
     'void',
