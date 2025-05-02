@@ -1,6 +1,8 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
+import { runCommand as runDevTemplateCommand } from '#build/commands/dev/template/stable';
+import { runCommand as runDevExperimentalTemplateCommand } from '#build/commands/dev/template/stable';
 import {
     experimentalMessageCli,
     experimentalMessageDfxJson
@@ -8,7 +10,6 @@ import {
 import { runCommand as runBuildCommand } from '#commands/build/index';
 import { runCommand as runCleanCommand } from '#commands/clean';
 import { runCommand as runDevSetupCommand } from '#commands/dev/setup/index';
-import { runCommand as runDevTemplateCommand } from '#commands/dev/template';
 import { runCommand as runExtensionInstallCommand } from '#commands/extension/install';
 import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runNewCommand } from '#commands/new';
@@ -87,7 +88,7 @@ export async function build(): Promise<void> {
     }
 
     if (command === 'upload-assets') {
-        throw new Error(experimentalMessageCli(`the ${command} command`));
+        throw new Error(experimentalMessageDfxJson(`the ${command} command`));
     }
 
     throwIfInvalidCommand(command);
@@ -154,7 +155,17 @@ export async function handleDevSetupCommand(): Promise<void> {
 }
 
 async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
-    await runDevTemplateCommand(ioType);
+    const all = process.argv.includes('--all');
+    const experimental = process.argv.includes('--experimental');
+
+    if (all === true) {
+        await runDevTemplateCommand(ioType);
+        await runDevExperimentalTemplateCommand(ioType);
+    } else if (experimental === true) {
+        await runDevExperimentalTemplateCommand(ioType);
+    } else {
+        await runDevTemplateCommand(ioType);
+    }
 }
 
 async function handleBuildCommand(ioType: IOType): Promise<void> {
@@ -167,21 +178,28 @@ async function handleBuildCommand(ioType: IOType): Promise<void> {
 }
 
 async function handleNewCommand(): Promise<void> {
+    const experimental = process.argv.includes('--experimental');
     const httpServer = process.argv.includes('--http-server');
+    const projectName =
+        httpServer === true ? 'hello_world_http_server' : 'hello_world';
 
-    if (httpServer === true) {
+    if (httpServer === true && experimental === false) {
         throw new Error(experimentalMessageCli('the --http-server option'));
     }
-
     const templatePath = join(
         AZLE_ROOT,
         'examples',
-        'stable',
+        httpServer === true ? 'experimental' : 'stable',
         'demo',
-        'hello_world'
+        projectName
     );
 
-    await runNewCommand(azleVersion, templatePath);
+    await runNewCommand(
+        azleVersion,
+        templatePath,
+        httpServer === true,
+        experimental === true
+    );
 }
 
 async function handleGenerateCommand(): Promise<void> {
