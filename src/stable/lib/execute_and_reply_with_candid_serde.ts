@@ -46,12 +46,14 @@ export async function executeAndReplyWithCandidSerde(
         paramIdlTypes,
         canisterMethodIdlParamTypes
     );
+
     const unencodedResult = await getUnencodedResult(
         mode,
         manual,
         decodedArgs,
         callback
     );
+
     encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }
 

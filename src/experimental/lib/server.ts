@@ -10,7 +10,7 @@ import { IncomingMessageForServer } from 'http';
 // @ts-ignore
 import httpMessageParser from 'http-message-parser';
 
-import { idlEncode } from '#lib/execute_with_candid_serde';
+import { idlEncode } from '#lib/execute_and_reply_with_candid_serde';
 import { msgReply } from '#lib/ic_apis/index';
 
 import { CandidType } from './candid/candid_type';

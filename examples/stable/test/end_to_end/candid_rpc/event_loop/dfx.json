@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "event_loop": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/event_loop",
+                "node_compatibility": true
+            }
+        }
+    }
+}

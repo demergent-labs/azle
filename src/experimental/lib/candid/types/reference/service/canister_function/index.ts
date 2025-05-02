@@ -2,7 +2,7 @@ import '#experimental/lib/assert_experimental';
 
 import { IDL } from '@dfinity/candid';
 
-import { CanisterMethodMode } from '#lib/execute_with_candid_serde';
+import { CanisterMethodMode } from '#lib/execute_and_reply_with_candid_serde';
 import { call } from '#lib/ic_apis/index';
 import { Method, MethodMeta } from '#utils/types';
 

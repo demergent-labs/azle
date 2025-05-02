@@ -2,7 +2,7 @@ import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid';
 
-import { idlDecode, idlEncode } from '../execute_with_candid_serde';
+import { idlDecode, idlEncode } from '../execute_and_reply_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
 
 type CallOptions<Args extends any[] | Uint8Array | undefined> = {

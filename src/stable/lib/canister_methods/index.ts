@@ -7,7 +7,7 @@ import { handleUncaughtError } from '../error';
 import {
     CanisterMethodMode,
     executeAndReplyWithCandidSerde
-} from '../execute_with_candid_serde';
+} from '../execute_and_reply_with_candid_serde';
 import { InitOptions } from './init';
 import { InspectMessageOptions } from './inspect_message';
 import { PostUpgradeOptions } from './post_upgrade';
