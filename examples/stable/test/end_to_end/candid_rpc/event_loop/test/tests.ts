@@ -4,7 +4,19 @@ import { expect, it, Test } from 'azle/_internal/test';
 
 import { _SERVICE } from './dfx_generated/event_loop/event_loop.did';
 
-const METHODS = ['testOrdering0', 'testOrdering1'] as const;
+const METHODS = [
+    'testOrdering0',
+    'testOrdering1',
+    'testOrdering2',
+    'testOrdering3',
+    'testOrdering4',
+    'testOrdering5',
+    'testOrdering6',
+    'testOrdering7',
+    'testOrdering8',
+    'testOrdering9',
+    'testOrdering10'
+] as const;
 type MethodName = (typeof METHODS)[number];
 
 export function getTests(actor: ActorSubclass<_SERVICE>): Test {
