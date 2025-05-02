@@ -1,16 +1,13 @@
 import { IOType } from 'child_process';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { build as stableBuild } from '#build/index';
-import { runCommand as runStableNewCommand } from '#commands/new';
 import { findProjectRoot } from '#experimental/build/utils/find_project_root';
 import { runCommand as runBuildCommand } from '#experimental/commands/build/index';
-import { runCommand as runDevTemplateCommand } from '#experimental/commands/dev/template';
 import { runCommand as runUploadAssetsCommand } from '#experimental/commands/upload_assets/index';
 import { getCanisterConfig } from '#utils/get_canister_config';
-import { AZLE_ROOT } from '#utils/global_paths';
-import { Command, ExperimentalCommand, SubCommand } from '#utils/types';
+import { Command, ExperimentalCommand } from '#utils/types';
 
 import { devDependencies, version as azleVersion } from '../../../package.json';
 
@@ -30,14 +27,6 @@ export async function build(): Promise<void> {
 
     const ioType = process.env.AZLE_VERBOSE === 'true' ? 'inherit' : 'pipe';
 
-    if (command === 'dev') {
-        const handledDevCommand = await handleDevCommand();
-
-        if (handledDevCommand === true) {
-            return;
-        }
-    }
-
     if (command === 'post-install') {
         await handlePostInstallCommand();
 
@@ -56,31 +45,7 @@ export async function build(): Promise<void> {
         return;
     }
 
-    if (command === 'new') {
-        await handleNewCommand();
-
-        return;
-    }
-
     stableBuild();
-}
-
-async function handleDevCommand(): Promise<boolean> {
-    const subCommand = process.argv[3] as SubCommand['dev'];
-
-    if (subCommand === 'template') {
-        return await handleDevTemplateCommand('inherit');
-    }
-
-    return false;
-}
-
-async function handleDevTemplateCommand(ioType: IOType): Promise<boolean> {
-    const needsToInstallStable = process.argv.includes('--all');
-
-    await runDevTemplateCommand(ioType);
-    const done = needsToInstallStable === false;
-    return done;
 }
 
 async function handlePostInstallCommand(): Promise<void> {
@@ -98,36 +63,6 @@ async function handleBuildCommand(ioType: IOType): Promise<void> {
     const canisterConfig = await getCanisterConfig(canisterName);
 
     await runBuildCommand(canisterName, canisterConfig, ioType);
-}
-
-async function handleNewCommand(): Promise<void> {
-    const httpServer = process.argv.includes('--http-server');
-    const projectName =
-        httpServer === true ? 'hello_world_http_server' : 'hello_world';
-
-    const templatePath = join(
-        AZLE_ROOT,
-        'examples',
-        httpServer === true ? 'experimental' : 'stable',
-        'demo',
-        projectName
-    );
-
-    await runStableNewCommand(azleVersion, templatePath, httpServer === true);
-    await installAzleExperimentalDepsForNewProject(projectName);
-}
-
-async function installAzleExperimentalDepsForNewProject(
-    projectName: string
-): Promise<void> {
-    const packageJsonPath = join(projectName, 'package.json');
-    const currentPackageJsonContents = await readFile(packageJsonPath, {
-        encoding: 'utf-8'
-    });
-    let packageJson = JSON.parse(currentPackageJsonContents);
-    packageJson.dependencies['azle-experimental-deps'] =
-        devDependencies['azle-experimental-deps'];
-    await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
 }
 
 async function checkAzleExperimentalDeps(): Promise<void> {

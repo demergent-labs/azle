@@ -22,3 +22,23 @@ export function compile(
         }
     );
 }
+
+export function compileExperimental(
+    manifestPath: string,
+    wasmDest: string,
+    ioType: IOType
+): void {
+    execSyncPretty(
+        `CARGO_TARGET_DIR=${AZLE_CARGO_TARGET_DIR} cargo build --target wasm32-wasip1 --manifest-path ${manifestPath} --release --locked`,
+        {
+            stdio: ioType
+        }
+    );
+
+    execSyncPretty(
+        `wasi2ic ${AZLE_CARGO_TARGET_DIR}/wasm32-wasip1/release/experimental_canister_template.wasm ${wasmDest}`,
+        {
+            stdio: ioType
+        }
+    );
+}
