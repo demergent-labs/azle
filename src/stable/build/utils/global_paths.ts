@@ -17,3 +17,10 @@ export const STABLE_STATIC_CANISTER_TEMPLATE_PATH = join(
     'canister_templates',
     'stable.wasm'
 );
+
+export const EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH = join(
+    AZLE_ROOT,
+    'dist',
+    'canister_templates',
+    'experimental.wasm'
+);

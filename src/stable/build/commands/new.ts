@@ -8,7 +8,8 @@ import { devDependencies } from '../../../../package.json';
 export async function runCommand(
     azleVersion: string,
     templatePath: string,
-    useExperimentalDecorators?: boolean
+    useExperimentalDecorators?: boolean,
+    experimental?: boolean
 ): Promise<void> {
     if (process.argv[3] === undefined) {
         throw new Error(`You must provide a name for your Azle project`);
@@ -33,6 +34,11 @@ export async function runCommand(
         jest: devDependencies.jest,
         'ts-jest': devDependencies['ts-jest']
     };
+
+    if (experimental === true) {
+        packageJson.dependencies['azle-experimental-deps'] =
+            devDependencies['azle-experimental-deps'];
+    }
 
     const packageJsonPath = join(projectName, 'package.json');
     await mkdir(dirname(packageJsonPath), { recursive: true });
