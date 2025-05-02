@@ -142,7 +142,7 @@ function generateVariableAliasDeclarations(
                           false,
                           name,
                           api
-                      )}`
+                      )};`
                   ];
         return [
             ...paramTypeDeclarations,
