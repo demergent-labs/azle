@@ -15,7 +15,7 @@ import { Command, ExperimentalCommand, SubCommand } from '#utils/types';
 import { devDependencies, version as azleVersion } from '../../../package.json';
 
 export async function build(): Promise<void> {
-    await assertAzleExperimentalDeps();
+    await checkAzleExperimentalDeps();
 
     const command = process.argv[2] as
         | Command
@@ -130,7 +130,7 @@ async function installAzleExperimentalDepsForNewProject(
     await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
 }
 
-async function assertAzleExperimentalDeps(): Promise<void> {
+async function checkAzleExperimentalDeps(): Promise<void> {
     const projectRoot = await findProjectRoot();
     const theirAzleExperimentalDepsVersion =
         await getAzleExperimentalDepsVersion(projectRoot);
@@ -145,15 +145,17 @@ async function assertAzleExperimentalDeps(): Promise<void> {
     const installPrompt = `Please run \`npm install https://github.com/demergent-labs/azle-experimental-deps#${azleExperimentalDepsVersionHash}\``;
 
     if (theirAzleExperimentalDepsVersion === undefined) {
-        throw new Error(
-            `azle-experimental-deps is not installed. ${installPrompt}`
+        console.warn(
+            `azle-experimental-deps might not be installed. ${installPrompt} to ensure it is installed before running azle.`
         );
+        return;
     }
 
     if (theirAzleExperimentalDepsVersion !== azleExperimentalDepsVersion) {
-        throw new Error(
+        console.warn(
             `The version of azle-experimental-deps installed in your project (${theirAzleExperimentalDepsVersion}) does not match the version of azle-experimental-deps required by azle@${azleVersion} (${azleExperimentalDepsVersion}). ${installPrompt} to ensure that the versions match before running azle.`
         );
+        return;
     }
 }
 
