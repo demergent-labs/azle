@@ -47,7 +47,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering2(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
 
@@ -67,7 +67,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering3(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
 
@@ -91,7 +91,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering4(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
         ordering.push(1);
@@ -110,7 +110,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering5(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
 
@@ -125,7 +125,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering6(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
         ordering.push(1);
@@ -145,7 +145,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering7(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
         ordering.push(1);
@@ -170,7 +170,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering8(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
 
@@ -190,7 +190,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering9(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
 
@@ -214,7 +214,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering10(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
 
@@ -235,7 +235,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering11(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
 
@@ -252,7 +252,7 @@ export default class {
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering12(): Promise<number[]> {
-        const ordering: number[] = [];
+        let ordering: number[] = [];
 
         ordering.push(0);
 
@@ -269,6 +269,83 @@ export default class {
         Promise.resolve().then(() => {
             ordering.push(4);
         });
+
+        return ordering;
+    }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering13(): Promise<number[]> {
+        let ordering: number[] = [];
+
+        ordering.push(0);
+
+        await chunk();
+
+        ordering.push(1);
+
+        Promise.resolve().then(() => ordering.push(2));
+
+        await chunk();
+
+        ordering.push(3);
+
+        await Promise.resolve().then(() => ordering.push(4));
+
+        await chunk();
+
+        ordering.push(5);
+
+        Promise.resolve().then(() => ordering.push(6));
+
+        return ordering;
+    }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering14(): Promise<number[]> {
+        let ordering: number[] = [];
+
+        ordering.push(0);
+
+        await chunk();
+        ordering.push(1);
+
+        await chunk();
+        ordering.push(2);
+
+        await chunk();
+        ordering.push(3);
+
+        await chunk();
+        ordering.push(4);
+
+        await chunk();
+        ordering.push(5);
+
+        Promise.resolve().then(() => ordering.push(6));
+
+        return ordering;
+    }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering15(): Promise<number[]> {
+        let ordering: number[] = [];
+
+        ordering.push(0);
+
+        await chunk();
+        ordering.push(1);
+
+        Promise.resolve().then(() => ordering.push(2));
+
+        await chunk();
+        ordering.push(3);
+
+        await Promise.resolve().then(() => ordering.push(4));
+
+        await chunk();
+        ordering.push(5);
+
+        Promise.resolve().then(() => ordering.push(6));
 
         return ordering;
     }
