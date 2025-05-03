@@ -20,7 +20,12 @@ const METHODS = [
     'testOrdering12',
     'testOrdering13',
     'testOrdering14',
-    'testOrdering15'
+    'testOrdering15',
+    'testOrdering16',
+    'testOrdering17',
+    'testOrdering18',
+    'testOrdering19',
+    'testOrdering20'
 ] as const;
 type MethodName = (typeof METHODS)[number];
 

@@ -349,4 +349,135 @@ export default class {
 
         return ordering;
     }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering16(): Promise<number[]> {
+        let ordering: number[] = [];
+
+        ordering.push(0);
+
+        await chunk();
+
+        ordering.push(1);
+
+        queueMicrotask(() => ordering.push(2));
+
+        await chunk();
+
+        ordering.push(3);
+
+        await Promise.resolve().then(() => ordering.push(4));
+
+        await chunk();
+
+        ordering.push(5);
+
+        Promise.resolve().then(() => ordering.push(6));
+
+        return ordering;
+    }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering17(): Promise<number[]> {
+        let ordering: number[] = [];
+
+        ordering.push(0);
+
+        const sequence = (async (): Promise<void> => {
+            await chunk();
+            ordering.push(2);
+
+            await chunk();
+            ordering.push(3);
+        })();
+
+        ordering.push(1);
+
+        await sequence;
+
+        ordering.push(4);
+
+        await chunk();
+        ordering.push(5);
+
+        Promise.resolve().then(() => ordering.push(6));
+
+        return ordering;
+    }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering18(): Promise<number[]> {
+        let ordering: number[] = [];
+
+        ordering.push(0);
+
+        try {
+            await chunk();
+            ordering.push(1);
+
+            await Promise.resolve().then(() => ordering.push(2));
+        } finally {
+            ordering.push(3);
+
+            await chunk();
+            ordering.push(4);
+        }
+
+        ordering.push(5);
+
+        Promise.resolve().then(() => ordering.push(6));
+
+        return ordering;
+    }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering19(): Promise<number[]> {
+        let ordering: number[] = [];
+
+        ordering.push(0);
+
+        for (const n of [1, 2, 3]) {
+            queueMicrotask(() => ordering.push(n));
+        }
+
+        await chunk();
+
+        ordering.push(4);
+
+        await Promise.resolve().then(() => ordering.push(5));
+
+        Promise.resolve().then(() => ordering.push(6));
+
+        return ordering;
+    }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering20(): Promise<number[]> {
+        let ordering: number[] = [];
+
+        ordering.push(0);
+
+        const p1 = (async (): Promise<void> => {
+            await chunk();
+            ordering.push(2);
+        })();
+
+        const p2 = p1.then(async () => {
+            await chunk();
+            ordering.push(3);
+        });
+
+        ordering.push(1);
+
+        await p2;
+
+        ordering.push(4);
+
+        await chunk();
+        ordering.push(5);
+
+        Promise.resolve().then(() => ordering.push(6));
+
+        return ordering;
+    }
 }
