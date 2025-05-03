@@ -5,8 +5,8 @@ use rquickjs::{Function, Object};
 
 use crate::{
     benchmarking::record_benchmark,
-    ic::call_raw::drain_inter_canister_call_futures,
-    rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
+    ic::{drain_inter_canister_call_futures, drain_microtasks},
+    rquickjs_utils::{call_with_error_handling, with_ctx},
 };
 
 #[unsafe(no_mangle)]

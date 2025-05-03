@@ -1,4 +1,8 @@
-use rquickjs::Ctx;
+use rquickjs::{Ctx, Function, Result};
+
+pub fn get_function(ctx: Ctx) -> Result<Function> {
+    Function::new(ctx.clone(), move || -> () { drain_microtasks(&ctx) })
+}
 
 // Executes all pending jobs in the QuickJS job queue
 // These jobs are essentially JavaScript microtasks such as

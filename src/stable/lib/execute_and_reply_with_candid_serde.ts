@@ -47,12 +47,35 @@ export async function executeAndReplyWithCandidSerde(
         canisterMethodIdlParamTypes
     );
 
+    // JavaScript code execution: macrotask (if thought of in that way)
+    // This isn't strictly a macrotask because it is executing
+    // within the microtask drain loop, but we are treating it as a macrotask
+    // because from the point of view of the developer it behaves similarly.
+    // This is because we drain the microtasks queued because of this execution
+    // just after this execution, providing priority to its microtasks.
+    // Once its microtasks are drained, Azle's own microtasks will be drained to completion.
     const unencodedResult = await getUnencodedResult(
         mode,
         manual,
         decodedArgs,
         callback
     );
+
+    // We are treating the execution of the final JavaScript callback associated
+    // with the canister method as a macrotask, as described above.
+    // We have decided to drain the microtask queue here to
+    // ensure execution of all microtasks registered because of the macrotask execution above.
+    // This will ensure that all of these microtasks are executed before the final reply is sent.
+    // This call to drain the micotasks is happening within an outer microtask draining loop.
+    // This essentially gives priority to the microtasks that are registered
+    // because of the execution of the final JavaScript callback associated with the canister method.
+    if (globalThis._azleIc !== undefined) {
+        globalThis._azleIc.drainMicrotasks();
+    }
+
+    if (globalThis._azleIcExperimental !== undefined) {
+        throw new Error('Not implemented');
+    }
 
     encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);
 }

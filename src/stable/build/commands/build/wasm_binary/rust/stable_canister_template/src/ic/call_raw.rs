@@ -11,8 +11,8 @@ use rquickjs::{
 
 use crate::{
     INTER_CANISTER_CALL_FUTURES, InterCanisterCallFuture,
-    ic::throw_error,
-    rquickjs_utils::{call_with_error_handling, drain_microtasks, with_ctx},
+    ic::{drain_microtasks, throw_error},
+    rquickjs_utils::{call_with_error_handling, with_ctx},
     state::dispatch_action,
 };
 

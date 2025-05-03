@@ -9,7 +9,7 @@ use ic_wasi_polyfill::init_with_memory;
 use crate::{
     MEMORY_MANAGER_REF_CELL,
     execute_method_js::execute_method_js,
-    ic::rand_seed::rand_seed,
+    ic::rand_seed,
     initialize_context::{WasmEnvironment, initialize_context},
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };

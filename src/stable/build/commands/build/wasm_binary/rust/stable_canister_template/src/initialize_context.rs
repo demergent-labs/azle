@@ -4,8 +4,8 @@ use rquickjs::{Array, Context, Module, Object, Runtime, Undefined};
 
 use crate::{
     CONTEXT_REF_CELL,
-    ic::register,
-    rquickjs_utils::{drain_microtasks, handle_promise_error, with_ctx},
+    ic::{drain_microtasks, register},
+    rquickjs_utils::{handle_promise_error, with_ctx},
 };
 
 pub enum WasmEnvironment {

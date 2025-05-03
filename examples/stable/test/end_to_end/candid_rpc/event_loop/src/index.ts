@@ -45,23 +45,18 @@ export default class {
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // mix of awaited & un‑awaited promises
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering2(): Promise<number[]> {
         const ordering: number[] = [];
 
         ordering.push(0);
 
-        // give the event‑loop one clean micro‑task turn
         await Promise.resolve();
 
         ordering.push(1);
 
-        // guarantee 2 happens before any later micro‑tasks
         await Promise.resolve().then(() => ordering.push(2));
 
-        // schedule the rest without awaiting – they drain in order
         Promise.resolve().then(() => ordering.push(3));
         Promise.resolve().then(() => ordering.push(4));
         Promise.resolve().then(() => ordering.push(5));
@@ -70,15 +65,12 @@ export default class {
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // nested micro‑tasks + post‑flush work
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering3(): Promise<number[]> {
         const ordering: number[] = [];
 
         ordering.push(0);
 
-        // nested promise queues 2, then 3 in the same micro‑task flush
         Promise.resolve().then(() => {
             ordering.push(2);
             return Promise.resolve().then(() => ordering.push(3));
@@ -86,12 +78,10 @@ export default class {
 
         ordering.push(1);
 
-        // allow the nested jobs above to complete
         await Promise.resolve();
 
         await Promise.resolve().then(() => ordering.push(4));
 
-        // final un‑awaited micro‑task
         Promise.resolve().then(() => ordering.push(6));
 
         ordering.push(5);
@@ -99,8 +89,6 @@ export default class {
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // fan‑out with Promise.all, then more queued work
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering4(): Promise<number[]> {
         const ordering: number[] = [];
@@ -108,13 +96,11 @@ export default class {
         ordering.push(0);
         ordering.push(1);
 
-        // 2 and 3 complete in the same turn
         await Promise.all([
             Promise.resolve().then(() => ordering.push(2)),
             Promise.resolve().then(() => ordering.push(3))
         ]);
 
-        // remaining tasks drain after the method’s return
         Promise.resolve().then(() => ordering.push(4));
         Promise.resolve().then(() => ordering.push(5));
         Promise.resolve().then(() => ordering.push(6));
@@ -122,8 +108,6 @@ export default class {
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // five explicit “ticks” to prove sequential flushing
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering5(): Promise<number[]> {
         const ordering: number[] = [];
@@ -139,8 +123,6 @@ export default class {
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // macro‑task gap with `await chunk()` + later micro‑tasks
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering6(): Promise<number[]> {
         const ordering: number[] = [];
@@ -148,25 +130,19 @@ export default class {
         ordering.push(0);
         ordering.push(1);
 
-        // enqueue micro‑tasks 2 & 3 before the macro‑task break
         Promise.resolve().then(() => ordering.push(2));
         Promise.resolve().then(() => ordering.push(3));
 
-        // yields to a new macro‑task (simulated inter‑canister call)
         await chunk();
 
-        // resume in next macro‑task
         ordering.push(4);
 
-        // final micro‑tasks
         Promise.resolve().then(() => ordering.push(5));
         Promise.resolve().then(() => ordering.push(6));
 
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // Promise.race + Promise.all interplay
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering7(): Promise<number[]> {
         const ordering: number[] = [];
@@ -177,23 +153,21 @@ export default class {
         const p2 = Promise.resolve().then(() => ordering.push(2));
         const p3 = Promise.resolve().then(() => ordering.push(3));
 
-        await Promise.race([p2, p3]); // returns after first micro‑task turn
+        await Promise.race([p2, p3]);
 
         ordering.push(4);
 
-        await Promise.all([p2, p3]); // both already resolved
+        await Promise.all([p2, p3]);
 
         ordering.push(5);
 
-        await Promise.resolve(); // one more micro‑task “tick”
+        await Promise.resolve();
 
         ordering.push(6);
 
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // async IIFE with nested await
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering8(): Promise<number[]> {
         const ordering: number[] = [];
@@ -214,8 +188,6 @@ export default class {
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // `queueMicrotask` and staggered awaits
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering9(): Promise<number[]> {
         const ordering: number[] = [];
@@ -227,11 +199,11 @@ export default class {
 
         ordering.push(1);
 
-        await Promise.resolve(); // flushes 2 & 3
+        await Promise.resolve();
 
         ordering.push(4);
 
-        await Promise.resolve(); // another micro‑task turn
+        await Promise.resolve();
 
         ordering.push(5);
 
@@ -240,10 +212,29 @@ export default class {
         return ordering;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    // long `.then` chain demonstrating micro‑task sequencing
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering10(): Promise<number[]> {
+        const ordering: number[] = [];
+
+        ordering.push(0);
+
+        Promise.resolve()
+            .then(() => ordering.push(2))
+            .then(() => ordering.push(3))
+            .then(() => ordering.push(4))
+            .then(() => ordering.push(5));
+
+        ordering.push(1);
+
+        await chunk();
+
+        ordering.push(6);
+
+        return ordering;
+    }
+
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering11(): Promise<number[]> {
         const ordering: number[] = [];
 
         ordering.push(0);
@@ -252,13 +243,32 @@ export default class {
             .then(() => ordering.push(1))
             .then(() => ordering.push(2))
             .then(() => ordering.push(3))
-            .then(() => ordering.push(4));
+            .then(() => ordering.push(4))
+            .then(() => ordering.push(5))
+            .then(() => ordering.push(6));
 
-        await Promise.resolve(); // after chain drains
+        return ordering;
+    }
 
-        ordering.push(5);
+    @update([], IDL.Vec(IDL.Nat32))
+    async testOrdering12(): Promise<number[]> {
+        const ordering: number[] = [];
 
-        Promise.resolve().then(() => ordering.push(6));
+        ordering.push(0);
+
+        Promise.resolve()
+            .then(() => ordering.push(1))
+            .then(() => ordering.push(3))
+            .then(() => ordering.push(5))
+            .then(() => ordering.push(6));
+
+        await Promise.resolve();
+
+        ordering.push(2);
+
+        Promise.resolve().then(() => {
+            ordering.push(4);
+        });
 
         return ordering;
     }
