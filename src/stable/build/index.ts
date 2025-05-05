@@ -1,8 +1,8 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
+import { runCommand as runDevExperimentalTemplateCommand } from '#build/commands/dev/template/experimental';
 import { runCommand as runDevTemplateCommand } from '#build/commands/dev/template/stable';
-import { runCommand as runDevExperimentalTemplateCommand } from '#build/commands/dev/template/stable';
 import {
     experimentalMessageCli,
     experimentalMessageDfxJson
