@@ -2,6 +2,7 @@ import { cp, mkdir, readFile, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
 
 import { AZLE_ROOT } from '#utils/global_paths';
+import { CanisterConfig } from '#utils/types';
 
 import { devDependencies } from '../../../../package.json';
 
@@ -59,6 +60,32 @@ export async function runCommand(
     const tsConfigPath = join(projectName, 'tsconfig.json');
     await mkdir(dirname(tsConfigPath), { recursive: true });
     await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 4));
+
+    if (experimental === true) {
+        const templateDfxJsonString = await readFile(
+            join(templatePath, 'dfx.json'),
+            {
+                encoding: 'utf-8'
+            }
+        );
+
+        let dfxJson = JSON.parse(templateDfxJsonString);
+
+        // Set experimental flag for all canisters
+        dfxJson.canisters.map((canister: CanisterConfig) => {
+            if (canister.custom === undefined) {
+                canister.custom = {};
+            }
+            canister.custom.experimental = true;
+
+            return canister;
+        });
+
+        await writeFile(
+            join(projectName, 'dfx.json'),
+            JSON.stringify(dfxJson, null, 4)
+        );
+    }
 
     console.info(`${projectName} created successfully`);
 }
