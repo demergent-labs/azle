@@ -19,13 +19,26 @@ export async function runCommand(
 
     await cp(templatePath, projectName, { recursive: true });
 
-    configurePackageJson(projectName, templatePath, azleVersion, experimental);
-    configureTsConfig(projectName, useExperimentalDecorators);
-    configureDfxJson(projectName, templatePath, experimental);
+    await configurePackageJson(
+        projectName,
+        templatePath,
+        azleVersion,
+        experimental
+    );
+    await configureTsConfig(projectName, useExperimentalDecorators);
+    await configureDfxJson(projectName, templatePath, experimental);
 
     console.info(`${projectName} created successfully`);
 }
 
+/**
+ * Configures the package.json for the new project.
+ *
+ * @param projectName - The name of the project directory to create.
+ * @param templatePath - The path to the template directory to copy from.
+ * @param azleVersion - The version of Azle to set in the project's dependencies.
+ * @param experimental - Whether to include experimental dependencies in the project.
+ */
 async function configurePackageJson(
     projectName: string,
     templatePath: string,
@@ -58,6 +71,12 @@ async function configurePackageJson(
     await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
 }
 
+/**
+ * Configures the tsconfig.json for the new project
+ *
+ * @param projectName - The name of the project directory to create.
+ * @param useExperimentalDecorators - Whether to enable the TypeScript experimentalDecorators compiler option.
+ */
 async function configureTsConfig(
     projectName: string,
     useExperimentalDecorators: boolean
@@ -79,6 +98,13 @@ async function configureTsConfig(
     await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 4));
 }
 
+/**
+ * Configures the dfx.json for the new project to enable experimental mode for all canisters if the experimental argument is true.
+ *
+ * @param projectName - The name of the project directory to create.
+ * @param templatePath - The path to the template directory to read the base dfx.json from.
+ * @param experimental - Whether to set the experimental flag on all canisters.
+ */
 async function configureDfxJson(
     projectName: string,
     templatePath: string,
