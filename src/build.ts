@@ -38,12 +38,7 @@ build();
  */
 async function build(): Promise<void> {
     if (await isExperimental()) {
-        const azleExperimentalDepsVersionHash =
-            devDependencies['azle-experimental-deps'].split('#')[1];
-        console.warn(
-            `Experimental mode requires azle-experimental-deps`,
-            `If not yet installed, run \`npm install https://github.com/demergent-labs/azle-experimental-deps#${azleExperimentalDepsVersionHash}\`.`
-        );
+        warnAboutExperimentalDeps();
         const { build } = await import('#experimental/build/index');
         await build();
     } else {
@@ -80,4 +75,13 @@ async function isExperimental(): Promise<boolean> {
     }
 
     return false;
+}
+
+function warnAboutExperimentalDeps(): void {
+    const azleExperimentalDepsVersionHash =
+        devDependencies['azle-experimental-deps'].split('#')[1];
+    console.warn(
+        `Experimental mode requires azle-experimental-deps`,
+        `If not yet installed, run \`npm install https://github.com/demergent-labs/azle-experimental-deps#${azleExperimentalDepsVersionHash}\`.`
+    );
 }

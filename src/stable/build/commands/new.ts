@@ -8,8 +8,8 @@ import { devDependencies } from '../../../../package.json';
 export async function runCommand(
     azleVersion: string,
     templatePath: string,
-    useExperimentalDecorators?: boolean,
-    experimental?: boolean
+    useExperimentalDecorators: boolean = false,
+    experimental: boolean = false
 ): Promise<void> {
     if (process.argv[3] === undefined) {
         throw new Error(`You must provide a name for your Azle project`);
@@ -19,6 +19,19 @@ export async function runCommand(
 
     await cp(templatePath, projectName, { recursive: true });
 
+    configurePackageJson(projectName, templatePath, azleVersion, experimental);
+    configureTsConfig(projectName, useExperimentalDecorators);
+    configureDfxJson(projectName, templatePath, experimental);
+
+    console.info(`${projectName} created successfully`);
+}
+
+async function configurePackageJson(
+    projectName: string,
+    templatePath: string,
+    azleVersion: string,
+    experimental: boolean
+): Promise<void> {
     const templatePackageJsonString = await readFile(
         join(templatePath, 'package.json'),
         {
@@ -43,7 +56,12 @@ export async function runCommand(
     const packageJsonPath = join(projectName, 'package.json');
     await mkdir(dirname(packageJsonPath), { recursive: true });
     await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
+}
 
+async function configureTsConfig(
+    projectName: string,
+    useExperimentalDecorators: boolean
+): Promise<void> {
     const templateTsConfigString = await readFile(
         join(AZLE_ROOT, 'tsconfig.dev.json'),
         { encoding: 'utf-8' }
@@ -59,7 +77,13 @@ export async function runCommand(
     const tsConfigPath = join(projectName, 'tsconfig.json');
     await mkdir(dirname(tsConfigPath), { recursive: true });
     await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 4));
+}
 
+async function configureDfxJson(
+    projectName: string,
+    templatePath: string,
+    experimental: boolean
+): Promise<void> {
     if (experimental === true) {
         const templateDfxJsonString = await readFile(
             join(templatePath, 'dfx.json'),
@@ -83,6 +107,4 @@ export async function runCommand(
             JSON.stringify(dfxJson, null, 4)
         );
     }
-
-    console.info(`${projectName} created successfully`);
 }
