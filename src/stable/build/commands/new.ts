@@ -60,5 +60,29 @@ export async function runCommand(
     await mkdir(dirname(tsConfigPath), { recursive: true });
     await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 4));
 
+    if (experimental === true) {
+        const templateDfxJsonString = await readFile(
+            join(templatePath, 'dfx.json'),
+            {
+                encoding: 'utf-8'
+            }
+        );
+
+        let dfxJson = JSON.parse(templateDfxJsonString);
+
+        // Set experimental flag for all canisters
+        for (const canister of Object.keys(dfxJson.canisters)) {
+            if (dfxJson.canisters[canister].custom === undefined) {
+                dfxJson.canisters[canister].custom = {};
+            }
+            dfxJson.canisters[canister].custom.experimental = true;
+        }
+
+        await writeFile(
+            join(projectName, 'dfx.json'),
+            JSON.stringify(dfxJson, null, 4)
+        );
+    }
+
     console.info(`${projectName} created successfully`);
 }
