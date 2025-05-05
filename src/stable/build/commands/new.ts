@@ -2,7 +2,6 @@ import { cp, mkdir, readFile, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
 
 import { AZLE_ROOT } from '#utils/global_paths';
-import { CanisterConfig } from '#utils/types';
 
 import { devDependencies } from '../../../../package.json';
 
@@ -72,14 +71,14 @@ export async function runCommand(
         let dfxJson = JSON.parse(templateDfxJsonString);
 
         // Set experimental flag for all canisters
-        dfxJson.canisters.map((canister: CanisterConfig) => {
+        for (const canister of dfxJson.canisters) {
             if (canister.custom === undefined) {
                 canister.custom = {};
             }
             canister.custom.experimental = true;
 
             return canister;
-        });
+        }
 
         await writeFile(
             join(projectName, 'dfx.json'),
