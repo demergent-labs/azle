@@ -54,14 +54,24 @@ async function build(): Promise<void> {
  * @returns A promise that resolves to true if the build is experimental, false otherwise.
  */
 async function isExperimental(): Promise<boolean> {
-    if (process.env.AZLE_EXPERIMENTAL === 'true') {
-        return true;
-    }
-
     const command = process.argv[2] as
         | Command
         | ExperimentalCommand
         | undefined;
+
+    if (
+        command === 'dev' ||
+        command === 'extension' ||
+        command === 'generate' ||
+        command === 'new' ||
+        command === '--version'
+    ) {
+        return false;
+    }
+
+    if (process.env.AZLE_EXPERIMENTAL === 'true') {
+        return true;
+    }
 
     if (
         command === 'build' ||
