@@ -1,7 +1,7 @@
 #!/usr/bin/env -S npx tsx
 
 import { getCanisterConfig } from '#utils/get_canister_config';
-import { Command, ExperimentalCommand, SubCommand } from '#utils/types';
+import { Command, ExperimentalCommand } from '#utils/types';
 
 import { devDependencies } from '../package.json';
 
@@ -77,14 +77,6 @@ async function isExperimental(): Promise<boolean> {
         const canisterConfig = await getCanisterConfig(canisterName);
 
         return canisterConfig?.custom?.experimental === true;
-    }
-
-    if (command === 'dev') {
-        const subCommand = process.argv[3] as SubCommand['dev'];
-
-        if (subCommand === 'template') {
-            return process.argv.includes('--all');
-        }
     }
 
     return false;
