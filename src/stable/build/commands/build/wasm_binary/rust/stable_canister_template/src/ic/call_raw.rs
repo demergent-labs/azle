@@ -44,7 +44,6 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            // TODO look into the need for the Box::pin
             let inter_canister_call_future = Box::pin(async move {
                 // My understanding of how this works:
                 // scopeguard will execute its closure at the end of the scope.
