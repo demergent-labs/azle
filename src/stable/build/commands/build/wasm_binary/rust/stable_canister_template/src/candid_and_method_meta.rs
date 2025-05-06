@@ -13,7 +13,7 @@ type CCharPtr = *mut c_char;
 
 #[unsafe(no_mangle)]
 pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
-    match initialize_and_get_candid() {
+    match initialize_and_get_candid_and_method_meta() {
         Ok(c_char_ptr) => c_char_ptr,
         Err(error) => {
             trap(&format!("Candid and MethodMeta generation failed: {error}"));
@@ -21,7 +21,7 @@ pub fn get_candid_and_method_meta_pointer() -> CCharPtr {
     }
 }
 
-fn initialize_and_get_candid() -> Result<CCharPtr, Box<dyn Error>> {
+fn initialize_and_get_candid_and_method_meta() -> Result<CCharPtr, Box<dyn Error>> {
     let js = get_js_code()?;
     let wasm_data = get_wasm_data()?;
 

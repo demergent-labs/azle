@@ -89,4 +89,7 @@ pub fn initialize_context(
 
         Ok(())
     })
+
+    // Note that we don't call drain_inter_canister_call_futures here because initialize_context is only used
+    // with init, post_upgrade, and Candid/MethodMeta generation. None of those allow for inter-canister calls.
 }

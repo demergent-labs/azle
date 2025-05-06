@@ -10,7 +10,7 @@ use rand::{SeedableRng, rngs::StdRng};
 use rquickjs::Context;
 
 mod benchmarking;
-mod candid;
+mod candid_and_method_meta;
 mod execute_method_js;
 mod guards;
 mod ic;
