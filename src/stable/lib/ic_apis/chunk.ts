@@ -28,7 +28,11 @@ export async function chunk(): Promise<void> {
         globalThis._azleIc === undefined &&
         globalThis._azleIcExperimental === undefined
     ) {
-        return undefined;
+        // This allows chunk to behave similarly in Node.js
+        // because the continuation of its await or the .then callback
+        // will run after a new macrotask, allowing all previously queued microtasks
+        // to complete (this change was motivated by the event_loop tests)
+        return new Promise((resolve) => setTimeout(resolve));
     }
 
     await call<undefined, Uint8Array>(canisterSelf(), '_azle_chunk', {

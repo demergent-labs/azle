@@ -5,15 +5,21 @@ export default class {
     testOrdering0(): number[] {
         let ordering: number[] = [];
 
-        ordering.push(0);
+        try {
+            ordering.push(0);
 
-        new Promise<void>((resolve) => resolve()).then(() => ordering.push(2));
-        new Promise<void>((resolve) => resolve()).then(() => ordering.push(3));
-        new Promise<void>((resolve) => resolve()).then(() => ordering.push(4));
-        new Promise<void>((resolve) => resolve()).then(() => ordering.push(5));
-        new Promise<void>((resolve) => resolve()).then(() => ordering.push(6));
-
-        ordering.push(1);
+            Promise.reject(null).catch(() => ordering.push(2));
+            Promise.resolve()
+                .then(() => ordering.push(3))
+                .catch(() => {});
+            new Promise<void>((_, reject) => reject()).catch(() =>
+                ordering.push(4)
+            );
+            Promise.resolve().then(() => ordering.push(5));
+            Promise.reject('err').catch(() => ordering.push(6));
+        } finally {
+            ordering.push(1);
+        }
 
         return ordering;
     }
@@ -24,24 +30,13 @@ export default class {
 
         ordering.push(0);
 
-        await new Promise<void>((resolve) => resolve()).then(() =>
-            ordering.push(1)
-        );
-        await new Promise<void>((resolve) => resolve()).then(() =>
-            ordering.push(2)
-        );
-        await new Promise<void>((resolve) => resolve()).then(() =>
-            ordering.push(3)
-        );
-        await new Promise<void>((resolve) => resolve()).then(() =>
-            ordering.push(4)
-        );
-        await new Promise<void>((resolve) => resolve()).then(() =>
-            ordering.push(5)
-        );
+        await Promise.reject('e').catch(() => ordering.push(1));
+        await Promise.resolve().then(() => ordering.push(2));
+        await Promise.reject('e').catch(() => ordering.push(3));
+        await Promise.resolve().then(() => ordering.push(4));
+        await Promise.reject('e').catch(() => ordering.push(5));
 
         ordering.push(6);
-
         return ordering;
     }
 
@@ -51,15 +46,17 @@ export default class {
 
         ordering.push(0);
 
-        await Promise.resolve();
+        try {
+            await Promise.resolve();
+            ordering.push(1);
+            await Promise.resolve().then(() => ordering.push(2));
+        } catch {
+            /* no‑op */
+        }
 
-        ordering.push(1);
-
-        await Promise.resolve().then(() => ordering.push(2));
-
-        Promise.resolve().then(() => ordering.push(3));
+        Promise.reject('e').catch(() => ordering.push(3));
         Promise.resolve().then(() => ordering.push(4));
-        Promise.resolve().then(() => ordering.push(5));
+        Promise.reject('e').catch(() => ordering.push(5));
         Promise.resolve().then(() => ordering.push(6));
 
         return ordering;
@@ -69,22 +66,27 @@ export default class {
     async testOrdering3(): Promise<number[]> {
         let ordering: number[] = [];
 
-        ordering.push(0);
+        try {
+            ordering.push(0);
 
-        Promise.resolve().then(() => {
-            ordering.push(2);
-            return Promise.resolve().then(() => ordering.push(3));
-        });
+            Promise.resolve()
+                .then(() => {
+                    ordering.push(2);
+                    return Promise.reject('err');
+                })
+                .catch(() => ordering.push(3));
 
-        ordering.push(1);
+            ordering.push(1);
 
-        await Promise.resolve();
+            await Promise.resolve();
+            await Promise.resolve();
+            await Promise.resolve();
+            await Promise.resolve().then(() => ordering.push(4));
 
-        await Promise.resolve().then(() => ordering.push(4));
-
-        Promise.resolve().then(() => ordering.push(6));
-
-        ordering.push(5);
+            Promise.reject('oops').catch(() => ordering.push(6));
+        } finally {
+            ordering.push(5);
+        }
 
         return ordering;
     }
@@ -98,12 +100,12 @@ export default class {
 
         await Promise.all([
             Promise.resolve().then(() => ordering.push(2)),
-            Promise.resolve().then(() => ordering.push(3))
+            Promise.reject('x').catch(() => ordering.push(3))
         ]);
 
-        Promise.resolve().then(() => ordering.push(4));
+        Promise.reject('y').catch(() => ordering.push(4));
         Promise.resolve().then(() => ordering.push(5));
-        Promise.resolve().then(() => ordering.push(6));
+        Promise.reject('z').catch(() => ordering.push(6));
 
         return ordering;
     }
@@ -115,11 +117,14 @@ export default class {
         ordering.push(0);
 
         for (let i = 1; i <= 5; i++) {
-            await Promise.resolve().then(() => ordering.push(i));
+            await new Promise<void>((resolve, reject) =>
+                i % 2 === 0 ? reject() : resolve()
+            )
+                .then(() => ordering.push(i))
+                .catch(() => ordering.push(i));
         }
 
         ordering.push(6);
-
         return ordering;
     }
 
@@ -133,11 +138,13 @@ export default class {
         Promise.resolve().then(() => ordering.push(2));
         Promise.resolve().then(() => ordering.push(3));
 
-        await chunk();
+        try {
+            await chunk();
+        } finally {
+            ordering.push(4);
+        }
 
-        ordering.push(4);
-
-        Promise.resolve().then(() => ordering.push(5));
+        Promise.reject('e').catch(() => ordering.push(5));
         Promise.resolve().then(() => ordering.push(6));
 
         return ordering;
@@ -151,9 +158,15 @@ export default class {
         ordering.push(1);
 
         const p2 = Promise.resolve().then(() => ordering.push(2));
-        const p3 = Promise.resolve().then(() => ordering.push(3));
+        const p3 = Promise.resolve()
+            .then(() => ordering.push(3))
+            .catch(() => {});
 
-        await Promise.race([p2, p3]);
+        try {
+            await Promise.race([p2, p3]);
+        } catch {
+            /* ignored */
+        }
 
         ordering.push(4);
 
@@ -162,9 +175,7 @@ export default class {
         ordering.push(5);
 
         await Promise.resolve();
-
         ordering.push(6);
-
         return ordering;
     }
 
@@ -176,14 +187,17 @@ export default class {
 
         await (async (): Promise<void> => {
             ordering.push(1);
-            await Promise.resolve().then(() => ordering.push(2));
+            try {
+                await Promise.reject('boom');
+            } catch {
+                ordering.push(2);
+            }
             ordering.push(3);
         })();
 
         ordering.push(4);
-
         Promise.resolve().then(() => ordering.push(5));
-        Promise.resolve().then(() => ordering.push(6));
+        Promise.reject('err').catch(() => ordering.push(6));
 
         return ordering;
     }
@@ -200,15 +214,12 @@ export default class {
         ordering.push(1);
 
         await Promise.resolve();
-
         ordering.push(4);
 
-        await Promise.resolve();
-
+        await Promise.reject('oops').catch(() => {});
         ordering.push(5);
 
-        Promise.resolve().then(() => ordering.push(6));
-
+        Promise.reject('final').catch(() => ordering.push(6));
         return ordering;
     }
 
@@ -220,15 +231,20 @@ export default class {
 
         Promise.resolve()
             .then(() => ordering.push(2))
-            .then(() => ordering.push(3))
+            .then(() => {
+                throw new Error('mid');
+            })
+            .catch(() => ordering.push(3))
             .then(() => ordering.push(4))
             .then(() => ordering.push(5));
 
         ordering.push(1);
 
-        await chunk();
-
-        ordering.push(6);
+        try {
+            await chunk();
+        } finally {
+            ordering.push(6);
+        }
 
         return ordering;
     }
@@ -241,7 +257,10 @@ export default class {
 
         Promise.resolve()
             .then(() => ordering.push(1))
-            .then(() => ordering.push(2))
+            .then(() => {
+                throw new Error('break');
+            })
+            .catch(() => ordering.push(2))
             .then(() => ordering.push(3))
             .then(() => ordering.push(4))
             .then(() => ordering.push(5))
@@ -258,17 +277,15 @@ export default class {
 
         Promise.resolve()
             .then(() => ordering.push(1))
-            .then(() => ordering.push(3))
+            .then(() => Promise.reject('err'))
+            .catch(() => ordering.push(4))
             .then(() => ordering.push(5))
             .then(() => ordering.push(6));
 
         await Promise.resolve();
-
         ordering.push(2);
 
-        Promise.resolve().then(() => {
-            ordering.push(4);
-        });
+        Promise.reject('late').catch(() => ordering.push(3));
 
         return ordering;
     }
@@ -280,23 +297,20 @@ export default class {
         ordering.push(0);
 
         await chunk();
-
         ordering.push(1);
-
-        Promise.resolve().then(() => ordering.push(2));
+        Promise.reject('a').catch(() => ordering.push(2));
 
         await chunk();
-
         ordering.push(3);
-
         await Promise.resolve().then(() => ordering.push(4));
 
-        await chunk();
-
-        ordering.push(5);
+        try {
+            await chunk();
+        } finally {
+            ordering.push(5);
+        }
 
         Promise.resolve().then(() => ordering.push(6));
-
         return ordering;
     }
 
@@ -309,20 +323,19 @@ export default class {
         await chunk();
         ordering.push(1);
 
-        await chunk();
+        await chunk().catch(() => {});
         ordering.push(2);
 
         await chunk();
         ordering.push(3);
 
-        await chunk();
+        await chunk().catch(() => {});
         ordering.push(4);
 
         await chunk();
         ordering.push(5);
 
-        Promise.resolve().then(() => ordering.push(6));
-
+        Promise.reject('x').catch(() => ordering.push(6));
         return ordering;
     }
 
@@ -332,10 +345,13 @@ export default class {
 
         ordering.push(0);
 
-        await chunk();
-        ordering.push(1);
+        try {
+            await chunk();
+        } finally {
+            ordering.push(1);
+        }
 
-        Promise.resolve().then(() => ordering.push(2));
+        Promise.reject('p').catch(() => ordering.push(2));
 
         await chunk();
         ordering.push(3);
@@ -346,7 +362,6 @@ export default class {
         ordering.push(5);
 
         Promise.resolve().then(() => ordering.push(6));
-
         return ordering;
     }
 
@@ -357,23 +372,21 @@ export default class {
         ordering.push(0);
 
         await chunk();
-
         ordering.push(1);
-
         queueMicrotask(() => ordering.push(2));
 
-        await chunk();
-
-        ordering.push(3);
+        try {
+            await chunk();
+        } finally {
+            ordering.push(3);
+        }
 
         await Promise.resolve().then(() => ordering.push(4));
 
         await chunk();
-
         ordering.push(5);
 
-        Promise.resolve().then(() => ordering.push(6));
-
+        Promise.reject('fin').catch(() => ordering.push(6));
         return ordering;
     }
 
@@ -387,53 +400,45 @@ export default class {
             await chunk();
             ordering.push(2);
 
-            await chunk();
+            await chunk().catch(() => {});
             ordering.push(3);
         })();
 
         ordering.push(1);
 
         await sequence;
-
         ordering.push(4);
 
         await chunk();
         ordering.push(5);
 
         Promise.resolve().then(() => ordering.push(6));
-
         return ordering;
     }
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering18(): Promise<number[]> {
         let ordering: number[] = [];
-
         ordering.push(0);
 
         try {
             await chunk();
             ordering.push(1);
-
-            await Promise.resolve().then(() => ordering.push(2));
+            await Promise.reject('oops').catch(() => ordering.push(2));
         } finally {
             ordering.push(3);
-
             await chunk();
             ordering.push(4);
         }
 
         ordering.push(5);
-
-        Promise.resolve().then(() => ordering.push(6));
-
+        Promise.reject('final').catch(() => ordering.push(6));
         return ordering;
     }
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering19(): Promise<number[]> {
         let ordering: number[] = [];
-
         ordering.push(0);
 
         for (const n of [1, 2, 3]) {
@@ -441,20 +446,16 @@ export default class {
         }
 
         await chunk();
-
         ordering.push(4);
 
-        await Promise.resolve().then(() => ordering.push(5));
-
+        await Promise.reject('x').catch(() => ordering.push(5));
         Promise.resolve().then(() => ordering.push(6));
-
         return ordering;
     }
 
     @update([], IDL.Vec(IDL.Nat32))
     async testOrdering20(): Promise<number[]> {
         let ordering: number[] = [];
-
         ordering.push(0);
 
         const p1 = (async (): Promise<void> => {
@@ -462,22 +463,25 @@ export default class {
             ordering.push(2);
         })();
 
-        const p2 = p1.then(async () => {
-            await chunk();
-            ordering.push(3);
-        });
+        const p2 = p1
+            .then(async () => {
+                await chunk();
+                ordering.push(3);
+            })
+            .catch(() => {});
 
         ordering.push(1);
 
         await p2;
-
         ordering.push(4);
 
-        await chunk();
-        ordering.push(5);
+        try {
+            await chunk();
+        } finally {
+            ordering.push(5);
+        }
 
-        Promise.resolve().then(() => ordering.push(6));
-
+        Promise.reject('zzz').catch(() => ordering.push(6));
         return ordering;
     }
 }
