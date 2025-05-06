@@ -78,6 +78,9 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                         trap(&format!("Azle CallRawCleanupError: {e}"));
                     }
 
+                    // We must drain all inter-canister call futures that could have been queued during previous JavaScript executions
+                    // Those executions include the resolve_or_reject macrotask, the cleanup call above as a regular
+                    // JavaScript execution, or the cleanup callback above as a macrotask execution
                     // This MUST be called outside of the with_ctx closure
                     drain_inter_canister_call_futures();
                 });
