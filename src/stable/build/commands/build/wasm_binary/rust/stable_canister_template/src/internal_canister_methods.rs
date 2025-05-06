@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use ic_cdk::trap;
+use ic_cdk::{query, trap, update};
 use rquickjs::{Array, Object, Value};
 
 use crate::{
@@ -10,15 +10,15 @@ use crate::{
     rquickjs_utils::with_ctx,
 };
 
-#[ic_cdk::update]
+#[update]
 fn _azle_chunk() {}
 
-#[ic_cdk::query(guard = guard_against_non_controllers)]
+#[query(guard = guard_against_non_controllers)]
 fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
     BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| benchmarks_ref_cell.borrow().clone())
 }
 
-#[ic_cdk::query(guard = guard_against_non_controllers)]
+#[query(guard = guard_against_non_controllers)]
 fn _azle_reject_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
@@ -34,7 +34,7 @@ fn _azle_reject_callbacks_len() -> u32 {
     }
 }
 
-#[ic_cdk::query(guard = guard_against_non_controllers)]
+#[query(guard = guard_against_non_controllers)]
 fn _azle_resolve_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
@@ -50,7 +50,7 @@ fn _azle_resolve_callbacks_len() -> u32 {
     }
 }
 
-#[ic_cdk::query(guard = guard_against_non_controllers)]
+#[query(guard = guard_against_non_controllers)]
 fn _azle_timer_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
@@ -66,7 +66,7 @@ fn _azle_timer_callbacks_len() -> u32 {
     }
 }
 
-#[ic_cdk::query(guard = guard_against_non_controllers)]
+#[query(guard = guard_against_non_controllers)]
 fn _azle_actions_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
@@ -82,14 +82,14 @@ fn _azle_actions_len() -> u32 {
     }
 }
 
-#[ic_cdk::query(guard = guard_against_non_controllers)]
+#[query(guard = guard_against_non_controllers)]
 fn _azle_inter_canister_call_futures_len() -> u32 {
     INTER_CANISTER_CALL_FUTURES.with(|inter_canister_call_futures_ref_cell| {
         inter_canister_call_futures_ref_cell.borrow().len() as u32
     })
 }
 
-#[ic_cdk::query(guard = guard_against_non_controllers)]
+#[query(guard = guard_against_non_controllers)]
 fn _azle_is_job_queue_empty() -> bool {
     let result = CONTEXT_REF_CELL.with(|context_ref_cell| -> Result<bool, Box<dyn Error>> {
         let context = context_ref_cell
