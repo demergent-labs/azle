@@ -67,7 +67,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleResolveCallbacksLen0 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
@@ -77,7 +76,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleTimerCallbacksLen0 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
@@ -87,7 +85,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleActionsLen0 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`,
@@ -97,7 +94,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleInterCanisterCallFuturesLen0 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
@@ -107,7 +103,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleIsJobQueueEmpty0 = JSON.parse(
                         execSync(
                             `dfx canister call ${canisterName} _azle_is_job_queue_empty --output json`,
@@ -126,7 +121,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleResolveCallbacksLen1 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
@@ -136,7 +130,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleTimerCallbacksLen1 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
@@ -146,7 +139,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleActionsLen1 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`,
@@ -156,7 +148,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleInterCanisterCallFuturesLen1 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
@@ -184,7 +175,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleResolveCallbacksLen2 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
@@ -194,7 +184,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleTimerCallbacksLen2 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
@@ -204,7 +193,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleActionsLen2 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`,
@@ -214,7 +202,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleInterCanisterCallFuturesLen2 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
