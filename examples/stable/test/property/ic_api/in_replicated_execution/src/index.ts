@@ -121,7 +121,8 @@ export default class {
             '_azle_resolve_callbacks_len',
             '_azle_timer_callbacks_len',
             '_azle_actions_len',
-            '_azle_inter_canister_call_futures_len'
+            '_azle_inter_canister_call_futures_len',
+            '_azle_is_job_queue_empty'
         ];
 
         if (acceptableMethods.includes(methodName)) {

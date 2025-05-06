@@ -49,7 +49,7 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
                 // is run after a new macrotask
                 await new Promise((resolve) => setTimeout(resolve));
 
-                expect(Array.from(result)).toStrictEqual([0, 1, 2, 3, 4, 5, 6]);
+                expect(result).toStrictEqual([0, 1, 2, 3, 4, 5, 6]);
             });
         });
     };
