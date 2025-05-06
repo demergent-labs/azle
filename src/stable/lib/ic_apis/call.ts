@@ -197,7 +197,7 @@ function handleOneWay(
             )
           : ((): never => {
                 throw new Error(
-                    'Neither globalThis._azleIcStable nor globalThis._azleIcExperimental are defined'
+                    'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
                 );
             })();
 }
