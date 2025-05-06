@@ -8,5 +8,3 @@ fi
 
 mkdir -p "$DFX_CACHE_DIR/extensions/azle"
 cp extension.json "$DFX_CACHE_DIR/extensions/azle/extension.json"
-
-echo "azle dfx extension successfully installed"
