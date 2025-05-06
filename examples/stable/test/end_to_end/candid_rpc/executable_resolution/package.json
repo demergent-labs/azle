@@ -1,6 +1,6 @@
 {
     "dependencies": {
-        "azle": "0.31.0"
+        "azle": "0.31.1-rc.7"
     },
     "scripts": {
         "pretest": "tsx test/pretest.ts",
