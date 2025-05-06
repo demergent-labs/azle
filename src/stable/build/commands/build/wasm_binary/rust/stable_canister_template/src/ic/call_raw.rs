@@ -57,7 +57,10 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                         // The ICP cleanup callback is executed when an inter-canister call reply or reject callback traps
                         // If the reply or reject callback does not trap, this will run in the same call
                         // as the reply or reject callback, and thus won't be a macrotask, but will still
-                        // be a JavaScript execution
+                        // be a JavaScript execution. If the inter-canister call returns synchronously because
+                        // of a synchronous error, this will run in the same ICP call as the original
+                        // execution that called into call_raw (call in JavaScript), and thus won't be a JavaScript macrotask
+                        // but will still be a JavaScript execution
                         cleanup(
                             ctx.clone(),
                             &global_resolve_id,
@@ -66,7 +69,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                         )?;
 
                         // We must drain all microtasks that could have been queued during previous JavaScript executions
-                        // Those executions include the resolve_or_reject macrotask, the cleanup call above as a regular
+                        // Those executions include the settle_promise macrotask, the cleanup call above as a regular
                         // JavaScript execution, or the cleanup callback above as a macrotask execution
                         drain_microtasks(&ctx);
 
@@ -78,7 +81,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                     }
 
                     // We must drain all inter-canister call futures that could have been queued during previous JavaScript executions
-                    // Those executions include the resolve_or_reject macrotask, the cleanup call above as a regular
+                    // Those executions include the settle_promise macrotask, the cleanup call above as a regular
                     // JavaScript execution, or the cleanup callback above as a macrotask execution
                     // This MUST be called outside of the with_ctx closure
                     drain_inter_canister_call_futures();
