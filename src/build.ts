@@ -91,7 +91,7 @@ function warnAboutExperimentalDeps(): void {
     const azleExperimentalDepsVersionHash =
         devDependencies['azle-experimental-deps'].split('#')[1];
     console.warn(
-        `Experimental mode requires azle-experimental-deps`,
-        `If not yet installed, run \`npm install https://github.com/demergent-labs/azle-experimental-deps#${azleExperimentalDepsVersionHash}\`.`
+        `\x1b[33mwarning:\x1b[0m Experimental mode requires azle-experimental-deps.`,
+        `If not yet installed, run \`npm install https://github.com/demergent-labs/azle-experimental-deps#${azleExperimentalDepsVersionHash}\``
     );
 }
