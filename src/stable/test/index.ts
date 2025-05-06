@@ -108,6 +108,13 @@ export function runTests(tests: Test): void {
                         )
                     );
 
+                    const azleIsJobQueueEmpty0 = JSON.parse(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_is_job_queue_empty --output json`,
+                            { cwd: getDfxRoot(), encoding: 'utf-8' }
+                        ).trim()
+                    ) as boolean;
+
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
                     const azleRejectCallbacksLen1 = Number(
@@ -159,6 +166,12 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
+                    const azleIsJobQueueEmpty1 = JSON.parse(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_is_job_queue_empty --output json`,
+                            { cwd: getDfxRoot(), encoding: 'utf-8' }
+                        ).trim()
+                    ) as boolean;
 
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
@@ -211,6 +224,12 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
+                    const azleIsJobQueueEmpty2 = JSON.parse(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_is_job_queue_empty --output json`,
+                            { cwd: getDfxRoot(), encoding: 'utf-8' }
+                        ).trim()
+                    ) as boolean;
 
                     console.info(
                         'azleRejectCallbacksLen0',
@@ -229,6 +248,7 @@ export function runTests(tests: Test): void {
                         'azleInterCanisterCallFuturesLen0',
                         azleInterCanisterCallFuturesLen0
                     );
+                    console.info('azleIsJobQueueEmpty0', azleIsJobQueueEmpty0);
 
                     console.info(
                         'azleRejectCallbacksLen1',
@@ -247,6 +267,7 @@ export function runTests(tests: Test): void {
                         'azleInterCanisterCallFuturesLen1',
                         azleInterCanisterCallFuturesLen1
                     );
+                    console.info('azleIsJobQueueEmpty1', azleIsJobQueueEmpty1);
 
                     console.info(
                         'azleRejectCallbacksLen2',
@@ -265,23 +286,27 @@ export function runTests(tests: Test): void {
                         'azleInterCanisterCallFuturesLen2',
                         azleInterCanisterCallFuturesLen2
                     );
+                    console.info('azleIsJobQueueEmpty2', azleIsJobQueueEmpty2);
 
                     expect(azleRejectCallbacksLen0).toEqual(0);
                     expect(azleResolveCallbacksLen0).toEqual(0);
                     expect(azleTimerCallbacksLen0).toEqual(0);
                     expect(azleInterCanisterCallFuturesLen0).toEqual(0);
+                    expect(azleIsJobQueueEmpty0).toBe(true);
 
                     expect(azleRejectCallbacksLen1).toEqual(0);
                     expect(azleResolveCallbacksLen1).toEqual(0);
                     expect(azleTimerCallbacksLen1).toEqual(0);
                     expect(azleActionsLen0).toEqual(azleActionsLen1);
                     expect(azleInterCanisterCallFuturesLen1).toEqual(0);
+                    expect(azleIsJobQueueEmpty1).toBe(true);
 
                     expect(azleRejectCallbacksLen2).toEqual(0);
                     expect(azleResolveCallbacksLen2).toEqual(0);
                     expect(azleTimerCallbacksLen2).toEqual(0);
                     expect(azleActionsLen0).toEqual(azleActionsLen2);
                     expect(azleInterCanisterCallFuturesLen2).toEqual(0);
+                    expect(azleIsJobQueueEmpty2).toBe(true);
                 }
             });
         });

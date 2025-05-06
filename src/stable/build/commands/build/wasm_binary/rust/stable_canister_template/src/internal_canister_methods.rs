@@ -4,7 +4,7 @@ use ic_cdk::trap;
 use rquickjs::{Array, Object, Value};
 
 use crate::{
-    INTER_CANISTER_CALL_FUTURES,
+    CONTEXT_REF_CELL, INTER_CANISTER_CALL_FUTURES,
     benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry},
     guards::guard_against_non_controllers,
     rquickjs_utils::with_ctx,
@@ -87,4 +87,22 @@ fn _azle_inter_canister_call_futures_len() -> u32 {
     INTER_CANISTER_CALL_FUTURES.with(|inter_canister_call_futures_ref_cell| {
         inter_canister_call_futures_ref_cell.borrow().len() as u32
     })
+}
+
+#[ic_cdk::query(guard = guard_against_non_controllers)]
+fn _azle_is_job_queue_empty() -> bool {
+    let result = CONTEXT_REF_CELL.with(|context_ref_cell| -> Result<bool, Box<dyn Error>> {
+        let context = context_ref_cell
+            .borrow()
+            .clone()
+            .ok_or("QuickJS context not initialized")?;
+        let runtime = context.runtime();
+
+        Ok(!runtime.is_job_pending())
+    });
+
+    match result {
+        Ok(is_empty) => is_empty,
+        Err(e) => trap(&format!("Azle IsJobQueueEmptyError: {}", e)),
+    }
 }

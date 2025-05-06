@@ -126,3 +126,11 @@ fn _azle_inter_canister_call_futures_len() -> u32 {
     // Hard-coded to 0 because we don't use the inter-canister call futures queue in experimental mode
     0
 }
+
+#[ic_cdk::query(guard = guard_against_non_controllers)]
+fn _azle_is_job_queue_empty() -> bool {
+    // Hard-coded to true because wasmedge-quickjs doesn't seem to expose an ideal
+    // way to get to the length of the job queue, and we would like to
+    // remove wasmedge-quickjs soon after 1.0 is released
+    true
+}
