@@ -59,8 +59,6 @@ export default class {
 
             throw error;
         }
-
-        throw new Error('should not reach here');
     }
 
     @update([], IDL.Vec(IDL.Nat8))
@@ -109,8 +107,6 @@ export default class {
                 `You cannot allow a trap to occur in a cleanup callback`
             );
         }
-
-        throw new Error('should not reach here');
     }
 
     @update
