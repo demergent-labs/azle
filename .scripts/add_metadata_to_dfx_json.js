@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import * as fs from 'fs';
-import * as path from 'path';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
 
 const targetDirectory = process.argv[2] || '.'; // Use the provided directory or default to the current directory
 
@@ -17,7 +17,7 @@ const metadataToAdd = [
 
 function updateDfxJson(filePath) {
     try {
-        const data = fs.readFileSync(filePath, 'utf8');
+        const data = readFileSync(filePath, 'utf8');
         const json = JSON.parse(data);
 
         // Check each canister in the 'canisters' object
@@ -35,19 +35,19 @@ function updateDfxJson(filePath) {
             }
         }
 
-        fs.writeFileSync(filePath, JSON.stringify(json, null, 4), 'utf8');
+        writeFileSync(filePath, JSON.stringify(json, null, 4), 'utf8');
         console.info(`Updated ${filePath}`);
     } catch (err) {
         console.error(`Error processing file ${filePath}: ${err}`);
     }
 }
 
-const entries = fs.readdirSync(targetDirectory, { withFileTypes: true });
+const entries = readdirSync(targetDirectory, { withFileTypes: true });
 
 entries.forEach((entry) => {
     if (entry.isDirectory()) {
-        const dfxJsonPath = path.join(targetDirectory, entry.name, 'dfx.json');
-        if (fs.existsSync(dfxJsonPath)) {
+        const dfxJsonPath = join(targetDirectory, entry.name, 'dfx.json');
+        if (existsSync(dfxJsonPath)) {
             updateDfxJson(dfxJsonPath);
         }
     }
