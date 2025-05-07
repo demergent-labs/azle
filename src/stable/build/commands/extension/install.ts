@@ -21,5 +21,5 @@ export function runCommand(ioType: IOType): void {
         'dfx extension installation script execution failed'
     );
 
-    console.log('azle dfx extension successfully installed');
+    console.info('azle dfx extension successfully installed');
 }
