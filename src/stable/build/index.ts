@@ -1,7 +1,7 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
-import { runCommand as runDevExperimentalTemplateCommand } from '#build/commands/dev/template/experimental';
+import { runCommand as runExperimentalDevTemplateCommand } from '#build/commands/dev/template/experimental';
 import { runCommand as runDevTemplateCommand } from '#build/commands/dev/template/stable';
 import {
     experimentalMessageCli,
@@ -160,9 +160,9 @@ async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
 
     if (all === true) {
         await runDevTemplateCommand(ioType);
-        await runDevExperimentalTemplateCommand(ioType);
+        await runExperimentalDevTemplateCommand(ioType);
     } else if (experimental === true) {
-        await runDevExperimentalTemplateCommand(ioType);
+        await runExperimentalDevTemplateCommand(ioType);
     } else {
         await runDevTemplateCommand(ioType);
     }
