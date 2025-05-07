@@ -90,7 +90,7 @@ async function getSignatureResult(messageHash: Uint8Array): Promise<any> {
             {
                 body: serialize({
                     args: [arg],
-                    cycles: 10_000_000_000n
+                    cycles: 50_000_000_000n
                 })
             }
         );
@@ -104,7 +104,7 @@ async function getSignatureResult(messageHash: Uint8Array): Promise<any> {
                 paramIdlTypes: [sign_with_ecdsa_args],
                 returnIdlType: sign_with_ecdsa_result,
                 args: [arg],
-                cycles: 10_000_000_000n
+                cycles: 50_000_000_000n
             }
         );
     }

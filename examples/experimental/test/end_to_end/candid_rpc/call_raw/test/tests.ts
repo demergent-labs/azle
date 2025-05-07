@@ -23,7 +23,7 @@ export function getTests(call_raw_canister: ActorSubclass<_SERVICE>): Test {
                 Principal.fromText('aaaaa-aa'),
                 'create_canister',
                 '(record { settings = null })',
-                100_000_000_000n
+                500_000_000_000n
             );
             expect(result).toMatch('record');
             expect(result).toMatch('principal');
