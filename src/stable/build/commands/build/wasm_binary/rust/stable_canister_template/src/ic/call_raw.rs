@@ -48,12 +48,12 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 // My understanding of how this works:
                 // scopeguard will execute its closure at the end of the scope.
                 // After a successful or unsuccessful inter-canister call (await point)
-                // the closure will run, cleaning up the global promise callbacks.
-                // Even during a trap, the IC will ensure that the closure runs in its own call
+                // the closure will run, cleaning up the global promise callbacks and settling the inter-canister promise.
+                // Even during a trap, the IC will ensure that the closure runs in its own call (the cleanup callback)
                 // thus allowing us to recover from a trap and persist that state
                 let _cleanup_scopeguard = scopeguard::guard((), |_| {
                     let result = with_ctx(|ctx| {
-                        // JavaScript code execution: macrotask when running as an ICP cleanup callback
+                        // JavaScript code execution: macrotask (when running as an ICP cleanup callback)
                         // The ICP cleanup callback is executed when an inter-canister call reply or reject callback traps
                         // If the reply or reject callback does not trap, this will run in the same call
                         // as the reply or reject callback, and thus won't be a macrotask, but will still
@@ -68,9 +68,9 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                             is_recovering_from_trap(),
                         )?;
 
-                        // We must drain all microtasks that could have been queued during previous JavaScript executions
-                        // Those executions include the settle_promise macrotask, the cleanup call above as a regular
-                        // JavaScript execution, or the cleanup callback above as a macrotask execution
+                        // We must drain all microtasks that could have been queued during previous JavaScript executions.
+                        // Those executions include the settle_promise JavaScript execution as a macrotask or regular execution,
+                        // the cleanup call above as a regular JavaScript execution, or the cleanup call above as a macrotask execution
                         drain_microtasks(&ctx);
 
                         Ok(())
@@ -80,9 +80,9 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                         trap(&format!("Azle CallRawCleanupError: {e}"));
                     }
 
-                    // We must drain all inter-canister call futures that could have been queued during previous JavaScript executions
-                    // Those executions include the settle_promise macrotask, the cleanup call above as a regular
-                    // JavaScript execution, or the cleanup callback above as a macrotask execution
+                    // We must drain all inter-canister call futures that could have been queued during previous JavaScript executions.
+                    // Those executions include the settle_promise JavaScript execution as a macrotask or regular execution,
+                    // the cleanup call above as a regular JavaScript execution, or the cleanup call above as a macrotask execution.
                     // This MUST be called outside of the with_ctx closure
                     drain_inter_canister_call_futures();
                 });
@@ -90,7 +90,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                 let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
 
                 let result = with_ctx(|ctx| {
-                    // JavaScript code execution: macrotask
+                    // JavaScript code execution: macrotask (when call_raw128.await does not return synchronously)
                     settle_promise(
                         ctx.clone(),
                         &call_result,
@@ -180,6 +180,18 @@ fn cleanup(
     Ok(())
 }
 
+/// Constructs the error object that will be used to reject the promise in the cleanup callback.
+///
+/// ## Remarks
+///
+/// If the reply or reject callback of an inter-canister call traps, then the IC will
+/// execute something called the cleanup callback, which is its own call execution.
+/// The purpose is to be able to clean up state from before the call that would have
+/// been cleaned up in the reply or reject callback.
+///
+/// In the cleanup callback, we settle the promise with this special error object.
+/// The developer can detect this and clean up their own state if they'd like,
+/// though they must not trap during the execution of the cleanup callback.
 fn reject_promise_with_cleanup_callback_error(
     ctx: Ctx,
     global_reject_id: &str,

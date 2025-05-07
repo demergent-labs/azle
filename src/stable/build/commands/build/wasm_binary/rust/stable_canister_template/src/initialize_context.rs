@@ -13,6 +13,13 @@ pub enum WasmEnvironment {
     Nodejs,
 }
 
+/// Initializes the rquickjs context with the given JavaScript code.
+///
+/// ## Remarks
+///
+/// This function creates an rquickjs Runtime and Context, stores the Context globally,
+/// then prepares the context and executes the JavaScript code. This functionality is shared
+/// across canister_init, canister_post_upgrade, and Candid/MethodMeta generation.
 pub fn initialize_context(
     js: Vec<u8>,
     main_js_path: &str,

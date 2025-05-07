@@ -10,14 +10,17 @@ use crate::{
     rquickjs_utils::with_ctx,
 };
 
+/// Used in conjunction with the JavaScript `chunk` function to increase the effective update call instruction limit.
 #[update]
 fn _azle_chunk() {}
 
+/// Returns the stored benchmarks if the benchmarking functionality is enabled.
 #[query(guard = guard_against_non_controllers)]
 fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
     BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| benchmarks_ref_cell.borrow().clone())
 }
 
+/// Returns the current length of globalThis._azleRejectCallbacks to aid in testing for memory leaks and other global state issues.
 #[query(guard = guard_against_non_controllers)]
 fn _azle_reject_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
@@ -34,6 +37,7 @@ fn _azle_reject_callbacks_len() -> u32 {
     }
 }
 
+/// Returns the current length of globalThis._azleResolveCallbacks to aid in testing for memory leaks and other global state issues.
 #[query(guard = guard_against_non_controllers)]
 fn _azle_resolve_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
@@ -50,6 +54,7 @@ fn _azle_resolve_callbacks_len() -> u32 {
     }
 }
 
+/// Returns the current length of globalThis._azleTimerCallbacks to aid in testing for memory leaks and other global state issues.
 #[query(guard = guard_against_non_controllers)]
 fn _azle_timer_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
@@ -66,6 +71,7 @@ fn _azle_timer_callbacks_len() -> u32 {
     }
 }
 
+/// Returns the current length of globalThis._azleActions to aid in testing for memory leaks and other global state issues.
 #[query(guard = guard_against_non_controllers)]
 fn _azle_actions_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
@@ -82,6 +88,7 @@ fn _azle_actions_len() -> u32 {
     }
 }
 
+/// Returns the current length of the INTER_CANISTER_CALL_FUTURES Vec to aid in testing for memory leaks and other global state issues.
 #[query(guard = guard_against_non_controllers)]
 fn _azle_inter_canister_call_futures_len() -> u32 {
     INTER_CANISTER_CALL_FUTURES.with(|inter_canister_call_futures_ref_cell| {
@@ -89,6 +96,7 @@ fn _azle_inter_canister_call_futures_len() -> u32 {
     })
 }
 
+/// Returns the current length of the QuickJS internal job queue to aid in testing for event loop problems, memory leaks, and other global state issues.
 #[query(guard = guard_against_non_controllers)]
 fn _azle_is_job_queue_empty() -> bool {
     let result = CONTEXT_REF_CELL.with(|context_ref_cell| -> Result<bool, Box<dyn Error>> {
