@@ -8,34 +8,34 @@ export function getTests(
     ethereumJsonRpcCanister: ActorSubclass<_SERVICE>
 ): Test {
     return () => {
-        it('executes `ethGetBalance 0xeac0827eff0c6e3ff28a7d4a54f65cb7689d7b99` from a canister', async () => {
+        it('executes `ethGetBalance 0xddf5810a0eb2fb2e32323bb2c99509ab320f24ac` from a canister', async () => {
             const result = await ethereumJsonRpcCanister.ethGetBalance(
-                '0xeac0827eff0c6e3ff28a7d4a54f65cb7689d7b99'
+                '0xddf5810a0eb2fb2e32323bb2c99509ab320f24ac'
             );
 
             const resultJson = JSON.parse(result);
 
-            expect(resultJson.result).toBe('0x9ad9e69f9d47520000');
+            expect(resultJson.result).toBe('0x1d5e1b3a1096ed20');
         });
 
-        it('executes `ethGetBalance 0xf4b6cdcfcb24230b337d770df6034dfbd4e1503f` from a canister', async () => {
+        it('executes `ethGetBalance 0xc951900c341abbb3bafbf7ee2029377071dbc36a` from a canister', async () => {
             const result = await ethereumJsonRpcCanister.ethGetBalance(
-                '0xf4b6cdcfcb24230b337d770df6034dfbd4e1503f'
+                '0xc951900c341abbb3bafbf7ee2029377071dbc36a'
             );
 
             const resultJson = JSON.parse(result);
 
-            expect(resultJson.result).toBe('0x405fdf7e5af85e00000');
+            expect(resultJson.result).toBe('0x26c95ea9f5baa58');
         });
 
-        it('executes `ethGetBalance 0x7be2f7680c802da6154c92c0194ae732517a7169` from a canister', async () => {
+        it('executes `ethGetBalance 0x7e7f18a02eccaa5d61ab8fbf030343c434a25ef7` from a canister', async () => {
             const result = await ethereumJsonRpcCanister.ethGetBalance(
-                '0x7be2f7680c802da6154c92c0194ae732517a7169'
+                '0x7e7f18a02eccaa5d61ab8fbf030343c434a25ef7'
             );
 
             const resultJson = JSON.parse(result);
 
-            expect(resultJson.result).toBe('0xfc936392801c0000');
+            expect(resultJson.result).toBe('0x39fbae8d042dd0000');
         });
 
         it('executes `ethGetBlockByNumber 0` from a canister', async () => {
