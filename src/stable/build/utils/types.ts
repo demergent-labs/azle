@@ -1,5 +1,3 @@
-import { ConsumerConfig } from '#experimental/commands/build/open_value_sharing/consumer';
-
 export type CandidAndMethodMeta = {
     candid: string;
     methodMeta: MethodMeta;
@@ -10,16 +8,17 @@ export type CandidGen = 'automatic' | 'custom' | 'http';
 export type CanisterConfig = {
     type?: 'azle';
     main?: string;
-    custom?: {
-        assets?: [string, string][];
-        build_assets?: string;
-        candid_gen?: CandidGen;
-        env?: string[];
-        esm_aliases: Record<string, string>;
-        esm_externals: string[];
-        experimental?: boolean;
-        openValueSharing?: ConsumerConfig;
-    };
+    custom?: CustomConfig;
+};
+
+export type CustomConfig = {
+    assets?: [string, string][];
+    build_assets?: string;
+    candid_gen?: CandidGen;
+    env?: string[];
+    esm_aliases: Record<string, string>;
+    esm_externals: string[];
+    experimental?: boolean;
 };
 
 export type Context = {

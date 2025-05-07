@@ -3,9 +3,9 @@ import { join } from 'path';
 
 import { getContext as getStableContext } from '#commands/build/get_context';
 import { Context, WasmData } from '#experimental/utils/types';
+import { CanisterConfig } from '#experimental/utils/types';
 import { getCanisterId } from '#utils/dfx';
 import { AZLE_ROOT } from '#utils/global_paths';
-import { CanisterConfig } from '#utils/types';
 
 import { getConsumer } from './open_value_sharing/consumer';
 
