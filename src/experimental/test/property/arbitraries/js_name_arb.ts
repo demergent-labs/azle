@@ -1,57 +1,4 @@
 import fc from 'fast-check';
-const rustKeywords = [
-    'as',
-    'break',
-    'const',
-    'continue',
-    'crate',
-    'else',
-    'enum',
-    'Err',
-    'extern',
-    'false',
-    'fn',
-    'for',
-    'if',
-    'impl',
-    'in',
-    'let',
-    'loop',
-    'match',
-    'mod',
-    'move',
-    'mut',
-    'Ok',
-    'pub',
-    'ref',
-    'return',
-    'self',
-    'Self',
-    'static',
-    'struct',
-    'super',
-    'trait',
-    'true',
-    'type',
-    'unsafe',
-    'use',
-    'where',
-    'while',
-    'async',
-    'await',
-    'dyn',
-    'abstract',
-    'become',
-    'box',
-    'do',
-    'final',
-    'macro',
-    'override',
-    'priv',
-    'virtual',
-    'yield'
-];
-
 const azleKeywords = [
     'blob',
     'bool',
@@ -81,6 +28,7 @@ const azleKeywords = [
 
 const jsKeywords = [
     '__proto__',
+    'as',
     'any',
     'await',
     'break',
@@ -123,6 +71,7 @@ const jsKeywords = [
     'throw',
     'true',
     'try',
+    'type',
     'typeof',
     'var',
     'void',
@@ -154,7 +103,6 @@ const cantBeQuoted = ['__proto__', 'constructor'];
 
 const unquotedFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)
-    .filter((sample) => !rustKeywords.includes(sample))
     .filter((sample) => !jsKeywords.includes(sample))
     .filter((sample) => !otherKeywords.includes(sample))
     .filter((sample) => !azleKeywords.includes(sample));
@@ -169,7 +117,6 @@ const quotedFunctionNameArb = fc
             if (
                 azleKeywords.includes(inner) ||
                 jsKeywords.includes(inner) ||
-                rustKeywords.includes(inner) ||
                 otherKeywords.includes(inner)
             ) {
                 return `"${inner}"`;

@@ -197,7 +197,7 @@ function generateVariableAliasDeclarations(
                           name,
                           fields,
                           api
-                      )}`
+                      )};`
                   ];
         return [
             ...fieldVariableAliasDeclarations,
