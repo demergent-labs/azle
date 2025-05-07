@@ -23,7 +23,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.31.0",
+        "azle": "0.31.1-rc.8",
         "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa"
     },
     "devDependencies": {
