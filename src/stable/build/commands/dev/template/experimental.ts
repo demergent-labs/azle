@@ -1,7 +1,7 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
-import { compileExperimental as compile } from '#commands/build/wasm_binary/compile';
+import { compile } from '#commands/build/wasm_binary/compile';
 import {
     AZLE_ROOT,
     EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH
@@ -25,6 +25,7 @@ export async function runCommand(ioType: IOType): Promise<void> {
             'Cargo.toml'
         ),
         EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH,
-        ioType
+        ioType,
+        true
     );
 }
