@@ -1,5 +1,5 @@
-import { cp, mkdir, readFile, writeFile } from 'fs/promises';
-import { dirname, join } from 'path';
+import { cp, readFile, writeFile } from 'fs/promises';
+import { join } from 'path';
 
 import { AZLE_ROOT } from '#utils/global_paths';
 
@@ -17,29 +17,26 @@ export async function runCommand(
 
     const projectName = process.argv[3];
 
+    // Copy the template to the new project directory
     await cp(templatePath, projectName, { recursive: true });
 
-    await configurePackageJson(
-        projectName,
-        templatePath,
-        azleVersion,
-        experimental
-    );
-    await configureTsConfig(projectName, useExperimentalDecorators);
-    await configureDfxJson(projectName, templatePath, experimental);
+    // Edit the configuration files in place so they are ready to use in the new project
+    await editPackageJson(projectName, templatePath, azleVersion, experimental);
+    await editTsConfig(projectName, useExperimentalDecorators);
+    await editDfxJson(projectName, templatePath, experimental);
 
     console.info(`${projectName} created successfully`);
 }
 
 /**
- * Configures the package.json for the new project.
+ * Edits the package.json for the new project.
  *
- * @param projectName - The name of the project directory to create.
- * @param templatePath - The path to the template directory to copy from.
+ * @param projectName - The name of the project directory.
+ * @param templatePath - The path to the template directory.
  * @param azleVersion - The version of Azle to set in the project's dependencies.
  * @param experimental - Whether to include experimental dependencies in the project.
  */
-async function configurePackageJson(
+async function editPackageJson(
     projectName: string,
     templatePath: string,
     azleVersion: string,
@@ -54,7 +51,10 @@ async function configurePackageJson(
 
     let packageJson = JSON.parse(templatePackageJsonString);
 
-    packageJson.dependencies.azle = `^${azleVersion}`;
+    packageJson.dependencies = {
+        ...packageJson.dependencies,
+        azle: `^${azleVersion}`
+    };
     packageJson.devDependencies = {
         ...packageJson.devDependencies,
         jest: devDependencies.jest,
@@ -67,17 +67,16 @@ async function configurePackageJson(
     }
 
     const packageJsonPath = join(projectName, 'package.json');
-    await mkdir(dirname(packageJsonPath), { recursive: true });
     await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 4));
 }
 
 /**
- * Configures the tsconfig.json for the new project
+ * Edits the tsconfig.json for the new project
  *
- * @param projectName - The name of the project directory to create.
+ * @param projectName - The name of the project directory.
  * @param useExperimentalDecorators - Whether to enable the TypeScript experimentalDecorators compiler option.
  */
-async function configureTsConfig(
+async function editTsConfig(
     projectName: string,
     useExperimentalDecorators: boolean
 ): Promise<void> {
@@ -89,23 +88,24 @@ async function configureTsConfig(
     let tsConfig = JSON.parse(templateTsConfigString);
 
     if (useExperimentalDecorators === true) {
-        tsConfig.compilerOptions.experimentalDecorators =
-            useExperimentalDecorators;
+        tsConfig.compilerOptions = {
+            ...tsConfig.compilerOptions,
+            experimentalDecorators: useExperimentalDecorators
+        };
     }
 
     const tsConfigPath = join(projectName, 'tsconfig.json');
-    await mkdir(dirname(tsConfigPath), { recursive: true });
     await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 4));
 }
 
 /**
- * Configures the dfx.json for the new project to enable experimental mode for all canisters if the experimental argument is true.
+ * Edits the dfx.json for the new project to enable experimental mode for all canisters if the experimental argument is true.
  *
- * @param projectName - The name of the project directory to create.
- * @param templatePath - The path to the template directory to read the base dfx.json from.
+ * @param projectName - The name of the project directory.
+ * @param templatePath - The path to the template directory.
  * @param experimental - Whether to set the experimental flag on all canisters.
  */
-async function configureDfxJson(
+async function editDfxJson(
     projectName: string,
     templatePath: string,
     experimental: boolean
@@ -122,10 +122,10 @@ async function configureDfxJson(
 
         // Set experimental flag for all canisters
         for (const canister of Object.keys(dfxJson.canisters)) {
-            if (dfxJson.canisters[canister].custom === undefined) {
-                dfxJson.canisters[canister].custom = {};
-            }
-            dfxJson.canisters[canister].custom.experimental = true;
+            dfxJson.canisters[canister].custom = {
+                ...dfxJson.canisters[canister].custom,
+                experimental: true
+            };
         }
 
         await writeFile(
