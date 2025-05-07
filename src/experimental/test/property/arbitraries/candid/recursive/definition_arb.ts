@@ -109,7 +109,7 @@ function generateVariableAliasDeclarations(
             ...innerType.candidMeta.variableAliasDeclarations,
             `const ${name} = IDL.Rec()`,
             `${name}.fill(${innerType.candidMeta.typeObject})`,
-            `type ${name} = ${innerType.candidMeta.typeAnnotation}`
+            `type ${name} = ${innerType.candidMeta.typeAnnotation};`
         ];
     }
     return [

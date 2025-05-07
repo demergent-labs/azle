@@ -78,7 +78,7 @@ async function getBalance(
                             JSON.stringify({
                                 jsonrpc: '2.0',
                                 method: 'eth_getBalance',
-                                params: [ethereumAddress, 'earliest'],
+                                params: [ethereumAddress, 'latest'],
                                 id: 1
                             })
                         )

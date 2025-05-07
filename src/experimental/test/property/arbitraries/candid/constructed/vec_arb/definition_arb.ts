@@ -134,7 +134,7 @@ function generateVariableAliasDeclarations(
                           name,
                           innerType,
                           api
-                      )}`
+                      )};`
                   ];
         return [
             ...innerType.candidMeta.variableAliasDeclarations,
