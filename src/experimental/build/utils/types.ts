@@ -23,10 +23,10 @@ export type WasmData = {
     managementDid: string;
 } & StableWasmData;
 
-export type CustomConfig = StableCustomConfig & {
+export type CustomConfig = Omit<StableCustomConfig, 'openValueSharing'> & {
     openValueSharing?: ConsumerConfig;
 };
 
-export interface CanisterConfig extends StableCanisterConfig {
+export type CanisterConfig = Omit<StableCanisterConfig, 'custom'> & {
     custom?: CustomConfig;
-}
+};

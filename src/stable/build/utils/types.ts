@@ -19,6 +19,7 @@ export type CustomConfig = {
     esm_aliases: Record<string, string>;
     esm_externals: string[];
     experimental?: boolean;
+    openValueSharing?: undefined;
 };
 
 export type Context = {
