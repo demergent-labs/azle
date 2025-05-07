@@ -1,6 +1,6 @@
 import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import jsSHA from 'jssha';
-import { Principal } from 'azle';
+import { Principal } from '#lib/index';
 
 // TODO we need to review these heavily
 export function hexAddressFromPrincipal(
