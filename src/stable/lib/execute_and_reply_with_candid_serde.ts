@@ -74,8 +74,7 @@ export async function executeAndReplyWithCandidSerde(
     }
 
     if (globalThis._azleIcExperimental !== undefined) {
-        // We have decided not to implement this functionality in experimental mode
-        // We plan to remove the wasmedge-quickjs binary shortly after 1.0 anyway
+        globalThis._azleIcExperimental.drainMicrotasks();
     }
 
     encodeResultAndReply(mode, manual, unencodedResult, returnIdlType);

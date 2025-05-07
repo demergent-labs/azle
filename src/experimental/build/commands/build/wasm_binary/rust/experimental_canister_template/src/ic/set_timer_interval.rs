@@ -3,7 +3,7 @@ use std::{cell::RefCell, rc::Rc};
 use slotmap::Key;
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
-use crate::{run_event_loop, RUNTIME};
+use crate::{RUNTIME, ic::drain_microtasks};
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
@@ -48,7 +48,7 @@ impl JsFn for NativeFunction {
                             js_exception.dump_error();
                             panic!("TODO needs error info");
                         }
-                        _ => run_event_loop(context),
+                        _ => drain_microtasks(context),
                     };
 
                     // TODO handle errors

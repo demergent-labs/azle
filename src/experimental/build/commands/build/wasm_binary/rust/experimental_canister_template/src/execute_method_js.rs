@@ -2,7 +2,7 @@ use std::env::var;
 
 use wasmedge_quickjs::{AsObject, JsValue};
 
-use crate::{RUNTIME, benchmarking::record_benchmark, run_event_loop};
+use crate::{RUNTIME, benchmarking::record_benchmark, ic::drain_microtasks};
 
 #[unsafe(no_mangle)]
 #[allow(unused)]
@@ -34,7 +34,7 @@ pub extern "C" fn execute_method_js(function_index: i32) {
                     js_exception.dump_error();
                     panic!("TODO needs error info");
                 }
-                _ => run_event_loop(context),
+                _ => drain_microtasks(context),
             };
 
             if let Ok(azle_record_benchmarks) = var("AZLE_RECORD_BENCHMARKS") {

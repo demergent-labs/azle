@@ -1,4 +1,4 @@
-import { chunk, IDL, update } from 'azle';
+import { chunk, IDL, query, update } from 'azle';
 
 export default class {
     @update([], IDL.Vec(IDL.Nat32))
@@ -24,7 +24,7 @@ export default class {
         return ordering;
     }
 
-    @update([], IDL.Vec(IDL.Nat32))
+    @query([], IDL.Vec(IDL.Nat32))
     async testOrdering1(): Promise<number[]> {
         let ordering: number[] = [];
 
@@ -62,7 +62,7 @@ export default class {
         return ordering;
     }
 
-    @update([], IDL.Vec(IDL.Nat32))
+    @query([], IDL.Vec(IDL.Nat32))
     async testOrdering3(): Promise<number[]> {
         let ordering: number[] = [];
 
@@ -110,7 +110,7 @@ export default class {
         return ordering;
     }
 
-    @update([], IDL.Vec(IDL.Nat32))
+    @query([], IDL.Vec(IDL.Nat32))
     async testOrdering5(): Promise<number[]> {
         let ordering: number[] = [];
 
@@ -150,7 +150,7 @@ export default class {
         return ordering;
     }
 
-    @update([], IDL.Vec(IDL.Nat32))
+    @query([], IDL.Vec(IDL.Nat32))
     async testOrdering7(): Promise<number[]> {
         let ordering: number[] = [];
 
@@ -202,14 +202,14 @@ export default class {
         return ordering;
     }
 
-    @update([], IDL.Vec(IDL.Nat32))
+    @query([], IDL.Vec(IDL.Nat32))
     async testOrdering9(): Promise<number[]> {
         let ordering: number[] = [];
 
         ordering.push(0);
 
-        queueMicrotask(() => ordering.push(2));
-        queueMicrotask(() => ordering.push(3));
+        Promise.resolve().then(() => ordering.push(2));
+        Promise.resolve().then(() => ordering.push(3));
 
         ordering.push(1);
 
@@ -249,7 +249,7 @@ export default class {
         return ordering;
     }
 
-    @update([], IDL.Vec(IDL.Nat32))
+    @query([], IDL.Vec(IDL.Nat32))
     async testOrdering11(): Promise<number[]> {
         let ordering: number[] = [];
 
@@ -373,7 +373,7 @@ export default class {
 
         await chunk();
         ordering.push(1);
-        queueMicrotask(() => ordering.push(2));
+        Promise.resolve().then(() => ordering.push(2));
 
         try {
             await chunk();
@@ -442,7 +442,7 @@ export default class {
         ordering.push(0);
 
         for (const n of [1, 2, 3]) {
-            queueMicrotask(() => ordering.push(n));
+            Promise.resolve().then(() => ordering.push(n));
         }
 
         await chunk();

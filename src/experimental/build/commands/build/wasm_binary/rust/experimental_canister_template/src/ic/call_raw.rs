@@ -1,7 +1,7 @@
 use ic_cdk::api::call::is_recovering_from_trap;
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
-use crate::run_event_loop;
+use crate::ic::drain_microtasks;
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
@@ -96,7 +96,7 @@ impl JsFn for NativeFunction {
                             js_exception.dump_error();
                             panic!("TODO needs error info");
                         }
-                        _ => run_event_loop(&mut context_clone_cleanup),
+                        _ => drain_microtasks(&mut context_clone_cleanup),
                     };
                 }
 
@@ -158,7 +158,7 @@ impl JsFn for NativeFunction {
                         js_exception.dump_error();
                         panic!("TODO needs error info");
                     }
-                    _ => run_event_loop(&mut context_clone),
+                    _ => drain_microtasks(&mut context_clone),
                 };
             } else {
                 let reject = global
@@ -180,7 +180,7 @@ impl JsFn for NativeFunction {
                         js_exception.dump_error();
                         panic!("TODO needs error info");
                     }
-                    _ => run_event_loop(&mut context_clone),
+                    _ => drain_microtasks(&mut context_clone),
                 };
             }
         });
