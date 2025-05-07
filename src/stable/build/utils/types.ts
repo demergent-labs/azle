@@ -16,8 +16,8 @@ export type CustomConfig = {
     build_assets?: string;
     candid_gen?: CandidGen;
     env?: string[];
-    esm_aliases: Record<string, string>;
-    esm_externals: string[];
+    esm_aliases?: Record<string, string>;
+    esm_externals?: string[];
     experimental?: boolean;
     openValueSharing?: undefined;
 };
