@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 
 import { createAuthenticatedAgent } from '#experimental/utils/dfx';

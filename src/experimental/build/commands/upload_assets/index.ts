@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { uploadFiles } from './file_uploader';
 import { getFilesToUpload } from './file_uploader/get_files_to_upload';
 

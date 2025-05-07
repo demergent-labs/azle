@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { IOType } from 'child_process';
 
 import { build as stableBuild } from '#build/index';

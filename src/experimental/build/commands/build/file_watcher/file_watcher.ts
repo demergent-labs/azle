@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 import { watch } from 'chokidar';
 import { mkdir, writeFile } from 'fs/promises';

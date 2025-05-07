@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { filterAsync } from '#experimental/utils/filter_async';
 
 import { Dest, Src } from '.';

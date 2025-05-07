@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { BuildOptions } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 import { existsSync } from 'fs';

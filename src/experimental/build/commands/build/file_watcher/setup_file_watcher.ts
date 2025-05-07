@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { spawn } from 'child_process';
 import { join } from 'path';
 

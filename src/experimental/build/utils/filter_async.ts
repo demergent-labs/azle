@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 export async function filterAsync<T>(
     elements: T[],
     callback: (element: T) => Promise<boolean>

@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { execSync } from 'child_process';
 import { readFile } from 'fs/promises';
 import { glob } from 'glob';

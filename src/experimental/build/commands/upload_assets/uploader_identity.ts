@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import {
     addController,
     generateIdentity,

@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { open, stat } from 'fs/promises';
 
 import { hashFileByParts } from '../../../../../../.scripts/hash_file_by_parts';
