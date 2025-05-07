@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 // TODO this is just a placeholder module so that bundling won't break
 // TODO eventually we would want a real implementation of this in Azle or wasmedge-quickjs or Waden
 // TODO we should PR this implementation into https://github.com/WasmEdge/WasmEdge/issues/1535

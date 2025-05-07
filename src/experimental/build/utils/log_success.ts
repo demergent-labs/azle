@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { execSyncPretty } from '#utils/exec_sync_pretty';
 
 export function logSuccess(canisterName: string, canisterId: string): void {
