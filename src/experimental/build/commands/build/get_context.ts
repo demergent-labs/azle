@@ -15,7 +15,14 @@ export async function getContext(
 ): Promise<Context> {
     const stableContext = await getStableContext(canisterName, {
         ...canisterConfig,
-        custom: { ...canisterConfig.custom, openValueSharing: undefined }
+        custom: {
+            ...canisterConfig.custom,
+            openValueSharing: undefined,
+            assets: undefined,
+            build_assets: undefined,
+            esm_aliases: undefined,
+            esm_externals: undefined
+        }
     });
 
     const canisterId = getCanisterId(canisterName);

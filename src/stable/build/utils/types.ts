@@ -12,14 +12,14 @@ export type CanisterConfig = {
 };
 
 export type CustomConfig = {
-    assets?: [string, string][];
-    build_assets?: string;
+    assets?: never;
+    build_assets?: never;
     candid_gen?: CandidGen;
     env?: string[];
-    esm_aliases?: Record<string, string>;
-    esm_externals?: string[];
+    esm_aliases?: never;
+    esm_externals?: never;
     experimental?: boolean;
-    openValueSharing?: undefined;
+    openValueSharing?: never;
 };
 
 export type Context = {

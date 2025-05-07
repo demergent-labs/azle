@@ -23,7 +23,18 @@ export type WasmData = {
     managementDid: string;
 } & StableWasmData;
 
-export type CustomConfig = Omit<StableCustomConfig, 'openValueSharing'> & {
+export type CustomConfig = Omit<
+    StableCustomConfig,
+    | 'assets'
+    | 'build_assets'
+    | 'esm_aliases'
+    | 'esm_externals'
+    | 'openValueSharing'
+> & {
+    assets?: [string, string][];
+    build_assets?: string;
+    esm_aliases?: Record<string, string>;
+    esm_externals?: string[];
     openValueSharing?: ConsumerConfig;
 };
 
