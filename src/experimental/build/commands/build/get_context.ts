@@ -3,9 +3,9 @@ import { join } from 'path';
 
 import { getContext as getStableContext } from '#commands/build/get_context';
 import { Context, WasmData } from '#experimental/utils/types';
+import { CanisterConfig } from '#experimental/utils/types';
 import { getCanisterId } from '#utils/dfx';
 import { AZLE_ROOT } from '#utils/global_paths';
-import { CanisterConfig } from '#utils/types';
 
 import { getConsumer } from './open_value_sharing/consumer';
 
@@ -13,7 +13,17 @@ export async function getContext(
     canisterName: string,
     canisterConfig: CanisterConfig
 ): Promise<Context> {
-    const stableContext = await getStableContext(canisterName, canisterConfig);
+    const stableContext = await getStableContext(canisterName, {
+        ...canisterConfig,
+        custom: {
+            ...canisterConfig.custom,
+            assets: undefined,
+            build_assets: undefined,
+            esm_aliases: undefined,
+            esm_externals: undefined,
+            openValueSharing: undefined
+        }
+    });
 
     const canisterId = getCanisterId(canisterName);
 

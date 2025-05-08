@@ -1,7 +1,9 @@
 #!/usr/bin/env -S npx tsx
 
 import { getCanisterConfig } from '#utils/get_canister_config';
-import { Command, ExperimentalCommand, SubCommand } from '#utils/types';
+import { Command, ExperimentalCommand } from '#utils/types';
+
+import { devDependencies } from '../package.json';
 
 process.on('uncaughtException', (error: Error) => {
     const prefix = 'Azle BuildError';
@@ -36,6 +38,7 @@ build();
  */
 async function build(): Promise<void> {
     if (await isExperimental()) {
+        warnAboutExperimentalDeps();
         const { build } = await import('#experimental/build/index');
         await build();
     } else {
@@ -51,18 +54,24 @@ async function build(): Promise<void> {
  * @returns A promise that resolves to true if the build is experimental, false otherwise.
  */
 async function isExperimental(): Promise<boolean> {
-    if (process.argv.includes('--experimental') === true) {
-        return true;
+    const command = process.argv[2] as
+        | Command
+        | ExperimentalCommand
+        | undefined;
+
+    if (
+        command === 'dev' ||
+        command === 'extension' ||
+        command === 'generate' ||
+        command === 'new' ||
+        command === '--version'
+    ) {
+        return false;
     }
 
     if (process.env.AZLE_EXPERIMENTAL === 'true') {
         return true;
     }
-
-    const command = process.argv[2] as
-        | Command
-        | ExperimentalCommand
-        | undefined;
 
     if (
         command === 'build' ||
@@ -75,13 +84,14 @@ async function isExperimental(): Promise<boolean> {
         return canisterConfig?.custom?.experimental === true;
     }
 
-    if (command === 'dev') {
-        const subCommand = process.argv[3] as SubCommand['dev'];
-
-        if (subCommand === 'template') {
-            return process.argv.includes('--all');
-        }
-    }
-
     return false;
+}
+
+function warnAboutExperimentalDeps(): void {
+    const azleExperimentalDepsVersionHash =
+        devDependencies['azle-experimental-deps'].split('#')[1];
+    console.warn(
+        `Azle Warning: Experimental mode requires azle-experimental-deps.`,
+        `If not yet installed, run \`npm install https://github.com/demergent-labs/azle-experimental-deps#${azleExperimentalDepsVersionHash}\``
+    );
 }
