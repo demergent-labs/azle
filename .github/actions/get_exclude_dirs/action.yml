@@ -33,11 +33,13 @@ runs:
               examples/experimental/test/end_to_end/http_server/multi_deploy
               examples/experimental/test/end_to_end/http_server/open_value_sharing
               examples/experimental/test/end_to_end/http_server/sqlite_drizzle
+              examples/experimental/test/property/candid_rpc/canister_methods/inspect_message
               examples/experimental/test/property/candid_rpc/opt
               examples/experimental/test/property/candid_rpc/stable_b_tree_map
               examples/experimental/test/property/candid_rpc/vec
               examples/stable/test/end_to_end/candid_rpc/multi_deploy
               examples/stable/test/end_to_end/candid_rpc/vec
+              examples/stable/test/property/candid_rpc/canister_methods/inspect_message
               examples/stable/test/property/candid_rpc/vec
               examples/stable/test/property/ic_api/performance_counter
               ') }}"

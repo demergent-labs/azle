@@ -17,11 +17,11 @@ export async function getContext(
         ...canisterConfig,
         custom: {
             ...canisterConfig.custom,
-            openValueSharing: undefined,
             assets: undefined,
             build_assets: undefined,
             esm_aliases: undefined,
-            esm_externals: undefined
+            esm_externals: undefined,
+            openValueSharing: undefined
         }
     });
 

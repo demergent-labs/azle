@@ -18,7 +18,7 @@ export function compile(
 
     execSyncPretty(
         `wasi2ic ${AZLE_CARGO_TARGET_DIR}/wasm32-wasip1/release/${
-            experimental ? 'experimental' : 'stable'
+            experimental === true ? 'experimental' : 'stable'
         }_canister_template.wasm ${wasmDest}`,
         {
             stdio: ioType
