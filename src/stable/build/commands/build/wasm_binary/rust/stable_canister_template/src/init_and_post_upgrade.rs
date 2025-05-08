@@ -1,7 +1,11 @@
 use std::{error::Error, str, time::Duration};
 
 use candid::Principal;
-use ic_cdk::{api::call::call, trap};
+use ic_cdk::{
+    api::call::call,
+    futures::{in_executor_context, spawn},
+    trap,
+};
 use ic_cdk_timers::set_timer;
 use ic_stable_structures::memory_manager::MemoryId;
 use ic_wasi_polyfill::init_with_memory;
@@ -73,31 +77,33 @@ fn execute_developer_init_or_post_upgrade(function_index: i32) {
 
 fn seed_from_raw_rand() {
     set_timer(Duration::new(0, 0), || {
-        ic_cdk::spawn(async {
-            let result: Result<(), Box<dyn Error>> = async {
-                let (randomness,): (Vec<u8>,) =
-                    call(Principal::management_canister(), "raw_rand", ())
-                        .await
-                        .map_err(|(rejection_code, message)| {
-                            format!(
-                                "The inter-canister call failed with reject code: {}: {}",
-                                rejection_code as i32, message
-                            )
-                        })?;
+        in_executor_context(|| {
+            spawn(async {
+                let result: Result<(), Box<dyn Error>> = async {
+                    let (randomness,): (Vec<u8>,) =
+                        call(Principal::management_canister(), "raw_rand", ())
+                            .await
+                            .map_err(|(rejection_code, message)| {
+                                format!(
+                                    "The inter-canister call failed with reject code: {}: {}",
+                                    rejection_code as i32, message
+                                )
+                            })?;
 
-                rand_seed(
-                    randomness
-                        .try_into()
-                        .map_err(|_| "seed must be exactly 32 bytes in length")?,
-                );
+                    rand_seed(
+                        randomness
+                            .try_into()
+                            .map_err(|_| "seed must be exactly 32 bytes in length")?,
+                    );
 
-                Ok(())
-            }
-            .await;
+                    Ok(())
+                }
+                .await;
 
-            if let Err(e) = result {
-                trap(&format!("Azle SeedFromRawRandError: {}", e));
-            }
+                if let Err(e) = result {
+                    trap(&format!("Azle SeedFromRawRandError: {}", e));
+                }
+            });
         });
     });
 }

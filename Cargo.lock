@@ -2132,7 +2132,7 @@ version = "0.0.0"
 dependencies = [
  "candid 0.10.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "candid_parser 0.1.4",
- "ic-cdk 0.17.1",
+ "ic-cdk 0.18.0",
  "ic-cdk-timers 0.12.0",
  "ic-stable-structures",
  "ic-wasi-polyfill",

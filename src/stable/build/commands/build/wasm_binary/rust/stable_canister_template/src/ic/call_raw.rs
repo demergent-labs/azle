@@ -3,7 +3,8 @@ use std::error::Error;
 use candid::Principal;
 use ic_cdk::{
     api::call::{RejectionCode, call_raw128, is_recovering_from_trap},
-    spawn, trap,
+    futures::spawn,
+    trap,
 };
 use rquickjs::{
     Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
