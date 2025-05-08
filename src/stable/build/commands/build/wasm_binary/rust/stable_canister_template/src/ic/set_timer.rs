@@ -48,7 +48,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
             }
 
             // We must drain all inter-canister call futures that could have been queued during the JavaScript code execution above
-            // This MUST be called outside of the with_ctx closure
+            // This MUST be called outside of the with_ctx closure or it will trap
             drain_inter_canister_call_futures();
         };
 

@@ -48,6 +48,23 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
             checkGlobalSettleCallbackLengths(0);
         });
 
+        it('should reject with trap when getRandomnessWithTrapCaughtRejectCallback is called', async () => {
+            await expect(
+                actor.getRandomnessWithTrapCaughtRejectCallback()
+            ).rejects.toThrow('executing within the reject callback');
+        });
+
+        it('should return the updated reject code and message after caught trap', async () => {
+            expect(await actor.getRejectCode()).toStrictEqual(10_001);
+            expect(await actor.getRejectMessage()).toStrictEqual(
+                'executing within cleanup callback'
+            );
+        });
+
+        it('should have 0 globalThis._azleRejectCallbacks and 0 globalThis._azleResolveCallbacks', () => {
+            checkGlobalSettleCallbackLengths(0);
+        });
+
         it('should reject with trap when getRandomnessWithTrapCaughtPromise is called', async () => {
             await expect(
                 actor.getRandomnessWithTrapCaughtPromise()
