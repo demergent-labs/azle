@@ -62,6 +62,33 @@ export default class {
     }
 
     @update([], IDL.Vec(IDL.Nat8))
+    async getRandomnessWithTrapCaughtRejectCallback(): Promise<Uint8Array> {
+        this.rejectCode = 0;
+        this.rejectMessage = 'no error';
+
+        try {
+            const result = await call<undefined, Uint8Array>(
+                'aaaaa-aa',
+                'candyland',
+                {
+                    returnIdlType: IDL.Vec(IDL.Nat8)
+                }
+            );
+
+            return result;
+        } catch (error: any) {
+            if (error.rejectCode === 10_001) {
+                this.rejectCode = error.rejectCode;
+                this.rejectMessage = error.rejectMessage;
+
+                throw error;
+            } else {
+                throw new Error(`executing within the reject callback`);
+            }
+        }
+    }
+
+    @update([], IDL.Vec(IDL.Nat8))
     getRandomnessWithTrapCaughtPromise(): Promise<Uint8Array> {
         this.rejectCode = 0;
         this.rejectMessage = 'no error';

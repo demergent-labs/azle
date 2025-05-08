@@ -83,7 +83,7 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                     // We must drain all inter-canister call futures that could have been queued during previous JavaScript executions.
                     // Those executions include the settle_promise JavaScript execution as a macrotask or regular execution,
                     // the cleanup call above as a regular JavaScript execution, or the cleanup call above as a macrotask execution.
-                    // This MUST be called outside of the with_ctx closure
+                    // This MUST be called outside of the with_ctx closure or it will trap
                     drain_inter_canister_call_futures();
                 });
 
