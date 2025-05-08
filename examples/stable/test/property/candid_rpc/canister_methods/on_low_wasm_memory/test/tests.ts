@@ -123,15 +123,7 @@ function validateMemoryLimitError(error: unknown): void {
         canisterId: Principal.from(canisterId),
         reject_message: expect.stringMatching(
             new RegExp(
-                `Error from Canister ${canisterId}: ` +
-                    'Canister exceeded its current Wasm memory limit of \\d+ bytes\\. ' +
-                    'The peak Wasm memory usage was \\d+ bytes\\. ' +
-                    'If the canister reaches 4GiB, then it may stop functioning and may become unrecoverable\\. ' +
-                    'Please reach out to the canister owner to investigate the reason for the increased memory usage\\. ' +
-                    'It might be necessary to move data from the Wasm memory to the stable memory\\. ' +
-                    'If such high Wasm memory usage is expected and safe, then the developer can increase the Wasm memory limit in the canister settings\\.\\.' +
-                    '\\nTry checking the canister for a possible memory leak or modifying it to use more stable memory instead of Wasm memory\\. ' +
-                    'See documentation: http://internetcomputer\\.org/docs/current/references/execution-errors#wasm-memory-limit-exceeded'
+                `Error from Canister ${canisterId}: Canister exceeded its current Wasm memory limit of \\d+ bytes`
             )
         )
     });
