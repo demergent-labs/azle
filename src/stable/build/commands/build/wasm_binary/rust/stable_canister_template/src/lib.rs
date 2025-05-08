@@ -1,5 +1,3 @@
-// TODO remove this
-
 use std::cell::RefCell;
 use std::future::Future;
 use std::pin::Pin;
