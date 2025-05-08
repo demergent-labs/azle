@@ -23,6 +23,7 @@ export type AzleIc = {
     cyclesBurn: (amountString: string) => string;
     dataCertificate: () => Uint8Array | undefined;
     debugPrint: (message: string) => void;
+    drainMicrotasks: () => void;
     inReplicatedExecution: () => boolean;
     isController: (principalBytes: Uint8Array) => boolean;
     msgArgData: () => Uint8Array;

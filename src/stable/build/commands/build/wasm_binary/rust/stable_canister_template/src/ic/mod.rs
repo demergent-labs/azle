@@ -2,6 +2,10 @@ use std::fmt::Display;
 
 use rquickjs::{Ctx, Error, Object, Result, String};
 
+pub use call_raw::drain_inter_canister_call_futures;
+pub use drain_microtasks::drain_microtasks;
+pub use rand_seed::rand_seed;
+
 mod accept_message;
 mod call_raw;
 mod candid_decode;
@@ -13,6 +17,7 @@ mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
 mod debug_print;
+mod drain_microtasks;
 mod in_replicated_execution;
 mod is_controller;
 mod msg_arg_data;
@@ -28,7 +33,7 @@ mod msg_reply;
 mod notify_raw;
 mod performance_counter;
 mod rand_bytes;
-pub mod rand_seed;
+mod rand_seed;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
@@ -79,6 +84,11 @@ pub fn register(ctx: Ctx) -> Result<()> {
     )?;
 
     ic.set("debugPrint", debug_print::get_function(ctx.clone()))?;
+
+    ic.set(
+        "drainMicrotasks",
+        drain_microtasks::get_function(ctx.clone()),
+    )?;
 
     ic.set(
         "inReplicatedExecution",

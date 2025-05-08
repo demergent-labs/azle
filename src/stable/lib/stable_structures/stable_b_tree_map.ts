@@ -58,7 +58,7 @@ export class StableBTreeMap<Key = any, Value = any> {
         this.keySerializable = keySerializable;
         this.valueSerializable = valueSerializable;
 
-        if (globalThis._azleNodeWasmEnvironment !== true) {
+        if (globalThis._azleNodejsWasmEnvironment !== true) {
             if (globalThis._azleIcExperimental !== undefined) {
                 globalThis._azleIcExperimental.stableBTreeMapInit(
                     memoryId.toString()

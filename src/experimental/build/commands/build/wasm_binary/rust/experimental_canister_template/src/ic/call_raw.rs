@@ -1,6 +1,7 @@
+use ic_cdk::api::call::is_recovering_from_trap;
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
-use crate::run_event_loop;
+use crate::ic::drain_microtasks;
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
@@ -57,6 +58,47 @@ impl JsFn for NativeFunction {
             // thus allowing us to recover from a trap and persist that state
             let _cleanup = scopeguard::guard((), |_| {
                 let global = context_clone_cleanup.get_global();
+
+                if is_recovering_from_trap() {
+                    let reject_code = 10_001;
+                    let reject_message = "executing within cleanup callback";
+
+                    let mut err_object = context_clone_cleanup
+                        .new_error(&format!(
+                            "The inter-canister call's reply or reject callback trapped. Azle reject code {}: {}",
+                            reject_code, reject_message
+                        ))
+                        .to_obj()
+                        .unwrap();
+
+                    err_object.set("rejectCode", reject_code.into());
+                    err_object.set(
+                        "rejectMessage",
+                        context_clone_cleanup.new_string(reject_message).into(),
+                    );
+
+                    let reject = global
+                        .get("_azleRejectCallbacks")
+                        .to_obj()
+                        .unwrap()
+                        .get(&global_reject_id)
+                        .to_function()
+                        .unwrap();
+
+                    let result = reject.call(&[err_object.into()]);
+
+                    // TODO error handling is mostly done in JS right now
+                    // TODO we would really like wasmedge-quickjs to add
+                    // TODO good error info to JsException and move error handling
+                    // TODO out of our own code
+                    match &result {
+                        wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                            js_exception.dump_error();
+                            panic!("TODO needs error info");
+                        }
+                        _ => drain_microtasks(&mut context_clone_cleanup),
+                    };
+                }
 
                 let resolve_callbacks = global.get("_azleResolveCallbacks");
                 let reject_callbacks = global.get("_azleRejectCallbacks");
@@ -116,7 +158,7 @@ impl JsFn for NativeFunction {
                         js_exception.dump_error();
                         panic!("TODO needs error info");
                     }
-                    _ => run_event_loop(&mut context_clone),
+                    _ => drain_microtasks(&mut context_clone),
                 };
             } else {
                 let reject = global
@@ -138,7 +180,7 @@ impl JsFn for NativeFunction {
                         js_exception.dump_error();
                         panic!("TODO needs error info");
                     }
-                    _ => run_event_loop(&mut context_clone),
+                    _ => drain_microtasks(&mut context_clone),
                 };
             }
         });

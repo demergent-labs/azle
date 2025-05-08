@@ -24,7 +24,7 @@ export function StableBTreeMap<Key = any, Value = any>(
 
     if (
         globalThis._azleIcExperimental !== undefined &&
-        globalThis._azleNodeWasmEnvironment !== true
+        globalThis._azleNodejsWasmEnvironment !== true
     ) {
         globalThis._azleIcExperimental.stableBTreeMapInit(memoryId);
     }

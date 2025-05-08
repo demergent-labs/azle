@@ -2,7 +2,7 @@ import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid';
 
-import { idlDecode, idlEncode } from '../execute_with_candid_serde';
+import { idlDecode, idlEncode } from '../execute_and_reply_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
 
 type CallOptions<Args extends any[] | Uint8Array | undefined> = {
@@ -89,8 +89,8 @@ export async function call<
     options?: CallOptions<Args>
 ): Promise<Return> {
     if (
-        globalThis._azleIcExperimental === undefined &&
-        globalThis._azleIc === undefined
+        globalThis._azleIc === undefined &&
+        globalThis._azleIcExperimental === undefined
     ) {
         return undefined as Return;
     }
@@ -104,14 +104,14 @@ export async function call<
     const cyclesString = getCyclesString(options);
 
     if (options?.oneway === true) {
-        return handleOneWay<Return>(
+        return handleOneWay(
             canisterIdBytes,
             method,
             argsRaw,
             cyclesString
-        );
+        ) as Return;
     } else {
-        return handleTwoWay<Return>(
+        return await handleTwoWay<Return>(
             canisterIdBytes,
             method,
             argsRaw,
@@ -171,44 +171,35 @@ function getCyclesString<Args extends any[] | Uint8Array | undefined>(
     return cycles.toString();
 }
 
-function handleOneWay<Return>(
+function handleOneWay(
     canisterIdBytes: Uint8Array,
     method: string,
     argsRaw: Uint8Array,
     cyclesString: string
-): Promise<Return> {
-    if (
-        globalThis._azleIcExperimental === undefined &&
-        globalThis._azleIc === undefined
-    ) {
-        throw new Error(
-            'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
-        );
-    }
-
-    if (globalThis._azleIcExperimental !== undefined) {
-        globalThis._azleIcExperimental.notifyRaw(
-            canisterIdBytes.buffer instanceof ArrayBuffer
-                ? canisterIdBytes.buffer
-                : new Uint8Array(canisterIdBytes).buffer,
-            method,
-            argsRaw.buffer instanceof ArrayBuffer
-                ? argsRaw.buffer
-                : new Uint8Array(argsRaw).buffer,
-            cyclesString
-        );
-    }
-
-    if (globalThis._azleIc !== undefined) {
-        globalThis._azleIc.notifyRaw(
-            canisterIdBytes,
-            method,
-            argsRaw,
-            cyclesString
-        );
-    }
-
-    return Promise.resolve(undefined as Return);
+): void {
+    return globalThis._azleIc !== undefined
+        ? globalThis._azleIc.notifyRaw(
+              canisterIdBytes,
+              method,
+              argsRaw,
+              cyclesString
+          )
+        : globalThis._azleIcExperimental !== undefined
+          ? globalThis._azleIcExperimental.notifyRaw(
+                canisterIdBytes.buffer instanceof ArrayBuffer
+                    ? canisterIdBytes.buffer
+                    : new Uint8Array(canisterIdBytes).buffer,
+                method,
+                argsRaw.buffer instanceof ArrayBuffer
+                    ? argsRaw.buffer
+                    : new Uint8Array(argsRaw).buffer,
+                cyclesString
+            )
+          : ((): never => {
+                throw new Error(
+                    'Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined'
+                );
+            })();
 }
 
 function handleTwoWay<Return>(

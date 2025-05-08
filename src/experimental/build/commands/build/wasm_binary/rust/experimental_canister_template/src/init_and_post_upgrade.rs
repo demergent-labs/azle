@@ -9,8 +9,7 @@ use wasmedge_quickjs::AsObject;
 
 use crate::{
     MEMORY_MANAGER_REF_CELL, RUNTIME, WASM_DATA_REF_CELL, execute_method_js, ic,
-    ic::rand_seed::rand_seed,
-    run_event_loop,
+    ic::{drain_microtasks, rand_seed::rand_seed},
     wasm_binary_manipulation::{WasmData, get_js_code, get_wasm_data},
 };
 
@@ -117,7 +116,7 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
             .set("_azleActions", context.new_array().into());
 
         context.get_global().set(
-            "_azleNodeWasmEnvironment",
+            "_azleNodejsWasmEnvironment",
             wasmedge_quickjs::JsValue::Bool(false),
         );
 
@@ -152,7 +151,7 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
 
         context.eval_module_str(js.to_string(), &wasm_data.main_js_path);
 
-        run_event_loop(context);
+        drain_microtasks(context);
 
         // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "main");
 

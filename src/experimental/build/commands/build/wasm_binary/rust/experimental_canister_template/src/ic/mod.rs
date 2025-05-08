@@ -10,6 +10,7 @@ mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
 mod debug_print;
+mod drain_microtasks;
 mod in_replicated_execution;
 mod is_controller;
 mod msg_arg_data;
@@ -43,6 +44,8 @@ mod time;
 mod trap;
 
 use wasmedge_quickjs::AsObject;
+
+pub use drain_microtasks::drain_microtasks;
 
 #[allow(unused)]
 pub fn register(context: &mut wasmedge_quickjs::Context) {
@@ -89,6 +92,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
+        "canisterSelf",
+        context
+            .new_function::<canister_self::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "canisterVersion",
         context
             .new_function::<canister_version::NativeFunction>("")
@@ -124,9 +134,9 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "canisterSelf",
+        "drainMicrotasks",
         context
-            .new_function::<canister_self::NativeFunction>("")
+            .new_function::<drain_microtasks::NativeFunction>("")
             .into(),
     );
 

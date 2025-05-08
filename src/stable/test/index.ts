@@ -67,7 +67,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleResolveCallbacksLen0 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
@@ -77,7 +76,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleTimerCallbacksLen0 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
@@ -87,7 +85,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleActionsLen0 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`,
@@ -97,6 +94,21 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
+                    const azleInterCanisterCallFuturesLen0 = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+                    const azleIsJobQueueEmpty0 = JSON.parse(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_is_job_queue_empty --output json`,
+                            { cwd: getDfxRoot(), encoding: 'utf-8' }
+                        ).trim()
+                    ) as boolean;
 
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
@@ -109,7 +121,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleResolveCallbacksLen1 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
@@ -119,7 +130,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleTimerCallbacksLen1 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
@@ -129,7 +139,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleActionsLen1 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`,
@@ -139,6 +148,21 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
+                    const azleInterCanisterCallFuturesLen1 = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+                    const azleIsJobQueueEmpty1 = JSON.parse(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_is_job_queue_empty --output json`,
+                            { cwd: getDfxRoot(), encoding: 'utf-8' }
+                        ).trim()
+                    ) as boolean;
 
                     await new Promise((resolve) => setTimeout(resolve, 2_000));
 
@@ -151,7 +175,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleResolveCallbacksLen2 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_resolve_callbacks_len --output json`,
@@ -161,7 +184,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleTimerCallbacksLen2 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_timer_callbacks_len --output json`,
@@ -171,7 +193,6 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
-
                     const azleActionsLen2 = Number(
                         execSync(
                             `dfx canister call ${canisterName} _azle_actions_len --output json`,
@@ -181,6 +202,21 @@ export function runTests(tests: Test): void {
                             }
                         )
                     );
+                    const azleInterCanisterCallFuturesLen2 = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+                    const azleIsJobQueueEmpty2 = JSON.parse(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_is_job_queue_empty --output json`,
+                            { cwd: getDfxRoot(), encoding: 'utf-8' }
+                        ).trim()
+                    ) as boolean;
 
                     console.info(
                         'azleRejectCallbacksLen0',
@@ -195,6 +231,11 @@ export function runTests(tests: Test): void {
                         azleTimerCallbacksLen0
                     );
                     console.info('azleActionsLen0', azleActionsLen0);
+                    console.info(
+                        'azleInterCanisterCallFuturesLen0',
+                        azleInterCanisterCallFuturesLen0
+                    );
+                    console.info('azleIsJobQueueEmpty0', azleIsJobQueueEmpty0);
 
                     console.info(
                         'azleRejectCallbacksLen1',
@@ -209,6 +250,11 @@ export function runTests(tests: Test): void {
                         azleTimerCallbacksLen1
                     );
                     console.info('azleActionsLen1', azleActionsLen1);
+                    console.info(
+                        'azleInterCanisterCallFuturesLen1',
+                        azleInterCanisterCallFuturesLen1
+                    );
+                    console.info('azleIsJobQueueEmpty1', azleIsJobQueueEmpty1);
 
                     console.info(
                         'azleRejectCallbacksLen2',
@@ -223,20 +269,31 @@ export function runTests(tests: Test): void {
                         azleTimerCallbacksLen2
                     );
                     console.info('azleActionsLen2', azleActionsLen2);
+                    console.info(
+                        'azleInterCanisterCallFuturesLen2',
+                        azleInterCanisterCallFuturesLen2
+                    );
+                    console.info('azleIsJobQueueEmpty2', azleIsJobQueueEmpty2);
 
                     expect(azleRejectCallbacksLen0).toEqual(0);
                     expect(azleResolveCallbacksLen0).toEqual(0);
                     expect(azleTimerCallbacksLen0).toEqual(0);
+                    expect(azleInterCanisterCallFuturesLen0).toEqual(0);
+                    expect(azleIsJobQueueEmpty0).toBe(true);
 
                     expect(azleRejectCallbacksLen1).toEqual(0);
                     expect(azleResolveCallbacksLen1).toEqual(0);
                     expect(azleTimerCallbacksLen1).toEqual(0);
                     expect(azleActionsLen0).toEqual(azleActionsLen1);
+                    expect(azleInterCanisterCallFuturesLen1).toEqual(0);
+                    expect(azleIsJobQueueEmpty1).toBe(true);
 
                     expect(azleRejectCallbacksLen2).toEqual(0);
                     expect(azleResolveCallbacksLen2).toEqual(0);
                     expect(azleTimerCallbacksLen2).toEqual(0);
                     expect(azleActionsLen0).toEqual(azleActionsLen2);
+                    expect(azleInterCanisterCallFuturesLen2).toEqual(0);
+                    expect(azleIsJobQueueEmpty2).toBe(true);
                 }
             });
         });

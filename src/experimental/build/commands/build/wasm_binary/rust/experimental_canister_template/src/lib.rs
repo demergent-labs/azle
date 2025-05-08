@@ -29,16 +29,3 @@ thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
     static WASM_DATA_REF_CELL: RefCell<Option<wasm_binary_manipulation::WasmData>> = RefCell::new(None);
 }
-
-pub fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
-    context.promise_loop_poll();
-
-    loop {
-        let num_tasks = context.event_loop().unwrap().run_tick_task();
-        context.promise_loop_poll();
-
-        if num_tasks == 0 {
-            break;
-        }
-    }
-}

@@ -44,6 +44,7 @@ export type AzleIcExperimental = {
     setTimer: (delayString: string) => string;
     setTimerInterval: (intervalString: string) => string;
     time: () => string;
+    drainMicrotasks: () => void;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
     // assuming that their types are the same as the types declared by our

@@ -21,7 +21,9 @@ export default Canister({
             methodName === '_azle_reject_callbacks_len' ||
             methodName === '_azle_resolve_callbacks_len' ||
             methodName === '_azle_timer_callbacks_len' ||
-            methodName === '_azle_actions_len'
+            methodName === '_azle_actions_len' ||
+            methodName === '_azle_inter_canister_call_futures_len' ||
+            methodName === '_azle_is_job_queue_empty'
         ) {
             ic.acceptMessage();
             return;

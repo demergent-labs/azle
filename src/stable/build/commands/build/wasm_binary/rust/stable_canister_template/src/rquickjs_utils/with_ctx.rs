@@ -4,7 +4,7 @@ use rquickjs::Ctx;
 
 use crate::CONTEXT_REF_CELL;
 
-pub fn quickjs_with_ctx<F, R>(callback: F) -> Result<R, Box<dyn Error>>
+pub fn with_ctx<F, R>(callback: F) -> Result<R, Box<dyn Error>>
 where
     F: FnOnce(Ctx) -> Result<R, Box<dyn Error>>,
 {
@@ -18,13 +18,7 @@ where
             let result = callback(ctx.clone())
                 .map_err(|e| format!("QuickJS callback execution failed: {e}"))?;
 
-            run_event_loop(ctx);
-
             Ok(result)
         })
     })
-}
-
-pub fn run_event_loop(ctx: Ctx) {
-    while ctx.execute_pending_job() {}
 }

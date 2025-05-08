@@ -4,7 +4,9 @@ use ic_cdk::{api::performance_counter, trap};
 use rquickjs::{Function, Object};
 
 use crate::{
-    benchmarking::record_benchmark, error::quickjs_call_with_error_handling, quickjs_with_ctx,
+    benchmarking::record_benchmark,
+    ic::{drain_inter_canister_call_futures, drain_microtasks},
+    rquickjs_utils::{call_with_error_handling, with_ctx},
 };
 
 #[unsafe(no_mangle)]
@@ -20,7 +22,7 @@ pub extern "C" fn execute_method_js(function_index: i32) {
 }
 
 fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Error>> {
-    quickjs_with_ctx(|ctx| {
+    with_ctx(|ctx| {
         let canister_class_meta: Object = ctx
             .clone()
             .globals()
@@ -37,10 +39,18 @@ fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Er
             )
         })?;
 
-        quickjs_call_with_error_handling(ctx.clone(), method_callback, ())?;
+        // JavaScript code execution: macrotask
+        call_with_error_handling(&ctx, &method_callback, ())?;
+
+        // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
+        drain_microtasks(&ctx);
 
         Ok(())
     })?;
+
+    // We must drain all inter-canister call futures that could have been queued during the JavaScript code execution above
+    // This MUST be called outside of the with_ctx closure or it will trap
+    drain_inter_canister_call_futures();
 
     if let Ok(azle_record_benchmarks) = var("AZLE_RECORD_BENCHMARKS") {
         if azle_record_benchmarks == "true" {

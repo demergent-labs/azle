@@ -2,11 +2,14 @@ use core::time::Duration;
 use std::{cell::RefCell, rc::Rc};
 
 use ic_cdk::trap;
-use ic_cdk_timers::{set_timer_interval, TimerId};
+use ic_cdk_timers::{TimerId, set_timer_interval};
 use rquickjs::{BigInt, Ctx, Function, Object, Result};
 use slotmap::Key;
 
-use crate::{error::quickjs_call_with_error_handling, quickjs_with_ctx};
+use crate::{
+    ic::{drain_inter_canister_call_futures, drain_microtasks},
+    rquickjs_utils::{call_with_error_handling, with_ctx},
+};
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(ctx.clone(), move |interval: u64| -> Result<BigInt> {
@@ -16,7 +19,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
         let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
 
         let closure = move || {
-            let result = quickjs_with_ctx(|ctx| {
+            let result = with_ctx(|ctx| {
                 let timer_id = timer_id_u64_rc_cloned
                     .borrow()
                     .ok_or("TimerId not found in reference-counting pointer")?;
@@ -31,14 +34,22 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                         format!("Failed to get globalThis._azleTimerCallbacks['{timer_id}']: {e}")
                     })?;
 
-                quickjs_call_with_error_handling(ctx, timer_callback, ())?;
+                // JavaScript code execution: macrotask
+                call_with_error_handling(&ctx, &timer_callback, ())?;
+
+                // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
+                drain_microtasks(&ctx);
 
                 Ok(())
             });
 
             if let Err(e) = result {
-                trap(&format!("Azle TimerIntervalError: {e}"));
+                trap(&format!("Azle TimerError: {e}"));
             }
+
+            // We must drain all inter-canister call futures that could have been queued during the JavaScript code execution above
+            // This MUST be called outside of the with_ctx closure or it will trap
+            drain_inter_canister_call_futures();
         };
 
         let timer_id: TimerId = set_timer_interval(interval_duration, closure);

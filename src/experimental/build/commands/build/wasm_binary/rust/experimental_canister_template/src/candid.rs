@@ -1,7 +1,8 @@
 use wasmedge_quickjs::AsObject;
 
 use crate::{
-    RUNTIME, ic, run_event_loop,
+    RUNTIME, ic,
+    ic::drain_microtasks,
     wasm_binary_manipulation::{get_js_code, get_wasm_data},
 };
 
@@ -33,7 +34,7 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
                 .set("_azleActions", context.new_array().into());
 
             context.get_global().set(
-                "_azleNodeWasmEnvironment",
+                "_azleNodejsWasmEnvironment",
                 wasmedge_quickjs::JsValue::Bool(true),
             );
 
@@ -75,7 +76,7 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
                 &wasm_data.main_js_path,
             );
 
-            run_event_loop(context);
+            drain_microtasks(context);
 
             let global = context.get_global();
 
@@ -95,7 +96,7 @@ pub fn get_candid_and_method_meta_pointer() -> *mut std::os::raw::c_char {
                     js_exception.dump_error();
                     panic!("TODO needs error info");
                 }
-                _ => run_event_loop(context),
+                _ => drain_microtasks(context),
             };
 
             let candid_and_method_meta_string =

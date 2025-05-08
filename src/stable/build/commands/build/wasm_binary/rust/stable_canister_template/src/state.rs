@@ -2,7 +2,7 @@ use std::error::Error;
 
 use rquickjs::{Ctx, Object, Value};
 
-use crate::error::quickjs_call_with_error_handling;
+use crate::rquickjs_utils::call_with_error_handling;
 
 /// Dispatches an action to the Azle JavaScript runtime.
 ///
@@ -49,7 +49,7 @@ pub fn dispatch_action<'a>(
 
     action.set("location", location)?;
 
-    quickjs_call_with_error_handling(ctx.clone(), ctx.globals().get("_azleDispatch")?, (action,))?;
+    call_with_error_handling(&ctx, &ctx.globals().get("_azleDispatch")?, (action,))?;
 
     Ok(())
 }
