@@ -2,12 +2,12 @@
     "scripts": {
         "build": "cd src/frontend && VITE_CANISTER_ORIGIN=http://$(dfx canister id backend).raw.localhost:$(dfx info webserver-port) VITE_IDENTITY_PROVIDER=http://$(dfx canister id internet_identity).localhost:$(dfx info webserver-port) vite build",
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "NODE_OPTIONS=--experimental-vm-modules jest"
     },
     "dependencies": {
         "@dfinity/auth-client": "^2.4.1",
         "azle": "0.31.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#34cf2e34958e03cae7bf63f77f86ae682eef8a7c",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa",
         "express": "^4.18.2",
         "lit": "^3.1.2",
         "vite": "^4.5.14"
