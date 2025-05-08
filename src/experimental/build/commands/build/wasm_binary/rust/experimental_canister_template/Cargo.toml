@@ -23,4 +23,4 @@ serde_json = "1.0.140"
 ic-wasi-polyfill = "0.8.1"
 wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "573c6c07316de64e4bb9a9561b079f265fd9bcc4" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }
-wasmi = "0.44.1"
+wasmi = "0.46.0"

@@ -1,13 +1,12 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
+import { compile } from '#commands/build/wasm_binary/compile';
 import {
     AZLE_ROOT,
-    STABLE_STATIC_CANISTER_TEMPLATE_PATH
+    EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH
 } from '#utils/global_paths';
 import { logGlobalDependencies } from '#utils/log_global_dependencies';
-
-import { compile } from '../build/wasm_binary/compile';
 
 export async function runCommand(ioType: IOType): Promise<void> {
     await logGlobalDependencies();
@@ -16,16 +15,17 @@ export async function runCommand(ioType: IOType): Promise<void> {
         join(
             AZLE_ROOT,
             'src',
-            'stable',
+            'experimental',
             'build',
             'commands',
             'build',
             'wasm_binary',
             'rust',
-            'stable_canister_template',
+            'experimental_canister_template',
             'Cargo.toml'
         ),
-        STABLE_STATIC_CANISTER_TEMPLATE_PATH,
-        ioType
+        EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH,
+        ioType,
+        true
     );
 }

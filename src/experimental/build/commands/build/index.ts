@@ -3,8 +3,8 @@ import { mkdir, rm, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
 
 import { logSuccess } from '#experimental/utils/log_success';
+import { CanisterConfig } from '#experimental/utils/types';
 import { execSyncPretty } from '#utils/exec_sync_pretty';
-import { CanisterConfig } from '#utils/types';
 
 import { getCandidAndMethodMeta } from './candid_and_method_meta';
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
