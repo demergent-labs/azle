@@ -1,3 +1,5 @@
+import 'azle/experimental/_internal/test/set_experimental';
+
 import { ActorSubclass, Certificate, HttpAgent } from '@dfinity/agent';
 import { IDL, lebDecode, PipeArrayBuffer } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
@@ -52,7 +54,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.nat({ max: 4_294_967_295 }), // max value for Nat32
-                    async (arbitraryValue) => {
+                    async (arbitraryValue: number) => {
                         await testCertifiedVariableUpdate(
                             arbitraryValue,
                             certVarCanister,

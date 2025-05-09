@@ -1,6 +1,7 @@
 // TODO allow running these tests with and without the authorization header
 // TODO these seem like really good tests for the server and normal fetch too
 // TODO consider how we'll do the axios tests as well
+import 'azle/experimental/_internal/test/set_experimental';
 
 import { expect, it, please, Test, wait } from 'azle/_internal/test';
 import { getCanisterOrigin } from 'azle/experimental/_internal/dfx';
