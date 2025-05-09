@@ -247,11 +247,18 @@ pub fn create_call_error<'a>(
                 exception
             }
         },
-        CallErrorType::CleanupCallback => create_call_error_exception(
-            ctx.clone(),
-            "CleanupCallback",
-            "executing within cleanup callback",
-        )?,
+        CallErrorType::CleanupCallback => {
+            let exception = create_call_error_exception(
+                ctx.clone(),
+                "CleanupCallback",
+                "executing within cleanup callback",
+            )?;
+
+            exception.set("rejectCode", 10_001)?;
+            exception.set("rejectMessage", "executing within cleanup callback")?;
+
+            exception
+        }
     };
 
     Ok(call_error)

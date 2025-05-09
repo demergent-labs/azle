@@ -62,6 +62,8 @@ export type CallRejected = {
 
 export type CleanupCallback = {
     type: 'CleanupCallback';
+    rejectCode: 10_001;
+    rejectMessage: 'executing within cleanup callback';
 };
 
 export type InsufficientLiquidCycleBalance = {
