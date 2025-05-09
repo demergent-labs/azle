@@ -7,7 +7,7 @@ use ic_cdk::{
     trap,
 };
 use rquickjs::{
-    Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
+    BigInt, Ctx, Exception, Function, IntoJs, Object, Result as QuickJsResult, TypedArray, Value,
 };
 
 use crate::{
@@ -16,6 +16,11 @@ use crate::{
     rquickjs_utils::{call_with_error_handling, with_ctx},
     state::dispatch_action,
 };
+
+pub enum CallErrorType {
+    CallFailed(CallFailed),
+    CleanupCallback,
+}
 
 #[derive(Clone, Copy)]
 enum SettleType {
@@ -88,7 +93,6 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                     drain_inter_canister_call_futures();
                 });
 
-                // TODO implement timeout with bounded wait
                 let call_result = Call::unbounded_wait(canister_id, &method)
                     .with_raw_args(&args_raw)
                     .with_cycles(payment)
@@ -120,40 +124,6 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
             Ok(())
         },
     )
-}
-
-/// Drains and spawns any queued inter-canister call futures.
-///
-/// ## Remarks
-///
-/// Every inter-canister call issued from the JavaScript environment using the `call` API
-/// creates an `InterCanisterCallFuture` and pushes it into the
-/// thread-local `INTER_CANISTER_CALL_FUTURES`.  
-/// When you `.await` such a call, the await can resolve in **two** ways:
-///
-/// 1. **Asynchronously** — the normal case, where the reply arrives later in a
-///    fresh replicated call context (the `reply` or `reject` callback).
-/// 2. **Synchronously** — certain errors (e.g. transient network failures) are
-///    raised immediately, so the `await` resumes *inside* the original
-///    `with_ctx` closure.
-///
-/// In the synchronous path the continuation is already executing within an
-/// outer `with_ctx`; calling `with_ctx` again would panic as `already borrowed`.  
-/// To avoid nested-context errors, each future is queued and executed **after**
-/// a top-level ICP call's `with_ctx` returns.
-///
-pub fn drain_inter_canister_call_futures() {
-    let inter_canister_call_futures: Vec<InterCanisterCallFuture> = INTER_CANISTER_CALL_FUTURES
-        .with(|inter_canister_call_futures_ref_cell| {
-            inter_canister_call_futures_ref_cell
-                .borrow_mut()
-                .drain(..)
-                .collect()
-        });
-
-    for inter_canister_call_future in inter_canister_call_futures {
-        spawn(inter_canister_call_future);
-    }
 }
 
 fn cleanup(
@@ -203,23 +173,134 @@ fn reject_promise_with_cleanup_callback_error(
 ) -> Result<(), Box<dyn Error>> {
     let reject_callback = get_settle_callback(ctx.clone(), SettleType::Reject, global_reject_id)?;
 
-    let reject_code = 10_001;
-    let reject_message = "executing within cleanup callback";
+    let call_error = create_call_error(ctx.clone(), CallErrorType::CleanupCallback)?;
 
-    let err_js_object = Exception::from_message(
-        ctx.clone(),
-        &format!(
-            "The inter-canister call's reply or reject callback trapped. Azle reject code {}: {}",
-            reject_code, reject_message
-        ),
-    )?;
-
-    err_js_object.set("rejectCode", reject_code)?;
-    err_js_object.set("rejectMessage", reject_message)?;
-
-    call_with_error_handling(&ctx, &reject_callback, (err_js_object,))?;
+    call_with_error_handling(&ctx, &reject_callback, (call_error,))?;
 
     Ok(())
+}
+
+fn get_settle_callback<'a>(
+    ctx: Ctx<'a>,
+    settle_type: SettleType,
+    settle_global_id: &str,
+) -> Result<Function<'a>, Box<dyn Error>> {
+    let settle_global_object = get_settle_global_object(ctx.clone(), settle_type)?;
+    Ok(settle_global_object.get(settle_global_id)?)
+}
+
+fn get_settle_global_object(ctx: Ctx, settle_type: SettleType) -> Result<Object, Box<dyn Error>> {
+    let globals = ctx.globals();
+
+    if matches!(settle_type, SettleType::Resolve) {
+        Ok(globals.get("_azleResolveCallbacks")?)
+    } else {
+        Ok(globals.get("_azleRejectCallbacks")?)
+    }
+}
+
+pub fn create_call_error<'a>(
+    ctx: Ctx<'a>,
+    call_error_type: CallErrorType,
+) -> Result<Exception<'a>, Box<dyn Error>> {
+    let call_error = match call_error_type {
+        CallErrorType::CallFailed(call_failed) => match &call_failed {
+            CallFailed::InsufficientLiquidCycleBalance(insufficient_liquid_cycle_balance) => {
+                let exception = create_call_error_exception(
+                    ctx.clone(),
+                    "InsufficientLiquidCycleBalance",
+                    &call_failed.to_string(),
+                )?;
+
+                exception.set(
+                    "available",
+                    ctx.eval::<BigInt, &str>(&format!(
+                        "{}n",
+                        insufficient_liquid_cycle_balance.available
+                    ))?,
+                )?;
+                exception.set(
+                    "required",
+                    ctx.eval::<BigInt, &str>(&format!(
+                        "{}n",
+                        insufficient_liquid_cycle_balance.required
+                    ))?,
+                )?;
+
+                exception
+            }
+            CallFailed::CallPerformFailed(_) => create_call_error_exception(
+                ctx.clone(),
+                "CallPerformFailed",
+                &call_failed.to_string(),
+            )?,
+            CallFailed::CallRejected(call_rejected) => {
+                let exception = create_call_error_exception(
+                    ctx.clone(),
+                    "CallRejected",
+                    &call_failed.to_string(),
+                )?;
+
+                exception.set("rejectCode", call_rejected.reject_code()? as u32)?;
+                exception.set("rejectMessage", call_rejected.reject_message())?;
+
+                exception
+            }
+        },
+        CallErrorType::CleanupCallback => create_call_error_exception(
+            ctx.clone(),
+            "CleanupCallback",
+            "executing within cleanup callback",
+        )?,
+    };
+
+    Ok(call_error)
+}
+
+fn create_call_error_exception<'a>(
+    ctx: Ctx<'a>,
+    call_error_type: &str,
+    message: &str,
+) -> Result<Exception<'a>, Box<dyn Error>> {
+    let exception = Exception::from_message(ctx.clone(), message)?;
+
+    exception.set("type", call_error_type)?;
+
+    Ok(exception)
+}
+
+/// Drains and spawns any queued inter-canister call futures.
+///
+/// ## Remarks
+///
+/// Every inter-canister call issued from the JavaScript environment using the `call` API
+/// creates an `InterCanisterCallFuture` and pushes it into the
+/// thread-local `INTER_CANISTER_CALL_FUTURES`.  
+/// When you `.await` such a call, the await can resolve in **two** ways:
+///
+/// 1. **Asynchronously** — the normal case, where the reply arrives later in a
+///    fresh replicated call context (the `reply` or `reject` callback).
+/// 2. **Synchronously** — certain errors (e.g. transient network failures) are
+///    raised immediately, so the `await` resumes *inside* the original
+///    `with_ctx` closure.
+///
+/// In the synchronous path the continuation is already executing within an
+/// outer `with_ctx`; calling `with_ctx` again would panic as `already borrowed`.  
+/// To avoid nested-context errors, each future is queued and executed **after**
+/// a top-level ICP call's `with_ctx` returns.
+///
+pub fn drain_inter_canister_call_futures() {
+    let inter_canister_call_futures: Vec<InterCanisterCallFuture> = INTER_CANISTER_CALL_FUTURES
+        .with(|inter_canister_call_futures_ref_cell| {
+            inter_canister_call_futures_ref_cell
+                .borrow_mut()
+                .drain(..)
+                .collect()
+        });
+
+    for inter_canister_call_future in inter_canister_call_futures {
+        spawn(inter_canister_call_future);
+    }
 }
 
 fn settle_promise<'a>(
@@ -255,36 +336,10 @@ fn prepare_settle_js_value<'a>(
 
             Ok((SettleType::Resolve, candid_bytes_js_value))
         }
-        Err(err) => {
-            let err_js_object = Exception::from_message(
-                ctx.clone(),
-                &format!("The inter-canister call failed: {err}"),
-            )?;
-
-            // TODO what do we do about this?
-            // err_js_object.set("rejectCode", err.0 as i32)?;
-            // err_js_object.set("rejectMessage", &err.1)?;
-
-            Ok((SettleType::Reject, err_js_object.into_js(&ctx)?))
-        }
-    }
-}
-
-fn get_settle_callback<'a>(
-    ctx: Ctx<'a>,
-    settle_type: SettleType,
-    settle_global_id: &str,
-) -> Result<Function<'a>, Box<dyn Error>> {
-    let settle_global_object = get_settle_global_object(ctx.clone(), settle_type)?;
-    Ok(settle_global_object.get(settle_global_id)?)
-}
-
-fn get_settle_global_object(ctx: Ctx, settle_type: SettleType) -> Result<Object, Box<dyn Error>> {
-    let globals = ctx.globals();
-
-    if matches!(settle_type, SettleType::Resolve) {
-        Ok(globals.get("_azleResolveCallbacks")?)
-    } else {
-        Ok(globals.get("_azleRejectCallbacks")?)
+        Err(call_failed) => Ok((
+            SettleType::Reject,
+            create_call_error(ctx.clone(), CallErrorType::CallFailed(call_failed))?
+                .into_js(&ctx)?,
+        )),
     }
 }

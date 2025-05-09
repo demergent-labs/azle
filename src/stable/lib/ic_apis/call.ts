@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 import { idlDecode, idlEncode } from '../execute_and_reply_with_candid_serde';
 import { RejectCode } from './msg_reject_code';
 
-type CallOptions<Args extends any[] | Uint8Array | undefined> = {
+export type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     /**
      * Candid types for encoding the arguments
      */
@@ -36,17 +36,39 @@ type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     timeout?: number | null;
 };
 
+// TODO redo these JS Docs for all of the error types
 /**
  * The error object thrown on an unsuccessful inter-canister call.
  *
  * @property rejectCode - Code associated with an unsuccessful inter-canister call
  * @property rejectMessage - An optional message providing additional context or details about the reject
  */
-// TODO add the sync property once the ic-cdk v0.18.0 comes out
-export interface CallError extends Error {
+// TODO we should add the CallError type to all inter-canister calls with a try-catch
+export type CallError =
+    | CallPerformFailed
+    | CallRejected
+    | CleanupCallback
+    | InsufficientLiquidCycleBalance;
+
+export type CallPerformFailed = {
+    type: 'CallPerformFailed';
+};
+
+export type CallRejected = {
+    type: 'CallRejected';
     rejectCode: RejectCode;
-    rejectMessage?: string;
-}
+    rejectMessage: string;
+};
+
+export type CleanupCallback = {
+    type: 'CleanupCallback';
+};
+
+export type InsufficientLiquidCycleBalance = {
+    type: 'InsufficientLiquidCycleBalance';
+    available: bigint;
+    required: bigint;
+};
 
 /**
  * Makes an inter-canister call to a method on another canister.

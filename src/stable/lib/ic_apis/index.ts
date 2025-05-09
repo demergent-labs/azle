@@ -1,4 +1,12 @@
-export { call, CallError } from './call';
+export {
+    call,
+    CallError,
+    CallOptions,
+    CallPerformFailed,
+    CallRejected,
+    CleanupCallback,
+    InsufficientLiquidCycleBalance
+} from './call';
 export { candidDecode } from './candid_decode';
 export { candidEncode } from './candid_encode';
 export { canisterCycleBalance } from './canister_cycle_balance';

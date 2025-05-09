@@ -21,7 +21,7 @@ export function canisterCycleBalance(): bigint {
     }
 
     if (globalThis._azleIc !== undefined) {
-        return BigInt(globalThis._azleIc.canisterCycleBalance());
+        return globalThis._azleIc.canisterCycleBalance();
     }
 
     return 0n;
