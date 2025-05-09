@@ -20,7 +20,7 @@
  *   - after a successful inter-canister await
  *   - after an unsuccessful inter-canister await
  */
-export function setCertifiedData(data: Uint8Array): void {
+export function certifiedDataSet(data: Uint8Array): void {
     if (globalThis._azleIcExperimental !== undefined) {
         globalThis._azleIcExperimental.setCertifiedData(
             data.buffer instanceof ArrayBuffer
@@ -30,6 +30,6 @@ export function setCertifiedData(data: Uint8Array): void {
     }
 
     if (globalThis._azleIc !== undefined) {
-        globalThis._azleIc.setCertifiedData(data);
+        globalThis._azleIc.certifiedDataSet(data);
     }
 }

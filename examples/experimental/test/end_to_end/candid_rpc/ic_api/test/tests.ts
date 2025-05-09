@@ -103,8 +103,8 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             ).rejects.toThrow(rejectMessage);
         });
 
-        it('calls setDataCertificate on the ic object', async () => {
-            const result = await icApiCanister.setCertifiedData(
+        it('calls certifiedDataSet on the ic object', async () => {
+            const result = await icApiCanister.certifiedDataSet(
                 Uint8Array.from([83, 117, 114, 112, 114, 105, 115, 101, 33])
             );
 

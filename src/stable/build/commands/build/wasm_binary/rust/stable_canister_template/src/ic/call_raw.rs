@@ -2,8 +2,8 @@ use std::error::Error;
 
 use candid::Principal;
 use ic_cdk::{
-    api::call::{RejectionCode, call_raw128, is_recovering_from_trap},
-    futures::spawn,
+    call::{Call, CallFailed, Response},
+    futures::{is_recovering_from_trap, spawn},
     trap,
 };
 use rquickjs::{
@@ -88,13 +88,17 @@ pub fn get_function(ctx: Ctx) -> QuickJsResult<Function> {
                     drain_inter_canister_call_futures();
                 });
 
-                let call_result = call_raw128(canister_id, &method, args_raw, payment).await;
+                // TODO implement timeout with bounded wait
+                let call_result = Call::unbounded_wait(canister_id, &method)
+                    .with_raw_args(&args_raw)
+                    .with_cycles(payment)
+                    .await;
 
                 let result = with_ctx(|ctx| {
                     // JavaScript code execution: macrotask (when call_raw128.await does not return synchronously)
                     settle_promise(
                         ctx.clone(),
-                        &call_result,
+                        call_result,
                         &global_resolve_id,
                         &global_reject_id,
                     )?;
@@ -220,11 +224,11 @@ fn reject_promise_with_cleanup_callback_error(
 
 fn settle_promise<'a>(
     ctx: Ctx<'a>,
-    call_result: &Result<Vec<u8>, (RejectionCode, String)>,
+    call_result: Result<Response, CallFailed>,
     global_resolve_id: &str,
     global_reject_id: &str,
 ) -> Result<(), Box<dyn Error>> {
-    let (settle_type, settle_js_value) = prepare_settle_js_value(ctx.clone(), &call_result)?;
+    let (settle_type, settle_js_value) = prepare_settle_js_value(ctx.clone(), call_result)?;
     let settle_callback = get_settle_callback(
         ctx.clone(),
         settle_type,
@@ -242,26 +246,24 @@ fn settle_promise<'a>(
 
 fn prepare_settle_js_value<'a>(
     ctx: Ctx<'a>,
-    call_result: &Result<Vec<u8>, (RejectionCode, String)>,
+    call_result: Result<Response, CallFailed>,
 ) -> Result<(SettleType, Value<'a>), Box<dyn Error>> {
     match call_result {
-        Ok(candid_bytes) => {
+        Ok(response) => {
             let candid_bytes_js_value =
-                TypedArray::<u8>::new(ctx.clone(), candid_bytes.clone()).into_js(&ctx)?;
+                TypedArray::<u8>::new(ctx.clone(), response.into_bytes()).into_js(&ctx)?;
 
             Ok((SettleType::Resolve, candid_bytes_js_value))
         }
         Err(err) => {
             let err_js_object = Exception::from_message(
                 ctx.clone(),
-                &format!(
-                    "The inter-canister call failed with reject code {}: {}",
-                    err.0 as i32, &err.1
-                ),
+                &format!("The inter-canister call failed: {err}"),
             )?;
 
-            err_js_object.set("rejectCode", err.0 as i32)?;
-            err_js_object.set("rejectMessage", &err.1)?;
+            // TODO what do we do about this?
+            // err_js_object.set("rejectCode", err.0 as i32)?;
+            // err_js_object.set("rejectMessage", &err.1)?;
 
             Ok((SettleType::Reject, err_js_object.into_js(&ctx)?))
         }

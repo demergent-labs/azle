@@ -2,6 +2,7 @@ import {
     canisterCycleBalance,
     canisterSelf,
     canisterVersion,
+    certifiedDataSet,
     dataCertificate,
     IDL,
     isController,
@@ -11,7 +12,6 @@ import {
     performanceCounter,
     Principal,
     query,
-    setCertifiedData,
     time,
     trap,
     update
@@ -108,8 +108,8 @@ export default class {
 
     // sets up to 32 bytes of certified data
     @update([IDL.Vec(IDL.Nat8)])
-    setCertifiedData(data: Uint8Array): void {
-        setCertifiedData(data);
+    certifiedDataSet(data: Uint8Array): void {
+        certifiedDataSet(data);
     }
 
     // returns the current timestamp

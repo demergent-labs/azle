@@ -1,8 +1,8 @@
-use ic_cdk::api::{caller, is_controller};
+use ic_cdk::api::{is_controller, msg_caller};
 
 #[allow(unused)]
 pub fn guard_against_non_controllers() -> Result<(), String> {
-    if is_controller(&caller()) {
+    if is_controller(&msg_caller()) {
         return Ok(());
     }
     return Err(

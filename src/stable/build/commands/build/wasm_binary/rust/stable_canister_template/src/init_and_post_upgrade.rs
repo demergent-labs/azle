@@ -1,7 +1,7 @@
 use std::{error::Error, str, time::Duration};
 
 use candid::Principal;
-use ic_cdk::{api::call::call, futures::spawn, trap};
+use ic_cdk::{call::Call, futures::spawn, trap};
 use ic_cdk_timers::set_timer;
 use ic_stable_structures::memory_manager::MemoryId;
 use ic_wasi_polyfill::init_with_memory;
@@ -75,15 +75,10 @@ fn seed_from_raw_rand() {
     set_timer(Duration::new(0, 0), || {
         spawn(async {
             let result: Result<(), Box<dyn Error>> = async {
-                let (randomness,): (Vec<u8>,) =
-                    call(Principal::management_canister(), "raw_rand", ())
-                        .await
-                        .map_err(|(rejection_code, message)| {
-                            format!(
-                                "The inter-canister call failed with reject code: {}: {}",
-                                rejection_code as i32, message
-                            )
-                        })?;
+                let randomness: Vec<u8> =
+                    Call::unbounded_wait(Principal::management_canister(), "raw_rand")
+                        .await?
+                        .candid()?;
 
                 rand_seed(
                     randomness

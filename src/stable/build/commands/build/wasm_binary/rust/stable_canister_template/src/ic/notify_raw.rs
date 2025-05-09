@@ -1,5 +1,5 @@
 use candid::Principal;
-use ic_cdk::api::call::notify_raw;
+use ic_cdk::call::Call;
 use rquickjs::{Ctx, Exception, Function, IntoJs, Result, TypedArray, Undefined, Value};
 
 use crate::ic::throw_error;
@@ -24,20 +24,19 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            let notify_result = notify_raw(canister_id, &method, &args_raw, payment);
+            let notify_result = Call::unbounded_wait(canister_id, &method)
+                .with_raw_args(&args_raw)
+                .with_cycles(payment)
+                .oneway();
 
             match notify_result {
                 Ok(_) => Undefined.into_js(&ctx),
                 Err(err) => {
+                    // TODO we need to rework the error object to match OneWayError
                     let err_js_object = Exception::from_message(
                         ctx.clone(),
-                        &format!(
-                            "The inter-canister call failed with reject code {}",
-                            err as i32
-                        ),
+                        &format!("The inter-canister call failed: {}", err),
                     )?;
-
-                    err_js_object.set("rejectCode", err as i32)?;
 
                     Ok(err_js_object.into_js(&ctx)?)
                 }

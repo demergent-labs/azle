@@ -3,8 +3,6 @@
  *
  * Reject codes:
  *
- *   0: NoError
- *
  *   1: SysFatal
  *
  *   2: SysTransient
@@ -15,9 +13,9 @@
  *
  *   5: CanisterError
  *
- *   6: Unknown
+ *   6: SysUnknown
  */
-export type RejectCode = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type RejectCode = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
  * Returns the reject code from the most recently executed inter-canister call.

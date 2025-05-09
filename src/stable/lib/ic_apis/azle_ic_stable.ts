@@ -19,6 +19,7 @@ export type AzleIc = {
     canisterCycleBalance: () => string;
     canisterSelf: () => Uint8Array;
     canisterVersion: () => bigint;
+    certifiedDataSet: (dataBytes: Uint8Array) => void;
     clearTimer: (timerId: string) => void;
     cyclesBurn: (amountString: string) => string;
     dataCertificate: () => Uint8Array | undefined;
@@ -45,7 +46,6 @@ export type AzleIc = {
     performanceCounter: (counterType: number) => bigint;
     randBytes: (byteLength: number) => Uint8Array;
     randSeed: (seed: Uint8Array) => void;
-    setCertifiedData: (dataBytes: Uint8Array) => void;
     setTimerInterval: (interval: number) => bigint;
     setTimer: (delay: number) => bigint;
     stableBTreeMapContainsKey: (
