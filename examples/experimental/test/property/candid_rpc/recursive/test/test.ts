@@ -1,3 +1,5 @@
+import '#experimental/test/set_experimental';
+
 import {
     defaultArrayConstraints,
     runPropTests,

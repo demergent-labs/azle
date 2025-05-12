@@ -1,3 +1,5 @@
+import '#experimental/test/set_experimental';
+
 import { runPropTests } from 'azle/experimental/_internal/test/property';
 import { candidDefinitionArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_definition_arb';
 import {
