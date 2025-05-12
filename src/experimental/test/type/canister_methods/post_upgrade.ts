@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import {
     bool,
     nat,

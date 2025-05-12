@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { ActorSubclass, Agent, HttpAgent } from '@dfinity/agent';
 
 import { getCanisterId } from '#utils/dfx';

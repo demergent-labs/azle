@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { TypeMapping } from '#experimental/lib/candid/type_mapping';
 import { Void } from '#experimental/lib/index';
 import {

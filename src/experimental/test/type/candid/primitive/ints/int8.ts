@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { TypeMapping } from '#experimental/lib/candid/type_mapping';
 import { int8 } from '#experimental/lib/index';
 import {

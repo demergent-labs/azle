@@ -1,3 +1,4 @@
+import '#experimental/build/assert_experimental';
 import './bool';
 import './empty';
 import './floats';

@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import fc from 'fast-check';
 
 import { HttpResponse, None } from '#experimental/lib/index';

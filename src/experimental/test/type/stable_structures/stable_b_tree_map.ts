@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { StableBTreeMap, text } from '#experimental/lib/index';
 import { AssertType, NotAnyAndExact } from '#test/type/assert_type';
 

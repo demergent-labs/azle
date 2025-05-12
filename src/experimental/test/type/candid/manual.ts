@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { TypeMapping } from '#experimental/lib/candid/type_mapping';
 import { Manual, text } from '#experimental/lib/index';
 import { testCandidType } from '#experimental/test/type/assert_type';

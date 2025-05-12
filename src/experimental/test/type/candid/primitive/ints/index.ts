@@ -1,3 +1,4 @@
+import '#experimental/build/assert_experimental';
 import './int';
 import './int8';
 import './int16';
