@@ -54,7 +54,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.nat({ max: 4_294_967_295 }), // max value for Nat32
-                    async (arbitraryValue: number) => {
+                    async (arbitraryValue) => {
                         await testCertifiedVariableUpdate(
                             arbitraryValue,
                             certVarCanister,
