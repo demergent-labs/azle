@@ -1,4 +1,4 @@
-import '#experimental/test/set_experimental';
+import 'azle/experimental/_internal/test/set_experimental';
 
 import { runPropTests } from 'azle/experimental/_internal/test/property';
 import { CandidReturnTypeArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_return_type_arb';
