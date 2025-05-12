@@ -1,4 +1,4 @@
-import '#experimental/build/assert_experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO there is much more we could test here
 // empty is not present because its type is never which is difficult to test

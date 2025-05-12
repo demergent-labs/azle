@@ -1,4 +1,4 @@
-import '#experimental/build/assert_experimental';
+import '#experimental/lib/assert_experimental';
 
 import { TypeMapping } from '#experimental/lib/candid/type_mapping';
 import { Principal } from '#experimental/lib/index';

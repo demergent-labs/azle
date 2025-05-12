@@ -1,4 +1,4 @@
-import '#experimental/build/assert_experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO These tests are just for one type, float32
 // TODO it will take a lot of effort (not that much though) to get all types tested with Vec

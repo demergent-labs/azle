@@ -1,4 +1,4 @@
-import '#experimental/build/assert_experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO we aren't really testing that the params and return type only accept CandidType
 // TODO The return type is not being tested here

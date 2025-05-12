@@ -1,4 +1,4 @@
-import '#experimental/build/assert_experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO what's going on with the types?
 // TODO if you pass in a Canister as a parameter to query or update

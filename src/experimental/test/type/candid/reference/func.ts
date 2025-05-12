@@ -1,4 +1,4 @@
-import '#experimental/build/assert_experimental';
+import '#experimental/lib/assert_experimental';
 
 // TODO we aren't really testing that Func only accepts CandidType
 // TODO we aren't really testing the params and return type

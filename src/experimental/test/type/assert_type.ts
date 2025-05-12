@@ -1,4 +1,4 @@
-import '#experimental/build/assert_experimental';
+import '#experimental/lib/assert_experimental';
 
 import { CandidType } from '#experimental/lib/candid/candid_type';
 import { Serializable } from '#experimental/lib/stable_structures/stable_b_tree_map';
