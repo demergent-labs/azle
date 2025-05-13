@@ -77,7 +77,11 @@ export default class {
 
             return result;
         } catch (error: any) {
-            if (error.rejectCode === 10_001) {
+            if (
+                error.type === 'CleanupCallback' &&
+                error.rejectCode === 10_001 &&
+                error.rejectMessage === 'executing within cleanup callback'
+            ) {
                 this.rejectCode = error.rejectCode;
                 this.rejectMessage = error.rejectMessage;
 

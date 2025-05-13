@@ -1,5 +1,3 @@
-import { RejectCode } from './msg_reject_code';
-
 /**
  * The interface for our Rust functions is slightly different than the interface
  * we expose to the users. This is the interface for the Rust functions.
@@ -33,7 +31,7 @@ export type AzleIc = {
     msgCyclesAvailable: () => bigint;
     msgCyclesRefunded: () => bigint;
     msgMethodName: () => string;
-    msgRejectCode: () => RejectCode;
+    msgRejectCode: () => number;
     msgRejectMsg: () => string;
     msgReject: (message: string) => void;
     msgReply: (bytes: Uint8Array) => void;

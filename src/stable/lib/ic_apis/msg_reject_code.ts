@@ -1,7 +1,11 @@
 /**
- * Code associated with an unsuccessful inter-canister call.
+ * Returns the reject code from the most recently executed inter-canister call.
  *
- * Reject codes:
+ * @returns The reject code as a number
+ *
+ * @remarks
+ *
+ * The currently supported reject codes are:
  *
  *   0: NoError
  *
@@ -16,15 +20,6 @@
  *   5: CanisterError
  *
  *   6: SysUnknown
- */
-export type RejectCode = 0 | 1 | 2 | 3 | 4 | 5 | 6;
-
-/**
- * Returns the reject code from the most recently executed inter-canister call.
- *
- * @returns The reject code as a number between 0 and 6 inclusive
- *
- * @remarks
  *
  * - **Call Context**:
  *   - after a successful inter-canister await
@@ -32,7 +27,7 @@ export type RejectCode = 0 | 1 | 2 | 3 | 4 | 5 | 6;
  *   - after a successful inter-canister await from a composite query
  *   - after an unsuccessful inter-canister await from a composite query
  */
-export function msgRejectCode(): RejectCode {
+export function msgRejectCode(): number {
     if (globalThis._azleIcExperimental !== undefined) {
         return globalThis._azleIcExperimental.msgRejectCode();
     }

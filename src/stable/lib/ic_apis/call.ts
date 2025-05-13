@@ -1,9 +1,11 @@
+// TODO do nice JSDocs below
+// TODO fix all experimental tests
+
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid';
 
 import { idlDecode, idlEncode } from '../execute_and_reply_with_candid_serde';
-import { RejectCode } from './msg_reject_code';
 
 export type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     /**
@@ -54,12 +56,14 @@ export type CallPerformFailed = {
     type: 'CallPerformFailed';
 };
 
+// TODO add JS Docs, especially explaining the rejectCode
 export type CallRejected = {
     type: 'CallRejected';
-    rejectCode: RejectCode;
+    rejectCode: 1 | 2 | 3 | 4 | 5 | 6;
     rejectMessage: string;
 };
 
+// TODO JS Docs should explain rejectCode in the 3 separate locations
 export type CleanupCallback = {
     type: 'CleanupCallback';
     rejectCode: 10_001;
