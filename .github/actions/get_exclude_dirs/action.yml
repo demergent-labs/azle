@@ -38,6 +38,7 @@ runs:
               # These tests are unstable and experimental. Since we aren't able to spend any time on them until 1.0 is released, we are disabling them entirely for the time being.
               DISABLED_EXCLUSIONS="${{ format('
               examples/experimental/demo/bitcoin_psbt
+              examples/experimental/test/end_to_end/http_server/autoreload
               examples/experimental/test/end_to_end/http_server/ethers_base
               examples/experimental/test/end_to_end/http_server/http_outcall_fetch
               examples/experimental/test/end_to_end/http_server/ic_evm_rpc
@@ -61,7 +62,6 @@ runs:
               examples/experimental/test/end_to_end/candid_rpc/cross_canister_calls
               examples/experimental/test/end_to_end/candid_rpc/management_canister
               examples/experimental/test/end_to_end/candid_rpc/stable_structures
-              examples/experimental/test/end_to_end/http_server/autoreload
               examples/experimental/test/end_to_end/http_server/large_files
               ') }}"
 

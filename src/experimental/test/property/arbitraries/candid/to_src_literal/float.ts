@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 export function floatToSrcLiteral(value: number): string {
     if (Number.isNaN(value)) {
         return 'Number.NaN';

@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
 

@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 import { TypeMapping } from '#experimental/lib/candid/type_mapping';
 import { nat32 } from '#experimental/lib/index';
 import {

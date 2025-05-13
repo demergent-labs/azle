@@ -1,4 +1,4 @@
-import '#experimental/test/set_experimental';
+import '#experimental/build/assert_experimental';
 
 import { execSync } from 'child_process';
 import fc from 'fast-check';

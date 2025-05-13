@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { Named } from '.';
 import { CandidValueAndMeta } from './arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from './arbitraries/candid/corresponding_js_type';

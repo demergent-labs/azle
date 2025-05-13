@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { PrimitiveDefinitionWeights } from './candid/candid_definition_arb/simple_candid_definition_arb';
 import { DefinitionConstraints } from './candid/candid_definition_arb/types';
 import { Float32Constraints } from './candid/primitive/floats/float32_arb';

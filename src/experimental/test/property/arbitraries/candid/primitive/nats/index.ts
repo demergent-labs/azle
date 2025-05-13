@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import fc from 'fast-check';
 
 export const UNumberArb = (depthLevel: number): fc.Arbitrary<number> =>

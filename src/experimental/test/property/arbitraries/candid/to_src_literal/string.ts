@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 function escapeStringForJavaScript(input: string): string {
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes

@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { existsSync } from 'fs';
 import { dirname, join, parse } from 'path';
 

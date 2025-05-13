@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import fc from 'fast-check';
 
 import { JsIdentifierNameArb, JsPropertyNameArb } from './js_name_arb';

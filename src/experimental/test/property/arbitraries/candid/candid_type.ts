@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 export type CandidType = ComplexCandidType | SimpleCandidType;
 
 export type ComplexCandidType =

@@ -1,3 +1,5 @@
+import 'azle/experimental/_internal/test/set_experimental';
+
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
 import {

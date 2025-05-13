@@ -1,3 +1,5 @@
+import 'azle/experimental/_internal/test/set_experimental';
+
 import { ActorSubclass, Certificate, HttpAgent } from '@dfinity/agent';
 import { IDL, lebDecode, PipeArrayBuffer } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';

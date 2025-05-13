@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { getCanisterId } from '#utils/dfx';
 
 import { generateUploaderIdentity } from '../uploader_identity';

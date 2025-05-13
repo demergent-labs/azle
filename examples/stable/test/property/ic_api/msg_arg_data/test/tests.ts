@@ -1,4 +1,4 @@
-globalThis._azleExperimental = true;
+import 'azle/experimental/_internal/test/set_experimental';
 
 import { ActorSubclass } from '@dfinity/agent';
 import { DidVisitor, getDefaultVisitorData } from 'azle/_internal';

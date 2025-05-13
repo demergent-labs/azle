@@ -1,5 +1,6 @@
-// See https://developers.cloudflare.com/rules/transform/request-header-modification/reference/header-format/
+import '#experimental/build/assert_experimental';
 
+// See https://developers.cloudflare.com/rules/transform/request-header-modification/reference/header-format/
 import fc from 'fast-check';
 
 const RESERVED_HEADERS = ['__proto__'];

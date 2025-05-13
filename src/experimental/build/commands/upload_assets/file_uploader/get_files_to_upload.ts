@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { getCanisterConfig } from '#utils/get_canister_config';
 
 export async function getFilesToUpload(
