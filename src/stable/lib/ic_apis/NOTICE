@@ -1,4 +1,4 @@
-Some `JSDoc` comments in the `ic_apis` directory are licensed as follows:
+Some `JSDoc` comments in the `ic_apis` directory are taken from `https://github.com/dfinity/cdk-rs/tree/main/ic-cdk` and licensed as follows:
 
                                  Apache License
                            Version 2.0, January 2004
