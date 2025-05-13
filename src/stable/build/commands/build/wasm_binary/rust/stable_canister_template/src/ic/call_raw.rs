@@ -199,6 +199,16 @@ fn get_settle_global_object(ctx: Ctx, settle_type: SettleType) -> Result<Object,
     }
 }
 
+/// Creates the JavaScript error object that will be used to reject the inter-canister call promise.
+///
+/// ## Remarks
+///
+/// This function will create the JavaScript error object for all inter-canister call error cases, including oneway calls and cleanup callbacks.
+/// Those cases are:
+/// - InsufficientLiquidCycleBalance
+/// - CallPerformFailed
+/// - CallRejected
+/// - CleanupCallback
 pub fn create_call_error<'a>(
     ctx: Ctx<'a>,
     call_error_type: CallErrorType,
