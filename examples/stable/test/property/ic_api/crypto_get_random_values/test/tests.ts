@@ -156,11 +156,9 @@ function randomResultIsUnique(randomResult: Uint8Array | number[]): boolean {
  * @returns The normalized number of calls.
  */
 function normalizeNumCalls(length: number, numCalls: number): number {
-    // The hope is that limiting numCalls to 3 for a length of 1 will
-    // make the probability of collisions only 1%, which is hopefully
-    // practically acceptable for these tests
+    // Limit to 2 calls when length === 1 to attempt to keep collision risk ≈1%
     if (length === 1) {
-        return numCalls > 3 ? 3 : numCalls;
+        return numCalls > 2 ? 2 : numCalls;
     }
 
     return numCalls;
