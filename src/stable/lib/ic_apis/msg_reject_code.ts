@@ -3,6 +3,8 @@
  *
  * Reject codes:
  *
+ *   0: NoError
+ *
  *   1: SysFatal
  *
  *   2: SysTransient
@@ -15,10 +17,7 @@
  *
  *   6: SysUnknown
  */
-export type RejectCode = 1 | 2 | 3 | 4 | 5 | 6;
-// TODO we need clarification, it looks like msgRejectCode returns 0 still
-// TODO but the Rust RejectCode enum omits 0...
-// TODO once we figure out if 0 is valid, we should probably add it back in here
+export type RejectCode = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
  * Returns the reject code from the most recently executed inter-canister call.
