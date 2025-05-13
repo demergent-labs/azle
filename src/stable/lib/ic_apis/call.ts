@@ -1,6 +1,3 @@
-// TODO do nice JSDocs below
-// TODO fix all experimental tests
-
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { v4 } from 'uuid';
@@ -38,41 +35,89 @@ export type CallOptions<Args extends any[] | Uint8Array | undefined> = {
     timeout?: number | null;
 };
 
-// TODO redo these JS Docs for all of the error types
 /**
  * The error object thrown on an unsuccessful inter-canister call.
- *
- * @property rejectCode - Code associated with an unsuccessful inter-canister call
- * @property rejectMessage - An optional message providing additional context or details about the reject
  */
-// TODO we should add the CallError type to all inter-canister calls with a try-catch
 export type CallError =
     | CallPerformFailed
     | CallRejected
     | CleanupCallback
     | InsufficientLiquidCycleBalance;
 
+/**
+ * The error object thrown when the `ic0.call_perform` operation fails.
+ *
+ * This error type indicates that the underlying `ic0.call_perform` operation
+ * returned a non-zero code, signaling a failure.
+ */
 export type CallPerformFailed = {
     type: 'CallPerformFailed';
 };
 
-// TODO add JS Docs, especially explaining the rejectCode
+/**
+ * The error object thrown when an inter-canister call is rejected.
+ */
 export type CallRejected = {
     type: 'CallRejected';
+    /**
+     * The reject code associated with the rejected inter-canister call.
+     *
+     * The currently supported reject codes are:
+     *
+     *   1: SysFatal
+     *
+     *   2: SysTransient
+     *
+     *   3: DestinationInvalid
+     *
+     *   4: CanisterReject
+     *
+     *   5: CanisterError
+     *
+     *   6: SysUnknown
+     */
     rejectCode: 1 | 2 | 3 | 4 | 5 | 6;
+    /**
+     * The reject message associated with the rejected inter-canister call.
+     */
     rejectMessage: string;
 };
 
-// TODO JS Docs should explain rejectCode in the 3 separate locations
+/**
+ * The error object thrown during execution of the cleanup callback associated with a reply or reject callback that has trapped.
+ *
+ * An inter-canister call's reply or reject callback may trap, rolling back all of the callback's state changes.
+ * This behavior is not desirable in situations where the reply or reject callback is expected to perform cleanup operations.
+ * This error will be thrown during execution of the cleanup callback, allowing the inter-canister caller to detect it
+ * and perform any necessary cleanup operations.
+ *
+ * You MUST NOT trap during execution of the cleanup callback.
+ *
+ */
 export type CleanupCallback = {
     type: 'CleanupCallback';
+    /**
+     * The reject code associated with the cleanup callback is always `10001`.
+     */
     rejectCode: 10_001;
+    /**
+     * The reject message associated with the cleanup callback is always `executing within cleanup callback`.
+     */
     rejectMessage: 'executing within cleanup callback';
 };
 
+/**
+ * The error object thrown when the liquid cycle balance is insufficient to perform the call.
+ */
 export type InsufficientLiquidCycleBalance = {
     type: 'InsufficientLiquidCycleBalance';
+    /**
+     * The liquid cycle balance available in the canister.
+     */
     available: bigint;
+    /**
+     * The required cycles to perform the call.
+     */
     required: bigint;
 };
 
