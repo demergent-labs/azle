@@ -1,3 +1,4 @@
+import '#experimental/lib/assert_experimental';
 import './nat';
 import './nat8';
 import './nat16';

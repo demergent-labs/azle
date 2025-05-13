@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { Dest, Src } from '.';
 import { getListOfIncompleteFiles } from './incomplete_files';
 import { UploaderActor } from './uploader_actor';

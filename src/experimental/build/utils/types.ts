@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import {
     CanisterConfig as StableCanisterConfig,
     Context as StableContext,

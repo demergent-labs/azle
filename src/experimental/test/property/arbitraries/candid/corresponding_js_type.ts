@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { Principal } from '@dfinity/principal';
 
 import { Opt } from './constructed/opt_arb';

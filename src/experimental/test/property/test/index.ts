@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { candidDeepEqual } from 'azle/_internal/test/candid_deep_equal';
 
 import { jsonStringify } from '#lib/json';

@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 export function bytesToHumanReadable(sizeInBytes: number): string {
     const suffixes = ['B', 'KiB', 'MiB', 'GiB'];
 

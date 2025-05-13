@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import fc, { StringSharedConstraints } from 'fast-check';
 
 import { Context } from '../../types';

@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import fc from 'fast-check';
 
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';

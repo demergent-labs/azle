@@ -1,3 +1,5 @@
+import 'azle/experimental/_internal/test/set_experimental';
+
 import { runPropTests } from 'azle/experimental/_internal/test/property';
 import { CorrespondingJSType } from 'azle/experimental/_internal/test/property/arbitraries/candid/corresponding_js_type';
 import { CanisterArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_arb';

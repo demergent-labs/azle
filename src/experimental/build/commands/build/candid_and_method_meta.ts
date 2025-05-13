@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 import { join } from 'path';

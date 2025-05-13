@@ -39,6 +39,7 @@ build();
 async function build(): Promise<void> {
     if (await isExperimental()) {
         warnAboutExperimentalDeps();
+        globalThis._azleExperimental = true;
         const { build } = await import('#experimental/build/index');
         await build();
     } else {
