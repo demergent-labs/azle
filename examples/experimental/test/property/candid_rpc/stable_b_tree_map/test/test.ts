@@ -1,3 +1,5 @@
+import 'azle/experimental/_internal/test/set_experimental';
+
 import { runPropTests } from 'azle/experimental/_internal/test/property';
 import { CanisterArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_arb';
 import { StableBTreeMapArb } from 'azle/experimental/_internal/test/property/arbitraries/stable_b_tree_map_arb';

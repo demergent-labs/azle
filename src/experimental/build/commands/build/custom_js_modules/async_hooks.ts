@@ -1,3 +1,5 @@
+import '#experimental/lib/assert_experimental';
+
 // TODO this is just a placeholder module so that bundling won't break
 // TODO eventually we would want a real implementation of this in Azle or wasmedge-quickjs or Waden
 // TODO it seems async_hooks is impossible or very difficult to polyfill in the browser

@@ -1,3 +1,5 @@
+import 'azle/experimental/_internal/test/set_experimental';
+
 import {
     defaultArrayConstraints,
     runPropTests,

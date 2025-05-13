@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { IOType } from 'child_process';
 import { mkdir, rm, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';

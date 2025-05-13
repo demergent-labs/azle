@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { IDL } from '@dfinity/candid';
 
 import { escapeCandidName } from '#lib/did_file/visitor/escape_candid_name';

@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import fc from 'fast-check';
 
 import { CandidType as RuntimeCandidType } from '#experimental/lib/candid/candid_type';

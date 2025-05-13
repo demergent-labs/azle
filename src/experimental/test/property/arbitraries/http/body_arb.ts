@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import fc from 'fast-check';
 
 export function BodyArb(): fc.Arbitrary<Uint8Array> {

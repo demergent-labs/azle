@@ -1,3 +1,5 @@
+import 'azle/experimental/_internal/test/set_experimental';
+
 import { expect, it, Test } from 'azle/_internal/test';
 
 export function getTests(canisterId: string): Test {

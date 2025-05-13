@@ -1,3 +1,5 @@
+import 'azle/experimental/_internal/test/set_experimental';
+
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, please, Test } from 'azle/_internal/test';

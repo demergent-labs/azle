@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import { createRequire } from 'module';
 import { dirname } from 'path';
 

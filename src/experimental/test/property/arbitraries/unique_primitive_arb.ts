@@ -1,3 +1,5 @@
+import '#experimental/build/assert_experimental';
+
 import fc from 'fast-check';
 
 // TODO I think all callers of createUniquePrimitiveArb will use the same Set
