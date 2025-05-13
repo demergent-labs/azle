@@ -28,8 +28,9 @@ runs:
               UNSTABLE_EXCLUSIONS="${{ format('
               ') }}"
 
-              # These tests are unstable and there is nothing we can do about them. Consequently, failing tests are not helpful, so we're disabling them entirely for the time being.
-              BROKEN_OUTSIDE_OF_OUR_CONTROL="${{ format('
+              # These tests are unstable because of problems in external code. Consequently, failing tests are not helpful, so we're disabling them entirely for the time being.
+              # multi_deploy will be fixed when https://github.com/demergent-labs/azle/issues/2145 is resolved
+              EXTERNAL_EXCLUSIONS="${{ format('
               examples/stable/test/end_to_end/candid_rpc/multi_deploy
               ') }}"
 
@@ -64,7 +65,7 @@ runs:
               examples/experimental/test/end_to_end/http_server/large_files
               ') }}"
 
-              EXCLUDE_DIRS="$DISABLED_EXCLUSIONS $BROKEN_OUTSIDE_OF_OUR_CONTROL"
+              EXCLUDE_DIRS="$DISABLED_EXCLUSIONS $EXTERNAL_EXCLUSIONS"
 
               if [[ "${{ inputs.exclude-release-only }}" == "true" ]]; then
                   EXCLUDE_DIRS="$EXCLUDE_DIRS $RELEASE_ONLY_EXCLUSIONS"
