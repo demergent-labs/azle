@@ -634,7 +634,7 @@ dependencies = [
  "anyhow",
  "candid 0.10.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "candid_parser 0.1.4",
- "ic-cdk 0.18.0",
+ "ic-cdk 0.18.1",
  "ic-cdk-timers",
  "ic-stable-structures",
  "ic-wasi-polyfill",
@@ -905,15 +905,15 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk"
-version = "0.18.0"
+version = "0.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b11cc255410be6a7e47e1a756ea94c1f31a2397a79e696f6f7d207d5ebd3e144"
+checksum = "977726fd275cca6229763726377e5eb8d10c1b441a6c8ddb80d7411864d15b6d"
 dependencies = [
  "candid 0.10.13 (registry+https://github.com/rust-lang/crates.io-index)",
- "ic-cdk-macros 0.18.0",
+ "ic-cdk-macros 0.18.1",
  "ic-error-types",
  "ic-management-canister-types",
- "ic0 0.24.0",
+ "ic0 0.25.0",
  "serde",
  "serde_bytes",
  "slotmap",
@@ -936,15 +936,14 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-macros"
-version = "0.18.0"
+version = "0.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30bab0b748bc4059f19abbd2c2609761ca6d6c731979f01148b49afcc4fe7a9f"
+checksum = "669681748d5ef717d712db2be1aba3b3bdeffb1bac87c9dd39ad22bc109e938e"
 dependencies = [
  "candid 0.10.13 (registry+https://github.com/rust-lang/crates.io-index)",
+ "darling",
  "proc-macro2",
  "quote",
- "serde",
- "serde_tokenstream",
  "syn 2.0.98",
 ]
 
@@ -956,7 +955,7 @@ checksum = "647de2a321d15442c2a73597fd81f031af80624022f069844bf789a317889299"
 dependencies = [
  "candid 0.10.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "futures",
- "ic-cdk 0.18.0",
+ "ic-cdk 0.18.1",
  "ic0 0.24.0",
  "serde",
  "serde_bytes",
@@ -1018,6 +1017,12 @@ name = "ic0"
 version = "0.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "673a6b846467547f3fc61f95d246aadff03e368b53c931655300b9d1bd05a55a"
+
+[[package]]
+name = "ic0"
+version = "0.25.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0ecd5c978846f2f917a899f5d644dca9a7f01b4cf7d16b361a5746c4f1922029"
 
 [[package]]
 name = "ic_principal"
@@ -2118,7 +2123,7 @@ version = "0.0.0"
 dependencies = [
  "candid 0.10.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "candid_parser 0.1.4",
- "ic-cdk 0.18.0",
+ "ic-cdk 0.18.1",
  "ic-cdk-timers",
  "ic-stable-structures",
  "ic-wasi-polyfill",
