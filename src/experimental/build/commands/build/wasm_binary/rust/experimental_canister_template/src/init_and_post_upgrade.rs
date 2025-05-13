@@ -2,7 +2,7 @@ use core::time::Duration;
 use std::error::Error;
 
 use candid::Principal;
-use ic_cdk::{api::call::call, trap};
+use ic_cdk::{call::Call, trap};
 use ic_cdk_timers::set_timer;
 use ic_stable_structures::memory_manager::MemoryId;
 use wasmedge_quickjs::AsObject;
@@ -86,8 +86,10 @@ fn initialize(init: bool, function_index: i32) {
 
     seed_from_raw_rand();
 
-    ic_cdk::spawn(async move {
-        open_value_sharing::init(&wasm_data.consumer).await;
+    ic_cdk::futures::in_executor_context(|| {
+        ic_cdk::futures::spawn(async move {
+            open_value_sharing::init(&wasm_data.consumer).await;
+        });
     });
 }
 
@@ -195,17 +197,12 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
 
 fn seed_from_raw_rand() {
     set_timer(Duration::new(0, 0), || {
-        ic_cdk::spawn(async {
+        ic_cdk::futures::spawn(async {
             let result: Result<(), Box<dyn Error>> = async {
-                let (randomness,): (Vec<u8>,) =
-                    call(Principal::management_canister(), "raw_rand", ())
-                        .await
-                        .map_err(|(rejection_code, message)| {
-                            format!(
-                                "The inter-canister call failed with reject code: {}: {}",
-                                rejection_code as i32, message
-                            )
-                        })?;
+                let randomness: Vec<u8> =
+                    Call::unbounded_wait(Principal::management_canister(), "raw_rand")
+                        .await?
+                        .candid()?;
 
                 rand_seed(
                     randomness

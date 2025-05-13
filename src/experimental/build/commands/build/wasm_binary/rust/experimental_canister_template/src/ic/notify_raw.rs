@@ -1,8 +1,11 @@
+use ic_cdk::call::{CallFailed, OnewayError};
 use wasmedge_quickjs::{Context, JsFn, JsValue};
+
+use crate::ic::call_raw::{CallErrorType, create_call_error};
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
-    fn call(_context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
+    fn call(context: &mut Context, _this_val: JsValue, argv: &[JsValue]) -> JsValue {
         let canister_id_bytes = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(0).unwrap()
         {
             js_array_buffer.to_vec()
@@ -30,23 +33,32 @@ impl JsFn for NativeFunction {
         };
         let payment: u128 = payment_string.parse().unwrap();
 
-        let notify_result = ic_cdk::api::call::notify_raw(canister_id, &method, &args_raw, payment);
+        let notify_result = ic_cdk::call::Call::unbounded_wait(canister_id, &method)
+            .with_raw_args(&args_raw)
+            .with_cycles(payment)
+            .oneway();
 
         match notify_result {
             Ok(_) => JsValue::UnDefined,
-            Err(err) => {
-                // TODO obviously fix this once we figure out wasmedge_quickjs errors
+            Err(oneway_error) => {
+                let call_error = create_call_error(
+                    context,
+                    match oneway_error {
+                        OnewayError::CallPerformFailed(call_perform_failed) => {
+                            CallErrorType::CallFailed(CallFailed::CallPerformFailed(
+                                call_perform_failed,
+                            ))
+                        }
+                        OnewayError::InsufficientLiquidCycleBalance(
+                            insufficient_liquid_cycle_balance,
+                        ) => CallErrorType::CallFailed(CallFailed::InsufficientLiquidCycleBalance(
+                            insufficient_liquid_cycle_balance,
+                        )),
+                    },
+                )
+                .unwrap();
 
-                // TODO it might be nice to convert the rejection code to a string as well if possible
-                // TODO to give the user an actual error message (like the enum variants converted to string)
-                let err_string = format!(
-                    "Rejection code {rejection_code}",
-                    rejection_code = (err as i32).to_string()
-                );
-
-                // Err(anyhow::anyhow!(err_string))
-
-                panic!("{}", err_string);
+                call_error.into()
             }
         }
     }

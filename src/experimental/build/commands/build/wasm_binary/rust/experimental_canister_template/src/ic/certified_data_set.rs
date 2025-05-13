@@ -10,7 +10,7 @@ impl JsFn for NativeFunction {
                 panic!("conversion from JsValue to JsArrayBuffer failed")
             };
 
-        ic_cdk::api::set_certified_data(&certified_data_bytes);
+        ic_cdk::api::certified_data_set(&certified_data_bytes);
 
         JsValue::UnDefined
     }

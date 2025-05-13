@@ -25,7 +25,7 @@ export default class {
         type _AssertReturnType = AssertType<
             NotAnyAndExact<
                 ReturnType<typeof msgRejectCode>,
-                0 | 1 | 2 | 3 | 4 | 5 | 6
+                1 | 2 | 3 | 4 | 5 | 6
             >
         >;
         const throwErrorRejectCode = await getThrowErrorRejectCode(

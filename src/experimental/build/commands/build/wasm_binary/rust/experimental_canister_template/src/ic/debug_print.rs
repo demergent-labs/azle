@@ -7,9 +7,9 @@ impl JsFn for NativeFunction {
 
         if let Some(first_arg) = first_arg_option {
             let string_to_print = first_arg.clone().to_string().unwrap().to_string();
-            ic_cdk::print(string_to_print);
+            ic_cdk::api::debug_print(string_to_print);
         } else {
-            ic_cdk::print("");
+            ic_cdk::api::debug_print("");
         }
 
         JsValue::UnDefined

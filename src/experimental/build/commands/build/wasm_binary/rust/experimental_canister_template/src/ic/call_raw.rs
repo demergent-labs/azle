@@ -1,7 +1,15 @@
-use ic_cdk::api::call::is_recovering_from_trap;
-use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
+use std::error::Error;
+
+use ic_cdk::call::{Call, CallFailed};
+use ic_cdk::futures::is_recovering_from_trap;
+use wasmedge_quickjs::{AsObject, Context, JsFn, JsObject, JsValue};
 
 use crate::ic::drain_microtasks;
+
+pub enum CallErrorType {
+    CallFailed(CallFailed),
+    CleanupCallback,
+}
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
@@ -47,45 +55,95 @@ impl JsFn for NativeFunction {
 
         let mut context_clone = context.clone();
 
-        ic_cdk::spawn(async move {
-            let mut context_clone_cleanup = context_clone.clone();
+        ic_cdk::futures::in_executor_context(|| {
+            ic_cdk::futures::spawn(async move {
+                let mut context_clone_cleanup = context_clone.clone();
 
-            // My understanding of how this works
-            // scopeguard will execute its closure at the end of the scope
-            // After a successful or unsuccessful cross-canister call (await point)
-            // the closure will run, cleaning up the global promise callbacks
-            // Even during a trap, the IC will ensure that the closure runs in its own call
-            // thus allowing us to recover from a trap and persist that state
-            let _cleanup = scopeguard::guard((), |_| {
-                let global = context_clone_cleanup.get_global();
+                // My understanding of how this works
+                // scopeguard will execute its closure at the end of the scope
+                // After a successful or unsuccessful cross-canister call (await point)
+                // the closure will run, cleaning up the global promise callbacks
+                // Even during a trap, the IC will ensure that the closure runs in its own call
+                // thus allowing us to recover from a trap and persist that state
+                let _cleanup_scopeguard = scopeguard::guard((), |_| {
+                    let global = context_clone_cleanup.get_global();
 
-                if is_recovering_from_trap() {
-                    let reject_code = 10_001;
-                    let reject_message = "executing within cleanup callback";
-
-                    let mut err_object = context_clone_cleanup
-                        .new_error(&format!(
-                            "The inter-canister call's reply or reject callback trapped. Azle reject code {}: {}",
-                            reject_code, reject_message
-                        ))
-                        .to_obj()
+                    if is_recovering_from_trap() {
+                        let call_error = create_call_error(
+                            &mut context_clone_cleanup,
+                            CallErrorType::CleanupCallback,
+                        )
                         .unwrap();
 
-                    err_object.set("rejectCode", reject_code.into());
-                    err_object.set(
-                        "rejectMessage",
-                        context_clone_cleanup.new_string(reject_message).into(),
-                    );
+                        let reject = global
+                            .get("_azleRejectCallbacks")
+                            .to_obj()
+                            .unwrap()
+                            .get(&global_reject_id)
+                            .to_function()
+                            .unwrap();
 
-                    let reject = global
-                        .get("_azleRejectCallbacks")
+                        let result = reject.call(&[call_error.into()]);
+
+                        // TODO error handling is mostly done in JS right now
+                        // TODO we would really like wasmedge-quickjs to add
+                        // TODO good error info to JsException and move error handling
+                        // TODO out of our own code
+                        match &result {
+                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                                js_exception.dump_error();
+                                panic!("TODO needs error info");
+                            }
+                            _ => drain_microtasks(&mut context_clone_cleanup),
+                        };
+                    }
+
+                    let resolve_callbacks = global.get("_azleResolveCallbacks");
+                    let reject_callbacks = global.get("_azleRejectCallbacks");
+
+                    resolve_callbacks
                         .to_obj()
                         .unwrap()
-                        .get(&global_reject_id)
+                        .delete(&global_resolve_id);
+                    reject_callbacks.to_obj().unwrap().delete(&global_reject_id);
+                });
+
+                let call_result = Call::unbounded_wait(canister_id, &method)
+                    .with_raw_args(&args_raw)
+                    .with_cycles(payment)
+                    .await;
+
+                let global = context_clone.get_global();
+
+                let (should_resolve, js_value) = match call_result {
+                    Ok(response) => {
+                        let candid_bytes_js_value: JsValue = context_clone
+                            .new_array_buffer(&response.into_bytes())
+                            .into();
+
+                        (true, candid_bytes_js_value)
+                    }
+                    Err(call_failed) => {
+                        let call_error = create_call_error(
+                            &mut context_clone,
+                            CallErrorType::CallFailed(call_failed),
+                        )
+                        .unwrap();
+
+                        (false, call_error.into())
+                    }
+                };
+
+                if should_resolve {
+                    let resolve = global
+                        .get("_azleResolveCallbacks")
+                        .to_obj()
+                        .unwrap()
+                        .get(&global_resolve_id)
                         .to_function()
                         .unwrap();
 
-                    let result = reject.call(&[err_object.into()]);
+                    let result = resolve.call(&[js_value.clone()]);
 
                     // TODO error handling is mostly done in JS right now
                     // TODO we would really like wasmedge-quickjs to add
@@ -96,95 +154,114 @@ impl JsFn for NativeFunction {
                             js_exception.dump_error();
                             panic!("TODO needs error info");
                         }
-                        _ => drain_microtasks(&mut context_clone_cleanup),
+                        _ => drain_microtasks(&mut context_clone),
                     };
-                }
-
-                let resolve_callbacks = global.get("_azleResolveCallbacks");
-                let reject_callbacks = global.get("_azleRejectCallbacks");
-
-                resolve_callbacks
-                    .to_obj()
-                    .unwrap()
-                    .delete(&global_resolve_id);
-                reject_callbacks.to_obj().unwrap().delete(&global_reject_id);
-            });
-
-            let call_result =
-                ic_cdk::api::call::call_raw128(canister_id, &method, &args_raw, payment).await;
-
-            let global = context_clone.get_global();
-
-            let (should_resolve, js_value) = match &call_result {
-                Ok(candid_bytes) => {
-                    let candid_bytes_js_value: JsValue =
-                        context_clone.new_array_buffer(candid_bytes).into();
-
-                    (true, candid_bytes_js_value)
-                }
-                Err(err) => {
-                    let mut err_object = context_clone
-                        .new_error(&format!(
-                            "The inter-canister call failed with reject code {}: {}",
-                            err.0 as i32, err.1
-                        ))
+                } else {
+                    let reject = global
+                        .get("_azleRejectCallbacks")
                         .to_obj()
+                        .unwrap()
+                        .get(&global_reject_id)
+                        .to_function()
                         .unwrap();
 
-                    err_object.set("rejectCode", (err.0 as i32).into());
-                    err_object.set("rejectMessage", context_clone.new_string(&err.1).into());
+                    let result = reject.call(&[js_value.clone()]);
 
-                    (false, err_object.into())
+                    // TODO error handling is mostly done in JS right now
+                    // TODO we would really like wasmedge-quickjs to add
+                    // TODO good error info to JsException and move error handling
+                    // TODO out of our own code
+                    match &result {
+                        wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                            js_exception.dump_error();
+                            panic!("TODO needs error info");
+                        }
+                        _ => drain_microtasks(&mut context_clone),
+                    };
                 }
-            };
-
-            if should_resolve {
-                let resolve = global
-                    .get("_azleResolveCallbacks")
-                    .to_obj()
-                    .unwrap()
-                    .get(&global_resolve_id)
-                    .to_function()
-                    .unwrap();
-
-                let result = resolve.call(&[js_value.clone()]);
-
-                // TODO error handling is mostly done in JS right now
-                // TODO we would really like wasmedge-quickjs to add
-                // TODO good error info to JsException and move error handling
-                // TODO out of our own code
-                match &result {
-                    wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                        js_exception.dump_error();
-                        panic!("TODO needs error info");
-                    }
-                    _ => drain_microtasks(&mut context_clone),
-                };
-            } else {
-                let reject = global
-                    .get("_azleRejectCallbacks")
-                    .to_obj()
-                    .unwrap()
-                    .get(&global_reject_id)
-                    .to_function()
-                    .unwrap();
-
-                let result = reject.call(&[js_value.clone()]);
-
-                // TODO error handling is mostly done in JS right now
-                // TODO we would really like wasmedge-quickjs to add
-                // TODO good error info to JsException and move error handling
-                // TODO out of our own code
-                match &result {
-                    wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                        js_exception.dump_error();
-                        panic!("TODO needs error info");
-                    }
-                    _ => drain_microtasks(&mut context_clone),
-                };
-            }
+            });
         });
 
         JsValue::UnDefined
     }
+}
+
+pub fn create_call_error<'a>(
+    context: &mut Context,
+    call_error_type: CallErrorType,
+) -> Result<JsObject, Box<dyn Error>> {
+    let call_error = match call_error_type {
+        CallErrorType::CallFailed(call_failed) => match &call_failed {
+            CallFailed::InsufficientLiquidCycleBalance(insufficient_liquid_cycle_balance) => {
+                let mut exception = create_call_error_exception(
+                    context,
+                    "InsufficientLiquidCycleBalance",
+                    &call_failed.to_string(),
+                )?;
+
+                exception.set(
+                    "available",
+                    context.eval_global_str(format!(
+                        "{}n",
+                        insufficient_liquid_cycle_balance.available
+                    )),
+                );
+                exception.set(
+                    "required",
+                    context.eval_global_str(format!(
+                        "{}n",
+                        insufficient_liquid_cycle_balance.required
+                    )),
+                );
+
+                exception
+            }
+            CallFailed::CallPerformFailed(_) => {
+                create_call_error_exception(context, "CallPerformFailed", &call_failed.to_string())?
+            }
+            CallFailed::CallRejected(call_rejected) => {
+                let mut exception =
+                    create_call_error_exception(context, "CallRejected", &call_failed.to_string())?;
+
+                exception.set("rejectCode", (call_rejected.reject_code()? as i32).into());
+                exception.set(
+                    "rejectMessage",
+                    context.new_string(call_rejected.reject_message()).into(),
+                );
+
+                exception
+            }
+        },
+        CallErrorType::CleanupCallback => {
+            let mut exception = create_call_error_exception(
+                context,
+                "CleanupCallback",
+                "executing within cleanup callback",
+            )?;
+
+            exception.set("rejectCode", 10_001.into());
+            exception.set(
+                "rejectMessage",
+                context
+                    .new_string("executing within cleanup callback")
+                    .into(),
+            );
+
+            exception
+        }
+    };
+
+    Ok(call_error)
+}
+
+fn create_call_error_exception(
+    context: &mut Context,
+    call_error_type: &str,
+    message: &str,
+) -> Result<JsObject, Box<dyn Error>> {
+    let mut exception = context.new_error(message).to_obj().unwrap();
+
+    exception.set("type", context.new_string(call_error_type).into());
+
+    Ok(exception)
 }

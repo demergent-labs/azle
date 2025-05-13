@@ -9,7 +9,8 @@ crate-type = ["cdylib"]
 [dependencies]
 candid = "0.10.13"
 candid_parser = "0.1.4"
-ic-cdk = "0.18.0"
+# TODO remove = once 0.18.1 is fixed
+ic-cdk = "=0.18.0"
 ic-cdk-timers = "0.12.0"
 ic-stable-structures = "0.6.8"
 ic-wasi-polyfill = "0.8.1"

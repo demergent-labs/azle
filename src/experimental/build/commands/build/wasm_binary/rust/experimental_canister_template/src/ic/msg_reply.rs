@@ -9,7 +9,7 @@ impl JsFn for NativeFunction {
             JsValue::ArrayBuffer(js_array_buffer) => {
                 let buf = js_array_buffer.to_vec();
 
-                ic_cdk::api::call::reply_raw(&buf);
+                ic_cdk::api::msg_reply(&buf);
             }
             _ => {}
         };

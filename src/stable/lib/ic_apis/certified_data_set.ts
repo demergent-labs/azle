@@ -22,7 +22,7 @@
  */
 export function certifiedDataSet(data: Uint8Array): void {
     if (globalThis._azleIcExperimental !== undefined) {
-        globalThis._azleIcExperimental.setCertifiedData(
+        globalThis._azleIcExperimental.certifiedDataSet(
             data.buffer instanceof ArrayBuffer
                 ? data.buffer
                 : new Uint8Array(data).buffer
