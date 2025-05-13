@@ -28,12 +28,12 @@ runs:
               UNSTABLE_EXCLUSIONS="${{ format('
               ') }}"
 
-              # These tests are unstable and there is nothing we can do about them. Consequently a failing test is not really helpful so we are disabling them entirely for the time being
+              # These tests are unstable and there is nothing we can do about them. Consequently, failing tests are not helpful, so we're disabling them entirely for the time being.
               BROKEN_OUTSIDE_OF_OUR_CONTROL="${{ format('
               examples/stable/test/end_to_end/candid_rpc/multi_deploy
               ') }}"
 
-              # These tests are unstable and also experimental, since we can't spend anytime of them until 1.0 is released we are disabling them entirely for the time being
+              # These tests are unstable and experimental. Since we aren't able to spend any time on them until 1.0 is released, we are disabling them entirely for the time being.
               DISABLED_EXCLUSIONS="${{ format('
               examples/experimental/demo/bitcoin_psbt
               examples/experimental/test/end_to_end/http_server/ethers_base
