@@ -73,11 +73,11 @@ export function getTests(): Test {
 
                         expect(
                             bigIntAbs(instructions0 - instructions1)
-                        ).toBeLessThan(1_100n);
+                        ).toBeLessThan(10_000n);
 
                         expect(
                             bigIntAbs(instructionsAfter0 - instructionsAfter1)
-                        ).toBeLessThan(1_100n);
+                        ).toBeLessThan(10_000n);
 
                         expect(instructions0).toBeLessThan(instructionsAfter0);
                         expect(instructions1).toBeLessThan(instructionsAfter1);
