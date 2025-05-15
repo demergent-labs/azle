@@ -185,7 +185,7 @@ globalThis._azleDispatch = (action: Action): void => {
         globalThis.process !== undefined &&
         globalThis.process.env.AZLE_RECORD_ACTIONS === 'true'
     ) {
-        globalThis._azleActions.push(action);
+        globalThis._azleActions?.push(action);
     }
 
     if (action.type === 'DELETE_AZLE_REJECT_CALLBACK') {
