@@ -1,3 +1,3 @@
 #!/bin/bash
 
-dfx deploy internet_identity --specified-id 4duc2-jqaaa-aaaaa-aabiq-cai --argument '(null)'
+dfx deploy internet_identity --specified-id u6s2n-gx777-77774-qaaba-cai --argument '(null)'
