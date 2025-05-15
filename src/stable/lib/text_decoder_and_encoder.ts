@@ -1,5 +1,3 @@
-import './state';
-
 // @ts-ignore
 import { TextDecoder, TextEncoder } from 'fast-text-encoding';
 

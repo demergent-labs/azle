@@ -1,7 +1,6 @@
 // ./text_decoder_and_encoder must be imported before ./stable_structures/stable_json
 // as ./stable_structures/stable_json relies on TextDecoder and TextEncoder.
-// ./text_decoder_and_encoder also contains the import of ./state
-// which is required to use globalThis._azleDispatch
+import './state';
 import './text_decoder_and_encoder';
 
 import { AzleIcExperimental } from '#experimental/lib/ic/azle_ic_experimental';
