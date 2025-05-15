@@ -1,4 +1,6 @@
 import { Principal } from '@dfinity/principal';
+// @ts-ignore
+import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
 import { jsonParse, jsonStringify } from '../json';
 import { Serializable } from './stable_b_tree_map';

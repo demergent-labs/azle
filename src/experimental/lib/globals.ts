@@ -1,9 +1,9 @@
 import '#experimental/lib/assert_experimental';
 import '#lib/globals'; // We import this to remove type errors having to do with the stable and experimental globals
 
-import { Buffer } from 'buffer';
 // @ts-ignore
-import { TextDecoder, TextEncoder } from 'fast-text-encoding';
+import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
+import { Buffer } from 'buffer';
 import * as process from 'process';
 import { URL } from 'url';
 import { v4 } from 'uuid';
@@ -39,10 +39,8 @@ if (
     // we must set them again here because importing the url module above
     // seemingly resets globalThis.TextDecoder and globalThis.TextEncoder
     // to the wasmedge-quickjs versions which break with a RangeError: The "ascii" encoding is not supported
-    globalThis.TextDecoder =
-        TextDecoder ?? global.TextDecoder ?? window.TextDecoder;
-    globalThis.TextEncoder =
-        TextEncoder ?? global.TextEncoder ?? window.TextEncoder;
+    globalThis.TextDecoder = TextDecoder;
+    globalThis.TextEncoder = TextEncoder;
 
     globalThis.window = globalThis as any;
 
