@@ -1,7 +1,8 @@
-import './state';
-
-// @ts-ignore
-import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
+// ./text_decoder_and_encoder must be imported before ./stable_structures/stable_json
+// as ./stable_structures/stable_json relies on TextDecoder and TextEncoder.
+// ./text_decoder_and_encoder also contains the import of ./state
+// which is required to use globalThis._azleDispatch
+import './text_decoder_and_encoder';
 
 import { AzleIcExperimental } from '#experimental/lib/ic/azle_ic_experimental';
 
@@ -49,24 +50,6 @@ if (
     globalThis._azleIcpReplicaWasmEnvironment === true ||
     globalThis._azleNodejsWasmEnvironment === true
 ) {
-    globalThis._azleDispatch({
-        type: 'SET_TEXT_DECODER',
-        payload: TextDecoder,
-        location: {
-            filepath: 'azle/src/stable/lib/global.ts',
-            functionName: ''
-        }
-    });
-
-    globalThis._azleDispatch({
-        type: 'SET_TEXT_ENCODER',
-        payload: TextEncoder,
-        location: {
-            filepath: 'azle/src/stable/lib/global.ts',
-            functionName: ''
-        }
-    });
-
     globalThis._azleDispatch({
         type: 'SET_CRYPTO',
         payload: {
