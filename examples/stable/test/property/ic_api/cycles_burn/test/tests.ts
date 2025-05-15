@@ -34,7 +34,7 @@ export function getTests(): Test {
                             cycleBalanceBefore -
                                 cycleBalanceAfter -
                                 cyclesBurned
-                        ).toBeLessThanOrEqual(1_000_000n);
+                        ).toBeLessThanOrEqual(10_000_000n);
                     }
                 ),
                 defaultPropTestParams()

@@ -4,7 +4,7 @@ read -r -d '' argument << CANDID
 (variant {
     Init = record {
         minting_account = record {
-            owner = principal "bd3sg-teaaa-aaaaa-qaaba-cai"
+            owner = principal "umunu-kh777-77774-qaaca-cai"
         };
         transfer_fee = 0 : nat64;
         token_symbol = "ckBTC";
@@ -20,4 +20,4 @@ read -r -d '' argument << CANDID
 })
 CANDID
 
-dfx deploy ckbtc --specified-id be2us-64aaa-aaaaa-qaabq-cai --argument "$argument"
+dfx deploy ckbtc --specified-id uxrrr-q7777-77774-qaaaq-cai --argument "$argument"

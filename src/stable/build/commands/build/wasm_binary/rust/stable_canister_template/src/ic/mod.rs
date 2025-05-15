@@ -13,6 +13,7 @@ mod candid_encode;
 mod canister_cycle_balance;
 mod canister_self;
 mod canister_version;
+mod certified_data_set;
 mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
@@ -34,7 +35,6 @@ mod notify_raw;
 mod performance_counter;
 mod rand_bytes;
 mod rand_seed;
-mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
 mod stable_b_tree_map_contains_key;
@@ -72,6 +72,11 @@ pub fn register(ctx: Ctx) -> Result<()> {
     ic.set(
         "canisterVersion",
         canister_version::get_function(ctx.clone()),
+    )?;
+
+    ic.set(
+        "certifiedDataSet",
+        certified_data_set::get_function(ctx.clone()),
     )?;
 
     ic.set("clearTimer", clear_timer::get_function(ctx.clone()))?;
@@ -136,11 +141,6 @@ pub fn register(ctx: Ctx) -> Result<()> {
     ic.set("randBytes", rand_bytes::get_function(ctx.clone()))?;
 
     ic.set("randSeed", rand_seed::get_function(ctx.clone()))?;
-
-    ic.set(
-        "setCertifiedData",
-        set_certified_data::get_function(ctx.clone()),
-    )?;
 
     ic.set(
         "setTimerInterval",

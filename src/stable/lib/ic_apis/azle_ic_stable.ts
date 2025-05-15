@@ -1,5 +1,3 @@
-import { RejectCode } from './msg_reject_code';
-
 /**
  * The interface for our Rust functions is slightly different than the interface
  * we expose to the users. This is the interface for the Rust functions.
@@ -16,11 +14,12 @@ export type AzleIc = {
     ) => void;
     candidDecode: (candidBytes: Uint8Array) => string;
     candidEncode: (candidString: string) => Uint8Array;
-    canisterCycleBalance: () => string;
+    canisterCycleBalance: () => bigint;
     canisterSelf: () => Uint8Array;
     canisterVersion: () => bigint;
+    certifiedDataSet: (dataBytes: Uint8Array) => void;
     clearTimer: (timerId: string) => void;
-    cyclesBurn: (amountString: string) => string;
+    cyclesBurn: (amountString: string) => bigint;
     dataCertificate: () => Uint8Array | undefined;
     debugPrint: (message: string) => void;
     drainMicrotasks: () => void;
@@ -28,24 +27,23 @@ export type AzleIc = {
     isController: (principalBytes: Uint8Array) => boolean;
     msgArgData: () => Uint8Array;
     msgCaller: () => Uint8Array;
-    msgCyclesAccept: (maxAmountString: string) => string;
-    msgCyclesAvailable: () => string;
-    msgCyclesRefunded: () => string;
+    msgCyclesAccept: (maxAmountString: string) => bigint;
+    msgCyclesAvailable: () => bigint;
+    msgCyclesRefunded: () => bigint;
     msgMethodName: () => string;
-    msgRejectCode: () => RejectCode;
+    msgRejectCode: () => number;
     msgRejectMsg: () => string;
     msgReject: (message: string) => void;
     msgReply: (bytes: Uint8Array) => void;
     notifyRaw: (
         canisterIdBytes: Uint8Array,
         method: string,
-        argsRawBuffer: Uint8Array,
+        argsRaw: Uint8Array,
         cyclesString: string
     ) => void;
     performanceCounter: (counterType: number) => bigint;
     randBytes: (byteLength: number) => Uint8Array;
     randSeed: (seed: Uint8Array) => void;
-    setCertifiedData: (dataBytes: Uint8Array) => void;
     setTimerInterval: (interval: number) => bigint;
     setTimer: (delay: number) => bigint;
     stableBTreeMapContainsKey: (

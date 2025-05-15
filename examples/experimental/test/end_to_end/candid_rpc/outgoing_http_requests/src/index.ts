@@ -22,7 +22,7 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             ic.setOutgoingHttpOptions({
                 maxResponseBytes: 2_000n,
-                cycles: 50_000_000n,
+                cycles: 100_000_000n,
                 transformMethodName: 'xkcdTransform'
             });
 
@@ -57,7 +57,7 @@ export default Canister({
                         ]
                     }
                 ],
-                cycles: 50_000_000n
+                cycles: 100_000_000n
             });
 
             return Buffer.from(httpResponse.body).toString();
@@ -83,7 +83,7 @@ export default Canister({
                     }
                 )
             `),
-                    cycles: 50_000_000n,
+                    cycles: 100_000_000n,
                     raw: true
                 }
             );

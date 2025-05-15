@@ -1,8 +1,11 @@
 use candid::Principal;
-use ic_cdk::api::call::notify_raw;
-use rquickjs::{Ctx, Exception, Function, IntoJs, Result, TypedArray, Undefined, Value};
+use ic_cdk::call::{Call, CallFailed, OnewayError};
+use rquickjs::{Ctx, Function, IntoJs, Result, TypedArray, Undefined, Value};
 
-use crate::ic::throw_error;
+use crate::ic::{
+    call_raw::{CallErrorType, create_call_error},
+    throw_error,
+};
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
     Function::new(
@@ -24,22 +27,34 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                 .parse()
                 .map_err(|e| throw_error(ctx.clone(), e))?;
 
-            let notify_result = notify_raw(canister_id, &method, &args_raw, payment);
+            let notify_result = Call::unbounded_wait(canister_id, &method)
+                .with_raw_args(&args_raw)
+                .with_cycles(payment)
+                .oneway();
 
             match notify_result {
                 Ok(_) => Undefined.into_js(&ctx),
-                Err(err) => {
-                    let err_js_object = Exception::from_message(
+                Err(oneway_error) => {
+                    let call_error = create_call_error(
                         ctx.clone(),
-                        &format!(
-                            "The inter-canister call failed with reject code {}",
-                            err as i32
-                        ),
-                    )?;
+                        match oneway_error {
+                            OnewayError::CallPerformFailed(call_perform_failed) => {
+                                CallErrorType::CallFailed(CallFailed::CallPerformFailed(
+                                    call_perform_failed,
+                                ))
+                            }
+                            OnewayError::InsufficientLiquidCycleBalance(
+                                insufficient_liquid_cycle_balance,
+                            ) => CallErrorType::CallFailed(
+                                CallFailed::InsufficientLiquidCycleBalance(
+                                    insufficient_liquid_cycle_balance,
+                                ),
+                            ),
+                        },
+                    )
+                    .map_err(|e| throw_error(ctx.clone(), e))?;
 
-                    err_js_object.set("rejectCode", err as i32)?;
-
-                    Ok(err_js_object.into_js(&ctx)?)
+                    Ok(call_error.into_js(&ctx)?)
                 }
             }
         },

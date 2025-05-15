@@ -1,9 +1,18 @@
-export { call, CallError } from './call';
+export {
+    call,
+    CallError,
+    CallOptions,
+    CallPerformFailed,
+    CallRejected,
+    CleanupCallback,
+    InsufficientLiquidCycleBalance
+} from './call';
 export { candidDecode } from './candid_decode';
 export { candidEncode } from './candid_encode';
 export { canisterCycleBalance } from './canister_cycle_balance';
 export { canisterSelf } from './canister_self';
 export { canisterVersion } from './canister_version';
+export { certifiedDataSet } from './certified_data_set';
 export { chunk } from './chunk';
 export { clearTimer } from './clear_timer';
 export { cyclesBurn } from './cycles_burn';
@@ -22,7 +31,6 @@ export { msgRejectMsg } from './msg_reject_msg';
 export { msgReply } from './msg_reply';
 export { performanceCounter } from './performance_counter';
 export { randSeed } from './rand_seed';
-export { setCertifiedData } from './set_certified_data';
 export { setTimer } from './set_timer';
 export { setTimerInterval } from './set_timer_interval';
 export { time } from './time';

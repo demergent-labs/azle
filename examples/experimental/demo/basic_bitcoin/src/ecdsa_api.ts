@@ -1,7 +1,6 @@
 import { serialize } from 'azle/experimental';
 
-// The fee for the `sign_with_ecdsa` endpoint using the test key.
-const SIGN_WITH_ECDSA_COST_CYCLES: bigint = 10_000_000_000n;
+const SIGN_WITH_ECDSA_COST_CYCLES: bigint = 30_000_000_000n;
 
 /// Returns the ECDSA public key of this canister at the given derivation path.
 export async function ecdsaPublicKey(

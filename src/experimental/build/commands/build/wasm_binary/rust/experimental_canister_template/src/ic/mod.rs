@@ -6,6 +6,7 @@ mod candid_encode;
 mod canister_cycle_balance;
 mod canister_self;
 mod canister_version;
+mod certified_data_set;
 mod clear_timer;
 mod cycles_burn;
 mod data_certificate;
@@ -27,7 +28,6 @@ mod notify_raw;
 mod performance_counter;
 mod rand_bytes;
 pub mod rand_seed;
-mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
 mod stable_b_tree_map_contains_key;
@@ -102,6 +102,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "canisterVersion",
         context
             .new_function::<canister_version::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "certifiedDataSet",
+        context
+            .new_function::<certified_data_set::NativeFunction>("")
             .into(),
     );
 
@@ -246,13 +253,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     ic.set(
         "msgReply",
         context.new_function::<msg_reply::NativeFunction>("").into(),
-    );
-
-    ic.set(
-        "setCertifiedData",
-        context
-            .new_function::<set_certified_data::NativeFunction>("")
-            .into(),
     );
 
     ic.set(

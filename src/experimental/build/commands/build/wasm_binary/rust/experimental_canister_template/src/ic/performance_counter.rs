@@ -11,7 +11,8 @@ impl JsFn for NativeFunction {
 
         context
             .new_string(
-                &ic_cdk::api::performance_counter(counter_type_string.parse().unwrap()).to_string(),
+                &ic_cdk::api::performance_counter(counter_type_string.parse::<u32>().unwrap())
+                    .to_string(),
             )
             .into()
     }

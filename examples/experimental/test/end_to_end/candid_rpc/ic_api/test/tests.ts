@@ -103,8 +103,8 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             ).rejects.toThrow(rejectMessage);
         });
 
-        it('calls setDataCertificate on the ic object', async () => {
-            const result = await icApiCanister.setCertifiedData(
+        it('calls certifiedDataSet on the ic object', async () => {
+            const result = await icApiCanister.certifiedDataSet(
                 Uint8Array.from([83, 117, 114, 112, 114, 105, 115, 101, 33])
             );
 
@@ -127,9 +127,9 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
         it('calls trap on the ic object', async () => {
             const message = 'here is the message';
             await expect(icApiCanister.trap(message)).rejects.toThrow(
-                `IC0503: Error from Canister ${getCanisterId(
+                `Error from Canister ${getCanisterId(
                     'ic_api'
-                )}: Canister called \`ic0.trap\` with message: ${message}`
+                )}: Canister called \`ic0.trap\` with message: '${message}'`
             );
         });
     };
