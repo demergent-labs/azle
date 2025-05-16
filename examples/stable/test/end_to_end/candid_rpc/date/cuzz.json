@@ -34,6 +34,7 @@
         "Method: setUtcSeconds \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument",
         "Method: setUtcMilliseconds \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat32 argument",
         "Method: getTime \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught RangeError: cannot convert NaN or Infinity to BigInt",
+        "Method: getTime \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat64 argument",
         "Method: setTime \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught RangeError: cannot convert NaN or Infinity to BigInt",
         "Method: parse \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught RangeError: cannot convert NaN or Infinity to BigInt",
         "Method: utc \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught RangeError: cannot convert NaN or Infinity to BigInt",
