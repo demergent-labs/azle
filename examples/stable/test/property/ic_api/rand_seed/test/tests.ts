@@ -150,9 +150,9 @@ export function getTests(): Test {
  * @returns The normalized number of calls.
  */
 function normalizeNumCalls(length: number, numCalls: number): number {
-    // Limit to 3 calls when length === 1 to attempt to keep collision risk ≈1%
+    // Limit to 2 calls when length === 1 to attempt to keep collision risk ≈1%
     if (length === 1) {
-        return numCalls > 3 ? 3 : numCalls;
+        return numCalls > 2 ? 2 : numCalls;
     }
     return numCalls;
 }
