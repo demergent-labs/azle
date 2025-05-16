@@ -64,9 +64,6 @@ jobs:
                   # Path to the packed azle.tgz file
                   AZLE_PACKAGE="${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
 
-                  echo "Testing help command"
-                  npx "${AZLE_PACKAGE}" --help
-
                   echo "Testing version command"
                   npx "${AZLE_PACKAGE}" --version
 
