@@ -1,0 +1,81 @@
+name: CLI Commands
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+
+jobs:
+    pack-azle:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+
+            - name: Link Azle source
+              if: matrix.azle_source == 'link'
+              run: npm link
+
+            - name: Pack Azle source
+              id: pack_azle
+              run: |
+                  # Ensure the dist directory exists
+                  mkdir -p "${{ github.workspace }}/dist"
+
+                  # Pack into the dist directory and capture the original filename
+                  ORIGINAL_PACKED_FILENAME=$(npm pack --pack-destination "${{ github.workspace }}/dist" | tail -n 1)
+                  echo "Original packed filename: ${ORIGINAL_PACKED_FILENAME}"
+
+                  # Define the final target path
+                  TARGET_PACKED_FILE_PATH="${{ github.workspace }}/dist/azle.tgz"
+                  echo "Target packed file path: ${TARGET_PACKED_FILE_PATH}"
+
+                  # Construct the path to the originally created file
+                  ORIGINAL_PACKED_FILE_PATH="${{ github.workspace }}/dist/${ORIGINAL_PACKED_FILENAME}"
+                  echo "Original packed file path: ${ORIGINAL_PACKED_FILE_PATH}"
+
+                  # Rename the packed file to the target name
+                  mv "${ORIGINAL_PACKED_FILE_PATH}" "${TARGET_PACKED_FILE_PATH}"
+                  echo "Renamed packed file to ${TARGET_PACKED_FILE_PATH}"
+
+                  # Output the final absolute path for the installer step
+                  echo "packed_file_absolute_path=${TARGET_PACKED_FILE_PATH}" >> $GITHUB_OUTPUT
+
+            - name: Test CLI Commands
+              run: |
+                  # Create a fresh test directory
+                  TEST_DIR="${{ github.workspace }}/cli-test"
+                  mkdir -p "${TEST_DIR}"
+                  cd "${TEST_DIR}"
+
+                  # Path to the packed azle.tgz file
+                  AZLE_PACKAGE="${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
+
+                  echo "Testing help command"
+                  npx "${AZLE_PACKAGE}" --help
+
+                  echo "Testing version command"
+                  npx "${AZLE_PACKAGE}" --version
+
+                  echo "Testing init command in a new project"
+                  mkdir -p test-project
+                  cd test-project
+                  npx "${AZLE_PACKAGE}" init
+
+                  echo "Testing template command"
+                  npx "${AZLE_PACKAGE}" template --list
+
+                  # Add more CLI commands to test as needed
