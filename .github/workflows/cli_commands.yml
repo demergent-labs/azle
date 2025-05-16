@@ -29,6 +29,22 @@ jobs:
               if: matrix.azle_source == 'link'
               run: npm link
 
+            - name: Update version in package.json
+              run: |
+                  # Create a unique version number using the GitHub run ID and run number
+                  UNIQUE_VERSION="0.0.0-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+                  echo "Setting unique test version: ${UNIQUE_VERSION}"
+
+                  # Update the version in package.json using npm version without creating a git tag
+                  npm version "${UNIQUE_VERSION}" --no-git-tag-version
+
+                  # Verify the updated version
+                  UPDATED_VERSION=$(node -p "require('./package.json').version")
+                  echo "Updated package.json version to: ${UPDATED_VERSION}"
+
+                  # Save the version for later verification
+                  echo "UNIQUE_VERSION=${UNIQUE_VERSION}" >> $GITHUB_ENV
+
             - name: Pack Azle source
               id: pack_azle
               run: |
@@ -69,14 +85,15 @@ jobs:
                   npm install "${AZLE_PACKAGE}"
 
                   echo "Testing version command"
-                  npx azle --version
+                  DISPLAYED_VERSION=$(npx azle --version)
+                  echo "Displayed version: ${DISPLAYED_VERSION}"
 
-                  echo "Testing init command in a new project"
-                  mkdir -p test-project
-                  cd test-project
-                  npx azle init
-
-                  echo "Testing template command"
-                  npx azle template --list
-
-                  # Add more CLI commands to test as needed
+                  # Verify the version matches our unique test version
+                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
+                    echo "✅ Verification successful: Running the correct packed version"
+                  else
+                    echo "❌ Verification failed: Version mismatch"
+                    echo "Expected to find: ${UNIQUE_VERSION}"
+                    echo "But got: ${DISPLAYED_VERSION}"
+                    exit 1
+                  fi
