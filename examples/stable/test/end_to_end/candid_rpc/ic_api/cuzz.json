@@ -1,7 +1,7 @@
 {
     "expectedErrors": [
         "Method: certifiedDataSet \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister violated contract: ic0_certified_data_set failed because the passed data must be no larger than 32 bytes",
-        "Method: reject \\(query\\)",
+        "Method: msgReject \\(query\\)",
         "Method: trap \\(query\\)"
     ]
 }

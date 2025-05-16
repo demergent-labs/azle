@@ -1,5 +1,6 @@
 {
     "expectedErrors": [
-        "Method: getRandomnessWithTrapCaught \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*trapped from getRandomnessWithTrapCaught"
+        "Method: getRandomnessWithTrapCaught \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*trapped from getRandomnessWithTrapCaught",
+        "Method: getRandomnessWithTrapCaughtAndTrapAgain \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*trapped from getRandomnessWithTrapCaughtAndTrapAgain"
     ]
 }

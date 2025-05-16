@@ -2,6 +2,7 @@
     "expectedErrors": [
         "Uncaught: Method \\\\\"alsoInaccessible\\\\\" not allowed",
         "Method: inaccessible \\(update\\)",
-        "Uncaught Error: alsoInaccessible args are incorrect"
+        "Uncaught Error: alsoInaccessible args are incorrect",
+        "Uncaught Error: accessible args are incorrect"
     ]
 }
