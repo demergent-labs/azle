@@ -1,0 +1,133 @@
+name: CLI Commands
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+
+jobs:
+    pack-azle:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+
+            - name: Link Azle source
+              if: matrix.azle_source == 'link'
+              run: npm link
+
+            - name: Update version in package.json
+              run: |
+                  # Create a unique version number using the GitHub run ID and run number
+                  UNIQUE_VERSION="0.0.0-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+                  echo "Setting unique test version: ${UNIQUE_VERSION}"
+
+                  # Update the version in package.json using npm version without creating a git tag
+                  npm version "${UNIQUE_VERSION}" --no-git-tag-version
+
+                  # Verify the updated version
+                  UPDATED_VERSION=$(node -p "require('./package.json').version")
+                  echo "Updated package.json version to: ${UPDATED_VERSION}"
+
+                  # Save the version for later verification
+                  echo "UNIQUE_VERSION=${UNIQUE_VERSION}" >> $GITHUB_ENV
+
+            - name: Pack Azle source
+              id: pack_azle
+              run: |
+                  # Ensure the dist directory exists
+                  mkdir -p "${{ github.workspace }}/dist"
+
+                  # Pack into the dist directory and capture the original filename
+                  ORIGINAL_PACKED_FILENAME=$(npm pack --pack-destination "${{ github.workspace }}/dist" | tail -n 1)
+                  echo "Original packed filename: ${ORIGINAL_PACKED_FILENAME}"
+
+                  # Define the final target path
+                  TARGET_PACKED_FILE_PATH="${{ github.workspace }}/dist/azle.tgz"
+                  echo "Target packed file path: ${TARGET_PACKED_FILE_PATH}"
+
+                  # Construct the path to the originally created file
+                  ORIGINAL_PACKED_FILE_PATH="${{ github.workspace }}/dist/${ORIGINAL_PACKED_FILENAME}"
+                  echo "Original packed file path: ${ORIGINAL_PACKED_FILE_PATH}"
+
+                  # Rename the packed file to the target name
+                  mv "${ORIGINAL_PACKED_FILE_PATH}" "${TARGET_PACKED_FILE_PATH}"
+                  echo "Renamed packed file to ${TARGET_PACKED_FILE_PATH}"
+
+                  # Output the final absolute path for the installer step
+                  echo "packed_file_absolute_path=${TARGET_PACKED_FILE_PATH}" >> $GITHUB_OUTPUT
+
+            - name: Make Test Directory
+              id: make_test_directory
+              run: |
+                  # Create a fresh test directory
+                  TEST_DIR="${{ github.workspace }}/cli-test"
+                  mkdir -p "${TEST_DIR}"
+                  echo "test_directory=${TEST_DIR}" >> $GITHUB_OUTPUT
+
+            - name: Install Test Azle
+              run: |
+                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
+                  cd "${TEST_DIR}"
+
+                  # Path to the packed azle.tgz file
+                  AZLE_PACKAGE="${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
+
+                  # Temporarily install the package locally for testing
+                  echo "Installing the packed azle package for testing"
+                  npm install "${AZLE_PACKAGE}"
+
+            - name: Verify that the directory is as we expect
+              run: |
+                  echo "Verifying the directory is as we expect"
+                  ls -lar
+
+            - name: Test Version CLI Command
+              run: |
+                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
+                  cd "${TEST_DIR}"
+
+                  echo "Testing version command"
+                  DISPLAYED_VERSION=$(npx azle --version)
+                  echo "Displayed version: ${DISPLAYED_VERSION}"
+
+                  # Verify the version matches our unique test version
+                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
+                    echo "✅ Verification successful: Running the correct packed version"
+                  else
+                    echo "❌ Verification failed: Version mismatch"
+                    echo "Expected to find: ${UNIQUE_VERSION}"
+                    echo "But got: ${DISPLAYED_VERSION}"
+                    exit 1
+                  fi
+
+            - name: Test Dev Setup CLI Command
+              run: |
+                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
+                  cd "${TEST_DIR}"
+
+                  echo "Testing dev setup command"
+                  npx azle dev setup
+
+            - name: Test Generate CLI Command
+              run: |
+                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
+                  cd "${TEST_DIR}"
+
+                  echo "Testing generate command"
+                  # TODO get path to file to generate
+                  # TODO get file to verify generation
+                  npx azle generate
