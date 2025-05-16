@@ -64,15 +64,19 @@ jobs:
                   # Path to the packed azle.tgz file
                   AZLE_PACKAGE="${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
 
+                  # Temporarily install the package locally for testing
+                  echo "Installing the packed azle package for testing"
+                  npm install "${AZLE_PACKAGE}"
+
                   echo "Testing version command"
-                  npx "${AZLE_PACKAGE}" --version
+                  npx azle --version
 
                   echo "Testing init command in a new project"
                   mkdir -p test-project
                   cd test-project
-                  npx "${AZLE_PACKAGE}" init
+                  npx azle init
 
                   echo "Testing template command"
-                  npx "${AZLE_PACKAGE}" template --list
+                  npx azle template --list
 
                   # Add more CLI commands to test as needed
