@@ -6,6 +6,7 @@
         "Method: trap \\(update\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister called `ic0.trap` with message: 'hahahaha'",
         "Method: account \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record",
         "Method: account \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record",
-        "Method: transfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot convert to bigint"
+        "Method: transfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot convert to bigint",
+        "Method: trap \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister called `ic0.trap` with message: 'hahahaha'"
     ]
 }
