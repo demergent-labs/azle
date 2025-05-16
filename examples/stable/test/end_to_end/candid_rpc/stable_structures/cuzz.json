@@ -1,24 +1,15 @@
 {
     "expectedErrors": [
-        "Method: stableMap16Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected token",
-        "Method: stableMap16Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: expecting property name",
-        "Method: stableMap16Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected data at the end",
-        "Method: stableMap16Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
-        "Method: stableMap17Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected token",
-        "Method: stableMap17Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: expecting property name",
-        "Method: stableMap17Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected data at the end",
-        "Method: stableMap17Insert \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
-        "Method: stableMap17Remove \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected token",
-        "Method: stableMap17Remove \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
-        "Method: stableMap17Remove \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected data at the end",
-        "Method: stableMap17Remove \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: unexpected end of string",
-        "Method: stableMap17Remove \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught SyntaxError: expecting property name",
-        "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected token",
-        "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected data at the end",
-        "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
-        "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected end of string",
-        "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected token",
-        "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
-        "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected data at the end"
+        "Uncaught SyntaxError: expecting property name",
+        "Uncaught SyntaxError: unexpected data at the end",
+        "Uncaught SyntaxError: Unexpected end of JSON input",
+        "Uncaught SyntaxError: unexpected end of string",
+        "Uncaught SyntaxError: unexpected token",
+        "Uncaught SyntaxError: No number after minus sign in JSON",
+        "Uncaught SyntaxError: Expected property name or '}' in JSON",
+        "Uncaught SyntaxError: Exponent part is missing a number in JSON",
+        "Uncaught SyntaxError: Expected ':' after property name in JSON",
+        "Uncaught SyntaxError: Bad escaped character in JSON",
+        "Uncaught SyntaxError: Unterminated fractional number in JSON"
     ]
 }

@@ -1,32 +1,7 @@
 {
     "expectedErrors": [
-        "Method: executeClearChunkStore \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeClearChunkStore \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: executeDeleteCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeDeleteCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: executeInstallCode \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeInstallCode \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: executeInstallChunkedCode \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeInstallChunkedCode \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, InstallChunkedCode Error: Store canister .* was not found on subnet .* of target canister",
-        "Method: executeStopCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeStopCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: executeUninstallCode \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeUninstallCode \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: executeUpdateSettings \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeUpdateSettings \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: executeUploadChunk \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeUploadChunk \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: getStoredChunks \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: getStoredChunks \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: getCanisterStatus \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: getCanisterStatus \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: provisionalTopUpCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: provisionalTopUpCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: executeStartCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeStartCanister \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: executeDepositCycles \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: executeDepositCycles \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found",
-        "Method: getCanisterInfo \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Unable to route management canister request",
-        "Method: getCanisterInfo \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Rejection code 3, Canister .* not found"
+        "Uncaught Error: call rejected: 3 - Unable to route management canister request",
+        "Uncaught Error: call rejected: 3 - Canister .* not found",
+        "Uncaught Error: call rejected: 3 - InstallChunkedCode Error: Store canister .* was not found on subnet .* of target canister"
     ]
 }
