@@ -1,6 +1,8 @@
-use ic_cdk::api::call::msg_cycles_refunded128;
-use rquickjs::{Ctx, Function, Result};
+use ic_cdk::api::msg_cycles_refunded;
+use rquickjs::{BigInt, Ctx, Function, Result};
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
-    Function::new(ctx, || -> String { msg_cycles_refunded128().to_string() })
+    Function::new(ctx.clone(), move || -> Result<BigInt> {
+        ctx.eval::<BigInt, &str>(&format!("{}n", msg_cycles_refunded()))
+    })
 }

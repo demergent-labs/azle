@@ -6,7 +6,7 @@ pub struct NativeFunction;
 impl JsFn for NativeFunction {
     fn call(context: &mut Context, _this_val: JsValue, _argv: &[JsValue]) -> JsValue {
         context
-            .new_string(&ic_cdk::api::canister_balance128().to_string())
+            .new_string(&ic_cdk::api::canister_cycle_balance().to_string())
             .into()
     }
 }

@@ -43,7 +43,7 @@ export default class {
                     ]
                 }
             ],
-            cycles: 50_000_000n
+            cycles: 100_000_000n
         });
 
         return new TextDecoder().decode(Uint8Array.from(httpResponse.body));
@@ -67,7 +67,7 @@ export default class {
                         }
                     )
                 `),
-                cycles: 50_000_000n,
+                cycles: 100_000_000n,
                 raw: true
             }
         );

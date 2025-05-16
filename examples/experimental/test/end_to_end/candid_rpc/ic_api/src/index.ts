@@ -2,13 +2,13 @@ import {
     canisterCycleBalance,
     canisterSelf,
     canisterVersion,
+    certifiedDataSet,
     dataCertificate,
     isController,
     msgArgData,
     msgCaller,
     msgReject,
     performanceCounter,
-    setCertifiedData,
     time,
     trap
 } from 'azle';
@@ -84,8 +84,8 @@ export default Canister({
         { manual: true }
     ),
     // sets up to 32 bytes of certified data
-    setCertifiedData: update([blob], Void, (data) => {
-        setCertifiedData(data);
+    certifiedDataSet: update([blob], Void, (data) => {
+        certifiedDataSet(data);
     }),
     // returns the current timestamp
     time: query([], nat64, () => {

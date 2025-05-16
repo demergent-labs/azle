@@ -242,7 +242,7 @@ export function getTests(): Test {
             const canisterId = getCanisterId(CANISTER_NAME);
 
             const expectedErrorMessage = new RegExp(
-                `Call failed:\\s*Canister: ${canisterId}\\s*Method: setDataCertificateInQuery \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "IC0504: Error from Canister ${canisterId}:`
+                `Call failed:\\s*Canister: ${canisterId}\\s*Method: setDataCertificateInQuery \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "Error from Canister ${canisterId}:`
             );
             await expect(actor.setDataCertificateInQuery()).rejects.toThrow(
                 expectedErrorMessage

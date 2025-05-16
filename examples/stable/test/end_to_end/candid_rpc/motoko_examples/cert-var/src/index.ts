@@ -1,4 +1,4 @@
-import { dataCertificate, IDL, query, setCertifiedData, update } from 'azle';
+import { certifiedDataSet, dataCertificate, IDL, query, update } from 'azle';
 
 const CertifiedValue = IDL.Record({
     value: IDL.Nat32,
@@ -16,14 +16,14 @@ export default class {
     @update([], IDL.Nat32)
     async inc(): Promise<number> {
         this.value += 1;
-        setCertifiedData(blobOfNat32(this.value));
+        certifiedDataSet(blobOfNat32(this.value));
         return this.value;
     }
 
     @update([IDL.Nat32])
     async set(value: number): Promise<void> {
         this.value = value;
-        setCertifiedData(blobOfNat32(this.value));
+        certifiedDataSet(blobOfNat32(this.value));
     }
 
     /// Returns the current counter value,

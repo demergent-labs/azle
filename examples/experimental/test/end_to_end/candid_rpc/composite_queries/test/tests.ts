@@ -34,7 +34,7 @@ export function getTests(canister1: ActorSubclass<_SERVICE>): Test {
         it('fails to perform a composite query attempting to call an update method', async () => {
             const canisterId = getCanisterId('canister2');
             const partialErrorMessage = new RegExp(
-                `reject code 5: Error from Canister ${canisterId}: Canister has no query method`
+                `call rejected: 5 - Error from Canister ${canisterId}: Canister has no query method`
             );
 
             await expect(canister1.updateQuery()).rejects.toThrow(
@@ -44,7 +44,7 @@ export function getTests(canister1: ActorSubclass<_SERVICE>): Test {
 
         it('fails to perform a composite query from a regular query', async () => {
             const partialErrorMessage = new RegExp(
-                `reject code 5: IC0527: Composite query cannot be called in replicated mode`
+                `call rejected: 5 - IC0527: Composite query cannot be called in replicated mode`
             );
 
             await expect(canister1.simpleUpdate()).rejects.toThrow(

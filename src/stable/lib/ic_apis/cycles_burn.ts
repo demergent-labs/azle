@@ -25,7 +25,7 @@ export function cyclesBurn(amount: bigint): bigint {
     }
 
     if (globalThis._azleIc !== undefined) {
-        return BigInt(globalThis._azleIc.cyclesBurn(amount.toString()));
+        return globalThis._azleIc.cyclesBurn(amount.toString());
     }
 
     return 0n;

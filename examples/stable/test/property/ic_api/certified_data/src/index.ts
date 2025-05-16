@@ -1,11 +1,11 @@
 import {
+    certifiedDataSet,
     dataCertificate,
     IDL,
     init,
     postUpgrade,
     preUpgrade,
     query,
-    setCertifiedData,
     StableBTreeMap,
     update
 } from 'azle';
@@ -38,7 +38,7 @@ export default class {
     init(setData: boolean, data: Uint8Array): void {
         if (setData === true) {
             this.data = data;
-            setCertifiedData(data);
+            certifiedDataSet(data);
         }
     }
 
@@ -47,7 +47,7 @@ export default class {
         // The idea is that the third deploy will always have certified data set from preUpgrade so to test it we need to deploy 3 times
         // We could make it arbitrary but that seems like a lot of work just to test this one case
         if (this.afterFirstPostUpgrade === true) {
-            setCertifiedData(PRE_UPGRADE_DATA);
+            certifiedDataSet(PRE_UPGRADE_DATA);
             this.stableStorage.insert('certifiedDataSetInPreUpgrade', true);
         }
     }
@@ -67,7 +67,7 @@ export default class {
 
         if (setData === true) {
             this.data = data;
-            setCertifiedData(data);
+            certifiedDataSet(data);
             return;
         }
     }
@@ -75,7 +75,7 @@ export default class {
     @update([IDL.Vec(IDL.Nat8)])
     setData(data: Uint8Array): void {
         this.data = data;
-        setCertifiedData(data);
+        certifiedDataSet(data);
     }
 
     @query([], CertifiedData)
@@ -95,7 +95,7 @@ export default class {
 
     @query
     setDataCertificateInQuery(): void {
-        setCertifiedData(new Uint8Array([3]));
+        certifiedDataSet(new Uint8Array([3]));
     }
 
     @query([], IDL.Bool)
@@ -123,13 +123,13 @@ export default class {
     @update([IDL.Vec(IDL.Nat8)], IDL.Bool)
     assertSetCertifiedDataTypes(data: Uint8Array): boolean {
         type _AssertParamType = AssertType<
-            NotAnyAndExact<Parameters<typeof setCertifiedData>[0], Uint8Array>
+            NotAnyAndExact<Parameters<typeof certifiedDataSet>[0], Uint8Array>
         >;
         type _AssertReturnType = AssertType<
-            NotAnyAndExact<ReturnType<typeof setCertifiedData>, void>
+            NotAnyAndExact<ReturnType<typeof certifiedDataSet>, void>
         >;
         return (
-            data instanceof Uint8Array && setCertifiedData(data) === undefined
+            data instanceof Uint8Array && certifiedDataSet(data) === undefined
         );
     }
 }

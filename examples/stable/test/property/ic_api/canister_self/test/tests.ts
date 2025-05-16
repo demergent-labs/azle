@@ -27,17 +27,19 @@ export function getTests(): Test {
                     async (nat) => {
                         // We need to ensure that the canister id that we generate is on the
                         // correct local subnet. We've taken the binary representation of
-                        // be2us-64aaa-aaaaa-qaabq-cai and just add to the end of it
+                        // uxrrr-q7777-77774-qaaaq-cai and just add to the end of it.
+                        // uxrrr-q7777-77774-qaaaq-cai is the first canister id you get
+                        // if you deploy to the local replica.
                         const canisterId = Principal.fromUint8Array(
                             Uint8Array.from([
-                                128,
+                                255,
+                                255,
+                                255,
+                                255,
+                                255,
+                                144,
                                 0,
-                                0,
-                                0,
-                                0,
-                                16,
-                                0,
-                                3,
+                                1,
                                 1,
                                 1 + nat
                             ])

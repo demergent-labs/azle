@@ -84,7 +84,7 @@ async function getSignatureResult(
                     }
                 }
             ],
-            cycles: 10_000_000_000n
+            cycles: 50_000_000_000n
         }
     );
 }

@@ -1,5 +1,3 @@
-import { RejectCode } from '#lib/ic_apis/msg_reject_code';
-
 /**
  * The interface for our rust methods it slightly different than the interface
  * we expose to the users. This is the interface for the rust functions.
@@ -36,11 +34,11 @@ export type AzleIcExperimental = {
         paymentString: string
     ) => void;
     performanceCounter: (counterType: string) => string;
-    msgRejectCode: () => RejectCode;
+    msgRejectCode: () => number;
     msgReply: (bytes: ArrayBuffer) => void;
     randBytes: (byteLength: number) => ArrayBuffer;
     randSeed: (seed: ArrayBuffer) => void;
-    setCertifiedData: (dataBytes: ArrayBuffer) => void;
+    certifiedDataSet: (dataBytes: ArrayBuffer) => void;
     setTimer: (delayString: string) => string;
     setTimerInterval: (intervalString: string) => string;
     time: () => string;

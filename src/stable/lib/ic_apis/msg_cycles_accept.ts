@@ -20,7 +20,7 @@ export function msgCyclesAccept(maxAmount: bigint): bigint {
     }
 
     if (globalThis._azleIc !== undefined) {
-        return BigInt(globalThis._azleIc.msgCyclesAccept(maxAmount.toString()));
+        return globalThis._azleIc.msgCyclesAccept(maxAmount.toString());
     }
 
     return 0n;

@@ -9,7 +9,7 @@ impl JsFn for NativeFunction {
             panic!("conversion from JsValue to JsString failed")
         };
 
-        ic_cdk::api::call::reject(&message);
+        ic_cdk::api::msg_reject(&message);
 
         JsValue::UnDefined
     }

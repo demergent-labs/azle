@@ -18,7 +18,7 @@ export function msgCyclesAvailable(): bigint {
     }
 
     if (globalThis._azleIc !== undefined) {
-        return BigInt(globalThis._azleIc.msgCyclesAvailable());
+        return globalThis._azleIc.msgCyclesAvailable();
     }
 
     return 0n;

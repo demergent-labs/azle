@@ -19,6 +19,7 @@ import { trap } from './ic_apis/trap';
  */
 export function handleUncaughtError(rawError: any): never | void {
     const executingWithinCleanupCallback =
+        rawError.type === 'CleanupCallback' &&
         rawError.rejectCode === 10_001 &&
         rawError.rejectMessage === 'executing within cleanup callback';
 
