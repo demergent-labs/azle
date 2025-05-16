@@ -90,6 +90,11 @@ jobs:
                   echo "Installing the packed azle package for testing"
                   npm install "${AZLE_PACKAGE}"
 
+            - name: Verify that the directory is as we expect
+              run: |
+                  echo "Verifying the directory is as we expect"
+                  ls -lar
+
             - name: Test Version CLI Command
               run: |
                   TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
@@ -126,8 +131,3 @@ jobs:
                   # TODO get path to file to generate
                   # TODO get file to verify generation
                   npx azle generate
-
-            - name: Verify that the directory is as we expect
-              run: |
-                  echo "Verifying the directory is as we expect"
-                  ls -lar
