@@ -70,11 +70,17 @@ jobs:
                   # Output the final absolute path for the installer step
                   echo "packed_file_absolute_path=${TARGET_PACKED_FILE_PATH}" >> $GITHUB_OUTPUT
 
-            - name: Test CLI Commands
+            - name: Make Test Directory
+              id: make_test_directory
               run: |
                   # Create a fresh test directory
                   TEST_DIR="${{ github.workspace }}/cli-test"
                   mkdir -p "${TEST_DIR}"
+                  echo "test_directory=${TEST_DIR}" >> $GITHUB_OUTPUT
+
+            - name: Install Test Azle
+              run: |
+                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
                   cd "${TEST_DIR}"
 
                   # Path to the packed azle.tgz file
@@ -83,6 +89,11 @@ jobs:
                   # Temporarily install the package locally for testing
                   echo "Installing the packed azle package for testing"
                   npm install "${AZLE_PACKAGE}"
+
+            - name: Test Version CLI Command
+              run: |
+                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
+                  cd "${TEST_DIR}"
 
                   echo "Testing version command"
                   DISPLAYED_VERSION=$(npx azle --version)
@@ -97,3 +108,26 @@ jobs:
                     echo "But got: ${DISPLAYED_VERSION}"
                     exit 1
                   fi
+
+            - name: Test Dev Setup CLI Command
+              run: |
+                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
+                  cd "${TEST_DIR}"
+
+                  echo "Testing dev setup command"
+                  npx azle dev setup
+
+            - name: Test Generate CLI Command
+              run: |
+                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
+                  cd "${TEST_DIR}"
+
+                  echo "Testing generate command"
+                  # TODO get path to file to generate
+                  # TODO get file to verify generation
+                  npx azle generate
+
+            - name: Verify that the directory is as we expect
+              run: |
+                  echo "Verifying the directory is as we expect"
+                  ls -lar
