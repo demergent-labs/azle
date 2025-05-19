@@ -169,3 +169,60 @@ jobs:
                   else
                     echo "✅ Verification successful: Generated output matches expected output"
                   fi
+
+            # Test 'azle new' command with stable template
+            - name: Test New Stable CLI Command
+              working-directory: cli-test
+              run: |
+                  echo "Testing 'azle new' command with stable template"
+                  npx azle new stable_new
+
+            - name: Install Dependencies for Stable New Project
+              working-directory: cli-test/stable_new
+              run: |
+                  echo "Installing dependencies for stable new project"
+                  npm install
+
+            - name: Test Stable New Project
+              working-directory: cli-test/stable_new
+              run: |
+                  echo "Testing stable new project"
+                  npm test
+
+            # Test 'azle new' command with experimental template
+            - name: Test New Experimental CLI Command
+              working-directory: cli-test
+              run: |
+                  echo "Testing 'azle new' command with experimental template"
+                  npx azle new experimental_new --experimental
+
+            - name: Install Dependencies for Experimental New Project
+              working-directory: cli-test/experimental_new
+              run: |
+                  echo "Installing dependencies for experimental new project"
+                  npm install
+
+            - name: Test Experimental New Project
+              working-directory: cli-test/experimental_new
+              run: |
+                  echo "Testing experimental new project"
+                  npm test
+
+            # Test 'azle new' command with HTTP server template (experimental mode)
+            - name: Test New HTTP CLI Command
+              working-directory: cli-test
+              run: |
+                  echo "Testing 'azle new' command with HTTP server template"
+                  npx azle new http_new --experimental --http-server
+
+            - name: Install Dependencies for HTTP New Project
+              working-directory: cli-test/http_new
+              run: |
+                  echo "Installing dependencies for HTTP new project"
+                  npm install
+
+            - name: Test HTTP New Project
+              working-directory: cli-test/http_new
+              run: |
+                  echo "Testing HTTP new project"
+                  npm test
