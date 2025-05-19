@@ -17,18 +17,24 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  path: 'azle'
+                  path: azle
 
             - uses: ./.github/actions/setup_node
+              with:
+                  working-directory: azle
 
             - uses: ./.github/actions/setup_dfx
+              with:
+                  working-directory: azle
 
             - uses: ./.github/actions/retry_command
               with:
+                  working-directory: azle
                   command: 'npm install'
 
             - name: Link Azle source
               if: matrix.azle_source == 'link'
+              working-directory: azle
               run: npm link
 
             - name: Update version in package.json
