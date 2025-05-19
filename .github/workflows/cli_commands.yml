@@ -27,15 +27,15 @@ jobs:
               with:
                   path: azle
 
-            - uses: .azle/.github/actions/setup_node
+            - uses: ./azle/.github/actions/setup_node
               with:
                   working-directory: azle
 
-            - uses: .azle/.github/actions/setup_dfx
+            - uses: ./azle/.github/actions/setup_dfx
               with:
                   working-directory: azle
 
-            - uses: .azle/.github/actions/retry_command
+            - uses: ./azle/.github/actions/retry_command
               with:
                   working-directory: azle
                   command: 'npm install'
