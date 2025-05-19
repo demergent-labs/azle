@@ -19,10 +19,14 @@ runs:
               echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
           shell: bash
 
+        - id: determine retry path
+          run: |
+              echo "retry-path=${{inputs.working-directory}}/.github/actions/retry_command" >> "$GITHUB_OUTPUT"
+          shell: bash
+
         # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
         - name: Install dfx
-          working-directory: '${{ inputs.working-directory }}'
-          uses: ./.github/actions/retry_command
+          uses: ${{ steps.determine-retry-path.outputs.retry-path }}
           with:
               command: src/stable/build/commands/dev/setup/install_dfx.sh "${{ steps.get-dfx-version.outputs.dfx-version }}"
 
