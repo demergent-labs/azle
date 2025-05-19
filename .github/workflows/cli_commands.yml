@@ -170,194 +170,30 @@ jobs:
                     echo "✅ Verification successful: Generated output matches expected output"
                   fi
 
-            # Test 'azle new' command with stable template
-            - name: Test New Stable CLI Command
-              working-directory: cli-test
-              run: |
-                  echo "Testing 'azle new' command with stable template"
-                  npx azle new stable_new
+            # Test templates using our custom action
+            - name: Test Stable Template
+              uses: ./.github/actions/test_azle_template
+              with:
+                  template_name: 'stable_new'
+                  experimental: 'false'
+                  http_server: 'false'
+                  working_directory: 'cli-test'
+                  version: ${{ env.UNIQUE_VERSION }}
 
-            - name: Install Dependencies for Stable New Project
-              working-directory: cli-test/stable_new
-              run: |
-                  echo "Installing dependencies for stable new project"
-                  npm install
+            - name: Test Experimental Template
+              uses: ./.github/actions/test_azle_template
+              with:
+                  template_name: 'experimental_new'
+                  experimental: 'true'
+                  http_server: 'false'
+                  working_directory: 'cli-test'
+                  version: ${{ env.UNIQUE_VERSION }}
 
-            - name: Test Stable New Project
-              working-directory: cli-test/stable_new
-              run: |
-                  echo "Testing stable new project"
-                  npm test
-
-            - name: Check .azle Directory for Stable Project
-              working-directory: cli-test/stable_new
-              run: |
-                  echo "Checking for .azle directory in stable project"
-                  if [ -d ".azle" ]; then
-                    echo "✅ .azle directory exists as expected"
-                  else
-                    echo "❌ .azle directory does not exist but should"
-                    exit 1
-                  fi
-
-            - name: Clean Stable Project
-              working-directory: cli-test/stable_new
-              run: |
-                  echo "Cleaning stable project"
-                  npx azle clean
-
-            - name: Verify .azle Directory Removed for Stable Project
-              working-directory: cli-test/stable_new
-              run: |
-                  echo "Verifying .azle directory was removed from stable project"
-                  if [ -d ".azle" ]; then
-                    echo "❌ .azle directory still exists but should have been removed"
-                    exit 1
-                  else
-                    echo "✅ .azle directory was successfully removed"
-                  fi
-
-            - name: Verify Azle Version in Stable Project
-              working-directory: cli-test/stable_new
-              run: |
-                  echo "Verifying azle version in stable project"
-                  DISPLAYED_VERSION=$(npx azle --version)
-                  echo "Displayed version: ${DISPLAYED_VERSION}"
-
-                  # Verify the version matches our unique test version
-                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
-                    echo "✅ Verification successful: Running the correct packed version"
-                  else
-                    echo "❌ Verification failed: Version mismatch"
-                    echo "Expected to find: ${UNIQUE_VERSION}"
-                    echo "But got: ${DISPLAYED_VERSION}"
-                    exit 1
-                  fi
-
-            # Test 'azle new' command with experimental template
-            - name: Test New Experimental CLI Command
-              working-directory: cli-test
-              run: |
-                  echo "Testing 'azle new' command with experimental template"
-                  npx azle new experimental_new --experimental
-
-            - name: Install Dependencies for Experimental New Project
-              working-directory: cli-test/experimental_new
-              run: |
-                  echo "Installing dependencies for experimental new project"
-                  npm install
-
-            - name: Test Experimental New Project
-              working-directory: cli-test/experimental_new
-              run: |
-                  echo "Testing experimental new project"
-                  npm test
-
-            - name: Check .azle Directory for Experimental Project
-              working-directory: cli-test/experimental_new
-              run: |
-                  echo "Checking for .azle directory in experimental project"
-                  if [ -d ".azle" ]; then
-                    echo "✅ .azle directory exists as expected"
-                  else
-                    echo "❌ .azle directory does not exist but should"
-                    exit 1
-                  fi
-
-            - name: Clean Experimental Project
-              working-directory: cli-test/experimental_new
-              run: |
-                  echo "Cleaning experimental project"
-                  npx azle clean
-
-            - name: Verify .azle Directory Removed for Experimental Project
-              working-directory: cli-test/experimental_new
-              run: |
-                  echo "Verifying .azle directory was removed from experimental project"
-                  if [ -d ".azle" ]; then
-                    echo "❌ .azle directory still exists but should have been removed"
-                    exit 1
-                  else
-                    echo "✅ .azle directory was successfully removed"
-                  fi
-
-            - name: Verify Azle Version in Experimental Project
-              working-directory: cli-test/experimental_new
-              run: |
-                  echo "Verifying azle version in experimental project"
-                  DISPLAYED_VERSION=$(npx azle --version)
-                  echo "Displayed version: ${DISPLAYED_VERSION}"
-
-                  # Verify the version matches our unique test version
-                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
-                    echo "✅ Verification successful: Running the correct packed version"
-                  else
-                    echo "❌ Verification failed: Version mismatch"
-                    echo "Expected to find: ${UNIQUE_VERSION}"
-                    echo "But got: ${DISPLAYED_VERSION}"
-                    exit 1
-                  fi
-
-            # Test 'azle new' command with HTTP server template (experimental mode)
-            - name: Test New HTTP CLI Command
-              working-directory: cli-test
-              run: |
-                  echo "Testing 'azle new' command with HTTP server template"
-                  npx azle new http_new --experimental --http-server
-
-            - name: Install Dependencies for HTTP New Project
-              working-directory: cli-test/http_new
-              run: |
-                  echo "Installing dependencies for HTTP new project"
-                  npm install
-
-            - name: Test HTTP New Project
-              working-directory: cli-test/http_new
-              run: |
-                  echo "Testing HTTP new project"
-                  npm test
-
-            - name: Check .azle Directory for HTTP Project
-              working-directory: cli-test/http_new
-              run: |
-                  echo "Checking for .azle directory in HTTP project"
-                  if [ -d ".azle" ]; then
-                    echo "✅ .azle directory exists as expected"
-                  else
-                    echo "❌ .azle directory does not exist but should"
-                    exit 1
-                  fi
-
-            - name: Clean HTTP Project
-              working-directory: cli-test/http_new
-              run: |
-                  echo "Cleaning HTTP project"
-                  npx azle clean
-
-            - name: Verify .azle Directory Removed for HTTP Project
-              working-directory: cli-test/http_new
-              run: |
-                  echo "Verifying .azle directory was removed from HTTP project"
-                  if [ -d ".azle" ]; then
-                    echo "❌ .azle directory still exists but should have been removed"
-                    exit 1
-                  else
-                    echo "✅ .azle directory was successfully removed"
-                  fi
-
-            - name: Verify Azle Version in HTTP Project
-              working-directory: cli-test/http_new
-              run: |
-                  echo "Verifying azle version in HTTP project"
-                  DISPLAYED_VERSION=$(npx azle --version)
-                  echo "Displayed version: ${DISPLAYED_VERSION}"
-
-                  # Verify the version matches our unique test version
-                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
-                    echo "✅ Verification successful: Running the correct packed version"
-                  else
-                    echo "❌ Verification failed: Version mismatch"
-                    echo "Expected to find: ${UNIQUE_VERSION}"
-                    echo "But got: ${DISPLAYED_VERSION}"
-                    exit 1
-                  fi
+            - name: Test HTTP Server Template
+              uses: ./.github/actions/test_azle_template
+              with:
+                  template_name: 'http_new'
+                  experimental: 'true'
+                  http_server: 'true'
+                  working_directory: 'cli-test'
+                  version: ${{ env.UNIQUE_VERSION }}

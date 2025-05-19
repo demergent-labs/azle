@@ -1,0 +1,109 @@
+name: 'Test Azle Template'
+description: 'Creates, tests, and verifies an Azle template'
+
+inputs:
+    template_name:
+        description: 'Name of the template project to be created'
+        required: true
+    experimental:
+        description: 'Whether to use experimental mode'
+        required: false
+        default: 'false'
+    http_server:
+        description: 'Whether to include HTTP server (requires experimental mode)'
+        required: false
+        default: 'false'
+    working_directory:
+        description: 'Base working directory where the template will be created'
+        required: true
+    version:
+        description: 'Expected Azle version for verification'
+        required: true
+
+runs:
+    using: 'composite'
+    steps:
+        - name: Test New Template CLI Command
+          working-directory: ${{ inputs.working_directory }}
+          shell: bash
+          run: |
+              echo "Testing 'azle new' command for ${{ inputs.template_name }}"
+
+              # Build the command based on inputs
+              CMD="npx azle new ${{ inputs.template_name }}"
+
+              # Add flags if specified
+              if [ "${{ inputs.experimental }}" = "true" ]; then
+                CMD="${CMD} --experimental"
+              fi
+
+              if [ "${{ inputs.http_server }}" = "true" ]; then
+                CMD="${CMD} --http-server"
+              fi
+
+              # Run the command
+              echo "Running command: ${CMD}"
+              ${CMD}
+
+        - name: Install Dependencies for Template Project
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Installing dependencies for ${{ inputs.template_name }} project"
+              npm install
+
+        - name: Test Template Project
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Testing ${{ inputs.template_name }} project"
+              npm test
+
+        - name: Check .azle Directory for Template Project
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Checking for .azle directory in ${{ inputs.template_name }} project"
+              if [ -d ".azle" ]; then
+                echo "✅ .azle directory exists as expected"
+              else
+                echo "❌ .azle directory does not exist but should"
+                exit 1
+              fi
+
+        - name: Clean Template Project
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Cleaning ${{ inputs.template_name }} project"
+              npx azle clean
+
+        - name: Verify .azle Directory Removed for Template Project
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Verifying .azle directory was removed from ${{ inputs.template_name }} project"
+              if [ -d ".azle" ]; then
+                echo "❌ .azle directory still exists but should have been removed"
+                exit 1
+              else
+                echo "✅ .azle directory was successfully removed"
+              fi
+
+        - name: Verify Azle Version in Template Project
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Verifying azle version in ${{ inputs.template_name }} project"
+              DISPLAYED_VERSION=$(npx azle --version)
+              echo "Displayed version: ${DISPLAYED_VERSION}"
+
+              # Verify the version matches our unique test version
+              if [[ "${DISPLAYED_VERSION}" == *"${{ inputs.version }}"* ]]; then
+                echo "✅ Verification successful: Running the correct packed version"
+              else
+                echo "❌ Verification failed: Version mismatch"
+                echo "Expected to find: ${{ inputs.version }}"
+                echo "But got: ${DISPLAYED_VERSION}"
+                exit 1
+              fi
