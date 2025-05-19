@@ -52,6 +52,11 @@ runs:
               echo "Installing dependencies for ${{ inputs.template_name }} project"
               npm install
 
+        - name: Start dfx with artificial delay 0
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: dfx start --clean --background --artificial-delay 0
+
         - name: Test Template Project
           working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
           shell: bash
