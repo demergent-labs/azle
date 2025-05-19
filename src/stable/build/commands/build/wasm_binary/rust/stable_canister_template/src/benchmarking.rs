@@ -21,17 +21,15 @@ pub fn record_benchmark(function_name: &str, instructions: u64) -> Result<(), Bo
     with_ctx(|ctx| {
         let timestamp = time();
 
-        let method_name = if let Ok(method_names) = ctx.clone().globals().get::<_, Object>("_azleCanisterMethodNames") {
-            if let Ok(name) = method_names.get::<_, String>(function_name) {
-                name
-            } else {
-                // If we can't get the method name, use the function name as a fallback
-                function_name.to_string()
-            }
-        } else {
-            // If _azleCanisterMethodNames doesn't exist, use the function name
-            function_name.to_string()
-        };
+        let method_names: Object = ctx
+            .clone()
+            .globals()
+            .get("_azleCanisterMethodNames")
+            .map_err(|e| format!("Failed to get globalThis._azleCanisterMethodNames: {e}"))?;
+
+        let method_name: String = method_names.get(function_name).map_err(|e| {
+            format!("Failed to get globalThis._azleCanisterMethodNames[{function_name}]: {e}")
+        })?;
 
         BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| {
             let mut benchmarks = benchmarks_ref_cell.borrow_mut();

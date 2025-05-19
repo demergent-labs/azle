@@ -26,17 +26,16 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
 
                 let globals = ctx.globals();
 
-                // Check if _azleTimerCallbacks is defined
-                if let Ok(timer_callbacks) = globals.get::<_, Object>("_azleTimerCallbacks") {
-                    if let Ok(timer_callback) = timer_callbacks.get::<_, Function>(timer_id.to_string()) {
-                        // JavaScript code execution: macrotask
-                        call_with_error_handling(&ctx, &timer_callback, ())?;
-                    } else {
-                        return Err(format!("Timer callback for ID '{timer_id}' not found").into());
-                    }
-                } else {
-                    return Err("globalThis._azleTimerCallbacks is not defined".into());
-                }
+                let timer_callbacks: Object = globals
+                    .get("_azleTimerCallbacks")
+                    .map_err(|e| format!("Failed to get globalThis._azleTimerCallbacks: {e}"))?;
+                let timer_callback: Function =
+                    timer_callbacks.get(timer_id.to_string()).map_err(|e| {
+                        format!("Failed to get globalThis._azleTimerCallbacks['{timer_id}']: {e}")
+                    })?;
+
+                // JavaScript code execution: macrotask
+                call_with_error_handling(&ctx, &timer_callback, ())?;
 
                 // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
                 drain_microtasks(&ctx);

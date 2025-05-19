@@ -62,16 +62,11 @@ fn _azle_reject_callbacks_len() -> i32 {
         let runtime = runtime.as_mut().unwrap();
 
         runtime.run_with_context(|context| {
-            // First check if _azleRejectCallbacks is defined
-            match context.eval_global_str("globalThis._azleRejectCallbacks !== undefined".to_string()) {
-                JsValue::Bool(true) => {
-                    // If defined, get the length
-                    match context.eval_global_str("Object.keys(globalThis._azleRejectCallbacks).length".to_string()) {
-                        JsValue::Int(length) => length,
-                        _ => 0, // If not an int, return 0
-                    }
-                },
-                _ => 0, // If undefined, return 0
+            match context
+                .eval_global_str("Object.keys(globalThis._azleRejectCallbacks).length".to_string())
+            {
+                JsValue::Int(length) => length,
+                _ => panic!("Could not convert JsValue to i32"),
             }
         })
     })
@@ -84,16 +79,11 @@ fn _azle_resolve_callbacks_len() -> i32 {
         let runtime = runtime.as_mut().unwrap();
 
         runtime.run_with_context(|context| {
-            // First check if _azleResolveCallbacks is defined
-            match context.eval_global_str("globalThis._azleResolveCallbacks !== undefined".to_string()) {
-                JsValue::Bool(true) => {
-                    // If defined, get the length
-                    match context.eval_global_str("Object.keys(globalThis._azleResolveCallbacks).length".to_string()) {
-                        JsValue::Int(length) => length,
-                        _ => 0, // If not an int, return 0
-                    }
-                },
-                _ => 0, // If undefined, return 0
+            match context
+                .eval_global_str("Object.keys(globalThis._azleResolveCallbacks).length".to_string())
+            {
+                JsValue::Int(length) => length,
+                _ => panic!("Could not convert JsValue to i32"),
             }
         })
     })
@@ -106,16 +96,11 @@ fn _azle_timer_callbacks_len() -> i32 {
         let runtime = runtime.as_mut().unwrap();
 
         runtime.run_with_context(|context| {
-            // First check if _azleTimerCallbacks is defined
-            match context.eval_global_str("globalThis._azleTimerCallbacks !== undefined".to_string()) {
-                JsValue::Bool(true) => {
-                    // If defined, get the length
-                    match context.eval_global_str("Object.keys(globalThis._azleTimerCallbacks).length".to_string()) {
-                        JsValue::Int(length) => length,
-                        _ => 0, // If not an int, return 0
-                    }
-                },
-                _ => 0, // If undefined, return 0
+            match context
+                .eval_global_str("Object.keys(globalThis._azleTimerCallbacks).length".to_string())
+            {
+                JsValue::Int(length) => length,
+                _ => panic!("Could not convert JsValue to i32"),
             }
         })
     })
@@ -128,16 +113,9 @@ fn _azle_actions_len() -> i32 {
         let runtime = runtime.as_mut().unwrap();
 
         runtime.run_with_context(|context| {
-            // First check if _azleActions is defined
-            match context.eval_global_str("globalThis._azleActions !== undefined".to_string()) {
-                JsValue::Bool(true) => {
-                    // If defined, get the length
-                    match context.eval_global_str("globalThis._azleActions.length".to_string()) {
-                        JsValue::Int(length) => length,
-                        _ => 0, // If not an int, return 0
-                    }
-                },
-                _ => 0, // If undefined, return 0
+            match context.eval_global_str("globalThis._azleActions.length".to_string()) {
+                JsValue::Int(length) => length,
+                _ => panic!("Could not convert JsValue to i32"),
             }
         })
     })
