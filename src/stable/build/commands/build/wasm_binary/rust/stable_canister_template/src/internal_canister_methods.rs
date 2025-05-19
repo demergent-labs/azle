@@ -26,9 +26,11 @@ fn _azle_reject_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
-        let _azle_reject_callbacks: Object = globals.get("_azleRejectCallbacks")?;
-
-        Ok(_azle_reject_callbacks.keys::<Value>().len() as u32)
+        if let Ok(_azle_reject_callbacks) = globals.get::<_, Object>("_azleRejectCallbacks") {
+            Ok(_azle_reject_callbacks.keys::<Value>().len() as u32)
+        } else {
+            Ok(0) // If _azleRejectCallbacks doesn't exist, return 0
+        }
     });
 
     match result {
@@ -43,9 +45,11 @@ fn _azle_resolve_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
-        let _azle_resolve_callbacks: Object = globals.get("_azleResolveCallbacks")?;
-
-        Ok(_azle_resolve_callbacks.keys::<Value>().len() as u32)
+        if let Ok(_azle_resolve_callbacks) = globals.get::<_, Object>("_azleResolveCallbacks") {
+            Ok(_azle_resolve_callbacks.keys::<Value>().len() as u32)
+        } else {
+            Ok(0) // If _azleResolveCallbacks doesn't exist, return 0
+        }
     });
 
     match result {
@@ -60,9 +64,11 @@ fn _azle_timer_callbacks_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
-        let _azle_timer_callbacks: Object = globals.get("_azleTimerCallbacks")?;
-
-        Ok(_azle_timer_callbacks.keys::<Value>().len() as u32)
+        if let Ok(_azle_timer_callbacks) = globals.get::<_, Object>("_azleTimerCallbacks") {
+            Ok(_azle_timer_callbacks.keys::<Value>().len() as u32)
+        } else {
+            Ok(0) // If _azleTimerCallbacks doesn't exist, return 0
+        }
     });
 
     match result {
@@ -77,9 +83,11 @@ fn _azle_actions_len() -> u32 {
     let result = with_ctx(|ctx| -> Result<u32, Box<dyn Error>> {
         let globals = ctx.globals();
 
-        let _azle_actions: Array = globals.get("_azleActions")?;
-
-        Ok(_azle_actions.len() as u32)
+        if let Ok(_azle_actions) = globals.get::<_, Array>("_azleActions") {
+            Ok(_azle_actions.len() as u32)
+        } else {
+            Ok(0) // If _azleActions doesn't exist, return 0
+        }
     });
 
     match result {

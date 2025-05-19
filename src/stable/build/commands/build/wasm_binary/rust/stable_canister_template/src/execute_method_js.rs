@@ -23,24 +23,25 @@ pub extern "C" fn execute_method_js(function_index: i32) {
 
 fn execute_method_js_with_result(function_name: String) -> Result<(), Box<dyn Error>> {
     with_ctx(|ctx| {
-        let canister_class_meta: Object = ctx
-            .clone()
-            .globals()
-            .get("_azleCanisterClassMeta")
-            .map_err(|e| format!("Failed to get globalThis._azleCanisterClassMeta: {e}"))?;
-
-        let callbacks: Object = canister_class_meta.get("callbacks").map_err(|e| {
-            format!("Failed to get globalThis._azleCanisterClassMeta.callbacks: {e}")
-        })?;
-
-        let method_callback: Function = callbacks.get(&function_name).map_err(|e| {
-            format!(
-                "Failed to get globalThis._azleCanisterClassMeta.callbacks[{function_name}]: {e}"
-            )
-        })?;
-
-        // JavaScript code execution: macrotask
-        call_with_error_handling(&ctx, &method_callback, ())?;
+        // Check if _azleCanisterClassMeta is defined
+        if let Ok(canister_class_meta) = ctx.clone().globals().get::<_, Object>("_azleCanisterClassMeta") {
+            // Check if callbacks property exists
+            if let Ok(callbacks) = canister_class_meta.get::<_, Object>("callbacks") {
+                // Check if the specific method callback exists
+                if let Ok(method_callback) = callbacks.get::<_, Function>(&function_name) {
+                    // JavaScript code execution: macrotask
+                    call_with_error_handling(&ctx, &method_callback, ())?;
+                } else {
+                    return Err(format!(
+                        "Method callback for '{function_name}' not found in _azleCanisterClassMeta.callbacks"
+                    ).into());
+                }
+            } else {
+                return Err("_azleCanisterClassMeta.callbacks is not defined".into());
+            }
+        } else {
+            return Err("globalThis._azleCanisterClassMeta is not defined".into());
+        }
 
         // We must drain all microtasks that could have been queued during the JavaScript macrotask code execution above
         drain_microtasks(&ctx);
