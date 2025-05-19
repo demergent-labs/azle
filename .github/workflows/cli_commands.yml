@@ -15,6 +15,14 @@ jobs:
     pack-azle:
         runs-on: ubuntu-latest
         steps:
+            - name: Make Azle Directory
+              id: make_azle_directory
+              run: |
+                  # Create a fresh test directory
+                  AZLE_DIR="${{ github.workspace }}/azle"
+                  mkdir -p "${AZLE_DIR}"
+                  echo "azle_directory=${AZLE_DIR}" >> $GITHUB_OUTPUT
+
             - uses: actions/checkout@v4
               with:
                   path: azle
