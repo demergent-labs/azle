@@ -217,6 +217,23 @@ jobs:
                     echo "✅ .azle directory was successfully removed"
                   fi
 
+            - name: Verify Azle Version in Stable Project
+              working-directory: cli-test/stable_new
+              run: |
+                  echo "Verifying azle version in stable project"
+                  DISPLAYED_VERSION=$(npx azle --version)
+                  echo "Displayed version: ${DISPLAYED_VERSION}"
+
+                  # Verify the version matches our unique test version
+                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
+                    echo "✅ Verification successful: Running the correct packed version"
+                  else
+                    echo "❌ Verification failed: Version mismatch"
+                    echo "Expected to find: ${UNIQUE_VERSION}"
+                    echo "But got: ${DISPLAYED_VERSION}"
+                    exit 1
+                  fi
+
             # Test 'azle new' command with experimental template
             - name: Test New Experimental CLI Command
               working-directory: cli-test
@@ -264,6 +281,23 @@ jobs:
                     echo "✅ .azle directory was successfully removed"
                   fi
 
+            - name: Verify Azle Version in Experimental Project
+              working-directory: cli-test/experimental_new
+              run: |
+                  echo "Verifying azle version in experimental project"
+                  DISPLAYED_VERSION=$(npx azle --version)
+                  echo "Displayed version: ${DISPLAYED_VERSION}"
+
+                  # Verify the version matches our unique test version
+                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
+                    echo "✅ Verification successful: Running the correct packed version"
+                  else
+                    echo "❌ Verification failed: Version mismatch"
+                    echo "Expected to find: ${UNIQUE_VERSION}"
+                    echo "But got: ${DISPLAYED_VERSION}"
+                    exit 1
+                  fi
+
             # Test 'azle new' command with HTTP server template (experimental mode)
             - name: Test New HTTP CLI Command
               working-directory: cli-test
@@ -309,4 +343,21 @@ jobs:
                     exit 1
                   else
                     echo "✅ .azle directory was successfully removed"
+                  fi
+
+            - name: Verify Azle Version in HTTP Project
+              working-directory: cli-test/http_new
+              run: |
+                  echo "Verifying azle version in HTTP project"
+                  DISPLAYED_VERSION=$(npx azle --version)
+                  echo "Displayed version: ${DISPLAYED_VERSION}"
+
+                  # Verify the version matches our unique test version
+                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
+                    echo "✅ Verification successful: Running the correct packed version"
+                  else
+                    echo "❌ Verification failed: Version mismatch"
+                    echo "Expected to find: ${UNIQUE_VERSION}"
+                    echo "But got: ${DISPLAYED_VERSION}"
+                    exit 1
                   fi
