@@ -172,7 +172,7 @@ jobs:
 
             # Test templates using our custom action
             - name: Test Stable Template
-              uses: ./.github/actions/test_azle_template
+              uses: ./azle/.github/actions/test_azle_template
               with:
                   template_name: 'stable_new'
                   experimental: 'false'
@@ -181,7 +181,7 @@ jobs:
                   version: ${{ env.UNIQUE_VERSION }}
 
             - name: Test Experimental Template
-              uses: ./.github/actions/test_azle_template
+              uses: ./azle/.github/actions/test_azle_template
               with:
                   template_name: 'experimental_new'
                   experimental: 'true'
@@ -190,7 +190,7 @@ jobs:
                   version: ${{ env.UNIQUE_VERSION }}
 
             - name: Test HTTP Server Template
-              uses: ./.github/actions/test_azle_template
+              uses: ./azle/.github/actions/test_azle_template
               with:
                   template_name: 'http_new'
                   experimental: 'true'
