@@ -16,6 +16,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+              with:
+                  path: 'azle'
 
             - uses: ./.github/actions/setup_node
 
@@ -30,6 +32,7 @@ jobs:
               run: npm link
 
             - name: Update version in package.json
+              working-directory: azle
               run: |
                   # Create a unique version number using the GitHub run ID and run number
                   UNIQUE_VERSION="0.0.0-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
@@ -47,6 +50,7 @@ jobs:
 
             - name: Pack Azle source
               id: pack_azle
+              working-directory: azle
               run: |
                   # Ensure the dist directory exists
                   mkdir -p "${{ github.workspace }}/dist"
@@ -79,10 +83,8 @@ jobs:
                   echo "test_directory=${TEST_DIR}" >> $GITHUB_OUTPUT
 
             - name: Install Test Azle
+              working-directory: cli-test
               run: |
-                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
-                  cd "${TEST_DIR}"
-
                   # Path to the packed azle.tgz file
                   AZLE_PACKAGE="${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
 
@@ -93,12 +95,11 @@ jobs:
             - name: Verify that the directory is as we expect
               run: |
                   echo "Verifying the directory is as we expect"
-                  ls -lar
+                  ls -laR
 
             - name: Test Version CLI Command
+              working-directory: cli-test
               run: |
-                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
-                  cd "${TEST_DIR}"
 
                   echo "Testing version command"
                   DISPLAYED_VERSION=$(npx azle --version)
@@ -115,19 +116,30 @@ jobs:
                   fi
 
             - name: Test Dev Setup CLI Command
+              working-directory: cli-test
               run: |
-                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
-                  cd "${TEST_DIR}"
 
                   echo "Testing dev setup command"
                   npx azle dev setup
 
-            - name: Test Generate CLI Command
+            - name: Generate Verification
               run: |
-                  TEST_DIR="${{ steps.make_test_directory.outputs.test_directory }}"
-                  cd "${TEST_DIR}"
+                  npx azle@latest generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > ${{ github.workspace }}/cli-test/expected_generate_output.ts
+
+            - name: Test Generate CLI Command
+              working-directory: cli-test
+              run: |
 
                   echo "Testing generate command"
-                  # TODO get path to file to generate
-                  # TODO get file to verify generation
-                  npx azle generate
+                  npx azle generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > generate_output.ts
+
+            - name: Verify Generate Command
+              working-directory: cli-test
+              run: |
+                  echo "Verifying generate command"
+                  if ! diff expected_generate_output.ts generate_output.ts; then
+                    echo "❌ Verification failed: Generated output does not match expected output"
+                    exit 1
+                  else
+                    echo "✅ Verification successful: Generated output matches expected output"
+                  fi
