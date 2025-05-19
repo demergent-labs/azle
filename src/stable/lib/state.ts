@@ -183,37 +183,33 @@ globalThis._azleDispatch = (action: Action): void => {
 
     if (
         globalThis.process !== undefined &&
-        globalThis.process.env.AZLE_RECORD_ACTIONS === 'true'
+        globalThis.process.env.AZLE_RECORD_ACTIONS === 'true' &&
+        globalThis._azleActions !== undefined
     ) {
-        if (globalThis._azleActions !== undefined) {
-            globalThis._azleActions.push(action);
-        }
+        globalThis._azleActions.push(action);
     }
 
     if (action.type === 'DELETE_AZLE_REJECT_CALLBACK') {
-        if (globalThis._azleRejectCallbacks !== undefined) {
-            delete globalThis._azleRejectCallbacks[action.payload];
-        } else {
+        if (globalThis._azleRejectCallbacks === undefined) {
             throw new Error('globalThis._azleRejectCallbacks is undefined');
         }
+        delete globalThis._azleRejectCallbacks[action.payload];
         return;
     }
 
     if (action.type === 'DELETE_AZLE_RESOLVE_CALLBACK') {
-        if (globalThis._azleResolveCallbacks !== undefined) {
-            delete globalThis._azleResolveCallbacks[action.payload];
-        } else {
+        if (globalThis._azleResolveCallbacks === undefined) {
             throw new Error('globalThis._azleResolveCallbacks is undefined');
         }
+        delete globalThis._azleResolveCallbacks[action.payload];
         return;
     }
 
     if (action.type === 'DELETE_AZLE_TIMER_CALLBACK') {
-        if (globalThis._azleTimerCallbacks !== undefined) {
-            delete globalThis._azleTimerCallbacks[action.payload.toString()];
-        } else {
+        if (globalThis._azleTimerCallbacks === undefined) {
             throw new Error('globalThis._azleTimerCallbacks is undefined');
         }
+        delete globalThis._azleTimerCallbacks[action.payload.toString()];
         return;
     }
 
@@ -233,38 +229,29 @@ globalThis._azleDispatch = (action: Action): void => {
     }
 
     if (action.type === 'SET_AZLE_REJECT_CALLBACK') {
-        if (globalThis._azleRejectCallbacks !== undefined) {
-            globalThis._azleRejectCallbacks[action.payload.globalRejectId] =
-                action.payload.rejectCallback;
-        } else {
+        if (globalThis._azleRejectCallbacks === undefined) {
             globalThis._azleRejectCallbacks = {};
-            globalThis._azleRejectCallbacks[action.payload.globalRejectId] =
-                action.payload.rejectCallback;
         }
+        globalThis._azleRejectCallbacks[action.payload.globalRejectId] =
+            action.payload.rejectCallback;
         return;
     }
 
     if (action.type === 'SET_AZLE_RESOLVE_CALLBACK') {
-        if (globalThis._azleResolveCallbacks !== undefined) {
-            globalThis._azleResolveCallbacks[action.payload.globalResolveId] =
-                action.payload.resolveCallback;
-        } else {
+        if (globalThis._azleResolveCallbacks === undefined) {
             globalThis._azleResolveCallbacks = {};
-            globalThis._azleResolveCallbacks[action.payload.globalResolveId] =
-                action.payload.resolveCallback;
         }
+        globalThis._azleResolveCallbacks[action.payload.globalResolveId] =
+            action.payload.resolveCallback;
         return;
     }
 
     if (action.type === 'SET_AZLE_TIMER_CALLBACK') {
-        if (globalThis._azleTimerCallbacks !== undefined) {
-            globalThis._azleTimerCallbacks[action.payload.timerId.toString()] =
-                action.payload.timerCallback;
-        } else {
+        if (globalThis._azleTimerCallbacks === undefined) {
             globalThis._azleTimerCallbacks = {};
-            globalThis._azleTimerCallbacks[action.payload.timerId.toString()] =
-                action.payload.timerCallback;
         }
+        globalThis._azleTimerCallbacks[action.payload.timerId.toString()] =
+            action.payload.timerCallback;
         return;
     }
 
