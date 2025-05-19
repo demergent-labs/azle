@@ -27,6 +27,11 @@ jobs:
               with:
                   path: azle
 
+            - name: Verify that the directory is as we expect
+              run: |
+                  echo "Verifying the directory is as we expect"
+                  ls -laR
+
             - uses: ./azle/.github/actions/setup_node
               with:
                   working-directory: azle
