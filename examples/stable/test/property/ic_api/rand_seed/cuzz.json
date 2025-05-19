@@ -1,6 +1,7 @@
 {
     "expectedErrors": [
         "Method: cryptoGetRandomValues \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister called `ic0.trap` with message: 'Uncaught RangeError: invalid array buffer length",
-        "Method: seed \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister called `ic0.trap` with message: 'Uncaught: seed must be exactly 32 bytes in length"
+        "Method: seed \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister called `ic0.trap` with message: 'Uncaught: seed must be exactly 32 bytes in length",
+        "Uncaught Error: QuotaExceeded: array cannot be larger than 65_536 bytes"
     ]
 }

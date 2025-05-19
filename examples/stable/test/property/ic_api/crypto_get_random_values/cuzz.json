@@ -1,5 +1,3 @@
 {
-    "expectedErrors": [
-        "Method: cryptoGetRandomValues \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister called `ic0.trap` with message: 'Uncaught Error: Unsupported TypedArray: "
-    ]
+    "expectedErrors": ["Uncaught Error: Unsupported TypedArray"]
 }

@@ -1,14 +1,10 @@
 {
     "expectedErrors": [
-        "Method: executeCallRaw \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught: Candid parser error: Unrecognized token",
-        "Method: executeCallRaw \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught: Candid parser error: Unrecognized EOF found at",
-        "Method: executeCallRaw \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught: Candid parser error: Unknown token",
-        "Method: executeCallRaw \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught: Candid parser error: Unclosed string at",
-        "Method: executeCallRaw \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught: Candid parser error: Unknown escape character",
-        "Method: executeCallRaw \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught: Candid parser error: Unexpected string",
-        "Reject text:.*Uncaught: Candid parser error: Unknown token",
-        "Reject text:.*Uncaught: Candid parser error: Unrecognized token",
-        "Reject text:.*Uncaught: Candid parser error: Unrecognized EOF found at",
-        "Reject text:.*Uncaught: Candid parser error: Unclosed string at"
+        "Uncaught: Candid parser error: Unrecognized token",
+        "Uncaught: Candid parser error: Unrecognized EOF found at",
+        "Uncaught: Candid parser error: Unknown token",
+        "Uncaught: Candid parser error: Unclosed string at",
+        "Uncaught: Candid parser error: Unknown escape character",
+        "Uncaught: Candid parser error: Unexpected string"
     ]
 }

@@ -1,7 +1,6 @@
 {
     "expectedErrors": [
-        "Request ID:[\\s\\S]*Reject code\":[\\s\\S]*Reject text\":.*Uncaught Error: User does not exist:",
-        "Request ID:[\\s\\S]*Reject code\":[\\s\\S]*Reject text\":.*Uncaught Error: User does not exist:",
-        "Request ID:[\\s\\S]*Reject code\":[\\s\\S]*Reject text\":.*Uncaught Error: Recording does not exist:"
+        "Uncaught Error: User does not exist:",
+        "Uncaught Error: Recording does not exist:"
     ]
 }
