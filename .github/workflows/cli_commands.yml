@@ -36,9 +36,21 @@ jobs:
               with:
                   working-directory: azle
 
-            - uses: ./azle/.github/actions/setup_dfx
+            - id: get-dfx-version
+              run: |
+                  PACKAGE_JSON_PATH="${{ github.workspace }}/azle/package.json"
+                  DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "$PACKAGE_JSON_PATH")
+                  echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
+              shell: bash
+
+            # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
+            - name: Install dfx
+              uses: ./azle/.github/actions/retry_command
               with:
-                  working-directory: azle
+                  command: src/stable/build/commands/dev/setup/install_dfx.sh "${{ steps.get-dfx-version.outputs.dfx-version }}"
+
+            - run: echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+              shell: bash
 
             - uses: ./azle/.github/actions/retry_command
               with:

@@ -1,10 +1,5 @@
 name: Setup dfx
 description: 'Sets up dfx by detecting version from package.json and installing it. (Note: DFX must be installed before `npm install` because the azle installation process requires dfx)'
-inputs:
-    working-directory:
-        description: 'Directory containing package.json (defaults to current directory)'
-        required: false
-        default: '.'
 outputs:
     dfx-version:
         description: 'The version of dfx that was installed'
@@ -14,19 +9,13 @@ runs:
     steps:
         - id: get-dfx-version
           run: |
-              PACKAGE_JSON_PATH="${{ inputs.working-directory }}/package.json"
-              DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "$PACKAGE_JSON_PATH")
+              DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
               echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
-          shell: bash
-
-        - id: determine retry path
-          run: |
-              echo "retry-path=${{inputs.working-directory}}/.github/actions/retry_command" >> "$GITHUB_OUTPUT"
           shell: bash
 
         # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
         - name: Install dfx
-          uses: ${{ steps.determine-retry-path.outputs.retry-path }}
+          uses: ./.github/actions/retry_command
           with:
               command: src/stable/build/commands/dev/setup/install_dfx.sh "${{ steps.get-dfx-version.outputs.dfx-version }}"
 
