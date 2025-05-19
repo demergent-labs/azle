@@ -189,6 +189,34 @@ jobs:
                   echo "Testing stable new project"
                   npm test
 
+            - name: Check .azle Directory for Stable Project
+              working-directory: cli-test/stable_new
+              run: |
+                  echo "Checking for .azle directory in stable project"
+                  if [ -d ".azle" ]; then
+                    echo "✅ .azle directory exists as expected"
+                  else
+                    echo "❌ .azle directory does not exist but should"
+                    exit 1
+                  fi
+
+            - name: Clean Stable Project
+              working-directory: cli-test/stable_new
+              run: |
+                  echo "Cleaning stable project"
+                  npx azle clean
+
+            - name: Verify .azle Directory Removed for Stable Project
+              working-directory: cli-test/stable_new
+              run: |
+                  echo "Verifying .azle directory was removed from stable project"
+                  if [ -d ".azle" ]; then
+                    echo "❌ .azle directory still exists but should have been removed"
+                    exit 1
+                  else
+                    echo "✅ .azle directory was successfully removed"
+                  fi
+
             # Test 'azle new' command with experimental template
             - name: Test New Experimental CLI Command
               working-directory: cli-test
@@ -208,6 +236,34 @@ jobs:
                   echo "Testing experimental new project"
                   npm test
 
+            - name: Check .azle Directory for Experimental Project
+              working-directory: cli-test/experimental_new
+              run: |
+                  echo "Checking for .azle directory in experimental project"
+                  if [ -d ".azle" ]; then
+                    echo "✅ .azle directory exists as expected"
+                  else
+                    echo "❌ .azle directory does not exist but should"
+                    exit 1
+                  fi
+
+            - name: Clean Experimental Project
+              working-directory: cli-test/experimental_new
+              run: |
+                  echo "Cleaning experimental project"
+                  npx azle clean
+
+            - name: Verify .azle Directory Removed for Experimental Project
+              working-directory: cli-test/experimental_new
+              run: |
+                  echo "Verifying .azle directory was removed from experimental project"
+                  if [ -d ".azle" ]; then
+                    echo "❌ .azle directory still exists but should have been removed"
+                    exit 1
+                  else
+                    echo "✅ .azle directory was successfully removed"
+                  fi
+
             # Test 'azle new' command with HTTP server template (experimental mode)
             - name: Test New HTTP CLI Command
               working-directory: cli-test
@@ -226,3 +282,31 @@ jobs:
               run: |
                   echo "Testing HTTP new project"
                   npm test
+
+            - name: Check .azle Directory for HTTP Project
+              working-directory: cli-test/http_new
+              run: |
+                  echo "Checking for .azle directory in HTTP project"
+                  if [ -d ".azle" ]; then
+                    echo "✅ .azle directory exists as expected"
+                  else
+                    echo "❌ .azle directory does not exist but should"
+                    exit 1
+                  fi
+
+            - name: Clean HTTP Project
+              working-directory: cli-test/http_new
+              run: |
+                  echo "Cleaning HTTP project"
+                  npx azle clean
+
+            - name: Verify .azle Directory Removed for HTTP Project
+              working-directory: cli-test/http_new
+              run: |
+                  echo "Verifying .azle directory was removed from HTTP project"
+                  if [ -d ".azle" ]; then
+                    echo "❌ .azle directory still exists but should have been removed"
+                    exit 1
+                  else
+                    echo "✅ .azle directory was successfully removed"
+                  fi
