@@ -34,23 +34,20 @@ export function getTests(): Test {
             }
 
             // If we're running the short test, only test Uint8Array
-            let typedArrays;
-
-            if (shouldRunShortTest() === true) {
-                typedArrays = [{ name: 'Uint8Array', bytesPerElement: 1 }];
-            } else {
-                typedArrays = [
-                    { name: 'Int8Array', bytesPerElement: 1 },
-                    { name: 'Uint8Array', bytesPerElement: 1 },
-                    { name: 'Uint8ClampedArray', bytesPerElement: 1 },
-                    { name: 'Int16Array', bytesPerElement: 2 },
-                    { name: 'Uint16Array', bytesPerElement: 2 },
-                    { name: 'Int32Array', bytesPerElement: 4 },
-                    { name: 'Uint32Array', bytesPerElement: 4 },
-                    { name: 'BigInt64Array', bytesPerElement: 8 },
-                    { name: 'BigUint64Array', bytesPerElement: 8 }
-                ];
-            }
+            const typedArrays =
+                shouldRunShortTest() === true
+                    ? [{ name: 'Uint8Array', bytesPerElement: 1 }]
+                    : [
+                          { name: 'Int8Array', bytesPerElement: 1 },
+                          { name: 'Uint8Array', bytesPerElement: 1 },
+                          { name: 'Uint8ClampedArray', bytesPerElement: 1 },
+                          { name: 'Int16Array', bytesPerElement: 2 },
+                          { name: 'Uint16Array', bytesPerElement: 2 },
+                          { name: 'Int32Array', bytesPerElement: 4 },
+                          { name: 'Uint32Array', bytesPerElement: 4 },
+                          { name: 'BigInt64Array', bytesPerElement: 8 },
+                          { name: 'BigUint64Array', bytesPerElement: 8 }
+                      ];
 
             describe.each(typedArrays)(
                 'crypto.getRandomValues with $name',
