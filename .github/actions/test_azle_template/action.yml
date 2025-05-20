@@ -28,6 +28,8 @@ runs:
           shell: bash
           run: |
               echo "Testing 'azle new' command for ${{ inputs.template_name }}"
+              echo "Current working directory: $(pwd)"
+              pwd
 
               # Build the command based on inputs
               CMD="npx azle new ${{ inputs.template_name }}"
@@ -50,6 +52,7 @@ runs:
           shell: bash
           run: |
               echo "Installing dependencies for ${{ inputs.template_name }} project"
+              echo "Current working directory: $(pwd)"
               npm install
 
         - name: Verify Azle Version in Template Project
@@ -57,6 +60,7 @@ runs:
           shell: bash
           run: |
               echo "Verifying azle version in ${{ inputs.template_name }} project"
+              echo "Current working directory: $(pwd)"
               DISPLAYED_VERSION=$(npx azle --version)
               echo "Displayed version: ${DISPLAYED_VERSION}"
 
