@@ -55,6 +55,19 @@ runs:
               echo "Current working directory: $(pwd)"
               npm install
 
+        - name: Verify azle in package.json
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Checking for 'azle' in package.json"
+              cat package.json | grep azle || { echo "❌ azle not found in package.json"; exit 1; }
+        - name: Verify azle in package-lock.json
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Checking for 'azle' in package-lock.json"
+              cat package-lock.json | grep azle || { echo "❌ azle not found in package-lock.json"; exit 1; }
+
         - name: Verify Azle Version in Template Project
           working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
           shell: bash
