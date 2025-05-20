@@ -1,3 +1,0 @@
-service: () -> {
-    cryptoGetRandomValues: (text, nat32) -> (vec nat8);
-}
