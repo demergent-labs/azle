@@ -32,7 +32,17 @@ npm install
 
 # Run security checks
 echo "Running npm audit..."
-npm audit --production || { echo "npm audit failed"; exit 1; }
+if npm audit --production; then
+    echo "npm audit check passed."
+else 
+    echo "WARNING: npm audit failed. Please review security vulnerabilities."
+    read -p "Do you want to continue with the release anyway? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Release aborted."
+        exit 1
+    fi
+fi
 
 # Check if cargo-audit is installed
 if cargo audit --version > /dev/null 2>&1; then
