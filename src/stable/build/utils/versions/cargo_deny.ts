@@ -1,7 +1,11 @@
 import { execSyncPretty } from '../exec_sync_pretty';
 
 export function getLocalCargoDenyVersion(): string {
-    return getCargoVersion('cargo-deny');
+    try {
+        return getCargoVersion('cargo-deny');
+    } catch (_error) {
+        return '0.15.0'; // Return default version if cargo-deny is not installed
+    }
 }
 
 function getCargoVersion(packageName: string): string {

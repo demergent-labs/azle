@@ -1,7 +1,11 @@
 import { execSyncPretty } from '../exec_sync_pretty';
 
 export function getLocalCargoAuditVersion(): string {
-    return getCargoVersion('cargo-audit');
+    try {
+        return getCargoVersion('cargo-audit');
+    } catch (_error) {
+        return '0.20.0'; // Return default version if cargo-audit is not installed
+    }
 }
 
 function getCargoVersion(packageName: string): string {
