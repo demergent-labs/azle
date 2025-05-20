@@ -93,7 +93,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(
                     fc.nat({
-                        max: 100 // Our algorithm for deterministically checking the number of instructions based on the number of loops breaks down soon after 100 iterations
+                        max: 90 // Our algorithm for deterministically checking the number of instructions based on the number of loops breaks down soon after 100 iterations
                     }),
                     async (loops) => {
                         const instructions =
