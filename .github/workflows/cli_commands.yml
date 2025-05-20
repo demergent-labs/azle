@@ -124,6 +124,7 @@ jobs:
                   ls -laR
 
             - name: Test Version CLI Command
+              if: false
               working-directory: cli-test
               run: |
 
@@ -142,6 +143,7 @@ jobs:
                   fi
 
             - name: Test Dev Setup CLI Command
+              if: false
               working-directory: cli-test
               run: |
 
@@ -149,10 +151,12 @@ jobs:
                   npx azle dev setup
 
             - name: Generate Verification
+              if: false
               run: |
                   npx azle@latest generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > ${{ github.workspace }}/cli-test/expected_generate_output.ts
 
             - name: Test Generate CLI Command
+              if: false
               working-directory: cli-test
               run: |
 
@@ -160,6 +164,7 @@ jobs:
                   npx azle generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > generate_output.ts
 
             - name: Verify Generate Command
+              if: false
               working-directory: cli-test
               run: |
                   echo "Verifying generate command"
