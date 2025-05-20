@@ -14,7 +14,11 @@ Build code is found at src/stable/build and src/experimental/build. This code is
 
 The Rust code for static binary template creation and manipulation of those templates to produce the final Wasm binaries for deployment are found at src/stable/build/commands/build/wasm_binary/rust and src/experimental/build/commands/build/wasm-binary/rust.
 
-Whenever you are working on a feature, unless otherwise noted in the issue or it makes sense not to do this, you should generally use the following commands to test any changes you make by generating the stable and experimental templates and running one or more of the example tests locally. You should run one or more of fhe example tests in stable mode and in experimental mode.
+## Verifying Changes
+
+Whenever you are working on a feature, unless otherwise noted in the issue or it makes sense not to do this, you should generally use the following commands to test any changes you make by generating the stable and experimental templates, running one or more of the example tests locally, and linting. You should do this BEFORE COMMITTING ANY CHANGES.
+
+### Generating the Wasm binary canister templates
 
 Here's how to generate the stable and experimental Wasm binary canister templates with one command. Always run this command from the Azle root directory:
 
@@ -24,6 +28,8 @@ npx azle dev template --all
 
 Make sure to resolve any Rust compiler errors before proceeding.
 
+### Running tests in stable mode
+
 Here's how to test the stable API async_await example in stable mode:
 
 ```
@@ -32,6 +38,8 @@ npm install
 npm link azle
 AZLE_VERBOSE=true AZLE_DEV_TEMPLATE=true npm test
 ```
+
+### Running tests in experimental mode
 
 Here's how to test the stable API async_await example in experimental mode:
 
@@ -44,11 +52,22 @@ AZLE_EXPERIMENTAL=true AZLE_VERBOSE=true AZLE_DEV_TEMPLATE=true npm test
 
 The example tests use jest. You should look for all green checkmarks indicating that all tests passed. Typechecking will automatically run as a test for each example.
 
+### Typechecking
+
 For more thorough typechecking, you can also run `npm run typecheck` from within the root directory.
+
+### Linting
+
+Remember that you must lint BEFORE COMMITTING ANY CHANGES. From the root directory:
+
+```bash
+npx lint-staged --allow-empty
+npm run lint
+```
 
 Before considering yourself finished with the PR, each of the above commands should complete without any errors whatsoever.
 
-Remember, before the PR can be considered complete, you must at least do the following: generate the stable and experimental templates, run one stable API test in stable and experimental mode to completion without any errors, typecheck from the root directory resulting in no type errors.
+Remember, before the PR can be considered complete, you must at least do the following: generate the stable and experimental templates, run one stable API test in stable and experimental mode to completion without any errors, typecheck from the root directory resulting in no type errors, and lint from the root directory resulting in no errors.
 
 ## Coding Standards
 
