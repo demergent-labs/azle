@@ -5,7 +5,7 @@ function pretest(): void {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy canister`, {
+    execSync(`dfx deploy --no-wallet canister`, {
         stdio: 'inherit'
     });
 
