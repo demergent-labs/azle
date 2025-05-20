@@ -67,3 +67,4 @@ Remember, before the PR can be considered complete, you must at least do the fol
 - Prefer excellent declarative function and variable names to comments
 - Abstract well using functions and variables
 - Avoid the use of classes in internal code
+- Put helper functions in function declarations underneath the code that it i used in. Generally, you should see all helper functions at the bottom of the file
