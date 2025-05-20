@@ -52,6 +52,24 @@ runs:
               echo "Installing dependencies for ${{ inputs.template_name }} project"
               npm install
 
+        - name: Verify Azle Version in Template Project
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Verifying azle version in ${{ inputs.template_name }} project"
+              DISPLAYED_VERSION=$(npx azle --version)
+              echo "Displayed version: ${DISPLAYED_VERSION}"
+
+              # Verify the version matches our unique test version
+              if [[ "${DISPLAYED_VERSION}" == *"${{ inputs.version }}"* ]]; then
+                echo "✅ Verification successful: Running the correct packed version"
+              else
+                echo "❌ Verification failed: Version mismatch"
+                echo "Expected to find: ${{ inputs.version }}"
+                echo "But got: ${DISPLAYED_VERSION}"
+                exit 1
+              fi
+
         - name: Start dfx with artificial delay 0
           working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
           shell: bash
@@ -93,22 +111,4 @@ runs:
                 exit 1
               else
                 echo "✅ .azle directory was successfully removed"
-              fi
-
-        - name: Verify Azle Version in Template Project
-          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
-          shell: bash
-          run: |
-              echo "Verifying azle version in ${{ inputs.template_name }} project"
-              DISPLAYED_VERSION=$(npx azle --version)
-              echo "Displayed version: ${DISPLAYED_VERSION}"
-
-              # Verify the version matches our unique test version
-              if [[ "${DISPLAYED_VERSION}" == *"${{ inputs.version }}"* ]]; then
-                echo "✅ Verification successful: Running the correct packed version"
-              else
-                echo "❌ Verification failed: Version mismatch"
-                echo "Expected to find: ${{ inputs.version }}"
-                echo "But got: ${DISPLAYED_VERSION}"
-                exit 1
               fi
