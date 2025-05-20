@@ -5,6 +5,7 @@
         "Uncaught: Candid parser error: Unknown token",
         "Uncaught: Candid parser error: Unclosed string at",
         "Uncaught: Candid parser error: Unknown escape character",
-        "Uncaught: Candid parser error: Unexpected string"
+        "Uncaught: Candid parser error: Unexpected string",
+        "Uncaught: Candid parser error: Unclosed comment"
     ]
 }
