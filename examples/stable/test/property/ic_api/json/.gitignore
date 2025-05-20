@@ -1,0 +1,4 @@
+node_modules
+test/dfx_generated
+.dfx
+.azle
