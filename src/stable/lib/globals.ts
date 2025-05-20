@@ -12,35 +12,43 @@ import { Action } from './state';
 
 declare global {
     // eslint-disable-next-line no-var
-    var _azleActions: Action[];
+    var _azleActions: Action[] | undefined;
     // eslint-disable-next-line no-var
     var _azleCanisterClassMeta: CanisterClassMeta | undefined;
     // eslint-disable-next-line no-var
-    var _azleCanisterMethodNames: { [key: string]: string };
+    var _azleCanisterMethodNames: { [key: string]: string } | undefined;
     // eslint-disable-next-line no-var
-    var _azleDispatch: (action: Action) => void;
+    var _azleDispatch: ((action: Action) => void) | undefined;
     // eslint-disable-next-line no-var
-    var _azleExperimental: boolean;
+    var _azleExperimental: boolean | undefined;
     // eslint-disable-next-line no-var
     var _azleIcExperimental: AzleIcExperimental | undefined;
     // eslint-disable-next-line no-var
-    var _azleIcpReplicaWasmEnvironment: boolean;
+    var _azleIcpReplicaWasmEnvironment: boolean | undefined;
     // eslint-disable-next-line no-var
     var _azleIc: AzleIc | undefined;
     // eslint-disable-next-line no-var
-    var _azleInitCalled: boolean;
+    var _azleInitCalled: boolean | undefined;
     // eslint-disable-next-line no-var
-    var _azleNodejsWasmEnvironment: boolean;
+    var _azleNodejsWasmEnvironment: boolean | undefined;
     // eslint-disable-next-line no-var
-    var _azlePostUpgradeCalled: boolean;
+    var _azlePostUpgradeCalled: boolean | undefined;
     // eslint-disable-next-line no-var
-    var _azleRejectCallbacks: { [globalRejectId: string]: (err: any) => void };
+    var _azleRejectCallbacks:
+        | { [globalRejectId: string]: (err: any) => void }
+        | undefined;
     // eslint-disable-next-line no-var
-    var _azleResolveCallbacks: {
-        [globalResolveId: string]: (buf: Uint8Array | ArrayBuffer) => void;
-    };
+    var _azleResolveCallbacks:
+        | {
+              [globalResolveId: string]: (
+                  buf: Uint8Array | ArrayBuffer
+              ) => void;
+          }
+        | undefined;
     // eslint-disable-next-line no-var
-    var _azleTimerCallbacks: { [timerId: string]: () => Promise<void> };
+    var _azleTimerCallbacks:
+        | { [timerId: string]: () => Promise<void> }
+        | undefined;
 }
 
 // TODO do we need to disable any other wasmedge-quickjs globals
@@ -49,6 +57,10 @@ if (
     globalThis._azleIcpReplicaWasmEnvironment === true ||
     globalThis._azleNodejsWasmEnvironment === true
 ) {
+    if (globalThis._azleDispatch === undefined) {
+        throw new Error('globalThis._azleDispatch is undefined');
+    }
+
     globalThis._azleDispatch({
         type: 'SET_TEXT_DECODER',
         payload: TextDecoder,

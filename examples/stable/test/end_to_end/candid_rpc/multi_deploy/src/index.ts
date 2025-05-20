@@ -18,7 +18,7 @@ export default class {
 
     @query([], IDL.Bool)
     getAzleInitCalled(): boolean {
-        return globalThis._azleInitCalled;
+        return globalThis._azleInitCalled ?? false;
     }
 
     @postUpgrade
@@ -35,6 +35,6 @@ export default class {
 
     @query([], IDL.Bool)
     getAzlePostUpgradeCalled(): boolean {
-        return globalThis._azlePostUpgradeCalled;
+        return globalThis._azlePostUpgradeCalled ?? false;
     }
 }
