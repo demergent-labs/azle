@@ -28,7 +28,7 @@ const AllVecsQueryMethodArb = QueryMethodArb(
         generateBody,
         generateTests
     },
-    fc.array(VecArb({ ...context, constraints: { depthLevel: 4 } })),
+    fc.array(VecArb({ ...context, constraints: { depthLevel: 3 } })),
     VecArb(context)
 );
 

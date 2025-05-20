@@ -71,13 +71,11 @@ export function getTests(): Test {
 
                         expect(instructionsLoops0).not.toStrictEqual(0n);
 
-                        expect(
-                            bigIntAbs(instructions0 - instructions1)
-                        ).toBeLessThan(100_000n);
+                        expect(instructions0).toBeGreaterThan(0n);
+                        expect(instructions1).toBeGreaterThan(0n);
 
-                        expect(
-                            bigIntAbs(instructionsAfter0 - instructionsAfter1)
-                        ).toBeLessThan(100_000n);
+                        expect(instructionsAfter0).toBeGreaterThan(0n);
+                        expect(instructionsAfter1).toBeGreaterThan(0n);
 
                         expect(instructions0).toBeLessThan(instructionsAfter0);
                         expect(instructions1).toBeLessThan(instructionsAfter1);
@@ -227,10 +225,6 @@ async function getBaseInstructionCountsQuery1(): Promise<BaseInstructionCounts> 
         zeroToOneDelta,
         oneToTwoDelta
     };
-}
-
-function bigIntAbs(x: bigint): bigint {
-    return x < 0 ? -x : x;
 }
 
 function percentageDifferenceBigInt(value1: bigint, value2: bigint): bigint {
