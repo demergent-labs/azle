@@ -25,11 +25,12 @@ export function runSecurityChecks(): void {
         });
         console.info('npm audit check passed.');
     } catch (error) {
-        console.warn(`npm audit check failed: ${error}`);
-        console.warn('This may be due to network connectivity issues.');
-        console.warn(
+        console.error(`npm audit check failed: ${error}`);
+        console.error('This may be due to network connectivity issues.');
+        console.error(
             'You should run npm audit manually when network access is available.'
         );
+        throw new Error(`npm audit check failed: ${error}`);
     }
 
     // Cargo Audit
@@ -44,12 +45,13 @@ export function runSecurityChecks(): void {
             throw new Error(`cargo audit check failed: ${error}`);
         }
     } else {
-        console.warn(
-            'cargo-audit is not installed, skipping cargo audit check'
+        console.error(
+            'cargo-audit is not installed, security check incomplete'
         );
-        console.warn(
+        console.error(
             'Run "cargo install cargo-audit --version 0.20.0" to install it'
         );
+        throw new Error('cargo-audit is not installed');
     }
 
     // Cargo Deny
@@ -64,10 +66,11 @@ export function runSecurityChecks(): void {
             throw new Error(`cargo deny check failed: ${error}`);
         }
     } else {
-        console.warn('cargo-deny is not installed, skipping cargo deny check');
-        console.warn(
+        console.error('cargo-deny is not installed, security check incomplete');
+        console.error(
             'Run "cargo install cargo-deny --version 0.15.0" to install it'
         );
+        throw new Error('cargo-deny is not installed');
     }
 }
 
