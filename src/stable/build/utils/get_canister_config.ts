@@ -16,6 +16,7 @@ export async function getCanisterConfig(
         );
     }
 
+    console.log('Hello this is where we are having the problem I guess');
     const dfxJson: DfxJson = JSON.parse(
         (await readFile(getDfxJsonPath())).toString()
     );
