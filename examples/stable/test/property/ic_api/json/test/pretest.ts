@@ -1,13 +1,17 @@
 import { execSync } from 'child_process';
 
-execSync(`dfx canister uninstall-code canister || true`, {
-    stdio: 'inherit'
-});
+function pretest(): void {
+    execSync(`dfx canister uninstall-code canister || true`, {
+        stdio: 'inherit'
+    });
 
-execSync(`dfx deploy`, {
-    stdio: 'inherit'
-});
+    execSync(`dfx deploy canister`, {
+        stdio: 'inherit'
+    });
 
-execSync(`dfx generate`, {
-    stdio: 'inherit'
-});
+    execSync(`dfx generate canister`, {
+        stdio: 'inherit'
+    });
+}
+
+pretest();

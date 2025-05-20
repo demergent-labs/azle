@@ -1,13 +1,3 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "target": "ES2020",
-        "moduleResolution": "node",
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
-        "outDir": "dist",
-        "forceConsistentCasingInFileNames": true,
-        "experimentalDecorators": true,
-        "lib": ["ES2020"]
-    }
+    "extends": "../../../../../../tsconfig.dev.json"
 }

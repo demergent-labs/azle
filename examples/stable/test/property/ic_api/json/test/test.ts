@@ -1,3 +1,5 @@
+import { runTests } from 'azle/_internal/test';
+
 import { getTests } from './tests';
 
-describe('JSON property tests', getTests());
+runTests(getTests());
