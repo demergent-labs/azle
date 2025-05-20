@@ -1,0 +1,20 @@
+{
+    "canisters": {
+        "caller": {
+            "type": "azle",
+            "main": "src/caller.ts",
+            "declarations": {
+                "output": "test/dfx_generated/caller",
+                "node_compatibility": true
+            }
+        },
+        "callee": {
+            "type": "azle",
+            "main": "src/callee.ts",
+            "declarations": {
+                "output": "test/dfx_generated/callee",
+                "node_compatibility": true
+            }
+        }
+    }
+}
