@@ -1,0 +1,3 @@
+service: () -> {
+    call: (text, text) -> (text);
+}
