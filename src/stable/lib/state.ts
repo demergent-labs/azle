@@ -194,6 +194,7 @@ globalThis._azleDispatch = (action: Action): void => {
         if (globalThis._azleActions === undefined) {
             globalThis._azleActions = [];
         }
+
         globalThis._azleActions.push(action);
     }
 
@@ -201,6 +202,7 @@ globalThis._azleDispatch = (action: Action): void => {
         if (globalThis._azleRejectCallbacks !== undefined) {
             delete globalThis._azleRejectCallbacks[action.payload];
         }
+
         return;
     }
 
@@ -208,6 +210,7 @@ globalThis._azleDispatch = (action: Action): void => {
         if (globalThis._azleResolveCallbacks !== undefined) {
             delete globalThis._azleResolveCallbacks[action.payload];
         }
+
         return;
     }
 
