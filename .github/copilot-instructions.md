@@ -26,3 +26,21 @@ AZLE_VERBOSE=true AZLE_DEV_TEMPLATE=true npm test
 The example tests use jest. You should look for all green checkmarks indicating that all tests passed. Typechecking will automatically run as a test for each example.
 
 For more thorough typechecking, you can also run `npm run typecheck` from within the root directory.
+
+## Coding Standards
+
+- Favor functional programming constructs
+- Use declarative programming design, striving to write what and not how
+- Avoid TypeScript interfaces
+- Use explicit and === strict conditional checks
+- Use function declarations vs function expressions, unless you're creating an anonymous function
+- Avoid mutation, using map, filter, reduce, object spread, array spread as much as practical
+- Avoid else if statements
+- Avoid switch statements, using if statements with return statements instead
+- Handle Rust Results and Options using ? syntax
+- All public APIs, those importable from the Azle npm package itself, must have and maintain excellent JS Docs
+- Any internal TypeScript or Rust functions that might require special knowledge to understand should have excellent JS or Rust Docs
+- Avoid comments unless absolutely necessary to aid in understanding
+- Prefer excellent declarative function and variable names to comments
+- Abstract well using functions and variables
+- Avoid the use of classes in internal code
