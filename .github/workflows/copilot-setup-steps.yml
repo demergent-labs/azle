@@ -31,3 +31,14 @@ jobs:
       - name: Install global dependencies
         run: |
             AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic
+
+      - name: Start dfx with artificial delay 0
+        run: dfx start --clean --background --artificial-delay 0
+
+      - name: Ensure clean slate by running one test
+        run: |
+              npm install
+              npm link
+              cd examples/stable/test/end_to_end/candid_rpc/async_await
+              npm link azle
+              AZLE_VERBOSE=true AZLE_DEV_TEMPLATE=true npm test
