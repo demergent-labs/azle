@@ -16,6 +16,7 @@ import { DfxJson } from '#utils/types';
 
 import { runBenchmarksForCanisters } from './benchmarks';
 import { runFuzzTests } from './fuzz';
+import { runSecurityChecks } from './security_checks';
 
 export type Test = () => void;
 
@@ -28,7 +29,8 @@ export function runTests(tests: Test): void {
         shouldRunTypeChecks,
         shouldRecordBenchmarks,
         shouldFuzz,
-        shouldCheckGlobalState
+        shouldCheckGlobalState,
+        shouldRunSecurityChecks
     } = processEnvVars();
 
     if (shouldRunTests === true) {
@@ -48,6 +50,14 @@ export function runTests(tests: Test): void {
                         'Type checking to pass'
                     );
                 }
+            });
+        });
+    }
+
+    if (shouldRunSecurityChecks === true) {
+        describe(`security checks`, () => {
+            it('runs security checks', () => {
+                runSecurityChecks();
             });
         });
     }
@@ -348,23 +358,30 @@ function processEnvVars(): {
     shouldRecordBenchmarks: boolean;
     shouldFuzz: boolean;
     shouldCheckGlobalState: boolean;
+    shouldRunSecurityChecks: boolean;
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
     const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
     const fuzz = process.env.AZLE_FUZZ ?? 'false';
     const checkGlobalState = process.env.AZLE_CHECK_GLOBAL_STATE ?? 'true';
+    const runSecurityChecks = process.env.AZLE_SECURITY_CHECKS ?? 'true';
 
-    const hasOnly = [runTests, runTypeChecks, fuzz, checkGlobalState].includes(
-        'only'
-    );
+    const hasOnly = [
+        runTests,
+        runTypeChecks,
+        fuzz,
+        checkGlobalState,
+        runSecurityChecks
+    ].includes('only');
 
     return {
         shouldRunTests: shouldRun(runTests, hasOnly, true),
         shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly, true),
         shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly,
         shouldFuzz: shouldRun(fuzz, hasOnly, false),
-        shouldCheckGlobalState: shouldRun(checkGlobalState, hasOnly, true)
+        shouldCheckGlobalState: shouldRun(checkGlobalState, hasOnly, true),
+        shouldRunSecurityChecks: shouldRun(runSecurityChecks, hasOnly, true)
     };
 }
 

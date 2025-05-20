@@ -30,5 +30,15 @@ sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" src/stable/build/dfx_exten
 
 npm install
 
+# Run security checks
+echo "Running npm audit..."
+npm audit --production || { echo "npm audit failed"; exit 1; }
+
+echo "Running cargo audit..."
+cargo audit || { echo "cargo audit failed"; exit 1; }
+
+echo "Running cargo deny check licenses..."
+cargo deny check licenses || { echo "cargo deny check failed"; exit 1; }
+
 git commit -am "$BRANCH"
 git push origin "$BRANCH"
