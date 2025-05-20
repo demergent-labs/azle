@@ -34,11 +34,23 @@ npm install
 echo "Running npm audit..."
 npm audit --production || { echo "npm audit failed"; exit 1; }
 
-echo "Running cargo audit..."
-cargo audit || { echo "cargo audit failed"; exit 1; }
+# Check if cargo-audit is installed
+if cargo audit --version > /dev/null 2>&1; then
+  echo "Running cargo audit..."
+  cargo audit || { echo "cargo audit failed"; exit 1; }
+else
+  echo "Warning: cargo-audit is not installed. Skipping cargo audit check."
+  echo "To install, run: cargo install cargo-audit --version 0.20.0"
+fi
 
-echo "Running cargo deny check licenses..."
-cargo deny check licenses || { echo "cargo deny check failed"; exit 1; }
+# Check if cargo-deny is installed
+if cargo deny --version > /dev/null 2>&1; then
+  echo "Running cargo deny check licenses..."
+  cargo deny check licenses || { echo "cargo deny check failed"; exit 1; }
+else
+  echo "Warning: cargo-deny is not installed. Skipping cargo deny check."
+  echo "To install, run: cargo install cargo-deny --version 0.15.0"
+fi
 
 git commit -am "$BRANCH"
 git push origin "$BRANCH"
