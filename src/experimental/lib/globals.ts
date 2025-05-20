@@ -16,7 +16,7 @@ export type Callbacks = {
 
 declare global {
     // eslint-disable-next-line no-var
-    var _azleCallbacks: Callbacks;
+    var _azleCallbacks: Callbacks | undefined;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
     // eslint-disable-next-line no-var
@@ -28,7 +28,7 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
     // eslint-disable-next-line no-var
-    var _azleWebAssembly: any;
+    var _azleWebAssembly: any | undefined;
 }
 
 if (
@@ -89,6 +89,10 @@ if (
 
     globalThis.WebAssembly = {
         instantiate: (...args: any[]) => {
+            if (!globalThis._azleWebAssembly) {
+                throw new Error('globalThis._azleWebAssembly is not defined');
+            }
+
             const uuid = v4();
 
             const instantiatedSource = globalThis._azleWebAssembly.instantiate(

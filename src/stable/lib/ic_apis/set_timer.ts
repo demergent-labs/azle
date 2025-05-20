@@ -55,6 +55,10 @@ export function setTimer(
                     );
                 })();
 
+    if (!globalThis._azleDispatch) {
+        throw new Error('globalThis._azleDispatch is not defined');
+    }
+
     globalThis._azleDispatch({
         type: 'SET_AZLE_TIMER_CALLBACK',
         payload: {
@@ -101,6 +105,10 @@ export function setTimer(
 }
 
 export function deleteGlobalTimerCallbacks(timerId: bigint): void {
+    if (!globalThis._azleDispatch) {
+        throw new Error('globalThis._azleDispatch is not defined');
+    }
+
     globalThis._azleDispatch({
         type: 'DELETE_AZLE_TIMER_CALLBACK',
         payload: timerId,

@@ -61,6 +61,10 @@ export function setTimerInterval(
     // still needs to exist for the next interval callback execution
     // Deletion of globalThis._azleTimerCallbacks in the context of setTimerInterval
     // only occurs through calling clearTimer or manual manipulation of globalThis._azleTimerCallbacks
+    if (!globalThis._azleDispatch) {
+        throw new Error('globalThis._azleDispatch is not defined');
+    }
+
     globalThis._azleDispatch({
         type: 'SET_AZLE_TIMER_CALLBACK',
         payload: {

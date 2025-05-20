@@ -12,35 +12,43 @@ import { Action } from './state';
 
 declare global {
     // eslint-disable-next-line no-var
-    var _azleActions: Action[];
+    var _azleActions: Action[] | undefined;
     // eslint-disable-next-line no-var
     var _azleCanisterClassMeta: CanisterClassMeta | undefined;
     // eslint-disable-next-line no-var
-    var _azleCanisterMethodNames: { [key: string]: string };
+    var _azleCanisterMethodNames: { [key: string]: string } | undefined;
     // eslint-disable-next-line no-var
-    var _azleDispatch: (action: Action) => void;
+    var _azleDispatch: ((action: Action) => void) | undefined;
     // eslint-disable-next-line no-var
-    var _azleExperimental: boolean;
+    var _azleExperimental: boolean | undefined;
     // eslint-disable-next-line no-var
     var _azleIcExperimental: AzleIcExperimental | undefined;
     // eslint-disable-next-line no-var
-    var _azleIcpReplicaWasmEnvironment: boolean;
+    var _azleIcpReplicaWasmEnvironment: boolean | undefined;
     // eslint-disable-next-line no-var
     var _azleIc: AzleIc | undefined;
     // eslint-disable-next-line no-var
-    var _azleInitCalled: boolean;
+    var _azleInitCalled: boolean | undefined;
     // eslint-disable-next-line no-var
-    var _azleNodejsWasmEnvironment: boolean;
+    var _azleNodejsWasmEnvironment: boolean | undefined;
     // eslint-disable-next-line no-var
-    var _azlePostUpgradeCalled: boolean;
+    var _azlePostUpgradeCalled: boolean | undefined;
     // eslint-disable-next-line no-var
-    var _azleRejectCallbacks: { [globalRejectId: string]: (err: any) => void };
+    var _azleRejectCallbacks:
+        | { [globalRejectId: string]: (err: any) => void }
+        | undefined;
     // eslint-disable-next-line no-var
-    var _azleResolveCallbacks: {
-        [globalResolveId: string]: (buf: Uint8Array | ArrayBuffer) => void;
-    };
+    var _azleResolveCallbacks:
+        | {
+              [globalResolveId: string]: (
+                  buf: Uint8Array | ArrayBuffer
+              ) => void;
+          }
+        | undefined;
     // eslint-disable-next-line no-var
-    var _azleTimerCallbacks: { [timerId: string]: () => Promise<void> };
+    var _azleTimerCallbacks:
+        | { [timerId: string]: () => Promise<void> }
+        | undefined;
 }
 
 // TODO do we need to disable any other wasmedge-quickjs globals
@@ -49,185 +57,187 @@ if (
     globalThis._azleIcpReplicaWasmEnvironment === true ||
     globalThis._azleNodejsWasmEnvironment === true
 ) {
-    globalThis._azleDispatch({
-        type: 'SET_TEXT_DECODER',
-        payload: TextDecoder,
-        location: {
-            filepath: 'azle/src/stable/lib/global.ts',
-            functionName: ''
-        }
-    });
+    if (globalThis._azleDispatch) {
+        globalThis._azleDispatch({
+            type: 'SET_TEXT_DECODER',
+            payload: TextDecoder,
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
 
-    globalThis._azleDispatch({
-        type: 'SET_TEXT_ENCODER',
-        payload: TextEncoder,
-        location: {
-            filepath: 'azle/src/stable/lib/global.ts',
-            functionName: ''
-        }
-    });
+        globalThis._azleDispatch({
+            type: 'SET_TEXT_ENCODER',
+            payload: TextEncoder,
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
 
-    globalThis._azleDispatch({
-        type: 'SET_CRYPTO',
-        payload: {
-            ...globalThis.crypto,
-            getRandomValues: (array) => {
-                if (
-                    array instanceof Int8Array === false &&
-                    array instanceof Uint8Array === false &&
-                    array instanceof Uint8ClampedArray === false &&
-                    array instanceof Int16Array === false &&
-                    array instanceof Uint16Array === false &&
-                    array instanceof Int32Array === false &&
-                    array instanceof Uint32Array === false &&
-                    array instanceof BigInt64Array === false &&
-                    array instanceof BigUint64Array === false
-                ) {
-                    throw new TypeError(
-                        'Expected an Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, BigInt64Array, or BigUint64Array'
+        globalThis._azleDispatch({
+            type: 'SET_CRYPTO',
+            payload: {
+                ...globalThis.crypto,
+                getRandomValues: (array) => {
+                    if (
+                        array instanceof Int8Array === false &&
+                        array instanceof Uint8Array === false &&
+                        array instanceof Uint8ClampedArray === false &&
+                        array instanceof Int16Array === false &&
+                        array instanceof Uint16Array === false &&
+                        array instanceof Int32Array === false &&
+                        array instanceof Uint32Array === false &&
+                        array instanceof BigInt64Array === false &&
+                        array instanceof BigUint64Array === false
+                    ) {
+                        throw new TypeError(
+                            'Expected an Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, BigInt64Array, or BigUint64Array'
+                        );
+                    }
+
+                    const byteLength = array.byteLength;
+
+                    if (byteLength === 0) {
+                        return array;
+                    }
+
+                    if (byteLength > 65_536) {
+                        throw new Error(
+                            `QuotaExceeded: array cannot be larger than 65_536 bytes`
+                        );
+                    }
+
+                    const bytes =
+                        globalThis._azleIc !== undefined
+                            ? globalThis._azleIc.randBytes(byteLength)
+                            : globalThis._azleIcExperimental !== undefined
+                              ? new Uint8Array(
+                                    globalThis._azleIcExperimental.randBytes(
+                                        byteLength
+                                    )
+                                )
+                              : ((): never => {
+                                    throw new Error(
+                                        `Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined`
+                                    );
+                                })();
+
+                    let targetView = new Uint8Array(
+                        array.buffer,
+                        array.byteOffset,
+                        byteLength
                     );
-                }
 
-                const byteLength = array.byteLength;
+                    targetView.set(bytes);
 
-                if (byteLength === 0) {
                     return array;
                 }
+            },
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
 
-                if (byteLength > 65_536) {
-                    throw new Error(
-                        `QuotaExceeded: array cannot be larger than 65_536 bytes`
-                    );
+        globalThis._azleDispatch({
+            type: 'SET_CONSOLE',
+            payload: {
+                ...globalThis.console,
+                log,
+                error: log,
+                warn: log,
+                info: log
+            },
+            location: {
+                filepath: 'azle/src/stable/lib/global.ts',
+                functionName: ''
+            }
+        });
+
+        if (globalThis._azleExperimental === false) {
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'fetch',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
                 }
+            });
 
-                const bytes =
-                    globalThis._azleIc !== undefined
-                        ? globalThis._azleIc.randBytes(byteLength)
-                        : globalThis._azleIcExperimental !== undefined
-                          ? new Uint8Array(
-                                globalThis._azleIcExperimental.randBytes(
-                                    byteLength
-                                )
-                            )
-                          : ((): never => {
-                                throw new Error(
-                                    `Neither globalThis._azleIc nor globalThis._azleIcExperimental are defined`
-                                );
-                            })();
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'Buffer',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
+                }
+            });
 
-                let targetView = new Uint8Array(
-                    array.buffer,
-                    array.byteOffset,
-                    byteLength
-                );
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'window',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
+                }
+            });
 
-                targetView.set(bytes);
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'global',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
+                }
+            });
 
-                return array;
-            }
-        },
-        location: {
-            filepath: 'azle/src/stable/lib/global.ts',
-            functionName: ''
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'self',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
+                }
+            });
+
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'URL',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
+                }
+            });
+
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'WebAssembly',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
+                }
+            });
+
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'setTimeout',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
+                }
+            });
+
+            globalThis._azleDispatch({
+                type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
+                payload: 'clearTimeout',
+                location: {
+                    filepath: 'azle/src/stable/lib/global.ts',
+                    functionName: ''
+                }
+            });
         }
-    });
-
-    globalThis._azleDispatch({
-        type: 'SET_CONSOLE',
-        payload: {
-            ...globalThis.console,
-            log,
-            error: log,
-            warn: log,
-            info: log
-        },
-        location: {
-            filepath: 'azle/src/stable/lib/global.ts',
-            functionName: ''
-        }
-    });
-
-    if (globalThis._azleExperimental === false) {
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'fetch',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
-
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'Buffer',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
-
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'window',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
-
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'global',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
-
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'self',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
-
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'URL',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
-
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'WebAssembly',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
-
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'setTimeout',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
-
-        globalThis._azleDispatch({
-            type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
-            payload: 'clearTimeout',
-            location: {
-                filepath: 'azle/src/stable/lib/global.ts',
-                functionName: ''
-            }
-        });
     }
 }
 

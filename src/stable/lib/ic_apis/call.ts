@@ -339,6 +339,10 @@ function createResolveCallback<Return>(
     raw: boolean,
     returnIdlType?: IDL.Type
 ): void {
+    if (!globalThis._azleDispatch) {
+        throw new Error('globalThis._azleDispatch is not defined');
+    }
+
     globalThis._azleDispatch({
         type: 'SET_AZLE_RESOLVE_CALLBACK',
         payload: {
@@ -373,6 +377,10 @@ function createRejectCallback(
     globalRejectId: string,
     reject: (reason?: any) => void
 ): void {
+    if (!globalThis._azleDispatch) {
+        throw new Error('globalThis._azleDispatch is not defined');
+    }
+
     globalThis._azleDispatch({
         type: 'SET_AZLE_REJECT_CALLBACK',
         payload: {

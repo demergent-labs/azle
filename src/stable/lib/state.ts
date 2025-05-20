@@ -83,7 +83,9 @@ interface SET_AZLE_REJECT_CALLBACK extends ActionShape {
     type: 'SET_AZLE_REJECT_CALLBACK';
     payload: {
         globalRejectId: string;
-        rejectCallback: (typeof globalThis._azleRejectCallbacks)[string];
+        rejectCallback: NonNullable<
+            typeof globalThis._azleRejectCallbacks
+        >[string];
     };
     location: {
         filepath: string;
@@ -95,7 +97,9 @@ interface SET_AZLE_RESOLVE_CALLBACK extends ActionShape {
     type: 'SET_AZLE_RESOLVE_CALLBACK';
     payload: {
         globalResolveId: string;
-        resolveCallback: (typeof globalThis._azleResolveCallbacks)[string];
+        resolveCallback: NonNullable<
+            typeof globalThis._azleResolveCallbacks
+        >[string];
     };
     location: {
         filepath: string;
@@ -107,7 +111,9 @@ interface SET_AZLE_TIMER_CALLBACK extends ActionShape {
     type: 'SET_AZLE_TIMER_CALLBACK';
     payload: {
         timerId: bigint;
-        timerCallback: (typeof globalThis._azleTimerCallbacks)[string];
+        timerCallback: NonNullable<
+            typeof globalThis._azleTimerCallbacks
+        >[string];
     };
     location: {
         filepath: string;
@@ -185,21 +191,30 @@ globalThis._azleDispatch = (action: Action): void => {
         globalThis.process !== undefined &&
         globalThis.process.env.AZLE_RECORD_ACTIONS === 'true'
     ) {
-        globalThis._azleActions?.push(action);
+        if (!globalThis._azleActions) {
+            globalThis._azleActions = [];
+        }
+        globalThis._azleActions.push(action);
     }
 
     if (action.type === 'DELETE_AZLE_REJECT_CALLBACK') {
-        delete globalThis._azleRejectCallbacks[action.payload];
+        if (globalThis._azleRejectCallbacks) {
+            delete globalThis._azleRejectCallbacks[action.payload];
+        }
         return;
     }
 
     if (action.type === 'DELETE_AZLE_RESOLVE_CALLBACK') {
-        delete globalThis._azleResolveCallbacks[action.payload];
+        if (globalThis._azleResolveCallbacks) {
+            delete globalThis._azleResolveCallbacks[action.payload];
+        }
         return;
     }
 
     if (action.type === 'DELETE_AZLE_TIMER_CALLBACK') {
-        delete globalThis._azleTimerCallbacks[action.payload.toString()];
+        if (globalThis._azleTimerCallbacks) {
+            delete globalThis._azleTimerCallbacks[action.payload.toString()];
+        }
         return;
     }
 
@@ -219,18 +234,27 @@ globalThis._azleDispatch = (action: Action): void => {
     }
 
     if (action.type === 'SET_AZLE_REJECT_CALLBACK') {
+        if (!globalThis._azleRejectCallbacks) {
+            globalThis._azleRejectCallbacks = {};
+        }
         globalThis._azleRejectCallbacks[action.payload.globalRejectId] =
             action.payload.rejectCallback;
         return;
     }
 
     if (action.type === 'SET_AZLE_RESOLVE_CALLBACK') {
+        if (!globalThis._azleResolveCallbacks) {
+            globalThis._azleResolveCallbacks = {};
+        }
         globalThis._azleResolveCallbacks[action.payload.globalResolveId] =
             action.payload.resolveCallback;
         return;
     }
 
     if (action.type === 'SET_AZLE_TIMER_CALLBACK') {
+        if (!globalThis._azleTimerCallbacks) {
+            globalThis._azleTimerCallbacks = {};
+        }
         globalThis._azleTimerCallbacks[action.payload.timerId.toString()] =
             action.payload.timerCallback;
         return;
