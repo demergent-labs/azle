@@ -33,17 +33,23 @@ export function getTests(): Test {
                 });
             }
 
-            describe.each([
-                { name: 'Int8Array', bytesPerElement: 1 },
-                { name: 'Uint8Array', bytesPerElement: 1 },
-                { name: 'Uint8ClampedArray', bytesPerElement: 1 },
-                { name: 'Int16Array', bytesPerElement: 2 },
-                { name: 'Uint16Array', bytesPerElement: 2 },
-                { name: 'Int32Array', bytesPerElement: 4 },
-                { name: 'Uint32Array', bytesPerElement: 4 },
-                { name: 'BigInt64Array', bytesPerElement: 8 },
-                { name: 'BigUint64Array', bytesPerElement: 8 }
-            ])(
+            // If we're running the short test, only test Uint8Array
+            const typedArrays =
+                shouldRunShortTest() === true
+                    ? [{ name: 'Uint8Array', bytesPerElement: 1 }]
+                    : [
+                          { name: 'Int8Array', bytesPerElement: 1 },
+                          { name: 'Uint8Array', bytesPerElement: 1 },
+                          { name: 'Uint8ClampedArray', bytesPerElement: 1 },
+                          { name: 'Int16Array', bytesPerElement: 2 },
+                          { name: 'Uint16Array', bytesPerElement: 2 },
+                          { name: 'Int32Array', bytesPerElement: 4 },
+                          { name: 'Uint32Array', bytesPerElement: 4 },
+                          { name: 'BigInt64Array', bytesPerElement: 8 },
+                          { name: 'BigUint64Array', bytesPerElement: 8 }
+                      ];
+
+            describe.each(typedArrays)(
                 'crypto.getRandomValues with $name',
                 ({ name, bytesPerElement }) => {
                     it(`should fill the ${name} correctly and return the correct byte length`, async () => {
@@ -162,4 +168,17 @@ function normalizeNumCalls(length: number, numCalls: number): number {
     }
 
     return numCalls;
+}
+
+/**
+ * Determines whether to run the short version of the test (Uint8Array only).
+ *
+ * @returns true if running in a feature branch PR, draft PR, or main branch push from feature merge
+ */
+function shouldRunShortTest(): boolean {
+    return (
+        process.env.AZLE_IS_FEATURE_BRANCH_PR === 'true' ||
+        process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true' ||
+        process.env.AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE === 'true'
+    );
 }

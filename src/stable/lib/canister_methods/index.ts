@@ -16,7 +16,7 @@ import { UpdateOptions } from './update';
 
 type CanisterClass = {
     constructor: (new () => unknown) & {
-        _azleCanisterClassMeta: CanisterClassMeta;
+        _azleCanisterClassMeta: CanisterClassMeta | undefined;
     };
 };
 
