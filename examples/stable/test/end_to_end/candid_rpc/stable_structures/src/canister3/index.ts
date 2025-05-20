@@ -13,7 +13,7 @@ export default [
     class {
         @query([], IDL.Bool)
         getRedeployed(): boolean {
-            return globalThis._azlePostUpgradeCalled;
+            return globalThis._azlePostUpgradeCalled ?? false;
         }
     },
     StableMap10,
