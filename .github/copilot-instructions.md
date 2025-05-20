@@ -55,7 +55,7 @@ Remember, before the PR can be considered complete, you must at least do the fol
 - Favor functional programming constructs
 - Use declarative programming design, striving to write what and not how
 - Avoid TypeScript interfaces
-- Use explicit and === strict conditional checks
+- Use explicit and === strict conditional checks, for example myVariable === true. Do not use just myVariable or !myVariable
 - Use function declarations vs function expressions, unless you're creating an anonymous function
 - Avoid mutation, using map, filter, reduce, object spread, array spread as much as practical
 - Avoid else if statements
@@ -67,4 +67,5 @@ Remember, before the PR can be considered complete, you must at least do the fol
 - Prefer excellent declarative function and variable names to comments
 - Abstract well using functions and variables
 - Avoid the use of classes in internal code
-- Put helper functions in function declarations underneath the code that it i used in. Generally, you should see all helper functions at the bottom of the file
+- Put helper functions in function declarations underneath the code that it is used in. Generally, you should see all helper functions at the bottom of the file
+- Prefer const variable declarations over let or var. You should always use const unless you have a very good reason to mutate the variable. In that case you can use let. There is almost no reason you should ever use var.
