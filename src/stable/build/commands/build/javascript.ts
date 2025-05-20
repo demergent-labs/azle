@@ -30,6 +30,10 @@ export function handleClassApiCanister(main: string): string {
     return /*TS*/ `
         const canisterClassMeta = getCanisterClassMeta();
 
+        if (globalThis._azleDispatch === undefined) {
+            throw new Error('globalThis._azleDispatch is undefined');
+        }
+
         globalThis._azleDispatch({
             type: 'SET_AZLE_CANISTER_CLASS_META',
             payload: canisterClassMeta,
@@ -225,6 +229,10 @@ function handleBenchmarking(): string {
                     return { ...acc, [indexString]: value.name };
                 }
             }, {});
+
+            if (globalThis._azleDispatch === undefined) {
+                throw new Error('globalThis._azleDispatch is undefined');
+            }
 
             globalThis._azleDispatch({
                 type: 'SET_AZLE_CANISTER_METHOD_NAMES',

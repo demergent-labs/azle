@@ -342,6 +342,7 @@ function createResolveCallback<Return>(
     if (globalThis._azleDispatch === undefined) {
         throw new Error('globalThis._azleDispatch is undefined');
     }
+
     globalThis._azleDispatch({
         type: 'SET_AZLE_RESOLVE_CALLBACK',
         payload: {
@@ -379,6 +380,7 @@ function createRejectCallback(
     if (globalThis._azleDispatch === undefined) {
         throw new Error('globalThis._azleDispatch is undefined');
     }
+
     globalThis._azleDispatch({
         type: 'SET_AZLE_REJECT_CALLBACK',
         payload: {

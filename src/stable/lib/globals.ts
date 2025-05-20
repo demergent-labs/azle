@@ -54,10 +54,13 @@ declare global {
 // TODO do we need to disable any other wasmedge-quickjs globals
 // TODO that we don't think are stable yet?
 if (
-    (globalThis._azleIcpReplicaWasmEnvironment === true ||
-        globalThis._azleNodejsWasmEnvironment === true) &&
-    globalThis._azleDispatch !== undefined
+    globalThis._azleIcpReplicaWasmEnvironment === true ||
+    globalThis._azleNodejsWasmEnvironment === true
 ) {
+    if (globalThis._azleDispatch === undefined) {
+        throw new Error('globalThis._azleDispatch is undefined');
+    }
+
     globalThis._azleDispatch({
         type: 'SET_TEXT_DECODER',
         payload: TextDecoder,
@@ -156,10 +159,7 @@ if (
         }
     });
 
-    if (
-        globalThis._azleExperimental !== undefined &&
-        globalThis._azleExperimental === false
-    ) {
+    if (globalThis._azleExperimental === false) {
         globalThis._azleDispatch({
             type: 'SET_GLOBAL_EXPERIMENTAL_ERROR_PROPERTY',
             payload: 'fetch',
