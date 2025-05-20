@@ -40,5 +40,6 @@ jobs:
               npm install
               npm link
               cd examples/stable/test/end_to_end/candid_rpc/async_await
+              npm install
               npm link azle
               AZLE_VERBOSE=true AZLE_DEV_TEMPLATE=true npm test
