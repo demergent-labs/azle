@@ -9,6 +9,7 @@
         "typescript": "^5.1.6"
     },
     "scripts": {
+        "pretest": "npx ts-node test/pretest.ts",
         "test": "jest"
     }
 }

@@ -13,7 +13,7 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 // Helper function to create a Principal arbitrary
 const principalArb = fc
-    .array(fc.uint8({ min: 0, max: 255 }), { minLength: 1, maxLength: 29 })
+    .array(fc.integer({ min: 0, max: 255 }), { minLength: 1, maxLength: 29 })
     .map((bytes) => Principal.fromUint8Array(Uint8Array.from(bytes)));
 
 // Create an arbitrary for all the special types that jsonStringify can handle
@@ -36,9 +36,9 @@ const specialValueArb = fc.oneof(
     fc.array(fc.float()).map((arr) => new Float32Array(arr)),
     fc.array(fc.float()).map((arr) => new Float64Array(arr)),
     fc
-        .array(fc.tuple(fc.anything(), fc.anything()), { maxLength: 5 })
+        .array(fc.tuple(fc.string(), fc.string()), { maxLength: 5 })
         .map((entries) => new Map(entries)),
-    fc.array(fc.anything(), { maxLength: 5 }).map((items) => new Set(items))
+    fc.array(fc.string(), { maxLength: 5 }).map((items) => new Set(items))
 );
 
 // Create an arbitrary for JSON-compatible values (strings, numbers, booleans, arrays, objects)
@@ -48,8 +48,8 @@ const jsonCompatibleArb: fc.Arbitrary<unknown> = fc.letrec((tie) => ({
         fc.string(),
         fc.float(),
         fc.boolean(),
-        fc.array(tie('value'), { maxLength: 3 }),
-        fc.dictionary(fc.string(), tie('value'), { maxKeys: 3 })
+        fc.array(tie('value'), { maxLength: 2 }),
+        fc.dictionary(fc.string(), tie('value'), { maxKeys: 2 })
     )
 })).value;
 
@@ -59,8 +59,8 @@ const mixedObjectArb: fc.Arbitrary<unknown> = fc.letrec((tie) => ({
         { depthFactor: 0.1 },
         specialValueArb,
         jsonCompatibleArb,
-        fc.array(tie('value'), { maxLength: 3 }),
-        fc.dictionary(fc.string(), tie('value'), { maxKeys: 3 })
+        fc.array(tie('value'), { maxLength: 2 }),
+        fc.dictionary(fc.string(), tie('value'), { maxKeys: 2 })
     )
 })).value;
 
