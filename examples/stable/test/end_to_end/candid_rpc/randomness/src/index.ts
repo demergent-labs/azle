@@ -3,12 +3,12 @@ import { IDL, query, randSeed, update } from 'azle';
 export default class {
     @query([], IDL.Bool)
     getInitCalled(): boolean {
-        return globalThis._azleInitCalled;
+        return globalThis._azleInitCalled ?? false;
     }
 
     @query([], IDL.Bool)
     getPostUpgradeCalled(): boolean {
-        return globalThis._azlePostUpgradeCalled;
+        return globalThis._azlePostUpgradeCalled ?? false;
     }
 
     @update([], IDL.Float64)

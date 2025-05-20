@@ -11,10 +11,10 @@ import {
 
 export default Canister({
     getInitCalled: query([], bool, () => {
-        return globalThis._azleInitCalled;
+        return globalThis._azleInitCalled ?? false;
     }),
     getPostUpgradeCalled: query([], bool, () => {
-        return globalThis._azlePostUpgradeCalled;
+        return globalThis._azlePostUpgradeCalled ?? false;
     }),
     mathRandom: update([], float64, () => {
         return Math.random();
