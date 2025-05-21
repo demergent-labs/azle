@@ -1,68 +1,79 @@
-import { call, canisterSelf, IDL, Principal, query, update } from 'azle';
+import {
+    call,
+    CallRejected,
+    IDL,
+    InsufficientLiquidCycleBalance,
+    update
+} from 'azle';
+
+const CallRejectedError = IDL.Record({
+    errorType: IDL.Text,
+    rejectCode: IDL.Nat32,
+    rejectMessage: IDL.Text,
+    message: IDL.Text
+});
+type CallRejectedError = CallRejected & {
+    message: string;
+};
+
+const InsufficientLiquidCycleBalanceError = IDL.Record({
+    errorType: IDL.Text,
+    available: IDL.Nat,
+    required: IDL.Nat,
+    message: IDL.Text
+});
+type InsufficientLiquidCycleBalanceError = InsufficientLiquidCycleBalance & {
+    message: string;
+};
 
 export default class {
-    calleeId: Principal | null = null;
-
-    @query([], IDL.Principal)
-    getSelf(): Principal {
-        return canisterSelf();
-    }
-
-    @update([IDL.Principal], IDL.Null)
-    setCalleeId(id: Principal): null {
-        this.calleeId = id;
-        return null;
-    }
-
-    // Test CallPerformFailed - using a special pattern to generate one
-    @query(
-        [],
-        IDL.Record({
-            errorName: IDL.Text
-        })
-    )
-    getErrorTypeCallPerformFailed(): { errorName: string } {
-        return {
-            errorName: 'CallPerformFailed'
-        };
-    }
-
-    // Test CallRejected - returns the correct type shape
-    @query(
-        [],
-        IDL.Record({
-            errorName: IDL.Text,
-            rejectCode: IDL.Nat8,
-            rejectMessage: IDL.Text
-        })
-    )
-    getErrorTypeCallRejected(): {
-        errorName: string;
-        rejectCode: number;
-        rejectMessage: string;
-    } {
-        return {
-            errorName: 'CallRejected',
-            rejectCode: 4, // CanisterReject
-            rejectMessage: 'Explicitly rejected for testing'
-        };
-    }
-
-    // Test if valid method execution works, but instead of returning the result directly,
-    // return a simple success flag to avoid Candid parameter encoding issues
-    @update([], IDL.Bool)
-    async testValidMethodCall(): Promise<boolean> {
-        if (!this.calleeId) {
-            return false;
-        }
-
+    @update([], CallRejectedError)
+    async test0(): Promise<CallRejectedError> {
         try {
-            await call<[], boolean>(this.calleeId, 'validMethod', {
-                args: []
+            await call('aaaaa-aa', 'test');
+
+            throw new Error(
+                'This signifies that the call did not fail as expected'
+            );
+        } catch (error: any) {
+            return {
+                ...error,
+                errorType: error.type
+            } as CallRejectedError;
+        }
+    }
+
+    @update([], CallRejectedError)
+    async test1(): Promise<CallRejectedError> {
+        try {
+            await call('vaupb-eqaaa-aaaai-qplka-cai', 'raw_rand');
+
+            throw new Error(
+                'This signifies that the call did not fail as expected'
+            );
+        } catch (error: any) {
+            return {
+                ...error,
+                errorType: error.type
+            } as CallRejectedError;
+        }
+    }
+
+    @update([], InsufficientLiquidCycleBalanceError)
+    async test2(): Promise<InsufficientLiquidCycleBalanceError> {
+        try {
+            await call('aaaaa-aa', 'raw_rand', {
+                cycles: 1_000_000_000_000_000_000_000_000n
             });
-            return true;
-        } catch (_error) {
-            return false;
+
+            throw new Error(
+                'This signifies that the call did not fail as expected'
+            );
+        } catch (error: any) {
+            return {
+                ...error,
+                errorType: error.type
+            } as InsufficientLiquidCycleBalanceError;
         }
     }
 }

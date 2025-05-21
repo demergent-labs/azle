@@ -1,73 +1,53 @@
-import { Principal } from '@dfinity/principal';
-import { getCanisterId } from 'azle/_internal/dfx';
-import { expect, getCanisterActor, it, Test } from 'azle/_internal/test';
+import { expect } from '@jest/globals';
+import { getCanisterActor, it, Test } from 'azle/_internal/test';
 
 import { _SERVICE as CallerActor } from './dfx_generated/caller/caller.did';
 
-// Define the error types for testing
-interface CallPerformFailed {
-    type: 'CallPerformFailed';
-}
-
-interface CallRejected {
-    type: 'CallRejected';
-    rejectCode: number;
-    rejectMessage: string;
-}
-
 export function getTests(): Test {
     return () => {
-        it('should setup the callee ID', async () => {
+        it('should produce a CallError: CallRejected with reject code 5', async () => {
             const caller = await getCanisterActor<CallerActor>('caller');
-            const calleeId = Principal.fromText(getCanisterId('callee'));
 
-            await caller.setCalleeId(calleeId);
+            const callRejected = await caller.test0();
+
+            expect(callRejected.errorType).toBe('CallRejected');
+            expect(callRejected.rejectCode).toBe(5);
+            expect(callRejected.rejectMessage).toBe(
+                `IC0536: Management canister has no method 'test'`
+            );
+            expect(callRejected.message).toBe(
+                `call rejected: 5 - IC0536: Management canister has no method 'test'`
+            );
         });
 
-        it('should validate CallPerformFailed error structure', async () => {
+        it('should produce a CallError: CallRejected with reject code 3', async () => {
             const caller = await getCanisterActor<CallerActor>('caller');
 
-            // Get the error structure information
-            const result = await caller.getErrorTypeCallPerformFailed();
+            const callRejected = await caller.test1();
 
-            // Validate the expected type
-            expect(result.errorName).toBe('CallPerformFailed');
-
-            // Create and validate a local instance of the error type
-            const error: CallPerformFailed = {
-                type: 'CallPerformFailed'
-            };
-            expect(error.type).toBe('CallPerformFailed');
-            expect(Object.keys(error)).toHaveLength(1);
+            expect(callRejected.errorType).toBe('CallRejected');
+            expect(callRejected.rejectCode).toBe(3);
+            expect(callRejected.rejectMessage).toBe(
+                'No route to canister vaupb-eqaaa-aaaai-qplka-cai'
+            );
+            expect(callRejected.message).toBe(
+                `call rejected: 3 - No route to canister vaupb-eqaaa-aaaai-qplka-cai`
+            );
         });
 
-        it('should validate CallRejected error structure', async () => {
+        it('should produce a CallError: InsufficientLiquidCycleBalance', async () => {
             const caller = await getCanisterActor<CallerActor>('caller');
 
-            // Get the error structure information
-            const result = await caller.getErrorTypeCallRejected();
+            const callRejected = await caller.test2();
 
-            // Validate the expected properties
-            expect(result.errorName).toBe('CallRejected');
-            expect(typeof result.rejectCode).toBe('number');
-            expect(typeof result.rejectMessage).toBe('string');
-
-            // Create and validate a local instance of the error type
-            const error: CallRejected = {
-                type: 'CallRejected',
-                rejectCode: 4,
-                rejectMessage: 'Explicitly rejected for testing'
-            };
-            expect(error.type).toBe('CallRejected');
-            expect(error.rejectCode).toBe(4);
-            expect(error.rejectMessage).toBe('Explicitly rejected for testing');
-            expect(Object.keys(error)).toHaveLength(3);
-        });
-
-        it('should succeed when calling a valid method', async () => {
-            const caller = await getCanisterActor<CallerActor>('caller');
-            const result = await caller.testValidMethodCall();
-            expect(result).toBe(true);
+            expect(callRejected.errorType).toBe(
+                'InsufficientLiquidCycleBalance'
+            );
+            expect(typeof callRejected.available).toBe('bigint');
+            expect(typeof callRejected.required).toBe('bigint');
+            expect(callRejected.message).toMatch(
+                /^insufficient liquid cycles balance, available: \d+, required: \d+$/
+            );
         });
     };
 }
