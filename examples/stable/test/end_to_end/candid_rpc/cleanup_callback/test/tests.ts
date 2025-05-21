@@ -107,6 +107,22 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
                 await actor.deleteAzleGlobalSettleCallbacks();
             }
         );
+
+        it('should reject and not trap when getRandomnessMsgRejectInReplyCallback is called', async () => {
+            await expect(
+                actor.getRandomnessMsgRejectInReplyCallback()
+            ).rejects.toThrow(
+                /calling msgReject from getRandomnessMsgRejectInReplyCallback/
+            );
+        });
+
+        it('should reject and not trap when getRandomnessMsgRejectInRejectCallback is called', async () => {
+            await expect(
+                actor.getRandomnessMsgRejectInRejectCallback()
+            ).rejects.toThrow(
+                /calling msgReject from getRandomnessMsgRejectInRejectCallback/
+            );
+        });
     };
 }
 
