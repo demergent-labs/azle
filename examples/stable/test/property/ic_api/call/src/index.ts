@@ -1,55 +1,102 @@
-import { IDL, update } from 'azle';
-
-type TypedArrayName =
-    | 'Int8Array'
-    | 'Uint8Array'
-    | 'Uint8ClampedArray'
-    | 'Int16Array'
-    | 'Uint16Array'
-    | 'Int32Array'
-    | 'Uint32Array'
-    | 'BigInt64Array'
-    | 'BigUint64Array';
-
-type TypedArrayConstructor =
-    | Int8Array
-    | Uint8Array
-    | Uint8ClampedArray
-    | Int16Array
-    | Uint16Array
-    | Int32Array
-    | Uint32Array
-    | BigInt64Array
-    | BigUint64Array;
+import {
+    call,
+    CallPerformFailed,
+    CallRejected,
+    IDL,
+    Principal,
+    query,
+    update
+} from 'azle';
 
 export default class {
-    @update([IDL.Text, IDL.Nat32], IDL.Vec(IDL.Nat8))
-    cryptoGetRandomValues(
-        typedArrayName: TypedArrayName,
-        length: number
-    ): Uint8Array {
-        let array = createTypedArray(typedArrayName, length);
-
-        crypto.getRandomValues(array);
-
-        // Return the underlying buffer as Uint8Array for Candid compatibility
-        return new Uint8Array(array.buffer);
+    @query([], IDL.Principal)
+    getSelf(): Principal {
+        return ic.id();
     }
-}
 
-function createTypedArray(
-    typedArrayName: TypedArrayName,
-    length: number
-): TypedArrayConstructor {
-    if (typedArrayName === 'Int8Array') return new Int8Array(length);
-    if (typedArrayName === 'Uint8Array') return new Uint8Array(length);
-    if (typedArrayName === 'Uint8ClampedArray')
-        return new Uint8ClampedArray(length);
-    if (typedArrayName === 'Int16Array') return new Int16Array(length);
-    if (typedArrayName === 'Uint16Array') return new Uint16Array(length);
-    if (typedArrayName === 'Int32Array') return new Int32Array(length);
-    if (typedArrayName === 'Uint32Array') return new Uint32Array(length);
-    if (typedArrayName === 'BigInt64Array') return new BigInt64Array(length);
-    if (typedArrayName === 'BigUint64Array') return new BigUint64Array(length);
-    throw new Error(`Unsupported TypedArray: ${typedArrayName}`);
+    @update([IDL.Principal], IDL.Bool)
+    async callNonExistentCanister(canisterId: Principal): Promise<boolean> {
+        try {
+            // Attempt to call a non-existent canister
+            await call<[], boolean>(canisterId, 'some_method');
+            return false; // Should not reach here
+        } catch (error) {
+            // Verify it's a CallPerformFailed error
+            return this.isCallPerformFailedError(error);
+        }
+    }
+
+    @update([IDL.Principal], IDL.Bool)
+    async callNonExistentMethod(canisterId: Principal): Promise<boolean> {
+        try {
+            // Attempt to call a non-existent method on an existing canister
+            await call<[], boolean>(canisterId, 'non_existent_method');
+            return false; // Should not reach here
+        } catch (error) {
+            // Verify it's a CallRejected error
+            return this.isCallRejectedError(error);
+        }
+    }
+
+    @update([IDL.Principal], IDL.Bool)
+    async callRejectingMethod(canisterId: Principal): Promise<boolean> {
+        try {
+            // Call a method that explicitly rejects
+            await call<[], boolean>(canisterId, 'explicitly_reject');
+            return false; // Should not reach here
+        } catch (error) {
+            // Verify it's a CallRejected error with specific properties
+            return this.isCallRejectedError(error);
+        }
+    }
+
+    // Helper methods to verify error types
+    @query([IDL.Variant({ Any: IDL.Null })], IDL.Bool)
+    isCallPerformFailedError(error: any): boolean {
+        // Check if the error has the correct structure for CallPerformFailed
+        const typedError = error as CallPerformFailed;
+        return (
+            typedError !== null &&
+            typeof typedError === 'object' &&
+            typedError.type === 'CallPerformFailed'
+        );
+    }
+
+    @query([IDL.Variant({ Any: IDL.Null })], IDL.Bool)
+    isCallRejectedError(error: any): boolean {
+        // Check if the error has the correct structure for CallRejected
+        const typedError = error as CallRejected;
+        return (
+            typedError !== null &&
+            typeof typedError === 'object' &&
+            typedError.type === 'CallRejected' &&
+            typeof typedError.rejectCode === 'number' &&
+            [1, 2, 3, 4, 5, 6].includes(typedError.rejectCode) &&
+            typeof typedError.rejectMessage === 'string' &&
+            typedError.rejectMessage.length > 0
+        );
+    }
+
+    @query([], IDL.Record({ type: IDL.Text }))
+    getCallPerformFailedExample(): CallPerformFailed {
+        return {
+            type: 'CallPerformFailed'
+        };
+    }
+
+    @query(
+        [],
+        IDL.Record({
+            type: IDL.Text,
+            rejectCode: IDL.Nat8,
+            rejectMessage: IDL.Text
+        })
+    )
+    getCallRejectedExample(): CallRejected {
+        return {
+            type: 'CallRejected',
+            rejectCode: 3, // DestinationInvalid
+            rejectMessage: 'Example reject message'
+        };
+    }
 }

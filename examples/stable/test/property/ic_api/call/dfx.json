@@ -1,10 +1,18 @@
 {
     "canisters": {
-        "canister": {
+        "call": {
             "type": "azle",
             "main": "src/index.ts",
             "declarations": {
-                "output": "test/dfx_generated/canister",
+                "output": "test/dfx_generated/call",
+                "node_compatibility": true
+            }
+        },
+        "callee": {
+            "type": "azle",
+            "main": "src/callee.ts",
+            "declarations": {
+                "output": "test/dfx_generated/callee",
                 "node_compatibility": true
             }
         }
