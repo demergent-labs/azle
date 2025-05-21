@@ -168,7 +168,7 @@ export async function call<
         return undefined as Return;
     }
 
-    if (typeof options?.timeout === 'number') {
+    if (options?.timeout !== undefined) {
         throw new Error('timeout is not yet implemented');
     }
 

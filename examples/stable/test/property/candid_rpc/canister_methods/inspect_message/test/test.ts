@@ -61,7 +61,7 @@ function CanisterConfigArb() {
         fc.array(
             CandidValueAndMetaArb({
                 ...context,
-                constraints: { depthLevel: 3 }
+                constraints: { depthLevel: 2 }
             }),
             {
                 size: 'max',

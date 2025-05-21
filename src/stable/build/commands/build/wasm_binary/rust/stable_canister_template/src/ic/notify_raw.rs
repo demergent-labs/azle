@@ -54,7 +54,7 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
                     )
                     .map_err(|e| throw_error(ctx.clone(), e))?;
 
-                    Ok(call_error.into_js(&ctx)?)
+                    Err(Ctx::throw(&ctx, call_error.into_js(&ctx)?))
                 }
             }
         },
