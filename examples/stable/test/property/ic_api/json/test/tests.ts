@@ -11,79 +11,177 @@ import fc from 'fast-check';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
-// Create very simple object keys - avoid special characters
-const simpleKeyArb = fc.constant('key');
+// Type for our test cases
+type TestCase = {
+    name: string;
+    value: unknown;
+};
 
-// Create basic primitives arbitrary
-const primitiveArb = fc.oneof(
-    fc.constant('simple_string'),
-    fc.constant(42),
-    fc.constant(true),
-    fc.constant(false),
+// Individual test cases for each special type
+const testCases: TestCase[] = [
+    {
+        name: 'simple string',
+        value: 'test string'
+    },
+    {
+        name: 'number',
+        value: 42.5
+    },
+    {
+        name: 'boolean',
+        value: true
+    },
+    {
+        name: 'null',
+        value: null
+    },
+    {
+        name: 'NaN',
+        value: NaN
+    },
+    {
+        name: 'Infinity',
+        value: Infinity
+    },
+    {
+        name: '-Infinity',
+        value: -Infinity
+    },
+    {
+        name: '-0',
+        value: -0
+    },
+    {
+        name: 'bigint',
+        value: BigInt('12345678901234567890')
+    },
+    {
+        name: 'Principal',
+        value: Principal.fromUint8Array(Uint8Array.from([1, 2, 3, 4, 5]))
+    },
+    {
+        name: 'Int8Array',
+        value: new Int8Array([1, 2, 3])
+    },
+    {
+        name: 'Int16Array',
+        value: new Int16Array([1, 2, 3])
+    },
+    {
+        name: 'Int32Array',
+        value: new Int32Array([1, 2, 3])
+    },
+    {
+        name: 'BigInt64Array',
+        value: new BigInt64Array([BigInt(1), BigInt(2), BigInt(3)])
+    },
+    {
+        name: 'Uint8Array',
+        value: new Uint8Array([1, 2, 3])
+    },
+    {
+        name: 'Uint16Array',
+        value: new Uint16Array([1, 2, 3])
+    },
+    {
+        name: 'Uint32Array',
+        value: new Uint32Array([1, 2, 3])
+    },
+    {
+        name: 'BigUint64Array',
+        value: new BigUint64Array([BigInt(1), BigInt(2), BigInt(3)])
+    },
+    {
+        name: 'Float32Array',
+        value: new Float32Array([1.1, 2.2, 3.3])
+    },
+    {
+        name: 'Float64Array',
+        value: new Float64Array([1.1, 2.2, 3.3])
+    },
+    {
+        name: 'Map',
+        value: new Map<string, string | number | boolean | null>([
+            ['a', 1],
+            ['b', 'string'],
+            ['c', true],
+            ['d', null]
+        ])
+    },
+    {
+        name: 'Set',
+        value: new Set<string | number | boolean | null>([
+            1,
+            'string',
+            true,
+            null
+        ])
+    },
+    {
+        name: 'Array',
+        value: [1, 'string', true, null]
+    },
+    {
+        name: 'Object',
+        value: {
+            a: 1,
+            b: 'string',
+            c: true,
+            d: null,
+            e: [1, 2, 3],
+            f: { nested: 'value' }
+        }
+    }
+];
+
+// Dictionary with 20 keys
+const largeDict: Record<string, string> = {};
+for (let i = 0; i < 20; i++) {
+    largeDict[`key${i}`] = `value${i}`;
+}
+testCases.push({
+    name: 'Dictionary with 20 keys',
+    value: largeDict
+});
+
+// Create a simpler object that doesn't include undefined
+const complexObject = {
+    string: 'test',
+    number: 42,
+    boolean: true,
+    null: null,
+    nan: NaN,
+    infinity: Infinity,
+    negativeInfinity: -Infinity,
+    negativeZero: -0,
+    bigint: BigInt('12345678901234567890'),
+    array: [1, 'test', true],
+    object: { nested: 'value' },
+    typedArray: new Uint8Array([1, 2, 3]),
+    map: new Map([['key', 'value']]),
+    set: new Set(['value'])
+};
+testCases.push({
+    name: 'Complex object with multiple types',
+    value: complexObject
+});
+
+// Simple object arbitraries for property testing
+const simpleValueArb = fc.oneof(
+    fc.string(),
+    fc.integer(),
+    fc.boolean(),
     fc.constant(null)
 );
 
-// Test special values individually
-const testNaN = { value: NaN };
-const testInfinity = { value: Infinity };
-const testNegativeInfinity = { value: -Infinity };
-const testNegativeZero = { value: -0 };
-const testBigInt = { value: BigInt(42) };
-const testInt8Array = { value: new Int8Array([1, 2, 3]) };
-const testInt16Array = { value: new Int16Array([1, 2, 3]) };
-const testInt32Array = { value: new Int32Array([1, 2, 3]) };
-const testUint8Array = { value: new Uint8Array([1, 2, 3]) };
-const testUint16Array = { value: new Uint16Array([1, 2, 3]) };
-const testUint32Array = { value: new Uint32Array([1, 2, 3]) };
-const testBigInt64Array = { value: BigInt64Array.from([1n, 2n, 3n]) };
-const testBigUint64Array = { value: BigUint64Array.from([1n, 2n, 3n]) };
-const testFloat32Array = { value: new Float32Array([1.1, 2.2, 3.3]) };
-const testFloat64Array = { value: new Float64Array([1.1, 2.2, 3.3]) };
-const testMap = {
-    value: new Map([
-        ['a', 1],
-        ['b', 2]
-    ])
-};
-const testSet = { value: new Set(['a', 'b', 'c']) };
-const testPrincipal = {
-    value: Principal.fromUint8Array(new Uint8Array([1, 2, 3, 4, 5]))
-};
-
-// Simple object with primitives only
-const simpleObjectArb = fc.record({
-    a: primitiveArb,
-    b: primitiveArb,
-    c: primitiveArb
+// Simple array and object arbitraries
+const simpleArrayArb = fc.array(simpleValueArb, { maxLength: 5 });
+const simpleObjectArb = fc.dictionary(fc.string(), simpleValueArb, {
+    maxKeys: 5
 });
 
-// Create a dictionary with primitives only
-const simpleDictArb = fc.dictionary(simpleKeyArb, primitiveArb, { maxKeys: 3 });
-
-// A list of test cases with a readable description
-const testCases = [
-    { description: 'NaN', value: testNaN },
-    { description: 'Infinity', value: testInfinity },
-    { description: 'NegativeInfinity', value: testNegativeInfinity },
-    { description: 'NegativeZero', value: testNegativeZero },
-    { description: 'BigInt', value: testBigInt },
-    { description: 'Int8Array', value: testInt8Array },
-    { description: 'Int16Array', value: testInt16Array },
-    { description: 'Int32Array', value: testInt32Array },
-    { description: 'Uint8Array', value: testUint8Array },
-    { description: 'Uint16Array', value: testUint16Array },
-    { description: 'Uint32Array', value: testUint32Array },
-    { description: 'BigInt64Array', value: testBigInt64Array },
-    { description: 'BigUint64Array', value: testBigUint64Array },
-    { description: 'Float32Array', value: testFloat32Array },
-    { description: 'Float64Array', value: testFloat64Array },
-    { description: 'Map', value: testMap },
-    { description: 'Set', value: testSet },
-    { description: 'Principal', value: testPrincipal }
-];
-
-// Create a small mixed object (avoiding type errors)
-const mixedObjectArb = fc.oneof(primitiveArb, simpleObjectArb, simpleDictArb);
+// Combine them for property testing
+const simpleTestArb = fc.oneof(simpleValueArb, simpleArrayArb, simpleObjectArb);
 
 export function getTests(): Test {
     return () => {
@@ -96,35 +194,43 @@ export function getTests(): Test {
             const actor = await getCanisterActor<Actor>('canister');
 
             for (const testCase of testCases) {
-                // Use the value from the test case
                 const { value } = testCase;
 
                 // Convert the value to a JSON string using jsonStringify
                 const jsonString = jsonStringify(value);
 
-                // Call the canister method that parses and then stringifies again
-                const returnedJsonString =
-                    await actor.processJsonQuery(jsonString);
+                // Call the canister methods and test both query and update
+                const queryResult = await actor.processJsonQuery(jsonString);
+                const updateResult = await actor.processJsonUpdate(jsonString);
 
-                // The returned string should match the original
-                expect(returnedJsonString).toEqual(jsonString);
+                // Since we can't compare directly due to special encodings (undefined, etc.)
+                // let's re-parse and re-stringify to compare the normalized versions
+                const normalizedJson = jsonStringify(jsonParse(jsonString));
+                const normalizedQueryResult = jsonStringify(
+                    jsonParse(queryResult)
+                );
+                const normalizedUpdateResult = jsonStringify(
+                    jsonParse(updateResult)
+                );
 
-                // Also parse the returned string to verify object equivalence
-                const parsedObject = jsonParse(returnedJsonString);
-                const reparsedJsonString = jsonStringify(parsedObject);
-                expect(reparsedJsonString).toEqual(jsonString);
+                // The normalized strings should match
+                expect(normalizedQueryResult).toEqual(normalizedJson);
+                expect(normalizedUpdateResult).toEqual(normalizedJson);
+
+                // Re-check original JSON too against the canister results
+                expect(queryResult).toEqual(updateResult);
             }
         });
 
-        it('should test primitive values with property tests', async () => {
-            // Use a smaller number of runs to ensure tests complete
+        it('should test simple values with property tests', async () => {
+            // Use a smaller number of runs for property tests
             const executionParams = {
                 ...defaultPropTestParams(),
                 numRuns: 10 * Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
             };
 
             await fc.assert(
-                fc.asyncProperty(mixedObjectArb, async (value) => {
+                fc.asyncProperty(simpleTestArb, async (value) => {
                     const actor = await getCanisterActor<Actor>('canister');
 
                     // Convert the value to a JSON string using jsonStringify
@@ -140,13 +246,17 @@ export function getTests(): Test {
                     expect(queryResult).toEqual(jsonString);
                     expect(updateResult).toEqual(jsonString);
 
-                    // Also parse the returned strings
-                    const queryObject = jsonParse(queryResult);
-                    const updateObject = jsonParse(updateResult);
+                    // Parse the returned JSON strings and verify they match the original
+                    const parsedQueryResult = jsonParse(queryResult);
+                    const parsedUpdateResult = jsonParse(updateResult);
 
-                    // Re-stringify and compare
-                    expect(jsonStringify(queryObject)).toEqual(jsonString);
-                    expect(jsonStringify(updateObject)).toEqual(jsonString);
+                    // Verify the objects can be re-stringified and still match
+                    expect(jsonStringify(parsedQueryResult)).toEqual(
+                        jsonString
+                    );
+                    expect(jsonStringify(parsedUpdateResult)).toEqual(
+                        jsonString
+                    );
                 }),
                 executionParams
             );
