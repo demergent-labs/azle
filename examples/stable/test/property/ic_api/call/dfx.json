@@ -2,7 +2,7 @@
     "canisters": {
         "caller": {
             "type": "azle",
-            "main": "src/index.ts",
+            "main": "src/caller.ts",
             "declarations": {
                 "output": "test/dfx_generated/caller",
                 "node_compatibility": true
