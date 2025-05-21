@@ -1,13 +1,13 @@
 import { expect } from '@jest/globals';
 import { getCanisterActor, it, Test } from 'azle/_internal/test';
 
-import { _SERVICE as StaticErrorsActor } from './dfx_generated/static_errors/static_errors.did';
+import { _SERVICE as CallErrorsActor } from './dfx_generated/call_errors/call_errors.did';
 
 export function getTests(): Test {
     return () => {
         it('should produce a CallError: CallPerformFailed', async () => {
             const actor =
-                await getCanisterActor<StaticErrorsActor>('static_errors');
+                await getCanisterActor<CallErrorsActor>('call_errors');
 
             const callPerformFailed = await actor.test0();
 
@@ -17,7 +17,7 @@ export function getTests(): Test {
 
         it('should produce a CallError: CallRejected with reject code 5', async () => {
             const actor =
-                await getCanisterActor<StaticErrorsActor>('static_errors');
+                await getCanisterActor<CallErrorsActor>('call_errors');
 
             const callRejected = await actor.test1();
 
@@ -33,7 +33,7 @@ export function getTests(): Test {
 
         it('should produce a CallError: CallRejected with reject code 3', async () => {
             const actor =
-                await getCanisterActor<StaticErrorsActor>('static_errors');
+                await getCanisterActor<CallErrorsActor>('call_errors');
 
             const callRejected = await actor.test2();
 
@@ -49,7 +49,7 @@ export function getTests(): Test {
 
         it('should produce a CallError: InsufficientLiquidCycleBalance', async () => {
             const actor =
-                await getCanisterActor<StaticErrorsActor>('static_errors');
+                await getCanisterActor<CallErrorsActor>('call_errors');
 
             const insufficientLiquidCycleBalance = await actor.test3();
 
@@ -69,7 +69,7 @@ export function getTests(): Test {
 
         it('should produce a CallError: CallPerformFailed for a oneway call', async () => {
             const actor =
-                await getCanisterActor<StaticErrorsActor>('static_errors');
+                await getCanisterActor<CallErrorsActor>('call_errors');
 
             const callPerformFailed = await actor.test4();
 
@@ -79,7 +79,7 @@ export function getTests(): Test {
 
         it('should produce a CallError: InsufficientLiquidCycleBalance for a oneway call', async () => {
             const actor =
-                await getCanisterActor<StaticErrorsActor>('static_errors');
+                await getCanisterActor<CallErrorsActor>('call_errors');
 
             const insufficientLiquidCycleBalance = await actor.test5();
 

@@ -26,6 +26,21 @@ export default class {
         ]);
     }
 
+    @update([], IDL.Vec(IDL.Nat8))
+    async getRandomnessSuperIndirectlyAndConcurrently(): Promise<Uint8Array> {
+        const [randomness0, randomness1, randomness2] = await Promise.all([
+            getRandomnessLevel0(),
+            getRandomnessLevel1(),
+            getRandomnessLevel2()
+        ]);
+
+        return Uint8Array.from([
+            ...randomness0,
+            ...randomness1,
+            ...randomness2
+        ]);
+    }
+
     @update
     async returnPromiseVoid(): Promise<void> {
         await call<undefined, Uint8Array>('aaaaa-aa', 'raw_rand', {

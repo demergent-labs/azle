@@ -1,10 +1,10 @@
 {
     "canisters": {
-        "static_errors": {
+        "call_errors": {
             "type": "azle",
-            "main": "src/static_errors.ts",
+            "main": "src/index.ts",
             "declarations": {
-                "output": "test/dfx_generated/static_errors",
+                "output": "test/dfx_generated/call_errors",
                 "node_compatibility": true
             }
         }
