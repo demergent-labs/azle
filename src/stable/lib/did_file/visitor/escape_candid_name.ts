@@ -28,6 +28,7 @@ const CANDID_KEYWORDS = [
     'record',
     'service',
     'text',
+    'type',
     'variant',
     'vec'
 ];
