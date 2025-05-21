@@ -1,6 +1,3 @@
-// TODO Once https://github.com/demergent-labs/azle/issues/3074 is resolved
-// TODO remove the `errorType` hacks and just use `type`
-
 import {
     call,
     CallPerformFailed,
@@ -11,7 +8,7 @@ import {
 } from 'azle';
 
 const CallPerformFailedError = IDL.Record({
-    errorType: IDL.Text,
+    type: IDL.Text,
     message: IDL.Text
 });
 type CallPerformFailedError = CallPerformFailed & {
@@ -19,7 +16,7 @@ type CallPerformFailedError = CallPerformFailed & {
 };
 
 const CallRejectedError = IDL.Record({
-    errorType: IDL.Text,
+    type: IDL.Text,
     rejectCode: IDL.Nat32,
     rejectMessage: IDL.Text,
     message: IDL.Text
@@ -29,7 +26,7 @@ type CallRejectedError = CallRejected & {
 };
 
 const InsufficientLiquidCycleBalanceError = IDL.Record({
-    errorType: IDL.Text,
+    type: IDL.Text,
     available: IDL.Nat,
     required: IDL.Nat,
     message: IDL.Text
@@ -55,10 +52,7 @@ export default class {
                 'This signifies that the call did not fail as expected'
             );
         } catch (error: any) {
-            return {
-                ...error,
-                errorType: error.type
-            } as CallPerformFailedError;
+            return error as CallPerformFailedError;
         }
     }
 
@@ -71,10 +65,7 @@ export default class {
                 'This signifies that the call did not fail as expected'
             );
         } catch (error: any) {
-            return {
-                ...error,
-                errorType: error.type
-            } as CallRejectedError;
+            return error as CallRejectedError;
         }
     }
 
@@ -87,10 +78,7 @@ export default class {
                 'This signifies that the call did not fail as expected'
             );
         } catch (error: any) {
-            return {
-                ...error,
-                errorType: error.type
-            } as CallRejectedError;
+            return error as CallRejectedError;
         }
     }
 
@@ -105,10 +93,7 @@ export default class {
                 'This signifies that the call did not fail as expected'
             );
         } catch (error: any) {
-            return {
-                ...error,
-                errorType: error.type
-            } as InsufficientLiquidCycleBalanceError;
+            return error as InsufficientLiquidCycleBalanceError;
         }
     }
 
@@ -132,10 +117,7 @@ export default class {
                 'This signifies that the call did not fail as expected'
             );
         } catch (error: any) {
-            return {
-                ...error,
-                errorType: error.type
-            } as CallPerformFailedError;
+            return error as CallPerformFailedError;
         }
     }
 
@@ -151,10 +133,7 @@ export default class {
                 'This signifies that the call did not fail as expected'
             );
         } catch (error: any) {
-            return {
-                ...error,
-                errorType: error.type
-            } as InsufficientLiquidCycleBalanceError;
+            return error as InsufficientLiquidCycleBalanceError;
         }
     }
 }

@@ -11,7 +11,7 @@ export function getTests(): Test {
 
             const callPerformFailed = await actor.test0();
 
-            expect(callPerformFailed.errorType).toBe('CallPerformFailed');
+            expect(callPerformFailed.type).toBe('CallPerformFailed');
             expect(callPerformFailed.message).toBe('call perform failed');
         });
 
@@ -21,7 +21,7 @@ export function getTests(): Test {
 
             const callRejected = await actor.test1();
 
-            expect(callRejected.errorType).toBe('CallRejected');
+            expect(callRejected.type).toBe('CallRejected');
             expect(callRejected.rejectCode).toBe(5);
             expect(callRejected.rejectMessage).toBe(
                 `IC0536: Management canister has no method 'nonexistent_method'`
@@ -37,7 +37,7 @@ export function getTests(): Test {
 
             const callRejected = await actor.test2();
 
-            expect(callRejected.errorType).toBe('CallRejected');
+            expect(callRejected.type).toBe('CallRejected');
             expect(callRejected.rejectCode).toBe(3);
             expect(callRejected.rejectMessage).toBe(
                 'No route to canister vaupb-eqaaa-aaaai-qplka-cai'
@@ -53,7 +53,7 @@ export function getTests(): Test {
 
             const insufficientLiquidCycleBalance = await actor.test3();
 
-            expect(insufficientLiquidCycleBalance.errorType).toBe(
+            expect(insufficientLiquidCycleBalance.type).toBe(
                 'InsufficientLiquidCycleBalance'
             );
             expect(typeof insufficientLiquidCycleBalance.available).toBe(
@@ -73,7 +73,7 @@ export function getTests(): Test {
 
             const callPerformFailed = await actor.test4();
 
-            expect(callPerformFailed.errorType).toBe('CallPerformFailed');
+            expect(callPerformFailed.type).toBe('CallPerformFailed');
             expect(callPerformFailed.message).toBe('call perform failed');
         });
 
@@ -83,7 +83,7 @@ export function getTests(): Test {
 
             const insufficientLiquidCycleBalance = await actor.test5();
 
-            expect(insufficientLiquidCycleBalance.errorType).toBe(
+            expect(insufficientLiquidCycleBalance.type).toBe(
                 'InsufficientLiquidCycleBalance'
             );
             expect(typeof insufficientLiquidCycleBalance.available).toBe(
