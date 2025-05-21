@@ -25,6 +25,13 @@ export function getTests(async_await_canister: ActorSubclass<_SERVICE>): Test {
             expect(result).toHaveLength(96);
         });
 
+        it('gets randomness even when there are multiple awaits in multiple places at multiple levels concurrently', async () => {
+            const result =
+                await async_await_canister.getRandomnessSuperIndirectlyAndConcurrently();
+
+            expect(result).toHaveLength(96);
+        });
+
         it('is able to handle Promise<void>', async () => {
             const result = await async_await_canister.returnPromiseVoid();
 

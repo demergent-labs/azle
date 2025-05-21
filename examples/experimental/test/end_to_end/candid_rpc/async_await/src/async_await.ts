@@ -28,6 +28,19 @@ export default Canister({
             ...randomness2
         ]);
     }),
+    getRandomnessSuperIndirectlyAndConcurrently: update([], blob, async () => {
+        const [randomness0, randomness1, randomness2] = await Promise.all([
+            getRandomnessLevel0(),
+            getRandomnessLevel1(),
+            getRandomnessLevel2()
+        ]);
+
+        return Uint8Array.from([
+            ...randomness0,
+            ...randomness1,
+            ...randomness2
+        ]);
+    }),
     returnPromiseVoid: update([], Void, async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/raw_rand`);
