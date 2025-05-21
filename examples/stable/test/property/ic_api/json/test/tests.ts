@@ -60,32 +60,31 @@ const simpleValueArb = fc.oneof(
 );
 
 const simpleArrayArb = fc.array(simpleValueArb, { maxLength: 3 });
-const simpleObjectArb = fc.dictionary(fc.string(), simpleValueArb, {
-    maxKeys: 5
+const dictionaryArb = fc.dictionary(fc.string(), simpleValueArb, {
+    maxKeys: 20
 });
 
-// Create a map with simple key/value pairs
-const mapArb = fc
-    .array(fc.tuple(fc.string(), simpleValueArb), { maxLength: 5 })
-    .map((entries) => new Map(entries));
-
-// Create a set with simple values
-const setArb = fc
-    .array(simpleValueArb, { maxLength: 5 })
-    .map((items) => new Set(items));
-
-// Combine everything to create mixed objects without excessive nesting
-const mixedObjectArb = fc.oneof(
+// Create initial version of mixed object arbitrary without Map and Set
+const initialMixedObjectArb = fc.oneof(
     specialValueArb,
     simpleValueArb,
     simpleArrayArb,
-    simpleObjectArb,
+    dictionaryArb,
     bigInt64ArrayArb,
-    bigUint64ArrayArb,
-    mapArb,
-    setArb,
-    fc.dictionary(fc.string(), simpleValueArb, { maxKeys: 20 })
+    bigUint64ArrayArb
 );
+
+// Create a map and set with the initial mixed object values
+const mapArb = fc
+    .array(fc.tuple(fc.string(), initialMixedObjectArb), { maxLength: 5 })
+    .map((entries) => new Map(entries));
+
+const setArb = fc
+    .array(initialMixedObjectArb, { maxLength: 5 })
+    .map((items) => new Set(items));
+
+// Final combined arbitrary that includes everything
+const finalMixedObjectArb = fc.oneof(initialMixedObjectArb, mapArb, setArb);
 
 export function getTests(): Test {
     return () => {
@@ -102,7 +101,7 @@ export function getTests(): Test {
             };
 
             await fc.assert(
-                fc.asyncProperty(mixedObjectArb, async (value) => {
+                fc.asyncProperty(finalMixedObjectArb, async (value) => {
                     const actor = await getCanisterActor<Actor>('canister');
 
                     // Convert the value to a JSON string using jsonStringify
@@ -115,11 +114,9 @@ export function getTests(): Test {
                     // The returned string should match the original
                     expect(returnedJsonString).toEqual(jsonString);
 
-                    // Parse the returned JSON string and verify it matches the original
+                    // Parse the returned JSON string and directly compare with original value
                     const parsedReturnedValue = jsonParse(returnedJsonString);
-                    expect(jsonStringify(parsedReturnedValue)).toEqual(
-                        jsonString
-                    );
+                    expect(parsedReturnedValue).toEqual(value);
                 }),
                 executionParams
             );
@@ -133,7 +130,7 @@ export function getTests(): Test {
             };
 
             await fc.assert(
-                fc.asyncProperty(mixedObjectArb, async (value) => {
+                fc.asyncProperty(finalMixedObjectArb, async (value) => {
                     const actor = await getCanisterActor<Actor>('canister');
 
                     // Convert the value to a JSON string using jsonStringify
@@ -146,11 +143,9 @@ export function getTests(): Test {
                     // The returned string should match the original
                     expect(returnedJsonString).toEqual(jsonString);
 
-                    // Parse the returned JSON string and verify it matches the original
+                    // Parse the returned JSON string and directly compare with original value
                     const parsedReturnedValue = jsonParse(returnedJsonString);
-                    expect(jsonStringify(parsedReturnedValue)).toEqual(
-                        jsonString
-                    );
+                    expect(parsedReturnedValue).toEqual(value);
                 }),
                 executionParams
             );
