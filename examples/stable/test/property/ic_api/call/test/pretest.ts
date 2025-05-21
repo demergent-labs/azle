@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 
 function pretest(): void {
     // Uninstall existing code if any
-    execSync(`dfx canister uninstall-code call || true`, {
+    execSync(`dfx canister uninstall-code caller || true`, {
         stdio: 'inherit'
     });
 
@@ -11,7 +11,7 @@ function pretest(): void {
     });
 
     // Deploy both canisters
-    execSync(`dfx deploy call`, {
+    execSync(`dfx deploy caller`, {
         stdio: 'inherit'
     });
 
@@ -20,7 +20,7 @@ function pretest(): void {
     });
 
     // Generate canister interfaces
-    execSync(`dfx generate call`, {
+    execSync(`dfx generate caller`, {
         stdio: 'inherit'
     });
 

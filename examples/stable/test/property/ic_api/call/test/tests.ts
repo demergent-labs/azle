@@ -1,56 +1,59 @@
+import { Principal } from '@dfinity/principal';
 import {
     CallPerformFailed,
     CallRejected,
     expect,
+    getCanisterActor,
     it,
     Test
 } from 'azle/_internal/test';
 
-import { createActor } from './test';
+import { _SERVICE as CalleeActor } from './dfx_generated/callee/callee.did';
+import { _SERVICE as CallerActor } from './dfx_generated/caller/caller.did';
 
 export function getTests(): Test {
     return () => {
         it('should handle CallPerformFailed when calling non-existent canister', async () => {
-            const actor = await createActor();
+            const caller = await getCanisterActor<CallerActor>('caller');
 
-            // Generate a principal ID for a non-existent canister
-            const nonExistentCanisterId = 'aaaaa-aa'; // Use management canister but we'll generate a principal
+            // Create a non-existent principal ID
+            const nonExistentCanisterId = Principal.fromText('aaaaa-qq');
 
             // Verify the error type is correctly identified
-            const result = await actor.callNonExistentCanister(
+            const result = await caller.callNonExistentCanister(
                 nonExistentCanisterId
             );
             expect(result).toBe(true);
 
             // Also test the static example
-            const exampleError = await actor.getCallPerformFailedExample();
+            const exampleError = await caller.getCallPerformFailedExample();
             expect(exampleError.type).toBe('CallPerformFailed');
         });
 
         it('should handle CallRejected when calling non-existent method', async () => {
-            const actor = await createActor();
+            const caller = await getCanisterActor<CallerActor>('caller');
 
             // Call a non-existent method on the caller canister (self-call)
-            const calleeId = await actor.getSelf();
+            const calleeId = await caller.getSelf();
 
             // Verify the error type is correctly identified
-            const result = await actor.callNonExistentMethod(calleeId);
+            const result = await caller.callNonExistentMethod(calleeId);
             expect(result).toBe(true);
         });
 
         it('should handle CallRejected when method explicitly rejects', async () => {
-            const actor = await createActor();
-            const calleeActor = await createActor('callee');
+            const caller = await getCanisterActor<CallerActor>('caller');
+            const callee = await getCanisterActor<CalleeActor>('callee');
 
             // Get the callee canister ID
-            const calleeId = await calleeActor.getSelf();
+            const calleeId = await callee.getSelf();
 
             // Call the explicitly rejecting method
-            const result = await actor.callRejectingMethod(calleeId);
+            const result = await caller.callRejectingMethod(calleeId);
             expect(result).toBe(true);
 
             // Also test the static example
-            const exampleError = await actor.getCallRejectedExample();
+            const exampleError = await caller.getCallRejectedExample();
             expect(exampleError.type).toBe('CallRejected');
             expect(exampleError.rejectCode).toBe(3);
             expect(exampleError.rejectMessage).toBe('Example reject message');

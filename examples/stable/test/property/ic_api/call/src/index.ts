@@ -2,6 +2,7 @@ import {
     call,
     CallPerformFailed,
     CallRejected,
+    canisterSelf,
     IDL,
     Principal,
     query,
@@ -11,7 +12,7 @@ import {
 export default class {
     @query([], IDL.Principal)
     getSelf(): Principal {
-        return ic.id();
+        return canisterSelf();
     }
 
     @update([IDL.Principal], IDL.Bool)
@@ -30,7 +31,7 @@ export default class {
     async callNonExistentMethod(canisterId: Principal): Promise<boolean> {
         try {
             // Attempt to call a non-existent method on an existing canister
-            await call<[], boolean>(canisterId, 'non_existent_method');
+            await call<[], boolean>(canisterId, 'nonExistentMethod');
             return false; // Should not reach here
         } catch (error) {
             // Verify it's a CallRejected error
@@ -42,7 +43,7 @@ export default class {
     async callRejectingMethod(canisterId: Principal): Promise<boolean> {
         try {
             // Call a method that explicitly rejects
-            await call<[], boolean>(canisterId, 'explicitly_reject');
+            await call<[], boolean>(canisterId, 'explicitlyReject');
             return false; // Should not reach here
         } catch (error) {
             // Verify it's a CallRejected error with specific properties
