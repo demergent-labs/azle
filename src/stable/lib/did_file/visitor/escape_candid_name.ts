@@ -8,9 +8,12 @@
 const CANDID_KEYWORDS = [
     'blob',
     'bool',
+    'composite_query',
+    'empty',
     'float32',
     'float64',
     'func',
+    'import',
     'int',
     'int16',
     'int32',
@@ -22,12 +25,15 @@ const CANDID_KEYWORDS = [
     'nat64',
     'nat8',
     'null',
+    'oneway',
     'opt',
     'principal',
     'query',
     'record',
+    'reserved',
     'service',
     'text',
+    'type',
     'variant',
     'vec'
 ];
