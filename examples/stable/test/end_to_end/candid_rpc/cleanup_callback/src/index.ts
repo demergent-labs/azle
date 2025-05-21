@@ -1,4 +1,4 @@
-import { call, IDL, query, trap, update } from 'azle';
+import { call, IDL, msgReject, query, trap, update } from 'azle';
 
 export default class {
     rejectCode: number = 0;
@@ -136,6 +136,44 @@ export default class {
 
             throw new Error(
                 `You cannot allow a trap to occur in a cleanup callback`
+            );
+        }
+    }
+
+    @update([], undefined, { manual: true })
+    async getRandomnessMsgRejectInReplyCallback(): Promise<void> {
+        try {
+            await call<undefined, Uint8Array>('aaaaa-aa', 'raw_rand', {
+                returnIdlType: IDL.Vec(IDL.Nat8)
+            });
+
+            msgReject(
+                'calling msgReject from getRandomnessMsgRejectInReplyCallback'
+            );
+        } catch {
+            trap(`an error should not have been thrown`);
+        }
+    }
+
+    @update([], undefined, { manual: true })
+    async getRandomnessMsgRejectInRejectCallback(): Promise<void> {
+        try {
+            await call<undefined, Uint8Array>('aaaaa-aa', 'candyland', {
+                returnIdlType: IDL.Vec(IDL.Nat8)
+            });
+
+            trap(`an error should have been thrown`);
+        } catch (error: any) {
+            if (
+                error.type === 'CleanupCallback' &&
+                error.rejectCode === 10_001 &&
+                error.rejectMessage === 'executing within cleanup callback'
+            ) {
+                trap(`the cleanup callback should not have been called`);
+            }
+
+            msgReject(
+                'calling msgReject from getRandomnessMsgRejectInRejectCallback'
             );
         }
     }
