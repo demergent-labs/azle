@@ -1,12 +1,16 @@
 import { Principal } from '@dfinity/principal';
-import {
-    CallPerformFailed,
-    CallRejected,
-    expect,
-    getCanisterActor,
-    it,
-    Test
-} from 'azle/_internal/test';
+import { expect, getCanisterActor, it, Test } from 'azle/_internal/test';
+
+// Define the error types locally for testing
+interface CallPerformFailed {
+    type: 'CallPerformFailed';
+}
+
+interface CallRejected {
+    type: 'CallRejected';
+    rejectCode: number;
+    rejectMessage: string;
+}
 
 import { _SERVICE as CalleeActor } from './dfx_generated/callee/callee.did';
 import { _SERVICE as CallerActor } from './dfx_generated/caller/caller.did';
@@ -17,7 +21,7 @@ export function getTests(): Test {
             const caller = await getCanisterActor<CallerActor>('caller');
 
             // Create a non-existent principal ID
-            const nonExistentCanisterId = Principal.fromText('aaaaa-qq');
+            const nonExistentCanisterId = Principal.fromText('aaaaa-aa');
 
             // Verify the error type is correctly identified
             const result = await caller.callNonExistentCanister(
@@ -27,7 +31,7 @@ export function getTests(): Test {
 
             // Also test the static example
             const exampleError = await caller.getCallPerformFailedExample();
-            expect(exampleError.type).toBe('CallPerformFailed');
+            expect(exampleError.errorType).toBe('CallPerformFailed');
         });
 
         it('should handle CallRejected when calling non-existent method', async () => {
@@ -54,7 +58,7 @@ export function getTests(): Test {
 
             // Also test the static example
             const exampleError = await caller.getCallRejectedExample();
-            expect(exampleError.type).toBe('CallRejected');
+            expect(exampleError.errorType).toBe('CallRejected');
             expect(exampleError.rejectCode).toBe(3);
             expect(exampleError.rejectMessage).toBe('Example reject message');
         });
