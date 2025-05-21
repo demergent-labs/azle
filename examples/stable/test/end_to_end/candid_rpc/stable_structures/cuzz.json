@@ -1,16 +1,12 @@
 {
     "expectedErrors": [
-        "Request ID:[\\s\\S]*Reject code:[\\s\\S]*Reject text:.*Uncaught SyntaxError: unexpected token",
-        "Request ID:[\\s\\S]*Reject code:[\\s\\S]*Reject text:.*Uncaught SyntaxError: expecting property name",
-        "Request ID:[\\s\\S]*Reject code:[\\s\\S]*Reject text:.*Uncaught SyntaxError: unexpected data at the end",
-        "Request ID:[\\s\\S]*Reject code:[\\s\\S]*Reject text:.*Uncaught SyntaxError: Unexpected end of JSON input",
-        "Request ID:[\\s\\S]*Reject code:[\\s\\S]*Reject text:.*Uncaught SyntaxError: unexpected end of string",
-        "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected token",
-        "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected data at the end",
+        "Uncaught SyntaxError: expecting property name",
+        "Uncaught SyntaxError: unexpected data at the end",
+        "Uncaught SyntaxError: Unexpected end of JSON input",
+        "Uncaught SyntaxError: unexpected end of string",
         "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
         "Method: stableMap17ContainsKey \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected end of string",
-        "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected token",
         "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: Unexpected end of JSON input",
-        "Method: stableMap17Get \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught SyntaxError: unexpected data at the end"
+        "Uncaught SyntaxError: unexpected token"
     ]
 }

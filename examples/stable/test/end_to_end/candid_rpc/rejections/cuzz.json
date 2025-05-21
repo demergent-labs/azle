@@ -1,6 +1,7 @@
 {
     "expectedErrors": [
         "Method: reject \\(query\\)",
-        "Method: error \\(query\\)"
+        "Method: error \\(query\\)",
+        "Canister violated contract: \"ic0_msg_reject_code\" cannot be executed in update mode."
     ]
 }

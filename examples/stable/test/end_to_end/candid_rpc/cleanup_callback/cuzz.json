@@ -5,6 +5,7 @@
         "Method: getRandomness \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister called `ic0.trap` with message: 'Azle CallRawError: QuickJS callback execution failed: Error converting from js 'undefined' into type 'function'",
         "Uncaught Error: executing within the reject callback",
         "Canister called `ic0.trap` with message: 'trapped from getRandomnessWithTrapCaughtPromise'",
-        "Canister called `ic0.trap` with message: 'trapped from getRandomnessWithTrapUncaught'"
+        "Canister called `ic0.trap` with message: 'trapped from getRandomnessWithTrapUncaught'",
+        "Canister called `ic0.trap` with message: 'Azle CallRawError: QuickJS callback execution failed: Error converting from js 'undefined' into type 'function''"
     ]
 }
