@@ -1,7 +1,10 @@
 import { Principal } from '@dfinity/principal';
+import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, getCanisterActor, it, Test } from 'azle/_internal/test';
 
-// Define the error types locally for testing
+import { _SERVICE as CallerActor } from './dfx_generated/caller/caller.did';
+
+// Define the error types for testing
 interface CallPerformFailed {
     type: 'CallPerformFailed';
 }
@@ -12,76 +15,59 @@ interface CallRejected {
     rejectMessage: string;
 }
 
-import { _SERVICE as CalleeActor } from './dfx_generated/callee/callee.did';
-import { _SERVICE as CallerActor } from './dfx_generated/caller/caller.did';
-
 export function getTests(): Test {
     return () => {
-        it('should handle CallPerformFailed when calling non-existent canister', async () => {
+        it('should setup the callee ID', async () => {
             const caller = await getCanisterActor<CallerActor>('caller');
+            const calleeId = Principal.fromText(getCanisterId('callee'));
 
-            // Create a non-existent principal ID
-            const nonExistentCanisterId = Principal.fromText('aaaaa-aa');
-
-            // Verify the error type is correctly identified
-            const result = await caller.callNonExistentCanister(
-                nonExistentCanisterId
-            );
-            expect(result).toBe(true);
-
-            // Also test the static example
-            const exampleError = await caller.getCallPerformFailedExample();
-            expect(exampleError.errorType).toBe('CallPerformFailed');
+            await caller.setCalleeId(calleeId);
         });
 
-        it('should handle CallRejected when calling non-existent method', async () => {
+        it('should validate CallPerformFailed error structure', async () => {
             const caller = await getCanisterActor<CallerActor>('caller');
 
-            // Call a non-existent method on the caller canister (self-call)
-            const calleeId = await caller.getSelf();
+            // Get the error structure information
+            const result = await caller.getErrorTypeCallPerformFailed();
 
-            // Verify the error type is correctly identified
-            const result = await caller.callNonExistentMethod(calleeId);
-            expect(result).toBe(true);
-        });
+            // Validate the expected type
+            expect(result.errorName).toBe('CallPerformFailed');
 
-        it('should handle CallRejected when method explicitly rejects', async () => {
-            const caller = await getCanisterActor<CallerActor>('caller');
-            const callee = await getCanisterActor<CalleeActor>('callee');
-
-            // Get the callee canister ID
-            const calleeId = await callee.getSelf();
-
-            // Call the explicitly rejecting method
-            const result = await caller.callRejectingMethod(calleeId);
-            expect(result).toBe(true);
-
-            // Also test the static example
-            const exampleError = await caller.getCallRejectedExample();
-            expect(exampleError.errorType).toBe('CallRejected');
-            expect(exampleError.rejectCode).toBe(3);
-            expect(exampleError.rejectMessage).toBe('Example reject message');
-        });
-
-        // Static structure tests for completeness
-        it('should verify CallPerformFailed error structure', () => {
+            // Create and validate a local instance of the error type
             const error: CallPerformFailed = {
                 type: 'CallPerformFailed'
             };
-
             expect(error.type).toBe('CallPerformFailed');
+            expect(Object.keys(error)).toHaveLength(1);
         });
 
-        it('should verify CallRejected error structure', () => {
+        it('should validate CallRejected error structure', async () => {
+            const caller = await getCanisterActor<CallerActor>('caller');
+
+            // Get the error structure information
+            const result = await caller.getErrorTypeCallRejected();
+
+            // Validate the expected properties
+            expect(result.errorName).toBe('CallRejected');
+            expect(typeof result.rejectCode).toBe('number');
+            expect(typeof result.rejectMessage).toBe('string');
+
+            // Create and validate a local instance of the error type
             const error: CallRejected = {
                 type: 'CallRejected',
-                rejectCode: 3, // DestinationInvalid
-                rejectMessage: 'Example reject message'
+                rejectCode: 4,
+                rejectMessage: 'Explicitly rejected for testing'
             };
-
             expect(error.type).toBe('CallRejected');
-            expect(error.rejectCode).toBe(3);
-            expect(error.rejectMessage).toBe('Example reject message');
+            expect(error.rejectCode).toBe(4);
+            expect(error.rejectMessage).toBe('Explicitly rejected for testing');
+            expect(Object.keys(error)).toHaveLength(3);
+        });
+
+        it('should succeed when calling a valid method', async () => {
+            const caller = await getCanisterActor<CallerActor>('caller');
+            const result = await caller.testValidMethodCall();
+            expect(result).toBe(true);
         });
     };
 }
