@@ -58,7 +58,7 @@ impl JsFn for NativeFunction {
                 )
                 .unwrap();
 
-                call_error.into()
+                context.throw_error(call_error.into()).into()
             }
         }
     }
