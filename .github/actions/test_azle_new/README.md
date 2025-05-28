@@ -1,10 +1,10 @@
 ## Example Usage
 
 ```yaml
-- name: Test stable template creation and functionality
-  uses: ./.github/actions/test_azle_template
+- name: Test azle new command
+  uses: ./.github/actions/test_azle_new
   with:
-      template_name: 'stable_template_test'
+      project_name: 'test_project'
       experimental: 'false'
       http_server: 'false'
       working_directory: 'external-test-env'
@@ -12,4 +12,4 @@
       packed_file_path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}
 ```
 
-The action will test all of the azle cli commands outside in a clean environment unaffected by the state of the azle repo.
+Tests the `azle new` command and CLI functionality in a clean external environment.
