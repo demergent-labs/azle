@@ -21,8 +21,6 @@ jobs:
                   # Create a fresh directory for azle source code
                   AZLE_SOURCE_DIR="${{ github.workspace }}/azle"
                   mkdir -p "${AZLE_SOURCE_DIR}"
-                  # TODO determine if we use this output
-                  echo "azle_source_directory=${AZLE_SOURCE_DIR}" >> $GITHUB_OUTPUT
 
             - uses: actions/checkout@v4
               with:
@@ -168,30 +166,30 @@ jobs:
               shell: bash
               run: dfx start --clean --background --artificial-delay 0
 
-            - name: Test stable template creation and functionality # TODO I'm not a fan of the word template here
-              uses: ./azle/.github/actions/test_azle_template
+            - name: Test stable project creation with azle new command
+              uses: ./azle/.github/actions/test_azle_new
               with:
-                  template_name: 'stable_template_test'
+                  project_name: 'stable_project_test'
                   experimental: 'false'
                   http_server: 'false'
                   working_directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
                   version: ${{ env.UNIQUE_VERSION }}
                   packed_file_path: ${{ steps.pack_azle_source.outputs.packed_file_absolute_path }}
 
-            - name: Test experimental template creation and functionality
-              uses: ./azle/.github/actions/test_azle_template
+            - name: Test experimental project creation with azle new command
+              uses: ./azle/.github/actions/test_azle_new
               with:
-                  template_name: 'experimental_template_test'
+                  project_name: 'experimental_project_test'
                   experimental: 'true'
                   http_server: 'false'
                   working_directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
                   version: ${{ env.UNIQUE_VERSION }}
                   packed_file_path: ${{ steps.pack_azle_source.outputs.packed_file_absolute_path }}
 
-            - name: Test HTTP server template creation and functionality
-              uses: ./azle/.github/actions/test_azle_template
+            - name: Test HTTP server project creation with azle new command
+              uses: ./azle/.github/actions/test_azle_new
               with:
-                  template_name: 'http_server_template_test'
+                  project_name: 'http_server_project_test'
                   experimental: 'true'
                   http_server: 'true'
                   working_directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
