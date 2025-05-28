@@ -57,7 +57,7 @@ runs:
               echo "✅ Successfully created new project: ${{ inputs.project_name }}"
 
         - name: Install azle package in new project
-          uses: ../retry_command
+          uses: ./azle/.github/actions/retry_command
           with:
               working-directory: ${{ inputs.working_directory }}/${{ inputs.project_name }}
               command: 'npm install ${{ inputs.packed_file_path }}'
