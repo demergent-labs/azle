@@ -11,8 +11,14 @@ export function defaultPropTestParams<T = unknown>(): fc.Parameters<T> {
             const reproductionMessage = `To reproduce this exact test case, run:\ncd ${process.cwd()}\n${reproductionCommand}`;
             console.info(reproductionMessage);
             if (runDetails.failed) {
+                const error =
+                    runDetails.errorInstance === undefined ||
+                    runDetails.errorInstance === null
+                        ? ''
+                        : `${runDetails.errorInstance.toString()}\n\n`;
+
                 throw new Error(
-                    `${reproductionMessage}\n\n${fc.defaultReportMessage(runDetails)}`
+                    `${reproductionMessage}\n\n${error}${fc.defaultReportMessage(runDetails)}`
                 );
             }
         },
