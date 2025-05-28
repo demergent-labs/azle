@@ -137,6 +137,61 @@ jobs:
                   echo "Testing 'azle dev setup' command"
                   npx azle dev setup
 
+            - name: Test azle dev template commands
+              working-directory: azle
+              run: |
+                  echo "Testing azle dev template commands"
+
+                  # Remove existing template files to test regeneration
+                  echo "Removing existing template files for regeneration test"
+                  rm -f dist/canister_templates/stable.wasm
+                  rm -f dist/canister_templates/experimental.wasm
+
+                  # Test azle dev template (stable)
+                  echo "Testing 'azle dev template' command"
+                  npx azle dev template
+
+                  # Verify stable template was created
+                  if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                    echo "✅ Stable template verification successful: stable.wasm was created"
+                  else
+                    echo "❌ Stable template verification failed: stable.wasm was not created"
+                    exit 1
+                  fi
+
+                  # Remove stable template for next test
+                  rm -f dist/canister_templates/stable.wasm
+
+                  # Test azle dev template --experimental
+                  echo "Testing 'azle dev template --experimental' command"
+                  npx azle dev template --experimental
+
+                  # Verify experimental template was created
+                  if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                    echo "✅ Experimental template verification successful: experimental.wasm was created"
+                  else
+                    echo "❌ Experimental template verification failed: experimental.wasm was not created"
+                    exit 1
+                  fi
+
+                  # Remove both templates for final test
+                  rm -f dist/canister_templates/stable.wasm
+                  rm -f dist/canister_templates/experimental.wasm
+
+                  # Test azle dev template --all
+                  echo "Testing 'azle dev template --all' command"
+                  npx azle dev template --all
+
+                  # Verify both templates were created
+                  if [[ -f "dist/canister_templates/stable.wasm" && -f "dist/canister_templates/experimental.wasm" ]]; then
+                    echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created"
+                  else
+                    echo "❌ All templates verification failed: Not all template files were created"
+                    echo "stable.wasm exists: $(test -f dist/canister_templates/stable.wasm && echo 'yes' || echo 'no')"
+                    echo "experimental.wasm exists: $(test -f dist/canister_templates/experimental.wasm && echo 'yes' || echo 'no')"
+                    exit 1
+                  fi
+
             - name: Test azle generate command
               working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               run: |
