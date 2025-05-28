@@ -57,17 +57,10 @@ runs:
               echo "✅ Successfully created new project: ${{ inputs.project_name }}"
 
         - name: Install azle package in new project
-          working-directory: ${{ inputs.working_directory }}/${{ inputs.project_name }}
-          shell: bash
-          run: |
-              echo "Installing azle package in ${{ inputs.project_name }} project"
-
-              if ! npm install ${{ inputs.packed_file_path }}; then
-                echo "❌ Failed to install azle package in new project"
-                exit 1
-              fi
-
-              echo "✅ Successfully installed azle package in new project"
+          uses: ../retry_command
+          with:
+              working-directory: ${{ inputs.working_directory }}/${{ inputs.project_name }}
+              command: 'npm install ${{ inputs.packed_file_path }}'
 
         - name: Verify azle version in new project
           working-directory: ${{ inputs.working_directory }}/${{ inputs.project_name }}
