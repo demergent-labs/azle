@@ -1,5 +1,5 @@
 name: 'Test Azle Template'
-description: 'Creates, tests, and verifies an Azle template'
+description: 'Creates, tests, and verifies an Azle template project to ensure CLI commands work correctly outside the azle repository'
 
 inputs:
     template_name:
@@ -20,95 +20,124 @@ inputs:
         description: 'Expected Azle version for verification'
         required: true
     packed_file_path:
-        description: 'Path to the packed azle file'
+        description: 'Path to the packed azle file for installation'
         required: true
 
 runs:
     using: 'composite'
     steps:
-        - name: Test New Template CLI Command
+        - name: Create new azle template project
           working-directory: ${{ inputs.working_directory }}
           shell: bash
           run: |
-              echo "Testing 'azle new' command for ${{ inputs.template_name }}"
+              echo "Creating new azle template project: ${{ inputs.template_name }}"
 
-              # Build the command based on inputs
-              CMD="npx azle new ${{ inputs.template_name }}"
+              # Build the azle new command based on inputs
+              NEW_COMMAND="npx azle new ${{ inputs.template_name }}"
 
-              # Add flags if specified
+              # Add experimental flag if specified
               if [ "${{ inputs.experimental }}" = "true" ]; then
-                CMD="${CMD} --experimental"
+                NEW_COMMAND="${NEW_COMMAND} --experimental"
+                echo "Using experimental mode"
               fi
 
+              # Add HTTP server flag if specified
               if [ "${{ inputs.http_server }}" = "true" ]; then
-                CMD="${CMD} --http-server"
+                NEW_COMMAND="${NEW_COMMAND} --http-server"
+                echo "Including HTTP server support"
               fi
 
-              # Run the command
-              echo "Running command: ${CMD}"
-              ${CMD}
+              # Execute the command and verify success
+              echo "Executing command: ${NEW_COMMAND}"
+              if ! ${NEW_COMMAND}; then
+                echo "❌ Failed to create template project: ${{ inputs.template_name }}"
+                exit 1
+              fi
 
-        - name: Install Dependencies for Template Project
+              echo "✅ Successfully created template project: ${{ inputs.template_name }}"
+
+        - name: Install azle package in template project # TODO can we change this to use the retry command action?
           working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
           shell: bash
           run: |
-              echo "Installing dependencies for ${{ inputs.template_name }} project"
-              npm install ${{ inputs.packed_file_path }}
+              echo "Installing azle package in ${{ inputs.template_name }} project"
 
-        - name: Verify Azle Version in Template Project
+              if ! npm install ${{ inputs.packed_file_path }}; then
+                echo "❌ Failed to install azle package in template project"
+                exit 1
+              fi
+
+              echo "✅ Successfully installed azle package in template project"
+
+        - name: Verify azle version in template project
           working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
           shell: bash
           run: |
               echo "Verifying azle version in ${{ inputs.template_name }} project"
+
               DISPLAYED_VERSION=$(npx azle --version)
               echo "Displayed version: ${DISPLAYED_VERSION}"
 
-              # Verify the version matches our unique test version
+              # Verify the version matches our expected test version
               if [[ "${DISPLAYED_VERSION}" == *"${{ inputs.version }}"* ]]; then
-                echo "✅ Verification successful: Running the correct packed version"
+                echo "✅ Version verification successful: Template project using correct azle version"
               else
-                echo "❌ Verification failed: Version mismatch"
+                echo "❌ Version verification failed: Version mismatch in template project"
                 echo "Expected to find: ${{ inputs.version }}"
                 echo "But got: ${DISPLAYED_VERSION}"
                 exit 1
               fi
 
-        - name: Test Template Project
+        - name: Run template project tests
           working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
           shell: bash
           env:
               AZLE_IDENTITY_STORAGE_MODE: plaintext
           run: |
-              echo "Testing ${{ inputs.template_name }} project"
-              npm test
+              echo "Running tests for ${{ inputs.template_name }} project"
 
-        - name: Check .azle Directory for Template Project
-          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
-          shell: bash
-          run: |
-              echo "Checking for .azle directory in ${{ inputs.template_name }} project"
-              if [ -d ".azle" ]; then
-                echo "✅ .azle directory exists as expected"
-              else
-                echo "❌ .azle directory does not exist but should"
+              if ! npm test; then
+                echo "❌ Template project tests failed"
                 exit 1
               fi
 
-        - name: Clean Template Project
-          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
-          shell: bash
-          run: |
-              echo "Cleaning ${{ inputs.template_name }} project"
-              npx azle clean
+              echo "✅ Template project tests passed successfully"
 
-        - name: Verify .azle Directory Removed for Template Project
+        - name: Verify azle build artifacts exist
           working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
           shell: bash
           run: |
-              echo "Verifying .azle directory was removed from ${{ inputs.template_name }} project"
+              echo "Verifying .azle directory exists in ${{ inputs.template_name }} project"
+
               if [ -d ".azle" ]; then
-                echo "❌ .azle directory still exists but should have been removed"
+                echo "✅ .azle directory exists as expected after build"
+              else
+                echo "❌ .azle directory does not exist but should after running tests"
+                exit 1
+              fi
+
+        - name: Test azle clean command
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Testing azle clean command in ${{ inputs.template_name }} project"
+
+              if ! npx azle clean; then
+                echo "❌ azle clean command failed"
+                exit 1
+              fi
+
+              echo "✅ azle clean command executed successfully"
+
+        - name: Verify azle clean command effectiveness
+          working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+          shell: bash
+          run: |
+              echo "Verifying .azle directory was removed by clean command"
+
+              if [ -d ".azle" ]; then
+                echo "❌ .azle directory still exists but should have been removed by clean command"
                 exit 1
               else
-                echo "✅ .azle directory was successfully removed"
+                echo "✅ .azle directory was successfully removed by clean command"
               fi

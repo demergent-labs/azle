@@ -1,4 +1,4 @@
-name: CLI Commands
+name: CLI Commands Testing
 
 on:
     push:
@@ -12,57 +12,56 @@ on:
             - reopened
 
 jobs:
-    pack-azle:
+    test-cli-commands-outside-azle-repo:
         runs-on: ubuntu-latest
         steps:
-            - name: Make Azle Directory
-              id: make_azle_directory
+            - name: Create azle source directory
+              id: create_azle_directory
               run: |
-                  # Create a fresh test directory
-                  AZLE_DIR="${{ github.workspace }}/azle"
-                  mkdir -p "${AZLE_DIR}"
-                  echo "azle_directory=${AZLE_DIR}" >> $GITHUB_OUTPUT
+                  # Create a fresh directory for azle source code
+                  AZLE_SOURCE_DIR="${{ github.workspace }}/azle"
+                  mkdir -p "${AZLE_SOURCE_DIR}"
+                  # TODO determine if we use this output
+                  echo "azle_source_directory=${AZLE_SOURCE_DIR}" >> $GITHUB_OUTPUT
 
             - uses: actions/checkout@v4
               with:
                   path: azle
 
-            - name: Verify that the directory is as we expect
-              run: |
-                  echo "Verifying the directory is as we expect"
-                  ls -laR
-
-            - uses: ./azle/.github/actions/setup_node
+            - name: Setup Node.js environment
+              uses: ./azle/.github/actions/setup_node
               with:
                   working-directory: azle
 
-            - id: get-dfx-version
+            - name: Extract dfx version from package.json
+              id: get-dfx-version
               run: |
                   PACKAGE_JSON_PATH="${{ github.workspace }}/azle/package.json"
                   DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "$PACKAGE_JSON_PATH")
                   echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
               shell: bash
 
-            # Install dfx (Note: dfx must be installed before `npx azle` because the azle installation process requires dfx)
             - name: Install dfx
               uses: ./azle/.github/actions/retry_command
               with:
                   command: azle/src/stable/build/commands/dev/setup/install_dfx.sh "${{ steps.get-dfx-version.outputs.dfx-version }}"
 
-            - run: echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+            - name: Add dfx to PATH
+              run: echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
               shell: bash
 
-            - uses: ./azle/.github/actions/retry_command
+            - name: Install azle dependencies
+              uses: ./azle/.github/actions/retry_command
               with:
                   working-directory: azle
                   command: 'npm install'
 
-            - name: Update version in package.json
+            - name: Create unique test version
               working-directory: azle
               run: |
                   # Create a unique version number using the GitHub run ID and run number
-                  UNIQUE_VERSION="0.0.0-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
-                  echo "Setting unique test version: ${UNIQUE_VERSION}"
+                  UNIQUE_VERSION="0.0.0-cli-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+                  echo "Creating unique test version: ${UNIQUE_VERSION}"
 
                   # Update the version in package.json using npm version without creating a git tag
                   npm version "${UNIQUE_VERSION}" --no-git-tag-version
@@ -74,134 +73,127 @@ jobs:
                   # Save the version for later verification
                   echo "UNIQUE_VERSION=${UNIQUE_VERSION}" >> $GITHUB_ENV
 
-            - name: Pack Azle source
-              id: pack_azle
+            - name: Pack azle for external testing
+              id: pack_azle_source
               working-directory: azle
               run: |
                   # Ensure the dist directory exists
-                  mkdir -p "${{ github.workspace }}/dist"
+                  DIST_DIR="${{ github.workspace }}/dist"
+                  mkdir -p "${DIST_DIR}"
 
                   # Pack into the dist directory and capture the original filename
-                  ORIGINAL_PACKED_FILENAME=$(npm pack --pack-destination "${{ github.workspace }}/dist" | tail -n 1)
+                  ORIGINAL_PACKED_FILENAME=$(npm pack --pack-destination "${DIST_DIR}" | tail -n 1)
                   echo "Original packed filename: ${ORIGINAL_PACKED_FILENAME}"
 
                   # Define the final target path
-                  TARGET_PACKED_FILE_PATH="${{ github.workspace }}/dist/azle.tgz"
+                  TARGET_PACKED_FILE_PATH="${DIST_DIR}/azle.tgz"
                   echo "Target packed file path: ${TARGET_PACKED_FILE_PATH}"
 
                   # Construct the path to the originally created file
-                  ORIGINAL_PACKED_FILE_PATH="${{ github.workspace }}/dist/${ORIGINAL_PACKED_FILENAME}"
+                  ORIGINAL_PACKED_FILE_PATH="${DIST_DIR}/${ORIGINAL_PACKED_FILENAME}"
                   echo "Original packed file path: ${ORIGINAL_PACKED_FILE_PATH}"
 
                   # Rename the packed file to the target name
                   mv "${ORIGINAL_PACKED_FILE_PATH}" "${TARGET_PACKED_FILE_PATH}"
                   echo "Renamed packed file to ${TARGET_PACKED_FILE_PATH}"
 
-                  # Output the final absolute path for the installer step
+                  # Output the final absolute path for subsequent steps
                   echo "packed_file_absolute_path=${TARGET_PACKED_FILE_PATH}" >> $GITHUB_OUTPUT
 
-            - name: Make Test Directory
-              id: make_test_directory
+            - name: Create external testing environment
+              id: create_test_environment
               run: |
-                  # Create a fresh test directory
-                  TEST_DIR="${{ github.workspace }}/cli-test"
-                  mkdir -p "${TEST_DIR}"
-                  echo "test_directory=${TEST_DIR}" >> $GITHUB_OUTPUT
+                  # Create a fresh test directory to simulate external user environment
+                  EXTERNAL_TEST_DIR="${{ github.workspace }}/external-test-env"
+                  mkdir -p "${EXTERNAL_TEST_DIR}"
+                  echo "external_test_directory=${EXTERNAL_TEST_DIR}" >> $GITHUB_OUTPUT
 
-            - name: Install Test Azle
-              working-directory: cli-test
+            - name: Install packed azle in external environment
+              working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               run: |
                   # Path to the packed azle.tgz file
-                  AZLE_PACKAGE="${{ steps.pack_azle.outputs.packed_file_absolute_path }}"
+                  AZLE_PACKAGE="${{ steps.pack_azle_source.outputs.packed_file_absolute_path }}"
 
-                  # Temporarily install the package locally for testing
-                  echo "Installing the packed azle package for testing"
+                  # Install the package locally for testing
+                  echo "Installing the packed azle package for CLI testing"
                   npm install "${AZLE_PACKAGE}"
 
-            - name: Verify that the directory is as we expect
+            - name: Test azle version command
+              working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               run: |
-                  echo "Verifying the directory is as we expect"
-                  ls -laR
-
-            - name: Test Version CLI Command
-              working-directory: cli-test
-              run: |
-
-                  echo "Testing version command"
+                  echo "Testing 'azle --version' command"
                   DISPLAYED_VERSION=$(npx azle --version)
                   echo "Displayed version: ${DISPLAYED_VERSION}"
 
                   # Verify the version matches our unique test version
                   if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
-                    echo "✅ Verification successful: Running the correct packed version"
+                    echo "✅ Version verification successful: Running the correct packed version"
                   else
-                    echo "❌ Verification failed: Version mismatch"
+                    echo "❌ Version verification failed: Version mismatch"
                     echo "Expected to find: ${UNIQUE_VERSION}"
                     echo "But got: ${DISPLAYED_VERSION}"
                     exit 1
                   fi
 
-            - name: Test Dev Setup CLI Command
-              working-directory: cli-test
+            - name: Test azle dev setup command
+              working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               run: |
-
-                  echo "Testing dev setup command"
+                  echo "Testing 'azle dev setup' command"
                   npx azle dev setup
 
-            - name: Generate Verification
+            - name: Generate expected output for azle generate command
               run: |
-                  npx azle@latest generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > ${{ github.workspace }}/cli-test/expected_generate_output.ts
+                  echo "Generating expected output for azle generate command verification"
+                  npx azle@latest generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > ${{ steps.create_test_environment.outputs.external_test_directory }}/expected_generate_output.ts
 
-            - name: Test Generate CLI Command
-              working-directory: cli-test
+            - name: Test azle generate command
+              working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               run: |
-
-                  echo "Testing generate command"
+                  echo "Testing 'azle generate' command"
                   npx azle generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > generate_output.ts
 
-            - name: Verify Generate Command
-              working-directory: cli-test
+            - name: Verify azle generate command output
+              working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               run: |
-                  echo "Verifying generate command"
+                  echo "Verifying azle generate command output"
                   if ! diff expected_generate_output.ts generate_output.ts; then
-                    echo "❌ Verification failed: Generated output does not match expected output"
+                    echo "❌ Generate command verification failed: Generated output does not match expected output"
                     exit 1
                   else
-                    echo "✅ Verification successful: Generated output matches expected output"
+                    echo "✅ Generate command verification successful: Generated output matches expected output"
                   fi
 
-            - name: Start dfx with artificial delay 0
-              working-directory: ${{ inputs.working_directory }}/${{ inputs.template_name }}
+            - name: Start dfx for template testing
+              working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               shell: bash
               run: dfx start --clean --background --artificial-delay 0
 
-            # Test templates using our custom action
-            - name: Test Stable Template
+            - name: Test stable template creation and functionality # TODO I'm not a fan of the word template here
               uses: ./azle/.github/actions/test_azle_template
               with:
-                  template_name: 'stable_new'
+                  template_name: 'stable_template_test'
                   experimental: 'false'
                   http_server: 'false'
-                  working_directory: 'cli-test'
+                  working_directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
                   version: ${{ env.UNIQUE_VERSION }}
-                  packed_file_path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}
+                  packed_file_path: ${{ steps.pack_azle_source.outputs.packed_file_absolute_path }}
 
-            - name: Test Experimental Template
+            - name: Test experimental template creation and functionality
               uses: ./azle/.github/actions/test_azle_template
               with:
-                  template_name: 'experimental_new'
+                  template_name: 'experimental_template_test'
                   experimental: 'true'
                   http_server: 'false'
-                  working_directory: 'cli-test'
+                  working_directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
                   version: ${{ env.UNIQUE_VERSION }}
-                  packed_file_path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}
+                  packed_file_path: ${{ steps.pack_azle_source.outputs.packed_file_absolute_path }}
 
-            - name: Test HTTP Server Template
+            - name: Test HTTP server template creation and functionality
               uses: ./azle/.github/actions/test_azle_template
               with:
-                  template_name: 'http_new'
+                  template_name: 'http_server_template_test'
                   experimental: 'true'
                   http_server: 'true'
-                  working_directory: 'cli-test'
+                  working_directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
                   version: ${{ env.UNIQUE_VERSION }}
-                  packed_file_path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}
+                  packed_file_path: ${{ steps.pack_azle_source.outputs.packed_file_absolute_path }}
