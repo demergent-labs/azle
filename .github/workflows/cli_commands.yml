@@ -31,21 +31,19 @@ jobs:
               with:
                   working-directory: azle
 
-            - name: Extract dfx version from package.json
-              id: get-dfx-version
+            - name: Setup dfx (copy of setup_dfx action)
+              id: setup-dfx
               run: |
+                  # Extract dfx version from package.json
                   PACKAGE_JSON_PATH="${{ github.workspace }}/azle/package.json"
                   DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "$PACKAGE_JSON_PATH")
                   echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
-              shell: bash
 
-            - name: Install dfx
-              uses: ./azle/.github/actions/retry_command
-              with:
-                  command: azle/src/stable/build/commands/dev/setup/install_dfx.sh "${{ steps.get-dfx-version.outputs.dfx-version }}"
+                  # Install dfx
+                  azle/src/stable/build/commands/dev/setup/install_dfx.sh "${DFX_VERSION}"
 
-            - name: Add dfx to PATH
-              run: echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+                  # Add dfx to PATH
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
               shell: bash
 
             - name: Install azle dependencies
@@ -139,20 +137,20 @@ jobs:
                   echo "Testing 'azle dev setup' command"
                   npx azle dev setup
 
-            - name: Generate expected output for azle generate command
-              run: |
-                  echo "Generating expected output for azle generate command verification"
-                  npx azle@latest generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > ${{ steps.create_test_environment.outputs.external_test_directory }}/expected_generate_output.ts
-
             - name: Test azle generate command
               working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               run: |
-                  echo "Testing 'azle generate' command"
+                  echo "Testing 'azle generate' command with output verification"
+
+                  # Generate expected output using azle@latest
+                  echo "Generating expected output for verification"
+                  npx azle@latest generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > expected_generate_output.ts
+
+                  # Test the generate command with the packed version
+                  echo "Running azle generate command"
                   npx azle generate ${{ github.workspace }}/azle/src/stable/lib/canisters/management/idl/ic.did > generate_output.ts
 
-            - name: Verify azle generate command output
-              working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
-              run: |
+                  # Verify the outputs match
                   echo "Verifying azle generate command output"
                   if ! diff expected_generate_output.ts generate_output.ts; then
                     echo "❌ Generate command verification failed: Generated output does not match expected output"
