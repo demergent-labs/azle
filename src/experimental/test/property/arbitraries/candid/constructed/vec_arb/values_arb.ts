@@ -44,7 +44,13 @@ export function VecValuesArb(
     }
     const arbitraryMemberValues = fc
         .tuple(
-            fc.array(fc.constant(null), determineVecConstraints(vecDefinition)),
+            fc.array(
+                fc.constant(null),
+                determineVecConstraints(
+                    vecDefinition,
+                    context.constraints?.maxLength
+                )
+            ),
             fc.constant(vecDefinition.innerType)
         )
         .chain(([arrayTemplate, innerType]) =>
@@ -84,7 +90,8 @@ export function VecValuesArb(
 }
 
 function determineVecConstraints(
-    vecDefinition: VecCandidDefinition
+    vecDefinition: VecCandidDefinition,
+    maxLength?: number
 ): ArrayConstraints | undefined {
     if (isEmptyInnerType(vecDefinition.innerType)) {
         return { maxLength: EMPTYISH_VEC_SIZE_LIMIT };
@@ -92,7 +99,7 @@ function determineVecConstraints(
 
     return {
         size: 'max',
-        maxLength: 10
+        maxLength
     };
 }
 
