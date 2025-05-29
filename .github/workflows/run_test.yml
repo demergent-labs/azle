@@ -33,7 +33,7 @@ on:
                 required: false
                 type: string
                 default: 'linux'
-                description: 'Operating system to run tests on (linux or mac)'
+                description: 'Operating system to run tests on (linux, mac, or windows)'
 
 jobs:
     get-test-infos:
@@ -68,12 +68,20 @@ jobs:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
                 os:
-                    - ${{ inputs.operating-system == 'mac' && 'macos-latest' || 'ubuntu-latest' }}
+                    - ${{ inputs.operating-system == 'mac' && 'macos-latest' || inputs.operating-system == 'windows' && 'windows-latest' || 'ubuntu-latest' }}
                 azle_source:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
         steps:
             - uses: actions/checkout@v4
+
+            - name: Setup WSL
+              if: matrix.os == 'windows-latest'
+              uses: Vampire/setup-wsl@v3
+              with:
+                  distribution: Ubuntu-22.04
+                  update: 'true'
+                  additional-packages: curl build-essential
 
             - uses: ./.github/actions/determine_workflow_context
               id: set-conditions
@@ -99,45 +107,110 @@ jobs:
               run: echo ${{matrix.test.path}}
 
             - uses: ./.github/actions/setup_node
+              if: matrix.os != 'windows-latest'
+
+            - name: Setup Node (WSL)
+              if: matrix.os == 'windows-latest'
+              shell: wsl-bash {0}
+              run: |
+                  curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+                  sudo apt-get install -y nodejs
 
             - uses: ./.github/actions/setup_dfx
+              if: matrix.os != 'windows-latest'
+
+            - name: Setup dfx (WSL)
+              if: matrix.os == 'windows-latest'
+              shell: wsl-bash {0}
+              run: |
+                  curl -fsSL https://internetcomputer.org/install.sh | sh
+                  echo 'export PATH="$HOME/.local/share/dfx/bin:$PATH"' >> ~/.bashrc
+                  source ~/.bashrc
 
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - uses: ./.github/actions/retry_command
+              if: matrix.os != 'windows-latest'
               with:
                   command: 'npm install'
 
+            - name: Install npm dependencies (WSL)
+              if: matrix.os == 'windows-latest'
+              shell: wsl-bash {0}
+              run: npm install
+
             - run: npm link
-              if: matrix.azle_source == 'repo'
+              if: matrix.azle_source == 'repo' && matrix.os != 'windows-latest'
+
+            - name: Link azle (WSL)
+              if: matrix.azle_source == 'repo' && matrix.os == 'windows-latest'
+              shell: wsl-bash {0}
+              run: npm link
 
             - run: npm run lint
+              if: matrix.os != 'windows-latest'
+
+            - name: Run lint (WSL)
+              if: matrix.os == 'windows-latest'
+              shell: wsl-bash {0}
+              run: npm run lint
 
             - uses: ./.github/actions/retry_command
+              if: matrix.os != 'windows-latest'
               with:
                   command: 'npm install'
                   working-directory: ${{ matrix.test.path }}
 
+            - name: Install test dependencies (WSL)
+              if: matrix.os == 'windows-latest'
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: npm install
+
             - name: Install experimental dependencies for stable api tests if running in experimental mode
-              if: ${{ inputs.run-experimental }}
+              if: ${{ inputs.run-experimental && matrix.os != 'windows-latest' }}
               uses: ./.github/actions/retry_command
               with:
                   command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa'
                   working-directory: ${{ matrix.test.path }}
 
+            - name: Install experimental dependencies (WSL)
+              if: ${{ inputs.run-experimental && matrix.os == 'windows-latest' }}
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
+
             - run: npm link azle
-              if: matrix.azle_source == 'repo'
+              if: matrix.azle_source == 'repo' && matrix.os != 'windows-latest'
               working-directory: ${{ matrix.test.path }}
 
+            - name: Link azle in test directory (WSL)
+              if: matrix.azle_source == 'repo' && matrix.os == 'windows-latest'
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: npm link azle
+
             - name: Start dfx with artificial delay 0
-              if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
+              if: ${{ (steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true') && matrix.os != 'windows-latest' }}
+              working-directory: ${{ matrix.test.path }}
+              run: dfx start --clean --background --artificial-delay 0
+
+            - name: Start dfx with artificial delay 0 (WSL)
+              if: ${{ (steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true') && matrix.os == 'windows-latest' }}
+              shell: wsl-bash {0}
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
+              if: ${{ (steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true') && matrix.os != 'windows-latest' }}
+              working-directory: ${{ matrix.test.path }}
+              run: dfx start --clean --background
+
+            - name: Start dfx (WSL)
+              if: ${{ (steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true') && matrix.os == 'windows-latest' }}
+              shell: wsl-bash {0}
               working-directory: ${{ matrix.test.path }}
               run: dfx start --clean --background
 
@@ -174,9 +247,24 @@ jobs:
                   echo "record_actions=$RECORD_ACTIONS" >> $GITHUB_OUTPUT
 
             - name: Run tests
+              if: matrix.os != 'windows-latest'
               run: npm test
               working-directory: ${{ matrix.test.path }}
               shell: bash -l {0}
+              env:
+                  AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
+                  AZLE_FUZZ: ${{ inputs.fuzz }}
+                  AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}
+                  AZLE_FUZZ_TIME_LIMIT: ${{ inputs.time-limit }}
+                  AZLE_RECORD_ACTIONS: ${{ steps.test-configuration.outputs.record_actions }}
+                  AZLE_PROPTEST_NUM_RUNS: ${{ steps.test-configuration.outputs.runs }}
+                  AZLE_PROPTEST_VERBOSE: true
+
+            - name: Run tests (WSL)
+              if: matrix.os == 'windows-latest'
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: npm test
               env:
                   AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
