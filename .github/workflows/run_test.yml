@@ -29,6 +29,11 @@ on:
                 required: false
                 type: string
                 default: '300'
+            operating-system:
+                required: false
+                type: string
+                default: 'linux'
+                description: 'Operating system to run tests on (linux or mac)'
 
 jobs:
     get-test-infos:
@@ -62,8 +67,8 @@ jobs:
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
-                # os: [macos-latest, ubuntu-latest]
-                os: [ubuntu-latest]
+                os:
+                    - ${{ inputs.operating-system == 'mac' && 'macos-latest' || 'ubuntu-latest' }}
                 azle_source:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}

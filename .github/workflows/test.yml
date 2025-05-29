@@ -109,6 +109,11 @@ jobs:
                           directories: './examples/stable/test/end_to_end/candid_rpc'
                       }
                     - {
+                          name: 'Stable E2E CRPC (Mac)',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          operating-system: 'mac'
+                      }
+                    - {
                           name: 'Stable E2E CRPC (Experimental)',
                           directories: './examples/stable/test/end_to_end/candid_rpc',
                           run-experimental: true
