@@ -1,0 +1,213 @@
+name: Run Test (Windows WSL)
+
+on:
+    workflow_call:
+        inputs:
+            directories:
+                required: true
+                type: string
+            exclude-dirs:
+                required: false
+                type: string
+                default: ''
+            link-azle:
+                required: true
+                type: boolean
+            run-experimental:
+                required: false
+                type: boolean
+                default: false
+            fuzz:
+                required: false
+                type: boolean
+                default: false
+            call-delay:
+                required: false
+                type: string
+                default: '.1'
+            time-limit:
+                required: false
+                type: string
+                default: '300'
+
+jobs:
+    get-test-infos:
+        name: Get test infos
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: ${{ inputs.directories }}
+                  exclude-dirs: ${{ inputs.exclude-dirs }}
+
+    run-test:
+        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | WSL'
+        needs: get-test-infos
+        runs-on: windows-latest
+        env:
+            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
+            AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
+            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
+            AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ''
+            AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ''
+            AZLE_IS_RELEASE_BRANCH_PR: ''
+            AZLE_IS_FEATURE_BRANCH_PR: ''
+            AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ''
+
+        strategy:
+            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
+            matrix: # spins up one job per combination of test and code source (repo or npm).
+                azle_source:
+                    - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
+                test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup WSL
+              uses: Vampire/setup-wsl@v3
+              with:
+                  distribution: Ubuntu-22.04
+                  update: 'true'
+                  additional-packages: curl build-essential git
+
+            - uses: ./.github/actions/determine_workflow_context
+              id: set-conditions
+
+            - name: Set condition environment variables
+              shell: wsl-bash {0}
+              run: |
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_RELEASE_BRANCH_PR=${{ steps.set-conditions.outputs.is_release_branch_pr }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_PR=${{ steps.set-conditions.outputs.is_feature_branch_pr }}" >> $GITHUB_ENV
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" >> $GITHUB_ENV
+
+            - name: Print environment variables
+              shell: wsl-bash {0}
+              run: |
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
+                  echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
+                  echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+
+            - name: Report full path of test
+              # Just in case the path isn't obvious from the name, this will remove ambiguity
+              shell: wsl-bash {0}
+              run: echo ${{matrix.test.path}}
+
+            - name: Setup Node (WSL)
+              shell: wsl-bash {0}
+              run: |
+                  curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+                  sudo apt-get install -y nodejs
+                  node --version
+                  npm --version
+
+            - name: Setup dfx (WSL)
+              shell: wsl-bash {0}
+              run: |
+                  curl -fsSL https://internetcomputer.org/install.sh | sh
+                  echo 'export PATH="$HOME/.local/share/dfx/bin:$PATH"' >> ~/.bashrc
+                  source ~/.bashrc
+                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  dfx --version
+
+            - name: Install npm dependencies (WSL)
+              shell: wsl-bash {0}
+              run: npm install
+
+            - name: Link azle (WSL)
+              if: matrix.azle_source == 'repo'
+              shell: wsl-bash {0}
+              run: npm link
+
+            - name: Run lint (WSL)
+              shell: wsl-bash {0}
+              run: npm run lint
+
+            - name: Install test dependencies (WSL)
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: npm install
+
+            - name: Install experimental dependencies (WSL)
+              if: ${{ inputs.run-experimental }}
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
+
+            - name: Link azle in test directory (WSL)
+              if: matrix.azle_source == 'repo'
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: npm link azle
+
+            - name: Start dfx with artificial delay 0 (WSL)
+              if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: |
+                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  dfx start --clean --background --artificial-delay 0
+
+            - name: Start dfx (WSL)
+              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: |
+                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  dfx start --clean --background
+
+            - name: Test configuration (WSL)
+              id: test-configuration
+              shell: wsl-bash {0}
+              run: |
+                  RECORD_ACTIONS='true'
+                  RUNS=1
+
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" == "true" ]]; then
+                      RUNS=5
+                  fi
+
+                  if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" == "true" ]]; then
+                      RUNS=100
+                  fi
+
+                  if [[ "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
+                      RECORD_ACTIONS='false'
+                      RUNS=10
+                  fi
+
+                  if [[ "${{ steps.set-conditions.outputs.is_feature_branch_pr }}" == "true" ]]; then
+                      RUNS=5
+                  fi
+
+                  if [[ "${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" == "true" ]]; then
+                      RUNS=1
+                  fi
+
+                  echo "Running tests $RUNS times"
+
+                  echo "runs=$RUNS" >> $GITHUB_OUTPUT
+                  echo "record_actions=$RECORD_ACTIONS" >> $GITHUB_OUTPUT
+
+            - name: Run tests (WSL)
+              shell: wsl-bash {0}
+              working-directory: ${{ matrix.test.path }}
+              run: |
+                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  npm test
+              env:
+                  AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
+                  AZLE_FUZZ: ${{ inputs.fuzz }}
+                  AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}
+                  AZLE_FUZZ_TIME_LIMIT: ${{ inputs.time-limit }}
+                  AZLE_RECORD_ACTIONS: ${{ steps.test-configuration.outputs.record_actions }}
+                  AZLE_PROPTEST_NUM_RUNS: ${{ steps.test-configuration.outputs.runs }}
+                  AZLE_PROPTEST_VERBOSE: true
