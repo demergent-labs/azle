@@ -21,11 +21,6 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - name: Install azle dependencies
-              uses: ./.github/actions/retry_command
-              with:
-                  command: 'npm install'
-
             - name: Create unique test version
               run: |
                   # Create a unique version number using the GitHub run ID and run number
