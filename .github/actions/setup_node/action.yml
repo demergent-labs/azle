@@ -7,10 +7,6 @@ inputs:
     registry-url:
         description: 'NPM registry URL'
         required: false
-    working-directory:
-        description: 'Directory containing package.json (defaults to current directory)'
-        required: false
-        default: '.'
 outputs:
     node-version:
         description: 'The Node.js version from package.json'
@@ -22,8 +18,7 @@ runs:
         - id: get-version
           shell: bash
           run: |
-              PACKAGE_JSON_PATH="${{ inputs.working-directory }}/package.json"
-              VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "$PACKAGE_JSON_PATH")
+              VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
               echo "version=$VERSION" >> $GITHUB_OUTPUT
 
         - uses: actions/setup-node@v4
