@@ -9,6 +9,9 @@ import fc from 'fast-check';
 
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
+// TODO use the same tests (the bottom one) for all of the tests
+// TODO get rid of the comments detailing the intricacies of the tests
+
 export function getTests(): Test {
     return () => {
         it('should calculate performanceCounter(0) instructions accurately from a query method', async () => {
@@ -65,9 +68,9 @@ export function getTests(): Test {
                             await actor.updatePerformanceCounter0(loops);
 
                         const instructionsAfter0 =
-                            await actor.updatePerformanceCounter0(loops + 1);
+                            await actor.updatePerformanceCounter0(loops + 100);
                         const instructionsAfter1 =
-                            await actor.updatePerformanceCounter0(loops + 1);
+                            await actor.updatePerformanceCounter0(loops + 100);
 
                         expect(instructionsLoops0).not.toStrictEqual(0n);
 
