@@ -8,8 +8,8 @@
       experimental: 'false'
       http_server: 'false'
       working_directory: 'external-test-env'
-      version: ${{ env.UNIQUE_VERSION }}
-      packed_file_path: ${{ steps.pack_azle.outputs.packed_file_absolute_path }}
+      version: '0.30.0-beta'
+      packed_file_path: '../azle/dist/azle.tgz'
 ```
 
-Tests the `azle new` command and CLI functionality in a clean external environment.
+Tests the `azle new` command and related CLI functionality outside the azle repository.

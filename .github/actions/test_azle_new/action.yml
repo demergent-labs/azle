@@ -1,5 +1,5 @@
 name: 'Test Azle New Command'
-description: 'Tests the azle new command by creating a new project and verifying all CLI commands work correctly in the newly created project outside the azle repository'
+description: 'Tests the azle new command by creating a new project and verifying all related CLI commands work correctly in the newly created project outside the azle repository'
 
 inputs:
     project_name:
@@ -32,25 +32,17 @@ runs:
           run: |
               echo "Creating new azle project: ${{ inputs.project_name }}"
 
-              # Build the azle new command based on inputs
-              NEW_COMMAND="npx azle new ${{ inputs.project_name }}"
-
-              # Add experimental flag if specified
-              if [ "${{ inputs.experimental }}" = "true" ]; then
-                NEW_COMMAND="${NEW_COMMAND} --experimental"
-                echo "Using experimental mode"
-              fi
-
-              # Add HTTP server flag if specified
-              if [ "${{ inputs.http_server }}" = "true" ]; then
-                NEW_COMMAND="${NEW_COMMAND} --http-server"
-                echo "Including HTTP server support"
-              fi
-
-              # Execute the command and verify success
-              echo "Executing command: ${NEW_COMMAND}"
-              if ! ${NEW_COMMAND}; then
-                echo "❌ Failed to create new project: ${{ inputs.project_name }}"
+              if [ "${{ inputs.experimental }}" = "false" ] && [ "${{ inputs.http_server }}" = "false" ]; then
+                echo "Creating stable project"
+                npx azle new ${{ inputs.project_name }}
+              elif [ "${{ inputs.experimental }}" = "true" ] && [ "${{ inputs.http_server }}" = "true" ]; then
+                echo "Creating experimental project with HTTP server"
+                npx azle new ${{ inputs.project_name }} --experimental --http-server
+              elif [ "${{ inputs.experimental }}" = "true" ] && [ "${{ inputs.http_server }}" = "false" ]; then
+                echo "Creating experimental project"
+                npx azle new ${{ inputs.project_name }} --experimental
+              else
+                echo "❌ Invalid combination of inputs - none of the conditions matched"
                 exit 1
               fi
 
@@ -72,7 +64,7 @@ runs:
               echo "Displayed version: ${DISPLAYED_VERSION}"
 
               # Verify the version matches our expected test version
-              if [[ "${DISPLAYED_VERSION}" == *"${{ inputs.version }}"* ]]; then
+              if [[ "${DISPLAYED_VERSION}" == "${{ inputs.version }}" ]]; then
                 echo "✅ Version verification successful: New project using correct azle version"
               else
                 echo "❌ Version verification failed: Version mismatch in new project"
@@ -89,12 +81,7 @@ runs:
           run: |
               echo "Running tests for ${{ inputs.project_name }} project"
 
-              if ! npm test; then
-                echo "❌ New project tests failed"
-                exit 1
-              fi
-
-              echo "✅ New project tests passed successfully"
+              npm test
 
         - name: Verify azle build artifacts exist
           working-directory: ${{ inputs.working_directory }}/${{ inputs.project_name }}
@@ -115,12 +102,7 @@ runs:
           run: |
               echo "Testing azle clean command in ${{ inputs.project_name }} project"
 
-              if ! npx azle clean; then
-                echo "❌ azle clean command failed"
-                exit 1
-              fi
-
-              echo "✅ azle clean command executed successfully"
+              npx azle clean
 
         - name: Verify azle clean command effectiveness
           working-directory: ${{ inputs.working_directory }}/${{ inputs.project_name }}

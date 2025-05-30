@@ -63,7 +63,7 @@ jobs:
                   npm version "${UNIQUE_VERSION}" --no-git-tag-version
 
                   # Verify the updated version
-                  UPDATED_VERSION=$(node -p "require('./package.json').version")
+                  UPDATED_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
                   echo "Updated package.json version to: ${UPDATED_VERSION}"
 
                   # Save the version for later verification
@@ -100,7 +100,7 @@ jobs:
               id: create_test_environment
               run: |
                   # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_DIR="${{ github.workspace }}/external-test-env"
+                  EXTERNAL_TEST_DIR="../external-test-env"
                   mkdir -p "${EXTERNAL_TEST_DIR}"
                   echo "external_test_directory=${EXTERNAL_TEST_DIR}" >> $GITHUB_OUTPUT
 
@@ -122,7 +122,7 @@ jobs:
                   echo "Displayed version: ${DISPLAYED_VERSION}"
 
                   # Verify the version matches our unique test version
-                  if [[ "${DISPLAYED_VERSION}" == *"${UNIQUE_VERSION}"* ]]; then
+                  if [[ "${DISPLAYED_VERSION}" == "${UNIQUE_VERSION}" ]]; then
                     echo "✅ Version verification successful: Running the correct packed version"
                   else
                     echo "❌ Version verification failed: Version mismatch"
