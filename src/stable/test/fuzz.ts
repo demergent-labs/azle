@@ -47,7 +47,10 @@ function fuzzTestCanister(canisterName: string, callDelay: string): void {
         '--skip-deploy',
         '--call-delay',
         callDelay,
-        '--clear-console'
+        '--clear-console',
+        ...(process.env.AZLE_RUNNING_IN_GITHUB_ACTIONS === 'true'
+            ? ['--silent']
+            : [])
     ];
 
     const cuzzArgs = [

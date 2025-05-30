@@ -180,3 +180,4 @@ jobs:
                   AZLE_RECORD_ACTIONS: ${{ steps.test-configuration.outputs.record_actions }}
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.test-configuration.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true
+                  AZLE_RUNNING_IN_GITHUB_ACTIONS: true
