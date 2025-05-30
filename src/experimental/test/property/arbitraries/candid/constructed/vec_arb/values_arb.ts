@@ -91,7 +91,7 @@ export function VecValuesArb(
 
 function determineVecConstraints(
     vecDefinition: VecCandidDefinition,
-    maxLength?: number
+    maxLength: number = 10
 ): ArrayConstraints | undefined {
     if (isEmptyInnerType(vecDefinition.innerType)) {
         return { maxLength: EMPTYISH_VEC_SIZE_LIMIT };
