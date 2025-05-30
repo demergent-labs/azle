@@ -27,7 +27,6 @@ jobs:
                   command: 'npm install'
 
             - name: Create unique test version
-              working-directory: azle
               run: |
                   # Create a unique version number using the GitHub run ID and run number
                   UNIQUE_VERSION="0.0.0-cli-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
@@ -111,7 +110,6 @@ jobs:
                   npx azle dev setup
 
             - name: Test azle dev template commands
-              working-directory: azle
               run: |
                   echo "Testing azle dev template commands"
 
