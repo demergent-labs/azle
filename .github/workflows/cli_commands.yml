@@ -60,7 +60,7 @@ jobs:
               id: create_test_environment
               run: |
                   # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_DIR="../external-test-env"
+                  EXTERNAL_TEST_DIR="../external_test_env"
                   mkdir -p "${EXTERNAL_TEST_DIR}"
                   echo "external_test_directory=${EXTERNAL_TEST_DIR}" >> $GITHUB_OUTPUT
 
