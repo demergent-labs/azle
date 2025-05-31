@@ -7,7 +7,7 @@
       project_name: 'test_project'
       experimental: 'false'
       http_server: 'false'
-      working_directory: 'external-test-env'
+      working_directory: 'external_test_env'
       version: '0.30.0-beta'
       packed_file_path: '../azle/dist/azle.tgz'
 ```
