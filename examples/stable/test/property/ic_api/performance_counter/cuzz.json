@@ -1,6 +1,7 @@
 {
     "expectedErrors": [
-        "Method: assertTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister violated contract: Error getting performance counter type",
-        "xUncaught Error: Rejection code 2, Couldn't send message"
+        "Canister violated contract: Error getting performance counter type",
+        "xUncaught Error: Rejection code 2, Couldn't send message",
+        "Uncaught: performanceCounter counterType can only be 0 or 1"
     ]
 }

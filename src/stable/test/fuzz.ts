@@ -7,6 +7,12 @@ import { getCanisterNames } from '.';
 
 export async function runFuzzTests(): Promise<void> {
     const cuzzConfig = await getCuzzConfig();
+
+    if (cuzzConfig.skip === true) {
+        console.log('Skipping fuzz tests as per cuzz configuration.');
+        return;
+    }
+
     const canisterNames = await getCanisterNames();
     const callDelay = getCallDelay(cuzzConfig);
 
@@ -47,7 +53,10 @@ function fuzzTestCanister(canisterName: string, callDelay: string): void {
         '--skip-deploy',
         '--call-delay',
         callDelay,
-        '--clear-console'
+        '--clear-console',
+        ...(process.env.AZLE_RUNNING_IN_GITHUB_ACTIONS === 'true'
+            ? ['--silent']
+            : [])
     ];
 
     const cuzzArgs = [
