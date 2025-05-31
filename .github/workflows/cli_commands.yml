@@ -95,7 +95,73 @@ jobs:
               working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               run: |
                   echo "Testing 'azle dev setup' command"
+
+                  # Read expected versions from package.json
+                  echo "Reading expected versions from package.json"
+                  EXPECTED_NODE_VERSION=$(jq -r '.azle.globalDependencies.node // "not found"' "${{ github.workspace }}/package.json")
+                  EXPECTED_RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // "not found"' "${{ github.workspace }}/package.json")
+                  EXPECTED_DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // "not found"' "${{ github.workspace }}/package.json")
+                  EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${{ github.workspace }}/package.json")
+
+                  echo "Expected Node version: ${EXPECTED_NODE_VERSION}"
+                  echo "Expected Rust version: ${EXPECTED_RUST_VERSION}"
+                  echo "Expected dfx version: ${EXPECTED_DFX_VERSION}"
+                  echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
+
+                  # Run azle dev setup
                   npx azle dev setup
+
+                  echo "Verifying installed versions match expected versions"
+
+                  # Check Node version
+                  if [[ "${EXPECTED_NODE_VERSION}" != "not found" ]]; then
+                    ACTUAL_NODE_VERSION=$(node --version | sed 's/^v//')
+                    echo "Actual Node version: ${ACTUAL_NODE_VERSION}"
+                    if [[ "${ACTUAL_NODE_VERSION}" == "${EXPECTED_NODE_VERSION}" ]]; then
+                      echo "✅ Node version verification successful"
+                    else
+                      echo "❌ Node version verification failed: Expected ${EXPECTED_NODE_VERSION}, got ${ACTUAL_NODE_VERSION}"
+                      exit 1
+                    fi
+                  fi
+
+                  # Check Rust version
+                  if [[ "${EXPECTED_RUST_VERSION}" != "not found" ]]; then
+                    ACTUAL_RUST_VERSION=$(rustc --version | awk '{print $2}')
+                    echo "Actual Rust version: ${ACTUAL_RUST_VERSION}"
+                    if [[ "${ACTUAL_RUST_VERSION}" == "${EXPECTED_RUST_VERSION}" ]]; then
+                      echo "✅ Rust version verification successful"
+                    else
+                      echo "❌ Rust version verification failed: Expected ${EXPECTED_RUST_VERSION}, got ${ACTUAL_RUST_VERSION}"
+                      exit 1
+                    fi
+                  fi
+
+                  # Check dfx version
+                  if [[ "${EXPECTED_DFX_VERSION}" != "not found" ]]; then
+                    ACTUAL_DFX_VERSION=$(dfx --version | awk '{print $2}')
+                    echo "Actual dfx version: ${ACTUAL_DFX_VERSION}"
+                    if [[ "${ACTUAL_DFX_VERSION}" == "${EXPECTED_DFX_VERSION}" ]]; then
+                      echo "✅ dfx version verification successful"
+                    else
+                      echo "❌ dfx version verification failed: Expected ${EXPECTED_DFX_VERSION}, got ${ACTUAL_DFX_VERSION}"
+                      exit 1
+                    fi
+                  fi
+
+                  # Check wasi2ic version
+                  if [[ "${EXPECTED_WASI2IC_VERSION}" != "not found" ]]; then
+                    ACTUAL_WASI2IC_VERSION=$(wasi2ic --version 2>/dev/null | head -n1 | awk '{print $NF}' || echo "not installed")
+                    echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
+                    if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
+                      echo "✅ wasi2ic version verification successful"
+                    else
+                      echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
+                      exit 1
+                    fi
+                  fi
+
+                  echo "✅ All version verifications completed successfully"
 
             - name: Test azle dev template commands
               run: |
