@@ -50,19 +50,19 @@ jobs:
                   echo "Original packed filename: ${ORIGINAL_PACKED_FILENAME}"
 
                   # Get the absolute path by combining current directory with filename
-                  ABSOLUTE_PATH="$(pwd)/${ORIGINAL_PACKED_FILENAME}"
-                  echo "Absolute path: ${ABSOLUTE_PATH}"
+                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${ORIGINAL_PACKED_FILENAME}"
+                  echo "Absolute path: ${PACKED_FILE_ABSOLUTE_PATH}"
 
                   # Output the final absolute path for subsequent steps
-                  echo "packed-file-absolute-path=${ABSOLUTE_PATH}" >> $GITHUB_OUTPUT
+                  echo "packed-file-absolute-path=${PACKED_FILE_ABSOLUTE_PATH}" >> $GITHUB_OUTPUT
 
             - name: Create test environment
               id: create-test-environment
               run: |
                   # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_DIR="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_DIR}"
-                  echo "external-test-directory=${EXTERNAL_TEST_DIR}" >> $GITHUB_OUTPUT
+                  EXTERNAL_TEST_DIRECTORY="../external_test_env"
+                  mkdir -p "${EXTERNAL_TEST_DIRECTORY}"
+                  echo "external-test-directory=${EXTERNAL_TEST_DIRECTORY}" >> $GITHUB_OUTPUT
 
             - name: Install packed azle in external environment
               working-directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
