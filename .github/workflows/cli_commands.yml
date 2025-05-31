@@ -167,53 +167,120 @@ jobs:
               run: |
                   echo "Testing azle dev template commands"
 
+                  # Helper function to clean all template files
+                  clean_templates() {
+                    echo "Cleaning all template files"
+                    rm -f dist/canister_templates/stable.wasm
+                    rm -f dist/canister_templates/experimental.wasm
+                  }
+
+                  # Helper function to check file size
+                  check_file_size() {
+                    local file="$1"
+                    local file_size=$(stat -c%s "$file" 2>/dev/null || echo "0")
+                    if [[ "$file_size" -gt 0 ]]; then
+                      return 0
+                    else
+                      return 1
+                    fi
+                  }
+
                   # Remove existing template files to test regeneration
-                  echo "Removing existing template files for regeneration test"
-                  rm -f dist/canister_templates/stable.wasm
-                  rm -f dist/canister_templates/experimental.wasm
+                  echo "Initial cleanup: Removing existing template files for regeneration test"
+                  clean_templates
 
                   # Test azle dev template (stable)
-                  echo "Testing 'azle dev template' command"
+                  echo "Testing 'azle dev template' command (stable only)"
                   npx azle dev template
 
-                  # Verify stable template was created
+                  # Verify stable template was created and has valid size
                   if [[ -f "dist/canister_templates/stable.wasm" ]]; then
-                    echo "✅ Stable template verification successful: stable.wasm was created"
+                    echo "✅ Stable template file created successfully"
+                    if ! check_file_size "dist/canister_templates/stable.wasm"; then
+                      echo "❌ Stable template size check failed during stable-only test"
+                      exit 1
+                    fi
                   else
                     echo "❌ Stable template verification failed: stable.wasm was not created"
                     exit 1
                   fi
 
-                  # Remove stable template for next test
-                  rm -f dist/canister_templates/stable.wasm
+                  # Verify experimental template was NOT created
+                  if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                    echo "❌ Stable command verification failed: experimental.wasm should not have been created"
+                    exit 1
+                  else
+                    echo "✅ Stable command verification successful: experimental.wasm was correctly not created"
+                  fi
+
+                  # Clean templates for next test
+                  clean_templates
 
                   # Test azle dev template --experimental
-                  echo "Testing 'azle dev template --experimental' command"
+                  echo "Testing 'azle dev template --experimental' command (experimental only)"
                   npx azle dev template --experimental
 
-                  # Verify experimental template was created
+                  # Verify experimental template was created and has valid size
                   if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
-                    echo "✅ Experimental template verification successful: experimental.wasm was created"
+                    echo "✅ Experimental template file created successfully"
+                    if ! check_file_size "dist/canister_templates/experimental.wasm"; then
+                      echo "❌ Experimental template size check failed during experimental-only test"
+                      exit 1
+                    fi
                   else
                     echo "❌ Experimental template verification failed: experimental.wasm was not created"
                     exit 1
                   fi
 
-                  # Remove both templates for final test
-                  rm -f dist/canister_templates/stable.wasm
-                  rm -f dist/canister_templates/experimental.wasm
+                  # Verify stable template was NOT created
+                  if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                    echo "❌ Experimental command verification failed: stable.wasm should not have been created"
+                    exit 1
+                  else
+                    echo "✅ Experimental command verification successful: stable.wasm was correctly not created"
+                  fi
+
+                  # Clean templates for final test
+                  clean_templates
 
                   # Test azle dev template --all
-                  echo "Testing 'azle dev template --all' command"
+                  echo "Testing 'azle dev template --all' command (both templates)"
                   npx azle dev template --all
 
-                  # Verify both templates were created
-                  if [[ -f "dist/canister_templates/stable.wasm" && -f "dist/canister_templates/experimental.wasm" ]]; then
-                    echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created"
+                  # Verify both templates were created and have valid sizes
+                  STABLE_EXISTS=false
+                  EXPERIMENTAL_EXISTS=false
+
+                  if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                    echo "✅ Stable template file created successfully"
+                    if check_file_size "dist/canister_templates/stable.wasm"; then
+                      STABLE_EXISTS=true
+                    else
+                      echo "❌ Stable template size check failed during --all test"
+                      exit 1
+                    fi
                   else
-                    echo "❌ All templates verification failed: Not all template files were created"
-                    echo "stable.wasm exists: $(test -f dist/canister_templates/stable.wasm && echo 'yes' || echo 'no')"
-                    echo "experimental.wasm exists: $(test -f dist/canister_templates/experimental.wasm && echo 'yes' || echo 'no')"
+                    echo "❌ All templates verification failed: stable.wasm was not created"
+                    exit 1
+                  fi
+
+                  if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                    echo "✅ Experimental template file created successfully"
+                    if check_file_size "dist/canister_templates/experimental.wasm"; then
+                      EXPERIMENTAL_EXISTS=true
+                    else
+                      echo "❌ Experimental template size check failed during --all test"
+                      exit 1
+                    fi
+                  else
+                    echo "❌ All templates verification failed: experimental.wasm was not created"
+                    exit 1
+                  fi
+
+                  if [[ "$STABLE_EXISTS" == true && "$EXPERIMENTAL_EXISTS" == true ]]; then
+                    echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created with valid sizes"
+                  else
+                    echo "❌ All templates verification failed: Not all template files were properly created"
                     exit 1
                   fi
 
