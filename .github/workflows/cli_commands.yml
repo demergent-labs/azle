@@ -308,7 +308,7 @@ jobs:
                     exit 1
                   fi
 
-            - name: Start dfx for template testing
+            - name: Start dfx for testing new command
               working-directory: ${{ steps.create_test_environment.outputs.external_test_directory }}
               shell: bash
               run: dfx start --clean --background --artificial-delay 0
