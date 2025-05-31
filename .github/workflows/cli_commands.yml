@@ -45,28 +45,16 @@ jobs:
             - name: Pack azle for external testing
               id: pack_azle_source
               run: |
-                  # Ensure the dist directory exists
-                  DIST_DIR="${{ github.workspace }}/dist"
-                  mkdir -p "${DIST_DIR}"
-
                   # Pack into the dist directory and capture the original filename
-                  ORIGINAL_PACKED_FILENAME=$(npm pack --pack-destination "${DIST_DIR}" | tail -n 1)
+                  ORIGINAL_PACKED_FILENAME=$(npm pack | tail -n 1)
                   echo "Original packed filename: ${ORIGINAL_PACKED_FILENAME}"
 
-                  # Define the final target path
-                  TARGET_PACKED_FILE_PATH="${DIST_DIR}/azle.tgz"
-                  echo "Target packed file path: ${TARGET_PACKED_FILE_PATH}"
-
-                  # Construct the path to the originally created file
-                  ORIGINAL_PACKED_FILE_PATH="${DIST_DIR}/${ORIGINAL_PACKED_FILENAME}"
-                  echo "Original packed file path: ${ORIGINAL_PACKED_FILE_PATH}"
-
-                  # Rename the packed file to the target name
-                  mv "${ORIGINAL_PACKED_FILE_PATH}" "${TARGET_PACKED_FILE_PATH}"
-                  echo "Renamed packed file to ${TARGET_PACKED_FILE_PATH}"
+                  # Get the absolute path by combining current directory with filename
+                  ABSOLUTE_PATH="$(pwd)/${ORIGINAL_PACKED_FILENAME}"
+                  echo "Absolute path: ${ABSOLUTE_PATH}"
 
                   # Output the final absolute path for subsequent steps
-                  echo "packed_file_absolute_path=${TARGET_PACKED_FILE_PATH}" >> $GITHUB_OUTPUT
+                  echo "packed_file_absolute_path=${ABSOLUTE_PATH}" >> $GITHUB_OUTPUT
 
             - name: Create external testing environment
               id: create_test_environment
