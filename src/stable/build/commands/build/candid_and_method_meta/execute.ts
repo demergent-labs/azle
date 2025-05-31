@@ -97,21 +97,34 @@ export async function execute(
         // }
     });
 
-    // TODO can we simplify this to be more like azle_log above?
-    const candidAndMethodMetaPointer = (
-        wasmInstance.exports as any
-    ).get_candid_and_method_meta_pointer();
+    try {
+        // TODO can we simplify this to be more like azle_log above?
+        const candidAndMethodMetaPointer = (
+            wasmInstance.exports as any
+        ).get_candid_and_method_meta_pointer();
 
-    const memory = new Uint8Array((wasmInstance.exports.memory as any).buffer);
+        const memory = new Uint8Array(
+            (wasmInstance.exports.memory as any).buffer
+        );
 
-    let candidBytes: number[] = [];
-    let i = candidAndMethodMetaPointer;
-    while (memory[i] !== 0) {
-        candidBytes.push(memory[i]);
-        i += 1;
+        let candidBytes: number[] = [];
+        let i = candidAndMethodMetaPointer;
+        while (memory[i] !== 0) {
+            candidBytes.push(memory[i]);
+            i += 1;
+        }
+
+        const resultString = Buffer.from(candidBytes).toString();
+
+        return JSON.parse(resultString);
+    } catch (error: any) {
+        if (process.env.AZLE_CANISTER_BACKTRACES === 'true') {
+            throw error;
+        } else {
+            // This will strip the Wasm (canister) backtrace from the error
+            // The Node.js backtrace will still be available
+            // The Node.js backtrace is toggled by the AZLE_VERBOSE environment variable
+            throw new Error(error.message);
+        }
     }
-
-    const resultString = Buffer.from(candidBytes).toString();
-
-    return JSON.parse(resultString);
 }

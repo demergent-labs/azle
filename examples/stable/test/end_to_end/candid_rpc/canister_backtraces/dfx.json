@@ -1,0 +1,8 @@
+{
+    "canisters": {
+        "canister_backtraces": {
+            "type": "azle",
+            "main": "src/index.ts"
+        }
+    }
+}
