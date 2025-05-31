@@ -60,12 +60,12 @@ jobs:
               id: create-test-environment
               run: |
                   # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_DIRECTORY="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_DIRECTORY}"
-                  echo "external-test-directory=${EXTERNAL_TEST_DIRECTORY}" >> $GITHUB_OUTPUT
+                  EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env_dir"
+                  mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
+                  echo "external-test-env-dir-path=${EXTERNAL_TEST_ENV_DIR_PATH}" >> $GITHUB_OUTPUT
 
             - name: Install packed azle in external environment
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
+              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
               run: |
                   # Path to the packed azle.tgz file
                   AZLE_PACKAGE="${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}"
@@ -75,7 +75,7 @@ jobs:
                   npm install "${AZLE_PACKAGE}"
 
             - name: Test azle version command
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
+              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
               run: |
                   echo "Testing 'azle --version' command"
                   DISPLAYED_VERSION=$(npx azle --version)
@@ -92,7 +92,7 @@ jobs:
                   fi
 
             - name: Test azle dev setup command
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
+              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
               run: |
                   echo "Testing 'azle dev setup' command"
 
@@ -285,7 +285,7 @@ jobs:
                   fi
 
             - name: Test azle generate command
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
+              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
               run: |
                   echo "Testing 'azle generate' command with output verification"
 
@@ -309,7 +309,7 @@ jobs:
                   fi
 
             - name: Start dfx for testing new command
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
+              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
               shell: bash
               run: dfx start --clean --background --artificial-delay 0
 
@@ -319,7 +319,7 @@ jobs:
                   project_name: 'stable_project_test'
                   experimental: 'false'
                   http_server: 'false'
-                  working_directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
+                  working_directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
                   version: ${{ env.UNIQUE_VERSION }}
                   packed_file_path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
@@ -329,7 +329,7 @@ jobs:
                   project_name: 'experimental_project_test'
                   experimental: 'true'
                   http_server: 'false'
-                  working_directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
+                  working_directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
                   version: ${{ env.UNIQUE_VERSION }}
                   packed_file_path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
@@ -339,6 +339,6 @@ jobs:
                   project_name: 'http_server_project_test'
                   experimental: 'true'
                   http_server: 'true'
-                  working_directory: ${{ steps.create-test-environment.outputs.external-test-directory }}
+                  working_directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
                   version: ${{ env.UNIQUE_VERSION }}
                   packed_file_path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
