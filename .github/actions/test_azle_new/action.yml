@@ -35,18 +35,23 @@ runs:
               if [[ "${{ inputs.experimental }}" == "false" ]] && [[ "${{ inputs.http-server }}" == "false" ]]; then
                 echo "Creating stable project"
                 npx azle new ${{ inputs.project-name }}
-              elif [[ "${{ inputs.experimental }}" == "true" ]] && [[ "${{ inputs.http-server }}" == "true" ]]; then
-                echo "Creating experimental project with HTTP server"
-                npx azle new ${{ inputs.project-name }} --experimental --http-server
-              elif [[ "${{ inputs.experimental }}" == "true" ]] && [[ "${{ inputs.http-server }}" == "false" ]]; then
-                echo "Creating experimental project"
-                npx azle new ${{ inputs.project-name }} --experimental
-              else
-                echo "❌ Invalid combination of inputs - none of the conditions matched"
-                exit 1
+                exit 0
               fi
 
-              echo "✅ Successfully created new project: ${{ inputs.project-name }}"
+              if [[ "${{ inputs.experimental }}" == "true" ]] && [[ "${{ inputs.http-server }}" == "true" ]]; then
+                echo "Creating experimental project with HTTP server"
+                npx azle new ${{ inputs.project-name }} --experimental --http-server
+                exit 0
+              fi
+
+              if [[ "${{ inputs.experimental }}" == "true" ]] && [[ "${{ inputs.http-server }}" == "false" ]]; then
+                echo "Creating experimental project"
+                npx azle new ${{ inputs.project-name }} --experimental
+                exit 0
+              fi
+
+              echo "❌ Invalid combination of inputs - none of the conditions matched"
+              exit 1
 
         - name: Install azle package in new project
           uses: ./.github/actions/retry_command
