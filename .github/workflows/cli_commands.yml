@@ -316,29 +316,29 @@ jobs:
             - name: Test stable project creation with azle new command
               uses: ./.github/actions/test_azle_new
               with:
-                  project_name: 'stable_project_test'
+                  project-name: 'stable_project_test'
                   experimental: 'false'
-                  http_server: 'false'
-                  working_directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+                  http-server: 'false'
+                  working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
                   version: ${{ env.UNIQUE_VERSION }}
-                  packed_file_path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
+                  packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
             - name: Test experimental project creation with azle new command
               uses: ./.github/actions/test_azle_new
               with:
-                  project_name: 'experimental_project_test'
+                  project-name: 'experimental_project_test'
                   experimental: 'true'
-                  http_server: 'false'
-                  working_directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+                  http-server: 'false'
+                  working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
                   version: ${{ env.UNIQUE_VERSION }}
-                  packed_file_path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
+                  packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
             - name: Test HTTP server project creation with azle new command
               uses: ./.github/actions/test_azle_new
               with:
-                  project_name: 'http_server_project_test'
+                  project-name: 'http_server_project_test'
                   experimental: 'true'
-                  http_server: 'true'
-                  working_directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+                  http-server: 'true'
+                  working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
                   version: ${{ env.UNIQUE_VERSION }}
-                  packed_file_path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
+                  packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
