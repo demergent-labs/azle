@@ -26,31 +26,32 @@ jobs:
               with:
                   command: 'npm install'
 
-            - name: Create unique test version
+            - name: Create test version number
+              id: create-test-version
               run: |
-                  # Create a unique version number using the GitHub run ID and run number
-                  UNIQUE_VERSION="0.0.0-cli-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
-                  echo "Creating unique test version: ${UNIQUE_VERSION}"
+                  # Create a test version number using the GitHub run ID and run number
+                  TEST_VERSION="0.0.0-cli-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+                  echo "Creating test version: ${TEST_VERSION}"
 
                   # Update the version in package.json using npm version without creating a git tag
-                  npm version "${UNIQUE_VERSION}" --no-git-tag-version
+                  npm version "${TEST_VERSION}" --no-git-tag-version
 
                   # Verify the updated version
                   UPDATED_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
                   echo "Updated package.json version to: ${UPDATED_VERSION}"
 
                   # Save the version for later verification
-                  echo "UNIQUE_VERSION=${UNIQUE_VERSION}" >> $GITHUB_ENV
+                  echo "test-version=${TEST_VERSION}" >> $GITHUB_OUTPUT
 
             - name: Pack azle source
               id: pack-azle-source
               run: |
                   # Pack into the dist directory and capture the original filename
-                  ORIGINAL_PACKED_FILENAME=$(npm pack | tail -n 1)
-                  echo "Original packed filename: ${ORIGINAL_PACKED_FILENAME}"
+                  PACKED_FILE_NAME=$(npm pack | tail -n 1)
+                  echo "Original packed filename: ${PACKED_FILE_NAME}"
 
                   # Get the absolute path by combining current directory with filename
-                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${ORIGINAL_PACKED_FILENAME}"
+                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${PACKED_FILE_NAME}"
                   echo "Absolute path: ${PACKED_FILE_ABSOLUTE_PATH}"
 
                   # Output the final absolute path for subsequent steps
@@ -67,12 +68,9 @@ jobs:
             - name: Install packed azle in external environment
               working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
               run: |
-                  # Path to the packed azle.tgz file
-                  AZLE_PACKAGE="${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}"
-
                   # Install the package locally for testing
                   echo "Installing the packed azle package for CLI testing"
-                  npm install "${AZLE_PACKAGE}"
+                  npm install "${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}"
 
             - name: Test azle version command
               working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
@@ -82,11 +80,11 @@ jobs:
                   echo "Displayed version: ${DISPLAYED_VERSION}"
 
                   # Verify the version matches our unique test version
-                  if [[ "${DISPLAYED_VERSION}" == "${UNIQUE_VERSION}" ]]; then
+                  if [[ "${DISPLAYED_VERSION}" == "${{ steps.create-test-version.outputs.test-version }}" ]]; then
                     echo "✅ Version verification successful: Running the correct packed version"
                   else
                     echo "❌ Version verification failed: Version mismatch"
-                    echo "Expected to find: ${UNIQUE_VERSION}"
+                    echo "Expected to find: ${{ steps.create-test-version.outputs.test-version }}"
                     echo "But got: ${DISPLAYED_VERSION}"
                     exit 1
                   fi
@@ -151,7 +149,27 @@ jobs:
 
                   # Check wasi2ic version
                   if [[ "${EXPECTED_WASI2IC_VERSION}" != "not found" ]]; then
-                    ACTUAL_WASI2IC_VERSION=$(wasi2ic --version 2>/dev/null | head -n1 | awk '{print $NF}' || echo "not installed")
+                    # Use the same approach as Azle's getLocalWasi2icVersion function
+                    CARGO_OUTPUT=$(cargo install --list 2>/dev/null || echo "")
+                    if [[ -n "${CARGO_OUTPUT}" ]]; then
+                      # Extract wasi2ic version using approach similar to the TypeScript version
+                      # First, look for a line with wasi2ic and capture version and optional repo link
+                      WASI2IC_LINE=$(echo "${CARGO_OUTPUT}" | grep -E "wasi2ic\s+v[0-9]+\.[0-9]+\.[0-9]+" | head -n1)
+                      if [[ -n "${WASI2IC_LINE}" ]]; then
+                        # Check if there's a repository link (in parentheses)
+                        if [[ "${WASI2IC_LINE}" =~ wasi2ic[[:space:]]+v[0-9]+\.[0-9]+\.[0-9]+[[:space:]]+\(([^)]+)\) ]]; then
+                          ACTUAL_WASI2IC_VERSION="${BASH_REMATCH[1]}"
+                        else
+                          # Extract just the version number
+                          ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*wasi2ic[[:space:]]+v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+                        fi
+                      else
+                        ACTUAL_WASI2IC_VERSION="not installed"
+                      fi
+                    else
+                      ACTUAL_WASI2IC_VERSION="not installed"
+                    fi
+
                     echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
                     if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
                       echo "✅ wasi2ic version verification successful"
@@ -320,7 +338,7 @@ jobs:
                   experimental: 'false'
                   http-server: 'false'
                   working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
-                  version: ${{ env.UNIQUE_VERSION }}
+                  version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
             - name: Test experimental project creation with azle new command
@@ -330,7 +348,7 @@ jobs:
                   experimental: 'true'
                   http-server: 'false'
                   working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
-                  version: ${{ env.UNIQUE_VERSION }}
+                  version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
             - name: Test HTTP server project creation with azle new command
@@ -340,5 +358,5 @@ jobs:
                   experimental: 'true'
                   http-server: 'true'
                   working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
-                  version: ${{ env.UNIQUE_VERSION }}
+                  version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
