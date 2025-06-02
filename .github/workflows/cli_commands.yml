@@ -253,15 +253,9 @@ jobs:
                   echo "Testing 'azle dev template --all' command (both templates)"
                   npx azle dev template --all
 
-                  # Verify both templates were created and have valid sizes
-                  STABLE_EXISTS=false
-                  EXPERIMENTAL_EXISTS=false
-
                   if [[ -f "dist/canister_templates/stable.wasm" ]]; then
                     echo "✅ Stable template file created successfully"
-                    if check_file_size "dist/canister_templates/stable.wasm"; then
-                      STABLE_EXISTS=true
-                    else
+                    if ! check_file_size "dist/canister_templates/stable.wasm"; then
                       echo "❌ Stable template size check failed during --all test"
                       exit 1
                     fi
@@ -272,9 +266,7 @@ jobs:
 
                   if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
                     echo "✅ Experimental template file created successfully"
-                    if check_file_size "dist/canister_templates/experimental.wasm"; then
-                      EXPERIMENTAL_EXISTS=true
-                    else
+                    if ! check_file_size "dist/canister_templates/experimental.wasm"; then
                       echo "❌ Experimental template size check failed during --all test"
                       exit 1
                     fi
@@ -283,12 +275,7 @@ jobs:
                     exit 1
                   fi
 
-                  if [[ "$STABLE_EXISTS" == true && "$EXPERIMENTAL_EXISTS" == true ]]; then
-                    echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created with valid sizes"
-                  else
-                    echo "❌ All templates verification failed: Not all template files were properly created"
-                    exit 1
-                  fi
+                  echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created with valid sizes"
 
             - name: Test azle generate command
               working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
