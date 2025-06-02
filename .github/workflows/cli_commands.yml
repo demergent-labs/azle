@@ -108,71 +108,63 @@ jobs:
                   echo "Verifying installed versions match expected versions"
 
                   # Check Node version
-                  if [[ "${EXPECTED_NODE_VERSION}" != "not found" ]]; then
-                    ACTUAL_NODE_VERSION=$(node --version | sed 's/^v//')
-                    echo "Actual Node version: ${ACTUAL_NODE_VERSION}"
-                    if [[ "${ACTUAL_NODE_VERSION}" == "${EXPECTED_NODE_VERSION}" ]]; then
-                      echo "✅ Node version verification successful"
-                    else
-                      echo "❌ Node version verification failed: Expected ${EXPECTED_NODE_VERSION}, got ${ACTUAL_NODE_VERSION}"
-                      exit 1
-                    fi
+                  ACTUAL_NODE_VERSION=$(node --version | sed 's/^v//')
+                  echo "Actual Node version: ${ACTUAL_NODE_VERSION}"
+                  if [[ "${ACTUAL_NODE_VERSION}" == "${EXPECTED_NODE_VERSION}" ]]; then
+                    echo "✅ Node version verification successful"
+                  else
+                    echo "❌ Node version verification failed: Expected ${EXPECTED_NODE_VERSION}, got ${ACTUAL_NODE_VERSION}"
+                    exit 1
                   fi
 
                   # Check Rust version
-                  if [[ "${EXPECTED_RUST_VERSION}" != "not found" ]]; then
-                    ACTUAL_RUST_VERSION=$(rustc --version | awk '{print $2}')
-                    echo "Actual Rust version: ${ACTUAL_RUST_VERSION}"
-                    if [[ "${ACTUAL_RUST_VERSION}" == "${EXPECTED_RUST_VERSION}" ]]; then
-                      echo "✅ Rust version verification successful"
-                    else
-                      echo "❌ Rust version verification failed: Expected ${EXPECTED_RUST_VERSION}, got ${ACTUAL_RUST_VERSION}"
-                      exit 1
-                    fi
+                  ACTUAL_RUST_VERSION=$(rustc --version | awk '{print $2}')
+                  echo "Actual Rust version: ${ACTUAL_RUST_VERSION}"
+                  if [[ "${ACTUAL_RUST_VERSION}" == "${EXPECTED_RUST_VERSION}" ]]; then
+                    echo "✅ Rust version verification successful"
+                  else
+                    echo "❌ Rust version verification failed: Expected ${EXPECTED_RUST_VERSION}, got ${ACTUAL_RUST_VERSION}"
+                    exit 1
                   fi
 
                   # Check dfx version
-                  if [[ "${EXPECTED_DFX_VERSION}" != "not found" ]]; then
-                    ACTUAL_DFX_VERSION=$(dfx --version | awk '{print $2}')
-                    echo "Actual dfx version: ${ACTUAL_DFX_VERSION}"
-                    if [[ "${ACTUAL_DFX_VERSION}" == "${EXPECTED_DFX_VERSION}" ]]; then
-                      echo "✅ dfx version verification successful"
-                    else
-                      echo "❌ dfx version verification failed: Expected ${EXPECTED_DFX_VERSION}, got ${ACTUAL_DFX_VERSION}"
-                      exit 1
-                    fi
+                  ACTUAL_DFX_VERSION=$(dfx --version | awk '{print $2}')
+                  echo "Actual dfx version: ${ACTUAL_DFX_VERSION}"
+                  if [[ "${ACTUAL_DFX_VERSION}" == "${EXPECTED_DFX_VERSION}" ]]; then
+                    echo "✅ dfx version verification successful"
+                  else
+                    echo "❌ dfx version verification failed: Expected ${EXPECTED_DFX_VERSION}, got ${ACTUAL_DFX_VERSION}"
+                    exit 1
                   fi
 
                   # Check wasi2ic version
-                  if [[ "${EXPECTED_WASI2IC_VERSION}" != "not found" ]]; then
-                    # Use the same approach as Azle's getLocalWasi2icVersion function
-                    CARGO_OUTPUT=$(cargo install --list 2>/dev/null || echo "")
-                    if [[ -n "${CARGO_OUTPUT}" ]]; then
-                      # Extract wasi2ic version using approach similar to the TypeScript version
-                      # First, look for a line with wasi2ic and capture version and optional repo link
-                      WASI2IC_LINE=$(echo "${CARGO_OUTPUT}" | grep -E "wasi2ic" | head -n1)
-                      if [[ -n "${WASI2IC_LINE}" ]]; then
-                        # Check if there's a repository link (in parentheses) and extract it
-                        if echo "${WASI2IC_LINE}" | grep -q "(https\?://"; then
-                          ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*\((https?:\/\/[^)]+)\).*/\1/')
-                        else
-                          # Extract just the version number
-                          ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*wasi2ic[[:space:]]+v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-                        fi
+                  # Use the same approach as Azle's getLocalWasi2icVersion function
+                  CARGO_OUTPUT=$(cargo install --list 2>/dev/null || echo "")
+                  if [[ -n "${CARGO_OUTPUT}" ]]; then
+                    # Extract wasi2ic version using approach similar to the TypeScript version
+                    # First, look for a line with wasi2ic and capture version and optional repo link
+                    WASI2IC_LINE=$(echo "${CARGO_OUTPUT}" | grep -E "wasi2ic" | head -n1)
+                    if [[ -n "${WASI2IC_LINE}" ]]; then
+                      # Check if there's a repository link (in parentheses) and extract it
+                      if echo "${WASI2IC_LINE}" | grep -q "(https\?://"; then
+                        ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*\((https?:\/\/[^)]+)\).*/\1/')
                       else
-                        ACTUAL_WASI2IC_VERSION="not installed"
+                        # Extract just the version number
+                        ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*wasi2ic[[:space:]]+v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
                       fi
                     else
                       ACTUAL_WASI2IC_VERSION="not installed"
                     fi
+                  else
+                    ACTUAL_WASI2IC_VERSION="not installed"
+                  fi
 
-                    echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
-                    if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
-                      echo "✅ wasi2ic version verification successful"
-                    else
-                      echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
-                      exit 1
-                    fi
+                  echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
+                  if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
+                    echo "✅ wasi2ic version verification successful"
+                  else
+                    echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
+                    exit 1
                   fi
 
                   echo "✅ All version verifications completed successfully"
