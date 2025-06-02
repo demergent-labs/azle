@@ -105,33 +105,28 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
-            - name: Configure MacOS DNS (if needed)
-              if: false
-              run: echo sudo networksetup -setdensservers Ethernet 9.9.9.9
-
             - uses: ./.github/actions/retry_command
               with:
                   command: 'npm install'
 
-            - name: Link azle (WSL)
+            - run: npm link
               if: matrix.azle_source == 'repo'
               shell: wsl-bash {0}
-              run: npm link
 
-            - name: Run lint (WSL)
+            - run: npm run lint
               shell: wsl-bash {0}
-              run: npm run lint
 
-            - name: Install test dependencies (WSL)
-              shell: wsl-bash {0}
-              working-directory: ${{ matrix.test.path }}
-              run: npm install
+            - uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+                  working-directory: ${{ matrix.test.path }}
 
-            - name: Install experimental dependencies (WSL)
+            - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: ${{ inputs.run-experimental }}
-              shell: wsl-bash {0}
-              working-directory: ${{ matrix.test.path }}
-              run: npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa'
+                  working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle
               if: matrix.azle_source == 'repo'
