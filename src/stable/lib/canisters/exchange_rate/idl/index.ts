@@ -1,6 +1,6 @@
 import { ActorMethod } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
+
 export interface Asset {
     class: AssetClass;
     symbol: string;
