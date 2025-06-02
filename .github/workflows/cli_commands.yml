@@ -156,9 +156,9 @@ jobs:
                       # First, look for a line with wasi2ic and capture version and optional repo link
                       WASI2IC_LINE=$(echo "${CARGO_OUTPUT}" | grep -E "wasi2ic\s+v[0-9]+\.[0-9]+\.[0-9]+" | head -n1)
                       if [[ -n "${WASI2IC_LINE}" ]]; then
-                        # Check if there's a repository link (in parentheses)
-                        if [[ "${WASI2IC_LINE}" =~ wasi2ic[[:space:]]+v[0-9]+\.[0-9]+\.[0-9]+[[:space:]]+\(([^)]+)\) ]]; then
-                          ACTUAL_WASI2IC_VERSION="${BASH_REMATCH[1]}"
+                        # Check if there's a repository link (in parentheses) and extract it
+                        if echo "${WASI2IC_LINE}" | grep -q "(https\?://"; then
+                          ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*\((https?:\/\/[^)]+)\).*/\1/')
                         else
                           # Extract just the version number
                           ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*wasi2ic[[:space:]]+v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
