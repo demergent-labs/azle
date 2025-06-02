@@ -156,6 +156,7 @@ jobs:
             link-azle: ${{ needs.workflow-config.outputs.link-azle == 'true' }}
             run-experimental: ${{ matrix.test_group.run-experimental || false }}
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
+            operating-system: ${{ matrix.test_group.operating-system || 'linux' }}
 
     top-level-checks:
         name: Top level checks
