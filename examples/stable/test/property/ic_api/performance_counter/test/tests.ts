@@ -66,10 +66,10 @@ export function getTests(): Test {
                                     await actor[method](loops);
 
                                 const instructionsAfter0 = await actor[method](
-                                    loops + 1000
+                                    loops + 1_000
                                 );
                                 const instructionsAfter1 = await actor[method](
-                                    loops + 1000
+                                    loops + 1_000
                                 );
 
                                 expect(instructionsLoops0).toBeGreaterThan(0n);
