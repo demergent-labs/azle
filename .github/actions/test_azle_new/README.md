@@ -12,4 +12,4 @@
       packed-file-path: '../azle/dist/azle.tgz'
 ```
 
-Tests the `azle new` command and related CLI functionality outside the azle repository.
+Tests the `azle new` command and related CLI functionality outside the azle repository. We are attempting to run these tests in an environment as similar to the end developer's as possible. Running tests from within the Azle repository itself has led to various problems in the past (e.g. the existence of the Azle dev dependencies causing things to work that shouldn't have).
