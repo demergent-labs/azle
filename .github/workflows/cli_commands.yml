@@ -26,7 +26,7 @@ jobs:
               with:
                   command: 'npm install'
 
-            - name: Create test version number
+            - name: Create test version
               id: create-test-version
               run: |
                   # Create a test version number using the GitHub run ID and run number
@@ -35,10 +35,6 @@ jobs:
 
                   # Update the version in package.json using npm version without creating a git tag
                   npm version "${TEST_VERSION}" --no-git-tag-version
-
-                  # Verify the updated version
-                  UPDATED_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
-                  echo "Updated package.json version to: ${UPDATED_VERSION}"
 
                   # Save the version for later verification
                   echo "test-version=${TEST_VERSION}" >> $GITHUB_OUTPUT
@@ -57,8 +53,8 @@ jobs:
                   # Output the final absolute path for subsequent steps
                   echo "packed-file-absolute-path=${PACKED_FILE_ABSOLUTE_PATH}" >> $GITHUB_OUTPUT
 
-            - name: Create test environment
-              id: create-test-environment
+            - name: Create external test environment
+              id: create-external-test-env
               run: |
                   # Create a fresh test directory to simulate external user environment
                   EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
@@ -66,14 +62,14 @@ jobs:
                   echo "external-test-env-dir-path=${EXTERNAL_TEST_ENV_DIR_PATH}" >> $GITHUB_OUTPUT
 
             - name: Install packed azle in external environment
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
               run: |
                   # Install the package locally for testing
                   echo "Installing the packed azle package for CLI testing"
                   npm install "${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}"
 
             - name: Test azle version command
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
               run: |
                   echo "Testing 'azle --version' command"
                   DISPLAYED_VERSION=$(npx azle --version)
@@ -90,7 +86,7 @@ jobs:
                   fi
 
             - name: Test azle dev setup command
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
               run: |
                   echo "Testing 'azle dev setup' command"
 
@@ -154,7 +150,7 @@ jobs:
                     if [[ -n "${CARGO_OUTPUT}" ]]; then
                       # Extract wasi2ic version using approach similar to the TypeScript version
                       # First, look for a line with wasi2ic and capture version and optional repo link
-                      WASI2IC_LINE=$(echo "${CARGO_OUTPUT}" | grep -E "wasi2ic\s+v[0-9]+\.[0-9]+\.[0-9]+" | head -n1)
+                      WASI2IC_LINE=$(echo "${CARGO_OUTPUT}" | grep -E "wasi2ic" | head -n1)
                       if [[ -n "${WASI2IC_LINE}" ]]; then
                         # Check if there's a repository link (in parentheses) and extract it
                         if echo "${WASI2IC_LINE}" | grep -q "(https\?://"; then
@@ -303,7 +299,7 @@ jobs:
                   fi
 
             - name: Test azle generate command
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
               run: |
                   echo "Testing 'azle generate' command with output verification"
 
@@ -327,7 +323,7 @@ jobs:
                   fi
 
             - name: Start dfx for testing new command
-              working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
               shell: bash
               run: dfx start --clean --background --artificial-delay 0
 
@@ -337,7 +333,7 @@ jobs:
                   project-name: 'stable_project_test'
                   experimental: 'false'
                   http-server: 'false'
-                  working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+                  working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
                   version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
@@ -347,7 +343,7 @@ jobs:
                   project-name: 'experimental_project_test'
                   experimental: 'true'
                   http-server: 'false'
-                  working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+                  working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
                   version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
@@ -357,6 +353,6 @@ jobs:
                   project-name: 'http_server_project_test'
                   experimental: 'true'
                   http-server: 'true'
-                  working-directory: ${{ steps.create-test-environment.outputs.external-test-env-dir-path }}
+                  working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
                   version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
