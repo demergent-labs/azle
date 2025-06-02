@@ -1,6 +1,7 @@
 import { ActorMethod } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
+
 export interface DataCertificate {
     certificate: Uint8Array | number[];
     hash_tree: Uint8Array | number[];

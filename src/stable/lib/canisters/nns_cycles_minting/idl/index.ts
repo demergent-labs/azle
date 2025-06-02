@@ -1,6 +1,7 @@
 import { ActorMethod } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
+
 export type AccountIdentifier = string;
 export type BlockIndex = bigint;
 export interface CanisterSettings {

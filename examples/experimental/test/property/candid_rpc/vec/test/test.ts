@@ -18,6 +18,10 @@ import { generateTests } from './generate_tests';
 
 const api: Api = 'functional';
 const context = { api, constraints: {} };
+const vecContext = {
+    ...context,
+    constraints: { maxLength: 5 }
+};
 
 const AllVecsQueryMethodArb = QueryMethodArb(
     {
@@ -28,8 +32,8 @@ const AllVecsQueryMethodArb = QueryMethodArb(
         generateBody,
         generateTests
     },
-    fc.array(VecArb(context)),
-    VecArb(context)
+    fc.array(VecArb(vecContext)),
+    VecArb(vecContext)
 );
 
 const CanisterConfigArb = fc

@@ -59,9 +59,14 @@ export async function getModule(
     wasmBinaryPath: string
 ): Promise<binaryen.Module> {
     const originalWasm = await readFile(wasmBinaryPath);
-    // TODO we should toggle this once dfx turns off canister backtraces in response to no name section being present
-    // TODO see this issue: https://github.com/demergent-labs/azle/issues/2873
-    binaryen.setDebugInfo(true);
+    // Toggle debug info based on AZLE_CANISTER_BACKTRACES environment variable
+    // Backtraces are off by default to avoid exposing end developers to confusing Rust messages.
+    // Azle's error messages are designed to provide relevant details to end developers.
+    // Canister backtraces are usually for Azle core developers debugging internal issues.
+    // When set to 'true', backtraces are enabled by keeping the name section
+    // When not set or set to any other value, backtraces are disabled by removing the name section
+    const enableBacktraces = process.env.AZLE_CANISTER_BACKTRACES === 'true';
+    binaryen.setDebugInfo(enableBacktraces);
     const module = binaryen.readBinary(originalWasm);
 
     return module;
