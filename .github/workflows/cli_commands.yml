@@ -326,7 +326,7 @@ jobs:
                   experimental: 'false'
                   http-server: 'false'
                   working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
-                  version: ${{ steps.create-test-version.outputs.test-version }}
+                  expected-azle-version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
             - name: Test experimental project creation with azle new command
@@ -336,7 +336,7 @@ jobs:
                   experimental: 'true'
                   http-server: 'false'
                   working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
-                  version: ${{ steps.create-test-version.outputs.test-version }}
+                  expected-azle-version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
 
             - name: Test HTTP server project creation with azle new command
@@ -346,5 +346,5 @@ jobs:
                   experimental: 'true'
                   http-server: 'true'
                   working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
-                  version: ${{ steps.create-test-version.outputs.test-version }}
+                  expected-azle-version: ${{ steps.create-test-version.outputs.test-version }}
                   packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}

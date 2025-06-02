@@ -8,7 +8,7 @@
       experimental: 'false'
       http-server: 'false'
       working-directory: 'external_test_env'
-      version: '0.30.0-beta'
+      expected-azle-version: '0.30.0-beta'
       packed-file-path: '../azle/dist/azle.tgz'
 ```
 

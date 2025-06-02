@@ -16,7 +16,7 @@ inputs:
     working-directory:
         description: 'Base working directory where the new project will be created'
         required: true
-    version:
+    expected-azle-version:
         description: 'Expected Azle version for verification'
         required: true
     packed-file-path:
@@ -69,11 +69,11 @@ runs:
               echo "Displayed version: ${DISPLAYED_VERSION}"
 
               # Verify the version matches our expected test version
-              if [[ "${DISPLAYED_VERSION}" == "${{ inputs.version }}" ]]; then
+              if [[ "${DISPLAYED_VERSION}" == "${{ inputs.expected-azle-version }}" ]]; then
                 echo "✅ Version verification successful: New project using correct azle version"
               else
                 echo "❌ Version verification failed: Version mismatch in new project"
-                echo "Expected to find: ${{ inputs.version }}"
+                echo "Expected to find: ${{ inputs.expected-azle-version }}"
                 echo "But got: ${DISPLAYED_VERSION}"
                 exit 1
               fi
