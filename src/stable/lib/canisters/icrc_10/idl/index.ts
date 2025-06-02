@@ -1,5 +1,6 @@
 import { ActorMethod } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
+
 export interface SupportedStandard {
     url: string;
     name: string;
