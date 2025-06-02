@@ -1,5 +1,6 @@
 import { ActorMethod } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
+
 export interface chat_message {
     content: string;
     role: role;
