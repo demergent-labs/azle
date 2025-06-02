@@ -138,27 +138,7 @@ jobs:
                   fi
 
                   # Check wasi2ic version
-                  # Use the same approach as Azle's getLocalWasi2icVersion function
-                  CARGO_OUTPUT=$(cargo install --list 2>/dev/null || echo "")
-                  if [[ -n "${CARGO_OUTPUT}" ]]; then
-                    # Extract wasi2ic version using approach similar to the TypeScript version
-                    # First, look for a line with wasi2ic and capture version and optional repo link
-                    WASI2IC_LINE=$(echo "${CARGO_OUTPUT}" | grep -E "wasi2ic" | head -n1)
-                    if [[ -n "${WASI2IC_LINE}" ]]; then
-                      # Check if there's a repository link (in parentheses) and extract it
-                      if echo "${WASI2IC_LINE}" | grep -q "(https\?://"; then
-                        ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*\((https?:\/\/[^)]+)\).*/\1/')
-                      else
-                        # Extract just the version number
-                        ACTUAL_WASI2IC_VERSION=$(echo "${WASI2IC_LINE}" | sed -E 's/.*wasi2ic[[:space:]]+v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-                      fi
-                    else
-                      ACTUAL_WASI2IC_VERSION="not installed"
-                    fi
-                  else
-                    ACTUAL_WASI2IC_VERSION="not installed"
-                  fi
-
+                  ACTUAL_WASI2IC_VERSION=$(npx tsx "${{ github.workspace }}/.scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
                   echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
                   if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
                     echo "✅ wasi2ic version verification successful"
