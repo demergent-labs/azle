@@ -32,13 +32,13 @@ runs:
           run: |
               echo "Creating new azle project: ${{ inputs.project-name }}"
 
-              if [ "${{ inputs.experimental }}" = "false" ] && [ "${{ inputs.http-server }}" = "false" ]; then
+              if [[ "${{ inputs.experimental }}" == "false" ]] && [[ "${{ inputs.http-server }}" == "false" ]]; then
                 echo "Creating stable project"
                 npx azle new ${{ inputs.project-name }}
-              elif [ "${{ inputs.experimental }}" = "true" ] && [ "${{ inputs.http-server }}" = "true" ]; then
+              elif [[ "${{ inputs.experimental }}" == "true" ]] && [[ "${{ inputs.http-server }}" == "true" ]]; then
                 echo "Creating experimental project with HTTP server"
                 npx azle new ${{ inputs.project-name }} --experimental --http-server
-              elif [ "${{ inputs.experimental }}" = "true" ] && [ "${{ inputs.http-server }}" = "false" ]; then
+              elif [[ "${{ inputs.experimental }}" == "true" ]] && [[ "${{ inputs.http-server }}" == "false" ]]; then
                 echo "Creating experimental project"
                 npx azle new ${{ inputs.project-name }} --experimental
               else
@@ -89,7 +89,7 @@ runs:
           run: |
               echo "Verifying .azle directory exists in ${{ inputs.project-name }} project"
 
-              if [ -d ".azle" ]; then
+              if [[ -d ".azle" ]]; then
                 echo "✅ .azle directory exists as expected after build"
               else
                 echo "❌ .azle directory does not exist but should after running tests"
@@ -110,7 +110,7 @@ runs:
           run: |
               echo "Verifying .azle directory was removed by clean command"
 
-              if [ -d ".azle" ]; then
+              if [[ -d ".azle" ]]; then
                 echo "❌ .azle directory still exists but should have been removed by clean command"
                 exit 1
               else
