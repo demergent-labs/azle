@@ -2,7 +2,6 @@ import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/persistent_storage/persistent_storage.did';
 
 export function getTests(
