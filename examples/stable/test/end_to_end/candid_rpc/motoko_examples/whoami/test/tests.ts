@@ -5,7 +5,6 @@ import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/whoami/whoami.did';
 
 function createIdentity(seed: number): SignIdentity {
