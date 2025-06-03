@@ -310,6 +310,7 @@ export function runTests(tests: Test): void {
 
     if (shouldFuzz === true) {
         describe(`fuzz`, () => {
+            // TODO right after this, I would like to run the global state checks
             it('runs fuzz tests for all canisters', runFuzzTests);
         });
     }
