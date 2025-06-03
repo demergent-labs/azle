@@ -93,16 +93,16 @@ jobs:
                 test_group:
                     - {
                           name: 'Stable E2E CRPC',
-                          directories: './examples/stable/test/end_to_end/candid_rpc'
+                          directories: './examples/stable/test/end_to_end/candid_rpc/query'
                       }
                     - {
                           name: 'Stable E2E CRPC (Mac)',
-                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          directories: './examples/stable/test/end_to_end/candid_rpc/query',
                           operating-system: 'mac'
                       }
                     - {
                           name: 'Stable E2E CRPC (Windows)',
-                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          directories: './examples/stable/test/end_to_end/candid_rpc/query',
                           operating-system: 'windows'
                       }
         uses: ./.github/workflows/run_test.yml
