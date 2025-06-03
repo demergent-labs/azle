@@ -1,6 +1,8 @@
 {
     "private": true,
     "workspaces": [
+        "stable/test/end_to_end/candid_rpc/management_canister",
+        "stable/test/end_to_end/candid_rpc/management_canister_generate_types",
         "experimental/test/end_to_end/http_server/sqlite_typeorm",
         "experimental/test/end_to_end/http_server/sqlite_drizzle",
         "experimental/test/end_to_end/http_server/sqlite",
