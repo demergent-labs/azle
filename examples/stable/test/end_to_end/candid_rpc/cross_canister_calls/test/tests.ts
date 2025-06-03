@@ -2,9 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, Test } from 'azle/_internal/test';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
 
 export function getTests(
