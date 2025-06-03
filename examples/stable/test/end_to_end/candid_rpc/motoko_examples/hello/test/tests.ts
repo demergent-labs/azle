@@ -1,7 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/_internal/test';
 
-// @ts-ignore
 import { _SERVICE } from '../dfx_generated/hello/hello.did';
 
 export function getTests(hello_canister: ActorSubclass<_SERVICE>): Test {
