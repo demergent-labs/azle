@@ -1,8 +1,6 @@
 {
     "private": true,
     "workspaces": [
-        "stable/test/end_to_end/candid_rpc/async_await",
-        "experimental/test/end_to_end/candid_rpc/async_await",
         "experimental/test/end_to_end/http_server/sqlite_typeorm",
         "experimental/test/end_to_end/http_server/sqlite_drizzle",
         "experimental/test/end_to_end/http_server/sqlite",
