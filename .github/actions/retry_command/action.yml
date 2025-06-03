@@ -33,7 +33,7 @@ runs:
               max_delay=${{ inputs.max-delay }}
 
               until cd ${{ inputs.working-directory }} && ${{ inputs.command }}; do
-                if [ $attempt -ge $max_attempts ]; then
+                if [[ "$attempt" -ge "$max_attempts" ]]; then
                   echo "Command failed after $attempt attempts"
                   exit 1
                 fi
@@ -44,7 +44,7 @@ runs:
 
                 # Exponential backoff with a configurable maximum
                 delay=$(( delay * 2 ))
-                if [ $delay -gt $max_delay ]; then
+                if [[ "$delay" -gt "$max_delay" ]]; then
                   delay=$max_delay
                 fi
               done

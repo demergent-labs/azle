@@ -25,7 +25,8 @@ export function VariantArb(
             {
                 ...context,
                 constraints: {
-                    depthLevel: DEFAULT_DEFINITION_MAX_DEPTH - 1
+                    depthLevel: DEFAULT_DEFINITION_MAX_DEPTH - 1,
+                    maxLength: context.constraints.maxLength
                 }
             },
             candidDefinitionMemo,
