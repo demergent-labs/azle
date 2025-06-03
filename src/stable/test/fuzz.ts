@@ -71,6 +71,8 @@ function fuzzTestCanister(canisterName: string, callDelay: string): void {
         stdio: 'inherit'
     });
 
+    // TODO if we use a promise here, I think we can overcome
+    // TODO the fuzz test issue as well
     cuzzProcess.on('exit', (code) => {
         if (code !== 0) {
             process.exit(code ?? 1);
