@@ -2,7 +2,6 @@ import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/_internal/test';
 
 import { ToDo } from '../src';
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/simple_to_do/simple_to_do.did';
 
 const FIRST_TODO_DESCRIPTION = 'Write tests for the simple to do list example';
