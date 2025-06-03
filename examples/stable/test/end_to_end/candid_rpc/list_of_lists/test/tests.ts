@@ -2,7 +2,6 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { expect, it, Test } from 'azle/_internal/test';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from '../dfx_generated/list_of_lists/list_of_lists.did';
 
 export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test {
