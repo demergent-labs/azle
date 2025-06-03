@@ -1,7 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/_internal/test';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/stable_b_tree_map_instruction_threshold/stable_b_tree_map_instruction_threshold.did';
 
 export function getTests(
