@@ -16,9 +16,11 @@ export async function runFuzzTests(): Promise<void> {
     const canisterNames = await getCanisterNames();
     const callDelay = getCallDelay(cuzzConfig);
 
-    for (const canisterName of canisterNames) {
-        fuzzTestCanister(canisterName, callDelay);
-    }
+    await Promise.all(
+        canisterNames.map((canisterName) =>
+            fuzzTestCanister(canisterName, callDelay)
+        )
+    );
 }
 
 async function getCuzzConfig(): Promise<CuzzConfig> {
@@ -42,40 +44,59 @@ function getCallDelay(cuzzConfig: CuzzConfig): string {
     );
 }
 
-function fuzzTestCanister(canisterName: string, callDelay: string): void {
-    const baseCuzzArgs = [
-        'exec',
-        '--offline',
-        'cuzz',
-        '--',
-        '--canister-name',
-        canisterName,
-        '--skip-deploy',
-        '--call-delay',
-        callDelay,
-        '--clear-console',
-        ...(process.env.AZLE_RUNNING_IN_GITHUB_ACTIONS === 'true'
-            ? ['--silent']
-            : [])
-    ];
+function fuzzTestCanister(
+    canisterName: string,
+    callDelay: string
+): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        const baseCuzzArgs = [
+            'exec',
+            '--offline',
+            'cuzz',
+            '--',
+            '--canister-name',
+            canisterName,
+            '--skip-deploy',
+            '--call-delay',
+            callDelay,
+            '--clear-console',
+            ...(process.env.AZLE_RUNNING_IN_GITHUB_ACTIONS === 'true'
+                ? ['--silent']
+                : [])
+        ];
 
-    const cuzzArgs = [
-        ...baseCuzzArgs,
-        ...(process.env.AZLE_FUZZ_TERMINAL === 'true' ? ['--terminal'] : []),
-        ...(process.env.AZLE_FUZZ_TIME_LIMIT !== undefined
-            ? ['--time-limit', process.env.AZLE_FUZZ_TIME_LIMIT]
-            : [])
-    ];
+        const cuzzArgs = [
+            ...baseCuzzArgs,
+            ...(process.env.AZLE_FUZZ_TERMINAL === 'true'
+                ? ['--terminal']
+                : []),
+            ...(process.env.AZLE_FUZZ_TIME_LIMIT !== undefined
+                ? ['--time-limit', process.env.AZLE_FUZZ_TIME_LIMIT]
+                : [])
+        ];
 
-    let cuzzProcess = spawn('npm', cuzzArgs, {
-        stdio: 'inherit'
-    });
+        const cuzzProcess = spawn('npm', cuzzArgs, {
+            stdio: 'inherit'
+        });
 
-    // TODO if we use a promise here, I think we can overcome
-    // TODO the fuzz test issue as well
-    cuzzProcess.on('exit', (code) => {
-        if (code !== 0) {
-            process.exit(code ?? 1);
-        }
+        cuzzProcess.on('exit', (code) => {
+            if (code === 0) {
+                resolve();
+            } else {
+                reject(
+                    new Error(
+                        `Fuzz test for canister ${canisterName} failed with exit code ${code}`
+                    )
+                );
+            }
+        });
+
+        cuzzProcess.on('error', (error) => {
+            reject(
+                new Error(
+                    `Failed to start fuzz test for canister ${canisterName}: ${error.message}`
+                )
+            );
+        });
     });
 }

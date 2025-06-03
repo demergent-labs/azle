@@ -52,6 +52,26 @@ export function runTests(tests: Test): void {
         });
     }
 
+    if (shouldRecordBenchmarks === true) {
+        describe(`benchmarks`, () => {
+            it('runs benchmarks for all canisters', async () => {
+                const canisterNames = await getCanisterNames();
+                await runBenchmarksForCanisters(canisterNames);
+            });
+        });
+    }
+
+    if (shouldFuzz === true) {
+        describe(`fuzz`, () => {
+            it('runs fuzz tests for all canisters', runFuzzTests);
+
+            wait(
+                'for fuzz tests to settle before checking global state',
+                30_000
+            );
+        });
+    }
+
     if (shouldCheckGlobalState === true) {
         describe(`global state checks`, () => {
             it('checks that the _azle global state variables are empty, and optionally that actions are not growing', async () => {
@@ -298,22 +318,6 @@ export function runTests(tests: Test): void {
             });
         });
     }
-
-    if (shouldRecordBenchmarks === true) {
-        describe(`benchmarks`, () => {
-            it('runs benchmarks for all canisters', async () => {
-                const canisterNames = await getCanisterNames();
-                await runBenchmarksForCanisters(canisterNames);
-            });
-        });
-    }
-
-    if (shouldFuzz === true) {
-        describe(`fuzz`, () => {
-            // TODO right after this, I would like to run the global state checks
-            it('runs fuzz tests for all canisters', runFuzzTests);
-        });
-    }
 }
 
 export function wait(name: string, delay: number): void {
@@ -360,12 +364,19 @@ function processEnvVars(): {
         'only'
     );
 
+    const shouldRunTests = shouldRun(runTests, hasOnly, true);
+    const shouldRunTypeChecks = shouldRun(runTypeChecks, hasOnly, true);
+    const shouldRecordBenchmarks = recordBenchmarks === 'true' && !hasOnly;
+    const shouldFuzz = shouldRun(fuzz, hasOnly, false);
+    const shouldCheckGlobalState =
+        shouldRun(checkGlobalState, hasOnly, true) || shouldFuzz === true;
+
     return {
-        shouldRunTests: shouldRun(runTests, hasOnly, true),
-        shouldRunTypeChecks: shouldRun(runTypeChecks, hasOnly, true),
-        shouldRecordBenchmarks: recordBenchmarks === 'true' && !hasOnly,
-        shouldFuzz: shouldRun(fuzz, hasOnly, false),
-        shouldCheckGlobalState: shouldRun(checkGlobalState, hasOnly, true)
+        shouldRunTests,
+        shouldRunTypeChecks,
+        shouldRecordBenchmarks,
+        shouldFuzz,
+        shouldCheckGlobalState
     };
 }
 
