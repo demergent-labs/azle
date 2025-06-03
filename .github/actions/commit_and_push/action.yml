@@ -33,7 +33,7 @@ runs:
           shell: bash
           run: |
               # Create new branch if requested
-              if [ "${{ inputs.create-branch }}" = "true" ]; then
+              if [[ "${{ inputs.create-branch }}" == "true" ]]; then
                   git switch -c "${{ inputs.branch-name }}"
               else
                   git switch "${{ inputs.branch-name }}"
