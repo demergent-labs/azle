@@ -1,12 +1,12 @@
 import { spawn } from 'child_process';
 import { CuzzConfig } from 'cuzz';
-import { readFile } from 'fs/promises';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { getCanisterNames } from '.';
 
 export async function runFuzzTests(): Promise<void> {
-    const cuzzConfig = await getCuzzConfig();
+    const cuzzConfig = getCuzzConfig();
 
     if (cuzzConfig.skip === true) {
         console.log('Skipping fuzz tests as per cuzz configuration.');
@@ -23,9 +23,12 @@ export async function runFuzzTests(): Promise<void> {
     );
 }
 
-async function getCuzzConfig(): Promise<CuzzConfig> {
+export function getCuzzConfig(): CuzzConfig {
     try {
-        const cuzzFile = await readFile(
+        // This is purposefully synchronous so that it can be used in the runTests function
+        // before the test runner is started. runTests must execute synchronously so that jest
+        // can properly register the tests.
+        const cuzzFile = readFileSync(
             join(process.cwd(), 'cuzz.json'),
             'utf-8'
         );

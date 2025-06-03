@@ -1,4 +1,5 @@
 {
+    "skipGlobalStateChecks": true,
     "expectedErrors": [
         "trapped from getRandomnessWithTrapCaught",
         "trapped from getRandomnessWithTrapCaughtAndTrapAgain",

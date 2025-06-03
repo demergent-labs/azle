@@ -15,7 +15,7 @@ import { getDfxRoot } from '#utils/dfx_root';
 import { DfxJson } from '#utils/types';
 
 import { runBenchmarksForCanisters } from './benchmarks';
-import { runFuzzTests } from './fuzz';
+import { getCuzzConfig, runFuzzTests } from './fuzz';
 
 export type Test = () => void;
 
@@ -65,10 +65,18 @@ export function runTests(tests: Test): void {
         describe(`fuzz`, () => {
             it('runs fuzz tests for all canisters', runFuzzTests);
 
-            wait(
-                'for fuzz tests to settle before checking global state',
-                30_000
-            );
+            please('wait for dfx to be healthy', () => {
+                execSync(`dfx ping --wait-healthy`, {
+                    cwd: getDfxRoot(),
+                    encoding: 'utf-8'
+                });
+            });
+
+            // TODO delete this if waiting for health works
+            // wait(
+            //     'for fuzz tests to settle before checking global state',
+            //     30_000
+            // );
         });
     }
 
@@ -358,6 +366,7 @@ function processEnvVars(): {
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
     const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
     const fuzz = process.env.AZLE_FUZZ ?? 'false';
+    const cuzzConfig = getCuzzConfig();
     const checkGlobalState = process.env.AZLE_CHECK_GLOBAL_STATE ?? 'true';
 
     const hasOnly = [runTests, runTypeChecks, fuzz, checkGlobalState].includes(
@@ -367,9 +376,11 @@ function processEnvVars(): {
     const shouldRunTests = shouldRun(runTests, hasOnly, true);
     const shouldRunTypeChecks = shouldRun(runTypeChecks, hasOnly, true);
     const shouldRecordBenchmarks = recordBenchmarks === 'true' && !hasOnly;
-    const shouldFuzz = shouldRun(fuzz, hasOnly, false);
+    const shouldFuzz =
+        cuzzConfig.skip !== true && shouldRun(fuzz, hasOnly, false);
     const shouldCheckGlobalState =
-        shouldRun(checkGlobalState, hasOnly, true) || shouldFuzz === true;
+        (shouldFuzz === false && shouldRun(checkGlobalState, hasOnly, true)) ||
+        (shouldFuzz === true && cuzzConfig.skipGlobalStateChecks !== true);
 
     return {
         shouldRunTests,
