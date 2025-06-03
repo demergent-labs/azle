@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
-import { getTests } from 'pre_and_post_upgrade_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/pre_and_post_upgrade';
+import { getTests } from './tests';
 
 const canisterName = 'pre_and_post_upgrade';
 const preAndPostUpgradeCanister = createActor(getCanisterId(canisterName), {
