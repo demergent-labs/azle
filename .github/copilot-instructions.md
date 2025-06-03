@@ -88,6 +88,8 @@ Remember, before the PR can be considered complete, you must at least do the fol
 - Avoid the use of classes in internal code
 - Put helper functions in function declarations underneath the code that it is used in. Generally, you should see all helper functions at the bottom of the file
 - Prefer const variable declarations over let or var. You should always use const unless you have a very good reason to mutate the variable. In that case you can use let. There is almost no reason you should ever use var.
+- Use console.info if you intend for your logs to be committed to the codebase. Use console.log only for debugging purposes.
+- Use numeric separators for large numbers, for example 1_000_000 instead of 1000000
 
 ## Human Notes
 

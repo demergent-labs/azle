@@ -79,11 +79,23 @@ export function runTests(tests: Test): void {
 
     if (shouldCheckGlobalStateAfterFuzzTests === true) {
         describe(`global state checks after fuzz tests`, () => {
-            please('wait for dfx to be healthy', () => {
-                execSync(`dfx ping --wait-healthy`, {
-                    cwd: getDfxRoot(),
-                    encoding: 'utf-8'
-                });
+            please('wait for dfx to be healthy', async () => {
+                while (true) {
+                    try {
+                        execSync(`dfx ping --wait-healthy`, {
+                            cwd: getDfxRoot(),
+                            encoding: 'utf-8'
+                        });
+                        break;
+                    } catch {
+                        console.info(
+                            'dfx ping --wait-healthy failed, retrying in 1 second...'
+                        );
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 1_000)
+                        );
+                    }
+                }
             });
 
             wait(
