@@ -20,7 +20,10 @@ export function TupleArb(
     return CandidValueAndMetaArbGenerator(
         context,
         TupleDefinitionArb(
-            { ...context, constraints: {} },
+            {
+                ...context,
+                constraints: { maxLength: context.constraints.maxLength }
+            },
             candidDefinitionArb(context, {})
         ),
         TupleValuesArb

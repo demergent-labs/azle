@@ -24,6 +24,7 @@ export type DefinitionConstraints = Partial<{
     recursiveWeights: boolean;
     weights: CandidDefinitionWeights;
     forceInline?: boolean;
+    maxLength?: number;
 }>;
 
 export type CandidDefinitionWeights = Partial<

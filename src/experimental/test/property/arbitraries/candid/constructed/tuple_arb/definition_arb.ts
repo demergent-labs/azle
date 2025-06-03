@@ -8,6 +8,7 @@ import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
+    DefinitionConstraints,
     TupleCandidDefinition,
     WithShapes,
     WithShapesArb
@@ -15,14 +16,17 @@ import {
 import { RecursiveShapes } from '../../recursive';
 
 export function TupleDefinitionArb(
-    context: Context,
+    context: Context<DefinitionConstraints>,
     candidTypeArbForFields: WithShapesArb<CandidDefinition>
 ): WithShapesArb<TupleCandidDefinition> {
     const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            fc.array(candidTypeArbForFields, { minLength: 1 }),
+            fc.array(candidTypeArbForFields, {
+                minLength: 1,
+                maxLength: context.constraints.maxLength
+            }),
             // Although no minLength is technically required (according to the
             // spec), there are some issues with vecs of empty objects that are causing some problems
             // https://github.com/demergent-labs/azle/issues/1453

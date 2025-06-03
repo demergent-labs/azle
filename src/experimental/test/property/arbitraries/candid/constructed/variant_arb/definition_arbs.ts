@@ -112,7 +112,8 @@ function VariantFieldsArb(
     const VARIANT_MIN_FIELD_COUNT = 1;
     return fc
         .uniqueArray(JsPropertyNameArb, {
-            minLength: VARIANT_MIN_FIELD_COUNT
+            minLength: VARIANT_MIN_FIELD_COUNT,
+            maxLength: context.constraints.maxLength
         })
         .chain((fieldsNames) =>
             fc.tuple(
