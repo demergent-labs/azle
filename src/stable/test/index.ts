@@ -25,10 +25,10 @@ export { defaultPropTestParams } from '#test/property/default_prop_test_params';
 export function runTests(tests: Test): void {
     const {
         shouldRunTests,
+        shouldCheckGlobalStateAfterTests,
         shouldRunTypeChecks,
         shouldRecordBenchmarks,
         shouldFuzz,
-        shouldCheckGlobalStateAfterTests,
         shouldCheckGlobalStateAfterFuzzTests
     } = processEnvVars();
 
@@ -344,19 +344,19 @@ async function runGlobalStateChecks(): Promise<void> {
 
 function processEnvVars(): {
     shouldRunTests: boolean;
+    shouldCheckGlobalStateAfterTests: boolean;
     shouldRunTypeChecks: boolean;
     shouldRecordBenchmarks: boolean;
     shouldFuzz: boolean;
-    shouldCheckGlobalStateAfterTests: boolean;
     shouldCheckGlobalStateAfterFuzzTests: boolean;
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
+    const checkGlobalStateAfterTests =
+        process.env.AZLE_CHECK_GLOBAL_STATE_AFTER_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
     const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
     const fuzz = process.env.AZLE_FUZZ ?? 'false';
     const cuzzConfig = getCuzzConfig();
-    const checkGlobalStateAfterTests =
-        process.env.AZLE_CHECK_GLOBAL_STATE_AFTER_TESTS ?? 'true';
     const checkGlobalStateAfterFuzzTests =
         process.env.AZLE_CHECK_GLOBAL_STATE_AFTER_FUZZ_TESTS ?? 'true';
 
@@ -369,18 +369,17 @@ function processEnvVars(): {
     ].includes('only');
 
     const shouldRunTests = shouldRun(runTests, hasOnly, true);
-    const shouldRunTypeChecks = shouldRun(runTypeChecks, hasOnly, true);
-    const shouldRecordBenchmarks = recordBenchmarks === 'true' && !hasOnly;
-    const shouldFuzz =
-        cuzzConfig.skip !== true && shouldRun(fuzz, hasOnly, false);
     const shouldCheckGlobalStateAfterTests = shouldRun(
         checkGlobalStateAfterTests,
         hasOnly,
         true
     );
+    const shouldRunTypeChecks = shouldRun(runTypeChecks, hasOnly, true);
+    const shouldRecordBenchmarks = recordBenchmarks === 'true' && !hasOnly;
+    const shouldFuzz =
+        cuzzConfig.skip !== true && shouldRun(fuzz, hasOnly, false);
     const shouldCheckGlobalStateAfterFuzzTests =
         shouldFuzz === true &&
-        cuzzConfig.skipGlobalStateChecks !== true &&
         shouldRun(checkGlobalStateAfterFuzzTests, hasOnly, true);
 
     return {
