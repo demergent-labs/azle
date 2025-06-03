@@ -6,21 +6,18 @@ import { execSync } from 'child_process';
 
 import {
     _SERVICE,
-    rec_0,
-    rec_2,
-    rec_4,
+    rec_3,
+    rec_5,
     rec_6,
     rec_8,
+    rec_9,
     rec_10,
-    rec_12,
+    rec_11,
+    rec_13,
     rec_14,
-    rec_16,
-    rec_24,
-    rec_26,
-    rec_34
-    // @ts-ignore
+    rec_15,
+    rec_16
 } from './dfx_generated/recursion/recursion.did';
-// @ts-ignore
 import { _SERVICE as _REC_SERVICE } from './dfx_generated/recursive_canister/recursive_canister.did';
 
 // TODO these tests should be rewritten to use @dfinity/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
@@ -140,7 +137,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive records with opts', async () => {
-            const recursiveRecord: rec_16 = {
+            const recursiveRecord: rec_3 = {
                 myOpt: [{ myOpt: [] }]
             };
             const result =
@@ -195,7 +192,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive tuples with vec', async () => {
-            const input: rec_26 = [[[[], [[[], []]]]], []];
+            const input: rec_6 = [[[[], [[[], []]]]], []];
             const result = await recursion_canister.testRecTupleWithVec(input);
 
             expect(result).toStrictEqual(input);
@@ -217,7 +214,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive tuples with opt', async () => {
-            const input: rec_24 = [[[[], [[[], []]]]], []];
+            const input: rec_5 = [[[[], [[[], []]]]], []];
             const result = await recursion_canister.testRecTupleWithOpt(input);
 
             expect(result).toStrictEqual(input);
@@ -269,7 +266,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive tuples with variants', async () => {
-            const recursiveTuple: rec_34 = [
+            const recursiveTuple: rec_8 = [
                 {
                     varTuple: [
                         { varTuple: [{ num: 70 }, { num: 7 }] },
@@ -336,7 +333,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive vec with variant', async () => {
-            const input: rec_0 = [
+            const input: rec_9 = [
                 { Leaf: 1 },
                 { Branch: [{ Leaf: 2 }] },
                 { Leaf: 3 },
@@ -358,7 +355,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive vec with tuple', async () => {
-            const input: rec_4 = [
+            const input: rec_11 = [
                 [[], []],
                 [[[[], []]], []],
                 [[], [[[], []]]],
@@ -370,7 +367,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive vec with opt', async () => {
-            const input: rec_2 = [[[[], [[[], []]]]], []];
+            const input: rec_10 = [[[[], [[[], []]]]], []];
             const result = await recursion_canister.testRecVecWithOpt(input);
 
             expect(result).toStrictEqual(input);
@@ -384,21 +381,21 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive opt with vec', async () => {
-            const input: rec_14 = [[[], [], [], []]];
+            const input: rec_16 = [[[], [], [], []]];
             const result = await recursion_canister.testRecOptWithVec(input);
 
             expect(result).toStrictEqual(input);
         });
 
         it('recursive opt with tuple', async () => {
-            const input: rec_12 = [[[], []]];
+            const input: rec_15 = [[[], []]];
             const result = await recursion_canister.testRecOptWithTuple(input);
 
             expect(result).toStrictEqual(input);
         });
 
         it('recursive opt with variant', async () => {
-            const input: rec_8 = [{ Branch: [] }];
+            const input: rec_13 = [{ Branch: [] }];
             const result =
                 await recursion_canister.testRecOptWithVariant(input);
 
@@ -406,7 +403,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('recursive opt with opt', async () => {
-            const input: rec_10 = [
+            const input: rec_14 = [
                 [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
             ];
             const result = await recursion_canister.testRecOptWithOpt(input);
