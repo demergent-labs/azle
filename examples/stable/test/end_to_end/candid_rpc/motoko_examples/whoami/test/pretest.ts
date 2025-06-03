@@ -1,25 +1,11 @@
 import { SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { linkAndInstallPatch } from 'azle/_internal/test/jest_link';
 import { execSync } from 'child_process';
-import { join } from 'path';
 
 const someoneIdentity = createIdentity(2);
 export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
 function pretest(): void {
-    linkAndInstallPatch(
-        join(
-            'examples',
-            'experimental',
-            'test',
-            'end_to_end',
-            'candid_rpc',
-            'motoko_examples',
-            'whoami'
-        )
-    );
-
     execSync(`dfx canister uninstall-code whoami || true`, {
         stdio: 'inherit'
     });
