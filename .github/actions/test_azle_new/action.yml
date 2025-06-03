@@ -1,0 +1,123 @@
+name: 'Test Azle New Command'
+description: 'Tests the azle new command by creating a new project and verifying all related CLI commands work correctly in the newly created project outside the azle repository'
+
+inputs:
+    project-name:
+        description: 'Name of the new project to be created'
+        required: true
+    experimental:
+        description: 'Whether to use experimental mode'
+        required: false
+        default: 'false'
+    http-server:
+        description: 'Whether to include HTTP server (requires experimental mode)'
+        required: false
+        default: 'false'
+    working-directory:
+        description: 'Base working directory where the new project will be created'
+        required: true
+    expected-azle-version:
+        description: 'Expected Azle version for verification'
+        required: true
+    packed-file-path:
+        description: 'Path to the packed azle file for installation'
+        required: true
+
+runs:
+    using: 'composite'
+    steps:
+        - name: Create new azle project
+          working-directory: ${{ inputs.working-directory }}
+          shell: bash
+          run: |
+              echo "Creating new azle project: ${{ inputs.project-name }}"
+
+              if [[ "${{ inputs.experimental }}" == "false" ]] && [[ "${{ inputs.http-server }}" == "false" ]]; then
+                echo "Creating stable project"
+                npx azle new ${{ inputs.project-name }}
+                exit 0
+              fi
+
+              if [[ "${{ inputs.experimental }}" == "true" ]] && [[ "${{ inputs.http-server }}" == "true" ]]; then
+                echo "Creating experimental project with HTTP server"
+                npx azle new ${{ inputs.project-name }} --experimental --http-server
+                exit 0
+              fi
+
+              if [[ "${{ inputs.experimental }}" == "true" ]] && [[ "${{ inputs.http-server }}" == "false" ]]; then
+                echo "Creating experimental project"
+                npx azle new ${{ inputs.project-name }} --experimental
+                exit 0
+              fi
+
+              echo "❌ Invalid combination of inputs - none of the conditions matched"
+              exit 1
+
+        - name: Install azle package in new project
+          uses: ./.github/actions/retry_command
+          with:
+              working-directory: ${{ inputs.working-directory }}/${{ inputs.project-name }}
+              command: 'npm install ${{ inputs.packed-file-path }}'
+
+        - name: Verify azle version in new project
+          working-directory: ${{ inputs.working-directory }}/${{ inputs.project-name }}
+          shell: bash
+          run: |
+              echo "Verifying azle version in ${{ inputs.project-name }} project"
+
+              DISPLAYED_VERSION=$(npx azle --version)
+              echo "Displayed version: ${DISPLAYED_VERSION}"
+
+              # Verify the version matches our expected test version
+              if [[ "${DISPLAYED_VERSION}" == "${{ inputs.expected-azle-version }}" ]]; then
+                echo "✅ Version verification successful: New project using correct azle version"
+              else
+                echo "❌ Version verification failed: Version mismatch in new project"
+                echo "Expected to find: ${{ inputs.expected-azle-version }}"
+                echo "But got: ${DISPLAYED_VERSION}"
+                exit 1
+              fi
+
+        - name: Run new project tests
+          working-directory: ${{ inputs.working-directory }}/${{ inputs.project-name }}
+          shell: bash
+          env:
+              AZLE_IDENTITY_STORAGE_MODE: plaintext
+          run: |
+              echo "Running tests for ${{ inputs.project-name }} project"
+
+              npm test
+
+        - name: Verify azle build artifacts exist
+          working-directory: ${{ inputs.working-directory }}/${{ inputs.project-name }}
+          shell: bash
+          run: |
+              echo "Verifying .azle directory exists in ${{ inputs.project-name }} project"
+
+              if [[ -d ".azle" ]]; then
+                echo "✅ .azle directory exists as expected after build"
+              else
+                echo "❌ .azle directory does not exist but should after running tests"
+                exit 1
+              fi
+
+        - name: Test azle clean command
+          working-directory: ${{ inputs.working-directory }}/${{ inputs.project-name }}
+          shell: bash
+          run: |
+              echo "Testing azle clean command in ${{ inputs.project-name }} project"
+
+              npx azle clean
+
+        - name: Verify azle clean command effectiveness
+          working-directory: ${{ inputs.working-directory }}/${{ inputs.project-name }}
+          shell: bash
+          run: |
+              echo "Verifying .azle directory was removed by clean command"
+
+              if [[ -d ".azle" ]]; then
+                echo "❌ .azle directory still exists but should have been removed by clean command"
+                exit 1
+              else
+                echo "✅ .azle directory was successfully removed by clean command"
+              fi
