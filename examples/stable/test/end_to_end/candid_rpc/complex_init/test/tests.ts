@@ -1,9 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/_internal/test';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE as _COMPLEX_SERVICE } from './dfx_generated/complex_init/complex_init.did';
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE as _REC_SERVICE } from './dfx_generated/rec_init/rec_init.did';
 
 export function getTests(
