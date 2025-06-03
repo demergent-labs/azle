@@ -10,6 +10,7 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
     CandidDefinitionArb,
+    DefinitionConstraints,
     RecordCandidDefinition,
     WithShapes,
     WithShapesArb
@@ -23,7 +24,7 @@ type RuntimeRecord = {
 };
 
 export function RecordDefinitionArb(
-    context: Context,
+    context: Context<DefinitionConstraints>,
     fieldCandidDefArb: CandidDefinitionArb
 ): WithShapesArb<RecordCandidDefinition> {
     const api = context.api;
@@ -32,7 +33,8 @@ export function RecordDefinitionArb(
             UniqueIdentifierArb('globalNames'),
             fc.uniqueArray(fc.tuple(JsPropertyNameArb, fieldCandidDefArb), {
                 selector: ([name, _]) => name,
-                minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
+                minLength: 1, // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
+                maxLength: context.constraints.maxLength
                 // https://github.com/demergent-labs/azle/issues/1453
             }),
             fc.boolean()

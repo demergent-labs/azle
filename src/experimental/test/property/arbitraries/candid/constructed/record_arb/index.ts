@@ -21,7 +21,10 @@ export function RecordArb(
     return CandidValueAndMetaArbGenerator(
         context,
         RecordDefinitionArb(
-            { ...context, constraints: {} },
+            {
+                ...context,
+                constraints: { maxLength: context.constraints.maxLength }
+            },
             candidDefinitionArb(context, {})
         ),
         RecordValuesArb

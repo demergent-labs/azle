@@ -1,6 +1,7 @@
 import { ActorMethod } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
+
 export type bitcoin_address = string;
 export type bitcoin_block_hash = Uint8Array | number[];
 export type bitcoin_block_header = Uint8Array | number[];

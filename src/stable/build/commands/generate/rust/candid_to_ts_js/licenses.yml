@@ -55,7 +55,7 @@ third_party_libraries:
       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
       THE SOFTWARE.
 - package_name: anyhow
-  package_version: 1.0.96
+  package_version: 1.0.98
   repository: https://github.com/dtolnay/anyhow
   license: MIT OR Apache-2.0
   licenses:
@@ -901,7 +901,7 @@ third_party_libraries:
       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
       THE SOFTWARE.
 - package_name: candid
-  package_version: 0.10.13
+  package_version: 0.10.14
   repository: https://github.com/dfinity/candid
   license: Apache-2.0
   licenses:
@@ -2303,7 +2303,7 @@ third_party_libraries:
       See the License for the specific language governing permissions and
       limitations under the License.
 - package_name: darling
-  package_version: 0.20.10
+  package_version: 0.20.11
   repository: https://github.com/TedDriggs/darling
   license: MIT
   licenses:
@@ -2331,7 +2331,7 @@ third_party_libraries:
       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
       SOFTWARE.
 - package_name: darling_core
-  package_version: 0.20.10
+  package_version: 0.20.11
   repository: https://github.com/TedDriggs/darling
   license: MIT
   licenses:
@@ -2359,7 +2359,7 @@ third_party_libraries:
       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
       SOFTWARE.
 - package_name: darling_macro
-  package_version: 0.20.10
+  package_version: 0.20.11
   repository: https://github.com/TedDriggs/darling
   license: MIT
   licenses:
@@ -3449,7 +3449,7 @@ third_party_libraries:
       IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
       DEALINGS IN THE SOFTWARE.
 - package_name: foldhash
-  package_version: 0.1.4
+  package_version: 0.1.5
   repository: https://github.com/orlp/foldhash
   license: Zlib
   licenses:
@@ -7010,7 +7010,7 @@ third_party_libraries:
       ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
       DEALINGS IN THE SOFTWARE.
 - package_name: serde
-  package_version: 1.0.218
+  package_version: 1.0.219
   repository: https://github.com/serde-rs/serde
   license: MIT OR Apache-2.0
   licenses:
@@ -7218,7 +7218,7 @@ third_party_libraries:
 
       END OF TERMS AND CONDITIONS
 - package_name: serde_bytes
-  package_version: 0.11.15
+  package_version: 0.11.17
   repository: https://github.com/serde-rs/bytes
   license: MIT OR Apache-2.0
   licenses:
@@ -7426,7 +7426,7 @@ third_party_libraries:
 
       END OF TERMS AND CONDITIONS
 - package_name: serde_derive
-  package_version: 1.0.218
+  package_version: 1.0.219
   repository: https://github.com/serde-rs/serde
   license: MIT OR Apache-2.0
   licenses:
@@ -7634,7 +7634,7 @@ third_party_libraries:
 
       END OF TERMS AND CONDITIONS
 - package_name: serde_json
-  package_version: 1.0.139
+  package_version: 1.0.140
   repository: https://github.com/serde-rs/json
   license: MIT OR Apache-2.0
   licenses:
@@ -8072,7 +8072,7 @@ third_party_libraries:
          limitations under the License.
 
 - package_name: sha2
-  package_version: 0.10.8
+  package_version: 0.10.9
   repository: https://github.com/RustCrypto/hashes
   license: MIT OR Apache-2.0
   licenses:

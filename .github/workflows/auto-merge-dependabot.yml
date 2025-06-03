@@ -40,7 +40,7 @@ jobs:
                   fi
 
                   SHOULD_AUTO_MERGE="false"
-                  if [[ $IS_STANDARD_DEPENDABOT_PR == "true" || $HAS_TEMPLATE_UPDATE == "true"  ]]; then
+                  if [[ "$IS_STANDARD_DEPENDABOT_PR" == "true" || "$HAS_TEMPLATE_UPDATE" == "true"  ]]; then
                       SHOULD_AUTO_MERGE="true"
                   fi
 

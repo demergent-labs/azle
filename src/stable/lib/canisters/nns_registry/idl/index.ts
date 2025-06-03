@@ -1,6 +1,7 @@
 import { ActorMethod } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
+
 export interface AddApiBoundaryNodesPayload {
     version: string;
     node_ids: Array<Principal>;

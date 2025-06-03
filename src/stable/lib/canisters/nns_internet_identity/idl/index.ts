@@ -1,6 +1,7 @@
 import { ActorMethod } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
+
 export type AddTentativeDeviceResponse =
     | {
           device_registration_mode_off: null;
