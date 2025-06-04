@@ -53,11 +53,11 @@ jobs:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
-            AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ''
-            AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ''
-            AZLE_IS_RELEASE_BRANCH_PR: ''
-            AZLE_IS_FEATURE_BRANCH_PR: ''
-            AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ''
+            AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}
+            AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}
+            AZLE_IS_RELEASE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_release_branch_pr }}
+            AZLE_IS_FEATURE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}
+            AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}
 
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
@@ -78,14 +78,6 @@ jobs:
             - uses: ./.github/actions/determine_workflow_context
               id: set-conditions
 
-            - name: Set condition environment variables
-              run: |
-                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" >> $GITHUB_ENV
-                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" >> $GITHUB_ENV
-                  echo "AZLE_IS_RELEASE_BRANCH_PR=${{ steps.set-conditions.outputs.is_release_branch_pr }}" >> $GITHUB_ENV
-                  echo "AZLE_IS_FEATURE_BRANCH_PR=${{ steps.set-conditions.outputs.is_feature_branch_pr }}" >> $GITHUB_ENV
-                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" >> $GITHUB_ENV
-
             - name: Print environment variables
               run: |
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
@@ -93,6 +85,12 @@ jobs:
                   echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+              env:
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}
+                  AZLE_IS_RELEASE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_release_branch_pr }}
+                  AZLE_IS_FEATURE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}
+                  AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}
 
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
@@ -207,3 +205,8 @@ jobs:
                   AZLE_RECORD_ACTIONS: ${{ steps.test-configuration.outputs.record_actions }}
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.test-configuration.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}
+                  AZLE_IS_RELEASE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_release_branch_pr }}
+                  AZLE_IS_FEATURE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}
+                  AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}
