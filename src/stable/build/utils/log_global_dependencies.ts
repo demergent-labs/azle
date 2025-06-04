@@ -2,6 +2,8 @@ import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { AZLE_ROOT } from './global_paths';
+import { getLocalCargoAuditVersion } from './versions/cargo_audit';
+import { getLocalCargoDenyVersion } from './versions/cargo_deny';
 import { getLocalDfxVersion } from './versions/dfx';
 import { getLocalNodeVersion } from './versions/node';
 import { getLocalRustVersion } from './versions/rust';
@@ -12,12 +14,16 @@ export async function logGlobalDependencies(): Promise<void> {
     const nodeVersion = getLocalNodeVersion();
     const rustVersion = getLocalRustVersion();
     const dfxVersion = getLocalDfxVersion();
+    const cargoAuditVersion = getLocalCargoAuditVersion();
+    const cargoDenyVersion = getLocalCargoDenyVersion();
 
     const globalDependencies = {
         wasi2ic: wasiVersion,
         node: nodeVersion,
         rust: rustVersion,
-        dfx: dfxVersion
+        dfx: dfxVersion,
+        'cargo-audit': cargoAuditVersion,
+        'cargo-deny': cargoDenyVersion
     };
 
     const packageJsonPath = join(AZLE_ROOT, 'package.json');
