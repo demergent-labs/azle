@@ -1,0 +1,8 @@
+type List = record {text; opt List};
+type Superhero = record {superpowers:opt List; name:text};
+service: () -> {
+    create: (Superhero) -> (nat32);
+    deleteHero: (nat32) -> (bool);
+    read: (nat32) -> (opt Superhero) query;
+    update: (nat32, Superhero) -> (bool);
+}

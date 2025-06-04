@@ -13,7 +13,7 @@ const Superhero = IDL.Record({
     name: IDL.Text,
     superpowers: IDL.Opt(List)
 });
-type Superhero = {
+export type Superhero = {
     name: string;
     superpowers: [List] | [];
 };
