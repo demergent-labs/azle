@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
-import { getTests } from 'tuple_types_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/tuple_types';
+import { getTests } from './tests';
 
 const canisterName = 'tuple_types';
 const tupleTypesCanister = createActor(getCanisterId(canisterName), {
