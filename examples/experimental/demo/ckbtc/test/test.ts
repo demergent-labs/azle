@@ -1,5 +1,5 @@
-import { Config } from '@azle/ckbtc_end_to_end_test_functional_syntax/test/test';
-import { getTests } from '@azle/ckbtc_end_to_end_test_functional_syntax/test/tests';
+import { Config } from '@azle/ckbtc/test/test';
+import { getTests } from '@azle/ckbtc/test/tests';
 import { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { afterAll, beforeAll, describe } from '@jest/globals';
