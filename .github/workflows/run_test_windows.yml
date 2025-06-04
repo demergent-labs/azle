@@ -95,7 +95,7 @@ jobs:
 
             - name: Get dfx version from package.json
               id: get-dfx-version
-              shell: wsl-bash {0}
+              shell: bash
               run: |
                   DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
                   echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
@@ -155,7 +155,7 @@ jobs:
 
             - name: Test configuration
               id: test-configuration
-              shell: wsl-bash {0}
+              shell: bash
               run: |
                   RECORD_ACTIONS='true'
                   RUNS=1
