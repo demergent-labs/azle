@@ -1,4 +1,4 @@
-import { getTests as getBitcoinTests } from '@azle/bitcore_lib_end_to_end_test/test/tests';
+import { getTests as getBitcoinTests } from '@azle/bitcore_lib/test/tests';
 import { describe } from '@jest/globals';
 import { expect, it, Test } from 'azle/_internal/test';
 

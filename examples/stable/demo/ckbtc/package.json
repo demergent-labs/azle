@@ -23,10 +23,6 @@
         "test": "jest"
     },
     "dependencies": {
-        "azle": "0.31.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa"
-    },
-    "devDependencies": {
-        "@azle/ckbtc_end_to_end_test_functional_syntax": "0.0.0"
+        "azle": "0.31.0"
     }
 }

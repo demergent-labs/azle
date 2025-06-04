@@ -1,8 +1,8 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/_internal/test';
 
-// @ts-ignore
-import { _SERVICE, Superhero } from '../src/declarations/superheroes.did';
+import { _SERVICE } from '../src/declarations/superheroes.did';
+import { Superhero } from '../src/index';
 
 const SPIDER_MAN: Superhero = {
     name: 'Spiderman',

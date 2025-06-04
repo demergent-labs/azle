@@ -1,5 +1,5 @@
 {
-    "name": "@azle/bitcore_lib_end_to_end_test",
+    "name": "@azle/bitcore_lib",
     "version": "0.0.0",
     "scripts": {
         "pretest": "tsx test/pretest.ts",

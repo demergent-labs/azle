@@ -59,7 +59,9 @@ pretest();
 // testing environment. Users shouldn't run into this issue because they will not have symlinked azle
 // The GitHub Actions tests on a release will run this test against azle as an npm package
 function workaroundForMultipleIDLPathsProblem(): void {
-    if (lstatSync('node_modules/azle').isSymbolicLink() === false) {
+    if (
+        lstatSync('../../../../../node_modules/azle').isSymbolicLink() === false
+    ) {
         return;
     }
 

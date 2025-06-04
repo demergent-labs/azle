@@ -114,10 +114,6 @@ jobs:
                           run-experimental: true
                       }
                     - {
-                          name: 'Experimental E2E CRPC',
-                          directories: './examples/experimental/test/end_to_end/candid_rpc'
-                      }
-                    - {
                           name: 'Experimental E2E HTTP Server',
                           directories: './examples/experimental/test/end_to_end/http_server'
                       }

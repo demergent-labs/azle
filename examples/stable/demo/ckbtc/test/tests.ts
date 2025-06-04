@@ -2,7 +2,6 @@ import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, please, Test, wait } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
-// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from '../wallet/frontend/dfx_generated/wallet_backend/wallet_backend.did';
 import { Config } from './test';
 
