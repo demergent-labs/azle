@@ -1,4 +1,4 @@
-import { getTests } from '@azle/management_canister_end_to_end_test/test/tests';
+import { getTests } from '@azle/management_canister/test/tests';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, runTests } from 'azle/_internal/test';
 import { readFileSync } from 'fs';

@@ -1,5 +1,6 @@
 {
-    "name": "@azle/management_canister_end_to_end_test",
+    "name": "@azle/management_canister",
+    "version": "0.0.0",
     "scripts": {
         "pretest": "tsx test/pretest.ts",
         "test": "jest"
