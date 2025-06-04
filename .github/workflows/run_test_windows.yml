@@ -85,7 +85,6 @@ jobs:
                   echo "AZLE_IS_RELEASE_BRANCH_PR=${{ steps.set-conditions.outputs.is_release_branch_pr }}" >> $GITHUB_ENV
                   echo "AZLE_IS_FEATURE_BRANCH_PR=${{ steps.set-conditions.outputs.is_feature_branch_pr }}" >> $GITHUB_ENV
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" >> $GITHUB_ENV
-              shell: wsl-bash {0}
 
             - name: Print environment variables
               run: |
@@ -94,16 +93,30 @@ jobs:
                   echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
-              shell: wsl-bash {0}
 
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.test.path}}
-              shell: wsl-bash {0}
 
             - uses: ./.github/actions/setup_node
 
-            - uses: ./.github/actions/setup_dfx
+            - name: Get dfx version from package.json
+              id: get-dfx-version
+              shell: wsl-bash {0}
+              run: |
+                  DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
+                  echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
+
+            - name: Install dfx for WSL
+              shell: wsl-bash {0}
+              run: |
+                  DFX_VERSION="${{ steps.get-dfx-version.outputs.dfx-version }}"
+                  src/stable/build/commands/dev/setup/install_dfx.sh "$DFX_VERSION"
+
+            - name: Add dfx to PATH for WSL
+              shell: wsl-bash {0}
+              run: |
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
             - uses: ./.github/actions/retry_command
               with:
@@ -111,10 +124,8 @@ jobs:
 
             - run: npm link
               if: matrix.azle_source == 'repo'
-              shell: wsl-bash {0}
 
             - run: npm run lint
-              shell: wsl-bash {0}
 
             - uses: ./.github/actions/retry_command
               with:
