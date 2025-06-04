@@ -68,7 +68,7 @@ async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
 
 function createConfig(id: number): Config {
     const walletBackendCanisterId = getCanisterId(canisterName);
-    const identity: any = createIdentity(id);
+    const identity = createIdentity(id);
     const canister = createActor(walletBackendCanisterId, {
         agentOptions: {
             host: 'http://127.0.0.1:4943',
