@@ -1,9 +1,9 @@
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
-import { getTests } from 'hello-world_end_to_end_test_functional_syntax/test/tests';
 
 // @ts-ignore
 import { createActor } from './dfx_generated/hello_world';
+import { getTests } from './tests';
 
 const canisterName = 'hello_world';
 const helloWorldCanister = createActor(getCanisterId(canisterName), {

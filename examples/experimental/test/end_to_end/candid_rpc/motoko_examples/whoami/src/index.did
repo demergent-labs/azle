@@ -1,7 +1,0 @@
-service: (principal) -> {
-    argument: () -> (principal) query;
-    id: () -> (principal);
-    idQuick: () -> (principal) query;
-    installer: () -> (principal) query;
-    whoami: () -> (principal);
-}

@@ -1,11 +1,7 @@
 import { runTests } from 'azle/_internal/test';
-import {
-    callingIdentity,
-    canisterId,
-    getTests
-} from 'whoami_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/whoami';
+import { callingIdentity, canisterId, getTests } from './tests';
 
 const canisterName = 'whoami';
 const whoamiCanister = createActor(canisterId, {

@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
-import { getTests } from 'phone-book_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from '../src/declarations/phone_book';
+import { getTests } from './tests';
 
 const canisterName = 'phone_book';
 const phoneBookCanister = createActor(getCanisterId(canisterName), {
