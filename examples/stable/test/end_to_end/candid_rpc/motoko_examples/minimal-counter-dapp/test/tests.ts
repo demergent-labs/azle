@@ -1,7 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/_internal/test';
 
-// @ts-ignore
 import { _SERVICE } from '../src/declarations/minimal_dapp/minimal_dapp.did';
 
 export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test {

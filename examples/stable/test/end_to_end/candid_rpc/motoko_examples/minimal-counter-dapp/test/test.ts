@@ -1,7 +1,6 @@
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
 
-// @ts-ignore
 import { createActor } from '../src/declarations/minimal_dapp';
 import { getTests } from './tests';
 
