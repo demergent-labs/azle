@@ -6,7 +6,7 @@ const SuperheroId = IDL.Nat32;
 
 const List = IDL.Rec();
 List.fill(IDL.Tuple(IDL.Text, IDL.Opt(List)));
-type List = [Text, [List] | []];
+type List = [string, [List] | []];
 
 // The type of a superhero.
 const Superhero = IDL.Record({
