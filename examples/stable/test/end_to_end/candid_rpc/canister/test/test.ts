@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
-import { getTests } from 'canister_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/canister';
+import { getTests } from './tests';
 
 const canisterName = 'canister';
 const canister = createActor(getCanisterId(canisterName), {
