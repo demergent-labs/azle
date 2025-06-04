@@ -5,7 +5,6 @@ import {
     _SERVICE,
     Recording,
     User
-    // @ts-ignore this path may not exist when these tests are imported into other test projects
 } from './dfx_generated/audio_recorder/audio_recorder.did';
 
 // TODO to be more thorough we could test all of the error cases as well
