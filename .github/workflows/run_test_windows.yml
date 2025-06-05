@@ -106,26 +106,25 @@ jobs:
                   echo "dfx installation completed."
               shell: wsl-bash {0}
 
-            - uses: ./.github/actions/retry_command
-              with:
-                  command: 'npm install'
+            - run: npm install
+              shell: wsl-bash {0}
 
             - run: npm link
               if: matrix.azle_source == 'repo'
+              shell: wsl-bash {0}
 
             - run: npm run lint
+              shell: wsl-bash {0}
 
-            - uses: ./.github/actions/retry_command
-              with:
-                  command: 'npm install'
-                  working-directory: ${{ matrix.test.path }}
+            - run: npm install
+              working-directory: ${{ matrix.test.path }}
+              shell: wsl-bash {0}
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: ${{ inputs.run-experimental }}
-              uses: ./.github/actions/retry_command
-              with:
-                  command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa'
-                  working-directory: ${{ matrix.test.path }}
+              run: npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
+              working-directory: ${{ matrix.test.path }}
+              shell: wsl-bash {0}
 
             - run: npm link azle
               if: matrix.azle_source == 'repo'
