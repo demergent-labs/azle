@@ -73,14 +73,19 @@ jobs:
                   set-as-default: 'true'
                   wsl-shell-user: 'root'
 
-            - name: Checkout code in WSL
+            - uses: actions/checkout@v4
+              with:
+                  # Configure checkout to use LF line endings
+                  fetch-depth: 0
+
+            - name: Configure git for Unix line endings
               run: |
-                  # Configure git to use LF line endings
-                  git config --global core.autocrlf false
-                  git config --global core.eol lf
-                  # Clone the repository
-                  git clone https://github.com/${{ github.repository }} .
-                  git checkout ${{ github.sha }}
+                  # Configure git to use LF line endings and fix any existing files
+                  git config core.autocrlf false
+                  git config core.eol lf
+                  # Reset and checkout to fix line endings
+                  git rm --cached -r .
+                  git reset --hard
               shell: wsl-bash {0}
 
             - uses: ./.github/actions/determine_workflow_context
