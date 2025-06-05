@@ -1,20 +1,7 @@
-import { linkAndInstallPatch } from 'azle/_internal/test/jest_link';
 import { execSync } from 'child_process';
 import { lstatSync, readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
 
 function pretest(): void {
-    linkAndInstallPatch(
-        join(
-            'examples',
-            'experimental',
-            'test',
-            'end_to_end',
-            'candid_rpc',
-            'management_canister'
-        )
-    );
-
     execSync(`dfx canister uninstall-code management_canister || true`, {
         stdio: 'inherit'
     });
@@ -72,7 +59,9 @@ pretest();
 // testing environment. Users shouldn't run into this issue because they will not have symlinked azle
 // The GitHub Actions tests on a release will run this test against azle as an npm package
 function workaroundForMultipleIDLPathsProblem(): void {
-    if (lstatSync('node_modules/azle').isSymbolicLink() === false) {
+    if (
+        lstatSync('../../../../../node_modules/azle').isSymbolicLink() === false
+    ) {
         return;
     }
 

@@ -2,9 +2,9 @@
 
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
-import { getTests } from 'ethereum_json_rpc_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/ethereum_json_rpc';
+import { getTests } from './tests';
 
 if (process.env.ETHEREUM_URL === undefined) {
     throw new Error(

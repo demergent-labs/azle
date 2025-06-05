@@ -1,20 +1,7 @@
 import { getCanisterId } from 'azle/_internal/dfx';
-import { linkAndInstallPatch } from 'azle/_internal/test/jest_link';
 import { execSync } from 'child_process';
-import { join } from 'path';
 
 function pretest(icp_ledger_path: string): void {
-    linkAndInstallPatch(
-        join(
-            'examples',
-            'experimental',
-            'test',
-            'end_to_end',
-            'candid_rpc',
-            'ledger_canister'
-        )
-    );
-
     execSync(`dfx canister uninstall-code icp_ledger || true`, {
         stdio: 'inherit'
     });

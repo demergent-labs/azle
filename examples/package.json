@@ -1,13 +1,11 @@
 {
     "private": true,
     "workspaces": [
-        "stable/test/end_to_end/candid_rpc/async_await",
-        "experimental/test/end_to_end/candid_rpc/async_await",
+        "stable/test/end_to_end/candid_rpc/management_canister",
+        "stable/test/end_to_end/candid_rpc/management_canister_generate_types",
         "experimental/test/end_to_end/http_server/sqlite_typeorm",
         "experimental/test/end_to_end/http_server/sqlite_drizzle",
         "experimental/test/end_to_end/http_server/sqlite",
-        "experimental/test/end_to_end/candid_rpc/ckbtc",
-        "experimental/demo/ckbtc",
         "experimental/demo/basic_bitcoin",
         "experimental/demo/bitcoin_psbt",
         "experimental/test/end_to_end/http_server/bitcoinjs_lib",

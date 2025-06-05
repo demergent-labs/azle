@@ -1,7 +1,0 @@
-{
-    "extends": "../../../../../../../tsconfig.dev.json",
-    "compilerOptions": {
-        "forceConsistentCasingInFileNames": true,
-        "jsx": "react"
-    }
-}

@@ -5,7 +5,7 @@ import { IDL, query } from 'azle';
 const Element = IDL.Record({
     id: IDL.Text
 });
-type Element = {
+export type Element = {
     id: string;
 };
 

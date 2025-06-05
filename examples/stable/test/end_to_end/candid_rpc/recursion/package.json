@@ -5,8 +5,5 @@
     },
     "dependencies": {
         "azle": "0.31.0"
-    },
-    "devDependencies": {
-        "recursion_end_to_end_test_functional_syntax": "file:../../../../../experimental/test/end_to_end/candid_rpc/recursion"
     }
 }
