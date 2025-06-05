@@ -124,8 +124,6 @@ jobs:
                       exit 1
                   fi
                   echo "dfx installation completed."
-                  # Add dfx to PATH for subsequent steps
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
               shell: wsl-bash {0}
 
             - name: Fix line endings and run npm install
