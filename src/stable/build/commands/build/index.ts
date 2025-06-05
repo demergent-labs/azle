@@ -14,6 +14,7 @@ export async function runCommand(
     canisterConfig: CanisterConfig,
     ioType: IOType
 ): Promise<void> {
+    console.log('>>> runCommand >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
     const { candidPath, canisterPath, main, wasmBinaryPath, wasmData } =
         await getContext(canisterName, canisterConfig);
 
@@ -45,4 +46,5 @@ export async function runCommand(
 
     await mkdir(dirname(wasmBinaryPath), { recursive: true });
     await writeFile(wasmBinaryPath, wasmBinary);
+    console.log('>>> end runCommand >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 }
