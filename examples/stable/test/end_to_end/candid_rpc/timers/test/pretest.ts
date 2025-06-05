@@ -18,11 +18,18 @@ function pretest(): void {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy`, {
+    execSync(`dfx deploy timers`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx generate`, {
+    execSync(
+        `dfx ledger fabricate-cycles --canister timers --cycles 1000000000000000`,
+        {
+            stdio: 'inherit'
+        }
+    );
+
+    execSync(`dfx generate timers`, {
         stdio: 'inherit'
     });
 }

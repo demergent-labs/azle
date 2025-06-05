@@ -57,6 +57,8 @@ export function setTimerInterval(
                     );
                 })();
 
+    console.log(`setTimerInterval: ${timerId}`);
+
     // We don't call deleteGlobalTimerCallbacks here because the callback
     // still needs to exist for the next interval callback execution
     // Deletion of globalThis._azleTimerCallbacks in the context of setTimerInterval
