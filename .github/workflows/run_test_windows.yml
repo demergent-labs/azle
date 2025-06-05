@@ -69,6 +69,11 @@ jobs:
                   distribution: Ubuntu-22.04
                   update: 'true'
                   additional-packages: curl build-essential git jq
+                  wsl-conf: |
+                      [boot]
+                      systemd=true
+                  set-as-default: 'true'
+                  wsl-shell-user: 'root'
 
             - uses: ./.github/actions/determine_workflow_context
               id: set-conditions
@@ -91,7 +96,20 @@ jobs:
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.test.path}}
 
-            - uses: ./.github/actions/setup_node
+            - name: Setup Node.js in WSL
+              run: |
+                  # Get Node version from package.json
+                  NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
+                  echo "Installing Node.js version $NODE_VERSION in WSL..."
+
+                  # Install Node.js using NodeSource repository
+                  curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sudo -E bash -
+                  sudo apt-get install -y nodejs
+
+                  # Verify installation
+                  node --version
+                  npm --version
+              shell: wsl-bash {0}
 
             - name: Install dfx
               run: |
