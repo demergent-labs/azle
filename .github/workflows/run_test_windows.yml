@@ -61,8 +61,6 @@ jobs:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
         steps:
-            - uses: actions/checkout@v4
-
             - name: Setup WSL
               uses: Vampire/setup-wsl@v3
               with:
@@ -74,6 +72,16 @@ jobs:
                       systemd=true
                   set-as-default: 'true'
                   wsl-shell-user: 'root'
+
+            - name: Checkout code in WSL
+              run: |
+                  # Configure git to use LF line endings
+                  git config --global core.autocrlf false
+                  git config --global core.eol lf
+                  # Clone the repository
+                  git clone https://github.com/${{ github.repository }} .
+                  git checkout ${{ github.sha }}
+              shell: wsl-bash {0}
 
             - uses: ./.github/actions/determine_workflow_context
               id: set-conditions
@@ -126,10 +134,8 @@ jobs:
                   echo "dfx installation completed."
               shell: wsl-bash {0}
 
-            - name: Fix line endings and run npm install
+            - name: Install npm dependencies
               run: |
-                  # Fix line endings for the install script
-                  sed -i 's/\r$//' src/stable/build/dfx_extension/install.sh
                   # Add dfx to PATH for this session
                   export PATH="$HOME/.local/share/dfx/bin:$PATH"
                   # Run npm install
