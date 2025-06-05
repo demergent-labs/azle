@@ -93,8 +93,17 @@ jobs:
 
             - uses: ./.github/actions/setup_node
 
-            - run: sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
-              shell: wsl-bash {0}
+            - name: Get dfx version from package.json
+              id: get-dfx-version
+              shell: bash
+              run: |
+                  DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
+                  echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
+
+            - name: Install dfx
+              uses: dfinity/setup-dfx@main
+              with:
+                  dfx-version: ${{ steps.get-dfx-version.outputs.dfx-version }}
 
             - uses: ./.github/actions/retry_command
               with:
