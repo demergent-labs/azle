@@ -7,7 +7,7 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.10.13"
+candid = "0.10.14"
 candid_parser = "0.1.4"
 ic-cdk = "0.18.1"
 ic-cdk-timers = "0.12.0"
