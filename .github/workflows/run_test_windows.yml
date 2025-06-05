@@ -124,9 +124,18 @@ jobs:
                       exit 1
                   fi
                   echo "dfx installation completed."
+                  # Add dfx to PATH for subsequent steps
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
               shell: wsl-bash {0}
 
-            - run: npm install
+            - name: Fix line endings and run npm install
+              run: |
+                  # Fix line endings for the install script
+                  sed -i 's/\r$//' src/stable/build/dfx_extension/install.sh
+                  # Add dfx to PATH for this session
+                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  # Run npm install
+                  npm install
               shell: wsl-bash {0}
 
             - run: npm link
