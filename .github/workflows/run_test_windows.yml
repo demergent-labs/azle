@@ -221,6 +221,7 @@ jobs:
             - name: Run tests
               run: |
                   export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  dfx start --clean --background --artificial-delay 0
                   npm test
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
