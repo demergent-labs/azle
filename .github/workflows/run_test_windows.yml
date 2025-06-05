@@ -93,23 +93,8 @@ jobs:
 
             - uses: ./.github/actions/setup_node
 
-            - name: Get dfx version from package.json
-              id: get-dfx-version
-              shell: bash
-              run: |
-                  DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
-                  echo "dfx-version=${DFX_VERSION}" >> "$GITHUB_OUTPUT"
-
-            - name: Install dfx for WSL
+            - run: sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
               shell: wsl-bash {0}
-              run: |
-                  DFX_VERSION="${{ steps.get-dfx-version.outputs.dfx-version }}"
-                  src/stable/build/commands/dev/setup/install_dfx.sh "$DFX_VERSION"
-
-            - name: Add dfx to PATH for WSL
-              shell: wsl-bash {0}
-              run: |
-                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
 
             - uses: ./.github/actions/retry_command
               with:
