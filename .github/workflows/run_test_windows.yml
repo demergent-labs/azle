@@ -93,9 +93,17 @@ jobs:
 
             - uses: ./.github/actions/setup_node
 
-            - run: sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
-              env:
-                  DFXVM_INIT_YES: true
+            - name: Install dfx
+              run: |
+                  DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
+                  echo "Installing dfx version $DFX_VERSION..."
+                  DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --retry 3 -fsSL https://sdk.dfinity.org/install.sh)"
+                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  if ! command -v dfx &> /dev/null; then
+                      echo "dfx installation verification failed" >&2
+                      exit 1
+                  fi
+                  echo "dfx installation completed."
               shell: wsl-bash {0}
 
             - uses: ./.github/actions/retry_command
