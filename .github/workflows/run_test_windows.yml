@@ -100,10 +100,12 @@ jobs:
               run: |
                   # Get Node version from package.json
                   NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
-                  echo "Installing Node.js version $NODE_VERSION in WSL..."
+                  # Extract major version number (e.g., "22.14.0" -> "22")
+                  MAJOR_VERSION=$(echo $NODE_VERSION | cut -d. -f1)
+                  echo "Installing Node.js version $NODE_VERSION (major version $MAJOR_VERSION) in WSL..."
 
                   # Install Node.js using NodeSource repository
-                  curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sudo -E bash -
+                  curl -fsSL https://deb.nodesource.com/setup_${MAJOR_VERSION}.x | sudo -E bash -
                   sudo apt-get install -y nodejs
 
                   # Verify installation
