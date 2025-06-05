@@ -222,7 +222,7 @@ jobs:
               run: |
                   export PATH="$HOME/.local/share/dfx/bin:$PATH"
                   dfx start --clean --background --artificial-delay 0
-                  npm test
+                  AZLE_VERBOSE=true npm test
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
               env:
