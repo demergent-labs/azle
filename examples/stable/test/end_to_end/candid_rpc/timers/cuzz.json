@@ -1,7 +1,4 @@
 {
-    "expectedErrors": [
-        "Method: getStatusReport \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid record"
-    ],
     "size": {
         "nat64": {
             "max": "1000000000"

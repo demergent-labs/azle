@@ -110,17 +110,22 @@ export default class Canister {
 
 function oneTimeTimerCallback(canister: Canister): void {
     canister.statusReport.single = true;
+    console.info('oneTimeTimerCallback called');
 }
 
 async function singleCrossCanisterTimerCallback(
     canister: Canister
 ): Promise<void> {
+    console.info('singleCrossCanisterTimerCallback');
+
     canister.statusReport.singleCrossCanister = await getRandomness();
 }
 
 async function repeatCrossCanisterTimerCallback(
     canister: Canister
 ): Promise<void> {
+    console.info('repeatCrossCanisterTimerCallback');
+
     canister.statusReport.repeatCrossCanister = Uint8Array.from([
         ...canister.statusReport.repeatCrossCanister,
         ...(await getRandomness())
