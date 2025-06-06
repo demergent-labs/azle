@@ -10,6 +10,7 @@
         "Uncaught SyntaxError: Exponent part is missing a number in JSON",
         "Uncaught SyntaxError: Expected ':' after property name in JSON",
         "Uncaught SyntaxError: Bad escaped character in JSON",
-        "Uncaught SyntaxError: Unterminated fractional number in JSON"
+        "Uncaught SyntaxError: Unterminated fractional number in JSON",
+        "Uncaught SyntaxError: Unexpected number in JSON at position 0"
     ]
 }
