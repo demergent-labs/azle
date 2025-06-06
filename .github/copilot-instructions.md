@@ -88,3 +88,19 @@ Remember, before the PR can be considered complete, you must at least do the fol
 - Avoid the use of classes in internal code
 - Put helper functions in function declarations underneath the code that it is used in. Generally, you should see all helper functions at the bottom of the file
 - Prefer const variable declarations over let or var. You should always use const unless you have a very good reason to mutate the variable. In that case you can use let. There is almost no reason you should ever use var.
+- Use console.info if you intend for your logs to be committed to the codebase. Use console.log only for debugging purposes.
+- Use numeric separators for large numbers, for example 1_000_000 instead of 1000000
+
+## Human Notes
+
+This section is for humans only, please ignore it if you are an AI.
+
+Before merging a PR created by the GitHub Copilot coding agent, you will need to collapse all of the coding agent's commits into one verified commit.
+
+One simple way to do this is the following:
+
+1. Check out the coding agent's feature branch on your local machine
+2. Run this command from the root of the repository: `git reset --soft $(git merge-base --fork-point main HEAD)`
+3. Commit and force push the changes
+
+The three steps above will essentially allow you to collapse all of the coding agent's commits into one commit on your machine, signed by you and verifiable by GitHub. You will need to force push to the coding agent's branch to remove all of its unverified commits.

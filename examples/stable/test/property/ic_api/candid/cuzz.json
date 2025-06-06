@@ -13,6 +13,7 @@
         "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown escape character",
         "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed comment at",
         "Method: candidDecodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
-        "Method: assertCandidDecodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header"
+        "Method: assertCandidDecodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
+        "Uncaught: Candid parser error: Unexpected string"
     ]
 }

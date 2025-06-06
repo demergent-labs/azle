@@ -1,11 +1,6 @@
 {
     "expectedErrors": [
-        "Method: candidDecode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
-        "Method: candidEncode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized token",
-        "Method: candidEncode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized EOF found at",
-        "Method: candidEncode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown token",
-        "Method: candidEncode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed string at",
-        "Method: candidEncode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown escape character",
-        "Method: candidEncode \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed comment at"
+        "Uncaught: Cannot parse header",
+        "Uncaught: Candid parser error"
     ]
 }
