@@ -85,6 +85,40 @@ jobs:
                   echo "=================================="
               shell: powershell
 
+            - name: Attempt WSL 2 Upgrade
+              run: |
+                  echo "=== Attempting WSL 2 Upgrade ==="
+                  echo "Current WSL status before upgrade:"
+                  wsl --status
+
+                  echo "Attempting to update WSL kernel..."
+                  wsl --update --web-download
+
+                  echo "Setting default version to WSL 2..."
+                  wsl --set-default-version 2
+
+                  echo "Converting Ubuntu to WSL 2..."
+                  wsl --set-version Ubuntu 2
+
+                  echo "WSL status after upgrade attempt:"
+                  wsl --status
+                  wsl --list --verbose
+                  echo "=================================="
+              continue-on-error: true
+              shell: powershell
+
+            - name: Log Windows WSL Information
+              run: |
+                  echo "=== Windows WSL Information ==="
+                  echo "WSL Version:"
+                  wsl --version
+                  echo "WSL Status:"
+                  wsl --status
+                  echo "WSL List:"
+                  wsl --list --verbose
+                  echo "=================================="
+              shell: powershell
+
             - name: Log WSL Environment Information
               run: |
                   echo "=== WSL Environment Diagnostics ==="
