@@ -9,5 +9,6 @@
         "nat32": {
             "max": 30
         }
-    }
+    },
+    "skipMethods": ["clearTimer"]
 }

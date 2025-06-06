@@ -36,7 +36,5 @@ export function clearTimer(timerId: bigint): void {
         globalThis._azleIc.clearTimer(timerId.toString());
     }
 
-    console.log(`clearTimer: ${timerId}`);
-
     deleteGlobalTimerCallbacks(timerId);
 }

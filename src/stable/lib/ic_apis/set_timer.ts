@@ -59,8 +59,6 @@ export function setTimer(
         throw new Error('globalThis._azleDispatch is undefined');
     }
 
-    console.log(`setTimer: ${timerId}`);
-
     globalThis._azleDispatch({
         type: 'SET_AZLE_TIMER_CALLBACK',
         payload: {
