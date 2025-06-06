@@ -100,7 +100,7 @@ export function runTests(tests: Test): void {
 
             wait(
                 'for fuzz tests to settle before checking global state',
-                60_000
+                120_000
             );
 
             it(
