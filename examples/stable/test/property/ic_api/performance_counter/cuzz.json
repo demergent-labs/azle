@@ -1,7 +1,10 @@
 {
     "expectedErrors": [
-        "Canister violated contract: Error getting performance counter type",
-        "xUncaught Error: Rejection code 2, Couldn't send message",
         "Uncaught: performanceCounter counterType can only be 0 or 1"
-    ]
+    ],
+    "size": {
+        "nat32": {
+            "max": 1000000
+        }
+    }
 }
