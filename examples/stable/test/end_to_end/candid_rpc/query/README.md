@@ -36,6 +36,15 @@
 
 ## Findings from GitHub Actions WSL Environment:
 
+### 🚨 **CRITICAL: WSL Version Mismatch**
+
+**GitHub Actions is running WSL 1, not WSL 2!**
+
+- **Default Version**: 1
+- **Current Distribution**: Ubuntu (Running, Version 1)
+- **WSL 2 Kernel**: Missing ("The WSL 2 kernel file is not found")
+- **Updates**: Disabled due to system settings
+
 ### Environment Details (from diagnostics):
 
 - **Kernel**: Linux 4.4.0-20348-Microsoft (November 2024)
@@ -44,6 +53,15 @@
 - **User**: root (not regular user)
 - **Disk**: 85G available space
 
+### WSL 1 vs WSL 2 Differences (Potential Issues):
+
+- **File System**: WSL 1 has different file system implementation
+- **System Calls**: Different kernel syscall handling
+- **Networking**: Different network stack implementation
+- **Performance**: WSL 1 generally slower for file I/O
+- **Process Management**: Different process/thread handling
+- **Memory Management**: Different memory allocation patterns
+
 ### Potential Issues Identified:
 
 - **PATH Pollution**: Many Windows paths in PATH (/mnt/c/...) could cause conflicts
@@ -51,6 +69,15 @@
     - `/mnt/c/npm/prefix` - could interfere with npm operations
     - `/mnt/c/Program Files/dotnet` - might cause .NET conflicts
     - Multiple Python/Node paths from Windows side
+
+### WSL-Specific Investigation Steps:
+
+- [ ] **Compare local WSL version** - Check if local uses WSL 2
+- [ ] **Test forcing WSL 2** - Try to upgrade GitHub Actions to WSL 2
+- [ ] **WSL 1 compatibility testing** - Test locally with WSL 1
+- [ ] **File system behavior** - Compare file operations between WSL 1/2
+- [ ] **Network behavior** - Test if networking differs between versions
+- [ ] **Process spawning** - Check if subprocess creation differs
 
 ### Additional Investigation Steps:
 
