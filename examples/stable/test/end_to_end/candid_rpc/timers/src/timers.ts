@@ -10,9 +10,9 @@ import {
 
 const StatusReport = IDL.Record({
     single: IDL.Bool,
-    inline: IDL.Int8,
+    inline: IDL.Nat32,
     capture: IDL.Text,
-    repeat: IDL.Int8,
+    repeat: IDL.Nat32,
     singleCrossCanister: IDL.Vec(IDL.Nat8),
     repeatCrossCanister: IDL.Vec(IDL.Nat8)
 });
