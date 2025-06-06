@@ -207,6 +207,9 @@ jobs:
 
             - name: Setup Node.js in WSL
               run: |
+                  # Use clean PATH to avoid Windows conflicts
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
                   # Get Node version from package.json
                   NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
                   # Extract major version number (e.g., "22.14.0" -> "22")
@@ -217,19 +220,22 @@ jobs:
                   curl -fsSL https://deb.nodesource.com/setup_${MAJOR_VERSION}.x | sudo -E bash -
                   sudo apt-get install -y nodejs
 
-                  # Verify installation
+                  # Verify installation with clean PATH
                   echo "Installed Node version:"
-                  node --version
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" node --version
                   echo "Installed npm version:"
-                  npm --version
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" npm --version
                   echo "Node installation path:"
-                  which node
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" which node
                   echo "npm installation path:"
-                  which npm
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" which npm
               shell: wsl-bash {0}
 
             - name: Install dfx
               run: |
+                  # Use clean PATH to avoid Windows conflicts
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
                   DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
                   echo "Installing dfx version $DFX_VERSION..."
                   DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --retry 3 -fsSL https://sdk.dfinity.org/install.sh)"
@@ -247,8 +253,8 @@ jobs:
 
             - name: Install npm dependencies
               run: |
-                  # Add dfx to PATH for this session
-                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  # Use clean PATH with dfx
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
                   # Run npm install
                   npm install
               shell: wsl-bash {0}
@@ -278,24 +284,34 @@ jobs:
             - run: npm link
               if: matrix.azle_source == 'repo'
               shell: wsl-bash {0}
+              env:
+                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
 
             - run: npm run lint
               shell: wsl-bash {0}
+              env:
+                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
 
             - run: npm install
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
+              env:
+                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: ${{ inputs.run-experimental }}
               run: npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
+              env:
+                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
 
             - run: npm link azle
               if: matrix.azle_source == 'repo'
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
+              env:
+                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
 
             - name: Test configuration
               id: test-configuration
@@ -332,7 +348,7 @@ jobs:
 
             - name: Run tests
               run: |
-                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
                   dfx start --clean --background --artificial-delay 0
                   AZLE_VERBOSE=true npm test
               working-directory: ${{ matrix.test.path }}
@@ -350,10 +366,13 @@ jobs:
                   AZLE_IS_RELEASE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_release_branch_pr }}
                   AZLE_IS_FEATURE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}
                   AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}
+                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
 
             - name: Log Azle Artifacts and Build Information
               if: always()
               run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+
                   echo "=== Azle Artifacts Diagnostics ==="
                   echo "Current working directory:"
                   pwd
@@ -404,7 +423,6 @@ jobs:
                   fi
 
                   echo "dfx info:"
-                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
                   dfx info || echo "dfx info failed"
 
                   echo "=================================="
