@@ -66,14 +66,17 @@ export default class Canister {
 
         const inlineId = setTimer(delay, () => {
             this.statusReport.inline = 1;
+            console.info('Inline timer called');
         });
 
         const captureId = setTimer(delay, () => {
             this.statusReport.capture = capturedValue;
+            console.info(`Timer captured value ${capturedValue}`);
         });
 
         const repeatId = setTimerInterval(interval, () => {
             this.statusReport.repeat++;
+            console.info(`Repeating timer. Call ${this.statusReport.repeat}`);
 
             if (this.statusReport.repeat >= 2) {
                 clearTimer(repeatId);
