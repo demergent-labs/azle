@@ -65,6 +65,16 @@ env:
 
 **Shell Context Fix**: Ensured all steps use `shell: wsl-bash {0}` to maintain WSL context.
 
+**Environment Variable Fix**: Changed from GitHub Actions `env:` to inline variable setting for better WSL compatibility:
+
+```bash
+# Set variables inline within each step
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
+```
+
+This approach is more reliable than GitHub Actions `env:` mechanism with WSL bash.
+
 ### Environment Details (from diagnostics):
 
 - **Kernel**: Linux 6.6.87.1-1 (WSL 2 - Updated!) ✅
