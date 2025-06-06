@@ -284,37 +284,41 @@ jobs:
                   echo "=================================="
               shell: wsl-bash {0}
 
-            - run: npm link
+            - name: npm link
               if: matrix.azle_source == 'repo'
               shell: wsl-bash {0}
-              env:
-                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  npm link
 
-            - run: npm run lint
+            - name: npm run lint
               shell: wsl-bash {0}
-              env:
-                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  npm run lint
 
-            - run: npm install
+            - name: npm install in test directory
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
-              env:
-                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  npm install
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: ${{ inputs.run-experimental }}
-              run: npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
-              env:
-                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
 
-            - run: npm link azle
+            - name: npm link azle
               if: matrix.azle_source == 'repo'
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
-              env:
-                  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  npm link azle
 
             - name: Test configuration
               id: test-configuration

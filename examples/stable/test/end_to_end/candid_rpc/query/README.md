@@ -58,22 +58,17 @@
 
 **Additional Fix Applied**: Clean PATH strategy to eliminate Windows conflicts:
 
-```yaml
-env:
-    PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
-```
-
 **Shell Context Fix**: Ensured all steps use `shell: wsl-bash {0}` to maintain WSL context.
 
-**Environment Variable Fix**: Changed from GitHub Actions `env:` to inline variable setting for better WSL compatibility:
+**Environment Variable Fix**: Completely replaced GitHub Actions `env:` mechanism with inline variable setting for full WSL compatibility:
 
 ```bash
-# Set variables inline within each step
+# All steps now set variables inline within each step
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
 export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
 ```
 
-This approach is more reliable than GitHub Actions `env:` mechanism with WSL bash.
+This eliminates all GitHub Actions `env:` dependencies and ensures reliable execution in WSL bash.
 
 ### Environment Details (from diagnostics):
 
