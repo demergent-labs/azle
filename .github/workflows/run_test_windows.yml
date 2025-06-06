@@ -73,11 +73,21 @@ jobs:
                   set-as-default: 'true'
                   wsl-shell-user: 'root'
 
+            - name: Log Windows WSL Information
+              run: |
+                  echo "=== Windows WSL Information ==="
+                  echo "WSL Version:"
+                  wsl --version
+                  echo "WSL Status:"
+                  wsl --status
+                  echo "WSL List:"
+                  wsl --list --verbose
+                  echo "=================================="
+              shell: powershell
+
             - name: Log WSL Environment Information
               run: |
                   echo "=== WSL Environment Diagnostics ==="
-                  echo "WSL Version:"
-                  wsl --version || echo "wsl --version failed"
                   echo "Kernel Version:"
                   uname -a
                   echo "Ubuntu Version:"
