@@ -73,6 +73,28 @@ jobs:
                   set-as-default: 'true'
                   wsl-shell-user: 'root'
 
+            - name: Log WSL Environment Information
+              run: |
+                  echo "=== WSL Environment Diagnostics ==="
+                  echo "WSL Version:"
+                  wsl --version || echo "wsl --version failed"
+                  echo "Kernel Version:"
+                  uname -a
+                  echo "Ubuntu Version:"
+                  cat /etc/os-release
+                  echo "Available Disk Space:"
+                  df -h
+                  echo "Memory Information:"
+                  free -h
+                  echo "CPU Information:"
+                  lscpu | head -20
+                  echo "Environment Variables:"
+                  env | sort
+                  echo "Current User and Groups:"
+                  id
+                  echo "=================================="
+              shell: wsl-bash {0}
+
             - uses: actions/checkout@v4
               with:
                   # Configure checkout to use LF line endings
@@ -122,8 +144,14 @@ jobs:
                   sudo apt-get install -y nodejs
 
                   # Verify installation
+                  echo "Installed Node version:"
                   node --version
+                  echo "Installed npm version:"
                   npm --version
+                  echo "Node installation path:"
+                  which node
+                  echo "npm installation path:"
+                  which npm
               shell: wsl-bash {0}
 
             - name: Install dfx
@@ -137,6 +165,10 @@ jobs:
                       exit 1
                   fi
                   echo "dfx installation completed."
+                  echo "Installed dfx version:"
+                  dfx --version
+                  echo "dfx installation path:"
+                  which dfx
               shell: wsl-bash {0}
 
             - name: Install npm dependencies
@@ -238,3 +270,85 @@ jobs:
                   AZLE_IS_RELEASE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_release_branch_pr }}
                   AZLE_IS_FEATURE_BRANCH_PR: ${{ steps.set-conditions.outputs.is_feature_branch_pr }}
                   AZLE_IS_FEATURE_BRANCH_DRAFT_PR: ${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}
+
+            - name: Log Azle Artifacts and Build Information
+              if: always()
+              run: |
+                  echo "=== Azle Artifacts Diagnostics ==="
+                  echo "Current working directory:"
+                  pwd
+                  echo "Directory contents:"
+                  ls -la
+
+                  echo "Checking for .azle directory:"
+                  if [ -d ".azle" ]; then
+                      echo ".azle directory exists"
+                      echo ".azle directory contents:"
+                      ls -la .azle/
+
+                      echo "Checking for main.js:"
+                      if [ -f ".azle/main.js" ]; then
+                          echo "main.js exists, size:"
+                          ls -lh .azle/main.js
+                          echo "main.js first 20 lines:"
+                          head -20 .azle/main.js
+                      else
+                          echo "main.js does NOT exist"
+                      fi
+
+                      echo "Checking for WASM binary:"
+                      find .azle -name "*.wasm" -exec ls -lh {} \;
+
+                      echo "Checking for Candid file:"
+                      find .azle -name "*.did" -exec ls -lh {} \; -exec head -10 {} \;
+
+                  else
+                      echo ".azle directory does NOT exist"
+                  fi
+
+                  echo "Checking for dfx.json:"
+                  if [ -f "dfx.json" ]; then
+                      echo "dfx.json exists:"
+                      cat dfx.json
+                  else
+                      echo "dfx.json does NOT exist"
+                  fi
+
+                  echo "Checking for node_modules:"
+                  if [ -d "node_modules" ]; then
+                      echo "node_modules exists"
+                      echo "azle in node_modules:"
+                      ls -la node_modules/ | grep azle || echo "azle not found in node_modules"
+                  else
+                      echo "node_modules does NOT exist"
+                  fi
+
+                  echo "dfx info:"
+                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  dfx info || echo "dfx info failed"
+
+                  echo "=================================="
+              working-directory: ${{ matrix.test.path }}
+              shell: wsl-bash {0}
+
+            - name: Upload Azle Artifacts
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: azle-artifacts-${{ matrix.test.name }}-${{ matrix.azle_source }}-${{ github.run_id }}
+                  path: |
+                      ${{ matrix.test.path }}/.azle/
+                      ${{ matrix.test.path }}/dfx.json
+                      ${{ matrix.test.path }}/package.json
+                      ${{ matrix.test.path }}/node_modules/azle/package.json
+                  if-no-files-found: warn
+
+            - name: Upload Test Logs
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: test-logs-${{ matrix.test.name }}-${{ matrix.azle_source }}-${{ github.run_id }}
+                  path: |
+                      ${{ matrix.test.path }}/.dfx/
+                      ${{ matrix.test.path }}/test-results/
+                  if-no-files-found: warn
