@@ -56,6 +56,15 @@
       wsl --set-version Ubuntu 2
 ```
 
+**Additional Fix Applied**: Clean PATH strategy to eliminate Windows conflicts:
+
+```yaml
+env:
+    PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin'
+```
+
+**Shell Context Fix**: Ensured all steps use `shell: wsl-bash {0}` to maintain WSL context.
+
 ### Environment Details (from diagnostics):
 
 - **Kernel**: Linux 6.6.87.1-1 (WSL 2 - Updated!) ✅
