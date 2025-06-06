@@ -194,6 +194,7 @@ jobs:
                   echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+              shell: wsl-bash {0}
               env:
                   AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: ${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}
                   AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: ${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}
@@ -204,6 +205,7 @@ jobs:
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.test.path}}
+              shell: wsl-bash {0}
 
             - name: Setup Node.js in WSL
               run: |
