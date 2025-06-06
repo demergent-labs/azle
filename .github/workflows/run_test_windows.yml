@@ -85,28 +85,6 @@ jobs:
                   echo "=================================="
               shell: powershell
 
-            - name: Attempt WSL 2 Upgrade
-              run: |
-                  echo "=== Attempting WSL 2 Upgrade ==="
-                  echo "Current WSL status before upgrade:"
-                  wsl --status
-
-                  echo "Attempting to update WSL kernel..."
-                  wsl --update --web-download
-
-                  echo "Setting default version to WSL 2..."
-                  wsl --set-default-version 2
-
-                  echo "Converting Ubuntu to WSL 2..."
-                  wsl --set-version Ubuntu 2
-
-                  echo "WSL status after upgrade attempt:"
-                  wsl --status
-                  wsl --list --verbose
-                  echo "=================================="
-              continue-on-error: true
-              shell: powershell
-
             - name: Log WSL Environment Information
               run: |
                   echo "=== WSL Environment Diagnostics ==="
@@ -286,22 +264,6 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
 
-            - name: Start dfx with artificial delay 0
-              if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
-              working-directory: ${{ matrix.test.path }}
-              run: |
-                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
-                  dfx start --clean --background --artificial-delay 0
-              shell: wsl-bash {0}
-
-            - name: Start dfx
-              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
-              working-directory: ${{ matrix.test.path }}
-              run: |
-                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
-                  dfx start --clean --background
-              shell: wsl-bash {0}
-
             - name: Test configuration
               id: test-configuration
               shell: bash
@@ -338,6 +300,7 @@ jobs:
             - name: Run tests
               run: |
                   export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  dfx start --clean --background --artificial-delay 0
                   AZLE_VERBOSE=true npm test
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
