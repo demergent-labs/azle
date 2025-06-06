@@ -1,0 +1,11 @@
+- make sure it works on a local windows machine
+- Make sure github actions is on the latests wsl
+- Log all of the artifacts that should exist
+    - .azle direcotry
+    - main.js
+    - wasm binary
+    - wasm binary is similar to the local machine size
+    - try and get the wasm binary off of that machine and run it on a local machine
+    - make sure the candid file looks good
+    - try and get it ALL out
+    - use llms to get files out, maybe commit the files to the branch?
