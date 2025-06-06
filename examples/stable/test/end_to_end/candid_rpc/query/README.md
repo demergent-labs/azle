@@ -33,3 +33,30 @@
     - [ ] Test with minimal example first
     - [ ] Compare build output byte-for-byte with local
     - [ ] Check if issue is specific to certain test types
+
+## Findings from GitHub Actions WSL Environment:
+
+### Environment Details (from diagnostics):
+
+- **Kernel**: Linux 4.4.0-20348-Microsoft (November 2024)
+- **Ubuntu**: 22.04.5 LTS (Jammy Jellyfish)
+- **Hardware**: AMD EPYC 7763 64-Core Processor, 15GB RAM
+- **User**: root (not regular user)
+- **Disk**: 85G available space
+
+### Potential Issues Identified:
+
+- **PATH Pollution**: Many Windows paths in PATH (/mnt/c/...) could cause conflicts
+    - `/mnt/c/Program Files/Git/bin` - might conflict with Linux git
+    - `/mnt/c/npm/prefix` - could interfere with npm operations
+    - `/mnt/c/Program Files/dotnet` - might cause .NET conflicts
+    - Multiple Python/Node paths from Windows side
+
+### Additional Investigation Steps:
+
+- [ ] Test with clean PATH (only Linux paths) to isolate Windows conflicts
+- [ ] Compare exact Node.js/npm versions and installation paths
+- [ ] Check if running as root vs regular user causes permission issues
+- [ ] Test kernel version differences (local vs GitHub Actions)
+- [ ] Verify if Windows-mounted paths are causing file system issues
+- [ ] Check for WSL-specific file system limitations or differences

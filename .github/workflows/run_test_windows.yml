@@ -95,6 +95,37 @@ jobs:
                   echo "=================================="
               shell: wsl-bash {0}
 
+            - name: Analyze PATH and Potential Conflicts
+              run: |
+                  echo "=== PATH Analysis ==="
+                  echo "Full PATH:"
+                  echo "$PATH"
+                  echo ""
+                  echo "PATH entries (one per line):"
+                  echo "$PATH" | tr ':' '\n' | nl
+                  echo ""
+                  echo "Windows paths in PATH:"
+                  echo "$PATH" | tr ':' '\n' | grep '/mnt/c' || echo "No Windows paths found"
+                  echo ""
+                  echo "Checking for command conflicts:"
+                  echo "node locations:"
+                  which -a node 2>/dev/null || echo "node not found"
+                  echo "npm locations:"
+                  which -a npm 2>/dev/null || echo "npm not found"
+                  echo "git locations:"
+                  which -a git 2>/dev/null || echo "git not found"
+                  echo "python locations:"
+                  which -a python 2>/dev/null || echo "python not found"
+                  which -a python3 2>/dev/null || echo "python3 not found"
+                  echo ""
+                  echo "Testing clean PATH:"
+                  export CLEAN_PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                  echo "Clean PATH: $CLEAN_PATH"
+                  PATH="$CLEAN_PATH" which node 2>/dev/null || echo "node not found with clean PATH"
+                  PATH="$CLEAN_PATH" which npm 2>/dev/null || echo "npm not found with clean PATH"
+                  echo "=================================="
+              shell: wsl-bash {0}
+
             - uses: actions/checkout@v4
               with:
                   # Configure checkout to use LF line endings
@@ -177,6 +208,28 @@ jobs:
                   export PATH="$HOME/.local/share/dfx/bin:$PATH"
                   # Run npm install
                   npm install
+              shell: wsl-bash {0}
+
+            - name: Test with Clean Environment
+              run: |
+                  echo "=== Testing with Clean Environment ==="
+                  # Create a clean PATH without Windows directories
+                  export CLEAN_PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  export PATH="$CLEAN_PATH"
+
+                  echo "Testing with clean PATH: $PATH"
+                  echo "Node version with clean PATH:"
+                  node --version || echo "Node failed with clean PATH"
+                  echo "npm version with clean PATH:"
+                  npm --version || echo "npm failed with clean PATH"
+                  echo "dfx version with clean PATH:"
+                  dfx --version || echo "dfx failed with clean PATH"
+
+                  # Test basic npm operations
+                  echo "Testing npm list:"
+                  npm list --depth=0 || echo "npm list failed"
+
+                  echo "=================================="
               shell: wsl-bash {0}
 
             - run: npm link
