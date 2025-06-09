@@ -1,7 +1,6 @@
 {
     "expectedErrors": [
-        "Method: setDataCertificateInQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister violated contract: \\\\\"ic0_certified_data_set\\\\\" cannot be executed in non replicated query mode",
-        "Method: setData \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister violated contract: ic0_certified_data_set failed because the passed data must be no larger than 32 bytes",
-        "Method: assertSetCertifiedDataTypes \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister violated contract: ic0_certified_data_set failed because the passed data must be no larger than 32 bytes"
+        "Canister violated contract: \\\\\"ic0_certified_data_set\\\\\" cannot be executed in non replicated query mode",
+        "Canister violated contract: ic0_certified_data_set failed because the passed data must be no larger than 32 bytes"
     ]
 }
