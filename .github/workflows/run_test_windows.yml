@@ -177,60 +177,60 @@ jobs:
                   which dfx
               shell: wsl-bash {0}
 
-            - name: Install npm dependencies
+            - name: Install Rust and Cargo
               run: |
-                  # Use clean PATH with dfx
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
-                  # Run npm install
-                  npm install
+                  # Use clean PATH to avoid Windows conflicts
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+                  echo "Installing Rust and Cargo..."
+                  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+                  # Source the cargo environment
+                  source "$HOME/.cargo/env"
+
+                  # Verify installation with clean PATH
+                  echo "Installed Rust version:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.cargo/bin" rustc --version
+                  echo "Installed Cargo version:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.cargo/bin" cargo --version
+                  echo "Rust installation path:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.cargo/bin" which rustc
+                  echo "Cargo installation path:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.cargo/bin" which cargo
               shell: wsl-bash {0}
 
-            - name: Test with Clean Environment
+            - name: Install npm dependencies
               run: |
-                  echo "=== Testing with Clean Environment ==="
-                  # Create a clean PATH without Windows directories
-                  export CLEAN_PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
-                  export PATH="$CLEAN_PATH"
-
-                  echo "Testing with clean PATH: $PATH"
-                  echo "Node version with clean PATH:"
-                  node --version || echo "Node failed with clean PATH"
-                  echo "npm version with clean PATH:"
-                  npm --version || echo "npm failed with clean PATH"
-                  echo "dfx version with clean PATH:"
-                  dfx --version || echo "dfx failed with clean PATH"
-
-                  # Test basic npm operations
-                  echo "Testing npm list:"
-                  npm list --depth=0 || echo "npm list failed"
-
-                  echo "=================================="
+                  # Use clean PATH with dfx and cargo
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  # Run npm install
+                  npm install
               shell: wsl-bash {0}
 
             - name: npm link
               if: matrix.azle_source == 'repo'
               shell: wsl-bash {0}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   npm link
 
             - name: npm run lint
               shell: wsl-bash {0}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   npm run lint
 
             - name: npm install in test directory
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   npm install
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: ${{ inputs.run-experimental }}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
@@ -240,7 +240,7 @@ jobs:
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   npm link azle
 
             - name: Test configuration
@@ -286,7 +286,7 @@ jobs:
             - name: Run tests
               run: |
                   # Set clean PATH
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
 
                   # Set workflow context variables inline
                   export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"

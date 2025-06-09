@@ -64,11 +64,20 @@
 
 ```bash
 # All steps now set variables inline within each step
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
 export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
 ```
 
 This eliminates all GitHub Actions `env:` dependencies and ensures reliable execution in WSL bash.
+
+**Rust/Cargo Support**: Added Rust and Cargo installation for tests that require `cargo install didc` and other Rust tools:
+
+```yaml
+- name: Install Rust and Cargo
+  run: |
+      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      source "$HOME/.cargo/env"
+```
 
 ### Environment Details (from diagnostics):
 

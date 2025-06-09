@@ -37,9 +37,6 @@ build();
  * Determines if the build should use experimental features and calls the appropriate build function.
  */
 async function build(): Promise<void> {
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log('>>> start build >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
     if (await isExperimental()) {
         warnAboutExperimentalDeps();
         globalThis._azleExperimental = true;
@@ -49,9 +46,6 @@ async function build(): Promise<void> {
         const { build } = await import('#build/index');
         await build();
     }
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log('>>> build completed >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 }
 
 /**
