@@ -14,7 +14,7 @@ import {
 import { CyclesResult } from '../types';
 
 export default class {
-    @update([IDL.Nat64], CyclesResult)
+    @update([IDL.Nat], CyclesResult)
     async sendAllCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call<undefined, CyclesResult>(
             getCyclesPrincipal(),
@@ -27,7 +27,7 @@ export default class {
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
 
-    @update([IDL.Nat64, IDL.Nat64], CyclesResult)
+    @update([IDL.Nat, IDL.Nat], CyclesResult)
     async sendVariableCycles(
         amountToSend: bigint,
         amountToAccept: bigint
@@ -36,7 +36,7 @@ export default class {
             getCyclesPrincipal(),
             'receiveVariableCycles',
             {
-                paramIdlTypes: [IDL.Nat64],
+                paramIdlTypes: [IDL.Nat],
                 returnIdlType: CyclesResult,
                 args: [amountToAccept],
                 cycles: amountToSend
@@ -45,7 +45,7 @@ export default class {
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
 
-    @update([IDL.Nat64], CyclesResult)
+    @update([IDL.Nat], CyclesResult)
     async sendNoCycles(amount: bigint): Promise<CyclesResult> {
         const result = await call<undefined, CyclesResult>(
             getCyclesPrincipal(),
@@ -58,7 +58,7 @@ export default class {
         return { ...result, cyclesRefunded: msgCyclesRefunded() };
     }
 
-    @update([IDL.Nat64, IDL.Nat64], CyclesResult)
+    @update([IDL.Nat, IDL.Nat64], CyclesResult)
     async sendCyclesByChunk(
         amount: bigint,
         numChunks: bigint
@@ -84,13 +84,13 @@ export default class {
         return typeof canisterCycleBalance() === 'bigint';
     }
 
-    @update([IDL.Nat64], IDL.Bool)
+    @update([IDL.Nat], IDL.Bool)
     async assertMsgCyclesAcceptTypes(amount: bigint): Promise<boolean> {
         return await call<[bigint], boolean>(
             getCyclesPrincipal(),
             'assertMsgCyclesAcceptTypes',
             {
-                paramIdlTypes: [IDL.Nat64],
+                paramIdlTypes: [IDL.Nat],
                 returnIdlType: IDL.Bool,
                 args: [amount]
             }
@@ -108,13 +108,13 @@ export default class {
         );
     }
 
-    @update([IDL.Nat64], IDL.Bool)
+    @update([IDL.Nat], IDL.Bool)
     async assertMsgCyclesRefundedTypes(amount: bigint): Promise<boolean> {
         await call<[bigint], boolean>(
             getCyclesPrincipal(),
             'assertMsgCyclesAcceptTypes',
             {
-                paramIdlTypes: [IDL.Nat64],
+                paramIdlTypes: [IDL.Nat],
                 returnIdlType: IDL.Bool,
                 args: [amount]
             }
