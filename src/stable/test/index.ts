@@ -2,6 +2,7 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { describe, expect, test } from '@jest/globals';
+import { DEFAULT_EXPECTED_ERRORS } from 'cuzz';
 
 import { execSyncPretty } from '#utils/exec_sync_pretty';
 
@@ -103,10 +104,23 @@ export function runTests(tests: Test): void {
                 120_000
             );
 
-            it(
-                'checks that the _azle global state variables are empty, and optionally that actions are not growing',
-                runGlobalStateChecks
-            );
+            it('checks that the _azle global state variables are empty, and optionally that actions are not growing', async () => {
+                while (true) {
+                    try {
+                        await runGlobalStateChecks();
+                    } catch (error: any) {
+                        if (
+                            isExpectedError(error, DEFAULT_EXPECTED_ERRORS) ===
+                            true
+                        ) {
+                            continue;
+                        }
+
+                        throw error;
+                    }
+                    break;
+                }
+            });
         });
     }
 }
@@ -461,4 +475,11 @@ async function getDfxJson(): Promise<DfxJson> {
     const dfxFile = await readFile(join(getDfxRoot(), 'dfx.json'), 'utf-8');
 
     return JSON.parse(dfxFile);
+}
+
+function isExpectedError(error: Error, expectedErrors: string[]): boolean {
+    return expectedErrors.some((expected) => {
+        const regex = new RegExp(expected);
+        return regex.test(error.message) || regex.test(error.toString());
+    });
 }

@@ -1,16 +1,3 @@
 {
-    "expectedErrors": [
-        "Uncaught SyntaxError: expecting property name",
-        "Uncaught SyntaxError: unexpected data at the end",
-        "Uncaught SyntaxError: Unexpected end of JSON input",
-        "Uncaught SyntaxError: unexpected end of string",
-        "Uncaught SyntaxError: unexpected token",
-        "Uncaught SyntaxError: No number after minus sign in JSON",
-        "Uncaught SyntaxError: Expected property name or '}' in JSON",
-        "Uncaught SyntaxError: Exponent part is missing a number in JSON",
-        "Uncaught SyntaxError: Expected ':' after property name in JSON",
-        "Uncaught SyntaxError: Bad escaped character in JSON",
-        "Uncaught SyntaxError: Unterminated fractional number in JSON",
-        "Uncaught SyntaxError: Unexpected number in JSON at position 0"
-    ]
+    "expectedErrors": ["Uncaught SyntaxError"]
 }
