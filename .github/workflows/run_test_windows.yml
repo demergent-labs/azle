@@ -304,6 +304,7 @@ jobs:
                   export AZLE_PROPTEST_NUM_RUNS="${{ steps.test-configuration.outputs.runs }}"
                   export AZLE_PROPTEST_VERBOSE=true
                   export AZLE_VERBOSE=true
+                  export AZLE_IDENTITY_STORAGE_MODE=plaintext
 
                   dfx start --clean --background --artificial-delay 0
                   npm test

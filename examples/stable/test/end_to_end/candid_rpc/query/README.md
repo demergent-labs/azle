@@ -101,3 +101,71 @@ This eliminates all GitHub Actions `env:` dependencies and ensures reliable exec
 - [ ] Compare exact Node.js/npm versions and installation paths
 - [ ] Check if running as root vs regular user causes permission issues
 - [ ] Verify if Windows-mounted paths are causing file system issues
+
+# This is for the LLM
+
+# WSL Testing Context for Azle
+
+I need help testing WSL localhost subdomain fixes for failing Azle tests. Here's the complete context:
+
+## Background
+
+Previously made a WSL fix in commit `e0d2157a6` for `examples/stable/test/end_to_end/candid_rpc/motoko_examples/http_counter/test/tests.ts` that detected WSL and used `http://127.0.0.1:4943/?canisterId=${canisterId}` instead of `http://${canisterId}.raw.localhost:4943/` because WSL doesn't handle localhost subdomains reliably.
+
+## Currently Failing Tests (need similar WSL fixes)
+
+1. `examples/stable/test/property/candid_rpc/canister_methods/http_request_update`
+2. `examples/stable/test/property/candid_rpc/canister_methods/http_request`
+3. `examples/stable/demo/llm`
+
+## Changes Already Made
+
+I've updated both HTTP request tests by adding WSL detection to their `fletch.ts` files:
+
+- `examples/stable/test/property/candid_rpc/canister_methods/http_request_update/test/fletch.ts`
+- `examples/stable/test/property/candid_rpc/canister_methods/http_request/test/fletch.ts`
+
+### Added this function to both files:
+
+```typescript
+function isRunningInWSL(): boolean {
+    try {
+        const isWSL =
+            process.env.WSL_DISTRO_NAME !== undefined ||
+            execSync(
+                'grep -qi microsoft /proc/version 2>/dev/null || echo false'
+            )
+                .toString()
+                .trim() !== 'false';
+        return isWSL;
+    } catch {
+        return false;
+    }
+}
+```
+
+### Modified the URL construction in the `fletch` function:
+
+```typescript
+// In WSL, subdomain resolution for localhost doesn't work reliably
+// Use the direct IP approach instead
+const url = isRunningInWSL()
+    ? `http://127.0.0.1:4943${path}?canisterId=${canisterId}`
+    : `http://${canisterId}.raw.localhost:4943${path}`;
+```
+
+## What I need you to do:
+
+1. Navigate to the azle repository root directory
+2. Test these three failing examples to see if the WSL fixes resolve the issues:
+    - `cd examples/stable/test/property/candid_rpc/canister_methods/http_request_update && npm test`
+    - `cd examples/stable/test/property/candid_rpc/canister_methods/http_request && npm test`
+    - `cd examples/stable/demo/llm && npm test`
+3. If any tests still fail, investigate if they need additional WSL-specific adjustments
+4. The LLM demo might not actually need changes since it uses inter-canister calls rather than direct HTTP requests to localhost subdomains
+
+## Original WSL Fix Pattern (from commit e0d2157a6)
+
+The pattern was to detect WSL and change from `http://${canisterId}.raw.localhost:4943/` to `http://127.0.0.1:4943/?canisterId=${canisterId}` for URLs that use localhost subdomains.
+
+Please test these and let me know if the fixes work or if additional adjustments are needed for WSL compatibility.

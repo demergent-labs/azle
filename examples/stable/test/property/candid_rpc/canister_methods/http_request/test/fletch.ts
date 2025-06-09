@@ -9,6 +9,26 @@ type HttpResponse = {
 };
 
 /**
+ * Detects if the current environment is running in WSL.
+ * WSL has issues with localhost subdomain resolution.
+ */
+function isRunningInWSL(): boolean {
+    try {
+        // Check if we're in WSL by looking for WSL-specific environment or file
+        const isWSL =
+            process.env.WSL_DISTRO_NAME !== undefined ||
+            execSync(
+                'grep -qi microsoft /proc/version 2>/dev/null || echo false'
+            )
+                .toString()
+                .trim() !== 'false';
+        return isWSL;
+    } catch {
+        return false;
+    }
+}
+
+/**
  * An asynchronous "fetch" for canisters.
  */
 export async function fletch(
@@ -22,7 +42,11 @@ export async function fletch(
 
     const { method, body, headers, url: path } = request;
 
-    const url = `http://${canisterId}.raw.localhost:4943${path}`;
+    // In WSL, subdomain resolution for localhost doesn't work reliably
+    // Use the direct IP approach instead
+    const url = isRunningInWSL()
+        ? `http://127.0.0.1:4943${path}?canisterId=${canisterId}`
+        : `http://${canisterId}.raw.localhost:4943${path}`;
 
     const fetchOptions = {
         method,
