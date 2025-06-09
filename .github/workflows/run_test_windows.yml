@@ -73,21 +73,8 @@ jobs:
                   set-as-default: 'true'
                   wsl-shell-user: 'root'
 
-            - name: Log Windows WSL Information
-              run: |
-                  echo "=== Windows WSL Information ==="
-                  echo "WSL Version:"
-                  wsl --version
-                  echo "WSL Status:"
-                  wsl --status
-                  echo "WSL List:"
-                  wsl --list --verbose
-                  echo "=================================="
-              shell: powershell
-
             - name: Upgrade to WSL 2
               run: |
-                  echo "=== Upgrading to WSL 2 ==="
                   echo "Current WSL status before upgrade:"
                   wsl --status
 
@@ -103,71 +90,7 @@ jobs:
                   echo "WSL status after upgrade:"
                   wsl --status
                   wsl --list --verbose
-                  echo "=================================="
               shell: powershell
-
-            - name: Verify WSL 2 Upgrade
-              run: |
-                  echo "=== Verifying WSL 2 Upgrade ==="
-                  echo "Final WSL Version:"
-                  wsl --version
-                  echo "Final WSL Status:"
-                  wsl --status
-                  echo "Final WSL List:"
-                  wsl --list --verbose
-                  echo "=================================="
-              shell: powershell
-
-            - name: Log WSL Environment Information
-              run: |
-                  echo "=== WSL Environment Diagnostics ==="
-                  echo "Kernel Version:"
-                  uname -a
-                  echo "Ubuntu Version:"
-                  cat /etc/os-release
-                  echo "Available Disk Space:"
-                  df -h
-                  echo "Memory Information:"
-                  free -h
-                  echo "CPU Information:"
-                  lscpu | head -20
-                  echo "Environment Variables:"
-                  env | sort
-                  echo "Current User and Groups:"
-                  id
-                  echo "=================================="
-              shell: wsl-bash {0}
-
-            - name: Analyze PATH and Potential Conflicts
-              run: |
-                  echo "=== PATH Analysis ==="
-                  echo "Full PATH:"
-                  echo "$PATH"
-                  echo ""
-                  echo "PATH entries (one per line):"
-                  echo "$PATH" | tr ':' '\n' | nl
-                  echo ""
-                  echo "Windows paths in PATH:"
-                  echo "$PATH" | tr ':' '\n' | grep '/mnt/c' || echo "No Windows paths found"
-                  echo ""
-                  echo "Checking for command conflicts:"
-                  echo "node locations:"
-                  which -a node 2>/dev/null || echo "node not found"
-                  echo "npm locations:"
-                  which -a npm 2>/dev/null || echo "npm not found"
-                  echo "git locations:"
-                  which -a git 2>/dev/null || echo "git not found"
-                  echo "python locations:"
-                  which -a python 2>/dev/null || echo "python not found"
-                  which -a python3 2>/dev/null || echo "python3 not found"
-                  echo ""
-                  echo "Testing clean PATH:"
-                  export CLEAN_PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-                  echo "Clean PATH: $CLEAN_PATH"
-                  PATH="$CLEAN_PATH" which node 2>/dev/null || echo "node not found with clean PATH"
-                  PATH="$CLEAN_PATH" which npm 2>/dev/null || echo "npm not found with clean PATH"
-                  echo "=================================="
-              shell: wsl-bash {0}
 
             - uses: actions/checkout@v4
               with:
@@ -386,86 +309,3 @@ jobs:
                   npm test
               working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
-
-            - name: Log Azle Artifacts and Build Information
-              if: always()
-              run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin"
-
-                  echo "=== Azle Artifacts Diagnostics ==="
-                  echo "Current working directory:"
-                  pwd
-                  echo "Directory contents:"
-                  ls -la
-
-                  echo "Checking for .azle directory:"
-                  if [ -d ".azle" ]; then
-                      echo ".azle directory exists"
-                      echo ".azle directory contents:"
-                      ls -la .azle/
-
-                      echo "Checking for main.js:"
-                      if [ -f ".azle/main.js" ]; then
-                          echo "main.js exists, size:"
-                          ls -lh .azle/main.js
-                          echo "main.js first 20 lines:"
-                          head -20 .azle/main.js
-                      else
-                          echo "main.js does NOT exist"
-                      fi
-
-                      echo "Checking for WASM binary:"
-                      find .azle -name "*.wasm" -exec ls -lh {} \;
-
-                      echo "Checking for Candid file:"
-                      find .azle -name "*.did" -exec ls -lh {} \; -exec head -10 {} \;
-
-                  else
-                      echo ".azle directory does NOT exist"
-                  fi
-
-                  echo "Checking for dfx.json:"
-                  if [ -f "dfx.json" ]; then
-                      echo "dfx.json exists:"
-                      cat dfx.json
-                  else
-                      echo "dfx.json does NOT exist"
-                  fi
-
-                  echo "Checking for node_modules:"
-                  if [ -d "node_modules" ]; then
-                      echo "node_modules exists"
-                      echo "azle in node_modules:"
-                      ls -la node_modules/ | grep azle || echo "azle not found in node_modules"
-                  else
-                      echo "node_modules does NOT exist"
-                  fi
-
-                  echo "dfx info:"
-                  dfx info || echo "dfx info failed"
-
-                  echo "=================================="
-              working-directory: ${{ matrix.test.path }}
-              shell: wsl-bash {0}
-
-            - name: Upload Azle Artifacts
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                  name: azle-artifacts-${{ matrix.test.name }}-${{ matrix.azle_source }}-${{ github.run_id }}
-                  path: |
-                      ${{ matrix.test.path }}/.azle/
-                      ${{ matrix.test.path }}/dfx.json
-                      ${{ matrix.test.path }}/package.json
-                      ${{ matrix.test.path }}/node_modules/azle/package.json
-                  if-no-files-found: warn
-
-            - name: Upload Test Logs
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                  name: test-logs-${{ matrix.test.name }}-${{ matrix.azle_source }}-${{ github.run_id }}
-                  path: |
-                      ${{ matrix.test.path }}/.dfx/
-                      ${{ matrix.test.path }}/test-results/
-                  if-no-files-found: warn
