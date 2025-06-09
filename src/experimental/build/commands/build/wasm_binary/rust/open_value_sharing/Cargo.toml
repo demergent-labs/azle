@@ -13,4 +13,4 @@ ic-stable-structures = "0.6.8"
 anyhow = "1.0.98"
 
 [dev-dependencies]
-proptest = "1.6.0"
+proptest = "1.7.0"
