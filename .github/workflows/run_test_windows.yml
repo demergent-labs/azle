@@ -322,7 +322,7 @@ jobs:
 
             - name: Test configuration
               id: test-configuration
-              shell: wsl-bash {0}
+              shell: bash
               run: |
                   # Set workflow context variables inline
                   AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
