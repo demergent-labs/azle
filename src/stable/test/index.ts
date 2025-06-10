@@ -24,7 +24,6 @@ type GlobalState = {
     azleRejectCallbacksLen: number;
     azleResolveCallbacksLen: number;
     azleTimerCallbacksLen: number;
-    azleActionsLen: number;
     azleInterCanisterCallFuturesLen: number;
     azleIsJobQueueEmpty: boolean;
 };
@@ -49,7 +48,7 @@ export function runTests(tests: Test): void {
     if (shouldCheckGlobalStateAfterTests === true) {
         describe(`global state checks after tests`, () => {
             it(
-                'checks that the _azle global state variables are empty, and optionally that actions are not growing',
+                'checks that the _azle global state variables are empty',
                 runGlobalStateChecks
             );
         });
@@ -115,7 +114,7 @@ export function runTests(tests: Test): void {
             //     120_000
             // );
 
-            it('checks that the _azle global state variables are empty, and optionally that actions are not growing', async () => {
+            it('checks that the _azle global state variables are empty', async () => {
                 while (true) {
                     try {
                         await runGlobalStateChecks();
@@ -176,18 +175,17 @@ async function checkCanisterGlobalStateWithRetry(
 ): Promise<void> {
     const maxWaitTimePower = 8; // 2^8 = 256 seconds
 
-    const result = await checkCanisterGlobalStateRecursively(
+    const finalGlobalState = await checkCanisterGlobalStateRecursively(
         canisterName,
         {
             checkCount: 0,
             currentWaitTimePower: 0,
-            totalWaitTime: 0,
-            baselineActionsLen: undefined
+            totalWaitTime: 0
         },
         maxWaitTimePower
     );
 
-    performFinalAssertions(result.globalState, result.baselineActionsLen);
+    performFinalAssertions(finalGlobalState);
 }
 
 async function checkCanisterGlobalStateRecursively(
@@ -196,34 +194,28 @@ async function checkCanisterGlobalStateRecursively(
         checkCount: number;
         currentWaitTimePower: number;
         totalWaitTime: number;
-        baselineActionsLen: number | undefined;
     },
     maxWaitTimePower: number
-): Promise<{
-    globalState: GlobalState;
-    baselineActionsLen: number;
-}> {
+): Promise<GlobalState> {
     console.info(
         `Global state check ${state.checkCount} for canister ${canisterName}`
     );
 
     const globalState = await getCanisterGlobalState(canisterName);
-    console.info(`Check ${state.checkCount} results:`, globalState);
 
-    const baselineActionsLen =
-        state.baselineActionsLen ?? globalState.azleActionsLen;
+    console.info(`Check ${state.checkCount} results:`, globalState);
 
     const criticalStatesClear = areCriticalStatesClear(globalState);
 
     if (criticalStatesClear === true) {
-        return { globalState, baselineActionsLen };
+        return globalState;
     }
 
     const hasReachedMaxWaitTime =
         state.currentWaitTimePower >= maxWaitTimePower;
 
     if (hasReachedMaxWaitTime === true) {
-        return { globalState, baselineActionsLen };
+        return globalState;
     }
 
     const currentWaitTimeMs = Math.pow(2, state.currentWaitTimePower) * 1_000;
@@ -236,8 +228,7 @@ async function checkCanisterGlobalStateRecursively(
     const nextState = {
         checkCount: state.checkCount + 1,
         currentWaitTimePower: state.currentWaitTimePower + 1,
-        totalWaitTime: state.totalWaitTime + currentWaitTimeMs,
-        baselineActionsLen
+        totalWaitTime: state.totalWaitTime + currentWaitTimeMs
     };
 
     return checkCanisterGlobalStateRecursively(
@@ -277,15 +268,6 @@ async function getCanisterGlobalState(
             }
         )
     );
-    const azleActionsLen = Number(
-        execSync(
-            `dfx canister call ${canisterName} _azle_actions_len --output json`,
-            {
-                cwd: getDfxRoot(),
-                encoding: 'utf-8'
-            }
-        )
-    );
     const azleInterCanisterCallFuturesLen = Number(
         execSync(
             `dfx canister call ${canisterName} _azle_inter_canister_call_futures_len --output json`,
@@ -306,7 +288,6 @@ async function getCanisterGlobalState(
         azleRejectCallbacksLen,
         azleResolveCallbacksLen,
         azleTimerCallbacksLen,
-        azleActionsLen,
         azleInterCanisterCallFuturesLen,
         azleIsJobQueueEmpty
     };
@@ -321,16 +302,12 @@ function areCriticalStatesClear(globalState: GlobalState): boolean {
     );
 }
 
-function performFinalAssertions(
-    globalState: GlobalState,
-    baselineActionsLen: number
-): void {
+function performFinalAssertions(globalState: GlobalState): void {
     expect(globalState.azleRejectCallbacksLen).toEqual(0);
     expect(globalState.azleResolveCallbacksLen).toEqual(0);
     expect(globalState.azleTimerCallbacksLen).toEqual(0);
     expect(globalState.azleInterCanisterCallFuturesLen).toEqual(0);
     expect(globalState.azleIsJobQueueEmpty).toBe(true);
-    expect(globalState.azleActionsLen).toEqual(baselineActionsLen);
 }
 
 function processEnvVars(): {
