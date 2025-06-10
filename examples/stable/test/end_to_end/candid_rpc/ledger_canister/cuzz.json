@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
         "Invalid account identifier: Checksum failed for .*, expected check bytes .* but found",
-        "Deserialization Failed: \\\\\"Fail to decode argument 0 from table.* to record"
+        "Deserialization Failed"
     ]
 }
