@@ -4,36 +4,44 @@ import { execSync } from 'child_process';
 export function getTests(): Test {
     return () => {
         it('gets an initial count via http', async () => {
+            if (await wslTest(getCount)) return;
             expect(await getCount()).toBe(getExpectedGetCountResult(0));
         });
 
         it('increments the counter once via http', async () => {
+            if (await wslTest(count)) return;
             expect(await count()).toBe(getExpectedCountResult(1));
         });
 
         it('increments the counter twice via http', async () => {
+            if (await wslTest(count)) return;
             expect(await count()).toBe(getExpectedCountResult(2));
         });
 
         it("gets the value of the counter via http after it's been incremented", async () => {
+            if (await wslTest(getCount)) return;
             expect(await getCount()).toBe(getExpectedGetCountResult(2));
         });
 
         it('increments the counter via http with gzipped result', async () => {
+            if (await wslTest(countGzip)) return;
             expect(await countGzip()).toBe('update');
         });
 
         it('gets the value of the counter via http with gzipped result', async () => {
+            if (await wslTest(getCountGzip)) return;
             expect(await getCountGzip()).toBe('query');
         });
 
         it('streams the value of the counter via http', async () => {
+            if (await wslTest(getCountStream)) return;
             expect(await getCountStream()).toBe(
                 getExpectedGetCountStreamResult(3)
             );
         });
 
         it('gets the final value of the counter via http', async () => {
+            if (await wslTest(getCount)) return;
             expect(await getCount()).toBe(getExpectedGetCountResult(3));
         });
     };
@@ -57,6 +65,16 @@ function isRunningInWSL(): boolean {
     } catch {
         return false;
     }
+}
+
+async function wslTest(testFunction: () => Promise<string>): Promise<boolean> {
+    if (process.env.AZLE_TEST_WSL) {
+        expect(await testFunction()).toBe(
+            'Response verification failed: Certification values not found'
+        );
+        return true;
+    }
+    return false;
 }
 
 function getUrl(): string {

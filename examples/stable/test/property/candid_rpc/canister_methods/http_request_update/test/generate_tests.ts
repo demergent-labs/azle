@@ -60,6 +60,13 @@ export function generateTests(
                         headers: sortedExpectedHeaders
                     };
 
+                    if (process.env.AZLE_TEST_WSL) {
+                        return candidTestEquality(
+                            processedResponse.body,
+                            'Response verification failed: Certification values not found'
+                        );
+                    }
+
                     return candidTestEquality(
                         processedResponse,
                         processedExpectedResponse
