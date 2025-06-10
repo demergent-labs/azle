@@ -89,29 +89,31 @@ export function runTests(tests: Test): void {
 
     if (shouldCheckGlobalStateAfterFuzzTests === true) {
         describe(`global state checks after fuzz tests`, () => {
-            please('wait for dfx to be healthy', async () => {
-                while (true) {
-                    try {
-                        execSync(`dfx ping --wait-healthy`, {
-                            cwd: getDfxRoot(),
-                            encoding: 'utf-8'
-                        });
-                        break;
-                    } catch {
-                        console.info(
-                            'dfx ping --wait-healthy failed, retrying in 1 second...'
-                        );
-                        await new Promise((resolve) =>
-                            setTimeout(resolve, 1_000)
-                        );
-                    }
-                }
-            });
+            // TODO we might not need this with our new exponential backoff retry logic for global state checks
+            // please('wait for dfx to be healthy', async () => {
+            //     while (true) {
+            //         try {
+            //             execSync(`dfx ping --wait-healthy`, {
+            //                 cwd: getDfxRoot(),
+            //                 encoding: 'utf-8'
+            //             });
+            //             break;
+            //         } catch {
+            //             console.info(
+            //                 'dfx ping --wait-healthy failed, retrying in 1 second...'
+            //             );
+            //             await new Promise((resolve) =>
+            //                 setTimeout(resolve, 1_000)
+            //             );
+            //         }
+            //     }
+            // });
 
-            wait(
-                'for fuzz tests to settle before checking global state',
-                120_000
-            );
+            // TODO we might not need this with our new exponential backoff retry logic for global state checks
+            // wait(
+            //     'for fuzz tests to settle before checking global state',
+            //     120_000
+            // );
 
             it('checks that the _azle global state variables are empty, and optionally that actions are not growing', async () => {
                 while (true) {
