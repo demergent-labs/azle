@@ -2,7 +2,11 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { describe, expect, test } from '@jest/globals';
-import { DEFAULT_EXPECTED_ERRORS } from 'cuzz';
+import {
+    DEFAULT_EXPECTED_ERRORS,
+    formatMemorySize,
+    getRawMemorySize
+} from 'cuzz';
 
 import { execSyncPretty } from '#utils/exec_sync_pretty';
 
@@ -19,6 +23,12 @@ import { runBenchmarksForCanisters } from './benchmarks';
 import { getCuzzConfig, runFuzzTests } from './fuzz';
 
 export type Test = () => void;
+
+type CanisterMemoryState = {
+    [canisterName: string]: number | null;
+};
+
+let startingMemorySizes: CanisterMemoryState = {};
 
 type GlobalState = {
     azleRejectCallbacksLen: number;
@@ -82,6 +92,24 @@ export function runTests(tests: Test): void {
     }
 
     if (shouldFuzz === true) {
+        describe('check canister memory size before fuzzing', () => {
+            please('check the canister memory size', async () => {
+                const canisterNames = await getCanisterNames();
+
+                for (const canisterName of canisterNames) {
+                    const memorySize = await getRawMemorySize(canisterName);
+
+                    startingMemorySizes[canisterName] = memorySize;
+
+                    console.info(
+                        `Canister ${canisterName} memory size: ${formatMemorySize(memorySize)}`
+                    );
+                }
+            });
+        });
+    }
+
+    if (shouldFuzz === true) {
         describe(`fuzz`, () => {
             it('runs fuzz tests for all canisters', runFuzzTests);
         });
@@ -130,6 +158,47 @@ export function runTests(tests: Test): void {
                         throw error;
                     }
                     break;
+                }
+            });
+        });
+    }
+
+    if (shouldFuzz === true) {
+        describe('check canister memory size after fuzzing', () => {
+            please('check the canister memory size', async () => {
+                const canisterNames = await getCanisterNames();
+
+                for (const canisterName of canisterNames) {
+                    const finalMemorySize =
+                        await getRawMemorySize(canisterName);
+                    const startingMemorySize =
+                        startingMemorySizes[canisterName];
+
+                    if (
+                        startingMemorySize === null ||
+                        startingMemorySize === undefined
+                    ) {
+                        console.info(
+                            `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (starting size unknown)`
+                        );
+                    } else {
+                        const memoryIncrease =
+                            finalMemorySize === null
+                                ? null
+                                : finalMemorySize - startingMemorySize;
+                        const increaseText =
+                            memoryIncrease === null
+                                ? 'unknown'
+                                : memoryIncrease === 0
+                                  ? 'no change'
+                                  : memoryIncrease > 0
+                                    ? `+${formatMemorySize(memoryIncrease)}`
+                                    : formatMemorySize(memoryIncrease);
+
+                        console.info(
+                            `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (${increaseText})`
+                        );
+                    }
                 }
             });
         });
