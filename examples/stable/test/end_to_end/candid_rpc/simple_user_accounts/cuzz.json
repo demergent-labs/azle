@@ -1,6 +1,5 @@
 {
     "expectedErrors": [
-        "Canister called `ic0.trap` with message: 'Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record {id:text; username:text}",
-        "Error while making call: fetch failed"
+        "Canister called `ic0.trap` with message: 'Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record {id:text; username:text}"
     ]
 }
