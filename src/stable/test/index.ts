@@ -166,6 +166,7 @@ export function runTests(tests: Test): void {
     if (shouldFuzz === true) {
         describe('check canister memory size after fuzzing', () => {
             please('check the canister memory size', async () => {
+                const cuzzConfig = getCuzzConfig();
                 const canisterNames = await getCanisterNames();
 
                 for (const canisterName of canisterNames) {
@@ -198,6 +199,14 @@ export function runTests(tests: Test): void {
                         console.info(
                             `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (${increaseText})`
                         );
+
+                        if (
+                            memoryIncrease === null ||
+                            (memoryIncrease > 0 &&
+                                cuzzConfig.memoryIncreaseExpected !== true)
+                        ) {
+                            expect(memoryIncrease).toBe(0);
+                        }
                     }
                 }
             });
