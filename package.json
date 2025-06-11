@@ -52,7 +52,7 @@
         "@dfinity/agent": "^2.4.1",
         "@sinonjs/text-encoding": "0.7.3",
         "binaryen": "^116.0.0",
-        "cuzz": "github:demergent-labs/cuzz#b33d1ad0683b33011e684c6a9a5584200535cf43",
+        "cuzz": "github:demergent-labs/cuzz#c2bf6d6cfd298c7db6e10718fb2f4f6d3b79fdb6",
         "esbuild": "^0.25.5",
         "jssha": "^3.3.1",
         "tsx": "^4.19.4",
