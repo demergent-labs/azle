@@ -1,0 +1,83 @@
+{
+    "benchmarks": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.31.0",
+            "benchmarks": [
+                {
+                    "instructions": "1174071",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1749772269722456747"
+                },
+                {
+                    "instructions": "1345650",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1749772270144593757"
+                },
+                {
+                    "instructions": "3541042",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1749772270450531092"
+                },
+                {
+                    "instructions": "25374823",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1749772270737173134"
+                },
+                {
+                    "instructions": "249970448",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1749772271037822187"
+                },
+                {
+                    "instructions": "2429557560",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1749772271402159960"
+                },
+                {
+                    "instructions": "24335621420",
+                    "method_name": "blobInitStack",
+                    "timestamp": "1749772272360438900"
+                },
+                {
+                    "instructions": "1135998",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1749772280082354075"
+                },
+                {
+                    "instructions": "1370444",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1749772280360481471"
+                },
+                {
+                    "instructions": "3746280",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1749772280657394629"
+                },
+                {
+                    "instructions": "27321234",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1749772280925711150"
+                },
+                {
+                    "instructions": "292982446",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1749772281329218008"
+                },
+                {
+                    "instructions": "2806564752",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1749772281692949120"
+                },
+                {
+                    "instructions": "28107311198",
+                    "method_name": "blobInitHeap",
+                    "timestamp": "1749772282970172549"
+                }
+            ]
+        }
+    }
+}
