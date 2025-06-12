@@ -1,6 +1,7 @@
 import '#experimental/build/assert_experimental';
 
 import { ActorSubclass, Agent, HttpAgent } from '@dfinity/agent';
+import { createRequire } from 'module';
 
 import { getCanisterId } from '#utils/dfx';
 
@@ -14,6 +15,7 @@ export async function getActor<T>(
     parentDir: string,
     agent?: Agent
 ): Promise<ActorSubclass<T> & { [key: string]: any }> {
+    const require = createRequire(import.meta.url);
     const resolvedPathIndex = require.resolve(
         `${parentDir}/dfx_generated/canister/index.js`
     );
@@ -24,7 +26,6 @@ export async function getActor<T>(
     delete require.cache[resolvedPathIndex];
     delete require.cache[resolvedPathDid];
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { createActor } = require(`${parentDir}/dfx_generated/canister`);
 
     return createActor(getCanisterId('canister'), {
