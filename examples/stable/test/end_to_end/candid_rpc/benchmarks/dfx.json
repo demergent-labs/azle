@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "benchmarks": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "declarations": {
+                "output": "test/dfx_generated/benchmarks",
+                "node_compatibility": true
+            }
+        }
+    }
+}

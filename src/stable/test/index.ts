@@ -109,6 +109,7 @@ export function runTests(tests: Test): void {
         });
     }
 
+    // TODO we might want to put everything related to fuzzing within the same describe
     if (shouldFuzz === true) {
         describe(`fuzz`, () => {
             it('runs fuzz tests for all canisters', runFuzzTests);
