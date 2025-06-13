@@ -1,0 +1,314 @@
+name: Run Test (Windows WSL)
+
+on:
+    workflow_call:
+        inputs:
+            directories:
+                required: true
+                type: string
+            exclude-dirs:
+                required: false
+                type: string
+                default: ''
+            link-azle:
+                required: true
+                type: boolean
+            run-experimental:
+                required: false
+                type: boolean
+                default: false
+            fuzz:
+                required: false
+                type: boolean
+                default: false
+            call-delay:
+                required: false
+                type: string
+                default: '.1'
+            time-limit:
+                required: false
+                type: string
+                default: '300'
+
+jobs:
+    get-test-infos:
+        name: Get test infos
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: ${{ inputs.directories }}
+                  exclude-dirs: ${{ inputs.exclude-dirs }}
+
+    run-test:
+        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | WSL'
+        needs: get-test-infos
+        runs-on: windows-latest
+        env:
+            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
+            AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
+            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
+
+        strategy:
+            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
+            matrix: # spins up one job per combination of test and code source (repo or npm).
+                azle_source:
+                    - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
+                test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
+        steps:
+            - name: Setup WSL
+              uses: Vampire/setup-wsl@v3
+              with:
+                  distribution: Ubuntu-22.04
+                  update: 'true'
+                  additional-packages: curl build-essential git jq
+                  wsl-conf: |
+                      [boot]
+                      systemd=true
+                  set-as-default: 'true'
+                  wsl-shell-user: 'root'
+
+            - name: Upgrade to WSL 2
+              run: |
+                  echo "Current WSL status before upgrade:"
+                  wsl --status
+
+                  echo "Updating WSL kernel..."
+                  wsl --update --web-download
+
+                  echo "Setting default version to WSL 2..."
+                  wsl --set-default-version 2
+
+                  echo "Converting Ubuntu to WSL 2..."
+                  wsl --set-version Ubuntu 2
+
+                  echo "WSL status after upgrade:"
+                  wsl --status
+                  wsl --list --verbose
+              shell: powershell
+
+            - uses: actions/checkout@v4
+              with:
+                  # Configure checkout to use LF line endings
+                  fetch-depth: 0
+
+            - name: Configure git for Unix line endings
+              run: |
+                  # Configure git to use LF line endings and fix any existing files
+                  git config core.autocrlf false
+                  git config core.eol lf
+                  # Reset and checkout to fix line endings
+                  git rm --cached -r .
+                  git reset --hard
+              shell: wsl-bash {0}
+
+            - uses: ./.github/actions/determine_workflow_context
+              id: set-conditions
+
+            - name: Print environment variables
+              run: |
+                  # Set workflow context variables inline
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge || 'false' }}"
+                  AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr || 'false' }}"
+                  AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr || 'false' }}"
+                  AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr || 'false' }}"
+
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
+                  echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
+                  echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
+                  echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
+                  echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+              shell: wsl-bash {0}
+
+            - name: Report full path of test
+              # Just in case the path isn't obvious from the name, this will remove ambiguity
+              run: echo ${{matrix.test.path}}
+              shell: wsl-bash {0}
+
+            - name: Setup Node.js in WSL
+              run: |
+                  # Use clean PATH to avoid Windows conflicts
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+                  # Get Node version from package.json
+                  NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
+                  # Extract major version number (e.g., "22.14.0" -> "22")
+                  MAJOR_VERSION=$(echo $NODE_VERSION | cut -d. -f1)
+                  echo "Installing Node.js version $NODE_VERSION (major version $MAJOR_VERSION) in WSL..."
+
+                  # Install Node.js using NodeSource repository
+                  curl -fsSL https://deb.nodesource.com/setup_${MAJOR_VERSION}.x | sudo -E bash -
+                  sudo apt-get install -y nodejs
+
+                  # Verify installation with clean PATH
+                  echo "Installed Node version:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" node --version
+                  echo "Installed npm version:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" npm --version
+                  echo "Node installation path:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" which node
+                  echo "npm installation path:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" which npm
+              shell: wsl-bash {0}
+
+            - name: Install dfx
+              run: |
+                  # Use clean PATH to avoid Windows conflicts
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+                  DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
+                  echo "Installing dfx version $DFX_VERSION..."
+                  DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --retry 3 -fsSL https://sdk.dfinity.org/install.sh)"
+                  export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                  if ! command -v dfx &> /dev/null; then
+                      echo "dfx installation verification failed" >&2
+                      exit 1
+                  fi
+                  echo "dfx installation completed."
+                  echo "Installed dfx version:"
+                  dfx --version
+                  echo "dfx installation path:"
+                  which dfx
+              shell: wsl-bash {0}
+
+            - name: Install Rust and Cargo
+              run: |
+                  # Use clean PATH to avoid Windows conflicts
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+                  echo "Installing Rust and Cargo..."
+                  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+                  # Source the cargo environment
+                  source "$HOME/.cargo/env"
+
+                  # Verify installation with clean PATH
+                  echo "Installed Rust version:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.cargo/bin" rustc --version
+                  echo "Installed Cargo version:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.cargo/bin" cargo --version
+                  echo "Rust installation path:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.cargo/bin" which rustc
+                  echo "Cargo installation path:"
+                  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.cargo/bin" which cargo
+              shell: wsl-bash {0}
+
+            - name: Install npm dependencies
+              run: |
+                  # Use clean PATH with dfx and cargo
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  # Run npm install
+                  npm install
+              shell: wsl-bash {0}
+
+            - name: npm link
+              if: matrix.azle_source == 'repo'
+              shell: wsl-bash {0}
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  npm link
+
+            - name: npm run lint
+              shell: wsl-bash {0}
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  npm run lint
+
+            - name: npm install in test directory
+              working-directory: ${{ matrix.test.path }}
+              shell: wsl-bash {0}
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  npm install
+
+            - name: Install experimental dependencies for stable api tests if running in experimental mode
+              if: ${{ inputs.run-experimental }}
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
+              working-directory: ${{ matrix.test.path }}
+              shell: wsl-bash {0}
+
+            - name: npm link azle
+              if: matrix.azle_source == 'repo'
+              working-directory: ${{ matrix.test.path }}
+              shell: wsl-bash {0}
+              run: |
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  npm link azle
+
+            - name: Test configuration
+              id: test-configuration
+              shell: bash
+              run: |
+                  # Set workflow context variables inline
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
+                  AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge || 'false' }}"
+                  AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr || 'false' }}"
+                  AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr || 'false' }}"
+                  AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr || 'false' }}"
+
+                  RECORD_ACTIONS='true'
+                  RUNS=1
+
+                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE" == "true" ]]; then
+                      RUNS=5
+                  fi
+
+                  if [[ "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
+                      RUNS=100
+                  fi
+
+                  if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
+                      RECORD_ACTIONS='false'
+                      RUNS=10
+                  fi
+
+                  if [[ "$AZLE_IS_FEATURE_BRANCH_PR" == "true" ]]; then
+                      RUNS=5
+                  fi
+
+                  if [[ "$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
+                      RUNS=1
+                  fi
+
+                  echo "Running tests $RUNS times"
+
+                  echo "runs=$RUNS" >> $GITHUB_OUTPUT
+                  echo "record_actions=$RECORD_ACTIONS" >> $GITHUB_OUTPUT
+
+            - name: Run tests
+              run: |
+                  # Set clean PATH
+                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+
+                  # Set workflow context variables inline
+                  export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
+                  export AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge || 'false' }}"
+                  export AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr || 'false' }}"
+                  export AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr || 'false' }}"
+                  export AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr || 'false' }}"
+
+                  # Set test configuration variables
+                  export AZLE_EXPERIMENTAL="${{ inputs.run-experimental }}"
+                  export AZLE_FUZZ="${{ inputs.fuzz }}"
+                  export AZLE_FUZZ_CALL_DELAY="${{ inputs.call-delay }}"
+                  export AZLE_FUZZ_TIME_LIMIT="${{ inputs.time-limit }}"
+                  export AZLE_RECORD_ACTIONS="${{ steps.test-configuration.outputs.record_actions }}"
+                  export AZLE_PROPTEST_NUM_RUNS="${{ steps.test-configuration.outputs.runs }}"
+                  export AZLE_PROPTEST_VERBOSE=true
+                  export AZLE_VERBOSE=true
+                  export AZLE_IDENTITY_STORAGE_MODE=plaintext
+                  export GITHUB_ACTIONS=true
+                  export AZLE_TEST_WSL=true
+
+                  dfx start --clean --background --artificial-delay 0
+                  npm test
+              working-directory: ${{ matrix.test.path }}
+              shell: wsl-bash {0}
