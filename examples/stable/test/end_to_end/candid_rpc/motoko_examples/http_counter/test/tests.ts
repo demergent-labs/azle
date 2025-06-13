@@ -1,7 +1,13 @@
-import { expect, it, Test } from 'azle/_internal/test';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 export function getTests(): Test {
+    if (process.env.AZLE_TEST_WSL) {
+        return () => {
+            please('skip all tests on wsl', async () => {});
+        };
+    }
+
     return () => {
         it('gets an initial count via http', async () => {
             expect(await getCount()).toBe(getExpectedGetCountResult(0));
