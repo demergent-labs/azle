@@ -2,16 +2,6 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { describe } from '@jest/globals';
 import { expect, it, please, Test } from 'azle/_internal/test';
-import {
-    blob,
-    float32,
-    float64,
-    int,
-    nat,
-    nat8,
-    nat16,
-    nat32
-} from 'azle/experimental';
 import { execSync } from 'child_process';
 
 import { Reaction, User } from '../src/types';
@@ -23,19 +13,19 @@ type _SERVICE = CANISTER1_SERVICE | CANISTER2_SERVICE | CANISTER3_SERVICE;
 
 const HELLO_BYTES = [104, 101, 108, 108, 111];
 const STABLE_MAP_KEYS: [
-    nat8,
-    nat16,
-    nat32,
+    number,
+    number,
+    number,
     Reaction,
     User,
     string[], //Opt?
     BigUint64Array,
     null,
     boolean,
-    float64,
-    float32,
-    nat,
-    blob,
+    number,
+    number,
+    bigint,
+    Uint8Array,
     string,
     string,
     [Principal, string],
@@ -76,11 +66,11 @@ const STABLE_MAP_KEYS: [
 
 const STABLEMAPVALUES: [
     string,
-    blob,
-    nat,
-    int,
-    float32,
-    float64,
+    Uint8Array,
+    bigint,
+    bigint,
+    number,
+    number,
     boolean,
     null,
     null,
@@ -354,7 +344,7 @@ function keysIsLength(
 }
 
 function lenReturns(
-    expectedLen: nat32,
+    expectedLen: number,
     suffix: string,
     stableStructuresCanister: ActorSubclass<_SERVICE>,
     index: number

@@ -6,7 +6,7 @@ function pretest(): void {
     for (const canister of CANISTERS) {
         execSync(`dfx canister uninstall-code ${canister.name} || true`, {
             stdio: 'inherit',
-            cwd: canister.dfxDir
+            cwd: canister.dfxRoot
         });
     }
 }
