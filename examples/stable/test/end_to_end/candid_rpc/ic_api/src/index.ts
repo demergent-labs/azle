@@ -36,7 +36,7 @@ export default class {
     }
 
     // returns the amount of cycles available in the canister
-    @query([], IDL.Nat64)
+    @query([], IDL.Nat)
     canisterCycleBalance(): bigint {
         return canisterCycleBalance();
     }

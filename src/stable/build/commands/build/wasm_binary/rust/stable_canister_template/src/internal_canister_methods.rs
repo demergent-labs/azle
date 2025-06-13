@@ -20,6 +20,8 @@ fn _azle_get_benchmarks() -> Vec<BenchmarkEntry> {
     BENCHMARKS_REF_CELL.with(|benchmarks_ref_cell| benchmarks_ref_cell.borrow().clone())
 }
 
+// TODO maybe we should just combine all of the global state checks into one method
+
 /// Returns the current length of globalThis._azleRejectCallbacks to aid in testing for memory leaks and other global state issues.
 #[query(guard = "guard_against_non_controllers")]
 fn _azle_reject_callbacks_len() -> u32 {

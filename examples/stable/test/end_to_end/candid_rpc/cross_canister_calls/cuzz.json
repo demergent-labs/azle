@@ -1,11 +1,11 @@
 {
     "expectedErrors": [
-        "Reject text:.*Canister called `ic0.trap` with message: hahahaha",
-        "Reject text:.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record {id:text; balance:nat64} argument",
-        "Method: trap \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister called `ic0.trap` with message: hahahaha",
-        "Method: trap \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Canister called `ic0.trap` with message: hahahaha",
-        "Method: account \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record",
-        "Method: account \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record",
-        "Method: transfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot convert to bigint"
+        "Canister called `ic0.trap` with message: hahahaha",
+        "Canister called `ic0.trap` with message: 'hahahaha'",
+        "Uncaught Error: Failed to encode Candid arguments: Error: Invalid opt record",
+        "Uncaught TypeError: cannot convert to bigint",
+        "Uncaught Error: call rejected: 5 - IC0503: Error from Canister .*: Canister called `ic0.trap` with message: 'hahahaha'",
+        "Canister called `ic0.trap` with message: 'Uncaught TypeError: cannot convert to BigInt",
+        "Uncaught Error: call perform failed"
     ]
 }

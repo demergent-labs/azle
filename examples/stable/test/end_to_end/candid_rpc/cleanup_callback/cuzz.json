@@ -1,0 +1,12 @@
+{
+    "expectedErrors": [
+        "trapped from getRandomnessWithTrapCaught",
+        "trapped from getRandomnessWithTrapCaughtAndTrapAgain",
+        "'Azle CallRawError: QuickJS callback execution failed: Error converting from js 'undefined' into type 'function'",
+        "Uncaught Error: executing within the reject callback",
+        "trapped from getRandomnessWithTrapCaughtPromise",
+        "trapped from getRandomnessWithTrapUncaught",
+        "calling msgReject from getRandomnessMsgRejectInRejectCallback",
+        "calling msgReject from getRandomnessMsgRejectInReplyCallback"
+    ]
+}

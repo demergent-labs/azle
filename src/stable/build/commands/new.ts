@@ -23,6 +23,7 @@ export async function runCommand(
     // Edit the configuration files in place so they are ready to use in the new project
     await editPackageJson(projectName, templatePath, azleVersion, experimental);
     await editTsConfig(projectName, useExperimentalDecorators);
+    await editJestConfig(projectName);
     await editDfxJson(projectName, templatePath, experimental);
 
     console.info(`${projectName} created successfully`);
@@ -96,6 +97,21 @@ async function editTsConfig(
 
     const tsConfigPath = join(projectName, 'tsconfig.json');
     await writeFile(tsConfigPath, JSON.stringify(tsConfig, null, 4));
+}
+
+/**
+ * Edits the jest.config.js for the new project
+ *
+ * @param projectName - The name of the project directory.
+ */
+async function editJestConfig(projectName: string): Promise<void> {
+    const templateJestConfigString = await readFile(
+        join(AZLE_ROOT, 'jest.config.dev.js'),
+        { encoding: 'utf-8' }
+    );
+
+    const jestConfigPath = join(projectName, 'jest.config.js');
+    await writeFile(jestConfigPath, templateJestConfigString);
 }
 
 /**

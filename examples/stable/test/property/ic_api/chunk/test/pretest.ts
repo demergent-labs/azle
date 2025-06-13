@@ -9,6 +9,13 @@ function pretest(): void {
         stdio: 'inherit'
     });
 
+    execSync(
+        `dfx ledger fabricate-cycles --canister canister --cycles 1000000000000000`,
+        {
+            stdio: 'inherit'
+        }
+    );
+
     execSync(`dfx generate canister`, {
         stdio: 'inherit'
     });

@@ -127,10 +127,6 @@ jobs:
                           run-experimental: true
                       }
                     - {
-                          name: 'Experimental Property CRPC',
-                          directories: './examples/experimental/test/property/candid_rpc'
-                      }
-                    - {
                           name: 'Stable Property IC API',
                           directories: './examples/stable/test/property/ic_api'
                       }

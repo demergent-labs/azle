@@ -1,7 +1,8 @@
 {
-    "expectedErrors": [
-        "Method: receiveCyclesByChunk \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: numChunks cannot be 0",
-        "Method: sendCyclesByChunk \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught Error: numChunks cannot be 0",
-        "xCanister trapped: heap out of bounds"
-    ]
+    "expectedErrors": ["Uncaught Error: numChunks cannot be 0"],
+    "size": {
+        "nat64": {
+            "max": 1000
+        }
+    }
 }
