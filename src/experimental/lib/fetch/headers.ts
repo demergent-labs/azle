@@ -6,7 +6,7 @@ export class AzleFetchHeaders {
         [key: string]: string;
     } = {};
 
-    [Symbol.iterator](): IterableIterator<[string, string]> {
+    [Symbol.iterator](): HeadersIterator<[string, string]> {
         return this.entries();
     }
 
@@ -40,7 +40,7 @@ export class AzleFetchHeaders {
         delete this.headers[name];
     }
 
-    entries(): IterableIterator<[string, string]> {
+    entries(): HeadersIterator<[string, string]> {
         return Object.entries(this.headers)[Symbol.iterator]();
     }
 
@@ -71,7 +71,7 @@ export class AzleFetchHeaders {
         return this.headers[name] !== undefined;
     }
 
-    keys(): IterableIterator<string> {
+    keys(): HeadersIterator<string> {
         return Object.keys(this.headers)[Symbol.iterator]();
     }
 
@@ -79,7 +79,7 @@ export class AzleFetchHeaders {
         this.headers[name] = value;
     }
 
-    values(): IterableIterator<string> {
+    values(): HeadersIterator<string> {
         return Object.values(this.headers)[Symbol.iterator]();
     }
 }
