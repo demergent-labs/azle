@@ -8,11 +8,10 @@ export class BlobBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            let _value =
+            let _value: Uint8Array =
                 i % 2 === 0
                     ? Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
                     : Uint8Array.from([]);
-
             i += 1;
         }
     }
