@@ -51,18 +51,11 @@ runs:
               ') }}"
 
               SLOW_EXCLUSIONS="${{ format('
+              examples/stable/demo/ckbtc
               examples/experimental/demo/basic_bitcoin
-              examples/experimental/demo/ckbtc
               examples/stable/test/end_to_end/candid_rpc/bitcoin
               examples/stable/test/end_to_end/candid_rpc/stable_structures
-              examples/stable/test/property/candid_rpc/stable_b_tree_map
-              examples/experimental/test/end_to_end/candid_rpc/bitcoin
-              examples/experimental/test/end_to_end/candid_rpc/composite_queries
-              examples/experimental/test/end_to_end/candid_rpc/ckbtc
-              examples/experimental/test/end_to_end/candid_rpc/cross_canister_calls
-              examples/experimental/test/end_to_end/candid_rpc/management_canister
-              examples/experimental/test/end_to_end/candid_rpc/stable_structures
-              examples/experimental/test/end_to_end/http_server/large_files
+               examples/experimental/test/end_to_end/http_server/large_files
               ') }}"
 
               EXCLUDE_DIRS="$DISABLED_EXCLUSIONS $EXTERNAL_EXCLUSIONS"
