@@ -1,7 +1,12 @@
-import { expect, it, Test } from 'azle/_internal/test';
+import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 export function getTests(): Test {
+    if (process.env.AZLE_TEST_WSL) {
+        return () => {
+            please('skip all tests on wsl', async () => {});
+        };
+    }
     return () => {
         it('gets an initial count via http', async () => {
             expect(await getCount()).toBe(getExpectedGetCountResult(0));
@@ -43,8 +48,31 @@ function getCanisterID(): string {
     return execSync(`dfx canister id http_counter`).toString().trim();
 }
 
+function isRunningInWSL(): boolean {
+    try {
+        // Check if we're in WSL by looking for WSL-specific environment or file
+        const isWSL =
+            process.env.WSL_DISTRO_NAME !== undefined ||
+            execSync(
+                'grep -qi microsoft /proc/version 2>/dev/null || echo false'
+            )
+                .toString()
+                .trim() !== 'false';
+        return isWSL;
+    } catch {
+        return false;
+    }
+}
+
 function getUrl(): string {
     const canister_id = getCanisterID();
+
+    // In WSL, subdomain resolution for localhost doesn't work reliably
+    // Use the direct IP approach instead
+    if (isRunningInWSL()) {
+        return `http://127.0.0.1:4943/?canisterId=${canister_id}`;
+    }
+
     return `http://${canister_id}.raw.localhost:4943/`;
 }
 

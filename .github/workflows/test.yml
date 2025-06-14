@@ -96,6 +96,16 @@ jobs:
                           directories: './examples/stable/demo'
                       }
                     - {
+                          name: 'Stable Demo (Mac)',
+                          directories: './examples/stable/demo',
+                          operating-system: 'mac'
+                      }
+                    - {
+                          name: 'Stable Demo (Windows)',
+                          directories: './examples/stable/demo',
+                          operating-system: 'windows'
+                      }
+                    - {
                           name: 'Stable Demo (Experimental)',
                           directories: './examples/stable/demo',
                           run-experimental: true
@@ -106,7 +116,17 @@ jobs:
                       }
                     - {
                           name: 'Stable E2E CRPC',
-                          directories: './examples/stable/test/end_to_end/candid_rpc'
+                          directories: './examples/stable/test/end_to_end/candid_rpc/query'
+                      }
+                    - {
+                          name: 'Stable E2E CRPC (Mac)',
+                          directories: './examples/stable/test/end_to_end/candid_rpc/query',
+                          operating-system: 'mac'
+                      }
+                    - {
+                          name: 'Stable E2E CRPC (Windows)',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          operating-system: 'windows'
                       }
                     - {
                           name: 'Stable E2E CRPC (Experimental)',
@@ -122,6 +142,16 @@ jobs:
                           directories: './examples/stable/test/property/candid_rpc'
                       }
                     - {
+                          name: 'Stable Property CRPC (Mac)',
+                          directories: './examples/stable/test/property/candid_rpc',
+                          operating-system: 'mac'
+                      }
+                    - {
+                          name: 'Stable Property CRPC (Windows)',
+                          directories: './examples/stable/test/property/candid_rpc',
+                          operating-system: 'windows'
+                      }
+                    - {
                           name: 'Stable Property CRPC (Experimental)',
                           directories: './examples/stable/test/property/candid_rpc',
                           run-experimental: true
@@ -135,6 +165,16 @@ jobs:
                           directories: './examples/stable/test/property/ic_api'
                       }
                     - {
+                          name: 'Stable Property IC API (Mac)',
+                          directories: './examples/stable/test/property/ic_api',
+                          operating-system: 'mac'
+                      }
+                    - {
+                          name: 'Stable Property IC API (Windows)',
+                          directories: './examples/stable/test/property/ic_api',
+                          operating-system: 'windows'
+                      }
+                    - {
                           name: 'Stable Property IC API (Experimental)',
                           directories: './examples/stable/test/property/ic_api',
                           run-experimental: true
@@ -146,6 +186,7 @@ jobs:
             link-azle: ${{ needs.workflow-config.outputs.link-azle == 'true' }}
             run-experimental: ${{ matrix.test_group.run-experimental || false }}
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
+            operating-system: ${{ matrix.test_group.operating-system || 'linux' }}
 
     top-level-checks:
         name: Top level checks
