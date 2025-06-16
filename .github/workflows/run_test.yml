@@ -30,14 +30,12 @@ on:
                 type: string
                 default: '300'
             operating-system:
-                required: false
                 type: string
-                default: 'linux'
-                description: 'Operating system to run tests on (linux, mac, or windows)'
+                description: 'Operating system to run tests on (linux, mac, or wsl)'
 
 jobs:
-    run-unix-tests:
-        if: ${{ inputs.operating-system != 'windows' }}
+    run-tests-linux-and-mac:
+        if: ${{ inputs.operating-system == 'linux' || inputs.operating-system == 'mac' }}
         uses: ./.github/workflows/run_test_unix.yml
         with:
             directories: ${{ inputs.directories }}
@@ -50,8 +48,8 @@ jobs:
             operating-system: ${{ inputs.operating-system }}
         secrets: inherit
 
-    run-windows-tests:
-        if: ${{ inputs.operating-system == 'windows' }}
+    run-tests-wsl:
+        if: ${{ inputs.operating-system == 'wsl' }}
         uses: ./.github/workflows/run_test_windows.yml
         with:
             directories: ${{ inputs.directories }}

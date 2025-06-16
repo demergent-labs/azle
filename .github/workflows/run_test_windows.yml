@@ -1,4 +1,4 @@
-name: Run Test (Windows WSL)
+name: Run Test (WSL)
 
 on:
     workflow_call:
