@@ -94,16 +94,19 @@ jobs:
                     - {
                           name: 'Stable Demo (Linux)',
                           directories: './examples/stable/demo',
+                          run-experimental: false,
                           operating-system: 'linux'
                       }
                     - {
                           name: 'Stable Demo (Mac)',
                           directories: './examples/stable/demo',
+                          run-experimental: false,
                           operating-system: 'mac'
                       }
                     - {
                           name: 'Stable Demo (WSL)',
                           directories: './examples/stable/demo',
+                          run-experimental: false,
                           operating-system: 'wsl'
                       }
                     - {
@@ -115,21 +118,25 @@ jobs:
                     - {
                           name: 'Experimental Demo (Linux)',
                           directories: './examples/experimental/demo',
+                          run-experimental: false,
                           operating-system: 'linux'
                       }
                     - {
                           name: 'Stable E2E CRPC (Linux)',
                           directories: './examples/stable/test/end_to_end/candid_rpc/query',
+                          run-experimental: false,
                           operating-system: 'linux'
                       }
                     - {
                           name: 'Stable E2E CRPC (Mac)',
                           directories: './examples/stable/test/end_to_end/candid_rpc/query',
+                          run-experimental: false,
                           operating-system: 'mac'
                       }
                     - {
                           name: 'Stable E2E CRPC (WSL)',
                           directories: './examples/stable/test/end_to_end/candid_rpc',
+                          run-experimental: false,
                           operating-system: 'wsl'
                       }
                     - {
@@ -141,21 +148,25 @@ jobs:
                     - {
                           name: 'Experimental E2E HTTP Server (Linux)',
                           directories: './examples/experimental/test/end_to_end/http_server',
+                          run-experimental: false,
                           operating-system: 'linux'
                       }
                     - {
                           name: 'Stable Property CRPC (Linux)',
                           directories: './examples/stable/test/property/candid_rpc',
+                          run-experimental: false,
                           operating-system: 'linux'
                       }
                     - {
                           name: 'Stable Property CRPC (Mac)',
                           directories: './examples/stable/test/property/candid_rpc',
+                          run-experimental: false,
                           operating-system: 'mac'
                       }
                     - {
                           name: 'Stable Property CRPC (WSL)',
                           directories: './examples/stable/test/property/candid_rpc',
+                          run-experimental: false,
                           operating-system: 'wsl'
                       }
                     - {
@@ -167,21 +178,25 @@ jobs:
                     - {
                           name: 'Experimental Property CRPC (Linux)',
                           directories: './examples/experimental/test/property/candid_rpc',
+                          run-experimental: false,
                           operating-system: 'linux'
                       }
                     - {
                           name: 'Stable Property IC API (Linux)',
                           directories: './examples/stable/test/property/ic_api',
+                          run-experimental: false,
                           operating-system: 'linux'
                       }
                     - {
                           name: 'Stable Property IC API (Mac)',
                           directories: './examples/stable/test/property/ic_api',
+                          run-experimental: false,
                           operating-system: 'mac'
                       }
                     - {
                           name: 'Stable Property IC API (WSL)',
                           directories: './examples/stable/test/property/ic_api',
+                          run-experimental: false,
                           operating-system: 'wsl'
                       }
                     - {
@@ -195,7 +210,7 @@ jobs:
             directories: ${{ matrix.test_group.directories }}
             exclude-dirs: ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             link-azle: ${{ needs.workflow-config.outputs.link-azle == 'true' }}
-            run-experimental: ${{ matrix.test_group.run-experimental || false }}
+            run-experimental: ${{ matrix.test_group.run-experimental }}
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
             operating-system: ${{ matrix.test_group.operating-system }}
 
