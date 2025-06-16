@@ -279,7 +279,7 @@ jobs:
                   export AZLE_VERBOSE=true
                   export AZLE_IDENTITY_STORAGE_MODE=plaintext
                   export GITHUB_ACTIONS=true
-                  export AZLE_TEST_WSL=true
+                  export AZLE_RUNNING_IN_WSL=true
 
                   dfx start --clean --background --artificial-delay 0
                   npm test

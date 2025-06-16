@@ -2,7 +2,7 @@ import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 export function getTests(): Test {
-    if (process.env.AZLE_TEST_WSL) {
+    if (process.env.AZLE_RUNNING_IN_WSL) {
         return () => {
             please('skip all tests on wsl', async () => {});
         };
