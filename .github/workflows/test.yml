@@ -123,13 +123,13 @@ jobs:
                       }
                     - {
                           name: 'Stable E2E CRPC (Linux)',
-                          directories: './examples/stable/test/end_to_end/candid_rpc/query',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
                           run-experimental: false,
                           operating-system: 'linux'
                       }
                     - {
                           name: 'Stable E2E CRPC (Mac)',
-                          directories: './examples/stable/test/end_to_end/candid_rpc/query',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
                           run-experimental: false,
                           operating-system: 'mac'
                       }
