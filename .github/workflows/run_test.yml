@@ -46,7 +46,6 @@ jobs:
             call-delay: ${{ inputs.call-delay }}
             time-limit: ${{ inputs.time-limit }}
             operating-system: ${{ inputs.operating-system }}
-        secrets: inherit
 
     run-tests-wsl:
         if: ${{ inputs.operating-system == 'wsl' }}
@@ -59,4 +58,3 @@ jobs:
             fuzz: ${{ inputs.fuzz }}
             call-delay: ${{ inputs.call-delay }}
             time-limit: ${{ inputs.time-limit }}
-        secrets: inherit
