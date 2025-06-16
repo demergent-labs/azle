@@ -55,7 +55,7 @@ runs:
               examples/experimental/demo/basic_bitcoin
               examples/stable/test/end_to_end/candid_rpc/bitcoin
               examples/stable/test/end_to_end/candid_rpc/stable_structures
-               examples/experimental/test/end_to_end/http_server/large_files
+              examples/experimental/test/end_to_end/http_server/large_files
               ') }}"
 
               EXCLUDE_DIRS="$DISABLED_EXCLUSIONS $EXTERNAL_EXCLUSIONS"
