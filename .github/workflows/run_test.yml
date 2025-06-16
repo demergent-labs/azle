@@ -36,7 +36,7 @@ on:
 jobs:
     run-tests-linux-and-mac:
         if: ${{ inputs.operating-system == 'linux' || inputs.operating-system == 'mac' }}
-        uses: ./.github/workflows/run_test_unix.yml
+        uses: ./.github/workflows/run_test_linux_and_mac.yml
         with:
             directories: ${{ inputs.directories }}
             exclude-dirs: ${{ inputs.exclude-dirs }}
@@ -50,7 +50,7 @@ jobs:
 
     run-tests-wsl:
         if: ${{ inputs.operating-system == 'wsl' }}
-        uses: ./.github/workflows/run_test_windows.yml
+        uses: ./.github/workflows/run_test_wsl.yml
         with:
             directories: ${{ inputs.directories }}
             exclude-dirs: ${{ inputs.exclude-dirs }}
