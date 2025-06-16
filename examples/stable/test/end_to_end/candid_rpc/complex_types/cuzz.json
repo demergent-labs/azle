@@ -5,5 +5,6 @@
         "Uncaught Error: Post not found",
         "Uncaught Error: Thread not found",
         "Uncaught Error: Author not found"
-    ]
+    ],
+    "memoryIncreaseExpected": true
 }

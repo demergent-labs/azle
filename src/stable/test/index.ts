@@ -201,6 +201,7 @@ export function runTests(tests: Test): void {
                             `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (${increaseText})`
                         );
 
+                        // TODO we really need to be able to set the memoryIncreaseExpected per canister right?
                         if (
                             memoryIncrease === null ||
                             (memoryIncrease > 0 &&

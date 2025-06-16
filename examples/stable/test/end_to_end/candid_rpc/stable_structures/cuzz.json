@@ -1,3 +1,4 @@
 {
-    "expectedErrors": ["Uncaught SyntaxError"]
+    "expectedErrors": ["Uncaught SyntaxError"],
+    "memoryIncreaseExpected": true
 }
