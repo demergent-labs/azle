@@ -1,4 +1,5 @@
 import { Principal } from '@dfinity/principal';
+import { describe } from '@jest/globals';
 import { jsonParse, jsonStringify } from 'azle';
 import {
     defaultPropTestParams,
@@ -97,6 +98,22 @@ const recursiveValueArb = fc.letrec((tie) => ({
     )
 })).value;
 
+type TestCase = {
+    type: 'query' | 'update';
+    method: 'processJsonQuery' | 'processJsonUpdate';
+};
+
+const testCases: TestCase[] = [
+    {
+        type: 'query',
+        method: 'processJsonQuery'
+    },
+    {
+        type: 'update',
+        method: 'processJsonUpdate'
+    }
+];
+
 export function getTests(): Test {
     return () => {
         it('asserts json functions static and runtime types', async () => {
@@ -104,62 +121,41 @@ export function getTests(): Test {
             expect(await actor.assertTypes()).toBe(true);
         });
 
-        it('should test jsonStringify and jsonParse with query method', async () => {
-            // Use fewer test runs to avoid timeouts
-            const executionParams = {
-                ...defaultPropTestParams(),
-                numRuns: 20 * Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
-            };
+        describe.each(testCases)(
+            'jsonStringify and jsonParse',
+            ({ type, method }) => {
+                it(`should test jsonStringify and jsonParse with ${type} method`, async () => {
+                    // Use fewer test runs to avoid timeouts
+                    const executionParams = {
+                        ...defaultPropTestParams(),
+                        numRuns:
+                            20 * Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
+                    };
 
-            await fc.assert(
-                fc.asyncProperty(recursiveValueArb, async (value) => {
-                    const actor = await getCanisterActor<Actor>('canister');
+                    await fc.assert(
+                        fc.asyncProperty(recursiveValueArb, async (value) => {
+                            const actor =
+                                await getCanisterActor<Actor>('canister');
 
-                    // Convert the value to a JSON string using jsonStringify
-                    const jsonString = jsonStringify(value);
+                            // Convert the value to a JSON string using jsonStringify
+                            const jsonString = jsonStringify(value);
 
-                    // Call the canister method that parses and then stringifies again
-                    const returnedJsonString =
-                        await actor.processJsonQuery(jsonString);
+                            // Call the canister method that parses and then stringifies again
+                            const returnedJsonString =
+                                await actor[method](jsonString);
 
-                    // The returned string should match the original
-                    expect(returnedJsonString).toEqual(jsonString);
+                            // The returned string should match the original
+                            expect(returnedJsonString).toEqual(jsonString);
 
-                    // Parse the returned JSON string and directly compare with original value
-                    const parsedReturnedValue = jsonParse(returnedJsonString);
-                    expect(parsedReturnedValue).toEqual(value);
-                }),
-                executionParams
-            );
-        });
-
-        it('should test jsonStringify and jsonParse with update method', async () => {
-            // Use fewer test runs to avoid timeouts
-            const executionParams = {
-                ...defaultPropTestParams(),
-                numRuns: 20 * Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
-            };
-
-            await fc.assert(
-                fc.asyncProperty(recursiveValueArb, async (value) => {
-                    const actor = await getCanisterActor<Actor>('canister');
-
-                    // Convert the value to a JSON string using jsonStringify
-                    const jsonString = jsonStringify(value);
-
-                    // Call the canister method that parses and then stringifies again
-                    const returnedJsonString =
-                        await actor.processJsonUpdate(jsonString);
-
-                    // The returned string should match the original
-                    expect(returnedJsonString).toEqual(jsonString);
-
-                    // Parse the returned JSON string and directly compare with original value
-                    const parsedReturnedValue = jsonParse(returnedJsonString);
-                    expect(parsedReturnedValue).toEqual(value);
-                }),
-                executionParams
-            );
-        });
+                            // Parse the returned JSON string and directly compare with original value
+                            const parsedReturnedValue =
+                                jsonParse(returnedJsonString);
+                            expect(parsedReturnedValue).toEqual(value);
+                        }),
+                        executionParams
+                    );
+                });
+            }
+        );
     };
 }
