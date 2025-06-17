@@ -1,4 +1,3 @@
-import { Principal } from '@dfinity/principal';
 import { describe } from '@jest/globals';
 import { jsonParse, jsonStringify } from 'azle';
 import {
@@ -10,94 +9,8 @@ import {
 } from 'azle/_internal/test';
 import fc from 'fast-check';
 
+import { recursiveValueArb } from './arbitraries';
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
-
-// Helper function to create a Principal arbitrary
-const principalArb = fc
-    .array(fc.integer({ min: 0, max: 255 }), { minLength: 1, maxLength: 29 })
-    .map((bytes) => Principal.fromUint8Array(Uint8Array.from(bytes)));
-
-const MAX_INT = 9007199254740991n;
-const MIN_INT = -MAX_INT;
-const MAX_NAT = MAX_INT;
-const MIN_NAT = 0n;
-
-// Create an arbitrary for primitive values
-const primitiveArb = fc.oneof(
-    fc.string(),
-    fc.float(),
-    fc.integer(),
-    fc.bigInt({ min: MIN_INT, max: MAX_INT }),
-    fc.bigInt({ min: MIN_NAT, max: MAX_NAT }),
-    fc.boolean(),
-    fc.constant(null),
-    fc.constant(undefined),
-    fc.constant(NaN),
-    fc.constant(Infinity),
-    fc.constant(-Infinity),
-    fc.constant(-0)
-);
-
-// Create an arbitrary for typed arrays
-const typedArrayArb = fc.oneof(
-    fc.uint8Array({ minLength: 0, maxLength: 3 }),
-    fc.uint16Array({ minLength: 0, maxLength: 3 }),
-    fc.uint32Array({ minLength: 0, maxLength: 3 }),
-    fc.int8Array({ minLength: 0, maxLength: 3 }),
-    fc.int16Array({ minLength: 0, maxLength: 3 }),
-    fc.int32Array({ minLength: 0, maxLength: 3 }),
-    fc.float32Array({ minLength: 0, maxLength: 3 }),
-    fc.float64Array({ minLength: 0, maxLength: 3 }),
-    fc
-        .array(
-            fc.bigInt({
-                min: MIN_INT,
-                max: MAX_INT
-            }),
-            { minLength: 0, maxLength: 3 }
-        )
-        .map((arr) => new BigInt64Array(arr)),
-    fc
-        .array(
-            fc.bigInt({
-                min: MIN_NAT,
-                max: MAX_NAT
-            }),
-            { minLength: 0, maxLength: 3 }
-        )
-        .map((arr) => new BigUint64Array(arr))
-);
-
-// Create recursively structured arbitraries with controlled nesting
-const recursiveValueArb = fc.letrec((tie) => ({
-    // Recursive value can contain any of these types
-    value: fc.oneof(
-        // Base values at any level
-        primitiveArb,
-        typedArrayArb,
-        principalArb,
-
-        // Array with recursive values - limited length
-        fc.array(tie('value'), { maxLength: 2 }),
-
-        // Object with recursive values - limited keys
-        fc.dictionary(fc.string({ maxLength: 5 }), tie('value'), {
-            maxKeys: 3
-        }),
-
-        // Map with recursive values - limited entries
-        fc
-            .array(fc.tuple(fc.string({ maxLength: 5 }), tie('value')), {
-                maxLength: 3
-            })
-            .map((entries) => new Map(entries)),
-
-        // Set with recursive values - limited members
-        fc
-            .array(tie('value'), { maxLength: 3 })
-            .map((values) => new Set(values))
-    )
-})).value;
 
 type TestCase = {
     type: 'query' | 'update';
@@ -146,7 +59,7 @@ export function getTests(): Test {
                                 await actor[method](jsonString);
 
                             // The returned string should match the original
-                            expect(returnedJsonString).toEqual(jsonString);
+                            expect(returnedJsonString).toBe(jsonString);
 
                             // Parse the returned JSON string and directly compare with original value
                             const parsedReturnedValue =
