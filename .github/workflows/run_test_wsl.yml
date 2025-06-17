@@ -131,7 +131,7 @@ jobs:
 
                   # Source nvm
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  source "$NVM_DIR/nvm.sh"
 
                   # Install and use the specific Node version
                   nvm install $NODE_VERSION
@@ -177,7 +177,7 @@ jobs:
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  source "$NVM_DIR/nvm.sh"
                   cd /home/tester/azle
                   npm install
               shell: wsl-bash {0}
@@ -189,7 +189,7 @@ jobs:
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  source "$NVM_DIR/nvm.sh"
                   cd /home/tester/azle
                   npm link
 
@@ -199,7 +199,7 @@ jobs:
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  source "$NVM_DIR/nvm.sh"
                   cd /home/tester/azle
                   npm run lint
 
@@ -209,7 +209,7 @@ jobs:
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  source "$NVM_DIR/nvm.sh"
                   cd /home/tester/azle/${{ matrix.test.path }}
                   npm install
 
@@ -219,7 +219,7 @@ jobs:
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  source "$NVM_DIR/nvm.sh"
                   cd /home/tester/azle/${{ matrix.test.path }}
                   npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
               shell: wsl-bash {0}
@@ -231,7 +231,7 @@ jobs:
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  source "$NVM_DIR/nvm.sh"
                   cd /home/tester/azle/${{ matrix.test.path }}
                   npm link azle
 
@@ -281,7 +281,7 @@ jobs:
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
-                  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                  source "$NVM_DIR/nvm.sh"
                   cd /home/tester/azle/${{ matrix.test.path }}
 
                   # Set workflow context variables inline
