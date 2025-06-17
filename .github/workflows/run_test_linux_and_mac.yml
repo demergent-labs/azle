@@ -49,7 +49,7 @@ jobs:
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
     run-test:
-        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}}'
+        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | ${{inputs.operating-system}}'
         needs: get-test-infos
         runs-on: ${{ matrix.os }}
         env:
