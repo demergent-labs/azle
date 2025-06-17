@@ -73,37 +73,23 @@ jobs:
                   set-as-default: 'true'
                   wsl-shell-user: 'tester'
 
-            - name: Upgrade to WSL 2
+            - name: Clone repository in WSL
               run: |
-                  echo "Current WSL status before upgrade:"
-                  wsl --status
+                  # Clone the repository directly in WSL for proper Unix line endings
+                  cd /home/tester
+                  git clone --no-single-branch https://github.com/${{ github.repository }}.git azle
+                  cd azle
+                  # Fetch all remote branches and pull request refs to ensure we have the specific commit
+                  git fetch --all
+                  git fetch origin '+refs/pull/*/head:refs/remotes/origin/pr/*' || true
+                  git fetch origin '+refs/pull/*/merge:refs/remotes/origin/merge/*' || true
+                  git checkout ${{ github.sha }}
+              shell: wsl-bash {0}
 
-                  echo "Updating WSL kernel..."
-                  wsl --update --web-download
-
-                  echo "Setting default version to WSL 2..."
-                  wsl --set-default-version 2
-
-                  echo "Converting Ubuntu to WSL 2..."
-                  wsl --set-version Ubuntu 2
-
-                  echo "WSL status after upgrade:"
-                  wsl --status
-                  wsl --list --verbose
-              shell: powershell
-
-            - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
-            - name: Configure git for Unix line endings
+            - name: Copy .github directory for actions
               run: |
-                  # Configure git to use LF line endings and fix any existing files
-                  git config core.autocrlf false
-                  git config core.eol lf
-                  # Reset and checkout to fix line endings
-                  git rm --cached -r .
-                  git reset --hard
+                  # Copy .github directory from WSL to Windows working directory
+                  cp -r /home/tester/azle/.github /mnt/c/a/azle/azle/
               shell: wsl-bash {0}
 
             - uses: ./.github/actions/determine_workflow_context
@@ -134,6 +120,7 @@ jobs:
               run: |
                   # Use clean PATH to avoid Windows conflicts
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                  cd /home/tester/azle
 
                   # Get Node version from package.json
                   NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
@@ -150,6 +137,7 @@ jobs:
               run: |
                   # Use clean PATH to avoid Windows conflicts
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                  cd /home/tester/azle
 
                   DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
                   echo "Installing dfx version $DFX_VERSION..."
@@ -177,6 +165,7 @@ jobs:
             - name: Install npm dependencies
               run: |
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  cd /home/tester/azle
                   npm install
               shell: wsl-bash {0}
 
@@ -185,35 +174,37 @@ jobs:
               shell: wsl-bash {0}
               run: |
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  cd /home/tester/azle
                   npm link
 
             - name: npm run lint
               shell: wsl-bash {0}
               run: |
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  cd /home/tester/azle
                   npm run lint
 
             - name: npm install in test directory
-              working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
               run: |
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  cd /home/tester/azle/${{ matrix.test.path }}
                   npm install
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: ${{ inputs.run-experimental }}
               run: |
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  cd /home/tester/azle/${{ matrix.test.path }}
                   npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
-              working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
 
             - name: npm link azle
               if: matrix.azle_source == 'repo'
-              working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
               run: |
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  cd /home/tester/azle/${{ matrix.test.path }}
                   npm link azle
 
             - name: Test configuration
@@ -260,6 +251,7 @@ jobs:
               run: |
                   # Set clean PATH
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  cd /home/tester/azle/${{ matrix.test.path }}
 
                   # Set workflow context variables inline
                   export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
@@ -283,5 +275,4 @@ jobs:
 
                   dfx start --clean --background --artificial-delay 0
                   npm test
-              working-directory: ${{ matrix.test.path }}
               shell: wsl-bash {0}
