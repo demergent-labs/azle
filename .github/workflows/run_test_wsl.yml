@@ -49,10 +49,6 @@ jobs:
         name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | WSL'
         needs: get-test-infos
         runs-on: windows-latest
-        env:
-            ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-            AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
-            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
 
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
@@ -62,16 +58,20 @@ jobs:
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
         steps:
             - name: Setup WSL
-              uses: Vampire/setup-wsl@v3
+              uses: Vampire/setup-wsl@v5
               with:
                   distribution: Ubuntu-24.04
                   update: 'true'
-                  additional-packages: curl build-essential git jq
+                  additional-packages: |
+                      curl
+                      build-essential
+                      git
+                      jq
                   wsl-conf: |
                       [boot]
                       systemd=true
                   set-as-default: 'true'
-                  wsl-shell-user: 'root'
+                  wsl-shell-user: 'tester'
 
             - name: Upgrade to WSL 2
               run: |
