@@ -28,7 +28,12 @@ type CanisterMemoryState = {
     [canisterName: string]: number | null;
 };
 
+type HeapAllocationState = {
+    [canisterName: string]: number | null;
+};
+
 let startingMemorySizes: CanisterMemoryState = {};
+let startingHeapAllocations: HeapAllocationState = {};
 
 type GlobalState = {
     azleRejectCallbacksLen: number;
@@ -104,7 +109,33 @@ export function runTests(tests: Test): void {
                     console.info(
                         `Canister ${canisterName} memory size: ${formatMemorySize(memorySize)}`
                     );
+
+                    const heapAllocation = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_heap_allocation --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+
+                    startingHeapAllocations[canisterName] = heapAllocation;
+
+                    console.info(
+                        `Canister ${canisterName} heap allocation: ${formatMemorySize(heapAllocation)}`
+                    );
                 }
+
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
             });
         });
     }
@@ -195,20 +226,55 @@ export function runTests(tests: Test): void {
                                   ? 'no change'
                                   : memoryIncrease > 0
                                     ? `+${formatMemorySize(memoryIncrease)}`
-                                    : formatMemorySize(memoryIncrease);
+                                    : `-${formatMemorySize(memoryIncrease)}`;
 
                         console.info(
                             `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (${increaseText})`
                         );
 
                         // TODO we really need to be able to set the memoryIncreaseExpected per canister right?
-                        if (
-                            memoryIncrease === null ||
-                            (memoryIncrease > 0 &&
-                                cuzzConfig.memoryIncreaseExpected !== true)
-                        ) {
+                        if (cuzzConfig.memoryIncreaseExpected !== false) {
                             expect(memoryIncrease).toBe(0);
                         }
+                    }
+
+                    const finalHeapAllocation = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_heap_allocation --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+                    const startingHeapAllocation =
+                        startingHeapAllocations[canisterName];
+
+                    if (
+                        startingHeapAllocation === null ||
+                        startingHeapAllocation === undefined
+                    ) {
+                        console.info(
+                            `Canister ${canisterName} final heap allocation: ${formatMemorySize(finalHeapAllocation)} (starting size unknown)`
+                        );
+                    } else {
+                        const heapAllocationIncrease =
+                            finalHeapAllocation - startingHeapAllocation;
+                        const increaseText =
+                            heapAllocationIncrease === 0
+                                ? 'no change'
+                                : heapAllocationIncrease > 0
+                                  ? `+${formatMemorySize(heapAllocationIncrease)}`
+                                  : `-${formatMemorySize(heapAllocationIncrease)}`;
+
+                        console.info(
+                            `Canister ${canisterName} final heap allocation: ${formatMemorySize(finalHeapAllocation)} (${increaseText})`
+                        );
+
+                        // TODO let's make this as small as possible
+                        expect(heapAllocationIncrease).toBeLessThanOrEqual(
+                            1_000
+                        );
                     }
                 }
             });

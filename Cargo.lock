@@ -295,6 +295,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "cap"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6f125eb85b84a24c36b02ed1d22c9dd8632f53b3cde6e4d23512f94021030003"
+
+[[package]]
 name = "cc"
 version = "1.2.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2065,6 +2071,7 @@ version = "0.0.0"
 dependencies = [
  "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "candid_parser 0.1.4",
+ "cap",
  "ic-cdk",
  "ic-cdk-timers",
  "ic-stable-structures",

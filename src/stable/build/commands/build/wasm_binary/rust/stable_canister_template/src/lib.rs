@@ -1,7 +1,9 @@
+use std::alloc;
 use std::cell::RefCell;
 use std::future::Future;
 use std::pin::Pin;
 
+use cap::Cap;
 use ic_stable_structures::{
     DefaultMemoryImpl,
     memory_manager::{MemoryManager, VirtualMemory},
@@ -21,6 +23,9 @@ mod rquickjs_utils;
 mod stable_b_tree_map;
 mod state;
 mod wasm_binary_manipulation;
+
+#[global_allocator]
+static ALLOCATOR: Cap<alloc::System> = Cap::new(alloc::System, usize::max_value());
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;

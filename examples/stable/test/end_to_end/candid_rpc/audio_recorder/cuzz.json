@@ -3,5 +3,5 @@
         "Uncaught Error: User does not exist:",
         "Uncaught Error: Recording does not exist:"
     ],
-    "memoryIncreaseExpected": false
+    "memoryIncreaseExpected": true
 }
