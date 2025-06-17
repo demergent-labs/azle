@@ -17,11 +17,18 @@ const principalArb = fc
     .array(fc.integer({ min: 0, max: 255 }), { minLength: 1, maxLength: 29 })
     .map((bytes) => Principal.fromUint8Array(Uint8Array.from(bytes)));
 
+const MAX_INT = 9007199254740991n;
+const MIN_INT = -MAX_INT;
+const MAX_NAT = MAX_INT;
+const MIN_NAT = 0n;
+
 // Create an arbitrary for primitive values
 const primitiveArb = fc.oneof(
-    fc.string({ maxLength: 5 }),
+    fc.string(),
     fc.float(),
     fc.integer(),
+    fc.bigInt({ min: MIN_INT, max: MAX_INT }),
+    fc.bigInt({ min: MIN_NAT, max: MAX_NAT }),
     fc.boolean(),
     fc.constant(null),
     fc.constant(undefined),
@@ -44,8 +51,8 @@ const typedArrayArb = fc.oneof(
     fc
         .array(
             fc.bigInt({
-                min: -9007199254740991n,
-                max: 9007199254740991n
+                min: MIN_INT,
+                max: MAX_INT
             }),
             { minLength: 0, maxLength: 3 }
         )
@@ -53,18 +60,12 @@ const typedArrayArb = fc.oneof(
     fc
         .array(
             fc.bigInt({
-                min: 0n,
-                max: 9007199254740991n
+                min: MIN_NAT,
+                max: MAX_NAT
             }),
             { minLength: 0, maxLength: 3 }
         )
         .map((arr) => new BigUint64Array(arr))
-);
-
-// Special value arbitrary including Principal and BigInt
-const specialArb = fc.oneof(
-    principalArb,
-    fc.bigInt({ min: -9007199254740991n, max: 9007199254740991n })
 );
 
 // Create recursively structured arbitraries with controlled nesting
@@ -74,7 +75,7 @@ const recursiveValueArb = fc.letrec((tie) => ({
         // Base values at any level
         primitiveArb,
         typedArrayArb,
-        specialArb,
+        principalArb,
 
         // Array with recursive values - limited length
         fc.array(tie('value'), { maxLength: 2 }),
