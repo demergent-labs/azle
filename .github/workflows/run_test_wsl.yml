@@ -119,7 +119,9 @@ jobs:
             - name: Setup Node.js in WSL
               run: |
                   # Use clean PATH to avoid Windows conflicts
+                  echo "Old PATH: $PATH"
                   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                  echo "New PATH: $PATH"
                   cd /home/tester/azle
 
                   # Get Node version from package.json
