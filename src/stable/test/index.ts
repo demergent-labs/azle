@@ -233,7 +233,7 @@ export function runTests(tests: Test): void {
                         );
 
                         // TODO we really need to be able to set the memoryIncreaseExpected per canister right?
-                        if (cuzzConfig.memoryIncreaseExpected !== false) {
+                        if (cuzzConfig.memoryIncreaseExpected !== true) {
                             expect(memoryIncrease).toBe(0);
                         }
                     }
