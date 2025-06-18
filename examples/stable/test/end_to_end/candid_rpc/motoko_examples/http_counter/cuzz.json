@@ -1,5 +1,6 @@
 {
     "expectedErrors": [
         "Method: http_streaming \\(query\\)[\\s\\S]*should not happen"
-    ]
+    ],
+    "memoryIncreaseExpected": true
 }

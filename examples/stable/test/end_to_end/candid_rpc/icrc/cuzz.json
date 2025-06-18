@@ -7,5 +7,6 @@
         "assertion failed at ICRC1.mo:268.20-268.59",
         "assertion failed at ICRC1.mo:262.5-262.37",
         "assertion failed at ICRC1.mo:206.13-206.54"
-    ]
+    ],
+    "memoryIncreaseExpected": true
 }
