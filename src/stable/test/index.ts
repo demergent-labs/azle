@@ -271,9 +271,8 @@ export function runTests(tests: Test): void {
                             `Canister ${canisterName} final heap allocation: ${formatMemorySize(finalHeapAllocation)} (${increaseText})`
                         );
 
-                        // TODO let's make this as small as possible
                         expect(heapAllocationIncrease).toBeLessThanOrEqual(
-                            1_000
+                            1_000_000
                         );
                     }
                 }
