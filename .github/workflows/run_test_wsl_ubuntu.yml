@@ -82,17 +82,6 @@ jobs:
                   git checkout ${{ github.sha }}
               shell: wsl-bash {0}
 
-            - name: Copy .github directory for actions
-              run: |
-                  # Copy .github directory from WSL to Windows working directory
-                  # Ensure the target directory exists first
-                  mkdir -p "${{ github.workspace }}/.github"
-                  cp -r /home/tester/azle/.github/* "${{ github.workspace }}/.github/"
-              shell: wsl-bash {0}
-
-            - uses: ./.github/actions/determine_workflow_context
-              id: set-conditions
-
             - name: Setup and run tests
               shell: wsl-bash {0}
               run: |
@@ -136,14 +125,14 @@ jobs:
                       return 0
                   }
 
-                  set_environment_variables() {
+                  determine_workflow_context() {
                       echo "=== Setting environment variables ==="
-                      # Set workflow context variables inline
-                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
-                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge || 'false' }}"
-                      AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr || 'false' }}"
-                      AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr || 'false' }}"
-                      AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr || 'false' }}"
+                      # Define conditions using shell variables (inline version of determine_workflow_context action)
+                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                      AZLE_IS_RELEASE_BRANCH_PR=${{ startsWith(github.head_ref, 'release--') }}
+                      AZLE_IS_FEATURE_BRANCH_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+                      AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
                   }
 
                   print_environment_variables() {
@@ -317,7 +306,7 @@ jobs:
 
                   # Execute functions in order
                   cd $AZLE_ROOT
-                  set_environment_variables
+                  determine_workflow_context
                   print_environment_variables
                   report_test_path
                   retry_command setup_nodejs
