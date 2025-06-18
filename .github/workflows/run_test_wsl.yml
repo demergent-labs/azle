@@ -89,7 +89,9 @@ jobs:
             - name: Copy .github directory for actions
               run: |
                   # Copy .github directory from WSL to Windows working directory
-                  cp -r /home/tester/azle/.github /mnt/c/a/azle/azle/
+                  # Ensure the target directory exists first
+                  mkdir -p "${{ github.workspace }}/.github"
+                  cp -r /home/tester/azle/.github/* "${{ github.workspace }}/.github/"
               shell: wsl-bash {0}
 
             - uses: ./.github/actions/determine_workflow_context
