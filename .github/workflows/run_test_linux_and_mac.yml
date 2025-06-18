@@ -1,4 +1,4 @@
-name: Run Test (Linux and Mac)
+name: Run Test (Ubuntu and Mac)
 
 on:
     workflow_call:
@@ -31,7 +31,7 @@ on:
                 default: '300'
             operating-system:
                 type: string
-                description: 'Operating system to run tests on (linux or mac)'
+                description: 'Operating system to run tests on (ubuntu or mac)'
 
 jobs:
     get-test-infos:
@@ -66,7 +66,7 @@ jobs:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
                 os:
-                    - ${{ inputs.operating-system == 'mac' && 'macos-latest' || inputs.operating-system == 'linux' && 'ubuntu-latest' }}
+                    - ${{ inputs.operating-system == 'mac' && 'macos-latest' || inputs.operating-system == 'ubuntu' && 'ubuntu-latest' }}
                 azle_source:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
