@@ -318,6 +318,7 @@ jobs:
                   }
 
                   # Execute functions in order
+                  cd $AZLE_ROOT
                   set_environment_variables
                   print_environment_variables
                   report_test_path
