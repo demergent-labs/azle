@@ -98,6 +98,9 @@ jobs:
             - name: Setup and run tests
               shell: wsl-bash {0}
               run: |
+                  AZLE_ROOT=/home/tester/azle
+                  EXAMPLE_ROOT=/home/tester/azle/${{ matrix.test.path }}
+
                   echo "=== Running tests ==="
 
                   # Function to retry a command with exponential backoff retries (similar to retry_command action)
@@ -169,7 +172,6 @@ jobs:
                   # Function to setup Node.js in WSL
                   setup_nodejs() {
                       echo "=== Setting up Node.js ==="
-                      cd /home/tester/azle
 
                       # Get Node version from package.json
                       NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
@@ -195,7 +197,6 @@ jobs:
                   # Function to install dfx
                   install_dfx() {
                       echo "=== Installing dfx ==="
-                      cd /home/tester/azle
 
                       DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
                       echo "Installing dfx version $DFX_VERSION..."
@@ -222,7 +223,6 @@ jobs:
                   # Function to install npm dependencies
                   install_npm_dependencies() {
                       echo "=== Installing npm dependencies ==="
-                      cd /home/tester/azle
                       npm install
                   }
 
@@ -230,7 +230,6 @@ jobs:
                   npm_link() {
                       if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
                           echo "=== Running npm link ==="
-                          cd /home/tester/azle
                           npm link
                       fi
                   }
@@ -238,23 +237,24 @@ jobs:
                   # Function to run npm lint
                   run_npm_lint() {
                       echo "=== Running npm lint ==="
-                      cd /home/tester/azle
                       npm run lint
                   }
 
                   # Function to install npm dependencies in test directory
                   install_test_npm_dependencies() {
                       echo "=== Installing npm dependencies in test directory ==="
-                      cd /home/tester/azle/${{ matrix.test.path }}
+                      cd $EXAMPLE_ROOT
                       npm install
+                      cd $AZLE_ROOT
                   }
 
                   # Function to install experimental dependencies (conditional)
                   install_experimental_dependencies() {
                       if [[ "${{ inputs.run-experimental }}" == "true" ]]; then
                           echo "=== Installing experimental dependencies ==="
-                          cd /home/tester/azle/${{ matrix.test.path }}
+                          cd $EXAMPLE_ROOT
                           npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
+                          cd $AZLE_ROOT
                       fi
                   }
 
@@ -262,8 +262,9 @@ jobs:
                   npm_link_azle() {
                       if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
                           echo "=== Running npm link azle ==="
-                          cd /home/tester/azle/${{ matrix.test.path }}
+                          cd $EXAMPLE_ROOT
                           npm link azle
+                          cd $AZLE_ROOT
                       fi
                   }
 
@@ -305,7 +306,7 @@ jobs:
                   # Function to run tests
                   run_tests() {
                       echo "=== Running tests ==="
-                      cd /home/tester/azle/${{ matrix.test.path }}
+                      cd $EXAMPLE_ROOT
 
                       # Set test configuration variables
                       export AZLE_EXPERIMENTAL="${{ inputs.run-experimental }}"
@@ -322,6 +323,7 @@ jobs:
 
                       dfx start --clean --background --artificial-delay 0
                       npm test
+                      cd $AZLE_ROOT
                   }
 
                   # Execute functions in order
