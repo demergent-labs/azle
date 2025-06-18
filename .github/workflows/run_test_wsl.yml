@@ -102,10 +102,10 @@ jobs:
                   EXAMPLE_ROOT=/home/tester/azle/${{ matrix.test.path }}
 
                   retry_command() {
-                      local max_attempts="${1:-5}"
-                      local initial_delay="${2:-1}"
-                      local max_delay="${3:-60}"
-                      local function_name="${4}"
+                      local function_name="${1}"
+                      local max_attempts=5
+                      local initial_delay=1
+                      local max_delay=60
 
                       local attempt=1
                       local delay=$initial_delay
@@ -321,14 +321,14 @@ jobs:
                   set_environment_variables
                   print_environment_variables
                   report_test_path
-                  retry_command 5 1 60 setup_nodejs
-                  retry_command 5 1 60 install_dfx
-                  retry_command 5 1 60 install_rust_cargo
-                  retry_command 5 1 60 install_npm_dependencies
+                  retry_command setup_nodejs
+                  retry_command install_dfx
+                  retry_command install_rust_cargo
+                  retry_command install_npm_dependencies
                   npm_link
                   run_npm_lint
-                  retry_command 5 1 60 install_test_npm_dependencies
-                  retry_command 5 1 60 install_experimental_dependencies
+                  retry_command install_test_npm_dependencies
+                  retry_command install_experimental_dependencies
                   npm_link_azle
                   start_dfx
                   configure_test_settings
