@@ -98,9 +98,8 @@ jobs:
             - name: Setup and run tests
               shell: wsl-bash {0}
               run: |
-                  # Function to print environment variables
-                  print_environment_variables() {
-                      echo "=== Printing environment variables ==="
+                  set_environment_variables() {
+                      echo "=== Setting environment variables ==="
                       # Set workflow context variables inline
                       AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
                       AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge || 'false' }}"
@@ -108,6 +107,11 @@ jobs:
                       AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr || 'false' }}"
                       AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr || 'false' }}"
 
+                  }
+
+                  # Function to print environment variables
+                  print_environment_variables() {
+                      echo "=== Printing environment variables ==="
                       echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
                       echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
                       echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
@@ -172,15 +176,12 @@ jobs:
 
                       # Source the cargo environment
                       source "$HOME/.cargo/env"
+                      export PATH="$HOME/.cargo/bin:$PATH"
                   }
 
                   # Function to install npm dependencies
                   install_npm_dependencies() {
                       echo "=== Installing npm dependencies ==="
-                      export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
-                      # Source nvm to access Node.js
-                      export NVM_DIR="$HOME/.nvm"
-                      source "$NVM_DIR/nvm.sh"
                       cd /home/tester/azle
                       npm install
                   }
@@ -189,10 +190,6 @@ jobs:
                   npm_link() {
                       if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
                           echo "=== Running npm link ==="
-                          export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
-                          # Source nvm to access Node.js
-                          export NVM_DIR="$HOME/.nvm"
-                          source "$NVM_DIR/nvm.sh"
                           cd /home/tester/azle
                           npm link
                       fi
@@ -201,10 +198,6 @@ jobs:
                   # Function to run npm lint
                   run_npm_lint() {
                       echo "=== Running npm lint ==="
-                      export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
-                      # Source nvm to access Node.js
-                      export NVM_DIR="$HOME/.nvm"
-                      source "$NVM_DIR/nvm.sh"
                       cd /home/tester/azle
                       npm run lint
                   }
@@ -212,10 +205,6 @@ jobs:
                   # Function to install npm dependencies in test directory
                   install_test_npm_dependencies() {
                       echo "=== Installing npm dependencies in test directory ==="
-                      export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
-                      # Source nvm to access Node.js
-                      export NVM_DIR="$HOME/.nvm"
-                      source "$NVM_DIR/nvm.sh"
                       cd /home/tester/azle/${{ matrix.test.path }}
                       npm install
                   }
@@ -224,10 +213,6 @@ jobs:
                   install_experimental_dependencies() {
                       if [[ "${{ inputs.run-experimental }}" == "true" ]]; then
                           echo "=== Installing experimental dependencies ==="
-                          export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
-                          # Source nvm to access Node.js
-                          export NVM_DIR="$HOME/.nvm"
-                          source "$NVM_DIR/nvm.sh"
                           cd /home/tester/azle/${{ matrix.test.path }}
                           npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
                       fi
@@ -237,10 +222,6 @@ jobs:
                   npm_link_azle() {
                       if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
                           echo "=== Running npm link azle ==="
-                          export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
-                          # Source nvm to access Node.js
-                          export NVM_DIR="$HOME/.nvm"
-                          source "$NVM_DIR/nvm.sh"
                           cd /home/tester/azle/${{ matrix.test.path }}
                           npm link azle
                       fi
@@ -249,12 +230,6 @@ jobs:
                   # Function to configure test settings
                   configure_test_settings() {
                       echo "=== Configuring test settings ==="
-                      # Set workflow context variables inline
-                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
-                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge || 'false' }}"
-                      AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr || 'false' }}"
-                      AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr || 'false' }}"
-                      AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr || 'false' }}"
 
                       RECORD_ACTIONS='true'
                       RUNS=1
@@ -290,18 +265,7 @@ jobs:
                   # Function to run tests
                   run_tests() {
                       echo "=== Running tests ==="
-                      export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
-                      # Source nvm to access Node.js
-                      export NVM_DIR="$HOME/.nvm"
-                      source "$NVM_DIR/nvm.sh"
                       cd /home/tester/azle/${{ matrix.test.path }}
-
-                      # Set workflow context variables inline
-                      export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge || 'false' }}"
-                      export AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE="${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge || 'false' }}"
-                      export AZLE_IS_RELEASE_BRANCH_PR="${{ steps.set-conditions.outputs.is_release_branch_pr || 'false' }}"
-                      export AZLE_IS_FEATURE_BRANCH_PR="${{ steps.set-conditions.outputs.is_feature_branch_pr || 'false' }}"
-                      export AZLE_IS_FEATURE_BRANCH_DRAFT_PR="${{ steps.set-conditions.outputs.is_feature_branch_draft_pr || 'false' }}"
 
                       # Set test configuration variables
                       export AZLE_EXPERIMENTAL="${{ inputs.run-experimental }}"
@@ -321,6 +285,7 @@ jobs:
                   }
 
                   # Execute functions in order
+                  set_environment_variables
                   print_environment_variables
                   report_test_path
                   setup_nodejs
