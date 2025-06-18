@@ -30,7 +30,7 @@ export default class {
             methodName === '_azle_actions_len' ||
             methodName === '_azle_inter_canister_call_futures_len' ||
             methodName === '_azle_is_job_queue_empty' ||
-            methodName === '_azle_heap_allocation'
+            methodName === '_azle_heap_current_allocation'
         ) {
             return true;
         }

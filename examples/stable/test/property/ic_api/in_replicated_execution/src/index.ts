@@ -123,7 +123,7 @@ export default class {
             '_azle_actions_len',
             '_azle_inter_canister_call_futures_len',
             '_azle_is_job_queue_empty',
-            '_azle_heap_allocation'
+            '_azle_heap_current_allocation'
         ];
 
         if (acceptableMethods.includes(methodName)) {

@@ -1,13 +1,12 @@
-use std::alloc;
 use std::cell::RefCell;
 use std::future::Future;
 use std::pin::Pin;
 
-use cap::Cap;
 use ic_stable_structures::{
     DefaultMemoryImpl,
     memory_manager::{MemoryManager, VirtualMemory},
 };
+use peak_alloc::PeakAlloc;
 use rand::{SeedableRng, rngs::StdRng};
 use rquickjs::Context;
 
@@ -25,7 +24,7 @@ mod state;
 mod wasm_binary_manipulation;
 
 #[global_allocator]
-static ALLOCATOR: Cap<alloc::System> = Cap::new(alloc::System, usize::max_value());
+static PEAK_ALLOC: PeakAlloc = PeakAlloc;
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;

@@ -295,12 +295,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cap"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f125eb85b84a24c36b02ed1d22c9dd8632f53b3cde6e4d23512f94021030003"
-
-[[package]]
 name = "cc"
 version = "1.2.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1494,6 +1488,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 
 [[package]]
+name = "peak_alloc"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29c4e8e2dd832fd76346468f822e4e600d30ba4e5aa545a128abf12cfae7ea3e"
+
+[[package]]
 name = "percent-encoding"
 version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2071,11 +2071,11 @@ version = "0.0.0"
 dependencies = [
  "candid 0.10.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "candid_parser 0.1.4",
- "cap",
  "ic-cdk",
  "ic-cdk-timers",
  "ic-stable-structures",
  "ic-wasi-polyfill",
+ "peak_alloc",
  "rand 0.9.1",
  "rquickjs",
  "scopeguard",

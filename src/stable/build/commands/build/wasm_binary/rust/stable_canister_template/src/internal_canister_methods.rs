@@ -4,7 +4,7 @@ use ic_cdk::{query, trap, update};
 use rquickjs::{Array, Object, Value};
 
 use crate::{
-    ALLOCATOR, CONTEXT_REF_CELL, INTER_CANISTER_CALL_FUTURES,
+    CONTEXT_REF_CELL, INTER_CANISTER_CALL_FUTURES, PEAK_ALLOC,
     benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry},
     guards::guard_against_non_controllers,
     rquickjs_utils::with_ctx,
@@ -118,6 +118,6 @@ fn _azle_is_job_queue_empty() -> bool {
 }
 
 #[query(guard = "guard_against_non_controllers")]
-fn _azle_heap_allocation() -> u32 {
-    ALLOCATOR.allocated() as u32
+fn _azle_heap_current_allocation() -> u32 {
+    PEAK_ALLOC.current_usage() as u32
 }
