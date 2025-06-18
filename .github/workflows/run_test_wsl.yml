@@ -118,10 +118,6 @@ jobs:
 
             - name: Setup Node.js in WSL
               run: |
-                  # Use clean PATH to avoid Windows conflicts
-                  echo "Old PATH: $PATH"
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-                  echo "New PATH: $PATH"
                   cd /home/tester/azle
 
                   # Get Node version from package.json
@@ -147,8 +143,6 @@ jobs:
 
             - name: Install dfx
               run: |
-                  # Use clean PATH to avoid Windows conflicts
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
                   cd /home/tester/azle
 
                   DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
@@ -164,9 +158,6 @@ jobs:
 
             - name: Install Rust and Cargo
               run: |
-                  # Use clean PATH to avoid Windows conflicts
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
                   echo "Installing Rust and Cargo..."
                   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
@@ -176,7 +167,7 @@ jobs:
 
             - name: Install npm dependencies
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
                   source "$NVM_DIR/nvm.sh"
@@ -188,7 +179,7 @@ jobs:
               if: matrix.azle_source == 'repo'
               shell: wsl-bash {0}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
                   source "$NVM_DIR/nvm.sh"
@@ -198,7 +189,7 @@ jobs:
             - name: npm run lint
               shell: wsl-bash {0}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
                   source "$NVM_DIR/nvm.sh"
@@ -208,7 +199,7 @@ jobs:
             - name: npm install in test directory
               shell: wsl-bash {0}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
                   source "$NVM_DIR/nvm.sh"
@@ -218,7 +209,7 @@ jobs:
             - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: ${{ inputs.run-experimental }}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
                   source "$NVM_DIR/nvm.sh"
@@ -230,7 +221,7 @@ jobs:
               if: matrix.azle_source == 'repo'
               shell: wsl-bash {0}
               run: |
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
                   source "$NVM_DIR/nvm.sh"
@@ -279,8 +270,7 @@ jobs:
 
             - name: Run tests
               run: |
-                  # Set clean PATH
-                  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
+                  export PATH="$PATH:$HOME/.local/share/dfx/bin:$HOME/.cargo/bin"
                   # Source nvm to access Node.js
                   export NVM_DIR="$HOME/.nvm"
                   source "$NVM_DIR/nvm.sh"
