@@ -19,8 +19,11 @@ const MAX_TYPED_ARRAY_LENGTH = 3;
  * Arbitrary for generating Principal values from random byte arrays
  */
 export const principalArb = fc
-    .array(fc.integer({ min: 0, max: 255 }), { minLength: 1, maxLength: 29 })
-    .map((bytes) => Principal.fromUint8Array(Uint8Array.from(bytes)));
+    .uint8Array({
+        minLength: 29,
+        maxLength: 29
+    })
+    .map((sample) => Principal.fromUint8Array(sample));
 
 /**
  * Arbitrary for generating primitive JavaScript values including special numeric values
