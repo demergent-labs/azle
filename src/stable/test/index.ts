@@ -207,6 +207,19 @@ export function runTests(tests: Test): void {
                     const startingMemorySize =
                         startingMemorySizes[canisterName];
 
+                    const finalHeapAllocation = Number(
+                        execSync(
+                            `dfx canister call ${canisterName} _azle_heap_allocation --output json`,
+                            {
+                                cwd: getDfxRoot(),
+                                encoding: 'utf-8'
+                            }
+                        )
+                    );
+                    const startingHeapAllocation =
+                        startingHeapAllocations[canisterName];
+
+                    // Console.info both values before expects
                     if (
                         startingMemorySize === null ||
                         startingMemorySize === undefined
@@ -231,24 +244,7 @@ export function runTests(tests: Test): void {
                         console.info(
                             `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (${increaseText})`
                         );
-
-                        // TODO we really need to be able to set the memoryIncreaseExpected per canister right?
-                        if (cuzzConfig.memoryIncreaseExpected !== true) {
-                            expect(memoryIncrease).toBe(0);
-                        }
                     }
-
-                    const finalHeapAllocation = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_heap_allocation --output json`,
-                            {
-                                cwd: getDfxRoot(),
-                                encoding: 'utf-8'
-                            }
-                        )
-                    );
-                    const startingHeapAllocation =
-                        startingHeapAllocations[canisterName];
 
                     if (
                         startingHeapAllocation === null ||
@@ -270,11 +266,28 @@ export function runTests(tests: Test): void {
                         console.info(
                             `Canister ${canisterName} final heap allocation: ${formatMemorySize(finalHeapAllocation)} (${increaseText})`
                         );
-
-                        expect(heapAllocationIncrease).toBeLessThanOrEqual(
-                            1_000_000
-                        );
                     }
+
+                    const memoryIncrease =
+                        finalMemorySize === null || startingMemorySize === null
+                            ? null
+                            : finalMemorySize - startingMemorySize;
+
+                    // TODO we really need to be able to set the memoryIncreaseExpected per canister right?
+                    if (cuzzConfig.memoryIncreaseExpected !== true) {
+                        expect(memoryIncrease).not.toBeNull();
+                        expect(memoryIncrease).toBe(0);
+                    }
+
+                    const heapAllocationIncrease =
+                        startingHeapAllocation === null
+                            ? null
+                            : finalHeapAllocation - startingHeapAllocation;
+
+                    expect(heapAllocationIncrease).not.toBeNull();
+                    expect(heapAllocationIncrease).toBeLessThanOrEqual(
+                        1_000_000
+                    );
                 }
             });
         });

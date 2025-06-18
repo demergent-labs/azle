@@ -7,5 +7,6 @@
         "Uncaught Error: call rejected: 5 - IC0503: Error from Canister .*: Canister called `ic0.trap` with message: 'hahahaha'",
         "Canister called `ic0.trap` with message: 'Uncaught TypeError: cannot convert to BigInt",
         "Uncaught Error: call perform failed"
-    ]
+    ],
+    "memoryIncreaseExpected": true
 }
