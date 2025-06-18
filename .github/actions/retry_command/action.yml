@@ -34,12 +34,12 @@ runs:
 
               until cd ${{ inputs.working-directory }} && ${{ inputs.command }}; do
                 if [[ "$attempt" -ge "$max_attempts" ]]; then
-                  echo "Command failed after $attempt attempts"
+                  echo "💥 ${{ inputs.command }} failed after $attempt attempts"
                   exit 1
                 fi
 
                 attempt=$(($attempt + 1))
-                echo "Command failed, retrying in $delay seconds... (attempt $attempt/$max_attempts)"
+                echo "❌ ${{ inputs.command }} failed, retrying in $delay seconds... (attempt $attempt/$max_attempts)"
                 sleep $delay
 
                 # Exponential backoff with a configurable maximum
@@ -48,3 +48,5 @@ runs:
                   delay=$max_delay
                 fi
               done
+
+              echo "✅ ${{ inputs.command }} succeeded on attempt $attempt"

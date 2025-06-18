@@ -98,6 +98,46 @@ jobs:
             - name: Setup and run tests
               shell: wsl-bash {0}
               run: |
+                  echo "=== Running tests ==="
+
+                  # Function to retry a command with exponential backoff retries (similar to retry_command action)
+                  retry_command() {
+                      local max_attempts="${1:-5}"
+                      local initial_delay="${2:-1}"
+                      local max_delay="${3:-60}"
+                      local function_name="${4}"
+
+                      local attempt=1
+                      local delay=$initial_delay
+
+                      echo "=== Retry command setup for '$function_name' ==="
+                      echo "Max attempts: $max_attempts, Initial delay: ${initial_delay}s, Max delay: ${max_delay}s"
+
+                      # Try the function until it succeeds (matches the original retry_command action pattern)
+                      until {
+                          echo "Attempt $attempt/$max_attempts for '$function_name'"
+                          $function_name
+                      }; do
+                          if [[ "$attempt" -ge "$max_attempts" ]]; then
+                              echo "💥 '$function_name' failed after $attempt attempts"
+                              return 1
+                          fi
+
+                          attempt=$(($attempt + 1))
+                          echo "❌ '$function_name' failed, retrying in $delay seconds... (attempt $attempt/$max_attempts)"
+                          sleep $delay
+
+                          # Exponential backoff with configurable maximum
+                          delay=$(( delay * 2 ))
+                          if [[ "$delay" -gt "$max_delay" ]]; then
+                              delay=$max_delay
+                          fi
+                      done
+
+                      echo "✅ '$function_name' succeeded on attempt $attempt"
+                      return 0
+                  }
+
                   set_environment_variables() {
                       echo "=== Setting environment variables ==="
                       # Set workflow context variables inline
@@ -288,14 +328,14 @@ jobs:
                   set_environment_variables
                   print_environment_variables
                   report_test_path
-                  setup_nodejs
-                  install_dfx
-                  install_rust_cargo
-                  install_npm_dependencies
+                  retry_command 3 1 60 setup_nodejs
+                  retry_command 3 1 30 install_dfx
+                  retry_command 3 1 30 install_rust_cargo
+                  retry_command 3 2 30 install_npm_dependencies
                   npm_link
                   run_npm_lint
-                  install_test_npm_dependencies
-                  install_experimental_dependencies
+                  retry_command 2 1 15 install_test_npm_dependencies
+                  retry_command 2 1 15 install_experimental_dependencies
                   npm_link_azle
                   configure_test_settings
                   run_tests
