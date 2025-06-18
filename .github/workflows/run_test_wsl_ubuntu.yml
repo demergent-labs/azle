@@ -66,9 +66,6 @@ jobs:
                       build-essential
                       git
                       jq
-                  wsl-conf: |
-                      [boot]
-                      systemd=true
                   set-as-default: 'true'
                   wsl-shell-user: 'tester'
 
