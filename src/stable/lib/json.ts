@@ -30,10 +30,44 @@ export function jsonParse(
     reviver?: (this: any, key: string, value: any) => any
 ): any {
     try {
-        return JSON.parse(text, reviver ?? jsonReviver);
+        const result = JSON.parse(text, reviver ?? jsonReviver);
+        // Post-process to restore undefined values when using the default reviver
+        if (!reviver) {
+            return restoreUndefinedValues(result);
+        }
+        return result;
     } catch (error: any) {
         throw new Error(
             `jsonParse: Error parsing JSON: ${error.message}. text: ${text}`
         );
     }
+}
+
+/**
+ * Recursively processes a value to convert undefined placeholder symbols back to actual undefined values.
+ *
+ * @param value - The value to process
+ * @returns The value with undefined placeholders restored to actual undefined values
+ */
+function restoreUndefinedValues(value: any): any {
+    // Get the symbol from the stable_json module
+    const UNDEFINED_PLACEHOLDER = Symbol.for('azle_undefined_placeholder');
+
+    if (value === UNDEFINED_PLACEHOLDER) {
+        return undefined;
+    }
+
+    if (Array.isArray(value)) {
+        return value.map(restoreUndefinedValues);
+    }
+
+    if (value !== null && typeof value === 'object') {
+        const result: any = {};
+        for (const [key, val] of Object.entries(value)) {
+            result[key] = restoreUndefinedValues(val);
+        }
+        return result;
+    }
+
+    return value;
 }
