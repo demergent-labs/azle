@@ -1,4 +1,4 @@
 {
-    "callDelay": 0.5,
+    "callDelay": 1,
     "expectedErrors": ["messageHash must be 32 bytes"]
 }
