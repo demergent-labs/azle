@@ -2,7 +2,7 @@ import { Principal } from '@dfinity/principal';
 // @ts-ignore
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
-import { jsonParse, jsonStringify } from '../json';
+import { jsonParse, jsonStringify, UNDEFINED_PLACEHOLDER } from '../json';
 import { Serializable } from './stable_b_tree_map';
 
 /**
@@ -174,7 +174,9 @@ export function jsonReplacer(_key: string, value: any): any {
 export function jsonReviver(_key: string, value: any): any {
     if (typeof value === 'object' && value !== null) {
         if (typeof value.__undefined__ === 'string') {
-            return undefined;
+            // Use placeholder symbol instead of returning undefined directly
+            // This prevents the property from being deleted during JSON.parse
+            return UNDEFINED_PLACEHOLDER;
         }
 
         if (typeof value.__bigint__ === 'string') {
