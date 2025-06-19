@@ -19,7 +19,7 @@ import { join } from 'node:path';
 import { getDfxRoot } from '#utils/dfx_root';
 import { DfxJson } from '#utils/types';
 
-import { runBenchmarksForCanisters } from './benchmarks';
+import { recordsBenchmarksForCanisters } from './benchmarks';
 import { getCuzzConfig, runFuzzTests } from './fuzz';
 
 export type Test = () => void;
@@ -58,146 +58,112 @@ export function runTests(tests: Test): void {
     } = processEnvVars();
 
     if (shouldRunTests === true) {
-        describe(`tests`, tests);
-    }
+        describe(`correctness tests`, () => {
+            tests();
 
-    if (shouldCheckGlobalStateAfterTests === true) {
-        describe(`global state checks after tests`, () => {
-            it(
-                'checks that the _azle global state variables are empty',
-                runGlobalStateChecks
-            );
-        });
-    }
+            if (shouldCheckGlobalStateAfterTests === true) {
+                it(
+                    'checks that all internal global state variables for all canisters are empty',
+                    runGlobalStateChecks
+                );
+            }
 
-    if (shouldRunTypeChecks === true) {
-        describe(`type checks`, () => {
-            it('checks types', async () => {
-                const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
-                try {
-                    execSyncPretty(typeCheckCommand, {
-                        stdio: 'inherit'
-                    });
-                } catch {
-                    expect('Type checking failed').toBe(
-                        'Type checking to pass'
-                    );
-                }
-            });
+            if (shouldRunTypeChecks === true) {
+                it('checks TypeScript types', async () => {
+                    const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
+                    try {
+                        execSyncPretty(typeCheckCommand, {
+                            stdio: 'inherit'
+                        });
+                    } catch {
+                        expect('Type checking failed').toBe(
+                            'Type checking to pass'
+                        );
+                    }
+                });
+            }
         });
     }
 
     if (shouldRecordBenchmarks === true) {
         describe(`benchmarks`, () => {
-            it('runs benchmarks for all canisters', async () => {
+            it('records benchmarks for all canisters', async () => {
                 const canisterNames = await getCanisterNames();
-                await runBenchmarksForCanisters(canisterNames);
+                await recordsBenchmarksForCanisters(canisterNames);
             });
         });
     }
 
     if (shouldFuzz === true) {
-        describe('check canister memory size before fuzzing', () => {
-            please('check the canister memory size', async () => {
-                const canisterNames = await getCanisterNames();
+        describe('fuzz tests', () => {
+            please(
+                'snapshot the canister memory size and heap allocation for all canisters',
+                async () => {
+                    const canisterNames = await getCanisterNames();
 
-                for (const canisterName of canisterNames) {
-                    const memorySize = await getRawMemorySize(canisterName);
+                    for (const canisterName of canisterNames) {
+                        const memorySize = await getRawMemorySize(canisterName);
 
-                    startingMemorySizes[canisterName] = memorySize;
+                        startingMemorySizes[canisterName] = memorySize;
 
-                    console.info(
-                        `Canister ${canisterName} memory size: ${formatMemorySize(memorySize)}`
-                    );
+                        console.info(
+                            `Canister ${canisterName} memory size: ${formatMemorySize(memorySize)}`
+                        );
 
-                    const heapAllocation = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_heap_current_allocation --output json`,
-                            {
-                                cwd: getDfxRoot(),
-                                encoding: 'utf-8'
-                            }
-                        )
-                    );
+                        const heapAllocation = Number(
+                            execSync(
+                                `dfx canister call ${canisterName} _azle_heap_current_allocation --output json`,
+                                {
+                                    cwd: getDfxRoot(),
+                                    encoding: 'utf-8'
+                                }
+                            )
+                        );
 
-                    startingHeapAllocations[canisterName] = heapAllocation;
+                        startingHeapAllocations[canisterName] = heapAllocation;
 
-                    console.info(
-                        `Canister ${canisterName} heap allocation: ${formatMemorySize(heapAllocation)}`
-                    );
-                }
-
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-            });
-        });
-    }
-
-    // TODO we might want to put everything related to fuzzing within the same describe
-    if (shouldFuzz === true) {
-        describe(`fuzz`, () => {
-            it('runs fuzz tests for all canisters', runFuzzTests);
-        });
-    }
-
-    if (shouldCheckGlobalStateAfterFuzzTests === true) {
-        describe(`global state checks after fuzz tests`, () => {
-            // TODO we might not need this with our new exponential backoff retry logic for global state checks
-            // please('wait for dfx to be healthy', async () => {
-            //     while (true) {
-            //         try {
-            //             execSync(`dfx ping --wait-healthy`, {
-            //                 cwd: getDfxRoot(),
-            //                 encoding: 'utf-8'
-            //             });
-            //             break;
-            //         } catch {
-            //             console.info(
-            //                 'dfx ping --wait-healthy failed, retrying in 1 second...'
-            //             );
-            //             await new Promise((resolve) =>
-            //                 setTimeout(resolve, 1_000)
-            //             );
-            //         }
-            //     }
-            // });
-
-            // TODO we might not need this with our new exponential backoff retry logic for global state checks
-            // wait(
-            //     'for fuzz tests to settle before checking global state',
-            //     120_000
-            // );
-
-            it('checks that the _azle global state variables are empty', async () => {
-                while (true) {
-                    try {
-                        await runGlobalStateChecks();
-                    } catch (error: any) {
-                        if (
-                            isExpectedError(error, DEFAULT_EXPECTED_ERRORS) ===
-                            true
-                        ) {
-                            continue;
-                        }
-
-                        throw error;
+                        console.info(
+                            `Canister ${canisterName} heap allocation: ${formatMemorySize(heapAllocation)}`
+                        );
                     }
-                    break;
-                }
-            });
-        });
-    }
 
-    if (shouldFuzz === true) {
-        describe('check canister memory size after fuzzing', () => {
-            please('check the canister memory size', async () => {
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                }
+            );
+
+            it('runs fuzz tests', runFuzzTests);
+
+            if (shouldCheckGlobalStateAfterFuzzTests === true) {
+                it('checks that all internal global state variables for all canisters are empty', async () => {
+                    while (true) {
+                        try {
+                            await runGlobalStateChecks();
+                        } catch (error: any) {
+                            if (
+                                isExpectedError(
+                                    error,
+                                    DEFAULT_EXPECTED_ERRORS
+                                ) === true
+                            ) {
+                                continue;
+                            }
+
+                            throw error;
+                        }
+                        break;
+                    }
+                });
+            }
+
+            it('checks the canister memory size and heap allocation for all canisters', async () => {
                 const cuzzConfig = getCuzzConfig();
                 const canisterNames = await getCanisterNames();
 
