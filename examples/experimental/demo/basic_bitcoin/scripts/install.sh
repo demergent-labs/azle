@@ -9,7 +9,7 @@ if [ ! -f ".bitcoin/bin/bitcoind" ]; then
     # macOS
     if [[ "$(uname -m)" == "arm64" ]]; then
       # Apple Silicon
-      BITCOIN_ARCHIVE="bitcoin-23.0-aarch64-apple-darwin.tar.gz"
+      BITCOIN_ARCHIVE="bitcoin-23.0-arm64-apple-darwin.tar.gz"
     else
       # Intel Mac
       BITCOIN_ARCHIVE="bitcoin-23.0-x86_64-apple-darwin.tar.gz"
