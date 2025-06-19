@@ -5,6 +5,9 @@ import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 import { jsonParse, jsonStringify } from '../json';
 import { Serializable } from './stable_b_tree_map';
 
+// Unique symbol to represent undefined values during JSON parsing
+const UNDEFINED_PLACEHOLDER = Symbol.for('azle_undefined_placeholder');
+
 /**
  * Creates a JSON-based `Serializable` object for use with `StableBTreeMap`.
  *
@@ -174,7 +177,9 @@ export function jsonReplacer(_key: string, value: any): any {
 export function jsonReviver(_key: string, value: any): any {
     if (typeof value === 'object' && value !== null) {
         if (typeof value.__undefined__ === 'string') {
-            return undefined;
+            // Use placeholder symbol instead of returning undefined directly
+            // This prevents the property from being deleted during JSON.parse
+            return UNDEFINED_PLACEHOLDER;
         }
 
         if (typeof value.__bigint__ === 'string') {
