@@ -14,8 +14,17 @@ DFX_VERSION=$1
 echo "Installing dfx version $DFX_VERSION..."
 DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --retry 3 -fsSL https://sdk.dfinity.org/install.sh)"
 
+# Determine the correct dfx path based on the operating system
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    DFX_PATH="$HOME/Library/Application Support/org.dfinity.dfx/bin"
+else
+    # Linux and others
+    DFX_PATH="$HOME/.local/share/dfx/bin"
+fi
+
 # Add dfx to PATH for current session so the installation can be verified
-export PATH="$HOME/.local/share/dfx/bin:$PATH"
+export PATH="$DFX_PATH:$PATH"
 
 # Verify installation
 if ! command -v dfx &> /dev/null; then

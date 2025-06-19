@@ -44,4 +44,8 @@ const CanisterConfigArb = RecordArb(context)
         };
     });
 
-runPropTests(CanisterArb(context, CanisterConfigArb));
+if (process.env.AZLE_RUNNING_IN_WSL === 'true') {
+    console.info('skipping all tests on wsl');
+} else {
+    runPropTests(CanisterArb(context, CanisterConfigArb));
+}

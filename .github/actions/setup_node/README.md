@@ -7,5 +7,5 @@ steps:
     - id: setup-node
       uses: ./.github/actions/setup_node
 
-    - run: echo "${{ steps.setup-node.outputs.version }}"
+    - run: echo "${{ steps.setup-node.outputs.node-version }}"
 ```
