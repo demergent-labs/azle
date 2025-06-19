@@ -1,6 +1,11 @@
 import { execSync } from 'child_process';
 
 function pretest(): void {
+    // Install all required binaries including Bitcoin
+    execSync(`npm run install`, {
+        stdio: 'inherit'
+    });
+
     uninstall(
         'ckbtc',
         'internet_identity',
