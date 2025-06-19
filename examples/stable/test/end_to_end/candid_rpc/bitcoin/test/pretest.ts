@@ -1,6 +1,11 @@
 import { execSync } from 'child_process';
 
 function pretest(): void {
+    // Install Bitcoin binaries if they don't exist
+    execSync(`./scripts/install.sh`, {
+        stdio: 'inherit'
+    });
+
     execSync(`rm -rf .bitcoin/data/regtest`, {
         stdio: 'inherit'
     });
