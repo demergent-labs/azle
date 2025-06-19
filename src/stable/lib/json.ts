@@ -1,5 +1,8 @@
 import { jsonReplacer, jsonReviver } from './stable_structures/stable_json';
 
+// Unique symbol to represent undefined values during JSON parsing
+export const UNDEFINED_PLACEHOLDER = Symbol.for('azle_undefined_placeholder');
+
 /**
  * An ICP-enabled wrapper over `JSON.stringify`, handling special types like `Principal`, `BigInt`, and `Uint8Array` by default.
  *
@@ -32,7 +35,7 @@ export function jsonParse(
     try {
         const result = JSON.parse(text, reviver ?? jsonReviver);
         // Post-process to restore undefined values when using the default reviver
-        if (!reviver) {
+        if (reviver === undefined) {
             return restoreUndefinedValues(result);
         }
         return result;
@@ -50,9 +53,6 @@ export function jsonParse(
  * @returns The value with undefined placeholders restored to actual undefined values
  */
 function restoreUndefinedValues(value: any): any {
-    // Get the symbol from the stable_json module
-    const UNDEFINED_PLACEHOLDER = Symbol.for('azle_undefined_placeholder');
-
     if (value === UNDEFINED_PLACEHOLDER) {
         return undefined;
     }
