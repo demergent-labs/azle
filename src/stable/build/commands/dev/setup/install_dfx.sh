@@ -18,16 +18,9 @@ DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --retry 3 -fsSL http
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
     DFX_PATH="$HOME/Library/Application Support/org.dfinity.dfx/bin"
-    ENV_FILE="$HOME/Library/Application Support/org.dfinity.dfx/env"
 else
     # Linux and others
     DFX_PATH="$HOME/.local/share/dfx/bin"
-    ENV_FILE="$HOME/.local/share/dfx/env"
-fi
-
-# Source the environment file if it exists to update PATH
-if [ -f "$ENV_FILE" ]; then
-    source "$ENV_FILE"
 fi
 
 # Add dfx to PATH for current session so the installation can be verified
