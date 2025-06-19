@@ -24,6 +24,11 @@ if [ ! -f ".bitcoin/bin/bitcoind" ]; then
 
   echo "Downloading Bitcoin Core for platform: $BITCOIN_ARCHIVE"
   curl -o bitcoin.tar.gz "https://bitcoincore.org/bin/bitcoin-core-23.0/$BITCOIN_ARCHIVE"
-  tar xzf bitcoin.tar.gz --overwrite --strip-components=1 --directory=.bitcoin/ bitcoin-23.0/bin/
+
+  # Remove existing bin directory if it exists to avoid conflicts
+  rm -rf .bitcoin/bin
+
+  # Extract with cross-platform compatible tar command
+  tar xzf bitcoin.tar.gz --strip-components=1 --directory=.bitcoin/ bitcoin-23.0/bin/
   rm -rf bitcoin.tar.gz
 fi
