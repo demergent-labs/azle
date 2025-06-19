@@ -115,6 +115,7 @@ fn _azle_is_job_queue_empty() -> bool {
     }
 }
 
+/// Returns the current size of the heap in bytes to aid in testing for memory leaks and other global state issues.
 #[query(guard = "guard_against_non_controllers")]
 fn _azle_heap_current_allocation() -> u32 {
     PEAK_ALLOC.current_usage() as u32
