@@ -73,6 +73,7 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
 }
 
 function shouldSkip(methodName: string, iterations: number): boolean {
+    // These were hitting the instruction limit
     if (
         methodName === 'principalInitStack' ||
         methodName === 'principalInitHeap' ||
