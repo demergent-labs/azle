@@ -1,5 +1,5 @@
 {
-    "callDelay": 0.5,
+    "callDelay": 1,
     "expectedErrors": [
         "Method: http_streaming \\(query\\)[\\s\\S]*should not happen"
     ],

@@ -1,5 +1,5 @@
 {
-    "callDelay": 0.5,
+    "callDelay": 1,
     "expectedErrors": [
         "assertion failed at ICRC1.mo:262.5-262.37",
         "assertion failed at ICRC1.mo:268.20-268.59",
