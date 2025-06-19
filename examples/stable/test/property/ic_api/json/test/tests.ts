@@ -39,7 +39,6 @@ export function getTests(): Test {
             'jsonStringify and jsonParse',
             ({ type, method }) => {
                 it(`should test jsonStringify and jsonParse with ${type} method`, async () => {
-                    // Use fewer test runs to avoid timeouts
                     const executionParams = {
                         ...defaultPropTestParams(),
                         numRuns:
@@ -51,20 +50,14 @@ export function getTests(): Test {
                             const actor =
                                 await getCanisterActor<Actor>('canister');
 
-                            // Convert the value to a JSON string using jsonStringify
                             const jsonString = jsonStringify(value);
 
-                            // Call the canister method that parses and then stringifies again
                             const returnedJsonString =
                                 await actor[method](jsonString);
+                            const parsedValue = jsonParse(returnedJsonString);
 
-                            // The returned string should match the original
                             expect(returnedJsonString).toBe(jsonString);
-
-                            // Parse the returned JSON string and directly compare with original value
-                            const parsedReturnedValue =
-                                jsonParse(returnedJsonString);
-                            expect(parsedReturnedValue).toEqual(value);
+                            expect(parsedValue).toEqual(value);
                         }),
                         executionParams
                     );
