@@ -9,7 +9,7 @@ export async function runFuzzTests(): Promise<void> {
     const cuzzConfig = getCuzzConfig();
 
     if (cuzzConfig.skip === true) {
-        console.log('Skipping fuzz tests as per cuzz configuration.');
+        console.info('Skipping fuzz tests as per cuzz configuration.');
         return;
     }
 
