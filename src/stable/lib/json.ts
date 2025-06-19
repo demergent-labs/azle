@@ -62,6 +62,46 @@ function restoreUndefinedValues(value: any): any {
     }
 
     if (value !== null && typeof value === 'object') {
+        // Special handling for Maps - process the values but preserve the Map structure
+        if (value instanceof Map) {
+            const processedMap = new Map();
+            for (const [key, val] of value.entries()) {
+                processedMap.set(
+                    restoreUndefinedValues(key),
+                    restoreUndefinedValues(val)
+                );
+            }
+            return processedMap;
+        }
+
+        // Special handling for Sets - process the values but preserve the Set structure
+        if (value instanceof Set) {
+            const processedSet = new Set();
+            for (const val of value.values()) {
+                processedSet.add(restoreUndefinedValues(val));
+            }
+            return processedSet;
+        }
+
+        // Don't process other special objects that were already correctly restored by jsonReviver
+        if (
+            value instanceof Int8Array ||
+            value instanceof Int16Array ||
+            value instanceof Int32Array ||
+            value instanceof BigInt64Array ||
+            value instanceof Uint8Array ||
+            value instanceof Uint16Array ||
+            value instanceof Uint32Array ||
+            value instanceof BigUint64Array ||
+            value instanceof Float32Array ||
+            value instanceof Float64Array ||
+            (typeof value._isPrincipal === 'boolean' &&
+                value._isPrincipal === true)
+        ) {
+            return value;
+        }
+
+        // Only process plain objects
         const result: any = {};
         for (const [key, val] of Object.entries(value)) {
             result[key] = restoreUndefinedValues(val);
