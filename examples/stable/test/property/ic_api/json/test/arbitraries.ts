@@ -13,8 +13,6 @@ const RECURSIVE_LIMITS = {
     maxKeyLength: 5
 } as const;
 
-const MAX_TYPED_ARRAY_LENGTH = 3;
-
 /**
  * Arbitrary for generating Principal values from random byte arrays
  */
@@ -25,8 +23,13 @@ const principalArb = fc
     })
     .map((sample) => Principal.fromUint8Array(sample));
 
+/**
+ * Arbitrary for generating BigInt values.
+ *
+ * TODO replace with fc.bigInt() once experimental mode no longer relies on wasmedge-quickjs
+ */
 const bigIntArb = process.env.AZLE_EXPERIMENTAL
-    ? fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
+    ? fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n)
     : fc.bigInt();
 
 /**
@@ -47,23 +50,19 @@ const primitiveArb = fc.oneof(
 );
 
 /**
- * Arbitrary for generating various typed array types with controlled sizes
+ * Arbitrary for generating various typed array types
  */
 const typedArrayArb = fc.oneof(
-    fc.uint8Array({ maxLength: MAX_TYPED_ARRAY_LENGTH }),
-    fc.uint16Array({ maxLength: MAX_TYPED_ARRAY_LENGTH }),
-    fc.uint32Array({ maxLength: MAX_TYPED_ARRAY_LENGTH }),
-    fc.int8Array({ maxLength: MAX_TYPED_ARRAY_LENGTH }),
-    fc.int16Array({ maxLength: MAX_TYPED_ARRAY_LENGTH }),
-    fc.int32Array({ maxLength: MAX_TYPED_ARRAY_LENGTH }),
-    fc.float32Array({ maxLength: MAX_TYPED_ARRAY_LENGTH }),
-    fc.float64Array({ maxLength: MAX_TYPED_ARRAY_LENGTH }),
-    fc
-        .array(fc.bigInt(), { maxLength: MAX_TYPED_ARRAY_LENGTH })
-        .map((arr) => new BigInt64Array(arr)),
-    fc
-        .array(fc.bigInt({ min: 0n }), { maxLength: MAX_TYPED_ARRAY_LENGTH })
-        .map((arr) => new BigUint64Array(arr))
+    fc.uint8Array(),
+    fc.uint16Array(),
+    fc.uint32Array(),
+    fc.int8Array(),
+    fc.int16Array(),
+    fc.int32Array(),
+    fc.float32Array(),
+    fc.float64Array(),
+    fc.array(fc.bigInt()).map((arr) => new BigInt64Array(arr)),
+    fc.array(fc.bigInt({ min: 0n })).map((arr) => new BigUint64Array(arr))
 );
 
 /**

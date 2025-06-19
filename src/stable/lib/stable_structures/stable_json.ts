@@ -2,11 +2,8 @@ import { Principal } from '@dfinity/principal';
 // @ts-ignore
 import { TextDecoder, TextEncoder } from '@sinonjs/text-encoding';
 
-import { jsonParse, jsonStringify } from '../json';
+import { jsonParse, jsonStringify, UNDEFINED_PLACEHOLDER } from '../json';
 import { Serializable } from './stable_b_tree_map';
-
-// Unique symbol to represent undefined values during JSON parsing
-const UNDEFINED_PLACEHOLDER = Symbol.for('azle_undefined_placeholder');
 
 /**
  * Creates a JSON-based `Serializable` object for use with `StableBTreeMap`.
