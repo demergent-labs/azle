@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let float64InitHeapStorage: { [key: string]: number | undefined } = {};
+let heapStorage: { [key: string]: number | undefined } = {};
 
 export class Float64Benchmarks {
     @update([IDL.Nat32])
@@ -18,9 +18,13 @@ export class Float64Benchmarks {
         let i = 0;
 
         while (i < numInits) {
-            float64InitHeapStorage[`element${i}`] =
-                i % 2 === 0 ? Math.PI : Math.E;
+            heapStorage[`element${i}`] = i % 2 === 0 ? Math.PI : Math.E;
             i += 1;
         }
+    }
+
+    @update
+    float64ClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

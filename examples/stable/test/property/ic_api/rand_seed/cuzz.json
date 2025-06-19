@@ -1,4 +1,5 @@
 {
+    "callDelay": 0.5,
     "expectedErrors": [
         "Canister called `ic0.trap` with message: 'Uncaught RangeError: invalid array buffer length",
         "Canister called `ic0.trap` with message: 'Uncaught: seed must be exactly 32 bytes in length",

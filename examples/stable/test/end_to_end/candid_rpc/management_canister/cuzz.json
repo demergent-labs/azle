@@ -1,4 +1,5 @@
 {
+    "callDelay": 0.5,
     "expectedErrors": [
         "Uncaught Error: call rejected: 3 - Unable to route management canister request",
         "Uncaught Error: call rejected: 3 - Canister .* not found",

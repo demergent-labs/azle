@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let boolInitHeapStorage: { [key: string]: boolean | undefined } = {};
+let heapStorage: { [key: string]: boolean | undefined } = {};
 
 export class BoolBenchmarks {
     @update([IDL.Nat32])
@@ -18,8 +18,13 @@ export class BoolBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            boolInitHeapStorage[`element${i}`] = i % 2 === 0 ? true : false;
+            heapStorage[`element${i}`] = i % 2 === 0 ? true : false;
             i += 1;
         }
+    }
+
+    @update
+    boolClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

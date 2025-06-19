@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let int64InitHeapStorage: { [key: string]: bigint | undefined } = {};
+let heapStorage: { [key: string]: bigint | undefined } = {};
 
 export class Int64Benchmarks {
     @update([IDL.Nat32])
@@ -18,9 +18,14 @@ export class Int64Benchmarks {
         let i = 0;
 
         while (i < numInits) {
-            int64InitHeapStorage[`element${i}`] =
+            heapStorage[`element${i}`] =
                 i % 2 === 0 ? 9_223_372_036_854_775_807n : 0n;
             i += 1;
         }
+    }
+
+    @update
+    int64ClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

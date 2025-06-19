@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let blobInitHeapStorage: { [key: string]: Uint8Array | undefined } = {};
+let heapStorage: { [key: string]: Uint8Array | undefined } = {};
 
 export class BlobBenchmarks {
     @update([IDL.Nat32])
@@ -21,11 +21,16 @@ export class BlobBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            blobInitHeapStorage[`element${i}`] =
+            heapStorage[`element${i}`] =
                 i % 2 === 0
                     ? Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
                     : Uint8Array.from([]);
             i += 1;
         }
+    }
+
+    @update
+    blobClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

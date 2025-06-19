@@ -12,7 +12,7 @@ type Reaction =
     | { ThumbsUp: number }
     | { Tip: Principal };
 
-let variantInitHeapStorage: { [key: string]: Reaction | undefined } = {};
+let heapStorage: { [key: string]: Reaction | undefined } = {};
 
 export class VariantBenchmarks {
     @update([IDL.Nat32])
@@ -37,7 +37,7 @@ export class VariantBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            variantInitHeapStorage[`element${i}`] =
+            heapStorage[`element${i}`] =
                 i % 2 === 0
                     ? {
                           ThumbsUp: 2
@@ -47,5 +47,10 @@ export class VariantBenchmarks {
                       };
             i += 1;
         }
+    }
+
+    @update
+    variantClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

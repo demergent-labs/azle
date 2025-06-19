@@ -17,7 +17,7 @@ type User = {
     username: string;
 };
 
-let recordInitHeapStorage: { [key: string]: User | undefined } = {};
+let heapStorage: { [key: string]: User | undefined } = {};
 
 export class RecordBenchmarks {
     @update([IDL.Nat32])
@@ -54,7 +54,7 @@ export class RecordBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            recordInitHeapStorage[`element${i}`] =
+            heapStorage[`element${i}`] =
                 i % 2 === 0
                     ? {
                           principal: Principal.fromText(
@@ -76,5 +76,10 @@ export class RecordBenchmarks {
                       };
             i += 1;
         }
+    }
+
+    @update
+    recordClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

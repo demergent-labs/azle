@@ -42,15 +42,17 @@ type TimerIds = {
     repeatCrossCanister: bigint;
 };
 
+const initialStatusReport: StatusReport = {
+    single: false,
+    inline: 0,
+    capture: '',
+    repeat: 0,
+    singleCrossCanister: Uint8Array.from([]),
+    repeatCrossCanister: Uint8Array.from([])
+};
+
 export default class Canister {
-    statusReport: StatusReport = {
-        single: false,
-        inline: 0,
-        capture: '',
-        repeat: 0,
-        singleCrossCanister: Uint8Array.from([]),
-        repeatCrossCanister: Uint8Array.from([])
-    };
+    statusReport: StatusReport = initialStatusReport;
 
     @update([IDL.Nat64])
     clearTimer(timerId: bigint): void {
@@ -108,6 +110,11 @@ export default class Canister {
     @query([], StatusReport)
     getStatusReport(): StatusReport {
         return this.statusReport;
+    }
+
+    @update
+    clearStatusReport(): void {
+        this.statusReport = initialStatusReport;
     }
 }
 

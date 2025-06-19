@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let vecInitHeapStorage: { [key: string]: number[] | undefined } = {};
+let heapStorage: { [key: string]: number[] | undefined } = {};
 
 export class VecBenchmarks {
     @update([IDL.Nat32])
@@ -19,9 +19,14 @@ export class VecBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            vecInitHeapStorage[`element${i}`] =
+            heapStorage[`element${i}`] =
                 i % 2 === 0 ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] : [];
             i += 1;
         }
+    }
+
+    @update
+    vecClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

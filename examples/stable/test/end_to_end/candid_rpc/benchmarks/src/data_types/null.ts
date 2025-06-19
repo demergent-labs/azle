@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let nullInitHeapStorage: { [key: string]: null | undefined } = {};
+let heapStorage: { [key: string]: null | undefined } = {};
 
 export class NullBenchmarks {
     @update([IDL.Nat32])
@@ -18,8 +18,13 @@ export class NullBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            nullInitHeapStorage[`element${i}`] = i % 2 === 0 ? null : null;
+            heapStorage[`element${i}`] = i % 2 === 0 ? null : null;
             i += 1;
         }
+    }
+
+    @update
+    nullClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

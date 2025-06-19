@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let int16InitHeapStorage: { [key: string]: number | undefined } = {};
+let heapStorage: { [key: string]: number | undefined } = {};
 
 export class Int16Benchmarks {
     @update([IDL.Nat32])
@@ -18,8 +18,13 @@ export class Int16Benchmarks {
         let i = 0;
 
         while (i < numInits) {
-            int16InitHeapStorage[`element${i}`] = i % 2 === 0 ? 32_767 : 0;
+            heapStorage[`element${i}`] = i % 2 === 0 ? 32_767 : 0;
             i += 1;
         }
+    }
+
+    @update
+    int16ClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

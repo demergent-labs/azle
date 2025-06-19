@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let textInitHeapStorage: { [key: string]: string | undefined } = {};
+let heapStorage: { [key: string]: string | undefined } = {};
 
 export class TextBenchmarks {
     @update([IDL.Nat32])
@@ -18,8 +18,13 @@ export class TextBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            textInitHeapStorage[`element${i}`] = i % 2 === 0 ? 'hello' : '';
+            heapStorage[`element${i}`] = i % 2 === 0 ? 'hello' : '';
             i += 1;
         }
+    }
+
+    @update
+    textClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

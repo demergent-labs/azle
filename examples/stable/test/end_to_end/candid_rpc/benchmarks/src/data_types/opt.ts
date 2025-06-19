@@ -1,6 +1,6 @@
 import { IDL, update } from 'azle';
 
-let optInitHeapStorage: { [key: string]: [boolean] | [] | undefined } = {};
+let heapStorage: { [key: string]: [boolean] | [] | undefined } = {};
 
 export class OptBenchmarks {
     @update([IDL.Nat32])
@@ -18,8 +18,13 @@ export class OptBenchmarks {
         let i = 0;
 
         while (i < numInits) {
-            optInitHeapStorage[`element${i}`] = i % 2 === 0 ? [true] : [];
+            heapStorage[`element${i}`] = i % 2 === 0 ? [true] : [];
             i += 1;
         }
+    }
+
+    @update
+    optClearHeapStorage(): void {
+        heapStorage = {};
     }
 }

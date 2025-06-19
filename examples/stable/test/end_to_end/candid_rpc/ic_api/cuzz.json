@@ -1,4 +1,5 @@
 {
+    "callDelay": 0.5,
     "expectedErrors": [
         "Canister violated contract: ic0_certified_data_set failed because the passed data must be no larger than 32 bytes",
         "Method: msgReject \\(query\\)",
