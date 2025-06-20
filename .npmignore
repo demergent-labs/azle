@@ -2,13 +2,13 @@
 *
 
 # Whitelist
+!.scripts/**
 !dist/canister_templates/**
 !examples/stable/demo/hello_world/**
 !examples/experimental/demo/hello_world_http_server/**
-!.scripts/**
 !src/**
 !.openvaluesharing.json
-!bin.mjs
+!jest.config.dev.js
 !LICENSE
 !LICENSE_EXTENSION.md
 !NOTICE

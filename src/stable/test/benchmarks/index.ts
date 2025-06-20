@@ -30,7 +30,7 @@ type BenchmarksJson = {
     [canisterName: string]: CanisterBenchmark;
 };
 
-export async function runBenchmarksForCanisters(
+export async function recordsBenchmarksForCanisters(
     canisterNames: string[]
 ): Promise<void> {
     const existingBenchmarks = await getBenchmarksJson();

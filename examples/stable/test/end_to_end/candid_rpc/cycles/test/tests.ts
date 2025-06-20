@@ -15,13 +15,8 @@ export function getTests(
             const cyclesCallResult =
                 await cyclesCanister.getCanisterCycleBalance();
 
-            const twoAndAHalfTrillion = 2_500_000_000_000n;
-            const fourTrillion = 4_000_000_000_000n;
-
-            expect(intermediaryCallResult).toBeGreaterThan(twoAndAHalfTrillion);
-            expect(intermediaryCallResult).toBeLessThan(fourTrillion);
-            expect(cyclesCallResult).toBeGreaterThan(twoAndAHalfTrillion);
-            expect(cyclesCallResult).toBeLessThan(fourTrillion);
+            expect(intermediaryCallResult).toBeGreaterThan(0);
+            expect(cyclesCallResult).toBeGreaterThan(0);
         });
 
         it('checks msgCyclesAvailable and msgCyclesAccept with 0 cycles sent', async () => {

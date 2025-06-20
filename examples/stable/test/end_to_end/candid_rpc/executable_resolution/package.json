@@ -4,6 +4,6 @@
     },
     "scripts": {
         "pretest": "tsx test/pretest.ts",
-        "test": "AZLE_CHECK_GLOBAL_STATE=false jest"
+        "test": "AZLE_CHECK_GLOBAL_STATE_AFTER_TESTS=false jest"
     }
 }

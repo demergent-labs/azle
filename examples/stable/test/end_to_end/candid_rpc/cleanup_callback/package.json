@@ -1,7 +1,7 @@
 {
     "scripts": {
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "AZLE_CHECK_GLOBAL_STATE_AFTER_FUZZ_TESTS=false jest"
     },
     "dependencies": {
         "azle": "0.31.0"

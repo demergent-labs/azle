@@ -44,10 +44,6 @@ runs:
               examples/experimental/test/end_to_end/http_server/ic_evm_rpc
               examples/experimental/test/end_to_end/http_server/open_value_sharing
               examples/experimental/test/end_to_end/http_server/sqlite_drizzle
-              examples/experimental/test/property/candid_rpc/canister_methods/inspect_message
-              examples/experimental/test/property/candid_rpc/opt
-              examples/experimental/test/property/candid_rpc/stable_b_tree_map
-              examples/experimental/test/property/candid_rpc/vec
               ') }}"
 
               SLOW_EXCLUSIONS="${{ format('
