@@ -56,6 +56,6 @@ jobs:
                 stable/test/end_to_end/candid_rpc/tuple_types
                 ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             fuzz: true
-            call-delay: ${{ inputs.call-delay }}
-            time-limit: ${{ inputs.time-limit }}
+            fuzz-call-delay: ${{ inputs.call-delay }}
+            fuzz-time-limit: ${{ inputs.time-limit }}
             link-azle: true
