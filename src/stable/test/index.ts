@@ -24,16 +24,35 @@ import { getCuzzConfig, runFuzzTests } from './fuzz';
 
 export type Test = () => void;
 
-type CanisterMemoryState = {
+type HeapAllocations = {
     [canisterName: string]: number | null;
 };
 
-type HeapAllocationState = {
+type MemorySizes = {
     [canisterName: string]: number | null;
 };
 
-let startingMemorySizes: CanisterMemoryState = {};
-let startingHeapAllocations: HeapAllocationState = {};
+type MemoryState = {
+    correctness: {
+        heapAllocations: HeapAllocations;
+        memorySizes: MemorySizes;
+    };
+    fuzz: {
+        heapAllocations: HeapAllocations;
+        memorySizes: MemorySizes;
+    };
+};
+
+let memoryState: MemoryState = {
+    correctness: {
+        heapAllocations: {},
+        memorySizes: {}
+    },
+    fuzz: {
+        heapAllocations: {},
+        memorySizes: {}
+    }
+};
 
 type GlobalState = {
     azleRejectCallbacksLen: number;
@@ -59,6 +78,17 @@ export function runTests(tests: Test): void {
 
     if (shouldRunTests === true) {
         describe(`correctness tests`, () => {
+            please(
+                'snapshot the canister memory size and heap allocation for all canisters before correctness tests',
+                async () => {
+                    const snapshot = await takeMemorySnapshot();
+
+                    memoryState.correctness.heapAllocations =
+                        snapshot.heapAllocations;
+                    memoryState.correctness.memorySizes = snapshot.memorySizes;
+                }
+            );
+
             tests();
 
             if (shouldCheckGlobalStateAfterTests === true) {
@@ -67,6 +97,13 @@ export function runTests(tests: Test): void {
                     runGlobalStateChecks
                 );
             }
+
+            it('checks the canister memory size and heap allocation for all canisters after correctness tests', async () => {
+                await checkMemoryChanges(
+                    memoryState.correctness.heapAllocations,
+                    memoryState.correctness.memorySizes
+                );
+            });
 
             if (shouldRunTypeChecks === true) {
                 it('checks TypeScript types', async () => {
@@ -97,45 +134,11 @@ export function runTests(tests: Test): void {
     if (shouldFuzz === true) {
         describe('fuzz tests', () => {
             please(
-                'snapshot the canister memory size and heap allocation for all canisters',
+                'snapshot the canister memory size and heap allocation for all canisters before fuzz tests',
                 async () => {
-                    const canisterNames = await getCanisterNames();
-
-                    for (const canisterName of canisterNames) {
-                        const memorySize = await getRawMemorySize(canisterName);
-
-                        startingMemorySizes[canisterName] = memorySize;
-
-                        console.info(
-                            `Canister ${canisterName} memory size: ${formatMemorySize(memorySize)}`
-                        );
-
-                        const heapAllocation = Number(
-                            execSync(
-                                `dfx canister call ${canisterName} _azle_heap_current_allocation --output json`,
-                                {
-                                    cwd: getDfxRoot(),
-                                    encoding: 'utf-8'
-                                }
-                            )
-                        );
-
-                        startingHeapAllocations[canisterName] = heapAllocation;
-
-                        console.info(
-                            `Canister ${canisterName} heap allocation: ${formatMemorySize(heapAllocation)}`
-                        );
-                    }
-
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
-                    console.info(`\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n`);
+                    const snapshot = await takeMemorySnapshot();
+                    memoryState.fuzz.heapAllocations = snapshot.heapAllocations;
+                    memoryState.fuzz.memorySizes = snapshot.memorySizes;
                 }
             );
 
@@ -163,98 +166,11 @@ export function runTests(tests: Test): void {
                 });
             }
 
-            it('checks the canister memory size and heap allocation for all canisters', async () => {
-                const cuzzConfig = getCuzzConfig();
-                const canisterNames = await getCanisterNames();
-
-                for (const canisterName of canisterNames) {
-                    const finalMemorySize =
-                        await getRawMemorySize(canisterName);
-                    const startingMemorySize =
-                        startingMemorySizes[canisterName];
-
-                    const finalHeapAllocation = Number(
-                        execSync(
-                            `dfx canister call ${canisterName} _azle_heap_current_allocation --output json`,
-                            {
-                                cwd: getDfxRoot(),
-                                encoding: 'utf-8'
-                            }
-                        )
-                    );
-                    const startingHeapAllocation =
-                        startingHeapAllocations[canisterName];
-
-                    // Console.info both values before expects
-                    if (
-                        startingMemorySize === null ||
-                        startingMemorySize === undefined
-                    ) {
-                        console.info(
-                            `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (starting size unknown)`
-                        );
-                    } else {
-                        const memoryIncrease =
-                            finalMemorySize === null
-                                ? null
-                                : finalMemorySize - startingMemorySize;
-                        const increaseText =
-                            memoryIncrease === null
-                                ? 'unknown'
-                                : memoryIncrease === 0
-                                  ? 'no change'
-                                  : memoryIncrease > 0
-                                    ? `+${formatMemorySize(memoryIncrease)}`
-                                    : `-${formatMemorySize(memoryIncrease)}`;
-
-                        console.info(
-                            `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (${increaseText})`
-                        );
-                    }
-
-                    if (
-                        startingHeapAllocation === null ||
-                        startingHeapAllocation === undefined
-                    ) {
-                        console.info(
-                            `Canister ${canisterName} final heap allocation: ${formatMemorySize(finalHeapAllocation)} (starting size unknown)`
-                        );
-                    } else {
-                        const heapAllocationIncrease =
-                            finalHeapAllocation - startingHeapAllocation;
-                        const increaseText =
-                            heapAllocationIncrease === 0
-                                ? 'no change'
-                                : heapAllocationIncrease > 0
-                                  ? `+${formatMemorySize(heapAllocationIncrease)}`
-                                  : `-${formatMemorySize(heapAllocationIncrease)}`;
-
-                        console.info(
-                            `Canister ${canisterName} final heap allocation: ${formatMemorySize(finalHeapAllocation)} (${increaseText})`
-                        );
-                    }
-
-                    const memoryIncrease =
-                        finalMemorySize === null || startingMemorySize === null
-                            ? null
-                            : finalMemorySize - startingMemorySize;
-
-                    // TODO we really need to be able to set the memoryIncreaseExpected per canister right?
-                    if (cuzzConfig.memoryIncreaseExpected !== true) {
-                        expect(memoryIncrease).not.toBeNull();
-                        expect(memoryIncrease).toBe(0);
-                    }
-
-                    const heapAllocationIncrease =
-                        startingHeapAllocation === null
-                            ? null
-                            : finalHeapAllocation - startingHeapAllocation;
-
-                    expect(heapAllocationIncrease).not.toBeNull();
-                    expect(heapAllocationIncrease).toBeLessThanOrEqual(
-                        1_000_000
-                    );
-                }
+            it('checks the canister memory size and heap allocation for all canisters after fuzz tests', async () => {
+                await checkMemoryChanges(
+                    memoryState.fuzz.heapAllocations,
+                    memoryState.fuzz.memorySizes
+                );
             });
         });
     }
@@ -593,4 +509,145 @@ function isExpectedError(error: Error, expectedErrors: string[]): boolean {
         const regex = new RegExp(expected);
         return regex.test(error.message) || regex.test(error.toString());
     });
+}
+
+async function takeMemorySnapshot(): Promise<{
+    heapAllocations: HeapAllocations;
+    memorySizes: MemorySizes;
+}> {
+    const canisterNames = await getCanisterNames();
+
+    const canisterSnapshots = await Promise.all(
+        canisterNames.map(async (canisterName) => {
+            const memorySize = await getRawMemorySize(canisterName);
+
+            console.info(
+                `Canister ${canisterName} memory size: ${formatMemorySize(memorySize)}`
+            );
+
+            const heapAllocation = getHeapAllocation(canisterName);
+
+            console.info(
+                `Canister ${canisterName} heap allocation: ${formatMemorySize(heapAllocation)}`
+            );
+
+            return {
+                canisterName,
+                heapAllocation,
+                memorySize
+            };
+        })
+    );
+
+    const heapAllocations = canisterSnapshots.reduce<HeapAllocations>(
+        (acc, { canisterName, heapAllocation }) => ({
+            ...acc,
+            [canisterName]: heapAllocation
+        }),
+        {}
+    );
+
+    const memorySizes = canisterSnapshots.reduce<MemorySizes>(
+        (acc, { canisterName, memorySize }) => ({
+            ...acc,
+            [canisterName]: memorySize
+        }),
+        {}
+    );
+
+    return { heapAllocations, memorySizes };
+}
+
+async function checkMemoryChanges(
+    startingHeapAllocations: HeapAllocations,
+    startingMemorySizes: MemorySizes
+): Promise<void> {
+    const cuzzConfig = getCuzzConfig();
+    const canisterNames = await getCanisterNames();
+
+    for (const canisterName of canisterNames) {
+        const finalMemorySize = await getRawMemorySize(canisterName);
+        const startingMemorySize = startingMemorySizes[canisterName];
+
+        const finalHeapAllocation = getHeapAllocation(canisterName);
+        const startingHeapAllocation = startingHeapAllocations[canisterName];
+
+        if (startingMemorySize === null || startingMemorySize === undefined) {
+            console.info(
+                `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (starting size unknown)`
+            );
+        } else {
+            const memoryIncrease =
+                finalMemorySize === null
+                    ? null
+                    : finalMemorySize - startingMemorySize;
+            const increaseText =
+                memoryIncrease === null
+                    ? 'unknown'
+                    : memoryIncrease === 0
+                      ? 'no change'
+                      : memoryIncrease > 0
+                        ? `+${formatMemorySize(memoryIncrease)}`
+                        : `-${formatMemorySize(memoryIncrease)}`;
+
+            console.info(
+                `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (${increaseText})`
+            );
+        }
+
+        if (
+            startingHeapAllocation === null ||
+            startingHeapAllocation === undefined
+        ) {
+            console.info(
+                `Canister ${canisterName} final heap allocation: ${formatMemorySize(finalHeapAllocation)} (starting size unknown)`
+            );
+        } else {
+            const heapAllocationIncrease =
+                finalHeapAllocation - startingHeapAllocation;
+            const increaseText =
+                heapAllocationIncrease === 0
+                    ? 'no change'
+                    : heapAllocationIncrease > 0
+                      ? `+${formatMemorySize(heapAllocationIncrease)}`
+                      : `-${formatMemorySize(heapAllocationIncrease)}`;
+
+            console.info(
+                `Canister ${canisterName} final heap allocation: ${formatMemorySize(finalHeapAllocation)} (${increaseText})`
+            );
+        }
+
+        const memoryIncrease =
+            finalMemorySize === null || startingMemorySize === null
+                ? null
+                : finalMemorySize - startingMemorySize;
+
+        // TODO we really need to be able to set the memoryIncreaseExpected per canister right?
+        // TODO maybe this should be done in the dfx.json custom section per canister?
+        // TODO I don't even think cuzz does anything with this memoryIncreaseExpected
+        if (cuzzConfig.memoryIncreaseExpected !== true) {
+            expect(memoryIncrease).not.toBeNull();
+            expect(memoryIncrease).toBe(0);
+        }
+
+        const heapAllocationIncrease =
+            startingHeapAllocation === null
+                ? null
+                : finalHeapAllocation - startingHeapAllocation;
+
+        expect(heapAllocationIncrease).not.toBeNull();
+        expect(heapAllocationIncrease).toBeLessThanOrEqual(100_000);
+    }
+}
+
+function getHeapAllocation(canisterName: string): number {
+    return Number(
+        execSync(
+            `dfx canister call ${canisterName} _azle_heap_current_allocation --output json`,
+            {
+                cwd: getDfxRoot(),
+                encoding: 'utf-8'
+            }
+        )
+    );
 }
