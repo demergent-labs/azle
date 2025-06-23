@@ -15,6 +15,7 @@ export type CustomConfig = {
     assets?: never;
     build_assets?: never;
     candid_gen?: CandidGen;
+    clearHeapMethods?: string[];
     env?: string[];
     esm_aliases?: never;
     esm_externals?: never;

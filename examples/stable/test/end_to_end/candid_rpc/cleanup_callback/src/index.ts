@@ -4,13 +4,6 @@ export default class {
     rejectCode: number = 0;
     rejectMessage: string = 'no error';
 
-    // This method exists to help ensure that the heap returns close to baseline during the fuzz tests
-    @update
-    deleteAzleGlobalSettleCallbacks0(): void {
-        globalThis._azleRejectCallbacks = {};
-        globalThis._azleResolveCallbacks = {};
-    }
-
     @query([], IDL.Nat32)
     getRejectCode(): number {
         return this.rejectCode;
@@ -41,13 +34,6 @@ export default class {
         trap('trapped from getRandomnessWithTrapUncaught');
 
         return result;
-    }
-
-    // This method exists to help ensure that the heap returns close to baseline during the fuzz tests
-    @update
-    deleteAzleGlobalSettleCallbacks1(): void {
-        globalThis._azleRejectCallbacks = {};
-        globalThis._azleResolveCallbacks = {};
     }
 
     @update([], IDL.Vec(IDL.Nat8))
@@ -106,13 +92,6 @@ export default class {
         }
     }
 
-    // This method exists to help ensure that the heap returns close to baseline during the fuzz tests
-    @update
-    deleteAzleGlobalSettleCallbacks2(): void {
-        globalThis._azleRejectCallbacks = {};
-        globalThis._azleResolveCallbacks = {};
-    }
-
     @update([], IDL.Vec(IDL.Nat8))
     getRandomnessWithTrapCaughtPromise(): Promise<Uint8Array> {
         this.rejectCode = 0;
@@ -159,13 +138,6 @@ export default class {
                 `You cannot allow a trap to occur in a cleanup callback`
             );
         }
-    }
-
-    // This method exists to help ensure that the heap returns close to baseline during the fuzz tests
-    @update
-    deleteAzleGlobalSettleCallbacks3(): void {
-        globalThis._azleRejectCallbacks = {};
-        globalThis._azleResolveCallbacks = {};
     }
 
     @update([], undefined, { manual: true })

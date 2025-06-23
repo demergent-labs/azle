@@ -92,6 +92,20 @@ export async function checkMemoryChanges(
     const canisterNames = await getCanisterNames();
 
     for (const canisterName of canisterNames) {
+        const canisterConfig = await getCanisterConfig(canisterName);
+
+        const clearHeapMethods = canisterConfig.custom?.clearHeapMethods;
+
+        for (const clearHeapMethod of clearHeapMethods ?? []) {
+            execSync(
+                `dfx canister call ${canisterName} ${clearHeapMethod} --output json`,
+                {
+                    cwd: getDfxRoot(),
+                    encoding: 'utf-8'
+                }
+            );
+        }
+
         const finalHeapAllocation = getHeapAllocation(canisterName);
         const startingHeapAllocation = startingHeapAllocations[canisterName];
 
@@ -134,15 +148,14 @@ export async function checkMemoryChanges(
             `Canister ${canisterName} final memory size: ${formatMemorySize(finalMemorySize)} (${memorySizeIncreaseText})`
         );
 
-        const canisterConfig = await getCanisterConfig(canisterName);
+        expect(heapAllocationIncrease).toBeLessThanOrEqual(100_000);
+
         const memorySizeIncreaseExpected =
             canisterConfig.custom?.memorySizeIncreaseExpected === true;
 
         if (memorySizeIncreaseExpected === false) {
             expect(memorySizeIncrease).toBeLessThanOrEqual(100_000);
         }
-
-        expect(heapAllocationIncrease).toBeLessThanOrEqual(100_000);
     }
 }
 
