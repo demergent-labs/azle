@@ -1,6 +1,6 @@
 //! A demo of a very bare-bones bitcoin "wallet".
 //!
-//! The wallet here showcases how bitcoin addresses can be be computed
+//! The wallet here showcases how bitcoin addresses can be computed
 //! and how bitcoin transactions can be signed. It is missing several
 //! pieces that any production-grade wallet would have, including:
 //!
