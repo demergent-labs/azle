@@ -3,6 +3,9 @@
         "canister1": {
             "type": "azle",
             "main": "src/canister1/index.ts",
+            "custom": {
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true

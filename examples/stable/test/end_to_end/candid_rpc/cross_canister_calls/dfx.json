@@ -8,7 +8,8 @@
                 "node_compatibility": true
             },
             "custom": {
-                "env": ["CANISTER2_PRINCIPAL"]
+                "env": ["CANISTER2_PRINCIPAL"],
+                "memorySizeIncreaseExpected": true
             }
         },
         "canister2": {
