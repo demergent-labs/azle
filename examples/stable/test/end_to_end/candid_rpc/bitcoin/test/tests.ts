@@ -16,12 +16,12 @@ import {
 import { wallets } from './wallets';
 
 export function getTests(bitcoinCanister: ActorSubclass<_SERVICE>): Test {
-    if (process.env.AZLE_RUNNING_IN_WSL) {
+    if (process.env.AZLE_RUNNING_IN_WSL === 'true') {
         return () => {
             please('skip all tests on wsl', async () => {});
         };
     }
-    if (process.env.AZLE_RUNNING_IN_MAC) {
+    if (process.env.AZLE_RUNNING_IN_MAC === 'true') {
         return () => {
             please('skip all tests on mac', async () => {});
         };
@@ -32,17 +32,19 @@ export function getTests(bitcoinCanister: ActorSubclass<_SERVICE>): Test {
 
         beforeAll(async () => {
             if (
-                !process.env.AZLE_RUNNING_IN_WSL &&
-                !process.env.AZLE_RUNNING_IN_MAC
+                process.env.AZLE_RUNNING_IN_WSL === 'true' ||
+                process.env.AZLE_RUNNING_IN_MAC === 'true'
             ) {
-                bitcoinDaemon = await startBitcoinDaemon();
-                createBitcoinWallet(wallets);
-                await mine101Blocks(wallets);
+                return;
             }
+
+            bitcoinDaemon = await startBitcoinDaemon();
+            createBitcoinWallet(wallets);
+            await mine101Blocks(wallets);
         });
 
         afterAll(() => {
-            if (bitcoinDaemon && !bitcoinDaemon.killed) {
+            if (bitcoinDaemon !== undefined && bitcoinDaemon.killed === false) {
                 bitcoinDaemon.kill();
             }
         });

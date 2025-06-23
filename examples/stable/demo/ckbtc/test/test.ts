@@ -27,15 +27,15 @@ runTests(() => {
 
     beforeAll(async () => {
         if (
-            !process.env.AZLE_RUNNING_IN_WSL &&
-            !process.env.AZLE_RUNNING_IN_MAC
+            process.env.AZLE_RUNNING_IN_WSL !== 'true' &&
+            process.env.AZLE_RUNNING_IN_MAC !== 'true'
         ) {
             bitcoinDaemon = await startBitcoinDaemon();
         }
     }, 60_000);
 
     afterAll(() => {
-        if (bitcoinDaemon && !bitcoinDaemon.killed) {
+        if (bitcoinDaemon !== undefined && bitcoinDaemon.killed === false) {
             bitcoinDaemon.kill();
         }
     });
