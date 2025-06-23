@@ -27,6 +27,7 @@ export function runTests(tests: Test): void {
     const {
         shouldRunTests,
         shouldCheckGlobalStateAfterTests,
+        shouldCheckMemoryStateAfterTests,
         shouldRunTypeChecks,
         shouldRecordBenchmarks,
         shouldFuzz,
@@ -36,7 +37,10 @@ export function runTests(tests: Test): void {
     (shouldRunTests === true ? describe : describe.skip)(
         `correctness tests`,
         () => {
-            (process.env.AZLE_EXPERIMENTAL !== 'true' ? please : please.skip)(
+            (shouldCheckMemoryStateAfterTests === true &&
+                process.env.AZLE_EXPERIMENTAL !== 'true'
+                ? please
+                : please.skip)(
                 'snapshot the canister memory size and heap allocation for all canisters before correctness tests',
                 async () => {
                     const snapshot = await takeMemorySnapshot();
@@ -54,7 +58,10 @@ export function runTests(tests: Test): void {
                 runGlobalStateChecks
             );
 
-            (process.env.AZLE_EXPERIMENTAL !== 'true' ? it : it.skip)(
+            (shouldCheckMemoryStateAfterTests === true &&
+                process.env.AZLE_EXPERIMENTAL !== 'true'
+                ? it
+                : it.skip)(
                 'checks the canister memory size and heap allocation for all canisters after correctness tests',
                 async () => {
                     await checkMemoryChanges(
@@ -166,6 +173,7 @@ it.skip = test.skip;
 function processEnvVars(): {
     shouldRunTests: boolean;
     shouldCheckGlobalStateAfterTests: boolean;
+    shouldCheckMemoryStateAfterTests: boolean;
     shouldRunTypeChecks: boolean;
     shouldRecordBenchmarks: boolean;
     shouldFuzz: boolean;
@@ -174,6 +182,8 @@ function processEnvVars(): {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const checkGlobalStateAfterTests =
         process.env.AZLE_CHECK_GLOBAL_STATE_AFTER_TESTS ?? 'true';
+    const checkMemoryStateAfterTests =
+        process.env.AZLE_CHECK_MEMORY_STATE_AFTER_TESTS ?? 'true';
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
     const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
     const fuzz = process.env.AZLE_FUZZ ?? 'false';
@@ -186,12 +196,18 @@ function processEnvVars(): {
         runTypeChecks,
         fuzz,
         checkGlobalStateAfterTests,
+        checkMemoryStateAfterTests,
         checkGlobalStateAfterFuzzTests
     ].includes('only');
 
     const shouldRunTests = shouldRun(runTests, hasOnly, true);
     const shouldCheckGlobalStateAfterTests = shouldRun(
         checkGlobalStateAfterTests,
+        hasOnly,
+        true
+    );
+    const shouldCheckMemoryStateAfterTests = shouldRun(
+        checkMemoryStateAfterTests,
         hasOnly,
         true
     );
@@ -211,6 +227,7 @@ function processEnvVars(): {
         shouldRecordBenchmarks,
         shouldFuzz,
         shouldCheckGlobalStateAfterTests,
+        shouldCheckMemoryStateAfterTests,
         shouldCheckGlobalStateAfterFuzzTests
     };
 }
