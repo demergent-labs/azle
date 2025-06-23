@@ -4,7 +4,7 @@
     "scripts": {
         "install": "./scripts/install.sh",
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "AZLE_EXPERIMENTAL=true jest"
     },
     "dependencies": {
         "azle": "0.31.0",

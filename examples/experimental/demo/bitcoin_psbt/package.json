@@ -13,7 +13,7 @@
         "manualtest": "jest test/manual_test.ts test/manual.test.ts",
         "install": "./scripts/install.sh",
         "pretest": "tsx test/pretest.ts",
-        "test": "jest test/test.ts"
+        "test": "AZLE_EXPERIMENTAL=true jest test/test.ts"
     },
     "dependencies": {
         "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",

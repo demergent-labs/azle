@@ -1,7 +1,7 @@
 {
     "scripts": {
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "AZLE_EXPERIMENTAL=true jest"
     },
     "dependencies": {
         "@tensorflow/tfjs": "^4.17.0",

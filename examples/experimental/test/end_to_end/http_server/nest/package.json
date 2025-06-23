@@ -1,7 +1,7 @@
 {
     "scripts": {
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "AZLE_EXPERIMENTAL=true jest"
     },
     "dependencies": {
         "@nestjs/common": "^10.4.16",
