@@ -26,7 +26,7 @@ export class AzleFetchResponse {
         this.type = '' as any; // TODO we should work to set this appropriately
         this.redirected = false; // TODO we are defaulting to false, I believe we would have to implement automatic redirects for this to ever be true
         this.bodyUsed = false;
-        this.headers = new AzleFetchHeaders(init?.headers) as any;
+        this.headers = new AzleFetchHeaders(init?.headers);
         this.url = ''; // TODO I do not understand how this is supposed to be set, as it is a readon-only property and the Respone constructor does not allow you to pass in the URL
     }
 
