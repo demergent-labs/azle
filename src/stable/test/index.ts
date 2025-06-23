@@ -12,7 +12,7 @@ import { getCuzzConfig, runFuzzTests } from './fuzz';
 import { runGlobalStateChecks } from './global_state';
 import {
     checkMemoryChanges,
-    memoryState,
+    startingMemoryState,
     takeMemorySnapshot
 } from './memory_state';
 
@@ -45,9 +45,10 @@ export function runTests(tests: Test): void {
                 async () => {
                     const snapshot = await takeMemorySnapshot();
 
-                    memoryState.correctness.heapAllocations =
+                    startingMemoryState.correctness.heapAllocations =
                         snapshot.heapAllocations;
-                    memoryState.correctness.memorySizes = snapshot.memorySizes;
+                    startingMemoryState.correctness.memorySizes =
+                        snapshot.memorySizes;
                 }
             );
 
@@ -65,8 +66,8 @@ export function runTests(tests: Test): void {
                 'checks the canister memory size and heap allocation for all canisters after correctness tests',
                 async () => {
                     await checkMemoryChanges(
-                        memoryState.correctness.heapAllocations,
-                        memoryState.correctness.memorySizes
+                        startingMemoryState.correctness.heapAllocations,
+                        startingMemoryState.correctness.memorySizes
                     );
                 }
             );
@@ -106,8 +107,9 @@ export function runTests(tests: Test): void {
             'snapshot the canister memory size and heap allocation for all canisters before fuzz tests',
             async () => {
                 const snapshot = await takeMemorySnapshot();
-                memoryState.fuzz.heapAllocations = snapshot.heapAllocations;
-                memoryState.fuzz.memorySizes = snapshot.memorySizes;
+                startingMemoryState.fuzz.heapAllocations =
+                    snapshot.heapAllocations;
+                startingMemoryState.fuzz.memorySizes = snapshot.memorySizes;
             }
         );
 
@@ -136,8 +138,8 @@ export function runTests(tests: Test): void {
 
         it('checks the canister memory size and heap allocation for all canisters after fuzz tests', async () => {
             await checkMemoryChanges(
-                memoryState.fuzz.heapAllocations,
-                memoryState.fuzz.memorySizes
+                startingMemoryState.fuzz.heapAllocations,
+                startingMemoryState.fuzz.memorySizes
             );
         });
     });
