@@ -8,11 +8,6 @@ import { getCanisterNames } from '.';
 export async function runFuzzTests(): Promise<void> {
     const cuzzConfig = getCuzzConfig();
 
-    if (cuzzConfig.skip === true) {
-        console.info('Skipping fuzz tests as per cuzz configuration.');
-        return;
-    }
-
     const canisterNames = await getCanisterNames();
     const callDelay = getCallDelay(cuzzConfig);
 

@@ -20,6 +20,7 @@ export type Test = () => void;
 
 export { getCanisterNames } from './canister_names';
 export { getCanisterActor } from './get_canister_actor';
+export { expect } from '@jest/globals';
 export { defaultPropTestParams } from '#test/property/default_prop_test_params';
 
 export function runTests(tests: Test): void {
@@ -32,9 +33,10 @@ export function runTests(tests: Test): void {
         shouldCheckGlobalStateAfterFuzzTests
     } = processEnvVars();
 
-    if (shouldRunTests === true) {
-        describe(`correctness tests`, () => {
-            please(
+    (shouldRunTests === true ? describe : describe.skip)(
+        `correctness tests`,
+        () => {
+            (process.env.AZLE_EXPERIMENTAL !== 'true' ? please : please.skip)(
                 'snapshot the canister memory size and heap allocation for all canisters before correctness tests',
                 async () => {
                     const snapshot = await takeMemorySnapshot();
@@ -47,22 +49,24 @@ export function runTests(tests: Test): void {
 
             tests();
 
-            if (shouldCheckGlobalStateAfterTests === true) {
-                it(
-                    'checks that all internal global state variables for all canisters are empty',
-                    runGlobalStateChecks
-                );
-            }
+            (shouldCheckGlobalStateAfterTests === true ? it : it.skip)(
+                'checks that all internal global state variables for all canisters are empty',
+                runGlobalStateChecks
+            );
 
-            it('checks the canister memory size and heap allocation for all canisters after correctness tests', async () => {
-                await checkMemoryChanges(
-                    memoryState.correctness.heapAllocations,
-                    memoryState.correctness.memorySizes
-                );
-            });
+            (process.env.AZLE_EXPERIMENTAL !== 'true' ? it : it.skip)(
+                'checks the canister memory size and heap allocation for all canisters after correctness tests',
+                async () => {
+                    await checkMemoryChanges(
+                        memoryState.correctness.heapAllocations,
+                        memoryState.correctness.memorySizes
+                    );
+                }
+            );
 
-            if (shouldRunTypeChecks === true) {
-                it('checks TypeScript types', async () => {
+            (shouldRunTypeChecks === true ? it : it.skip)(
+                'checks TypeScript types',
+                async () => {
                     const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
                     try {
                         execSyncPretty(typeCheckCommand, {
@@ -73,63 +77,63 @@ export function runTests(tests: Test): void {
                             'Type checking to pass'
                         );
                     }
-                });
-            }
-        });
-    }
+                }
+            );
+        }
+    );
 
-    if (shouldRecordBenchmarks === true) {
-        describe(`benchmarks`, () => {
+    (shouldRecordBenchmarks === true ? describe : describe.skip)(
+        `benchmarks`,
+        () => {
             it('records benchmarks for all canisters', async () => {
                 const canisterNames = await getCanisterNames();
                 await recordsBenchmarksForCanisters(canisterNames);
             });
-        });
-    }
+        }
+    );
 
-    if (shouldFuzz === true) {
-        describe('fuzz tests', () => {
-            please(
-                'snapshot the canister memory size and heap allocation for all canisters before fuzz tests',
-                async () => {
-                    const snapshot = await takeMemorySnapshot();
-                    memoryState.fuzz.heapAllocations = snapshot.heapAllocations;
-                    memoryState.fuzz.memorySizes = snapshot.memorySizes;
-                }
-            );
-
-            it('runs fuzz tests', runFuzzTests);
-
-            if (shouldCheckGlobalStateAfterFuzzTests === true) {
-                it('checks that all internal global state variables for all canisters are empty', async () => {
-                    while (true) {
-                        try {
-                            await runGlobalStateChecks();
-                        } catch (error: any) {
-                            if (
-                                isExpectedError(
-                                    error,
-                                    DEFAULT_EXPECTED_ERRORS
-                                ) === true
-                            ) {
-                                continue;
-                            }
-
-                            throw error;
-                        }
-                        break;
-                    }
-                });
+    (shouldFuzz === true && process.env.AZLE_EXPERIMENTAL !== 'true'
+        ? describe
+        : describe.skip)('fuzz tests', () => {
+        please(
+            'snapshot the canister memory size and heap allocation for all canisters before fuzz tests',
+            async () => {
+                const snapshot = await takeMemorySnapshot();
+                memoryState.fuzz.heapAllocations = snapshot.heapAllocations;
+                memoryState.fuzz.memorySizes = snapshot.memorySizes;
             }
+        );
 
-            it('checks the canister memory size and heap allocation for all canisters after fuzz tests', async () => {
-                await checkMemoryChanges(
-                    memoryState.fuzz.heapAllocations,
-                    memoryState.fuzz.memorySizes
-                );
-            });
+        it('runs fuzz tests', runFuzzTests);
+
+        (shouldCheckGlobalStateAfterFuzzTests === true ? it : it.skip)(
+            'checks that all internal global state variables for all canisters are empty',
+            async () => {
+                while (true) {
+                    try {
+                        await runGlobalStateChecks();
+                    } catch (error: any) {
+                        if (
+                            isExpectedError(error, DEFAULT_EXPECTED_ERRORS) ===
+                            true
+                        ) {
+                            continue;
+                        }
+
+                        throw error;
+                    }
+                    break;
+                }
+            }
+        );
+
+        it('checks the canister memory size and heap allocation for all canisters after fuzz tests', async () => {
+            await checkMemoryChanges(
+                memoryState.fuzz.heapAllocations,
+                memoryState.fuzz.memorySizes
+            );
         });
-    }
+    });
 }
 
 export function wait(name: string, delay: number): void {
@@ -194,7 +198,9 @@ function processEnvVars(): {
     const shouldRunTypeChecks = shouldRun(runTypeChecks, hasOnly, true);
     const shouldRecordBenchmarks = recordBenchmarks === 'true' && !hasOnly;
     const shouldFuzz =
-        cuzzConfig.skip !== true && shouldRun(fuzz, hasOnly, false);
+        cuzzConfig.skip !== true &&
+        typeof cuzzConfig.skip !== 'string' &&
+        shouldRun(fuzz, hasOnly, false);
     const shouldCheckGlobalStateAfterFuzzTests =
         shouldFuzz === true &&
         shouldRun(checkGlobalStateAfterFuzzTests, hasOnly, true);
