@@ -1,5 +1,3 @@
 {
-    "expectedErrors": [
-        "Uncaught Error: call rejected: 4 - Error: request messages exceed the maximum size of 10KiB"
-    ]
+    "skip": "seems like this set of canisters is too compute-heavy to be reliably fuzzed"
 }

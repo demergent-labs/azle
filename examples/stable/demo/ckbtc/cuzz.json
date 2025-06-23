@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
         "Uncaught Error: Invalid character",
-        "Uncaught Error: Principal \"aaaaa-aa\" does not have a valid checksum"
+        "Uncaught Error: Principal \\\"aaaaa-aa\\\" does not have a valid checksum"
     ]
 }

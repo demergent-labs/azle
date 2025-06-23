@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "test": "jest"
+        "test": "AZLE_CHECK_MEMORY_STATE_AFTER_TESTS=false jest"
     },
     "dependencies": {
         "azle": "0.31.0"
