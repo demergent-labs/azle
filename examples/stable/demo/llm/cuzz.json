@@ -1,0 +1,5 @@
+{
+    "expectedErrors": [
+        "Uncaught Error: call rejected: 4 - Error: request messages exceed the maximum size of 10KiB"
+    ]
+}

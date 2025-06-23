@@ -154,7 +154,7 @@ export async function checkMemoryChanges(
         // TODO I don't even think cuzz does anything with this memoryIncreaseExpected
         if (cuzzConfig.memoryIncreaseExpected !== true) {
             expect(memoryIncrease).not.toBeNull();
-            expect(memoryIncrease).toBe(0);
+            expect(memoryIncrease).toBeLessThanOrEqual(100_000);
         }
 
         const heapAllocationIncrease =

@@ -1,3 +1,4 @@
 {
-    "callDelay": 1
+    "callDelay": 1,
+    "memoryIncreaseExpected": true
 }

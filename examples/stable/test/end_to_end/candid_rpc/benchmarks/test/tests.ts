@@ -69,6 +69,30 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
                 }
             );
         });
+
+        please('clear all heap storage', async () => {
+            await actor.blobClearHeapStorage();
+            await actor.boolClearHeapStorage();
+            await actor.float32ClearHeapStorage();
+            await actor.float64ClearHeapStorage();
+            await actor.int16ClearHeapStorage();
+            await actor.int32ClearHeapStorage();
+            await actor.int64ClearHeapStorage();
+            await actor.int8ClearHeapStorage();
+            await actor.intClearHeapStorage();
+            await actor.nat16ClearHeapStorage();
+            await actor.nat32ClearHeapStorage();
+            await actor.nat64ClearHeapStorage();
+            await actor.nat8ClearHeapStorage();
+            await actor.natClearHeapStorage();
+            await actor.nullClearHeapStorage();
+            await actor.optClearHeapStorage();
+            await actor.principalClearHeapStorage();
+            await actor.recordClearHeapStorage();
+            await actor.textClearHeapStorage();
+            await actor.variantClearHeapStorage();
+            await actor.vecClearHeapStorage();
+        });
     };
 }
 
