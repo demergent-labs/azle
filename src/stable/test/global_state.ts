@@ -40,7 +40,9 @@ async function checkCanisterGlobalStateWithRetry(
             maxWaitTimePower
         );
 
-    performFinalAssertions(finalGlobalState, previousActionsLen);
+    expect(areCriticalStatesClear(finalGlobalState, previousActionsLen)).toBe(
+        true
+    );
 }
 
 async function checkCanisterGlobalStateRecursively(
@@ -189,20 +191,4 @@ function areCriticalStatesClear(
         globalState.azleIsJobQueueEmpty === true &&
         globalActionsLengthUnchanged === true
     );
-}
-
-function performFinalAssertions(
-    globalState: GlobalState,
-    previousActionsLen: number | undefined
-): void {
-    const globalActionsLengthUnchanged =
-        previousActionsLen === undefined ||
-        globalState.azleActionsLen === previousActionsLen;
-
-    expect(globalState.azleRejectCallbacksLen).toEqual(0);
-    expect(globalState.azleResolveCallbacksLen).toEqual(0);
-    expect(globalState.azleTimerCallbacksLen).toEqual(0);
-    expect(globalState.azleInterCanisterCallFuturesLen).toEqual(0);
-    expect(globalState.azleIsJobQueueEmpty).toBe(true);
-    expect(globalActionsLengthUnchanged).toEqual(true);
 }
