@@ -38,6 +38,9 @@ export let startingMemoryState: MemoryState = {
     }
 };
 
+/**
+ * Returns a snapshot of the current dfx/ICP memory size and the heap allocation for all canisters.
+ */
 export async function takeMemorySnapshot(): Promise<{
     heapAllocations: HeapAllocations;
     memorySizes: MemorySizes;
@@ -85,6 +88,14 @@ export async function takeMemorySnapshot(): Promise<{
     return { heapAllocations, memorySizes };
 }
 
+/**
+ * Checks the increases in memory size and heap allocation for all canisters.
+ *
+ * @remarks
+ *
+ * If a canister's heap allocation increases by more than 100_000 bytes this will throw a jest failure.
+ * If a canister's memory size increases by more than 100_000 bytes and the canister's `memorySizeIncreaseExpected` is not set to true in the canister's config, this will throw a jest failure.
+ */
 export async function checkMemoryChanges(
     startingHeapAllocations: HeapAllocations,
     startingMemorySizes: MemorySizes

@@ -4,6 +4,11 @@ import { join } from 'node:path';
 import { getDfxRoot } from '#utils/dfx_root';
 import { DfxJson } from '#utils/types';
 
+/**
+ * Returns the names of all canisters defined in the dfx.json file of the current project.
+ *
+ * @param onlyAzle - If true, only returns canisters of type 'azle'. If false, returns all canisters. Defaults to true.
+ */
 export async function getCanisterNames(
     onlyAzle: boolean = true
 ): Promise<string[]> {

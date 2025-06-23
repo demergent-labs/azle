@@ -15,6 +15,14 @@ type GlobalState = {
     azleIsJobQueueEmpty: boolean;
 };
 
+/**
+ * Checks the global state of all canisters defined in the dfx.json file.
+ *
+ * @remarks
+ *
+ * It checks the state recursively with exponential backoff, waiting for critical states to clear.
+ * If critical states are not clear after a certain amount of time, it will stop checking with a jest failure.
+ */
 export async function runGlobalStateChecks(): Promise<void> {
     const canisterNames = await getCanisterNames();
 

@@ -267,6 +267,9 @@ function createWait(name: string, delay: number): () => Promise<void> {
     };
 }
 
+/**
+ * Checks if an error matches any of a list of expected error messages.
+ */
 function isExpectedError(error: Error, expectedErrors: string[]): boolean {
     return expectedErrors.some((expected) => {
         const regex = new RegExp(expected);
