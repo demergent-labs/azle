@@ -3,13 +3,13 @@
         "proxy": {
             "type": "azle",
             "main": "canisters/proxy/index.ts",
-            "declarations": {
-                "output": "test/dfx_generated/proxy",
-                "node_compatibility": true
-            },
             "custom": {
                 "env": ["ICRC_PRINCIPAL"],
                 "memorySizeIncreaseExpected": true
+            },
+            "declarations": {
+                "output": "test/dfx_generated/proxy",
+                "node_compatibility": true
             }
         },
         "icrc": {

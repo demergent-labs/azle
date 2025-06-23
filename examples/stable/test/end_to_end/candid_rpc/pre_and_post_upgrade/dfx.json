@@ -3,12 +3,12 @@
         "pre_and_post_upgrade": {
             "type": "azle",
             "main": "src/index.ts",
+            "custom": {
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "test/dfx_generated/pre_and_post_upgrade",
                 "node_compatibility": true
-            },
-            "custom": {
-                "memorySizeIncreaseExpected": true
             }
         }
     }
