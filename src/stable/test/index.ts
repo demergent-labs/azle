@@ -187,7 +187,6 @@ function processEnvVars(): {
     const runTypeChecks = process.env.AZLE_RUN_TYPE_CHECKS ?? 'true';
     const recordBenchmarks = process.env.AZLE_RECORD_BENCHMARKS ?? 'false';
     const fuzz = process.env.AZLE_FUZZ ?? 'false';
-    const cuzzConfig = getCuzzConfig();
     const checkGlobalStateAfterFuzzTests =
         process.env.AZLE_CHECK_GLOBAL_STATE_AFTER_FUZZ_TESTS ?? 'true';
 
@@ -213,6 +212,7 @@ function processEnvVars(): {
     );
     const shouldRunTypeChecks = shouldRun(runTypeChecks, hasOnly, true);
     const shouldRecordBenchmarks = recordBenchmarks === 'true' && !hasOnly;
+    const cuzzConfig = getCuzzConfig();
     const shouldFuzz =
         cuzzConfig.skip !== true &&
         typeof cuzzConfig.skip !== 'string' &&
