@@ -25,6 +25,9 @@
         "canister3": {
             "type": "azle",
             "main": "src/canister3/index.ts",
+            "custom": {
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true
