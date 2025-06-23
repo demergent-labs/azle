@@ -16,18 +16,16 @@ import {
 import { wallets } from './wallets';
 
 export function getTests(bitcoinCanister: ActorSubclass<_SERVICE>): Test {
-    if (process.env.AZLE_RUNNING_IN_WSL) {
-        return () => {
-            please('skip all tests on wsl', async () => {});
-        };
-    }
-    if (process.env.AZLE_RUNNING_IN_MAC) {
-        return () => {
-            please('skip all tests on mac', async () => {});
-        };
-    }
-
     return () => {
+        if (process.env.AZLE_RUNNING_IN_WSL) {
+            please('skip all tests on wsl', async () => {});
+            return;
+        }
+        if (process.env.AZLE_RUNNING_IN_MAC) {
+            please('skip all tests on mac', async () => {});
+            return;
+        }
+
         let bitcoinDaemon: BitcoinDaemon;
 
         beforeAll(async () => {
