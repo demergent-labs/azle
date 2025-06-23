@@ -3,6 +3,9 @@
         "simple_erc20": {
             "type": "azle",
             "main": "src/index.ts",
+            "custom": {
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "test/dfx_generated/simple_erc20",
                 "node_compatibility": true

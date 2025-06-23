@@ -1,5 +1,4 @@
 {
     "callDelay": 0.5,
-    "expectedErrors": ["Uncaught SyntaxError"],
-    "memoryIncreaseExpected": true
+    "expectedErrors": ["Uncaught SyntaxError"]
 }

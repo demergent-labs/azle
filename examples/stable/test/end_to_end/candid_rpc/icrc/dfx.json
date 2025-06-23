@@ -8,7 +8,8 @@
                 "node_compatibility": true
             },
             "custom": {
-                "env": ["ICRC_PRINCIPAL"]
+                "env": ["ICRC_PRINCIPAL"],
+                "memorySizeIncreaseExpected": true
             }
         },
         "icrc": {

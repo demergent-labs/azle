@@ -3,10 +3,10 @@ import { execSync } from 'node:child_process';
 import { expect } from '@jest/globals';
 import { formatMemorySize, getRawMemorySize } from 'cuzz';
 
+import { getCanisterConfig } from '#build/utils/get_canister_config';
 import { getDfxRoot } from '#utils/dfx_root';
 
 import { getCanisterNames } from './canister_names';
-import { getCuzzConfig } from './fuzz';
 
 type HeapAllocations = {
     [canisterName: string]: number | null;
@@ -89,7 +89,6 @@ export async function checkMemoryChanges(
     startingHeapAllocations: HeapAllocations,
     startingMemorySizes: MemorySizes
 ): Promise<void> {
-    const cuzzConfig = getCuzzConfig();
     const canisterNames = await getCanisterNames();
 
     for (const canisterName of canisterNames) {
@@ -149,10 +148,11 @@ export async function checkMemoryChanges(
                 ? null
                 : finalMemorySize - startingMemorySize;
 
-        // TODO we really need to be able to set the memoryIncreaseExpected per canister right?
-        // TODO maybe this should be done in the dfx.json custom section per canister?
-        // TODO I don't even think cuzz does anything with this memoryIncreaseExpected
-        if (cuzzConfig.memoryIncreaseExpected !== true) {
+        const canisterConfig = await getCanisterConfig(canisterName);
+        const memorySizeIncreaseExpected =
+            canisterConfig.custom?.memorySizeIncreaseExpected === true;
+
+        if (memorySizeIncreaseExpected === false) {
             expect(memoryIncrease).not.toBeNull();
             expect(memoryIncrease).toBeLessThanOrEqual(100_000);
         }

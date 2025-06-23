@@ -19,6 +19,7 @@ export type CustomConfig = {
     esm_aliases?: never;
     esm_externals?: never;
     experimental?: boolean;
+    memorySizeIncreaseExpected?: boolean;
     openValueSharing?: never;
 };
 

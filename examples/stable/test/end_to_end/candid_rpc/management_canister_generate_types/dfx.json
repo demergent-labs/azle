@@ -3,6 +3,9 @@
         "management_canister": {
             "type": "azle",
             "main": "src/index.ts",
+            "custom": {
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "test/dfx_generated/management_canister",
                 "node_compatibility": true

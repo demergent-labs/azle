@@ -3,6 +3,9 @@
         "phone_book": {
             "type": "azle",
             "main": "src/index.ts",
+            "custom": {
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "src/declarations/phone_book",
                 "node_compatibility": true

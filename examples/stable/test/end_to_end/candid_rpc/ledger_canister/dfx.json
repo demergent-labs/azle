@@ -8,7 +8,8 @@
                 "node_compatibility": true
             },
             "custom": {
-                "env": ["ICP_CANISTER_PRINCIPAL"]
+                "env": ["ICP_CANISTER_PRINCIPAL"],
+                "memorySizeIncreaseExpected": true
             }
         },
         "icp_ledger": {

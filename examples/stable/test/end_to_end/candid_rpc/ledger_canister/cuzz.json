@@ -2,6 +2,5 @@
     "expectedErrors": [
         "Invalid account identifier: Checksum failed for .*, expected check bytes .* but found",
         "Deserialization Failed"
-    ],
-    "memoryIncreaseExpected": true
+    ]
 }

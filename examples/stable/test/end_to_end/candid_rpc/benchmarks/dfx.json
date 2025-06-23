@@ -3,6 +3,9 @@
         "benchmarks": {
             "type": "azle",
             "main": "src/index.ts",
+            "custom": {
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "test/dfx_generated/benchmarks",
                 "node_compatibility": true

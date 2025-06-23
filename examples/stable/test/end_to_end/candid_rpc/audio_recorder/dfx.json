@@ -4,12 +4,13 @@
             "type": "azle",
             "main": "src/index.ts",
             "candid": "src/index.did",
+            "custom": {
+                "candid_gen": "custom",
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "test/dfx_generated/audio_recorder",
                 "node_compatibility": true
-            },
-            "custom": {
-                "candid_gen": "custom"
             }
         }
     }

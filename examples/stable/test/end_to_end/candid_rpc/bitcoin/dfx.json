@@ -3,6 +3,9 @@
         "bitcoin": {
             "type": "azle",
             "main": "src/index.ts",
+            "custom": {
+                "memorySizeIncreaseExpected": true
+            },
             "declarations": {
                 "output": "test/dfx_generated/bitcoin",
                 "node_compatibility": true

@@ -4,6 +4,5 @@
         "get_balance failed: MalformedAddress",
         "get_utxos failed: MalformedAddress",
         "send_transaction failed: MalformedTransaction"
-    ],
-    "memoryIncreaseExpected": true
+    ]
 }
