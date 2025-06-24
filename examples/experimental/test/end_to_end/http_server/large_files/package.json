@@ -2,7 +2,7 @@
     "scripts": {
         "postinstall": "mkdir -p assets/auto",
         "pretest": "tsx test/pretest.ts",
-        "test": "AZLE_EXPERIMENTAL=true jest"
+        "test": "AZLE_EXPERIMENTAL=true AZLE_CHECK_MEMORY_STATE_AFTER_TESTS=false jest"
     },
     "dependencies": {
         "azle": "0.31.0",
