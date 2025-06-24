@@ -495,82 +495,66 @@ SOFTWARE.
                                 Candid RPC is heading towards 1.0 and
                                 production-readiness in 2025.
                             </p>
+                            <h2 id="quick-navigation">
+                                <a
+                                    class="header"
+                                    href="#quick-navigation"
+                                    >Quick Navigation</a
+                                >
+                            </h2>
                             <ul>
                                 <li>
-                                    <a href="candid_rpc.html#get-started"
+                                    <a href="./candid_rpc/get_started.html"
                                         >Get Started</a
                                     >
+                                    - Installation and deployment guide
                                 </li>
                                 <li>
-                                    <a href="candid_rpc.html#examples"
+                                    <a href="./candid_rpc/examples.html"
                                         >Examples</a
                                     >
+                                    - Working examples and best practices
                                 </li>
                                 <li>
-                                    <a href="candid_rpc.html#canister-class"
+                                    <a href="./candid_rpc/canister_class.html"
                                         >Canister Class</a
                                     >
+                                    - How to structure your canister
                                 </li>
                                 <li>
-                                    <a href="candid_rpc.html#dfinitycandid-idl"
+                                    <a
+                                        href="./candid_rpc/dfinity_candid_idl.html"
                                         >@dfinity/candid IDL</a
                                     >
+                                    - Type definitions and serialization
                                 </li>
                                 <li>
-                                    <a href="candid_rpc.html#decorators"
+                                    <a href="./candid_rpc/decorators.html"
                                         >Decorators</a
                                     >
-                                    <ul>
-                                        <li>
-                                            <a href="candid_rpc.html#query"
-                                                >@query</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a href="candid_rpc.html#update"
-                                                >@update</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a href="candid_rpc.html#init"
-                                                >@init</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="candid_rpc.html#postupgrade"
-                                                >@postUpgrade</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a href="candid_rpc.html#preupgrade"
-                                                >@preUpgrade</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="candid_rpc.html#inspectmessage"
-                                                >@inspectMessage</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a href="candid_rpc.html#heartbeat"
-                                                >@heartbeat</a
-                                            >
-                                        </li>
-                                    </ul>
+                                    - Method decorators for canister entry
+                                    points
                                 </li>
                                 <li>
-                                    <a href="candid_rpc.html#ic-api">IC API</a>
+                                    <a href="./candid_rpc/ic_api.html"
+                                        >IC API</a
+                                    >
+                                    - Internet Computer platform APIs
                                 </li>
                             </ul>
-                            <h2 id="get-started">
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="get-started">
                                 <a
                                     class="header"
                                     href="#get-started"
                                     >Get Started</a
                                 >
-                            </h2>
+                            </h1>
                             <p>
                                 Azle helps you to build secure
                                 decentralized/replicated servers in TypeScript
@@ -602,13 +586,13 @@ SOFTWARE.
                                 standard library, npm ecosystem, and HTTP server
                                 functionality.
                             </p>
-                            <h3 id="installation">
+                            <h2 id="installation">
                                 <a
                                     class="header"
                                     href="#installation"
                                     >Installation</a
                                 >
-                            </h3>
+                            </h2>
                             <blockquote>
                                 <p>
                                     Windows is only supported through a Linux
@@ -621,19 +605,22 @@ SOFTWARE.
                             </blockquote>
                             <p>
                                 You will need
-                                <a href="candid_rpc.html#nodejs-22"
+                                <a href="candid_rpc/get_started.html#nodejs-22"
                                     >Node.js 22</a
                                 >
-                                and <a href="candid_rpc.html#dfx">dfx</a> to
-                                develop ICP applications with Azle:
+                                and
+                                <a href="candid_rpc/get_started.html#dfx"
+                                    >dfx</a
+                                >
+                                to develop ICP applications with Azle:
                             </p>
-                            <h4 id="nodejs-22">
+                            <h3 id="nodejs-22">
                                 <a
                                     class="header"
                                     href="#nodejs-22"
                                     >Node.js 22</a
                                 >
-                            </h4>
+                            </h3>
                             <p>
                                 It's recommended to use nvm to install Node.js
                                 22:
@@ -650,13 +637,13 @@ SOFTWARE.
                             </p>
                             <pre><code class="language-bash">node --version
 </code></pre>
-                            <h4 id="dfx">
+                            <h3 id="dfx">
                                 <a
                                     class="header"
                                     href="#dfx"
                                     >dfx</a
                                 >
-                            </h4>
+                            </h3>
                             <p>
                                 Install the dfx command line tools for managing
                                 ICP applications:
@@ -670,13 +657,13 @@ SOFTWARE.
                             </p>
                             <pre><code class="language-bash">dfx --version
 </code></pre>
-                            <h3 id="deployment">
+                            <h2 id="deployment">
                                 <a
                                     class="header"
                                     href="#deployment"
                                     >Deployment</a
                                 >
-                            </h3>
+                            </h2>
                             <p>
                                 To create and deploy a simple sample application
                                 called <code>hello_world</code>:
@@ -698,13 +685,19 @@ dfx start --clean
                             <pre><code class="language-bash"># deploy your canister
 dfx deploy
 </code></pre>
-                            <h2 id="examples">
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="examples">
                                 <a
                                     class="header"
                                     href="#examples"
                                     >Examples</a
                                 >
-                            </h2>
+                            </h1>
                             <p>
                                 Some of the best documentation for creating
                                 Candid RPC canisters is currently in
@@ -713,13 +706,114 @@ dfx deploy
                                     >the examples directory</a
                                 >.
                             </p>
-                            <h2 id="canister-class">
+                            <h2 id="basic-hello-world">
+                                <a
+                                    class="header"
+                                    href="#basic-hello-world"
+                                    >Basic Hello World</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, query } from 'azle';
+
+export default class {
+    @query([], IDL.Text)
+    hello(): string {
+        return 'Hello World!';
+    }
+}
+</code></pre>
+                            <h2 id="counter-with-state">
+                                <a
+                                    class="header"
+                                    href="#counter-with-state"
+                                    >Counter with State</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, query, update } from 'azle';
+
+export default class {
+    counter: number = 0;
+
+    @query([], IDL.Nat)
+    get(): number {
+        return this.counter;
+    }
+
+    @update([], IDL.Nat)
+    increment(): number {
+        this.counter += 1;
+        return this.counter;
+    }
+
+    @update([IDL.Nat], IDL.Nat)
+    set(value: number): number {
+        this.counter = value;
+        return this.counter;
+    }
+}
+</code></pre>
+                            <h2 id="user-management">
+                                <a
+                                    class="header"
+                                    href="#user-management"
+                                    >User Management</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, Principal, query, update, msgCaller } from 'azle';
+
+type User = {
+    id: Principal;
+    name: string;
+    age: number;
+};
+
+const UserRecord = IDL.Record({
+    id: IDL.Principal,
+    name: IDL.Text,
+    age: IDL.Nat8
+});
+
+export default class {
+    users: Map&lt;string, User&gt; = new Map();
+
+    @update([IDL.Text, IDL.Nat8], UserRecord)
+    createUser(name: string, age: number): User {
+        const caller = msgCaller();
+        const user: User = {
+            id: caller,
+            name,
+            age
+        };
+
+        this.users.set(caller.toText(), user);
+        return user;
+    }
+
+    @query([], IDL.Vec(UserRecord))
+    getUsers(): User[] {
+        return Array.from(this.users.values());
+    }
+
+    @query([IDL.Principal], IDL.Opt(UserRecord))
+    getUser(id: Principal): [User] | [] {
+        const user = this.users.get(id.toText());
+        return user ? [user] : [];
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="canister-class">
                                 <a
                                     class="header"
                                     href="#canister-class"
                                     >Canister Class</a
                                 >
-                            </h2>
+                            </h1>
                             <p>
                                 Your canister's functionality must be
                                 encapsulated in a class exported using the
@@ -734,45 +828,132 @@ export default class {
     }
 }
 </code></pre>
-                            <p>
-                                You must use the
-                                <a href="candid_rpc.html#query">@query</a>,
-                                <a href="candid_rpc.html#update">@update</a>,
-                                <a href="candid_rpc.html#init">@init</a>,
-                                <a href="candid_rpc.html#postupgrade"
-                                    >@postUpgrade</a
-                                >,
-                                <a href="candid_rpc.html#preupgrade"
-                                    >@preUpgrade</a
-                                >,
-                                <a href="candid_rpc.html#inspectmessage"
-                                    >@inspectMessage</a
-                                >, and
-                                <a href="candid_rpc.html#heartbeat"
-                                    >@heartbeat</a
+                            <h2 id="required-structure">
+                                <a
+                                    class="header"
+                                    href="#required-structure"
+                                    >Required Structure</a
                                 >
-                                decorators to expose your canister's methods.
-                                Adding TypeScript types is optional.
+                            </h2>
+                            <ul>
+                                <li>
+                                    Must use <code>export default class</code>
+                                </li>
+                                <li>
+                                    Methods must use decorators to be exposed
+                                </li>
+                                <li>
+                                    TypeScript types are optional but
+                                    recommended
+                                </li>
+                            </ul>
+                            <h2 id="state-management">
+                                <a
+                                    class="header"
+                                    href="#state-management"
+                                    >State Management</a
+                                >
+                            </h2>
+                            <p>Class properties become canister state:</p>
+                            <pre><code class="language-typescript">import { IDL, query, update } from 'azle';
+
+export default class {
+    // This becomes persistent canister state
+    counter: number = 0;
+    users: Map&lt;string, string&gt; = new Map();
+
+    @query([], IDL.Nat)
+    getCounter(): number {
+        return this.counter;
+    }
+
+    @update([], IDL.Nat)
+    increment(): number {
+        this.counter += 1;
+        return this.counter;
+    }
+}
+</code></pre>
+                            <h2 id="available-decorators">
+                                <a
+                                    class="header"
+                                    href="#available-decorators"
+                                    >Available Decorators</a
+                                >
+                            </h2>
+                            <p>
+                                You must use these decorators to expose your
+                                canister's methods:
                             </p>
-                            <h2 id="dfinitycandid-idl">
+                            <ul>
+                                <li><code>@query</code> - Read-only methods</li>
+                                <li>
+                                    <code>@update</code> - Read-write methods
+                                </li>
+                                <li>
+                                    <code>@init</code> - Initialization method
+                                </li>
+                                <li>
+                                    <code>@postUpgrade</code> - Post-upgrade
+                                    method
+                                </li>
+                                <li>
+                                    <code>@preUpgrade</code> - Pre-upgrade
+                                    method
+                                </li>
+                                <li>
+                                    <code>@inspectMessage</code> - Message
+                                    inspection method
+                                </li>
+                                <li>
+                                    <code>@heartbeat</code> - Periodic execution
+                                    method
+                                </li>
+                            </ul>
+                            <h2 id="method-visibility">
+                                <a
+                                    class="header"
+                                    href="#method-visibility"
+                                    >Method Visibility</a
+                                >
+                            </h2>
+                            <p>
+                                Only decorated methods are exposed in the
+                                canister's Candid interface:
+                            </p>
+                            <pre><code class="language-typescript">import { IDL, query } from 'azle';
+
+export default class {
+    // This method is exposed
+    @query([], IDL.Text)
+    publicMethod(): string {
+        return this.privateHelper();
+    }
+
+    // This method is private (not exposed)
+    privateHelper(): string {
+        return 'Hello from private method';
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="dfinitycandid-idl">
                                 <a
                                     class="header"
                                     href="#dfinitycandid-idl"
                                     >@dfinity/candid IDL</a
                                 >
-                            </h2>
+                            </h1>
                             <p>
                                 For each of your canister's methods,
                                 deserialization of incoming arguments and
                                 serialization of return values is handled with a
-                                combination of the
-                                <a href="candid_rpc.html#query">@query</a>,
-                                <a href="candid_rpc.html#update">@update</a>,
-                                <a href="candid_rpc.html#init">@init</a>, and
-                                <a href="candid_rpc.html#postupgrade"
-                                    >@postUpgrade</a
-                                >
-                                decorators and the
+                                combination of decorators and the
                                 <a
                                     href="https://agent-js.icp.xyz/candid/modules/IDL.html"
                                     >IDL</a
@@ -790,221 +971,2206 @@ export default class {
                                 <a
                                     href="https://internetcomputer.org/docs/current/references/candid-ref"
                                     >Candid's supported types</a
-                                >. You must use <code>IDL</code> to instruct the
-                                method decorators on how to deserialize
-                                arguments and serialize the return value. Here's
-                                an example of accessing the Candid types from
-                                <code>IDL</code>:
+                                >.
                             </p>
+                            <h2 id="basic-types">
+                                <a
+                                    class="header"
+                                    href="#basic-types"
+                                    >Basic Types</a
+                                >
+                            </h2>
                             <pre><code class="language-typescript">import { IDL } from 'azle';
 
+// Text
 IDL.Text;
 
-IDL.Vec(IDL.Nat8); // Candid blob
+// Numbers
+IDL.Nat; // Unlimited precision unsigned integer
+IDL.Nat64; // 64-bit unsigned integer
+IDL.Nat32; // 32-bit unsigned integer
+IDL.Nat16; // 16-bit unsigned integer
+IDL.Nat8; // 8-bit unsigned integer
 
-IDL.Nat;
-IDL.Nat64;
-IDL.Nat32;
-IDL.Nat16;
-IDL.Nat8;
+IDL.Int; // Unlimited precision signed integer
+IDL.Int64; // 64-bit signed integer
+IDL.Int32; // 32-bit signed integer
+IDL.Int16; // 16-bit signed integer
+IDL.Int8; // 8-bit signed integer
 
-IDL.Int;
-IDL.Int64;
-IDL.Int32;
-IDL.Int16;
-IDL.Int8;
+// Floating point
+IDL.Float64; // 64-bit floating point
+IDL.Float32; // 32-bit floating point
 
-IDL.Float64;
-IDL.Float32;
-
+// Boolean and null
 IDL.Bool;
-
 IDL.Null;
+</code></pre>
+                            <h2 id="complex-types">
+                                <a
+                                    class="header"
+                                    href="#complex-types"
+                                    >Complex Types</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL } from 'azle';
 
-IDL.Vec(IDL.Int);
+// Vector (array)
+IDL.Vec(IDL.Text); // Array of text
+IDL.Vec(IDL.Nat8); // Blob (array of bytes)
 
-IDL.Opt(IDL.Text);
+// Optional
+IDL.Opt(IDL.Text); // Optional text
 
+// Record (object)
 IDL.Record({
-    prop1: IDL.Text,
-    prop2: IDL.Bool
+    name: IDL.Text,
+    age: IDL.Nat8,
+    active: IDL.Bool
 });
 
+// Variant (union type)
 IDL.Variant({
-    Tag1: IDL.Null,
-    Tag2: IDL.Nat
+    Success: IDL.Text,
+    Error: IDL.Text,
+    Loading: IDL.Null
 });
+</code></pre>
+                            <h2 id="advanced-types">
+                                <a
+                                    class="header"
+                                    href="#advanced-types"
+                                    >Advanced Types</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL } from 'azle';
 
-IDL.Func([], [], ['query']);
+// Function reference
+IDL.Func([IDL.Text], [IDL.Bool], ['query']);
 
+// Service reference
 IDL.Service({
-    myQueryMethod: IDL.Func([IDL.Text, IDL.Text], [IDL.Bool])
+    getName: IDL.Func([], [IDL.Text], ['query']),
+    setName: IDL.Func([IDL.Text], [], ['update'])
 });
 
+// Principal
 IDL.Principal;
 
+// Reserved and Empty
 IDL.Reserved;
-
 IDL.Empty;
 </code></pre>
-                            <h2 id="decorators">
+                            <h2 id="usage-example">
+                                <a
+                                    class="header"
+                                    href="#usage-example"
+                                    >Usage Example</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, query, update } from 'azle';
+
+type User = {
+    name: string;
+    email: string;
+    age: number;
+};
+
+const UserRecord = IDL.Record({
+    name: IDL.Text,
+    email: IDL.Text,
+    age: IDL.Nat8
+});
+
+export default class {
+    @query([IDL.Text], IDL.Opt(UserRecord))
+    getUser(id: string): [User] | [] {
+        // Implementation here
+        return [];
+    }
+
+    @update([UserRecord], IDL.Bool)
+    createUser(user: User): boolean {
+        // Implementation here
+        return true;
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="decorators">
                                 <a
                                     class="header"
                                     href="#decorators"
                                     >Decorators</a
+                                >
+                            </h1>
+                            <p>
+                                Decorators expose your class methods as canister
+                                entry points. Each decorator specifies how the
+                                method should be called and what permissions it
+                                has.
+                            </p>
+                            <h2 id="available-decorators-1">
+                                <a
+                                    class="header"
+                                    href="#available-decorators-1"
+                                    >Available Decorators</a
                                 >
                             </h2>
                             <h3 id="query">
                                 <a
                                     class="header"
                                     href="#query"
-                                    >@query</a
+                                    ><a
+                                        href="candid_rpc/./decorators/query.html"
+                                        >@query</a
+                                    ></a
                                 >
                             </h3>
                             <p>
-                                Exposes the decorated method as a read-only
-                                <code>canister_query</code> method.
-                            </p>
-                            <p>
-                                The first parameter to this decorator accepts
-                                <code>IDL</code> Candid type objects that will
-                                deserialize incoming Candid arguments. The
-                                second parameter to this decorator accepts an
-                                <code>IDL</code> Candid type object that will
-                                serialize the outgoing return value to Candid.
+                                Read-only methods that cannot modify state. Fast
+                                execution with optional cross-canister calls.
                             </p>
                             <h3 id="update">
                                 <a
                                     class="header"
                                     href="#update"
-                                    >@update</a
+                                    ><a
+                                        href="candid_rpc/./decorators/update.html"
+                                        >@update</a
+                                    ></a
                                 >
                             </h3>
                             <p>
-                                Exposes the decorated method as a read-write
-                                <code>canister_update</code> method.
-                            </p>
-                            <p>
-                                The first parameter to this decorator accepts
-                                <code>IDL</code> Candid type objects that will
-                                deserialize incoming Candid arguments. The
-                                second parameter to this decorator accepts an
-                                <code>IDL</code> Candid type object that will
-                                serialize the outgoing return value to Candid.
+                                Read-write methods that can modify canister
+                                state. Full async support with cross-canister
+                                calls.
                             </p>
                             <h3 id="init">
                                 <a
                                     class="header"
                                     href="#init"
-                                    >@init</a
+                                    ><a href="candid_rpc/./decorators/init.html"
+                                        >@init</a
+                                    ></a
                                 >
                             </h3>
                             <p>
-                                Exposes the decorated method as the
-                                <code>canister_init</code> method called only
-                                once during canister initialization.
-                            </p>
-                            <p>
-                                The first parameter to this decorator accepts
-                                <code>IDL</code> Candid type objects that will
-                                deserialize incoming Candid arguments.
+                                Initialization method called once during
+                                canister deployment. Sets up initial state.
                             </p>
                             <h3 id="postupgrade">
                                 <a
                                     class="header"
                                     href="#postupgrade"
-                                    >@postUpgrade</a
+                                    ><a
+                                        href="candid_rpc/./decorators/post_upgrade.html"
+                                        >@postUpgrade</a
+                                    ></a
                                 >
                             </h3>
                             <p>
-                                Exposes the decorated method as the
-                                <code>canister_post_upgrade</code> method called
-                                during every canister upgrade.
-                            </p>
-                            <p>
-                                The first parameter to this decorator accepts
-                                <code>IDL</code> Candid type objects that will
-                                deserialize incoming Candid arguments.
+                                Called after canister upgrade. Used for state
+                                migration and restoration.
                             </p>
                             <h3 id="preupgrade">
                                 <a
                                     class="header"
                                     href="#preupgrade"
-                                    >@preUpgrade</a
+                                    ><a
+                                        href="candid_rpc/./decorators/pre_upgrade.html"
+                                        >@preUpgrade</a
+                                    ></a
                                 >
                             </h3>
                             <p>
-                                Exposes the decorated method as the
-                                <code>canister_pre_upgrade</code> method called
-                                before every canister upgrade.
+                                Called before canister upgrade. Used for cleanup
+                                and state validation.
                             </p>
                             <h3 id="inspectmessage">
                                 <a
                                     class="header"
                                     href="#inspectmessage"
-                                    >@inspectMessage</a
+                                    ><a
+                                        href="candid_rpc/./decorators/inspect_message.html"
+                                        >@inspectMessage</a
+                                    ></a
                                 >
                             </h3>
                             <p>
-                                Exposes the decorated method as the
-                                <code>canister_inspect_message</code> method
-                                called before every <code>update</code> call.
+                                Called before every <code>@update</code> method.
+                                Provides access control and validation.
                             </p>
                             <h3 id="heartbeat">
                                 <a
                                     class="header"
                                     href="#heartbeat"
-                                    >@heartbeat</a
+                                    ><a
+                                        href="candid_rpc/./decorators/heartbeat.html"
+                                        >@heartbeat</a
+                                    ></a
                                 >
                             </h3>
                             <p>
-                                Exposes the decorated method as the
-                                <code>canister_heartbeat</code> method called on
-                                a regular interval (every second or so).
+                                Called periodically (~every second). Not
+                                recommended - use timers instead.
                             </p>
-                            <h2 id="ic-api">
+                            <h2 id="quick-comparison">
+                                <a
+                                    class="header"
+                                    href="#quick-comparison"
+                                    >Quick Comparison</a
+                                >
+                            </h2>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Decorator</th>
+                                            <th>State Access</th>
+                                            <th>Async</th>
+                                            <th>Replication</th>
+                                            <th>Instruction Limit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>@query</code></td>
+                                            <td>read-only</td>
+                                            <td>yes*</td>
+                                            <td>possible</td>
+                                            <td>5B</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>@update</code></td>
+                                            <td>read-write</td>
+                                            <td>yes</td>
+                                            <td>yes</td>
+                                            <td>40B</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>@init</code></td>
+                                            <td>read-write</td>
+                                            <td>no</td>
+                                            <td>yes</td>
+                                            <td>300B</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>@postUpgrade</code></td>
+                                            <td>read-write</td>
+                                            <td>no</td>
+                                            <td>yes</td>
+                                            <td>300B</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>@preUpgrade</code></td>
+                                            <td>read-only</td>
+                                            <td>no</td>
+                                            <td>yes</td>
+                                            <td>300B</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code>@inspectMessage</code>
+                                            </td>
+                                            <td>read-only</td>
+                                            <td>no</td>
+                                            <td>none</td>
+                                            <td>200M</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>@heartbeat</code></td>
+                                            <td>read-write</td>
+                                            <td>yes</td>
+                                            <td>yes</td>
+                                            <td>40B</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p>
+                                *Only with <code>composite: true</code> option
+                            </p>
+                            <h2 id="common-options">
+                                <a
+                                    class="header"
+                                    href="#common-options"
+                                    >Common Options</a
+                                >
+                            </h2>
+                            <p>All decorators support these common options:</p>
+                            <ul>
+                                <li>
+                                    <code>manual</code>: Manual argument/return
+                                    handling
+                                </li>
+                                <li>
+                                    <code>hidden</code>: Hide from Candid
+                                    interface (except <code>@preUpgrade</code>,
+                                    <code>@inspectMessage</code>,
+                                    <code>@heartbeat</code>)
+                                </li>
+                            </ul>
+                            <h2 id="basic-example">
+                                <a
+                                    class="header"
+                                    href="#basic-example"
+                                    >Basic Example</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, query, update, init } from 'azle';
+
+export default class {
+    counter: number = 0;
+    owner: string = '';
+
+    @init([IDL.Text])
+    initialize(ownerName: string): void {
+        this.owner = ownerName;
+    }
+
+    @query([], IDL.Nat)
+    getCounter(): number {
+        return this.counter;
+    }
+
+    @update([], IDL.Nat)
+    increment(): number {
+        this.counter += 1;
+        return this.counter;
+    }
+}
+</code></pre>
+                            <h2 id="query-1">
+                                <a
+                                    class="header"
+                                    href="#query-1"
+                                    >@query</a
+                                >
+                            </h2>
+                            <p>
+                                Read-only canister method. Cannot modify state.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-only</li>
+                                <li><strong>Replication</strong>: possible</li>
+                                <li>
+                                    <strong>Async</strong>: yes with
+                                    <code>composite</code> set to true
+                                </li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    5_000_000_000
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, query } from 'azle';
+
+export default class {
+    counter: number = 0;
+
+    @query([], IDL.Nat)
+    getCounter(): number {
+        return this.counter;
+    }
+
+    @query([IDL.Text], IDL.Text)
+    echo(message: string): string {
+        return `Echo: ${message}`;
+    }
+}
+</code></pre>
+                            <h3 id="composite-queries">
+                                <a
+                                    class="header"
+                                    href="#composite-queries"
+                                    >Composite Queries</a
+                                >
+                            </h3>
+                            <pre><code class="language-typescript">import { IDL, query, call } from 'azle';
+
+export default class {
+    @query([], IDL.Text, { composite: true })
+    async crossCanisterQuery(): Promise&lt;string&gt; {
+        const result = await call('canister-id', 'method_name', {
+            returnIdlType: IDL.Text
+        });
+        return result;
+    }
+}
+</code></pre>
+                            <h2 id="update-1">
+                                <a
+                                    class="header"
+                                    href="#update-1"
+                                    >@update</a
+                                >
+                            </h2>
+                            <p>Read-write canister method. Can modify state.</p>
+                            <ul>
+                                <li><strong>State</strong>: read-write</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: yes</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    40_000_000_000
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, update } from 'azle';
+
+export default class {
+    counter: number = 0;
+
+    @update([], IDL.Nat)
+    increment(): number {
+        this.counter += 1;
+        return this.counter;
+    }
+
+    @update([IDL.Nat], IDL.Nat)
+    setCounter(value: number): number {
+        this.counter = value;
+        return this.counter;
+    }
+}
+</code></pre>
+                            <h2 id="init-1">
+                                <a
+                                    class="header"
+                                    href="#init-1"
+                                    >@init</a
+                                >
+                            </h2>
+                            <p>
+                                Canister initialization method. Called once
+                                during deployment.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-write</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: no</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    300_000_000_000
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, init } from 'azle';
+
+export default class {
+    owner: string = '';
+    initialized: boolean = false;
+
+    @init([IDL.Text])
+    initialize(ownerName: string): void {
+        this.owner = ownerName;
+        this.initialized = true;
+    }
+}
+</code></pre>
+                            <h2 id="postupgrade-1">
+                                <a
+                                    class="header"
+                                    href="#postupgrade-1"
+                                    >@postUpgrade</a
+                                >
+                            </h2>
+                            <p>
+                                Called after canister upgrade. Used to restore
+                                state.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-write</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: no</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    300_000_000_000 (shared with preUpgrade)
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, postUpgrade } from 'azle';
+
+export default class {
+    version: string = '1.0.0';
+
+    @postUpgrade([IDL.Text])
+    upgrade(newVersion: string): void {
+        this.version = newVersion;
+        console.log(`Upgraded to version ${newVersion}`);
+    }
+}
+</code></pre>
+                            <h2 id="preupgrade-1">
+                                <a
+                                    class="header"
+                                    href="#preupgrade-1"
+                                    >@preUpgrade</a
+                                >
+                            </h2>
+                            <p>
+                                Called before canister upgrade. Used to save
+                                state.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-only</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: no</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    300_000_000_000 (shared with postUpgrade)
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, preUpgrade } from 'azle';
+
+export default class {
+    counter: number = 0;
+
+    @preUpgrade()
+    saveState(): void {
+        // Save critical state before upgrade
+        console.log(`Current counter: ${this.counter}`);
+    }
+}
+</code></pre>
+                            <h2 id="inspectmessage-1">
+                                <a
+                                    class="header"
+                                    href="#inspectmessage-1"
+                                    >@inspectMessage</a
+                                >
+                            </h2>
+                            <p>
+                                Called before every <code>@update</code> method.
+                                Can reject calls.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-only</li>
+                                <li><strong>Replication</strong>: none</li>
+                                <li><strong>Async</strong>: no</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    200_000_000
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, inspectMessage, msgCaller } from 'azle';
+
+export default class {
+    owner: string = 'owner-principal-id';
+
+    @inspectMessage()
+    inspect(methodName: string): boolean {
+        const caller = msgCaller();
+
+        // Only allow owner to call sensitive methods
+        if (methodName === 'sensitiveMethod') {
+            return caller.toText() === this.owner;
+        }
+
+        return true; // Allow all other methods
+    }
+
+    @update([], IDL.Text)
+    sensitiveMethod(): string {
+        return 'Secret data';
+    }
+}
+</code></pre>
+                            <h2 id="heartbeat-1">
+                                <a
+                                    class="header"
+                                    href="#heartbeat-1"
+                                    >@heartbeat</a
+                                >
+                            </h2>
+                            <p>
+                                Called periodically (~every second). Not
+                                recommended for most use cases.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-write</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: yes</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    40_000_000_000
+                                </li>
+                            </ul>
+                            <blockquote>
+                                <p>
+                                    <strong>Note</strong>: Use
+                                    <code>setTimer</code> and
+                                    <code>setTimerInterval</code> instead of
+                                    <code>@heartbeat</code> for most periodic
+                                    tasks.
+                                </p>
+                            </blockquote>
+                            <pre><code class="language-typescript">import { IDL, heartbeat } from 'azle';
+
+export default class {
+    heartbeatCount: number = 0;
+
+    @heartbeat()
+    periodicTask(): void {
+        this.heartbeatCount += 1;
+        console.log(`Heartbeat ${this.heartbeatCount}`);
+    }
+}
+</code></pre>
+                            <h2 id="manual-mode">
+                                <a
+                                    class="header"
+                                    href="#manual-mode"
+                                    >Manual Mode</a
+                                >
+                            </h2>
+                            <p>
+                                All decorators support manual mode for advanced
+                                use cases:
+                            </p>
+                            <pre><code class="language-typescript">import { IDL, query, msgArgData, msgReply, IDL as CandidIDL } from 'azle';
+
+export default class {
+    @query([], IDL.Text, { manual: true })
+    manualQuery(): void {
+        const args = msgArgData();
+        const decodedArgs = CandidIDL.decode([IDL.Text], args);
+
+        const result = `Processed: ${decodedArgs[0]}`;
+        const encodedResult = CandidIDL.encode([IDL.Text], [result]);
+
+        msgReply(encodedResult);
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="query-2">
+                                <a
+                                    class="header"
+                                    href="#query-2"
+                                    >@query</a
+                                >
+                            </h1>
+                            <p>
+                                Read-only canister method. Cannot modify state.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-only</li>
+                                <li><strong>Replication</strong>: possible</li>
+                                <li>
+                                    <strong>Async</strong>: yes with
+                                    <code>composite</code> set to true
+                                </li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    5_000_000_000
+                                </li>
+                            </ul>
+                            <h2 id="basic-usage">
+                                <a
+                                    class="header"
+                                    href="#basic-usage"
+                                    >Basic Usage</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, query } from 'azle';
+
+export default class {
+    counter: number = 0;
+
+    @query([], IDL.Nat)
+    getCounter(): number {
+        return this.counter;
+    }
+
+    @query([IDL.Text], IDL.Text)
+    echo(message: string): string {
+        return `Echo: ${message}`;
+    }
+}
+</code></pre>
+                            <h2 id="composite-queries-1">
+                                <a
+                                    class="header"
+                                    href="#composite-queries-1"
+                                    >Composite Queries</a
+                                >
+                            </h2>
+                            <p>
+                                Enable cross-canister calls within query
+                                methods:
+                            </p>
+                            <pre><code class="language-typescript">import { IDL, query, call } from 'azle';
+
+export default class {
+    @query([], IDL.Text, { composite: true })
+    async crossCanisterQuery(): Promise&lt;string&gt; {
+        const result = await call('canister-id', 'method_name', {
+            returnIdlType: IDL.Text
+        });
+        return result;
+    }
+}
+</code></pre>
+                            <h2 id="options">
+                                <a
+                                    class="header"
+                                    href="#options"
+                                    >Options</a
+                                >
+                            </h2>
+                            <ul>
+                                <li>
+                                    <code>composite</code>: Enable async
+                                    cross-canister calls
+                                </li>
+                                <li>
+                                    <code>manual</code>: Manual argument/return
+                                    handling
+                                </li>
+                                <li>
+                                    <code>hidden</code>: Hide from Candid
+                                    interface
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, query, msgArgData, msgReply } from 'azle';
+
+export default class {
+    @query([], IDL.Text, { manual: true })
+    manualQuery(): void {
+        const args = msgArgData();
+        // Process manually
+        msgReply(new Uint8Array([1, 2, 3]));
+    }
+
+    @query([], IDL.Text, { hidden: true })
+    hiddenQuery(): string {
+        return 'This method is hidden from Candid interface';
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="update-2">
+                                <a
+                                    class="header"
+                                    href="#update-2"
+                                    >@update</a
+                                >
+                            </h1>
+                            <p>Read-write canister method. Can modify state.</p>
+                            <ul>
+                                <li><strong>State</strong>: read-write</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: yes</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    40_000_000_000
+                                </li>
+                            </ul>
+                            <h2 id="basic-usage-1">
+                                <a
+                                    class="header"
+                                    href="#basic-usage-1"
+                                    >Basic Usage</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, update } from 'azle';
+
+export default class {
+    counter: number = 0;
+
+    @update([], IDL.Nat)
+    increment(): number {
+        this.counter += 1;
+        return this.counter;
+    }
+
+    @update([IDL.Nat], IDL.Nat)
+    setCounter(value: number): number {
+        this.counter = value;
+        return this.counter;
+    }
+}
+</code></pre>
+                            <h2 id="async-operations">
+                                <a
+                                    class="header"
+                                    href="#async-operations"
+                                    >Async Operations</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, update, call } from 'azle';
+
+export default class {
+    @update([IDL.Text], IDL.Text)
+    async processData(data: string): Promise&lt;string&gt; {
+        // Async processing
+        await new Promise((resolve) =&gt; setTimeout(resolve, 1000));
+
+        return `Processed: ${data}`;
+    }
+
+    @update([IDL.Principal, IDL.Text], IDL.Text)
+    async callOtherCanister(
+        canisterId: Principal,
+        message: string
+    ): Promise&lt;string&gt; {
+        const result = await call(canisterId, 'process', {
+            args: [message],
+            paramIdlTypes: [IDL.Text],
+            returnIdlType: IDL.Text
+        });
+        return result;
+    }
+}
+</code></pre>
+                            <h2 id="options-1">
+                                <a
+                                    class="header"
+                                    href="#options-1"
+                                    >Options</a
+                                >
+                            </h2>
+                            <ul>
+                                <li>
+                                    <code>manual</code>: Manual argument/return
+                                    handling
+                                </li>
+                                <li>
+                                    <code>hidden</code>: Hide from Candid
+                                    interface
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, update, msgArgData, msgReply, msgReject } from 'azle';
+
+export default class {
+    @update([], IDL.Text, { manual: true })
+    manualUpdate(): void {
+        try {
+            const args = msgArgData();
+            // Process manually
+            const result = 'Success!';
+            msgReply(new TextEncoder().encode(result));
+        } catch (error) {
+            msgReject(`Error: ${error}`);
+        }
+    }
+
+    @update([IDL.Text], IDL.Text, { hidden: true })
+    hiddenUpdate(secret: string): string {
+        return `Hidden processing of: ${secret}`;
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="init-2">
+                                <a
+                                    class="header"
+                                    href="#init-2"
+                                    >@init</a
+                                >
+                            </h1>
+                            <p>
+                                Canister initialization method. Called once
+                                during deployment.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-write</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: no</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    300_000_000_000
+                                </li>
+                            </ul>
+                            <p>
+                                Only one <code>@init</code> method is allowed
+                                per canister.
+                            </p>
+                            <h2 id="basic-usage-2">
+                                <a
+                                    class="header"
+                                    href="#basic-usage-2"
+                                    >Basic Usage</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, init } from 'azle';
+
+export default class {
+    owner: string = '';
+    initialized: boolean = false;
+
+    @init([IDL.Text])
+    initialize(ownerName: string): void {
+        this.owner = ownerName;
+        this.initialized = true;
+        console.log(`Canister initialized with owner: ${ownerName}`);
+    }
+}
+</code></pre>
+                            <h2 id="complex-initialization">
+                                <a
+                                    class="header"
+                                    href="#complex-initialization"
+                                    >Complex Initialization</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, init, msgCaller } from 'azle';
+
+type Config = {
+    name: string;
+    maxUsers: number;
+    features: string[];
+};
+
+const ConfigRecord = IDL.Record({
+    name: IDL.Text,
+    maxUsers: IDL.Nat32,
+    features: IDL.Vec(IDL.Text)
+});
+
+export default class {
+    config: Config = { name: '', maxUsers: 0, features: [] };
+    owner: Principal | null = null;
+    users: Map&lt;string, string&gt; = new Map();
+
+    @init([ConfigRecord])
+    initialize(config: Config): void {
+        this.config = config;
+        this.owner = msgCaller();
+
+        console.log(`Initialized canister "${config.name}"`);
+        console.log(`Max users: ${config.maxUsers}`);
+        console.log(`Features: ${config.features.join(', ')}`);
+    }
+}
+</code></pre>
+                            <h2 id="no-arguments">
+                                <a
+                                    class="header"
+                                    href="#no-arguments"
+                                    >No Arguments</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, init } from 'azle';
+
+export default class {
+    startTime: bigint = 0n;
+
+    @init()
+    initialize(): void {
+        this.startTime = time();
+        console.log('Canister initialized at:', this.startTime);
+    }
+}
+</code></pre>
+                            <h2 id="options-2">
+                                <a
+                                    class="header"
+                                    href="#options-2"
+                                    >Options</a
+                                >
+                            </h2>
+                            <ul>
+                                <li>
+                                    <code>manual</code>: Manual argument
+                                    handling
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, init, msgArgData, candidDecode } from 'azle';
+
+export default class {
+    @init([], { manual: true })
+    initialize(): void {
+        const args = msgArgData();
+        const decodedArgs = candidDecode([IDL.Text], args);
+
+        console.log('Manual init with args:', decodedArgs);
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="postupgrade-2">
+                                <a
+                                    class="header"
+                                    href="#postupgrade-2"
+                                    >@postUpgrade</a
+                                >
+                            </h1>
+                            <p>
+                                Called after canister upgrade. Used to restore
+                                state.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-write</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: no</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    300_000_000_000 (shared with preUpgrade)
+                                </li>
+                            </ul>
+                            <p>
+                                Only one <code>@postUpgrade</code> method is
+                                allowed per canister.
+                            </p>
+                            <h2 id="basic-usage-3">
+                                <a
+                                    class="header"
+                                    href="#basic-usage-3"
+                                    >Basic Usage</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, postUpgrade } from 'azle';
+
+export default class {
+    version: string = '1.0.0';
+
+    @postUpgrade([IDL.Text])
+    upgrade(newVersion: string): void {
+        this.version = newVersion;
+        console.log(`Upgraded to version ${newVersion}`);
+    }
+}
+</code></pre>
+                            <h2 id="state-migration">
+                                <a
+                                    class="header"
+                                    href="#state-migration"
+                                    >State Migration</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, postUpgrade } from 'azle';
+
+type UserV1 = {
+    name: string;
+    age: number;
+};
+
+type UserV2 = {
+    name: string;
+    age: number;
+    email: string; // New field
+    active: boolean; // New field
+};
+
+export default class {
+    users: Map&lt;string, UserV2&gt; = new Map();
+    version: string = '2.0.0';
+
+    @postUpgrade([IDL.Text])
+    migrateToV2(previousVersion: string): void {
+        console.log(`Migrating from ${previousVersion} to ${this.version}`);
+
+        // Migrate existing users to new format
+        for (const [id, user] of this.users.entries()) {
+            const userV1 = user as any;
+            if (!userV1.email) {
+                const migratedUser: UserV2 = {
+                    ...userV1,
+                    email: `${userV1.name.toLowerCase()}@example.com`,
+                    active: true
+                };
+                this.users.set(id, migratedUser);
+            }
+        }
+
+        console.log(`Migration complete. ${this.users.size} users migrated.`);
+    }
+}
+</code></pre>
+                            <h2 id="no-arguments-1">
+                                <a
+                                    class="header"
+                                    href="#no-arguments-1"
+                                    >No Arguments</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, postUpgrade, time } from 'azle';
+
+export default class {
+    lastUpgrade: bigint = 0n;
+    upgradeCount: number = 0;
+
+    @postUpgrade()
+    handleUpgrade(): void {
+        this.lastUpgrade = time();
+        this.upgradeCount += 1;
+
+        console.log(
+            `Upgrade #${this.upgradeCount} completed at ${this.lastUpgrade}`
+        );
+    }
+}
+</code></pre>
+                            <h2 id="options-3">
+                                <a
+                                    class="header"
+                                    href="#options-3"
+                                    >Options</a
+                                >
+                            </h2>
+                            <ul>
+                                <li>
+                                    <code>manual</code>: Manual argument
+                                    handling
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, postUpgrade, msgArgData, candidDecode } from 'azle';
+
+export default class {
+    @postUpgrade([], { manual: true })
+    manualUpgrade(): void {
+        const args = msgArgData();
+        const decodedArgs = candidDecode([IDL.Text, IDL.Nat], args);
+
+        console.log('Manual upgrade with args:', decodedArgs);
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="preupgrade-2">
+                                <a
+                                    class="header"
+                                    href="#preupgrade-2"
+                                    >@preUpgrade</a
+                                >
+                            </h1>
+                            <p>
+                                Called before canister upgrade. Used to save
+                                state.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-only</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: no</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    300_000_000_000 (shared with postUpgrade)
+                                </li>
+                            </ul>
+                            <p>
+                                Only one <code>@preUpgrade</code> method is
+                                allowed per canister.
+                            </p>
+                            <h2 id="basic-usage-4">
+                                <a
+                                    class="header"
+                                    href="#basic-usage-4"
+                                    >Basic Usage</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, preUpgrade } from 'azle';
+
+export default class {
+    counter: number = 0;
+
+    @preUpgrade()
+    saveState(): void {
+        // Save critical state before upgrade
+        console.log(`Current counter: ${this.counter}`);
+
+        // State is automatically preserved
+        // This is mainly for logging/cleanup
+    }
+}
+</code></pre>
+                            <h2 id="state-validation">
+                                <a
+                                    class="header"
+                                    href="#state-validation"
+                                    >State Validation</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, preUpgrade } from 'azle';
+
+export default class {
+    users: Map&lt;string, any&gt; = new Map();
+    orders: Map&lt;string, any&gt; = new Map();
+
+    @preUpgrade()
+    validateState(): void {
+        console.log(`Pre-upgrade validation:`);
+        console.log(`- Users: ${this.users.size}`);
+        console.log(`- Orders: ${this.orders.size}`);
+
+        // Validate critical state
+        if (this.users.size === 0) {
+            console.warn('Warning: No users in system');
+        }
+
+        // Log important metrics
+        const activeUsers = Array.from(this.users.values()).filter(
+            (user) =&gt; user.active
+        ).length;
+        console.log(`- Active users: ${activeUsers}`);
+    }
+}
+</code></pre>
+                            <h2 id="cleanup-operations">
+                                <a
+                                    class="header"
+                                    href="#cleanup-operations"
+                                    >Cleanup Operations</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, preUpgrade, clearTimer } from 'azle';
+
+export default class {
+    activeTimers: Set&lt;bigint&gt; = new Set();
+
+    @preUpgrade()
+    cleanup(): void {
+        console.log('Cleaning up before upgrade...');
+
+        // Cancel all active timers
+        for (const timerId of this.activeTimers) {
+            clearTimer(timerId);
+        }
+
+        console.log(`Cleared ${this.activeTimers.size} timers`);
+
+        // Other cleanup operations
+        console.log('Cleanup complete');
+    }
+}
+</code></pre>
+                            <h2 id="backup-state">
+                                <a
+                                    class="header"
+                                    href="#backup-state"
+                                    >Backup State</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, preUpgrade } from 'azle';
+
+export default class {
+    criticalData: Map&lt;string, string&gt; = new Map();
+
+    @preUpgrade()
+    backupCriticalData(): void {
+        const backup = {
+            timestamp: Date.now(),
+            dataCount: this.criticalData.size,
+            keys: Array.from(this.criticalData.keys())
+        };
+
+        console.log('Backup info:', JSON.stringify(backup));
+
+        // In a real scenario, you might want to store
+        // backup data in stable storage
+    }
+}
+</code></pre>
+                            <h2 id="no-manual-mode">
+                                <a
+                                    class="header"
+                                    href="#no-manual-mode"
+                                    >No Manual Mode</a
+                                >
+                            </h2>
+                            <blockquote>
+                                <p>
+                                    <strong>Note</strong>:
+                                    <code>@preUpgrade</code> does not support
+                                    manual mode as it takes no arguments.
+                                </p>
+                            </blockquote>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="inspectmessage-2">
+                                <a
+                                    class="header"
+                                    href="#inspectmessage-2"
+                                    >@inspectMessage</a
+                                >
+                            </h1>
+                            <p>
+                                Called before every <code>@update</code> method.
+                                Can reject calls.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-only</li>
+                                <li><strong>Replication</strong>: none</li>
+                                <li><strong>Async</strong>: no</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    200_000_000
+                                </li>
+                            </ul>
+                            <p>
+                                Only one <code>@inspectMessage</code> method is
+                                allowed per canister.
+                            </p>
+                            <h2 id="basic-usage-5">
+                                <a
+                                    class="header"
+                                    href="#basic-usage-5"
+                                    >Basic Usage</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, inspectMessage, msgCaller, update } from 'azle';
+
+export default class {
+    owner: string = 'owner-principal-id';
+
+    @inspectMessage()
+    inspect(methodName: string): boolean {
+        const caller = msgCaller();
+
+        // Only allow owner to call sensitive methods
+        if (methodName === 'sensitiveMethod') {
+            return caller.toText() === this.owner;
+        }
+
+        return true; // Allow all other methods
+    }
+
+    @update([], IDL.Text)
+    sensitiveMethod(): string {
+        return 'Secret data';
+    }
+
+    @update([IDL.Text], IDL.Text)
+    publicMethod(message: string): string {
+        return `Public: ${message}`;
+    }
+}
+</code></pre>
+                            <h2 id="role-based-access-control">
+                                <a
+                                    class="header"
+                                    href="#role-based-access-control"
+                                    >Role-Based Access Control</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, inspectMessage, msgCaller, update } from 'azle';
+
+export default class {
+    admins: Set&lt;string&gt; = new Set(['admin-principal-1', 'admin-principal-2']);
+    moderators: Set&lt;string&gt; = new Set(['mod-principal-1']);
+
+    @inspectMessage()
+    checkPermissions(methodName: string): boolean {
+        const caller = msgCaller().toText();
+
+        // Admin-only methods
+        if (['deleteUser', 'systemReset'].includes(methodName)) {
+            return this.admins.has(caller);
+        }
+
+        // Moderator or admin methods
+        if (['banUser', 'deletePost'].includes(methodName)) {
+            return this.admins.has(caller) || this.moderators.has(caller);
+        }
+
+        // Public methods - all users allowed
+        return true;
+    }
+
+    @update([IDL.Text], IDL.Bool)
+    deleteUser(userId: string): boolean {
+        // Admin only - checked in inspectMessage
+        return true;
+    }
+
+    @update([IDL.Text], IDL.Bool)
+    banUser(userId: string): boolean {
+        // Admin or moderator - checked in inspectMessage
+        return true;
+    }
+
+    @update([IDL.Text], IDL.Text)
+    createPost(content: string): string {
+        // Public method - all users allowed
+        return `Post created: ${content}`;
+    }
+}
+</code></pre>
+                            <h2 id="rate-limiting">
+                                <a
+                                    class="header"
+                                    href="#rate-limiting"
+                                    >Rate Limiting</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, inspectMessage, msgCaller, update, time } from 'azle';
+
+export default class {
+    lastCallTime: Map&lt;string, bigint&gt; = new Map();
+    rateLimitSeconds: bigint = 60n * 1_000_000_000n; // 60 seconds in nanoseconds
+
+    @inspectMessage()
+    rateLimit(methodName: string): boolean {
+        const caller = msgCaller().toText();
+        const now = time();
+
+        // Only rate limit certain methods
+        if (['expensiveOperation', 'sendEmail'].includes(methodName)) {
+            const lastCall = this.lastCallTime.get(caller);
+
+            if (lastCall &amp;&amp; now - lastCall &lt; this.rateLimitSeconds) {
+                console.log(`Rate limit exceeded for ${caller}`);
+                return false; // Reject the call
+            }
+
+            this.lastCallTime.set(caller, now);
+        }
+
+        return true;
+    }
+
+    @update([IDL.Text], IDL.Text)
+    expensiveOperation(data: string): string {
+        // Rate limited operation
+        return `Processed: ${data}`;
+    }
+
+    @update([IDL.Text], IDL.Bool)
+    sendEmail(recipient: string): boolean {
+        // Rate limited operation
+        return true;
+    }
+}
+</code></pre>
+                            <h2 id="method-arguments-access">
+                                <a
+                                    class="header"
+                                    href="#method-arguments-access"
+                                    >Method Arguments Access</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, inspectMessage, update } from 'azle';
+
+export default class {
+    @inspectMessage()
+    validateArguments(methodName: string, ...args: unknown[]): boolean {
+        console.log(`Method: ${methodName}, Args:`, args);
+
+        // Validate specific method arguments
+        if (methodName === 'transfer') {
+            const [amount] = args as [number];
+            if (amount &lt;= 0 || amount &gt; 1000000) {
+                console.log('Invalid transfer amount');
+                return false;
+            }
+        }
+
+        if (methodName === 'setUsername') {
+            const [username] = args as [string];
+            if (username.length &lt; 3 || username.length &gt; 20) {
+                console.log('Invalid username length');
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @update([IDL.Nat], IDL.Bool)
+    transfer(amount: number): boolean {
+        return true;
+    }
+
+    @update([IDL.Text], IDL.Bool)
+    setUsername(username: string): boolean {
+        return true;
+    }
+}
+</code></pre>
+                            <h2 id="options-4">
+                                <a
+                                    class="header"
+                                    href="#options-4"
+                                    >Options</a
+                                >
+                            </h2>
+                            <ul>
+                                <li>
+                                    <code>manual</code>: Manual argument
+                                    handling
+                                </li>
+                            </ul>
+                            <pre><code class="language-typescript">import { IDL, inspectMessage, msgArgData, candidDecode } from 'azle';
+
+export default class {
+    @inspectMessage([], { manual: true })
+    manualInspect(): boolean {
+        const args = msgArgData();
+        const decoded = candidDecode([IDL.Text], args);
+
+        console.log('Manual inspect with args:', decoded);
+        return true;
+    }
+}
+</code></pre>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="heartbeat-2">
+                                <a
+                                    class="header"
+                                    href="#heartbeat-2"
+                                    >@heartbeat</a
+                                >
+                            </h1>
+                            <p>
+                                Called periodically (~every second). Not
+                                recommended for most use cases.
+                            </p>
+                            <ul>
+                                <li><strong>State</strong>: read-write</li>
+                                <li><strong>Replication</strong>: yes</li>
+                                <li><strong>Async</strong>: yes</li>
+                                <li>
+                                    <strong>Instruction limit</strong>:
+                                    40_000_000_000
+                                </li>
+                            </ul>
+                            <p>
+                                Only one <code>@heartbeat</code> method is
+                                allowed per canister.
+                            </p>
+                            <blockquote>
+                                <p>
+                                    <strong>Note</strong>: Use
+                                    <code>setTimer</code> and
+                                    <code>setTimerInterval</code> instead of
+                                    <code>@heartbeat</code> for most periodic
+                                    tasks.
+                                </p>
+                            </blockquote>
+                            <h2 id="basic-usage-6">
+                                <a
+                                    class="header"
+                                    href="#basic-usage-6"
+                                    >Basic Usage</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, heartbeat } from 'azle';
+
+export default class {
+    heartbeatCount: number = 0;
+
+    @heartbeat()
+    periodicTask(): void {
+        this.heartbeatCount += 1;
+        console.log(`Heartbeat ${this.heartbeatCount}`);
+    }
+}
+</code></pre>
+                            <h2 id="periodic-cleanup">
+                                <a
+                                    class="header"
+                                    href="#periodic-cleanup"
+                                    >Periodic Cleanup</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, heartbeat, time } from 'azle';
+
+export default class {
+    sessions: Map&lt;string, { userId: string; lastActive: bigint }&gt; = new Map();
+    lastCleanup: bigint = 0n;
+
+    @heartbeat()
+    cleanup(): void {
+        const now = time();
+        const oneHour = 60n * 60n * 1_000_000_000n; // 1 hour in nanoseconds
+
+        // Only run cleanup every hour
+        if (now - this.lastCleanup &lt; oneHour) {
+            return;
+        }
+
+        // Clean up expired sessions
+        const expiredSessions: string[] = [];
+        for (const [sessionId, session] of this.sessions.entries()) {
+            if (now - session.lastActive &gt; oneHour * 24n) {
+                // 24 hours
+                expiredSessions.push(sessionId);
+            }
+        }
+
+        for (const sessionId of expiredSessions) {
+            this.sessions.delete(sessionId);
+        }
+
+        console.log(`Cleaned up ${expiredSessions.length} expired sessions`);
+        this.lastCleanup = now;
+    }
+}
+</code></pre>
+                            <h2 id="async-operations-1">
+                                <a
+                                    class="header"
+                                    href="#async-operations-1"
+                                    >Async Operations</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import { IDL, heartbeat, call } from 'azle';
+
+export default class {
+    lastHealthCheck: bigint = 0n;
+    isHealthy: boolean = true;
+
+    @heartbeat()
+    async healthCheck(): Promise&lt;void&gt; {
+        const now = time();
+        const fiveMinutes = 5n * 60n * 1_000_000_000n;
+
+        // Only check every 5 minutes
+        if (now - this.lastHealthCheck &lt; fiveMinutes) {
+            return;
+        }
+
+        try {
+            // Check external service
+            const response = await call('external-service-canister', 'ping', {
+                returnIdlType: IDL.Bool
+            });
+
+            this.isHealthy = response;
+            console.log(`Health check: ${this.isHealthy ? 'OK' : 'FAILED'}`);
+        } catch (error) {
+            this.isHealthy = false;
+            console.log(`Health check failed: ${error}`);
+        }
+
+        this.lastCleanup = now;
+    }
+}
+</code></pre>
+                            <h2 id="why-use-timers-instead">
+                                <a
+                                    class="header"
+                                    href="#why-use-timers-instead"
+                                    >Why Use Timers Instead</a
+                                >
+                            </h2>
+                            <p>Timers are more flexible and efficient:</p>
+                            <pre><code class="language-typescript">import { IDL, init, setTimerInterval, clearTimer } from 'azle';
+
+export default class {
+    cleanupTimerId: bigint | null = null;
+
+    @init()
+    initialize(): void {
+        // Set up periodic cleanup with timer instead of heartbeat
+        this.cleanupTimerId = setTimerInterval(3600, () =&gt; {
+            // Every hour
+            this.performCleanup();
+        });
+    }
+
+    performCleanup(): void {
+        console.log('Performing scheduled cleanup...');
+        // Cleanup logic here
+    }
+
+    stopCleanup(): void {
+        if (this.cleanupTimerId) {
+            clearTimer(this.cleanupTimerId);
+            this.cleanupTimerId = null;
+        }
+    }
+}
+</code></pre>
+                            <h2 id="limitations">
+                                <a
+                                    class="header"
+                                    href="#limitations"
+                                    >Limitations</a
+                                >
+                            </h2>
+                            <ul>
+                                <li>Cannot guarantee exact timing</li>
+                                <li>
+                                    Runs on all replicas (waste of resources)
+                                </li>
+                                <li>May not execute during high load</li>
+                                <li>Cannot pass arguments</li>
+                                <li>Limited to ~1 second intervals</li>
+                            </ul>
+                            <h2 id="when-to-use-heartbeat">
+                                <a
+                                    class="header"
+                                    href="#when-to-use-heartbeat"
+                                    >When to Use Heartbeat</a
+                                >
+                            </h2>
+                            <p>
+                                Only use <code>@heartbeat</code> when you need:
+                            </p>
+                            <ul>
+                                <li>
+                                    Guaranteed periodic execution across all
+                                    replicas
+                                </li>
+                                <li>System-level maintenance tasks</li>
+                                <li>
+                                    Monitoring that must run even when canister
+                                    is idle
+                                </li>
+                            </ul>
+                            <p>
+                                For most use cases, prefer
+                                <code>setTimer</code> and
+                                <code>setTimerInterval</code>.
+                            </p>
+                            <div
+                                style="
+                                    break-before: page;
+                                    page-break-before: always;
+                                "
+                            ></div>
+                            <h1 id="ic-api">
                                 <a
                                     class="header"
                                     href="#ic-api"
                                     >IC API</a
                                 >
-                            </h2>
+                            </h1>
                             <p>
                                 The IC API is exposed as functions exported from
-                                <code>azle</code>. You can see the available
-                                functions in
-                                <a
-                                    href="https://github.com/demergent-labs/azle/tree/main/src/lib/stable/ic_apis"
-                                    >the source code</a
-                                >.
+                                <code>azle</code>. These functions provide
+                                access to Internet Computer platform
+                                capabilities.
                             </p>
+                            <h2 id="message-information">
+                                <a
+                                    class="header"
+                                    href="#message-information"
+                                    >Message Information</a
+                                >
+                            </h2>
+                            <h3 id="msgcaller">
+                                <a
+                                    class="header"
+                                    href="#msgcaller"
+                                    >msgCaller</a
+                                >
+                            </h3>
                             <p>
-                                Some of the best documentation for using the IC
-                                API is currently in
-                                <a
-                                    href="https://github.com/demergent-labs/azle/tree/main/examples/stable"
-                                    >the examples directory</a
-                                >, especially the
-                                <a
-                                    href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/property/ic_api"
-                                    >ic_api property tests</a
-                                >.
+                                Get the principal of the identity that initiated
+                                the current call:
                             </p>
-                            <p>
-                                Here's an example of getting the caller's
-                                principal using the
-                                <code>caller</code> function:
-                            </p>
-                            <pre><code class="language-typescript">import { caller, IDL, update } from 'azle';
+                            <pre><code class="language-typescript">import { msgCaller, IDL, query } from 'azle';
 
 export default class {
-    @update([], IDL.Bool)
-    isUserAnonymous(): boolean {
-        if (caller().toText() === '2vxsx-fae') {
+    @query([], IDL.Text)
+    whoAmI(): string {
+        return msgCaller().toText();
+    }
+
+    @query([], IDL.Bool)
+    isAnonymous(): boolean {
+        return msgCaller().toText() === '2vxsx-fae';
+    }
+}
+</code></pre>
+                            <h3 id="msgmethodname">
+                                <a
+                                    class="header"
+                                    href="#msgmethodname"
+                                    >msgMethodName</a
+                                >
+                            </h3>
+                            <p>
+                                Get the name of the currently executing method:
+                            </p>
+                            <pre><code class="language-typescript">import { msgMethodName, IDL, update } from 'azle';
+
+export default class {
+    @update([], IDL.Text)
+    currentMethod(): string {
+        return msgMethodName(); // Returns "currentMethod"
+    }
+}
+</code></pre>
+                            <h2 id="time">
+                                <a
+                                    class="header"
+                                    href="#time"
+                                    >Time</a
+                                >
+                            </h2>
+                            <h3 id="time-1">
+                                <a
+                                    class="header"
+                                    href="#time-1"
+                                    >time</a
+                                >
+                            </h3>
+                            <p>
+                                Get the current ICP system time in nanoseconds:
+                            </p>
+                            <pre><code class="language-typescript">import { time, IDL, query } from 'azle';
+
+export default class {
+    @query([], IDL.Nat64)
+    getCurrentTime(): bigint {
+        return time();
+    }
+
+    @query([], IDL.Text)
+    getFormattedTime(): string {
+        const nanos = time();
+        const date = new Date(Number(nanos / 1_000_000n));
+        return date.toISOString();
+    }
+}
+</code></pre>
+                            <h2 id="timers">
+                                <a
+                                    class="header"
+                                    href="#timers"
+                                    >Timers</a
+                                >
+                            </h2>
+                            <h3 id="settimer">
+                                <a
+                                    class="header"
+                                    href="#settimer"
+                                    >setTimer</a
+                                >
+                            </h3>
+                            <p>Execute a callback after a delay:</p>
+                            <pre><code class="language-typescript">import { setTimer, IDL, update } from 'azle';
+
+export default class {
+    @update([IDL.Nat], IDL.Nat64)
+    scheduleTask(delaySeconds: number): bigint {
+        const timerId = setTimer(delaySeconds, () =&gt; {
+            console.log('Timer executed!');
+        });
+
+        return timerId;
+    }
+}
+</code></pre>
+                            <h3 id="settimerinterval">
+                                <a
+                                    class="header"
+                                    href="#settimerinterval"
+                                    >setTimerInterval</a
+                                >
+                            </h3>
+                            <p>Execute a callback repeatedly:</p>
+                            <pre><code class="language-typescript">import { setTimerInterval, IDL, update } from 'azle';
+
+export default class {
+    counter: number = 0;
+
+    @update([IDL.Nat], IDL.Nat64)
+    startPeriodicTask(intervalSeconds: number): bigint {
+        const timerId = setTimerInterval(intervalSeconds, () =&gt; {
+            this.counter += 1;
+            console.log(`Periodic task executed ${this.counter} times`);
+        });
+
+        return timerId;
+    }
+}
+</code></pre>
+                            <h3 id="cleartimer">
+                                <a
+                                    class="header"
+                                    href="#cleartimer"
+                                    >clearTimer</a
+                                >
+                            </h3>
+                            <p>Cancel a scheduled timer:</p>
+                            <pre><code class="language-typescript">import { setTimer, clearTimer, IDL, update } from 'azle';
+
+export default class {
+    activeTimers: Set&lt;bigint&gt; = new Set();
+
+    @update([IDL.Nat], IDL.Nat64)
+    scheduleTask(delaySeconds: number): bigint {
+        const timerId = setTimer(delaySeconds, () =&gt; {
+            console.log('Task executed!');
+            this.activeTimers.delete(timerId);
+        });
+
+        this.activeTimers.add(timerId);
+        return timerId;
+    }
+
+    @update([IDL.Nat64], IDL.Bool)
+    cancelTask(timerId: bigint): boolean {
+        if (this.activeTimers.has(timerId)) {
+            clearTimer(timerId);
+            this.activeTimers.delete(timerId);
             return true;
-        } else {
-            return false;
         }
+        return false;
+    }
+}
+</code></pre>
+                            <h2 id="cycles">
+                                <a
+                                    class="header"
+                                    href="#cycles"
+                                    >Cycles</a
+                                >
+                            </h2>
+                            <h3 id="canistercyclebalance">
+                                <a
+                                    class="header"
+                                    href="#canistercyclebalance"
+                                    >canisterCycleBalance</a
+                                >
+                            </h3>
+                            <p>Get the canister's current cycle balance:</p>
+                            <pre><code class="language-typescript">import { canisterCycleBalance, IDL, query } from 'azle';
+
+export default class {
+    @query([], IDL.Nat)
+    getBalance(): bigint {
+        return canisterCycleBalance();
+    }
+
+    @query([], IDL.Bool)
+    hasEnoughCycles(): boolean {
+        const balance = canisterCycleBalance();
+        const minimumRequired = 1_000_000_000n; // 1 billion cycles
+        return balance &gt;= minimumRequired;
+    }
+}
+</code></pre>
+                            <h3 id="msgcyclesaccept">
+                                <a
+                                    class="header"
+                                    href="#msgcyclesaccept"
+                                    >msgCyclesAccept</a
+                                >
+                            </h3>
+                            <p>Accept cycles sent with the current call:</p>
+                            <pre><code class="language-typescript">import { msgCyclesAccept, msgCyclesAvailable, IDL, update } from 'azle';
+
+export default class {
+    @update([], IDL.Nat)
+    acceptPayment(): bigint {
+        const available = msgCyclesAvailable();
+        const accepted = msgCyclesAccept(available);
+        return accepted;
+    }
+}
+</code></pre>
+                            <h2 id="inter-canister-calls">
+                                <a
+                                    class="header"
+                                    href="#inter-canister-calls"
+                                    >Inter-Canister Calls</a
+                                >
+                            </h2>
+                            <h3 id="call">
+                                <a
+                                    class="header"
+                                    href="#call"
+                                    >call</a
+                                >
+                            </h3>
+                            <p>Make calls to other canisters:</p>
+                            <pre><code class="language-typescript">import { call, IDL, update, Principal } from 'azle';
+
+export default class {
+    @update([IDL.Principal, IDL.Text], IDL.Text)
+    async callOtherCanister(
+        canisterId: Principal,
+        message: string
+    ): Promise&lt;string&gt; {
+        const result = await call(canisterId, 'process_message', {
+            args: [message],
+            paramIdlTypes: [IDL.Text],
+            returnIdlType: IDL.Text
+        });
+
+        return result;
+    }
+
+    @update([IDL.Principal], IDL.Nat)
+    async transferCycles(recipient: Principal): Promise&lt;bigint&gt; {
+        const cyclesToSend = 1_000_000n;
+
+        await call(recipient, 'receive_cycles', {
+            cycles: cyclesToSend
+        });
+
+        return cyclesToSend;
+    }
+}
+</code></pre>
+                            <h2 id="canister-information">
+                                <a
+                                    class="header"
+                                    href="#canister-information"
+                                    >Canister Information</a
+                                >
+                            </h2>
+                            <h3 id="canisterself">
+                                <a
+                                    class="header"
+                                    href="#canisterself"
+                                    >canisterSelf</a
+                                >
+                            </h3>
+                            <p>Get the current canister's principal:</p>
+                            <pre><code class="language-typescript">import { canisterSelf, IDL, query } from 'azle';
+
+export default class {
+    @query([], IDL.Principal)
+    myId(): Principal {
+        return canisterSelf();
+    }
+}
+</code></pre>
+                            <h3 id="canisterversion">
+                                <a
+                                    class="header"
+                                    href="#canisterversion"
+                                    >canisterVersion</a
+                                >
+                            </h3>
+                            <p>Get the current canister version:</p>
+                            <pre><code class="language-typescript">import { canisterVersion, IDL, query } from 'azle';
+
+export default class {
+    @query([], IDL.Nat64)
+    getVersion(): bigint {
+        return canisterVersion();
+    }
+}
+</code></pre>
+                            <h2 id="error-handling">
+                                <a
+                                    class="header"
+                                    href="#error-handling"
+                                    >Error Handling</a
+                                >
+                            </h2>
+                            <h3 id="trap">
+                                <a
+                                    class="header"
+                                    href="#trap"
+                                    >trap</a
+                                >
+                            </h3>
+                            <p>Terminate execution with an error:</p>
+                            <pre><code class="language-typescript">import { trap, IDL, update } from 'azle';
+
+export default class {
+    @update([IDL.Text], IDL.Text)
+    processInput(input: string): string {
+        if (input === '') {
+            trap('Input cannot be empty');
+        }
+
+        return `Processed: ${input}`;
+    }
+}
+</code></pre>
+                            <h2 id="manual-response-handling">
+                                <a
+                                    class="header"
+                                    href="#manual-response-handling"
+                                    >Manual Response Handling</a
+                                >
+                            </h2>
+                            <h3 id="msgreply--msgreject">
+                                <a
+                                    class="header"
+                                    href="#msgreply--msgreject"
+                                    >msgReply / msgReject</a
+                                >
+                            </h3>
+                            <p>
+                                For manual response handling in decorators with
+                                <code>manual: true</code>:
+                            </p>
+                            <pre><code class="language-typescript">import {
+    msgReply,
+    msgReject,
+    msgArgData,
+    IDL,
+    update,
+    candidDecode,
+    candidEncode
+} from 'azle';
+
+export default class {
+    @update([], IDL.Text, { manual: true })
+    manualResponse(): void {
+        try {
+            const result = 'Success!';
+            const encoded = candidEncode([IDL.Text], [result]);
+            msgReply(encoded);
+        } catch (error) {
+            msgReject(`Error: ${error}`);
+        }
+    }
+}
+</code></pre>
+                            <h2 id="random-numbers">
+                                <a
+                                    class="header"
+                                    href="#random-numbers"
+                                    >Random Numbers</a
+                                >
+                            </h2>
+                            <h3 id="randseed">
+                                <a
+                                    class="header"
+                                    href="#randseed"
+                                    >randSeed</a
+                                >
+                            </h3>
+                            <p>
+                                Get a random seed for pseudorandom number
+                                generation:
+                            </p>
+                            <pre><code class="language-typescript">import { randSeed, IDL, query } from 'azle';
+
+export default class {
+    @query([], IDL.Nat)
+    getRandomNumber(): number {
+        const seed = randSeed();
+        // Use seed for pseudorandom number generation
+        return Math.abs(seed.reduce((a, b) =&gt; a + b, 0));
     }
 }
 </code></pre>
@@ -2215,10 +4381,10 @@ async function asynchronousHelloWorld() {
     return 'Hello World Asynchronous!';
 }
 </code></pre>
-                            <h2 id="limitations">
+                            <h2 id="limitations-1">
                                 <a
                                     class="header"
-                                    href="#limitations"
+                                    href="#limitations-1"
                                     >Limitations</a
                                 >
                             </h2>

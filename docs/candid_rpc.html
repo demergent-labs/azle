@@ -367,476 +367,53 @@
                                 Candid RPC is heading towards 1.0 and
                                 production-readiness in 2025.
                             </p>
+                            <h2 id="quick-navigation">
+                                <a
+                                    class="header"
+                                    href="#quick-navigation"
+                                    >Quick Navigation</a
+                                >
+                            </h2>
                             <ul>
-                                <li><a href="#get-started">Get Started</a></li>
-                                <li><a href="#examples">Examples</a></li>
                                 <li>
-                                    <a href="#canister-class">Canister Class</a>
+                                    <a href="./candid_rpc/get_started.html"
+                                        >Get Started</a
+                                    >
+                                    - Installation and deployment guide
                                 </li>
                                 <li>
-                                    <a href="#dfinitycandid-idl"
+                                    <a href="./candid_rpc/examples.html"
+                                        >Examples</a
+                                    >
+                                    - Working examples and best practices
+                                </li>
+                                <li>
+                                    <a href="./candid_rpc/canister_class.html"
+                                        >Canister Class</a
+                                    >
+                                    - How to structure your canister
+                                </li>
+                                <li>
+                                    <a
+                                        href="./candid_rpc/dfinity_candid_idl.html"
                                         >@dfinity/candid IDL</a
                                     >
+                                    - Type definitions and serialization
                                 </li>
                                 <li>
-                                    <a href="#decorators">Decorators</a>
-                                    <ul>
-                                        <li><a href="#query">@query</a></li>
-                                        <li><a href="#update">@update</a></li>
-                                        <li><a href="#init">@init</a></li>
-                                        <li>
-                                            <a href="#postupgrade"
-                                                >@postUpgrade</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a href="#preupgrade"
-                                                >@preUpgrade</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a href="#inspectmessage"
-                                                >@inspectMessage</a
-                                            >
-                                        </li>
-                                        <li>
-                                            <a href="#heartbeat">@heartbeat</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><a href="#ic-api">IC API</a></li>
-                            </ul>
-                            <h2 id="get-started">
-                                <a
-                                    class="header"
-                                    href="#get-started"
-                                    >Get Started</a
-                                >
-                            </h2>
-                            <p>
-                                Azle helps you to build secure
-                                decentralized/replicated servers in TypeScript
-                                or JavaScript on
-                                <a href="https://internetcomputer.org/">ICP</a>.
-                                The current replication factor is
-                                <a
-                                    href="https://dashboard.internetcomputer.org/subnets"
-                                    >13-40 times</a
-                                >.
-                            </p>
-                            <p>
-                                Please remember that Azle stable mode is
-                                continuously subjected to
-                                <a
-                                    href="https://github.com/demergent-labs/azle/actions"
-                                    >intense scrutiny and testing</a
-                                >, however it does not yet have multiple
-                                independent security reviews/audits.
-                            </p>
-                            <p>Azle runs in stable mode by default.</p>
-                            <p>
-                                This mode is intended for production use after
-                                Azle's 1.0 release. Its focus is on API and
-                                runtime stability, security, performance,
-                                TypeScript and JavaScript language support, the
-                                ICP APIs, and Candid remote procedure calls
-                                (RPC). There is minimal support for the Node.js
-                                standard library, npm ecosystem, and HTTP server
-                                functionality.
-                            </p>
-                            <h3 id="installation">
-                                <a
-                                    class="header"
-                                    href="#installation"
-                                    >Installation</a
-                                >
-                            </h3>
-                            <blockquote>
-                                <p>
-                                    Windows is only supported through a Linux
-                                    virtual environment of some kind, such as
-                                    <a
-                                        href="https://learn.microsoft.com/en-us/windows/wsl/install"
-                                        >WSL</a
+                                    <a href="./candid_rpc/decorators.html"
+                                        >Decorators</a
                                     >
-                                </p>
-                            </blockquote>
-                            <p>
-                                You will need
-                                <a href="#nodejs-22">Node.js 22</a> and
-                                <a href="#dfx">dfx</a> to develop ICP
-                                applications with Azle:
-                            </p>
-                            <h4 id="nodejs-22">
-                                <a
-                                    class="header"
-                                    href="#nodejs-22"
-                                    >Node.js 22</a
-                                >
-                            </h4>
-                            <p>
-                                It's recommended to use nvm to install Node.js
-                                22:
-                            </p>
-                            <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-</code></pre>
-                            <p>Restart your terminal and then run:</p>
-                            <pre><code class="language-bash">nvm install 22
-</code></pre>
-                            <p>
-                                Check that the installation went smoothly by
-                                looking for clean output from the following
-                                command:
-                            </p>
-                            <pre><code class="language-bash">node --version
-</code></pre>
-                            <h4 id="dfx">
-                                <a
-                                    class="header"
-                                    href="#dfx"
-                                    >dfx</a
-                                >
-                            </h4>
-                            <p>
-                                Install the dfx command line tools for managing
-                                ICP applications:
-                            </p>
-                            <pre><code class="language-bash">DFX_VERSION=0.24.3 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
-</code></pre>
-                            <p>
-                                Check that the installation went smoothly by
-                                looking for clean output from the following
-                                command:
-                            </p>
-                            <pre><code class="language-bash">dfx --version
-</code></pre>
-                            <h3 id="deployment">
-                                <a
-                                    class="header"
-                                    href="#deployment"
-                                    >Deployment</a
-                                >
-                            </h3>
-                            <p>
-                                To create and deploy a simple sample application
-                                called <code>hello_world</code>:
-                            </p>
-                            <pre><code class="language-bash"># create a new default project called hello_world
-npx azle new hello_world
-cd hello_world
-</code></pre>
-                            <pre><code class="language-bash"># install all npm dependencies including azle
-npm install
-</code></pre>
-                            <pre><code class="language-bash"># start up a local ICP replica
-dfx start --clean
-</code></pre>
-                            <p>
-                                In a separate terminal in the
-                                <code>hello_world</code> directory:
-                            </p>
-                            <pre><code class="language-bash"># deploy your canister
-dfx deploy
-</code></pre>
-                            <h2 id="examples">
-                                <a
-                                    class="header"
-                                    href="#examples"
-                                    >Examples</a
-                                >
-                            </h2>
-                            <p>
-                                Some of the best documentation for creating
-                                Candid RPC canisters is currently in
-                                <a
-                                    href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc"
-                                    >the examples directory</a
-                                >.
-                            </p>
-                            <h2 id="canister-class">
-                                <a
-                                    class="header"
-                                    href="#canister-class"
-                                    >Canister Class</a
-                                >
-                            </h2>
-                            <p>
-                                Your canister's functionality must be
-                                encapsulated in a class exported using the
-                                default export:
-                            </p>
-                            <pre><code class="language-typescript">import { IDL, query } from 'azle';
-
-export default class {
-    @query([], IDL.Text)
-    hello(): string {
-        return 'world!';
-    }
-}
-</code></pre>
-                            <p>
-                                You must use the <a href="#query">@query</a>,
-                                <a href="#update">@update</a>,
-                                <a href="#init">@init</a>,
-                                <a href="#postupgrade">@postUpgrade</a>,
-                                <a href="#preupgrade">@preUpgrade</a>,
-                                <a href="#inspectmessage">@inspectMessage</a>,
-                                and
-                                <a href="#heartbeat">@heartbeat</a> decorators
-                                to expose your canister's methods. Adding
-                                TypeScript types is optional.
-                            </p>
-                            <h2 id="dfinitycandid-idl">
-                                <a
-                                    class="header"
-                                    href="#dfinitycandid-idl"
-                                    >@dfinity/candid IDL</a
-                                >
-                            </h2>
-                            <p>
-                                For each of your canister's methods,
-                                deserialization of incoming arguments and
-                                serialization of return values is handled with a
-                                combination of the <a href="#query">@query</a>,
-                                <a href="#update">@update</a>,
-                                <a href="#init">@init</a>, and
-                                <a href="#postupgrade">@postUpgrade</a>
-                                decorators and the
-                                <a
-                                    href="https://agent-js.icp.xyz/candid/modules/IDL.html"
-                                    >IDL</a
-                                >
-                                object from the
-                                <a
-                                    href="https://agent-js.icp.xyz/candid/index.html"
-                                    >@dfinity/candid</a
-                                >
-                                library.
-                            </p>
-                            <p>
-                                <code>IDL</code> is re-exported by Azle, and has
-                                properties that correspond to
-                                <a
-                                    href="https://internetcomputer.org/docs/current/references/candid-ref"
-                                    >Candid's supported types</a
-                                >. You must use <code>IDL</code> to instruct the
-                                method decorators on how to deserialize
-                                arguments and serialize the return value. Here's
-                                an example of accessing the Candid types from
-                                <code>IDL</code>:
-                            </p>
-                            <pre><code class="language-typescript">import { IDL } from 'azle';
-
-IDL.Text;
-
-IDL.Vec(IDL.Nat8); // Candid blob
-
-IDL.Nat;
-IDL.Nat64;
-IDL.Nat32;
-IDL.Nat16;
-IDL.Nat8;
-
-IDL.Int;
-IDL.Int64;
-IDL.Int32;
-IDL.Int16;
-IDL.Int8;
-
-IDL.Float64;
-IDL.Float32;
-
-IDL.Bool;
-
-IDL.Null;
-
-IDL.Vec(IDL.Int);
-
-IDL.Opt(IDL.Text);
-
-IDL.Record({
-    prop1: IDL.Text,
-    prop2: IDL.Bool
-});
-
-IDL.Variant({
-    Tag1: IDL.Null,
-    Tag2: IDL.Nat
-});
-
-IDL.Func([], [], ['query']);
-
-IDL.Service({
-    myQueryMethod: IDL.Func([IDL.Text, IDL.Text], [IDL.Bool])
-});
-
-IDL.Principal;
-
-IDL.Reserved;
-
-IDL.Empty;
-</code></pre>
-                            <h2 id="decorators">
-                                <a
-                                    class="header"
-                                    href="#decorators"
-                                    >Decorators</a
-                                >
-                            </h2>
-                            <h3 id="query">
-                                <a
-                                    class="header"
-                                    href="#query"
-                                    >@query</a
-                                >
-                            </h3>
-                            <p>
-                                Exposes the decorated method as a read-only
-                                <code>canister_query</code> method.
-                            </p>
-                            <p>
-                                The first parameter to this decorator accepts
-                                <code>IDL</code> Candid type objects that will
-                                deserialize incoming Candid arguments. The
-                                second parameter to this decorator accepts an
-                                <code>IDL</code> Candid type object that will
-                                serialize the outgoing return value to Candid.
-                            </p>
-                            <h3 id="update">
-                                <a
-                                    class="header"
-                                    href="#update"
-                                    >@update</a
-                                >
-                            </h3>
-                            <p>
-                                Exposes the decorated method as a read-write
-                                <code>canister_update</code> method.
-                            </p>
-                            <p>
-                                The first parameter to this decorator accepts
-                                <code>IDL</code> Candid type objects that will
-                                deserialize incoming Candid arguments. The
-                                second parameter to this decorator accepts an
-                                <code>IDL</code> Candid type object that will
-                                serialize the outgoing return value to Candid.
-                            </p>
-                            <h3 id="init">
-                                <a
-                                    class="header"
-                                    href="#init"
-                                    >@init</a
-                                >
-                            </h3>
-                            <p>
-                                Exposes the decorated method as the
-                                <code>canister_init</code> method called only
-                                once during canister initialization.
-                            </p>
-                            <p>
-                                The first parameter to this decorator accepts
-                                <code>IDL</code> Candid type objects that will
-                                deserialize incoming Candid arguments.
-                            </p>
-                            <h3 id="postupgrade">
-                                <a
-                                    class="header"
-                                    href="#postupgrade"
-                                    >@postUpgrade</a
-                                >
-                            </h3>
-                            <p>
-                                Exposes the decorated method as the
-                                <code>canister_post_upgrade</code> method called
-                                during every canister upgrade.
-                            </p>
-                            <p>
-                                The first parameter to this decorator accepts
-                                <code>IDL</code> Candid type objects that will
-                                deserialize incoming Candid arguments.
-                            </p>
-                            <h3 id="preupgrade">
-                                <a
-                                    class="header"
-                                    href="#preupgrade"
-                                    >@preUpgrade</a
-                                >
-                            </h3>
-                            <p>
-                                Exposes the decorated method as the
-                                <code>canister_pre_upgrade</code> method called
-                                before every canister upgrade.
-                            </p>
-                            <h3 id="inspectmessage">
-                                <a
-                                    class="header"
-                                    href="#inspectmessage"
-                                    >@inspectMessage</a
-                                >
-                            </h3>
-                            <p>
-                                Exposes the decorated method as the
-                                <code>canister_inspect_message</code> method
-                                called before every <code>update</code> call.
-                            </p>
-                            <h3 id="heartbeat">
-                                <a
-                                    class="header"
-                                    href="#heartbeat"
-                                    >@heartbeat</a
-                                >
-                            </h3>
-                            <p>
-                                Exposes the decorated method as the
-                                <code>canister_heartbeat</code> method called on
-                                a regular interval (every second or so).
-                            </p>
-                            <h2 id="ic-api">
-                                <a
-                                    class="header"
-                                    href="#ic-api"
-                                    >IC API</a
-                                >
-                            </h2>
-                            <p>
-                                The IC API is exposed as functions exported from
-                                <code>azle</code>. You can see the available
-                                functions in
-                                <a
-                                    href="https://github.com/demergent-labs/azle/tree/main/src/lib/stable/ic_apis"
-                                    >the source code</a
-                                >.
-                            </p>
-                            <p>
-                                Some of the best documentation for using the IC
-                                API is currently in
-                                <a
-                                    href="https://github.com/demergent-labs/azle/tree/main/examples/stable"
-                                    >the examples directory</a
-                                >, especially the
-                                <a
-                                    href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/property/ic_api"
-                                    >ic_api property tests</a
-                                >.
-                            </p>
-                            <p>
-                                Here's an example of getting the caller's
-                                principal using the
-                                <code>caller</code> function:
-                            </p>
-                            <pre><code class="language-typescript">import { caller, IDL, update } from 'azle';
-
-export default class {
-    @update([], IDL.Bool)
-    isUserAnonymous(): boolean {
-        if (caller().toText() === '2vxsx-fae') {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-</code></pre>
+                                    - Method decorators for canister entry
+                                    points
+                                </li>
+                                <li>
+                                    <a href="./candid_rpc/ic_api.html"
+                                        >IC API</a
+                                    >
+                                    - Internet Computer platform APIs
+                                </li>
+                            </ul>
                         </main>
 
                         <nav
@@ -857,7 +434,7 @@ export default class {
 
                             <a
                                 rel="next prefetch"
-                                href="http_server.html"
+                                href="candid_rpc/get_started.html"
                                 class="mobile-nav-chapters next"
                                 title="Next chapter"
                                 aria-label="Next chapter"
@@ -888,7 +465,7 @@ export default class {
 
                     <a
                         rel="next prefetch"
-                        href="http_server.html"
+                        href="candid_rpc/get_started.html"
                         class="nav-chapters next"
                         title="Next chapter"
                         aria-label="Next chapter"
