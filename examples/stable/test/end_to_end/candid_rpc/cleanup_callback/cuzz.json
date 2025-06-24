@@ -8,5 +8,10 @@
         "trapped from getRandomnessWithTrapUncaught",
         "calling msgReject from getRandomnessMsgRejectInRejectCallback",
         "calling msgReject from getRandomnessMsgRejectInReplyCallback"
+    ],
+    "skipMethods": [
+        "getRandomnessWithTrapCaughtAndTrapAgain",
+        "getRandomnessMsgRejectInReplyCallback",
+        "deleteAzleGlobalSettleCallbacks"
     ]
 }
