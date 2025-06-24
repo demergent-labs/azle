@@ -1,6 +1,12 @@
 name: Example/test maintenance (package-lock updating, formatting, linting)
 on:
     workflow_dispatch:
+        inputs:
+            delete_package_lock:
+                description: 'Delete package-lock.json files before npm install'
+                required: false
+                default: false
+                type: boolean
     schedule:
         # Run at 10:00 UTC (4:00 AM MT) every day
         - cron: '0 10 * * *'
@@ -98,6 +104,12 @@ jobs:
             - uses: ./.github/actions/setup_node
 
             - uses: ./.github/actions/setup_dfx
+
+            # Conditionally delete package-lock.json if input is true
+            - name: Delete package-lock.json
+              if: ${{ github.event.inputs.delete_package_lock == 'true' }}
+              run: rm package-lock.json
+              working-directory: ${{ matrix.test.path }}
 
             # Update package-lock.json in test directory
             - name: Update package-lock.json
