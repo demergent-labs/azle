@@ -4,7 +4,7 @@
     <img src="logo.svg" alt="The Azle Logo" height="250px" />
 </div>
 
-Welcome to The Azle Book! This is a guide for building secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
+Welcome to The Azle Book! This is a guide for building secure decentralized/replicated servers in TypeScript or JavaScript on <a href="https://internetcomputer.org" target="_blank">ICP</a>. The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
 Please remember that Azle stable mode is continuously subjected to [intense scrutiny and testing](https://github.com/demergent-labs/azle/actions), however it does not yet have multiple independent security reviews/audits.
 
