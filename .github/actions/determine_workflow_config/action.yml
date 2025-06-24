@@ -18,6 +18,10 @@ inputs:
         description: 'Workflow dispatch input for running fuzz tests'
         required: false
         default: 'false'
+    fuzz-time-limit-dispatch-input-value:
+        description: 'Workflow dispatch input for fuzz test time limit in minutes'
+        required: false
+        default: '.5'
     link-azle-dispatch-input-value:
         description: 'Workflow dispatch input for linking to the development version of azle'
         required: true
@@ -38,6 +42,9 @@ outputs:
     fuzz:
         description: 'Whether to run fuzz tests'
         value: ${{ steps.determine_workflow_config.outputs.fuzz }}
+    fuzz-time-limit:
+        description: 'Time limit for fuzz tests in minutes'
+        value: ${{ steps.determine_workflow_config.outputs.fuzz-time-limit }}
     is-dependabot:
         description: 'Whether the commit is from Dependabot'
         value: ${{ steps.determine_workflow_config.outputs.is-dependabot }}
@@ -57,6 +64,7 @@ runs:
                 echo "exclude-release-only=${{ inputs.exclude-release-only-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "link-azle=${{ inputs.link-azle-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "fuzz=${{ inputs.fuzz-dispatch-input-value }}" >> $GITHUB_OUTPUT
+                echo "fuzz-time-limit=${{ inputs.fuzz-time-limit-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "is-dependabot=false" >> $GITHUB_OUTPUT
               else
                 EXCLUDE_SLOW=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' }}
@@ -72,7 +80,18 @@ runs:
                 else
                   echo "link-azle=true" >> $GITHUB_OUTPUT
                 fi
-                echo "fuzz=false" >> $GITHUB_OUTPUT
+                
+                if [[ "${{ steps.workflow-context.outputs.is_feature_branch_draft_pr }}" == "true" ]]; then
+                  echo "fuzz=true" >> $GITHUB_OUTPUT
+                  echo "fuzz-time-limit=0.5" >> $GITHUB_OUTPUT
+                elif [[ "${{ steps.workflow-context.outputs.is_feature_branch_pr }}" == "true" ]]; then
+                  echo "fuzz=true" >> $GITHUB_OUTPUT
+                  echo "fuzz-time-limit=1" >> $GITHUB_OUTPUT
+                else
+                  echo "fuzz=false" >> $GITHUB_OUTPUT
+                  echo "fuzz-time-limit=.5" >> $GITHUB_OUTPUT
+                fi
+                
                 echo ${{ github.actor }}
                 echo "is-dependabot=${{ github.actor == 'dependabot[bot]' }}" >> $GITHUB_OUTPUT
               fi
@@ -86,4 +105,5 @@ runs:
               echo "exclude-release-only: ${{ steps.determine_workflow_config.outputs.exclude-release-only }}"
               echo "link-azle: ${{ steps.determine_workflow_config.outputs.link-azle }}"
               echo "fuzz: ${{ steps.determine_workflow_config.outputs.fuzz }}"
+              echo "fuzz-time-limit: ${{ steps.determine_workflow_config.outputs.fuzz-time-limit }}"
               echo "is-dependabot: ${{ steps.determine_workflow_config.outputs.is-dependabot }}"

@@ -6,6 +6,7 @@ use ic_stable_structures::{
     DefaultMemoryImpl,
     memory_manager::{MemoryManager, VirtualMemory},
 };
+use peak_alloc::PeakAlloc;
 use rand::{SeedableRng, rngs::StdRng};
 use rquickjs::Context;
 
@@ -21,6 +22,9 @@ mod rquickjs_utils;
 mod stable_b_tree_map;
 mod state;
 mod wasm_binary_manipulation;
+
+#[global_allocator]
+static PEAK_ALLOC: PeakAlloc = PeakAlloc;
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;

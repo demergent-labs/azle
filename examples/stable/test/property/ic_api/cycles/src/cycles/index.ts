@@ -18,7 +18,7 @@ export default class {
         return acceptCycles();
     }
 
-    @update([IDL.Nat64], CyclesResult)
+    @update([IDL.Nat], CyclesResult)
     receiveVariableCycles(receiveAmount: bigint): CyclesResult {
         return acceptCycles(receiveAmount);
     }
@@ -33,7 +33,7 @@ export default class {
         return acceptCycles(undefined, numChunks);
     }
 
-    @update([IDL.Nat64], IDL.Bool)
+    @update([IDL.Nat], IDL.Bool)
     assertMsgCyclesAcceptTypes(amount: bigint): boolean {
         type _AssertParamType = AssertType<
             NotAnyAndExact<Parameters<typeof msgCyclesAccept>[0], bigint>

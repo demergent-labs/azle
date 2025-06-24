@@ -83,6 +83,7 @@ runs:
           shell: bash
           env:
               AZLE_IDENTITY_STORAGE_MODE: plaintext
+              AZLE_EXPERIMENTAL: ${{ inputs.experimental }}
           run: |
               echo "Running tests for ${{ inputs.project-name }} project"
 

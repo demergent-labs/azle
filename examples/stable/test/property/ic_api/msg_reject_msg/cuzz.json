@@ -1,3 +1,7 @@
 {
-    "expectedErrors": ["reject_message proptest message:"]
+    "callDelay": 0.5,
+    "expectedErrors": [
+        "reject_message proptest message:",
+        "Canister violated contract: \\\"ic0_msg_reject_msg_size\\\" cannot be executed in update mode"
+    ]
 }

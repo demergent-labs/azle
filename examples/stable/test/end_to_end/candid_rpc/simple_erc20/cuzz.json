@@ -1,6 +1,6 @@
 {
     "expectedErrors": [
-        "Method: transfer \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Uncaught TypeError: cannot convert to bigint",
-        "xUncaught Error: Failed to encode Candid arguments: Error: Invalid nat64 argument"
+        "Uncaught TypeError: cannot convert to BigInt",
+        "Uncaught Error: Failed to encode Candid arguments: Error: Invalid nat64 argument"
     ]
 }

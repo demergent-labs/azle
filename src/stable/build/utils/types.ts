@@ -20,6 +20,10 @@ export type CustomConfig = {
     esm_externals?: never;
     experimental?: boolean;
     openValueSharing?: never;
+    test?: {
+        clearHeapMethods?: string[];
+        memorySizeIncreaseExpected?: boolean;
+    };
 };
 
 export type Context = {

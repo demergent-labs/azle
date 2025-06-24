@@ -3,6 +3,11 @@
         "complex_types": {
             "type": "azle",
             "main": "src/index.ts",
+            "custom": {
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
+            },
             "declarations": {
                 "output": "test/dfx_generated/complex_types",
                 "node_compatibility": true

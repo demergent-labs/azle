@@ -10,10 +10,10 @@ export type CyclesResult = {
 };
 
 export const CyclesResult = IDL.Record({
-    initialAvailable: IDL.Nat64,
-    accepted: IDL.Nat64,
-    finalAvailable: IDL.Nat64,
-    startingCanisterCycleBalance: IDL.Nat64,
-    endingCanisterCycleBalance: IDL.Nat64,
-    cyclesRefunded: IDL.Nat64
+    initialAvailable: IDL.Nat,
+    accepted: IDL.Nat,
+    finalAvailable: IDL.Nat,
+    startingCanisterCycleBalance: IDL.Nat,
+    endingCanisterCycleBalance: IDL.Nat,
+    cyclesRefunded: IDL.Nat
 });

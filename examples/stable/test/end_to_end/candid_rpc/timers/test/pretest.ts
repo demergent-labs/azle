@@ -5,11 +5,11 @@ function pretest(): void {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy`, {
+    execSync(`dfx deploy timers`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx generate`, {
+    execSync(`dfx generate timers`, {
         stdio: 'inherit'
     });
 }

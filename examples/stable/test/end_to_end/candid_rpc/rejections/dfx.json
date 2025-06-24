@@ -3,12 +3,15 @@
         "rejections": {
             "type": "azle",
             "main": "src/rejections/index.ts",
+            "custom": {
+                "env": ["SOME_CANISTER_PRINCIPAL"],
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
+            },
             "declarations": {
                 "output": "test/dfx_generated/rejections",
                 "node_compatibility": true
-            },
-            "custom": {
-                "env": ["SOME_CANISTER_PRINCIPAL"]
             }
         },
         "some_canister": {

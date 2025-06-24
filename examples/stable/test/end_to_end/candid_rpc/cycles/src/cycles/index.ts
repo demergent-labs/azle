@@ -8,12 +8,12 @@ import {
 } from 'azle';
 
 export default class {
-    @update([], IDL.Nat64)
+    @update([], IDL.Nat)
     receiveCycles(): bigint {
         return msgCyclesAccept(msgCyclesAvailable() / 2n);
     }
 
-    @query([], IDL.Nat64)
+    @query([], IDL.Nat)
     getCanisterCycleBalance(): bigint {
         return canisterCycleBalance();
     }
