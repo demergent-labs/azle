@@ -128,7 +128,7 @@ async function getCanisterGlobalState(
                 cwd: getDfxRoot(),
                 encoding: 'utf-8'
             }
-        )
+        ).trim()
     );
     const azleResolveCallbacksLen = Number(
         execSync(
@@ -137,7 +137,7 @@ async function getCanisterGlobalState(
                 cwd: getDfxRoot(),
                 encoding: 'utf-8'
             }
-        )
+        ).trim()
     );
     const azleTimerCallbacksLen = Number(
         execSync(
@@ -146,7 +146,7 @@ async function getCanisterGlobalState(
                 cwd: getDfxRoot(),
                 encoding: 'utf-8'
             }
-        )
+        ).trim()
     );
     const azleInterCanisterCallFuturesLen = Number(
         execSync(
@@ -155,7 +155,7 @@ async function getCanisterGlobalState(
                 cwd: getDfxRoot(),
                 encoding: 'utf-8'
             }
-        )
+        ).trim()
     );
     const azleActionsLen = Number(
         execSync(
@@ -164,7 +164,7 @@ async function getCanisterGlobalState(
                 cwd: getDfxRoot(),
                 encoding: 'utf-8'
             }
-        )
+        ).trim()
     );
     const azleIsJobQueueEmpty = JSON.parse(
         execSync(

@@ -174,7 +174,7 @@ function getHeapAllocation(canisterName: string): number | null {
     try {
         return Number(
             execSync(
-                `dfx canister call ${canisterName} _azle_heap_current_allocation --output json`,
+                `dfx canister call ${canisterName} _azle_heap_allocation --output json`,
                 {
                     cwd: getDfxRoot(),
                     encoding: 'utf-8'
