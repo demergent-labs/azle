@@ -1,0 +1,54 @@
+name: Nightly Fuzz Tests
+
+on:
+    schedule:
+        # Run at 22:00 UTC (10:00 PM UTC) every day
+        - cron: '0 22 * * *'
+    workflow_dispatch:
+        # Allow manual triggering for testing
+
+jobs:
+    get-exclude-dirs:
+        name: Get exclude directories
+        runs-on: ubuntu-latest
+        outputs:
+            exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get-exclude-dirs
+              uses: ./.github/actions/get_exclude_dirs
+              with:
+                  exclude-slow: false
+                  exclude-unstable: true
+                  exclude-release-only: true
+
+    run-tests:
+        name: ${{ matrix.test_group.name }}
+        needs: get-exclude-dirs
+        strategy:
+            fail-fast: false
+            matrix:
+                test_group:
+                    - {
+                          name: 'Stable E2E CRPC',
+                          directories: './examples/stable/test/end_to_end/candid_rpc'
+                      }
+                    - {
+                          name: 'Stable Property IC API',
+                          directories: './examples/stable/test/property/ic_api'
+                      }
+        uses: ./.github/workflows/run_test.yml
+        with:
+            directories: ${{ matrix.test_group.directories }}
+            exclude-dirs: >-
+                stable/test/end_to_end/candid_rpc/new
+                stable/test/end_to_end/candid_rpc/ethereum_json_rpc
+                stable/test/end_to_end/candid_rpc/motoko_examples/superheroes
+                stable/test/end_to_end/candid_rpc/outgoing_http_requests
+                stable/test/end_to_end/candid_rpc/recursion
+                stable/test/end_to_end/candid_rpc/tuple_types
+                ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
+            fuzz: true
+            fuzz-call-delay: '.1'
+            fuzz-time-limit: '300'
+            link-azle: true
