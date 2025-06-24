@@ -4,7 +4,9 @@
             "type": "azle",
             "main": "src/index.ts",
             "custom": {
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/canister",

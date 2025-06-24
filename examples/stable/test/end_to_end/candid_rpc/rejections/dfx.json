@@ -5,7 +5,9 @@
             "main": "src/rejections/index.ts",
             "custom": {
                 "env": ["SOME_CANISTER_PRINCIPAL"],
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/rejections",

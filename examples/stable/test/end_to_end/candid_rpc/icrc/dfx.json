@@ -5,7 +5,9 @@
             "main": "canisters/proxy/index.ts",
             "custom": {
                 "env": ["ICRC_PRINCIPAL"],
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/proxy",

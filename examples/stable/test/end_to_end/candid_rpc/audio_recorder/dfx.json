@@ -6,7 +6,9 @@
             "candid": "src/index.did",
             "custom": {
                 "candid_gen": "custom",
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/audio_recorder",

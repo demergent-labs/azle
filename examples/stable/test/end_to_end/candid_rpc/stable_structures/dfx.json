@@ -4,7 +4,9 @@
             "type": "azle",
             "main": "src/canister1/index.ts",
             "custom": {
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/canister1",
@@ -15,7 +17,9 @@
             "type": "azle",
             "main": "src/canister2/index.ts",
             "custom": {
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/canister2",
@@ -26,7 +30,9 @@
             "type": "azle",
             "main": "src/canister3/index.ts",
             "custom": {
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/canister3",

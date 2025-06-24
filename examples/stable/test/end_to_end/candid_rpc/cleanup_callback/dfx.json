@@ -4,7 +4,9 @@
             "type": "azle",
             "main": "src/index.ts",
             "custom": {
-                "clearHeapMethods": ["deleteAzleGlobalSettleCallbacks"]
+                "test": {
+                    "clearHeapMethods": ["deleteAzleGlobalSettleCallbacks"]
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/cleanup_callback",

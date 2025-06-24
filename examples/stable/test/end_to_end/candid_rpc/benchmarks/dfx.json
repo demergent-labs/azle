@@ -4,30 +4,32 @@
             "type": "azle",
             "main": "src/index.ts",
             "custom": {
-                "memorySizeIncreaseExpected": true,
-                "clearHeapMethods": [
-                    "blobClearHeapStorage",
-                    "boolClearHeapStorage",
-                    "float32ClearHeapStorage",
-                    "float64ClearHeapStorage",
-                    "int16ClearHeapStorage",
-                    "int32ClearHeapStorage",
-                    "int64ClearHeapStorage",
-                    "int8ClearHeapStorage",
-                    "intClearHeapStorage",
-                    "nat16ClearHeapStorage",
-                    "nat32ClearHeapStorage",
-                    "nat64ClearHeapStorage",
-                    "nat8ClearHeapStorage",
-                    "natClearHeapStorage",
-                    "nullClearHeapStorage",
-                    "optClearHeapStorage",
-                    "principalClearHeapStorage",
-                    "recordClearHeapStorage",
-                    "textClearHeapStorage",
-                    "variantClearHeapStorage",
-                    "vecClearHeapStorage"
-                ]
+                "test": {
+                    "clearHeapMethods": [
+                        "blobClearHeapStorage",
+                        "boolClearHeapStorage",
+                        "float32ClearHeapStorage",
+                        "float64ClearHeapStorage",
+                        "int16ClearHeapStorage",
+                        "int32ClearHeapStorage",
+                        "int64ClearHeapStorage",
+                        "int8ClearHeapStorage",
+                        "intClearHeapStorage",
+                        "nat16ClearHeapStorage",
+                        "nat32ClearHeapStorage",
+                        "nat64ClearHeapStorage",
+                        "nat8ClearHeapStorage",
+                        "natClearHeapStorage",
+                        "nullClearHeapStorage",
+                        "optClearHeapStorage",
+                        "principalClearHeapStorage",
+                        "recordClearHeapStorage",
+                        "textClearHeapStorage",
+                        "variantClearHeapStorage",
+                        "vecClearHeapStorage"
+                    ],
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/benchmarks",

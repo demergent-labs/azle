@@ -5,7 +5,9 @@
             "main": "src/caller/index.ts",
             "custom": {
                 "env": ["REJECTOR_PRINCIPAL"],
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             },
             "declarations": {
                 "output": "test/dfx_generated/caller",

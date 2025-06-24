@@ -105,7 +105,7 @@ export async function checkMemoryChanges(
     for (const canisterName of canisterNames) {
         const canisterConfig = await getCanisterConfig(canisterName);
 
-        const clearHeapMethods = canisterConfig.custom?.clearHeapMethods;
+        const clearHeapMethods = canisterConfig.custom?.test?.clearHeapMethods;
 
         for (const clearHeapMethod of clearHeapMethods ?? []) {
             execSync(
@@ -162,7 +162,7 @@ export async function checkMemoryChanges(
         expect(heapAllocationIncrease).toBeLessThanOrEqual(100_000);
 
         const memorySizeIncreaseExpected =
-            canisterConfig.custom?.memorySizeIncreaseExpected === true;
+            canisterConfig.custom?.test?.memorySizeIncreaseExpected === true;
 
         if (memorySizeIncreaseExpected === false) {
             expect(memorySizeIncrease).toBeLessThanOrEqual(100_000);

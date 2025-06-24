@@ -5,7 +5,9 @@
             "main": "src/index.ts",
             "gzip": true,
             "custom": {
-                "memorySizeIncreaseExpected": true
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
             }
         }
     }
