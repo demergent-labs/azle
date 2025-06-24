@@ -136,10 +136,12 @@ async function repeatCrossCanisterTimerCallback(
 ): Promise<void> {
     console.info('repeatCrossCanisterTimerCallback');
 
-    canister.statusReport.repeatCrossCanister = Uint8Array.from([
-        ...canister.statusReport.repeatCrossCanister,
-        ...(await getRandomness())
-    ]);
+    if (canister.statusReport.repeatCrossCanister.length < 64) {
+        canister.statusReport.repeatCrossCanister = Uint8Array.from([
+            ...canister.statusReport.repeatCrossCanister,
+            ...(await getRandomness())
+        ]);
+    }
 }
 
 async function getRandomness(): Promise<Uint8Array> {
