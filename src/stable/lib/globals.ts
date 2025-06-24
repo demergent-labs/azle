@@ -11,32 +11,33 @@ import { jsonReplacer } from './stable_structures/stable_json';
 import { Action } from './state';
 
 declare global {
+     
     var _azleActions: Action[] | undefined;
-
+     
     var _azleCanisterClassMeta: CanisterClassMeta | undefined;
-
+     
     var _azleCanisterMethodNames: { [key: string]: string } | undefined;
-
+     
     var _azleDispatch: ((action: Action) => void) | undefined;
-
+     
     var _azleExperimental: boolean | undefined;
-
+     
     var _azleIcExperimental: AzleIcExperimental | undefined;
-
+     
     var _azleIcpReplicaWasmEnvironment: boolean | undefined;
-
+     
     var _azleIc: AzleIc | undefined;
-
+     
     var _azleInitCalled: boolean | undefined;
-
+     
     var _azleNodejsWasmEnvironment: boolean | undefined;
-
+     
     var _azlePostUpgradeCalled: boolean | undefined;
-
+     
     var _azleRejectCallbacks:
         | { [globalRejectId: string]: (err: any) => void }
         | undefined;
-
+     
     var _azleResolveCallbacks:
         | {
               [globalResolveId: string]: (
@@ -44,7 +45,7 @@ declare global {
               ) => void;
           }
         | undefined;
-
+     
     var _azleTimerCallbacks:
         | { [timerId: string]: () => Promise<void> }
         | undefined;
