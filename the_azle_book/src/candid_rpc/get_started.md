@@ -1,8 +1,8 @@
 # Get Started
 
-Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
+Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on <a href="https://internetcomputer.org/" target="_blank">ICP</a>. The current replication factor is <a href="https://dashboard.internetcomputer.org/subnets" target="_blank">13-40</a>.
 
-Please remember that Azle stable mode is continuously subjected to [intense scrutiny and testing](https://github.com/demergent-labs/azle/actions), however it does not yet have multiple independent security reviews/audits.
+Please remember that Azle stable mode is continuously subjected to <a href="https://github.com/demergent-labs/azle/actions" target="_blank">intense scrutiny and testing</a>, however it has not yet undergone intense security review.
 
 Azle runs in stable mode by default.
 
@@ -10,22 +10,22 @@ This mode is intended for production use after Azle's 1.0 release. Its focus is 
 
 ## Installation
 
-> Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+> Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install" target="_blank">WSL</a>
 
-You will need [Node.js 22](#nodejs-22) and [dfx](#dfx) to develop ICP applications with Azle:
+You will need [Node.js](#nodejs) and [dfx](#dfx) to develop ICP applications with Azle:
 
-### Node.js 22
+### Node.js
 
-It's recommended to use nvm to install Node.js 22:
+It's recommended to use nvm to install the latest LTS version of Node.js:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 ```
 
 Restart your terminal and then run:
 
 ```bash
-nvm install 22
+nvm install --lts
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -39,7 +39,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.24.3 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+DFX_VERSION=0.27.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:

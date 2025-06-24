@@ -361,10 +361,502 @@
                                 access to Internet Computer platform
                                 capabilities.
                             </p>
-                            <h2 id="message-information">
+                            <h2 id="quick-example">
+                                <a
+                                    class="header"
+                                    href="#quick-example"
+                                    >Quick Example</a
+                                >
+                            </h2>
+                            <pre><code class="language-typescript">import {
+    msgCaller,
+    time,
+    canisterCycleBalance,
+    call,
+    IDL,
+    query,
+    update
+} from 'azle';
+
+export default class {
+    @query([], IDL.Text)
+    whoCalledWhen(): string {
+        const caller = msgCaller().toText();
+        const now = time();
+        return `Called by ${caller} at ${now}`;
+    }
+
+    @query([], IDL.Nat)
+    getBalance(): bigint {
+        return canisterCycleBalance();
+    }
+
+    @update([IDL.Principal, IDL.Text], IDL.Text)
+    async callOther(canisterId: Principal, message: string): Promise&lt;string&gt; {
+        const result = await call(canisterId, 'echo', {
+            args: [message],
+            paramIdlTypes: [IDL.Text],
+            returnIdlType: IDL.Text
+        });
+        return result;
+    }
+}
+</code></pre>
+                            <h2 id="ic-api-functions">
+                                <a
+                                    class="header"
+                                    href="#ic-api-functions"
+                                    >IC API Functions</a
+                                >
+                            </h2>
+                            <h3 id="message-information">
                                 <a
                                     class="header"
                                     href="#message-information"
+                                    >Message Information</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/msg_caller.html"
+                                        >msgCaller</a
+                                    >
+                                    - Get the caller's principal identity
+                                </li>
+                                <li>
+                                    <a href="./ic_api/msg_method_name.html"
+                                        >msgMethodName</a
+                                    >
+                                    - Get the name of the currently executing
+                                    method
+                                </li>
+                                <li>
+                                    <a href="./ic_api/msg_arg_data.html"
+                                        >msgArgData</a
+                                    >
+                                    - Get raw Candid-encoded arguments
+                                </li>
+                            </ul>
+                            <h3 id="time">
+                                <a
+                                    class="header"
+                                    href="#time"
+                                    >Time</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/time.html">time</a> - Get
+                                    the current Internet Computer time
+                                </li>
+                            </ul>
+                            <h3 id="timers">
+                                <a
+                                    class="header"
+                                    href="#timers"
+                                    >Timers</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/set_timer.html"
+                                        >setTimer</a
+                                    >
+                                    - Execute a callback after a delay
+                                </li>
+                                <li>
+                                    <a href="./ic_api/set_timer_interval.html"
+                                        >setTimerInterval</a
+                                    >
+                                    - Execute a callback repeatedly
+                                </li>
+                                <li>
+                                    <a href="./ic_api/clear_timer.html"
+                                        >clearTimer</a
+                                    >
+                                    - Cancel a scheduled timer
+                                </li>
+                            </ul>
+                            <h3 id="cycles">
+                                <a
+                                    class="header"
+                                    href="#cycles"
+                                    >Cycles</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a
+                                        href="./ic_api/canister_cycle_balance.html"
+                                        >canisterCycleBalance</a
+                                    >
+                                    - Get the canister's cycle balance
+                                </li>
+                                <li>
+                                    <a href="./ic_api/msg_cycles_accept.html"
+                                        >msgCyclesAccept</a
+                                    >
+                                    - Accept cycles sent with a call
+                                </li>
+                                <li>
+                                    <a href="./ic_api/msg_cycles_available.html"
+                                        >msgCyclesAvailable</a
+                                    >
+                                    - Get cycles available in current call
+                                </li>
+                                <li>
+                                    <a href="./ic_api/msg_cycles_refunded.html"
+                                        >msgCyclesRefunded</a
+                                    >
+                                    - Get cycles refunded from last call
+                                </li>
+                                <li>
+                                    <a href="./ic_api/cycles_burn.html"
+                                        >cyclesBurn</a
+                                    >
+                                    - Permanently destroy cycles
+                                </li>
+                            </ul>
+                            <h3 id="inter-canister-calls">
+                                <a
+                                    class="header"
+                                    href="#inter-canister-calls"
+                                    >Inter-Canister Calls</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/call.html">call</a> - Make
+                                    calls to other canisters
+                                </li>
+                            </ul>
+                            <h3 id="canister-information">
+                                <a
+                                    class="header"
+                                    href="#canister-information"
+                                    >Canister Information</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/canister_self.html"
+                                        >canisterSelf</a
+                                    >
+                                    - Get the current canister's principal
+                                </li>
+                                <li>
+                                    <a href="./ic_api/canister_version.html"
+                                        >canisterVersion</a
+                                    >
+                                    - Get the canister version number
+                                </li>
+                                <li>
+                                    <a href="./ic_api/is_controller.html"
+                                        >isController</a
+                                    >
+                                    - Check if a principal is a controller
+                                </li>
+                            </ul>
+                            <h3 id="error-handling">
+                                <a
+                                    class="header"
+                                    href="#error-handling"
+                                    >Error Handling</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/trap.html">trap</a> -
+                                    Terminate execution with an error
+                                </li>
+                                <li>
+                                    <a href="./ic_api/msg_reject_code.html"
+                                        >msgRejectCode</a
+                                    >
+                                    - Get rejection code from failed calls
+                                </li>
+                                <li>
+                                    <a href="./ic_api/msg_reject_msg.html"
+                                        >msgRejectMsg</a
+                                    >
+                                    - Get rejection message from failed calls
+                                </li>
+                            </ul>
+                            <h3 id="manual-response">
+                                <a
+                                    class="header"
+                                    href="#manual-response"
+                                    >Manual Response</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/msg_reply.html"
+                                        >msgReply</a
+                                    >
+                                    - Reply with raw Candid-encoded data
+                                </li>
+                                <li>
+                                    <a href="./ic_api/msg_reject.html"
+                                        >msgReject</a
+                                    >
+                                    - Reject with an error message
+                                </li>
+                            </ul>
+                            <h3 id="random">
+                                <a
+                                    class="header"
+                                    href="#random"
+                                    >Random</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/rand_seed.html"
+                                        >randSeed</a
+                                    >
+                                    - Seed the random number generator
+                                </li>
+                            </ul>
+                            <h3 id="advanced">
+                                <a
+                                    class="header"
+                                    href="#advanced"
+                                    >Advanced</a
+                                >
+                            </h3>
+                            <ul>
+                                <li>
+                                    <a href="./ic_api/performance_counter.html"
+                                        >performanceCounter</a
+                                    >
+                                    - Get performance metrics
+                                </li>
+                                <li>
+                                    <a href="./ic_api/data_certificate.html"
+                                        >dataCertificate</a
+                                    >
+                                    - Get data certificate for queries
+                                </li>
+                                <li>
+                                    <a href="./ic_api/candid_encode.html"
+                                        >candidEncode</a
+                                    >
+                                    - Encode values to Candid format
+                                </li>
+                                <li>
+                                    <a href="./ic_api/candid_decode.html"
+                                        >candidDecode</a
+                                    >
+                                    - Decode Candid format to values
+                                </li>
+                                <li>
+                                    <a
+                                        href="./ic_api/in_replicated_execution.html"
+                                        >inReplicatedExecution</a
+                                    >
+                                    - Check execution context
+                                </li>
+                                <li>
+                                    <a href="./ic_api/chunk.html">chunk</a> -
+                                    Process data in chunks
+                                </li>
+                            </ul>
+                            <h2 id="api-reference-table">
+                                <a
+                                    class="header"
+                                    href="#api-reference-table"
+                                    >API Reference Table</a
+                                >
+                            </h2>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Function</th>
+                                            <th>Category</th>
+                                            <th>Use Case</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>call</code></td>
+                                            <td>Calls</td>
+                                            <td>
+                                                Inter-canister communication
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>candidDecode</code></td>
+                                            <td>Advanced</td>
+                                            <td>Manual deserialization</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>candidEncode</code></td>
+                                            <td>Advanced</td>
+                                            <td>Manual serialization</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code
+                                                    >canisterCycleBalance</code
+                                                >
+                                            </td>
+                                            <td>Cycles</td>
+                                            <td>Resource monitoring</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>canisterSelf</code></td>
+                                            <td>Info</td>
+                                            <td>Self-reference</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code>canisterVersion</code>
+                                            </td>
+                                            <td>Info</td>
+                                            <td>Version tracking</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>chunk</code></td>
+                                            <td>Advanced</td>
+                                            <td>Memory management</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>clearTimer</code></td>
+                                            <td>Timers</td>
+                                            <td>Cancel scheduled operations</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>cyclesBurn</code></td>
+                                            <td>Cycles</td>
+                                            <td>Deflationary mechanics</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code>dataCertificate</code>
+                                            </td>
+                                            <td>Advanced</td>
+                                            <td>Query verification</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code
+                                                    >inReplicatedExecution</code
+                                                >
+                                            </td>
+                                            <td>Advanced</td>
+                                            <td>Environment detection</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>isController</code></td>
+                                            <td>Info</td>
+                                            <td>Admin access control</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>msgArgData</code></td>
+                                            <td>Message</td>
+                                            <td>Manual argument processing</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>msgCaller</code></td>
+                                            <td>Message</td>
+                                            <td>
+                                                Authentication, access control
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code>msgCyclesAccept</code>
+                                            </td>
+                                            <td>Cycles</td>
+                                            <td>Payment processing</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code>msgCyclesAvailable</code>
+                                            </td>
+                                            <td>Cycles</td>
+                                            <td>Payment validation</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code>msgCyclesRefunded</code>
+                                            </td>
+                                            <td>Cycles</td>
+                                            <td>Cost tracking</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>msgMethodName</code></td>
+                                            <td>Message</td>
+                                            <td>Logging, analytics</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>msgReject</code></td>
+                                            <td>Manual</td>
+                                            <td>Custom error responses</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>msgRejectCode</code></td>
+                                            <td>Errors</td>
+                                            <td>Error classification</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>msgRejectMsg</code></td>
+                                            <td>Errors</td>
+                                            <td>Detailed error info</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>msgReply</code></td>
+                                            <td>Manual</td>
+                                            <td>Custom response handling</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code>performanceCounter</code>
+                                            </td>
+                                            <td>Advanced</td>
+                                            <td>Performance monitoring</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>randSeed</code></td>
+                                            <td>Random</td>
+                                            <td>Secure randomness</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>setTimer</code></td>
+                                            <td>Timers</td>
+                                            <td>Delayed operations</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <code>setTimerInterval</code>
+                                            </td>
+                                            <td>Timers</td>
+                                            <td>Recurring tasks</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>time</code></td>
+                                            <td>Time</td>
+                                            <td>Timestamps, expiration</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>trap</code></td>
+                                            <td>Errors</td>
+                                            <td>Input validation</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p>
+                                For detailed examples and usage patterns, click
+                                on any function name above to view its dedicated
+                                documentation page.
+                            </p>
+                            <h2 id="message-information-1">
+                                <a
+                                    class="header"
+                                    href="#message-information-1"
                                     >Message Information</a
                                 >
                             </h2>
@@ -412,17 +904,17 @@ export default class {
     }
 }
 </code></pre>
-                            <h2 id="time">
-                                <a
-                                    class="header"
-                                    href="#time"
-                                    >Time</a
-                                >
-                            </h2>
-                            <h3 id="time-1">
+                            <h2 id="time-1">
                                 <a
                                     class="header"
                                     href="#time-1"
+                                    >Time</a
+                                >
+                            </h2>
+                            <h3 id="time-2">
+                                <a
+                                    class="header"
+                                    href="#time-2"
                                     >time</a
                                 >
                             </h3>
@@ -445,10 +937,10 @@ export default class {
     }
 }
 </code></pre>
-                            <h2 id="timers">
+                            <h2 id="timers-1">
                                 <a
                                     class="header"
-                                    href="#timers"
+                                    href="#timers-1"
                                     >Timers</a
                                 >
                             </h2>
@@ -532,10 +1024,10 @@ export default class {
     }
 }
 </code></pre>
-                            <h2 id="cycles">
+                            <h2 id="cycles-1">
                                 <a
                                     class="header"
-                                    href="#cycles"
+                                    href="#cycles-1"
                                     >Cycles</a
                                 >
                             </h2>
@@ -582,10 +1074,10 @@ export default class {
     }
 }
 </code></pre>
-                            <h2 id="inter-canister-calls">
+                            <h2 id="inter-canister-calls-1">
                                 <a
                                     class="header"
-                                    href="#inter-canister-calls"
+                                    href="#inter-canister-calls-1"
                                     >Inter-Canister Calls</a
                                 >
                             </h2>
@@ -626,10 +1118,10 @@ export default class {
     }
 }
 </code></pre>
-                            <h2 id="canister-information">
+                            <h2 id="canister-information-1">
                                 <a
                                     class="header"
-                                    href="#canister-information"
+                                    href="#canister-information-1"
                                     >Canister Information</a
                                 >
                             </h2>
@@ -667,10 +1159,10 @@ export default class {
     }
 }
 </code></pre>
-                            <h2 id="error-handling">
+                            <h2 id="error-handling-1">
                                 <a
                                     class="header"
-                                    href="#error-handling"
+                                    href="#error-handling-1"
                                     >Error Handling</a
                                 >
                             </h2>
@@ -765,6 +1257,326 @@ export default class {
     }
 }
 </code></pre>
+                            <h2 id="data-structures">
+                                <a
+                                    class="header"
+                                    href="#data-structures"
+                                    >Data Structures</a
+                                >
+                            </h2>
+                            <h3 id="stablebtreemap">
+                                <a
+                                    class="header"
+                                    href="#stablebtreemap"
+                                    >StableBTreeMap</a
+                                >
+                            </h3>
+                            <p>
+                                A persistent B-tree map backed by stable memory
+                                that automatically persists across canister
+                                upgrades:
+                            </p>
+                            <pre><code class="language-typescript">import { StableBTreeMap, IDL, query, update } from 'azle';
+
+export default class {
+    // Create a stable map with memory ID 0
+    userProfiles = new StableBTreeMap&lt;string, { name: string; age: number }&gt;(0);
+
+    // Create multiple maps with different memory IDs
+    counters = new StableBTreeMap&lt;string, bigint&gt;(1);
+    settings = new StableBTreeMap&lt;string, boolean&gt;(2);
+
+    @update(
+        [IDL.Text, IDL.Record({ name: IDL.Text, age: IDL.Nat })],
+        IDL.Opt(IDL.Record({ name: IDL.Text, age: IDL.Nat }))
+    )
+    setUserProfile(
+        userId: string,
+        profile: { name: string; age: number }
+    ): { name: string; age: number } | undefined {
+        return this.userProfiles.insert(userId, profile);
+    }
+
+    @query([IDL.Text], IDL.Opt(IDL.Record({ name: IDL.Text, age: IDL.Nat })))
+    getUserProfile(userId: string): { name: string; age: number } | undefined {
+        return this.userProfiles.get(userId);
+    }
+
+    @query(
+        [],
+        IDL.Vec(
+            IDL.Tuple(IDL.Text, IDL.Record({ name: IDL.Text, age: IDL.Nat }))
+        )
+    )
+    getAllProfiles(): [string, { name: string; age: number }][] {
+        return this.userProfiles.items();
+    }
+
+    @update([IDL.Text], IDL.Opt(IDL.Record({ name: IDL.Text, age: IDL.Nat })))
+    removeUser(userId: string): { name: string; age: number } | undefined {
+        return this.userProfiles.remove(userId);
+    }
+
+    @query([], IDL.Nat32)
+    getUserCount(): number {
+        return this.userProfiles.len();
+    }
+
+    @query([IDL.Text], IDL.Bool)
+    userExists(userId: string): boolean {
+        return this.userProfiles.containsKey(userId);
+    }
+}
+</code></pre>
+                            <h4 id="stablebtreemap-constructor">
+                                <a
+                                    class="header"
+                                    href="#stablebtreemap-constructor"
+                                    >StableBTreeMap Constructor</a
+                                >
+                            </h4>
+                            <pre><code class="language-typescript">new StableBTreeMap&lt;Key, Value&gt;(
+    memoryId: number,
+    keySerializable?: Serializable,
+    valueSerializable?: Serializable
+)
+</code></pre>
+                            <ul>
+                                <li>
+                                    <strong><code>memoryId</code></strong> -
+                                    Unique identifier (0-253) for this map's
+                                    stable memory
+                                </li>
+                                <li>
+                                    <strong
+                                        ><code>keySerializable</code></strong
+                                    >
+                                    - Optional custom serialization for keys
+                                    (defaults to ICP-enabled JSON)
+                                </li>
+                                <li>
+                                    <strong
+                                        ><code>valueSerializable</code></strong
+                                    >
+                                    - Optional custom serialization for values
+                                    (defaults to ICP-enabled JSON)
+                                </li>
+                            </ul>
+                            <h4 id="stablebtreemap-methods">
+                                <a
+                                    class="header"
+                                    href="#stablebtreemap-methods"
+                                    >StableBTreeMap Methods</a
+                                >
+                            </h4>
+                            <ul>
+                                <li>
+                                    <strong
+                                        ><code>containsKey(key)</code></strong
+                                    >
+                                    - Check if a key exists
+                                </li>
+                                <li>
+                                    <strong><code>get(key)</code></strong> -
+                                    Retrieve value by key
+                                </li>
+                                <li>
+                                    <strong
+                                        ><code>insert(key, value)</code></strong
+                                    >
+                                    - Insert/update key-value pair
+                                </li>
+                                <li>
+                                    <strong><code>remove(key)</code></strong> -
+                                    Remove key and return its value
+                                </li>
+                                <li>
+                                    <strong><code>isEmpty()</code></strong> -
+                                    Check if map is empty
+                                </li>
+                                <li>
+                                    <strong><code>len()</code></strong> - Get
+                                    number of key-value pairs
+                                </li>
+                                <li>
+                                    <strong
+                                        ><code
+                                            >keys(startIndex?, length?)</code
+                                        ></strong
+                                    >
+                                    - Get keys in sorted order
+                                </li>
+                                <li>
+                                    <strong
+                                        ><code
+                                            >values(startIndex?, length?)</code
+                                        ></strong
+                                    >
+                                    - Get values in sorted order
+                                </li>
+                                <li>
+                                    <strong
+                                        ><code
+                                            >items(startIndex?, length?)</code
+                                        ></strong
+                                    >
+                                    - Get key-value pairs in sorted order
+                                </li>
+                            </ul>
+                            <h4 id="custom-serialization">
+                                <a
+                                    class="header"
+                                    href="#custom-serialization"
+                                    >Custom Serialization</a
+                                >
+                            </h4>
+                            <pre><code class="language-typescript">import { StableBTreeMap, Serializable } from 'azle';
+
+// Custom serializer for numbers as little-endian bytes
+const numberSerializer: Serializable = {
+    toBytes: (num: number) =&gt; {
+        const buffer = new ArrayBuffer(8);
+        const view = new DataView(buffer);
+        view.setFloat64(0, num, true); // little-endian
+        return new Uint8Array(buffer);
+    },
+    fromBytes: (bytes: Uint8Array) =&gt; {
+        const view = new DataView(bytes.buffer);
+        return view.getFloat64(0, true); // little-endian
+    }
+};
+
+export default class {
+    // Map with custom number serialization for keys
+    numericMap = new StableBTreeMap&lt;number, string&gt;(0, numberSerializer);
+}
+</code></pre>
+                            <h2 id="json-utilities">
+                                <a
+                                    class="header"
+                                    href="#json-utilities"
+                                    >JSON Utilities</a
+                                >
+                            </h2>
+                            <h3 id="jsonstringify--jsonparse">
+                                <a
+                                    class="header"
+                                    href="#jsonstringify--jsonparse"
+                                    >jsonStringify / jsonParse</a
+                                >
+                            </h3>
+                            <p>
+                                ICP-enabled JSON utilities that handle special
+                                types like <code>Principal</code>,
+                                <code>BigInt</code>, and
+                                <code>Uint8Array</code>:
+                            </p>
+                            <pre><code class="language-typescript">import { jsonStringify, jsonParse, Principal, IDL, query, update } from 'azle';
+
+export default class {
+    @update([IDL.Text], IDL.Text)
+    processComplexData(input: string): string {
+        // Parse ICP-enabled JSON
+        const data = jsonParse(input);
+
+        // Work with the data
+        if (data.principal) {
+            data.lastAccessed = time();
+            data.accessCount = (data.accessCount || 0n) + 1n;
+        }
+
+        // Convert back to ICP-enabled JSON
+        return jsonStringify(data);
+    }
+
+    @query([], IDL.Text)
+    getExampleData(): string {
+        const complexData = {
+            principal: Principal.fromText('rdmx6-jaaaa-aaaah-qcaiq-cai'),
+            balance: 123_456_789n, // BigInt
+            buffer: new Uint8Array([1, 2, 3, 4]),
+            metadata: {
+                created: time(),
+                isActive: true,
+                tags: ['user', 'verified']
+            }
+        };
+
+        return jsonStringify(complexData);
+    }
+
+    @update([IDL.Text], IDL.Principal)
+    extractPrincipal(jsonData: string): Principal {
+        const parsed = jsonParse(jsonData);
+        return parsed.principal; // Automatically converted back to Principal
+    }
+}
+</code></pre>
+                            <h4 id="supported-special-types">
+                                <a
+                                    class="header"
+                                    href="#supported-special-types"
+                                    >Supported Special Types</a
+                                >
+                            </h4>
+                            <p>
+                                The ICP-enabled JSON utilities automatically
+                                handle:
+                            </p>
+                            <ul>
+                                <li>
+                                    <strong><code>Principal</code></strong> -
+                                    Converted to/from text representation
+                                </li>
+                                <li>
+                                    <strong><code>BigInt</code></strong> -
+                                    Converted to/from string with special
+                                    markers
+                                </li>
+                                <li>
+                                    <strong><code>Uint8Array</code></strong> -
+                                    Converted to/from array representation
+                                </li>
+                                <li>
+                                    <strong><code>undefined</code></strong> -
+                                    Properly preserved (standard JSON loses
+                                    undefined values)
+                                </li>
+                            </ul>
+                            <h4 id="custom-json-processing">
+                                <a
+                                    class="header"
+                                    href="#custom-json-processing"
+                                    >Custom JSON Processing</a
+                                >
+                            </h4>
+                            <pre><code class="language-typescript">import { jsonStringify, jsonParse } from 'azle';
+
+// Custom replacer function
+function customReplacer(key: string, value: any): any {
+    if (value instanceof Date) {
+        return { __date__: value.toISOString() };
+    }
+    return value;
+}
+
+// Custom reviver function
+function customReviver(key: string, value: any): any {
+    if (value?.__date__) {
+        return new Date(value.__date__);
+    }
+    return value;
+}
+
+export default class {
+    @update([IDL.Text], IDL.Text)
+    processWithCustomJSON(input: string): string {
+        const data = jsonParse(input, customReviver);
+        data.processedAt = new Date();
+        return jsonStringify(data, customReplacer);
+    }
+}
+</code></pre>
                         </main>
 
                         <nav
@@ -774,7 +1586,7 @@ export default class {
                             <!-- Mobile navigation buttons -->
                             <a
                                 rel="prev"
-                                href="../candid_rpc/decorators/heartbeat.html"
+                                href="../candid_rpc/decorators/on_low_wasm_memory.html"
                                 class="mobile-nav-chapters previous"
                                 title="Previous chapter"
                                 aria-label="Previous chapter"
@@ -785,7 +1597,7 @@ export default class {
 
                             <a
                                 rel="next prefetch"
-                                href="../http_server.html"
+                                href="../candid_rpc/ic_api/call.html"
                                 class="mobile-nav-chapters next"
                                 title="Next chapter"
                                 aria-label="Next chapter"
@@ -805,7 +1617,7 @@ export default class {
                 >
                     <a
                         rel="prev"
-                        href="../candid_rpc/decorators/heartbeat.html"
+                        href="../candid_rpc/decorators/on_low_wasm_memory.html"
                         class="nav-chapters previous"
                         title="Previous chapter"
                         aria-label="Previous chapter"
@@ -816,7 +1628,7 @@ export default class {
 
                     <a
                         rel="next prefetch"
-                        href="../http_server.html"
+                        href="../candid_rpc/ic_api/call.html"
                         class="nav-chapters next"
                         title="Next chapter"
                         aria-label="Next chapter"

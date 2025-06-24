@@ -388,6 +388,124 @@ export default class {
                                     recommended
                                 </li>
                             </ul>
+                            <h2 id="multiple-canister-classes">
+                                <a
+                                    class="header"
+                                    href="#multiple-canister-classes"
+                                    >Multiple Canister Classes</a
+                                >
+                            </h2>
+                            <p>
+                                For complex canisters, you can organize your
+                                functionality across multiple classes and export
+                                them as an array. This pattern is useful for:
+                            </p>
+                            <ul>
+                                <li>
+                                    Organizing related methods into logical
+                                    groups
+                                </li>
+                                <li>
+                                    Better code separation and maintainability
+                                </li>
+                                <li>Modular canister design</li>
+                            </ul>
+                            <h3 id="example-implementation">
+                                <a
+                                    class="header"
+                                    href="#example-implementation"
+                                    >Example Implementation</a
+                                >
+                            </h3>
+                            <p>Create separate files for each class:</p>
+                            <pre><code class="language-typescript">// user_service.ts
+import { IDL, query, update } from 'azle';
+
+export class UserService {
+    users: Map&lt;string, string&gt; = new Map();
+
+    @update([IDL.Text, IDL.Text], IDL.Bool)
+    createUser(id: string, name: string): boolean {
+        if (this.users.has(id)) {
+            return false;
+        }
+        this.users.set(id, name);
+        return true;
+    }
+
+    @query([IDL.Text], IDL.Opt(IDL.Text))
+    getUser(id: string): string | undefined {
+        return this.users.get(id);
+    }
+}
+</code></pre>
+                            <pre><code class="language-typescript">// notification_service.ts
+import { IDL, query, update } from 'azle';
+
+export class NotificationService {
+    notifications: string[] = [];
+
+    @update([IDL.Text], IDL.Nat)
+    addNotification(message: string): number {
+        this.notifications.push(message);
+        return this.notifications.length;
+    }
+
+    @query([], IDL.Vec(IDL.Text))
+    getNotifications(): string[] {
+        return this.notifications;
+    }
+}
+</code></pre>
+                            <p>Then combine them in your main index file:</p>
+                            <pre><code class="language-typescript">// index.ts
+import { UserService } from './user_service';
+import { NotificationService } from './notification_service';
+
+export default [UserService, NotificationService];
+</code></pre>
+                            <h3 id="key-points-for-multiple-classes">
+                                <a
+                                    class="header"
+                                    href="#key-points-for-multiple-classes"
+                                    >Key Points for Multiple Classes:</a
+                                >
+                            </h3>
+                            <ol>
+                                <li>
+                                    <strong>Array Export</strong>: Use
+                                    <code
+                                        >export default [Class1, Class2,
+                                        ...]</code
+                                    >
+                                    instead of a single class
+                                </li>
+                                <li>
+                                    <strong>Separate Files</strong>: Each class
+                                    can be defined in its own file for better
+                                    organization
+                                </li>
+                                <li>
+                                    <strong>Method Merging</strong>: All
+                                    decorated methods from all classes become
+                                    part of the canister's interface
+                                </li>
+                                <li>
+                                    <strong>Independent State</strong>: Each
+                                    class maintains its own state within the
+                                    same canister
+                                </li>
+                                <li>
+                                    <strong>No Instantiation Needed</strong>:
+                                    Classes are automatically instantiated by
+                                    Azle
+                                </li>
+                            </ol>
+                            <p>
+                                All methods from all exported classes will be
+                                available in the final canister's Candid
+                                interface.
+                            </p>
                             <h2 id="state-management">
                                 <a
                                     class="header"
@@ -449,6 +567,72 @@ export default class {
                                 <li>
                                     <code>@heartbeat</code> - Periodic execution
                                     method
+                                </li>
+                                <li>
+                                    <code>@onLowWasmMemory</code> - Low memory
+                                    handler method
+                                </li>
+                            </ul>
+                            <h3 id="system-method-decorators">
+                                <a
+                                    class="header"
+                                    href="#system-method-decorators"
+                                    >System Method Decorators</a
+                                >
+                            </h3>
+                            <h4 id="onlowwasmmemory">
+                                <a
+                                    class="header"
+                                    href="#onlowwasmmemory"
+                                    >@onLowWasmMemory</a
+                                >
+                            </h4>
+                            <p>
+                                Marks a method to handle low Wasm memory
+                                conditions. This system method allows canisters
+                                to respond gracefully when running low on
+                                memory:
+                            </p>
+                            <pre><code class="language-typescript">import { onLowWasmMemory, IDL } from 'azle';
+
+export default class {
+    @onLowWasmMemory
+    handleLowMemory(): void {
+        // Clean up unnecessary data
+        this.cache.clear();
+
+        // Log the event
+        console.info('Low memory condition detected, cleaned up cache');
+
+        // Perform garbage collection or other memory management
+        this.performMemoryCleanup();
+    }
+
+    private performMemoryCleanup(): void {
+        // Custom cleanup logic
+    }
+}
+</code></pre>
+                            <p><strong>Key characteristics:</strong></p>
+                            <ul>
+                                <li>
+                                    Only one
+                                    <code>@onLowWasmMemory</code> method allowed
+                                    per canister
+                                </li>
+                                <li>
+                                    Called automatically when the canister is
+                                    running low on Wasm memory
+                                </li>
+                                <li>State: read-write access</li>
+                                <li>
+                                    Replication: yes (replicated across all
+                                    nodes)
+                                </li>
+                                <li>Async: supports async operations</li>
+                                <li>
+                                    Instruction limit: 40,000,000,000
+                                    instructions
                                 </li>
                             </ul>
                             <h2 id="method-visibility">

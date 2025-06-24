@@ -159,8 +159,8 @@
 <li><a href="#interacting-with-your-canister">Interacting with your canister</a></li>
 <li><a href="#deploying-to-mainnet">Deploying to mainnet</a></li>
 </ul>
-<p>There are two main <a href="https://internetcomputer.org/">ICP</a> environments that you will generally interact with: <a href="#deploying-to-the-local-replica">the local replica</a> and <a href="#deploying-to-mainnet">mainnet</a>.</p>
-<p>We recommend using the <code>dfx</code> command line tools to deploy to these environments. Please note that not all <code>dfx</code> commands are shown here. See <a href="https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent">the dfx CLI reference</a> for more information.</p>
+<p>There are two main <a href="https://internetcomputer.org/" target="_blank">ICP</a> environments that you will generally interact with: <a href="#deploying-to-the-local-replica">the local replica</a> and <a href="#deploying-to-mainnet">mainnet</a>.</p>
+<p>We recommend using the <code>dfx</code> command line tools to deploy to these environments. Please note that not all <code>dfx</code> commands are shown here. See <a href="https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent" target="_blank">the dfx CLI reference</a> for more information.</p>
 <h2 id="starting-the-local-replica"><a class="header" href="#starting-the-local-replica">Starting the local replica</a></h2>
 <p>We recommend running your local replica in its own terminal and on a port of your choosing:</p>
 <pre><code class="language-bash">dfx start --host 127.0.0.1:8000
@@ -205,7 +205,7 @@ curl http://a3shf-5eaaa-aaaaa-qaafa-cai.raw.localhost:8000
 curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://a3shf-5eaaa-aaaaa-qaafa-cai.raw.localhost:8000
 </code></pre>
 <h2 id="deploying-to-mainnet"><a class="header" href="#deploying-to-mainnet">Deploying to mainnet</a></h2>
-<p>Assuming you are <a href="https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet">setup with a cycles wallet</a>, then you are ready to deploy to mainnet.</p>
+<p>Assuming you are <a href="https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet" target="_blank">setup with a cycles wallet</a>, then you are ready to deploy to mainnet.</p>
 <p>To deploy all canisters defined in your dfx.json:</p>
 <pre><code class="language-bash">dfx deploy --network ic
 </code></pre>

@@ -1,8 +1,8 @@
 # @dfinity/candid IDL
 
-For each of your canister's methods, deserialization of incoming arguments and serialization of return values is handled with a combination of decorators and the [IDL](https://agent-js.icp.xyz/candid/modules/IDL.html) object from the [@dfinity/candid](https://agent-js.icp.xyz/candid/index.html) library.
+For each of your canister's methods, deserialization of incoming arguments and serialization of return values is handled with a combination of decorators and the <a href="https://agent-js.icp.xyz/candid/modules/IDL.html" target="_blank">IDL</a> object from the <a href="https://agent-js.icp.xyz/candid/index.html" target="_blank">@dfinity/candid</a> library.
 
-`IDL` is re-exported by Azle, and has properties that correspond to [Candid's supported types](https://internetcomputer.org/docs/current/references/candid-ref).
+`IDL` is re-exported by Azle, and has properties that correspond to <a href="https://internetcomputer.org/docs/references/candid-ref" target="_blank">Candid's supported types</a>.
 
 ## Basic Types
 
@@ -88,26 +88,25 @@ IDL.Empty;
 ```typescript
 import { IDL, query, update } from 'azle';
 
+const User = IDL.Record({
+    name: IDL.Text,
+    email: IDL.Text,
+    age: IDL.Nat8
+});
 type User = {
     name: string;
     email: string;
     age: number;
 };
 
-const UserRecord = IDL.Record({
-    name: IDL.Text,
-    email: IDL.Text,
-    age: IDL.Nat8
-});
-
 export default class {
-    @query([IDL.Text], IDL.Opt(UserRecord))
+    @query([IDL.Text], IDL.Opt(User))
     getUser(id: string): [User] | [] {
         // Implementation here
         return [];
     }
 
-    @update([UserRecord], IDL.Bool)
+    @update([User], IDL.Bool)
     createUser(user: User): boolean {
         // Implementation here
         return true;

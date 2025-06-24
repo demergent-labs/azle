@@ -19,7 +19,7 @@ TypeScript and JavaScript CDK for the [Internet Computer](https://internetcomput
 
 ## Disclaimer
 
-Azle stable mode is continuously subjected to [intense scrutiny and testing](https://github.com/demergent-labs/azle/actions), however it does not yet have multiple independent security reviews/audits.
+Azle stable mode is continuously subjected to [intense scrutiny and testing](https://github.com/demergent-labs/azle/actions), however it has not yet undergone intense security review.
 
 ## Stable Mode
 

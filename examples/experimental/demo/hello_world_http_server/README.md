@@ -27,7 +27,7 @@ You will need [Node.js](#nodejs) and [dfx](#dfx) to develop ICP applications wit
 It's recommended to use nvm to install the latest LTS version of Node.js:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 ```
 
 Restart your terminal and then run:
@@ -47,7 +47,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.25.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+DFX_VERSION=0.27.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:

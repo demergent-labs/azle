@@ -64,9 +64,9 @@ bootstrap();
 - [Server](#server)
 - [Limitations](#limitations)
 
-Azle supports building HTTP servers on ICP using the [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver) class as the foundation. These servers can serve static files or act as API backends, or both.
+Azle supports building HTTP servers on ICP using the <a href="https://nodejs.org/api/http.html#class-httpserver" target="_blank">Node.js http.Server</a> class as the foundation. These servers can serve static files or act as API backends, or both.
 
-Azle currently has good but not comprehensive support for [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver) and [Express](https://expressjs.com/). Support for other libraries like [Nest](https://nestjs.com/) are works-in-progress.
+Azle currently has good but not comprehensive support for <a href="https://nodejs.org/api/http.html#class-httpserver" target="_blank">Node.js http.Server</a> and <a href="https://expressjs.com/" target="_blank">Express</a>. Support for other libraries like <a href="https://nestjs.com/" target="_blank">Nest</a> are works-in-progress.
 
 Once [deployed](./deployment.md) you can access your server at a URL like this locally `http://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.localhost:8000` or like this on mainnet `https://bkyz2-fmaaa-aaaaa-qaaaq-cai.raw.icp0.io`.
 
@@ -74,9 +74,9 @@ You can use any HTTP client to interact with your server, such as `curl`, `fetch
 
 ## Node.js http.server
 
-Azle supports instances of [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver). `listen()` must be called on the server instance for Azle to use it to handle HTTP requests. Azle does not respect a port being passed into `listen()`. The port is set by the ICP replica (e.g. `dfx start --host 127.0.0.1:8000`), not by Azle.
+Azle supports instances of <a href="https://nodejs.org/api/http.html#class-httpserver" target="_blank">Node.js http.Server</a>. `listen()` must be called on the server instance for Azle to use it to handle HTTP requests. Azle does not respect a port being passed into `listen()`. The port is set by the ICP replica (e.g. `dfx start --host 127.0.0.1:8000`), not by Azle.
 
-Here's an example of a very simple [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver):
+Here's an example of a very simple <a href="https://nodejs.org/api/http.html#class-httpserver" target="_blank">Node.js http.Server</a>:
 
 ```typescript
 import { createServer } from 'http';
@@ -91,7 +91,7 @@ server.listen();
 
 ## Express
 
-[Express](https://expressjs.com/) is one of the most popular backend JavaScript web frameworks, and it's the recommended way to get started building servers in Azle. Here's the main code from the [hello_world_http_server example](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/hello_world_http_server):
+<a href="https://expressjs.com/" target="_blank">Express</a> is one of the most popular backend JavaScript web frameworks, and it's the recommended way to get started building servers in Azle. Here's the main code from the <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/hello_world_http_server" target="_blank">hello_world_http_server example</a>:
 
 ```typescript
 import express, { Request } from 'express';
@@ -208,7 +208,7 @@ export default Server(
 );
 ```
 
-The `default` export of your `main` module must be the result of calling `Server`, and the callback argument to `Server` must return a [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver). The `main` module is specified by the `main` property of your project's [dfx.json file](https://github.com/demergent-labs/azle/blob/main/examples/hello_world/dfx.json#L5). The `dfx.json` file must be at the root directory of your project.
+The `default` export of your `main` module must be the result of calling `Server`, and the callback argument to `Server` must return a <a href="https://nodejs.org/api/http.html#class-httpserver" target="_blank">Node.js http.Server</a>. The `main` module is specified by the `main` property of your project's <a href="https://github.com/demergent-labs/azle/blob/main/examples/hello_world/dfx.json#L5" target="_blank">dfx.json file</a>. The `dfx.json` file must be at the root directory of your project.
 
 The callback argument to `Server` can be asynchronous:
 
@@ -233,7 +233,7 @@ async function asynchronousHelloWorld() {
 
 ## Limitations
 
-For a deeper understanding of possible limitations you may want to refer to [The HTTP Gateway Protocol Specification](https://internetcomputer.org/docs/current/references/http-gateway-protocol-spec).
+For a deeper understanding of possible limitations you may want to refer to <a href="https://internetcomputer.org/docs/current/references/http-gateway-protocol-spec" target="_blank">The HTTP Gateway Protocol Specification</a>.
 
 - The top-level route `/api` is currently reserved by the replica locally
 - The `Transfer-Encoding` header is not supported

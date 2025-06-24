@@ -359,11 +359,15 @@
                                 Azle helps you to build secure
                                 decentralized/replicated servers in TypeScript
                                 or JavaScript on
-                                <a href="https://internetcomputer.org/">ICP</a>.
-                                The current replication factor is
+                                <a
+                                    href="https://internetcomputer.org/"
+                                    target="_blank"
+                                    >ICP</a
+                                >. The current replication factor is
                                 <a
                                     href="https://dashboard.internetcomputer.org/subnets"
-                                    >13-40 times</a
+                                    target="_blank"
+                                    >13-40</a
                                 >.
                             </p>
                             <p>
@@ -371,9 +375,10 @@
                                 continuously subjected to
                                 <a
                                     href="https://github.com/demergent-labs/azle/actions"
+                                    target="_blank"
                                     >intense scrutiny and testing</a
-                                >, however it does not yet have multiple
-                                independent security reviews/audits.
+                                >, however it has not yet undergone intense
+                                security review.
                             </p>
                             <p>Azle runs in stable mode by default.</p>
                             <p>
@@ -399,31 +404,31 @@
                                     virtual environment of some kind, such as
                                     <a
                                         href="https://learn.microsoft.com/en-us/windows/wsl/install"
+                                        target="_blank"
                                         >WSL</a
                                     >
                                 </p>
                             </blockquote>
                             <p>
-                                You will need
-                                <a href="#nodejs-22">Node.js 22</a> and
+                                You will need <a href="#nodejs">Node.js</a> and
                                 <a href="#dfx">dfx</a> to develop ICP
                                 applications with Azle:
                             </p>
-                            <h3 id="nodejs-22">
+                            <h3 id="nodejs">
                                 <a
                                     class="header"
-                                    href="#nodejs-22"
-                                    >Node.js 22</a
+                                    href="#nodejs"
+                                    >Node.js</a
                                 >
                             </h3>
                             <p>
-                                It's recommended to use nvm to install Node.js
-                                22:
+                                It's recommended to use nvm to install the
+                                latest LTS version of Node.js:
                             </p>
-                            <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+                            <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 </code></pre>
                             <p>Restart your terminal and then run:</p>
-                            <pre><code class="language-bash">nvm install 22
+                            <pre><code class="language-bash">nvm install --lts
 </code></pre>
                             <p>
                                 Check that the installation went smoothly by
@@ -443,7 +448,7 @@
                                 Install the dfx command line tools for managing
                                 ICP applications:
                             </p>
-                            <pre><code class="language-bash">DFX_VERSION=0.24.3 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+                            <pre><code class="language-bash">DFX_VERSION=0.27.0 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 </code></pre>
                             <p>
                                 Check that the installation went smoothly by
