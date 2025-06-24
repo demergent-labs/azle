@@ -1,4 +1,4 @@
-# The Azle Book (Beta)
+# The Azle Book (Release Candidate)
 
 <div style="display: flex; justify-content: center">
     <img src="logo.svg" alt="The Azle Logo" height="250px" />
