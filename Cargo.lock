@@ -639,6 +639,7 @@ dependencies = [
  "ic-stable-structures",
  "ic-wasi-polyfill",
  "open_value_sharing",
+ "peak_alloc",
  "rand 0.9.1",
  "scopeguard",
  "serde",

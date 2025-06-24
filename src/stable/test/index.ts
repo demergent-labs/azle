@@ -37,10 +37,7 @@ export function runTests(tests: Test): void {
     (shouldRunTests === true ? describe : describe.skip)(
         `correctness tests`,
         () => {
-            (shouldCheckMemoryStateAfterTests === true &&
-                process.env.AZLE_EXPERIMENTAL !== 'true'
-                ? please
-                : please.skip)(
+            (shouldCheckMemoryStateAfterTests === true ? please : please.skip)(
                 'snapshot the canister memory size and heap allocation for all canisters before correctness tests',
                 async () => {
                     const snapshot = await takeMemorySnapshot();
@@ -59,10 +56,7 @@ export function runTests(tests: Test): void {
                 runGlobalStateChecks
             );
 
-            (shouldCheckMemoryStateAfterTests === true &&
-                process.env.AZLE_EXPERIMENTAL !== 'true'
-                ? it
-                : it.skip)(
+            (shouldCheckMemoryStateAfterTests === true ? it : it.skip)(
                 'checks the canister memory size and heap allocation for all canisters after correctness tests',
                 async () => {
                     await checkMemoryChanges(
