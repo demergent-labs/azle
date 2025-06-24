@@ -1,14 +1,14 @@
-# The Azle Book (Beta)
+# The Azle Book (Release Candidate)
 
 <div style="display: flex; justify-content: center">
     <img src="logo.svg" alt="The Azle Logo" height="250px" />
 </div>
 
-Welcome to The Azle Book! This is a guide for building secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
+Welcome to The Azle Book! This is a guide for building secure decentralized/replicated servers in TypeScript or JavaScript on <a href="https://internetcomputer.org" target="_blank">ICP</a>. The current replication factor is <a href="https://dashboard.internetcomputer.org/network/subnets" target="_blank">13-40</a>.
 
-Please remember that Azle stable mode is continuously subjected to [intense scrutiny and testing](https://github.com/demergent-labs/azle/actions), however it does not yet have multiple independent security reviews/audits.
+Please remember that Azle stable mode is continuously subjected to <a href="https://github.com/demergent-labs/azle/actions" target="_blank">intense scrutiny and testing</a>, however it has not yet undergone intense security review.
 
-The Azle Book is subject to the following license and Azle's [License Extension](https://github.com/demergent-labs/azle/blob/main/LICENSE_EXTENSION.md):
+The Azle Book is subject to the following license and Azle's <a href="https://github.com/demergent-labs/azle/blob/main/LICENSE_EXTENSION.md" target="_blank">License Extension</a>:
 
 ```
 MIT License

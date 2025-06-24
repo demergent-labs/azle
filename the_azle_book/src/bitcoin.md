@@ -2,20 +2,20 @@
 
 Examples:
 
-- [basic_bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/basic_bitcoin)
-- [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/bitcoin)
-- [bitcoin_psbt](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/bitcoin_psbt)
-- [bitcoinjs_lib](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcoinjs_lib)
-- [bitcore_lib](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcore_lib)
-- [ckbtc](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/ckbtc)
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/basic_bitcoin" target="_blank">basic_bitcoin</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/bitcoin" target="_blank">bitcoin</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/bitcoin_psbt" target="_blank">bitcoin_psbt</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcoinjs_lib" target="_blank">bitcoinjs_lib</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcore_lib" target="_blank">bitcore_lib</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/ckbtc" target="_blank">ckbtc</a>
 
 There are two main ways to interact with Bitcoin on ICP: through the [management canister](#management-canister) and through the [ckBTC canister](#ckbtc).
 
 ## management canister
 
-To sign Bitcoin transactions using [threshold ECDSA](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/encryption/t-ecdsa) and interact with the Bitcoin blockchain directly from ICP, make [cross-canister calls](./fetch.md) to the following methods on the [management canister](https://internetcomputer.org/docs/current/references/ic-interface-spec#ic-management-canister): `ecdsa_public_key`, `sign_with_ecdsa`, `bitcoin_get_balance`, `bitcoin_get_balance_query`, `bitcoin_get_utxos`, `bitcoin_get_utxos_query`, `bitcoin_send_transaction`, `bitcoin_get_current_fee_percentiles`.
+To sign Bitcoin transactions using <a href="https://internetcomputer.org/docs/current/developer-docs/smart-contracts/encryption/t-ecdsa" target="_blank">threshold ECDSA</a> and interact with the Bitcoin blockchain directly from ICP, make [cross-canister calls](./fetch.md) to the following methods on the <a href="https://internetcomputer.org/docs/current/references/ic-interface-spec#ic-management-canister" target="_blank">management canister</a>: `ecdsa_public_key`, `sign_with_ecdsa`, `bitcoin_get_balance`, `bitcoin_get_balance_query`, `bitcoin_get_utxos`, `bitcoin_get_utxos_query`, `bitcoin_send_transaction`, `bitcoin_get_current_fee_percentiles`.
 
-To construct your cross-canister calls to these methods, use `canister id` `aaaaa-aa` and the management canister's [Candid type information](https://internetcomputer.org/docs/current/references/ic-interface-spec#ic-candid) to construct the arguments to send in the `body` of your `fetch` call.
+To construct your cross-canister calls to these methods, use `canister id` `aaaaa-aa` and the management canister's <a href="https://internetcomputer.org/docs/current/references/ic-interface-spec#ic-candid" target="_blank">Candid type information</a> to construct the arguments to send in the `body` of your `fetch` call.
 
 Here's an example of doing a test cross-canister call to the `bitcoin_get_balance` method:
 
@@ -43,11 +43,11 @@ const responseJson = await response.json();
 
 ## ckBTC
 
-[ckBTC](https://internetcomputer.org/docs/current/developer-docs/multi-chain/bitcoin/ckbtc/overview) is an [ICRC](https://internetcomputer.org/docs/current/references/icrc1-standard) canister that wraps underlying bitcoin controlled with threshold ECDSA.
+<a href="https://internetcomputer.org/docs/current/developer-docs/multi-chain/bitcoin/ckbtc/overview" target="_blank">ckBTC</a> is an <a href="https://internetcomputer.org/docs/current/references/icrc1-standard" target="_blank">ICRC</a> canister that wraps underlying bitcoin controlled with threshold ECDSA.
 
 ICRCs are a set of standards for ICP canisters that define the method signatures and corresponding types for those canisters.
 
-You interact with the `ckBTC` canister by calling its methods. You can do this from the frontend with [@dfinity/agent](https://www.npmjs.com/package/@dfinity/agent), or from an Azle canister through [cross-canister calls](./fetch.md).
+You interact with the `ckBTC` canister by calling its methods. You can do this from the frontend with <a href="https://www.npmjs.com/package/@dfinity/agent" target="_blank">@dfinity/agent</a>, or from an Azle canister through [cross-canister calls](./fetch.md).
 
 Here's an example of doing a test cross-canister call to the `ckBTC` `icrc1_balance_of` method:
 

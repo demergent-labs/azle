@@ -2,7 +2,7 @@
 
 # Instruction Limit Chunking
 
-Query and Update calls on ICP have [instruction limits](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits).
+Query and Update calls on ICP have <a href="https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits" target="_blank">instruction limits</a>.
 
 The limit can only be increased as a protocol-level change. If after optimizing your code you still cannot stay under the limit, then considering using `ic.chunk()` imported from `azle`.
 

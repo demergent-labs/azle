@@ -1,16 +1,16 @@
 # npm TL;DR
 
-If you want to know if an [npm](https://www.npmjs.com/) package will work with Azle, just try out the package.
+If you want to know if an <a href="https://www.npmjs.com/" target="_blank">npm</a> package will work with Azle, just try out the package.
 
 It's extremely difficult to know generally if a package will work unless it has been tried out and tested already. This is due to the complexity of understanding and implementing all required JavaScript, web, Node.js, and OS-level APIs required for an `npm` package to execute correctly.
 
 To get an idea for which `npm` packages are currently supported, the [Azle examples](./rest_based_examples.md) are full of example code with tests.
 
-You can also look at the [wasmedge-quickjs](https://github.com/second-state/wasmedge-quickjs) documentation [here](https://github.com/WasmEdge/WasmEdge/issues/1535) and [here](https://wasmedge.org/docs/develop/javascript/nodejs), as `wasmedge-quickjs` is our implementation for much of the Node.js stdlib.
+You can also look at the <a href="https://github.com/second-state/wasmedge-quickjs" target="_blank">wasmedge-quickjs</a> documentation <a href="https://github.com/WasmEdge/WasmEdge/issues/1535" target="_blank">here</a> and <a href="https://wasmedge.org/docs/develop/javascript/nodejs" target="_blank">here</a>, as `wasmedge-quickjs` is our implementation for much of the Node.js stdlib.
 
 # npm
 
-Azle's goal is to support as many [npm](https://www.npmjs.com/) packages as possible.
+Azle's goal is to support as many <a href="https://www.npmjs.com/" target="_blank">npm</a> packages as possible.
 
 The current reality is that not all `npm` packages work well with Azle. It is also very difficult to determine which `npm` packages might work well.
 
@@ -26,4 +26,4 @@ For example, any kind of networking outside of HTTP is unlikely to work (without
 
 Also any kind of heavy computation is unlikely to work (without modification), because ICP has very limited instruction limits per call.
 
-We use [wasmedge-quickjs](https://github.com/second-state/wasmedge-quickjs) as our implementation for much of the Node.js stdlib. To get a feel for which Node.js standard libraries Azle supports, see [here](https://github.com/WasmEdge/WasmEdge/issues/1535) and [here](https://wasmedge.org/docs/develop/javascript/nodejs).
+We use <a href="https://github.com/second-state/wasmedge-quickjs" target="_blank">wasmedge-quickjs</a> as our implementation for much of the Node.js stdlib. To get a feel for which Node.js standard libraries Azle supports, see <a href="https://github.com/WasmEdge/WasmEdge/issues/1535" target="_blank">here</a> and <a href="https://wasmedge.org/docs/develop/javascript/nodejs" target="_blank">here</a>.

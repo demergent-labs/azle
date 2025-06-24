@@ -13,19 +13,19 @@
     <a href="https://github.com/demergent-labs/azle/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/azle.svg" alt="License"></a>
 </div>
 
-# Azle (Beta)
+# Azle (Release Candidate)
 
 TypeScript and JavaScript CDK for the [Internet Computer](https://internetcomputer.org/).
 
 ## Disclaimer
 
-Azle stable mode is continuously subjected to [intense scrutiny and testing](https://github.com/demergent-labs/azle/actions), however it does not yet have multiple independent security reviews/audits.
+Azle stable mode is continuously subjected to [intense scrutiny and testing](https://github.com/demergent-labs/azle/actions), however it has not yet undergone intense security review.
 
 ## Stable Mode
 
 Azle runs in stable mode by default.
 
-This mode is intended for production use after Azle's 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.
+This mode is intended for production use after Azle's imminent 1.0 release. Its focus is on API and runtime stability, security, performance, TypeScript and JavaScript language support, the ICP APIs, and Candid remote procedure calls (RPC). There is minimal support for the Node.js standard library, npm ecosystem, and HTTP server functionality.
 
 ## Experimental Mode
 

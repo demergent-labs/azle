@@ -5,9 +5,9 @@
 - [Interacting with your canister](#interacting-with-your-canister)
 - [Deploying to mainnet](#deploying-to-mainnet)
 
-There are two main [ICP](https://internetcomputer.org/) environments that you will generally interact with: [the local replica](#deploying-to-the-local-replica) and [mainnet](#deploying-to-mainnet).
+There are two main <a href="https://internetcomputer.org/" target="_blank">ICP</a> environments that you will generally interact with: [the local replica](#deploying-to-the-local-replica) and [mainnet](#deploying-to-mainnet).
 
-We recommend using the `dfx` command line tools to deploy to these environments. Please note that not all `dfx` commands are shown here. See [the dfx CLI reference](https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent) for more information.
+We recommend using the `dfx` command line tools to deploy to these environments. Please note that not all `dfx` commands are shown here. See <a href="https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent" target="_blank">the dfx CLI reference</a> for more information.
 
 ## Starting the local replica
 
@@ -87,7 +87,7 @@ curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" h
 
 ## Deploying to mainnet
 
-Assuming you are [setup with a cycles wallet](https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet), then you are ready to deploy to mainnet.
+Assuming you are <a href="https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet" target="_blank">setup with a cycles wallet</a>, then you are ready to deploy to mainnet.
 
 To deploy all canisters defined in your dfx.json:
 
