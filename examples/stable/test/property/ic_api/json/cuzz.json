@@ -1,0 +1,3 @@
+{
+    "expectedErrors": ["Uncaught Error: jsonParse: Error parsing JSON"]
+}
