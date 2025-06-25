@@ -11,33 +11,32 @@ import { jsonReplacer } from './stable_structures/stable_json';
 import { Action } from './state';
 
 declare global {
-    // eslint-disable-next-line no-var
     var _azleActions: Action[] | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleCanisterClassMeta: CanisterClassMeta | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleCanisterMethodNames: { [key: string]: string } | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleDispatch: ((action: Action) => void) | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleExperimental: boolean | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleIcExperimental: AzleIcExperimental | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleIcpReplicaWasmEnvironment: boolean | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleIc: AzleIc | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleInitCalled: boolean | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleNodejsWasmEnvironment: boolean | undefined;
-    // eslint-disable-next-line no-var
+
     var _azlePostUpgradeCalled: boolean | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleRejectCallbacks:
         | { [globalRejectId: string]: (err: any) => void }
         | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleResolveCallbacks:
         | {
               [globalResolveId: string]: (
@@ -45,7 +44,7 @@ declare global {
               ) => void;
           }
         | undefined;
-    // eslint-disable-next-line no-var
+
     var _azleTimerCallbacks:
         | { [timerId: string]: () => Promise<void> }
         | undefined;
