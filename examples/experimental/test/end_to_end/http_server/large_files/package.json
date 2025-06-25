@@ -2,11 +2,11 @@
     "scripts": {
         "postinstall": "mkdir -p assets/auto",
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "AZLE_EXPERIMENTAL=true AZLE_CHECK_MEMORY_STATE_AFTER_TESTS=false jest"
     },
     "dependencies": {
-        "azle": "0.31.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa",
+        "azle": "0.32.0",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd",
         "express": "^4.18.2",
         "mime-type": "^4.0.0",
         "uuid": "^10.0.0"

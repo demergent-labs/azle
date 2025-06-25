@@ -1,4 +1,5 @@
 {
+    "callDelay": 1,
     "expectedErrors": [
         "get_balance failed: MalformedAddress",
         "get_utxos failed: MalformedAddress",

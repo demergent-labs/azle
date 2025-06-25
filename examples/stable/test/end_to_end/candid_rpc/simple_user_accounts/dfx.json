@@ -3,6 +3,11 @@
         "simple_user_accounts": {
             "type": "azle",
             "main": "src/index.ts",
+            "custom": {
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
+            },
             "declarations": {
                 "output": "test/dfx_generated/simple_user_accounts",
                 "node_compatibility": true

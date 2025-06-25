@@ -86,7 +86,7 @@ export default class {
     async test3(): Promise<InsufficientLiquidCycleBalanceError> {
         try {
             await call('aaaaa-aa', 'raw_rand', {
-                cycles: 1_000_000_000_000_000_000_000_000n
+                cycles: 100_000_000_000_000_000_000_000_000_000_000n
             });
 
             throw new Error(
@@ -126,7 +126,7 @@ export default class {
         try {
             await call('aaaaa-aa', 'raw_rand', {
                 oneway: true,
-                cycles: 1_000_000_000_000_000_000_000_000n
+                cycles: 100_000_000_000_000_000_000_000_000_000_000n
             });
 
             throw new Error(

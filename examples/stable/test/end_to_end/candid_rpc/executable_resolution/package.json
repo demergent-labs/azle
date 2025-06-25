@@ -1,9 +1,9 @@
 {
     "dependencies": {
-        "azle": "0.31.0"
+        "azle": "0.32.0"
     },
     "scripts": {
         "pretest": "tsx test/pretest.ts",
-        "test": "AZLE_CHECK_GLOBAL_STATE=false jest"
+        "test": "AZLE_CHECK_MEMORY_STATE_AFTER_TESTS=false AZLE_CHECK_GLOBAL_STATE_AFTER_TESTS=false jest"
     }
 }

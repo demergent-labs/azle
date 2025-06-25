@@ -63,14 +63,17 @@
         <!-- Highlight.js Stylesheets -->
         <link
             rel="stylesheet"
+            id="highlight-css"
             href="highlight.css"
         />
         <link
             rel="stylesheet"
+            id="tomorrow-night-css"
             href="tomorrow-night.css"
         />
         <link
             rel="stylesheet"
+            id="ayu-highlight-css"
             href="ayu-highlight.css"
         />
 
@@ -376,7 +379,11 @@
                             </ul>
                             <p>
                                 There are two main
-                                <a href="https://internetcomputer.org/">ICP</a>
+                                <a
+                                    href="https://internetcomputer.org/"
+                                    target="_blank"
+                                    >ICP</a
+                                >
                                 environments that you will generally interact
                                 with:
                                 <a href="#deploying-to-the-local-replica"
@@ -391,6 +398,7 @@
                                 <code>dfx</code> commands are shown here. See
                                 <a
                                     href="https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent"
+                                    target="_blank"
                                     >the dfx CLI reference</a
                                 >
                                 for more information.
@@ -500,6 +508,7 @@ curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" h
                                 Assuming you are
                                 <a
                                     href="https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet"
+                                    target="_blank"
                                     >setup with a cycles wallet</a
                                 >, then you are ready to deploy to mainnet.
                             </p>

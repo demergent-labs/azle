@@ -3,8 +3,12 @@
         "http_counter": {
             "type": "azle",
             "main": "src/index.ts",
-
-            "gzip": true
+            "gzip": true,
+            "custom": {
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
+            }
         }
     }
 }

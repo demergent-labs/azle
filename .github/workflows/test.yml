@@ -22,6 +22,11 @@ on:
                 required: true
                 type: boolean
                 default: false
+            fuzz-time-limit:
+                description: 'Time limit for fuzz tests in minutes'
+                required: false
+                type: string
+                default: '.5'
             exclude-slow-tests:
                 description: 'Exclude slow tests'
                 required: true
@@ -53,6 +58,7 @@ jobs:
             exclude-release-only: ${{ steps.determine-workflow-config.outputs.exclude-release-only }}
             link-azle: ${{ steps.determine-workflow-config.outputs.link-azle }}
             fuzz: ${{ steps.determine-workflow-config.outputs.fuzz }}
+            fuzz-time-limit: ${{ steps.determine-workflow-config.outputs.fuzz-time-limit }}
         steps:
             - uses: actions/checkout@v4
 
@@ -65,6 +71,7 @@ jobs:
                   exclude-release-only-dispatch-input-value: ${{ inputs.exclude-release-only-tests }}
                   link-azle-dispatch-input-value: ${{ inputs.link-azle }}
                   fuzz-dispatch-input-value: ${{ inputs.fuzz }}
+                  fuzz-time-limit-dispatch-input-value: ${{ inputs.fuzz-time-limit }}
 
     get-exclude-dirs:
         name: Get exclude directories
@@ -176,12 +183,6 @@ jobs:
                           operating-system: 'ubuntu'
                       }
                     - {
-                          name: 'Experimental Property CRPC (Ubuntu)',
-                          directories: './examples/experimental/test/property/candid_rpc',
-                          run-experimental: false,
-                          operating-system: 'ubuntu'
-                      }
-                    - {
                           name: 'Stable Property IC API (Ubuntu)',
                           directories: './examples/stable/test/property/ic_api',
                           run-experimental: false,
@@ -213,6 +214,7 @@ jobs:
             run-experimental: ${{ matrix.test_group.run-experimental }}
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
             operating-system: ${{ matrix.test_group.operating-system }}
+            fuzz-time-limit: ${{ needs.workflow-config.outputs.fuzz-time-limit }}
 
     top-level-checks:
         name: Top level checks

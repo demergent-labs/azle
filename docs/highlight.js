@@ -25,7 +25,7 @@ var hljs = (function () {
     }
     class n {
         constructor(e) {
-            void 0 === e.data && (e.data = {}), (this.data = e.data);
+            (void 0 === e.data && (e.data = {}), (this.data = e.data));
         }
         ignoreMatch() {
             this.ignore = !0;
@@ -120,12 +120,12 @@ var hljs = (function () {
                 ) {
                     o.reverse().forEach(u);
                     do {
-                        d(g.splice(0, 1)[0]), (g = l());
+                        (d(g.splice(0, 1)[0]), (g = l()));
                     } while (g === e && g.length && g[0].offset === i);
                     o.reverse().forEach(c);
                 } else
-                    'start' === g[0].event ? o.push(g[0].node) : o.pop(),
-                        d(g.splice(0, 1)[0]);
+                    ('start' === g[0].event ? o.push(g[0].node) : o.pop(),
+                        d(g.splice(0, 1)[0]));
             }
             return s + t(r.substr(i));
         }
@@ -134,9 +134,9 @@ var hljs = (function () {
         o = (e) => !!e.kind;
     class l {
         constructor(e, n) {
-            (this.buffer = ''),
+            ((this.buffer = ''),
                 (this.classPrefix = n.classPrefix),
-                e.walk(this);
+                e.walk(this));
         }
         addText(e) {
             this.buffer += t(e);
@@ -144,7 +144,7 @@ var hljs = (function () {
         openNode(e) {
             if (!o(e)) return;
             let n = e.kind;
-            e.sublanguage || (n = `${this.classPrefix}${n}`), this.span(n);
+            (e.sublanguage || (n = `${this.classPrefix}${n}`), this.span(n));
         }
         closeNode(e) {
             o(e) && (this.buffer += s);
@@ -158,7 +158,8 @@ var hljs = (function () {
     }
     class c {
         constructor() {
-            (this.rootNode = { children: [] }), (this.stack = [this.rootNode]);
+            ((this.rootNode = { children: [] }),
+                (this.stack = [this.rootNode]));
         }
         get top() {
             return this.stack[this.stack.length - 1];
@@ -171,7 +172,7 @@ var hljs = (function () {
         }
         openNode(e) {
             const n = { kind: e, children: [] };
-            this.add(n), this.stack.push(n);
+            (this.add(n), this.stack.push(n));
         }
         closeNode() {
             if (this.stack.length > 1) return this.stack.pop();
@@ -208,7 +209,7 @@ var hljs = (function () {
     }
     class u extends c {
         constructor(e) {
-            super(), (this.options = e);
+            (super(), (this.options = e));
         }
         addKeyword(e, n) {
             '' !== e && (this.openNode(n), this.addText(e), this.closeNode());
@@ -218,7 +219,7 @@ var hljs = (function () {
         }
         addSublanguage(e, n) {
             const t = e.root;
-            (t.kind = n), (t.sublanguage = !0), this.add(t);
+            ((t.kind = n), (t.sublanguage = !0), this.add(t));
         }
         toHTML() {
             return new l(this, this.options).value();
@@ -404,7 +405,7 @@ var hljs = (function () {
             var a = { code: n, language: e };
             S('before:highlight', a);
             var i = a.result ? a.result : m(a.language, a.code, t, r);
-            return (i.code = a.code), S('after:highlight', i), i;
+            return ((i.code = a.code), S('after:highlight', i), i);
         }
         function m(e, t, a, s) {
             var o = t;
@@ -416,20 +417,20 @@ var hljs = (function () {
                 );
             }
             function u() {
-                null != y.subLanguage
+                (null != y.subLanguage
                     ? (function () {
                           if ('' !== A) {
                               var e = null;
                               if ('string' == typeof y.subLanguage) {
                                   if (!i[y.subLanguage])
                                       return void O.addText(A);
-                                  (e = m(
+                                  ((e = m(
                                       y.subLanguage,
                                       A,
                                       !0,
                                       k[y.subLanguage]
                                   )),
-                                      (k[y.subLanguage] = e.top);
+                                      (k[y.subLanguage] = e.top));
                               } else
                                   e = v(
                                       A,
@@ -437,8 +438,8 @@ var hljs = (function () {
                                           ? y.subLanguage
                                           : null
                                   );
-                              y.relevance > 0 && (I += e.relevance),
-                                  O.addSublanguage(e.emitter, e.language);
+                              (y.relevance > 0 && (I += e.relevance),
+                                  O.addSublanguage(e.emitter, e.language));
                           }
                       })()
                     : (function () {
@@ -452,17 +453,17 @@ var hljs = (function () {
                               const r = c(y, n);
                               if (r) {
                                   const [e, a] = r;
-                                  O.addText(t),
+                                  (O.addText(t),
                                       (t = ''),
                                       (I += a),
-                                      O.addKeyword(n[0], e);
+                                      O.addKeyword(n[0], e));
                               } else t += n[0];
-                              (e = y.keywordPatternRe.lastIndex),
-                                  (n = y.keywordPatternRe.exec(A));
+                              ((e = y.keywordPatternRe.lastIndex),
+                                  (n = y.keywordPatternRe.exec(A)));
                           }
-                          (t += A.substr(e)), O.addText(t);
+                          ((t += A.substr(e)), O.addText(t));
                       })(),
-                    (A = '');
+                    (A = ''));
             }
             function h(e) {
                 return (
@@ -478,7 +479,7 @@ var hljs = (function () {
             var b = {};
             function x(t, r) {
                 var i = r && r[0];
-                if (((A += t), null == i)) return u(), 0;
+                if (((A += t), null == i)) return (u(), 0);
                 if (
                     'begin' === b.type &&
                     'end' === r.type &&
@@ -537,7 +538,8 @@ var hljs = (function () {
                                 if (i) {
                                     if (t['on:end']) {
                                         const e = new n(t);
-                                        t['on:end'](r, e), e.ignore && (i = !1);
+                                        (t['on:end'](r, e),
+                                            e.ignore && (i = !1));
                                     }
                                     if (i) {
                                         for (; t.endsParent && t.parent; )
@@ -555,9 +557,9 @@ var hljs = (function () {
                               u(),
                               i.excludeEnd && (A = t));
                         do {
-                            y.className && O.closeNode(),
+                            (y.className && O.closeNode(),
                                 y.skip || y.subLanguage || (I += y.relevance),
-                                (y = y.parent);
+                                (y = y.parent));
                         } while (y !== a.parent);
                         return (
                             a.starts &&
@@ -573,13 +575,13 @@ var hljs = (function () {
                     throw Error(
                         'potential infinite loop, way more iterations than matches'
                     );
-                return (A += i), i.length;
+                return ((A += i), i.length);
             }
             var E = T(e);
             if (!E)
                 throw (
-                    (console.error(g.replace('{}', e)),
-                    Error('Unknown language: "' + e + '"'))
+                    console.error(g.replace('{}', e)),
+                    Error('Unknown language: "' + e + '"')
                 );
             var _ = (function (e) {
                     function n(n, t) {
@@ -592,13 +594,13 @@ var hljs = (function () {
                     }
                     class t {
                         constructor() {
-                            (this.matchIndexes = {}),
+                            ((this.matchIndexes = {}),
                                 (this.regexes = []),
                                 (this.matchAt = 1),
-                                (this.position = 0);
+                                (this.position = 0));
                         }
                         addRule(e, n) {
-                            (n.position = this.position++),
+                            ((n.position = this.position++),
                                 (this.matchIndexes[this.matchAt] = n),
                                 this.regexes.push([n, e]),
                                 (this.matchAt +=
@@ -607,13 +609,13 @@ var hljs = (function () {
                                             RegExp(e.toString() + '|').exec('')
                                                 .length - 1
                                         );
-                                    })(e) + 1);
+                                    })(e) + 1));
                         }
                         compile() {
                             0 === this.regexes.length &&
                                 (this.exec = () => null);
                             const e = this.regexes.map((e) => e[1]);
-                            (this.matcherRe = n(
+                            ((this.matcherRe = n(
                                 (function (e, n = '|') {
                                     for (
                                         var t =
@@ -636,14 +638,14 @@ var hljs = (function () {
                                                 a += o;
                                                 break;
                                             }
-                                            (a += o.substring(0, l.index)),
+                                            ((a += o.substring(0, l.index)),
                                                 (o = o.substring(
                                                     l.index + l[0].length
                                                 )),
                                                 '\\' === l[0][0] && l[1]
                                                     ? (a += '\\' + (+l[1] + s))
                                                     : ((a += l[0]),
-                                                      '(' === l[0] && r++);
+                                                      '(' === l[0] && r++));
                                         }
                                         a += ')';
                                     }
@@ -651,7 +653,7 @@ var hljs = (function () {
                                 })(e),
                                 !0
                             )),
-                                (this.lastIndex = 0);
+                                (this.lastIndex = 0));
                         }
                         exec(e) {
                             this.matcherRe.lastIndex = this.lastIndex;
@@ -661,16 +663,16 @@ var hljs = (function () {
                                     (e, n) => n > 0 && void 0 !== e
                                 ),
                                 r = this.matchIndexes[t];
-                            return n.splice(0, t), Object.assign(n, r);
+                            return (n.splice(0, t), Object.assign(n, r));
                         }
                     }
                     class a {
                         constructor() {
-                            (this.rules = []),
+                            ((this.rules = []),
                                 (this.multiRegexes = []),
                                 (this.count = 0),
                                 (this.lastIndex = 0),
-                                (this.regexIndex = 0);
+                                (this.regexIndex = 0));
                         }
                         getMatcher(e) {
                             if (this.multiRegexes[e])
@@ -689,8 +691,8 @@ var hljs = (function () {
                             this.regexIndex = 0;
                         }
                         addRule(e, n) {
-                            this.rules.push([e, n]),
-                                'begin' === n.type && this.count++;
+                            (this.rules.push([e, n]),
+                                'begin' === n.type && this.count++);
                         }
                         exec(e) {
                             const n = this.getMatcher(this.regexIndex);
@@ -717,9 +719,9 @@ var hljs = (function () {
                     return (function t(s, o) {
                         const l = s;
                         if (s.compiled) return l;
-                        (s.compiled = !0),
+                        ((s.compiled = !0),
                             (s.__beforeBegin = null),
-                            (s.keywords = s.keywords || s.beginKeywords);
+                            (s.keywords = s.keywords || s.beginKeywords));
                         let c = null;
                         if (
                             ('object' == typeof s.keywords &&
@@ -739,11 +741,11 @@ var hljs = (function () {
                                         t
                                     );
                                     function r(e, r) {
-                                        n && (r = r.toLowerCase()),
+                                        (n && (r = r.toLowerCase()),
                                             r.split(' ').forEach(function (n) {
                                                 var r = n.split('|');
                                                 t[r[0]] = [e, w(r[0], r[1])];
-                                            });
+                                            }));
                                     }
                                 })(s.keywords, e.case_insensitive)),
                             s.lexemes && c)
@@ -860,11 +862,11 @@ var hljs = (function () {
                 L = !1;
             try {
                 for (y.matcher.considerAll(); ; ) {
-                    B++,
+                    (B++,
                         L
                             ? (L = !1)
                             : ((y.matcher.lastIndex = S),
-                              y.matcher.considerAll());
+                              y.matcher.considerAll()));
                     const e = y.matcher.exec(o);
                     if (!e) break;
                     const n = x(o.substring(S, e.index), e);
@@ -921,7 +923,7 @@ var hljs = (function () {
                         illegal: !1,
                         top: h
                     };
-                    return n.emitter.addText(e), n;
+                    return (n.emitter.addText(e), n);
                 })(e),
                 r = t;
             return (
@@ -930,9 +932,9 @@ var hljs = (function () {
                     .filter(I)
                     .forEach(function (n) {
                         var a = m(n, e, !1);
-                        (a.language = n),
+                        ((a.language = n),
                             a.relevance > r.relevance && (r = a),
-                            a.relevance > t.relevance && ((r = t), (t = a));
+                            a.relevance > t.relevance && ((r = t), (t = a)));
                     }),
                 r.language && (t.second_best = r),
                 t
@@ -972,21 +974,21 @@ var hljs = (function () {
                 return n.split(/\s+/).find((e) => p(e) || T(e));
             })(e);
             if (p(t)) return;
-            S('before:highlightBlock', { block: e, language: t }),
+            (S('before:highlightBlock', { block: e, language: t }),
                 f.useBR
                     ? ((n = document.createElement('div')).innerHTML =
                           e.innerHTML
                               .replace(/\n/g, '')
                               .replace(/<br[ /]*>/g, '\n'))
-                    : (n = e);
+                    : (n = e));
             const r = n.textContent,
                 a = t ? b(t, r, !0) : v(r),
                 i = k(n);
             if (i.length) {
                 const e = document.createElement('div');
-                (e.innerHTML = a.value), (a.value = O(i, k(e), r));
+                ((e.innerHTML = a.value), (a.value = O(i, k(e), r)));
             }
-            (a.value = x(a.value)),
+            ((a.value = x(a.value)),
                 S('after:highlightBlock', { block: e, result: a }),
                 (e.innerHTML = a.value),
                 (e.className = (function (e, n, t) {
@@ -1008,7 +1010,7 @@ var hljs = (function () {
                         language: a.second_best.language,
                         re: a.second_best.relevance,
                         relavance: a.second_best.relevance
-                    });
+                    }));
         }
         const N = () => {
             if (!N.called) {
@@ -1018,13 +1020,13 @@ var hljs = (function () {
             }
         };
         function T(e) {
-            return (e = (e || '').toLowerCase()), i[e] || i[s[e]];
+            return ((e = (e || '').toLowerCase()), i[e] || i[s[e]]);
         }
         function A(e, { languageName: n }) {
-            'string' == typeof e && (e = [e]),
+            ('string' == typeof e && (e = [e]),
                 e.forEach((e) => {
                     s[e] = n;
-                });
+                }));
         }
         function I(e) {
             var n = T(e);
@@ -1036,7 +1038,7 @@ var hljs = (function () {
                 e[t] && e[t](n);
             });
         }
-        Object.assign(t, {
+        (Object.assign(t, {
             highlight: b,
             highlightAuto: v,
             fixMarkup: x,
@@ -1063,12 +1065,12 @@ var hljs = (function () {
                         !l)
                     )
                         throw n;
-                    console.error(n), (r = h);
+                    (console.error(n), (r = h));
                 }
-                r.name || (r.name = e),
+                (r.name || (r.name = e),
                     (i[e] = r),
                     (r.rawDefinition = n.bind(null, t)),
-                    r.aliases && A(r.aliases, { languageName: e });
+                    r.aliases && A(r.aliases, { languageName: e }));
             },
             listLanguages: function () {
                 return Object.keys(i);
@@ -1097,9 +1099,9 @@ var hljs = (function () {
             (t.safeMode = function () {
                 l = !0;
             }),
-            (t.versionString = '10.1.1');
+            (t.versionString = '10.1.1'));
         for (const n in _) 'object' == typeof _[n] && e(_[n]);
-        return Object.assign(t, _), t;
+        return (Object.assign(t, _), t);
     })({});
 })();
 'object' == typeof exports &&
@@ -1451,7 +1453,7 @@ hljs.registerLanguage(
         'use strict';
         return function (e) {
             var n = e.getLanguage('c-like').rawDefinition();
-            return (n.name = 'C'), (n.aliases = ['c', 'h']), n;
+            return ((n.name = 'C'), (n.aliases = ['c', 'h']), n);
         };
     })()
 );
@@ -1807,7 +1809,7 @@ hljs.registerLanguage(
                         r
                     ]
                 });
-            (l.contains = [
+            ((l.contains = [
                 o,
                 c,
                 s,
@@ -1824,7 +1826,7 @@ hljs.registerLanguage(
                     e.QUOTE_STRING_MODE,
                     a,
                     e.inherit(e.C_BLOCK_COMMENT_MODE, { illegal: /\n/ })
-                ]);
+                ]));
             var d = {
                     variants: [o, c, s, e.APOS_STRING_MODE, e.QUOTE_STRING_MODE]
                 },
@@ -3510,7 +3512,7 @@ hljs.registerLanguage(
                         { begin: /_(?!_)/, end: /_/, relevance: 0 }
                     ]
                 };
-            i.contains.push(s), s.contains.push(i);
+            (i.contains.push(s), s.contains.push(i));
             var c = [e, a];
             return (
                 (i.contains = i.contains.concat(c)),
@@ -4443,7 +4445,7 @@ hljs.registerLanguage(
                         relevance: 0
                     }
                 ].concat(r);
-            (c.contains = d), (b.contains = d);
+            ((c.contains = d), (b.contains = d));
             var g = [
                 { begin: /^\s*=>/, starts: { end: '$', contains: d } },
                 {

@@ -21,11 +21,11 @@ on:
                 required: false
                 type: boolean
                 default: false
-            call-delay:
+            fuzz-call-delay:
                 required: false
                 type: string
                 default: '.1'
-            time-limit:
+            fuzz-time-limit:
                 required: false
                 type: string
                 default: '300'
@@ -122,7 +122,7 @@ jobs:
               if: ${{ inputs.run-experimental }}
               uses: ./.github/actions/retry_command
               with:
-                  command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa'
+                  command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd'
                   working-directory: ${{ matrix.test.path }}
 
             - run: npm link azle
@@ -142,7 +142,6 @@ jobs:
             - name: Test configuration
               id: test-configuration
               run: |
-                  RECORD_ACTIONS='true'
                   RUNS=1
 
                   if [[ "${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" == "true" ]]; then
@@ -154,7 +153,6 @@ jobs:
                   fi
 
                   if [[ "${{ steps.set-conditions.outputs.is_release_branch_pr }}" == "true" ]]; then
-                      RECORD_ACTIONS='false'
                       RUNS=10
                   fi
 
@@ -169,7 +167,6 @@ jobs:
                   echo "Running tests $RUNS times"
 
                   echo "runs=$RUNS" >> $GITHUB_OUTPUT
-                  echo "record_actions=$RECORD_ACTIONS" >> $GITHUB_OUTPUT
 
             - name: Run tests
               run: npm test
@@ -178,9 +175,10 @@ jobs:
               env:
                   AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
-                  AZLE_FUZZ_CALL_DELAY: ${{ inputs.call-delay }}
-                  AZLE_FUZZ_TIME_LIMIT: ${{ inputs.time-limit }}
-                  AZLE_RECORD_ACTIONS: ${{ steps.test-configuration.outputs.record_actions }}
+                  AZLE_FUZZ_CALL_DELAY: ${{ inputs.fuzz-call-delay }}
+                  AZLE_FUZZ_TIME_LIMIT: ${{ inputs.fuzz-time-limit }}
+                  AZLE_RECORD_ACTIONS: ${{ !inputs.fuzz }}
                   AZLE_PROPTEST_NUM_RUNS: ${{ steps.test-configuration.outputs.runs }}
                   AZLE_PROPTEST_VERBOSE: true
                   AZLE_RUNNING_IN_MAC: ${{ matrix.os == 'macos-latest' }}
+                  AZLE_RUNNING_IN_GITHUB_ACTIONS: true

@@ -4,6 +4,7 @@ use ic_stable_structures::{
     DefaultMemoryImpl,
     memory_manager::{MemoryManager, VirtualMemory},
 };
+use peak_alloc::PeakAlloc;
 use rand::{SeedableRng, rngs::StdRng};
 
 mod autoreload;
@@ -19,6 +20,9 @@ mod stable_b_tree_map;
 mod upload_file;
 mod wasm_binary_manipulation;
 mod web_assembly;
+
+#[global_allocator]
+static PEAK_ALLOC: PeakAlloc = PeakAlloc;
 
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;

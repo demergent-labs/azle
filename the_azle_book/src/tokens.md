@@ -1,36 +1,36 @@
 # Tokens TL;DR
 
-[Canisters](https://internetcomputer.org/docs/current/concepts/canisters-code) can either:
+<a href="https://internetcomputer.org/docs/current/concepts/canisters-code" target="_blank">Canisters</a> can either:
 
 1. Interact with tokens that already exist
 2. Implement, extend, or proxy tokens
 
-Canisters can use cross-canister calls to interact with tokens implemented using [ICRC](https://github.com/dfinity/ICRC) or other standards. They can also interact with non-ICP tokens through [threshold ECDSA](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/encryption/t-ecdsa).
+Canisters can use cross-canister calls to interact with tokens implemented using <a href="https://github.com/dfinity/ICRC" target="_blank">ICRC</a> or other standards. They can also interact with non-ICP tokens through <a href="https://internetcomputer.org/docs/current/developer-docs/smart-contracts/encryption/t-ecdsa" target="_blank">threshold ECDSA</a>.
 
 Canisters can implement tokens from scratch, or extend or proxy implementations already written.
 
 Demergent Labs does not keep any token implementations up-to-date. Here are some old implementations for inspiration and learning:
 
-- [ICRC-1](https://github.com/demergent-labs/ICRC-1)
-- [extendable-token-azle](https://github.com/lastmjs/extendable-token-azle)
+- <a href="https://github.com/demergent-labs/ICRC-1" target="_blank">ICRC-1</a>
+- <a href="https://github.com/lastmjs/extendable-token-azle" target="_blank">extendable-token-azle</a>
 
 # Tokens
 
 Examples:
 
-- [basic_bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/basic_bitcoin)
-- [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/bitcoin)
-- [bitcoinjs-lib](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcoinjs_lib)
-- [bitcore-lib](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcore_lib)
-- [ckbtc](https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/ckbtc)
-- [ethereum_json_rpc](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ethereum_json_rpc)
-- [ethers](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers)
-- [ethers_base](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers_base)
-- [extendable-token-azle](https://github.com/lastmjs/extendable-token-azle)
-- [ic_evm_rpc](https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ic_evm_rpc)
-- [icrc](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/icrc)
-- [ICRC-1](https://github.com/demergent-labs/ICRC-1)
-- [ledger_canister](https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ledger_canister)
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/basic_bitcoin" target="_blank">basic_bitcoin</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/bitcoin" target="_blank">bitcoin</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcoinjs_lib" target="_blank">bitcoinjs-lib</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/bitcore_lib" target="_blank">bitcore-lib</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/demo/ckbtc" target="_blank">ckbtc</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ethereum_json_rpc" target="_blank">ethereum_json_rpc</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers" target="_blank">ethers</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ethers_base" target="_blank">ethers_base</a>
+- <a href="https://github.com/lastmjs/extendable-token-azle" target="_blank">extendable-token-azle</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/experimental/test/end_to_end/http_server/ic_evm_rpc" target="_blank">ic_evm_rpc</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/icrc" target="_blank">icrc</a>
+- <a href="https://github.com/demergent-labs/ICRC-1" target="_blank">ICRC-1</a>
+- <a href="https://github.com/demergent-labs/azle/tree/main/examples/stable/test/end_to_end/candid_rpc/ledger_canister" target="_blank">ledger_canister</a>
 
 <!-- -   ICRC transfer from frontend
 -   ICRC transfer from backend

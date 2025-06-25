@@ -1,10 +1,10 @@
 {
     "scripts": {
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "AZLE_EXPERIMENTAL=true jest"
     },
     "dependencies": {
-        "azle": "0.31.0",
+        "azle": "0.32.0",
         "express": "^4.18.2"
     },
     "devDependencies": {

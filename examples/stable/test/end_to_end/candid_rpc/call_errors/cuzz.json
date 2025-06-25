@@ -1,0 +1,5 @@
+{
+    "expectedErrors": [
+        "Uncaught Error: Failed to encode Candid arguments: Error: Record is missing key"
+    ]
+}

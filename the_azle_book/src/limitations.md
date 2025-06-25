@@ -11,11 +11,11 @@ There are a number of limitations that you are likely to run into while you deve
 - High costs relative to traditional web applications (think ~10x traditional web costs)
 - StableBTreeMap memory id `254` is reserved for the stable memory file system
 
-Read more [here](https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits) for in-depth information on current ICP limitations.
+Read more <a href="https://internetcomputer.org/docs/current/developer-docs/smart-contracts/maintain/resource-limits" target="_blank">here</a> for in-depth information on current ICP limitations.
 
 <!-- # Limitations
 
-Keep in mind that this is not an exhaustive collection of the limitations of Azle or [ICP](https://internetcomputer.org/).
+Keep in mind that this is not an exhaustive collection of the limitations of Azle or <a href="https://internetcomputer.org/" target="_blank">ICP</a>.
 
 Let's discuss some important limitations of Azle and ICP that you are likely to run into. This is chapter is currently a work-in-progress:
 

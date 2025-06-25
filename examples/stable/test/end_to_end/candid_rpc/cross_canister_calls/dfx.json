@@ -3,17 +3,25 @@
         "canister1": {
             "type": "azle",
             "main": "src/canister1/index.ts",
+            "custom": {
+                "env": ["CANISTER2_PRINCIPAL"],
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
+            },
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
-            },
-            "custom": {
-                "env": ["CANISTER2_PRINCIPAL"]
             }
         },
         "canister2": {
             "type": "azle",
             "main": "src/canister2/index.ts",
+            "custom": {
+                "test": {
+                    "memorySizeIncreaseExpected": true
+                }
+            },
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true

@@ -10,9 +10,9 @@ import {
 
 const StatusReport = IDL.Record({
     single: IDL.Bool,
-    inline: IDL.Int8,
+    inline: IDL.Nat32,
     capture: IDL.Text,
-    repeat: IDL.Int8,
+    repeat: IDL.Nat32,
     singleCrossCanister: IDL.Vec(IDL.Nat8),
     repeatCrossCanister: IDL.Vec(IDL.Nat8)
 });
@@ -42,15 +42,17 @@ type TimerIds = {
     repeatCrossCanister: bigint;
 };
 
+const initialStatusReport: StatusReport = {
+    single: false,
+    inline: 0,
+    capture: '',
+    repeat: 0,
+    singleCrossCanister: Uint8Array.from([]),
+    repeatCrossCanister: Uint8Array.from([])
+};
+
 export default class Canister {
-    statusReport: StatusReport = {
-        single: false,
-        inline: 0,
-        capture: '',
-        repeat: 0,
-        singleCrossCanister: Uint8Array.from([]),
-        repeatCrossCanister: Uint8Array.from([])
-    };
+    statusReport: StatusReport = initialStatusReport;
 
     @update([IDL.Nat64])
     clearTimer(timerId: bigint): void {
@@ -77,15 +79,23 @@ export default class Canister {
         const repeatId = setTimerInterval(interval, () => {
             this.statusReport.repeat++;
             console.info(`Repeating timer. Call ${this.statusReport.repeat}`);
+
+            if (this.statusReport.repeat >= 2) {
+                clearTimer(repeatId);
+            }
         });
 
         const singleCrossCanisterId = setTimer(delay, () =>
             singleCrossCanisterTimerCallback(this)
         );
 
-        const repeatCrossCanisterId = setTimerInterval(interval, () =>
-            repeatCrossCanisterTimerCallback(this)
-        );
+        const repeatCrossCanisterId = setTimerInterval(interval, async () => {
+            await repeatCrossCanisterTimerCallback(this);
+
+            if (this.statusReport.repeatCrossCanister.length >= 64) {
+                clearTimer(repeatCrossCanisterId);
+            }
+        });
 
         return {
             single: singleId,
@@ -100,6 +110,11 @@ export default class Canister {
     @query([], StatusReport)
     getStatusReport(): StatusReport {
         return this.statusReport;
+    }
+
+    @update
+    clearStatusReport(): void {
+        this.statusReport = initialStatusReport;
     }
 }
 
@@ -121,10 +136,12 @@ async function repeatCrossCanisterTimerCallback(
 ): Promise<void> {
     console.info('repeatCrossCanisterTimerCallback');
 
-    canister.statusReport.repeatCrossCanister = Uint8Array.from([
-        ...canister.statusReport.repeatCrossCanister,
-        ...(await getRandomness())
-    ]);
+    if (canister.statusReport.repeatCrossCanister.length < 64) {
+        canister.statusReport.repeatCrossCanister = Uint8Array.from([
+            ...canister.statusReport.repeatCrossCanister,
+            ...(await getRandomness())
+        ]);
+    }
 }
 
 async function getRandomness(): Promise<Uint8Array> {

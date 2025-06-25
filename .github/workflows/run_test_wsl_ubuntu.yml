@@ -21,11 +21,11 @@ on:
                 required: false
                 type: boolean
                 default: false
-            call-delay:
+            fuzz-call-delay:
                 required: false
                 type: string
                 default: '.1'
-            time-limit:
+            fuzz-time-limit:
                 required: false
                 type: string
                 default: '300'
@@ -226,7 +226,7 @@ jobs:
                       if [[ "${{ inputs.run-experimental }}" == "true" ]]; then
                           echo "=== Installing experimental dependencies ==="
                           cd $EXAMPLE_ROOT
-                          npm install https://github.com/demergent-labs/azle-experimental-deps#882dcaa3aa0ccb66d81ee923c8279369a8424bfa
+                          npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd
                           cd $AZLE_ROOT
                       fi
                   }
@@ -252,7 +252,6 @@ jobs:
                   configure_test_settings() {
                       echo "=== Configuring test settings ==="
 
-                      RECORD_ACTIONS='true'
                       RUNS=1
 
                       if [[ "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE" == "true" ]]; then
@@ -264,7 +263,6 @@ jobs:
                       fi
 
                       if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
-                          RECORD_ACTIONS='false'
                           RUNS=10
                       fi
 
@@ -280,7 +278,6 @@ jobs:
 
                       # Export these for use in run_tests function
                       export TEST_RUNS=$RUNS
-                      export TEST_RECORD_ACTIONS=$RECORD_ACTIONS
                   }
 
                   run_tests() {
@@ -290,15 +287,16 @@ jobs:
                       # Set test configuration variables
                       export AZLE_EXPERIMENTAL="${{ inputs.run-experimental }}"
                       export AZLE_FUZZ="${{ inputs.fuzz }}"
-                      export AZLE_FUZZ_CALL_DELAY="${{ inputs.call-delay }}"
-                      export AZLE_FUZZ_TIME_LIMIT="${{ inputs.time-limit }}"
-                      export AZLE_RECORD_ACTIONS="$TEST_RECORD_ACTIONS"
+                      export AZLE_FUZZ_CALL_DELAY="${{ inputs.fuzz-call-delay }}"
+                      export AZLE_FUZZ_TIME_LIMIT="${{ inputs.fuzz-time-limit }}"
+                      export AZLE_RECORD_ACTIONS="${{ !inputs.fuzz }}"
                       export AZLE_PROPTEST_NUM_RUNS="$TEST_RUNS"
                       export AZLE_PROPTEST_VERBOSE=true
                       export AZLE_VERBOSE=true
                       export AZLE_IDENTITY_STORAGE_MODE=plaintext
                       export GITHUB_ACTIONS=true
                       export AZLE_RUNNING_IN_WSL=true
+                      export AZLE_RUNNING_IN_GITHUB_ACTIONS=true
 
                       npm test
                       cd $AZLE_ROOT

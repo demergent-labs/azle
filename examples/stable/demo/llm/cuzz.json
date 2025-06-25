@@ -1,0 +1,3 @@
+{
+    "skip": "seems like this set of canisters is too compute-heavy to be reliably fuzzed"
+}

@@ -21,14 +21,14 @@ on:
                 required: false
                 type: boolean
                 default: false
-            call-delay:
+            fuzz-call-delay:
                 required: false
                 type: string
                 default: '.1'
-            time-limit:
+            fuzz-time-limit:
                 required: false
                 type: string
-                default: '300'
+                default: '.5'
             operating-system:
                 type: string
                 description: 'Operating system to run tests on (ubuntu, mac, or wsl-ubuntu)'
@@ -43,8 +43,8 @@ jobs:
             link-azle: ${{ inputs.link-azle }}
             run-experimental: ${{ inputs.run-experimental }}
             fuzz: ${{ inputs.fuzz }}
-            call-delay: ${{ inputs.call-delay }}
-            time-limit: ${{ inputs.time-limit }}
+            fuzz-call-delay: ${{ inputs.fuzz-call-delay }}
+            fuzz-time-limit: ${{ inputs.fuzz-time-limit }}
             operating-system: ${{ inputs.operating-system }}
 
     run-tests-wsl-ubuntu:
@@ -56,5 +56,5 @@ jobs:
             link-azle: ${{ inputs.link-azle }}
             run-experimental: ${{ inputs.run-experimental }}
             fuzz: ${{ inputs.fuzz }}
-            call-delay: ${{ inputs.call-delay }}
-            time-limit: ${{ inputs.time-limit }}
+            fuzz-call-delay: ${{ inputs.fuzz-call-delay }}
+            fuzz-time-limit: ${{ inputs.fuzz-time-limit }}

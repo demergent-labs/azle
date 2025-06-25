@@ -1,0 +1,16 @@
+{
+    "expectedErrors": [
+        "trapped from getRandomnessWithTrapCaught",
+        "trapped from getRandomnessWithTrapCaughtAndTrapAgain",
+        "Uncaught Error: executing within the reject callback",
+        "trapped from getRandomnessWithTrapCaughtPromise",
+        "trapped from getRandomnessWithTrapUncaught",
+        "calling msgReject from getRandomnessMsgRejectInRejectCallback",
+        "calling msgReject from getRandomnessMsgRejectInReplyCallback"
+    ],
+    "skipMethods": [
+        "getRandomnessWithTrapCaughtAndTrapAgain",
+        "getRandomnessMsgRejectInReplyCallback",
+        "deleteAzleGlobalSettleCallbacks"
+    ]
+}

@@ -1,7 +1,7 @@
 use wasmedge_quickjs::JsValue;
 
 use crate::{
-    RUNTIME,
+    PEAK_ALLOC, RUNTIME,
     autoreload::reload_js,
     benchmarking::{BENCHMARKS_REF_CELL, BenchmarkEntry},
     guards::guard_against_non_controllers,
@@ -133,4 +133,10 @@ fn _azle_is_job_queue_empty() -> bool {
     // way to get to the length of the job queue, and we would like to
     // remove wasmedge-quickjs soon after 1.0 is released
     true
+}
+
+/// Returns the current size of the heap in bytes to aid in testing for memory leaks and other global state issues.
+#[ic_cdk::query(guard = "guard_against_non_controllers")]
+fn _azle_heap_allocation() -> u32 {
+    PEAK_ALLOC.current_usage() as u32
 }
