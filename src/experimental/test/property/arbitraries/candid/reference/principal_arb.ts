@@ -38,7 +38,7 @@ export function PrincipalValueArb(): fc.Arbitrary<CandidValues<Principal>> {
 function principal(): fc.Arbitrary<Principal> {
     return fc
         .uint8Array({
-            minLength: 29,
+            minLength: 0,
             maxLength: 29
         })
         .map((sample) => Principal.fromUint8Array(sample));
