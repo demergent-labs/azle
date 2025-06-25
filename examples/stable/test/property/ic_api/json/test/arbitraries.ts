@@ -18,7 +18,7 @@ const RECURSIVE_LIMITS = {
  */
 const principalArb = fc
     .uint8Array({
-        minLength: 29,
+        minLength: 0,
         maxLength: 29
     })
     .map((sample) => Principal.fromUint8Array(sample));
