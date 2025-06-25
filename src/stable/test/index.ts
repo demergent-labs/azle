@@ -197,7 +197,7 @@ function processEnvVars(): {
     const fuzz = process.env.AZLE_FUZZ ?? 'false';
     const checkGlobalStateAfterFuzzTests =
         process.env.AZLE_CHECK_GLOBAL_STATE_AFTER_FUZZ_TESTS ?? 'true';
-    const runSecurityChecks = process.env.AZLE_SECURITY_CHECKS ?? 'false';
+    const runSecurityChecks = process.env.AZLE_SECURITY_CHECKS ?? 'true';
 
     const hasOnly = [
         runTests,
