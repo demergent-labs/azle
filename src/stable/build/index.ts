@@ -147,10 +147,19 @@ export async function handleDevSetupCommand(): Promise<void> {
             dfx: true,
             node: true,
             rust: true,
-            wasi2ic: true
+            wasi2ic: true,
+            'cargo-audit': true,
+            'cargo-deny': true
         });
     } else {
-        await runDevSetupCommand({ dfx, node, rust, wasi2ic });
+        await runDevSetupCommand({
+            dfx,
+            node,
+            rust,
+            wasi2ic,
+            'cargo-audit': true,
+            'cargo-deny': true
+        });
     }
 }
 
