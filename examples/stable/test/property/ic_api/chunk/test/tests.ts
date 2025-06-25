@@ -14,7 +14,7 @@ const max =
     process.env.AZLE_IS_FEATURE_BRANCH_DRAFT_PR === 'true' ||
     process.env.AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE === 'true'
         ? 80
-        : 200;
+        : 100;
 
 // Currently the instruction limit of 40_000_000_000 is hit at about 18_750_000 loops
 // So we are rounding up a bit and using 20_000_000 loops to ensure that the instruction limit is hit
