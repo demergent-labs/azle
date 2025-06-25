@@ -1,10 +1,6 @@
 {
     "caller": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -26,15 +22,30 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "2523880",
+                    "method_name": "echoThroughReject",
+                    "timestamp": "1750853919524509044"
+                },
+                {
+                    "instructions": "2340939",
+                    "method_name": "assertTypes",
+                    "timestamp": "1750853919892174184"
+                }
+            ]
         }
     },
     "rejector": {
         "previous": {
-            "version": "No previous benchmarks",
+            "version": "0.30.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.30.0",
+            "version": "0.32.0",
             "benchmarks": []
         }
     }

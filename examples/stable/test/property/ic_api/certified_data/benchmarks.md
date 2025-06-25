@@ -1,8 +1,18 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
+
+| Id  | Method Name                        | Instructions  | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ---------------------------------- | ------------- | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade                        | 1_004_481_168 | 802_382_467 | $0.0010669039 | $1_066.90         | <font color="red">+4_004_044</font> |
+| 1   | getDataCertificateInUpdate         | 1_714_244     | 1_275_697   | $0.0000016963 | $1.69             | <font color="red">+4_539</font>     |
+| 2   | setData                            | 1_234_487     | 1_083_794   | $0.0000014411 | $1.44             | <font color="green">-4_028</font>   |
+| 3   | getDataCertificateInUpdate         | 1_695_544     | 1_268_217   | $0.0000016863 | $1.68             | <font color="red">+6_173</font>     |
+| 4   | setData                            | 1_238_191     | 1_085_276   | $0.0000014431 | $1.44             | <font color="red">+3_024</font>     |
+| 5   | assertDataCertificateTypesInUpdate | 1_121_510     | 1_038_604   | $0.0000013810 | $1.38             | <font color="red">+4_762</font>     |
+| 6   | assertSetCertifiedDataTypes        | 1_413_096     | 1_155_238   | $0.0000015361 | $1.53             | <font color="red">+3_878</font>     |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name                        | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ---------------------------------- | ------------- | ----------- | ------------- | ----------------- |
@@ -13,10 +23,6 @@
 | 4   | setData                            | 1_235_167     | 1_084_066   | $0.0000014415 | $1.44             |
 | 5   | assertDataCertificateTypesInUpdate | 1_116_748     | 1_036_699   | $0.0000013785 | $1.37             |
 | 6   | assertSetCertifiedDataTypes        | 1_409_218     | 1_153_687   | $0.0000015340 | $1.53             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

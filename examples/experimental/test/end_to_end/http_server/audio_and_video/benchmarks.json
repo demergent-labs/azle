@@ -1,20 +1,6 @@
 {
     "backend": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7517890247"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741368953509254685"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -25,6 +11,16 @@
                     "timestamp": {
                         "__bigint__": "1741976997769584185"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "7745158720",
+                    "method_name": "init",
+                    "timestamp": "1750853911128559351"
                 }
             ]
         }

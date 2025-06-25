@@ -1,56 +1,6 @@
 {
     "bitcore_lib": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "9392153252"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741368955679444500"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "1101365517"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368965740284724"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "6667480994"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368966211795389"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "13787322313"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368967544864815"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "12423588118"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368970191065669"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -97,6 +47,36 @@
                     "timestamp": {
                         "__bigint__": "1741977019711529944"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "8726121408",
+                    "method_name": "init",
+                    "timestamp": "1750853930606410611"
+                },
+                {
+                    "instructions": "1106227164",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853941994233031"
+                },
+                {
+                    "instructions": "6623980202",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853942473951052"
+                },
+                {
+                    "instructions": "18923717117",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853944281305185"
+                },
+                {
+                    "instructions": "17425957891",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853948998536496"
                 }
             ]
         }

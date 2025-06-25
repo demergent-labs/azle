@@ -1,56 +1,6 @@
 {
     "sqlite": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "11914830934"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741368988402477222"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "160171281"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368996968776098"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "75131753"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368997214905661"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "144176993"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368997685054863"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "83179224"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368998178843331"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -97,6 +47,36 @@
                     "timestamp": {
                         "__bigint__": "1741977043012595642"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "11726701141",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1750853972657495691"
+                },
+                {
+                    "instructions": "151439396",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853979222521804"
+                },
+                {
+                    "instructions": "75168305",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853979548647307"
+                },
+                {
+                    "instructions": "144165504",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853979853800453"
+                },
+                {
+                    "instructions": "83288415",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853980172837571"
                 }
             ]
         }

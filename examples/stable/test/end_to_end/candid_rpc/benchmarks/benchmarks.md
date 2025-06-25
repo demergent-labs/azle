@@ -1,6 +1,318 @@
 # Benchmarks for benchmarks
 
-## Current benchmarks Azle version: 0.31.0
+## Current benchmarks Azle version: 0.32.0
+
+| Id  | Method Name               | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------------- | -------------- | -------------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | blobInitStack             | 1_164_591      | 1_055_836      | $0.0000014039 | $1.40             | <font color="red">+2_892</font>         |
+| 1   | blobInitStack             | 1_347_919      | 1_129_167      | $0.0000015014 | $1.50             | <font color="red">+1_124</font>         |
+| 2   | blobInitStack             | 3_535_295      | 2_004_118      | $0.0000026648 | $2.66             | <font color="green">-13_036</font>      |
+| 3   | blobInitStack             | 25_463_883     | 10_775_553     | $0.0000143279 | $14.32            | <font color="green">-398_035</font>     |
+| 4   | blobInitStack             | 246_375_879    | 99_140_351     | $0.0001318240 | $131.82           | <font color="red">+1_031_218</font>     |
+| 5   | blobInitStack             | 2_430_262_997  | 1_772_695_198  | $0.0023570996 | $2_357.09         | <font color="red">+17_656_055</font>    |
+| 6   | blobInitStack             | 24_141_123_944 | 19_257_039_577 | $0.0256055078 | $25_605.50        | <font color="green">-376_000_045</font> |
+| 7   | blobInitHeap              | 1_140_106      | 1_046_042      | $0.0000013909 | $1.39             | <font color="red">+2_374</font>         |
+| 8   | blobInitHeap              | 1_365_160      | 1_136_064      | $0.0000015106 | $1.51             | <font color="red">+1_158</font>         |
+| 9   | blobInitHeap              | 3_730_209      | 2_082_083      | $0.0000027685 | $2.76             | <font color="red">+10_779</font>        |
+| 10  | blobInitHeap              | 27_221_724     | 11_478_689     | $0.0000152629 | $15.26            | <font color="red">+52_220</font>        |
+| 11  | blobInitHeap              | 295_326_875    | 118_720_750    | $0.0001578594 | $157.85           | <font color="red">+554_849</font>       |
+| 12  | blobInitHeap              | 2_811_397_079  | 1_925_148_831  | $0.0025598126 | $2_559.81         | <font color="red">+2_343_009</font>     |
+| 13  | blobInitHeap              | 28_136_854_731 | 22_455_331_892 | $0.0298581812 | $29_858.18        | <font color="red">+31_584_442</font>    |
+| 14  | boolInitStack             | 1_092_674      | 1_027_069      | $0.0000013657 | $1.36             | <font color="green">-3_950</font>       |
+| 15  | boolInitStack             | 1_105_947      | 1_032_378      | $0.0000013727 | $1.37             | <font color="green">-104</font>         |
+| 16  | boolInitStack             | 1_234_763      | 1_083_905      | $0.0000014412 | $1.44             | <font color="red">+450</font>           |
+| 17  | boolInitStack             | 2_516_894      | 1_596_757      | $0.0000021232 | $2.12             | <font color="green">-1_664</font>       |
+| 18  | boolInitStack             | 15_301_187     | 6_710_474      | $0.0000089227 | $8.92             | <font color="green">-1_106</font>       |
+| 19  | boolInitStack             | 143_150_557    | 57_850_222     | $0.0000769217 | $76.92            | <font color="red">+948</font>           |
+| 20  | boolInitStack             | 1_421_607_938  | 969_233_175    | $0.0012887603 | $1_288.76         | <font color="green">-509</font>         |
+| 21  | boolInitHeap              | 1_101_609      | 1_030_643      | $0.0000013704 | $1.37             | <font color="red">+922</font>           |
+| 22  | boolInitHeap              | 1_158_177      | 1_053_270      | $0.0000014005 | $1.40             | <font color="green">-640</font>         |
+| 23  | boolInitHeap              | 1_699_950      | 1_269_980      | $0.0000016887 | $1.68             | <font color="red">+4_667</font>         |
+| 24  | boolInitHeap              | 7_102_435      | 3_430_974      | $0.0000045621 | $4.56             | <font color="green">-42_642</font>      |
+| 25  | boolInitHeap              | 61_570_186     | 25_218_074     | $0.0000335317 | $33.53            | <font color="green">-46_185</font>      |
+| 26  | boolInitHeap              | 615_054_956    | 246_611_982    | $0.0003279126 | $327.91           | <font color="red">+102_049</font>       |
+| 27  | boolInitHeap              | 6_282_536_999  | 4_913_604_799  | $0.0065334729 | $6_533.47         | <font color="red">+1_121_723</font>     |
+| 28  | float32InitStack          | 1_100_596      | 1_030_238      | $0.0000013699 | $1.36             | <font color="red">+3_686</font>         |
+| 29  | float32InitStack          | 1_117_019      | 1_036_807      | $0.0000013786 | $1.37             | <font color="red">+3_935</font>         |
+| 30  | float32InitStack          | 1_281_824      | 1_102_729      | $0.0000014663 | $1.46             | <font color="red">+3_981</font>         |
+| 31  | float32InitStack          | 2_930_924      | 1_762_369      | $0.0000023434 | $2.34             | <font color="red">+1_727</font>         |
+| 32  | float32InitStack          | 19_405_516     | 8_352_206      | $0.0000111057 | $11.10            | <font color="red">+3_349</font>         |
+| 33  | float32InitStack          | 184_153_667    | 74_251_466     | $0.0000987299 | $98.72            | <font color="red">+2_044</font>         |
+| 34  | float32InitStack          | 1_831_610_937  | 1_133_234_374  | $0.0015068278 | $1_506.82         | <font color="red">+2_765</font>         |
+| 35  | float32InitHeap           | 1_105_062      | 1_032_024      | $0.0000013723 | $1.37             | <font color="red">+103</font>           |
+| 36  | float32InitHeap           | 1_167_377      | 1_056_950      | $0.0000014054 | $1.40             | <font color="red">+2_046</font>         |
+| 37  | float32InitHeap           | 1_740_272      | 1_286_108      | $0.0000017101 | $1.71             | <font color="green">-732</font>         |
+| 38  | float32InitHeap           | 7_515_005      | 3_596_002      | $0.0000047815 | $4.78             | <font color="green">-25_439</font>      |
+| 39  | float32InitHeap           | 65_703_135     | 26_871_254     | $0.0000357299 | $35.72            | <font color="green">-453_012</font>     |
+| 40  | float32InitHeap           | 656_646_201    | 263_248_480    | $0.0003500336 | $350.03           | <font color="green">-3_933_403</font>   |
+| 41  | float32InitHeap           | 6_685_798_135  | 5_074_909_254  | $0.0067479546 | $6_747.95         | <font color="green">-52_208_254</font>  |
+| 42  | float64InitStack          | 1_100_582      | 1_030_232      | $0.0000013699 | $1.36             | <font color="red">+3_300</font>         |
+| 43  | float64InitStack          | 1_117_024      | 1_036_809      | $0.0000013786 | $1.37             | <font color="red">+5_816</font>         |
+| 44  | float64InitStack          | 1_281_775      | 1_102_710      | $0.0000014662 | $1.46             | <font color="red">+4_507</font>         |
+| 45  | float64InitStack          | 2_931_476      | 1_762_590      | $0.0000023437 | $2.34             | <font color="red">+953</font>           |
+| 46  | float64InitStack          | 19_406_070     | 8_352_428      | $0.0000111060 | $11.10            | <font color="red">+6_173</font>         |
+| 47  | float64InitStack          | 184_154_037    | 74_251_614     | $0.0000987301 | $98.73            | <font color="red">+3_578</font>         |
+| 48  | float64InitStack          | 1_831_611_307  | 1_133_234_522  | $0.0015068279 | $1_506.82         | <font color="red">+2_919</font>         |
+| 49  | float64InitHeap           | 1_105_609      | 1_032_243      | $0.0000013725 | $1.37             | <font color="red">+2_087</font>         |
+| 50  | float64InitHeap           | 1_167_499      | 1_056_999      | $0.0000014055 | $1.40             | <font color="red">+5_121</font>         |
+| 51  | float64InitHeap           | 1_740_374      | 1_286_149      | $0.0000017102 | $1.71             | <font color="red">+572</font>           |
+| 52  | float64InitHeap           | 7_515_468      | 3_596_187      | $0.0000047817 | $4.78             | <font color="red">+69_290</font>        |
+| 53  | float64InitHeap           | 65_717_916     | 26_877_166     | $0.0000357378 | $35.73            | <font color="green">-489_189</font>     |
+| 54  | float64InitHeap           | 656_646_293    | 263_248_517    | $0.0003500337 | $350.03           | <font color="green">-2_936_120</font>   |
+| 55  | float64InitHeap           | 6_685_798_237  | 5_074_909_294  | $0.0067479546 | $6_747.95         | <font color="green">-4_130_090</font>   |
+| 56  | intInitStack              | 1_100_319      | 1_030_127      | $0.0000013697 | $1.36             | <font color="red">+4_065</font>         |
+| 57  | intInitStack              | 1_113_449      | 1_035_379      | $0.0000013767 | $1.37             | <font color="green">-476</font>         |
+| 58  | intInitStack              | 1_245_350      | 1_088_140      | $0.0000014469 | $1.44             | <font color="red">+4_038</font>         |
+| 59  | intInitStack              | 2_566_578      | 1_616_631      | $0.0000021496 | $2.14             | <font color="green">-474</font>         |
+| 60  | intInitStack              | 15_756_167     | 6_892_466      | $0.0000091647 | $9.16             | <font color="red">+3_991</font>         |
+| 61  | intInitStack              | 147_654_113    | 59_651_645     | $0.0000793170 | $79.31            | <font color="green">-449</font>         |
+| 62  | intInitStack              | 1_466_611_429  | 987_234_571    | $0.0013126962 | $1_312.69         | <font color="red">+3_935</font>         |
+| 63  | intInitHeap               | 1_105_215      | 1_032_086      | $0.0000013723 | $1.37             | <font color="green">-266</font>         |
+| 64  | intInitHeap               | 1_163_993      | 1_055_597      | $0.0000014036 | $1.40             | <font color="red">+5_788</font>         |
+| 65  | intInitHeap               | 1_702_897      | 1_271_158      | $0.0000016902 | $1.69             | <font color="green">-4_655</font>       |
+| 66  | intInitHeap               | 7_141_809      | 3_446_723      | $0.0000045830 | $4.58             | <font color="green">-24_711</font>      |
+| 67  | intInitHeap               | 61_916_634     | 25_356_653     | $0.0000337160 | $33.71            | <font color="green">-525_275</font>     |
+| 68  | intInitHeap               | 619_228_193    | 248_281_277    | $0.0003301322 | $330.13           | <font color="green">-3_342_206</font>   |
+| 69  | intInitHeap               | 6_304_592_582  | 4_922_427_032  | $0.0065452036 | $6_545.20         | <font color="green">-5_234_455</font>   |
+| 70  | int8InitStack             | 1_101_193      | 1_030_477      | $0.0000013702 | $1.37             | <font color="red">+4_122</font>         |
+| 71  | int8InitStack             | 1_113_314      | 1_035_325      | $0.0000013766 | $1.37             | <font color="red">+2_982</font>         |
+| 72  | int8InitStack             | 1_241_622      | 1_086_648      | $0.0000014449 | $1.44             | <font color="red">+1_884</font>         |
+| 73  | int8InitStack             | 2_526_829      | 1_600_731      | $0.0000021284 | $2.12             | <font color="red">+1_849</font>         |
+| 74  | int8InitStack             | 15_356_404     | 6_732_561      | $0.0000089521 | $8.95             | <font color="red">+3_679</font>         |
+| 75  | int8InitStack             | 143_654_384    | 58_051_753     | $0.0000771897 | $77.18            | <font color="red">+2_448</font>         |
+| 76  | int8InitStack             | 1_426_611_680  | 971_234_672    | $0.0012914216 | $1_291.42         | <font color="red">+3_084</font>         |
+| 77  | int8InitHeap              | 1_105_437      | 1_032_174      | $0.0000013725 | $1.37             | <font color="red">+2_911</font>         |
+| 78  | int8InitHeap              | 1_164_027      | 1_055_610      | $0.0000014036 | $1.40             | <font color="red">+1_754</font>         |
+| 79  | int8InitHeap              | 1_700_403      | 1_270_161      | $0.0000016889 | $1.68             | <font color="green">-2_288</font>       |
+| 80  | int8InitHeap              | 7_116_890      | 3_436_756      | $0.0000045698 | $4.56             | <font color="red">+75_473</font>        |
+| 81  | int8InitHeap              | 61_667_626     | 25_257_050     | $0.0000335835 | $33.58            | <font color="red">+598_587</font>       |
+| 82  | int8InitHeap              | 616_738_196    | 247_285_278    | $0.0003288078 | $328.80           | <font color="red">+7_557_890</font>     |
+| 83  | int8InitHeap              | 6_279_692_597  | 4_912_467_038  | $0.0065319600 | $6_531.96         | <font color="red">+49_764_908</font>    |
+| 84  | int16InitStack            | 1_101_198      | 1_030_479      | $0.0000013702 | $1.37             | <font color="red">+3_894</font>         |
+| 85  | int16InitStack            | 1_113_319      | 1_035_327      | $0.0000013766 | $1.37             | <font color="red">+2_763</font>         |
+| 86  | int16InitStack            | 1_241_621      | 1_086_648      | $0.0000014449 | $1.44             | <font color="red">+5_915</font>         |
+| 87  | int16InitStack            | 2_526_850      | 1_600_740      | $0.0000021285 | $2.12             | <font color="red">+2_742</font>         |
+| 88  | int16InitStack            | 15_356_369     | 6_732_547      | $0.0000089521 | $8.95             | <font color="red">+3_184</font>         |
+| 89  | int16InitStack            | 143_654_369    | 58_051_747     | $0.0000771897 | $77.18            | <font color="red">+1_802</font>         |
+| 90  | int16InitStack            | 1_426_611_679  | 971_234_671    | $0.0012914216 | $1_291.42         | <font color="red">+1_731</font>         |
+| 91  | int16InitHeap             | 1_105_441      | 1_032_176      | $0.0000013725 | $1.37             | <font color="red">+4_400</font>         |
+| 92  | int16InitHeap             | 1_163_756      | 1_055_502      | $0.0000014035 | $1.40             | <font color="red">+3_952</font>         |
+| 93  | int16InitHeap             | 1_699_685      | 1_269_874      | $0.0000016885 | $1.68             | <font color="red">+1_572</font>         |
+| 94  | int16InitHeap             | 7_115_971      | 3_436_388      | $0.0000045693 | $4.56             | <font color="green">-24_588</font>      |
+| 95  | int16InitHeap             | 61_667_203     | 25_256_881     | $0.0000335833 | $33.58            | <font color="green">-491_276</font>     |
+| 96  | int16InitHeap             | 616_737_350    | 247_284_940    | $0.0003288074 | $328.80           | <font color="green">-2_342_081</font>   |
+| 97  | int16InitHeap             | 6_279_691_921  | 4_912_466_768  | $0.0065319597 | $6_531.95         | <font color="red">+49_762_061</font>    |
+| 98  | int32InitStack            | 1_100_529      | 1_030_211      | $0.0000013698 | $1.36             | <font color="red">+3_979</font>         |
+| 99  | int32InitStack            | 1_113_309      | 1_035_323      | $0.0000013766 | $1.37             | <font color="red">+883</font>           |
+| 100 | int32InitStack            | 1_241_507      | 1_086_602      | $0.0000014448 | $1.44             | <font color="red">+4_433</font>         |
+| 101 | int32InitStack            | 2_525_850      | 1_600_340      | $0.0000021279 | $2.12             | <font color="red">+5_253</font>         |
+| 102 | int32InitStack            | 15_346_394     | 6_728_557      | $0.0000089468 | $8.94             | <font color="red">+3_174</font>         |
+| 103 | int32InitStack            | 143_554_362    | 58_011_744     | $0.0000771365 | $77.13            | <font color="red">+2_669</font>         |
+| 104 | int32InitStack            | 1_425_611_679  | 970_834_671    | $0.0012908897 | $1_290.88         | <font color="red">+3_940</font>         |
+| 105 | int32InitHeap             | 1_105_439      | 1_032_175      | $0.0000013725 | $1.37             | <font color="red">+2_526</font>         |
+| 106 | int32InitHeap             | 1_163_746      | 1_055_498      | $0.0000014035 | $1.40             | <font color="red">+1_281</font>         |
+| 107 | int32InitHeap             | 1_699_582      | 1_269_832      | $0.0000016885 | $1.68             | <font color="green">-5_040</font>       |
+| 108 | int32InitHeap             | 7_114_985      | 3_435_994      | $0.0000045687 | $4.56             | <font color="green">-41_868</font>      |
+| 109 | int32InitHeap             | 61_657_198     | 25_252_879     | $0.0000335780 | $33.57            | <font color="green">-389_601</font>     |
+| 110 | int32InitHeap             | 616_783_636    | 247_303_454    | $0.0003288320 | $328.83           | <font color="red">+2_204_066</font>     |
+| 111 | int32InitHeap             | 6_278_691_914  | 4_912_066_765  | $0.0065314278 | $6_531.42         | <font color="green">-49_233_907</font>  |
+| 112 | int64InitStack            | 1_100_569      | 1_030_227      | $0.0000013699 | $1.36             | <font color="red">+3_269</font>         |
+| 113 | int64InitStack            | 1_113_719      | 1_035_487      | $0.0000013769 | $1.37             | <font color="green">-147</font>         |
+| 114 | int64InitStack            | 1_245_621      | 1_088_248      | $0.0000014470 | $1.44             | <font color="green">-1_430</font>       |
+| 115 | int64InitStack            | 2_566_832      | 1_616_732      | $0.0000021497 | $2.14             | <font color="red">+6_075</font>         |
+| 116 | int64InitStack            | 15_756_396     | 6_892_558      | $0.0000091648 | $9.16             | <font color="red">+1_957</font>         |
+| 117 | int64InitStack            | 147_654_369    | 59_651_747     | $0.0000793171 | $79.31            | <font color="red">+1_254</font>         |
+| 118 | int64InitStack            | 1_466_611_666  | 987_234_666    | $0.0013126963 | $1_312.69         | <font color="red">+957</font>           |
+| 119 | int64InitHeap             | 1_105_462      | 1_032_184      | $0.0000013725 | $1.37             | <font color="red">+459</font>           |
+| 120 | int64InitHeap             | 1_164_030      | 1_055_612      | $0.0000014036 | $1.40             | <font color="red">+4_178</font>         |
+| 121 | int64InitHeap             | 1_702_150      | 1_270_860      | $0.0000016898 | $1.68             | <font color="red">+3_955</font>         |
+| 122 | int64InitHeap             | 7_140_891      | 3_446_356      | $0.0000045825 | $4.58             | <font color="green">-19_134</font>      |
+| 123 | int64InitHeap             | 61_916_169     | 25_356_467     | $0.0000337157 | $33.71            | <font color="green">-500_740</font>     |
+| 124 | int64InitHeap             | 619_373_649    | 248_339_459    | $0.0003302095 | $330.20           | <font color="red">+2_299_063</font>     |
+| 125 | int64InitHeap             | 6_304_591_921  | 4_922_426_768  | $0.0065452032 | $6_545.20         | <font color="green">-49_237_159</font>  |
+| 126 | natInitStack              | 1_100_566      | 1_030_226      | $0.0000013699 | $1.36             | <font color="red">+4_689</font>         |
+| 127 | natInitStack              | 1_113_702      | 1_035_480      | $0.0000013768 | $1.37             | <font color="red">+2_580</font>         |
+| 128 | natInitStack              | 1_245_624      | 1_088_249      | $0.0000014470 | $1.44             | <font color="red">+4_712</font>         |
+| 129 | natInitStack              | 2_567_002      | 1_616_800      | $0.0000021498 | $2.14             | <font color="red">+2_788</font>         |
+| 130 | natInitStack              | 15_756_548     | 6_892_619      | $0.0000091649 | $9.16             | <font color="red">+4_838</font>         |
+| 131 | natInitStack              | 147_654_526    | 59_651_810     | $0.0000793172 | $79.31            | <font color="red">+2_751</font>         |
+| 132 | natInitStack              | 1_466_611_830  | 987_234_732    | $0.0013126964 | $1_312.69         | <font color="red">+2_539</font>         |
+| 133 | natInitHeap               | 1_105_646      | 1_032_258      | $0.0000013726 | $1.37             | <font color="red">+4_094</font>         |
+| 134 | natInitHeap               | 1_164_400      | 1_055_760      | $0.0000014038 | $1.40             | <font color="red">+4_757</font>         |
+| 135 | natInitHeap               | 1_703_301      | 1_271_320      | $0.0000016904 | $1.69             | <font color="green">-2_720</font>       |
+| 136 | natInitHeap               | 7_137_813      | 3_445_125      | $0.0000045809 | $4.58             | <font color="green">-45_101</font>      |
+| 137 | natInitHeap               | 61_893_962     | 25_347_584     | $0.0000337039 | $33.70            | <font color="green">-469_000</font>     |
+| 138 | natInitHeap               | 619_011_473    | 248_194_589    | $0.0003300169 | $330.01           | <font color="red">+1_102_557</font>     |
+| 139 | natInitHeap               | 6_304_592_662  | 4_922_427_064  | $0.0065452036 | $6_545.20         | <font color="green">-50_091_527</font>  |
+| 140 | nat8InitStack             | 1_101_267      | 1_030_506      | $0.0000013702 | $1.37             | <font color="red">+3_597</font>         |
+| 141 | nat8InitStack             | 1_113_474      | 1_035_389      | $0.0000013767 | $1.37             | <font color="red">+2_762</font>         |
+| 142 | nat8InitStack             | 1_241_782      | 1_086_712      | $0.0000014450 | $1.44             | <font color="red">+1_850</font>         |
+| 143 | nat8InitStack             | 2_527_013      | 1_600_805      | $0.0000021285 | $2.12             | <font color="red">+2_267</font>         |
+| 144 | nat8InitStack             | 15_356_541     | 6_732_616      | $0.0000089522 | $8.95             | <font color="red">+4_204</font>         |
+| 145 | nat8InitStack             | 143_654_544    | 58_051_817     | $0.0000771898 | $77.18            | <font color="red">+2_976</font>         |
+| 146 | nat8InitStack             | 1_426_611_840  | 971_234_736    | $0.0012914217 | $1_291.42         | <font color="red">+2_251</font>         |
+| 147 | nat8InitHeap              | 1_105_621      | 1_032_248      | $0.0000013725 | $1.37             | <font color="red">+3_307</font>         |
+| 148 | nat8InitHeap              | 1_164_121      | 1_055_648      | $0.0000014037 | $1.40             | <font color="red">+4_511</font>         |
+| 149 | nat8InitHeap              | 1_700_814      | 1_270_325      | $0.0000016891 | $1.68             | <font color="green">-354</font>         |
+| 150 | nat8InitHeap              | 7_112_882      | 3_435_152      | $0.0000045676 | $4.56             | <font color="red">+8_082</font>         |
+| 151 | nat8InitHeap              | 61_644_958     | 25_247_983     | $0.0000335715 | $33.57            | <font color="red">+23_251</font>        |
+| 152 | nat8InitHeap              | 616_521_476    | 247_198_590    | $0.0003286925 | $328.69           | <font color="red">+6_598_509</font>     |
+| 153 | nat8InitHeap              | 6_279_692_671  | 4_912_467_068  | $0.0065319601 | $6_531.96         | <font color="green">-1_089_326</font>   |
+| 154 | nat16InitStack            | 1_101_270      | 1_030_508      | $0.0000013702 | $1.37             | <font color="red">+613</font>           |
+| 155 | nat16InitStack            | 1_113_469      | 1_035_387      | $0.0000013767 | $1.37             | <font color="red">+2_624</font>         |
+| 156 | nat16InitStack            | 1_241_681      | 1_086_672      | $0.0000014449 | $1.44             | <font color="green">-30</font>          |
+| 157 | nat16InitStack            | 2_526_012      | 1_600_404      | $0.0000021280 | $2.12             | <font color="red">+3_898</font>         |
+| 158 | nat16InitStack            | 15_346_540     | 6_728_616      | $0.0000089468 | $8.94             | <font color="red">+2_702</font>         |
+| 159 | nat16InitStack            | 143_554_543    | 58_011_817     | $0.0000771366 | $77.13            | <font color="red">+4_161</font>         |
+| 160 | nat16InitStack            | 1_425_611_863  | 970_834_745    | $0.0012908898 | $1_290.88         | <font color="red">+3_234</font>         |
+| 161 | nat16InitHeap             | 1_105_599      | 1_032_239      | $0.0000013725 | $1.37             | <font color="red">+1_765</font>         |
+| 162 | nat16InitHeap             | 1_163_840      | 1_055_536      | $0.0000014035 | $1.40             | <font color="red">+5_181</font>         |
+| 163 | nat16InitHeap             | 1_700_544      | 1_270_217      | $0.0000016890 | $1.68             | <font color="green">-1_446</font>       |
+| 164 | nat16InitHeap             | 7_111_702      | 3_434_680      | $0.0000045670 | $4.56             | <font color="red">+10_911</font>        |
+| 165 | nat16InitHeap             | 61_657_182     | 25_252_872     | $0.0000335780 | $33.57            | <font color="green">-495_932</font>     |
+| 166 | nat16InitHeap             | 616_783_823    | 247_303_529    | $0.0003288321 | $328.83           | <font color="green">-2_933_505</font>   |
+| 167 | nat16InitHeap             | 6_278_692_081  | 4_912_066_832  | $0.0065314279 | $6_531.42         | <font color="red">+34_913_076</font>    |
+| 168 | nat32InitStack            | 1_100_704      | 1_030_281      | $0.0000013699 | $1.36             | <font color="red">+3_652</font>         |
+| 169 | nat32InitStack            | 1_113_544      | 1_035_417      | $0.0000013768 | $1.37             | <font color="red">+985</font>           |
+| 170 | nat32InitStack            | 1_242_417      | 1_086_966      | $0.0000014453 | $1.44             | <font color="red">+3_842</font>         |
+| 171 | nat32InitStack            | 2_533_510      | 1_603_404      | $0.0000021320 | $2.13             | <font color="red">+2_459</font>         |
+| 172 | nat32InitStack            | 15_421_558     | 6_758_623      | $0.0000089867 | $8.98             | <font color="red">+2_319</font>         |
+| 173 | nat32InitStack            | 144_304_567    | 58_311_826     | $0.0000775355 | $77.53            | <font color="red">+2_032</font>         |
+| 174 | nat32InitStack            | 1_433_111_839  | 973_834_735    | $0.0012948788 | $1_294.87         | <font color="red">+1_521</font>         |
+| 175 | nat32InitHeap             | 1_105_614      | 1_032_245      | $0.0000013725 | $1.37             | <font color="green">-534</font>         |
+| 176 | nat32InitHeap             | 1_163_915      | 1_055_566      | $0.0000014036 | $1.40             | <font color="red">+771</font>           |
+| 177 | nat32InitHeap             | 1_701_294      | 1_270_517      | $0.0000016894 | $1.68             | <font color="green">-4_368</font>       |
+| 178 | nat32InitHeap             | 7_119_220      | 3_437_688      | $0.0000045710 | $4.57             | <font color="red">+9_969</font>         |
+| 179 | nat32InitHeap             | 61_732_173     | 25_282_869     | $0.0000336179 | $33.61            | <font color="red">+45_621</font>        |
+| 180 | nat32InitHeap             | 617_533_810    | 247_603_524    | $0.0003292310 | $329.23           | <font color="red">+1_461_403</font>     |
+| 181 | nat32InitHeap             | 6_286_192_081  | 4_915_066_832  | $0.0065354169 | $6_535.41         | <font color="green">-55_089_249</font>  |
+| 182 | nat64InitStack            | 1_100_729      | 1_030_291      | $0.0000013699 | $1.36             | <font color="red">+1_630</font>         |
+| 183 | nat64InitStack            | 1_113_879      | 1_035_551      | $0.0000013769 | $1.37             | <font color="red">+169</font>           |
+| 184 | nat64InitStack            | 1_245_806      | 1_088_322      | $0.0000014471 | $1.44             | <font color="red">+3_144</font>         |
+| 185 | nat64InitStack            | 2_566_968      | 1_616_787      | $0.0000021498 | $2.14             | <font color="red">+3_084</font>         |
+| 186 | nat64InitStack            | 15_756_580     | 6_892_632      | $0.0000091649 | $9.16             | <font color="red">+4_163</font>         |
+| 187 | nat64InitStack            | 147_654_543    | 59_651_817     | $0.0000793172 | $79.31            | <font color="red">+1_617</font>         |
+| 188 | nat64InitStack            | 1_466_611_826  | 987_234_730    | $0.0013126964 | $1_312.69         | <font color="green">-539</font>         |
+| 189 | nat64InitHeap             | 1_105_622      | 1_032_248      | $0.0000013725 | $1.37             | <font color="red">+4_564</font>         |
+| 190 | nat64InitHeap             | 1_164_099      | 1_055_639      | $0.0000014037 | $1.40             | <font color="red">+4_823</font>         |
+| 191 | nat64InitHeap             | 1_703_134      | 1_271_253      | $0.0000016903 | $1.69             | <font color="red">+506</font>           |
+| 192 | nat64InitHeap             | 7_137_626      | 3_445_050      | $0.0000045808 | $4.58             | <font color="red">+8_954</font>         |
+| 193 | nat64InitHeap             | 61_916_151     | 25_356_460     | $0.0000337157 | $33.71            | <font color="green">-494_170</font>     |
+| 194 | nat64InitHeap             | 619_373_823    | 248_339_529    | $0.0003302096 | $330.20           | <font color="red">+1_463_126</font>     |
+| 195 | nat64InitHeap             | 6_304_592_081  | 4_922_426_832  | $0.0065452033 | $6_545.20         | <font color="green">-1_088_107</font>   |
+| 196 | nullInitStack             | 1_100_685      | 1_030_274      | $0.0000013699 | $1.36             | <font color="red">+1_507</font>         |
+| 197 | nullInitStack             | 1_113_430      | 1_035_372      | $0.0000013767 | $1.37             | <font color="red">+1_235</font>         |
+| 198 | nullInitStack             | 1_241_306      | 1_086_522      | $0.0000014447 | $1.44             | <font color="red">+4_413</font>         |
+| 199 | nullInitStack             | 2_521_989      | 1_598_795      | $0.0000021259 | $2.12             | <font color="red">+5_599</font>         |
+| 200 | nullInitStack             | 15_306_566     | 6_712_626      | $0.0000089256 | $8.92             | <font color="red">+3_333</font>         |
+| 201 | nullInitStack             | 143_154_544    | 57_851_817     | $0.0000769238 | $76.92            | <font color="red">+1_220</font>         |
+| 202 | nullInitStack             | 1_421_611_840  | 969_234_736    | $0.0012887624 | $1_288.76         | <font color="red">+4_734</font>         |
+| 203 | nullInitHeap              | 1_105_590      | 1_032_236      | $0.0000013725 | $1.37             | <font color="red">+3_162</font>         |
+| 204 | nullInitHeap              | 1_164_091      | 1_055_636      | $0.0000014036 | $1.40             | <font color="red">+2_517</font>         |
+| 205 | nullInitHeap              | 1_700_307      | 1_270_122      | $0.0000016888 | $1.68             | <font color="red">+2_267</font>         |
+| 206 | nullInitHeap              | 7_107_933      | 3_433_173      | $0.0000045650 | $4.56             | <font color="green">-38_368</font>      |
+| 207 | nullInitHeap              | 61_594_608     | 25_227_843     | $0.0000335447 | $33.54            | <font color="green">-414_330</font>     |
+| 208 | nullInitHeap              | 615_598_536    | 246_829_414    | $0.0003282017 | $328.20           | <font color="red">+680_726</font>       |
+| 209 | nullInitHeap              | 6_274_692_671  | 4_910_467_068  | $0.0065293007 | $6_529.30         | <font color="green">-1_085_659</font>   |
+| 210 | optInitStack              | 1_103_237      | 1_031_294      | $0.0000013713 | $1.37             | <font color="red">+2_846</font>         |
+| 211 | optInitStack              | 1_129_896      | 1_041_958      | $0.0000013855 | $1.38             | <font color="red">+4_375</font>         |
+| 212 | optInitStack              | 1_400_509      | 1_150_203      | $0.0000015294 | $1.52             | <font color="red">+2_002</font>         |
+| 213 | optInitStack              | 4_109_059      | 2_233_623      | $0.0000029700 | $2.96             | <font color="red">+3_854</font>         |
+| 214 | optInitStack              | 31_172_158     | 13_058_863     | $0.0000173640 | $17.36            | <font color="red">+4_670</font>         |
+| 215 | optInitStack              | 301_805_121    | 121_312_048    | $0.0001613050 | $161.30           | <font color="red">+4_662</font>         |
+| 216 | optInitStack              | 3_008_112_391  | 2_403_834_956  | $0.0031963072 | $3_196.30         | <font color="red">+4_642</font>         |
+| 217 | optInitHeap               | 1_107_130      | 1_032_852      | $0.0000013734 | $1.37             | <font color="red">+2_668</font>         |
+| 218 | optInitHeap               | 1_173_829      | 1_059_531      | $0.0000014088 | $1.40             | <font color="red">+2_089</font>         |
+| 219 | optInitHeap               | 1_802_259      | 1_310_903      | $0.0000017431 | $1.74             | <font color="red">+7_062</font>         |
+| 220 | optInitHeap               | 8_074_792      | 3_819_916      | $0.0000050792 | $5.07             | <font color="red">+23_918</font>        |
+| 221 | optInitHeap               | 71_100_868     | 29_030_347     | $0.0000386008 | $38.60            | <font color="green">-756_848</font>     |
+| 222 | optInitHeap               | 707_862_109    | 283_734_843    | $0.0003772737 | $377.27           | <font color="green">-64_777</font>      |
+| 223 | optInitHeap               | 9_496_518_104  | 7_399_197_241  | $0.0098384906 | $9_838.49         | <font color="green">-737_228</font>     |
+| 224 | principalInitStack        | 1_788_595      | 1_305_438      | $0.0000017358 | $1.73             | <font color="green">-1_325</font>       |
+| 225 | principalInitStack        | 5_889_182      | 2_945_672      | $0.0000039168 | $3.91             | <font color="red">+7_120</font>         |
+| 226 | principalInitStack        | 48_976_611     | 20_180_644     | $0.0000268336 | $26.83            | <font color="red">+78_285</font>        |
+| 227 | principalInitStack        | 479_803_755    | 192_511_502    | $0.0002559768 | $255.97           | <font color="red">+762_674</font>       |
+| 228 | principalInitStack        | 4_788_097_736  | 3_515_829_094  | $0.0046748925 | $4_674.89         | <font color="red">+7_634_160</font>     |
+| 229 | principalInitHeap         | 1_774_329      | 1_299_731      | $0.0000017282 | $1.72             | <font color="red">+170</font>           |
+| 230 | principalInitHeap         | 5_923_750      | 2_959_500      | $0.0000039352 | $3.93             | <font color="green">-2_774</font>       |
+| 231 | principalInitHeap         | 49_261_321     | 20_294_528     | $0.0000269850 | $26.98            | <font color="green">-11_286</font>      |
+| 232 | principalInitHeap         | 482_789_427    | 193_705_770    | $0.0002575648 | $257.56           | <font color="green">-43_829</font>      |
+| 233 | principalInitHeap         | 4_811_468_147  | 3_525_177_258  | $0.0046873224 | $4_687.32         | <font color="green">-864_383</font>     |
+| 234 | recordInitStack           | 1_805_361      | 1_312_144      | $0.0000017447 | $1.74             | <font color="green">-2_029</font>       |
+| 235 | recordInitStack           | 6_261_589      | 3_094_635      | $0.0000041148 | $4.11             | <font color="green">-17_256</font>      |
+| 236 | recordInitStack           | 52_931_250     | 21_762_500     | $0.0000289369 | $28.93            | <font color="red">+231_420</font>       |
+| 237 | recordInitStack           | 519_544_131    | 208_407_652    | $0.0002771134 | $277.11           | <font color="red">+1_571_823</font>     |
+| 238 | recordInitStack           | 5_181_637_703  | 4_073_245_081  | $0.0054160718 | $5_416.07         | <font color="red">+4_786_643</font>     |
+| 239 | recordInitHeap            | 1_806_044      | 1_312_417      | $0.0000017451 | $1.74             | <font color="red">+1_051</font>         |
+| 240 | recordInitHeap            | 6_267_623      | 3_097_049      | $0.0000041181 | $4.11             | <font color="red">+931</font>           |
+| 241 | recordInitHeap            | 52_793_191     | 21_707_276     | $0.0000288635 | $28.86            | <font color="red">+9_333</font>         |
+| 242 | recordInitHeap            | 517_963_778    | 207_775_511    | $0.0002762729 | $276.27           | <font color="red">+80_834</font>        |
+| 243 | recordInitHeap            | 5_170_616_256  | 4_068_836_502  | $0.0054102098 | $5_410.20         | <font color="green">-133_874</font>     |
+| 244 | textInitStack             | 1_100_187      | 1_030_074      | $0.0000013697 | $1.36             | <font color="red">+2_914</font>         |
+| 245 | textInitStack             | 1_112_027      | 1_034_810      | $0.0000013760 | $1.37             | <font color="green">-656</font>         |
+| 246 | textInitStack             | 1_249_212      | 1_089_684      | $0.0000014489 | $1.44             | <font color="red">+5_652</font>         |
+| 247 | textInitStack             | 2_585_136      | 1_624_054      | $0.0000021595 | $2.15             | <font color="red">+3_351</font>         |
+| 248 | textInitStack             | 15_926_211     | 6_960_484      | $0.0000092551 | $9.25             | <font color="red">+289</font>           |
+| 249 | textInitStack             | 149_356_541    | 60_332_616     | $0.0000802225 | $80.22            | <font color="red">+5_543</font>         |
+| 250 | textInitStack             | 1_483_610_599  | 994_034_239    | $0.0013217375 | $1_321.73         | <font color="red">+305</font>           |
+| 251 | textInitHeap              | 1_105_210      | 1_032_084      | $0.0000013723 | $1.37             | <font color="green">-1_078</font>       |
+| 252 | textInitHeap              | 1_163_881      | 1_055_552      | $0.0000014035 | $1.40             | <font color="red">+3_477</font>         |
+| 253 | textInitHeap              | 1_703_889      | 1_271_555      | $0.0000016907 | $1.69             | <font color="red">+2_235</font>         |
+| 254 | textInitHeap              | 7_121_515      | 3_438_606      | $0.0000045722 | $4.57             | <font color="green">-28_263</font>      |
+| 255 | textInitHeap              | 62_779_790     | 25_701_916     | $0.0000341751 | $34.17            | <font color="green">-540_871</font>     |
+| 256 | textInitHeap              | 626_447_329    | 251_168_931    | $0.0003339718 | $333.97           | <font color="red">+9_509_974</font>     |
+| 257 | textInitHeap              | 6_386_990_653  | 4_955_386_261  | $0.0065890284 | $6_589.02         | <font color="red">+57_528_384</font>    |
+| 258 | variantInitStack          | 1_106_683      | 1_032_673      | $0.0000013731 | $1.37             | <font color="red">+1_655</font>         |
+| 259 | variantInitStack          | 1_143_023      | 1_047_209      | $0.0000013924 | $1.39             | <font color="red">+1_976</font>         |
+| 260 | variantInitStack          | 1_496_551      | 1_188_620      | $0.0000015805 | $1.58             | <font color="green">-168</font>         |
+| 261 | variantInitStack          | 5_092_818      | 2_627_127      | $0.0000034932 | $3.49             | <font color="red">+34_134</font>        |
+| 262 | variantInitStack          | 40_994_647     | 16_987_858     | $0.0000225882 | $22.58            | <font color="red">+116_530</font>       |
+| 263 | variantInitStack          | 396_304_792    | 159_111_916    | $0.0002115663 | $211.56           | <font color="green">-1_651_089</font>   |
+| 264 | variantInitStack          | 3_953_110_550  | 2_781_834_220  | $0.0036989215 | $3_698.92         | <font color="green">-25_501_857</font>  |
+| 265 | variantInitHeap           | 1_109_045      | 1_033_618      | $0.0000013744 | $1.37             | <font color="red">+1_204</font>         |
+| 266 | variantInitHeap           | 1_175_565      | 1_060_226      | $0.0000014098 | $1.40             | <font color="red">+377</font>           |
+| 267 | variantInitHeap           | 1_805_795      | 1_312_318      | $0.0000017449 | $1.74             | <font color="green">-2_277</font>       |
+| 268 | variantInitHeap           | 8_137_756      | 3_845_102      | $0.0000051127 | $5.11             | <font color="red">+21_885</font>        |
+| 269 | variantInitHeap           | 72_425_497     | 29_560_198     | $0.0000393053 | $39.30            | <font color="green">-923</font>         |
+| 270 | variantInitHeap           | 721_321_363    | 289_118_545    | $0.0003844323 | $384.43           | <font color="green">-176_718</font>     |
+| 271 | variantInitHeap           | 7_353_946_918  | 5_742_168_767  | $0.0076351895 | $7_635.18         | <font color="red">+253_386</font>       |
+| 272 | vecInitStack              | 1_108_149      | 1_033_259      | $0.0000013739 | $1.37             | <font color="red">+547</font>           |
+| 273 | vecInitStack              | 1_157_454      | 1_052_981      | $0.0000014001 | $1.40             | <font color="red">+541</font>           |
+| 274 | vecInitStack              | 1_683_100      | 1_263_240      | $0.0000016797 | $1.67             | <font color="red">+547</font>           |
+| 275 | vecInitStack              | 6_941_831      | 3_366_732      | $0.0000044766 | $4.47             | <font color="red">+565</font>           |
+| 276 | vecInitStack              | 59_506_382     | 24_392_552     | $0.0000324340 | $32.43            | <font color="red">+519</font>           |
+| 277 | vecInitStack              | 585_154_399    | 234_651_759    | $0.0003120094 | $312.00           | <font color="red">+565</font>           |
+| 278 | vecInitStack              | 5_841_611_659  | 4_337_234_663  | $0.0057670908 | $5_767.09         | <font color="red">+561</font>           |
+| 279 | vecInitHeap               | 1_111_735      | 1_034_694      | $0.0000013758 | $1.37             | <font color="red">+559</font>           |
+| 280 | vecInitHeap               | 1_201_948      | 1_070_779      | $0.0000014238 | $1.42             | <font color="red">+1_408</font>         |
+| 281 | vecInitHeap               | 2_072_229      | 1_418_891      | $0.0000018867 | $1.88             | <font color="green">-6_282</font>       |
+| 282 | vecInitHeap               | 10_733_926     | 4_883_570      | $0.0000064935 | $6.49             | <font color="green">-57_532</font>      |
+| 283 | vecInitHeap               | 98_754_653     | 40_091_861     | $0.0000533089 | $53.30            | <font color="green">-557_265</font>     |
+| 284 | vecInitHeap               | 981_132_331    | 393_042_932    | $0.0005226174 | $522.61           | <font color="green">-15_608_461</font>  |
+| 285 | vecInitHeap               | 13_628_059_102 | 10_651_813_640 | $0.0141633970 | $14_163.39        | <font color="red">+4_765_741</font>     |
+| 286 | blobClearHeapStorage      | 2_175_145_252  | 1_670_648_100  | $0.0022214107 | $2_221.41         |                                         |
+| 287 | boolClearHeapStorage      | 49_928_604     | 20_561_441     | $0.0000273399 | $27.33            |                                         |
+| 288 | float32ClearHeapStorage   | 49_928_624     | 20_561_449     | $0.0000273399 | $27.33            |                                         |
+| 289 | float64ClearHeapStorage   | 49_928_765     | 20_561_506     | $0.0000273400 | $27.34            |                                         |
+| 290 | int16ClearHeapStorage     | 49_928_741     | 20_561_496     | $0.0000273400 | $27.34            |                                         |
+| 291 | int32ClearHeapStorage     | 49_928_772     | 20_561_508     | $0.0000273400 | $27.34            |                                         |
+| 292 | int64ClearHeapStorage     | 63_928_766     | 26_161_506     | $0.0000347862 | $34.78            |                                         |
+| 293 | int8ClearHeapStorage      | 49_928_738     | 20_561_495     | $0.0000273400 | $27.34            |                                         |
+| 294 | intClearHeapStorage       | 63_928_860     | 26_161_544     | $0.0000347862 | $34.78            |                                         |
+| 295 | nat16ClearHeapStorage     | 49_928_696     | 20_561_478     | $0.0000273400 | $27.33            |                                         |
+| 296 | nat32ClearHeapStorage     | 49_928_752     | 20_561_500     | $0.0000273400 | $27.34            |                                         |
+| 297 | nat64ClearHeapStorage     | 63_928_784     | 26_161_513     | $0.0000347862 | $34.78            |                                         |
+| 298 | nat8ClearHeapStorage      | 49_928_770     | 20_561_508     | $0.0000273400 | $27.34            |                                         |
+| 299 | natClearHeapStorage       | 63_928_866     | 26_161_546     | $0.0000347862 | $34.78            |                                         |
+| 300 | nullClearHeapStorage      | 49_928_763     | 20_561_505     | $0.0000273400 | $27.34            |                                         |
+| 301 | optClearHeapStorage       | 1_059_572_004  | 824_418_801    | $0.0010962049 | $1_096.20         |                                         |
+| 302 | principalClearHeapStorage | 33_207_041     | 13_872_816     | $0.0000184463 | $18.44            |                                         |
+| 303 | recordClearHeapStorage    | 71_609_744     | 29_233_897     | $0.0000388714 | $38.87            |                                         |
+| 304 | textClearHeapStorage      | 63_926_969     | 26_160_787     | $0.0000347852 | $34.78            |                                         |
+| 305 | variantClearHeapStorage   | 825_742_551    | 330_887_020    | $0.0004399705 | $439.97           |                                         |
+| 306 | vecClearHeapStorage       | 2_021_851_320  | 1_609_330_528  | $0.0021398785 | $2_139.87         |                                         |
+
+## Baseline benchmarks Azle version: 0.31.0
 
 | Id  | Method Name        | Instructions   | Cycles         | USD           | USD/Million Calls |
 | --- | ------------------ | -------------- | -------------- | ------------- | ----------------- |
@@ -290,10 +602,6 @@
 | 283 | vecInitHeap        | 99_311_918     | 40_314_767     | $0.0000536053 | $53.60            |
 | 284 | vecInitHeap        | 996_740_792    | 399_286_316    | $0.0005309190 | $530.91           |
 | 285 | vecInitHeap        | 13_623_293_361 | 10_649_907_344 | $0.0141608623 | $14_160.86        |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 
