@@ -8,7 +8,7 @@ export function getLocalCargoAuditVersion(): string {
     }
 }
 
-function getCargoVersion(packageName: string): string {
+export function getCargoVersion(packageName: string): string {
     const cargoOutput = execSyncPretty('cargo install --list').toString();
 
     // Regular expression to capture both with and without a repository link
