@@ -28,30 +28,33 @@ const principalArb = fc
  *
  * TODO replace with fc.bigInt() once experimental mode no longer relies on wasmedge-quickjs
  */
-const bigIntArb = process.env.AZLE_EXPERIMENTAL
-    ? fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n)
-    : fc.bigInt();
+const bigIntArb =
+    process.env.AZLE_EXPERIMENTAL === 'true'
+        ? fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n)
+        : fc.bigInt();
 
-const bigIntExponent = process.env.AZLE_EXPERIMENTAL ? 59 : 63; // TODO remove once experimental mode no longer relies on wasmedge-quickjs
+const bigIntExponent = process.env.AZLE_EXPERIMENTAL === 'true' ? 59 : 63; // TODO remove once experimental mode no longer relies on wasmedge-quickjs
 
 /**
  * Arbitrary for generating BigInt64 values.
  */
-const bigInt64Arb = process.env.AZLE_EXPERIMENTAL
-    ? fc.bigInt(
-          -(2n ** BigInt(bigIntExponent)),
-          2n ** BigInt(bigIntExponent) - 1n
-      ) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
-    : fc.bigInt();
+const bigInt64Arb =
+    process.env.AZLE_EXPERIMENTAL === 'true'
+        ? fc.bigInt(
+              -(2n ** BigInt(bigIntExponent)),
+              2n ** BigInt(bigIntExponent) - 1n
+          ) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
+        : fc.bigInt();
 
-const bigUint64Exponent = process.env.AZLE_EXPERIMENTAL ? 60 : 64; // TODO remove once experimental mode no longer relies on wasmedge-quickjs
+const bigUint64Exponent = process.env.AZLE_EXPERIMENTAL === 'true' ? 60 : 64; // TODO remove once experimental mode no longer relies on wasmedge-quickjs
 
 /**
  * Arbitrary for generating BigUint64 values.
  */
-const bigUint64Arb = process.env.AZLE_EXPERIMENTAL
-    ? fc.bigInt(0n, 2n ** BigInt(bigUint64Exponent) - 1n) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
-    : fc.bigInt();
+const bigUint64Arb =
+    process.env.AZLE_EXPERIMENTAL === 'true'
+        ? fc.bigInt(0n, 2n ** BigInt(bigUint64Exponent) - 1n) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
+        : fc.bigInt();
 
 /**
  * Arbitrary for generating primitive JavaScript values including special numeric values
