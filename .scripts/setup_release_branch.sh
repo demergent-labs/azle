@@ -32,7 +32,7 @@ npm install
 
 # Run security checks
 echo "Running npm audit..."
-if npm audit --production; then
+if npm audit; then
     echo "npm audit check passed."
 else
     echo "WARNING: npm audit failed. Please review security vulnerabilities."

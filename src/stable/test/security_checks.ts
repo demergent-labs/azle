@@ -3,7 +3,7 @@ import { execSyncPretty } from '#utils/exec_sync_pretty';
 export function runSecurityChecks(): void {
     try {
         console.info('Running npm audit...');
-        execSyncPretty('npm audit --production', {
+        execSyncPretty('npm audit', {
             stdio: 'inherit'
         });
         console.info('npm audit check passed.');
