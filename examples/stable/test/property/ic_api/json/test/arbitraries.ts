@@ -6,10 +6,10 @@ import fc from 'fast-check';
  * to prevent excessive nesting and ensure reasonable test performance
  */
 const RECURSIVE_LIMITS = {
-    maxArrayLength: 2,
-    maxObjectKeys: 3,
-    maxMapEntries: 3,
-    maxSetMembers: 3,
+    maxArrayLength: 5,
+    maxObjectKeys: 5,
+    maxMapEntries: 5,
+    maxSetMembers: 5,
     maxKeyLength: 5
 } as const;
 
