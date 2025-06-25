@@ -1,29 +1,9 @@
-import { execSyncPretty } from '../exec_sync_pretty';
+import { getCargoVersion } from './get_cargo_version';
 
 export function getLocalCargoAuditVersion(): string {
     try {
         return getCargoVersion('cargo-audit');
     } catch (_error) {
         return '0.20.0'; // Return default version if cargo-audit is not installed
-    }
-}
-
-export function getCargoVersion(packageName: string): string {
-    const cargoOutput = execSyncPretty('cargo install --list').toString();
-
-    // Regular expression to capture both with and without a repository link
-    const regex = new RegExp(
-        `${packageName}\\s+v([\\d\\.]+)(?:\\s+\\((https?:\\/\\/.+?)\\))?`
-    );
-    const match = cargoOutput.match(regex);
-
-    if (match !== null && match.length > 1 && typeof match[1] === 'string') {
-        if (match.length > 2 && typeof match[2] === 'string') {
-            return match[2]; // Return the repository link if available
-        } else {
-            return match[1]; // Return the version number if no link is found
-        }
-    } else {
-        throw new Error(`Could not parse ${packageName} version`);
     }
 }
