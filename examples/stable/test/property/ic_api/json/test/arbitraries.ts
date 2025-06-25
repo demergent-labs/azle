@@ -6,10 +6,10 @@ import fc from 'fast-check';
  * to prevent excessive nesting and ensure reasonable test performance
  */
 const RECURSIVE_LIMITS = {
-    maxArrayLength: 2,
-    maxObjectKeys: 3,
-    maxMapEntries: 3,
-    maxSetMembers: 3,
+    maxArrayLength: 5,
+    maxObjectKeys: 5,
+    maxMapEntries: 5,
+    maxSetMembers: 5,
     maxKeyLength: 5
 } as const;
 
@@ -38,23 +38,17 @@ const bigIntExponent = process.env.AZLE_EXPERIMENTAL === 'true' ? 59 : 63; // TO
 /**
  * Arbitrary for generating BigInt64 values.
  */
-const bigInt64Arb =
-    process.env.AZLE_EXPERIMENTAL === 'true'
-        ? fc.bigInt(
-              -(2n ** BigInt(bigIntExponent)),
-              2n ** BigInt(bigIntExponent) - 1n
-          ) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
-        : fc.bigInt();
+const bigInt64Arb = fc.bigInt(
+    -(2n ** BigInt(bigIntExponent)),
+    2n ** BigInt(bigIntExponent) - 1n
+);
 
 const bigUint64Exponent = process.env.AZLE_EXPERIMENTAL === 'true' ? 60 : 64; // TODO remove once experimental mode no longer relies on wasmedge-quickjs
 
 /**
  * Arbitrary for generating BigUint64 values.
  */
-const bigUint64Arb =
-    process.env.AZLE_EXPERIMENTAL === 'true'
-        ? fc.bigInt(0n, 2n ** BigInt(bigUint64Exponent) - 1n) // TODO remove once experimental mode no longer relies on wasmedge-quickjs
-        : fc.bigInt();
+const bigUint64Arb = fc.bigInt(0n, 2n ** BigInt(bigUint64Exponent) - 1n);
 
 /**
  * Arbitrary for generating primitive JavaScript values including special numeric values
