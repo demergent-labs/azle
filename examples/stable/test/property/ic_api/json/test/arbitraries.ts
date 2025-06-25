@@ -109,7 +109,7 @@ const createRecursiveObjectArb = (
 ): fc.Arbitrary<Record<string, any>> =>
     fc.dictionary(
         fc.string({ maxLength: RECURSIVE_LIMITS.maxKeyLength }),
-        valueArb,
+        valueArb.filter((value) => value !== undefined),
         { maxKeys: RECURSIVE_LIMITS.maxObjectKeys }
     );
 
@@ -125,7 +125,7 @@ const createRecursiveMapArb = (
         .array(
             fc.tuple(
                 fc.string({ maxLength: RECURSIVE_LIMITS.maxKeyLength }),
-                valueArb
+                valueArb.filter((value) => value !== undefined)
             ),
             { maxLength: RECURSIVE_LIMITS.maxMapEntries }
         )

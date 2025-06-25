@@ -1,8 +1,5 @@
 import { jsonReplacer, jsonReviver } from './stable_structures/stable_json';
 
-// Unique symbol to represent undefined values during JSON parsing
-export const UNDEFINED_PLACEHOLDER = Symbol.for('azle_undefined_placeholder');
-
 /**
  * An ICP-enabled wrapper over `JSON.stringify`, handling special types like `Principal`, `BigInt`, and `Uint8Array` by default.
  *
@@ -33,81 +30,10 @@ export function jsonParse(
     reviver?: (this: any, key: string, value: any) => any
 ): any {
     try {
-        const result = JSON.parse(text, reviver ?? jsonReviver);
-        // Post-process to restore undefined values when using the default reviver
-        if (reviver === undefined) {
-            return restoreUndefinedValues(result);
-        }
-        return result;
+        return JSON.parse(text, reviver ?? jsonReviver);
     } catch (error: any) {
         throw new Error(
             `jsonParse: Error parsing JSON: ${error.message}. text: ${text}`
         );
     }
-}
-
-/**
- * Recursively processes a value to convert undefined placeholder symbols back to actual undefined values.
- *
- * @param value - The value to process
- * @returns The value with undefined placeholders restored to actual undefined values
- */
-function restoreUndefinedValues(value: any): any {
-    if (value === UNDEFINED_PLACEHOLDER) {
-        return undefined;
-    }
-
-    if (Array.isArray(value)) {
-        return value.map(restoreUndefinedValues);
-    }
-
-    if (value !== null && typeof value === 'object') {
-        // Special handling for Maps - process the values but preserve the Map structure
-        if (value instanceof Map) {
-            const processedMap = new Map();
-            for (const [key, val] of value.entries()) {
-                processedMap.set(
-                    restoreUndefinedValues(key),
-                    restoreUndefinedValues(val)
-                );
-            }
-            return processedMap;
-        }
-
-        // Special handling for Sets - process the values but preserve the Set structure
-        if (value instanceof Set) {
-            const processedSet = new Set();
-            for (const val of value.values()) {
-                processedSet.add(restoreUndefinedValues(val));
-            }
-            return processedSet;
-        }
-
-        // Don't process other special objects that were already correctly restored by jsonReviver
-        if (
-            value instanceof Int8Array ||
-            value instanceof Int16Array ||
-            value instanceof Int32Array ||
-            value instanceof BigInt64Array ||
-            value instanceof Uint8Array ||
-            value instanceof Uint16Array ||
-            value instanceof Uint32Array ||
-            value instanceof BigUint64Array ||
-            value instanceof Float32Array ||
-            value instanceof Float64Array ||
-            (typeof value._isPrincipal === 'boolean' &&
-                value._isPrincipal === true)
-        ) {
-            return value;
-        }
-
-        // Only process plain objects
-        const result: any = {};
-        for (const [key, val] of Object.entries(value)) {
-            result[key] = restoreUndefinedValues(val);
-        }
-        return result;
-    }
-
-    return value;
 }
