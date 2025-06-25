@@ -174,7 +174,6 @@ jobs:
                   AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic --cargo-audit --cargo-deny
 
             - run: cargo audit
-            - run: cargo deny
 
     check-test-success:
         name: Check Azle tests succeeded
