@@ -12,7 +12,6 @@ export default class {
      */
     @query([IDL.Text], IDL.Text)
     processJsonQuery(jsonString: string): string {
-        // Parse the JSON string, then stringify it again
         const parsedValue = jsonParse(jsonString);
         return jsonStringify(parsedValue);
     }
@@ -24,7 +23,6 @@ export default class {
      */
     @update([IDL.Text], IDL.Text)
     processJsonUpdate(jsonString: string): string {
-        // Parse the JSON string, then stringify it again
         const parsedValue = jsonParse(jsonString);
         return jsonStringify(parsedValue);
     }
@@ -34,7 +32,6 @@ export default class {
      */
     @query([], IDL.Bool)
     assertTypes(): boolean {
-        // Assert types for jsonStringify and jsonParse
         type _AssertJsonStringifyReturnType = AssertType<
             NotAnyAndExact<ReturnType<typeof jsonStringify>, string>
         >;
