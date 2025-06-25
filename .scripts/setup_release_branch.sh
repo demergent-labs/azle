@@ -30,5 +30,41 @@ sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" src/stable/build/dfx_exten
 
 npm install
 
+# Run security checks
+echo "Running npm audit..."
+if npm audit --production; then
+    echo "npm audit check passed."
+else
+    echo "WARNING: npm audit failed. Please review security vulnerabilities."
+    read -p "Do you want to continue with the release anyway? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Release aborted."
+        exit 1
+    fi
+fi
+
+# Check if cargo-audit is installed
+if cargo audit --version > /dev/null 2>&1; then
+  echo "Running cargo audit..."
+  cargo audit || { echo "cargo audit failed"; exit 1; }
+else
+  echo "ERROR: cargo-audit is not installed."
+  echo "To install, run: cargo install cargo-audit --version 0.20.0"
+  echo "Release aborted."
+  exit 1
+fi
+
+# Check if cargo-deny is installed
+if cargo deny --version > /dev/null 2>&1; then
+  echo "Running cargo deny check licenses..."
+  cargo deny check licenses || { echo "cargo deny check failed"; exit 1; }
+else
+  echo "ERROR: cargo-deny is not installed."
+  echo "To install, run: cargo install cargo-deny --version 0.15.0"
+  echo "Release aborted."
+  exit 1
+fi
+
 git commit -am "$BRANCH"
 git push origin "$BRANCH"
