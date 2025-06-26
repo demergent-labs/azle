@@ -48,6 +48,8 @@ jobs:
               with:
                   command: 'npm install'
 
+            - run: npm audit
+
             - name: Install global dependencies
               run: |
                   AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic
