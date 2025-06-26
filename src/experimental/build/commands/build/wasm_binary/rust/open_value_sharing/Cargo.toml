@@ -2,6 +2,7 @@
 name = "open_value_sharing"
 version = "0.0.0"
 edition = "2021"
+license = "MIT"
 
 [dependencies]
 serde = { workspace = true }
