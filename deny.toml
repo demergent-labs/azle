@@ -11,17 +11,6 @@ allow = [
     "Unicode-3.0"
 ]
 
-[bans]
-# This section is considered when running `cargo deny check bans`
-
-# Deny multiple versions of the same dependency
-multiple-versions = "warn"
-
-# Configure workspace dependency checking
-[bans.workspace-dependencies]
-# Warn when a workspace dependency is not used
-unused = "warn"
-
 [sources]
 # This section is considered when running `cargo deny check sources`
 

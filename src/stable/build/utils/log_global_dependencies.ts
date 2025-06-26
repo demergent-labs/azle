@@ -18,12 +18,12 @@ export async function logGlobalDependencies(): Promise<void> {
     const cargoDenyVersion = getLocalCargoDenyVersion();
 
     const globalDependencies = {
-        wasi2ic: wasiVersion,
+        dfx: dfxVersion,
         node: nodeVersion,
         rust: rustVersion,
-        dfx: dfxVersion,
         'cargo-audit': cargoAuditVersion,
-        'cargo-deny': cargoDenyVersion
+        'cargo-deny': cargoDenyVersion,
+        wasi2ic: wasiVersion
     };
 
     const packageJsonPath = join(AZLE_ROOT, 'package.json');

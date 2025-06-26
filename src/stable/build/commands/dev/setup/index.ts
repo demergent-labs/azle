@@ -4,12 +4,12 @@ import { AZLE_ROOT } from '#utils/global_paths';
 import { azle } from '../../../../../../package.json';
 
 type DependencyName =
-    | 'node'
     | 'dfx'
+    | 'node'
     | 'rust'
-    | 'wasi2ic'
     | 'cargo-audit'
-    | 'cargo-deny';
+    | 'cargo-deny'
+    | 'wasi2ic';
 
 type DependencyInstallInfo = {
     [key in DependencyName]: boolean;

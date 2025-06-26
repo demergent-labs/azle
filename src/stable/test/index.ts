@@ -230,11 +230,7 @@ function processEnvVars(): {
     const shouldCheckGlobalStateAfterFuzzTests =
         shouldFuzz === true &&
         shouldRun(checkGlobalStateAfterFuzzTests, hasOnly, true);
-    const shouldRunSecurityChecks = shouldRun(
-        runSecurityChecks,
-        hasOnly,
-        false
-    );
+    const shouldRunSecurityChecks = shouldRun(runSecurityChecks, hasOnly, true);
 
     return {
         shouldRunTests,
