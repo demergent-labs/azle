@@ -24,31 +24,14 @@ const principalArb = fc
     .map((sample) => Principal.fromUint8Array(sample));
 
 /**
- * Arbitrary for generating BigInt values.
- *
- * TODO replace with fc.bigInt() once experimental mode no longer relies on wasmedge-quickjs
- */
-const bigIntArb =
-    process.env.AZLE_EXPERIMENTAL === 'true'
-        ? fc.bigInt(-1_000_000_000_000_000_000n, 1_000_000_000_000_000_000n)
-        : fc.bigInt();
-
-const bigIntExponent = process.env.AZLE_EXPERIMENTAL === 'true' ? 59 : 63; // TODO remove once experimental mode no longer relies on wasmedge-quickjs
-
-/**
  * Arbitrary for generating BigInt64 values.
  */
-const bigInt64Arb = fc.bigInt(
-    -(2n ** BigInt(bigIntExponent)),
-    2n ** BigInt(bigIntExponent) - 1n
-);
-
-const bigUint64Exponent = process.env.AZLE_EXPERIMENTAL === 'true' ? 60 : 64; // TODO remove once experimental mode no longer relies on wasmedge-quickjs
+const bigInt64Arb = fc.bigInt(-(2n ** BigInt(63)), 2n ** BigInt(63) - 1n);
 
 /**
  * Arbitrary for generating BigUint64 values.
  */
-const bigUint64Arb = fc.bigInt(0n, 2n ** BigInt(bigUint64Exponent) - 1n);
+const bigUint64Arb = fc.bigInt(0n, 2n ** BigInt(64) - 1n);
 
 /**
  * Arbitrary for generating primitive JavaScript values including special numeric values
@@ -57,7 +40,7 @@ const primitiveArb = fc.oneof(
     fc.string(),
     fc.float(),
     fc.integer(),
-    bigIntArb,
+    fc.bigInt(),
     fc.boolean(),
     fc.constant(null),
     fc.constant(undefined),
