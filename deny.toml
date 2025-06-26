@@ -1,11 +1,6 @@
 [licenses]
 # This section is considered when running `cargo deny check licenses`
 
-# List of explicitly allowed licenses
-# See https://spdx.org/licenses/ for list of possible licenses
-# [possible values: any SPDX 3.11 short identifier (+ optional exception identifier),
-# or SPDX 2.3 license expression for complex license combinations, or "unlicense" for
-# the Unlicense]
 allow = [
     "MIT",
     "Apache-2.0",
@@ -16,11 +11,6 @@ allow = [
     "MPL-2.0",
     "Unicode-3.0"
 ]
-
-# Ignore certain licenses for crates
-# [[licenses.exceptions]]
-# name = "ring"
-# allow = ["OpenSSL"]
 
 [bans]
 # This section is considered when running `cargo deny check bans`
