@@ -86,12 +86,12 @@
     },
     "azle": {
         "globalDependencies": {
-            "wasi2ic": "https://github.com/wasm-forge/wasi2ic?rev=676508667a0c3b9fb900ce19cb33bfafa2ae8f8e#67650866",
+            "dfx": "0.27.0",
             "node": "22.14.0",
             "rust": "1.87.0",
-            "dfx": "0.27.0",
             "cargo-audit": "0.21.2",
-            "cargo-deny": "0.18.3"
+            "cargo-deny": "0.18.3",
+            "wasi2ic": "https://github.com/wasm-forge/wasi2ic?rev=676508667a0c3b9fb900ce19cb33bfafa2ae8f8e#67650866"
         }
     }
 }
