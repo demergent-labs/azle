@@ -4,7 +4,7 @@
     "scripts": {
         "install": "./scripts/install.sh",
         "pretest": "tsx test/pretest.ts",
-        "test": "AZLE_EXPERIMENTAL=true jest"
+        "test": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ]; then AZLE_EXPERIMENTAL=true AZLE_FUZZ=false jest; else AZLE_EXPERIMENTAL=true jest; fi"
     },
     "dependencies": {
         "azle": "0.32.0",

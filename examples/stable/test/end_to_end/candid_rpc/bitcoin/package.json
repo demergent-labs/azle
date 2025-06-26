@@ -5,7 +5,7 @@
         "deploy": "./scripts/deploy.sh bitcoin",
         "install": "./scripts/install.sh",
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ]; then AZLE_FUZZ=false jest; else jest; fi"
     },
     "dependencies": {
         "azle": "0.32.0"

@@ -20,7 +20,7 @@
         "mint": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 $npm_config_address",
         "build": "cd wallet/frontend && npm run build",
         "pretest": "tsx test/pretest.ts",
-        "test": "jest"
+        "test": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ]; then AZLE_FUZZ=false jest; else jest; fi"
     },
     "dependencies": {
         "azle": "0.32.0"
