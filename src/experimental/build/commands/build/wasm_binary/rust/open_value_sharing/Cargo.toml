@@ -14,4 +14,4 @@ ic-stable-structures = { workspace = true }
 anyhow = { workspace = true }
 
 [dev-dependencies]
-proptest = { workspace = true }
+proptest = "1.7.0"

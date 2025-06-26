@@ -19,10 +19,9 @@ peak_alloc = { workspace = true }
 rand = { workspace = true }
 scopeguard = { workspace = true }
 slotmap = { workspace = true }
-sha2 = { workspace = true }
+sha2 = "0.10.9"
 serde = { workspace = true }
 serde_json = { workspace = true }
 ic-wasi-polyfill = { workspace = true }
-wasmedge_quickjs = { workspace = true }
-# wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }
-wasmi = { workspace = true }
+wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "573c6c07316de64e4bb9a9561b079f265fd9bcc4" }
+wasmi = "0.47.0"
