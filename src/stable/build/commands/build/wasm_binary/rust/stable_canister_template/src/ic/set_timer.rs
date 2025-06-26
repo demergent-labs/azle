@@ -20,6 +20,10 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
         let timer_id_u64_rc_cloned_for_cleanup_closure = timer_id_u64_rc.clone();
         let timer_id_u64_rc_cloned_for_timer_closure = timer_id_u64_rc.clone();
 
+        // We use a scopeguard to ensure that the global JavaScript timer callback is cleaned up when the closure is dropped.
+        // This is necessary to prevent memory leaks by ensuring that the global JavaScript timer callback is properly removed
+        // from the global state when it is no longer needed, either because the closure has been executed successfully
+        // or because it has trapped.
         let cleanup_scopeguard = scopeguard::guard((), move |_| {
             let result = with_ctx(|ctx| {
                 let timer_id = timer_id_u64_rc_cloned_for_cleanup_closure
