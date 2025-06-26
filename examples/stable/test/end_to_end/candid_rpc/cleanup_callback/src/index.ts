@@ -1,4 +1,13 @@
-import { call, IDL, msgReject, query, trap, update } from 'azle';
+import {
+    call,
+    chunk,
+    IDL,
+    msgReject,
+    query,
+    setTimer,
+    trap,
+    update
+} from 'azle';
 
 export default class {
     rejectCode: number = 0;
@@ -176,6 +185,39 @@ export default class {
                 'calling msgReject from getRandomnessMsgRejectInRejectCallback'
             );
         }
+    }
+
+    @update([], IDL.Bool)
+    setTimerWithTrap(): boolean {
+        setTimer(0, () => {
+            trap('trapped from setTimerWithTrap');
+        });
+
+        return true;
+    }
+
+    @update([], IDL.Bool)
+    setTimerWithTrapAndInterCanisterCall(): boolean {
+        setTimer(0, async () => {
+            await chunk();
+
+            trap('trapped from setTimerWithTrapAndInterCanisterCall');
+        });
+
+        return true;
+    }
+
+    @update([], IDL.Bool)
+    setTimerWithTrapAndInterCanisterCalls(): boolean {
+        setTimer(0, async () => {
+            await chunk();
+            await chunk();
+            await chunk();
+
+            trap('trapped from setTimerWithTrapAndInterCanisterCalls');
+        });
+
+        return true;
     }
 
     @update
