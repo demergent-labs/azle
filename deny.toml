@@ -7,7 +7,7 @@ allow = [
     "ISC",
     "Zlib",
     "CC0-1.0",
-    "MPL-2.0",
+    "MPL-2.0", # TODO try and remove when we replace wasmedge_quickjs
     "Unicode-3.0"
 ]
 
