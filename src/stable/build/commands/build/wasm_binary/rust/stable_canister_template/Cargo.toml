@@ -9,8 +9,8 @@ crate-type = ["cdylib"]
 [dependencies]
 candid = "0.10.14"
 candid_parser = "0.1.4"
-ic-cdk = "0.18.4"
-ic-cdk-timers = "0.12.1"
+ic-cdk = "0.18.5"
+ic-cdk-timers = "0.12.2"
 ic-stable-structures = "0.6.9"
 ic-wasi-polyfill = "0.8.2"
 peak_alloc = "0.3.0"
