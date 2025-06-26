@@ -18,11 +18,21 @@ runTests(() => {
     let bitcoinDaemon: BitcoinDaemon;
 
     beforeAll(async () => {
-        bitcoinDaemon = await startBitcoinDaemon();
+        if (
+            process.env.AZLE_RUNNING_IN_WSL !== 'true' &&
+            process.env.AZLE_RUNNING_IN_MAC !== 'true'
+        ) {
+            console.info('Starting bitcoind for Bitcoin tests...');
+            bitcoinDaemon = await startBitcoinDaemon();
+        } else {
+            console.info('Skipping bitcoind startup on Mac or WSL environment');
+        }
     }, 60_000);
 
     afterAll(() => {
-        bitcoinDaemon.kill();
+        if (bitcoinDaemon !== undefined && bitcoinDaemon.killed === false) {
+            bitcoinDaemon.kill();
+        }
     });
 
     describe(
