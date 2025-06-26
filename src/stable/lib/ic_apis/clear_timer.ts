@@ -1,5 +1,3 @@
-import { deleteGlobalTimerCallbacks } from './set_timer';
-
 /**
  * Cancels a timer previously created with `setTimer` or `setTimerInterval`.
  *
@@ -37,4 +35,19 @@ export function clearTimer(timerId: bigint): void {
     }
 
     deleteGlobalTimerCallbacks(timerId);
+}
+
+function deleteGlobalTimerCallbacks(timerId: bigint): void {
+    if (globalThis._azleDispatch === undefined) {
+        throw new Error('globalThis._azleDispatch is undefined');
+    }
+
+    globalThis._azleDispatch({
+        type: 'DELETE_AZLE_TIMER_CALLBACK',
+        payload: timerId,
+        location: {
+            filepath: 'azle/src/stable/lib/ic_apis/clear_timer.ts',
+            functionName: 'deleteGlobalTimerCallbacks'
+        }
+    });
 }

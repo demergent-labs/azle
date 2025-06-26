@@ -9,6 +9,7 @@ use slotmap::Key;
 use crate::{
     ic::{drain_inter_canister_call_futures, drain_microtasks},
     rquickjs_utils::{call_with_error_handling, with_ctx},
+    state::dispatch_action,
 };
 
 pub fn get_function(ctx: Ctx) -> Result<Function> {
@@ -16,11 +17,36 @@ pub fn get_function(ctx: Ctx) -> Result<Function> {
         let delay_duration = Duration::new(delay, 0);
 
         let timer_id_u64_rc: Rc<RefCell<Option<u64>>> = Rc::new(RefCell::new(None));
-        let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
+        let timer_id_u64_rc_cloned_for_cleanup_closure = timer_id_u64_rc.clone();
+        let timer_id_u64_rc_cloned_for_timer_closure = timer_id_u64_rc.clone();
+
+        let cleanup_scopeguard = scopeguard::guard((), move |_| {
+            let result = with_ctx(|ctx| {
+                let timer_id = timer_id_u64_rc_cloned_for_cleanup_closure
+                    .borrow()
+                    .ok_or("TimerId not found in reference-counting pointer")?;
+
+                dispatch_action(
+                    ctx.clone(),
+                    "DELETE_AZLE_TIMER_CALLBACK",
+                    ctx.eval::<BigInt, &str>(&format!("{timer_id}n"))?.into(),
+                    "azle/src/stable/build/commands/build/wasm_binary/rust/stable_canister_template/src/ic/set_timer.rs",
+                    "scopeguard::guard",
+                )?;
+
+                Ok(())
+            });
+
+            if let Err(e) = result {
+                trap(&format!("Azle TimerCleanupError: {e}"));
+            }
+        });
 
         let closure = move || {
+            let _cleanup_scopeguard = cleanup_scopeguard;
+
             let result = with_ctx(|ctx| {
-                let timer_id = timer_id_u64_rc_cloned
+                let timer_id = timer_id_u64_rc_cloned_for_timer_closure
                     .borrow()
                     .ok_or("TimerId not found in reference-counting pointer")?;
 
