@@ -8,7 +8,7 @@ import {
     defaultPropTestParams,
     expect,
     getCanisterActor,
-    it,
+    it as test,
     Test
 } from 'azle/_internal/test';
 import {
@@ -28,6 +28,8 @@ type DeployCanisterOptions = {
 };
 
 const CANISTER_NAME = 'canister';
+
+const it = process.env.AZLE_RUNNING_IN_WSL === 'true' ? test.skip : test;
 
 export function getTests(): Test {
     return () => {
