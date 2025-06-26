@@ -34,10 +34,10 @@ export function clearTimer(timerId: bigint): void {
         globalThis._azleIc.clearTimer(timerId.toString());
     }
 
-    deleteGlobalTimerCallbacks(timerId);
+    deleteGlobalTimerCallback(timerId);
 }
 
-function deleteGlobalTimerCallbacks(timerId: bigint): void {
+function deleteGlobalTimerCallback(timerId: bigint): void {
     if (globalThis._azleDispatch === undefined) {
         throw new Error('globalThis._azleDispatch is undefined');
     }
@@ -47,7 +47,7 @@ function deleteGlobalTimerCallbacks(timerId: bigint): void {
         payload: timerId,
         location: {
             filepath: 'azle/src/stable/lib/ic_apis/clear_timer.ts',
-            functionName: 'deleteGlobalTimerCallbacks'
+            functionName: 'deleteGlobalTimerCallback'
         }
     });
 }
