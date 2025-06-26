@@ -7,16 +7,16 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.10.14"
-candid_parser = "0.1.4"
-ic-cdk = "0.18.5"
-ic-cdk-timers = "0.12.2"
-ic-stable-structures = "0.6.9"
-ic-wasi-polyfill = "0.8.2"
-peak_alloc = "0.3.0"
-rand = "0.9.1"
-rquickjs = { version = "0.9.0", features = ["array-buffer"] }
-scopeguard = "1.2.0"
-serde = "1.0.219"
-serde_json = "1.0.140"
-slotmap = "1.0.7"
+candid = { workspace = true }
+candid_parser = { workspace = true }
+ic-cdk = { workspace = true }
+ic-cdk-timers = { workspace = true }
+ic-stable-structures = { workspace = true }
+ic-wasi-polyfill = { workspace = true }
+peak_alloc = { workspace = true }
+rand = { workspace = true }
+rquickjs = { workspace = true }
+scopeguard = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+slotmap = { workspace = true }

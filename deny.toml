@@ -19,24 +19,8 @@ allow = [
     "Unicode-DFS-2016",
 ]
 
-# Deny licenses listed here explicitly
-deny = [
-    "GPL-1.0",
-    "GPL-2.0",
-    "GPL-3.0",
-    "AGPL-1.0",
-    "AGPL-3.0",
-    "LGPL-2.0",
-    "LGPL-2.1",
-    "LGPL-3.0",
-    "CDDL-1.0",
-    "CDDL-1.1",
-    "EPL-1.0",
-    "EPL-2.0",
-]
-
-# Deny licenses not explicitly allowed or denied
-unlicensed = "deny"
+# The confidence threshold for detecting a license from license text.
+confidence-threshold = 0.8
 
 # Ignore certain licenses for crates
 # [[licenses.exceptions]]
@@ -49,5 +33,7 @@ unlicensed = "deny"
 # Deny multiple versions of the same dependency
 multiple-versions = "warn"
 
-# Warn when a dependency is not used
-unused-crates = "warn"
+# Configure workspace dependency checking
+[bans.workspace-dependencies]
+# Warn when a workspace dependency is not used
+unused = "warn"

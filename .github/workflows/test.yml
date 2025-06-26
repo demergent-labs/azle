@@ -175,6 +175,8 @@ jobs:
 
             - run: cargo audit
 
+            - run: cargo deny check
+
     check-test-success:
         name: Check Azle tests succeeded
         needs:

@@ -7,21 +7,21 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-anyhow = "1.0.98"
-ic-cdk = "0.18.5"
-ic-cdk-timers = "0.12.2"
-candid = "0.10.14"
-candid_parser = "0.1.4"
-ic-stable-structures = "0.6.9"
+anyhow = { workspace = true }
+ic-cdk = { workspace = true }
+ic-cdk-timers = { workspace = true }
+candid = { workspace = true }
+candid_parser = { workspace = true }
+ic-stable-structures = { workspace = true }
 open_value_sharing = { path = "../open_value_sharing" }
-peak_alloc = "0.3.0"
-rand = "0.9.1"
-scopeguard = "1.2.0"
-slotmap = "=1.0.7"
-sha2 = "0.10.9"
-serde = "1.0.219"
-serde_json = "1.0.140"
-ic-wasi-polyfill = "0.8.2"
-wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "573c6c07316de64e4bb9a9561b079f265fd9bcc4" }
+peak_alloc = { workspace = true }
+rand = { workspace = true }
+scopeguard = { workspace = true }
+slotmap = { workspace = true }
+sha2 = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+ic-wasi-polyfill = { workspace = true }
+wasmedge_quickjs = { workspace = true }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }
-wasmi = "0.47.0"
+wasmi = { workspace = true }
