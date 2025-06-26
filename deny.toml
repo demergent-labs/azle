@@ -1,3 +1,10 @@
+[bans]
+# This section is considered when running `cargo deny check bans`
+
+[bans.workspace-dependencies]
+
+unused = "deny"
+
 [licenses]
 # This section is considered when running `cargo deny check licenses`
 
@@ -20,10 +27,26 @@ allow-git = [
     "https://github.com/demergent-labs/candid",
 ]
 
+# Explicitly deny unknown git sources (strictest setting)
+unknown-git = "deny"
+
+# Explicitly deny unknown registries (only allow crates.io)
+unknown-registry = "deny"
+
+# Allow only crates.io registry
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+
 [advisories]
 # This section is considered when running `cargo deny check advisories`
 
-# Ignore specific advisories by their ID
+# Deny yanked crates (strictest setting)
+yanked = "deny"
+
+# Deny unmaintained crates - valid values: "all", "workspace", "transitive", "none"
+# "all" = strictest, fails for any unmaintained dependency
+unmaintained = "all"
+
+# Ignore specific advisories by their ID (minimize this list!)
 ignore = [
     # encoding crate is unmaintained but used by wasmedge_quickjs
     # Alternative: encoding_rs, but would require upstream changes
