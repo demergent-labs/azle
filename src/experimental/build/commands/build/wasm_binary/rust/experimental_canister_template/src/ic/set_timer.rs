@@ -17,10 +17,27 @@ impl JsFn for NativeFunction {
         let delay = core::time::Duration::new(delay_u64, 0);
 
         let timer_id_u64_rc: Rc<RefCell<Option<u64>>> = Rc::new(RefCell::new(None));
-        let timer_id_u64_rc_cloned = timer_id_u64_rc.clone();
+        let timer_id_u64_rc_cloned_for_cleanup_closure = timer_id_u64_rc.clone();
+        let timer_id_u64_rc_cloned_for_timer_closure = timer_id_u64_rc.clone();
+
+        let mut context_clone = context.clone();
+
+        let cleanup_scopeguard = scopeguard::guard((), move |_| {
+            let timer_id = timer_id_u64_rc_cloned_for_cleanup_closure.borrow().unwrap();
+
+            let global = context_clone.get_global();
+            let timer_callbacks = global.get("_azleTimerCallbacks");
+
+            timer_callbacks
+                .to_obj()
+                .unwrap()
+                .delete(&timer_id.to_string());
+        });
 
         let closure = move || {
-            let timer_id = timer_id_u64_rc_cloned.borrow().unwrap();
+            let _cleanup_scopeguard = cleanup_scopeguard;
+
+            let timer_id = timer_id_u64_rc_cloned_for_timer_closure.borrow().unwrap();
 
             RUNTIME.with(|runtime| {
                 let mut runtime = runtime.borrow_mut();
