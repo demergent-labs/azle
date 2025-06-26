@@ -171,7 +171,7 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic --cargo-audit --cargo-deny
+                  AZLE_VERBOSE=true npx azle dev setup --rust --cargo-audit --cargo-deny
 
             - run: cargo audit
 
