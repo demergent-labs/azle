@@ -192,6 +192,7 @@ jobs:
                       echo "dfx installation completed."
                   }
 
+                  # Cargo is needed to install didc which is used in several tests
                   install_rust_cargo() {
                       echo "=== Installing Rust and Cargo ==="
                       echo "Installing Rust and Cargo..."
