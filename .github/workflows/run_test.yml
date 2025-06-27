@@ -46,7 +46,7 @@ jobs:
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
     run-test:
-        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | fuzz ${{ inputs.fuzz }} / cd ${{ inputs.fuzz-call-delay }} / tl ${{ inputs.fuzz-time-limit }}'
+        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | fcd ${{ inputs.fuzz-call-delay }} / ftl ${{ inputs.fuzz-time-limit }}'
         needs: get-test-infos
         runs-on: ${{ matrix.os }}
         env:
