@@ -1,13 +1,9 @@
-import { expect, it, please, Test } from 'azle/_internal/test';
+import { expect, it as test, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
-export function getTests(): Test {
-    if (process.env.AZLE_RUNNING_IN_WSL) {
-        return () => {
-            please('skip all tests on wsl', async () => {});
-        };
-    }
+const it = process.env.AZLE_RUNNING_IN_WSL === 'true' ? test.skip : test; // Skipping on WSL due to sub domain issues
 
+export function getTests(): Test {
     return () => {
         it('gets an initial count via http', async () => {
             expect(await getCount()).toBe(getExpectedGetCountResult(0));

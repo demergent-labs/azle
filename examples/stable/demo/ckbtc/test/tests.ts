@@ -8,17 +8,6 @@ import { Config } from './test';
 let firstDepositAddress: string;
 
 export function getTests(configs: Config[]): Test {
-    if (process.env.AZLE_RUNNING_IN_WSL === 'true') {
-        return () => {
-            please('skip all tests on wsl', async () => {});
-        };
-    }
-    if (process.env.AZLE_RUNNING_IN_MAC === 'true') {
-        return () => {
-            please('skip all tests on mac', async () => {});
-        };
-    }
-
     return () => {
         it('gets balance for first identity', async () => {
             await testGetBalance(configs[0].canister, 0n);

@@ -16,37 +16,17 @@ import {
 import { wallets } from './wallets';
 
 export function getTests(bitcoinCanister: ActorSubclass<_SERVICE>): Test {
-    if (process.env.AZLE_RUNNING_IN_WSL === 'true') {
-        return () => {
-            please('skip all tests on wsl', async () => {});
-        };
-    }
-    if (process.env.AZLE_RUNNING_IN_MAC === 'true') {
-        return () => {
-            please('skip all tests on mac', async () => {});
-        };
-    }
-
     return () => {
         let bitcoinDaemon: BitcoinDaemon;
 
         beforeAll(async () => {
-            if (
-                process.env.AZLE_RUNNING_IN_WSL === 'true' ||
-                process.env.AZLE_RUNNING_IN_MAC === 'true'
-            ) {
-                return;
-            }
-
             bitcoinDaemon = await startBitcoinDaemon();
             createBitcoinWallet(wallets);
             await mine101Blocks(wallets);
         });
 
         afterAll(() => {
-            if (bitcoinDaemon !== undefined && bitcoinDaemon.killed === false) {
-                bitcoinDaemon.kill();
-            }
+            bitcoinDaemon.kill();
         });
 
         wait('for blockchain balance to reflect', 60_000);

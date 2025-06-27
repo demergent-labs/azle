@@ -51,11 +51,7 @@ const CanisterConfigArb = HttpRequestUpdateMethodArb.map(
     }
 );
 
-if (process.env.AZLE_RUNNING_IN_WSL === 'true') {
-    console.info('skipping all tests on wsl');
-} else {
-    runPropTests(CanisterArb(context, CanisterConfigArb));
-}
+runPropTests(CanisterArb(context, CanisterConfigArb));
 
 function generateHttpRequestMethod(): QueryMethod {
     return {

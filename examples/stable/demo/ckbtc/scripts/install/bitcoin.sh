@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Skip Bitcoin installation on Mac or WSL environments
-if [ "$AZLE_RUNNING_IN_MAC" = "true" ] || [ "$AZLE_RUNNING_IN_WSL" = "true" ]; then
-    echo "Skipping Bitcoin installation on Mac or WSL environment"
-    exit 0
-fi
-
 mkdir -p .bitcoin/data
 
 # Check if bitcoind executable exists; if not, download and extract it
