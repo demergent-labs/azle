@@ -11,9 +11,9 @@
         "help": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf help",
         "premanualtest": "tsx test/pretest.ts",
         "manualtest": "jest test/manual_test.ts test/manual.test.ts",
-        "install": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else ./scripts/install.sh; fi",
-        "pretest": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else tsx test/pretest.ts; fi",
-        "test": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ]; then AZLE_EXPERIMENTAL=true AZLE_FUZZ=false jest test/test.ts; else AZLE_EXPERIMENTAL=true jest test/test.ts; fi"
+        "install": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else ./scripts/install.sh; fi",
+        "pretest": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else tsx test/pretest.ts; fi",
+        "test": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ]; then AZLE_EXPERIMENTAL=true AZLE_FUZZ=false jest test/test.ts; else AZLE_EXPERIMENTAL=true jest test/test.ts; fi"
     },
     "dependencies": {
         "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",

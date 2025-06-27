@@ -3,7 +3,7 @@ import { expect, it as test } from 'azle/_internal/test';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
-const it = process.env.AZLE_RUNNING_IN_WSL === 'true' ? test.skip : test;
+const it = process.env.AZLE_RUNNING_IN_WSL_UBUNTU === 'true' ? test.skip : test;
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/management_canister/management_canister.did';

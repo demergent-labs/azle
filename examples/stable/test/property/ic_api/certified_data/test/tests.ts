@@ -29,7 +29,7 @@ type DeployCanisterOptions = {
 
 const CANISTER_NAME = 'canister';
 
-const it = process.env.AZLE_RUNNING_IN_WSL === 'true' ? test.skip : test;
+const it = process.env.AZLE_RUNNING_IN_WSL_UBUNTU === 'true' ? test.skip : test;
 
 export function getTests(): Test {
     return () => {

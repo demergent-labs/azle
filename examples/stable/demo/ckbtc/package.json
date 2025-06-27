@@ -1,9 +1,9 @@
 {
     "scripts": {
-        "bitcoin": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else .bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444; fi",
+        "bitcoin": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else .bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444; fi",
         "ic": "dfx start --clean --enable-bitcoin",
-        "install": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else ./scripts/install/all.sh; fi",
-        "install:bitcoin": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else ./scripts/install/bitcoin.sh; fi",
+        "install": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else ./scripts/install/all.sh; fi",
+        "install:bitcoin": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else ./scripts/install/bitcoin.sh; fi",
         "install:ckbtc": "curl -o ./ckbtc/ledger.wasm.gz https://download.dfinity.systems/ic/d6d395a480cd6986b4788f4aafffc5c03a07e46e/canisters/ic-icrc1-ledger.wasm.gz",
         "install:internet_identity": "curl -L -o ./internet_identity/internet_identity_test.wasm.gz https://github.com/dfinity/internet-identity/releases/download/release-2023-05-15/internet_identity_test.wasm.gz",
         "install:kyt": "curl -o ./kyt/kyt.wasm.gz https://download.dfinity.systems/ic/d6d395a480cd6986b4788f4aafffc5c03a07e46e/canisters/ic-ckbtc-kyt.wasm.gz",
@@ -17,10 +17,10 @@
         "deploy:wallet_backend": "./scripts/deploy/wallet_backend.sh",
         "deploy:wallet_frontend": "dfx deploy wallet_frontend --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai",
         "frontend": "npx open-cli http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:4943/",
-        "mint": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else .bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 $npm_config_address; fi",
+        "mint": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else .bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 $npm_config_address; fi",
         "build": "cd wallet/frontend && npm run build",
-        "pretest": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else tsx test/pretest.ts; fi",
-        "test": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else jest; fi"
+        "pretest": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else tsx test/pretest.ts; fi",
+        "test": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else jest; fi"
     },
     "dependencies": {
         "azle": "0.32.0"

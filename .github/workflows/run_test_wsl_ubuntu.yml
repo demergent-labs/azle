@@ -1,4 +1,4 @@
-name: Run Test (WSL Ubuntu)
+name: Run Test (WSL-Ubuntu)
 
 on:
     workflow_call:
@@ -46,7 +46,7 @@ jobs:
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
     run-test:
-        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | WSL'
+        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | WSL-Ubuntu'
         needs: get-test-infos
         runs-on: windows-latest
 
@@ -57,7 +57,7 @@ jobs:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
         steps:
-            - name: Setup WSL
+            - name: Setup WSL-Ubuntu'
               uses: Wandalen/wretry.action@v1.4.10
               with:
                   action: Vampire/setup-wsl@v5
@@ -73,9 +73,9 @@ jobs:
                   attempt_limit: 5
                   attempt_delay: 60000
 
-            - name: Clone repository in WSL
+            - name: Clone repository in WSL-Ubuntu
               run: |
-                  # Clone the repository directly in WSL for proper Unix line endings
+                  # Clone the repository directly in WSL-Ubuntu for proper Unix line endings
                   cd /home/tester
                   git clone --no-single-branch https://github.com/${{ github.repository }}.git azle
                   cd azle
@@ -289,7 +289,7 @@ jobs:
                       export AZLE_VERBOSE=true
                       export AZLE_IDENTITY_STORAGE_MODE=plaintext
                       export GITHUB_ACTIONS=true
-                      export AZLE_RUNNING_IN_WSL=true
+                      export AZLE_RUNNING_IN_WSL_UBUNTU=true
                       export AZLE_RUNNING_IN_GITHUB_ACTIONS=true
 
                       npm test

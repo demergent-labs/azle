@@ -1,11 +1,11 @@
 {
     "scripts": {
-        "bitcoind": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else .bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444; fi",
-        "bitcoin-cli": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data -rpcport=18443; fi",
+        "bitcoind": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else .bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444; fi",
+        "bitcoin-cli": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data -rpcport=18443; fi",
         "deploy": "./scripts/deploy.sh bitcoin",
-        "install": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else ./scripts/install.sh; fi",
-        "pretest": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else tsx test/pretest.ts; fi",
-        "test": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else jest; fi"
+        "install": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else ./scripts/install.sh; fi",
+        "pretest": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else tsx test/pretest.ts; fi",
+        "test": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else jest; fi"
     },
     "dependencies": {
         "azle": "0.32.0"
