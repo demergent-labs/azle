@@ -167,6 +167,15 @@ jobs:
 
             - run: npm run typecheck
             - run: npm run lint
+            - run: npm audit
+
+            - name: Install global dependencies
+              run: |
+                  AZLE_VERBOSE=true npx azle dev setup --rust --cargo-audit --cargo-deny
+
+            - run: cargo audit
+
+            - run: cargo deny check
 
     check-test-success:
         name: Check Azle tests succeeded
