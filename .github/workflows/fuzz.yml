@@ -47,6 +47,14 @@ jobs:
                           name: 'Stable Property IC API',
                           directories: './examples/stable/test/property/ic_api'
                       }
+                fuzz_config:
+                    - { name: 'Burst Fuzz', call-delay: '0', time-limit: '10' }
+                    - {
+                          name: 'Standard Fuzz',
+                          call-delay: '.1',
+                          time-limit: '300'
+                      }
+                    - { name: 'Light Fuzz', call-delay: '1', time-limit: '300' }
         uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
@@ -59,6 +67,6 @@ jobs:
                 stable/test/end_to_end/candid_rpc/tuple_types
                 ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             fuzz: true
-            fuzz-call-delay: ${{ inputs.call-delay }}
-            fuzz-time-limit: ${{ inputs.time-limit }}
+            fuzz-call-delay: ${{ inputs.call-delay || matrix.fuzz_config.call-delay }}
+            fuzz-time-limit: ${{ inputs.time-limit || matrix.fuzz_config.time-limit }}
             link-azle: true
