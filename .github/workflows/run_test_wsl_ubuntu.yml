@@ -236,7 +236,7 @@ jobs:
 
                   start_dfx() {
                       echo "=== Starting dfx ==="
-                      if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
+                      if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" || "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
                           dfx start --clean --background
                       else
                           dfx start --clean --background --artificial-delay 0
