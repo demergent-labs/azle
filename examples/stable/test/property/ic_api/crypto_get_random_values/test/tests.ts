@@ -137,7 +137,7 @@ async function validateCryptoGetRandomValues(
             .map(() => actor.cryptoGetRandomValues(name, length))
     );
 
-    randomResults.forEach((randomResult: Uint8Array | number[]) => {
+    randomResults.forEach((randomResult) => {
         expect(randomResultIsUnique(randomResult)).toBe(true);
 
         const expectedByteLength = length * bytesPerElement;
