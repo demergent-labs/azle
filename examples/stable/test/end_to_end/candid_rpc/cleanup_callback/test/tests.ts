@@ -28,7 +28,7 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
         });
 
         it('should have 0 globalThis._azleRejectCallbacks and 0 globalThis._azleResolveCallbacks', () => {
-            checkGlobalSettleCallbackLengths(0);
+            checkGlobalSettleCallbacksLengths(0);
         });
 
         it('should reject with trap when getRandomnessWithTrapCaught is called', async () => {
@@ -45,7 +45,7 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
         });
 
         it('should have 0 globalThis._azleRejectCallbacks and 0 globalThis._azleResolveCallbacks', () => {
-            checkGlobalSettleCallbackLengths(0);
+            checkGlobalSettleCallbacksLengths(0);
         });
 
         it('should reject with trap when getRandomnessWithTrapCaughtRejectCallback is called', async () => {
@@ -62,7 +62,7 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
         });
 
         it('should have 0 globalThis._azleRejectCallbacks and 0 globalThis._azleResolveCallbacks', () => {
-            checkGlobalSettleCallbackLengths(0);
+            checkGlobalSettleCallbacksLengths(0);
         });
 
         it('should reject with trap when getRandomnessWithTrapCaughtPromise is called', async () => {
@@ -81,7 +81,7 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
         });
 
         it('should have 0 globalThis._azleRejectCallbacks and 0 globalThis._azleResolveCallbacks', () => {
-            checkGlobalSettleCallbackLengths(0);
+            checkGlobalSettleCallbacksLengths(0);
         });
 
         it('should reject with trap when getRandomnessWithTrapCaughtAndTrapAgain is called', async () => {
@@ -98,7 +98,7 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
         });
 
         it('should have 1 globalThis._azleRejectCallbacks and 1 globalThis._azleResolveCallbacks', () => {
-            checkGlobalSettleCallbackLengths(1);
+            checkGlobalSettleCallbacksLengths(1);
         });
 
         please(
@@ -123,10 +123,22 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
                 /calling msgReject from getRandomnessMsgRejectInRejectCallback/
             );
         });
+
+        it('calls setTimerWithTrap methods', async () => {
+            expect(await actor.setTimerWithTrap()).toStrictEqual(true);
+            expect(
+                await actor.setTimerWithTrapAndInterCanisterCall()
+            ).toStrictEqual(true);
+            expect(
+                await actor.setTimerWithTrapAndInterCanisterCalls()
+            ).toStrictEqual(true);
+
+            checkGlobalTimerCallbacksLength(0);
+        });
     };
 }
 
-function checkGlobalSettleCallbackLengths(expectedLength: number): void {
+function checkGlobalSettleCallbacksLengths(expectedLength: number): void {
     const azleRejectCallbacksLen = Number(
         execSync(
             `dfx canister call cleanup_callback _azle_reject_callbacks_len --output json`,
@@ -147,4 +159,17 @@ function checkGlobalSettleCallbackLengths(expectedLength: number): void {
 
     expect(azleRejectCallbacksLen).toStrictEqual(expectedLength);
     expect(azleResolveCallbacksLen).toStrictEqual(expectedLength);
+}
+
+function checkGlobalTimerCallbacksLength(expectedLength: number): void {
+    const azleTimerCallbacksLen = Number(
+        execSync(
+            `dfx canister call cleanup_callback _azle_timer_callbacks_len --output json`,
+            {
+                encoding: 'utf-8'
+            }
+        )
+    );
+
+    expect(azleTimerCallbacksLen).toStrictEqual(expectedLength);
 }

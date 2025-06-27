@@ -29,40 +29,58 @@ const testCases: TestCase[] = [
 ];
 
 export function getTests(): Test {
-    return () => {
-        it('asserts json functions static and runtime types', async () => {
-            const actor = await getCanisterActor<Actor>('canister');
-            expect(await actor.assertTypes()).toBe(true);
-        });
+    if (process.env.AZLE_EXPERIMENTAL === 'true') {
+        return () => {
+            // TODO once we unify the stable mode and experimental mode binaries
+            // TODO and thus completely remove wasmedge-quickjs, then we should
+            // TODO run these tests again in experimental mode. We did not want to
+            // TODO deal with the 64-bit number corruption issue in the old version of QuickJS
+            // TODO that is still used in our version of wasmedge-quickjs
+            it.skip(`does not run these tests on experimental`, () => {});
+        };
+    } else {
+        return () => {
+            it('asserts json functions static and runtime types', async () => {
+                const actor = await getCanisterActor<Actor>('canister');
+                expect(await actor.assertTypes()).toBe(true);
+            });
 
-        describe.each(testCases)(
-            'jsonStringify and jsonParse',
-            ({ type, method }) => {
-                it(`should test jsonStringify and jsonParse with ${type} method`, async () => {
-                    const executionParams = {
-                        ...defaultPropTestParams(),
-                        numRuns:
-                            20 * Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
-                    };
+            describe.each(testCases)(
+                'jsonStringify and jsonParse',
+                ({ type, method }) => {
+                    it(`should test jsonStringify and jsonParse with ${type} method`, async () => {
+                        const executionParams = {
+                            ...defaultPropTestParams(),
+                            numRuns:
+                                20 *
+                                Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
+                        };
 
-                    await fc.assert(
-                        fc.asyncProperty(recursiveValueArb, async (value) => {
-                            const actor =
-                                await getCanisterActor<Actor>('canister');
+                        await fc.assert(
+                            fc.asyncProperty(
+                                recursiveValueArb,
+                                async (value) => {
+                                    const actor =
+                                        await getCanisterActor<Actor>(
+                                            'canister'
+                                        );
 
-                            const jsonString = jsonStringify(value);
+                                    const jsonString = jsonStringify(value);
 
-                            const returnedJsonString =
-                                await actor[method](jsonString);
-                            const parsedValue = jsonParse(returnedJsonString);
+                                    const returnedJsonString =
+                                        await actor[method](jsonString);
+                                    const parsedValue =
+                                        jsonParse(returnedJsonString);
 
-                            expect(returnedJsonString).toBe(jsonString);
-                            expect(parsedValue).toEqual(value);
-                        }),
-                        executionParams
-                    );
-                });
-            }
-        );
-    };
+                                    expect(returnedJsonString).toBe(jsonString);
+                                    expect(parsedValue).toEqual(value);
+                                }
+                            ),
+                            executionParams
+                        );
+                    });
+                }
+            );
+        };
+    }
 }
