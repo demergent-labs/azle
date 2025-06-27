@@ -78,3 +78,4 @@ jobs:
             fuzz-call-delay: ${{ matrix.test_group.call-delay }}
             fuzz-time-limit: ${{ matrix.test_group.time-limit }}
             link-azle: true
+            operating-system: ubuntu
