@@ -1,0 +1,80 @@
+name: Fuzz
+
+on:
+    schedule:
+        # Run at 04:00 UTC (~10:00 PM Mountain Time) every day
+        - cron: '0 4 * * *'
+
+jobs:
+    get-exclude-dirs:
+        name: Get exclude directories
+        runs-on: ubuntu-latest
+        outputs:
+            exclude-dirs: ${{ steps.get-exclude-dirs.outputs.exclude-dirs }}
+        steps:
+            - uses: actions/checkout@v4
+            - id: get-exclude-dirs
+              uses: ./.github/actions/get_exclude_dirs
+              with:
+                  exclude-slow: false
+                  exclude-unstable: true
+                  exclude-release-only: true
+
+    run-tests:
+        name: ${{ matrix.test_group.name }}
+        needs: get-exclude-dirs
+        strategy:
+            fail-fast: false
+            matrix:
+                test_group:
+                    - {
+                          name: 'S/E2E/CRPC | F/0/10',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          call-delay: '0',
+                          time-limit: '10'
+                      }
+                    - {
+                          name: 'S/P/IC API | F/0/10',
+                          directories: './examples/stable/test/property/ic_api',
+                          call-delay: '0',
+                          time-limit: '10'
+                      }
+                    - {
+                          name: 'S/E2E/CRPC | F/.1/300',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          call-delay: '.1',
+                          time-limit: '300'
+                      }
+                    - {
+                          name: 'S/P/IC API | F/.1/300',
+                          directories: './examples/stable/test/property/ic_api',
+                          call-delay: '.1',
+                          time-limit: '300'
+                      }
+                    - {
+                          name: 'S/E2E/CRPC | F/1/300',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          call-delay: '1',
+                          time-limit: '300'
+                      }
+                    - {
+                          name: 'S/P/IC API | F/1/300',
+                          directories: './examples/stable/test/property/ic_api',
+                          call-delay: '1',
+                          time-limit: '300'
+                      }
+        uses: ./.github/workflows/run_test.yml
+        with:
+            directories: ${{ matrix.test_group.directories }}
+            exclude-dirs: >-
+                stable/test/end_to_end/candid_rpc/new
+                stable/test/end_to_end/candid_rpc/ethereum_json_rpc
+                stable/test/end_to_end/candid_rpc/motoko_examples/superheroes
+                stable/test/end_to_end/candid_rpc/outgoing_http_requests
+                stable/test/end_to_end/candid_rpc/recursion
+                stable/test/end_to_end/candid_rpc/tuple_types
+                ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
+            fuzz: true
+            fuzz-call-delay: ${{ matrix.test_group.call-delay }}
+            fuzz-time-limit: ${{ matrix.test_group.time-limit }}
+            link-azle: true

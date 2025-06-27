@@ -1,9 +1,6 @@
 name: Fuzz
 
 on:
-    schedule:
-        # Run at 04:00 UTC (~10:00 PM Mountain Time) every day
-        - cron: '0 4 * * *'
     workflow_dispatch:
         inputs:
             call-delay:
@@ -40,40 +37,12 @@ jobs:
             matrix:
                 test_group:
                     - {
-                          name: 'S/E2E/CRPC | F/0/10',
-                          directories: './examples/stable/test/end_to_end/candid_rpc',
-                          call-delay: '0',
-                          time-limit: '10'
+                          name: 'S/E2E/CRPC | F/${{ inputs.call-delay }}/${{ inputs.time-limit }}',
+                          directories: './examples/stable/test/end_to_end/candid_rpc'
                       }
                     - {
-                          name: 'S/P/IC API | F/0/10',
-                          directories: './examples/stable/test/property/ic_api',
-                          call-delay: '0',
-                          time-limit: '10'
-                      }
-                    - {
-                          name: 'S/E2E/CRPC | F/.1/300',
-                          directories: './examples/stable/test/end_to_end/candid_rpc',
-                          call-delay: '.1',
-                          time-limit: '300'
-                      }
-                    - {
-                          name: 'S/P/IC API | F/.1/300',
-                          directories: './examples/stable/test/property/ic_api',
-                          call-delay: '.1',
-                          time-limit: '300'
-                      }
-                    - {
-                          name: 'S/E2E/CRPC | F/1/300',
-                          directories: './examples/stable/test/end_to_end/candid_rpc',
-                          call-delay: '1',
-                          time-limit: '300'
-                      }
-                    - {
-                          name: 'S/P/IC API | F/1/300',
-                          directories: './examples/stable/test/property/ic_api',
-                          call-delay: '1',
-                          time-limit: '300'
+                          name: 'S/P/IC API | F/${{ inputs.call-delay }}/${{ inputs.time-limit }}',
+                          directories: './examples/stable/test/property/ic_api'
                       }
         uses: ./.github/workflows/run_test.yml
         with:
@@ -87,6 +56,6 @@ jobs:
                 stable/test/end_to_end/candid_rpc/tuple_types
                 ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             fuzz: true
-            fuzz-call-delay: ${{ inputs.call-delay || matrix.test_group.call-delay }}
-            fuzz-time-limit: ${{ inputs.time-limit || matrix.test_group.time-limit }}
+            fuzz-call-delay: ${{ inputs.call-delay }}
+            fuzz-time-limit: ${{ inputs.time-limit }}
             link-azle: true
