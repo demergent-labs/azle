@@ -119,7 +119,6 @@ jobs:
             - workflow-config
             - workflow-context
             - get-exclude-dirs
-        if: ${{ matrix.test_group.operating-system == 'ubuntu' || needs.workflow-context.outputs.should-run-mac-wsl == 'true' }}
         strategy:
             fail-fast: false
             matrix:
@@ -241,6 +240,7 @@ jobs:
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
             operating-system: ${{ matrix.test_group.operating-system }}
             fuzz-time-limit: ${{ needs.workflow-config.outputs.fuzz-time-limit }}
+            skip-mac-wsl: ${{ needs.workflow-context.outputs.should-run-mac-wsl != 'true' }}
 
     top-level-checks:
         name: Top level checks

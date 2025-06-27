@@ -32,10 +32,15 @@ on:
             operating-system:
                 type: string
                 description: 'Operating system to run tests on (ubuntu, mac, or wsl-ubuntu)'
+            skip-mac-wsl:
+                required: false
+                type: boolean
+                default: false
+                description: 'Whether to skip Mac and WSL tests'
 
 jobs:
     run-tests-ubuntu-and-mac:
-        if: ${{ inputs.operating-system == 'ubuntu' || inputs.operating-system == 'mac' }}
+        if: ${{ (inputs.operating-system == 'ubuntu' || inputs.operating-system == 'mac') && (inputs.operating-system == 'ubuntu' || !inputs.skip-mac-wsl) }}
         uses: ./.github/workflows/run_test_ubuntu_and_mac.yml
         with:
             directories: ${{ inputs.directories }}
@@ -48,7 +53,7 @@ jobs:
             operating-system: ${{ inputs.operating-system }}
 
     run-tests-wsl-ubuntu:
-        if: ${{ inputs.operating-system == 'wsl-ubuntu' }}
+        if: ${{ inputs.operating-system == 'wsl-ubuntu' && !inputs.skip-mac-wsl }}
         uses: ./.github/workflows/run_test_wsl_ubuntu.yml
         with:
             directories: ${{ inputs.directories }}
