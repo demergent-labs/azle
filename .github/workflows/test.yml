@@ -73,30 +73,6 @@ jobs:
                   fuzz-dispatch-input-value: ${{ inputs.fuzz }}
                   fuzz-time-limit-dispatch-input-value: ${{ inputs.fuzz-time-limit }}
 
-    workflow-context:
-        name: Determine workflow context
-        runs-on: ubuntu-latest
-        outputs:
-            should-run-mac-wsl: ${{ steps.set-mac-wsl-condition.outputs.should-run-mac-wsl }}
-        steps:
-            - uses: actions/checkout@v4
-
-            - id: determine-context
-              uses: ./.github/actions/determine_workflow_context
-
-            - id: set-mac-wsl-condition
-              run: |
-                  # Mac and WSL tests should run on release PRs or merges into main
-                  IS_RELEASE_PR="${{ steps.determine-context.outputs.is_release_branch_pr }}"
-                  IS_RELEASE_MERGE="${{ steps.determine-context.outputs.is_main_branch_push_from_release_merge }}"
-                  IS_FEATURE_MERGE="${{ steps.determine-context.outputs.is_main_branch_push_from_feature_merge }}"
-
-                  if [[ "$IS_RELEASE_PR" == "true" || "$IS_RELEASE_MERGE" == "true" || "$IS_FEATURE_MERGE" == "true" ]]; then
-                      echo "should-run-mac-wsl=true" >> $GITHUB_OUTPUT
-                  else
-                      echo "should-run-mac-wsl=false" >> $GITHUB_OUTPUT
-                  fi
-
     get-exclude-dirs:
         name: Get exclude directories
         needs: workflow-config
@@ -117,7 +93,6 @@ jobs:
         name: ${{ matrix.test_group.name }}
         needs:
             - workflow-config
-            - workflow-context
             - get-exclude-dirs
         strategy:
             fail-fast: false
@@ -240,7 +215,6 @@ jobs:
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
             operating-system: ${{ matrix.test_group.operating-system }}
             fuzz-time-limit: ${{ needs.workflow-config.outputs.fuzz-time-limit }}
-            skip-mac-wsl: ${{ needs.workflow-context.outputs.should-run-mac-wsl != 'true' }}
 
     top-level-checks:
         name: Top level checks
@@ -273,7 +247,6 @@ jobs:
         needs:
             - run-tests
             - top-level-checks
-            - workflow-context
         runs-on: ubuntu-latest
         if: success()
         steps:
@@ -284,7 +257,6 @@ jobs:
         needs:
             - run-tests
             - top-level-checks
-            - workflow-context
         runs-on: ubuntu-latest
         if: failure()
         steps:
