@@ -24,7 +24,6 @@ updates:
                   - 'ts-jest'
       ignore:
           - dependency-name: 'binaryen'
-          - dependency-name: 'vite'
 
     - package-ecosystem: 'cargo'
       directory: '/'
