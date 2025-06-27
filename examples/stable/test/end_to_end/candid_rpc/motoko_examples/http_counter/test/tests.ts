@@ -1,5 +1,7 @@
-import { expect, it, Test } from 'azle/_internal/test';
+import { expect, it as test, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
+
+const it = process.env.AZLE_RUNNING_IN_WSL_UBUNTU === 'true' ? test.skip : test; // Skipping on WSL due to sub domain issues
 
 export function getTests(): Test {
     return () => {
