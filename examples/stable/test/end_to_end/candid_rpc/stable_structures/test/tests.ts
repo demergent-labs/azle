@@ -1,6 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { describe } from '@jest/globals';
 import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
@@ -120,18 +119,9 @@ export function getTests(
     stableStructuresCanister3: ActorSubclass<CANISTER3_SERVICE>
 ): Test {
     return () => {
-        describe(
-            'initial tests canisters 0-4',
-            preRedeployTests(stableStructuresCanister1, 0, 4)
-        );
-        describe(
-            'initial tests canisters 5-9',
-            preRedeployTests(stableStructuresCanister2, 5, 9)
-        );
-        describe(
-            'initial tests canisters 10-17',
-            preRedeployTests(stableStructuresCanister3, 10, 17)
-        );
+        preRedeployTests(stableStructuresCanister1, 0, 4);
+        preRedeployTests(stableStructuresCanister2, 5, 9);
+        preRedeployTests(stableStructuresCanister3, 10, 17);
 
         please('redeploy canisters', async () => {
             execSync('dfx deploy --upgrade-unchanged', {
@@ -145,18 +135,9 @@ export function getTests(
             expect(await stableStructuresCanister3.getRedeployed()).toBe(true);
         });
 
-        describe(
-            'final tests canisters 0-4',
-            postRedeployTests(stableStructuresCanister1, 0, 4)
-        );
-        describe(
-            'final tests canisters 5-9',
-            postRedeployTests(stableStructuresCanister2, 5, 9)
-        );
-        describe(
-            'final tests canisters 10-17',
-            postRedeployTests(stableStructuresCanister3, 10, 17)
-        );
+        postRedeployTests(stableStructuresCanister1, 0, 4);
+        postRedeployTests(stableStructuresCanister2, 5, 9);
+        postRedeployTests(stableStructuresCanister3, 10, 17);
     };
 }
 
@@ -164,47 +145,45 @@ export function preRedeployTests(
     canister: ActorSubclass<_SERVICE>,
     start: number,
     end: number
-): Test {
+): void {
     const range = Array.from({ length: end - start + 1 }, (v, k) => k + start);
-    return () => {
-        describe.each(range)('initial tests', (index) => {
-            getReturnsEmpty(canister, index);
-            isEmptyReturns(true, 'before insert', canister, index);
-            lenReturns(0, 'before insert', canister, index);
-            containsKeyReturns(false, 'before insert', canister, index);
-            keysIsLength(0, 'before insert', canister, index);
-            valuesIsLength(0, 'before insert', canister, index);
-            itemsIsLength(0, 'before insert', canister, index);
 
-            insert(canister, index);
+    for (const index of range) {
+        getReturnsEmpty(canister, index);
+        isEmptyReturns(true, 'before insert', canister, index);
+        lenReturns(0, 'before insert', canister, index);
+        containsKeyReturns(false, 'before insert', canister, index);
+        keysIsLength(0, 'before insert', canister, index);
+        valuesIsLength(0, 'before insert', canister, index);
+        itemsIsLength(0, 'before insert', canister, index);
 
-            containsKeyReturns(true, 'after insert', canister, index);
-            isEmptyReturns(false, 'after insert', canister, index);
-            lenReturns(1, 'after insert', canister, index);
-            getReturnsExpectedValue('after insert', canister, index);
-            keysIsLength(1, 'after insert', canister, index);
-            valuesIsLength(1, 'after insert', canister, index);
-            itemsIsLength(1, 'after insert', canister, index);
-        });
-    };
+        insert(canister, index);
+
+        containsKeyReturns(true, 'after insert', canister, index);
+        isEmptyReturns(false, 'after insert', canister, index);
+        lenReturns(1, 'after insert', canister, index);
+        getReturnsExpectedValue('after insert', canister, index);
+        keysIsLength(1, 'after insert', canister, index);
+        valuesIsLength(1, 'after insert', canister, index);
+        itemsIsLength(1, 'after insert', canister, index);
+    }
 }
 
 export function postRedeployTests(
     canister: ActorSubclass<_SERVICE>,
     start: number,
     end: number
-): Test {
+): void {
     const range = Array.from({ length: end - start + 1 }, (v, k) => k + start);
-    return () => {
-        describe.each(range)('final tests', (index) => {
-            getReturnsExpectedValue('post redeploy', canister, index);
-            keysIsLength(1, 'after insert', canister, index);
-            valuesIsLength(1, 'after insert', canister, index);
-            itemsIsLength(1, 'after insert', canister, index);
-            remove(canister, index);
-            containsKeyReturns(false, 'after remove', canister, index);
-        });
-    };
+
+    for (const index of range) {
+        getReturnsExpectedValue('post redeploy', canister, index);
+        keysIsLength(1, 'after insert', canister, index);
+        valuesIsLength(1, 'after insert', canister, index);
+        itemsIsLength(1, 'after insert', canister, index);
+        remove(canister, index);
+        containsKeyReturns(false, 'after remove', canister, index);
+    }
 }
 
 function containsKeyReturns(

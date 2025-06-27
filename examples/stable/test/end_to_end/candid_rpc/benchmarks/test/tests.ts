@@ -1,5 +1,4 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { describe } from '@jest/globals';
 import { please, Test } from 'azle/_internal/test';
 
 import { _SERVICE } from './dfx_generated/benchmarks/benchmarks.did';
@@ -51,24 +50,24 @@ const methodNames = [
 ] as const;
 
 const testCases = methodNames.flatMap((methodName) =>
-    iterations.map((iterationCount) => [methodName, iterationCount] as const)
+    iterations.map((iterations) => [methodName, iterations] as const)
 );
 
 export function getTests(actor: ActorSubclass<_SERVICE>): Test {
     return () => {
-        describe.each(testCases)('%s benchmarks', (methodName, iterations) => {
+        for (const [methodName, iterations] of testCases) {
             const pleaseMethod =
                 shouldSkip(methodName, iterations) === true
                     ? please.skip
                     : please;
 
             pleaseMethod(
-                `benchmark with ${iterations} iteration${iterations === 1 ? '' : 's'}`,
+                `benchmark ${methodName} with ${iterations} iteration${iterations === 1 ? '' : 's'}`,
                 async () => {
                     await actor[methodName](iterations);
                 }
             );
-        });
+        }
     };
 }
 

@@ -1,9 +1,22 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { describe } from '@jest/globals';
 import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/candid_encoding/candid_encoding.did';
+
+const candidStrings = [
+    '()',
+    `("hello my friend")`,
+    `(blob "0123456789")`,
+    `(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)`,
+    `(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)`,
+    `(true)`,
+    `(null : null)`,
+    `(vec { 0 : int8; 1 : int8; 2 : int8 })`,
+    `(opt (43 : int32))`,
+    `(func "aaaaa-aa".raw_rand)`,
+    `(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")`
+];
 
 export function getTests(
     candidEncodingCanister: ActorSubclass<_SERVICE>
@@ -16,24 +29,12 @@ export function getTests(
             );
         });
 
-        describe.each([
-            '()',
-            `("hello my friend")`,
-            `(blob "0123456789")`,
-            `(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)`,
-            `(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)`,
-            `(true)`,
-            `(null : null)`,
-            `(vec { 0 : int8; 1 : int8; 2 : int8 })`,
-            `(opt (43 : int32))`,
-            `(func "aaaaa-aa".raw_rand)`,
-            `(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")`
-        ])('simple tests', (candidString) => {
-            it(`candid encodes ${candidString}`, async () =>
-                await candidEncodeTest(candidEncodingCanister, candidString));
+        it.each(candidStrings)('candid encodes %s', async (candidString) => {
+            await candidEncodeTest(candidEncodingCanister, candidString);
+        });
 
-            it(`candid decodes ${candidString}`, async () =>
-                await candidDecodeTest(candidEncodingCanister, candidString));
+        it.each(candidStrings)('candid decodes %s', async (candidString) => {
+            await candidDecodeTest(candidEncodingCanister, candidString);
         });
 
         it('candid encodes/candid decodes (record { first_name = "John"; last_name = "Doe" })', async () => {

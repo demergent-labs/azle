@@ -1,4 +1,3 @@
-import { describe } from '@jest/globals';
 import { jsonParse, jsonStringify } from 'azle';
 import {
     defaultPropTestParams,
@@ -45,40 +44,31 @@ export function getTests(): Test {
                 expect(await actor.assertTypes()).toBe(true);
             });
 
-            describe.each(testCases)(
-                'jsonStringify and jsonParse',
-                ({ type, method }) => {
-                    it(`should test jsonStringify and jsonParse with ${type} method`, async () => {
-                        const executionParams = {
-                            ...defaultPropTestParams(),
-                            numRuns:
-                                20 *
-                                Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
-                        };
+            it.each(testCases)(
+                'should test jsonStringify and jsonParse with $type method',
+                async ({ method }) => {
+                    const executionParams = {
+                        ...defaultPropTestParams(),
+                        numRuns:
+                            20 * Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1)
+                    };
 
-                        await fc.assert(
-                            fc.asyncProperty(
-                                recursiveValueArb,
-                                async (value) => {
-                                    const actor =
-                                        await getCanisterActor<Actor>(
-                                            'canister'
-                                        );
+                    await fc.assert(
+                        fc.asyncProperty(recursiveValueArb, async (value) => {
+                            const actor =
+                                await getCanisterActor<Actor>('canister');
 
-                                    const jsonString = jsonStringify(value);
+                            const jsonString = jsonStringify(value);
 
-                                    const returnedJsonString =
-                                        await actor[method](jsonString);
-                                    const parsedValue =
-                                        jsonParse(returnedJsonString);
+                            const returnedJsonString =
+                                await actor[method](jsonString);
+                            const parsedValue = jsonParse(returnedJsonString);
 
-                                    expect(returnedJsonString).toBe(jsonString);
-                                    expect(parsedValue).toEqual(value);
-                                }
-                            ),
-                            executionParams
-                        );
-                    });
+                            expect(returnedJsonString).toBe(jsonString);
+                            expect(parsedValue).toEqual(value);
+                        }),
+                        executionParams
+                    );
                 }
             );
         };

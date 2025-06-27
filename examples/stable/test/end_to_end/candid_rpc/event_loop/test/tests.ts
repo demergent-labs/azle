@@ -1,5 +1,4 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { describe } from '@jest/globals';
 import { expect, it, Test } from 'azle/_internal/test';
 
 import CanisterClass from '../src/index';
@@ -28,19 +27,22 @@ const METHODS = [
     'testOrdering19',
     'testOrdering20'
 ] as const;
-type MethodName = (typeof METHODS)[number];
 
 const canisterClass = new CanisterClass();
 
 export function getTests(actor: ActorSubclass<_SERVICE>): Test {
     return () => {
-        describe.each(METHODS)('%s', (methodName: MethodName) => {
-            it(`should return the correct order for ${methodName} from the deployed canister`, async () => {
+        it.each(METHODS)(
+            'should return the correct order for %s from the deployed canister',
+            async (methodName) => {
                 const result = await actor[methodName]();
                 expect(Array.from(result)).toStrictEqual([0, 1, 2, 3, 4, 5, 6]);
-            });
+            }
+        );
 
-            it(`should return the correct order for ${methodName} from Node.js`, async () => {
+        it.each(METHODS)(
+            'should return the correct order for %s from Node.js',
+            async (methodName) => {
                 const result = await canisterClass[methodName]();
 
                 // This allows us to emulate what Azle does before returning the encoded result,
@@ -50,7 +52,7 @@ export function getTests(actor: ActorSubclass<_SERVICE>): Test {
                 await new Promise((resolve) => setTimeout(resolve));
 
                 expect(result).toStrictEqual([0, 1, 2, 3, 4, 5, 6]);
-            });
-        });
+            }
+        );
     };
 }

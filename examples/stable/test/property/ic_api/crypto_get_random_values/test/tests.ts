@@ -1,11 +1,9 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { describe } from '@jest/globals';
 import {
     defaultPropTestParams,
     expect,
     getCanisterActor,
     it,
-    please,
     Test
 } from 'azle/_internal/test';
 import { execSync } from 'child_process';
@@ -15,100 +13,114 @@ import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
     return () => {
-        describe.each([
+        const rounds = [
             { name: 'initial' },
             { name: 'after upgrade-unchanged' },
             { name: 'after reinstall' }
-        ])('round $name', (roundName) => {
-            if (roundName.name === 'after upgrade-unchanged') {
-                please('deploy with --upgrade-unchanged', async () => {
-                    execSync('dfx deploy canister --upgrade-unchanged');
-                });
-            }
+        ];
 
-            if (roundName.name === 'after reinstall') {
-                please('reinstall canister', async () => {
+        // If we're running the short test, only test Uint8Array
+        const typedArrays =
+            shouldRunShortTest() === true
+                ? [{ name: 'Uint8Array', bytesPerElement: 1 }]
+                : [
+                      { name: 'Int8Array', bytesPerElement: 1 },
+                      { name: 'Uint8Array', bytesPerElement: 1 },
+                      { name: 'Uint8ClampedArray', bytesPerElement: 1 },
+                      { name: 'Int16Array', bytesPerElement: 2 },
+                      { name: 'Uint16Array', bytesPerElement: 2 },
+                      { name: 'Int32Array', bytesPerElement: 4 },
+                      { name: 'Uint32Array', bytesPerElement: 4 },
+                      { name: 'BigInt64Array', bytesPerElement: 8 },
+                      { name: 'BigUint64Array', bytesPerElement: 8 }
+                  ];
+
+        // Generate test cases by combining rounds and typed arrays
+        const testCases = rounds.flatMap((round) =>
+            typedArrays.map((typedArray) => ({
+                round,
+                typedArray
+            }))
+        );
+
+        it.each(testCases)(
+            'should fill the $typedArray.name correctly and return the correct byte length for round $round.name',
+            async ({ round, typedArray }) => {
+                if (round.name === 'after upgrade-unchanged') {
+                    execSync('dfx deploy canister --upgrade-unchanged');
+                }
+
+                if (round.name === 'after reinstall') {
                     execSync('dfx canister uninstall-code canister');
                     execSync('dfx deploy canister');
-                });
-            }
-
-            // If we're running the short test, only test Uint8Array
-            const typedArrays =
-                shouldRunShortTest() === true
-                    ? [{ name: 'Uint8Array', bytesPerElement: 1 }]
-                    : [
-                          { name: 'Int8Array', bytesPerElement: 1 },
-                          { name: 'Uint8Array', bytesPerElement: 1 },
-                          { name: 'Uint8ClampedArray', bytesPerElement: 1 },
-                          { name: 'Int16Array', bytesPerElement: 2 },
-                          { name: 'Uint16Array', bytesPerElement: 2 },
-                          { name: 'Int32Array', bytesPerElement: 4 },
-                          { name: 'Uint32Array', bytesPerElement: 4 },
-                          { name: 'BigInt64Array', bytesPerElement: 8 },
-                          { name: 'BigUint64Array', bytesPerElement: 8 }
-                      ];
-
-            describe.each(typedArrays)(
-                'crypto.getRandomValues with $name',
-                ({ name, bytesPerElement }) => {
-                    it(`should fill the ${name} correctly and return the correct byte length`, async () => {
-                        const actor = await getCanisterActor<Actor>('canister');
-                        const maxElements = Math.floor(
-                            65_536 / bytesPerElement
-                        );
-
-                        await fc.assert(
-                            fc.asyncProperty(
-                                fc.nat(maxElements),
-                                fc.integer({ min: 2, max: 10 }),
-                                async (length, rawNumCalls) => {
-                                    const numCalls = normalizeNumCalls(
-                                        length,
-                                        rawNumCalls
-                                    );
-
-                                    await validateCryptoGetRandomValues(
-                                        actor,
-                                        name,
-                                        bytesPerElement,
-                                        length,
-                                        numCalls
-                                    );
-                                }
-                            ),
-                            defaultPropTestParams()
-                        );
-                    });
-
-                    it(`should throw quota exceeded error for ${name} with byte length > 65_536`, async () => {
-                        const actor = await getCanisterActor<Actor>('canister');
-                        const minElementsToExceed =
-                            Math.floor(65_536 / bytesPerElement) + 1;
-
-                        await fc.assert(
-                            fc.asyncProperty(
-                                fc.integer({
-                                    min: minElementsToExceed,
-                                    max: 1_000_000
-                                }),
-                                async (length) => {
-                                    await expect(
-                                        actor.cryptoGetRandomValues(
-                                            name,
-                                            length
-                                        )
-                                    ).rejects.toThrow(
-                                        'QuotaExceeded: array cannot be larger than 65_536 bytes'
-                                    );
-                                }
-                            ),
-                            defaultPropTestParams()
-                        );
-                    });
                 }
-            );
-        });
+
+                const actor = await getCanisterActor<Actor>('canister');
+                const maxElements = Math.floor(
+                    65_536 / typedArray.bytesPerElement
+                );
+
+                await fc.assert(
+                    fc.asyncProperty(
+                        fc.nat(maxElements),
+                        fc.integer({ min: 2, max: 10 }),
+                        async (length, rawNumCalls) => {
+                            const numCalls = normalizeNumCalls(
+                                length,
+                                rawNumCalls
+                            );
+
+                            await validateCryptoGetRandomValues(
+                                actor,
+                                typedArray.name,
+                                typedArray.bytesPerElement,
+                                length,
+                                numCalls
+                            );
+                        }
+                    ),
+                    defaultPropTestParams()
+                );
+            }
+        );
+
+        it.each(testCases)(
+            'should throw quota exceeded error for $typedArray.name with byte length > 65_536 for round $round.name',
+            async ({ round, typedArray }) => {
+                if (round.name === 'after upgrade-unchanged') {
+                    execSync('dfx deploy canister --upgrade-unchanged');
+                }
+
+                if (round.name === 'after reinstall') {
+                    execSync('dfx canister uninstall-code canister');
+                    execSync('dfx deploy canister');
+                }
+
+                const actor = await getCanisterActor<Actor>('canister');
+                const minElementsToExceed =
+                    Math.floor(65_536 / typedArray.bytesPerElement) + 1;
+
+                await fc.assert(
+                    fc.asyncProperty(
+                        fc.integer({
+                            min: minElementsToExceed,
+                            max: 1_000_000
+                        }),
+                        async (length) => {
+                            await expect(
+                                actor.cryptoGetRandomValues(
+                                    typedArray.name,
+                                    length
+                                )
+                            ).rejects.toThrow(
+                                'QuotaExceeded: array cannot be larger than 65_536 bytes'
+                            );
+                        }
+                    ),
+                    defaultPropTestParams()
+                );
+            }
+        );
     };
 }
 
