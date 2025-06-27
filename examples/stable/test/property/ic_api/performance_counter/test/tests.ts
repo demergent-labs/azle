@@ -1,4 +1,3 @@
-import { describe } from '@jest/globals';
 import {
     defaultPropTestParams,
     expect,
@@ -45,64 +44,59 @@ export function getTests(): Test {
             }
         ];
 
-        describe.each(testCases)(
-            'test performanceCounter',
-            ({ counterType, method, type }) => {
-                it(`should calculate performanceCounter(${counterType}) instructions accurately from a ${type} method`, async () => {
-                    const actor = await getCanisterActor<Actor>('canister');
+        it.each(testCases)(
+            'should calculate performanceCounter($counterType) instructions accurately from a $type method',
+            async ({ method }) => {
+                const actor = await getCanisterActor<Actor>('canister');
 
-                    await fc.assert(
-                        fc.asyncProperty(
-                            fc.nat({
-                                max: 1_000_000
-                            }),
-                            async (loops) => {
-                                const instructionsLoops0 =
-                                    await actor[method](0);
+                await fc.assert(
+                    fc.asyncProperty(
+                        fc.nat({
+                            max: 1_000_000
+                        }),
+                        async (loops) => {
+                            const instructionsLoops0 = await actor[method](0);
 
-                                const instructions0 =
-                                    await actor[method](loops);
-                                const instructions1 =
-                                    await actor[method](loops);
+                            const instructions0 = await actor[method](loops);
+                            const instructions1 = await actor[method](loops);
 
-                                const instructionsAfter0 = await actor[method](
-                                    loops + 1_000
-                                );
-                                const instructionsAfter1 = await actor[method](
-                                    loops + 1_000
-                                );
+                            const instructionsAfter0 = await actor[method](
+                                loops + 1_000
+                            );
+                            const instructionsAfter1 = await actor[method](
+                                loops + 1_000
+                            );
 
-                                expect(instructionsLoops0).toBeGreaterThan(0n);
-                                expect(instructions0).toBeGreaterThan(0n);
-                                expect(instructions1).toBeGreaterThan(0n);
-                                expect(instructionsAfter0).toBeGreaterThan(0n);
-                                expect(instructionsAfter1).toBeGreaterThan(0n);
+                            expect(instructionsLoops0).toBeGreaterThan(0n);
+                            expect(instructions0).toBeGreaterThan(0n);
+                            expect(instructions1).toBeGreaterThan(0n);
+                            expect(instructionsAfter0).toBeGreaterThan(0n);
+                            expect(instructionsAfter1).toBeGreaterThan(0n);
 
-                                expect(
-                                    percentageDifferenceBigInt(
-                                        instructions0,
-                                        instructions1
-                                    )
-                                ).toBeLessThanOrEqual(5n);
+                            expect(
+                                percentageDifferenceBigInt(
+                                    instructions0,
+                                    instructions1
+                                )
+                            ).toBeLessThanOrEqual(5n);
 
-                                expect(
-                                    percentageDifferenceBigInt(
-                                        instructionsAfter0,
-                                        instructionsAfter1
-                                    )
-                                ).toBeLessThanOrEqual(5n);
-
-                                expect(instructions0).toBeLessThan(
-                                    instructionsAfter0
-                                );
-                                expect(instructions1).toBeLessThan(
+                            expect(
+                                percentageDifferenceBigInt(
+                                    instructionsAfter0,
                                     instructionsAfter1
-                                );
-                            }
-                        ),
-                        defaultPropTestParams()
-                    );
-                });
+                                )
+                            ).toBeLessThanOrEqual(5n);
+
+                            expect(instructions0).toBeLessThan(
+                                instructionsAfter0
+                            );
+                            expect(instructions1).toBeLessThan(
+                                instructionsAfter1
+                            );
+                        }
+                    ),
+                    defaultPropTestParams()
+                );
             }
         );
 
