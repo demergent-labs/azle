@@ -28,37 +28,37 @@ jobs:
             matrix:
                 test_group:
                     - {
-                          name: 'S/E2E/CRPC | F/0/10',
+                          name: 'S/E2E/CRPC | cd 0 | tl 10',
                           directories: './examples/stable/test/end_to_end/candid_rpc',
                           call-delay: '0',
                           time-limit: '10'
                       }
                     - {
-                          name: 'S/P/IC API | F/0/10',
+                          name: 'S/P/IC API | cd 0 | tl 10',
                           directories: './examples/stable/test/property/ic_api',
                           call-delay: '0',
                           time-limit: '10'
                       }
                     - {
-                          name: 'S/E2E/CRPC | F/.1/300',
+                          name: 'S/E2E/CRPC | cd .1 | tl 300',
                           directories: './examples/stable/test/end_to_end/candid_rpc',
                           call-delay: '.1',
                           time-limit: '300'
                       }
                     - {
-                          name: 'S/P/IC API | F/.1/300',
+                          name: 'S/P/IC API | cd .1 | tl 300',
                           directories: './examples/stable/test/property/ic_api',
                           call-delay: '.1',
                           time-limit: '300'
                       }
                     - {
-                          name: 'S/E2E/CRPC | F/1/300',
+                          name: 'S/E2E/CRPC | cd 1 | tl 300',
                           directories: './examples/stable/test/end_to_end/candid_rpc',
                           call-delay: '1',
                           time-limit: '300'
                       }
                     - {
-                          name: 'S/P/IC API | F/1/300',
+                          name: 'S/P/IC API | cd 1 | tl 300',
                           directories: './examples/stable/test/property/ic_api',
                           call-delay: '1',
                           time-limit: '300'
