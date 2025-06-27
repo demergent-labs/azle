@@ -37,11 +37,11 @@ jobs:
             matrix:
                 test_group:
                     - {
-                          name: 'S/E2E/CRPC | F/${{ inputs.call-delay }}/${{ inputs.time-limit }}',
+                          name: 'S/E2E/CRPC | cd ${{ inputs.call-delay }}| tl ${{ inputs.time-limit }}',
                           directories: './examples/stable/test/end_to_end/candid_rpc'
                       }
                     - {
-                          name: 'S/P/IC API | F/${{ inputs.call-delay }}/${{ inputs.time-limit }}',
+                          name: 'S/P/IC API | cd ${{ inputs.call-delay }}| tl ${{ inputs.time-limit }}',
                           directories: './examples/stable/test/property/ic_api'
                       }
         uses: ./.github/workflows/run_test.yml
