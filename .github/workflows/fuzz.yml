@@ -40,21 +40,41 @@ jobs:
             matrix:
                 test_group:
                     - {
-                          name: 'Stable E2E CRPC',
-                          directories: './examples/stable/test/end_to_end/candid_rpc'
+                          name: 'Stable E2E CRPC | Fuzz (call-delay 0, time-limit 10)',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          call-delay: '0',
+                          time-limit: '10'
                       }
                     - {
-                          name: 'Stable Property IC API',
-                          directories: './examples/stable/test/property/ic_api'
+                          name: 'Stable Property IC API | Fuzz (call-delay 0, time-limit 10)',
+                          directories: './examples/stable/test/property/ic_api',
+                          call-delay: '0',
+                          time-limit: '10'
                       }
-                fuzz_config:
-                    - { name: 'Burst Fuzz', call-delay: '0', time-limit: '10' }
                     - {
-                          name: 'Standard Fuzz',
+                          name: 'Stable E2E CRPC | Fuzz (call-delay .1, time-limit 300)',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
                           call-delay: '.1',
                           time-limit: '300'
                       }
-                    - { name: 'Light Fuzz', call-delay: '1', time-limit: '300' }
+                    - {
+                          name: 'Stable Property IC API | Fuzz (call-delay .1, time-limit 300)',
+                          directories: './examples/stable/test/property/ic_api',
+                          call-delay: '.1',
+                          time-limit: '300'
+                      }
+                    - {
+                          name: 'Stable E2E CRPC | Fuzz (call-delay 1, time-limit 300)',
+                          directories: './examples/stable/test/end_to_end/candid_rpc',
+                          call-delay: '1',
+                          time-limit: '300'
+                      }
+                    - {
+                          name: 'Stable Property IC API | Fuzz (call-delay 1, time-limit 300)',
+                          directories: './examples/stable/test/property/ic_api',
+                          call-delay: '1',
+                          time-limit: '300'
+                      }
         uses: ./.github/workflows/run_test.yml
         with:
             directories: ${{ matrix.test_group.directories }}
@@ -67,6 +87,6 @@ jobs:
                 stable/test/end_to_end/candid_rpc/tuple_types
                 ${{ needs.get-exclude-dirs.outputs.exclude-dirs }}
             fuzz: true
-            fuzz-call-delay: ${{ inputs.call-delay || matrix.fuzz_config.call-delay }}
-            fuzz-time-limit: ${{ inputs.time-limit || matrix.fuzz_config.time-limit }}
+            fuzz-call-delay: ${{ inputs.call-delay || matrix.test_group.call-delay }}
+            fuzz-time-limit: ${{ inputs.time-limit || matrix.test_group.time-limit }}
             link-azle: true
