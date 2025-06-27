@@ -1,4 +1,4 @@
-name: Run Test (WSL)
+name: Run Test (WSL Ubuntu)
 
 on:
     workflow_call:
