@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "bitcoin": "if [ \"$AZLE_RUNNING_IN_WSL\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else .bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444; fi",
+        "bitcoin": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
         "clean": "rm -rf .bitcoin/data/regtest",
         "generate": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf -generate $npm_config_blocks",
         "getblock": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getblock $npm_config_blockhash 2",
