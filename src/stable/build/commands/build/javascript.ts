@@ -18,7 +18,9 @@ function getPrelude(main: string): string {
 
             import { getDefaultVisitorData, IDL, idlToString } from 'azle';
 
-            import * as Canister from '${absoluteMainPath}';
+            import * as CanisterModule from '${absoluteMainPath}';
+
+            createGetCandidAndMethodMetaFunction(CanisterModule);
 
             ${handleClassApiCanister(main)}
 
@@ -28,39 +30,41 @@ function getPrelude(main: string): string {
 
 export function handleClassApiCanister(main: string): string {
     return /*TS*/ `
-        const canisterClassMeta = getCanisterClassMeta();
+        function createGetCandidAndMethodMetaFunction(canisterModule) {
+            const canisterClassMeta = getCanisterClassMeta(canisterModule);
 
-        if (globalThis._azleDispatch === undefined) {
-            throw new Error('globalThis._azleDispatch is undefined');
-        }
-
-        globalThis._azleDispatch({
-            type: 'SET_AZLE_CANISTER_CLASS_META',
-            payload: canisterClassMeta,
-            location: {
-                filepath: 'azle/src/stable/build/commands/build/javascript.ts',
-                functionName: 'handleClassApiCanister'
+            if (globalThis._azleDispatch === undefined) {
+                throw new Error('globalThis._azleDispatch is undefined');
             }
-        });
 
-        const visibleMethodIdlParamTypes = Object.fromEntries(
-            Object.entries(canisterClassMeta.canisterMethodIdlParamTypes)
-                .filter(([methodName]) => isMethodVisible(methodName, canisterClassMeta.methodMeta))
-        );
-
-        const canisterIdlType = IDL.Service(visibleMethodIdlParamTypes);
-        const candid = idlToString(canisterIdlType, {
-            ...getDefaultVisitorData(),
-            isFirstService: true,
-            initAndPostUpgradeParamIdlTypes: canisterClassMeta.initAndPostUpgradeIdlTypes
-        });
-
-        globalThis._azleGetCandidAndMethodMeta = () => {
-            return JSON.stringify({
-                candid,
-                methodMeta: canisterClassMeta.methodMeta
+            globalThis._azleDispatch({
+                type: 'SET_AZLE_CANISTER_CLASS_META',
+                payload: canisterClassMeta,
+                location: {
+                    filepath: 'azle/src/stable/build/commands/build/javascript.ts',
+                    functionName: 'handleClassApiCanister'
+                }
             });
-        };
+
+            const visibleMethodIdlParamTypes = Object.fromEntries(
+                Object.entries(canisterClassMeta.canisterMethodIdlParamTypes)
+                    .filter(([methodName]) => isMethodVisible(methodName, canisterClassMeta.methodMeta))
+            );
+
+            const canisterIdlType = IDL.Service(visibleMethodIdlParamTypes);
+            const candid = idlToString(canisterIdlType, {
+                ...getDefaultVisitorData(),
+                isFirstService: true,
+                initAndPostUpgradeParamIdlTypes: canisterClassMeta.initAndPostUpgradeIdlTypes
+            });
+
+            globalThis._azleGetCandidAndMethodMeta = () => {
+                return JSON.stringify({
+                    candid,
+                    methodMeta: canisterClassMeta.methodMeta
+                });
+            };
+        }
 
         /**
          * @internal
@@ -76,10 +80,10 @@ export function handleClassApiCanister(main: string): string {
          * - ICP protocol improvement to allow for dynamic canister method registration
          * - ICP replica improvement to automatically run Wasm binaries through a similar process as our Node.js Wasm environment
          */
-        function getCanisterClassMeta() {
-            const defaultExportNotDefined = Canister.default === undefined || Canister.default === null;
-            const defaultExportNotAnArrayOrClass = Array.isArray(Canister.default) === false && isClass(Canister.default) === false;
-            const defaultExportAnArrayWithNonClasses = Array.isArray(Canister.default) === true && Canister.default.every((canisterClass) => isClass(canisterClass) === true) === false;
+        function getCanisterClassMeta(canisterModule) {
+            const defaultExportNotDefined = canisterModule.default === undefined || canisterModule.default === null;
+            const defaultExportNotAnArrayOrClass = Array.isArray(canisterModule.default) === false && isClass(canisterModule.default) === false;
+            const defaultExportAnArrayWithNonClasses = Array.isArray(canisterModule.default) === true && canisterModule.default.every((canisterClass) => isClass(canisterClass) === true) === false;
 
             if (
                 defaultExportNotDefined === true ||
@@ -90,7 +94,7 @@ export function handleClassApiCanister(main: string): string {
                 throw new Error('A class or an array of classes must be the default export from ${main}');
             }
 
-            const canisterClasses = Array.isArray(Canister.default) ? Canister.default : [Canister.default];
+            const canisterClasses = Array.isArray(canisterModule.default) ? canisterModule.default : [canisterModule.default];
 
             // This object WILL BE MUTATED.
             // This is the original CanisterClassMeta object that we will

@@ -1,3 +1,5 @@
+// TODO I believe that experimental now is exacting the same as this file
+
 import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 
@@ -13,36 +15,10 @@ export async function getCandidAndMethodMeta(
     ioType: IOType,
     wasmData: WasmData
 ): Promise<CandidAndMethodMeta> {
-    if (
-        candidGen === undefined ||
-        candidGen === 'automatic' ||
-        candidGen === 'custom'
-    ) {
-        return await handleAutomaticAndCustom(
-            candidGen,
-            candidPath,
-            ioType,
-            js,
-            wasmData
-        );
-    }
-
-    if (candidGen === 'http') {
-        handleHttp();
-    }
-
-    throw new Error(`dfx.json: "candid_gen": "${candidGen}" is not supported`);
-}
-
-async function handleAutomaticAndCustom(
-    candidGen: CandidGen | undefined,
-    candidPath: string,
-    ioType: IOType,
-    js: string,
-    wasmData: WasmData
-): Promise<CandidAndMethodMeta> {
+    // TODO let's generalize this for experimental and stable
     const wasmBinary = await getWasmBinary(ioType, js, wasmData);
 
+    // TODO let's generalize this for experimental and stable
     const { candid, methodMeta } = await execute(wasmBinary);
 
     return {
@@ -52,10 +28,4 @@ async function handleAutomaticAndCustom(
                 : candid,
         methodMeta
     };
-}
-
-function handleHttp(): never {
-    throw new Error(
-        `dfx.json: "candid_gen": "http" is only available in experimental mode`
-    );
 }

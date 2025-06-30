@@ -5,7 +5,6 @@
             "main": "src/index.ts",
             "custom": {
                 "experimental": true,
-                "candid_gen": "http",
                 "env": ["BITCOIN_NETWORK"]
             }
         }

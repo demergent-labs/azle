@@ -10,7 +10,6 @@
             },
             "custom": {
                 "experimental": true,
-                "candid_gen": "http",
                 "openValueSharing": {
                     "killSwitch": false,
                     "period": 1,

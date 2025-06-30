@@ -1,7 +1,5 @@
 import '#experimental/lib/assert_experimental';
 
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Server as NodeServer, ServerResponse } from 'http';
 // @ts-ignore
 import { HttpConn } from 'http';
@@ -23,8 +21,6 @@ import {
 export class Server {
     nodeServer?: NodeServer;
 
-    // TODO should this always be composite?
-    // TODO check how the old Canister worked
     @query([HttpRequest], HttpResponse, { composite: true, manual: true })
     async http_request(): Promise<void> {
         const httpRequest = idlDecode(
@@ -58,49 +54,12 @@ export class Server {
     }
 }
 
-// export function ServerOld<T extends CanisterOptions>(
-//     serverCallback: ServerCallback,
-//     canisterOptions?: T
-// ) {
-//     const canisterOptionsNodeServerized = Object.entries(
-//         canisterOptions ?? {}
-//     ).reduce((acc, [key, value]) => {
-//         const valueServerized =
-//             value.mode === 'init' || value.mode === 'postUpgrade'
-//                 ? {
-//                       ...value,
-//                       callback: async (...args: any[]) => {
-//                           if (value.callback !== undefined) {
-//                               value.callback(...args);
-//                           }
-
-//                           setNodeServer(await serverCallback());
-//                       }
-//                   }
-//                 : value;
-
-//         return {
-//             ...acc,
-//             [key]: valueServerized
-//         };
-//     }, {} as T);
-
-//     return Canister({
-//         ...serverCanisterMethods(serverCallback),
-//         ...canisterOptionsNodeServerized
-//     });
-// }
-
 export async function httpHandler(
     nodeServer: NodeServer,
     httpRequest: HttpRequest | HttpUpdateRequest,
     query: boolean
-) {
-    console.log('httpHandler');
-
+): Promise<void> {
     if (shouldUpgrade(httpRequest, query)) {
-        console.log('shouldUpgrade');
-
         const encoded = idlEncode(
             [HttpResponse],
             [
@@ -127,14 +86,8 @@ export async function httpHandler(
         res: ServerResponse | null = null;
 
         // TODO we get to read but nothing else
-        async read() {
-            console.log('socket read 0');
-
-            console.log('httpRequest', httpRequest);
-
+        async read(): Promise<ArrayBuffer> {
             const httpLine1 = `${httpRequest.method} ${httpRequest.url} HTTP/1.1\r\n`;
-
-            console.log('socket read 1');
 
             const httpHeaders = httpRequest.headers
                 .map((header) => {
@@ -142,13 +95,7 @@ export async function httpHandler(
                 })
                 .join('\r\n');
 
-            console.log('socket read 2');
-
             const httpString = `${httpLine1}${httpHeaders}\r\n\r\n`;
-
-            console.log('socket read 3');
-
-            console.log('httpString', httpString);
 
             return Buffer.concat([
                 Buffer.from(httpString),
@@ -156,9 +103,7 @@ export async function httpHandler(
             ]).buffer;
         }
 
-        async write(data: any) {
-            console.log('socket write');
-
+        async write(data: any): Promise<void> {
             if (data.byteLength !== undefined) {
                 this.responseData = Buffer.concat([
                     this.responseData,
@@ -189,9 +134,7 @@ export async function httpHandler(
             }
         }
 
-        end(_data: any) {
-            console.log('socket end');
-
+        end(_data: any): void {
             const startIndex =
                 this.responseData.indexOf(Buffer.from('\r\n\r\n')) + 4;
 
@@ -243,7 +186,6 @@ export async function httpHandler(
                 ]
             );
 
-            console.log('socket end msgReply');
             msgReply(encoded);
         }
     }
@@ -259,9 +201,7 @@ export async function httpHandler(
 
     azleSocket.res = res;
 
-    console.log('about to emit request');
     nodeServer.emit('request', req, res);
-    console.log('request emitted');
 }
 
 function shouldUpgrade(
