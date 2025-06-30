@@ -2,8 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType } from '#experimental/lib/candid/candid_type';
-import { Func } from '#experimental/lib/candid/types/reference/func';
+import { IDL } from '#lib/index';
 
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
@@ -210,10 +209,14 @@ function generateRuntimeTypeObject(
     paramCandids: CandidDefinition[],
     returnCandid: CandidDefinition,
     mode: Mode
-): CandidType {
+): IDL.Type {
     const params = paramCandids.map(
         (param) => param.candidMeta.runtimeTypeObject
     );
 
-    return Func(params, returnCandid.candidMeta.runtimeTypeObject, mode);
+    return IDL.Func(
+        params,
+        [returnCandid.candidMeta.runtimeTypeObject],
+        [mode]
+    );
 }

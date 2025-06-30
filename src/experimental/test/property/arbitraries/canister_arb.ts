@@ -77,21 +77,17 @@ export function CanisterArb<
 
         const initArgs = config.initMethod?.params.map((param) => {
             const value = param.value.value;
-            return value.runtimeTypeObject
-                .getIdlType([])
-                .accept(new CliStringVisitor(), {
-                    value: value.agentArgumentValue
-                });
+            return value.runtimeTypeObject.accept(new CliStringVisitor(), {
+                value: value.agentArgumentValue
+            });
         });
 
         const postUpgradeArgs = config.postUpgradeMethod?.params.map(
             (param) => {
                 const value = param.value.value;
-                return value.runtimeTypeObject
-                    .getIdlType([])
-                    .accept(new CliStringVisitor(), {
-                        value: value.agentArgumentValue
-                    });
+                return value.runtimeTypeObject.accept(new CliStringVisitor(), {
+                    value: value.agentArgumentValue
+                });
             }
         );
 

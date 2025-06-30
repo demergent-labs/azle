@@ -2,8 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { HttpRequest, None, Some } from '#experimental/lib/index';
-
+import { HttpRequest } from '../../../../../stable/lib/canisters/http_gateway/idl';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
@@ -69,8 +68,8 @@ function HttpRequestValueArb() {
             BodyArb(),
             fc
                 .option(fc.integer({ min: 0, max: 2 ** 16 - 1 }))
-                .map((optCertVer) => {
-                    return optCertVer === null ? None : Some(optCertVer);
+                .map((optCertVer): [number] | [] => {
+                    return optCertVer === null ? [] : [optCertVer];
                 })
         )
         .map(
@@ -104,7 +103,7 @@ export function HttpRequestArb(
             )
             .join(',');
 
-        const bodySrc = blobToSrcLiteral(httpRequest.body);
+        const bodySrc = blobToSrcLiteral(new Uint8Array(httpRequest.body));
 
         const certificateVersion =
             'Some' in httpRequest.certificate_version

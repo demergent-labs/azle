@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType, Tuple } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
@@ -173,10 +173,10 @@ function generateTypeObject(
     return `Tuple(${innerTypesAsString})`;
 }
 
-function generateRuntimeTypeObject(fields: CandidDefinition[]): CandidType {
+function generateRuntimeTypeObject(fields: CandidDefinition[]): IDL.Type {
     const innerTypes = fields.map(
         (field) => field.candidMeta.runtimeTypeObject
     );
 
-    return Tuple(...innerTypes);
+    return IDL.Tuple(...innerTypes);
 }

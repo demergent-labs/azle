@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType, Opt } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
@@ -194,6 +194,6 @@ function generateTypeObject(
     return `Opt(${innerType.candidMeta.typeObject})`;
 }
 
-function generateRuntimeTypeObject(innerType: CandidDefinition): CandidType {
-    return Opt(innerType.candidMeta.runtimeTypeObject);
+function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {
+    return IDL.Opt(innerType.candidMeta.runtimeTypeObject);
 }
