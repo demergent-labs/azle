@@ -55,6 +55,9 @@ on:
             run-wsl-ubuntu-tests:
                 description: 'Run Windows tests'
                 required: true
+            copy-outside-repo:
+                description: 'Copy test outside repository to validate external usage'
+                required: false
                 type: boolean
                 default: false
 
@@ -71,6 +74,7 @@ jobs:
             fuzz-time-limit: ${{ steps.determine-workflow-config.outputs.fuzz-time-limit }}
             run-mac-tests: ${{ steps.determine-workflow-config.outputs.run-mac-tests }}
             run-wsl-ubuntu-tests: ${{ steps.determine-workflow-config.outputs.run-wsl-ubuntu-tests }}
+            copy-outside-repo: ${{ steps.determine-workflow-config.outputs.copy-outside-repo }}
         steps:
             - uses: actions/checkout@v4
 
@@ -86,6 +90,7 @@ jobs:
                   fuzz-time-limit-dispatch-input-value: ${{ inputs.fuzz-time-limit }}
                   run-mac-tests-dispatch-input-value: ${{ inputs.run-mac-tests }}
                   run-wsl-ubuntu-tests-dispatch-input-value: ${{ inputs.run-wsl-ubuntu-tests }}
+                  copy-outside-repo-dispatch-input-value: ${{ inputs.copy-outside-repo }}
 
     get-exclude-dirs:
         name: Get exclude directories
@@ -231,6 +236,7 @@ jobs:
             fuzz-time-limit: ${{ needs.workflow-config.outputs.fuzz-time-limit }}
             run-mac-tests: ${{ needs.workflow-config.outputs.run-mac-tests == 'true' }}
             run-wsl-ubuntu-tests: ${{ needs.workflow-config.outputs.run-wsl-ubuntu-tests == 'true' }}
+            copy-outside-repo: ${{ needs.workflow-config.outputs.copy-outside-repo == 'true' }}
 
     top-level-checks:
         name: Top level checks

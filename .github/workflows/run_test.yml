@@ -42,6 +42,11 @@ on:
                 type: boolean
                 default: false
                 description: 'Whether to run Windows tests'
+            copy-outside-repo:
+                required: false
+                type: boolean
+                default: false
+                description: 'Copy test outside repository to validate external usage'
 
 jobs:
     run-tests-ubuntu-and-mac:
@@ -56,6 +61,7 @@ jobs:
             fuzz-call-delay: ${{ inputs.fuzz-call-delay }}
             fuzz-time-limit: ${{ inputs.fuzz-time-limit }}
             operating-system: ${{ inputs.operating-system }}
+            copy-outside-repo: ${{ inputs.copy-outside-repo }}
 
     run-tests-wsl-ubuntu:
         if: ${{ inputs.operating-system == 'wsl-ubuntu' && inputs.run-wsl-ubuntu-tests == true }}
