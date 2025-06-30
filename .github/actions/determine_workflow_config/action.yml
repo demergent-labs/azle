@@ -25,12 +25,17 @@ inputs:
     link-azle-dispatch-input-value:
         description: 'Workflow dispatch input for linking to the development version of azle'
         required: true
+        default: 'true'
     run-mac-tests-dispatch-input-value:
         description: 'Workflow dispatch input for running Mac tests'
         required: false
         default: 'false'
     run-wsl-ubuntu-tests-dispatch-input-value:
         description: 'Workflow dispatch input for running WSL-Ubuntu tests'
+        required: false
+        default: 'false'
+    copy-outside-repo-dispatch-input-value:
+        description: 'Workflow dispatch input for copying test outside repository'
         required: false
         default: 'false'
 
@@ -62,6 +67,9 @@ outputs:
     run-wsl-ubuntu-tests:
         description: 'Whether to run WSL-Ubuntu tests'
         value: ${{ steps.determine_workflow_config.outputs.run-wsl-ubuntu-tests }}
+    copy-outside-repo:
+        description: 'Whether to copy test outside repository'
+        value: ${{ steps.determine_workflow_config.outputs.copy-outside-repo }}
 
 runs:
     using: 'composite'
@@ -81,6 +89,7 @@ runs:
                 echo "fuzz-time-limit=${{ inputs.fuzz-time-limit-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "run-mac-tests=${{ inputs.run-mac-tests-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "run-wsl-ubuntu-tests=${{ inputs.run-wsl-ubuntu-tests-dispatch-input-value }}" >> $GITHUB_OUTPUT
+                echo "copy-outside-repo=${{ inputs.copy-outside-repo-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "is-dependabot=false" >> $GITHUB_OUTPUT
               else
                 EXCLUDE_SLOW=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' }}
@@ -108,6 +117,7 @@ runs:
                   echo "fuzz-time-limit=.5" >> $GITHUB_OUTPUT
                 fi
 
+                echo "copy-outside-repo=false" >> $GITHUB_OUTPUT
                 echo ${{ github.actor }}
                 echo "is-dependabot=${{ github.actor == 'dependabot[bot]' }}" >> $GITHUB_OUTPUT
 
@@ -127,6 +137,7 @@ runs:
               echo "link-azle: ${{ steps.determine_workflow_config.outputs.link-azle }}"
               echo "fuzz: ${{ steps.determine_workflow_config.outputs.fuzz }}"
               echo "fuzz-time-limit: ${{ steps.determine_workflow_config.outputs.fuzz-time-limit }}"
+              echo "copy-outside-repo: ${{ steps.determine_workflow_config.outputs.copy-outside-repo }}"
               echo "is-dependabot: ${{ steps.determine_workflow_config.outputs.is-dependabot }}"
               echo "run-mac-tests: ${{ steps.determine_workflow_config.outputs.run-mac-tests }}"
               echo "run-wsl-ubuntu-tests: ${{ steps.determine_workflow_config.outputs.run-wsl-ubuntu-tests }}"
