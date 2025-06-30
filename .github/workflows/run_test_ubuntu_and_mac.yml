@@ -127,6 +127,11 @@ jobs:
                   echo "working-dir=$WORKING_DIR" >> $GITHUB_OUTPUT
                   echo "Working directory set to: $WORKING_DIR"
 
+            - name: Verify working directory
+              run: |
+                  echo "Current working directory: $(pwd)"
+                  echo "Target working directory: ${{ steps.set-working-dir.outputs.working-dir }}"
+
             - uses: ./.github/actions/setup_node
 
             - uses: ./.github/actions/setup_dfx
@@ -200,7 +205,9 @@ jobs:
                   echo "runs=$RUNS" >> $GITHUB_OUTPUT
 
             - name: Run tests
-              run: npm test
+              run: |
+                  npm test
+                  echo "Current working directory of tests: $(pwd)"
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               shell: bash -l {0}
               env:
