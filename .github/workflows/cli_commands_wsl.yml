@@ -215,6 +215,29 @@ jobs:
                       cd "${AZLE_ROOT}"
                   }
 
+                  # Helper function to ensure cargo environment is sourced
+                  ensure_cargo_env() {
+                      echo "Ensuring cargo environment is available..."
+
+                      # Always source the cargo environment to ensure PATH is updated
+                      if [[ -f "$HOME/.cargo/env" ]]; then
+                          echo "Sourcing $HOME/.cargo/env..."
+                          source "$HOME/.cargo/env"
+                          export PATH="$HOME/.cargo/bin:$PATH"
+                      fi
+
+                      # Verify cargo is available after sourcing
+                      if ! command -v cargo &> /dev/null; then
+                          echo "❌ Cargo is still not available after sourcing environment"
+                          echo "PATH: $PATH"
+                          echo "Contents of ~/.cargo/bin (if it exists):"
+                          ls -la "$HOME/.cargo/bin" || echo "Directory does not exist"
+                          return 1
+                      else
+                          echo "✅ Cargo is available at: $(which cargo)"
+                      fi
+                  }
+
                   test_azle_dev_setup_command() {
                       echo "=== Testing azle dev setup command ==="
                       cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
@@ -225,16 +248,26 @@ jobs:
                       EXPECTED_RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // "not found"' "${AZLE_ROOT}/package.json")
                       EXPECTED_DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // "not found"' "${AZLE_ROOT}/package.json")
                       EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_CARGO_AUDIT_VERSION=$(jq -r '.azle.globalDependencies."cargo-audit" // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_CARGO_DENY_VERSION=$(jq -r '.azle.globalDependencies."cargo-deny" // "not found"' "${AZLE_ROOT}/package.json")
 
                       echo "Expected Node version: ${EXPECTED_NODE_VERSION}"
                       echo "Expected Rust version: ${EXPECTED_RUST_VERSION}"
                       echo "Expected dfx version: ${EXPECTED_DFX_VERSION}"
                       echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
+                      echo "Expected cargo-audit version: ${EXPECTED_CARGO_AUDIT_VERSION}"
+                      echo "Expected cargo-deny version: ${EXPECTED_CARGO_DENY_VERSION}"
 
-                      # Run azle dev setup
+                      # First, install Rust by itself to ensure cargo environment is set up
+                      echo "Installing Rust first to establish cargo environment..."
+                      npx azle dev setup --rust
+
+                      # Ensure cargo environment is available after Rust installation
+                      ensure_cargo_env
+
+                      # Now run the full setup command with cargo available
+                      echo "Running full azle dev setup with cargo environment available..."
                       npx azle dev setup
-
-                      echo "Verifying installed versions match expected versions"
 
                       # Check Node version
                       ACTUAL_NODE_VERSION=$(node --version | sed 's/^v//')
@@ -273,6 +306,26 @@ jobs:
                           echo "✅ wasi2ic version verification successful"
                       else
                           echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check cargo-audit version
+                      ACTUAL_CARGO_AUDIT_VERSION=$(cargo audit --version | awk '{print $2}')
+                      echo "Actual cargo-audit version: ${ACTUAL_CARGO_AUDIT_VERSION}"
+                      if [[ "${ACTUAL_CARGO_AUDIT_VERSION}" == "${EXPECTED_CARGO_AUDIT_VERSION}" ]]; then
+                          echo "✅ cargo-audit version verification successful"
+                      else
+                          echo "❌ cargo-audit version verification failed: Expected ${EXPECTED_CARGO_AUDIT_VERSION}, got ${ACTUAL_CARGO_AUDIT_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check cargo-deny version
+                      ACTUAL_CARGO_DENY_VERSION=$(cargo deny --version | awk '{print $2}')
+                      echo "Actual cargo-deny version: ${ACTUAL_CARGO_DENY_VERSION}"
+                      if [[ "${ACTUAL_CARGO_DENY_VERSION}" == "${EXPECTED_CARGO_DENY_VERSION}" ]]; then
+                          echo "✅ cargo-deny version verification successful"
+                      else
+                          echo "❌ cargo-deny version verification failed: Expected ${EXPECTED_CARGO_DENY_VERSION}, got ${ACTUAL_CARGO_DENY_VERSION}"
                           exit 1
                       fi
 
@@ -374,21 +427,22 @@ jobs:
 
                       echo "✅ Project directory created successfully"
 
-                      # Verify package.json exists and has azle dependency
+                      # Install the packed azle file to override the version
                       cd "${PROJECT_NAME}"
-                      if [[ ! -f "package.json" ]]; then
-                          echo "❌ package.json was not created"
-                          exit 1
-                      fi
+                      echo "Installing packed azle package in new project..."
+                      npm install "${AZLE_PACKED_FILE_PATH}"
 
-                      # Check that azle is listed as a dependency with our test version
-                      AZLE_DEP_VERSION=$(jq -r '.dependencies.azle // "not found"' package.json)
-                      echo "Azle dependency version: ${AZLE_DEP_VERSION}"
+                      # Verify azle version using the CLI (not package.json)
+                      echo "Verifying azle version in new project"
+                      DISPLAYED_VERSION=$(npx azle --version)
+                      echo "Displayed version: ${DISPLAYED_VERSION}"
 
-                      if [[ "${AZLE_DEP_VERSION}" == "${AZLE_TEST_VERSION}" ]]; then
-                          echo "✅ Azle dependency version verification successful"
+                      if [[ "${DISPLAYED_VERSION}" == "${AZLE_TEST_VERSION}" ]]; then
+                          echo "✅ Version verification successful: New project using correct azle version"
                       else
-                          echo "❌ Azle dependency version verification failed: Expected ${AZLE_TEST_VERSION}, got ${AZLE_DEP_VERSION}"
+                          echo "❌ Version verification failed: Version mismatch in new project"
+                          echo "Expected to find: ${AZLE_TEST_VERSION}"
+                          echo "But got: ${DISPLAYED_VERSION}"
                           exit 1
                       fi
 
@@ -405,12 +459,32 @@ jobs:
 
                       echo "✅ Project structure verification successful"
 
-                      # Try to build the project
-                      echo "Testing project build..."
-                      npm install
-                      npm run build
+                      # Run the project tests
+                      echo "Running tests for new project..."
+                      AZLE_IDENTITY_STORAGE_MODE=plaintext npm test
 
-                      echo "✅ Project build successful"
+                      # Verify build artifacts exist
+                      echo "Verifying .azle directory exists after build"
+                      if [[ -d ".azle" ]]; then
+                          echo "✅ .azle directory exists as expected after build"
+                      else
+                          echo "❌ .azle directory does not exist but should after running tests"
+                          exit 1
+                      fi
+
+                      # Test azle clean command
+                      echo "Testing azle clean command in new project"
+                      npx azle clean
+
+                      # Verify clean command effectiveness
+                      echo "Verifying .azle directory was removed by clean command"
+                      if [[ -d ".azle" ]]; then
+                          echo "❌ .azle directory still exists but should have been removed by clean command"
+                          exit 1
+                      else
+                          echo "✅ .azle directory was successfully removed by clean command"
+                      fi
+
                       echo "✅ Stable project creation test completed successfully"
 
                       cd "${AZLE_ROOT}"
