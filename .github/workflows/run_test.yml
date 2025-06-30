@@ -38,8 +38,8 @@ jobs:
         name: Check Mac WSL-Ubuntu execution conditions
         runs-on: ubuntu-latest
         outputs:
-            should-run-mac: ${{ steps.set-mac-condition.outputs.should-run-mac }}
-            should-run-wsl-ubuntu: ${{ steps.set-wsl-ubuntu-condition.outputs.should-run-wsl-ubuntu }}
+            should-run-mac: ${{ steps.set-mac-wsl-condition.outputs.should-run-mac }}
+            should-run-wsl-ubuntu: ${{ steps.set-mac-wsl-condition.outputs.should-run-wsl-ubuntu }}
         steps:
             - uses: actions/checkout@v4
 
