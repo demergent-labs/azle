@@ -1,0 +1,435 @@
+name: Azle CLI Commands Testing (WSL-Ubuntu)
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+
+jobs:
+    test-cli-commands-wsl-ubuntu:
+        runs-on: windows-latest
+        steps:
+            - name: Setup WSL-Ubuntu
+              uses: Wandalen/wretry.action@v1.4.10
+              with:
+                  action: Vampire/setup-wsl@v5
+                  with: |
+                      distribution: Ubuntu-24.04
+                      additional-packages: |
+                          curl
+                          build-essential
+                          git
+                          jq
+                      set-as-default: 'true'
+                      wsl-shell-user: 'tester'
+                  attempt_limit: 5
+                  attempt_delay: 60000
+
+            - name: Clone repository in WSL-Ubuntu
+              run: |
+                  # Clone the repository directly in WSL-Ubuntu for proper Unix line endings
+                  cd /home/tester
+                  git clone --no-single-branch https://github.com/${{ github.repository }}.git azle
+                  cd azle
+                  # Fetch all remote branches and pull request refs to ensure we have the specific commit
+                  git fetch --all
+                  git fetch origin '+refs/pull/*/head:refs/remotes/origin/pr/*' || true
+                  git fetch origin '+refs/pull/*/merge:refs/remotes/origin/merge/*' || true
+                  git checkout ${{ github.sha }}
+              shell: wsl-bash {0}
+
+            - name: Capture GitHub run info
+              id: github_info
+              run: |
+                  echo "run_id=${{ github.run_id }}" >> $GITHUB_OUTPUT
+                  echo "run_number=${{ github.run_number }}" >> $GITHUB_OUTPUT
+                  echo "test_version=0.0.0-cli-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
+              shell: bash
+
+            - name: Setup and run CLI command tests
+              shell: wsl-bash {0}
+              run: |
+                  AZLE_ROOT=/home/tester/azle
+                  EXTERNAL_TEST_ENV_DIR_PATH=/home/tester/external_test_env
+
+                  retry_command() {
+                      local function_name="${1}"
+                      local max_attempts=5
+                      local initial_delay=1
+                      local max_delay=60
+
+                      local attempt=1
+                      local delay=$initial_delay
+
+                      echo "=== Retry command setup for '$function_name' ==="
+                      echo "Max attempts: $max_attempts, Initial delay: ${initial_delay}s, Max delay: ${max_delay}s"
+
+                      # Try the function until it succeeds
+                      until {
+                          echo "Attempt $attempt/$max_attempts for '$function_name'"
+                          $function_name
+                      }; do
+                          if [[ "$attempt" -ge "$max_attempts" ]]; then
+                              echo "💥 '$function_name' failed after $attempt attempts"
+                              return 1
+                          fi
+
+                          attempt=$(($attempt + 1))
+                          echo "❌ '$function_name' failed, retrying in $delay seconds... (attempt $attempt/$max_attempts)"
+                          sleep $delay
+
+                          # Exponential backoff with configurable maximum
+                          delay=$(( delay * 2 ))
+                          if [[ "$delay" -gt "$max_delay" ]]; then
+                              delay=$max_delay
+                          fi
+                      done
+
+                      echo "✅ '$function_name' succeeded on attempt $attempt"
+                      return 0
+                  }
+
+                  # Helper function to check file size (cross-platform)
+                  check_file_size() {
+                      local file="$1"
+                      local file_size=$(wc -c < "$file" 2>/dev/null || echo "0")
+                      if [[ "$file_size" -gt 0 ]]; then
+                          return 0
+                      else
+                          return 1
+                      fi
+                  }
+
+                  setup_nodejs() {
+                      echo "=== Setting up Node.js ==="
+
+                      # Get Node version from package.json
+                      NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
+                      echo "Installing Node.js version $NODE_VERSION using nvm..."
+
+                      # Install nvm
+                      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+                      # Source nvm
+                      export NVM_DIR="$HOME/.nvm"
+                      source "$NVM_DIR/nvm.sh"
+
+                      # Install and use the specific Node version
+                      nvm install $NODE_VERSION
+                      nvm use $NODE_VERSION
+                      nvm alias default $NODE_VERSION
+
+                      # Verify installation
+                      node --version
+                      npm --version
+                  }
+
+                  install_dfx() {
+                      echo "=== Installing dfx ==="
+
+                      DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
+                      echo "Installing dfx version $DFX_VERSION..."
+                      DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --retry 3 -fsSL https://sdk.dfinity.org/install.sh)"
+                      export PATH="$HOME/.local/share/dfx/bin:$PATH"
+                      if ! command -v dfx &> /dev/null; then
+                          echo "dfx installation verification failed" >&2
+                          exit 1
+                      fi
+                      echo "dfx installation completed."
+                  }
+
+                  install_npm_dependencies() {
+                      echo "=== Installing azle dependencies ==="
+                      npm install
+                  }
+
+                  create_test_version() {
+                      echo "=== Creating test version ==="
+                      # Create a test version number using the GitHub run ID and run number
+                      TEST_VERSION="${{ steps.github_info.outputs.test_version }}"
+                      echo "Creating test version: ${TEST_VERSION}"
+
+                      # Update the version in package.json using npm version without creating a git tag
+                      npm version "${TEST_VERSION}" --no-git-tag-version
+
+                      # Export for later use
+                      export AZLE_TEST_VERSION="${TEST_VERSION}"
+                      echo "Test version set to: $AZLE_TEST_VERSION"
+                  }
+
+                  pack_azle_source() {
+                      echo "=== Packing azle source ==="
+                      # Pack into the current directory and capture the original filename
+                      PACKED_FILE_NAME=$(npm pack | tail -n 1)
+                      echo "Original packed filename: ${PACKED_FILE_NAME}"
+
+                      # Get the absolute path by combining current directory with filename
+                      PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${PACKED_FILE_NAME}"
+                      echo "Absolute path: ${PACKED_FILE_ABSOLUTE_PATH}"
+
+                      # Export for later use
+                      export AZLE_PACKED_FILE_PATH="${PACKED_FILE_ABSOLUTE_PATH}"
+                      echo "Packed file path set to: $AZLE_PACKED_FILE_PATH"
+                  }
+
+                  create_external_test_environment() {
+                      echo "=== Creating external test environment ==="
+                      # Create a fresh test directory to simulate external user environment
+                      mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
+                      echo "External test environment created at: ${EXTERNAL_TEST_ENV_DIR_PATH}"
+                  }
+
+                  install_packed_azle() {
+                      echo "=== Installing packed azle in external environment ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+                      # Install the package locally for testing
+                      echo "Installing the packed azle package for CLI testing"
+                      npm install "${AZLE_PACKED_FILE_PATH}"
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  test_azle_version_command() {
+                      echo "=== Testing azle version command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+
+                      echo "Testing 'azle --version' command"
+                      DISPLAYED_VERSION=$(npx azle --version)
+                      echo "Displayed version: ${DISPLAYED_VERSION}"
+
+                      # Verify the version matches our unique test version
+                      if [[ "${DISPLAYED_VERSION}" == "${AZLE_TEST_VERSION}" ]]; then
+                          echo "✅ Version verification successful: Running the correct packed version"
+                      else
+                          echo "❌ Version verification failed: Version mismatch"
+                          echo "Expected to find: ${AZLE_TEST_VERSION}"
+                          echo "But got: ${DISPLAYED_VERSION}"
+                          exit 1
+                      fi
+
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  test_azle_dev_setup_command() {
+                      echo "=== Testing azle dev setup command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+
+                      # Read expected versions from package.json
+                      echo "Reading expected versions from package.json"
+                      EXPECTED_NODE_VERSION=$(jq -r '.azle.globalDependencies.node // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${AZLE_ROOT}/package.json")
+
+                      echo "Expected Node version: ${EXPECTED_NODE_VERSION}"
+                      echo "Expected Rust version: ${EXPECTED_RUST_VERSION}"
+                      echo "Expected dfx version: ${EXPECTED_DFX_VERSION}"
+                      echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
+
+                      # Run azle dev setup
+                      npx azle dev setup
+
+                      echo "Verifying installed versions match expected versions"
+
+                      # Check Node version
+                      ACTUAL_NODE_VERSION=$(node --version | sed 's/^v//')
+                      echo "Actual Node version: ${ACTUAL_NODE_VERSION}"
+                      if [[ "${ACTUAL_NODE_VERSION}" == "${EXPECTED_NODE_VERSION}" ]]; then
+                          echo "✅ Node version verification successful"
+                      else
+                          echo "❌ Node version verification failed: Expected ${EXPECTED_NODE_VERSION}, got ${ACTUAL_NODE_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check Rust version
+                      ACTUAL_RUST_VERSION=$(rustc --version | awk '{print $2}')
+                      echo "Actual Rust version: ${ACTUAL_RUST_VERSION}"
+                      if [[ "${ACTUAL_RUST_VERSION}" == "${EXPECTED_RUST_VERSION}" ]]; then
+                          echo "✅ Rust version verification successful"
+                      else
+                          echo "❌ Rust version verification failed: Expected ${EXPECTED_RUST_VERSION}, got ${ACTUAL_RUST_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check dfx version
+                      ACTUAL_DFX_VERSION=$(dfx --version | awk '{print $2}')
+                      echo "Actual dfx version: ${ACTUAL_DFX_VERSION}"
+                      if [[ "${ACTUAL_DFX_VERSION}" == "${EXPECTED_DFX_VERSION}" ]]; then
+                          echo "✅ dfx version verification successful"
+                      else
+                          echo "❌ dfx version verification failed: Expected ${EXPECTED_DFX_VERSION}, got ${ACTUAL_DFX_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check wasi2ic version
+                      ACTUAL_WASI2IC_VERSION=$(npx tsx "${AZLE_ROOT}/.scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
+                      echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
+                      if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
+                          echo "✅ wasi2ic version verification successful"
+                      else
+                          echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
+                          exit 1
+                      fi
+
+                      echo "✅ All version verifications completed successfully"
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  test_azle_dev_template_commands() {
+                      echo "=== Testing azle dev template commands ==="
+
+                      # Helper function to clean all template files
+                      clean_templates() {
+                          echo "Cleaning all template files"
+                          rm -f dist/canister_templates/stable.wasm
+                          rm -f dist/canister_templates/experimental.wasm
+                      }
+
+                      # Remove existing template files to test regeneration
+                      echo "Initial cleanup: Removing existing template files for regeneration test"
+                      clean_templates
+
+                      # Test azle dev template (stable)
+                      echo "Testing 'azle dev template' command (stable only)"
+                      npx azle dev template
+
+                      # Verify stable template was created and has valid size
+                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                          echo "✅ Stable template file created successfully"
+                          if ! check_file_size "dist/canister_templates/stable.wasm"; then
+                              echo "❌ Stable template size check failed during stable-only test"
+                              exit 1
+                          fi
+                      else
+                          echo "❌ Stable template verification failed: stable.wasm was not created"
+                          exit 1
+                      fi
+
+                      # Verify experimental template was NOT created
+                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                          echo "❌ Stable command verification failed: experimental.wasm should not have been created"
+                          exit 1
+                      else
+                          echo "✅ Stable command verification successful: experimental.wasm was correctly not created"
+                      fi
+
+                      echo "✅ Template command verification successful"
+                  }
+
+                  test_azle_generate_command() {
+                      echo "=== Testing azle generate command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+
+                      echo "Testing 'azle generate' command with output verification"
+
+                      # Test the generate command with the packed version
+                      echo "Running azle generate command"
+                      npx azle generate "${AZLE_ROOT}/src/stable/lib/canisters/management/idl/ic.did" > generate_output.ts
+
+                      # Verify the generated file exists and is not empty
+                      echo "Verifying azle generate command output"
+                      if [[ -f "generate_output.ts" ]]; then
+                          FILE_SIZE=$(wc -c < "generate_output.ts" 2>/dev/null || echo "0")
+                          if [[ "$FILE_SIZE" -gt 0 ]]; then
+                              echo "✅ Generate command verification successful: Generated file exists and has valid size ($FILE_SIZE bytes)"
+                          else
+                              echo "❌ Generate command verification failed: Generated file is empty (0 bytes)"
+                              exit 1
+                          fi
+                      else
+                          echo "❌ Generate command verification failed: Generated file does not exist"
+                          exit 1
+                      fi
+
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  start_dfx_for_testing() {
+                      echo "=== Starting dfx for testing new command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+                      dfx start --clean --background --artificial-delay 0
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  test_azle_new_command() {
+                      echo "=== Testing stable project creation with azle new command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+
+                      PROJECT_NAME="stable_project_test"
+                      echo "Creating new stable project: ${PROJECT_NAME}"
+
+                      # Create the new project
+                      npx azle new "${PROJECT_NAME}" --no-examples
+
+                      # Verify project was created
+                      if [[ ! -d "${PROJECT_NAME}" ]]; then
+                          echo "❌ Project directory was not created"
+                          exit 1
+                      fi
+
+                      echo "✅ Project directory created successfully"
+
+                      # Verify package.json exists and has azle dependency
+                      cd "${PROJECT_NAME}"
+                      if [[ ! -f "package.json" ]]; then
+                          echo "❌ package.json was not created"
+                          exit 1
+                      fi
+
+                      # Check that azle is listed as a dependency with our test version
+                      AZLE_DEP_VERSION=$(jq -r '.dependencies.azle // "not found"' package.json)
+                      echo "Azle dependency version: ${AZLE_DEP_VERSION}"
+
+                      if [[ "${AZLE_DEP_VERSION}" == "${AZLE_TEST_VERSION}" ]]; then
+                          echo "✅ Azle dependency version verification successful"
+                      else
+                          echo "❌ Azle dependency version verification failed: Expected ${AZLE_TEST_VERSION}, got ${AZLE_DEP_VERSION}"
+                          exit 1
+                      fi
+
+                      # Verify basic project structure
+                      if [[ ! -f "src/index.ts" ]]; then
+                          echo "❌ src/index.ts was not created"
+                          exit 1
+                      fi
+
+                      if [[ ! -f "dfx.json" ]]; then
+                          echo "❌ dfx.json was not created"
+                          exit 1
+                      fi
+
+                      echo "✅ Project structure verification successful"
+
+                      # Try to build the project
+                      echo "Testing project build..."
+                      npm install
+                      npm run build
+
+                      echo "✅ Project build successful"
+                      echo "✅ Stable project creation test completed successfully"
+
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  # Execute functions in order
+                  cd "${AZLE_ROOT}"
+                  retry_command setup_nodejs
+                  retry_command install_dfx
+                  retry_command install_npm_dependencies
+                  create_test_version
+                  pack_azle_source
+                  create_external_test_environment
+                  retry_command install_packed_azle
+                  test_azle_version_command
+                  test_azle_dev_setup_command
+                  test_azle_dev_template_commands
+                  test_azle_generate_command
+                  start_dfx_for_testing
+                  test_azle_new_command
+
+                  echo "🎉 All CLI command tests completed successfully!"
