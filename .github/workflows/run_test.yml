@@ -34,8 +34,36 @@ on:
                 description: 'Operating system to run tests on (ubuntu, mac, or wsl-ubuntu)'
 
 jobs:
+    check-mac-wsl-conditions:
+        name: Check Mac WSL-Ubuntu execution conditions
+        runs-on: ubuntu-latest
+        outputs:
+            should-run-mac: ${{ steps.set-mac-wsl-condition.outputs.should-run-mac }}
+            should-run-wsl-ubuntu: ${{ steps.set-mac-wsl-condition.outputs.should-run-wsl-ubuntu }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: determine-context
+              uses: ./.github/actions/determine_workflow_context
+
+            - id: set-mac-wsl-condition
+              run: |
+                  # Mac and WSL tests should run on release PRs or merges into main
+                  IS_RELEASE_PR="${{ steps.determine-context.outputs.is_release_branch_pr }}"
+                  IS_RELEASE_MERGE="${{ steps.determine-context.outputs.is_main_branch_push_from_release_merge }}"
+                  IS_FEATURE_MERGE="${{ steps.determine-context.outputs.is_main_branch_push_from_feature_merge }}"
+
+                  if [[ "$IS_RELEASE_PR" == "true" || "$IS_RELEASE_MERGE" == "true" || "$IS_FEATURE_MERGE" == "true" ]]; then
+                      echo "should-run-mac=true" >> $GITHUB_OUTPUT
+                      echo "should-run-wsl-ubuntu=true" >> $GITHUB_OUTPUT
+                  else
+                      echo "should-run-mac=false" >> $GITHUB_OUTPUT
+                      echo "should-run-wsl-ubuntu=false" >> $GITHUB_OUTPUT
+                  fi
+
     run-tests-ubuntu-and-mac:
-        if: ${{ inputs.operating-system == 'ubuntu' || inputs.operating-system == 'mac' }}
+        needs: check-mac-wsl-conditions
+        if: ${{ inputs.operating-system == 'ubuntu' || (inputs.operating-system == 'mac' && needs.check-mac-wsl-conditions.outputs.should-run-mac == 'true') }}
         uses: ./.github/workflows/run_test_ubuntu_and_mac.yml
         with:
             directories: ${{ inputs.directories }}
@@ -48,7 +76,8 @@ jobs:
             operating-system: ${{ inputs.operating-system }}
 
     run-tests-wsl-ubuntu:
-        if: ${{ inputs.operating-system == 'wsl-ubuntu' }}
+        needs: check-mac-wsl-conditions
+        if: ${{ inputs.operating-system == 'wsl-ubuntu' && needs.check-mac-wsl-conditions.outputs.should-run-wsl-ubuntu == 'true' }}
         uses: ./.github/workflows/run_test_wsl_ubuntu.yml
         with:
             directories: ${{ inputs.directories }}
