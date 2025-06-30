@@ -13,7 +13,10 @@ on:
 
 jobs:
     test-cli-commands-outside-azle-repo:
-        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 
@@ -187,7 +190,7 @@ jobs:
                   # Helper function to check file size
                   check_file_size() {
                     local file="$1"
-                    local file_size=$(stat -c%s "$file" 2>/dev/null || echo "0")
+                    local file_size=$(wc -c < "$file" 2>/dev/null || echo "0")
                     if [[ "$file_size" -gt 0 ]]; then
                       return 0
                     else
@@ -293,7 +296,7 @@ jobs:
                   # Verify the generated file exists and is not empty
                   echo "Verifying azle generate command output"
                   if [[ -f "generate_output.ts" ]]; then
-                    FILE_SIZE=$(stat -c%s "generate_output.ts" 2>/dev/null || echo "0")
+                    FILE_SIZE=$(wc -c < "generate_output.ts" 2>/dev/null || echo "0")
                     if [[ "$FILE_SIZE" -gt 0 ]]; then
                       echo "✅ Generate command verification successful: Generated file exists and has valid size ($FILE_SIZE bytes)"
                     else
