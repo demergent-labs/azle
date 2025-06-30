@@ -2,34 +2,64 @@ import {
     init,
     postUpgrade,
     preUpgrade,
-    Server,
     StableBTreeMap,
     stableJson
-} from 'azle/experimental';
+} from 'azle';
+import { Server } from 'azle/experimental';
+import express from 'express';
 import { Database } from 'sql.js/dist/sql-asm.js';
 
 import { initDb } from './db';
-import { initServer } from './server';
+import { getRouter as getRouterPosts } from './entities/posts/router';
+import { getRouter as getRouterUsers } from './entities/users/router';
 
 export let db: Database;
 
-let stableDbMap = StableBTreeMap<'DATABASE', Uint8Array>(0, stableJson, {
-    toBytes: (data: Uint8Array) => data,
-    fromBytes: (bytes: Uint8Array) => bytes
+let stableDbMap = new StableBTreeMap<'DATABASE', Uint8Array>(0, stableJson, {
+    toBytes: (data): Uint8Array => data,
+    fromBytes: (bytes): any => bytes
 });
 
-export default Server(initServer, {
-    init: init([], async () => {
+export default class extends Server {
+    constructor() {
+        super();
+
+        let app = express();
+
+        app.use(express.json());
+
+        app.use('/users', getRouterUsers());
+        app.use('/posts', getRouterPosts());
+
+        app.get('/init-called', (_req, res) => {
+            res.json(globalThis._azleInitCalled);
+        });
+
+        app.get('/post-upgrade-called', (_req, res) => {
+            res.json(globalThis._azlePostUpgradeCalled);
+        });
+
+        this.nodeServer = app.listen();
+    }
+
+    @init
+    async init(): Promise<void> {
         db = await initDb();
-    }),
-    preUpgrade: preUpgrade(() => {
+    }
+
+    @preUpgrade
+    preUpgrade(): void {
         stableDbMap.insert('DATABASE', db.export());
-    }),
-    postUpgrade: postUpgrade([], async () => {
+    }
+
+    @postUpgrade
+    async postUpgrade(): Promise<void> {
         const database = stableDbMap.get('DATABASE');
+
         if (database === null) {
             throw new Error('Failed to get database');
         }
+
         db = await initDb(database);
-    })
-});
+    }
+}

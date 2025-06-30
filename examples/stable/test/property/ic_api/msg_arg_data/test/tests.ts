@@ -200,9 +200,10 @@ function generateRandomCandidString(
     candidDefinition: WithShapes<CandidDefinition>
 ): string {
     const didVisitorResult =
-        candidDefinition.definition.candidMeta.runtimeTypeObject
-            .getIdlType([])
-            .accept(new DidVisitor(), getDefaultVisitorData());
+        candidDefinition.definition.candidMeta.runtimeTypeObject.accept(
+            new DidVisitor(),
+            getDefaultVisitorData()
+        );
     const candidString = didVisitorResult[0];
     const command = `didc random -t '(${candidString})'`;
     console.info(`command: ${command}`);

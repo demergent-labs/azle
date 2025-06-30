@@ -61,12 +61,10 @@ export function getTests(): Test {
                     candidDefinitionArb({ api: 'class', constraints }, {}),
                     async (candid) => {
                         const didVisitorResult =
-                            candid.definition.candidMeta.runtimeTypeObject
-                                .getIdlType([])
-                                .accept(
-                                    new DidVisitor(),
-                                    getDefaultVisitorData()
-                                );
+                            candid.definition.candidMeta.runtimeTypeObject.accept(
+                                new DidVisitor(),
+                                getDefaultVisitorData()
+                            );
                         const candidString = didVisitorResult[0];
                         const command = `didc random -t '(${candidString})'`;
                         const candidValueString = execSync(command)
