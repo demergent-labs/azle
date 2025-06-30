@@ -1,3 +1,5 @@
+// TODO make sure to remove experimental canister code from this file
+
 import '#experimental/build/assert_experimental';
 
 import { BuildOptions } from 'esbuild';
@@ -200,7 +202,8 @@ export async function getBuildOptions(
             ...esmAliases
         },
         external: [...externalImplemented, ...externalNotImplemented],
-        plugins: [esbuildPluginTsc({ tsconfigPath: await getTsConfigPath() })]
+        plugins: [esbuildPluginTsc({ tsconfigPath: await getTsConfigPath() })] // TODO why is this even here?
+        // TODO where did the experimental decorators go?
     };
 }
 export async function getTsConfigPath(): Promise<string> {
