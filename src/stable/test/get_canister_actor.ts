@@ -29,12 +29,18 @@ export async function getCanisterActor<T>(
         join(parentDir, 'dfx_generated', canisterName)
     );
 
+    // Check if running in CI environment - increase timeout for CI
+    const isCI =
+        process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+    const ingressExpiryInMinutes = isCI ? 20 : 5; // 20 minutes for CI, 5 minutes default
+
     const agent =
         options.agent ??
         (await HttpAgent.create({
             host: 'http://127.0.0.1:4943',
             identity: options.identity,
-            shouldFetchRootKey: true
+            shouldFetchRootKey: true,
+            ingressExpiryInMinutes
         }));
 
     const actor = createActor(getCanisterId(canisterName), {

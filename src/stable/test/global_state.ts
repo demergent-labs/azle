@@ -34,7 +34,10 @@ export async function runGlobalStateChecks(): Promise<void> {
 async function checkCanisterGlobalStateWithRetry(
     canisterName: string
 ): Promise<void> {
-    const maxWaitTimePower = 8; // 2^8 = 256 seconds
+    // Increase retry timeout for CI environments where cleanup might take longer
+    const isCI =
+        process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+    const maxWaitTimePower = isCI ? 10 : 8; // 2^10 = 1024 seconds for CI, 2^8 = 256 seconds for local
 
     const { finalGlobalState, previousActionsLen } =
         await checkCanisterGlobalStateRecursively(
