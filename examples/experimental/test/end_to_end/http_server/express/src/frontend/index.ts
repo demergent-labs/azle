@@ -1,10 +1,12 @@
+// @ts-nocheck
+
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 @customElement('azle-app')
 export class AzleApp extends LitElement {
     canisterOrigin: string = `http://${
-        import.meta.env.VITE_CANISTER_ID
+        (import.meta as any).env.VITE_CANISTER_ID
     }.raw.localhost:4943`;
 
     @property()

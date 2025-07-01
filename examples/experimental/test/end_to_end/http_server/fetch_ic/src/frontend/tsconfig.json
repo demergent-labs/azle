@@ -1,0 +1,7 @@
+{
+    "extends": "../../../../../../../../tsconfig.dev.json",
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true
+    }
+}

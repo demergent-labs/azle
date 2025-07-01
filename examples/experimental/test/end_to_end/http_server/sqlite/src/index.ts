@@ -16,8 +16,8 @@ import { getRouter as getRouterUsers } from './entities/users/router';
 export let db: Database;
 
 let stableDbMap = new StableBTreeMap<'DATABASE', Uint8Array>(0, stableJson, {
-    toBytes: (data): Uint8Array => data,
-    fromBytes: (bytes): any => bytes
+    toBytes: (data: Uint8Array): Uint8Array => data,
+    fromBytes: (bytes): Uint8Array => bytes
 });
 
 export default class extends Server {
