@@ -15,19 +15,12 @@ export type Callbacks = {
 };
 
 declare global {
-    // eslint-disable-next-line no-var
     var _azleCallbacks: Callbacks | undefined;
-    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
-    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsMaxResponseBytes: bigint | undefined;
-    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsCycles: bigint | undefined;
-    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
-    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
-    // eslint-disable-next-line no-var
     var _azleWebAssembly: any | undefined;
 }
 
