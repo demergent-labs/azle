@@ -92,120 +92,20 @@ jobs:
                   AZLE_ROOT=/home/tester/azle
                   EXAMPLE_ROOT=/home/tester/azle/${{ matrix.test.path }}
 
-                  retry_command() {
-                      local function_name="${1}"
-                      local max_attempts=5
-                      local initial_delay=1
-                      local max_delay=60
+                  # Set workflow context environment variables before sourcing common functions
+                  export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                  export AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                  export AZLE_IS_RELEASE_BRANCH_PR=${{ startsWith(github.head_ref, 'release--') }}
+                  export AZLE_IS_FEATURE_BRANCH_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+                  export AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
 
-                      local attempt=1
-                      local delay=$initial_delay
-
-                      echo "=== Retry command setup for '$function_name' ==="
-                      echo "Max attempts: $max_attempts, Initial delay: ${initial_delay}s, Max delay: ${max_delay}s"
-
-                      # Try the function until it succeeds (matches the original retry_command action pattern)
-                      until {
-                          echo "Attempt $attempt/$max_attempts for '$function_name'"
-                          $function_name
-                      }; do
-                          if [[ "$attempt" -ge "$max_attempts" ]]; then
-                              echo "💥 '$function_name' failed after $attempt attempts"
-                              return 1
-                          fi
-
-                          attempt=$(($attempt + 1))
-                          echo "❌ '$function_name' failed, retrying in $delay seconds... (attempt $attempt/$max_attempts)"
-                          sleep $delay
-
-                          # Exponential backoff with configurable maximum
-                          delay=$(( delay * 2 ))
-                          if [[ "$delay" -gt "$max_delay" ]]; then
-                              delay=$max_delay
-                          fi
-                      done
-
-                      echo "✅ '$function_name' succeeded on attempt $attempt"
-                      return 0
-                  }
-
-                  determine_workflow_context() {
-                      echo "=== Setting environment variables ==="
-                      # Define conditions using shell variables (inline version of determine_workflow_context action)
-                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-                      AZLE_IS_RELEASE_BRANCH_PR=${{ startsWith(github.head_ref, 'release--') }}
-                      AZLE_IS_FEATURE_BRANCH_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
-                      AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
-                  }
-
-                  print_environment_variables() {
-                      echo "=== Printing environment variables ==="
-                      echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
-                      echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
-                      echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
-                      echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
-                      echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
-                  }
+                  # Source common functions
+                  source "${AZLE_ROOT}/.github/scripts/common_functions.sh"
 
                   report_test_path() {
                       echo "=== Reporting test path ==="
                       # Just in case the path isn't obvious from the name, this will remove ambiguity
                       echo ${{matrix.test.path}}
-                  }
-
-                  setup_nodejs() {
-                      echo "=== Setting up Node.js ==="
-
-                      # Get Node version from package.json
-                      NODE_VERSION=$(jq -r '.azle.globalDependencies.node // error("node version not found")' "package.json")
-                      echo "Installing Node.js version $NODE_VERSION using nvm..."
-
-                      # Install nvm
-                      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-
-                      # Source nvm
-                      export NVM_DIR="$HOME/.nvm"
-                      source "$NVM_DIR/nvm.sh"
-
-                      # Install and use the specific Node version
-                      nvm install $NODE_VERSION
-                      nvm use $NODE_VERSION
-                      nvm alias default $NODE_VERSION
-
-                      # Verify installation
-                      node --version
-                      npm --version
-                  }
-
-                  install_dfx() {
-                      echo "=== Installing dfx ==="
-
-                      DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // error("dfx version not found")' "package.json")
-                      echo "Installing dfx version $DFX_VERSION..."
-                      DFXVM_INIT_YES=true DFX_VERSION=$DFX_VERSION sh -ci "$(curl --retry 3 -fsSL https://sdk.dfinity.org/install.sh)"
-                      export PATH="$HOME/.local/share/dfx/bin:$PATH"
-                      if ! command -v dfx &> /dev/null; then
-                          echo "dfx installation verification failed" >&2
-                          exit 1
-                      fi
-                      echo "dfx installation completed."
-                  }
-
-                  # Cargo is needed to install didc which is used in several tests
-                  install_rust_cargo() {
-                      echo "=== Installing Rust and Cargo ==="
-                      echo "Installing Rust and Cargo..."
-                      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-                      # Source the cargo environment
-                      source "$HOME/.cargo/env"
-                      export PATH="$HOME/.cargo/bin:$PATH"
-                  }
-
-                  install_npm_dependencies() {
-                      echo "=== Installing npm dependencies ==="
-                      npm install
                   }
 
                   npm_link() {
