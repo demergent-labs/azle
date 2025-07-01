@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { describe, expect, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { DEFAULT_EXPECTED_ERRORS } from 'cuzz';
 
 import { execSyncPretty } from '#utils/exec_sync_pretty';
@@ -39,50 +39,60 @@ export function runTests(tests: Test): void {
     (shouldRunTests === true ? describe : describe.skip)(
         `correctness tests`,
         () => {
-            (shouldCheckMemoryStateAfterTests === true ? please : please.skip)(
-                'snapshot the canister memory size and heap allocation for all canisters before correctness tests',
-                async () => {
+            if (shouldCheckMemoryStateAfterTests === true) {
+                beforeAll(async () => {
+                    console.info(
+                        'Preparing: snapshot the canister memory size and heap allocation for all canisters before correctness tests'
+                    );
                     const snapshot = await takeMemorySnapshot();
 
                     startingMemoryState.correctness.heapAllocations =
                         snapshot.heapAllocations;
                     startingMemoryState.correctness.memorySizes =
                         snapshot.memorySizes;
-                }
-            );
+                });
+            }
 
             tests();
 
-            (shouldCheckGlobalStateAfterTests === true ? it : it.skip)(
-                'checks that all internal global state variables for all canisters are empty',
-                runGlobalStateChecks
-            );
+            if (
+                shouldCheckGlobalStateAfterTests === true ||
+                shouldCheckMemoryStateAfterTests === true ||
+                shouldRunTypeChecks === true
+            ) {
+                afterAll(async () => {
+                    if (shouldCheckGlobalStateAfterTests === true) {
+                        console.info(
+                            'Testing: checks that all internal global state variables for all canisters are empty'
+                        );
+                        await runGlobalStateChecks();
+                    }
 
-            (shouldCheckMemoryStateAfterTests === true ? it : it.skip)(
-                'checks the canister memory size and heap allocation for all canisters after correctness tests',
-                async () => {
-                    await checkMemoryChanges(
-                        startingMemoryState.correctness.heapAllocations,
-                        startingMemoryState.correctness.memorySizes
-                    );
-                }
-            );
-
-            (shouldRunTypeChecks === true ? it : it.skip)(
-                'checks TypeScript types',
-                async () => {
-                    const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
-                    try {
-                        execSyncPretty(typeCheckCommand, {
-                            stdio: 'inherit'
-                        });
-                    } catch {
-                        expect('Type checking failed').toBe(
-                            'Type checking to pass'
+                    if (shouldCheckMemoryStateAfterTests === true) {
+                        console.info(
+                            'Testing: checks the canister memory size and heap allocation for all canisters after correctness tests'
+                        );
+                        await checkMemoryChanges(
+                            startingMemoryState.correctness.heapAllocations,
+                            startingMemoryState.correctness.memorySizes
                         );
                     }
-                }
-            );
+
+                    if (shouldRunTypeChecks === true) {
+                        console.info('Testing: checks TypeScript types');
+                        const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
+                        try {
+                            execSyncPretty(typeCheckCommand, {
+                                stdio: 'inherit'
+                            });
+                        } catch {
+                            expect('Type checking failed').toBe(
+                                'Type checking to pass'
+                            );
+                        }
+                    }
+                });
+            }
         }
     );
 
