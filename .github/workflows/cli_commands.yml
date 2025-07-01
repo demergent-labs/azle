@@ -329,6 +329,10 @@ jobs:
                     exit 1
                   fi
 
+            - name: Configure MacOS DNS (if needed)
+              if: matrix.os == 'macos-latest'
+              run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
+
             - name: Start dfx for testing new command
               working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
               shell: bash
