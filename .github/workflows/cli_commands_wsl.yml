@@ -44,11 +44,9 @@ jobs:
                   git checkout ${{ github.sha }}
               shell: wsl-bash {0}
 
-            - name: Capture GitHub run info
-              id: github_info
+            - name: Create test version number
+              id: test_version
               run: |
-                  echo "run_id=${{ github.run_id }}" >> $GITHUB_OUTPUT
-                  echo "run_number=${{ github.run_number }}" >> $GITHUB_OUTPUT
                   echo "test_version=0.0.0-cli-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
               shell: bash
 
@@ -152,7 +150,7 @@ jobs:
                   create_test_version() {
                       echo "=== Creating test version ==="
                       # Create a test version number using the GitHub run ID and run number
-                      TEST_VERSION="${{ steps.github_info.outputs.test_version }}"
+                      TEST_VERSION="${{ steps.test_version.outputs.test_version }}"
                       echo "Creating test version: ${TEST_VERSION}"
 
                       # Update the version in package.json using npm version without creating a git tag
