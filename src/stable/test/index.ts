@@ -39,8 +39,8 @@ export function runTests(tests: Test): void {
     (shouldRunTests === true ? describe : describe.skip)(
         `correctness tests`,
         () => {
-            if (shouldCheckMemoryStateAfterTests === true) {
-                beforeAll(async () => {
+            beforeAll(async () => {
+                if (shouldCheckMemoryStateAfterTests === true) {
                     console.info(
                         'Preparing: snapshot the canister memory size and heap allocation for all canisters before correctness tests'
                     );
@@ -50,58 +50,42 @@ export function runTests(tests: Test): void {
                         snapshot.heapAllocations;
                     startingMemoryState.correctness.memorySizes =
                         snapshot.memorySizes;
-                });
-            }
+                }
+            });
 
             tests();
 
-            if (
-                shouldCheckGlobalStateAfterTests === true ||
-                shouldCheckMemoryStateAfterTests === true ||
-                shouldRunTypeChecks === true
-            ) {
-                afterAll(async () => {
-                    if (shouldCheckGlobalStateAfterTests === true) {
-                        console.info(
-                            'Testing: checks that all internal global state variables for all canisters are empty'
-                        );
-                        await runGlobalStateChecks();
-                    }
+            afterAll(async () => {
+                if (shouldCheckGlobalStateAfterTests === true) {
+                    console.info(
+                        'Testing: checks that all internal global state variables for all canisters are empty'
+                    );
+                    await runGlobalStateChecks();
+                }
 
-                    if (shouldCheckMemoryStateAfterTests === true) {
-                        console.info(
-                            'Testing: checks the canister memory size and heap allocation for all canisters after correctness tests'
-                        );
-                        await checkMemoryChanges(
-                            startingMemoryState.correctness.heapAllocations,
-                            startingMemoryState.correctness.memorySizes
+                if (shouldCheckMemoryStateAfterTests === true) {
+                    console.info(
+                        'Testing: checks the canister memory size and heap allocation for all canisters after correctness tests'
+                    );
+                    await checkMemoryChanges(
+                        startingMemoryState.correctness.heapAllocations,
+                        startingMemoryState.correctness.memorySizes
+                    );
+                }
+
+                if (shouldRunTypeChecks === true) {
+                    console.info('Testing: checks TypeScript types');
+                    const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
+                    try {
+                        execSyncPretty(typeCheckCommand, {
+                            stdio: 'inherit'
+                        });
+                    } catch {
+                        expect('Type checking failed').toBe(
+                            'Type checking to pass'
                         );
                     }
-
-                    if (shouldRunTypeChecks === true) {
-                        console.info('Testing: checks TypeScript types');
-                        const typeCheckCommand = `npm exec --offline tsc -- --skipLibCheck`; // TODO: remove skipLibCheck once https://github.com/demergent-labs/azle/issues/2690 is resolved
-                        try {
-                            execSyncPretty(typeCheckCommand, {
-                                stdio: 'inherit'
-                            });
-                        } catch {
-                            expect('Type checking failed').toBe(
-                                'Type checking to pass'
-                            );
-                        }
-                    }
-                });
-            }
-        }
-    );
-
-    (shouldRecordBenchmarks === true ? describe : describe.skip)(
-        `benchmarks`,
-        () => {
-            it('records benchmarks for all canisters', async () => {
-                const canisterNames = await getCanisterNames();
-                await recordsBenchmarksForCanisters(canisterNames);
+                }
             });
         }
     );
@@ -111,6 +95,16 @@ export function runTests(tests: Test): void {
         () => {
             it('runs security checks', () => {
                 runSecurityChecks();
+            });
+        }
+    );
+
+    (shouldRecordBenchmarks === true ? describe : describe.skip)(
+        `benchmarks`,
+        () => {
+            it('records benchmarks for all canisters', async () => {
+                const canisterNames = await getCanisterNames();
+                await recordsBenchmarksForCanisters(canisterNames);
             });
         }
     );
