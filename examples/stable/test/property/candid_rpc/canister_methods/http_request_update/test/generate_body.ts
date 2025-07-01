@@ -1,4 +1,4 @@
-import { HttpRequest } from 'azle/experimental';
+import { HttpRequest } from 'azle/canisters/http_gateway/idl';
 import { Named } from 'azle/experimental/_internal/test/property';
 import { CandidReturnType } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
@@ -18,7 +18,10 @@ export function generateBody(
     const urlCheck = generateUrlCheck(request.url, requestParamName);
     const headersMap = generateHeadersMap(request.headers, requestParamName);
     const headerChecks = generateHeaderChecks(request.headers);
-    const bodyCheck = generateBodyCheck(request.body, requestParamName);
+    const bodyCheck = generateBodyCheck(
+        new Uint8Array(request.body),
+        requestParamName
+    );
 
     return `
         state++;

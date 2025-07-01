@@ -1,5 +1,6 @@
 import 'azle/experimental/_internal/test/set_experimental';
 
+import { IDL } from 'azle';
 import { DidVisitor, getDefaultVisitorData } from 'azle/_internal';
 import {
     defaultPropTestParams,
@@ -60,11 +61,10 @@ export function getTests(): Test {
                 fc.asyncProperty(
                     candidDefinitionArb({ api: 'class', constraints }, {}),
                     async (candid) => {
-                        const didVisitorResult =
-                            candid.definition.candidMeta.runtimeTypeObject.accept(
-                                new DidVisitor(),
-                                getDefaultVisitorData()
-                            );
+                        const didVisitorResult = (
+                            candid.definition.candidMeta.runtimeTypeObject ??
+                            IDL.Null
+                        ).accept(new DidVisitor(), getDefaultVisitorData());
                         const candidString = didVisitorResult[0];
                         const command = `didc random -t '(${candidString})'`;
                         const candidValueString = execSync(command)

@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse } from 'azle/experimental';
+import { HttpRequest, HttpResponse } from 'azle/canisters/http_gateway/idl';
 import { getActor, Named } from 'azle/experimental/_internal/test/property';
 import { CandidValueAndMeta } from 'azle/experimental/_internal/test/property/arbitraries/candid/candid_value_and_meta_arb';
 import { HttpResponseAgentResponseValue } from 'azle/experimental/_internal/test/property/arbitraries/http/response_arb';
@@ -13,10 +13,7 @@ import { fletch } from './fletch';
 export function generateTests(
     functionName: string,
     params: Named<CandidValueAndMeta<HttpRequest>>[],
-    returnType: CandidValueAndMeta<
-        HttpResponse<any>,
-        HttpResponseAgentResponseValue
-    >
+    returnType: CandidValueAndMeta<HttpResponse, HttpResponseAgentResponseValue>
 ): Test[][] {
     const request = params[0].value.value.agentArgumentValue;
     const expectedResponse = returnType.value.agentResponseValue;
