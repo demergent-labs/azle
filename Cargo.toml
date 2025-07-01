@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "dev-tools",
     "src/experimental/build/commands/build/wasm_binary/rust/experimental_canister_template",
     "src/experimental/build/commands/build/wasm_binary/rust/open_value_sharing",
     "src/stable/build/commands/build/wasm_binary/rust/stable_canister_template",

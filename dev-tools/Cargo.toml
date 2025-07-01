@@ -1,0 +1,29 @@
+[package]
+name = "azle-dev-tools"
+version = "0.1.0"
+edition = "2021"
+
+# This crate exists solely to track Rust command-line tools used by Azle developers
+# as dependencies, allowing them to be scanned by cargo audit, cargo deny, and dependabot.
+# 
+# Note: This crate intentionally does not build or use these dependencies.
+# It exists purely for dependency tracking purposes.
+
+[dependencies]
+# Core cargo tools for security scanning
+# Note: Using specific compatible versions to avoid build issues
+cargo-audit = { version = "0.20.0", default-features = false }
+
+# Note: cargo-deny has version compatibility issues with current rustsec
+# We'll track it as a git dependency from a known working commit
+cargo-deny = { git = "https://github.com/EmbarkStudios/cargo-deny", tag = "0.16.2", default-features = false }
+
+# Note: wasi2ic is only tracked as a git dependency for dependabot visibility
+# but is marked as optional due to platform compatibility issues
+[dependencies.wasi2ic]
+git = "https://github.com/wasm-forge/wasi2ic"
+rev = "676508667a0c3b9fb900ce19cb33bfafa2ae8f8e"
+optional = true
+
+[features]
+default = []
