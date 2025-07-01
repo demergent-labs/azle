@@ -92,15 +92,24 @@ jobs:
                   AZLE_ROOT=/home/tester/azle
                   EXAMPLE_ROOT=/home/tester/azle/${{ matrix.test.path }}
 
-                  # Set workflow context environment variables before sourcing common functions
-                  export AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-                  export AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-                  export AZLE_IS_RELEASE_BRANCH_PR=${{ startsWith(github.head_ref, 'release--') }}
-                  export AZLE_IS_FEATURE_BRANCH_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
-                  export AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+                  determine_workflow_context() {
+                      echo "=== Setting environment variables ==="
+                      # Define conditions using shell variables (inline version of determine_workflow_context action)
+                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                      AZLE_IS_RELEASE_BRANCH_PR=${{ startsWith(github.head_ref, 'release--') }}
+                      AZLE_IS_FEATURE_BRANCH_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+                      AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+                  }
 
-                  # Source common functions
-                  source "${AZLE_ROOT}/.github/scripts/common_functions.sh"
+                  print_environment_variables() {
+                      echo "=== Printing environment variables ==="
+                      echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
+                      echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
+                      echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
+                      echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
+                      echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+                  }
 
                   report_test_path() {
                       echo "=== Reporting test path ==="

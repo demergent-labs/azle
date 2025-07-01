@@ -78,30 +78,9 @@ install_dfx() {
     echo "dfx installation completed."
 }
 
-install_rust_cargo() {
-    echo "=== Installing Rust and Cargo ==="
-    echo "Installing Rust and Cargo..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-    # Source the cargo environment
-    source "$HOME/.cargo/env"
-    export PATH="$HOME/.cargo/bin:$PATH"
-}
-
 install_npm_dependencies() {
     echo "=== Installing npm dependencies ==="
     npm install
-}
-
-# Helper function to check file size (cross-platform)
-check_file_size() {
-    local file="$1"
-    local file_size=$(wc -c < "$file" 2>/dev/null || echo "0")
-    if [[ "$file_size" -gt 0 ]]; then
-        return 0
-    else
-        return 1
-    fi
 }
 
 # Helper function to ensure cargo environment is sourced
@@ -127,30 +106,9 @@ ensure_cargo_env() {
     fi
 }
 
-determine_workflow_context() {
-    echo "=== Setting environment variables ==="
-    # These variables should be set by the calling workflow before sourcing this script
-    # Define conditions using shell variables (inline version of determine_workflow_context action)
-    # Example of how to set these in the workflow:
-    # AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-    # AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
-    # AZLE_IS_RELEASE_BRANCH_PR=${{ startsWith(github.head_ref, 'release--') }}
-    # AZLE_IS_FEATURE_BRANCH_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
-    # AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+install_rust_cargo() {
+    echo "=== Installing Rust and Cargo ==="
+    npx azle dev setup --rust
 
-    # Set defaults if not already set
-    AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE:-"false"}
-    AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE:-"false"}
-    AZLE_IS_RELEASE_BRANCH_PR=${AZLE_IS_RELEASE_BRANCH_PR:-"false"}
-    AZLE_IS_FEATURE_BRANCH_PR=${AZLE_IS_FEATURE_BRANCH_PR:-"false"}
-    AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${AZLE_IS_FEATURE_BRANCH_DRAFT_PR:-"false"}
-}
-
-print_environment_variables() {
-    echo "=== Printing environment variables ==="
-    echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
-    echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
-    echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
-    echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
-    echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+    ensure_cargo_env
 }

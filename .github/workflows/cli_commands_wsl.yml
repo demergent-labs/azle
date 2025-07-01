@@ -126,8 +126,6 @@ jobs:
                       cd "${AZLE_ROOT}"
                   }
 
-
-
                   test_azle_dev_setup_command() {
                       echo "=== Testing azle dev setup command ==="
                       cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
@@ -148,16 +146,13 @@ jobs:
                       echo "Expected cargo-audit version: ${EXPECTED_CARGO_AUDIT_VERSION}"
                       echo "Expected cargo-deny version: ${EXPECTED_CARGO_DENY_VERSION}"
 
-                      # First, install Rust by itself to ensure cargo environment is set up
-                      echo "Installing Rust first to establish cargo environment..."
-                      npx azle dev setup --rust
+                      # Since wsl-ubuntu doesn't have cargo installed, we need to install it and ensure it's in the path, other runners have cargo (even if it's a different version) so the path is already set up for those runners.
+                      install_rust_cargo
 
-                      # Ensure cargo environment is available after Rust installation
-                      ensure_cargo_env
-
-                      # Now run the full setup command with cargo available
-                      echo "Running full azle dev setup with cargo environment available..."
+                      echo "Running azle dev setup..."
                       npx azle dev setup
+
+                      echo "Verifying installed versions match expected versions"
 
                       # Check Node version
                       ACTUAL_NODE_VERSION=$(node --version | sed 's/^v//')
@@ -233,6 +228,17 @@ jobs:
                           rm -f dist/canister_templates/experimental.wasm
                       }
 
+                      # Helper function to check file size (cross-platform)
+                      check_file_size() {
+                          local file="$1"
+                          local file_size=$(wc -c < "$file" 2>/dev/null || echo "0")
+                          if [[ "$file_size" -gt 0 ]]; then
+                              return 0
+                          else
+                              return 1
+                          fi
+                      }
+
                       # Remove existing template files to test regeneration
                       echo "Initial cleanup: Removing existing template files for regeneration test"
                       clean_templates
@@ -261,7 +267,63 @@ jobs:
                           echo "✅ Stable command verification successful: experimental.wasm was correctly not created"
                       fi
 
-                      echo "✅ Template command verification successful"
+                      # Clean templates for next test
+                      clean_templates
+
+                      # Test azle dev template --experimental
+                      echo "Testing 'azle dev template --experimental' command (experimental only)"
+                      npx azle dev template --experimental
+
+                      # Verify experimental template was created and has valid size
+                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                          echo "✅ Experimental template file created successfully"
+                          if ! check_file_size "dist/canister_templates/experimental.wasm"; then
+                          echo "❌ Experimental template size check failed during experimental-only test"
+                          exit 1
+                          fi
+                      else
+                          echo "❌ Experimental template verification failed: experimental.wasm was not created"
+                          exit 1
+                      fi
+
+                      # Verify stable template was NOT created
+                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                          echo "❌ Experimental command verification failed: stable.wasm should not have been created"
+                          exit 1
+                      else
+                          echo "✅ Experimental command verification successful: stable.wasm was correctly not created"
+                      fi
+
+                      # Clean templates for final test
+                      clean_templates
+
+                      # Test azle dev template --all
+                      echo "Testing 'azle dev template --all' command (both templates)"
+                      npx azle dev template --all
+
+                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                          echo "✅ Stable template file created successfully"
+                          if ! check_file_size "dist/canister_templates/stable.wasm"; then
+                          echo "❌ Stable template size check failed during --all test"
+                          exit 1
+                          fi
+                      else
+                          echo "❌ All templates verification failed: stable.wasm was not created"
+                          exit 1
+                      fi
+
+                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                          echo "✅ Experimental template file created successfully"
+                          if ! check_file_size "dist/canister_templates/experimental.wasm"; then
+                          echo "❌ Experimental template size check failed during --all test"
+                          exit 1
+                          fi
+                      else
+                          echo "❌ All templates verification failed: experimental.wasm was not created"
+                          exit 1
+                      fi
+
+                      echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created with valid sizes"
                   }
 
                   test_azle_generate_command() {
