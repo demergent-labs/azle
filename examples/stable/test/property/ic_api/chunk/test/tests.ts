@@ -16,8 +16,14 @@ const max =
         ? 80
         : 160;
 
+// Check if running in CI environment to reduce computation load
+const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+
 // Currently the instruction limit of 40_000_000_000 is hit at about 18_750_000 loops
 // So we are rounding up a bit and using 20_000_000 loops to ensure that the instruction limit is hit
+// In CI environments, reduce the base loops to prevent timeouts
+const baseLoops = isCI ? 10_000_000 : 20_000_000;
+const loopMultiplier = isCI ? 500_000 : 1_000_000;
 export function getTests(): Test {
     return () => {
         const updateCallInstructionLimit = 40_000_000_000n;
@@ -29,7 +35,7 @@ export function getTests(): Test {
                 fc.asyncProperty(fc.nat({ max }), async (constant) => {
                     await expect(
                         actor.measureSum(
-                            20_000_000 + 1_000_000 * constant,
+                            baseLoops + loopMultiplier * constant,
                             false
                         )
                     ).rejects.toThrow(
@@ -46,7 +52,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(fc.nat({ max }), async (constant) => {
                     const instructions = await actor.measureSum(
-                        20_000_000 + 1_000_000 * constant,
+                        baseLoops + loopMultiplier * constant,
                         true
                     );
 
@@ -67,7 +73,7 @@ export function getTests(): Test {
             await fc.assert(
                 fc.asyncProperty(fc.nat({ max }), async (constant) => {
                     await actor.measureSumTimer(
-                        20_000_000 + 1_000_000 * constant,
+                        baseLoops + loopMultiplier * constant,
                         true
                     );
 

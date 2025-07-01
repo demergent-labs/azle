@@ -51,7 +51,8 @@ async function sum(loops: number, shouldChunk: boolean): Promise<void> {
     for (let i = 0; i < loops; i++) {
         _sum += (i % 100) * (i % 100);
 
-        if (shouldChunk && i % 14_000_000 === 0) {
+        // More frequent chunking to reduce individual request duration
+        if (shouldChunk && i % 7_000_000 === 0) {
             await chunk();
         }
     }
