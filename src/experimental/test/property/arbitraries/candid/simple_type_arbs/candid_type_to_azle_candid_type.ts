@@ -6,7 +6,7 @@ import { SimpleCandidType } from '../candid_type';
 
 export function candidTypeToRuntimeTypeObject(
     candidType: SimpleCandidType
-): IDL.Type {
+): IDL.Type | undefined {
     if (candidType === 'blob') {
         return IDL.Vec(IDL.Nat8);
     }
@@ -54,6 +54,9 @@ export function candidTypeToRuntimeTypeObject(
     }
     if (candidType === 'text') {
         return IDL.Text;
+    }
+    if (candidType === 'Void') {
+        return undefined;
     }
     if (candidType === 'Principal') {
         return IDL.Principal;

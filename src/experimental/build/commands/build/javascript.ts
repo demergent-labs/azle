@@ -187,6 +187,7 @@ export async function getBuildOptions(
         // TODO where did the experimental decorators go?
     };
 }
+
 export async function getTsConfigPath(): Promise<string> {
     const projectRoot = await findProjectRoot();
     const tsConfigPath = join(projectRoot, 'tsconfig.json');

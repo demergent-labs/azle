@@ -128,7 +128,8 @@ function generateImports(innerType: CandidDefinition, api: Api): Set<string> {
 function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {
     const rec = IDL.Rec();
 
-    rec.fill(innerType.candidMeta.runtimeTypeObject);
+    // TODO IDL.Null is a placeholder for void...not quite correct
+    rec.fill(innerType.candidMeta.runtimeTypeObject ?? IDL.Null);
 
     return rec;
 }

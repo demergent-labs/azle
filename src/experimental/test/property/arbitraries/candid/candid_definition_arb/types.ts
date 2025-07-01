@@ -110,7 +110,7 @@ export type RecursiveCandidDefinition = {
 type CandidMeta = {
     typeAnnotation: string; // Either a type reference or type literal
     typeObject: string;
-    runtimeTypeObject: IDL.Type;
+    runtimeTypeObject: IDL.Type | undefined;
     variableAliasDeclarations: string[];
     imports: Set<string>;
     candidType: CandidType;

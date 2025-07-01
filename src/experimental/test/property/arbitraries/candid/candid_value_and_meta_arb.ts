@@ -36,7 +36,7 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
     value: {
         agentArgumentValue: T;
         agentResponseValue: E;
-        runtimeTypeObject: IDL.Type;
+        runtimeTypeObject: IDL.Type | undefined;
     };
     src: {
         typeAnnotation: string;

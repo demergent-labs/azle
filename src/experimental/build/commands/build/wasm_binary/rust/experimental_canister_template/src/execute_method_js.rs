@@ -1,3 +1,5 @@
+// TODO make sure to update this file as well
+
 use std::env::var;
 
 use wasmedge_quickjs::{AsObject, JsValue};

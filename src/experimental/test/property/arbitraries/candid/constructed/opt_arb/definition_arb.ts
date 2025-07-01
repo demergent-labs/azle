@@ -195,5 +195,6 @@ function generateTypeObject(
 }
 
 function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {
-    return IDL.Opt(innerType.candidMeta.runtimeTypeObject);
+    // TODO IDL.Null is a placeholder for void...not quite correct
+    return IDL.Opt(innerType.candidMeta.runtimeTypeObject ?? IDL.Null);
 }
