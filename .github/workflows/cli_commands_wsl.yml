@@ -362,17 +362,35 @@ jobs:
                   }
 
                   test_azle_new_command() {
-                      echo "=== Testing stable project creation with azle new command ==="
-                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+                      local project_name="$1"
+                      local experimental="$2"
+                      local http_server="$3"
+                      local working_directory="$4"
+                      local expected_azle_version="$5"
+                      local packed_file_path="$6"
 
-                      PROJECT_NAME="stable_project_test"
-                      echo "Creating new stable project: ${PROJECT_NAME}"
+                      echo "=== Testing azle new command for ${project_name} ==="
+                      cd "${working_directory}"
 
-                      # Create the new project
-                      npx azle new "${PROJECT_NAME}" --no-examples
+                      echo "Creating new azle project: ${project_name}"
+
+                      # Determine which flags to use based on parameters
+                      if [[ "${experimental}" == "false" ]] && [[ "${http_server}" == "false" ]]; then
+                          echo "Creating stable project"
+                          npx azle new "${project_name}"
+                      elif [[ "${experimental}" == "true" ]] && [[ "${http_server}" == "true" ]]; then
+                          echo "Creating experimental project with HTTP server"
+                          npx azle new "${project_name}" --experimental --http-server
+                      elif [[ "${experimental}" == "true" ]] && [[ "${http_server}" == "false" ]]; then
+                          echo "Creating experimental project"
+                          npx azle new "${project_name}" --experimental
+                      else
+                          echo "❌ Invalid combination of inputs - none of the conditions matched"
+                          exit 1
+                      fi
 
                       # Verify project was created
-                      if [[ ! -d "${PROJECT_NAME}" ]]; then
+                      if [[ ! -d "${project_name}" ]]; then
                           echo "❌ Project directory was not created"
                           exit 1
                       fi
@@ -380,20 +398,20 @@ jobs:
                       echo "✅ Project directory created successfully"
 
                       # Install the packed azle file to override the version
-                      cd "${PROJECT_NAME}"
+                      cd "${project_name}"
                       echo "Installing packed azle package in new project..."
-                      npm install "${AZLE_PACKED_FILE_PATH}"
+                      npm install "${packed_file_path}"
 
                       # Verify azle version using the CLI (not package.json)
-                      echo "Verifying azle version in new project"
+                      echo "Verifying azle version in ${project_name} project"
                       DISPLAYED_VERSION=$(npx azle --version)
                       echo "Displayed version: ${DISPLAYED_VERSION}"
 
-                      if [[ "${DISPLAYED_VERSION}" == "${AZLE_TEST_VERSION}" ]]; then
+                      if [[ "${DISPLAYED_VERSION}" == "${expected_azle_version}" ]]; then
                           echo "✅ Version verification successful: New project using correct azle version"
                       else
                           echo "❌ Version verification failed: Version mismatch in new project"
-                          echo "Expected to find: ${AZLE_TEST_VERSION}"
+                          echo "Expected to find: ${expected_azle_version}"
                           echo "But got: ${DISPLAYED_VERSION}"
                           exit 1
                       fi
@@ -412,11 +430,15 @@ jobs:
                       echo "✅ Project structure verification successful"
 
                       # Run the project tests
-                      echo "Running tests for new project..."
-                      AZLE_IDENTITY_STORAGE_MODE=plaintext npm test
+                      echo "Running tests for ${project_name} project"
+                      if [[ "${experimental}" == "true" ]]; then
+                          AZLE_IDENTITY_STORAGE_MODE=plaintext AZLE_EXPERIMENTAL=true npm test
+                      else
+                          AZLE_IDENTITY_STORAGE_MODE=plaintext npm test
+                      fi
 
                       # Verify build artifacts exist
-                      echo "Verifying .azle directory exists after build"
+                      echo "Verifying .azle directory exists in ${project_name} project"
                       if [[ -d ".azle" ]]; then
                           echo "✅ .azle directory exists as expected after build"
                       else
@@ -425,7 +447,7 @@ jobs:
                       fi
 
                       # Test azle clean command
-                      echo "Testing azle clean command in new project"
+                      echo "Testing azle clean command in ${project_name} project"
                       npx azle clean
 
                       # Verify clean command effectiveness
@@ -437,7 +459,7 @@ jobs:
                           echo "✅ .azle directory was successfully removed by clean command"
                       fi
 
-                      echo "✅ Stable project creation test completed successfully"
+                      echo "✅ ${project_name} project creation test completed successfully"
 
                       cd "${AZLE_ROOT}"
                   }
@@ -456,6 +478,14 @@ jobs:
                   test_azle_dev_template_commands
                   test_azle_generate_command
                   start_dfx_for_testing
-                  test_azle_new_command
+
+                  # Test stable project creation with azle new command
+                  test_azle_new_command "stable_project_test" "false" "false" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${AZLE_TEST_VERSION}" "${AZLE_PACKED_FILE_PATH}"
+
+                  # Test experimental project creation with azle new command
+                  test_azle_new_command "experimental_project_test" "true" "false" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${AZLE_TEST_VERSION}" "${AZLE_PACKED_FILE_PATH}"
+
+                  # Test HTTP server project creation with azle new command
+                  test_azle_new_command "http_server_project_test" "true" "true" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${AZLE_TEST_VERSION}" "${AZLE_PACKED_FILE_PATH}"
 
                   echo "🎉 All CLI command tests completed successfully!"
