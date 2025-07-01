@@ -107,6 +107,7 @@ jobs:
                   exclude-slow: ${{ needs.workflow-config.outputs.exclude-slow }}
                   exclude-unstable: ${{ needs.workflow-config.outputs.exclude-unstable }}
                   exclude-release-only: ${{ needs.workflow-config.outputs.exclude-release-only }}
+                  exclude-copy-outside-repo-incompatible: ${{ needs.workflow-config.outputs.copy-outside-repo }}
 
     run-tests:
         name: ${{ matrix.test_group.name }}
