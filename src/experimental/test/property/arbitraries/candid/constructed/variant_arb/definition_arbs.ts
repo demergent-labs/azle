@@ -22,7 +22,7 @@ type Field = [string, CandidDefinition];
 type FieldAndShapes = [string, WithShapes<CandidDefinition>];
 
 type RuntimeVariant = {
-    [key: string]: any;
+    [key: string]: IDL.Type;
 };
 
 export function VariantDefinitionArb(
