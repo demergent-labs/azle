@@ -1,5 +1,3 @@
-// TODO I believe that experimental now is exacting the same as this file
-
 import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 
