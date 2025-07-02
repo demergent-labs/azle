@@ -2,7 +2,8 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { HttpResponse } from '../../../../../stable/lib/canisters/http_gateway/idl';
+import { HttpResponse } from '#lib/canisters/http_gateway/idl/index';
+
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';

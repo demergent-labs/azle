@@ -8,15 +8,14 @@ import { IncomingMessageForServer } from 'http';
 // @ts-ignore
 import httpMessageParser from 'http-message-parser';
 
-import { idlDecode, idlEncode } from '#lib/execute_and_reply_with_candid_serde';
-import { msgArgData, msgReply } from '#lib/ic_apis/index';
-import { query, update } from '#lib/index';
-
 import {
     HttpRequest,
     HttpResponse,
     HttpUpdateRequest
-} from '../../stable/lib/canisters/http_gateway/idl';
+} from '#lib/canisters/http_gateway/idl/index';
+import { idlDecode, idlEncode } from '#lib/execute_and_reply_with_candid_serde';
+import { msgArgData, msgReply } from '#lib/ic_apis/index';
+import { query, update } from '#lib/index';
 
 export class Server {
     nodeServer?: NodeServer;
