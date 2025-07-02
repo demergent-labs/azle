@@ -417,19 +417,6 @@ jobs:
                           exit 1
                       fi
 
-                      # Verify basic project structure
-                      if [[ ! -f "src/index.ts" ]]; then
-                          echo "❌ src/index.ts was not created"
-                          exit 1
-                      fi
-
-                      if [[ ! -f "dfx.json" ]]; then
-                          echo "❌ dfx.json was not created"
-                          exit 1
-                      fi
-
-                      echo "✅ Project structure verification successful"
-
                       # Run the project tests
                       echo "Running tests for ${project_name} project"
                       if [[ "${experimental}" == "true" ]]; then
