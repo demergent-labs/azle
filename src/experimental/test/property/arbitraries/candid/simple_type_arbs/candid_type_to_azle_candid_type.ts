@@ -55,6 +55,7 @@ export function candidTypeToRuntimeTypeObject(
     if (candidType === 'text') {
         return IDL.Text;
     }
+    // TODO not sure we have landed on the best solution for representing void in this property testing framework
     if (candidType === 'Void') {
         return undefined;
     }
