@@ -79,8 +79,8 @@ export function CanisterArb<
 
         const initArgs = config.initMethod?.params.map((param) => {
             const value = param.value.value;
-            // TODO IDL.Null is a placeholder for void...not quite correct
-            return (value.runtimeTypeObject ?? IDL.Null).accept(
+            // TODO IDL.Empty is a placeholder for void...not quite correct
+            return (value.runtimeTypeObject ?? IDL.Empty).accept(
                 new CliStringVisitor(),
                 {
                     value: value.agentArgumentValue
@@ -91,8 +91,8 @@ export function CanisterArb<
         const postUpgradeArgs = config.postUpgradeMethod?.params.map(
             (param) => {
                 const value = param.value.value;
-                // TODO IDL.Null is a placeholder for void...not quite correct
-                return (value.runtimeTypeObject ?? IDL.Null).accept(
+                // TODO IDL.Empty is a placeholder for void...not quite correct
+                return (value.runtimeTypeObject ?? IDL.Empty).accept(
                     new CliStringVisitor(),
                     {
                         value: value.agentArgumentValue

@@ -190,8 +190,8 @@ function generateTypeObject(
 }
 
 function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {
-    // TODO IDL.Null is a placeholder for void...not quite correct
-    return IDL.Vec(innerType.candidMeta.runtimeTypeObject ?? IDL.Null);
+    // TODO IDL.Empty is a placeholder for void...not quite correct
+    return IDL.Vec(innerType.candidMeta.runtimeTypeObject ?? IDL.Empty);
 }
 
 function toClassTypeAnnotation(innerType: CandidDefinition): string {

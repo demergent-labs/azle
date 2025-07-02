@@ -63,7 +63,7 @@ export function getTests(): Test {
                     async (candid) => {
                         const didVisitorResult = (
                             candid.definition.candidMeta.runtimeTypeObject ??
-                            IDL.Null
+                            IDL.Empty
                         ).accept(new DidVisitor(), getDefaultVisitorData());
                         const candidString = didVisitorResult[0];
                         const command = `didc random -t '(${candidString})'`;

@@ -99,13 +99,13 @@ function generateRuntimeTypeObject(
     params: CandidDefinition[],
     returnType: CandidDefinition
 ): IDL.Type {
-    // TODO IDL.Null is a placeholder for void...not quite correct
+    // TODO IDL.Empty is a placeholder for void...not quite correct
     const paramTypeObjects = params.map(
-        (param) => param.candidMeta.runtimeTypeObject ?? IDL.Null
+        (param) => param.candidMeta.runtimeTypeObject ?? IDL.Empty
     );
-    // TODO IDL.Null is a placeholder for void...not quite correct
+    // TODO IDL.Empty is a placeholder for void...not quite correct
     const returnTypeObject =
-        returnType.candidMeta.runtimeTypeObject ?? IDL.Null;
+        returnType.candidMeta.runtimeTypeObject ?? IDL.Empty;
 
     return IDL.Func(paramTypeObjects, [returnTypeObject], [mode]);
 }
