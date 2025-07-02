@@ -1,5 +1,3 @@
-// TODO make sure to remove experimental canister code from this file
-
 import '#experimental/build/assert_experimental';
 
 import { BuildOptions } from 'esbuild';
@@ -64,12 +62,14 @@ export function getPrelude(main: string): string {
         export { Principal } from '@dfinity/principal';
         import * as CanisterModuleExperimental from '${absoluteMainPath}';
 
-        if (isClassSyntaxExport(CanisterModuleExperimental) === true) {
+        const somethingDefaultExported = CanisterModuleExperimental.default !== undefined && CanisterModuleExperimental.default !== null;
+
+        if (somethingDefaultExported === true) {
             createGetCandidAndMethodMetaFunction(CanisterModuleExperimental);
         }
         else {
             // TODO This setTimeout is here to allow asynchronous operations during canister initialization
-            // for Server canisters that have chosen not to use export default Server
+            // for Server canisters that have chosen not to use export default class extends Server
             // This seems to work no matter how many async tasks are awaited, but I am still unsure about how it will
             // behave in all async situations
             setTimeout(() => {
@@ -87,15 +87,6 @@ export function getPrelude(main: string): string {
 
                 createGetCandidAndMethodMetaFunction(CanisterModuleExperimentalServer);
             });
-        }
-
-        // TODO should probably use a better check, maybe from the stable equivalent
-        function isClassSyntaxExport(canister) {
-            const isNothing = canister === undefined || canister.default === undefined;
-            const isFunctionalSyntaxExport =
-                canister?.default?.isCanister === true ||
-                canister?.default?.isRecursive === true;
-            return !isNothing && !isFunctionalSyntaxExport;
         }
 
         ${handleClassApiCanister(main)}
@@ -183,8 +174,9 @@ export async function getBuildOptions(
             ...esmAliases
         },
         external: [...externalImplemented, ...externalNotImplemented],
-        plugins: [esbuildPluginTsc({ tsconfigPath: await getTsConfigPath() })] // TODO why is this even here?
-        // TODO where did the experimental decorators go?
+        // I believe the esbuildPluginTsc is here to honor the reflect-metadata import and thus to enable experimental decorators.
+        // I am not sure about this.
+        plugins: [esbuildPluginTsc({ tsconfigPath: await getTsConfigPath() })]
     };
 }
 
