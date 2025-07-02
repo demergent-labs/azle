@@ -200,8 +200,9 @@ async function setupCanisters(
 function generateRandomCandidString(
     candidDefinition: WithShapes<CandidDefinition>
 ): string {
+    // TODO IDL.Empty is a placeholder for void...not quite correct
     const didVisitorResult = (
-        candidDefinition.definition.candidMeta.runtimeTypeObject ?? IDL.Null
+        candidDefinition.definition.candidMeta.runtimeTypeObject ?? IDL.Empty
     ).accept(new DidVisitor(), getDefaultVisitorData());
     const candidString = didVisitorResult[0];
     const command = `didc random -t '(${candidString})'`;

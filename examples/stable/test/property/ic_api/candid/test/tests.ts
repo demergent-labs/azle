@@ -61,6 +61,7 @@ export function getTests(): Test {
                 fc.asyncProperty(
                     candidDefinitionArb({ api: 'class', constraints }, {}),
                     async (candid) => {
+                        // TODO IDL.Empty is a placeholder for void...not quite correct
                         const didVisitorResult = (
                             candid.definition.candidMeta.runtimeTypeObject ??
                             IDL.Empty
