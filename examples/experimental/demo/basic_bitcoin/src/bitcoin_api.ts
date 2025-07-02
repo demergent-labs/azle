@@ -1,9 +1,9 @@
-import { serialize } from 'azle/experimental';
 import {
-    BitcoinNetwork,
-    GetUtxosResult,
-    MillisatoshiPerByte
-} from 'azle/experimental/canisters/management';
+    bitcoin_get_utxos_result,
+    bitcoin_network,
+    millisatoshi_per_byte
+} from 'azle/canisters/management/idl';
+import { serialize } from 'azle/experimental';
 
 // The fees for the various bitcoin endpoints.
 const GET_BALANCE_COST_CYCLES: bigint = 100_000_000n;
@@ -17,7 +17,7 @@ const SEND_TRANSACTION_PER_BYTE_CYCLES: bigint = 20_000_000n;
 /// Relies on the `bitcoin_get_balance` endpoint.
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_get_balance
 export async function getBalance(
-    network: BitcoinNetwork,
+    network: bitcoin_network,
     address: string
 ): Promise<bigint> {
     const balanceRes = await fetch(`icp://aaaaa-aa/bitcoin_get_balance`, {
@@ -40,9 +40,9 @@ export async function getBalance(
 /// NOTE: Relies on the `bitcoin_get_utxos` endpoint.
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_get_utxos
 export async function getUtxos(
-    network: BitcoinNetwork,
+    network: bitcoin_network,
     address: string
-): Promise<GetUtxosResult> {
+): Promise<bitcoin_get_utxos_result> {
     const utxoRes = await fetch(`icp://aaaaa-aa/bitcoin_get_utxos`, {
         body: serialize({
             args: [
@@ -64,8 +64,8 @@ export async function getUtxos(
 /// Relies on the `bitcoin_get_current_fee_percentiles` endpoint.
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_get_current_fee_percentiles
 export async function getCurrentFeePercentiles(
-    network: BitcoinNetwork
-): Promise<MillisatoshiPerByte[]> {
+    network: bitcoin_network
+): Promise<millisatoshi_per_byte[]> {
     const res = await fetch(
         `icp://aaaaa-aa/bitcoin_get_current_fee_percentiles`,
         {
@@ -87,7 +87,7 @@ export async function getCurrentFeePercentiles(
 /// Relies on the `bitcoin_send_transaction` endpoint.
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_send_transaction
 export async function sendTransaction(
-    network: BitcoinNetwork,
+    network: bitcoin_network,
     transaction: Uint8Array
 ): Promise<void> {
     const transactionFee =

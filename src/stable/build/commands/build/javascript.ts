@@ -30,6 +30,14 @@ function getPrelude(main: string): string {
 
 export function handleClassApiCanister(main: string): string {
     return /*TS*/ `
+        /**
+         * @internal
+         *
+         * This function will create the globalThis._azleGetCandidAndMethodMeta variable.
+         * This global variable is used by the Node.js build environment to retrieve
+         * the canister's generated Candid string and the method metadata necessary
+         * for the final manipulated binary to be deployed.
+         */
         function createGetCandidAndMethodMetaFunction(canisterModule) {
             const canisterClassMeta = getCanisterClassMeta(canisterModule);
 
