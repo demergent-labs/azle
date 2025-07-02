@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe } from '@jest/globals';
+import { afterAll, beforeAll } from '@jest/globals';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
 
@@ -25,8 +25,5 @@ runTests(() => {
         bitcoinDaemon.kill();
     });
 
-    describe(
-        'runs bitcoin tests while bitcoin daemon is running',
-        getTests(bitcoinCanister)
-    );
+    getTests(bitcoinCanister)();
 });
