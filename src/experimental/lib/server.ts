@@ -29,7 +29,7 @@ export class Server {
 
         if (this.nodeServer === undefined) {
             throw new Error(
-                'The nodeServer property of the Server class has not been set.'
+                'The nodeServer property of the Server base class has not been set.'
             );
         }
 
@@ -45,7 +45,7 @@ export class Server {
 
         if (this.nodeServer === undefined) {
             throw new Error(
-                'The nodeServer property of the Server class has not been set.'
+                'The nodeServer property of the Server base class has not been set.'
             );
         }
 
@@ -84,7 +84,6 @@ export async function httpHandler(
         writeable = true;
         res: ServerResponse | null = null;
 
-        // TODO we get to read but nothing else
         async read(): Promise<ArrayBuffer> {
             const httpLine1 = `${httpRequest.method} ${httpRequest.url} HTTP/1.1\r\n`;
 
@@ -278,7 +277,3 @@ function processChunkedBody(buffer: Buffer): Buffer {
 
     return result;
 }
-
-// export function setNodeServer(newNodeServer: NodeServer) {
-//     nodeServer = newNodeServer;
-// }
