@@ -1,6 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { describe } from '@jest/globals';
 import { expect, it, please, Test } from 'azle/_internal/test';
 import { execSync } from 'child_process';
 
@@ -13,9 +12,9 @@ export function getTests(ledgerCanister: ActorSubclass<_SERVICE>): Test {
         getAddressFromPrincipalTests(ledgerCanister);
 
     return () => {
-        describe('simpleTests', simpleTests);
-        describe('transferErrorTests', transferErrorTests);
-        describe('addressFromPrincipalTests', addressFromPrincipalTests);
+        simpleTests();
+        transferErrorTests();
+        addressFromPrincipalTests();
     };
 }
 

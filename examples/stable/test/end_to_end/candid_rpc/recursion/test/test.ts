@@ -1,4 +1,3 @@
-import { describe } from '@jest/globals';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
 
@@ -27,9 +26,6 @@ const recursiveCanister = createRecursiveActor(
 );
 
 runTests(() => {
-    describe('getTests', getTests(recursionCanister));
-    describe(
-        'getRecursiveCanisterTests',
-        getRecursiveCanisterTests(recursiveCanister)
-    );
+    getTests(recursionCanister)();
+    getRecursiveCanisterTests(recursiveCanister)();
 });

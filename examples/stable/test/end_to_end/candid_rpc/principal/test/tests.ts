@@ -1,6 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { describe } from '@jest/globals';
 import { expect, it, Test } from 'azle/_internal/test';
 
 import { _SERVICE } from './dfx_generated/principal/principal.did';
@@ -47,13 +46,13 @@ export function getTests(principalCanister: ActorSubclass<_SERVICE>): Test {
             });
         });
 
-        describe('from hex', fromHexTests);
-        describe('from text', fromTextTests);
-        describe('from blob', fromBlobTests);
-        describe('to hex', toHexTests);
-        describe('to text', toTextTests);
-        describe('to blob', toBlobTests);
-        describe('self authentication', selfAuthenticatingTests);
+        fromHexTests();
+        fromTextTests();
+        fromBlobTests();
+        toHexTests();
+        toTextTests();
+        toBlobTests();
+        selfAuthenticatingTests();
     };
 }
 

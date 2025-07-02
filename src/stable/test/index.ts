@@ -86,21 +86,21 @@ export function runTests(tests: Test): void {
         }
     );
 
+    (shouldRunSecurityChecks === true ? describe : describe.skip)(
+        'security checks',
+        () => {
+            it('runs security checks', () => {
+                runSecurityChecks();
+            });
+        }
+    );
+
     (shouldRecordBenchmarks === true ? describe : describe.skip)(
         `benchmarks`,
         () => {
             it('records benchmarks for all canisters', async () => {
                 const canisterNames = await getCanisterNames();
                 await recordsBenchmarksForCanisters(canisterNames);
-            });
-        }
-    );
-
-    (shouldRunSecurityChecks === true ? describe : describe.skip)(
-        'security checks',
-        () => {
-            it('runs security checks', () => {
-                runSecurityChecks();
             });
         }
     );
@@ -165,8 +165,9 @@ export function please(name: string, fn: () => void | Promise<void>): void {
         await fn();
     });
 }
-please.skip = test.skip;
+please.each = test.each;
 please.only = test.only;
+please.skip = test.skip;
 
 export function it(name: string, fn: () => void | Promise<void>): void {
     test(`it ${name}`, async () => {
@@ -174,6 +175,7 @@ export function it(name: string, fn: () => void | Promise<void>): void {
         await fn();
     });
 }
+it.each = test.each;
 it.only = test.only;
 it.skip = test.skip;
 

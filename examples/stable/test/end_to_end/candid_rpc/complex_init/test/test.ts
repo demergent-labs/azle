@@ -1,4 +1,3 @@
-import { describe } from '@jest/globals';
 import { getCanisterId } from 'azle/_internal/dfx';
 import { runTests } from 'azle/_internal/test';
 
@@ -26,6 +25,6 @@ const recInitCanister = createRecActor(getCanisterId(recInitCanisterName), {
 });
 
 runTests(() => {
-    describe('complex init canister', getTests(complexInitCanister));
-    describe('rec init canister', getRecTests(recInitCanister));
+    getTests(complexInitCanister)();
+    getRecTests(recInitCanister)();
 });
