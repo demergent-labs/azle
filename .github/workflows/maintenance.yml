@@ -62,6 +62,18 @@ jobs:
               with:
                   command: 'npm install'
 
+            # Conditionally delete and update workspace package-lock.json
+            - name: Delete workspace package-lock.json
+              if: ${{ github.event.inputs.delete_package_lock == 'true' }}
+              run: if [ -f package-lock.json ]; then rm package-lock.json; fi
+              working-directory: ./examples
+
+            - name: Update workspace dependencies
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+                  working-directory: ./examples
+
             # Run global prettier/lint fixes
             - name: Run Prettier
               run: npx prettier --write .
@@ -105,10 +117,17 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
+            # Install dependencies at the examples workspace root
+            - name: Install workspace dependencies
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+                  working-directory: ./examples
+
             # Conditionally delete package-lock.json if input is true
             - name: Delete package-lock.json
               if: ${{ github.event.inputs.delete_package_lock == 'true' }}
-              run: rm package-lock.json
+              run: if [ -f package-lock.json ]; then rm package-lock.json; fi
               working-directory: ${{ matrix.test.path }}
 
             # Update package-lock.json in test directory
