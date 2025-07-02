@@ -20,7 +20,7 @@ import { RecursiveShapes } from '../../recursive';
 type Field = [string, CandidDefinition];
 
 type RuntimeRecord = {
-    [key: string]: any;
+    [key: string]: IDL.Type;
 };
 
 export function RecordDefinitionArb(
