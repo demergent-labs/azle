@@ -26,6 +26,7 @@ jobs:
                           build-essential
                           git
                           jq
+                          clang
                       set-as-default: 'true'
                       wsl-shell-user: 'tester'
                   attempt_limit: 5
