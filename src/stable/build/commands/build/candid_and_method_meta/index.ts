@@ -13,10 +13,8 @@ export async function getCandidAndMethodMeta(
     ioType: IOType,
     wasmData: WasmData
 ): Promise<CandidAndMethodMeta> {
-    // TODO let's generalize this for experimental and stable
     const wasmBinary = await getWasmBinary(ioType, js, wasmData);
 
-    // TODO let's generalize this for experimental and stable
     const { candid, methodMeta } = await execute(wasmBinary);
 
     return {
