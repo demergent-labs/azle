@@ -15,7 +15,6 @@ export type Callbacks = {
 };
 
 declare global {
-    var _azleCallbacks: Callbacks | undefined;
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
     var _azleOutgoingHttpOptionsMaxResponseBytes: bigint | undefined;
     var _azleOutgoingHttpOptionsCycles: bigint | undefined;
