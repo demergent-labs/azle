@@ -47,6 +47,16 @@ on:
                 required: true
                 type: boolean
                 default: true
+            run-mac-tests:
+                description: 'Run Mac tests'
+                required: true
+                type: boolean
+                default: false
+            run-wsl-ubuntu-tests:
+                description: 'Run Windows tests'
+                required: true
+                type: boolean
+                default: false
 
 jobs:
     workflow-config:
@@ -59,6 +69,8 @@ jobs:
             link-azle: ${{ steps.determine-workflow-config.outputs.link-azle }}
             fuzz: ${{ steps.determine-workflow-config.outputs.fuzz }}
             fuzz-time-limit: ${{ steps.determine-workflow-config.outputs.fuzz-time-limit }}
+            run-mac-tests: ${{ steps.determine-workflow-config.outputs.run-mac-tests }}
+            run-wsl-ubuntu-tests: ${{ steps.determine-workflow-config.outputs.run-wsl-ubuntu-tests }}
         steps:
             - uses: actions/checkout@v4
 
@@ -72,6 +84,8 @@ jobs:
                   link-azle-dispatch-input-value: ${{ inputs.link-azle }}
                   fuzz-dispatch-input-value: ${{ inputs.fuzz }}
                   fuzz-time-limit-dispatch-input-value: ${{ inputs.fuzz-time-limit }}
+                  run-mac-tests-dispatch-input-value: ${{ inputs.run-mac-tests }}
+                  run-wsl-ubuntu-tests-dispatch-input-value: ${{ inputs.run-wsl-ubuntu-tests }}
 
     get-exclude-dirs:
         name: Get exclude directories
@@ -215,6 +229,8 @@ jobs:
             fuzz: ${{ needs.workflow-config.outputs.fuzz == 'true' }}
             operating-system: ${{ matrix.test_group.operating-system }}
             fuzz-time-limit: ${{ needs.workflow-config.outputs.fuzz-time-limit }}
+            run-mac-tests: ${{ needs.workflow-config.outputs.run-mac-tests == 'true' }}
+            run-wsl-ubuntu-tests: ${{ needs.workflow-config.outputs.run-wsl-ubuntu-tests == 'true' }}
 
     top-level-checks:
         name: Top level checks
