@@ -164,6 +164,13 @@ jobs:
                   command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
+            - name: Install tsx and jest for external tests
+              if: ${{ inputs.copy-outside-repo }}
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install tsx jest'
+                  working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
+
             - run: npm link azle
               if: matrix.azle_source == 'repo'
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
