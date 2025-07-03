@@ -1,6 +1,6 @@
 import 'azle/experimental/_internal/test/set_experimental';
 
-import { HttpRequest } from 'azle/experimental';
+import { HttpRequest } from 'azle/canisters/http_gateway/idl';
 import { runPropTests } from 'azle/experimental/_internal/test/property';
 import { RecordArb } from 'azle/experimental/_internal/test/property/arbitraries/candid/constructed/record_arb';
 import {

@@ -1,8 +1,11 @@
-import { query, Server, text, update } from 'azle/experimental';
+import { IDL, query, update } from 'azle';
+import { Server } from 'azle/experimental';
 import express from 'express';
 
-export default Server(
-    () => {
+export default class extends Server {
+    constructor() {
+        super();
+
         const app = express();
 
         app.get('/http-query', (_req, res) => {
@@ -13,14 +16,16 @@ export default Server(
             res.send('http-update-server');
         });
 
-        return app.listen();
-    },
-    {
-        candidQuery: query([], text, () => {
-            return 'candidQueryServer';
-        }),
-        candidUpdate: update([], text, () => {
-            return 'candidUpdateServer';
-        })
+        this.nodeServer = app.listen();
     }
-);
+
+    @query([], IDL.Text)
+    candidQuery(): string {
+        return 'candidQueryServer';
+    }
+
+    @update([], IDL.Text)
+    candidUpdate(): string {
+        return 'candidUpdateServer';
+    }
+}

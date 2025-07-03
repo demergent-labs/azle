@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Identity } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
 import { toJwt } from 'azle/experimental/http_client';

@@ -19,11 +19,7 @@ pub extern "C" fn execute_method_js(function_index: i32) {
 
                 let canister_class_meta = global.get("_azleCanisterClassMeta");
 
-                let callbacks = if matches!(canister_class_meta, JsValue::UnDefined) {
-                    global.get("_azleCallbacks")
-                } else {
-                    canister_class_meta.get("callbacks").unwrap()
-                };
+                let callbacks = canister_class_meta.get("callbacks").unwrap();
 
                 let method_callback = callbacks.get(&function_name).unwrap();
 

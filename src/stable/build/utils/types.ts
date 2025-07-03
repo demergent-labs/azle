@@ -3,7 +3,7 @@ export type CandidAndMethodMeta = {
     methodMeta: MethodMeta;
 };
 
-export type CandidGen = 'automatic' | 'custom' | 'http';
+export type CandidGen = 'automatic' | 'custom';
 
 export type CanisterConfig = {
     type?: 'azle';

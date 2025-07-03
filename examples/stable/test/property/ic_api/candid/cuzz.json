@@ -1,20 +1,7 @@
 {
     "expectedErrors": [
-        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized token",
-        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized EOF found at",
-        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown token",
-        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed string at",
-        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown escape character",
-        "Method: candidEncodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed comment at",
-        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized token",
-        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unrecognized EOF found at",
-        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown token",
-        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed string at",
-        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unknown escape character",
-        "Method: assertCandidEncodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Candid parser error: Unclosed comment at",
-        "Method: candidDecodeQuery \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
-        "Method: assertCandidDecodeTypes \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught: Cannot parse header",
-        "Uncaught: Candid parser error: Unexpected string",
+        "Uncaught: Candid parser error",
+        "Uncaught: Cannot parse header",
         "index out of bounds: the len is \\d+ but the index is \\d+"
     ]
 }

@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType, Variant } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { JsPropertyNameArb } from '../../../js_name_arb';
 import { Api, Context } from '../../../types';
@@ -22,7 +22,7 @@ type Field = [string, CandidDefinition];
 type FieldAndShapes = [string, WithShapes<CandidDefinition>];
 
 type RuntimeVariant = {
-    [key: string]: CandidType;
+    [key: string]: IDL.Type;
 };
 
 export function VariantDefinitionArb(
@@ -268,7 +268,7 @@ function generateTypeObject(
     return `Variant({${fieldsAsString}})`;
 }
 
-function generateRuntimeTypeObject(fields: Field[]): CandidType {
+function generateRuntimeTypeObject(fields: Field[]): IDL.Type {
     const azleVariantConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RuntimeVariant => {
             return {
@@ -279,5 +279,5 @@ function generateRuntimeTypeObject(fields: Field[]): CandidType {
         {}
     );
 
-    return Variant(azleVariantConstructorObj);
+    return IDL.Variant(azleVariantConstructorObj);
 }

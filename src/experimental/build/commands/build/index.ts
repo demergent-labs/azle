@@ -72,9 +72,7 @@ export async function runCommand(
         methodMeta.post_upgrade?.index ?? -1
     );
 
-    if (canisterConfig.custom?.candid_gen === 'http') {
-        logSuccess(canisterName, canisterId);
-    }
+    logSuccess(canisterName, canisterId);
 }
 
 function buildAssets(canisterConfig: CanisterConfig, ioType: IOType): void {

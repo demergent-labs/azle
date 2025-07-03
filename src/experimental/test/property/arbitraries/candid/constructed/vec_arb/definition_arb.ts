@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType, Vec } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
@@ -189,8 +189,9 @@ function generateTypeObject(
     return `Vec(${innerType.candidMeta.typeObject})`;
 }
 
-function generateRuntimeTypeObject(innerType: CandidDefinition): CandidType {
-    return Vec(innerType.candidMeta.runtimeTypeObject);
+function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {
+    // TODO IDL.Empty is a placeholder for void...not quite correct
+    return IDL.Vec(innerType.candidMeta.runtimeTypeObject ?? IDL.Empty);
 }
 
 function toClassTypeAnnotation(innerType: CandidDefinition): string {

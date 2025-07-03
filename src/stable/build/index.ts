@@ -234,14 +234,6 @@ function checkForExperimentalDfxJsonFields(
         );
     }
 
-    if (canisterConfig.custom?.candid_gen === 'http') {
-        throw new Error(
-            experimentalMessageDfxJson(
-                'the "candid_gen": "http" field in your dfx.json file'
-            )
-        );
-    }
-
     if (canisterConfig.custom?.esm_aliases !== undefined) {
         throw new Error(
             experimentalMessageDfxJson(

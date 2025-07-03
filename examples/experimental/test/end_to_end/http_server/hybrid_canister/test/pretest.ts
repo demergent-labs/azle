@@ -12,17 +12,6 @@ function pretest(): void {
         }
     );
 
-    execSync(`dfx canister uninstall-code canister || true`, {
-        stdio: 'inherit'
-    });
-
-    execSync(
-        `dfx canister uninstall-code canister_init_and_post_upgrade || true`,
-        {
-            stdio: 'inherit'
-        }
-    );
-
     execSync(`dfx deploy`, {
         stdio: 'inherit'
     });

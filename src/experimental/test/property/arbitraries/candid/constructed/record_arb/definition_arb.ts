@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType, Record } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { JsPropertyNameArb } from '../../../js_name_arb';
 import { Api, Context } from '../../../types';
@@ -20,7 +20,7 @@ import { RecursiveShapes } from '../../recursive';
 type Field = [string, CandidDefinition];
 
 type RuntimeRecord = {
-    [key: string]: CandidType;
+    [key: string]: IDL.Type;
 };
 
 export function RecordDefinitionArb(
@@ -185,7 +185,7 @@ function generateTypeObject(
     return `Record({${fieldsAsString}})`;
 }
 
-function generateRuntimeTypeObject(fields: Field[]): CandidType {
+function generateRuntimeTypeObject(fields: Field[]): IDL.Type {
     const azleRecordConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RuntimeRecord => {
             return {
@@ -196,5 +196,5 @@ function generateRuntimeTypeObject(fields: Field[]): CandidType {
         {}
     );
 
-    return Record(azleRecordConstructorObj);
+    return IDL.Record(azleRecordConstructorObj);
 }

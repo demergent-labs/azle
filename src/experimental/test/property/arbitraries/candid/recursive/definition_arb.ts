@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType, Recursive } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { Api, Context } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
@@ -32,7 +32,7 @@ export function RecursiveDefinitionArb(
                         api === 'functional' ? `typeof ${name}.tsType` : name,
                     imports: new Set(),
                     variableAliasDeclarations: [],
-                    runtimeTypeObject: Recursive(() => undefined)
+                    runtimeTypeObject: IDL.Rec()
                 },
                 name
             };
@@ -125,6 +125,11 @@ function generateImports(innerType: CandidDefinition, api: Api): Set<string> {
     return new Set([...innerType.candidMeta.imports, recursiveImports]);
 }
 
-function generateRuntimeTypeObject(innerType: CandidDefinition): CandidType {
-    return Recursive(() => innerType.candidMeta.runtimeTypeObject);
+function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {
+    const rec = IDL.Rec();
+
+    // TODO IDL.Empty is a placeholder for void...not quite correct
+    rec.fill(innerType.candidMeta.runtimeTypeObject ?? IDL.Empty);
+
+    return rec;
 }

@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { Canister } from '#experimental/lib/candid/types/reference/service/index';
+import { IDL } from '#lib/index';
 
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
@@ -182,5 +182,5 @@ function generateRuntimeTypeObject(serviceMethods: ServiceMethodDefinition[]) {
         };
     }, {});
 
-    return Canister(methods);
+    return IDL.Service(methods);
 }

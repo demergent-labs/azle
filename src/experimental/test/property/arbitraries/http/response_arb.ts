@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { HttpResponse, None } from '#experimental/lib/index';
+import { HttpResponse } from '#lib/canisters/http_gateway/idl/index';
 
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
@@ -45,7 +45,7 @@ const StatusCodeArb = fc
 // TODO Status 206 needs Content-Range header to work so we're filtering it out until we support that header in our arbitraries
 // TODO https://github.com/demergent-labs/azle/issues/2768
 
-export function HttpResponseValueArb<T>(): fc.Arbitrary<HttpResponse<T>> {
+export function HttpResponseValueArb(): fc.Arbitrary<HttpResponse> {
     return fc
         .tuple(StatusCodeArb, HttpHeadersArb())
         .chain(([statusCode, headers]) => {
@@ -55,24 +55,24 @@ export function HttpResponseValueArb<T>(): fc.Arbitrary<HttpResponse<T>> {
                 hasBody(statusCode) ? BodyArb() : fc.constant(new Uint8Array())
             );
         })
-        .map(([status_code, headers, body]): HttpResponse<T> => {
+        .map(([status_code, headers, body]): HttpResponse => {
             return {
                 status_code,
                 headers,
                 body,
-                upgrade: None,
-                streaming_strategy: None
+                upgrade: [],
+                streaming_strategy: []
             };
         });
 }
-export function HttpResponseArb<T extends CorrespondingJSType = any>(
+export function HttpResponseArb(
     context: Context,
     token: CandidValueAndMeta<CorrespondingJSType>
 ): fc.Arbitrary<
-    CandidValueAndMeta<HttpResponse<T>, HttpResponseAgentResponseValue>
+    CandidValueAndMeta<HttpResponse, HttpResponseAgentResponseValue>
 > {
     const api = context.api;
-    return HttpResponseValueArb<T>().map((response) => {
+    return HttpResponseValueArb().map((response) => {
         const lowerCasedHeaders = response.headers.map<[string, string]>(
             ([name, value]) => [name.toLowerCase(), value]
         );
@@ -83,7 +83,7 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
             body:
                 response.status_code === 204 // No Content
                     ? ''
-                    : new TextDecoder().decode(response.body)
+                    : new TextDecoder().decode(new Uint8Array(response.body))
         };
 
         const headerStrings = response.headers
@@ -93,7 +93,7 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
             )
             .join(',');
 
-        const bodySrc = blobToSrcLiteral(response.body);
+        const bodySrc = blobToSrcLiteral(new Uint8Array(response.body));
 
         const responseImports =
             api === 'functional'
@@ -104,7 +104,7 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
             value: {
                 agentArgumentValue: response,
                 agentResponseValue: agentResponseValue,
-                runtimeTypeObject: HttpResponse(token.value.runtimeTypeObject)
+                runtimeTypeObject: HttpResponse
             },
             src: {
                 typeAnnotation:

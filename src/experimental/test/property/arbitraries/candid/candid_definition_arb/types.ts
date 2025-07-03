@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType as RuntimeCandidType } from '#experimental/lib/candid/candid_type';
+import { IDL } from '#lib/index';
 
 import { Context } from '../../types';
 import { CandidType } from '../candid_type';
@@ -110,7 +110,7 @@ export type RecursiveCandidDefinition = {
 type CandidMeta = {
     typeAnnotation: string; // Either a type reference or type literal
     typeObject: string;
-    runtimeTypeObject: RuntimeCandidType;
+    runtimeTypeObject: IDL.Type | undefined;
     variableAliasDeclarations: string[];
     imports: Set<string>;
     candidType: CandidType;
