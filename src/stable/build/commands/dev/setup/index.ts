@@ -8,6 +8,7 @@ type DependencyName =
     | 'node'
     | 'rust'
     | 'cargo-audit'
+    | 'cargo-auditable'
     | 'cargo-deny'
     | 'wasi2ic';
 
