@@ -146,6 +146,23 @@ jobs:
                       # Since wsl-ubuntu doesn't have cargo installed, we need to install it and ensure it's in the path, other runners have cargo (even if it's a different version) so the path is already set up for those runners.
                       install_rust_cargo
 
+                      # Ensure cargo environment is available in current shell session
+                      echo "Ensuring cargo environment is properly sourced..."
+                      source "$HOME/.cargo/env"
+                      export PATH="$HOME/.cargo/bin:$PATH"
+
+                      # Verify cargo is available before proceeding
+                      if ! command -v cargo &> /dev/null; then
+                          echo "❌ Cargo is still not available after sourcing environment"
+                          echo "PATH: $PATH"
+                          echo "Contents of ~/.cargo/bin:"
+                          ls -la "$HOME/.cargo/bin" || echo "Directory does not exist"
+                          exit 1
+                      else
+                          echo "✅ Cargo is available at: $(which cargo)"
+                          echo "Cargo version: $(cargo --version)"
+                      fi
+
                       echo "Running azle dev setup..."
                       npx azle dev setup
 

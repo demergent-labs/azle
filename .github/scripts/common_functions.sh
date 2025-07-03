@@ -91,7 +91,16 @@ ensure_cargo_env() {
     if [[ -f "$HOME/.cargo/env" ]]; then
         echo "Sourcing $HOME/.cargo/env..."
         source "$HOME/.cargo/env"
+        # Force export PATH to ensure it's available in the current shell session
         export PATH="$HOME/.cargo/bin:$PATH"
+        echo "Updated PATH: $PATH"
+    else
+        echo "Warning: $HOME/.cargo/env does not exist"
+        # Try to manually add cargo bin to PATH as fallback
+        if [[ -d "$HOME/.cargo/bin" ]]; then
+            echo "Manually adding $HOME/.cargo/bin to PATH"
+            export PATH="$HOME/.cargo/bin:$PATH"
+        fi
     fi
 
     # Verify cargo is available after sourcing
@@ -100,9 +109,12 @@ ensure_cargo_env() {
         echo "PATH: $PATH"
         echo "Contents of ~/.cargo/bin (if it exists):"
         ls -la "$HOME/.cargo/bin" || echo "Directory does not exist"
+        echo "Contents of ~/.cargo (if it exists):"
+        ls -la "$HOME/.cargo" || echo "Directory does not exist"
         return 1
     else
         echo "✅ Cargo is available at: $(which cargo)"
+        echo "Cargo version: $(cargo --version)"
     fi
 }
 

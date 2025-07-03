@@ -224,6 +224,24 @@ jobs:
                   retry_command setup_nodejs
                   retry_command install_dfx
                   retry_command install_rust_cargo
+
+                  # Ensure cargo environment is available in current shell session
+                  echo "Ensuring cargo environment is properly sourced..."
+                  source "$HOME/.cargo/env" 2>/dev/null || true
+                  export PATH="$HOME/.cargo/bin:$PATH"
+
+                  # Verify cargo is available before proceeding
+                  if ! command -v cargo &> /dev/null; then
+                      echo "❌ Cargo is still not available after sourcing environment"
+                      echo "PATH: $PATH"
+                      echo "Contents of ~/.cargo/bin:"
+                      ls -la "$HOME/.cargo/bin" || echo "Directory does not exist"
+                      exit 1
+                  else
+                      echo "✅ Cargo is available at: $(which cargo)"
+                      echo "Cargo version: $(cargo --version)"
+                  fi
+
                   retry_command install_npm_dependencies
                   npm_link
                   run_npm_lint
