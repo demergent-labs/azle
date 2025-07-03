@@ -209,7 +209,10 @@ jobs:
 
             - name: Run tests
               run: |
+                  echo "=== Running npm test with explicit error checking ==="
+                  set -e  # Exit on any error
                   npm test
+                  echo "npm test completed successfully"
                   echo "Current working directory of tests: $(pwd)"
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               shell: bash -l {0}
