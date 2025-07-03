@@ -12,7 +12,7 @@ on:
             - reopened
 
 jobs:
-    test-cli-commands-wsl-ubuntu:
+    test-cli-commands-outside-azle-repo-wsl-ubuntu:
         runs-on: windows-latest
         steps:
             - name: Setup WSL-Ubuntu
@@ -70,9 +70,7 @@ jobs:
                       # Update the version in package.json using npm version without creating a git tag
                       npm version "${TEST_VERSION}" --no-git-tag-version
 
-                      # Export for later use
-                      export AZLE_TEST_VERSION="${TEST_VERSION}"
-                      echo "Test version set to: $AZLE_TEST_VERSION"
+                      echo "Test version set to: $TEST_VERSION"
                   }
 
                   pack_azle_source() {
@@ -85,9 +83,7 @@ jobs:
                       PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${PACKED_FILE_NAME}"
                       echo "Absolute path: ${PACKED_FILE_ABSOLUTE_PATH}"
 
-                      # Export for later use
-                      export AZLE_PACKED_FILE_PATH="${PACKED_FILE_ABSOLUTE_PATH}"
-                      echo "Packed file path set to: $AZLE_PACKED_FILE_PATH"
+                      echo "Packed file path set to: $PACKED_FILE_ABSOLUTE_PATH"
                   }
 
                   create_external_test_environment() {
@@ -102,7 +98,7 @@ jobs:
                       cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
                       # Install the package locally for testing
                       echo "Installing the packed azle package for CLI testing"
-                      npm install "${AZLE_PACKED_FILE_PATH}"
+                      npm install "${PACKED_FILE_ABSOLUTE_PATH}"
                       cd "${AZLE_ROOT}"
                   }
 
@@ -115,11 +111,11 @@ jobs:
                       echo "Displayed version: ${DISPLAYED_VERSION}"
 
                       # Verify the version matches our unique test version
-                      if [[ "${DISPLAYED_VERSION}" == "${AZLE_TEST_VERSION}" ]]; then
+                      if [[ "${DISPLAYED_VERSION}" == "${TEST_VERSION}" ]]; then
                           echo "✅ Version verification successful: Running the correct packed version"
                       else
                           echo "❌ Version verification failed: Version mismatch"
-                          echo "Expected to find: ${AZLE_TEST_VERSION}"
+                          echo "Expected to find: ${TEST_VERSION}"
                           echo "But got: ${DISPLAYED_VERSION}"
                           exit 1
                       fi
@@ -278,8 +274,8 @@ jobs:
                       # Verify experimental template was created and has valid size
                       if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
                           echo "✅ Experimental template file created successfully"
-                          if ! check_file_size "dist/canister_templates/experimental.wasm"; then
-                          echo "❌ Experimental template size check failed during experimental-only test"
+                              if ! check_file_size "dist/canister_templates/experimental.wasm"; then
+                              echo "❌ Experimental template size check failed during experimental-only test"
                           exit 1
                           fi
                       else
@@ -305,8 +301,8 @@ jobs:
                       if [[ -f "dist/canister_templates/stable.wasm" ]]; then
                           echo "✅ Stable template file created successfully"
                           if ! check_file_size "dist/canister_templates/stable.wasm"; then
-                          echo "❌ Stable template size check failed during --all test"
-                          exit 1
+                              echo "❌ Stable template size check failed during --all test"
+                              exit 1
                           fi
                       else
                           echo "❌ All templates verification failed: stable.wasm was not created"
@@ -316,8 +312,8 @@ jobs:
                       if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
                           echo "✅ Experimental template file created successfully"
                           if ! check_file_size "dist/canister_templates/experimental.wasm"; then
-                          echo "❌ Experimental template size check failed during --all test"
-                          exit 1
+                              echo "❌ Experimental template size check failed during --all test"
+                              exit 1
                           fi
                       else
                           echo "❌ All templates verification failed: experimental.wasm was not created"
@@ -468,13 +464,13 @@ jobs:
                   start_dfx_for_testing
 
                   # Test stable project creation with azle new command
-                  test_azle_new_command "stable_project_test" "false" "false" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${AZLE_TEST_VERSION}" "${AZLE_PACKED_FILE_PATH}"
+                  test_azle_new_command "stable_project_test" "false" "false" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${TEST_VERSION}" "${PACKED_FILE_ABSOLUTE_PATH}"
 
                   # Test experimental project creation with azle new command
-                  test_azle_new_command "experimental_project_test" "true" "false" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${AZLE_TEST_VERSION}" "${AZLE_PACKED_FILE_PATH}"
+                  test_azle_new_command "experimental_project_test" "true" "false" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${TEST_VERSION}" "${PACKED_FILE_ABSOLUTE_PATH}"
 
-                  # TODO: Skipping on WSL due to sub domain issues
+                  # TODO: Skipping on WSL-Ubuntu due to sub domain issues
                   # Test HTTP server project creation with azle new command
-                  # test_azle_new_command "http_server_project_test" "true" "true" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${AZLE_TEST_VERSION}" "${AZLE_PACKED_FILE_PATH}"
+                  # test_azle_new_command "http_server_project_test" "true" "true" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${TEST_VERSION}" "${PACKED_FILE_ABSOLUTE_PATH}"
 
                   echo "🎉 All CLI command tests completed successfully!"

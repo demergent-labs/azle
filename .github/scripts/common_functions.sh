@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Common functions used across GitHub Actions workflows for Azle
+# Common functions used across WSL-Ubuntu GitHub Actions workflows for Azle
 # This script should be sourced in workflows that need these functions
 
 retry_command() {

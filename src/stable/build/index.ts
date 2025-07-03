@@ -144,7 +144,14 @@ export async function handleDevSetupCommand(): Promise<void> {
     const cargoAudit = process.argv.includes('--cargo-audit');
     const cargoDeny = process.argv.includes('--cargo-deny');
 
-    if (!node && !dfx && !rust && !wasi2ic && !cargoAudit && !cargoDeny) {
+    if (
+        node === false &&
+        dfx === false &&
+        rust === false &&
+        wasi2ic === false &&
+        cargoAudit === false &&
+        cargoDeny === false
+    ) {
         await runDevSetupCommand({
             dfx: true,
             node: true,

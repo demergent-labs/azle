@@ -92,6 +92,9 @@ jobs:
                   AZLE_ROOT=/home/tester/azle
                   EXAMPLE_ROOT=/home/tester/azle/${{ matrix.test.path }}
 
+                  # Source common functions
+                  source "${AZLE_ROOT}/.github/scripts/common_functions.sh"
+
                   determine_workflow_context() {
                       echo "=== Setting environment variables ==="
                       # Define conditions using shell variables (inline version of determine_workflow_context action)
@@ -189,9 +192,6 @@ jobs:
                       fi
 
                       echo "Running tests $RUNS times"
-
-                      # Export these for use in run_tests function
-                      export TEST_RUNS=$RUNS
                   }
 
                   run_tests() {
@@ -204,7 +204,7 @@ jobs:
                       export AZLE_FUZZ_CALL_DELAY="${{ inputs.fuzz-call-delay }}"
                       export AZLE_FUZZ_TIME_LIMIT="${{ inputs.fuzz-time-limit }}"
                       export AZLE_RECORD_ACTIONS="${{ !inputs.fuzz }}"
-                      export AZLE_PROPTEST_NUM_RUNS="$TEST_RUNS"
+                      export AZLE_PROPTEST_NUM_RUNS="$RUNS"
                       export AZLE_PROPTEST_VERBOSE=true
                       export AZLE_VERBOSE=true
                       export AZLE_IDENTITY_STORAGE_MODE=plaintext

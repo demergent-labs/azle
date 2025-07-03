@@ -29,8 +29,8 @@ inputs:
         description: 'Workflow dispatch input for running Mac tests'
         required: false
         default: 'false'
-    run-windows-tests-dispatch-input-value:
-        description: 'Workflow dispatch input for running Windows tests'
+    run-wsl-ubuntu-tests-dispatch-input-value:
+        description: 'Workflow dispatch input for running WSL-Ubuntu tests'
         required: false
         default: 'false'
 
@@ -59,9 +59,9 @@ outputs:
     run-mac-tests:
         description: 'Whether to run Mac tests'
         value: ${{ steps.determine_workflow_config.outputs.run-mac-tests }}
-    run-windows-tests:
-        description: 'Whether to run Windows tests'
-        value: ${{ steps.determine_workflow_config.outputs.run-windows-tests }}
+    run-wsl-ubuntu-tests:
+        description: 'Whether to run WSL-Ubuntu tests'
+        value: ${{ steps.determine_workflow_config.outputs.run-wsl-ubuntu-tests }}
 
 runs:
     using: 'composite'
@@ -80,7 +80,7 @@ runs:
                 echo "fuzz=${{ inputs.fuzz-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "fuzz-time-limit=${{ inputs.fuzz-time-limit-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "run-mac-tests=${{ inputs.run-mac-tests-dispatch-input-value }}" >> $GITHUB_OUTPUT
-                echo "run-windows-tests=${{ inputs.run-windows-tests-dispatch-input-value }}" >> $GITHUB_OUTPUT
+                echo "run-wsl-ubuntu-tests=${{ inputs.run-wsl-ubuntu-tests-dispatch-input-value }}" >> $GITHUB_OUTPUT
                 echo "is-dependabot=false" >> $GITHUB_OUTPUT
               else
                 EXCLUDE_SLOW=${{ steps.workflow-context.outputs.is_feature_branch_draft_pr == 'true' }}
@@ -112,9 +112,9 @@ runs:
                 echo "is-dependabot=${{ github.actor == 'dependabot[bot]' }}" >> $GITHUB_OUTPUT
 
                 SHOULD_RUN_MAC_TESTS=${{ steps.workflow-context.outputs.is_release_branch_pr == 'true' || steps.workflow-context.outputs.is_main_branch_push_from_release_merge == 'true' || steps.workflow-context.outputs.is_main_branch_push_from_feature_merge == 'true' }}
-                SHOULD_RUN_WINDOWS_TESTS=${{ steps.workflow-context.outputs.is_release_branch_pr == 'true' || steps.workflow-context.outputs.is_main_branch_push_from_release_merge == 'true' || steps.workflow-context.outputs.is_main_branch_push_from_feature_merge == 'true' }}
+                SHOULD_RUN_WSL_UBUNTU_TESTS=${{ steps.workflow-context.outputs.is_release_branch_pr == 'true' || steps.workflow-context.outputs.is_main_branch_push_from_release_merge == 'true' || steps.workflow-context.outputs.is_main_branch_push_from_feature_merge == 'true' }}
                 echo "run-mac-tests=$SHOULD_RUN_MAC_TESTS" >> $GITHUB_OUTPUT
-                echo "run-windows-tests=$SHOULD_RUN_WINDOWS_TESTS" >> $GITHUB_OUTPUT
+                echo "run-wsl-ubuntu-tests=$SHOULD_RUN_WSL_UBUNTU_TESTS" >> $GITHUB_OUTPUT
               fi
 
         - id: echo-outputs
@@ -129,4 +129,4 @@ runs:
               echo "fuzz-time-limit: ${{ steps.determine_workflow_config.outputs.fuzz-time-limit }}"
               echo "is-dependabot: ${{ steps.determine_workflow_config.outputs.is-dependabot }}"
               echo "run-mac-tests: ${{ steps.determine_workflow_config.outputs.run-mac-tests }}"
-              echo "run-windows-tests: ${{ steps.determine_workflow_config.outputs.run-windows-tests }}"
+              echo "run-wsl-ubuntu-tests: ${{ steps.determine_workflow_config.outputs.run-wsl-ubuntu-tests }}"
