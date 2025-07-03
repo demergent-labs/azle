@@ -141,8 +141,17 @@ export async function handleDevSetupCommand(): Promise<void> {
     // to ensure that they are compiled with the latest version of Rust
     const rust = process.argv.includes('--rust');
     const wasi2ic = process.argv.includes('--wasi2ic');
+    const cargoAudit = process.argv.includes('--cargo-audit');
+    const cargoDeny = process.argv.includes('--cargo-deny');
 
-    if (!node && !dfx && !rust && !wasi2ic) {
+    if (
+        node === false &&
+        dfx === false &&
+        rust === false &&
+        wasi2ic === false &&
+        cargoAudit === false &&
+        cargoDeny === false
+    ) {
         await runDevSetupCommand({
             dfx: true,
             node: true,
@@ -156,8 +165,8 @@ export async function handleDevSetupCommand(): Promise<void> {
             dfx,
             node,
             rust,
-            'cargo-audit': true,
-            'cargo-deny': true,
+            'cargo-audit': cargoAudit,
+            'cargo-deny': cargoDeny,
             wasi2ic
         });
     }
