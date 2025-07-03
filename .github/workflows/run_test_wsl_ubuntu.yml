@@ -223,8 +223,8 @@ jobs:
                   report_test_path
                   retry_command setup_nodejs
                   retry_command install_dfx
-                  retry_command install_rust_cargo
                   retry_command install_npm_dependencies
+                  retry_command install_rust_cargo
                   npm_link
                   run_npm_lint
                   retry_command install_test_npm_dependencies
