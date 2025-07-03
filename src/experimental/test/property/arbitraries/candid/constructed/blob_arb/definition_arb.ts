@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { blob } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
@@ -46,7 +46,7 @@ export function _VecNat8DefinitionArb(
             return {
                 definition: {
                     candidMeta: {
-                        runtimeTypeObject: blob,
+                        runtimeTypeObject: IDL.Vec(IDL.Nat8),
                         typeAnnotation,
                         typeObject: useTypeDeclaration ? name : typeObject,
                         variableAliasDeclarations,

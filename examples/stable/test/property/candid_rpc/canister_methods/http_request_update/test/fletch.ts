@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/_internal/dfx';
-import { HttpRequest } from 'azle/experimental';
+import { HttpRequest } from 'azle/canisters/http_gateway/idl';
 import { execSync } from 'child_process';
 
 type HttpResponse = {
@@ -27,7 +27,7 @@ export async function fletch(
     const fetchOptions = {
         method,
         headers,
-        body: method === 'GET' ? undefined : body
+        body: method === 'GET' ? undefined : new Uint8Array(body)
     };
 
     return await toResponse(await fetch(url, fetchOptions));

@@ -2,11 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import {
-    query,
-    update
-} from '#experimental/lib/canister_methods/methods/index';
-import { CanisterMethodInfo } from '#experimental/lib/canister_methods/types/canister_method_info';
+import { IDL } from '#lib/index';
 
 import { JsPropertyNameArb } from '../../../js_name_arb';
 import { Context } from '../../../types';
@@ -15,14 +11,13 @@ import {
     WithShapes,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { CandidType } from '../../candid_type';
 import { VoidDefinitionArb } from '../../primitive/void_arb';
 
 type Mode = 'query' | 'update';
 
 export type ServiceMethodDefinition = {
     name: string;
-    runtimeTypeObject: CanisterMethodInfo<CandidType[], CandidType>;
+    runtimeTypeObject: IDL.Type;
     imports: Set<string>;
     variableAliasDeclarations: string[];
     src: string;
@@ -103,12 +98,14 @@ function generateRuntimeTypeObject(
     mode: Mode,
     params: CandidDefinition[],
     returnType: CandidDefinition
-): CanisterMethodInfo<CandidType[], CandidType> {
-    const queryOrUpdate = mode === 'query' ? query : update;
+): IDL.Type {
+    // TODO IDL.Empty is a placeholder for void...not quite correct
     const paramTypeObjects = params.map(
-        (param) => param.candidMeta.runtimeTypeObject
+        (param) => param.candidMeta.runtimeTypeObject ?? IDL.Empty
     );
-    const returnTypeObject = returnType.candidMeta.runtimeTypeObject;
+    // TODO IDL.Empty is a placeholder for void...not quite correct
+    const returnTypeObject =
+        returnType.candidMeta.runtimeTypeObject ?? IDL.Empty;
 
-    return queryOrUpdate(paramTypeObjects, returnTypeObject);
+    return IDL.Func(paramTypeObjects, [returnTypeObject], [mode]);
 }

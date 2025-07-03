@@ -3,14 +3,16 @@ import { createReadStream, writeFileSync } from 'fs';
 
 let globalState = {};
 
-writeFileSync(
-    '/dist/test.html',
-    `<!DOCTYPE html><html><body>HTML from the filesystem</body></html>`
-);
+if (globalThis._azleIcpReplicaWasmEnvironment === true) {
+    writeFileSync(
+        '/dist/test.html',
+        `<!DOCTYPE html><html><body>HTML from the filesystem</body></html>`
+    );
 
-writeFileSync('/dist/test.txt', 'I have written some text to this file');
+    writeFileSync('/dist/test.txt', 'I have written some text to this file');
 
-writeFileSync('/dist/send-file.txt', 'Does this work too?');
+    writeFileSync('/dist/send-file.txt', 'Does this work too?');
+}
 
 const app = express();
 

@@ -1,6 +1,7 @@
 import 'azle/experimental/_internal/test/set_experimental';
 
 import { ActorSubclass } from '@dfinity/agent';
+import { IDL } from 'azle';
 import { DidVisitor, getDefaultVisitorData } from 'azle/_internal';
 import {
     defaultPropTestParams,
@@ -199,10 +200,10 @@ async function setupCanisters(
 function generateRandomCandidString(
     candidDefinition: WithShapes<CandidDefinition>
 ): string {
-    const didVisitorResult =
-        candidDefinition.definition.candidMeta.runtimeTypeObject
-            .getIdlType([])
-            .accept(new DidVisitor(), getDefaultVisitorData());
+    // TODO IDL.Empty is a placeholder for void...not quite correct
+    const didVisitorResult = (
+        candidDefinition.definition.candidMeta.runtimeTypeObject ?? IDL.Empty
+    ).accept(new DidVisitor(), getDefaultVisitorData());
     const candidString = didVisitorResult[0];
     const command = `didc random -t '(${candidString})'`;
     console.info(`command: ${command}`);

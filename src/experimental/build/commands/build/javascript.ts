@@ -52,70 +52,44 @@ export function getPrelude(main: string): string {
 
         import 'reflect-metadata';
 
-        // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
+        import { getDefaultVisitorData, IDL, idlToString } from 'azle';
         import { ethersGetUrl, Server } from 'azle/experimental';
         import { ethers } from 'ethers';
+
+        // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
         ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
-        import { getDefaultVisitorData, IDL, idlToString } from 'azle';
         export { Principal } from '@dfinity/principal';
-        import * as Canister from '${absoluteMainPath}';
+        import * as CanisterModuleExperimental from '${absoluteMainPath}';
 
-        if (isClassSyntaxExport(Canister)) {
-            ${handleClassApiCanister(main)}
+        const somethingDefaultExported = CanisterModuleExperimental.default !== undefined && CanisterModuleExperimental.default !== null;
+
+        if (somethingDefaultExported === true) {
+            createGetCandidAndMethodMetaFunction(CanisterModuleExperimental);
         }
         else {
             // TODO This setTimeout is here to allow asynchronous operations during canister initialization
-            // for Server canisters that have chosen not to use export default Server
+            // for Server canisters that have chosen not to use export default class extends Server
             // This seems to work no matter how many async tasks are awaited, but I am still unsure about how it will
             // behave in all async situations
             setTimeout(() => {
-                const canister = Canister.default !== undefined ? Canister.default() : Server(() => globalThis._azleNodeServer)();
-                if (globalThis.process !== undefined && globalThis.process.env.AZLE_RECORD_BENCHMARKS === 'true') {
-                    const methodMeta = canister.methodMeta;
+                class ServerCanister extends Server {
+                    constructor() {
+                        super();
 
-                    globalThis._azleCanisterMethodNames = Object.entries(methodMeta).reduce((acc, [key, value]) => {
-                        if (value === undefined) {
-                            return acc;
-                        }
-
-                        if (key === 'queries' || key === 'updates') {
-                            const queriesOrUpdates = value.reduce((innerAcc, method) => {
-                                const indexString = method.index.toString();
-                                return { ...innerAcc, [indexString]: method.name };
-                            }, {});
-                            return { ...acc, ...queriesOrUpdates };
-                        } else {
-                            const indexString = value.index.toString();
-                            return { ...acc, [indexString]: value.name };
-                        }
-                    }, {});
+                        this.nodeServer = globalThis._azleNodeServer;
+                    }
                 }
 
-                const candid = idlToString(canister.getIdlType([]), {
-                    ...getDefaultVisitorData(),
-                    isFirstService: true,
-                    initAndPostUpgradeParamIdlTypes: canister.getInitAndPostUpgradeParamIdlTypes()
-                });
-
-                globalThis._azleCallbacks = canister.callbacks;
-
-                globalThis._azleGetCandidAndMethodMeta = () => {
-                    return JSON.stringify({
-                        candid,
-                        methodMeta: canister.methodMeta
-                    });
+                const CanisterModuleExperimentalServer = {
+                    default: ServerCanister
                 };
+
+                createGetCandidAndMethodMetaFunction(CanisterModuleExperimentalServer);
             });
         }
 
-        function isClassSyntaxExport(canister) {
-            const isNothing = canister === undefined || canister.default === undefined;
-            const isFunctionalSyntaxExport =
-                canister?.default?.isCanister === true ||
-                canister?.default?.isRecursive === true;
-            return !isNothing && !isFunctionalSyntaxExport;
-        }
+        ${handleClassApiCanister(main)}
     `;
 }
 
@@ -200,9 +174,12 @@ export async function getBuildOptions(
             ...esmAliases
         },
         external: [...externalImplemented, ...externalNotImplemented],
+        // I believe the esbuildPluginTsc is here to honor the reflect-metadata import and thus to enable experimental decorators.
+        // I am not sure about this.
         plugins: [esbuildPluginTsc({ tsconfigPath: await getTsConfigPath() })]
     };
 }
+
 export async function getTsConfigPath(): Promise<string> {
     const projectRoot = await findProjectRoot();
     const tsConfigPath = join(projectRoot, 'tsconfig.json');
