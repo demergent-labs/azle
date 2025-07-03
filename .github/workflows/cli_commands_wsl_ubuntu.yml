@@ -34,7 +34,6 @@ jobs:
 
             - name: Clone repository in WSL-Ubuntu
               run: |
-                  # Add a comment
                   # Clone the repository directly in WSL-Ubuntu for proper Unix line endings
                   cd /home/tester
                   git clone --no-single-branch https://github.com/${{ github.repository }}.git azle
