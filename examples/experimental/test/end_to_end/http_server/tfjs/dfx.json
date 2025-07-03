@@ -5,7 +5,6 @@
             "main": "src/api.ts",
             "custom": {
                 "experimental": true,
-                "candid_gen": "http",
                 "assets": [["src/spam", "spam"]]
             }
         }

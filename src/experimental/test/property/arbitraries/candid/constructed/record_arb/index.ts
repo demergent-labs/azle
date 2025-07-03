@@ -11,9 +11,11 @@ import { CorrespondingJSType } from '../../corresponding_js_type';
 import { RecordDefinitionArb } from './definition_arb';
 import { RecordValuesArb } from './values_arb';
 
-export type Record = {
-    [x: string]: CorrespondingJSType;
-};
+export type Record =
+    | {
+          [x: string]: CorrespondingJSType;
+      }
+    | object;
 
 export function RecordArb(
     context: Context<CandidValueConstraints>

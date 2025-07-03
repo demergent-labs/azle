@@ -2,8 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType } from '#experimental/lib/candid/candid_type';
-import { Func } from '#experimental/lib/candid/types/reference/func';
+import { IDL } from '#lib/index';
 
 import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
@@ -210,10 +209,16 @@ function generateRuntimeTypeObject(
     paramCandids: CandidDefinition[],
     returnCandid: CandidDefinition,
     mode: Mode
-): CandidType {
+): IDL.Type {
+    // TODO IDL.Empty is a placeholder for void...not quite correct
     const params = paramCandids.map(
-        (param) => param.candidMeta.runtimeTypeObject
+        (param) => param.candidMeta.runtimeTypeObject ?? IDL.Empty
     );
 
-    return Func(params, returnCandid.candidMeta.runtimeTypeObject, mode);
+    // TODO IDL.Empty is a placeholder for void...not quite correct
+    return IDL.Func(
+        params,
+        [returnCandid.candidMeta.runtimeTypeObject ?? IDL.Empty],
+        [mode]
+    );
 }

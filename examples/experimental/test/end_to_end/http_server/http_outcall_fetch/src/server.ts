@@ -1,12 +1,15 @@
-import { ic, query, Server } from 'azle/experimental';
+import { query } from 'azle';
 import {
-    HttpResponse,
-    HttpTransformArgs
-} from 'azle/experimental/canisters/management';
+    http_request_result,
+    http_transform_args
+} from 'azle/canisters/management/idl';
+import { ic, Server } from 'azle/experimental';
 import express from 'express';
 
-export default Server(
-    () => {
+export default class extends Server {
+    constructor() {
+        super();
+
         const app = express();
 
         app.use(express.json());
@@ -226,19 +229,15 @@ export default Server(
             }
         });
 
-        return app.listen();
-    },
-    {
-        transform: query(
-            [HttpTransformArgs],
-            HttpResponse,
-            (httpTransformArgs) => {
-                return {
-                    ...httpTransformArgs.response,
-                    headers: [],
-                    body: httpTransformArgs.context
-                };
-            }
-        )
+        this.nodeServer = app.listen();
     }
-);
+
+    @query([http_transform_args], http_request_result)
+    transform(httpTransformArgs: http_transform_args): http_request_result {
+        return {
+            ...httpTransformArgs.response,
+            headers: [],
+            body: httpTransformArgs.context
+        };
+    }
+}

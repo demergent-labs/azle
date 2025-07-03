@@ -2,6 +2,8 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
+import { IDL } from '#lib/index';
+
 import { Test } from '../test';
 import { CliStringVisitor } from '../visitors/cli-string-visitor';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
@@ -77,21 +79,25 @@ export function CanisterArb<
 
         const initArgs = config.initMethod?.params.map((param) => {
             const value = param.value.value;
-            return value.runtimeTypeObject
-                .getIdlType([])
-                .accept(new CliStringVisitor(), {
+            // TODO IDL.Empty is a placeholder for void...not quite correct
+            return (value.runtimeTypeObject ?? IDL.Empty).accept(
+                new CliStringVisitor(),
+                {
                     value: value.agentArgumentValue
-                });
+                }
+            );
         });
 
         const postUpgradeArgs = config.postUpgradeMethod?.params.map(
             (param) => {
                 const value = param.value.value;
-                return value.runtimeTypeObject
-                    .getIdlType([])
-                    .accept(new CliStringVisitor(), {
+                // TODO IDL.Empty is a placeholder for void...not quite correct
+                return (value.runtimeTypeObject ?? IDL.Empty).accept(
+                    new CliStringVisitor(),
+                    {
                         value: value.agentArgumentValue
-                    });
+                    }
+                );
             }
         );
 
