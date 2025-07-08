@@ -19,15 +19,13 @@ export function Nat64Arb(
 ): fc.Arbitrary<CandidValueAndMeta<bigint>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        Nat64DefinitionArb(context),
+        Nat64DefinitionArb(),
         Nat64ValueArb
     );
 }
 
-export function Nat64DefinitionArb(
-    context: Context
-): WithShapesArb<NatCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'nat64');
+export function Nat64DefinitionArb(): WithShapesArb<NatCandidDefinition> {
+    return SimpleCandidDefinitionArb('nat64');
 }
 
 export function Nat64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {

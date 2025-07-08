@@ -19,15 +19,13 @@ export function VoidArb(
 ): fc.Arbitrary<CandidValueAndMeta<undefined>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        VoidDefinitionArb(context),
+        VoidDefinitionArb(),
         VoidValueArb
     );
 }
 
-export function VoidDefinitionArb(
-    context: Context
-): WithShapesArb<VoidCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'Void');
+export function VoidDefinitionArb(): WithShapesArb<VoidCandidDefinition> {
+    return SimpleCandidDefinitionArb('Void');
 }
 
 export function VoidValueArb(): fc.Arbitrary<CandidValues<undefined>> {

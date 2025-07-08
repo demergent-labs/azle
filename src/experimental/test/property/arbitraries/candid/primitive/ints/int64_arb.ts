@@ -19,15 +19,13 @@ export function Int64Arb(
 ): fc.Arbitrary<CandidValueAndMeta<bigint>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        Int64DefinitionArb(context),
+        Int64DefinitionArb(),
         Int64ValueArb
     );
 }
 
-export function Int64DefinitionArb(
-    context: Context
-): WithShapesArb<IntCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'int64');
+export function Int64DefinitionArb(): WithShapesArb<IntCandidDefinition> {
+    return SimpleCandidDefinitionArb('int64');
 }
 
 export function Int64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {

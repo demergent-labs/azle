@@ -4,7 +4,6 @@ import fc from 'fast-check';
 
 import { IDL } from '#lib/index';
 
-import { Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -18,13 +17,12 @@ import {
 } from './service_method_arb';
 
 export function ServiceDefinitionArb(
-    context: Context,
     fieldCandidDefArb: WithShapesArb<CandidDefinition>
 ): WithShapesArb<ServiceCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            fc.uniqueArray(ServiceMethodArb(context, fieldCandidDefArb), {
+            fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb), {
                 selector: (entry) => entry.definition.name
             }),
             fc.constant(true) // TODO This needs to be true, I don't know why we set up to be an arbitrary boolean if it has to be true

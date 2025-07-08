@@ -2,7 +2,6 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { Context } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     PrimitiveDefinition,
@@ -13,7 +12,6 @@ import { SimpleCandidType, simpleCandidTypeToTsType } from '../candid_type';
 import { candidTypeToRuntimeTypeObject } from './candid_type_to_azle_candid_type';
 
 export function SimpleCandidDefinitionArb(
-    context: Context,
     candidType: SimpleCandidType,
     useVariableAliasDeclaration?: boolean
 ): WithShapesArb<PrimitiveDefinition> {
@@ -67,6 +65,9 @@ function generateImports(candidType: SimpleCandidType): Set<string> {
 function toIDL(candidType: SimpleCandidType): string {
     if (candidType === 'Void') {
         return '';
+    }
+    if (candidType === 'blob') {
+        return 'IDL.Vec(IDL.Nat8)';
     }
     return `IDL.${candidType.charAt(0).toUpperCase()}${candidType.slice(1)}`;
 }

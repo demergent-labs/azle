@@ -14,15 +14,13 @@ import { booleanToSrcLiteral } from '../to_src_literal/boolean';
 export function BoolArb(context: Context): fc.Arbitrary<any> {
     return CandidValueAndMetaArbGenerator(
         context,
-        BoolDefinitionArb(context),
+        BoolDefinitionArb(),
         BoolValueArb
     );
 }
 
-export function BoolDefinitionArb(
-    context: Context
-): WithShapesArb<BoolCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'bool');
+export function BoolDefinitionArb(): WithShapesArb<BoolCandidDefinition> {
+    return SimpleCandidDefinitionArb('bool');
 }
 
 export function BoolValueArb(): fc.Arbitrary<CandidValues<boolean>> {

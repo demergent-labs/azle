@@ -4,7 +4,6 @@ import fc from 'fast-check';
 
 import { IDL } from '#lib/index';
 
-import { Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -17,14 +16,13 @@ import { VoidDefinitionArb } from '../../primitive/void_arb';
 type Mode = 'query' | 'update' | 'oneway';
 
 export function FuncDefinitionArb(
-    context: Context,
     candidDefArb: WithShapesArb<CandidDefinition>
 ): WithShapesArb<FuncCandidDefinition> {
     return fc
         .constantFrom<Mode>('query', 'update', 'oneway')
         .chain((mode) => {
             const returnType =
-                mode === 'oneway' ? VoidDefinitionArb(context) : candidDefArb;
+                mode === 'oneway' ? VoidDefinitionArb() : candidDefArb;
 
             return fc.tuple(
                 UniqueIdentifierArb('globalNames'),

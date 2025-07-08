@@ -58,7 +58,6 @@ export function complexCandidDefinitionMemo(
             },
             {
                 arbitrary: FuncDefinitionArb(
-                    { ...context, constraints: {} },
                     candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.func ?? 1
@@ -103,7 +102,6 @@ export function complexCandidDefinitionMemo(
             },
             {
                 arbitrary: ServiceDefinitionArb(
-                    { ...context, constraints: {} },
                     candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.service ?? 0
