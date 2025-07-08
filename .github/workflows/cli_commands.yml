@@ -188,6 +188,8 @@ jobs:
 
                   echo "✅ All version verifications completed successfully"
 
+            - uses: Swatinem/rust-cache@v2
+
             - name: Setup Rust and WASM targets (macOS only)
               if: matrix.os == 'macos-latest'
               run: |

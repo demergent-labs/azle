@@ -32,6 +32,8 @@ jobs:
               run: |
                   npx azle dev setup --rust --wasi2ic
 
+            - uses: Swatinem/rust-cache@v2
+
             - name: Start dfx with artificial delay 0
               run: dfx start --clean --background --artificial-delay 0
 

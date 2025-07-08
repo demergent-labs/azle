@@ -486,3 +486,5 @@ jobs:
                   # test_azle_new_command "http_server_project_test" "true" "true" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${TEST_VERSION}" "${PACKED_FILE_ABSOLUTE_PATH}"
 
                   echo "🎉 All CLI command tests completed successfully!"
+            # TODO This is suspicious, not sure it will work with wsl
+            - uses: Swatinem/rust-cache@v2
