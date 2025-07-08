@@ -30,7 +30,7 @@ const HttpRequestUpdateMethodArb = RecordArb(context).chain((record) => {
             generateTests
         },
         fc.tuple(HttpRequestArb()),
-        HttpResponseArb(context, record)
+        HttpResponseArb(record)
     );
 
     return HttpRequestMethodArb;

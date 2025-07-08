@@ -8,7 +8,6 @@ import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
-import { Context } from '../types';
 import { BodyArb } from './body_arb';
 import { HttpHeadersArb } from './headers_arb';
 
@@ -66,7 +65,6 @@ export function HttpResponseValueArb(): fc.Arbitrary<HttpResponse> {
         });
 }
 export function HttpResponseArb(
-    context: Context,
     token: CandidValueAndMeta<CorrespondingJSType>
 ): fc.Arbitrary<
     CandidValueAndMeta<HttpResponse, HttpResponseAgentResponseValue>

@@ -30,7 +30,7 @@ const CanisterConfigArb = RecordArb(context)
                 generateTests
             },
             fc.tuple(HttpRequestArb()),
-            HttpResponseArb(context, record)
+            HttpResponseArb(record)
         );
 
         return HttpRequestMethodArb;
