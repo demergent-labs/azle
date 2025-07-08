@@ -2,5 +2,10 @@
 
 VERSION=$1
 
-echo "Installing cargo-wasi2ic version $VERSION..."
-cargo install wasi2ic --version "$VERSION" --locked
+if [[ $VERSION =~ ^https?:// ]]; then
+    echo "Installing wasi2ic from repository $VERSION"
+    cargo auditable install wasi2ic --git "$VERSION" --locked
+else
+    echo "Installing wasi2ic version $VERSION"
+    cargo auditable install wasi2ic --version "$VERSION" --locked
+fi

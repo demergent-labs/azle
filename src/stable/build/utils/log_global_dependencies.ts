@@ -14,8 +14,8 @@ export async function logGlobalDependencies(): Promise<void> {
     const dfxVersion = getLocalDfxVersion();
     const nodeVersion = getLocalNodeVersion();
     const rustVersion = getLocalRustVersion();
-    const cargoAuditVersion = getLocalCargoAuditVersion();
     const cargoAuditableVersion = getLocalCargoAuditableVersion();
+    const cargoAuditVersion = getLocalCargoAuditVersion();
     const cargoDenyVersion = getLocalCargoDenyVersion();
     const wasiVersion = getLocalWasi2icVersion();
 
@@ -23,8 +23,8 @@ export async function logGlobalDependencies(): Promise<void> {
         dfx: dfxVersion,
         node: nodeVersion,
         rust: rustVersion,
-        'cargo-audit': cargoAuditVersion,
         'cargo-auditable': cargoAuditableVersion,
+        'cargo-audit': cargoAuditVersion,
         'cargo-deny': cargoDenyVersion,
         wasi2ic: wasiVersion
     };

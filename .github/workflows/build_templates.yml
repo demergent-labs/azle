@@ -47,7 +47,7 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic
+                  npx azle dev setup --rust --wasi2ic
 
             - name: Build stable template
               run: npx azle dev template

@@ -221,25 +221,24 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-
             - uses: ./.github/actions/setup_node
-
             - uses: ./.github/actions/setup_dfx
 
             - uses: ./.github/actions/retry_command
               with:
                   command: 'npm install'
-
             - run: npm run typecheck
             - run: npm run lint
             - run: npm audit
 
             - name: Install global dependencies
               run: |
-                  AZLE_VERBOSE=true npx azle dev setup --rust --cargo-audit --cargo-deny
-
+                  npx azle dev setup --rust --cargo-auditable --cargo-audit --cargo-deny --wasi2ic
             - run: cargo audit
-
+            - run: cargo audit bin ~/.cargo/bin/cargo-auditable
+            - run: cargo audit bin ~/.cargo/bin/cargo-audit
+            - run: cargo audit bin ~/.cargo/bin/cargo-deny
+            - run: cargo audit bin ~/.cargo/bin/wasi2ic
             - run: cargo deny check
 
     check-test-success:

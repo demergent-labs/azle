@@ -7,8 +7,8 @@ type DependencyName =
     | 'dfx'
     | 'node'
     | 'rust'
-    | 'cargo-audit'
     | 'cargo-auditable'
+    | 'cargo-audit'
     | 'cargo-deny'
     | 'wasi2ic';
 

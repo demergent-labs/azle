@@ -2,7 +2,6 @@
 name = "stable_canister_template"
 version = "0.0.0"
 edition = "2024"
-license = "MIT"
 license-file = "../../../../../../LICENSE"
 
 [lib]
