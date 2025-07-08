@@ -5,7 +5,7 @@ import fc from 'fast-check';
 import { IDL } from '#lib/index';
 
 import { JsPropertyNameArb } from '../../../js_name_arb';
-import { Api, Context } from '../../../types';
+import { Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -30,7 +30,6 @@ export function VariantDefinitionArb(
     candidTypeArbForFields: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[]
 ): WithShapesArb<VariantCandidDefinition> {
-    const api = context.api;
     const constraints = context.constraints;
     return fc
         .tuple(
@@ -60,15 +59,13 @@ export function VariantDefinitionArb(
                 const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    fields,
-                    api
+                    fields
                 );
 
                 const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
-                    fields,
-                    api
+                    fields
                 );
 
                 const runtimeTypeObject = generateRuntimeTypeObject(fields);
@@ -77,11 +74,10 @@ export function VariantDefinitionArb(
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        fields,
-                        api
+                        fields
                     );
 
-                const imports = generateImports(fields, api);
+                const imports = generateImports(fields);
 
                 return {
                     definition: {
@@ -172,39 +168,32 @@ function possiblyRecursiveArb(
     });
 }
 
-function generateImports(fields: Field[], api: Api): Set<string> {
+function generateImports(fields: Field[]): Set<string> {
     const fieldImports = fields.flatMap((field): string[] => [
         ...field[1].candidMeta.imports
     ]);
-    const variantImports =
-        api === 'functional' ? ['RequireExactlyOne', 'Variant'] : ['IDL'];
-    return new Set([...fieldImports, ...variantImports]);
+    return new Set([...fieldImports, 'IDL']);
 }
 
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[],
-    api: Api
+    fields: Field[]
 ): string[] {
     const fieldVariableAliasDeclarations = fields.flatMap(
         (field): string[] => field[1].candidMeta.variableAliasDeclarations
     );
     if (useTypeDeclaration === true) {
-        const type =
-            api === 'functional'
-                ? []
-                : [
-                      `type ${name} = ${generateCandidTypeAnnotation(
-                          false,
-                          name,
-                          fields,
-                          api
-                      )};`
-                  ];
+        const type = [
+            `type ${name} = ${generateCandidTypeAnnotation(
+                false,
+                name,
+                fields
+            )};`
+        ];
         return [
             ...fieldVariableAliasDeclarations,
-            `const ${name} = ${generateTypeObject(false, name, fields, api)};`,
+            `const ${name} = ${generateTypeObject(false, name, fields)};`,
             ...type
         ];
     }
@@ -214,40 +203,26 @@ function generateVariableAliasDeclarations(
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[],
-    api: Api
+    fields: Field[]
 ): string {
     if (useTypeDeclaration === true) {
-        if (api === 'class') {
-            return name;
-        }
-        return `typeof ${name}.tsType`;
+        return name;
     }
 
-    if (api === 'class') {
-        return fields
-            .map(([fieldName, fieldDataType]) => {
-                const escapedFieldName = fieldName.startsWith('"')
-                    ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
-                    : fieldName;
-                return `{${escapedFieldName}: ${fieldDataType.candidMeta.typeAnnotation}}`;
-            })
-            .join('|');
-    }
-
-    return `RequireExactlyOne<{${fields
-        .map(
-            ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}`
-        )
-        .join(',')}}>`;
+    return fields
+        .map(([fieldName, fieldDataType]) => {
+            const escapedFieldName = fieldName.startsWith('"')
+                ? `"${fieldName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : fieldName;
+            return `{${escapedFieldName}: ${fieldDataType.candidMeta.typeAnnotation}}`;
+        })
+        .join('|');
 }
 
 function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[],
-    api: Api
+    fields: Field[]
 ): string {
     if (useTypeDeclaration === true) {
         return name;
@@ -261,11 +236,7 @@ function generateTypeObject(
             return `${escapedFieldName}: ${fieldDefinition.candidMeta.typeObject}`;
         })
         .join(',');
-    if (api === 'class') {
-        return `IDL.Variant({${fieldsAsString}})`;
-    }
-
-    return `Variant({${fieldsAsString}})`;
+    return `IDL.Variant({${fieldsAsString}})`;
 }
 
 function generateRuntimeTypeObject(fields: Field[]): IDL.Type {

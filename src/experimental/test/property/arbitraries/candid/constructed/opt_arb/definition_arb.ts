@@ -4,7 +4,7 @@ import fc from 'fast-check';
 
 import { IDL } from '#lib/index';
 
-import { Api, Context } from '../../../types';
+import { Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -21,7 +21,6 @@ export function OptDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[]
 ): WithShapesArb<OptCandidDefinition> {
-    const api = context.api;
     const constraints = context.constraints;
     return fc
         .tuple(
@@ -44,15 +43,13 @@ export function OptDefinitionArb(
                 const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    innerType,
-                    api
+                    innerType
                 );
 
                 const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
-                    innerType,
-                    api
+                    innerType
                 );
 
                 const runtimeTypeObject = generateRuntimeTypeObject(innerType);
@@ -61,11 +58,10 @@ export function OptDefinitionArb(
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        innerType,
-                        api
+                        innerType
                     );
 
-                const imports = generateImports(innerType, api);
+                const imports = generateImports(innerType);
 
                 return {
                     definition: {
@@ -120,37 +116,26 @@ function possiblyRecursiveArb(
     });
 }
 
-function generateImports(innerType: CandidDefinition, api: Api): Set<string> {
-    const optImports = api === 'functional' ? ['Opt', 'Some', 'None'] : ['IDL'];
-    return new Set([...innerType.candidMeta.imports, ...optImports]);
+function generateImports(innerType: CandidDefinition): Set<string> {
+    return new Set([...innerType.candidMeta.imports, 'IDL']);
 }
 
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition,
-    api: Api
+    innerType: CandidDefinition
 ): string[] {
     if (useTypeDeclaration === true) {
-        const type =
-            api === 'functional'
-                ? []
-                : [
-                      `type ${name} = ${generateCandidTypeAnnotation(
-                          false,
-                          name,
-                          innerType,
-                          api
-                      )};`
-                  ];
-        return [
-            ...innerType.candidMeta.variableAliasDeclarations,
-            `const ${name} = ${generateTypeObject(
+        const type = [
+            `type ${name} = ${generateCandidTypeAnnotation(
                 false,
                 name,
-                innerType,
-                api
-            )};`,
+                innerType
+            )};`
+        ];
+        return [
+            ...innerType.candidMeta.variableAliasDeclarations,
+            `const ${name} = ${generateTypeObject(false, name, innerType)};`,
             ...type
         ];
     }
@@ -160,38 +145,25 @@ function generateVariableAliasDeclarations(
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition,
-    api: Api
-): string {
-    if (useTypeDeclaration === true) {
-        if (api === 'class') {
-            return name;
-        }
-        return `typeof ${name}.tsType`;
-    }
-
-    if (api === 'class') {
-        return `[${innerType.candidMeta.typeAnnotation}] | []`;
-    }
-
-    return `Opt<${innerType.candidMeta.typeAnnotation}>`;
-}
-
-function generateTypeObject(
-    useTypeDeclaration: boolean,
-    name: string,
-    innerType: CandidDefinition,
-    api: Api
+    innerType: CandidDefinition
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
-    if (api === 'class') {
-        return `IDL.Opt(${innerType.candidMeta.typeObject})`;
+    return `[${innerType.candidMeta.typeAnnotation}] | []`;
+}
+
+function generateTypeObject(
+    useTypeDeclaration: boolean,
+    name: string,
+    innerType: CandidDefinition
+): string {
+    if (useTypeDeclaration === true) {
+        return name;
     }
 
-    return `Opt(${innerType.candidMeta.typeObject})`;
+    return `IDL.Opt(${innerType.candidMeta.typeObject})`;
 }
 
 function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {

@@ -7,14 +7,12 @@ import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { VoidArb } from '../candid/primitive/void_arb';
-import { Api, Context } from '../types';
+import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    CanisterMethodConstraints,
     generateMethodImplementation,
     isDefined,
-    MethodImplementationLocationArb,
     TestsGenerator
 } from '.';
 
@@ -35,7 +33,7 @@ export function InitMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 >(
-    context: Context<CanisterMethodConstraints>,
+    context: Context,
     generator: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
@@ -50,36 +48,17 @@ export function InitMethodArb<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
     >
 ): fc.Arbitrary<InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>> {
-    const api = context.api;
-    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties', 'property'),
             paramTypeArrayArb,
-            VoidArb({ ...context, constraints: {} }),
-            MethodImplementationLocationArb,
-            UniqueIdentifierArb('globalNames')
-            // TODO: This unique id would be better named globalScope or something
-            // But needs to match the same scope as typeDeclarations so I'm using
-            // that for now.
+            VoidArb({ ...context, constraints: {} })
         )
         .map(
-            ([
-                functionName,
-                paramTypes,
-                returnType,
-                defaultMethodImplementationLocation,
-                methodName
-            ]): InitMethod<
+            ([functionName, paramTypes, returnType]): InitMethod<
                 ParamAgentArgumentValue,
                 ParamAgentResponseValue
             > => {
-                const methodImplementationLocation =
-                    api === 'class'
-                        ? 'INLINE'
-                        : (constraints.methodImplementationLocation ??
-                          defaultMethodImplementationLocation);
-
                 const imports = new Set([
                     'init',
                     ...paramTypes.flatMap((param) => [...param.src.imports])
@@ -96,28 +75,19 @@ export function InitMethodArb<
                     namedParams,
                     returnType,
                     generator.generateBody,
-                    methodImplementationLocation,
-                    functionName,
-                    methodName,
-                    api
+                    functionName
                 );
 
                 const variableAliasDeclarations = paramTypes
                     .flatMap((param) => param.src.variableAliasDeclarations)
                     .filter(isDefined);
 
-                const globalDeclarations =
-                    methodImplementationLocation === 'STANDALONE'
-                        ? [...variableAliasDeclarations, methodImplementation]
-                        : variableAliasDeclarations;
+                const globalDeclarations = variableAliasDeclarations;
 
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
-                    methodImplementationLocation === 'STANDALONE'
-                        ? methodName
-                        : methodImplementation,
-                    api
+                    methodImplementation
                 );
 
                 const tests = generator.generateTests(
@@ -143,8 +113,7 @@ function generateSourceCode<
 >(
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
-    methodImplementation: string,
-    api: Api
+    methodImplementation: string
 ): string {
     const paramTypeObjects = paramTypes
         .map((param) => param.src.typeObject)
@@ -154,9 +123,5 @@ function generateSourceCode<
         ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
         : functionName;
 
-    if (api === 'functional') {
-        return `${escapedFunctionName}: init([${paramTypeObjects}], ${methodImplementation})`;
-    } else {
-        return `@init([${paramTypeObjects}])\n${escapedFunctionName}${methodImplementation}`;
-    }
+    return `@init([${paramTypeObjects}])\n${escapedFunctionName}${methodImplementation}`;
 }

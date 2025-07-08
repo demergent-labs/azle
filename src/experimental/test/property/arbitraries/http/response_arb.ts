@@ -8,7 +8,7 @@ import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
-import { Api, Context } from '../types';
+import { Context } from '../types';
 import { BodyArb } from './body_arb';
 import { HttpHeadersArb } from './headers_arb';
 
@@ -71,7 +71,6 @@ export function HttpResponseArb(
 ): fc.Arbitrary<
     CandidValueAndMeta<HttpResponse, HttpResponseAgentResponseValue>
 > {
-    const api = context.api;
     return HttpResponseValueArb().map((response) => {
         const lowerCasedHeaders = response.headers.map<[string, string]>(
             ([name, value]) => [name.toLowerCase(), value]
@@ -95,10 +94,7 @@ export function HttpResponseArb(
 
         const bodySrc = blobToSrcLiteral(new Uint8Array(response.body));
 
-        const responseImports =
-            api === 'functional'
-                ? ['HttpResponse', 'bool', 'None']
-                : ['IDL', 'Principal'];
+        const responseImports = ['IDL', 'Principal'];
 
         return {
             value: {
@@ -107,18 +103,11 @@ export function HttpResponseArb(
                 runtimeTypeObject: HttpResponse
             },
             src: {
-                typeAnnotation:
-                    api === 'functional'
-                        ? `HttpResponse<${token.src.typeAnnotation}>`
-                        : 'HttpResponse',
-                typeObject:
-                    api === 'functional'
-                        ? `HttpResponse(${token.src.typeObject})`
-                        : 'HttpResponse',
+                typeAnnotation: 'HttpResponse',
+                typeObject: 'HttpResponse',
                 variableAliasDeclarations: [
                     ...token.src.variableAliasDeclarations,
                     generateVariableAliasDeclarations(
-                        api,
                         token.src.typeObject,
                         token.src.typeAnnotation
                     )
@@ -128,8 +117,8 @@ export function HttpResponseArb(
                 status_code: ${response.status_code},
                     headers: [${headerStrings}],
                     body: ${bodySrc},
-                    upgrade: ${api === 'class' ? '[]' : 'None'},
-                    streaming_strategy: ${api === 'class' ? '[]' : 'None'}
+                    upgrade: [],
+                    streaming_strategy: []
                 }`,
                 idl: 'HttpResponse'
             }
@@ -153,12 +142,10 @@ function hasBody(statusCode: number): boolean {
 }
 
 function generateVariableAliasDeclarations(
-    api: Api,
     TokenIdl: string,
     TokenType: string
 ): string {
-    if (api === 'class') {
-        return /*TS*/ `
+    return /*TS*/ `
             const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
             type HeaderField = [string, string];
             const StreamingCallbackHttpResponse = IDL.Record({
@@ -201,9 +188,7 @@ function generateVariableAliasDeclarations(
                 headers: HeaderField[];
                 body: Uint8Array;
                 upgrade: [boolean] | [];
-                streaming_strategy: [StreamingStrategy] | [];
-            };
-        `;
-    }
-    return '';
+            streaming_strategy: [StreamingStrategy] | [];
+        };
+    `;
 }

@@ -48,13 +48,12 @@ export function complexCandidDefinitionMemo(
         forceInline: constraints.forceInline
     };
     const newContext = {
-        api: context.api,
         constraints: newConstraints
     };
     return fc.memo((depthLevel) => {
         return fc.oneof(
             {
-                arbitrary: BlobDefinitionArb({ ...context, constraints: {} }),
+                arbitrary: BlobDefinitionArb(),
                 weight: weights.blob ?? 1
             },
             {
