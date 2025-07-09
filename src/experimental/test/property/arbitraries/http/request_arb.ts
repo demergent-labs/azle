@@ -152,7 +152,7 @@ function generateVariableAliasDeclarations(): string {
             url: string;
             headers: RequestHeaderField[];
             body: Uint8Array;
-        certificate_version: [number] | [];
-    };
+            certificate_version: [number] | [];
+        };
     `;
 }

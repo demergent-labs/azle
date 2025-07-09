@@ -47,7 +47,7 @@ export function StableBTreeMapArb(
             return {
                 name,
                 imports,
-                definition: `let ${name} = new StableBTreeMap<${key}, ${value}>(${memoryId}, stableJson, stableJson);`,
+                definition: `let ${name} = new StableBTreeMap<${key}, ${value}>(${memoryId});`,
                 keySample,
                 valueSample
             };

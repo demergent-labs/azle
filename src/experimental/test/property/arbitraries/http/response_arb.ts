@@ -144,48 +144,48 @@ function generateVariableAliasDeclarations(
     TokenType: string
 ): string {
     return /*TS*/ `
-            const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
-            type HeaderField = [string, string];
-            const StreamingCallbackHttpResponse = IDL.Record({
-                body: IDL.Vec(IDL.Nat8),
-                token: IDL.Opt(${TokenIdl})
-            });
-            type StreamingCallbackHttpResponse = {
-                body: Uint8Array;
-                token: [${TokenType}] | [];
-            };
-            const Callback = IDL.Func(
-                [${TokenIdl}],
-                [IDL.Opt(StreamingCallbackHttpResponse)],
-                ['query']
-            );
-            type Callback = [Principal, string];
-            const CallbackStrategy = IDL.Record({
-                callback: Callback,
-                token: ${TokenIdl}
-            });
-            type CallbackStrategy = {
-                callback: Callback;
-                token: ${TokenType};
-            };
-            const StreamingStrategy = IDL.Variant({
-                Callback: CallbackStrategy
-            });
-            type StreamingStrategy = {
-                Callback: CallbackStrategy;
-            };
-            const HttpResponse = IDL.Record({
-                status_code: IDL.Nat16,
-                headers: IDL.Vec(HeaderField),
-                body: IDL.Vec(IDL.Nat8),
-                upgrade: IDL.Opt(IDL.Bool),
-                streaming_strategy: IDL.Opt(StreamingStrategy)
-            });
-            type HttpResponse = {
-                status_code: number;
-                headers: HeaderField[];
-                body: Uint8Array;
-                upgrade: [boolean] | [];
+        const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
+        type HeaderField = [string, string];
+        const StreamingCallbackHttpResponse = IDL.Record({
+            body: IDL.Vec(IDL.Nat8),
+            token: IDL.Opt(${TokenIdl})
+        });
+        type StreamingCallbackHttpResponse = {
+            body: Uint8Array;
+            token: [${TokenType}] | [];
+        };
+        const Callback = IDL.Func(
+            [${TokenIdl}],
+            [IDL.Opt(StreamingCallbackHttpResponse)],
+            ['query']
+        );
+        type Callback = [Principal, string];
+        const CallbackStrategy = IDL.Record({
+            callback: Callback,
+            token: ${TokenIdl}
+        });
+        type CallbackStrategy = {
+            callback: Callback;
+            token: ${TokenType};
+        };
+        const StreamingStrategy = IDL.Variant({
+            Callback: CallbackStrategy
+        });
+        type StreamingStrategy = {
+            Callback: CallbackStrategy;
+        };
+        const HttpResponse = IDL.Record({
+            status_code: IDL.Nat16,
+            headers: IDL.Vec(HeaderField),
+            body: IDL.Vec(IDL.Nat8),
+            upgrade: IDL.Opt(IDL.Bool),
+            streaming_strategy: IDL.Opt(StreamingStrategy)
+        });
+        type HttpResponse = {
+            status_code: number;
+            headers: HeaderField[];
+            body: Uint8Array;
+            upgrade: [boolean] | [];
             streaming_strategy: [StreamingStrategy] | [];
         };
     `;
