@@ -55,6 +55,8 @@ on:
             run-wsl-ubuntu-tests:
                 description: 'Run Windows tests'
                 required: true
+                type: boolean
+                default: false
             copy-outside-repo:
                 description: 'Copy test outside repository to validate external usage'
                 required: false
