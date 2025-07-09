@@ -168,7 +168,7 @@ jobs:
               if: ${{ inputs.copy-outside-repo }}
               uses: ./.github/actions/retry_command
               with:
-                  command: 'npm install tsx jest'
+                  command: 'npm install tsx'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - run: npm link azle
