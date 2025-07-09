@@ -117,7 +117,13 @@ runs:
                   echo "fuzz-time-limit=.5" >> $GITHUB_OUTPUT
                 fi
 
-                echo "copy-outside-repo=false" >> $GITHUB_OUTPUT
+                if [[ "${{ steps.workflow-context.outputs.is_main_branch_push_from_release_merge }}" == "true" || \
+                      "${{ steps.workflow-context.outputs.is_release_branch_pr }}" == "true" ]]; then
+                  echo "copy-outside-repo=true" >> $GITHUB_OUTPUT
+                else
+                  echo "copy-outside-repo=false" >> $GITHUB_OUTPUT
+                fi
+
                 echo ${{ github.actor }}
                 echo "is-dependabot=${{ github.actor == 'dependabot[bot]' }}" >> $GITHUB_OUTPUT
 
