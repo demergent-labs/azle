@@ -79,3 +79,5 @@ jobs:
             fuzz-time-limit: ${{ matrix.test_group.time-limit }}
             link-azle: true
             operating-system: ubuntu
+            run-mac-tests: false
+            run-wsl-ubuntu-tests: false
