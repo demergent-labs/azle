@@ -376,6 +376,10 @@ jobs:
                   retry_command install_dfx
                   retry_command install_npm_dependencies
 
+                  # Setup Rust dependencies for template building
+                  echo "=== Setting up Rust dependencies for template building ==="
+                  npx azle dev setup --cargo-all
+
                   # Test azle dev template commands
                   echo "=== Testing azle dev template commands ==="
 
