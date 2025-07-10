@@ -284,6 +284,11 @@ jobs:
 
                   echo "✅ WASI SDK installed and configured for macOS"
 
+            - name: Setup Rust dependencies for template building
+              run: |
+                  echo "Setting up Rust dependencies for template building"
+                  npx azle dev setup --cargo-all
+
             - name: Test azle dev template commands
               run: |
                   echo "Testing azle dev template commands"
