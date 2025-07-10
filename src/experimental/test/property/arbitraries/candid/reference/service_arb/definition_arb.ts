@@ -4,7 +4,6 @@ import fc from 'fast-check';
 
 import { IDL } from '#lib/index';
 
-import { Api, Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -18,14 +17,12 @@ import {
 } from './service_method_arb';
 
 export function ServiceDefinitionArb(
-    context: Context,
     fieldCandidDefArb: WithShapesArb<CandidDefinition>
 ): WithShapesArb<ServiceCandidDefinition> {
-    const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
-            fc.uniqueArray(ServiceMethodArb(context, fieldCandidDefArb), {
+            fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb), {
                 selector: (entry) => entry.definition.name
             }),
             fc.constant(true) // TODO This needs to be true, I don't know why we set up to be an arbitrary boolean if it has to be true
@@ -48,15 +45,13 @@ export function ServiceDefinitionArb(
 
                 const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
-                    name,
-                    api
+                    name
                 );
 
                 const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
-                    fields,
-                    api
+                    fields
                 );
 
                 const runtimeTypeObject = generateRuntimeTypeObject(fields);
@@ -65,11 +60,10 @@ export function ServiceDefinitionArb(
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        fields,
-                        api
+                        fields
                     );
 
-                const imports = generateImports(fields, api);
+                const imports = generateImports(fields);
 
                 return {
                     definition: {
@@ -91,10 +85,9 @@ export function ServiceDefinitionArb(
 }
 
 function generateImports(
-    serviceMethods: ServiceMethodDefinition[],
-    api: Api
+    serviceMethods: ServiceMethodDefinition[]
 ): Set<string> {
-    const serviceImports = api === 'functional' ? ['Canister'] : ['IDL'];
+    const serviceImports = ['IDL'];
     return new Set([
         ...serviceMethods.flatMap((serviceMethod) =>
             Array.from(serviceMethod.imports)
@@ -108,21 +101,19 @@ function generateImports(
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    serviceMethods: ServiceMethodDefinition[],
-    api: Api
+    serviceMethods: ServiceMethodDefinition[]
 ): string[] {
     const serviceMethodTypeAliasDecls = serviceMethods.flatMap(
         (serviceMethod) => serviceMethod.variableAliasDeclarations
     );
     if (useTypeDeclaration === true) {
-        const type = api === 'functional' ? [] : [`type ${name} = Principal;`];
+        const type = [`type ${name} = Principal;`];
         return [
             ...serviceMethodTypeAliasDecls,
             `const ${name} = ${generateTypeObject(
                 false,
                 name,
-                serviceMethods,
-                api
+                serviceMethods
             )};`,
             ...type
         ];
@@ -132,14 +123,10 @@ function generateVariableAliasDeclarations(
 
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
-    name: string,
-    api: Api
+    name: string
 ): string {
     if (useTypeDeclaration === true) {
-        if (api === 'class') {
-            return name;
-        }
-        return `typeof ${name}.tsType`;
+        return name;
     }
 
     return '[Principal]';
@@ -148,28 +135,18 @@ function generateCandidTypeAnnotation(
 function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    serviceMethods: ServiceMethodDefinition[],
-    api: Api
+    serviceMethods: ServiceMethodDefinition[]
 ): string {
     if (useTypeDeclaration === true) {
         return name;
     }
 
-    if (api === 'class') {
-        const methods = serviceMethods
-            .map((serviceMethod) => serviceMethod.idl)
-            .filter((typeDeclaration) => typeDeclaration)
-            .join(',\n');
-
-        return `IDL.Service({${methods}})`;
-    }
-
     const methods = serviceMethods
-        .map((serviceMethod) => serviceMethod.src)
+        .map((serviceMethod) => serviceMethod.idl)
         .filter((typeDeclaration) => typeDeclaration)
         .join(',\n');
 
-    return `Canister({${methods}})`;
+    return `IDL.Service({${methods}})`;
 }
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860

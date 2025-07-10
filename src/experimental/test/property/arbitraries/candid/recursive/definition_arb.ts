@@ -4,7 +4,7 @@ import fc from 'fast-check';
 
 import { IDL } from '#lib/index';
 
-import { Api, Context } from '../../types';
+import { Context } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -21,15 +21,13 @@ export function RecursiveDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[]
 ): WithShapesArb<RecursiveCandidDefinition> {
-    const api = context.api;
     return UniqueIdentifierArb('globalNames')
         .chain((name): fc.Arbitrary<RecursiveCandidName> => {
             const recCanDef: RecursiveCandidName = {
                 candidMeta: {
                     candidType: 'Recursive',
                     typeObject: name,
-                    typeAnnotation:
-                        api === 'functional' ? `typeof ${name}.tsType` : name,
+                    typeAnnotation: name,
                     imports: new Set(),
                     variableAliasDeclarations: [],
                     runtimeTypeObject: IDL.Rec()
@@ -72,9 +70,9 @@ export function RecursiveDefinitionArb(
                     candidMeta: { typeObject, typeAnnotation }
                 } = recCanDef;
                 const variableAliasDeclarations =
-                    generateVariableAliasDeclarations(name, innerType, api);
+                    generateVariableAliasDeclarations(name, innerType);
 
-                const imports = generateImports(innerType, api);
+                const imports = generateImports(innerType);
 
                 const runtimeTypeObject = generateRuntimeTypeObject(innerType);
 
@@ -103,26 +101,18 @@ export function RecursiveDefinitionArb(
 
 function generateVariableAliasDeclarations(
     name: string,
-    innerType: CandidDefinition,
-    api: Api
+    innerType: CandidDefinition
 ): string[] {
-    if (api === 'class') {
-        return [
-            ...innerType.candidMeta.variableAliasDeclarations,
-            `const ${name} = IDL.Rec()`,
-            `${name}.fill(${innerType.candidMeta.typeObject})`,
-            `type ${name} = ${innerType.candidMeta.typeAnnotation};`
-        ];
-    }
     return [
-        `const ${name} = Recursive(() => ${innerType.candidMeta.typeObject});`,
-        ...innerType.candidMeta.variableAliasDeclarations
+        ...innerType.candidMeta.variableAliasDeclarations,
+        `const ${name} = IDL.Rec()`,
+        `${name}.fill(${innerType.candidMeta.typeObject})`,
+        `type ${name} = ${innerType.candidMeta.typeAnnotation};`
     ];
 }
 
-function generateImports(innerType: CandidDefinition, api: Api): Set<string> {
-    const recursiveImports = api === 'functional' ? 'Recursive' : 'IDL';
-    return new Set([...innerType.candidMeta.imports, recursiveImports]);
+function generateImports(innerType: CandidDefinition): Set<string> {
+    return new Set([...innerType.candidMeta.imports, 'IDL']);
 }
 
 function generateRuntimeTypeObject(innerType: CandidDefinition): IDL.Type {

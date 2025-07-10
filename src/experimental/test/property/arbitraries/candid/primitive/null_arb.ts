@@ -19,15 +19,13 @@ export function NullArb(
 ): fc.Arbitrary<CandidValueAndMeta<null>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        NullDefinitionArb(context),
+        NullDefinitionArb(),
         NullValueArb
     );
 }
 
-export function NullDefinitionArb(
-    context: Context
-): WithShapesArb<NullCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'Null');
+export function NullDefinitionArb(): WithShapesArb<NullCandidDefinition> {
+    return SimpleCandidDefinitionArb('Null');
 }
 
 export function NullValueArb(): fc.Arbitrary<CandidValues<null>> {
