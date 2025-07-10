@@ -144,6 +144,7 @@ jobs:
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - uses: ./.github/actions/retry_command
+              name: Install azle dependencies
               with:
                   command: 'npm install'
 
@@ -153,6 +154,7 @@ jobs:
             - run: npm run lint
 
             - uses: ./.github/actions/retry_command
+              name: Install test dependencies
               with:
                   command: 'npm install'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
