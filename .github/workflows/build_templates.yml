@@ -59,6 +59,7 @@ jobs:
               run: npx azle dev template --experimental
 
             - uses: ./.github/actions/commit_and_push
+              if: ${{ github.event_name == 'pull_request' }}
               with:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'
