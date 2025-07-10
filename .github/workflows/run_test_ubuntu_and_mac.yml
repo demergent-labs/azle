@@ -114,6 +114,10 @@ jobs:
                   # Copy the test directory outside the repo
                   cp -r "${{ matrix.test.path }}" "$EXTERNAL_TEST_DIR"
 
+                  # Copy jest config file to external test directory
+                  cp jest.config.dev.js "$EXTERNAL_TEST_DIR/"
+                  echo "Copied jest.config.dev.js to external test directory"
+
                   # Set the external directory as output
                   echo "external-test-dir=$EXTERNAL_TEST_DIR" >> $GITHUB_OUTPUT
                   echo "Test copied to external directory: $EXTERNAL_TEST_DIR"
