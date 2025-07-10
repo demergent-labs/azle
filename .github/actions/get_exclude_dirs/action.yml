@@ -40,8 +40,10 @@ runs:
               examples/experimental/demo/bitcoin_psbt
               examples/experimental/test/end_to_end/http_server/autoreload
               examples/experimental/test/end_to_end/http_server/ethers_base
+              examples/experimental/test/end_to_end/http_server/fetch_ic
               examples/experimental/test/end_to_end/http_server/http_outcall_fetch
               examples/experimental/test/end_to_end/http_server/ic_evm_rpc
+              examples/experimental/test/end_to_end/http_server/internet_identity
               examples/experimental/test/end_to_end/http_server/nest
               examples/experimental/test/end_to_end/http_server/open_value_sharing
               examples/experimental/test/end_to_end/http_server/sqlite_drizzle
