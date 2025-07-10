@@ -2,6 +2,9 @@
 
 VERSION=$1
 
+# cargo-auditable allows us to run cargo audit bin on our global cargo dependencies.
+# We first install cargo-auditable so that it can be used to install itself.
+# Without this, cargo audit bin would not be able to audit cargo-auditable itself.
 if [[ $VERSION =~ ^https?:// ]]; then
     echo "Installing cargo-auditable from repository $VERSION"
     cargo install cargo-auditable --git "$VERSION" --locked
