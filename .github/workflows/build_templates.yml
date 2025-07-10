@@ -7,6 +7,7 @@ on:
             - synchronize
             - ready_for_review
             - reopened
+    workflow_dispatch:
 
 jobs:
     workflow-config:
@@ -20,16 +21,16 @@ jobs:
             - id: determine-workflow-config
               uses: ./.github/actions/determine_workflow_config
               with:
-                  is-workflow-dispatch: false
+                  is-workflow-dispatch: ${{ github.event_name == 'workflow_dispatch' }}
                   exclude-slow-dispatch-input-value: false
                   exclude-unstable-dispatch-input-value: false
                   exclude-release-only-dispatch-input-value: false
                   link-azle-dispatch-input-value: false
 
     build-templates:
-        name: Build templates for Dependabot
+        name: Build templates
         needs: workflow-config
-        if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' }}
+        if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' || github.event_name == 'workflow_dispatch' }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -47,8 +48,10 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  npx azle dev setup --rust --wasi2ic
+                  npx azle dev setup --rust --cargo-auditable --wasi2ic
+
             - uses: Swatinem/rust-cache@v2
+
             - name: Build stable template
               run: npx azle dev template
 
