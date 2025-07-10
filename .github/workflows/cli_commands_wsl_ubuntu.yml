@@ -140,8 +140,9 @@ jobs:
                   # Source common functions
                   source ".github/scripts/common_functions.sh"
 
-                  # Setup Node.js
+                  # Setup Node.js and dfx
                   retry_command setup_nodejs
+                  retry_command install_dfx
 
                   # Create external test environment
                   EXTERNAL_TEST_ENV_DIR_PATH=/home/tester/external_test_env
@@ -215,8 +216,9 @@ jobs:
                   # Source common functions
                   source ".github/scripts/common_functions.sh"
 
-                  # Setup Node.js
+                  # Setup Node.js and dfx
                   retry_command setup_nodejs
+                  retry_command install_dfx
 
                   # Create external test environment
                   EXTERNAL_TEST_ENV_DIR_PATH=/home/tester/external_test_env
@@ -530,8 +532,9 @@ jobs:
                   # Source common functions
                   source ".github/scripts/common_functions.sh"
 
-                  # Setup Node.js
+                  # Setup Node.js and dfx
                   retry_command setup_nodejs
+                  retry_command install_dfx
 
                   # Create external test environment
                   EXTERNAL_TEST_ENV_DIR_PATH=/home/tester/external_test_env
