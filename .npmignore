@@ -7,7 +7,6 @@
 !examples/stable/demo/hello_world/**
 !examples/experimental/demo/hello_world_http_server/**
 !src/**
-!.openvaluesharing.json
 !jest.config.dev.js
 !LICENSE
 !LICENSE_EXTENSION.md
