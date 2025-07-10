@@ -6,93 +6,50 @@ import { Test } from '../../test';
 import { BoolArb } from '../candid/primitive/bool_arb';
 import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
-import {
-    BodyGenerator,
-    CanisterMethodConstraints,
-    generateMethodImplementation,
-    MethodImplementationLocationArb,
-    TestsGenerator
-} from '.';
+import { BodyGenerator, generateMethodImplementation, TestsGenerator } from '.';
 
 export type InspectMessageMethod = {
     imports: Set<string>;
-    globalDeclarations: string[];
     sourceCode: string;
     tests: Test[][];
 };
 
 export function InspectMessageMethodArb(
-    context: Context<CanisterMethodConstraints>,
+    context: Context,
     generator: {
         generateBody: BodyGenerator;
         generateTests: TestsGenerator;
     }
 ): fc.Arbitrary<InspectMessageMethod> {
-    const api = context.api;
-    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties', 'property'),
             BoolArb({ ...context, constraints: {} }),
-            MethodImplementationLocationArb,
             UniqueIdentifierArb('globalNames')
         )
-        .map(
-            ([
-                functionName,
+        .map(([functionName, returnType]): InspectMessageMethod => {
+            const imports = new Set(['inspectMessage']);
+
+            const methodImplementation = generateMethodImplementation(
+                [],
                 returnType,
-                defaultMethodImplementationLocation,
-                methodName
-            ]): InspectMessageMethod => {
-                const methodImplementationLocation =
-                    api === 'class'
-                        ? 'INLINE'
-                        : (constraints.methodImplementationLocation ??
-                          defaultMethodImplementationLocation);
+                generator.generateBody,
+                functionName,
+                true
+            );
 
-                const imports = new Set(['inspectMessage']);
+            const escapedFunctionName = functionName.startsWith('"')
+                ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+                : functionName;
 
-                const methodImplementation = generateMethodImplementation(
-                    [],
-                    returnType,
-                    generator.generateBody,
-                    methodImplementationLocation,
-                    functionName,
-                    methodName,
-                    api,
-                    api === 'class'
-                );
+            const sourceCode = `@inspectMessage\n${escapedFunctionName}${methodImplementation}`;
 
-                const globalDeclarations =
-                    methodImplementationLocation === 'STANDALONE'
-                        ? [methodImplementation]
-                        : [];
+            const tests = generator.generateTests(functionName, [], returnType);
 
-                const escapedFunctionName = functionName.startsWith('"')
-                    ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
-                    : functionName;
-
-                const sourceCode =
-                    api === 'functional'
-                        ? `${escapedFunctionName}: inspectMessage(${
-                              methodImplementationLocation === 'STANDALONE'
-                                  ? methodName
-                                  : methodImplementation
-                          })`
-                        : `@inspectMessage\n${escapedFunctionName}${methodImplementation}`;
-
-                const tests = generator.generateTests(
-                    functionName,
-                    [],
-                    returnType
-                );
-
-                return {
-                    imports,
-                    globalDeclarations,
-                    sourceCode,
-                    tests
-                };
-            }
-        );
+            return {
+                imports,
+                sourceCode,
+                tests
+            };
+        });
 }

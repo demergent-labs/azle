@@ -59,7 +59,7 @@ export function getTests(): Test {
             };
             await fc.assert(
                 fc.asyncProperty(
-                    candidDefinitionArb({ api: 'class', constraints }, {}),
+                    candidDefinitionArb({ constraints }, {}),
                     async (candid) => {
                         // TODO IDL.Empty is a placeholder for void...not quite correct
                         const didVisitorResult = (

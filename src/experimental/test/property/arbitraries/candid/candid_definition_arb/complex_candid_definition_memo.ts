@@ -48,18 +48,16 @@ export function complexCandidDefinitionMemo(
         forceInline: constraints.forceInline
     };
     const newContext = {
-        api: context.api,
         constraints: newConstraints
     };
     return fc.memo((depthLevel) => {
         return fc.oneof(
             {
-                arbitrary: BlobDefinitionArb({ ...context, constraints: {} }),
+                arbitrary: BlobDefinitionArb(),
                 weight: weights.blob ?? 1
             },
             {
                 arbitrary: FuncDefinitionArb(
-                    { ...context, constraints: {} },
                     candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.func ?? 1
@@ -104,7 +102,6 @@ export function complexCandidDefinitionMemo(
             },
             {
                 arbitrary: ServiceDefinitionArb(
-                    { ...context, constraints: {} },
                     candidDefinitionMemo(newContext, [])(depthLevel)
                 ),
                 weight: weights.service ?? 0

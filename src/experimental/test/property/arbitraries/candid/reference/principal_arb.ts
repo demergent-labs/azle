@@ -20,15 +20,13 @@ export function PrincipalArb(
 ): fc.Arbitrary<CandidValueAndMeta<Principal>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        PrincipalDefinitionArb(context),
+        PrincipalDefinitionArb(),
         PrincipalValueArb
     );
 }
 
-export function PrincipalDefinitionArb(
-    context: Context
-): WithShapesArb<PrincipalCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'Principal');
+export function PrincipalDefinitionArb(): WithShapesArb<PrincipalCandidDefinition> {
+    return SimpleCandidDefinitionArb('Principal');
 }
 
 export function PrincipalValueArb(): fc.Arbitrary<CandidValues<Principal>> {

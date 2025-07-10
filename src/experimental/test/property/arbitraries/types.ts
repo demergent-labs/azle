@@ -5,12 +5,7 @@ import { DefinitionConstraints } from './candid/candid_definition_arb/types';
 import { Float32Constraints } from './candid/primitive/floats/float32_arb';
 import { Float64Constraints } from './candid/primitive/floats/float64_arb';
 import { TextConstraints } from './candid/primitive/text_arb';
-import {
-    CanisterMethodConstraints,
-    QueryOrUpdateConstraints
-} from './canister_methods';
-
-export type Api = 'class' | 'functional';
+import { QueryOrUpdateConstraints } from './canister_methods';
 
 type NoConstraints = Record<string, never>;
 
@@ -21,11 +16,9 @@ type Constraints =
     | Float32Constraints
     | Float64Constraints
     | TextConstraints
-    | QueryOrUpdateConstraints
-    | CanisterMethodConstraints;
+    | QueryOrUpdateConstraints;
 
 export type Context<Constraint extends Constraints = Record<string, never>> = {
-    api: Api;
     constraints: Constraint;
     inspectMessageImportHack?: boolean;
 };
