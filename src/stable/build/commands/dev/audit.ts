@@ -1,4 +1,4 @@
-import { IOType } from 'child_process';
+import { ExecSyncOptionsWithBufferEncoding, IOType } from 'child_process';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
@@ -6,10 +6,9 @@ import { execSyncPretty } from '#utils/exec_sync_pretty';
 import { AZLE_ROOT } from '#utils/global_paths';
 
 export async function runCommand(ioType: IOType = 'inherit'): Promise<void> {
-    execSyncPretty('npm audit', {
+    runAuditCommand('npm audit', {
         stdio: ioType
     });
-    console.info('✓ npm audit completed successfully');
 
     // Check if we're in a Rust project directory or need to run from AZLE_ROOT
     const currentDir = process.cwd();
@@ -18,46 +17,29 @@ export async function runCommand(ioType: IOType = 'inherit'): Promise<void> {
     // If we're not in a directory with a Cargo.lock, run cargo commands from AZLE_ROOT
     const workingDir =
         existsSync(cargoLockPath) === true ? currentDir : AZLE_ROOT;
-
-    execSyncPretty('cargo audit', {
+    const cargoOpts = {
         stdio: ioType,
         cwd: workingDir
-    });
-    console.info('✓ cargo audit completed successfully');
+    };
 
-    execSyncPretty('cargo audit bin ~/.cargo/bin/cargo-auditable', {
-        stdio: ioType
-    });
-    console.info(
-        '✓ cargo audit bin ~/.cargo/bin/cargo-auditable completed successfully'
-    );
-
-    execSyncPretty('cargo audit bin ~/.cargo/bin/cargo-audit', {
-        stdio: ioType
-    });
-    console.info(
-        '✓ cargo audit bin ~/.cargo/bin/cargo-audit completed successfully'
-    );
-
-    execSyncPretty('cargo audit bin ~/.cargo/bin/cargo-deny', {
-        stdio: ioType
-    });
-    console.info(
-        '✓ cargo audit bin ~/.cargo/bin/cargo-deny completed successfully'
-    );
-
-    execSyncPretty('cargo audit bin ~/.cargo/bin/wasi2ic', {
-        stdio: ioType
-    });
-    console.info(
-        '✓ cargo audit bin ~/.cargo/bin/wasi2ic completed successfully'
-    );
-
-    execSyncPretty('cargo deny check', {
-        stdio: ioType,
-        cwd: workingDir
-    });
-    console.info('✓ cargo deny check completed successfully');
+    runAuditCommand('cargo audit', cargoOpts);
+    runAuditCommand('cargo audit bin ~/.cargo/bin/cargo-auditable', cargoOpts);
+    runAuditCommand('cargo audit bin ~/.cargo/bin/cargo-audit', cargoOpts);
+    runAuditCommand('cargo audit bin ~/.cargo/bin/cargo-deny', cargoOpts);
+    runAuditCommand('cargo audit bin ~/.cargo/bin/wasi2ic', cargoOpts);
+    runAuditCommand('cargo deny check', cargoOpts);
 
     console.info('\n🎉 All security audit checks completed successfully!');
+}
+/**
+ * Runs an audit command and logs a success message
+ * @param command - The command to execute
+ * @param options - Options to pass to execSyncPretty
+ */
+function runAuditCommand(
+    command: string,
+    options?: ExecSyncOptionsWithBufferEncoding
+): void {
+    execSyncPretty(command, options);
+    console.info(`✓ ${command} completed successfully`);
 }
