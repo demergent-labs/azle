@@ -47,8 +47,8 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic
-
+                  npx azle dev setup --rust --wasi2ic
+            - uses: Swatinem/rust-cache@v2
             - name: Build stable template
               run: npx azle dev template
 

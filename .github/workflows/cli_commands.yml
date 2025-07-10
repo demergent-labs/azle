@@ -98,16 +98,18 @@ jobs:
                   EXPECTED_NODE_VERSION=$(jq -r '.azle.globalDependencies.node // "not found"' "${{ github.workspace }}/package.json")
                   EXPECTED_RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // "not found"' "${{ github.workspace }}/package.json")
                   EXPECTED_DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // "not found"' "${{ github.workspace }}/package.json")
-                  EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${{ github.workspace }}/package.json")
+                  EXPECTED_CARGO_AUDITABLE_VERSION=$(jq -r '.azle.globalDependencies."cargo-auditable" // "not found"' "${{ github.workspace }}/package.json")
                   EXPECTED_CARGO_AUDIT_VERSION=$(jq -r '.azle.globalDependencies."cargo-audit" // "not found"' "${{ github.workspace }}/package.json")
                   EXPECTED_CARGO_DENY_VERSION=$(jq -r '.azle.globalDependencies."cargo-deny" // "not found"' "${{ github.workspace }}/package.json")
+                  EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${{ github.workspace }}/package.json")
 
                   echo "Expected Node version: ${EXPECTED_NODE_VERSION}"
                   echo "Expected Rust version: ${EXPECTED_RUST_VERSION}"
                   echo "Expected dfx version: ${EXPECTED_DFX_VERSION}"
-                  echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
+                  echo "Expected cargo-auditable version: ${EXPECTED_CARGO_AUDITABLE_VERSION}"
                   echo "Expected cargo-audit version: ${EXPECTED_CARGO_AUDIT_VERSION}"
                   echo "Expected cargo-deny version: ${EXPECTED_CARGO_DENY_VERSION}"
+                  echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
 
                   # Run azle dev setup
                   npx azle dev setup
@@ -144,18 +146,18 @@ jobs:
                     exit 1
                   fi
 
-                  # Check wasi2ic version
-                  ACTUAL_WASI2IC_VERSION=$(npx tsx "${{ github.workspace }}/.scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
-                  echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
-                  if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
-                    echo "✅ wasi2ic version verification successful"
+                  # Check cargo-auditable version
+                  ACTUAL_CARGO_AUDITABLE_VERSION=$(npx tsx "${{ github.workspace }}/.github/scripts/get_local_cargo_auditable_version.ts" 2>/dev/null || echo "not installed")
+                  echo "Actual cargo-auditable version: ${ACTUAL_CARGO_AUDITABLE_VERSION}"
+                  if [[ "${ACTUAL_CARGO_AUDITABLE_VERSION}" == "${EXPECTED_CARGO_AUDITABLE_VERSION}" ]]; then
+                    echo "✅ cargo-auditable version verification successful"
                   else
-                    echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
+                    echo "❌ cargo-auditable version verification failed: Expected ${EXPECTED_CARGO_AUDITABLE_VERSION}, got ${ACTUAL_CARGO_AUDITABLE_VERSION}"
                     exit 1
                   fi
 
                   # Check cargo-audit version
-                  ACTUAL_CARGO_AUDIT_VERSION=$(cargo audit --version | awk '{print $2}')
+                  ACTUAL_CARGO_AUDIT_VERSION=$(npx tsx "${{ github.workspace }}/.github/scripts/get_local_cargo_audit_version.ts" 2>/dev/null || echo "not installed")
                   echo "Actual cargo-audit version: ${ACTUAL_CARGO_AUDIT_VERSION}"
                   if [[ "${ACTUAL_CARGO_AUDIT_VERSION}" == "${EXPECTED_CARGO_AUDIT_VERSION}" ]]; then
                     echo "✅ cargo-audit version verification successful"
@@ -165,7 +167,7 @@ jobs:
                   fi
 
                   # Check cargo-deny version
-                  ACTUAL_CARGO_DENY_VERSION=$(cargo deny --version | awk '{print $2}')
+                  ACTUAL_CARGO_DENY_VERSION=$(npx tsx "${{ github.workspace }}/.github/scripts/get_local_cargo_deny_version.ts" 2>/dev/null || echo "not installed")
                   echo "Actual cargo-deny version: ${ACTUAL_CARGO_DENY_VERSION}"
                   if [[ "${ACTUAL_CARGO_DENY_VERSION}" == "${EXPECTED_CARGO_DENY_VERSION}" ]]; then
                     echo "✅ cargo-deny version verification successful"
@@ -174,7 +176,19 @@ jobs:
                     exit 1
                   fi
 
+                  # Check wasi2ic version
+                  ACTUAL_WASI2IC_VERSION=$(npx tsx "${{ github.workspace }}/.github/scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
+                  echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
+                  if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
+                    echo "✅ wasi2ic version verification successful"
+                  else
+                    echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
+                    exit 1
+                  fi
+
                   echo "✅ All version verifications completed successfully"
+
+            - uses: Swatinem/rust-cache@v2
 
             - name: Setup Rust and WASM targets (macOS only)
               if: matrix.os == 'macos-latest'
