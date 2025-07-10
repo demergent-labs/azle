@@ -54,7 +54,7 @@ jobs:
               run: |
                   npx azle dev setup --rust --cargo-auditable --cargo-audit --cargo-deny --wasi2ic
             - uses: Swatinem/rust-cache@v2
-            - run: npx azle dev audit
+            - run: AZLE_VERBOSE=true npx azle dev audit
 
             - name: Update version
               run: |
