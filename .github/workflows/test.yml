@@ -249,7 +249,7 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  npx azle dev setup --rust --cargo-auditable --cargo-audit --cargo-deny --wasi2ic
+                  npx azle dev setup --cargo-all
             - uses: Swatinem/rust-cache@v2
             - run: cargo audit
             - run: cargo audit bin ~/.cargo/bin/cargo-auditable

@@ -138,13 +138,15 @@ export async function handleDevSetupCommand(): Promise<void> {
     // About the ordering:
     // rust must come before any other dependencies that depend on cargo/rust.
     // cargo-auditable must come before all other dependencies that produce binaries from cargo.
+    const cargoAll = process.argv.includes('--cargo-all'); // Installs all cargo-related dependencies: rust, cargo-auditable, cargo-audit, cargo-deny, wasi2ic
     const dfx = process.argv.includes('--dfx');
     const node = process.argv.includes('--node');
-    const rust = process.argv.includes('--rust');
-    const cargoAuditable = process.argv.includes('--cargo-auditable');
-    const cargoAudit = process.argv.includes('--cargo-audit');
-    const cargoDeny = process.argv.includes('--cargo-deny');
-    const wasi2ic = process.argv.includes('--wasi2ic');
+    const rust = process.argv.includes('--rust') || cargoAll;
+    const cargoAuditable =
+        process.argv.includes('--cargo-auditable') || cargoAll;
+    const cargoAudit = process.argv.includes('--cargo-audit') || cargoAll;
+    const cargoDeny = process.argv.includes('--cargo-deny') || cargoAll;
+    const wasi2ic = process.argv.includes('--wasi2ic') || cargoAll;
 
     if (
         dfx === false &&
