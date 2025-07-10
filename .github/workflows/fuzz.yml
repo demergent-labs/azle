@@ -60,3 +60,5 @@ jobs:
             fuzz-time-limit: ${{ inputs.time-limit }}
             link-azle: true
             operating-system: ubuntu
+            run-mac-tests: false
+            run-wsl-ubuntu-tests: false
