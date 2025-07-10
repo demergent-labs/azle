@@ -24,15 +24,13 @@ export function TextArb(
 ): fc.Arbitrary<CandidValueAndMeta<string>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        TextDefinitionArb({ ...context, constraints: {} }),
+        TextDefinitionArb(),
         TextValueArb
     );
 }
 
-export function TextDefinitionArb(
-    context: Context
-): WithShapesArb<TextCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'text');
+export function TextDefinitionArb(): WithShapesArb<TextCandidDefinition> {
+    return SimpleCandidDefinitionArb('text');
 }
 
 export function TextValueArb(

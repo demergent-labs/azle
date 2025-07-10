@@ -20,15 +20,13 @@ export function Nat32Arb(
 ): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        Nat32DefinitionArb(context),
+        Nat32DefinitionArb(),
         Nat32ValueArb
     );
 }
 
-export function Nat32DefinitionArb(
-    context: Context
-): WithShapesArb<NatCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'nat32');
+export function Nat32DefinitionArb(): WithShapesArb<NatCandidDefinition> {
+    return SimpleCandidDefinitionArb('nat32');
 }
 
 export function Nat32ValueArb(): fc.Arbitrary<CandidValues<number>> {

@@ -18,7 +18,6 @@ import {
     UpdateMethod,
     UpdateMethodArb
 } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/update_method_arb';
-import { Api } from 'azle/experimental/_internal/test/property/arbitraries/types';
 import fc from 'fast-check';
 import { v4 } from 'uuid';
 
@@ -30,8 +29,7 @@ const AZLE_ACCEPT_IDENTITY_NAME = `_prop_test_azle_accept_identity_${v4()}`;
 const AZLE_RETURN_IDENTITY_NAME = `_prop_test_azle_return_identity_${v4()}`;
 const AZLE_THROW_IDENTITY_NAME = `_prop_test_azle_throw_identity_${v4()}`;
 
-const api: Api = 'class';
-const context = { api, constraints: {}, inspectMessageImportHack: true };
+const context = { constraints: {}, inspectMessageImportHack: true };
 
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -49,10 +47,7 @@ function CanisterConfigArb() {
     ];
 
     const HeterogeneousUpdateMethodArb = UpdateMethodArb(
-        {
-            api,
-            constraints: {}
-        },
+        { constraints: {} },
         {
             generateBody: (_, returnType) =>
                 `return ${returnType.src.valueLiteral}`,
@@ -81,7 +76,6 @@ function CanisterConfigArb() {
         .chain((updateMethods) => {
             const InspectMessageArb = InspectMessageMethodArb(
                 {
-                    api,
                     constraints: {}
                 },
                 {

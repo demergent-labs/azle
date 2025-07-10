@@ -24,15 +24,13 @@ export function Float64Arb(
 ): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        Float64DefinitionArb({ ...context, constraints: {} }),
+        Float64DefinitionArb(),
         Float64ValueArb
     );
 }
 
-export function Float64DefinitionArb(
-    context: Context
-): WithShapesArb<FloatCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'float64');
+export function Float64DefinitionArb(): WithShapesArb<FloatCandidDefinition> {
+    return SimpleCandidDefinitionArb('float64');
 }
 
 export function Float64ValueArb<C extends Float64Constraints>(

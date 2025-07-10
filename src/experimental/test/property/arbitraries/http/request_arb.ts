@@ -7,7 +7,6 @@ import { HttpRequest } from '#lib/canisters/http_gateway/idl/index';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
-import { Api, Context } from '../types';
 import { BodyArb } from './body_arb';
 import { HttpHeadersArb } from './headers_arb';
 
@@ -92,10 +91,9 @@ function HttpRequestValueArb() {
         );
 }
 
-export function HttpRequestArb(
-    context: Context
-): fc.Arbitrary<CandidValueAndMeta<HttpRequest>> {
-    const api = context.api;
+export function HttpRequestArb(): fc.Arbitrary<
+    CandidValueAndMeta<HttpRequest>
+> {
     return HttpRequestValueArb().map((httpRequest) => {
         const headerStrings = httpRequest.headers
             .map(
@@ -108,19 +106,8 @@ export function HttpRequestArb(
 
         const certificateVersion =
             'Some' in httpRequest.certificate_version
-                ? api === 'functional'
-                    ? `Some(${httpRequest.certificate_version.Some})`
-                    : `[${httpRequest.certificate_version.Some}]`
-                : api === 'functional'
-                  ? `None`
-                  : [];
-
-        const optImport =
-            api === 'functional'
-                ? ['Some' in httpRequest.certificate_version ? 'Some' : 'None']
+                ? `[${httpRequest.certificate_version.Some}]`
                 : [];
-
-        const requestImport = api === 'functional' ? 'HttpRequest' : 'IDL';
 
         return {
             value: {
@@ -132,9 +119,9 @@ export function HttpRequestArb(
                 typeAnnotation: 'HttpRequest',
                 typeObject: 'HttpRequest',
                 variableAliasDeclarations: [
-                    generateVariableAliasDeclarations(api)
+                    generateVariableAliasDeclarations()
                 ],
-                imports: new Set([requestImport, ...optImport]),
+                imports: new Set(['IDL']),
                 valueLiteral: `{
                     method: '${httpRequest.method}',
                     url: '${httpRequest.url}',
@@ -148,9 +135,8 @@ export function HttpRequestArb(
     });
 }
 
-function generateVariableAliasDeclarations(api: Api): string {
-    if (api === 'class') {
-        return /*TS*/ `
+function generateVariableAliasDeclarations(): string {
+    return /*TS*/ `
         export const RequestHeaderField = IDL.Tuple(IDL.Text, IDL.Text);
         export type RequestHeaderField = [string, string];
 
@@ -169,6 +155,4 @@ function generateVariableAliasDeclarations(api: Api): string {
             certificate_version: [number] | [];
         };
     `;
-    }
-    return '';
 }

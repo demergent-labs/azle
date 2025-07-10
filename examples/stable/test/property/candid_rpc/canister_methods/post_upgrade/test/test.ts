@@ -26,7 +26,6 @@ import {
 } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/query_method_arb';
 import { UpdateMethodArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/update_method_arb';
 import { DEFAULT_VALUE_MAX_DEPTH } from 'azle/experimental/_internal/test/property/arbitraries/config';
-import { Api } from 'azle/experimental/_internal/test/property/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
@@ -36,8 +35,7 @@ import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_
 import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
 import { globalInitVarName, globalPostUpgradeVarName } from './global_var_name';
 
-const api: Api = 'class';
-const context = { api, constraints: {} };
+const context = { constraints: {} };
 
 const CanisterConfigArb = fc
     .array(candidDefinitionArb(context, {}))
@@ -56,7 +54,6 @@ const CanisterConfigArb = fc
 
         const SimpleInitMethodArb = InitMethodArb(
             {
-                api,
                 constraints: {}
             },
             {
@@ -68,7 +65,6 @@ const CanisterConfigArb = fc
 
         const SimplePostUpgradeMethodArb = PostUpgradeMethodArb(
             {
-                api,
                 constraints: {}
             },
             {
@@ -80,7 +76,6 @@ const CanisterConfigArb = fc
 
         const HeterogeneousQueryMethodArb = QueryMethodArb(
             {
-                api,
                 constraints: {}
             },
             {
@@ -93,7 +88,6 @@ const CanisterConfigArb = fc
 
         const HeterogeneousUpdateMethodArb = UpdateMethodArb(
             {
-                api,
                 constraints: {}
             },
             {
@@ -286,7 +280,6 @@ function definitionsToValueAndMetaArb(
                     // https://github.com/dfinity/candid/issues/499
                     CandidValueArb(
                         {
-                            api,
                             constraints: {
                                 noDefaultInfinity: true,
                                 noNaN: true,

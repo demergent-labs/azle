@@ -20,15 +20,13 @@ export function Int32Arb(
 ): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        Int32DefinitionArb(context),
+        Int32DefinitionArb(),
         Int32ValueArb
     );
 }
 
-export function Int32DefinitionArb(
-    context: Context
-): WithShapesArb<IntCandidDefinition> {
-    return SimpleCandidDefinitionArb(context, 'int32');
+export function Int32DefinitionArb(): WithShapesArb<IntCandidDefinition> {
+    return SimpleCandidDefinitionArb('int32');
 }
 
 export function Int32ValueArb(): fc.Arbitrary<CandidValues<number>> {

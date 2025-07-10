@@ -52,9 +52,9 @@ export function getTests(): Test {
             };
             await fc.assert(
                 fc.asyncProperty(
-                    candidDefinitionArb({ api: 'class', constraints }, {}),
-                    candidDefinitionArb({ api: 'class', constraints }, {}),
-                    candidDefinitionArb({ api: 'class', constraints }, {}),
+                    candidDefinitionArb({ constraints }, {}),
+                    candidDefinitionArb({ constraints }, {}),
+                    candidDefinitionArb({ constraints }, {}),
                     async (deployArgDef, queryArgDef, updateArgDef) => {
                         const actor = await setupCanisters(
                             deployArgDef,

@@ -7,14 +7,12 @@ import { Test } from '../../test';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { VoidArb } from '../candid/primitive/void_arb';
-import { Api, Context } from '../types';
+import { Context } from '../types';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    CanisterMethodConstraints,
     generateMethodImplementation,
     isDefined,
-    MethodImplementationLocation,
     TestsGenerator
 } from '.';
 
@@ -35,7 +33,7 @@ export function PostUpgradeMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue
 >(
-    context: Context<CanisterMethodConstraints>,
+    context: Context,
     generator: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
@@ -52,39 +50,21 @@ export function PostUpgradeMethodArb<
 ): fc.Arbitrary<
     PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
 > {
-    const api = context.api;
-    const constraints = context.constraints;
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties', 'property'),
             paramTypeArrayArb,
             VoidArb({ ...context, constraints: {} }),
-            fc.constantFrom<MethodImplementationLocation>(
-                'INLINE',
-                'STANDALONE'
-            ),
             UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
             // that for now.
         )
         .map(
-            ([
-                functionName,
-                paramTypes,
-                returnType,
-                defaultMethodImplementationLocation,
-                methodName
-            ]): PostUpgradeMethod<
+            ([functionName, paramTypes, returnType]): PostUpgradeMethod<
                 ParamAgentArgumentValue,
                 ParamAgentResponseValue
             > => {
-                const methodImplementationLocation =
-                    api === 'class'
-                        ? 'INLINE'
-                        : (constraints.methodImplementationLocation ??
-                          defaultMethodImplementationLocation);
-
                 const imports = new Set([
                     'postUpgrade',
                     ...paramTypes.flatMap((param) => [...param.src.imports])
@@ -101,28 +81,19 @@ export function PostUpgradeMethodArb<
                     namedParams,
                     returnType,
                     generator.generateBody,
-                    methodImplementationLocation,
-                    functionName,
-                    methodName,
-                    api
+                    functionName
                 );
 
                 const variableAliasDeclarations = paramTypes
                     .flatMap((param) => param.src.variableAliasDeclarations)
                     .filter(isDefined);
 
-                const globalDeclarations =
-                    methodImplementationLocation === 'STANDALONE'
-                        ? [...variableAliasDeclarations, methodImplementation]
-                        : variableAliasDeclarations;
+                const globalDeclarations = variableAliasDeclarations;
 
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
-                    methodImplementationLocation === 'STANDALONE'
-                        ? methodName
-                        : methodImplementation,
-                    api
+                    methodImplementation
                 );
 
                 const tests = generator.generateTests(
@@ -148,8 +119,7 @@ function generateSourceCode<
 >(
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
-    methodImplementation: string,
-    api: Api
+    methodImplementation: string
 ): string {
     const paramTypeObjects = paramTypes
         .map((param) => param.src.typeObject)
@@ -159,9 +129,5 @@ function generateSourceCode<
         ? `"${functionName.slice(1, -1).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
         : functionName;
 
-    if (api === 'functional') {
-        return `${escapedFunctionName}: postUpgrade([${paramTypeObjects}], ${methodImplementation})`;
-    } else {
-        return `@postUpgrade([${paramTypeObjects}])\n${escapedFunctionName}${methodImplementation}`;
-    }
+    return `@postUpgrade([${paramTypeObjects}])\n${escapedFunctionName}${methodImplementation}`;
 }

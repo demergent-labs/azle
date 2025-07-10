@@ -14,15 +14,13 @@ import {
     QueryMethodArb
 } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/query_method_arb';
 import { UpdateMethodArb } from 'azle/experimental/_internal/test/property/arbitraries/canister_methods/update_method_arb';
-import { Api } from 'azle/experimental/_internal/test/property/arbitraries/types';
 import fc from 'fast-check';
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
 import { generateBody as initBodyGenerator } from './generate_init_body';
 import { generateTests } from './generate_tests';
 
-const api: Api = 'class';
-const context = { api, constraints: {} };
+const context = { constraints: {} };
 
 // TODO multiplying by zero is to remove -0
 // TODO we should open an issue with agent-js
@@ -37,40 +35,37 @@ const valueConstraints = {
 };
 const SimpleInitMethodArb = InitMethodArb(
     {
-        api,
         constraints: {}
     },
     {
         generateBody: initBodyGenerator,
         generateTests
     },
-    fc.array(CandidValueAndMetaArb({ api, constraints: valueConstraints }))
+    fc.array(CandidValueAndMetaArb({ constraints: valueConstraints }))
 );
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
     {
-        api,
         constraints: {}
     },
     {
         generateBody: callableMethodBodyGenerator,
         generateTests: () => []
     },
-    fc.array(CandidValueAndMetaArb({ api, constraints: {} })),
-    CandidReturnTypeArb({ api, constraints: {} })
+    fc.array(CandidValueAndMetaArb({ constraints: {} })),
+    CandidReturnTypeArb({ constraints: {} })
 );
 
 const HeterogeneousUpdateMethodArb = UpdateMethodArb(
     {
-        api,
         constraints: {}
     },
     {
         generateBody: callableMethodBodyGenerator,
         generateTests: () => []
     },
-    fc.array(CandidValueAndMetaArb({ api, constraints: {} })),
-    CandidReturnTypeArb({ api, constraints: {} })
+    fc.array(CandidValueAndMetaArb({ constraints: {} })),
+    CandidReturnTypeArb({ constraints: {} })
 );
 
 const small = {

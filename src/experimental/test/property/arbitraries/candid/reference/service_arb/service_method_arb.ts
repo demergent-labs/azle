@@ -5,7 +5,6 @@ import fc from 'fast-check';
 import { IDL } from '#lib/index';
 
 import { JsPropertyNameArb } from '../../../js_name_arb';
-import { Context } from '../../../types';
 import {
     CandidDefinition,
     WithShapes,
@@ -25,7 +24,6 @@ export type ServiceMethodDefinition = {
 };
 
 export function ServiceMethodArb(
-    context: Context,
     candidDefArb: WithShapesArb<CandidDefinition>
 ): WithShapesArb<ServiceMethodDefinition> {
     return fc
@@ -33,7 +31,7 @@ export function ServiceMethodArb(
             JsPropertyNameArb,
             fc.constantFrom<Mode>('query', 'update'),
             fc.array(candidDefArb),
-            fc.oneof(candidDefArb, VoidDefinitionArb(context))
+            fc.oneof(candidDefArb, VoidDefinitionArb())
         )
         .map(
             ([

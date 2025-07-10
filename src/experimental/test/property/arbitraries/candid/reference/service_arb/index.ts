@@ -35,7 +35,7 @@ export function ServiceArb(
 ): fc.Arbitrary<CandidValueAndMeta<Principal>> {
     return CandidValueAndMetaArbGenerator(
         context,
-        ServiceDefinitionArb(context, innerCandidDefinitionArb),
+        ServiceDefinitionArb(innerCandidDefinitionArb),
         ServiceValueArb
     );
 }
