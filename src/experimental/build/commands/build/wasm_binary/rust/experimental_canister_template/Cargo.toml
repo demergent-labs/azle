@@ -14,7 +14,6 @@ ic-cdk-timers = { workspace = true }
 candid = { workspace = true }
 candid_parser = { workspace = true }
 ic-stable-structures = { workspace = true }
-open_value_sharing = { path = "../open_value_sharing" }
 peak_alloc = { workspace = true }
 rand = { workspace = true }
 scopeguard = { workspace = true }

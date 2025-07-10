@@ -19,7 +19,6 @@ export type CustomConfig = {
     esm_aliases?: never;
     esm_externals?: never;
     experimental?: boolean;
-    openValueSharing?: never;
     test?: {
         clearHeapMethods?: string[];
         memorySizeIncreaseExpected?: boolean;

@@ -1,6 +1,6 @@
 use std::env::var;
 
-use wasmedge_quickjs::{AsObject, JsValue};
+use wasmedge_quickjs::AsObject;
 
 use crate::{RUNTIME, benchmarking::record_benchmark, ic::drain_microtasks};
 

@@ -9,8 +9,6 @@ import { CanisterConfig } from '#experimental/utils/types';
 import { getCanisterId } from '#utils/dfx';
 import { AZLE_ROOT } from '#utils/global_paths';
 
-import { getConsumer } from './open_value_sharing/consumer';
-
 export async function getContext(
     canisterName: string,
     canisterConfig: CanisterConfig
@@ -22,8 +20,7 @@ export async function getContext(
             assets: undefined,
             build_assets: undefined,
             esm_aliases: undefined,
-            esm_externals: undefined,
-            openValueSharing: undefined
+            esm_externals: undefined
         }
     });
 
@@ -34,7 +31,6 @@ export async function getContext(
 
     const reloadedJsPath = join('.azle', canisterName, 'main_reloaded.js');
 
-    const consumer = await getConsumer(canisterConfig);
     const managementDid = (
         await readFile(
             join(
@@ -51,7 +47,6 @@ export async function getContext(
     ).toString();
     const wasmData: WasmData = {
         ...stableContext.wasmData,
-        consumer,
         managementDid
     };
 

@@ -85,12 +85,6 @@ fn initialize(init: bool, function_index: i32) {
     );
 
     seed_from_raw_rand();
-
-    ic_cdk::futures::in_executor_context(|| {
-        ic_cdk::futures::spawn(async move {
-            open_value_sharing::init(&wasm_data.consumer).await;
-        });
-    });
 }
 
 pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index: i32) {

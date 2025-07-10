@@ -1,12 +1,9 @@
 use core::ptr::read_volatile;
 
-use open_value_sharing::Consumer;
-
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct WasmData {
-    pub consumer: Consumer,
     #[serde(rename = "envVars")]
     pub env_vars: Vec<(String, String)>,
     #[serde(rename = "mainJsPath")]

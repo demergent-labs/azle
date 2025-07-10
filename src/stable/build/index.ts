@@ -263,12 +263,4 @@ function checkForExperimentalDfxJsonFields(
             )
         );
     }
-
-    if (canisterConfig.custom?.openValueSharing !== undefined) {
-        throw new Error(
-            experimentalMessageDfxJson(
-                'the openValueSharing field in your dfx.json file'
-            )
-        );
-    }
 }
