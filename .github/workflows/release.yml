@@ -49,18 +49,12 @@ jobs:
                   command: 'npm install'
             - run: npm run typecheck
             - run: npm run lint
-            - run: npm audit
 
             - name: Install global dependencies
               run: |
                   npx azle dev setup --rust --cargo-auditable --cargo-audit --cargo-deny --wasi2ic
             - uses: Swatinem/rust-cache@v2
-            - run: cargo audit
-            - run: cargo audit bin ~/.cargo/bin/cargo-auditable
-            - run: cargo audit bin ~/.cargo/bin/cargo-audit
-            - run: cargo audit bin ~/.cargo/bin/cargo-deny
-            - run: cargo audit bin ~/.cargo/bin/wasi2ic
-            - run: cargo deny check
+            - run: npx azle dev audit
 
             - name: Update version
               run: |
