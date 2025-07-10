@@ -2,8 +2,7 @@
 name = "open_value_sharing"
 version = "0.0.0"
 edition = "2021"
-license = "MIT"
-license-file = "../../../../../../LICENSE"
+license-file = "../../../../../../../../LICENSE"
 
 [dependencies]
 serde = { workspace = true }
