@@ -30,7 +30,7 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  npx azle dev setup --cargo-all
+                  npx azle dev setup --rust --cargo-auditable --wasi2ic
 
             - uses: Swatinem/rust-cache@v2
 
