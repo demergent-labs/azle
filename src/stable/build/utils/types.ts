@@ -46,7 +46,7 @@ export type Command =
 export type ExperimentalCommand = 'upload-assets';
 
 type DevSubCommands = {
-    [K in Extract<Command, 'dev'>]: 'setup' | 'template';
+    [K in Extract<Command, 'dev'>]: 'audit' | 'setup' | 'template';
 };
 
 type ExtensionSubCommands = {
