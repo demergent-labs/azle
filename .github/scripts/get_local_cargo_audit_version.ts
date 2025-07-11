@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { getLocalCargoAuditVersion } from '#build/utils/versions/cargo_audit';
+import { getCargoVersion } from './get_cargo_version';
 
 /**
  * Script to get the local cargo-audit version using Azle's getLocalCargoAuditVersion function.
@@ -8,7 +8,7 @@ import { getLocalCargoAuditVersion } from '#build/utils/versions/cargo_audit';
  */
 function main(): void {
     try {
-        const version = getLocalCargoAuditVersion();
+        const version = getCargoVersion('cargo-audit');
         console.log(version);
         process.exit(0);
     } catch (error) {
