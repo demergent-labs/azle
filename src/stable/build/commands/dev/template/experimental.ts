@@ -6,11 +6,8 @@ import {
     AZLE_ROOT,
     EXPERIMENTAL_STATIC_CANISTER_TEMPLATE_PATH
 } from '#utils/global_paths';
-import { logGlobalDependencies } from '#utils/log_global_dependencies';
 
 export async function runCommand(ioType: IOType): Promise<void> {
-    await logGlobalDependencies();
-
     compile(
         join(
             AZLE_ROOT,
