@@ -56,11 +56,6 @@ async function editPackageJson(
         ...packageJson.dependencies,
         azle: `^${azleVersion}`
     };
-    packageJson.devDependencies = {
-        ...packageJson.devDependencies,
-        jest: devDependencies.jest,
-        'ts-jest': devDependencies['ts-jest']
-    };
 
     if (experimental === true) {
         packageJson.dependencies['azle-experimental-deps'] =
