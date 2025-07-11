@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { getLocalWasi2icVersion } from '#build/utils/versions/wasi2ic';
+import { getCargoVersion } from './get_cargo_version';
 
 /**
  * Script to get the local wasi2ic version using Azle's getLocalWasi2icVersion function.
@@ -8,7 +8,7 @@ import { getLocalWasi2icVersion } from '#build/utils/versions/wasi2ic';
  */
 function main(): void {
     try {
-        const version = getLocalWasi2icVersion();
+        const version = getCargoVersion('wasi2ic');
         console.log(version);
         process.exit(0);
     } catch (error) {

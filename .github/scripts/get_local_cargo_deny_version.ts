@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { getLocalCargoDenyVersion } from '#build/utils/versions/cargo_deny';
+import { getCargoVersion } from './get_cargo_version';
 
 /**
  * Script to get the local cargo-deny version using Azle's getLocalCargoDenyVersion function.
@@ -8,7 +8,7 @@ import { getLocalCargoDenyVersion } from '#build/utils/versions/cargo_deny';
  */
 function main(): void {
     try {
-        const version = getLocalCargoDenyVersion();
+        const version = getCargoVersion('cargo-deny');
         console.log(version);
         process.exit(0);
     } catch (error) {
