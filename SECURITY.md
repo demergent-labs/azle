@@ -6,7 +6,7 @@ If you think that you have found a security vulnerability, we ask you to reach o
 
 ## Supported Versions
 
-We will only update Azle in response to security vulnerabilities found in its latest published `npm` version.
+We will only update Azle in response to security vulnerabilities found in its latest GitHub release and corresponding published `npm` version.
 
 ## Reporting a Security Vulnerability
 
