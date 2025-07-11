@@ -1,15 +1,16 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
-import { runCommand as runExperimentalDevTemplateCommand } from '#build/commands/dev/template/experimental';
-import { runCommand as runDevTemplateCommand } from '#build/commands/dev/template/stable';
 import {
     experimentalMessageCli,
     experimentalMessageDfxJson
 } from '#build/utils/experimental_message';
 import { runCommand as runBuildCommand } from '#commands/build/index';
 import { runCommand as runCleanCommand } from '#commands/clean';
+import { runCommand as runDevAuditCommand } from '#commands/dev/audit';
 import { runCommand as runDevSetupCommand } from '#commands/dev/setup/index';
+import { runCommand as runExperimentalDevTemplateCommand } from '#commands/dev/template/experimental';
+import { runCommand as runDevTemplateCommand } from '#commands/dev/template/stable';
 import { runCommand as runExtensionInstallCommand } from '#commands/extension/install';
 import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runNewCommand } from '#commands/new';
@@ -46,7 +47,7 @@ export async function build(): Promise<void> {
     }
 
     if (command === 'dev') {
-        await handleDevCommand();
+        await handleDevCommand(ioType);
 
         return;
     }
@@ -116,8 +117,14 @@ function handleExtensionInstallCommand(ioType: IOType): void {
     runExtensionInstallCommand(ioType);
 }
 
-async function handleDevCommand(): Promise<void> {
+async function handleDevCommand(ioType: IOType): Promise<void> {
     const subCommand = process.argv[3] as SubCommand['dev'];
+
+    if (subCommand === 'audit') {
+        await runDevAuditCommand(ioType);
+
+        return;
+    }
 
     if (subCommand === 'setup') {
         handleDevSetupCommand();
