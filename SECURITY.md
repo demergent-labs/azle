@@ -25,4 +25,4 @@ Once you have opened a draft security advisory, Demergent Labs will do the follo
 4. Address vulnerabilities assessed as `Critical` or `High` as soon as possible, culminating in a published security advisory and a new release of Azle.
 5. Address vulnerabilities assessed as `Medium` or lower according to our own discretion.
 
-We are very grateful to all who work to make Azle more secure. That being said, there are currently no bounties or rewards available for reporting vulnerabilites in Azle. We will credit you in the published security advisory at your discretion.
+We are very grateful to all who work to make Azle more secure. That being said, there are currently no bounties or rewards available for reporting vulnerabilites in Azle. We will credit you by mentioning your name/username of choice in the published security advisory unless you choose to opt out.
