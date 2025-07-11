@@ -2,7 +2,7 @@
 
 Thank you for your interest in helping to keep Azle secure.
 
-If you have found a security vulnerability, we ask you to reach out to us privately according to the guidelines found in this security policy. We also ask that you refrain from opening any GitHub issues related to or publicly discussing any specific security vulnerability found in Azle until it has been resolved and publicly acknowledged by Demergent Labs.
+If you think that you have found a security vulnerability, we ask you to reach out to us privately according to the guidelines found in this security policy. We also ask that you refrain from opening any GitHub issues related to or publicly discussing any specific security vulnerability found in Azle until it has been resolved and publicly acknowledged by Demergent Labs.
 
 ## Supported Versions
 
