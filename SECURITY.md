@@ -6,12 +6,7 @@ If you think that you have found a security vulnerability, we ask you to reach o
 
 ## Supported Versions
 
-We will only update Azle in response to security vulnerabilities found in its latest published `npm` version:
-
-| Version | Supported          |
-| ------- | ------------------ |
-| >= 0.32.0   | :white_check_mark: |
-| < 0.32.0   | :x:                |
+We will only update Azle in response to security vulnerabilities found in its latest published `npm` version.
 
 ## Reporting a Security Vulnerability
 
