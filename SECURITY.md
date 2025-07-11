@@ -11,7 +11,7 @@ We currently support security updates for the following versions of Azle:
 
 ## Reporting a Vulnerability
 
-To report a vulnerability in Azle, please reach out privately using GitHub's official [vulnerability reporting tool](https://github.com/demergent-labs/azle/security).
+To report a vulnerability in Azle, please open a draft security advisory using GitHub's [vulnerability reporting tool](https://github.com/demergent-labs/azle/security/advisories/new).
 
 Once you have submitted a vulnerability, the following process will occur:
 
