@@ -2,8 +2,7 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+We currently support security updates for the following versions of Azle:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -14,12 +13,11 @@ currently being supported with security updates.
 
 To report a vulnerability in Azle, please reach out privately using GitHub's official [vulnerability reporting tool](https://github.com/demergent-labs/azle/security).
 
-Demergent Labs will respond privately to your report within 24 hours.
+Once you have submitted a vulnerability, the following process will occur:
 
-Demergent Labs will assess the vulnerability according to the `CVSS v4 base metrics`.
-
-Vulnerabilities assessed as `Critical` or `High` will be addressed as soon as feasible.
-
-Vulnerabilities assessed as `Medium` or lower will be addressed according to the discretion of Demergent Labs.
+1. Demergent Labs will respond privately to your report within 24 hours.
+2. Demergent Labs will assess the vulnerability according to the [CVSS v4](https://www.first.org/cvss/v4-0/specification-document).
+3. Vulnerabilities assessed as `Critical` or `High` will be addressed as soon as feasible.
+4. Vulnerabilities assessed as `Medium` or lower will be addressed according to the discretion of Demergent Labs.
 
 There are currently no bounties or rewards available for reporting vulnerabilites in Azle.
