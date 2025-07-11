@@ -1,4 +1,4 @@
-import { execSyncPretty } from '../../src/stable/build/utils/exec_sync_pretty';
+import { execSyncPretty } from '#build/utils/exec_sync_pretty';
 
 export function getCargoVersion(packageName: string): string {
     const cargoOutput = execSyncPretty('cargo install --list').toString();
