@@ -17,7 +17,7 @@ Once Demergent Labs has received the initial necessary information from you, we 
 1. Respond privately to you within 3 business days.
 2. Remain in regular private contact with you to share our progress and ask for appropriate information and guidance.
 3. Perform our own assessment of the vulnerability according to [CVSS v4](https://www.first.org/cvss/v4-0/specification-document).
-4. Address vulnerabilities assessed as `Critical` or `High` as soon as possible, culminating in a published security advisory and [CVE ID](https://www.cve.org/) and a new release of Azle.
+4. Address vulnerabilities assessed as `Critical` or `High` as soon as possible, culminating in a published GitHub security advisory and [CVE ID](https://www.cve.org/) and a new release of Azle.
 5. Address vulnerabilities assessed as `Medium` or lower according to our own discretion.
 
 We are very grateful to all who work to make Azle more secure. That being said, there are currently no bounties or rewards available for reporting vulnerabilities in Azle. We will credit you by mentioning your name/username of choice in the published security advisory unless you choose to opt out.
