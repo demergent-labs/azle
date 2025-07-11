@@ -14,7 +14,7 @@ To report a security vulnerability in Azle, please open a draft security advisor
 
 Once Demergent Labs has received the necessary initial information from you, we will do the following:
 
-1. Respond privately to you within 24 hours.
+1. Respond privately to you within 3 business days.
 2. Remain in regular private contact with you to share our progress and ask for appropriate information and guidance.
 3. Perform our own assessment of the vulnerability according to [CVSS v4](https://www.first.org/cvss/v4-0/specification-document).
 4. Address vulnerabilities assessed as `Critical` or `High` as soon as possible, culminating in a published security advisory and a new release of Azle.
