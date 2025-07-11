@@ -22,6 +22,14 @@ export default class {
         totalSupply: 0n
     };
 
+    // TODO This looks like the minimal reproducible example for the undefined return value bug
+    // TODO It looks like an issue as of dfx 0.28.0
+    // TODO I would guess that on small strings this isn't an issue
+    @update([IDL.Text], IDL.Bool)
+    test(): boolean {
+        return true;
+    }
+
     @update([IDL.Text, IDL.Text, IDL.Text, IDL.Nat64], IDL.Bool)
     initializeSupply(
         name: string,
