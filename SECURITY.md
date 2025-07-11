@@ -6,7 +6,7 @@ If you think that you have found a security vulnerability, we ask you to reach o
 
 ## Supported Versions
 
-We will only update Azle in response to security vulnerabilities found in its latest stable [GitHub release](https://github.com/demergent-labs/azle/releases) and corresponding published [npm version](https://www.npmjs.com/package/azle?activeTab=versions).
+We will only update Azle in response to security vulnerabilities found in its latest stable <a href="https://github.com/demergent-labs/azle/releases">GitHub release</a> and corresponding published [npm version](https://www.npmjs.com/package/azle?activeTab=versions).
 
 ## Reporting a Security Vulnerability
 
