@@ -15,9 +15,9 @@ We will only update Azle in response to security vulnerabilities found in its la
 
 ## Reporting a Vulnerability
 
-To report a vulnerability in Azle, please open a draft security advisory using GitHub's [vulnerability reporting tool](https://github.com/demergent-labs/azle/security/advisories/new).
+To report a vulnerability in Azle, please open a draft security advisory using GitHub's [vulnerability reporting tool](https://github.com/demergent-labs/azle/security/advisories/new). If for some reason you cannot open a draft security advisory, please send an email to lastmjs@demergentlabs.org without disclosing any details about the vulnerability. You will be sent information to set up a secure channel for further communication.
 
-Once you have opened a draft security advisory, Demergent Labs will do the following:
+Once you have opened a draft security advisory or sent the appropriate details via email, Demergent Labs will do the following:
 
 1. Respond privately to your draft security advisory within 24 hours.
 2. Remain in regular private contact with you to share our progress and ask for appropriate information and guidance.
