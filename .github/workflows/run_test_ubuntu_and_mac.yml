@@ -115,7 +115,7 @@ jobs:
                   cp -r "${{ matrix.test.path }}" "$EXTERNAL_TEST_DIR"
 
                   # Copy jest config file to external test directory
-                  cp jest.config.dev.js "$EXTERNAL_TEST_DIR/"
+                  cp jest.config.dev.js "$EXTERNAL_TEST_DIR/jest.config.js"
                   echo "Copied jest.config.dev.js to external test directory"
 
                   # Set the external directory as output
