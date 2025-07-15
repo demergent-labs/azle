@@ -22,6 +22,15 @@ jobs:
             test-version: ${{ steps.create_test_version.outputs.test_version }}
             packed-file-name: ${{ steps.pack_azle_source.outputs.packed_file_name }}
         steps:
+            - name: Create test version
+              id: create_test_version
+              run: |
+                  # Create a test version number using the GitHub run ID and run number
+                  TEST_VERSION="0.0.0-cli-test-${{ github.run_id }}-${{ github.run_number }}"
+                  echo "Creating test version: ${TEST_VERSION}"
+                  echo "test_version=${TEST_VERSION}" >> $GITHUB_OUTPUT
+              shell: bash
+
             - name: Setup WSL-Ubuntu
               uses: Wandalen/wretry.action@v1.4.10
               with:
@@ -66,29 +75,23 @@ jobs:
                   retry_command install_dfx
                   retry_command install_npm_dependencies
 
-                  # Create test version
+                  # Create test version (using the version created outside WSL)
                   echo "=== Creating test version ==="
-                  TEST_VERSION="0.0.0-cli-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}"
+                  TEST_VERSION="${{ steps.create_test_version.outputs.test_version }}"
                   echo "Creating test version: ${TEST_VERSION}"
                   npm version "${TEST_VERSION}" --no-git-tag-version
-                  echo "test_version=${TEST_VERSION}" >> $GITHUB_OUTPUT
 
                   # Pack azle source
                   echo "=== Packing azle source ==="
                   PACKED_FILE_NAME=$(npm pack | tail -n 1)
                   echo "Original packed filename: ${PACKED_FILE_NAME}"
-                  echo "packed_file_name=${PACKED_FILE_NAME}" >> $GITHUB_OUTPUT
 
-            - name: Create test version output
-              id: create_test_version
-              run: |
-                  echo "test_version=${{ env.test_version }}" >> $GITHUB_OUTPUT
-              shell: bash
-
-            - name: Create packed file output
+            - name: Set packed file output
               id: pack_azle_source
               run: |
-                  echo "packed_file_name=${{ env.packed_file_name }}" >> $GITHUB_OUTPUT
+                  # Get the packed file name from the WSL filesystem
+                  PACKED_FILE_NAME=$(wsl ls /home/tester/azle/*.tgz | head -n 1 | sed 's|.*/||')
+                  echo "packed_file_name=${PACKED_FILE_NAME}" >> $GITHUB_OUTPUT
               shell: bash
 
             - name: Upload packed azle
