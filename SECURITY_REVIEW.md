@@ -1,0 +1,7 @@
+- [ ] Discover major categories of vulnerabilities
+- [ ] ICP-specific items
+- [ ] JavaScript-specific items
+- [ ] Rust-specific items
+- [ ] All conceivable user inputs are sanitized
+- [ ] Rust unsafe code, memory issues
+- [ ] OWASP web security
