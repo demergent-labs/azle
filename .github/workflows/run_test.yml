@@ -43,6 +43,10 @@ on:
                 default: false
                 description: 'Whether to run Windows tests'
 
+permissions:
+    contents: read
+    actions: read
+
 jobs:
     run-tests-ubuntu-and-mac:
         if: ${{ inputs.operating-system == 'ubuntu' || (inputs.operating-system == 'mac' && inputs.run-mac-tests == true) }}

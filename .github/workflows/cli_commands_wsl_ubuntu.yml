@@ -11,6 +11,10 @@ on:
             - ready_for_review
             - reopened
 
+permissions:
+    contents: read
+    actions: read
+
 jobs:
     setup-and-pack-wsl:
         runs-on: windows-latest
