@@ -6,6 +6,6 @@
         "azle": "0.32.0"
     },
     "devDependencies": {
-        "@dfinity/identity-secp256k1": "2.4.1"
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd"
     }
 }
