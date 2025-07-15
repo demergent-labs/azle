@@ -502,7 +502,7 @@ jobs:
                   http-server: 'false'
                   working-directory: '../external_test_env'
                   expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
-                  packed-file-path: '../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
+                  packed-file-path: '../../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
 
     test-experimental-project-creation:
         needs: setup-and-pack
@@ -553,7 +553,7 @@ jobs:
                   http-server: 'false'
                   working-directory: '../external_test_env'
                   expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
-                  packed-file-path: '../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
+                  packed-file-path: '../../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
 
     test-http-server-project-creation:
         needs: setup-and-pack
@@ -604,7 +604,7 @@ jobs:
                   http-server: 'true'
                   working-directory: '../external_test_env'
                   expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
-                  packed-file-path: '../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
+                  packed-file-path: '../../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
 
     test-cli-commands-outside-azle-repo:
         needs:
