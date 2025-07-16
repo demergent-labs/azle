@@ -1,12 +1,12 @@
 name: 'Setup External Azle Test Environment'
-description: 'Sets up Node.js, dfx, downloads packed azle, and creates external test environment for CLI testing'
+description: 'Sets up Node.js, dfx, downloads packed azle by artifact name, and creates external test environment for CLI testing'
 
 inputs:
     packed-file-name:
         description: 'Name of the packed azle file to download and install'
         required: true
-    artifact-name-suffix:
-        description: 'Suffix for the artifact name (e.g., ubuntu-latest, macos-latest)'
+    artifact-name:
+        description: 'Full name of the artifact to download (e.g., azle-packed-ubuntu-latest)'
         required: true
 
 outputs:
@@ -29,7 +29,7 @@ runs:
         - name: Download packed azle
           uses: actions/download-artifact@v4
           with:
-              name: azle-packed-${{ inputs.artifact-name-suffix }}
+              name: ${{ inputs.artifact-name }}
 
         - name: Create external test environment and install packed azle
           id: get-paths

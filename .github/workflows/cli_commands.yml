@@ -77,7 +77,7 @@ jobs:
               uses: ./.github/actions/setup_external_azle_test_environment
               with:
                   packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
-                  artifact-name-suffix: ${{ matrix.os }}
+                  artifact-name: azle-packed-${{ matrix.os }}
 
             - name: Test azle version command
               working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
@@ -110,7 +110,7 @@ jobs:
               uses: ./.github/actions/setup_external_azle_test_environment
               with:
                   packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
-                  artifact-name-suffix: ${{ matrix.os }}
+                  artifact-name: azle-packed-${{ matrix.os }}
 
             - name: Test azle dev setup command
               working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
@@ -380,7 +380,7 @@ jobs:
               uses: ./.github/actions/setup_external_azle_test_environment
               with:
                   packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
-                  artifact-name-suffix: ${{ matrix.os }}
+                  artifact-name: azle-packed-${{ matrix.os }}
 
             - name: Test azle generate command
               working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
@@ -420,7 +420,7 @@ jobs:
               uses: ./.github/actions/setup_external_azle_test_environment
               with:
                   packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
-                  artifact-name-suffix: ${{ matrix.os }}
+                  artifact-name: azle-packed-${{ matrix.os }}
 
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
@@ -455,7 +455,7 @@ jobs:
               uses: ./.github/actions/setup_external_azle_test_environment
               with:
                   packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
-                  artifact-name-suffix: ${{ matrix.os }}
+                  artifact-name: ${{ matrix.os }}
 
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
@@ -490,7 +490,7 @@ jobs:
               uses: ./.github/actions/setup_external_azle_test_environment
               with:
                   packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
-                  artifact-name-suffix: ${{ matrix.os }}
+                  artifact-name: azle-packed-${{ matrix.os }}
 
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
