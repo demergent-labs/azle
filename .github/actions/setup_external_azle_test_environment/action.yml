@@ -12,7 +12,7 @@ inputs:
 outputs:
     external-test-env-path:
         description: 'Path to the external test environment directory'
-        value: '../external_test_env'
+        value: ${{ steps.get-paths.outputs.external-test-env-path }}
     packed-file-absolute-path:
         description: 'Absolute path to the packed azle file'
         value: ${{ steps.get-paths.outputs.packed-file-absolute-path }}
@@ -35,17 +35,15 @@ runs:
           id: get-paths
           shell: bash
           run: |
+              PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${{ inputs.packed-file-name }}"
+
               # Create a fresh test directory to simulate external user environment
               EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
               mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
               cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
 
-              # Get absolute path to packed file
-              PACKED_FILE_ABSOLUTE_PATH="$(pwd)/../azle/${{ inputs.packed-file-name }}"
-
-              # Install the package locally for testing
               echo "Installing the packed azle package for CLI testing"
               npm install "${PACKED_FILE_ABSOLUTE_PATH}"
 
-              # Output the absolute path for use in subsequent steps
               echo "packed-file-absolute-path=${PACKED_FILE_ABSOLUTE_PATH}" >> $GITHUB_OUTPUT
+              echo "external-test-env-path=${EXTERNAL_TEST_ENV_DIR_PATH}" >> $GITHUB_OUTPUT
