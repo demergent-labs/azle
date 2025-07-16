@@ -75,8 +75,12 @@ jobs:
                 azle_source:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
-                location:
-                    - ${{ inputs.copy-outside-repo == true && 'External' || 'Internal' }}
+                copy-outside-repo: ${{ inputs.copy-outside-repo && fromJSON('[true, false]') || fromJSON('[false]') }}
+                include:
+                    - copy-outside-repo: true
+                      location: 'External'
+                    - copy-outside-repo: false
+                      location: 'Internal'
         steps:
             - uses: actions/checkout@v4
 
@@ -104,7 +108,7 @@ jobs:
               run: echo ${{matrix.test.path}}
 
             - name: Copy test outside repository
-              if: ${{ inputs.copy-outside-repo }}
+              if: ${{ matrix.copy-outside-repo }}
               id: copy-test
               run: |
                   # Create external test directory
@@ -129,7 +133,7 @@ jobs:
             - name: Set working directory
               id: set-working-dir
               run: |
-                  if [[ "${{ inputs.copy-outside-repo }}" == "true" ]]; then
+                  if [[ "${{ matrix.copy-outside-repo }}" == "true" ]]; then
                       WORKING_DIR="${{ steps.copy-test.outputs.external-test-dir }}"
                   else
                       WORKING_DIR="${{ matrix.test.path }}"
