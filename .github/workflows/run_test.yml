@@ -46,7 +46,7 @@ on:
                 required: false
                 type: boolean
                 default: false
-                description: 'Copy test outside repository to validate external usage'
+                description: 'Copy test outside repository to validate external-to-the-azle-repository usage'
 
 jobs:
     run-tests-ubuntu-and-mac:

@@ -58,7 +58,7 @@ on:
                 type: boolean
                 default: false
             copy-outside-repo:
-                description: 'Copy test outside repository to validate external usage'
+                description: 'Copy test outside repository to validate external-to-the-azle-repository usage'
                 required: false
                 type: boolean
                 default: false

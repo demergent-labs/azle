@@ -36,7 +36,7 @@ on:
                 required: false
                 type: boolean
                 default: false
-                description: 'Copy test outside repository to validate external usage'
+                description: 'Copy test outside repository to validate external-to-the-azle-repository usage'
 
 jobs:
     get-test-infos:
@@ -112,7 +112,7 @@ jobs:
               id: copy-test
               run: |
                   # Create external test directory
-                  EXTERNAL_TEST_DIR="/tmp/azle-external-test-$(basename ${{ matrix.test.path }})-$(date +%s)"
+                  EXTERNAL_TEST_DIR="../external_test_env
                   echo "Copying test from ${{ matrix.test.path }} to $EXTERNAL_TEST_DIR"
 
                   # Copy the test directory outside the repo
