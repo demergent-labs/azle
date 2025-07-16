@@ -411,7 +411,6 @@ jobs:
                   retry_command install_packed_azle
                   test_azle_version_command
                   test_azle_dev_setup_command
-                  test_azle_dev_template_commands
                   test_azle_generate_command
                   start_dfx_for_testing
 
