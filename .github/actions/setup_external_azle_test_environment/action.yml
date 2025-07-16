@@ -41,7 +41,7 @@ runs:
               cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
 
               # Get absolute path to packed file
-              PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${{ inputs.packed-file-name }}"
+              PACKED_FILE_ABSOLUTE_PATH="$(pwd)/../azle/${{ inputs.packed-file-name }}"
 
               # Install the package locally for testing
               echo "Installing the packed azle package for CLI testing"
