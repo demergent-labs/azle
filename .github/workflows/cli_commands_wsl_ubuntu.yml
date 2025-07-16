@@ -133,26 +133,13 @@ jobs:
                       # Read expected versions from package.json
                       echo "Reading expected versions from package.json"
                       EXPECTED_NODE_VERSION=$(jq -r '.azle.globalDependencies.node // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // "not found"' "${AZLE_ROOT}/package.json")
                       EXPECTED_DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_CARGO_AUDITABLE_VERSION=$(jq -r '.azle.globalDependencies."cargo-auditable" // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_CARGO_AUDIT_VERSION=$(jq -r '.azle.globalDependencies."cargo-audit" // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_CARGO_DENY_VERSION=$(jq -r '.azle.globalDependencies."cargo-deny" // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${AZLE_ROOT}/package.json")
 
                       echo "Expected Node version: ${EXPECTED_NODE_VERSION}"
-                      echo "Expected Rust version: ${EXPECTED_RUST_VERSION}"
                       echo "Expected dfx version: ${EXPECTED_DFX_VERSION}"
-                      echo "Expected cargo-auditable version: ${EXPECTED_CARGO_AUDITABLE_VERSION}"
-                      echo "Expected cargo-audit version: ${EXPECTED_CARGO_AUDIT_VERSION}"
-                      echo "Expected cargo-deny version: ${EXPECTED_CARGO_DENY_VERSION}"
-                      echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
-
-                      # Since wsl-ubuntu doesn't have cargo installed, we need to install it and ensure it's in the path, other runners have cargo (even if it's a different version) so the path is already set up for those runners.
-                      install_rust_cargo
 
                       echo "Running azle dev setup..."
-                      npx azle dev setup
+                      npx azle dev setup --dfx --node
 
                       echo "Verifying installed versions match expected versions"
 
@@ -166,16 +153,6 @@ jobs:
                           exit 1
                       fi
 
-                      # Check Rust version
-                      ACTUAL_RUST_VERSION=$(rustc --version | awk '{print $2}')
-                      echo "Actual Rust version: ${ACTUAL_RUST_VERSION}"
-                      if [[ "${ACTUAL_RUST_VERSION}" == "${EXPECTED_RUST_VERSION}" ]]; then
-                          echo "✅ Rust version verification successful"
-                      else
-                          echo "❌ Rust version verification failed: Expected ${EXPECTED_RUST_VERSION}, got ${ACTUAL_RUST_VERSION}"
-                          exit 1
-                      fi
-
                       # Check dfx version
                       ACTUAL_DFX_VERSION=$(dfx --version | awk '{print $2}')
                       echo "Actual dfx version: ${ACTUAL_DFX_VERSION}"
@@ -183,46 +160,6 @@ jobs:
                           echo "✅ dfx version verification successful"
                       else
                           echo "❌ dfx version verification failed: Expected ${EXPECTED_DFX_VERSION}, got ${ACTUAL_DFX_VERSION}"
-                          exit 1
-                      fi
-
-                      # Check cargo-auditable version
-                      ACTUAL_CARGO_AUDITABLE_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_auditable_version.ts" 2>/dev/null || echo "not installed")
-                      echo "Actual cargo-auditable version: ${ACTUAL_CARGO_AUDITABLE_VERSION}"
-                      if [[ "${ACTUAL_CARGO_AUDITABLE_VERSION}" == "${EXPECTED_CARGO_AUDITABLE_VERSION}" ]]; then
-                          echo "✅ cargo-auditable version verification successful"
-                      else
-                          echo "❌ cargo-auditable version verification failed: Expected ${EXPECTED_CARGO_AUDITABLE_VERSION}, got ${ACTUAL_CARGO_AUDITABLE_VERSION}"
-                          exit 1
-                      fi
-
-                      # Check cargo-audit version
-                      ACTUAL_CARGO_AUDIT_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_audit_version.ts" 2>/dev/null || echo "not installed")
-                      echo "Actual cargo-audit version: ${ACTUAL_CARGO_AUDIT_VERSION}"
-                      if [[ "${ACTUAL_CARGO_AUDIT_VERSION}" == "${EXPECTED_CARGO_AUDIT_VERSION}" ]]; then
-                          echo "✅ cargo-audit version verification successful"
-                      else
-                          echo "❌ cargo-audit version verification failed: Expected ${EXPECTED_CARGO_AUDIT_VERSION}, got ${ACTUAL_CARGO_AUDIT_VERSION}"
-                          exit 1
-                      fi
-
-                      # Check cargo-deny version
-                      ACTUAL_CARGO_DENY_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_deny_version.ts" 2>/dev/null || echo "not installed")
-                      echo "Actual cargo-deny version: ${ACTUAL_CARGO_DENY_VERSION}"
-                      if [[ "${ACTUAL_CARGO_DENY_VERSION}" == "${EXPECTED_CARGO_DENY_VERSION}" ]]; then
-                          echo "✅ cargo-deny version verification successful"
-                      else
-                          echo "❌ cargo-deny version verification failed: Expected ${EXPECTED_CARGO_DENY_VERSION}, got ${ACTUAL_CARGO_DENY_VERSION}"
-                          exit 1
-                      fi
-
-                      # Check wasi2ic version
-                      ACTUAL_WASI2IC_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
-                      echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
-                      if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
-                          echo "✅ wasi2ic version verification successful"
-                      else
-                          echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
                           exit 1
                       fi
 
