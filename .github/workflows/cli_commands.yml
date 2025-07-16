@@ -75,31 +75,15 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - uses: ./.github/actions/setup_node
-
-            - uses: ./.github/actions/setup_dfx
-
-            - name: Download packed azle
-              uses: actions/download-artifact@v4
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
               with:
-                  name: azle-packed-${{ matrix.os }}
-
-            - name: Create external test environment and install packed azle
-              run: |
-                  # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
-                  cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
-
-                  # Get absolute path to packed file
-                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}"
-
-                  # Install the package locally for testing
-                  echo "Installing the packed azle package for CLI testing"
-                  npm install "${PACKED_FILE_ABSOLUTE_PATH}"
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name-suffix: ${{ matrix.os }}
 
             - name: Test azle version command
-              working-directory: '../external_test_env'
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   echo "Testing 'azle --version' command"
                   DISPLAYED_VERSION=$(npx azle --version)
@@ -124,31 +108,15 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - uses: ./.github/actions/setup_node
-
-            - uses: ./.github/actions/setup_dfx
-
-            - name: Download packed azle
-              uses: actions/download-artifact@v4
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
               with:
-                  name: azle-packed-${{ matrix.os }}
-
-            - name: Create external test environment and install packed azle
-              run: |
-                  # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
-                  cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
-
-                  # Get absolute path to packed file
-                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}"
-
-                  # Install the package locally for testing
-                  echo "Installing the packed azle package for CLI testing"
-                  npm install "${PACKED_FILE_ABSOLUTE_PATH}"
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name-suffix: ${{ matrix.os }}
 
             - name: Test azle dev setup command
-              working-directory: '../external_test_env'
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   echo "Testing 'azle dev setup' command"
 
@@ -410,31 +378,15 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - uses: ./.github/actions/setup_node
-
-            - uses: ./.github/actions/setup_dfx
-
-            - name: Download packed azle
-              uses: actions/download-artifact@v4
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
               with:
-                  name: azle-packed-${{ matrix.os }}
-
-            - name: Create external test environment and install packed azle
-              run: |
-                  # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
-                  cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
-
-                  # Get absolute path to packed file
-                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}"
-
-                  # Install the package locally for testing
-                  echo "Installing the packed azle package for CLI testing"
-                  npm install "${PACKED_FILE_ABSOLUTE_PATH}"
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name-suffix: ${{ matrix.os }}
 
             - name: Test azle generate command
-              working-directory: '../external_test_env'
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   echo "Testing 'azle generate' command with output verification"
 
@@ -466,35 +418,19 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - uses: ./.github/actions/setup_node
-
-            - uses: ./.github/actions/setup_dfx
-
-            - name: Download packed azle
-              uses: actions/download-artifact@v4
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
               with:
-                  name: azle-packed-${{ matrix.os }}
-
-            - name: Create external test environment and install packed azle
-              run: |
-                  # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
-                  cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
-
-                  # Get absolute path to packed file
-                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}"
-
-                  # Install the package locally for testing
-                  echo "Installing the packed azle package for CLI testing"
-                  npm install "${PACKED_FILE_ABSOLUTE_PATH}"
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name-suffix: ${{ matrix.os }}
 
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - name: Start dfx for testing new command
-              working-directory: '../external_test_env'
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   dfx start --clean --background --artificial-delay 0
 
@@ -504,9 +440,9 @@ jobs:
                   project-name: 'stable_project_test'
                   experimental: 'false'
                   http-server: 'false'
-                  working-directory: '../external_test_env'
+                  working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
                   expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
-                  packed-file-path: '../../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
+                  packed-file-path: ${{ steps.setup-external-azle-test-environment.outputs.packed-file-absolute-path }}
 
     test-experimental-project-creation:
         needs: setup-and-pack
@@ -517,35 +453,19 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - uses: ./.github/actions/setup_node
-
-            - uses: ./.github/actions/setup_dfx
-
-            - name: Download packed azle
-              uses: actions/download-artifact@v4
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
               with:
-                  name: azle-packed-${{ matrix.os }}
-
-            - name: Create external test environment and install packed azle
-              run: |
-                  # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
-                  cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
-
-                  # Get absolute path to packed file
-                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}"
-
-                  # Install the package locally for testing
-                  echo "Installing the packed azle package for CLI testing"
-                  npm install "${PACKED_FILE_ABSOLUTE_PATH}"
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name-suffix: ${{ matrix.os }}
 
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - name: Start dfx for testing new command
-              working-directory: '../external_test_env'
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   dfx start --clean --background --artificial-delay 0
 
@@ -555,9 +475,9 @@ jobs:
                   project-name: 'experimental_project_test'
                   experimental: 'true'
                   http-server: 'false'
-                  working-directory: '../external_test_env'
+                  working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
                   expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
-                  packed-file-path: '../../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
+                  packed-file-path: ${{ steps.setup-external-azle-test-environment.outputs.packed-file-absolute-path }}
 
     test-http-server-project-creation:
         needs: setup-and-pack
@@ -568,35 +488,19 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - uses: ./.github/actions/setup_node
-
-            - uses: ./.github/actions/setup_dfx
-
-            - name: Download packed azle
-              uses: actions/download-artifact@v4
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
               with:
-                  name: azle-packed-${{ matrix.os }}
-
-            - name: Create external test environment and install packed azle
-              run: |
-                  # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
-                  cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
-
-                  # Get absolute path to packed file
-                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}"
-
-                  # Install the package locally for testing
-                  echo "Installing the packed azle package for CLI testing"
-                  npm install "${PACKED_FILE_ABSOLUTE_PATH}"
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name-suffix: ${{ matrix.os }}
 
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - name: Start dfx for testing new command
-              working-directory: '../external_test_env'
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   dfx start --clean --background --artificial-delay 0
 
@@ -606,9 +510,9 @@ jobs:
                   project-name: 'http_server_project_test'
                   experimental: 'true'
                   http-server: 'true'
-                  working-directory: '../external_test_env'
+                  working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
                   expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
-                  packed-file-path: '../../azle/${{ needs.setup-and-pack.outputs.packed-file-name }}'
+                  packed-file-path: ${{ steps.setup-external-azle-test-environment.outputs.packed-file-absolute-path }}
 
     test-cli-commands-outside-azle-repo:
         needs:
