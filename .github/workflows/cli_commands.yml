@@ -52,11 +52,8 @@ jobs:
             - name: Pack azle source
               id: pack-azle-source
               run: |
-                  # Pack into the current directory and capture the original filename
+                  # Pack azle and capture the packed filename
                   PACKED_FILE_NAME=$(npm pack | tail -n 1)
-                  echo "Original packed filename: ${PACKED_FILE_NAME}"
-
-                  # Output the filename for subsequent jobs
                   echo "packed-file-name=${PACKED_FILE_NAME}" >> $GITHUB_OUTPUT
 
             - name: Upload packed azle
@@ -259,7 +256,7 @@ jobs:
             - name: Setup Rust dependencies for template building
               run: |
                   echo "Setting up Rust dependencies for template building"
-                  npx azle dev setup --cargo-all
+                  npx azle dev setup --rust --cargo-auditable --wasi2ic
 
             - name: Test azle dev template commands
               run: |
