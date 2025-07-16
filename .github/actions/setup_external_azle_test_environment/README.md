@@ -15,7 +15,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: azle-packed-ubuntu-latest
-                  path: '*.tgz'
+                  path: 'azle.tgz'
 
     # Second job: Test the packed azle in external environment
     test-packed-azle:
@@ -27,7 +27,7 @@ jobs:
             - id: setup-external-azle-test-environment
               uses: ./.github/actions/setup_external_azle_test_environment
               with:
-                  packed-file-name: ${{ needs.pack-azle.outputs.packed-file-name }}
+                  packed-file-name: azle.tgz
                   artifact-name-suffix: ubuntu-latest
 
             - name: Run tests
