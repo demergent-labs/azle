@@ -15,7 +15,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: azle-packed-ubuntu-latest
-                  path: 'azle.tgz'
+                  path: azle.tgz
 
     # Second job: Test the packed azle in external environment
     test-packed-azle:
