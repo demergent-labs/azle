@@ -25,21 +25,20 @@ export function getTests(): Test {
                         max: 254
                     }),
                     async (nat) => {
-                        // We need to ensure that the canister id that we generate is on the
-                        // correct local subnet. We've taken the binary representation of
-                        // uxrrr-q7777-77774-qaaaq-cai and just add to the end of it.
-                        // uxrrr-q7777-77774-qaaaq-cai is the first canister id you get
-                        // if you deploy to the local replica.
+                        // To use --specified-id, we need to ensure that the canister id that we generate is on the
+                        // ICP mainnet. We've taken the binary representation of
+                        // lyt4m-myaaa-aaaac-aadkq-cai and just add to the end of it.
+                        // lyt4m-myaaa-aaaac-aadkq-cai is just a random canister id I found on the dashboard.
                         const canisterId = Principal.fromUint8Array(
                             Uint8Array.from([
-                                255,
-                                255,
-                                255,
-                                255,
-                                255,
-                                144,
                                 0,
-                                1,
+                                0,
+                                0,
+                                0,
+                                0,
+                                64,
+                                0,
+                                213,
                                 1,
                                 1 + nat
                             ])
