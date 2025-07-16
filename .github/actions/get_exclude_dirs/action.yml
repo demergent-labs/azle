@@ -64,10 +64,8 @@ runs:
               COPY_OUTSIDE_REPO_INCOMPATIBLE_EXCLUSIONS="${{ format('
               examples/stable/test/end_to_end/candid_rpc/executable_resolution
               examples/stable/test/end_to_end/candid_rpc/management_canister_generate_types
-              examples/stable/test/end_to_end/candid_rpc/new
               examples/experimental/demo/hello_world_http_server
               examples/experimental/test/end_to_end/http_server/bitcoinjs_lib
-              examples/experimental/test/end_to_end/http_server/new
               examples/experimental/test/end_to_end/http_server/sqlite_typeorm
               ') }}"
 
