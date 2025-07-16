@@ -99,8 +99,8 @@ jobs:
                   npm install "${PACKED_FILE_ABSOLUTE_PATH}"
 
             - name: Test azle version command
+              working-directory: '../external_test_env'
               run: |
-                  cd "../external_test_env"
                   echo "Testing 'azle --version' command"
                   DISPLAYED_VERSION=$(npx azle --version)
                   echo "Displayed version: ${DISPLAYED_VERSION}"
@@ -148,8 +148,8 @@ jobs:
                   npm install "${PACKED_FILE_ABSOLUTE_PATH}"
 
             - name: Test azle dev setup command
+              working-directory: '../external_test_env'
               run: |
-                  cd "../external_test_env"
                   echo "Testing 'azle dev setup' command"
 
                   # Read expected versions from package.json
@@ -434,8 +434,8 @@ jobs:
                   npm install "${PACKED_FILE_ABSOLUTE_PATH}"
 
             - name: Test azle generate command
+              working-directory: '../external_test_env'
               run: |
-                  cd "../external_test_env"
                   echo "Testing 'azle generate' command with output verification"
 
                   # Test the generate command with the packed version
@@ -494,8 +494,8 @@ jobs:
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - name: Start dfx for testing new command
+              working-directory: '../external_test_env'
               run: |
-                  cd "../external_test_env"
                   dfx start --clean --background --artificial-delay 0
 
             - name: Test stable project creation with azle new command
@@ -545,8 +545,8 @@ jobs:
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - name: Start dfx for testing new command
+              working-directory: '../external_test_env'
               run: |
-                  cd "../external_test_env"
                   dfx start --clean --background --artificial-delay 0
 
             - name: Test experimental project creation with azle new command
@@ -596,8 +596,8 @@ jobs:
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - name: Start dfx for testing new command
+              working-directory: '../external_test_env'
               run: |
-                  cd "../external_test_env"
                   dfx start --clean --background --artificial-delay 0
 
             - name: Test HTTP server project creation with azle new command
