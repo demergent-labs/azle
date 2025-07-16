@@ -428,8 +428,7 @@ jobs:
 
             - name: Start dfx for testing new command
               working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
-              run: |
-                  dfx start --clean --background --artificial-delay 0
+              run: dfx start --clean --background --artificial-delay 0
 
             - name: Test stable project creation with azle new command
               uses: ./.github/actions/test_azle_new
@@ -463,8 +462,7 @@ jobs:
 
             - name: Start dfx for testing new command
               working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
-              run: |
-                  dfx start --clean --background --artificial-delay 0
+              run: dfx start --clean --background --artificial-delay 0
 
             - name: Test experimental project creation with azle new command
               uses: ./.github/actions/test_azle_new
@@ -513,20 +511,15 @@ jobs:
 
     test-cli-commands-outside-azle-repo:
         needs:
-            [
-                setup-and-pack,
-                test-version-command,
-                test-dev-setup-command,
-                test-dev-template-commands,
-                test-generate-command,
-                test-stable-project-creation,
-                test-experimental-project-creation,
-                test-http-server-project-creation
-            ]
-        strategy:
-            matrix:
-                os: [ubuntu-latest, macos-latest]
-        runs-on: ${{ matrix.os }}
+            - setup-and-pack
+            - test-version-command
+            - test-dev-setup-command
+            - test-dev-template-commands
+            - test-generate-command
+            - test-stable-project-creation
+            - test-experimental-project-creation
+            - test-http-server-project-creation
+        runs-on: ubuntu-latest
         steps:
             - name: All tests passed
               run: echo "🎉 All CLI command tests completed successfully!"
