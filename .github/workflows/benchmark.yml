@@ -138,8 +138,6 @@ jobs:
             - squash-branches
             - create-branch-prefix
         runs-on: ubuntu-latest
-        permissions:
-            contents: write
         steps:
             - uses: actions/checkout@v4
               with:
@@ -169,9 +167,6 @@ jobs:
             - analyze-benchmarks
             - create-branch-prefix
         runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            pull-requests: write
         steps:
             - uses: actions/checkout@v4
               with:
