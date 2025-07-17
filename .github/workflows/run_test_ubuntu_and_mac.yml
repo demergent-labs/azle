@@ -175,7 +175,7 @@ jobs:
               if: ${{ matrix.copy-outside-repo }}
               name: Install example testing dependencies
               with:
-                  command: 'npm install jest ts-jest cuzz --save-dev'
+                  command: 'npm install cuzz jest ts-jest --save-dev'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode

@@ -1,5 +1,4 @@
 {
-    "extends": "../../../../tsconfig.dev.json",
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "strict": true,
