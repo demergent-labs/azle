@@ -12,6 +12,9 @@
         "vite": "^7.0.0"
     },
     "devDependencies": {
-        "@types/express": "^4.17.21"
+        "@types/express": "^4.17.21",
+        "jest": "^30.0.4",
+        "ts-jest": "^29.4.0",
+        "cuzz": "^0.0.14"
     }
 }

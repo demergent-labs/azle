@@ -26,6 +26,9 @@
         "azle": "0.32.0"
     },
     "devDependencies": {
-        "@dfinity/identity": "^2.4.1"
+        "@dfinity/identity": "^2.4.1",
+        "jest": "^30.0.4",
+        "ts-jest": "^29.4.0",
+        "cuzz": "^0.0.14"
     }
 }
