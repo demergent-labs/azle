@@ -454,7 +454,7 @@ jobs:
               uses: ./.github/actions/setup_external_azle_test_environment
               with:
                   packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
-                  artifact-name: ${{ matrix.os }}
+                  artifact-name: azle-packed-${{ matrix.os }}
 
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
