@@ -166,9 +166,16 @@ jobs:
             - run: npm run lint
 
             - uses: ./.github/actions/retry_command
-              name: Install test dependencies
+              name: Install example dependencies
               with:
                   command: 'npm install'
+                  working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
+
+            - uses: ./.github/actions/retry_command
+              if: ${{ matrix.copy-outside-repo }}
+              name: Install example testing dependencies
+              with:
+                  command: 'npm install jest ts-jest cuzz --save-dev'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode
