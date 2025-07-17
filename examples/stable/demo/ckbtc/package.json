@@ -27,8 +27,8 @@
     },
     "devDependencies": {
         "@dfinity/identity": "^2.4.1",
+        "cuzz": "^0.0.14",
         "jest": "^30.0.4",
-        "ts-jest": "^29.4.0",
-        "cuzz": "^0.0.14"
+        "ts-jest": "^29.4.0"
     }
 }
