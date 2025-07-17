@@ -53,7 +53,7 @@ jobs:
                   directories: ${{ inputs.directories }}
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
-            - name: Debug test-infos output
+            - name: Debug test-infos and inputs
               run: |
                   echo "Test infos found: ${{ steps.get-test-infos.outputs.test-infos }}"
                   echo "Number of characters: ${#TEST_INFOS}"
@@ -62,6 +62,14 @@ jobs:
                   else
                       echo "✅ test-infos has content"
                   fi
+                  echo ""
+                  echo "Input debugging:"
+                  echo "inputs.copy-outside-repo: '${{ inputs.copy-outside-repo }}'"
+                  echo "inputs.copy-outside-repo type: $(echo '${{ inputs.copy-outside-repo }}' | wc -c) chars"
+                  echo "inputs.copy-outside-repo == true: ${{ inputs.copy-outside-repo == true }}"
+                  echo "inputs.copy-outside-repo == false: ${{ inputs.copy-outside-repo == false }}"
+                  echo "inputs.operating-system: '${{ inputs.operating-system }}'"
+                  echo "inputs.link-azle: '${{ inputs.link-azle }}'"
               env:
                   TEST_INFOS: ${{ steps.get-test-infos.outputs.test-infos }}
 
@@ -85,12 +93,14 @@ jobs:
                 os: ${{ inputs.operating-system == 'mac' && fromJSON('["macos-latest"]') || fromJSON('["ubuntu-latest"]') }}
                 azle_source: ${{ inputs.link-azle == true && fromJSON('["repo"]') || fromJSON('["npm"]') }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
-                copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false]') }}
+                copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false, "debug-false"]') }}
                 include:
-                    - copy-outside-repo: true
-                      location: 'External'
                     - copy-outside-repo: false
                       location: 'Internal'
+                    - copy-outside-repo: true
+                      location: 'External'
+                    - copy-outside-repo: 'debug-false'
+                      location: 'Internal-Debug'
         steps:
             - name: Debug matrix values
               run: |
@@ -129,7 +139,7 @@ jobs:
               run: echo ${{matrix.test.path}}
 
             - name: Copy test outside repository
-              if: ${{ matrix.copy-outside-repo }}
+              if: ${{ matrix.copy-outside-repo == true }}
               id: copy-test
               run: |
                   # Create external test directory
@@ -161,6 +171,7 @@ jobs:
                   fi
                   echo "working-dir=$WORKING_DIR" >> $GITHUB_OUTPUT
                   echo "Working directory set to: $WORKING_DIR"
+                  echo "Debug: copy-outside-repo value is '${{ matrix.copy-outside-repo }}'"
 
             - name: Verify working directory
               run: |
@@ -193,7 +204,7 @@ jobs:
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - uses: ./.github/actions/retry_command
-              if: ${{ matrix.copy-outside-repo }}
+              if: ${{ matrix.copy-outside-repo == true }}
               name: Install example testing dependencies
               with:
                   command: 'npm install cuzz jest ts-jest --save-dev'
