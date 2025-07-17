@@ -32,7 +32,6 @@ on:
 
 permissions:
     contents: read
-    actions: read
 
 jobs:
     get-test-infos:

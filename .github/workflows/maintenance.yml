@@ -12,9 +12,7 @@ on:
         - cron: '0 10 * * *'
 
 permissions:
-    contents: write
-    pull-requests: write
-    actions: read
+    contents: read
 
 jobs:
     determine-signing-key:
@@ -51,6 +49,8 @@ jobs:
             - create-branch-prefix
             - determine-signing-key
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
@@ -105,6 +105,8 @@ jobs:
             - determine-signing-key
         name: Update dependencies for ${{ matrix.test.name }}
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -178,6 +180,9 @@ jobs:
             - squash-branches
             - create-branch-prefix
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
         steps:
             - uses: actions/checkout@v4
               with:

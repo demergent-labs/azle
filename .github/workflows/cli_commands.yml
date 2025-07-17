@@ -13,7 +13,6 @@ on:
 
 permissions:
     contents: read
-    actions: read
 
 jobs:
     setup-and-pack:
