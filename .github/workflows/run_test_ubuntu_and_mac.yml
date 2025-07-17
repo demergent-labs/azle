@@ -112,7 +112,7 @@ jobs:
               id: copy-test
               run: |
                   # Create external test directory
-                  EXTERNAL_TEST_DIR="../external_test_env
+                  EXTERNAL_TEST_DIR="../external_test_env"
                   echo "Copying test from ${{ matrix.test.path }} to $EXTERNAL_TEST_DIR"
 
                   # Copy the test directory outside the repo
