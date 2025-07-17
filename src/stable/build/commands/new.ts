@@ -58,9 +58,9 @@ async function editPackageJson(
     };
     packageJson.devDependencies = {
         ...packageJson.devDependencies,
+        cuzz: devDependencies.cuzz,
         jest: devDependencies.jest,
-        'ts-jest': devDependencies['ts-jest'],
-        cuzz: devDependencies.cuzz
+        'ts-jest': devDependencies['ts-jest']
     };
 
     if (experimental === true) {
