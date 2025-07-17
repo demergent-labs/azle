@@ -9,6 +9,9 @@ on:
             - reopened
     workflow_dispatch:
 
+permissions:
+    contents: read
+
 jobs:
     workflow-config:
         name: Determine workflow config
@@ -32,6 +35,8 @@ jobs:
         needs: workflow-config
         if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' || github.event_name == 'workflow_dispatch' }}
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
         steps:
             - uses: actions/checkout@v4
               with:

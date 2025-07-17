@@ -30,6 +30,9 @@ on:
                 type: string
                 default: '300'
 
+permissions:
+    contents: read
+
 jobs:
     get-test-infos:
         name: Get test infos

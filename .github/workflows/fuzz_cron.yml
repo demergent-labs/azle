@@ -5,6 +5,9 @@ on:
         # Run at 04:00 UTC (~10:00 PM Mountain Time) every day
         - cron: '0 4 * * *'
 
+permissions:
+    contents: read
+
 jobs:
     get-exclude-dirs:
         name: Get exclude directories
