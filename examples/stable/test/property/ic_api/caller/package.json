@@ -5,5 +5,9 @@
     },
     "dependencies": {
         "azle": "0.32.0"
+    },
+    "devDependencies": {
+        "@dfinity/identity": "^2.4.1",
+        "@dfinity/identity-secp256k1": "2.4.1"
     }
 }

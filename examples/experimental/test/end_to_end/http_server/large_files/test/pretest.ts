@@ -10,6 +10,13 @@ function pretest(): void {
     // create is called here to make sure we have the right canister id for the
     // origin
     execSync(`dfx canister create backend`);
+
+    execSync(
+        `dfx ledger fabricate-cycles --canister backend --cycles 10000000000000000000000000000`,
+        {
+            stdio: 'inherit'
+        }
+    );
 }
 
 pretest();

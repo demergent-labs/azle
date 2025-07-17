@@ -1,8 +1,13 @@
 {
-    "extends": "../../../../tsconfig.dev.json",
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
-        "useDefineForClassFields": false
+        "useDefineForClassFields": false,
+        "strict": true,
+        "target": "ES2024",
+        "module": "ES2022",
+        "moduleResolution": "bundler",
+        "allowJs": true,
+        "noEmit": true
     }
 }
