@@ -53,6 +53,18 @@ jobs:
                   directories: ${{ inputs.directories }}
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
+            - name: Debug test-infos output
+              run: |
+                  echo "Test infos found: ${{ steps.get-test-infos.outputs.test-infos }}"
+                  echo "Number of characters: ${#TEST_INFOS}"
+                  if [ -z "${{ steps.get-test-infos.outputs.test-infos }}" ]; then
+                      echo "❌ test-infos is empty!"
+                  else
+                      echo "✅ test-infos has content"
+                  fi
+              env:
+                  TEST_INFOS: ${{ steps.get-test-infos.outputs.test-infos }}
+
     run-test:
         name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | ${{inputs.operating-system}} | ${{ matrix.location }}'
         needs: get-test-infos
@@ -70,10 +82,8 @@ jobs:
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
-                os:
-                    - ${{ inputs.operating-system == 'mac' && 'macos-latest' || inputs.operating-system == 'ubuntu' && 'ubuntu-latest' }}
-                azle_source:
-                    - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
+                os: ${{ inputs.operating-system == 'mac' && fromJSON('["macos-latest"]') || fromJSON('["ubuntu-latest"]') }}
+                azle_source: ${{ inputs.link-azle == true && fromJSON('["repo"]') || fromJSON('["npm"]') }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
                 copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false]') }}
                 include:
@@ -82,6 +92,17 @@ jobs:
                     - copy-outside-repo: false
                       location: 'Internal'
         steps:
+            - name: Debug matrix values
+              run: |
+                  echo "Matrix debug info:"
+                  echo "OS: ${{ matrix.os }}"
+                  echo "Azle source: ${{ matrix.azle_source }}"
+                  echo "Test name: ${{ matrix.test.name }}"
+                  echo "Test path: ${{ matrix.test.path }}"
+                  echo "Copy outside repo: ${{ matrix.copy-outside-repo }}"
+                  echo "Location: ${{ matrix.location }}"
+                  echo "Input copy-outside-repo: ${{ inputs.copy-outside-repo }}"
+
             - uses: actions/checkout@v4
 
             - uses: ./.github/actions/determine_workflow_context
