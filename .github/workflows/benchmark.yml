@@ -66,6 +66,8 @@ jobs:
                   exclude-release-only: ${{ github.event.inputs.exclude-release-only-benchmarks }}
 
     create-branch-prefix:
+        permissions:
+            contents: write
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
             prefix: 'benchmark'
