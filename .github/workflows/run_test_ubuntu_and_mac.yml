@@ -75,12 +75,8 @@ jobs:
                 azle_source:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
-                copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false]') }}
                 include:
-                    - copy-outside-repo: true
-                      location: 'External'
-                    - copy-outside-repo: false
-                      location: 'Internal'
+                    - location: ${{ inputs.copy-outside-repo == true && 'External' || 'Internal' }}
         steps:
             - uses: actions/checkout@v4
 
@@ -108,7 +104,7 @@ jobs:
               run: echo ${{matrix.test.path}}
 
             - name: Copy test outside repository
-              if: ${{ matrix.copy-outside-repo }}
+              if: ${{ inputs.copy-outside-repo }}
               id: copy-test
               run: |
                   # Create external test directory
@@ -133,7 +129,7 @@ jobs:
             - name: Set working directory
               id: set-working-dir
               run: |
-                  if [[ "${{ matrix.copy-outside-repo }}" == "true" ]]; then
+                  if [[ "${{ inputs.copy-outside-repo }}" == "true" ]]; then
                       WORKING_DIR="${{ steps.copy-test.outputs.external-test-dir }}"
                   else
                       WORKING_DIR="${{ matrix.test.path }}"
@@ -172,7 +168,7 @@ jobs:
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - uses: ./.github/actions/retry_command
-              if: ${{ matrix.copy-outside-repo }}
+              if: ${{ inputs.copy-outside-repo }}
               name: Install example testing dependencies
               with:
                   command: 'npm install cuzz jest ts-jest --save-dev'
