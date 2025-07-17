@@ -1,6 +1,12 @@
 {
     "extends": "../../../../tsconfig.dev.json",
     "compilerOptions": {
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "target": "ES2024",
+        "module": "ES2022",
+        "moduleResolution": "bundler",
+        "allowJs": true,
+        "noEmit": true
     }
 }

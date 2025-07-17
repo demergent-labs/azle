@@ -10,6 +10,10 @@ inputs:
     exclude-release-only:
         description: 'Whether to exclude release only benchmarks'
         required: true
+    exclude-copy-outside-repo-incompatible:
+        description: 'Whether to exclude tests that are incompatible with copy-outside-repo'
+        required: false
+        default: 'false'
 outputs:
     exclude-dirs:
         description: 'Space-separated list of directories to exclude'
@@ -57,6 +61,14 @@ runs:
               examples/stable/test/end_to_end/candid_rpc/stable_structures
               ') }}"
 
+              COPY_OUTSIDE_REPO_INCOMPATIBLE_EXCLUSIONS="${{ format('
+              examples/stable/test/end_to_end/candid_rpc/executable_resolution
+              examples/stable/test/end_to_end/candid_rpc/management_canister_generate_types
+              examples/experimental/demo/hello_world_http_server
+              examples/experimental/test/end_to_end/http_server/bitcoinjs_lib
+              examples/experimental/test/end_to_end/http_server/sqlite_typeorm
+              ') }}"
+
               EXCLUDE_DIRS="$DISABLED_EXCLUSIONS $EXTERNAL_EXCLUSIONS"
 
               if [[ "${{ inputs.exclude-release-only }}" == "true" ]]; then
@@ -69,6 +81,10 @@ runs:
 
               if [[ "${{ inputs.exclude-slow }}" == "true" ]]; then
                   EXCLUDE_DIRS="$EXCLUDE_DIRS $SLOW_EXCLUSIONS"
+              fi
+
+              if [[ "${{ inputs.exclude-copy-outside-repo-incompatible }}" == "true" ]]; then
+                  EXCLUDE_DIRS="$EXCLUDE_DIRS $COPY_OUTSIDE_REPO_INCOMPATIBLE_EXCLUSIONS"
               fi
 
               # Trim leading or trailing spaces and save the exclude-dirs in the environment
