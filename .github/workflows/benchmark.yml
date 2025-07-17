@@ -66,6 +66,8 @@ jobs:
                   exclude-release-only: ${{ github.event.inputs.exclude-release-only-benchmarks }}
 
     create-branch-prefix:
+        permissions:
+            contents: write
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
             prefix: 'benchmark'
@@ -118,6 +120,8 @@ jobs:
             - squash-branches
             - create-branch-prefix
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
         steps:
             - uses: actions/checkout@v4
               with:
@@ -147,6 +151,9 @@ jobs:
             - analyze-benchmarks
             - create-branch-prefix
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
         steps:
             - uses: actions/checkout@v4
               with:
