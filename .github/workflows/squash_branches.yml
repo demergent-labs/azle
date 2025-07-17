@@ -23,13 +23,14 @@ on:
                 required: true
 
 permissions:
-    contents: write
-    actions: read
+    contents: read
 
 jobs:
     squash:
         name: Squash Branches
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
