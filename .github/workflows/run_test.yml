@@ -45,7 +45,6 @@ on:
 
 permissions:
     contents: read
-    actions: read
 
 jobs:
     run-tests-ubuntu-and-mac:

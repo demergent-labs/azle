@@ -7,9 +7,7 @@ on:
             - reopened
 
 permissions:
-    contents: write
-    pull-requests: write
-    actions: read
+    contents: read
 
 jobs:
     evaluate-auto-merge-conditions:
@@ -66,6 +64,9 @@ jobs:
         needs: evaluate-auto-merge-conditions
         if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
         steps:
             - uses: actions/checkout@v4
               with:
