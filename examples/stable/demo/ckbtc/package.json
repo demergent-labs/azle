@@ -23,7 +23,7 @@
         "test": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ] || [ \"$AZLE_RUNNING_IN_MAC\" = \"true\" ]; then echo 'Skipping test on WSL and Mac due to issues installing bitcoin'; exit 0; else jest; fi"
     },
     "dependencies": {
-        "azle": "0.32.0"
+        "azle": "0.33.0-rc.15"
     },
     "devDependencies": {
         "@dfinity/identity": "^2.4.1"
