@@ -47,10 +47,14 @@ jobs:
             - uses: ./.github/actions/retry_command
               with:
                   command: 'npm install'
+            - run: npm run typecheck
+            - run: npm run lint
 
             - name: Install global dependencies
               run: |
-                  AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic
+                  npx azle dev setup --rust --cargo-auditable --cargo-audit --cargo-deny --wasi2ic
+            - uses: Swatinem/rust-cache@v2
+            - run: AZLE_VERBOSE=true npx azle dev audit
 
             - name: Update version
               run: |

@@ -1,9 +1,9 @@
 import 'azle/experimental/_internal/test/set_experimental';
 
 import { beforeAll } from '@jest/globals';
+import { jsonParse, jsonStringify } from 'azle';
 import { expect, it, please, Test, wait } from 'azle/_internal/test';
-import { jsonParse, jsonStringify } from 'azle/experimental';
-import { GetUtxosResult, Utxo } from 'azle/experimental/canisters/management';
+import { bitcoin_get_utxos_result, utxo } from 'azle/canisters/management/idl';
 import { Transaction } from 'bitcoinjs-lib';
 
 import {
@@ -87,7 +87,7 @@ export function getTests(
                 `${origin}/get-utxos?address=${address}`,
                 { headers: [['X-Ic-Force-Update', 'true']] }
             );
-            const utxosResult: GetUtxosResult = await jsonParse(
+            const utxosResult: bitcoin_get_utxos_result = await jsonParse(
                 await response.text()
             );
 
@@ -297,7 +297,7 @@ async function getBalance(origin: string, address: string): Promise<bigint> {
     return jsonParse(await response.text());
 }
 
-function checkUtxos(utxos: Utxo[]): boolean {
+function checkUtxos(utxos: utxo[]): boolean {
     return utxos.every(
         (utxo) => utxo.value === SINGLE_BLOCK_REWARD && utxo.outpoint.vout === 0
     );

@@ -40,25 +40,21 @@ runs:
               examples/experimental/demo/bitcoin_psbt
               examples/experimental/test/end_to_end/http_server/autoreload
               examples/experimental/test/end_to_end/http_server/ethers_base
+              examples/experimental/test/end_to_end/http_server/fetch_ic
               examples/experimental/test/end_to_end/http_server/http_outcall_fetch
               examples/experimental/test/end_to_end/http_server/ic_evm_rpc
-              examples/experimental/test/end_to_end/http_server/open_value_sharing
+              examples/experimental/test/end_to_end/http_server/internet_identity
+              examples/experimental/test/end_to_end/http_server/nest
               examples/experimental/test/end_to_end/http_server/sqlite_drizzle
+              examples/experimental/test/end_to_end/http_server/sqlite_typeorm
               ') }}"
 
               SLOW_EXCLUSIONS="${{ format('
               examples/experimental/demo/basic_bitcoin
-              examples/experimental/demo/ckbtc
+              examples/experimental/test/end_to_end/http_server/large_files
+              examples/stable/demo/ckbtc
               examples/stable/test/end_to_end/candid_rpc/bitcoin
               examples/stable/test/end_to_end/candid_rpc/stable_structures
-              examples/stable/test/property/candid_rpc/stable_b_tree_map
-              examples/experimental/test/end_to_end/candid_rpc/bitcoin
-              examples/experimental/test/end_to_end/candid_rpc/composite_queries
-              examples/experimental/test/end_to_end/candid_rpc/ckbtc
-              examples/experimental/test/end_to_end/candid_rpc/cross_canister_calls
-              examples/experimental/test/end_to_end/candid_rpc/management_canister
-              examples/experimental/test/end_to_end/candid_rpc/stable_structures
-              examples/experimental/test/end_to_end/http_server/large_files
               ') }}"
 
               EXCLUDE_DIRS="$DISABLED_EXCLUSIONS $EXTERNAL_EXCLUSIONS"

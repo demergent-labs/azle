@@ -2,7 +2,6 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { Api, Context } from '../../types';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     PrimitiveDefinition,
@@ -13,7 +12,6 @@ import { SimpleCandidType, simpleCandidTypeToTsType } from '../candid_type';
 import { candidTypeToRuntimeTypeObject } from './candid_type_to_azle_candid_type';
 
 export function SimpleCandidDefinitionArb(
-    context: Context,
     candidType: SimpleCandidType,
     useVariableAliasDeclaration?: boolean
 ): WithShapesArb<PrimitiveDefinition> {
@@ -29,24 +27,16 @@ export function SimpleCandidDefinitionArb(
             ]): WithShapes<PrimitiveDefinition> => {
                 const useTypeDeclaration =
                     useTypeDeclarationChance && candidType !== 'Void';
-                const typeAnnotation =
-                    context.api === 'functional'
-                        ? candidType
-                        : simpleCandidTypeToTsType(candidType);
+                const typeAnnotation = simpleCandidTypeToTsType(candidType);
                 const idl = toIDL(candidType);
-                const typeObject = useTypeDeclaration
-                    ? name
-                    : context.api === 'functional'
-                      ? candidType
-                      : idl;
+                const typeObject = useTypeDeclaration ? name : idl;
                 const runtimeTypeObject =
                     candidTypeToRuntimeTypeObject(candidType);
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         name,
                         candidType,
-                        useTypeDeclaration,
-                        context.api
+                        useTypeDeclaration
                     );
                 return {
                     definition: {
@@ -55,7 +45,7 @@ export function SimpleCandidDefinitionArb(
                             typeObject,
                             candidType,
                             runtimeTypeObject,
-                            imports: generateImports(candidType, context.api),
+                            imports: generateImports(candidType),
                             variableAliasDeclarations
                         }
                     },
@@ -65,19 +55,19 @@ export function SimpleCandidDefinitionArb(
         );
 }
 
-function generateImports(candidType: SimpleCandidType, api: Api): Set<string> {
-    if (api === 'class') {
-        if (candidType === 'Principal') {
-            return new Set(['IDL', 'Principal']);
-        }
-        return new Set(['IDL']);
+function generateImports(candidType: SimpleCandidType): Set<string> {
+    if (candidType === 'Principal') {
+        return new Set(['IDL', 'Principal']);
     }
-    return new Set([candidType]);
+    return new Set(['IDL']);
 }
 
 function toIDL(candidType: SimpleCandidType): string {
     if (candidType === 'Void') {
         return '';
+    }
+    if (candidType === 'blob') {
+        return 'IDL.Vec(IDL.Nat8)';
     }
     return `IDL.${candidType.charAt(0).toUpperCase()}${candidType.slice(1)}`;
 }
@@ -93,17 +83,13 @@ function useVariableAliasDeclarationArb(
 function generateVariableAliasDeclarations(
     name: string,
     candidType: SimpleCandidType,
-    useTypeDeclaration: boolean,
-    api: Api
+    useTypeDeclaration: boolean
 ): string[] {
     if (useTypeDeclaration === true) {
-        if (api === 'class') {
-            return [
-                `const ${name} = ${toIDL(candidType)};`,
-                `type ${name} = ${simpleCandidTypeToTsType(candidType)};`
-            ];
-        }
-        return [`const ${name} = ${candidType};`];
+        return [
+            `const ${name} = ${toIDL(candidType)};`,
+            `type ${name} = ${simpleCandidTypeToTsType(candidType)};`
+        ];
     }
     return [];
 }

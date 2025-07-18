@@ -9,7 +9,6 @@ import {
     RecordCandidDefinition,
     RecursiveCandidDefinition,
     RecursiveCandidName,
-    ServiceCandidDefinition,
     TupleCandidDefinition,
     VariantCandidDefinition,
     VecCandidDefinition
@@ -116,7 +115,7 @@ export function CandidValueArb(
         return Float64ValueArb(context);
     }
     if (candidType === 'int') {
-        return IntValueArb(context);
+        return IntValueArb();
     }
     if (candidType === 'int8') {
         return Int8ValueArb();
@@ -128,10 +127,10 @@ export function CandidValueArb(
         return Int32ValueArb();
     }
     if (candidType === 'int64') {
-        return Int64ValueArb(context);
+        return Int64ValueArb();
     }
     if (candidType === 'nat') {
-        return NatValueArb(context);
+        return NatValueArb();
     }
     if (candidType === 'nat8') {
         return Nat8ValueArb();
@@ -143,7 +142,7 @@ export function CandidValueArb(
         return Nat32ValueArb();
     }
     if (candidType === 'nat64') {
-        return Nat64ValueArb(context);
+        return Nat64ValueArb();
     }
     if (candidType === 'Null') {
         return NullValueArb();
@@ -161,10 +160,7 @@ export function CandidValueArb(
         return PrincipalValueArb();
     }
     if (candidType === 'Service') {
-        return ServiceValueArb(
-            { ...context, constraints: {} },
-            candidTypeMeta as ServiceCandidDefinition
-        );
+        return ServiceValueArb();
     }
     if (candidType === 'Recursive') {
         return RecursiveNameValuesArb(

@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "test": "tsx test/test.ts"
+        "test": "if [ \"$AZLE_RUNNING_IN_WSL_UBUNTU\" = \"true\" ]; then echo 'Skipping test on WSL due to sub domain issues'; exit 0; else tsx test/test.ts; fi"
     },
     "dependencies": {
         "azle": "0.32.0"

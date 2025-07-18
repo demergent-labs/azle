@@ -1,0 +1,235 @@
+name: Run Test (WSL-Ubuntu)
+
+on:
+    workflow_call:
+        inputs:
+            directories:
+                required: true
+                type: string
+            exclude-dirs:
+                required: false
+                type: string
+                default: ''
+            link-azle:
+                required: true
+                type: boolean
+            run-experimental:
+                required: false
+                type: boolean
+                default: false
+            fuzz:
+                required: false
+                type: boolean
+                default: false
+            fuzz-call-delay:
+                required: false
+                type: string
+                default: '.1'
+            fuzz-time-limit:
+                required: false
+                type: string
+                default: '300'
+
+jobs:
+    get-test-infos:
+        name: Get test infos
+        runs-on: ubuntu-latest
+        outputs:
+            test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - id: get-test-infos
+              uses: ./.github/actions/get_test_infos
+              with:
+                  directories: ${{ inputs.directories }}
+                  exclude-dirs: ${{ inputs.exclude-dirs }}
+
+    run-test:
+        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | WSL-Ubuntu'
+        needs: get-test-infos
+        runs-on: windows-latest
+
+        strategy:
+            fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
+            matrix: # spins up one job per combination of test and code source (repo or npm).
+                azle_source:
+                    - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
+                test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
+        steps:
+            - name: Setup WSL-Ubuntu'
+              uses: Wandalen/wretry.action@v1.4.10
+              with:
+                  action: Vampire/setup-wsl@v5
+                  with: |
+                      distribution: Ubuntu-24.04
+                      additional-packages: |
+                          curl
+                          build-essential
+                          git
+                          jq
+                      set-as-default: 'true'
+                      wsl-shell-user: 'tester'
+                  attempt_limit: 5
+                  attempt_delay: 60000
+
+            - name: Clone repository in WSL-Ubuntu
+              run: |
+                  # Clone the repository directly in WSL-Ubuntu for proper Unix line endings
+                  cd /home/tester
+                  git clone --no-single-branch https://github.com/${{ github.repository }}.git azle
+                  cd azle
+                  # Fetch all remote branches and pull request refs to ensure we have the specific commit
+                  git fetch --all
+                  git fetch origin '+refs/pull/*/head:refs/remotes/origin/pr/*' || true
+                  git fetch origin '+refs/pull/*/merge:refs/remotes/origin/merge/*' || true
+                  git checkout ${{ github.sha }}
+              shell: wsl-bash {0}
+
+            - name: Setup and run tests
+              shell: wsl-bash {0}
+              run: |
+                  AZLE_ROOT=/home/tester/azle
+                  EXAMPLE_ROOT=/home/tester/azle/${{ matrix.test.path }}
+
+                  # Source common functions
+                  source "${AZLE_ROOT}/.github/scripts/common_functions.sh"
+
+                  determine_workflow_context() {
+                      echo "=== Setting environment variables ==="
+                      # Define conditions using shell variables (inline version of determine_workflow_context action)
+                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                      AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'demergent-labs/release--') }}
+                      AZLE_IS_RELEASE_BRANCH_PR=${{ startsWith(github.head_ref, 'release--') }}
+                      AZLE_IS_FEATURE_BRANCH_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == false }}
+                      AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ !startsWith(github.head_ref, 'release--') && github.ref != 'refs/heads/main' && github.event.pull_request.draft == true }}
+                  }
+
+                  print_environment_variables() {
+                      echo "=== Printing environment variables ==="
+                      echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
+                      echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
+                      echo "AZLE_IS_RELEASE_BRANCH_PR: $AZLE_IS_RELEASE_BRANCH_PR"
+                      echo "AZLE_IS_FEATURE_BRANCH_PR: $AZLE_IS_FEATURE_BRANCH_PR"
+                      echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
+                  }
+
+                  report_test_path() {
+                      echo "=== Reporting test path ==="
+                      # Just in case the path isn't obvious from the name, this will remove ambiguity
+                      echo ${{matrix.test.path}}
+                  }
+
+                  npm_link() {
+                      if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                          echo "=== Running npm link ==="
+                          npm link
+                      fi
+                  }
+
+                  run_npm_lint() {
+                      echo "=== Running npm lint ==="
+                      npm run lint
+                  }
+
+                  install_test_npm_dependencies() {
+                      echo "=== Installing npm dependencies in test directory ==="
+                      cd $EXAMPLE_ROOT
+                      npm install
+                      cd $AZLE_ROOT
+                  }
+
+                  install_experimental_dependencies() {
+                      if [[ "${{ inputs.run-experimental }}" == "true" ]]; then
+                          echo "=== Installing experimental dependencies ==="
+                          cd $EXAMPLE_ROOT
+                          npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd
+                          cd $AZLE_ROOT
+                      fi
+                  }
+
+                  npm_link_azle() {
+                      if [[ "${{ matrix.azle_source }}" == "repo" ]]; then
+                          echo "=== Running npm link azle ==="
+                          cd $EXAMPLE_ROOT
+                          npm link azle
+                          cd $AZLE_ROOT
+                      fi
+                  }
+
+                  start_dfx() {
+                      echo "=== Starting dfx ==="
+                      if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" || "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
+                          dfx start --clean --background
+                      else
+                          dfx start --clean --background --artificial-delay 0
+                      fi
+                  }
+
+                  configure_test_settings() {
+                      echo "=== Configuring test settings ==="
+
+                      RUNS=1
+
+                      if [[ "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE" == "true" ]]; then
+                          RUNS=5
+                      fi
+
+                      if [[ "$AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE" == "true" ]]; then
+                          RUNS=100
+                      fi
+
+                      if [[ "$AZLE_IS_RELEASE_BRANCH_PR" == "true" ]]; then
+                          RUNS=10
+                      fi
+
+                      if [[ "$AZLE_IS_FEATURE_BRANCH_PR" == "true" ]]; then
+                          RUNS=5
+                      fi
+
+                      if [[ "$AZLE_IS_FEATURE_BRANCH_DRAFT_PR" == "true" ]]; then
+                          RUNS=1
+                      fi
+
+                      echo "Running tests $RUNS times"
+                  }
+
+                  run_tests() {
+                      echo "=== Running tests ==="
+                      cd $EXAMPLE_ROOT
+
+                      # Set test configuration variables
+                      export AZLE_EXPERIMENTAL="${{ inputs.run-experimental }}"
+                      export AZLE_FUZZ="${{ inputs.fuzz }}"
+                      export AZLE_FUZZ_CALL_DELAY="${{ inputs.fuzz-call-delay }}"
+                      export AZLE_FUZZ_TIME_LIMIT="${{ inputs.fuzz-time-limit }}"
+                      export AZLE_RECORD_ACTIONS="${{ !inputs.fuzz }}"
+                      export AZLE_PROPTEST_NUM_RUNS="$RUNS"
+                      export AZLE_PROPTEST_VERBOSE=true
+                      export AZLE_VERBOSE=true
+                      export AZLE_IDENTITY_STORAGE_MODE=plaintext
+                      export GITHUB_ACTIONS=true
+                      export AZLE_RUNNING_IN_WSL_UBUNTU=true
+                      export AZLE_RUNNING_IN_GITHUB_ACTIONS=true
+
+                      npm test
+                      cd $AZLE_ROOT
+                  }
+
+                  # Execute functions in order
+                  cd $AZLE_ROOT
+                  determine_workflow_context
+                  print_environment_variables
+                  report_test_path
+                  retry_command setup_nodejs
+                  retry_command install_dfx
+                  retry_command install_npm_dependencies
+                  retry_command install_rust_cargo
+                  npm_link
+                  run_npm_lint
+                  retry_command install_test_npm_dependencies
+                  retry_command install_experimental_dependencies
+                  npm_link_azle
+                  start_dfx
+                  configure_test_settings
+                  run_tests

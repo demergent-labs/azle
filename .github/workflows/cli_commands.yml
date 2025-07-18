@@ -13,7 +13,10 @@ on:
 
 jobs:
     test-cli-commands-outside-azle-repo:
-        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
 
@@ -95,11 +98,17 @@ jobs:
                   EXPECTED_NODE_VERSION=$(jq -r '.azle.globalDependencies.node // "not found"' "${{ github.workspace }}/package.json")
                   EXPECTED_RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // "not found"' "${{ github.workspace }}/package.json")
                   EXPECTED_DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // "not found"' "${{ github.workspace }}/package.json")
+                  EXPECTED_CARGO_AUDITABLE_VERSION=$(jq -r '.azle.globalDependencies."cargo-auditable" // "not found"' "${{ github.workspace }}/package.json")
+                  EXPECTED_CARGO_AUDIT_VERSION=$(jq -r '.azle.globalDependencies."cargo-audit" // "not found"' "${{ github.workspace }}/package.json")
+                  EXPECTED_CARGO_DENY_VERSION=$(jq -r '.azle.globalDependencies."cargo-deny" // "not found"' "${{ github.workspace }}/package.json")
                   EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${{ github.workspace }}/package.json")
 
                   echo "Expected Node version: ${EXPECTED_NODE_VERSION}"
                   echo "Expected Rust version: ${EXPECTED_RUST_VERSION}"
                   echo "Expected dfx version: ${EXPECTED_DFX_VERSION}"
+                  echo "Expected cargo-auditable version: ${EXPECTED_CARGO_AUDITABLE_VERSION}"
+                  echo "Expected cargo-audit version: ${EXPECTED_CARGO_AUDIT_VERSION}"
+                  echo "Expected cargo-deny version: ${EXPECTED_CARGO_DENY_VERSION}"
                   echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
 
                   # Run azle dev setup
@@ -137,8 +146,38 @@ jobs:
                     exit 1
                   fi
 
+                  # Check cargo-auditable version
+                  ACTUAL_CARGO_AUDITABLE_VERSION=$(npx tsx "${{ github.workspace }}/.github/scripts/get_local_cargo_auditable_version.ts" 2>/dev/null || echo "not installed")
+                  echo "Actual cargo-auditable version: ${ACTUAL_CARGO_AUDITABLE_VERSION}"
+                  if [[ "${ACTUAL_CARGO_AUDITABLE_VERSION}" == "${EXPECTED_CARGO_AUDITABLE_VERSION}" ]]; then
+                    echo "✅ cargo-auditable version verification successful"
+                  else
+                    echo "❌ cargo-auditable version verification failed: Expected ${EXPECTED_CARGO_AUDITABLE_VERSION}, got ${ACTUAL_CARGO_AUDITABLE_VERSION}"
+                    exit 1
+                  fi
+
+                  # Check cargo-audit version
+                  ACTUAL_CARGO_AUDIT_VERSION=$(npx tsx "${{ github.workspace }}/.github/scripts/get_local_cargo_audit_version.ts" 2>/dev/null || echo "not installed")
+                  echo "Actual cargo-audit version: ${ACTUAL_CARGO_AUDIT_VERSION}"
+                  if [[ "${ACTUAL_CARGO_AUDIT_VERSION}" == "${EXPECTED_CARGO_AUDIT_VERSION}" ]]; then
+                    echo "✅ cargo-audit version verification successful"
+                  else
+                    echo "❌ cargo-audit version verification failed: Expected ${EXPECTED_CARGO_AUDIT_VERSION}, got ${ACTUAL_CARGO_AUDIT_VERSION}"
+                    exit 1
+                  fi
+
+                  # Check cargo-deny version
+                  ACTUAL_CARGO_DENY_VERSION=$(npx tsx "${{ github.workspace }}/.github/scripts/get_local_cargo_deny_version.ts" 2>/dev/null || echo "not installed")
+                  echo "Actual cargo-deny version: ${ACTUAL_CARGO_DENY_VERSION}"
+                  if [[ "${ACTUAL_CARGO_DENY_VERSION}" == "${EXPECTED_CARGO_DENY_VERSION}" ]]; then
+                    echo "✅ cargo-deny version verification successful"
+                  else
+                    echo "❌ cargo-deny version verification failed: Expected ${EXPECTED_CARGO_DENY_VERSION}, got ${ACTUAL_CARGO_DENY_VERSION}"
+                    exit 1
+                  fi
+
                   # Check wasi2ic version
-                  ACTUAL_WASI2IC_VERSION=$(npx tsx "${{ github.workspace }}/.scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
+                  ACTUAL_WASI2IC_VERSION=$(npx tsx "${{ github.workspace }}/.github/scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
                   echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
                   if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
                     echo "✅ wasi2ic version verification successful"
@@ -148,6 +187,29 @@ jobs:
                   fi
 
                   echo "✅ All version verifications completed successfully"
+
+            - uses: Swatinem/rust-cache@v2
+
+            - name: Setup Rust and WASM targets (macOS only)
+              if: matrix.os == 'macos-latest'
+              run: |
+                  echo "Setting up Rust and WASM compilation targets for macOS"
+
+                  # Install wasi-sdk for proper WASM compilation support
+                  WASI_SDK_VERSION="24"
+                  WASI_SDK_URL="https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_SDK_VERSION}/wasi-sdk-${WASI_SDK_VERSION}.0-x86_64-macos.tar.gz"
+
+                  curl -L "$WASI_SDK_URL" | tar -xz -C /tmp/
+                  export WASI_SDK_PATH="/tmp/wasi-sdk-${WASI_SDK_VERSION}.0-x86_64-macos"
+                  export CC_wasm32_wasip1="$WASI_SDK_PATH/bin/clang"
+                  export CFLAGS_wasm32_wasip1="--sysroot=$WASI_SDK_PATH/share/wasi-sysroot"
+
+                  # Export these for subsequent steps
+                  echo "WASI_SDK_PATH=$WASI_SDK_PATH" >> $GITHUB_ENV
+                  echo "CC_wasm32_wasip1=$WASI_SDK_PATH/bin/clang" >> $GITHUB_ENV
+                  echo "CFLAGS_wasm32_wasip1=--sysroot=$WASI_SDK_PATH/share/wasi-sysroot" >> $GITHUB_ENV
+
+                  echo "✅ WASI SDK installed and configured for macOS"
 
             - name: Test azle dev template commands
               run: |
@@ -163,7 +225,7 @@ jobs:
                   # Helper function to check file size
                   check_file_size() {
                     local file="$1"
-                    local file_size=$(stat -c%s "$file" 2>/dev/null || echo "0")
+                    local file_size=$(wc -c < "$file" 2>/dev/null || echo "0")
                     if [[ "$file_size" -gt 0 ]]; then
                       return 0
                     else
@@ -269,7 +331,7 @@ jobs:
                   # Verify the generated file exists and is not empty
                   echo "Verifying azle generate command output"
                   if [[ -f "generate_output.ts" ]]; then
-                    FILE_SIZE=$(stat -c%s "generate_output.ts" 2>/dev/null || echo "0")
+                    FILE_SIZE=$(wc -c < "generate_output.ts" 2>/dev/null || echo "0")
                     if [[ "$FILE_SIZE" -gt 0 ]]; then
                       echo "✅ Generate command verification successful: Generated file exists and has valid size ($FILE_SIZE bytes)"
                     else
@@ -280,6 +342,10 @@ jobs:
                     echo "❌ Generate command verification failed: Generated file does not exist"
                     exit 1
                   fi
+
+            - name: Configure MacOS DNS (if needed)
+              if: matrix.os == 'macos-latest'
+              run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - name: Start dfx for testing new command
               working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}

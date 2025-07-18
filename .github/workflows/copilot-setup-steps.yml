@@ -30,7 +30,9 @@ jobs:
 
             - name: Install global dependencies
               run: |
-                  AZLE_VERBOSE=true npx azle dev setup --rust --wasi2ic
+                  npx azle dev setup --rust --cargo-auditable --wasi2ic
+
+            - uses: Swatinem/rust-cache@v2
 
             - name: Start dfx with artificial delay 0
               run: dfx start --clean --background --artificial-delay 0

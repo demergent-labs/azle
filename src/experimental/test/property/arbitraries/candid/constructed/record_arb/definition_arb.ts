@@ -2,10 +2,10 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType, Record } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { JsPropertyNameArb } from '../../../js_name_arb';
-import { Api, Context } from '../../../types';
+import { Context } from '../../../types';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -20,14 +20,13 @@ import { RecursiveShapes } from '../../recursive';
 type Field = [string, CandidDefinition];
 
 type RuntimeRecord = {
-    [key: string]: CandidType;
+    [key: string]: IDL.Type;
 };
 
 export function RecordDefinitionArb(
     context: Context<DefinitionConstraints>,
     fieldCandidDefArb: CandidDefinitionArb
 ): WithShapesArb<RecordCandidDefinition> {
-    const api = context.api;
     return fc
         .tuple(
             UniqueIdentifierArb('globalNames'),
@@ -57,15 +56,13 @@ export function RecordDefinitionArb(
                 const typeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name,
-                    fields,
-                    api
+                    fields
                 );
 
                 const typeObject = generateTypeObject(
                     useTypeDeclaration,
                     name,
-                    fields,
-                    api
+                    fields
                 );
 
                 const runtimeTypeObject = generateRuntimeTypeObject(fields);
@@ -74,11 +71,10 @@ export function RecordDefinitionArb(
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
                         name,
-                        fields,
-                        api
+                        fields
                     );
 
-                const imports = generateImports(fields, api);
+                const imports = generateImports(fields);
 
                 return {
                     definition: {
@@ -98,38 +94,32 @@ export function RecordDefinitionArb(
         );
 }
 
-function generateImports(fields: Field[], api: Api): Set<string> {
+function generateImports(fields: Field[]): Set<string> {
     const fieldImports = fields.flatMap((field): string[] => [
         ...field[1].candidMeta.imports
     ]);
-    const recordImports = api === 'functional' ? ['Record'] : ['IDL'];
-    return new Set([...fieldImports, ...recordImports]);
+    return new Set([...fieldImports, 'IDL']);
 }
 
 function generateVariableAliasDeclarations(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[],
-    api: Api
+    fields: Field[]
 ): string[] {
     const fieldVariableAliasDeclarations = fields.flatMap(
         (field): string[] => field[1].candidMeta.variableAliasDeclarations
     );
     if (useTypeDeclaration === true) {
-        const type =
-            api === 'functional'
-                ? []
-                : [
-                      `type ${name} = ${generateCandidTypeAnnotation(
-                          false,
-                          name,
-                          fields,
-                          api
-                      )};`
-                  ];
+        const type = [
+            `type ${name} = ${generateCandidTypeAnnotation(
+                false,
+                name,
+                fields
+            )};`
+        ];
         return [
             ...fieldVariableAliasDeclarations,
-            `const ${name} = ${generateTypeObject(false, name, fields, api)};`,
+            `const ${name} = ${generateTypeObject(false, name, fields)};`,
             ...type
         ];
     }
@@ -139,14 +129,10 @@ function generateVariableAliasDeclarations(
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[],
-    api: Api
+    fields: Field[]
 ): string {
     if (useTypeDeclaration === true) {
-        if (api === 'class') {
-            return name;
-        }
-        return `typeof ${name}.tsType`;
+        return name;
     }
 
     return `{${fields
@@ -162,8 +148,7 @@ function generateCandidTypeAnnotation(
 function generateTypeObject(
     useTypeDeclaration: boolean,
     name: string,
-    fields: Field[],
-    api: Api
+    fields: Field[]
 ): string {
     if (useTypeDeclaration === true) {
         return name;
@@ -178,14 +163,10 @@ function generateTypeObject(
         })
         .join(',');
 
-    if (api === 'class') {
-        return `IDL.Record({${fieldsAsString}})`;
-    }
-
-    return `Record({${fieldsAsString}})`;
+    return `IDL.Record({${fieldsAsString}})`;
 }
 
-function generateRuntimeTypeObject(fields: Field[]): CandidType {
+function generateRuntimeTypeObject(fields: Field[]): IDL.Type {
     const azleRecordConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RuntimeRecord => {
             return {
@@ -196,5 +177,5 @@ function generateRuntimeTypeObject(fields: Field[]): CandidType {
         {}
     );
 
-    return Record(azleRecordConstructorObj);
+    return IDL.Record(azleRecordConstructorObj);
 }

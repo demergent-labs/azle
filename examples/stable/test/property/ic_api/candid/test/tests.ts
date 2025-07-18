@@ -1,5 +1,6 @@
 import 'azle/experimental/_internal/test/set_experimental';
 
+import { IDL } from 'azle';
 import { DidVisitor, getDefaultVisitorData } from 'azle/_internal';
 import {
     defaultPropTestParams,
@@ -58,15 +59,13 @@ export function getTests(): Test {
             };
             await fc.assert(
                 fc.asyncProperty(
-                    candidDefinitionArb({ api: 'class', constraints }, {}),
+                    candidDefinitionArb({ constraints }, {}),
                     async (candid) => {
-                        const didVisitorResult =
-                            candid.definition.candidMeta.runtimeTypeObject
-                                .getIdlType([])
-                                .accept(
-                                    new DidVisitor(),
-                                    getDefaultVisitorData()
-                                );
+                        // TODO IDL.Empty is a placeholder for void...not quite correct
+                        const didVisitorResult = (
+                            candid.definition.candidMeta.runtimeTypeObject ??
+                            IDL.Empty
+                        ).accept(new DidVisitor(), getDefaultVisitorData());
                         const candidString = didVisitorResult[0];
                         const command = `didc random -t '(${candidString})'`;
                         const candidValueString = execSync(command)

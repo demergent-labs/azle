@@ -1,7 +1,5 @@
 import '#experimental/lib/assert_experimental';
 
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Server as NodeServer, ServerResponse } from 'http';
 // @ts-ignore
 import { HttpConn } from 'http';
@@ -10,196 +8,59 @@ import { IncomingMessageForServer } from 'http';
 // @ts-ignore
 import httpMessageParser from 'http-message-parser';
 
-import { idlEncode } from '#lib/execute_and_reply_with_candid_serde';
-import { msgReply } from '#lib/ic_apis/index';
+import {
+    HttpRequest,
+    HttpResponse,
+    HttpUpdateRequest
+} from '#lib/canisters/http_gateway/idl/index';
+import { idlDecode, idlEncode } from '#lib/execute_and_reply_with_candid_serde';
+import { msgArgData, msgReply } from '#lib/ic_apis/index';
+import { query, update } from '#lib/index';
 
-import { CandidType } from './candid/candid_type';
-import { Manual } from './candid/manual';
-import { blob } from './candid/types/constructed/blob';
-import { Opt } from './candid/types/constructed/opt';
-import { Record } from './candid/types/constructed/record';
-import { Tuple } from './candid/types/constructed/tuple';
-import { Variant } from './candid/types/constructed/variant';
-import { Vec } from './candid/types/constructed/vec';
-import { bool } from './candid/types/primitive/bool';
-import { nat16 } from './candid/types/primitive/nats/nat16';
-import { text } from './candid/types/primitive/text';
-import { Func } from './candid/types/reference/func';
-import { Canister } from './candid/types/reference/service';
-import { CanisterOptions } from './candid/types/reference/service/canister_function';
-import { init } from './canister_methods/methods/init';
-import { postUpgrade } from './canister_methods/methods/post_upgrade';
-import { query } from './canister_methods/methods/query';
-import { update } from './canister_methods/methods/update';
+export class Server {
+    nodeServer?: NodeServer;
 
-export type HeaderField = [text, text];
-export const HeaderField = Tuple(text, text);
+    @query([HttpRequest], HttpResponse, { composite: true, manual: true })
+    async http_request(): Promise<void> {
+        const httpRequest = idlDecode(
+            [HttpRequest],
+            msgArgData()
+        )[0] as unknown as HttpRequest;
 
-export const HttpRequest = Record({
-    method: text,
-    url: text,
-    headers: Vec(HeaderField),
-    body: blob,
-    certificate_version: Opt(nat16)
-});
-export type HttpRequest = typeof HttpRequest.tsType;
+        if (this.nodeServer === undefined) {
+            throw new Error(
+                'The nodeServer property of the Server base class has not been set.'
+            );
+        }
 
-export const HttpUpdateRequest = Record({
-    method: text,
-    url: text,
-    headers: Vec(HeaderField),
-    body: blob
-});
-export type HttpUpdateRequest = typeof HttpUpdateRequest.tsType;
-
-export const DefaultToken = blob;
-export function StreamingCallbackHttpResponse<Token extends CandidType>(
-    token: Token
-) {
-    return Record({
-        body: blob,
-        token: Opt(token)
-    });
-}
-export type StreamingCallbackHttpResponse<Token> = {
-    body: Uint8Array;
-    token: Opt<Token>;
-};
-
-function Callback<Token extends CandidType>(token: Token) {
-    return Func([token], Opt(StreamingCallbackHttpResponse(token)), 'query');
-}
-type Callback = Func;
-
-export function CallbackStrategy<Token extends CandidType>(token: Token) {
-    return Record({
-        callback: Callback(token),
-        token
-    });
-}
-export type CallbackStrategy<Token> = {
-    callback: Callback;
-    token: Token;
-};
-
-export function StreamingStrategy<Token extends CandidType>(token: Token) {
-    return Variant({
-        Callback: CallbackStrategy(token)
-    });
-}
-
-export type StreamingStrategy<Token> = Variant<{
-    Callback: CallbackStrategy<Token>;
-}>;
-
-export function HttpResponse<Token extends CandidType>(token?: Token) {
-    return Record({
-        status_code: nat16,
-        headers: Vec(HeaderField),
-        body: blob,
-        upgrade: Opt(bool),
-        streaming_strategy: Opt(StreamingStrategy(token ?? DefaultToken))
-    });
-}
-export type HttpResponse<Token> = {
-    status_code: number;
-    headers: HeaderField[];
-    body: Uint8Array;
-    upgrade: Opt<boolean>;
-    streaming_strategy: Opt<StreamingStrategy<Token>>;
-};
-
-let nodeServer: NodeServer | undefined = undefined;
-
-type ServerCallback = () => NodeServer | Promise<NodeServer>;
-
-export function serverInit(serverCallback: ServerCallback) {
-    return init([], async () => {
-        nodeServer = await serverCallback();
-    });
-}
-
-export function serverPostUpgrade(serverCallback: ServerCallback) {
-    return postUpgrade([], async () => {
-        nodeServer = await serverCallback();
-    });
-}
-
-export const serverHttpRequest = query(
-    [HttpRequest],
-    Manual(HttpResponse()),
-    async (httpRequest) => {
-        await httpHandler(httpRequest, true);
-    },
-    {
-        manual: true
+        await httpHandler(this.nodeServer, httpRequest, true);
     }
-);
 
-export const serverHttpRequestUpdate = update(
-    [HttpUpdateRequest],
-    Manual(HttpResponse()),
-    async (httpRequest) => {
-        await httpHandler(httpRequest, false);
-    },
-    {
-        manual: true
+    @update([HttpUpdateRequest], HttpResponse, { manual: true })
+    async http_request_update(): Promise<void> {
+        const httpUpdateRequest = idlDecode(
+            [HttpUpdateRequest],
+            msgArgData()
+        )[0] as unknown as HttpUpdateRequest;
+
+        if (this.nodeServer === undefined) {
+            throw new Error(
+                'The nodeServer property of the Server base class has not been set.'
+            );
+        }
+
+        await httpHandler(this.nodeServer, httpUpdateRequest, false);
     }
-);
-
-export function serverCanisterMethods(serverCallback: ServerCallback) {
-    return {
-        init: serverInit(serverCallback),
-        postUpgrade: serverPostUpgrade(serverCallback),
-        http_request: serverHttpRequest,
-        http_request_update: serverHttpRequestUpdate
-    };
-}
-
-export function Server<T extends CanisterOptions>(
-    serverCallback: ServerCallback,
-    canisterOptions?: T
-) {
-    const canisterOptionsNodeServerized = Object.entries(
-        canisterOptions ?? {}
-    ).reduce((acc, [key, value]) => {
-        const valueServerized =
-            value.mode === 'init' || value.mode === 'postUpgrade'
-                ? {
-                      ...value,
-                      callback: async (...args: any[]) => {
-                          if (value.callback !== undefined) {
-                              value.callback(...args);
-                          }
-
-                          setNodeServer(await serverCallback());
-                      }
-                  }
-                : value;
-
-        return {
-            ...acc,
-            [key]: valueServerized
-        };
-    }, {} as T);
-
-    return Canister({
-        ...serverCanisterMethods(serverCallback),
-        ...canisterOptionsNodeServerized
-    });
 }
 
 export async function httpHandler(
+    nodeServer: NodeServer,
     httpRequest: HttpRequest | HttpUpdateRequest,
     query: boolean
-) {
-    if (nodeServer === undefined) {
-        throw new Error(`The server was not initialized`);
-    }
-
+): Promise<void> {
     if (shouldUpgrade(httpRequest, query)) {
         const encoded = idlEncode(
-            [HttpResponse().getIdlType([])],
+            [HttpResponse],
             [
                 {
                     status_code: 204,
@@ -223,7 +84,7 @@ export async function httpHandler(
         writeable = true;
         res: ServerResponse | null = null;
 
-        async read() {
+        async read(): Promise<ArrayBuffer> {
             const httpLine1 = `${httpRequest.method} ${httpRequest.url} HTTP/1.1\r\n`;
 
             const httpHeaders = httpRequest.headers
@@ -234,11 +95,13 @@ export async function httpHandler(
 
             const httpString = `${httpLine1}${httpHeaders}\r\n\r\n`;
 
-            return Buffer.concat([Buffer.from(httpString), httpRequest.body])
-                .buffer;
+            return Buffer.concat([
+                Buffer.from(httpString),
+                new Uint8Array(httpRequest.body)
+            ]).buffer;
         }
 
-        async write(data: any) {
+        async write(data: any): Promise<void> {
             if (data.byteLength !== undefined) {
                 this.responseData = Buffer.concat([
                     this.responseData,
@@ -269,7 +132,7 @@ export async function httpHandler(
             }
         }
 
-        end(_data: any) {
+        end(_data: any): void {
             const startIndex =
                 this.responseData.indexOf(Buffer.from('\r\n\r\n')) + 4;
 
@@ -296,7 +159,7 @@ export async function httpHandler(
             // TODO also Express in Node has more headers like Date, Connection, Keep-Alive
             // TODO Conection and Keep-Alive might just not make sense in our context
             const encoded = idlEncode(
-                [HttpResponse().getIdlType([])],
+                [HttpResponse],
                 [
                     {
                         status_code: this.res.statusCode,
@@ -413,8 +276,4 @@ function processChunkedBody(buffer: Buffer): Buffer {
     }
 
     return result;
-}
-
-export function setNodeServer(newNodeServer: NodeServer) {
-    nodeServer = newNodeServer;
 }

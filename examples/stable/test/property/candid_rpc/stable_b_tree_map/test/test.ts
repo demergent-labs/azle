@@ -18,7 +18,7 @@ import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
 
-const context: Context = { api: 'class', constraints: {} };
+const context: Context = { constraints: {} };
 
 const StableBTreeMapTestArb = fc
     .array(

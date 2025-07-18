@@ -2,7 +2,7 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
-import { CandidType as RuntimeCandidType } from '#experimental/lib/index';
+import { IDL } from '#lib/index';
 
 import { Context } from '../types';
 import { CandidValueConstraints } from './candid_values_arb';
@@ -36,7 +36,7 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
     value: {
         agentArgumentValue: T;
         agentResponseValue: E;
-        runtimeTypeObject: RuntimeCandidType;
+        runtimeTypeObject: IDL.Type | undefined;
     };
     src: {
         typeAnnotation: string;

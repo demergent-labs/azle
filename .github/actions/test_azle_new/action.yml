@@ -53,6 +53,16 @@ runs:
               echo "❌ Invalid combination of inputs - none of the conditions matched"
               exit 1
 
+        - name: Verify project was created
+          working-directory: ${{ inputs.working-directory }}
+          shell: bash
+          run: |
+              if [[ ! -d "${{ inputs.project-name }}" ]]; then
+                echo "❌ Project directory was not created"
+                exit 1
+              fi
+              echo "✅ Project directory created successfully"
+
         - name: Install azle package in new project
           uses: ./.github/actions/retry_command
           with:

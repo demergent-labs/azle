@@ -37,11 +37,11 @@ jobs:
             matrix:
                 test_group:
                     - {
-                          name: 'Stable E2E CRPC',
+                          name: 'S/E2E/CRPC | cd ${{ inputs.call-delay }}| tl ${{ inputs.time-limit }}',
                           directories: './examples/stable/test/end_to_end/candid_rpc'
                       }
                     - {
-                          name: 'Stable Property IC API',
+                          name: 'S/P/IC API | cd ${{ inputs.call-delay }}| tl ${{ inputs.time-limit }}',
                           directories: './examples/stable/test/property/ic_api'
                       }
         uses: ./.github/workflows/run_test.yml
@@ -59,3 +59,6 @@ jobs:
             fuzz-call-delay: ${{ inputs.call-delay }}
             fuzz-time-limit: ${{ inputs.time-limit }}
             link-azle: true
+            operating-system: ubuntu
+            run-mac-tests: false
+            run-wsl-ubuntu-tests: false

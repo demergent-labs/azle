@@ -2,6 +2,8 @@ import '#experimental/build/assert_experimental';
 
 import fc from 'fast-check';
 
+import { IDL } from '#lib/index';
+
 import { Test } from '../test';
 import { CliStringVisitor } from '../visitors/cli-string-visitor';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
@@ -11,7 +13,7 @@ import { PostUpgradeMethod } from './canister_methods/post_upgrade_method_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { UpdateMethod } from './canister_methods/update_method_arb';
-import { Api, Context } from './types';
+import { Context } from './types';
 
 export type Canister = {
     initArgs: string[] | undefined;
@@ -77,28 +79,31 @@ export function CanisterArb<
 
         const initArgs = config.initMethod?.params.map((param) => {
             const value = param.value.value;
-            return value.runtimeTypeObject
-                .getIdlType([])
-                .accept(new CliStringVisitor(), {
+            // TODO IDL.Empty is a placeholder for void...not quite correct
+            return (value.runtimeTypeObject ?? IDL.Empty).accept(
+                new CliStringVisitor(),
+                {
                     value: value.agentArgumentValue
-                });
+                }
+            );
         });
 
         const postUpgradeArgs = config.postUpgradeMethod?.params.map(
             (param) => {
                 const value = param.value.value;
-                return value.runtimeTypeObject
-                    .getIdlType([])
-                    .accept(new CliStringVisitor(), {
+                // TODO IDL.Empty is a placeholder for void...not quite correct
+                return (value.runtimeTypeObject ?? IDL.Empty).accept(
+                    new CliStringVisitor(),
+                    {
                         value: value.agentArgumentValue
-                    });
+                    }
+                );
             }
         );
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
             canisterMethods,
-            context.api,
             context.inspectMessageImportHack
         );
 
@@ -139,26 +144,28 @@ function generateSourceCode<
     ParamAgentResponseValue
 >(
     globalDeclarations: string[],
-    canisterMethods: (
-        | UpdateMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
-        | QueryMethod
-    )[],
-    api: Api,
+    canisterMethods: CanisterMethod<
+        ParamAgentArgumentValue,
+        ParamAgentResponseValue
+    >[],
     inspectMessageImportHack?: boolean
 ): string {
-    const canisterImports = api === 'functional' ? ['Canister'] : [];
     const imports = [
         ...new Set([
-            ...canisterImports,
             ...canisterMethods.flatMap((method) => [...method.imports])
         ])
     ]
         .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
         .join();
-    const importLocation = `azle${api === 'functional' ? '/experimental' : ''}`;
+    const importLocation = `azle`;
 
     const declarationsFromCanisterMethods = canisterMethods.flatMap(
-        (method) => method.globalDeclarations
+        (method) => {
+            if ('globalDeclarations' in method) {
+                return method.globalDeclarations;
+            }
+            return [];
+        }
     );
 
     const declarations = [
@@ -167,14 +174,7 @@ function generateSourceCode<
 
     const sourceCodes = canisterMethods.map((method) => method.sourceCode);
 
-    const canister =
-        api === 'functional'
-            ? `
-        export default Canister({
-            ${sourceCodes.join(',\n    ')}
-        });
-            `
-            : `
+    const canister = `
         export default class {
             ${sourceCodes.join('\n    ')}
         };

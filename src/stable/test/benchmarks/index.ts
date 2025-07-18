@@ -222,31 +222,26 @@ function createNote(): string {
 ---
 
 **Note on calculations:**
-- Cycles are calculated using the formula: base_fee + (per_instruction_fee \\* number_of_instructions) + (additional_fee_per_billion \\* floor(number_of_instructions / 1_000_000_000))
-- base_fee: 590_000 cycles
-- per_instruction_fee: 0.4 cycles
-- additional_fee_per_billion: 400_000_000 cycles per billion instructions
-- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.329670 (as of October 24, 2024)
+- All calculations assume a 13-node subnet
+- Cycles are calculated using the formula: base_fee + per_instruction_fee \\* number_of_instructions
+- base_fee: 5_000_000 cycles
+- per_instruction_fee: 1 cycle
+- USD value is derived from the total cycles, where 1 trillion cycles = 1 XDR, and 1 XDR = $1.37 (as of June 27, 2025)
 
 For the most up-to-date XDR to USD conversion rate, please refer to the [IMF website](https://www.imf.org/external/np/fin/data/rms_sdrv.aspx).
-For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/current/developer-docs/gas-cost#execution).`;
+For the most current fee information, please check the [official documentation](https://internetcomputer.org/docs/references/cycles-cost-formulas).`;
 }
 
 function calculateCycles(instructions: bigint): bigint {
-    const baseFee = 590_000n;
-    const perInstructionFee = 4n; // Multiplied by 10 to avoid fractional bigint
-    const additionalFeePerBillion = 400_000_000n;
+    const baseFee = 5_000_000n;
+    const perInstructionFee = 1n;
 
-    const instructionFee = (perInstructionFee * instructions) / 10n;
-    const additionalFee =
-        (instructions / 1_000_000_000n) * additionalFeePerBillion;
-
-    return baseFee + instructionFee + additionalFee;
+    return baseFee + perInstructionFee * instructions;
 }
 
 function calculateUSD(cycles: bigint): number {
     const cyclesPerXDR = 1_000_000_000_000; // 1 trillion cycles = 1 XDR
-    const usdPerXDR = 1.32967; // As of October 24, 2024
+    const usdPerXDR = 1.37; // As of June 27, 2025
     return (Number(cycles) / cyclesPerXDR) * usdPerXDR;
 }
 

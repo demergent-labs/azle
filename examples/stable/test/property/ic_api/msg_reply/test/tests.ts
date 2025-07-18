@@ -22,8 +22,7 @@ export function getTests(): Test {
     return () => {
         it('should always reply with the input in alwaysReplyQuery and alwaysReplyUpdate', async () => {
             const context: Context<CandidValueConstraints> = {
-                constraints: {},
-                api: 'class'
+                constraints: {}
             };
             await fc.assert(
                 fc.asyncProperty(

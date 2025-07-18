@@ -85,12 +85,6 @@ fn initialize(init: bool, function_index: i32) {
     );
 
     seed_from_raw_rand();
-
-    ic_cdk::futures::in_executor_context(|| {
-        ic_cdk::futures::spawn(async move {
-            open_value_sharing::init(&wasm_data.consumer).await;
-        });
-    });
 }
 
 pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index: i32) {
@@ -142,10 +136,6 @@ pub fn initialize_js(wasm_data: &WasmData, js: &str, init: bool, function_index:
         context
             .get_global()
             .set("_azleResolveCallbacks", context.new_object().into());
-
-        context
-            .get_global()
-            .set("_azleCallbacks", context.new_object().into());
 
         // TODO what do we do if there is an error in here?
         context.eval_global_str("globalThis.exports = {};".to_string());

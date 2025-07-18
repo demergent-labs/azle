@@ -3,7 +3,7 @@ export type CandidAndMethodMeta = {
     methodMeta: MethodMeta;
 };
 
-export type CandidGen = 'automatic' | 'custom' | 'http';
+export type CandidGen = 'automatic' | 'custom';
 
 export type CanisterConfig = {
     type?: 'azle';
@@ -19,7 +19,6 @@ export type CustomConfig = {
     esm_aliases?: never;
     esm_externals?: never;
     experimental?: boolean;
-    openValueSharing?: never;
     test?: {
         clearHeapMethods?: string[];
         memorySizeIncreaseExpected?: boolean;
@@ -47,7 +46,7 @@ export type Command =
 export type ExperimentalCommand = 'upload-assets';
 
 type DevSubCommands = {
-    [K in Extract<Command, 'dev'>]: 'setup' | 'template';
+    [K in Extract<Command, 'dev'>]: 'audit' | 'setup' | 'template';
 };
 
 type ExtensionSubCommands = {

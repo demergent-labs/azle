@@ -1,0 +1,490 @@
+name: Azle CLI Commands Testing (WSL-Ubuntu)
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - ready_for_review
+            - reopened
+
+jobs:
+    test-cli-commands-outside-azle-repo-wsl-ubuntu:
+        runs-on: windows-latest
+        steps:
+            - name: Setup WSL-Ubuntu
+              uses: Wandalen/wretry.action@v1.4.10
+              with:
+                  action: Vampire/setup-wsl@v5
+                  with: |
+                      distribution: Ubuntu-24.04
+                      additional-packages: |
+                          curl
+                          build-essential
+                          git
+                          jq
+                          clang
+                      set-as-default: 'true'
+                      wsl-shell-user: 'tester'
+                  attempt_limit: 5
+                  attempt_delay: 60000
+
+            - name: Clone repository in WSL-Ubuntu
+              run: |
+                  # Add a comment
+                  # Clone the repository directly in WSL-Ubuntu for proper Unix line endings
+                  cd /home/tester
+                  git clone --no-single-branch https://github.com/${{ github.repository }}.git azle
+                  cd azle
+                  # Fetch all remote branches and pull request refs to ensure we have the specific commit
+                  git fetch --all
+                  git fetch origin '+refs/pull/*/head:refs/remotes/origin/pr/*' || true
+                  git fetch origin '+refs/pull/*/merge:refs/remotes/origin/merge/*' || true
+                  git checkout ${{ github.sha }}
+              shell: wsl-bash {0}
+
+            - name: Create test version number
+              id: test_version
+              run: |
+                  echo "test_version=0.0.0-cli-test-${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
+              shell: bash
+
+            - name: Setup and run CLI command tests
+              shell: wsl-bash {0}
+              run: |
+                  AZLE_ROOT=/home/tester/azle
+                  EXTERNAL_TEST_ENV_DIR_PATH=/home/tester/external_test_env
+
+                  # Source common functions
+                  source "${AZLE_ROOT}/.github/scripts/common_functions.sh"
+
+                  create_test_version() {
+                      echo "=== Creating test version ==="
+                      # Create a test version number using the GitHub run ID and run number
+                      TEST_VERSION="${{ steps.test_version.outputs.test_version }}"
+                      echo "Creating test version: ${TEST_VERSION}"
+
+                      # Update the version in package.json using npm version without creating a git tag
+                      npm version "${TEST_VERSION}" --no-git-tag-version
+
+                      echo "Test version set to: $TEST_VERSION"
+                  }
+
+                  pack_azle_source() {
+                      echo "=== Packing azle source ==="
+                      # Pack into the current directory and capture the original filename
+                      PACKED_FILE_NAME=$(npm pack | tail -n 1)
+                      echo "Original packed filename: ${PACKED_FILE_NAME}"
+
+                      # Get the absolute path by combining current directory with filename
+                      PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${PACKED_FILE_NAME}"
+                      echo "Absolute path: ${PACKED_FILE_ABSOLUTE_PATH}"
+
+                      echo "Packed file path set to: $PACKED_FILE_ABSOLUTE_PATH"
+                  }
+
+                  create_external_test_environment() {
+                      echo "=== Creating external test environment ==="
+                      # Create a fresh test directory to simulate external user environment
+                      mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
+                      echo "External test environment created at: ${EXTERNAL_TEST_ENV_DIR_PATH}"
+                  }
+
+                  install_packed_azle() {
+                      echo "=== Installing packed azle in external environment ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+                      # Install the package locally for testing
+                      echo "Installing the packed azle package for CLI testing"
+                      npm install "${PACKED_FILE_ABSOLUTE_PATH}"
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  test_azle_version_command() {
+                      echo "=== Testing azle version command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+
+                      echo "Testing 'azle --version' command"
+                      DISPLAYED_VERSION=$(npx azle --version)
+                      echo "Displayed version: ${DISPLAYED_VERSION}"
+
+                      # Verify the version matches our unique test version
+                      if [[ "${DISPLAYED_VERSION}" == "${TEST_VERSION}" ]]; then
+                          echo "✅ Version verification successful: Running the correct packed version"
+                      else
+                          echo "❌ Version verification failed: Version mismatch"
+                          echo "Expected to find: ${TEST_VERSION}"
+                          echo "But got: ${DISPLAYED_VERSION}"
+                          exit 1
+                      fi
+
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  test_azle_dev_setup_command() {
+                      echo "=== Testing azle dev setup command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+
+                      # Read expected versions from package.json
+                      echo "Reading expected versions from package.json"
+                      EXPECTED_NODE_VERSION=$(jq -r '.azle.globalDependencies.node // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_CARGO_AUDITABLE_VERSION=$(jq -r '.azle.globalDependencies."cargo-auditable" // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_CARGO_AUDIT_VERSION=$(jq -r '.azle.globalDependencies."cargo-audit" // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_CARGO_DENY_VERSION=$(jq -r '.azle.globalDependencies."cargo-deny" // "not found"' "${AZLE_ROOT}/package.json")
+                      EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${AZLE_ROOT}/package.json")
+
+                      echo "Expected Node version: ${EXPECTED_NODE_VERSION}"
+                      echo "Expected Rust version: ${EXPECTED_RUST_VERSION}"
+                      echo "Expected dfx version: ${EXPECTED_DFX_VERSION}"
+                      echo "Expected cargo-auditable version: ${EXPECTED_CARGO_AUDITABLE_VERSION}"
+                      echo "Expected cargo-audit version: ${EXPECTED_CARGO_AUDIT_VERSION}"
+                      echo "Expected cargo-deny version: ${EXPECTED_CARGO_DENY_VERSION}"
+                      echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
+
+                      # Since wsl-ubuntu doesn't have cargo installed, we need to install it and ensure it's in the path, other runners have cargo (even if it's a different version) so the path is already set up for those runners.
+                      install_rust_cargo
+
+                      echo "Running azle dev setup..."
+                      npx azle dev setup
+
+                      echo "Verifying installed versions match expected versions"
+
+                      # Check Node version
+                      ACTUAL_NODE_VERSION=$(node --version | sed 's/^v//')
+                      echo "Actual Node version: ${ACTUAL_NODE_VERSION}"
+                      if [[ "${ACTUAL_NODE_VERSION}" == "${EXPECTED_NODE_VERSION}" ]]; then
+                          echo "✅ Node version verification successful"
+                      else
+                          echo "❌ Node version verification failed: Expected ${EXPECTED_NODE_VERSION}, got ${ACTUAL_NODE_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check Rust version
+                      ACTUAL_RUST_VERSION=$(rustc --version | awk '{print $2}')
+                      echo "Actual Rust version: ${ACTUAL_RUST_VERSION}"
+                      if [[ "${ACTUAL_RUST_VERSION}" == "${EXPECTED_RUST_VERSION}" ]]; then
+                          echo "✅ Rust version verification successful"
+                      else
+                          echo "❌ Rust version verification failed: Expected ${EXPECTED_RUST_VERSION}, got ${ACTUAL_RUST_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check dfx version
+                      ACTUAL_DFX_VERSION=$(dfx --version | awk '{print $2}')
+                      echo "Actual dfx version: ${ACTUAL_DFX_VERSION}"
+                      if [[ "${ACTUAL_DFX_VERSION}" == "${EXPECTED_DFX_VERSION}" ]]; then
+                          echo "✅ dfx version verification successful"
+                      else
+                          echo "❌ dfx version verification failed: Expected ${EXPECTED_DFX_VERSION}, got ${ACTUAL_DFX_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check cargo-auditable version
+                      ACTUAL_CARGO_AUDITABLE_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_auditable_version.ts" 2>/dev/null || echo "not installed")
+                      echo "Actual cargo-auditable version: ${ACTUAL_CARGO_AUDITABLE_VERSION}"
+                      if [[ "${ACTUAL_CARGO_AUDITABLE_VERSION}" == "${EXPECTED_CARGO_AUDITABLE_VERSION}" ]]; then
+                          echo "✅ cargo-auditable version verification successful"
+                      else
+                          echo "❌ cargo-auditable version verification failed: Expected ${EXPECTED_CARGO_AUDITABLE_VERSION}, got ${ACTUAL_CARGO_AUDITABLE_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check cargo-audit version
+                      ACTUAL_CARGO_AUDIT_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_audit_version.ts" 2>/dev/null || echo "not installed")
+                      echo "Actual cargo-audit version: ${ACTUAL_CARGO_AUDIT_VERSION}"
+                      if [[ "${ACTUAL_CARGO_AUDIT_VERSION}" == "${EXPECTED_CARGO_AUDIT_VERSION}" ]]; then
+                          echo "✅ cargo-audit version verification successful"
+                      else
+                          echo "❌ cargo-audit version verification failed: Expected ${EXPECTED_CARGO_AUDIT_VERSION}, got ${ACTUAL_CARGO_AUDIT_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check cargo-deny version
+                      ACTUAL_CARGO_DENY_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_deny_version.ts" 2>/dev/null || echo "not installed")
+                      echo "Actual cargo-deny version: ${ACTUAL_CARGO_DENY_VERSION}"
+                      if [[ "${ACTUAL_CARGO_DENY_VERSION}" == "${EXPECTED_CARGO_DENY_VERSION}" ]]; then
+                          echo "✅ cargo-deny version verification successful"
+                      else
+                          echo "❌ cargo-deny version verification failed: Expected ${EXPECTED_CARGO_DENY_VERSION}, got ${ACTUAL_CARGO_DENY_VERSION}"
+                          exit 1
+                      fi
+
+                      # Check wasi2ic version
+                      ACTUAL_WASI2IC_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
+                      echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
+                      if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
+                          echo "✅ wasi2ic version verification successful"
+                      else
+                          echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
+                          exit 1
+                      fi
+
+                      echo "✅ All version verifications completed successfully"
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  test_azle_dev_template_commands() {
+                      echo "=== Testing azle dev template commands ==="
+
+                      # Helper function to clean all template files
+                      clean_templates() {
+                          echo "Cleaning all template files"
+                          rm -f dist/canister_templates/stable.wasm
+                          rm -f dist/canister_templates/experimental.wasm
+                      }
+
+                      # Helper function to check file size (cross-platform)
+                      check_file_size() {
+                          local file="$1"
+                          local file_size=$(wc -c < "$file" 2>/dev/null || echo "0")
+                          if [[ "$file_size" -gt 0 ]]; then
+                              return 0
+                          else
+                              return 1
+                          fi
+                      }
+
+                      # Remove existing template files to test regeneration
+                      echo "Initial cleanup: Removing existing template files for regeneration test"
+                      clean_templates
+
+                      # Test azle dev template (stable)
+                      echo "Testing 'azle dev template' command (stable only)"
+                      npx azle dev template
+
+                      # Verify stable template was created and has valid size
+                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                          echo "✅ Stable template file created successfully"
+                          if ! check_file_size "dist/canister_templates/stable.wasm"; then
+                              echo "❌ Stable template size check failed during stable-only test"
+                              exit 1
+                          fi
+                      else
+                          echo "❌ Stable template verification failed: stable.wasm was not created"
+                          exit 1
+                      fi
+
+                      # Verify experimental template was NOT created
+                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                          echo "❌ Stable command verification failed: experimental.wasm should not have been created"
+                          exit 1
+                      else
+                          echo "✅ Stable command verification successful: experimental.wasm was correctly not created"
+                      fi
+
+                      # Clean templates for next test
+                      clean_templates
+
+                      # Test azle dev template --experimental
+                      echo "Testing 'azle dev template --experimental' command (experimental only)"
+                      npx azle dev template --experimental
+
+                      # Verify experimental template was created and has valid size
+                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                          echo "✅ Experimental template file created successfully"
+                              if ! check_file_size "dist/canister_templates/experimental.wasm"; then
+                              echo "❌ Experimental template size check failed during experimental-only test"
+                          exit 1
+                          fi
+                      else
+                          echo "❌ Experimental template verification failed: experimental.wasm was not created"
+                          exit 1
+                      fi
+
+                      # Verify stable template was NOT created
+                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                          echo "❌ Experimental command verification failed: stable.wasm should not have been created"
+                          exit 1
+                      else
+                          echo "✅ Experimental command verification successful: stable.wasm was correctly not created"
+                      fi
+
+                      # Clean templates for final test
+                      clean_templates
+
+                      # Test azle dev template --all
+                      echo "Testing 'azle dev template --all' command (both templates)"
+                      npx azle dev template --all
+
+                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
+                          echo "✅ Stable template file created successfully"
+                          if ! check_file_size "dist/canister_templates/stable.wasm"; then
+                              echo "❌ Stable template size check failed during --all test"
+                              exit 1
+                          fi
+                      else
+                          echo "❌ All templates verification failed: stable.wasm was not created"
+                          exit 1
+                      fi
+
+                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
+                          echo "✅ Experimental template file created successfully"
+                          if ! check_file_size "dist/canister_templates/experimental.wasm"; then
+                              echo "❌ Experimental template size check failed during --all test"
+                              exit 1
+                          fi
+                      else
+                          echo "❌ All templates verification failed: experimental.wasm was not created"
+                          exit 1
+                      fi
+
+                      echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created with valid sizes"
+                  }
+
+                  test_azle_generate_command() {
+                      echo "=== Testing azle generate command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+
+                      echo "Testing 'azle generate' command with output verification"
+
+                      # Test the generate command with the packed version
+                      echo "Running azle generate command"
+                      npx azle generate "${AZLE_ROOT}/src/stable/lib/canisters/management/idl/ic.did" > generate_output.ts
+
+                      # Verify the generated file exists and is not empty
+                      echo "Verifying azle generate command output"
+                      if [[ -f "generate_output.ts" ]]; then
+                          FILE_SIZE=$(wc -c < "generate_output.ts" 2>/dev/null || echo "0")
+                          if [[ "$FILE_SIZE" -gt 0 ]]; then
+                              echo "✅ Generate command verification successful: Generated file exists and has valid size ($FILE_SIZE bytes)"
+                          else
+                              echo "❌ Generate command verification failed: Generated file is empty (0 bytes)"
+                              exit 1
+                          fi
+                      else
+                          echo "❌ Generate command verification failed: Generated file does not exist"
+                          exit 1
+                      fi
+
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  start_dfx_for_testing() {
+                      echo "=== Starting dfx for testing new command ==="
+                      cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+                      dfx start --clean --background --artificial-delay 0
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  test_azle_new_command() {
+                      local project_name="$1"
+                      local experimental="$2"
+                      local http_server="$3"
+                      local working_directory="$4"
+                      local expected_azle_version="$5"
+                      local packed_file_path="$6"
+
+                      echo "=== Testing azle new command for ${project_name} ==="
+                      cd "${working_directory}"
+
+                      echo "Creating new azle project: ${project_name}"
+
+                      # Determine which flags to use based on parameters
+                      if [[ "${experimental}" == "false" ]] && [[ "${http_server}" == "false" ]]; then
+                          echo "Creating stable project"
+                          npx azle new "${project_name}"
+                      elif [[ "${experimental}" == "true" ]] && [[ "${http_server}" == "true" ]]; then
+                          echo "Creating experimental project with HTTP server"
+                          npx azle new "${project_name}" --experimental --http-server
+                      elif [[ "${experimental}" == "true" ]] && [[ "${http_server}" == "false" ]]; then
+                          echo "Creating experimental project"
+                          npx azle new "${project_name}" --experimental
+                      else
+                          echo "❌ Invalid combination of inputs - none of the conditions matched"
+                          exit 1
+                      fi
+
+                      # Verify project was created
+                      if [[ ! -d "${project_name}" ]]; then
+                          echo "❌ Project directory was not created"
+                          exit 1
+                      fi
+
+                      echo "✅ Project directory created successfully"
+
+                      # Install the packed azle file to override the version
+                      cd "${project_name}"
+                      echo "Installing packed azle package in new project..."
+                      npm install "${packed_file_path}"
+
+                      # Verify azle version using the CLI (not package.json)
+                      echo "Verifying azle version in ${project_name} project"
+                      DISPLAYED_VERSION=$(npx azle --version)
+                      echo "Displayed version: ${DISPLAYED_VERSION}"
+
+                      if [[ "${DISPLAYED_VERSION}" == "${expected_azle_version}" ]]; then
+                          echo "✅ Version verification successful: New project using correct azle version"
+                      else
+                          echo "❌ Version verification failed: Version mismatch in new project"
+                          echo "Expected to find: ${expected_azle_version}"
+                          echo "But got: ${DISPLAYED_VERSION}"
+                          exit 1
+                      fi
+
+                      # Run the project tests
+                      echo "Running tests for ${project_name} project"
+                      if [[ "${experimental}" == "true" ]]; then
+                          AZLE_IDENTITY_STORAGE_MODE=plaintext AZLE_EXPERIMENTAL=true npm test
+                      else
+                          AZLE_IDENTITY_STORAGE_MODE=plaintext npm test
+                      fi
+
+                      # Verify build artifacts exist
+                      echo "Verifying .azle directory exists in ${project_name} project"
+                      if [[ -d ".azle" ]]; then
+                          echo "✅ .azle directory exists as expected after build"
+                      else
+                          echo "❌ .azle directory does not exist but should after running tests"
+                          exit 1
+                      fi
+
+                      # Test azle clean command
+                      echo "Testing azle clean command in ${project_name} project"
+                      npx azle clean
+
+                      # Verify clean command effectiveness
+                      echo "Verifying .azle directory was removed by clean command"
+                      if [[ -d ".azle" ]]; then
+                          echo "❌ .azle directory still exists but should have been removed by clean command"
+                          exit 1
+                      else
+                          echo "✅ .azle directory was successfully removed by clean command"
+                      fi
+
+                      echo "✅ ${project_name} project creation test completed successfully"
+
+                      cd "${AZLE_ROOT}"
+                  }
+
+                  # Execute functions in order
+                  cd "${AZLE_ROOT}"
+                  retry_command setup_nodejs
+                  retry_command install_dfx
+                  retry_command install_npm_dependencies
+                  create_test_version
+                  pack_azle_source
+                  create_external_test_environment
+                  retry_command install_packed_azle
+                  test_azle_version_command
+                  test_azle_dev_setup_command
+                  test_azle_dev_template_commands
+                  test_azle_generate_command
+                  start_dfx_for_testing
+
+                  # Test stable project creation with azle new command
+                  test_azle_new_command "stable_project_test" "false" "false" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${TEST_VERSION}" "${PACKED_FILE_ABSOLUTE_PATH}"
+
+                  # Test experimental project creation with azle new command
+                  test_azle_new_command "experimental_project_test" "true" "false" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${TEST_VERSION}" "${PACKED_FILE_ABSOLUTE_PATH}"
+
+                  # TODO: Skipping on WSL-Ubuntu due to sub domain issues
+                  # Test HTTP server project creation with azle new command
+                  # test_azle_new_command "http_server_project_test" "true" "true" "${EXTERNAL_TEST_ENV_DIR_PATH}" "${TEST_VERSION}" "${PACKED_FILE_ABSOLUTE_PATH}"
+
+                  echo "🎉 All CLI command tests completed successfully!"
+            # TODO This is suspicious, not sure it will work with wsl
+            - uses: Swatinem/rust-cache@v2
