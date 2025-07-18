@@ -69,8 +69,6 @@ jobs:
         name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | ${{inputs.operating-system}} | ${{ matrix.location }}'
         needs: get-test-infos
         runs-on: ${{ matrix.os }}
-        # Skip jobs when copy-outside-repo input is false but matrix value is true
-        if: ${{ !(inputs.copy-outside-repo == false && matrix.copy-outside-repo == true) }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
@@ -96,6 +94,9 @@ jobs:
                       copy-outside-repo: false
                     - location: 'External'
                       copy-outside-repo: true
+                exclude:
+                    # When copy-outside-repo input is false, exclude the true cases
+                    - ${{ inputs.copy-outside-repo == false && fromJSON('{"copy-outside-repo": true}') || fromJSON('{}') }}
 
         steps:
             - name: Debug matrix values
