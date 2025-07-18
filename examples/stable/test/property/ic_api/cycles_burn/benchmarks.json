@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -24,6 +20,21 @@
                     "timestamp": {
                         "__bigint__": "1741977013354206179"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "1367031",
+                    "method_name": "updateCyclesBurn",
+                    "timestamp": "1750853908819069619"
+                },
+                {
+                    "instructions": "1259324",
+                    "method_name": "assertCyclesBurnTypes",
+                    "timestamp": "1750853909174753720"
                 }
             ]
         }

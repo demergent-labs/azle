@@ -1,20 +1,6 @@
 {
     "complex_init": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "986859735"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741368977486800373"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -27,24 +13,20 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "992855070",
+                    "method_name": "init",
+                    "timestamp": "1750853904141779497"
+                }
+            ]
         }
     },
     "rec_init": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "986533460"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741368985336187404"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -55,6 +37,16 @@
                     "timestamp": {
                         "__bigint__": "1741977062670458775"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "992498748",
+                    "method_name": "init",
+                    "timestamp": "1750853911307721883"
                 }
             ]
         }

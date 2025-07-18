@@ -1,18 +1,20 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
+
+| Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
+| --- | ------------------ | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
+| 0   | updateIsController | 1_319_086    | 1_117_634 | $0.0000014861 | $1.48             | <font color="red">+1_292</font> |
+| 1   | updateIsController | 1_277_147    | 1_100_858 | $0.0000014638 | $1.46             | <font color="red">+8_431</font> |
+| 2   | updateIsController | 1_276_418    | 1_100_567 | $0.0000014634 | $1.46             | <font color="red">+4_526</font> |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name        | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------ | ------------ | --------- | ------------- | ----------------- |
 | 0   | updateIsController | 1_317_794    | 1_117_117 | $0.0000014854 | $1.48             |
 | 1   | updateIsController | 1_268_716    | 1_097_486 | $0.0000014593 | $1.45             |
 | 2   | updateIsController | 1_271_892    | 1_098_756 | $0.0000014610 | $1.46             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

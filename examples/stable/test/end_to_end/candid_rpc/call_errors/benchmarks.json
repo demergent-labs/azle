@@ -1,0 +1,43 @@
+{
+    "call_errors": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "570710138",
+                    "method_name": "test0",
+                    "timestamp": "1750853905277395115"
+                },
+                {
+                    "instructions": "883211",
+                    "method_name": "test1",
+                    "timestamp": "1750853909338024332"
+                },
+                {
+                    "instructions": "1254661",
+                    "method_name": "test2",
+                    "timestamp": "1750853909698330357"
+                },
+                {
+                    "instructions": "8682978",
+                    "method_name": "test3",
+                    "timestamp": "1750853910178887698"
+                },
+                {
+                    "instructions": "411487335",
+                    "method_name": "test4",
+                    "timestamp": "1750853910536366114"
+                },
+                {
+                    "instructions": "8533650",
+                    "method_name": "test5",
+                    "timestamp": "1750853910877945206"
+                }
+            ]
+        }
+    }
+}

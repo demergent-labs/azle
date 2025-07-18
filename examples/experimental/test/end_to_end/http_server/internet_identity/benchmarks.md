@@ -1,18 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for backend
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
-| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | init        | 7_521_438_592 | 5_809_165_436 | $0.0077242730 | $7_724.27         | <font color="red">+4_513_725</font> |
+| Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls | Change                                |
+| --- | ----------- | ------------- | ------------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | init        | 7_745_562_972 | 5_898_815_188 | $0.0078434776 | $7_843.47         | <font color="red">+224_124_380</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions  | Cycles        | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ------------- | ------------- | ----------------- |
-| 0   | init        | 7_516_924_867 | 5_807_359_946 | $0.0077218723 | $7_721.87         |
+| 0   | init        | 7_521_438_592 | 5_809_165_436 | $0.0077242730 | $7_724.27         |
 
 ---
 

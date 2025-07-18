@@ -1,20 +1,6 @@
 {
     "whoami": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "995240411"
-                    },
-                    "method_name": "postUpgrade",
-                    "timestamp": {
-                        "__bigint__": "1741368992486579428"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -25,6 +11,16 @@
                     "timestamp": {
                         "__bigint__": "1741977077280486844"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "1002682998",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1750853908340104897"
                 }
             ]
         }

@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -96,6 +92,61 @@
                     "timestamp": {
                         "__bigint__": "1741977018015727118"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "1796056",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1750853911379754252"
+                },
+                {
+                    "instructions": "96389144",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1750853911619947458"
+                },
+                {
+                    "instructions": "96387445",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1750853911874621488"
+                },
+                {
+                    "instructions": "98238544",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1750853912129366464"
+                },
+                {
+                    "instructions": "98237775",
+                    "method_name": "updatePerformanceCounter0",
+                    "timestamp": "1750853912384950886"
+                },
+                {
+                    "instructions": "1751077",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1750853913346133060"
+                },
+                {
+                    "instructions": "822487",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1750853913585452388"
+                },
+                {
+                    "instructions": "799617",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1750853914393843922"
+                },
+                {
+                    "instructions": "801550",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1750853915202376258"
+                },
+                {
+                    "instructions": "804029",
+                    "method_name": "updatePerformanceCounter1",
+                    "timestamp": "1750853916016161628"
                 }
             ]
         }

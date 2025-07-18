@@ -1,110 +1,6 @@
 {
     "wallet_backend": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "5385246"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1741369017467185857"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5329423"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1741369017711623993"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5664650"
-                    },
-                    "method_name": "2",
-                    "timestamp": {
-                        "__bigint__": "1741369017955444254"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5665305"
-                    },
-                    "method_name": "2",
-                    "timestamp": {
-                        "__bigint__": "1741369018443067691"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5655580"
-                    },
-                    "method_name": "1",
-                    "timestamp": {
-                        "__bigint__": "1741369079015735207"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5646491"
-                    },
-                    "method_name": "1",
-                    "timestamp": {
-                        "__bigint__": "1741369079486294852"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5329536"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1741369079732764895"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5325696"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1741369079977135643"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "13744552"
-                    },
-                    "method_name": "3",
-                    "timestamp": {
-                        "__bigint__": "1741369080221851155"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5317924"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1741369080466808103"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5320946"
-                    },
-                    "method_name": "0",
-                    "timestamp": {
-                        "__bigint__": "1741369080958286102"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -205,6 +101,66 @@
                     "timestamp": {
                         "__bigint__": "1741977164973564857"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "4849562",
+                    "method_name": "getBalance",
+                    "timestamp": "1750853935730311751"
+                },
+                {
+                    "instructions": "4757727",
+                    "method_name": "getBalance",
+                    "timestamp": "1750853935983168842"
+                },
+                {
+                    "instructions": "5106597",
+                    "method_name": "getDepositAddress",
+                    "timestamp": "1750853936233457175"
+                },
+                {
+                    "instructions": "5099929",
+                    "method_name": "getDepositAddress",
+                    "timestamp": "1750853936608612983"
+                },
+                {
+                    "instructions": "5102146",
+                    "method_name": "updateBalance",
+                    "timestamp": "1750853997007071482"
+                },
+                {
+                    "instructions": "5095018",
+                    "method_name": "updateBalance",
+                    "timestamp": "1750853997411205274"
+                },
+                {
+                    "instructions": "4758503",
+                    "method_name": "getBalance",
+                    "timestamp": "1750853997915430120"
+                },
+                {
+                    "instructions": "4749997",
+                    "method_name": "getBalance",
+                    "timestamp": "1750853998167692289"
+                },
+                {
+                    "instructions": "13437948",
+                    "method_name": "transfer",
+                    "timestamp": "1750853998418341656"
+                },
+                {
+                    "instructions": "4766089",
+                    "method_name": "getBalance",
+                    "timestamp": "1750853998678527615"
+                },
+                {
+                    "instructions": "4753604",
+                    "method_name": "getBalance",
+                    "timestamp": "1750853998929418330"
                 }
             ]
         }

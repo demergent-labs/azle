@@ -1,26 +1,24 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for bitcore_lib
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
 | Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls | Change                                    |
 | --- | ------------------- | -------------- | -------------- | ------------- | ----------------- | ----------------------------------------- |
-| 0   | init                | 9_397_168_537  | 7_359_457_414  | $0.0097856497 | $9_785.64         | <font color="red">+5_015_285</font>       |
-| 1   | http_request_update | 1_100_746_578  | 840_888_631    | $0.0011181044 | $1_118.10         | <font color="green">-618_939</font>       |
-| 2   | http_request_update | 11_433_099_631 | 8_973_829_852  | $0.0119322323 | $11_932.23        | <font color="red">+4_765_618_637</font>   |
-| 3   | http_request_update | 11_623_543_637 | 9_050_007_454  | $0.0120335234 | $12_033.52        | <font color="green">-2_163_778_676</font> |
-| 4   | http_request_update | 17_187_080_665 | 13_675_422_266 | $0.0181837987 | $18_183.79        | <font color="red">+4_763_492_547</font>   |
+| 0   | init                | 8_726_121_408  | 6_691_038_563  | $0.0088968732 | $8_896.87         | <font color="green">-671_047_129</font>   |
+| 1   | http_request_update | 1_106_227_164  | 843_080_865    | $0.0011210193 | $1_121.01         | <font color="red">+5_480_586</font>       |
+| 2   | http_request_update | 6_623_980_202  | 5_050_182_080  | $0.0067150756 | $6_715.07         | <font color="green">-4_809_119_429</font> |
+| 3   | http_request_update | 18_923_717_117 | 14_770_076_846 | $0.0196393281 | $19_639.32        | <font color="red">+7_300_173_480</font>   |
+| 4   | http_request_update | 17_425_957_891 | 13_770_973_156 | $0.0183108499 | $18_310.84        | <font color="red">+238_877_226</font>     |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name         | Instructions   | Cycles         | USD           | USD/Million Calls |
 | --- | ------------------- | -------------- | -------------- | ------------- | ----------------- |
-| 0   | init                | 9_392_153_252  | 7_357_451_300  | $0.0097829823 | $9_782.98         |
-| 1   | http_request_update | 1_101_365_517  | 841_136_206    | $0.0011184336 | $1_118.43         |
-| 2   | http_request_update | 6_667_480_994  | 5_067_582_397  | $0.0067382123 | $6_738.21         |
-| 3   | http_request_update | 13_787_322_313 | 10_715_518_925 | $0.0142481040 | $14_248.10        |
-| 4   | http_request_update | 12_423_588_118 | 9_770_025_247  | $0.0129909095 | $12_990.90        |
+| 0   | init                | 9_397_168_537  | 7_359_457_414  | $0.0097856497 | $9_785.64         |
+| 1   | http_request_update | 1_100_746_578  | 840_888_631    | $0.0011181044 | $1_118.10         |
+| 2   | http_request_update | 11_433_099_631 | 8_973_829_852  | $0.0119322323 | $11_932.23        |
+| 3   | http_request_update | 11_623_543_637 | 9_050_007_454  | $0.0120335234 | $12_033.52        |
+| 4   | http_request_update | 17_187_080_665 | 13_675_422_266 | $0.0181837987 | $18_183.79        |
 
 ---
 

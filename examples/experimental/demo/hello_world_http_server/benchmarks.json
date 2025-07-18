@@ -1,29 +1,6 @@
 {
     "backend": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "7516766936"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741368958536479870"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "53309725"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368970645290657"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -43,6 +20,21 @@
                     "timestamp": {
                         "__bigint__": "1741977065768560859"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "7736401550",
+                    "method_name": "init",
+                    "timestamp": "1750853904404847437"
+                },
+                {
+                    "instructions": "53363901",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853918580417646"
                 }
             ]
         }

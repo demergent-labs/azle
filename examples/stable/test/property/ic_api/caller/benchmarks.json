@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -42,6 +38,31 @@
                     "timestamp": {
                         "__bigint__": "1741977020019124266"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "1002139257",
+                    "method_name": "postUpgrade",
+                    "timestamp": "1750853911003462412"
+                },
+                {
+                    "instructions": "1289172",
+                    "method_name": "getUpdateCaller",
+                    "timestamp": "1750853914767369076"
+                },
+                {
+                    "instructions": "959086",
+                    "method_name": "setInspectMessageCaller",
+                    "timestamp": "1750853915126873392"
+                },
+                {
+                    "instructions": "1261233",
+                    "method_name": "getUpdateCaller",
+                    "timestamp": "1750853915604913173"
                 }
             ]
         }

@@ -1,8 +1,21 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
+
+| Id  | Method Name               | Instructions | Cycles     | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------------- | ------------ | ---------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | updatePerformanceCounter0 | 1_796_056    | 1_308_422  | $0.0000017398 | $1.73             | <font color="green">-1_625</font>       |
+| 1   | updatePerformanceCounter0 | 96_389_144   | 39_145_657 | $0.0000520508 | $52.05            | <font color="green">-493_663_671</font> |
+| 2   | updatePerformanceCounter0 | 96_387_445   | 39_144_978 | $0.0000520499 | $52.04            | <font color="green">-493_667_323</font> |
+| 3   | updatePerformanceCounter0 | 98_238_544   | 39_885_417 | $0.0000530344 | $53.03            | <font color="green">-491_816_341</font> |
+| 4   | updatePerformanceCounter0 | 98_237_775   | 39_885_110 | $0.0000530340 | $53.03            | <font color="green">-491_816_751</font> |
+| 5   | updatePerformanceCounter1 | 1_751_077    | 1_290_430  | $0.0000017158 | $1.71             | <font color="red">+847</font>           |
+| 6   | updatePerformanceCounter1 | 822_487      | 918_994    | $0.0000012220 | $1.22             | <font color="green">-59_624</font>      |
+| 7   | updatePerformanceCounter1 | 799_617      | 909_846    | $0.0000012098 | $1.20             | <font color="green">-65_858</font>      |
+| 8   | updatePerformanceCounter1 | 801_550      | 910_620    | $0.0000012108 | $1.21             | <font color="green">-65_762</font>      |
+| 9   | updatePerformanceCounter1 | 804_029      | 911_611    | $0.0000012121 | $1.21             | <font color="green">-65_186</font>      |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name               | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ------------------------- | ------------ | ----------- | ------------- | ----------------- |
@@ -16,10 +29,6 @@
 | 7   | updatePerformanceCounter1 | 865_475      | 936_190     | $0.0000012448 | $1.24             |
 | 8   | updatePerformanceCounter1 | 867_312      | 936_924     | $0.0000012458 | $1.24             |
 | 9   | updatePerformanceCounter1 | 869_215      | 937_686     | $0.0000012468 | $1.24             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

@@ -1,0 +1,88 @@
+{
+    "event_loop": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "3796240",
+                    "method_name": "testOrdering0",
+                    "timestamp": "1750853904709026552"
+                },
+                {
+                    "instructions": "3747275",
+                    "method_name": "testOrdering2",
+                    "timestamp": "1750853905189588113"
+                },
+                {
+                    "instructions": "3790543",
+                    "method_name": "testOrdering4",
+                    "timestamp": "1750853905430341352"
+                },
+                {
+                    "instructions": "719940",
+                    "method_name": "testOrdering6",
+                    "timestamp": "1750853905672660720"
+                },
+                {
+                    "instructions": "3649604",
+                    "method_name": "testOrdering8",
+                    "timestamp": "1750853905921065398"
+                },
+                {
+                    "instructions": "764335",
+                    "method_name": "testOrdering10",
+                    "timestamp": "1750853906164010093"
+                },
+                {
+                    "instructions": "3745939",
+                    "method_name": "testOrdering12",
+                    "timestamp": "1750853906412236253"
+                },
+                {
+                    "instructions": "628214",
+                    "method_name": "testOrdering13",
+                    "timestamp": "1750853906654212905"
+                },
+                {
+                    "instructions": "627387",
+                    "method_name": "testOrdering14",
+                    "timestamp": "1750853906908127386"
+                },
+                {
+                    "instructions": "630139",
+                    "method_name": "testOrdering15",
+                    "timestamp": "1750853907172125454"
+                },
+                {
+                    "instructions": "628240",
+                    "method_name": "testOrdering16",
+                    "timestamp": "1750853907425171686"
+                },
+                {
+                    "instructions": "656579",
+                    "method_name": "testOrdering17",
+                    "timestamp": "1750853907680537882"
+                },
+                {
+                    "instructions": "628605",
+                    "method_name": "testOrdering18",
+                    "timestamp": "1750853907934376871"
+                },
+                {
+                    "instructions": "738559",
+                    "method_name": "testOrdering19",
+                    "timestamp": "1750853908185584393"
+                },
+                {
+                    "instructions": "672489",
+                    "method_name": "testOrdering20",
+                    "timestamp": "1750853908433293247"
+                }
+            ]
+        }
+    }
+}

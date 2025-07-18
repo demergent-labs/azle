@@ -1,47 +1,6 @@
 {
     "complex_types": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "19641958"
-                    },
-                    "method_name": "createUser",
-                    "timestamp": {
-                        "__bigint__": "1741368981333629195"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "20883197"
-                    },
-                    "method_name": "createThread",
-                    "timestamp": {
-                        "__bigint__": "1741368981578744483"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "23389787"
-                    },
-                    "method_name": "createPost",
-                    "timestamp": {
-                        "__bigint__": "1741368981841280183"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "26478198"
-                    },
-                    "method_name": "createReaction",
-                    "timestamp": {
-                        "__bigint__": "1741368982306016471"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -79,6 +38,31 @@
                     "timestamp": {
                         "__bigint__": "1741977060195029567"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "19650158",
+                    "method_name": "createUser",
+                    "timestamp": "1750853905348833884"
+                },
+                {
+                    "instructions": "20872901",
+                    "method_name": "createThread",
+                    "timestamp": "1750853905593231384"
+                },
+                {
+                    "instructions": "23412002",
+                    "method_name": "createPost",
+                    "timestamp": "1750853905837190037"
+                },
+                {
+                    "instructions": "26483074",
+                    "method_name": "createReaction",
+                    "timestamp": "1750853906083085705"
                 }
             ]
         }

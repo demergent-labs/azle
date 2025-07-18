@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -105,6 +101,36 @@
                     "timestamp": {
                         "__bigint__": "1741977056176410765"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "1141581",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1750853910148317142"
+                },
+                {
+                    "instructions": "1064007",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1750853913731050792"
+                },
+                {
+                    "instructions": "1065548",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1750853917515436949"
+                },
+                {
+                    "instructions": "1068380",
+                    "method_name": "addRandomBytes",
+                    "timestamp": "1750853921495935122"
+                },
+                {
+                    "instructions": "101838",
+                    "method_name": "onLowWasmMemory",
+                    "timestamp": "1750853925317145681"
                 }
             ]
         }

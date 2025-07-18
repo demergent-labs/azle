@@ -1,18 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for persistent_storage
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                              |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | postUpgrade | 995_182_458  | 398_662_983 | $0.0005300902 | $530.09           | <font color="red">+3_089_555</font> |
+| 0   | postUpgrade | 999_685_150  | 400_464_060 | $0.0005324850 | $532.48           | <font color="red">+4_502_692</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- |
-| 0   | postUpgrade | 992_092_903  | 397_427_161 | $0.0005284470 | $528.44           |
+| 0   | postUpgrade | 995_182_458  | 398_662_983 | $0.0005300902 | $530.09           |
 
 ---
 

@@ -1,18 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for phone_book
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | insert      | 3_151_577    | 1_850_630 | $0.0000024607 | $2.46             | <font color="red">+1_268</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | insert      | 3_145_850    | 1_848_340 | $0.0000024577 | $2.45             | <font color="green">-5_727</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | insert      | 3_150_309    | 1_850_123 | $0.0000024601 | $2.46             |
+| 0   | insert      | 3_151_577    | 1_850_630 | $0.0000024607 | $2.46             |
 
 ---
 

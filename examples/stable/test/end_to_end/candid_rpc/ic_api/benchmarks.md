@@ -1,20 +1,18 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for ic_api
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
-| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
-| --- | ------------------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
-| 0   | dataCertificateNull | 1_745_288    | 1_288_115 | $0.0000017128 | $1.71             | <font color="green">-1_426</font> |
-| 1   | setCertifiedData    | 1_241_894    | 1_086_757 | $0.0000014450 | $1.44             | <font color="red">+2_278</font>   |
+| Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
+| --- | ------------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
+| 0   | dataCertificateNull | 1_755_419    | 1_292_167 | $0.0000017182 | $1.71             | <font color="red">+10_131</font> |
+| 1   | certifiedDataSet    | 1_241_425    | 1_086_570 | $0.0000014448 | $1.44             | <font color="green">-469</font>  |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name         | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | dataCertificateNull | 1_746_714    | 1_288_685 | $0.0000017135 | $1.71             |
-| 1   | setCertifiedData    | 1_239_616    | 1_085_846 | $0.0000014438 | $1.44             |
+| 0   | dataCertificateNull | 1_745_288    | 1_288_115 | $0.0000017128 | $1.71             |
+| 1   | setCertifiedData    | 1_241_894    | 1_086_757 | $0.0000014450 | $1.44             |
 
 ---
 

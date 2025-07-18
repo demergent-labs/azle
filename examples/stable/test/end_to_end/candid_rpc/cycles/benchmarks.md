@@ -1,38 +1,36 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for cycles
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
-| Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | receiveCycles | 1_612_215    | 1_234_886 | $0.0000016420 | $1.64             | <font color="red">+2_602</font> |
-| 1   | receiveCycles | 1_606_132    | 1_232_452 | $0.0000016388 | $1.63             | <font color="green">-277</font> |
-| 2   | receiveCycles | 1_607_399    | 1_232_959 | $0.0000016394 | $1.63             | <font color="green">-940</font> |
+| Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls | Change                              |
+| --- | ------------- | ------------ | --------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | receiveCycles | 1_297_084    | 1_108_833 | $0.0000014744 | $1.47             | <font color="green">-315_131</font> |
+| 1   | receiveCycles | 1_362_026    | 1_134_810 | $0.0000015089 | $1.50             | <font color="green">-244_106</font> |
+| 2   | receiveCycles | 1_360_495    | 1_134_198 | $0.0000015081 | $1.50             | <font color="green">-246_904</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name   | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | receiveCycles | 1_609_613    | 1_233_845 | $0.0000016406 | $1.64             |
-| 1   | receiveCycles | 1_606_409    | 1_232_563 | $0.0000016389 | $1.63             |
-| 2   | receiveCycles | 1_608_339    | 1_233_335 | $0.0000016399 | $1.63             |
+| 0   | receiveCycles | 1_612_215    | 1_234_886 | $0.0000016420 | $1.64             |
+| 1   | receiveCycles | 1_606_132    | 1_232_452 | $0.0000016388 | $1.63             |
+| 2   | receiveCycles | 1_607_399    | 1_232_959 | $0.0000016394 | $1.63             |
 
 # Benchmarks for intermediary
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
-| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
-| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | sendCycles       | 1_411_465    | 1_154_586 | $0.0000015352 | $1.53             | <font color="red">+50_603</font> |
-| 1   | sendCyclesNotify | 1_723_845    | 1_279_538 | $0.0000017014 | $1.70             | <font color="red">+3_725</font>  |
+| Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ---------------- | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | sendCycles       | 1_341_073    | 1_126_429 | $0.0000014978 | $1.49             | <font color="green">-70_392</font> |
+| 1   | sendCyclesNotify | 1_686_679    | 1_264_671 | $0.0000016816 | $1.68             | <font color="green">-37_166</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name      | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ---------------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | sendCycles       | 1_360_862    | 1_134_344 | $0.0000015083 | $1.50             |
-| 1   | sendCyclesNotify | 1_720_120    | 1_278_048 | $0.0000016994 | $1.69             |
+| 0   | sendCycles       | 1_411_465    | 1_154_586 | $0.0000015352 | $1.53             |
+| 1   | sendCyclesNotify | 1_723_845    | 1_279_538 | $0.0000017014 | $1.70             |
 
 ---
 

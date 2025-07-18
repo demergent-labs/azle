@@ -1,56 +1,6 @@
 {
     "bitcoin": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "9144460"
-                    },
-                    "method_name": "getBalance",
-                    "timestamp": {
-                        "__bigint__": "1741369097969515050"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "11260214"
-                    },
-                    "method_name": "getUtxos",
-                    "timestamp": {
-                        "__bigint__": "1741369098214981477"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5420496"
-                    },
-                    "method_name": "getCurrentFeePercentiles",
-                    "timestamp": {
-                        "__bigint__": "1741369098501751427"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "7052369"
-                    },
-                    "method_name": "sendTransaction",
-                    "timestamp": {
-                        "__bigint__": "1741369098970131727"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "5418866"
-                    },
-                    "method_name": "getCurrentFeePercentiles",
-                    "timestamp": {
-                        "__bigint__": "1741369175581508825"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -97,6 +47,36 @@
                     "timestamp": {
                         "__bigint__": "1741977243097530782"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "9137641",
+                    "method_name": "getBalance",
+                    "timestamp": "1750853990040127678"
+                },
+                {
+                    "instructions": "11240379",
+                    "method_name": "getUtxos",
+                    "timestamp": "1750853990441630336"
+                },
+                {
+                    "instructions": "5400146",
+                    "method_name": "getCurrentFeePercentiles",
+                    "timestamp": "1750853990919054645"
+                },
+                {
+                    "instructions": "7043163",
+                    "method_name": "sendTransaction",
+                    "timestamp": "1750853991440190927"
+                },
+                {
+                    "instructions": "5402204",
+                    "method_name": "getCurrentFeePercentiles",
+                    "timestamp": "1750854067814362993"
                 }
             ]
         }

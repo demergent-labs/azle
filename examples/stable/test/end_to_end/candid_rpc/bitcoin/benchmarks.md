@@ -1,26 +1,24 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for bitcoin
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
-| Id  | Method Name              | Instructions | Cycles    | USD           | USD/Million Calls | Change                           |
-| --- | ------------------------ | ------------ | --------- | ------------- | ----------------- | -------------------------------- |
-| 0   | getBalance               | 9_197_870    | 4_269_148 | $0.0000056766 | $5.67             | <font color="red">+53_410</font> |
-| 1   | getUtxos                 | 11_294_452   | 5_107_780 | $0.0000067917 | $6.79             | <font color="red">+34_238</font> |
-| 2   | getCurrentFeePercentiles | 5_464_738    | 2_775_895 | $0.0000036910 | $3.69             | <font color="red">+44_242</font> |
-| 3   | sendTransaction          | 7_103_904    | 3_431_561 | $0.0000045628 | $4.56             | <font color="red">+51_535</font> |
-| 4   | getCurrentFeePercentiles | 5_492_620    | 2_787_048 | $0.0000037059 | $3.70             | <font color="red">+73_754</font> |
+| Id  | Method Name              | Instructions | Cycles    | USD           | USD/Million Calls | Change                             |
+| --- | ------------------------ | ------------ | --------- | ------------- | ----------------- | ---------------------------------- |
+| 0   | getBalance               | 9_137_641    | 4_245_056 | $0.0000056445 | $5.64             | <font color="green">-60_229</font> |
+| 1   | getUtxos                 | 11_240_379   | 5_086_151 | $0.0000067629 | $6.76             | <font color="green">-54_073</font> |
+| 2   | getCurrentFeePercentiles | 5_400_146    | 2_750_058 | $0.0000036567 | $3.65             | <font color="green">-64_592</font> |
+| 3   | sendTransaction          | 7_043_163    | 3_407_265 | $0.0000045305 | $4.53             | <font color="green">-60_741</font> |
+| 4   | getCurrentFeePercentiles | 5_402_204    | 2_750_881 | $0.0000036578 | $3.65             | <font color="green">-90_416</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name              | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ------------------------ | ------------ | --------- | ------------- | ----------------- |
-| 0   | getBalance               | 9_144_460    | 4_247_784 | $0.0000056482 | $5.64             |
-| 1   | getUtxos                 | 11_260_214   | 5_094_085 | $0.0000067735 | $6.77             |
-| 2   | getCurrentFeePercentiles | 5_420_496    | 2_758_198 | $0.0000036675 | $3.66             |
-| 3   | sendTransaction          | 7_052_369    | 3_410_947 | $0.0000045354 | $4.53             |
-| 4   | getCurrentFeePercentiles | 5_418_866    | 2_757_546 | $0.0000036666 | $3.66             |
+| 0   | getBalance               | 9_197_870    | 4_269_148 | $0.0000056766 | $5.67             |
+| 1   | getUtxos                 | 11_294_452   | 5_107_780 | $0.0000067917 | $6.79             |
+| 2   | getCurrentFeePercentiles | 5_464_738    | 2_775_895 | $0.0000036910 | $3.69             |
+| 3   | sendTransaction          | 7_103_904    | 3_431_561 | $0.0000045628 | $4.56             |
+| 4   | getCurrentFeePercentiles | 5_492_620    | 2_787_048 | $0.0000037059 | $3.70             |
 
 ---
 

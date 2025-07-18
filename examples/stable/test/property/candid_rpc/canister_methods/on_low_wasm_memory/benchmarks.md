@@ -1,8 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
+
+| Id  | Method Name     | Instructions | Cycles    | USD           | USD/Million Calls | Change                                |
+| --- | --------------- | ------------ | --------- | ------------- | ----------------- | ------------------------------------- |
+| 0   | addRandomBytes  | 1_141_581    | 1_046_632 | $0.0000013917 | $1.39             | <font color="green">-65_406</font>    |
+| 1   | addRandomBytes  | 1_064_007    | 1_015_602 | $0.0000013504 | $1.35             | <font color="green">-74_439</font>    |
+| 2   | addRandomBytes  | 1_065_548    | 1_016_219 | $0.0000013512 | $1.35             | <font color="green">-74_263</font>    |
+| 3   | addRandomBytes  | 1_068_380    | 1_017_352 | $0.0000013527 | $1.35             | <font color="green">-72_261</font>    |
+| 4   | onLowWasmMemory | 101_838      | 630_735   | $0.0000008387 | $0.83             | <font color="green">-1_039_094</font> |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name     | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | --------------- | ------------ | --------- | ------------- | ----------------- |
@@ -17,10 +25,6 @@
 | 8   | addRandomBytes  | 1_138_193    | 1_045_277 | $0.0000013899 | $1.38             |
 | 9   | addRandomBytes  | 1_137_162    | 1_044_864 | $0.0000013893 | $1.38             |
 | 10  | onLowWasmMemory | 99_500       | 629_800   | $0.0000008374 | $0.83             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 
