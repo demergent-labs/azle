@@ -53,7 +53,7 @@ jobs:
                   directories: ${{ inputs.directories }}
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
-            - name: Debug test-infos and inputs
+            - name: Debug test-infos output
               run: |
                   echo "Test infos found: ${{ steps.get-test-infos.outputs.test-infos }}"
                   echo "Number of characters: ${#TEST_INFOS}"
@@ -62,14 +62,6 @@ jobs:
                   else
                       echo "✅ test-infos has content"
                   fi
-                  echo ""
-                  echo "Input debugging:"
-                  echo "inputs.copy-outside-repo: '${{ inputs.copy-outside-repo }}'"
-                  echo "inputs.copy-outside-repo type: $(echo '${{ inputs.copy-outside-repo }}' | wc -c) chars"
-                  echo "inputs.copy-outside-repo == true: ${{ inputs.copy-outside-repo == true }}"
-                  echo "inputs.copy-outside-repo == false: ${{ inputs.copy-outside-repo == false }}"
-                  echo "inputs.operating-system: '${{ inputs.operating-system }}'"
-                  echo "inputs.link-azle: '${{ inputs.link-azle }}'"
               env:
                   TEST_INFOS: ${{ steps.get-test-infos.outputs.test-infos }}
 
@@ -77,6 +69,8 @@ jobs:
         name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | ${{inputs.operating-system}} | ${{ matrix.location }}'
         needs: get-test-infos
         runs-on: ${{ matrix.os }}
+        # Skip jobs when copy-outside-repo input is false but matrix value is true
+        if: ${{ !(inputs.copy-outside-repo == false && matrix.copy-outside-repo == true) }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
@@ -95,12 +89,14 @@ jobs:
                 azle_source:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
+                # Note: Always use 2-element arrays due to GitHub Actions matrix limitation with single-element arrays
                 copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false, true]') }}
                 include:
                     - location: 'Internal'
                       copy-outside-repo: false
                     - location: 'External'
                       copy-outside-repo: true
+
         steps:
             - name: Debug matrix values
               run: |
@@ -171,7 +167,6 @@ jobs:
                   fi
                   echo "working-dir=$WORKING_DIR" >> $GITHUB_OUTPUT
                   echo "Working directory set to: $WORKING_DIR"
-                  echo "Debug: copy-outside-repo value is '${{ matrix.copy-outside-repo }}'"
 
             - name: Verify working directory
               run: |
