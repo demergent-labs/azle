@@ -90,17 +90,17 @@ jobs:
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix: # spins up one job per combination of test and code source (repo or npm).
-                os: ${{ inputs.operating-system == 'mac' && fromJSON('["macos-latest"]') || fromJSON('["ubuntu-latest"]') }}
-                azle_source: ${{ inputs.link-azle == true && fromJSON('["repo"]') || fromJSON('["npm"]') }}
+                os:
+                    - ${{ inputs.operating-system == 'mac' && 'macos-latest' || inputs.operating-system == 'ubuntu' && 'ubuntu-latest' }}
+                azle_source:
+                    - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
                 copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false, true]') }}
                 include:
-                    - copy-outside-repo: false
-                      location: 'Internal'
-                    - copy-outside-repo: true
-                      location: 'External'
-                    - copy-outside-repo: 'debug-false'
-                      location: 'Internal-Debug'
+                    - location: 'Internal'
+                      copy-outside-repo: false
+                    - location: 'External'
+                      copy-outside-repo: true
         steps:
             - name: Debug matrix values
               run: |
@@ -139,7 +139,7 @@ jobs:
               run: echo ${{matrix.test.path}}
 
             - name: Copy test outside repository
-              if: ${{ matrix.copy-outside-repo == true }}
+              if: ${{ inputs.copy-outside-repo }}
               id: copy-test
               run: |
                   # Create external test directory
@@ -164,7 +164,7 @@ jobs:
             - name: Set working directory
               id: set-working-dir
               run: |
-                  if [[ "${{ matrix.copy-outside-repo }}" == "true" ]]; then
+                  if [[ "${{ inputs.copy-outside-repo }}" == "true" ]]; then
                       WORKING_DIR="${{ steps.copy-test.outputs.external-test-dir }}"
                   else
                       WORKING_DIR="${{ matrix.test.path }}"
