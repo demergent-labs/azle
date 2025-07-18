@@ -88,15 +88,12 @@ jobs:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
                 # Note: Always use 2-element arrays due to GitHub Actions matrix limitation with single-element arrays
-                copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false, true]') }}
+                copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false, false]') }}
                 include:
                     - location: 'Internal'
                       copy-outside-repo: false
                     - location: 'External'
                       copy-outside-repo: true
-                exclude:
-                    # When copy-outside-repo input is false, exclude the true cases
-                    - ${{ inputs.copy-outside-repo == false && fromJSON('{"copy-outside-repo": true}') || fromJSON('{}') }}
 
         steps:
             - name: Debug matrix values
