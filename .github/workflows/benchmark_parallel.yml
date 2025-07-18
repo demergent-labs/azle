@@ -28,6 +28,10 @@ on:
             LASTMJS_GITHUB_TOKEN:
                 required: true
 
+permissions:
+    contents: write
+    actions: read
+
 jobs:
     prepare-benchmark:
         name: Prepare Benchmark

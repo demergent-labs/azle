@@ -58,6 +58,10 @@ on:
                 type: boolean
                 default: false
 
+permissions:
+    contents: read
+    actions: read
+
 jobs:
     workflow-config:
         name: Determine workflow config

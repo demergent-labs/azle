@@ -9,6 +9,10 @@ on:
             - reopened
             - edited
 
+permissions:
+    contents: read
+    pull-requests: read
+
 jobs:
     pr_tasks_check:
         name: All PR checkboxes marked completed

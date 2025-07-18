@@ -11,12 +11,19 @@ on:
             - ready_for_review
             - reopened
 
+permissions:
+    contents: read
+    actions: read
+
 jobs:
-    test-cli-commands-outside-azle-repo:
+    setup-and-pack:
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest]
         runs-on: ${{ matrix.os }}
+        outputs:
+            test-version: ${{ steps.create-test-version.outputs.test-version }}
+            packed-file-name: ${{ steps.pack-azle-source.outputs.packed-file-name }}
         steps:
             - uses: actions/checkout@v4
 
@@ -45,51 +52,68 @@ jobs:
             - name: Pack azle source
               id: pack-azle-source
               run: |
-                  # Pack into the dist directory and capture the original filename
+                  # Pack azle and capture the packed filename
                   PACKED_FILE_NAME=$(npm pack | tail -n 1)
-                  echo "Original packed filename: ${PACKED_FILE_NAME}"
+                  echo "packed-file-name=${PACKED_FILE_NAME}" >> $GITHUB_OUTPUT
 
-                  # Get the absolute path by combining current directory with filename
-                  PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${PACKED_FILE_NAME}"
-                  echo "Absolute path: ${PACKED_FILE_ABSOLUTE_PATH}"
+            - name: Upload packed azle
+              uses: actions/upload-artifact@v4
+              with:
+                  name: azle-packed-${{ matrix.os }}
+                  path: ${{ steps.pack-azle-source.outputs.packed-file-name }}
+                  retention-days: 1
 
-                  # Output the final absolute path for subsequent steps
-                  echo "packed-file-absolute-path=${PACKED_FILE_ABSOLUTE_PATH}" >> $GITHUB_OUTPUT
+    test-version-command:
+        needs: setup-and-pack
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
 
-            - name: Create external test environment
-              id: create-external-test-env
-              run: |
-                  # Create a fresh test directory to simulate external user environment
-                  EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
-                  mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
-                  echo "external-test-env-dir-path=${EXTERNAL_TEST_ENV_DIR_PATH}" >> $GITHUB_OUTPUT
-
-            - name: Install packed azle in external environment
-              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
-              run: |
-                  # Install the package locally for testing
-                  echo "Installing the packed azle package for CLI testing"
-                  npm install "${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}"
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
+              with:
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name: azle-packed-${{ matrix.os }}
 
             - name: Test azle version command
-              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   echo "Testing 'azle --version' command"
                   DISPLAYED_VERSION=$(npx azle --version)
                   echo "Displayed version: ${DISPLAYED_VERSION}"
 
                   # Verify the version matches our unique test version
-                  if [[ "${DISPLAYED_VERSION}" == "${{ steps.create-test-version.outputs.test-version }}" ]]; then
+                  if [[ "${DISPLAYED_VERSION}" == "${{ needs.setup-and-pack.outputs.test-version }}" ]]; then
                     echo "✅ Version verification successful: Running the correct packed version"
                   else
                     echo "❌ Version verification failed: Version mismatch"
-                    echo "Expected to find: ${{ steps.create-test-version.outputs.test-version }}"
+                    echo "Expected to find: ${{ needs.setup-and-pack.outputs.test-version }}"
                     echo "But got: ${DISPLAYED_VERSION}"
                     exit 1
                   fi
 
+    test-dev-setup-command:
+        needs: setup-and-pack
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
+              with:
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name: azle-packed-${{ matrix.os }}
+
             - name: Test azle dev setup command
-              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   echo "Testing 'azle dev setup' command"
 
@@ -188,6 +212,24 @@ jobs:
 
                   echo "✅ All version verifications completed successfully"
 
+    test-dev-template-commands:
+        needs: setup-and-pack
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: ./.github/actions/setup_node
+
+            - uses: ./.github/actions/setup_dfx
+
+            - name: Install azle dependencies
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+
             - uses: Swatinem/rust-cache@v2
 
             - name: Setup Rust and WASM targets (macOS only)
@@ -210,6 +252,11 @@ jobs:
                   echo "CFLAGS_wasm32_wasip1=--sysroot=$WASI_SDK_PATH/share/wasi-sysroot" >> $GITHUB_ENV
 
                   echo "✅ WASI SDK installed and configured for macOS"
+
+            - name: Setup Rust dependencies for template building
+              run: |
+                  echo "Setting up Rust dependencies for template building"
+                  npx azle dev setup --rust --cargo-auditable --wasi2ic
 
             - name: Test azle dev template commands
               run: |
@@ -319,8 +366,24 @@ jobs:
 
                   echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created with valid sizes"
 
+    test-generate-command:
+        needs: setup-and-pack
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
+              with:
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name: azle-packed-${{ matrix.os }}
+
             - name: Test azle generate command
-              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: |
                   echo "Testing 'azle generate' command with output verification"
 
@@ -343,13 +406,28 @@ jobs:
                     exit 1
                   fi
 
+    test-stable-project-creation:
+        needs: setup-and-pack
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
+              with:
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name: azle-packed-${{ matrix.os }}
+
             - name: Configure MacOS DNS (if needed)
               if: matrix.os == 'macos-latest'
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - name: Start dfx for testing new command
-              working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
-              shell: bash
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
               run: dfx start --clean --background --artificial-delay 0
 
             - name: Test stable project creation with azle new command
@@ -358,9 +436,33 @@ jobs:
                   project-name: 'stable_project_test'
                   experimental: 'false'
                   http-server: 'false'
-                  working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
-                  expected-azle-version: ${{ steps.create-test-version.outputs.test-version }}
-                  packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
+                  working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
+                  expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
+                  packed-file-path: ${{ steps.setup-external-azle-test-environment.outputs.packed-file-absolute-path }}
+
+    test-experimental-project-creation:
+        needs: setup-and-pack
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
+              with:
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name: azle-packed-${{ matrix.os }}
+
+            - name: Configure MacOS DNS (if needed)
+              if: matrix.os == 'macos-latest'
+              run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
+
+            - name: Start dfx for testing new command
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
+              run: dfx start --clean --background --artificial-delay 0
 
             - name: Test experimental project creation with azle new command
               uses: ./.github/actions/test_azle_new
@@ -368,9 +470,34 @@ jobs:
                   project-name: 'experimental_project_test'
                   experimental: 'true'
                   http-server: 'false'
-                  working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
-                  expected-azle-version: ${{ steps.create-test-version.outputs.test-version }}
-                  packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
+                  working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
+                  expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
+                  packed-file-path: ${{ steps.setup-external-azle-test-environment.outputs.packed-file-absolute-path }}
+
+    test-http-server-project-creation:
+        needs: setup-and-pack
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup external Azle test environment
+              id: setup-external-azle-test-environment
+              uses: ./.github/actions/setup_external_azle_test_environment
+              with:
+                  packed-file-name: ${{ needs.setup-and-pack.outputs.packed-file-name }}
+                  artifact-name: azle-packed-${{ matrix.os }}
+
+            - name: Configure MacOS DNS (if needed)
+              if: matrix.os == 'macos-latest'
+              run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
+
+            - name: Start dfx for testing new command
+              working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
+              run: |
+                  dfx start --clean --background --artificial-delay 0
 
             - name: Test HTTP server project creation with azle new command
               uses: ./.github/actions/test_azle_new
@@ -378,6 +505,21 @@ jobs:
                   project-name: 'http_server_project_test'
                   experimental: 'true'
                   http-server: 'true'
-                  working-directory: ${{ steps.create-external-test-env.outputs.external-test-env-dir-path }}
-                  expected-azle-version: ${{ steps.create-test-version.outputs.test-version }}
-                  packed-file-path: ${{ steps.pack-azle-source.outputs.packed-file-absolute-path }}
+                  working-directory: ${{ steps.setup-external-azle-test-environment.outputs.external-test-env-path }}
+                  expected-azle-version: ${{ needs.setup-and-pack.outputs.test-version }}
+                  packed-file-path: ${{ steps.setup-external-azle-test-environment.outputs.packed-file-absolute-path }}
+
+    test-cli-commands-outside-azle-repo:
+        needs:
+            - setup-and-pack
+            - test-version-command
+            - test-dev-setup-command
+            - test-dev-template-commands
+            - test-generate-command
+            - test-stable-project-creation
+            - test-experimental-project-creation
+            - test-http-server-project-creation
+        runs-on: ubuntu-latest
+        steps:
+            - name: All tests passed
+              run: echo "🎉 All CLI command tests completed successfully!"
