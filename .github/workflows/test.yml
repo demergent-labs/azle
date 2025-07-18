@@ -57,6 +57,11 @@ on:
                 required: true
                 type: boolean
                 default: false
+            copy-outside-repo:
+                description: 'Copy test outside repository to validate external-to-the-azle-repository usage'
+                required: false
+                type: boolean
+                default: false
 
 permissions:
     contents: read
@@ -75,6 +80,7 @@ jobs:
             fuzz-time-limit: ${{ steps.determine-workflow-config.outputs.fuzz-time-limit }}
             run-mac-tests: ${{ steps.determine-workflow-config.outputs.run-mac-tests }}
             run-wsl-ubuntu-tests: ${{ steps.determine-workflow-config.outputs.run-wsl-ubuntu-tests }}
+            copy-outside-repo: ${{ steps.determine-workflow-config.outputs.copy-outside-repo }}
         steps:
             - uses: actions/checkout@v4
 
@@ -90,6 +96,7 @@ jobs:
                   fuzz-time-limit-dispatch-input-value: ${{ inputs.fuzz-time-limit }}
                   run-mac-tests-dispatch-input-value: ${{ inputs.run-mac-tests }}
                   run-wsl-ubuntu-tests-dispatch-input-value: ${{ inputs.run-wsl-ubuntu-tests }}
+                  copy-outside-repo-dispatch-input-value: ${{ inputs.copy-outside-repo }}
 
     get-exclude-dirs:
         name: Get exclude directories
@@ -106,6 +113,7 @@ jobs:
                   exclude-slow: ${{ needs.workflow-config.outputs.exclude-slow }}
                   exclude-unstable: ${{ needs.workflow-config.outputs.exclude-unstable }}
                   exclude-release-only: ${{ needs.workflow-config.outputs.exclude-release-only }}
+                  exclude-copy-outside-repo-incompatible: ${{ needs.workflow-config.outputs.copy-outside-repo }}
 
     run-tests:
         name: ${{ matrix.test_group.name }}
@@ -235,6 +243,7 @@ jobs:
             fuzz-time-limit: ${{ needs.workflow-config.outputs.fuzz-time-limit }}
             run-mac-tests: ${{ needs.workflow-config.outputs.run-mac-tests == 'true' }}
             run-wsl-ubuntu-tests: ${{ needs.workflow-config.outputs.run-wsl-ubuntu-tests == 'true' }}
+            copy-outside-repo: ${{ needs.workflow-config.outputs.copy-outside-repo == 'true' }}
 
     top-level-checks:
         name: Top level checks
