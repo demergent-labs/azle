@@ -88,7 +88,7 @@ jobs:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
                 # Note: Always use 2-element arrays due to GitHub Actions matrix limitation with single-element arrays
-                copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false, false]') }}
+                copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false, true]') }}
                 include:
                     - location: 'Internal'
                       copy-outside-repo: false
@@ -96,6 +96,20 @@ jobs:
                       copy-outside-repo: true
 
         steps:
+            - name: Check if this job should run
+              id: should-run
+              run: |
+                  # Skip jobs where input is false but matrix value is true (unwanted external tests)
+                  if [[ "${{ inputs.copy-outside-repo }}" == "false" && "${{ matrix.copy-outside-repo }}" == "true" ]]; then
+                      echo "Skipping: copy-outside-repo input is false but matrix value is true"
+                      echo "This job will be cancelled as it's not needed"
+                      # Use GitHub Actions workflow command to cancel this job
+                      echo "::notice::Skipping external test job because copy-outside-repo input is false"
+                      exit 78  # Exit with a special code that indicates skipped
+                  else
+                      echo "Job will proceed normally"
+                  fi
+
             - name: Debug matrix values
               run: |
                   echo "Matrix debug info:"
