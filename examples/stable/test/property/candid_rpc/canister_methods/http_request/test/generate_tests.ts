@@ -27,12 +27,15 @@ export function generateTests(
                     const filteredHeaders = response.headers
                         .filter(
                             ([name]) =>
-                                name !== 'x-ic-streaming-response' &&
-                                name !== 'content-length' &&
-                                name !== 'date' &&
                                 name !== 'access-control-allow-origin' &&
                                 name !== 'access-control-expose-headers' &&
-                                name !== 'vary'
+                                name !== 'content-length' &&
+                                name !== 'date' &&
+                                name !== 'strict-transport-security' &&
+                                name !== 'vary' &&
+                                name !== 'x-ic-canister-id' &&
+                                name !== 'x-ic-streaming-response' &&
+                                name !== 'x-request-id'
                         )
                         .sort();
                     const processedResponse = {

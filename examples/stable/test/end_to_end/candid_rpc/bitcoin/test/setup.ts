@@ -1,21 +1,27 @@
-import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { existsSync } from 'fs';
 import { rm } from 'fs/promises';
 
 import { bitcoinCli, TxInput, TxOutputs, Utxo } from './bitcoin_cli';
 import { Wallets } from './wallets';
 
-export type BitcoinDaemon = ChildProcessWithoutNullStreams;
+export type BitcoinDaemon = ChildProcess;
 
 export async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     if (existsSync(`.bitcoin/regtest`)) {
         await rm('.bitcoin/regtest', { recursive: true, force: true });
     }
-    const bitcoinDaemon = spawn('.bitcoin/bin/bitcoind', [
-        `-conf=${process.cwd()}/.bitcoin.conf`,
-        `-datadir=${process.cwd()}/.bitcoin/data`,
-        '--port=18444'
-    ]);
+    const bitcoinDaemon = spawn(
+        '.bitcoin/bin/bitcoind',
+        [
+            `-conf=${process.cwd()}/.bitcoin.conf`,
+            `-datadir=${process.cwd()}/.bitcoin/data`,
+            '--port=18444'
+        ],
+        {
+            stdio: ['ignore', 'ignore', 'ignore']
+        }
+    );
 
     process.on('uncaughtException', () => {
         if (!bitcoinDaemon.killed) {
@@ -30,7 +36,9 @@ export async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     });
 
     console.info(`starting bitcoind...`);
+
     await new Promise((resolve) => setTimeout(resolve, 5000));
+
     return bitcoinDaemon;
 }
 

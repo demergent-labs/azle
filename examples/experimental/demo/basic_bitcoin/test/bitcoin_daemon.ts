@@ -1,19 +1,25 @@
-import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { existsSync } from 'fs';
 import { rm } from 'fs/promises';
 
-export type BitcoinDaemon = ChildProcessWithoutNullStreams;
+export type BitcoinDaemon = ChildProcess;
 
 export async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     if (existsSync(`.bitcoin/data/regtest`)) {
         await rm('.bitcoin/data/regtest', { recursive: true, force: true });
     }
 
-    const bitcoinDaemon = spawn('.bitcoin/bin/bitcoind', [
-        `-conf=${process.cwd()}/.bitcoin.conf`,
-        `-datadir=${process.cwd()}/.bitcoin/data`,
-        '--port=18444'
-    ]);
+    const bitcoinDaemon = spawn(
+        '.bitcoin/bin/bitcoind',
+        [
+            `-conf=${process.cwd()}/.bitcoin.conf`,
+            `-datadir=${process.cwd()}/.bitcoin/data`,
+            '--port=18444'
+        ],
+        {
+            stdio: ['ignore', 'ignore', 'ignore']
+        }
+    );
 
     process.on('uncaughtException', () => {
         if (!bitcoinDaemon.killed) {
