@@ -10,6 +10,12 @@ on:
                 type: string
                 default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
                 description: 'Signing key ID'
+
+permissions:
+    contents: write
+    pull-requests: write
+    actions: read
+
 jobs:
     create-branch-prefix:
         uses: ./.github/workflows/create_branch_prefix.yml

@@ -9,6 +9,11 @@ on:
             - reopened
     workflow_dispatch:
 
+permissions:
+    contents: write
+    pull-requests: write
+    actions: read
+
 jobs:
     workflow-config:
         name: Determine workflow config
