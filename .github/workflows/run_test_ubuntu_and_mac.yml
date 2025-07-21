@@ -148,7 +148,7 @@ jobs:
             - uses: ./.github/actions/setup_dfx
 
             - name: Configure MacOS DNS (if needed)
-              if: ${{ matrix.os == 'macos-latest' }}
+              if: matrix.os == 'macos-latest'
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - uses: ./.github/actions/retry_command
@@ -157,12 +157,11 @@ jobs:
                   command: 'npm install'
 
             - run: npm link
-              if: ${{ matrix.azle_source == 'repo' }}
+              if: matrix.azle_source == 'repo'
 
             - run: npm run lint
 
             - uses: ./.github/actions/retry_command
-              if: ${{ inputs.copy-outside-repo }}
               name: Install example dependencies
               with:
                   command: 'npm install'
@@ -183,16 +182,16 @@ jobs:
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - run: npm link azle
-              if: ${{ matrix.azle_source == 'repo' }}
+              if: matrix.azle_source == 'repo'
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - name: Start dfx with artificial delay 0
-              if: ${{ (steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true') }}
+              if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               run: dfx start --clean --background --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ (steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true') }}
+              if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               run: dfx start --clean --background
 
