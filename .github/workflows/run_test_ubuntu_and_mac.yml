@@ -53,18 +53,6 @@ jobs:
                   directories: ${{ inputs.directories }}
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
-            - name: Debug test-infos output
-              run: |
-                  echo "Test infos found: ${{ steps.get-test-infos.outputs.test-infos }}"
-                  echo "Number of characters: ${#TEST_INFOS}"
-                  if [ -z "${{ steps.get-test-infos.outputs.test-infos }}" ]; then
-                      echo "❌ test-infos is empty!"
-                  else
-                      echo "✅ test-infos has content"
-                  fi
-              env:
-                  TEST_INFOS: ${{ steps.get-test-infos.outputs.test-infos }}
-
     run-test:
         name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | ${{inputs.operating-system}} | ${{ matrix.location }}'
         needs: get-test-infos
@@ -87,55 +75,15 @@ jobs:
                 azle_source:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
-                # Note: Always use 2-element arrays due to GitHub Actions matrix limitation with single-element arrays
-                copy-outside-repo: ${{ inputs.copy-outside-repo == true && fromJSON('[true, false]') || fromJSON('[false, true]') }}
                 include:
-                    - location: 'Internal'
-                      copy-outside-repo: false
-                    - location: 'External'
-                      copy-outside-repo: true
-
+                    - location: ${{ inputs.copy-outside-repo == true && 'External' || 'Internal' }}
         steps:
-            - name: Check if this job should run
-              id: should-run
-              run: |
-                  # Skip jobs where input is false but matrix value is true (unwanted external tests)
-                  if [[ "${{ inputs.copy-outside-repo }}" == "false" && "${{ matrix.copy-outside-repo }}" == "true" ]]; then
-                      echo "Skipping: copy-outside-repo input is false but matrix value is true"
-                      echo "should-run=false" >> $GITHUB_OUTPUT
-                  else
-                      echo "Job will proceed normally"
-                      echo "should-run=true" >> $GITHUB_OUTPUT
-                  fi
-
-            - name: Skip this job (external test when input is false)
-              if: steps.should-run.outputs.should-run == 'false'
-              run: |
-                  echo "✅ This job is being skipped because copy-outside-repo input is false but matrix requested external test"
-                  echo "This is expected behavior - only internal tests should run"
-                  exit 0
-
-            - name: Debug matrix values
-              if: steps.should-run.outputs.should-run == 'true'
-              run: |
-                  echo "Matrix debug info:"
-                  echo "OS: ${{ matrix.os }}"
-                  echo "Azle source: ${{ matrix.azle_source }}"
-                  echo "Test name: ${{ matrix.test.name }}"
-                  echo "Test path: ${{ matrix.test.path }}"
-                  echo "Copy outside repo: ${{ matrix.copy-outside-repo }}"
-                  echo "Location: ${{ matrix.location }}"
-                  echo "Input copy-outside-repo: ${{ inputs.copy-outside-repo }}"
-
             - uses: actions/checkout@v4
-              if: steps.should-run.outputs.should-run == 'true'
 
             - uses: ./.github/actions/determine_workflow_context
-              if: steps.should-run.outputs.should-run == 'true'
               id: set-conditions
 
             - name: Set condition environment variables
-              if: steps.should-run.outputs.should-run == 'true'
               run: |
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_feature_merge }}" >> $GITHUB_ENV
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE=${{ steps.set-conditions.outputs.is_main_branch_push_from_release_merge }}" >> $GITHUB_ENV
@@ -144,7 +92,6 @@ jobs:
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR=${{ steps.set-conditions.outputs.is_feature_branch_draft_pr }}" >> $GITHUB_ENV
 
             - name: Print environment variables
-              if: steps.should-run.outputs.should-run == 'true'
               run: |
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_FEATURE_MERGE"
                   echo "AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE: $AZLE_IS_MAIN_BRANCH_PUSH_FROM_RELEASE_MERGE"
@@ -153,12 +100,11 @@ jobs:
                   echo "AZLE_IS_FEATURE_BRANCH_DRAFT_PR: $AZLE_IS_FEATURE_BRANCH_DRAFT_PR"
 
             - name: Report full path of test
-              if: steps.should-run.outputs.should-run == 'true'
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.test.path}}
 
             - name: Copy test outside repository
-              if: ${{ steps.should-run.outputs.should-run == 'true' && matrix.copy-outside-repo }}
+              if: ${{ inputs.copy-outside-repo }}
               id: copy-test
               run: |
                   # Create external test directory
@@ -181,10 +127,9 @@ jobs:
                   echo "Test copied to external directory: $EXTERNAL_TEST_DIR"
 
             - name: Set working directory
-              if: steps.should-run.outputs.should-run == 'true'
               id: set-working-dir
               run: |
-                  if [[ "${{ matrix.copy-outside-repo }}" == "true" ]]; then
+                  if [[ "${{ inputs.copy-outside-repo }}" == "true" ]]; then
                       WORKING_DIR="${{ steps.copy-test.outputs.external-test-dir }}"
                   else
                       WORKING_DIR="${{ matrix.test.path }}"
@@ -193,71 +138,65 @@ jobs:
                   echo "Working directory set to: $WORKING_DIR"
 
             - name: Verify working directory
-              if: steps.should-run.outputs.should-run == 'true'
               run: |
                   echo "Location: ${{ matrix.location }}"
                   echo "Current working directory: $(pwd)"
                   echo "Target working directory: ${{ steps.set-working-dir.outputs.working-dir }}"
 
             - uses: ./.github/actions/setup_node
-              if: steps.should-run.outputs.should-run == 'true'
 
             - uses: ./.github/actions/setup_dfx
-              if: steps.should-run.outputs.should-run == 'true'
 
             - name: Configure MacOS DNS (if needed)
-              if: ${{ steps.should-run.outputs.should-run == 'true' && matrix.os == 'macos-latest' }}
+              if: ${{ matrix.os == 'macos-latest' }}
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - uses: ./.github/actions/retry_command
-              if: steps.should-run.outputs.should-run == 'true'
               name: Install azle dependencies
               with:
                   command: 'npm install'
 
             - run: npm link
-              if: ${{ steps.should-run.outputs.should-run == 'true' && matrix.azle_source == 'repo' }}
+              if: ${{ matrix.azle_source == 'repo' }}
 
             - run: npm run lint
-              if: steps.should-run.outputs.should-run == 'true'
 
             - uses: ./.github/actions/retry_command
-              if: steps.should-run.outputs.should-run == 'true'
+              if: ${{ inputs.copy-outside-repo }}
               name: Install example dependencies
               with:
                   command: 'npm install'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - uses: ./.github/actions/retry_command
-              if: ${{ steps.should-run.outputs.should-run == 'true' && matrix.copy-outside-repo == true }}
+              if: ${{ inputs.copy-outside-repo }}
               name: Install example testing dependencies
               with:
                   command: 'npm install cuzz jest ts-jest --save-dev'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode
-              if: ${{ steps.should-run.outputs.should-run == 'true' && inputs.run-experimental }}
+              if: ${{ inputs.run-experimental }}
               uses: ./.github/actions/retry_command
               with:
                   command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - run: npm link azle
-              if: ${{ steps.should-run.outputs.should-run == 'true' && matrix.azle_source == 'repo' }}
+              if: ${{ matrix.azle_source == 'repo' }}
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - name: Start dfx with artificial delay 0
-              if: ${{ steps.should-run.outputs.should-run == 'true' && (steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true') }}
+              if: ${{ (steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true') }}
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               run: dfx start --clean --background --artificial-delay 0
 
             - name: Start dfx
-              if: ${{ steps.should-run.outputs.should-run == 'true' && (steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true') }}
+              if: ${{ (steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true') }}
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               run: dfx start --clean --background
 
             - name: Test configuration
-              if: steps.should-run.outputs.should-run == 'true'
               id: test-configuration
               run: |
                   RUNS=1
@@ -287,7 +226,6 @@ jobs:
                   echo "runs=$RUNS" >> $GITHUB_OUTPUT
 
             - name: Run tests
-              if: steps.should-run.outputs.should-run == 'true'
               run: |
                   npm test && echo "Current working directory of tests: $(pwd)"
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
