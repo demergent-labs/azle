@@ -1,10 +1,6 @@
 {
     "caller": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -44,15 +40,40 @@
                     }
                 }
             ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "1364398",
+                    "method_name": "getRejectCodeCanisterThrowError",
+                    "timestamp": "1750853918334712182"
+                },
+                {
+                    "instructions": "1288297",
+                    "method_name": "getRejectCodeCanisterReject",
+                    "timestamp": "1750853918701059786"
+                },
+                {
+                    "instructions": "1283620",
+                    "method_name": "getRejectNoError",
+                    "timestamp": "1750853919067774785"
+                },
+                {
+                    "instructions": "1271897",
+                    "method_name": "assertTypes",
+                    "timestamp": "1750853919434077226"
+                }
+            ]
         }
     },
     "rejector": {
         "previous": {
-            "version": "No previous benchmarks",
+            "version": "0.30.0",
             "benchmarks": []
         },
         "current": {
-            "version": "0.30.0",
+            "version": "0.32.0",
             "benchmarks": []
         }
     }

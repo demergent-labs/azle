@@ -1,8 +1,92 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
+
+| Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------- | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade | 1_013_329_862 | 805_921_944 | $0.0010716102 | $1_071.61         | <font color="red">+4_943_605</font> |
+| 1   | heartbeat   | 106_618       | 632_647     | $0.0000008412 | $0.84             | <font color="red">+2_355</font>     |
+| 2   | heartbeat   | 106_221       | 632_488     | $0.0000008410 | $0.84             | <font color="red">+2_736</font>     |
+| 3   | heartbeat   | 105_581       | 632_232     | $0.0000008407 | $0.84             | <font color="red">+1_847</font>     |
+| 4   | heartbeat   | 105_442       | 632_176     | $0.0000008406 | $0.84             | <font color="red">+1_492</font>     |
+| 5   | heartbeat   | 105_640       | 632_256     | $0.0000008407 | $0.84             | <font color="red">+2_392</font>     |
+| 6   | heartbeat   | 105_120       | 632_048     | $0.0000008404 | $0.84             | <font color="red">+1_455</font>     |
+| 7   | heartbeat   | 105_188       | 632_075     | $0.0000008405 | $0.84             | <font color="red">+1_368</font>     |
+| 8   | heartbeat   | 105_154       | 632_061     | $0.0000008404 | $0.84             | <font color="red">+1_938</font>     |
+| 9   | heartbeat   | 105_254       | 632_101     | $0.0000008405 | $0.84             | <font color="red">+1_874</font>     |
+| 10  | heartbeat   | 105_345       | 632_138     | $0.0000008405 | $0.84             | <font color="red">+1_941</font>     |
+| 11  | heartbeat   | 105_452       | 632_180     | $0.0000008406 | $0.84             | <font color="red">+2_110</font>     |
+| 12  | heartbeat   | 105_507       | 632_202     | $0.0000008406 | $0.84             | <font color="red">+2_131</font>     |
+| 13  | heartbeat   | 105_495       | 632_198     | $0.0000008406 | $0.84             | <font color="red">+2_079</font>     |
+| 14  | heartbeat   | 105_498       | 632_199     | $0.0000008406 | $0.84             | <font color="red">+2_142</font>     |
+| 15  | heartbeat   | 106_236       | 632_494     | $0.0000008410 | $0.84             | <font color="red">+2_651</font>     |
+| 16  | heartbeat   | 106_039       | 632_415     | $0.0000008409 | $0.84             | <font color="red">+2_721</font>     |
+| 17  | heartbeat   | 105_977       | 632_390     | $0.0000008409 | $0.84             | <font color="red">+2_739</font>     |
+| 18  | heartbeat   | 105_401       | 632_160     | $0.0000008406 | $0.84             | <font color="red">+2_444</font>     |
+| 19  | heartbeat   | 105_820       | 632_328     | $0.0000008408 | $0.84             | <font color="red">+2_339</font>     |
+| 20  | heartbeat   | 105_375       | 632_150     | $0.0000008406 | $0.84             | <font color="red">+1_800</font>     |
+| 21  | heartbeat   | 105_600       | 632_240     | $0.0000008407 | $0.84             | <font color="red">+2_441</font>     |
+| 22  | heartbeat   | 105_507       | 632_202     | $0.0000008406 | $0.84             | <font color="red">+2_131</font>     |
+| 23  | heartbeat   | 105_970       | 632_388     | $0.0000008409 | $0.84             | <font color="red">+2_475</font>     |
+| 24  | heartbeat   | 106_132       | 632_452     | $0.0000008410 | $0.84             | <font color="red">+2_342</font>     |
+| 25  | heartbeat   | 105_635       | 632_254     | $0.0000008407 | $0.84             | <font color="red">+2_230</font>     |
+| 26  | heartbeat   | 105_635       | 632_254     | $0.0000008407 | $0.84             | <font color="red">+2_589</font>     |
+| 27  | heartbeat   | 105_799       | 632_319     | $0.0000008408 | $0.84             | <font color="red">+2_302</font>     |
+| 28  | heartbeat   | 105_660       | 632_264     | $0.0000008407 | $0.84             | <font color="red">+2_056</font>     |
+| 29  | heartbeat   | 105_428       | 632_171     | $0.0000008406 | $0.84             | <font color="red">+2_035</font>     |
+| 30  | heartbeat   | 105_139       | 632_055     | $0.0000008404 | $0.84             | <font color="red">+1_358</font>     |
+| 31  | heartbeat   | 105_105       | 632_042     | $0.0000008404 | $0.84             | <font color="red">+1_733</font>     |
+| 32  | heartbeat   | 105_043       | 632_017     | $0.0000008404 | $0.84             | <font color="red">+1_871</font>     |
+| 33  | heartbeat   | 104_877       | 631_950     | $0.0000008403 | $0.84             | <font color="red">+1_657</font>     |
+| 34  | heartbeat   | 104_906       | 631_962     | $0.0000008403 | $0.84             | <font color="red">+1_331</font>     |
+| 35  | heartbeat   | 104_906       | 631_962     | $0.0000008403 | $0.84             | <font color="red">+1_312</font>     |
+| 36  | heartbeat   | 104_720       | 631_888     | $0.0000008402 | $0.84             | <font color="red">+830</font>       |
+| 37  | heartbeat   | 104_652       | 631_860     | $0.0000008402 | $0.84             | <font color="red">+829</font>       |
+| 38  | heartbeat   | 104_659       | 631_863     | $0.0000008402 | $0.84             | <font color="red">+880</font>       |
+| 39  | heartbeat   | 105_416       | 632_166     | $0.0000008406 | $0.84             | <font color="red">+2_350</font>     |
+| 40  | heartbeat   | 104_709       | 631_883     | $0.0000008402 | $0.84             | <font color="red">+925</font>       |
+| 41  | heartbeat   | 105_569       | 632_227     | $0.0000008407 | $0.84             | <font color="red">+1_900</font>     |
+| 42  | heartbeat   | 105_022       | 632_008     | $0.0000008404 | $0.84             | <font color="red">+1_191</font>     |
+| 43  | heartbeat   | 105_196       | 632_078     | $0.0000008405 | $0.84             | <font color="red">+1_736</font>     |
+| 44  | heartbeat   | 105_744       | 632_297     | $0.0000008407 | $0.84             | <font color="red">+1_934</font>     |
+| 45  | heartbeat   | 105_038       | 632_015     | $0.0000008404 | $0.84             | <font color="red">+1_691</font>     |
+| 46  | heartbeat   | 105_356       | 632_142     | $0.0000008405 | $0.84             | <font color="red">+1_951</font>     |
+| 47  | heartbeat   | 105_819       | 632_327     | $0.0000008408 | $0.84             | <font color="red">+2_421</font>     |
+| 48  | heartbeat   | 105_400       | 632_160     | $0.0000008406 | $0.84             | <font color="red">+2_144</font>     |
+| 49  | heartbeat   | 105_663       | 632_265     | $0.0000008407 | $0.84             | <font color="red">+2_035</font>     |
+| 50  | heartbeat   | 105_506       | 632_202     | $0.0000008406 | $0.84             | <font color="red">+2_229</font>     |
+| 51  | heartbeat   | 105_548       | 632_219     | $0.0000008406 | $0.84             | <font color="red">+1_981</font>     |
+| 52  | heartbeat   | 105_351       | 632_140     | $0.0000008405 | $0.84             | <font color="red">+2_105</font>     |
+| 53  | heartbeat   | 105_381       | 632_152     | $0.0000008406 | $0.84             | <font color="red">+1_790</font>     |
+| 54  | heartbeat   | 105_235       | 632_094     | $0.0000008405 | $0.84             | <font color="red">+1_995</font>     |
+| 55  | heartbeat   | 104_965       | 631_986     | $0.0000008403 | $0.84             | <font color="red">+1_350</font>     |
+| 56  | heartbeat   | 105_083       | 632_033     | $0.0000008404 | $0.84             | <font color="red">+1_285</font>     |
+| 57  | heartbeat   | 105_234       | 632_093     | $0.0000008405 | $0.84             | <font color="red">+1_614</font>     |
+| 58  | heartbeat   | 105_698       | 632_279     | $0.0000008407 | $0.84             | <font color="red">+2_397</font>     |
+| 59  | heartbeat   | 105_404       | 632_161     | $0.0000008406 | $0.84             | <font color="red">+1_989</font>     |
+| 60  | heartbeat   | 105_408       | 632_163     | $0.0000008406 | $0.84             | <font color="red">+1_971</font>     |
+| 61  | heartbeat   | 105_747       | 632_298     | $0.0000008407 | $0.84             | <font color="red">+2_422</font>     |
+| 62  | heartbeat   | 105_244       | 632_097     | $0.0000008405 | $0.84             | <font color="red">+2_061</font>     |
+| 63  | heartbeat   | 105_681       | 632_272     | $0.0000008407 | $0.84             | <font color="red">+2_294</font>     |
+| 64  | heartbeat   | 105_342       | 632_136     | $0.0000008405 | $0.84             | <font color="red">+2_295</font>     |
+| 65  | heartbeat   | 105_205       | 632_082     | $0.0000008405 | $0.84             | <font color="red">+1_881</font>     |
+| 66  | heartbeat   | 105_342       | 632_136     | $0.0000008405 | $0.84             | <font color="red">+1_386</font>     |
+| 67  | heartbeat   | 105_309       | 632_123     | $0.0000008405 | $0.84             | <font color="red">+1_923</font>     |
+| 68  | heartbeat   | 105_284       | 632_113     | $0.0000008405 | $0.84             | <font color="red">+1_216</font>     |
+| 69  | heartbeat   | 105_702       | 632_280     | $0.0000008407 | $0.84             | <font color="red">+1_967</font>     |
+| 70  | heartbeat   | 105_526       | 632_210     | $0.0000008406 | $0.84             | <font color="red">+1_518</font>     |
+| 71  | heartbeat   | 105_433       | 632_173     | $0.0000008406 | $0.84             | <font color="red">+1_984</font>     |
+| 72  | heartbeat   | 105_415       | 632_166     | $0.0000008406 | $0.84             | <font color="red">+1_651</font>     |
+| 73  | heartbeat   | 105_575       | 632_230     | $0.0000008407 | $0.84             | <font color="red">+2_122</font>     |
+| 74  | heartbeat   | 105_274       | 632_109     | $0.0000008405 | $0.84             | <font color="red">+1_601</font>     |
+| 75  | heartbeat   | 105_558       | 632_223     | $0.0000008406 | $0.84             | <font color="red">+2_442</font>     |
+| 76  | heartbeat   | 105_438       | 632_175     | $0.0000008406 | $0.84             | <font color="red">+1_409</font>     |
+| 77  | heartbeat   | 105_962       | 632_384     | $0.0000008409 | $0.84             | <font color="red">+2_621</font>     |
+| 78  | heartbeat   | 105_399       | 632_159     | $0.0000008406 | $0.84             | <font color="red">+1_462</font>     |
+| 79  | heartbeat   | 105_772       | 632_308     | $0.0000008408 | $0.84             | <font color="red">+2_410</font>     |
+| 80  | heartbeat   | 105_423       | 632_169     | $0.0000008406 | $0.84             | <font color="red">+1_416</font>     |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------- | ----------- | ------------- | ----------------- |
@@ -90,10 +174,6 @@
 | 81  | heartbeat   | 104_262       | 631_704     | $0.0000008400 | $0.83             |
 | 82  | heartbeat   | 104_187       | 631_674     | $0.0000008399 | $0.83             |
 | 83  | heartbeat   | 104_149       | 631_659     | $0.0000008399 | $0.83             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 

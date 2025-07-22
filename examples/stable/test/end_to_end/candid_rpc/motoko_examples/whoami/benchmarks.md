@@ -1,18 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for whoami
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
-| Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls | Change                              |
-| --- | ----------- | ------------ | ----------- | ------------- | ----------------- | ----------------------------------- |
-| 0   | postUpgrade | 998_218_620  | 399_877_448 | $0.0005317050 | $531.70           | <font color="red">+2_978_209</font> |
+| Id  | Method Name | Instructions  | Cycles      | USD           | USD/Million Calls | Change                              |
+| --- | ----------- | ------------- | ----------- | ------------- | ----------------- | ----------------------------------- |
+| 0   | postUpgrade | 1_002_682_998 | 801_663_199 | $0.0010659475 | $1_065.94         | <font color="red">+4_464_378</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles      | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | ----------- | ------------- | ----------------- |
-| 0   | postUpgrade | 995_240_411  | 398_686_164 | $0.0005301210 | $530.12           |
+| 0   | postUpgrade | 998_218_620  | 399_877_448 | $0.0005317050 | $531.70           |
 
 ---
 

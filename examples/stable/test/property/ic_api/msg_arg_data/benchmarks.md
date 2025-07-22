@@ -1,8 +1,22 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for canister
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
+
+| Id  | Method Name         | Instructions | Cycles      | USD           | USD/Million Calls | Change                                  |
+| --- | ------------------- | ------------ | ----------- | ------------- | ----------------- | --------------------------------------- |
+| 0   | postUpgrade         | 995_821_993  | 398_918_797 | $0.0005304304 | $530.43           | <font color="green">-118_964_505</font> |
+| 1   | getUpdateMsgArgData | 2_330_976    | 1_522_390   | $0.0000020243 | $2.02             | <font color="red">+308_050</font>       |
+| 2   | getUpdateMsgArgData | 1_838_749    | 1_325_499   | $0.0000017625 | $1.76             | <font color="green">-153_610</font>     |
+| 3   | getUpdateMsgArgData | 1_828_145    | 1_321_258   | $0.0000017568 | $1.75             | <font color="green">-143_678</font>     |
+| 4   | getUpdateMsgArgData | 1_831_449    | 1_322_579   | $0.0000017586 | $1.75             | <font color="green">-158_489</font>     |
+| 5   | getUpdateMsgArgData | 1_825_475    | 1_320_190   | $0.0000017554 | $1.75             | <font color="green">-166_135</font>     |
+| 6   | getUpdateMsgArgData | 1_823_956    | 1_319_582   | $0.0000017546 | $1.75             | <font color="green">-139_914</font>     |
+| 7   | getUpdateMsgArgData | 1_832_308    | 1_322_923   | $0.0000017591 | $1.75             | <font color="green">-158_903</font>     |
+| 8   | getUpdateMsgArgData | 1_836_390    | 1_324_556   | $0.0000017612 | $1.76             | <font color="green">-153_897</font>     |
+| 9   | getUpdateMsgArgData | 1_830_449    | 1_322_179   | $0.0000017581 | $1.75             | <font color="green">-160_213</font>     |
+| 10  | getUpdateMsgArgData | 1_830_936    | 1_322_374   | $0.0000017583 | $1.75             | <font color="green">-162_517</font>     |
+
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name         | Instructions  | Cycles      | USD           | USD/Million Calls |
 | --- | ------------------- | ------------- | ----------- | ------------- | ----------------- |
@@ -17,10 +31,6 @@
 | 8   | getUpdateMsgArgData | 1_990_287     | 1_386_114   | $0.0000018431 | $1.84             |
 | 9   | getUpdateMsgArgData | 1_990_662     | 1_386_264   | $0.0000018433 | $1.84             |
 | 10  | getUpdateMsgArgData | 1_993_453     | 1_387_381   | $0.0000018448 | $1.84             |
-
-## Baseline benchmarks Azle version: No previous benchmarks
-
-No benchmarks reported
 
 ---
 
