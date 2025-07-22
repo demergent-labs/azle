@@ -48,6 +48,10 @@ on:
                 default: false
                 description: 'Copy test outside repository to validate external-to-the-azle-repository usage'
 
+permissions:
+    contents: read
+    actions: read
+
 jobs:
     run-tests-ubuntu-and-mac-repo-internal:
         if: ${{ inputs.operating-system == 'ubuntu' || (inputs.operating-system == 'mac' && inputs.run-mac-tests == true) }}

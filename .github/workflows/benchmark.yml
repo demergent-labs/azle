@@ -46,6 +46,11 @@ on:
             LASTMJS_GITHUB_TOKEN:
                 required: true
 
+permissions:
+    contents: write
+    pull-requests: write
+    actions: read
+
 jobs:
     get-exclude-dirs:
         name: Get exclude directories

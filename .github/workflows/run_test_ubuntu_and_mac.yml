@@ -38,6 +38,10 @@ on:
                 default: false
                 description: 'Copy test outside repository to validate external-to-the-azle-repository usage'
 
+permissions:
+    contents: read
+    actions: read
+
 jobs:
     get-test-infos:
         name: Get test infos

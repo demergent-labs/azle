@@ -25,6 +25,10 @@ on:
             GPG_SIGNING_KEY:
                 required: true
 
+permissions:
+    contents: write
+    actions: read
+
 jobs:
     create-branch-prefix:
         name: Create Branch and Branch Prefix
