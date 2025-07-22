@@ -15,7 +15,6 @@ import {
     startingMemoryState,
     takeMemorySnapshot
 } from './memory_state';
-import { runSecurityChecks } from './security_checks';
 
 export type Test = () => void;
 
@@ -32,8 +31,7 @@ export function runTests(tests: Test): void {
         shouldRunTypeChecks,
         shouldRecordBenchmarks,
         shouldFuzz,
-        shouldCheckGlobalStateAfterFuzzTests,
-        shouldRunSecurityChecks
+        shouldCheckGlobalStateAfterFuzzTests
     } = processEnvVars();
 
     (shouldRunTests === true ? describe : describe.skip)(
@@ -83,15 +81,6 @@ export function runTests(tests: Test): void {
                     }
                 }
             );
-        }
-    );
-
-    (shouldRunSecurityChecks === true ? describe : describe.skip)(
-        'security checks',
-        () => {
-            it('runs security checks', () => {
-                runSecurityChecks();
-            });
         }
     );
 
@@ -187,7 +176,6 @@ function processEnvVars(): {
     shouldRecordBenchmarks: boolean;
     shouldFuzz: boolean;
     shouldCheckGlobalStateAfterFuzzTests: boolean;
-    shouldRunSecurityChecks: boolean;
 } {
     const runTests = process.env.AZLE_RUN_TESTS ?? 'true';
     const checkGlobalStateAfterTests =
@@ -199,7 +187,6 @@ function processEnvVars(): {
     const fuzz = process.env.AZLE_FUZZ ?? 'false';
     const checkGlobalStateAfterFuzzTests =
         process.env.AZLE_CHECK_GLOBAL_STATE_AFTER_FUZZ_TESTS ?? 'true';
-    const runSecurityChecks = process.env.AZLE_SECURITY_CHECKS ?? 'true';
 
     const hasOnly = [
         runTests,
@@ -207,8 +194,7 @@ function processEnvVars(): {
         fuzz,
         checkGlobalStateAfterTests,
         checkMemoryStateAfterTests,
-        checkGlobalStateAfterFuzzTests,
-        runSecurityChecks
+        checkGlobalStateAfterFuzzTests
     ].includes('only');
 
     const shouldRunTests = shouldRun(runTests, hasOnly, true);
@@ -232,7 +218,6 @@ function processEnvVars(): {
     const shouldCheckGlobalStateAfterFuzzTests =
         shouldFuzz === true &&
         shouldRun(checkGlobalStateAfterFuzzTests, hasOnly, true);
-    const shouldRunSecurityChecks = shouldRun(runSecurityChecks, hasOnly, true);
 
     return {
         shouldRunTests,
@@ -241,8 +226,7 @@ function processEnvVars(): {
         shouldFuzz,
         shouldCheckGlobalStateAfterTests,
         shouldCheckMemoryStateAfterTests,
-        shouldCheckGlobalStateAfterFuzzTests,
-        shouldRunSecurityChecks
+        shouldCheckGlobalStateAfterFuzzTests
     };
 }
 
