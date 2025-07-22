@@ -5,8 +5,17 @@ import { join } from 'path';
 import { execSyncPretty } from '#utils/exec_sync_pretty';
 import { AZLE_ROOT } from '#utils/global_paths';
 
+// TODO I'm thinking that we might want to ensure that npm audit is run for AZLE_ROOT
+// TODO let's also add npm run licensee after npm audit
+// TODO let's think about if npm run licensee is the best name
 export async function runCommand(ioType: IOType = 'inherit'): Promise<void> {
     runAuditCommand('npm audit', {
+        cwd: AZLE_ROOT,
+        stdio: ioType
+    });
+
+    runAuditCommand('npm run licensee', {
+        cwd: AZLE_ROOT,
         stdio: ioType
     });
 
@@ -18,8 +27,8 @@ export async function runCommand(ioType: IOType = 'inherit'): Promise<void> {
     const workingDir =
         existsSync(cargoLockPath) === true ? currentDir : AZLE_ROOT;
     const cargoOpts = {
-        stdio: ioType,
-        cwd: workingDir
+        cwd: workingDir,
+        stdio: ioType
     };
 
     runAuditCommand('cargo audit', cargoOpts);
@@ -27,6 +36,7 @@ export async function runCommand(ioType: IOType = 'inherit'): Promise<void> {
     runAuditCommand('cargo audit bin ~/.cargo/bin/cargo-audit', cargoOpts);
     runAuditCommand('cargo audit bin ~/.cargo/bin/cargo-deny', cargoOpts);
     runAuditCommand('cargo audit bin ~/.cargo/bin/wasi2ic', cargoOpts);
+
     runAuditCommand('cargo deny check', cargoOpts);
 
     console.info('\n🎉 All security audit checks completed successfully!');
