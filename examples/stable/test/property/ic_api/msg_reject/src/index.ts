@@ -5,12 +5,7 @@ export default class {
     alwaysRejectQuery(): void {
         const argData = msgArgData();
 
-        const message = IDL.decode(
-            [IDL.Text],
-            argData.buffer instanceof ArrayBuffer
-                ? argData.buffer
-                : new Uint8Array(argData).buffer
-        )[0] as string;
+        const message = IDL.decode([IDL.Text], argData)[0] as string;
 
         msgReject(`reject proptest message: ${message}`);
     }
@@ -19,12 +14,7 @@ export default class {
     alwaysRejectUpdate(): void {
         const argData = msgArgData();
 
-        const message = IDL.decode(
-            [IDL.Text],
-            argData.buffer instanceof ArrayBuffer
-                ? argData.buffer
-                : new Uint8Array(argData).buffer
-        )[0] as string;
+        const message = IDL.decode([IDL.Text], argData)[0] as string;
 
         msgReject(`reject proptest message: ${message}`);
     }
@@ -33,12 +23,7 @@ export default class {
     evenOrRejectQuery(): void {
         const argData = msgArgData();
 
-        const number = IDL.decode(
-            [IDL.Int],
-            argData.buffer instanceof ArrayBuffer
-                ? argData.buffer
-                : new Uint8Array(argData).buffer
-        )[0] as unknown as bigint;
+        const number = IDL.decode([IDL.Int], argData)[0] as unknown as bigint;
 
         if (number % 2n === 0n) {
             const encoded = new Uint8Array(IDL.encode([IDL.Int], [number]));
@@ -53,12 +38,7 @@ export default class {
     evenOrRejectUpdate(): void {
         const argData = msgArgData();
 
-        const number = IDL.decode(
-            [IDL.Int],
-            argData.buffer instanceof ArrayBuffer
-                ? argData.buffer
-                : new Uint8Array(argData).buffer
-        )[0] as unknown as bigint;
+        const number = IDL.decode([IDL.Int], argData)[0] as unknown as bigint;
 
         if (number % 2n === 0n) {
             const encoded = new Uint8Array(IDL.encode([IDL.Int], [number]));
