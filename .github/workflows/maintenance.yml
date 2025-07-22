@@ -35,6 +35,8 @@ jobs:
         needs:
             - determine-signing-key
             - determine-prefix
+        permissions:
+            contents: write
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
             prefix: ${{ needs.determine-prefix.outputs.prefix }}
