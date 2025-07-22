@@ -42,13 +42,18 @@ on:
                 type: boolean
                 default: false
                 description: 'Whether to run Windows tests'
+            copy-outside-repo:
+                required: false
+                type: boolean
+                default: false
+                description: 'Copy test outside repository to validate external-to-the-azle-repository usage'
 
 permissions:
     contents: read
     actions: read
 
 jobs:
-    run-tests-ubuntu-and-mac:
+    run-tests-ubuntu-and-mac-repo-internal:
         if: ${{ inputs.operating-system == 'ubuntu' || (inputs.operating-system == 'mac' && inputs.run-mac-tests == true) }}
         uses: ./.github/workflows/run_test_ubuntu_and_mac.yml
         with:
@@ -60,6 +65,21 @@ jobs:
             fuzz-call-delay: ${{ inputs.fuzz-call-delay }}
             fuzz-time-limit: ${{ inputs.fuzz-time-limit }}
             operating-system: ${{ inputs.operating-system }}
+            copy-outside-repo: false
+
+    run-tests-ubuntu-and-mac-repo-external:
+        if: ${{ inputs.copy-outside-repo == true && (inputs.operating-system == 'ubuntu' || (inputs.operating-system == 'mac' && inputs.run-mac-tests == true)) }}
+        uses: ./.github/workflows/run_test_ubuntu_and_mac.yml
+        with:
+            directories: ${{ inputs.directories }}
+            exclude-dirs: ${{ inputs.exclude-dirs }}
+            link-azle: ${{ inputs.link-azle }}
+            run-experimental: ${{ inputs.run-experimental }}
+            fuzz: ${{ inputs.fuzz }}
+            fuzz-call-delay: ${{ inputs.fuzz-call-delay }}
+            fuzz-time-limit: ${{ inputs.fuzz-time-limit }}
+            operating-system: ${{ inputs.operating-system }}
+            copy-outside-repo: true
 
     run-tests-wsl-ubuntu:
         if: ${{ inputs.operating-system == 'wsl-ubuntu' && inputs.run-wsl-ubuntu-tests == true }}

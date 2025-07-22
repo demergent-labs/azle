@@ -1,5 +1,0 @@
-{
-    "scripts": {
-        "test": "tsx test/test.ts"
-    }
-}
