@@ -87,8 +87,6 @@ async function generateToAddress(
     const counts = [...Array(iterations).fill(50), remainder];
     for (const n of counts) {
         cli(`generatetoaddress ${n} ${address}`);
-        // If we don't wait a little the Bitcoin CLI hangs
-        await new Promise((resolve) => setTimeout(resolve, 500));
     }
 }
 
