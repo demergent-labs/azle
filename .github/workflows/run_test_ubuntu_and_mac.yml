@@ -32,6 +32,11 @@ on:
             operating-system:
                 type: string
                 description: 'Operating system to run tests on (ubuntu or mac)'
+            copy-outside-repo:
+                required: false
+                type: boolean
+                default: false
+                description: 'Copy test outside repository to validate external-to-the-azle-repository usage'
 
 permissions:
     contents: read
@@ -53,7 +58,7 @@ jobs:
                   exclude-dirs: ${{ inputs.exclude-dirs }}
 
     run-test:
-        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | ${{inputs.operating-system}}'
+        name: '${{matrix.test.name}} | ${{matrix.test.displayPath}} | ${{matrix.azle_source}} | ${{inputs.operating-system}} | ${{ matrix.location }}'
         needs: get-test-infos
         runs-on: ${{ matrix.os }}
         env:
@@ -74,6 +79,8 @@ jobs:
                 azle_source:
                     - ${{ inputs.link-azle == true && 'repo' || 'npm' }}
                 test: ${{ fromJSON(needs.get-test-infos.outputs.test-infos) }}
+                include:
+                    - location: ${{ inputs.copy-outside-repo == true && 'External' || 'Internal' }}
         steps:
             - uses: actions/checkout@v4
 
@@ -100,6 +107,46 @@ jobs:
               # Just in case the path isn't obvious from the name, this will remove ambiguity
               run: echo ${{matrix.test.path}}
 
+            - name: Copy test outside repository
+              if: ${{ inputs.copy-outside-repo }}
+              id: copy-test
+              run: |
+                  # Create external test directory
+                  EXTERNAL_TEST_DIR="../external_test_env"
+                  echo "Copying test from ${{ matrix.test.path }} to $EXTERNAL_TEST_DIR"
+
+                  # Copy the test directory outside the repo
+                  cp -r "${{ matrix.test.path }}" "$EXTERNAL_TEST_DIR"
+
+                  # Copy jest config file to external test directory
+                  cp jest.config.dev.js "$EXTERNAL_TEST_DIR/jest.config.js"
+                  echo "Copied jest.config.dev.js to external test directory"
+
+                  # Copy TypeScript config file to external test directory
+                  cp tsconfig.dev.json "$EXTERNAL_TEST_DIR/tsconfig.json"
+                  echo "Copied tsconfig.dev.json to external test directory"
+
+                  # Set the external directory as output
+                  echo "external-test-dir=$EXTERNAL_TEST_DIR" >> $GITHUB_OUTPUT
+                  echo "Test copied to external directory: $EXTERNAL_TEST_DIR"
+
+            - name: Set working directory
+              id: set-working-dir
+              run: |
+                  if [[ "${{ inputs.copy-outside-repo }}" == "true" ]]; then
+                      WORKING_DIR="${{ steps.copy-test.outputs.external-test-dir }}"
+                  else
+                      WORKING_DIR="${{ matrix.test.path }}"
+                  fi
+                  echo "working-dir=$WORKING_DIR" >> $GITHUB_OUTPUT
+                  echo "Working directory set to: $WORKING_DIR"
+
+            - name: Verify working directory
+              run: |
+                  echo "Location: ${{ matrix.location }}"
+                  echo "Current working directory: $(pwd)"
+                  echo "Target working directory: ${{ steps.set-working-dir.outputs.working-dir }}"
+
             - uses: ./.github/actions/setup_node
 
             - uses: ./.github/actions/setup_dfx
@@ -109,6 +156,7 @@ jobs:
               run: sudo networksetup -setdnsservers Ethernet 9.9.9.9
 
             - uses: ./.github/actions/retry_command
+              name: Install azle dependencies
               with:
                   command: 'npm install'
 
@@ -118,29 +166,37 @@ jobs:
             - run: npm run lint
 
             - uses: ./.github/actions/retry_command
+              name: Install example dependencies
               with:
                   command: 'npm install'
-                  working-directory: ${{ matrix.test.path }}
+                  working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
+
+            - uses: ./.github/actions/retry_command
+              if: ${{ inputs.copy-outside-repo }}
+              name: Install example testing dependencies
+              with:
+                  command: 'npm install cuzz jest ts-jest --save-dev'
+                  working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - name: Install experimental dependencies for stable api tests if running in experimental mode
               if: ${{ inputs.run-experimental }}
               uses: ./.github/actions/retry_command
               with:
                   command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd'
-                  working-directory: ${{ matrix.test.path }}
+                  working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - run: npm link azle
               if: matrix.azle_source == 'repo'
-              working-directory: ${{ matrix.test.path }}
+              working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - name: Start dfx with artificial delay 0
               if: ${{ steps.set-conditions.outputs.is_feature_branch_pr == 'true' || steps.set-conditions.outputs.is_feature_branch_draft_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_feature_merge == 'true' }}
-              working-directory: ${{ matrix.test.path }}
+              working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               run: dfx start --clean --background --artificial-delay 0
 
             - name: Start dfx
               if: ${{ steps.set-conditions.outputs.is_release_branch_pr == 'true' || steps.set-conditions.outputs.is_main_branch_push_from_release_merge == 'true' }}
-              working-directory: ${{ matrix.test.path }}
+              working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               run: dfx start --clean --background
 
             - name: Test configuration
@@ -173,8 +229,9 @@ jobs:
                   echo "runs=$RUNS" >> $GITHUB_OUTPUT
 
             - name: Run tests
-              run: npm test
-              working-directory: ${{ matrix.test.path }}
+              run: |
+                  npm test && echo "Current working directory of tests: $(pwd)"
+              working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               shell: bash -l {0}
               env:
                   AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
