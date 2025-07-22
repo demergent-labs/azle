@@ -1,38 +1,6 @@
 {
     "stable_b_tree_map_instruction_threshold": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "20305711930"
-                    },
-                    "method_name": "insertSmallRecord",
-                    "timestamp": {
-                        "__bigint__": "1741368991898469253"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "18371055983"
-                    },
-                    "method_name": "insertMediumRecord",
-                    "timestamp": {
-                        "__bigint__": "1741368999399815062"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "21003576762"
-                    },
-                    "method_name": "insertLargeRecord",
-                    "timestamp": {
-                        "__bigint__": "1741369006151583209"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -61,6 +29,26 @@
                     "timestamp": {
                         "__bigint__": "1741977094402307144"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "19172288381",
+                    "method_name": "insertSmallRecord",
+                    "timestamp": "1750853903837987277"
+                },
+                {
+                    "instructions": "17897930796",
+                    "method_name": "insertMediumRecord",
+                    "timestamp": "1750853912932933424"
+                },
+                {
+                    "instructions": "20620408060",
+                    "method_name": "insertLargeRecord",
+                    "timestamp": "1750853920563844939"
                 }
             ]
         }

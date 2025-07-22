@@ -1,29 +1,6 @@
 {
     "api": {
         "previous": {
-            "version": "0.29.0",
-            "benchmarks": [
-                {
-                    "instructions": {
-                        "__bigint__": "13570977819"
-                    },
-                    "method_name": "init",
-                    "timestamp": {
-                        "__bigint__": "1741368956323165933"
-                    }
-                },
-                {
-                    "instructions": {
-                        "__bigint__": "102015667"
-                    },
-                    "method_name": "http_request_update",
-                    "timestamp": {
-                        "__bigint__": "1741368975093776260"
-                    }
-                }
-            ]
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -43,6 +20,21 @@
                     "timestamp": {
                         "__bigint__": "1741977017342532126"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "13841702435",
+                    "method_name": "init",
+                    "timestamp": "1750853913633169278"
+                },
+                {
+                    "instructions": "102214384",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853935922150871"
                 }
             ]
         }

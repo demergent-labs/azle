@@ -1,18 +1,16 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for hello_world
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
-| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                          |
-| --- | ----------- | ------------ | --------- | ------------- | ----------------- | ------------------------------- |
-| 0   | setMessage  | 1_410_904    | 1_154_361 | $0.0000015349 | $1.53             | <font color="red">+4_316</font> |
+| Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls | Change                            |
+| --- | ----------- | ------------ | --------- | ------------- | ----------------- | --------------------------------- |
+| 0   | setMessage  | 1_404_869    | 1_151_947 | $0.0000015317 | $1.53             | <font color="green">-6_035</font> |
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 | Id  | Method Name | Instructions | Cycles    | USD           | USD/Million Calls |
 | --- | ----------- | ------------ | --------- | ------------- | ----------------- |
-| 0   | setMessage  | 1_406_588    | 1_152_635 | $0.0000015326 | $1.53             |
+| 0   | setMessage  | 1_410_904    | 1_154_361 | $0.0000015349 | $1.53             |
 
 ---
 
