@@ -52,7 +52,6 @@ runs:
               SLOW_EXCLUSIONS="${{ format('
               examples/experimental/demo/basic_bitcoin
               examples/experimental/test/end_to_end/http_server/large_files
-              examples/stable/demo/ckbtc
               examples/stable/test/end_to_end/candid_rpc/bitcoin
               examples/stable/test/end_to_end/candid_rpc/stable_structures
               ') }}"
