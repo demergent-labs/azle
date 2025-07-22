@@ -11,6 +11,11 @@ on:
         # Run at 10:00 UTC (4:00 AM MT) every day
         - cron: '0 10 * * *'
 
+permissions:
+    contents: write
+    pull-requests: write
+    actions: read
+
 jobs:
     determine-signing-key:
         runs-on: ubuntu-latest

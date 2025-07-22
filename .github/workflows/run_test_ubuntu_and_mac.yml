@@ -33,6 +33,10 @@ on:
                 type: string
                 description: 'Operating system to run tests on (ubuntu or mac)'
 
+permissions:
+    contents: read
+    actions: read
+
 jobs:
     get-test-infos:
         name: Get test infos

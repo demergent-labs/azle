@@ -1,0 +1,49 @@
+name: 'Setup External Azle Test Environment'
+description: 'Sets up Node.js, dfx, downloads packed azle by artifact name, and creates external-to-the-azle-repository test environment for CLI testing'
+
+inputs:
+    packed-file-name:
+        description: 'Name of the packed azle file to download and install'
+        required: true
+    artifact-name:
+        description: 'Full name of the artifact to download (e.g., azle-packed-ubuntu-latest)'
+        required: true
+
+outputs:
+    external-test-env-path:
+        description: 'Path to the external test environment directory'
+        value: ${{ steps.get-paths.outputs.external-test-env-path }}
+    packed-file-absolute-path:
+        description: 'Absolute path to the packed azle file'
+        value: ${{ steps.get-paths.outputs.packed-file-absolute-path }}
+
+runs:
+    using: 'composite'
+    steps:
+        - name: Setup Node.js
+          uses: ./.github/actions/setup_node
+
+        - name: Setup dfx
+          uses: ./.github/actions/setup_dfx
+
+        - name: Download packed azle
+          uses: actions/download-artifact@v4
+          with:
+              name: ${{ inputs.artifact-name }}
+
+        - name: Create external test environment and install packed azle
+          id: get-paths
+          shell: bash
+          run: |
+              PACKED_FILE_ABSOLUTE_PATH="$(pwd)/${{ inputs.packed-file-name }}"
+
+              # Create a fresh test directory to simulate external user environment
+              EXTERNAL_TEST_ENV_DIR_PATH="../external_test_env"
+              mkdir -p "${EXTERNAL_TEST_ENV_DIR_PATH}"
+              cd "${EXTERNAL_TEST_ENV_DIR_PATH}"
+
+              echo "Installing the packed azle package for CLI testing"
+              npm install "${PACKED_FILE_ABSOLUTE_PATH}"
+
+              echo "packed-file-absolute-path=${PACKED_FILE_ABSOLUTE_PATH}" >> $GITHUB_OUTPUT
+              echo "external-test-env-path=${EXTERNAL_TEST_ENV_DIR_PATH}" >> $GITHUB_OUTPUT

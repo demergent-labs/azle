@@ -11,6 +11,10 @@ on:
             - ready_for_review
             - reopened
 
+permissions:
+    contents: read
+    actions: write
+
 jobs:
     test-cli-commands-outside-azle-repo-wsl-ubuntu:
         runs-on: windows-latest
@@ -34,7 +38,6 @@ jobs:
 
             - name: Clone repository in WSL-Ubuntu
               run: |
-                  # Add a comment
                   # Clone the repository directly in WSL-Ubuntu for proper Unix line endings
                   cd /home/tester
                   git clone --no-single-branch https://github.com/${{ github.repository }}.git azle
@@ -130,26 +133,13 @@ jobs:
                       # Read expected versions from package.json
                       echo "Reading expected versions from package.json"
                       EXPECTED_NODE_VERSION=$(jq -r '.azle.globalDependencies.node // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_RUST_VERSION=$(jq -r '.azle.globalDependencies.rust // "not found"' "${AZLE_ROOT}/package.json")
                       EXPECTED_DFX_VERSION=$(jq -r '.azle.globalDependencies.dfx // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_CARGO_AUDITABLE_VERSION=$(jq -r '.azle.globalDependencies."cargo-auditable" // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_CARGO_AUDIT_VERSION=$(jq -r '.azle.globalDependencies."cargo-audit" // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_CARGO_DENY_VERSION=$(jq -r '.azle.globalDependencies."cargo-deny" // "not found"' "${AZLE_ROOT}/package.json")
-                      EXPECTED_WASI2IC_VERSION=$(jq -r '.azle.globalDependencies.wasi2ic // "not found"' "${AZLE_ROOT}/package.json")
 
                       echo "Expected Node version: ${EXPECTED_NODE_VERSION}"
-                      echo "Expected Rust version: ${EXPECTED_RUST_VERSION}"
                       echo "Expected dfx version: ${EXPECTED_DFX_VERSION}"
-                      echo "Expected cargo-auditable version: ${EXPECTED_CARGO_AUDITABLE_VERSION}"
-                      echo "Expected cargo-audit version: ${EXPECTED_CARGO_AUDIT_VERSION}"
-                      echo "Expected cargo-deny version: ${EXPECTED_CARGO_DENY_VERSION}"
-                      echo "Expected wasi2ic version: ${EXPECTED_WASI2IC_VERSION}"
-
-                      # Since wsl-ubuntu doesn't have cargo installed, we need to install it and ensure it's in the path, other runners have cargo (even if it's a different version) so the path is already set up for those runners.
-                      install_rust_cargo
 
                       echo "Running azle dev setup..."
-                      npx azle dev setup
+                      npx azle dev setup --dfx --node
 
                       echo "Verifying installed versions match expected versions"
 
@@ -163,16 +153,6 @@ jobs:
                           exit 1
                       fi
 
-                      # Check Rust version
-                      ACTUAL_RUST_VERSION=$(rustc --version | awk '{print $2}')
-                      echo "Actual Rust version: ${ACTUAL_RUST_VERSION}"
-                      if [[ "${ACTUAL_RUST_VERSION}" == "${EXPECTED_RUST_VERSION}" ]]; then
-                          echo "✅ Rust version verification successful"
-                      else
-                          echo "❌ Rust version verification failed: Expected ${EXPECTED_RUST_VERSION}, got ${ACTUAL_RUST_VERSION}"
-                          exit 1
-                      fi
-
                       # Check dfx version
                       ACTUAL_DFX_VERSION=$(dfx --version | awk '{print $2}')
                       echo "Actual dfx version: ${ACTUAL_DFX_VERSION}"
@@ -183,156 +163,8 @@ jobs:
                           exit 1
                       fi
 
-                      # Check cargo-auditable version
-                      ACTUAL_CARGO_AUDITABLE_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_auditable_version.ts" 2>/dev/null || echo "not installed")
-                      echo "Actual cargo-auditable version: ${ACTUAL_CARGO_AUDITABLE_VERSION}"
-                      if [[ "${ACTUAL_CARGO_AUDITABLE_VERSION}" == "${EXPECTED_CARGO_AUDITABLE_VERSION}" ]]; then
-                          echo "✅ cargo-auditable version verification successful"
-                      else
-                          echo "❌ cargo-auditable version verification failed: Expected ${EXPECTED_CARGO_AUDITABLE_VERSION}, got ${ACTUAL_CARGO_AUDITABLE_VERSION}"
-                          exit 1
-                      fi
-
-                      # Check cargo-audit version
-                      ACTUAL_CARGO_AUDIT_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_audit_version.ts" 2>/dev/null || echo "not installed")
-                      echo "Actual cargo-audit version: ${ACTUAL_CARGO_AUDIT_VERSION}"
-                      if [[ "${ACTUAL_CARGO_AUDIT_VERSION}" == "${EXPECTED_CARGO_AUDIT_VERSION}" ]]; then
-                          echo "✅ cargo-audit version verification successful"
-                      else
-                          echo "❌ cargo-audit version verification failed: Expected ${EXPECTED_CARGO_AUDIT_VERSION}, got ${ACTUAL_CARGO_AUDIT_VERSION}"
-                          exit 1
-                      fi
-
-                      # Check cargo-deny version
-                      ACTUAL_CARGO_DENY_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_cargo_deny_version.ts" 2>/dev/null || echo "not installed")
-                      echo "Actual cargo-deny version: ${ACTUAL_CARGO_DENY_VERSION}"
-                      if [[ "${ACTUAL_CARGO_DENY_VERSION}" == "${EXPECTED_CARGO_DENY_VERSION}" ]]; then
-                          echo "✅ cargo-deny version verification successful"
-                      else
-                          echo "❌ cargo-deny version verification failed: Expected ${EXPECTED_CARGO_DENY_VERSION}, got ${ACTUAL_CARGO_DENY_VERSION}"
-                          exit 1
-                      fi
-
-                      # Check wasi2ic version
-                      ACTUAL_WASI2IC_VERSION=$(npx tsx "${AZLE_ROOT}/.github/scripts/get_local_wasi2ic_version.ts" 2>/dev/null || echo "not installed")
-                      echo "Actual wasi2ic version: ${ACTUAL_WASI2IC_VERSION}"
-                      if [[ "${ACTUAL_WASI2IC_VERSION}" == "${EXPECTED_WASI2IC_VERSION}" ]]; then
-                          echo "✅ wasi2ic version verification successful"
-                      else
-                          echo "❌ wasi2ic version verification failed: Expected ${EXPECTED_WASI2IC_VERSION}, got ${ACTUAL_WASI2IC_VERSION}"
-                          exit 1
-                      fi
-
                       echo "✅ All version verifications completed successfully"
                       cd "${AZLE_ROOT}"
-                  }
-
-                  test_azle_dev_template_commands() {
-                      echo "=== Testing azle dev template commands ==="
-
-                      # Helper function to clean all template files
-                      clean_templates() {
-                          echo "Cleaning all template files"
-                          rm -f dist/canister_templates/stable.wasm
-                          rm -f dist/canister_templates/experimental.wasm
-                      }
-
-                      # Helper function to check file size (cross-platform)
-                      check_file_size() {
-                          local file="$1"
-                          local file_size=$(wc -c < "$file" 2>/dev/null || echo "0")
-                          if [[ "$file_size" -gt 0 ]]; then
-                              return 0
-                          else
-                              return 1
-                          fi
-                      }
-
-                      # Remove existing template files to test regeneration
-                      echo "Initial cleanup: Removing existing template files for regeneration test"
-                      clean_templates
-
-                      # Test azle dev template (stable)
-                      echo "Testing 'azle dev template' command (stable only)"
-                      npx azle dev template
-
-                      # Verify stable template was created and has valid size
-                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
-                          echo "✅ Stable template file created successfully"
-                          if ! check_file_size "dist/canister_templates/stable.wasm"; then
-                              echo "❌ Stable template size check failed during stable-only test"
-                              exit 1
-                          fi
-                      else
-                          echo "❌ Stable template verification failed: stable.wasm was not created"
-                          exit 1
-                      fi
-
-                      # Verify experimental template was NOT created
-                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
-                          echo "❌ Stable command verification failed: experimental.wasm should not have been created"
-                          exit 1
-                      else
-                          echo "✅ Stable command verification successful: experimental.wasm was correctly not created"
-                      fi
-
-                      # Clean templates for next test
-                      clean_templates
-
-                      # Test azle dev template --experimental
-                      echo "Testing 'azle dev template --experimental' command (experimental only)"
-                      npx azle dev template --experimental
-
-                      # Verify experimental template was created and has valid size
-                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
-                          echo "✅ Experimental template file created successfully"
-                              if ! check_file_size "dist/canister_templates/experimental.wasm"; then
-                              echo "❌ Experimental template size check failed during experimental-only test"
-                          exit 1
-                          fi
-                      else
-                          echo "❌ Experimental template verification failed: experimental.wasm was not created"
-                          exit 1
-                      fi
-
-                      # Verify stable template was NOT created
-                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
-                          echo "❌ Experimental command verification failed: stable.wasm should not have been created"
-                          exit 1
-                      else
-                          echo "✅ Experimental command verification successful: stable.wasm was correctly not created"
-                      fi
-
-                      # Clean templates for final test
-                      clean_templates
-
-                      # Test azle dev template --all
-                      echo "Testing 'azle dev template --all' command (both templates)"
-                      npx azle dev template --all
-
-                      if [[ -f "dist/canister_templates/stable.wasm" ]]; then
-                          echo "✅ Stable template file created successfully"
-                          if ! check_file_size "dist/canister_templates/stable.wasm"; then
-                              echo "❌ Stable template size check failed during --all test"
-                              exit 1
-                          fi
-                      else
-                          echo "❌ All templates verification failed: stable.wasm was not created"
-                          exit 1
-                      fi
-
-                      if [[ -f "dist/canister_templates/experimental.wasm" ]]; then
-                          echo "✅ Experimental template file created successfully"
-                          if ! check_file_size "dist/canister_templates/experimental.wasm"; then
-                              echo "❌ Experimental template size check failed during --all test"
-                              exit 1
-                          fi
-                      else
-                          echo "❌ All templates verification failed: experimental.wasm was not created"
-                          exit 1
-                      fi
-
-                      echo "✅ All templates verification successful: Both stable.wasm and experimental.wasm were created with valid sizes"
                   }
 
                   test_azle_generate_command() {
@@ -471,7 +303,6 @@ jobs:
                   retry_command install_packed_azle
                   test_azle_version_command
                   test_azle_dev_setup_command
-                  test_azle_dev_template_commands
                   test_azle_generate_command
                   start_dfx_for_testing
 

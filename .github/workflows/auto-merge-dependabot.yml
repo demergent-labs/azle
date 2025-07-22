@@ -6,6 +6,11 @@ on:
             - synchronize
             - reopened
 
+permissions:
+    contents: write
+    pull-requests: write
+    actions: read
+
 jobs:
     evaluate-auto-merge-conditions:
         runs-on: ubuntu-latest
