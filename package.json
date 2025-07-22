@@ -7,7 +7,8 @@
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --cache --fix; else eslint . --cache; fi",
         "prepare": "husky",
         "install": "cd src/stable/build/dfx_extension && ./install.sh",
-        "test": "echo 'test'"
+        "test": "echo 'test'",
+        "licensee": "licensee --errors-only && echo \"License check passed successfully!\" || { echo \"License check failed! Non-compliant licenses found.\"; exit 1; }"
     },
     "type": "module",
     "bin": {
@@ -73,6 +74,7 @@
         "fast-check": "^4.2.0",
         "husky": "9.1.7",
         "jest": "^30.0.4",
+        "licensee": "^11.1.1",
         "lint-staged": "16.1.2",
         "prettier": "^3.6.2",
         "puppeteer": "^24.14.0",
