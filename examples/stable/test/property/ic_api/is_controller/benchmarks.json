@@ -1,10 +1,6 @@
 {
     "canister": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -33,6 +29,26 @@
                     "timestamp": {
                         "__bigint__": "1741977019510076997"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "1319086",
+                    "method_name": "updateIsController",
+                    "timestamp": "1750853908046924347"
+                },
+                {
+                    "instructions": "1277147",
+                    "method_name": "updateIsController",
+                    "timestamp": "1750853908870336809"
+                },
+                {
+                    "instructions": "1276418",
+                    "method_name": "updateIsController",
+                    "timestamp": "1750853909574873014"
                 }
             ]
         }

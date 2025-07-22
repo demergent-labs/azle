@@ -1,10 +1,6 @@
 {
     "http_counter": {
         "previous": {
-            "version": "No previous benchmarks",
-            "benchmarks": []
-        },
-        "current": {
             "version": "0.30.0",
             "benchmarks": [
                 {
@@ -42,6 +38,31 @@
                     "timestamp": {
                         "__bigint__": "1741977068057458883"
                     }
+                }
+            ]
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "1015570714",
+                    "method_name": "init",
+                    "timestamp": "1750853899009069997"
+                },
+                {
+                    "instructions": "30083229",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853904725170062"
+                },
+                {
+                    "instructions": "30038442",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853904970579203"
+                },
+                {
+                    "instructions": "30114541",
+                    "method_name": "http_request_update",
+                    "timestamp": "1750853905216560703"
                 }
             ]
         }

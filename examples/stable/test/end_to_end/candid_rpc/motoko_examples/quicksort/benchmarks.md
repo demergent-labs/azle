@@ -1,12 +1,10 @@
-⚠️ **WARNING: Benchmark process failed for version 0.30.0**
-
 # Benchmarks for quicksort
 
-## Current benchmarks Azle version: 0.30.0
+## Current benchmarks Azle version: 0.32.0
 
 No benchmarks reported
 
-## Baseline benchmarks Azle version: 0.29.0
+## Baseline benchmarks Azle version: 0.30.0
 
 No benchmarks reported
 

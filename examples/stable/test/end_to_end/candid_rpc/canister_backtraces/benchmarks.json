@@ -1,0 +1,12 @@
+{
+    "canister_backtraces": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": []
+        }
+    }
+}

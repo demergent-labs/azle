@@ -1,0 +1,58 @@
+{
+    "cleanup_callback": {
+        "previous": {
+            "version": "No previous benchmarks",
+            "benchmarks": []
+        },
+        "current": {
+            "version": "0.32.0",
+            "benchmarks": [
+                {
+                    "instructions": "969107",
+                    "method_name": "getRandomness",
+                    "timestamp": "1750853903608568107"
+                },
+                {
+                    "instructions": "894864",
+                    "method_name": "getRandomnessWithTrapUncaught",
+                    "timestamp": "1750853904083589847"
+                },
+                {
+                    "instructions": "897797",
+                    "method_name": "getRandomnessWithTrapCaught",
+                    "timestamp": "1750853905141330988"
+                },
+                {
+                    "instructions": "897776",
+                    "method_name": "getRandomnessWithTrapCaughtRejectCallback",
+                    "timestamp": "1750853906198618653"
+                },
+                {
+                    "instructions": "919217",
+                    "method_name": "getRandomnessWithTrapCaughtPromise",
+                    "timestamp": "1750853907022079093"
+                },
+                {
+                    "instructions": "892815",
+                    "method_name": "getRandomnessWithTrapCaughtAndTrapAgain",
+                    "timestamp": "1750853908080188956"
+                },
+                {
+                    "instructions": "993041",
+                    "method_name": "deleteAzleGlobalSettleCallbacks",
+                    "timestamp": "1750853909023658107"
+                },
+                {
+                    "instructions": "585418",
+                    "method_name": "getRandomnessMsgRejectInReplyCallback",
+                    "timestamp": "1750853909261787699"
+                },
+                {
+                    "instructions": "582737",
+                    "method_name": "getRandomnessMsgRejectInRejectCallback",
+                    "timestamp": "1750853909734148743"
+                }
+            ]
+        }
+    }
+}
