@@ -65,7 +65,7 @@
         "@types/uuid": "^10.0.0",
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#7d1b0d91df640d1df9845ec39fed647831c2da88",
         "cuzz": "0.0.14",
         "eslint": "^9.31.0",
         "eslint-config-prettier": "^10.1.8",

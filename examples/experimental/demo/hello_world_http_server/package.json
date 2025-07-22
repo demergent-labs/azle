@@ -6,7 +6,7 @@
     },
     "dependencies": {
         "azle": "0.32.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#7d1b0d91df640d1df9845ec39fed647831c2da88",
         "express": "^4.18.2",
         "lit": "^3.2.1",
         "vite": "^7.0.0"
