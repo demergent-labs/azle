@@ -178,9 +178,7 @@ jobs:
             commit-message: 'Example/test maintenance: update dependencies'
             signing-key-id: ${{ needs.determine-signing-key.outputs.signing-key-id }}
         secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
     create-pr:
         needs:
