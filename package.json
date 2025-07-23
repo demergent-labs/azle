@@ -67,7 +67,7 @@
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
         "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d1a9430f6a07388f44c047e53aa0c325305cd117",
-        "cuzz": "0.0.14",
+        "cuzz": "0.0.15",
         "eslint": "^9.31.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-simple-import-sort": "^12.1.1",
