@@ -11,28 +11,25 @@ on:
             commit-message:
                 required: true
                 type: string
-            signing-key-id:
-                required: true
-                type: string
-        secrets:
-            GH_TOKEN:
-                required: true
 
 permissions:
-    contents: read
+    contents: write
 
 jobs:
     squash:
         name: Squash Branches
         runs-on: ubuntu-latest
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
                   token: ${{ secrets.GITHUB_TOKEN }}
                   fetch-depth: 0
+
+            - name: Configure git
+              run: |
+                  git config --global user.name "github-actions[bot]"
+                  git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
             - name: Collect branches
               id: collect-branches

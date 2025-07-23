@@ -170,15 +170,11 @@ jobs:
         needs:
             - update-test-dependencies
             - create-branch-prefix
-            - determine-signing-key
         uses: ./.github/workflows/squash_branches.yml
         with:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'Example/test maintenance: update dependencies'
-            signing-key-id: ${{ needs.determine-signing-key.outputs.signing-key-id }}
-        secrets:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     create-pr:
         needs:
