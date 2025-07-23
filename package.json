@@ -8,7 +8,7 @@
         "prepare": "husky",
         "install": "cd src/stable/build/dfx_extension && ./install.sh",
         "test": "echo 'test'",
-        "licensee": "licensee --errors-only && echo \"License check passed successfully!\" || { echo \"License check failed! Non-compliant licenses found.\"; exit 1; }"
+        "license-check": "licensee --errors-only && echo \"License check passed successfully!\" || { echo \"License check failed! Non-compliant licenses found.\"; exit 1; }"
     },
     "type": "module",
     "bin": {
