@@ -7,5 +7,3 @@ wasm-pack build --target nodejs --dev
 # wasm-pack build automatically adds a .gitignore to ignore all of the generated files
 # but we want to check them into our repository
 rm pkg/.gitignore
-
-cargo bundle-licenses --format yaml --output licenses.yml
