@@ -29,9 +29,7 @@ class WhoAmI {
 
         const somebody = IDL.decode(
             [IDL.Principal],
-            argData.buffer instanceof ArrayBuffer
-                ? argData.buffer
-                : new Uint8Array(argData).buffer
+            argData
         )[0] as unknown as Principal;
 
         this.install = msgCaller();
