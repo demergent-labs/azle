@@ -1,6 +1,7 @@
 import { IOType } from 'child_process';
 import { join } from 'path';
 
+import { generateLicenses } from '#build/commands/dev/template/generate_licenses';
 import {
     experimentalMessageCli,
     experimentalMessageDfxJson
@@ -15,7 +16,6 @@ import { runCommand as runExtensionInstallCommand } from '#commands/extension/in
 import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runNewCommand } from '#commands/new';
 import { runCommand as runVersionCommand } from '#commands/version';
-import { generateLicenses } from '#utils/generate_licenses';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
 import {
