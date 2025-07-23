@@ -26,10 +26,37 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   fetch-depth: 0
 
-            - name: Configure git
+            - name: Create GraphQL mutation file
               run: |
-                  git config --global user.name "github-actions[bot]"
-                  git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                  mkdir -p .github/api
+                  cat > .github/api/createCommitOnBranch.gql << 'EOF'
+                  mutation (
+                      $githubRepository: String!,
+                      $branchName: String!,
+                      $expectedHeadOid: GitObjectID!
+                      $commitMessage: String!
+                      $files: [FileAddition!]!
+                  ) {
+                    createCommitOnBranch(
+                      input: {
+                      branch:
+                      {
+                          repositoryNameWithOwner: $githubRepository,
+                          branchName: $branchName
+                      },
+                      message: {headline: $commitMessage},
+                      fileChanges: {
+                          additions: $files
+                      }
+                      expectedHeadOid: $expectedHeadOid
+                      }
+                    ){
+                      commit {
+                      url
+                      }
+                    }
+                  }
+                  EOF
 
             - name: Collect branches
               id: collect-branches
@@ -55,10 +82,13 @@ jobs:
                   done
                   git fetch origin $BRANCHES_TO_FETCH
 
-            - name: Squash changes
+            - name: Squash changes and commit via GraphQL
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   CURRENT_BRANCH=$(git branch --show-current)
 
+                  # Perform squash merges
                   for branch in ${{ steps.collect-branches.outputs.branches }}; do
                     echo "Merging $branch into $CURRENT_BRANCH"
                     git merge --squash $branch
@@ -67,11 +97,37 @@ jobs:
                   # Check if there are any changes to commit
                   if git diff --staged --quiet; then
                     echo "No changes to commit"
-                  else
-                    # Create a merge commit with a descriptive message
-                    git commit -am "${{ inputs.commit-message }}"
-                    git push origin HEAD:$CURRENT_BRANCH
+                    exit 0
                   fi
+
+                  # Collect all changed files
+                  CHANGED_FILES=($(git diff --staged --name-only))
+
+                  if [ ${#CHANGED_FILES[@]} -eq 0 ]; then
+                    echo "No files to commit"
+                    exit 0
+                  fi
+
+                  echo "Committing ${#CHANGED_FILES[@]} files via GraphQL API..."
+
+                  # Build files parameter for GraphQL
+                  FILES=""
+                  for file in "${CHANGED_FILES[@]}"; do
+                    echo "Processing file: $file"
+                    FILES="${FILES} -F files[][path]=$file -F files[][contents]=$(base64 -w0 $file)"
+                  done
+
+                  # Get current HEAD commit
+                  EXPECTED_HEAD_OID=$(git rev-parse HEAD)
+
+                  # Create single commit with all files via GraphQL API (automatically signed)
+                  gh api graphql \
+                    -F githubRepository="${GITHUB_REPOSITORY}" \
+                    -F branchName="$CURRENT_BRANCH" \
+                    -F expectedHeadOid="$EXPECTED_HEAD_OID" \
+                    -F commitMessage="${{ inputs.commit-message }}" \
+                    -F "query=@.github/api/createCommitOnBranch.gql" \
+                    ${FILES}
 
             - name: Delete branches
               run: |
