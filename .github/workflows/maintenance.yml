@@ -126,6 +126,11 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
+            - name: Install azle dependencies
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+
             # Install dependencies at the examples workspace root
             - name: Install workspace dependencies
               uses: ./.github/actions/retry_command
