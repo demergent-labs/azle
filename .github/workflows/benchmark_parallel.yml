@@ -28,14 +28,12 @@ on:
             LASTMJS_GITHUB_TOKEN:
                 required: true
 
-permissions:
-    contents: write
-    actions: read
-
 jobs:
     prepare-benchmark:
         name: Prepare Benchmark
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
             version: ${{ steps.get-version.outputs.version }}
@@ -59,6 +57,8 @@ jobs:
         needs: prepare-benchmark
         name: Run benchmarks for ${{ matrix.test.name }}
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
