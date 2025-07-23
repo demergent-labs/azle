@@ -23,4 +23,4 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 ic-wasi-polyfill = { workspace = true }
 wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "573c6c07316de64e4bb9a9561b079f265fd9bcc4" }
-wasmi = "0.47.0"
+wasmi = "0.48.0"
