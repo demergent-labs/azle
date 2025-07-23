@@ -167,6 +167,8 @@ jobs:
                   signing-key-id: ${{ needs.determine-signing-key.outputs.signing-key-id }}
 
     squash-branches:
+        permissions:
+            contents: write
         needs:
             - update-test-dependencies
             - create-branch-prefix
