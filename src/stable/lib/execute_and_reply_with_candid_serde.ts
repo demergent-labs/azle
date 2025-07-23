@@ -242,12 +242,7 @@ export function idlDecode(
     bytes: Uint8Array
 ): JsonValue[] {
     try {
-        return IDL.decode(
-            retTypes,
-            bytes.buffer instanceof ArrayBuffer
-                ? bytes.buffer
-                : new Uint8Array(bytes).buffer
-        );
+        return IDL.decode(retTypes, bytes);
     } catch (error) {
         throw new Error(`Failed to decode Candid bytes: ${error}`);
     }

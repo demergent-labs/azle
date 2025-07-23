@@ -6,7 +6,7 @@
     "dependencies": {
         "@apollo/server": "^4.10.0",
         "azle": "0.32.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d1a9430f6a07388f44c047e53aa0c325305cd117",
         "express": "^4.18.2",
         "graphql": "^16.8.1"
     }

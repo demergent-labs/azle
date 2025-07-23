@@ -41,7 +41,7 @@ export function getTests(): Test {
                 async () => {
                     if (process.env.AZLE_EXPERIMENTAL === 'true') {
                         execSync(
-                            `npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd`,
+                            `npm install https://github.com/demergent-labs/azle-experimental-deps#d1a9430f6a07388f44c047e53aa0c325305cd117`,
                             {
                                 cwd: canister.projectRoot
                             }
