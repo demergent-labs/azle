@@ -15,6 +15,7 @@ import { runCommand as runExtensionInstallCommand } from '#commands/extension/in
 import { runCommand as runGenerateCommand } from '#commands/generate/index';
 import { runCommand as runNewCommand } from '#commands/new';
 import { runCommand as runVersionCommand } from '#commands/version';
+import { generateLicenses } from '#utils/generate_licenses';
 import { getCanisterConfig } from '#utils/get_canister_config';
 import { AZLE_ROOT } from '#utils/global_paths';
 import {
@@ -133,7 +134,7 @@ async function handleDevCommand(ioType: IOType): Promise<void> {
     }
 
     if (subCommand === 'template') {
-        await handleDevTemplateCommand('inherit');
+        await handleDevTemplateCommand(ioType);
 
         return;
     }
@@ -150,6 +151,9 @@ export async function handleDevSetupCommand(): Promise<void> {
     const rust = process.argv.includes('--rust');
     const cargoAuditable = process.argv.includes('--cargo-auditable');
     const cargoAudit = process.argv.includes('--cargo-audit');
+    const cargoBundleLicenses = process.argv.includes(
+        '--cargo-bundle-licenses'
+    );
     const cargoDeny = process.argv.includes('--cargo-deny');
     const wasi2ic = process.argv.includes('--wasi2ic');
 
@@ -159,6 +163,7 @@ export async function handleDevSetupCommand(): Promise<void> {
         rust === false &&
         cargoAuditable === false &&
         cargoAudit === false &&
+        cargoBundleLicenses === false &&
         cargoDeny === false &&
         wasi2ic === false
     ) {
@@ -168,6 +173,7 @@ export async function handleDevSetupCommand(): Promise<void> {
             rust: true,
             'cargo-auditable': true,
             'cargo-audit': true,
+            'cargo-bundle-licenses': true,
             'cargo-deny': true,
             wasi2ic: true
         });
@@ -178,6 +184,7 @@ export async function handleDevSetupCommand(): Promise<void> {
             rust,
             'cargo-auditable': cargoAuditable,
             'cargo-audit': cargoAudit,
+            'cargo-bundle-licenses': cargoBundleLicenses,
             'cargo-deny': cargoDeny,
             wasi2ic
         });
@@ -189,13 +196,15 @@ async function handleDevTemplateCommand(ioType: IOType): Promise<void> {
     const experimental = process.argv.includes('--experimental');
 
     if (all === true) {
-        await runDevTemplateCommand(ioType);
-        await runExperimentalDevTemplateCommand(ioType);
+        await runDevTemplateCommand('inherit');
+        await runExperimentalDevTemplateCommand('inherit');
     } else if (experimental === true) {
-        await runExperimentalDevTemplateCommand(ioType);
+        await runExperimentalDevTemplateCommand('inherit');
     } else {
-        await runDevTemplateCommand(ioType);
+        await runDevTemplateCommand('inherit');
     }
+
+    generateLicenses(ioType);
 }
 
 async function handleBuildCommand(ioType: IOType): Promise<void> {

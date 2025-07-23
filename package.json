@@ -93,6 +93,7 @@
             "rust": "1.88.0",
             "cargo-auditable": "0.7.0",
             "cargo-audit": "https://github.com/rustsec/rustsec?rev=13604e1909456e25752784681f0367b13a21e47b#13604e19",
+            "cargo-bundle-licenses": "4.0.0",
             "cargo-deny": "0.18.3",
             "wasi2ic": "0.2.15"
         }
