@@ -256,7 +256,7 @@ jobs:
             - name: Setup Rust dependencies for template building
               run: |
                   echo "Setting up Rust dependencies for template building"
-                  npx azle dev setup --rust --cargo-auditable --wasi2ic
+                  npx azle dev setup --rust --cargo-auditable --cargo-bundle-licenses --wasi2ic
 
             - name: Test azle dev template commands
               run: |

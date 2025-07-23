@@ -7,7 +7,8 @@
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --cache --fix; else eslint . --cache; fi",
         "prepare": "husky",
         "install": "cd src/stable/build/dfx_extension && ./install.sh",
-        "test": "echo 'test'"
+        "test": "echo 'test'",
+        "license-check": "licensee --errors-only && echo \"License check passed successfully!\" || { echo \"License check failed! Non-compliant licenses found.\"; exit 1; }"
     },
     "type": "module",
     "bin": {
@@ -73,6 +74,7 @@
         "fast-check": "^4.2.0",
         "husky": "9.1.7",
         "jest": "^30.0.5",
+        "licensee": "^11.1.1",
         "lint-staged": "16.1.2",
         "prettier": "^3.6.2",
         "puppeteer": "^24.14.0",
@@ -91,6 +93,7 @@
             "rust": "1.88.0",
             "cargo-auditable": "0.7.0",
             "cargo-audit": "https://github.com/rustsec/rustsec?rev=13604e1909456e25752784681f0367b13a21e47b#13604e19",
+            "cargo-bundle-licenses": "4.0.0",
             "cargo-deny": "0.18.3",
             "wasi2ic": "0.2.15"
         }

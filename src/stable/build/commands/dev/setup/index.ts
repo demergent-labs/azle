@@ -9,6 +9,7 @@ type DependencyName =
     | 'rust'
     | 'cargo-auditable'
     | 'cargo-audit'
+    | 'cargo-bundle-licenses'
     | 'cargo-deny'
     | 'wasi2ic';
 
