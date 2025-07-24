@@ -147,7 +147,7 @@ jobs:
                       if [[ "${{ inputs.run-experimental }}" == "true" ]]; then
                           echo "=== Installing experimental dependencies ==="
                           cd $EXAMPLE_ROOT
-                          npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd
+                          npm install https://github.com/demergent-labs/azle-experimental-deps#7d1b0d91df640d1df9845ec39fed647831c2da88
                           cd $AZLE_ROOT
                       fi
                   }

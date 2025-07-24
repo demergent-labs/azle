@@ -100,12 +100,7 @@ export default class {
     manualUpdate(): void {
         const argData = msgArgData();
 
-        const message = IDL.decode(
-            [IDL.Text],
-            argData.buffer instanceof ArrayBuffer
-                ? argData.buffer
-                : new Uint8Array(argData).buffer
-        )[0] as string;
+        const message = IDL.decode([IDL.Text], argData)[0] as string;
 
         if (message === 'reject') {
             msgReject(message);
@@ -202,12 +197,7 @@ export default class {
     manualQuery(): void {
         const argData = msgArgData();
 
-        const message = IDL.decode(
-            [IDL.Text],
-            argData.buffer instanceof ArrayBuffer
-                ? argData.buffer
-                : new Uint8Array(argData).buffer
-        )[0] as string;
+        const message = IDL.decode([IDL.Text], argData)[0] as string;
 
         if (message === 'reject') {
             msgReject(message);

@@ -1,6 +1,5 @@
-import { getCrc32 } from '@dfinity/principal/lib/esm/utils/getCrc';
 import jsSHA from 'jssha';
-import { Principal } from '#lib/index';
+import { Principal, getCrc32 } from '#lib/index';
 
 // TODO we need to review these heavily
 export function hexAddressFromPrincipal(
@@ -57,7 +56,7 @@ function addressFromPrincipal(
             ])
         )
         .getHash('UINT8ARRAY');
-    const checksum = to32Bits(getCrc32(hash.buffer));
+    const checksum = to32Bits(getCrc32(hash));
 
     return toHexString(new Uint8Array([...checksum, ...hash]));
 }
