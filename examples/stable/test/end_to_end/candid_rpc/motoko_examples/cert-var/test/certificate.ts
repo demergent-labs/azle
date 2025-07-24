@@ -1,31 +1,14 @@
-import { Certificate, LookupResultFound } from '@dfinity/agent';
+import { Certificate, LookupPathStatus, NodePath } from '@dfinity/agent';
 
 export function findLookupValueOrThrow(
     certificate: Certificate,
-    path: (ArrayBuffer | string)[]
-): ArrayBuffer {
-    const lookup = findLookupOrThrow(certificate, path);
-    return getValueAsArrayBufferOrThrow(lookup);
-}
+    path: NodePath
+): Uint8Array {
+    const lookupResult = certificate.lookup_path(path);
 
-function findLookupOrThrow(
-    certificate: Certificate,
-    path: (ArrayBuffer | string)[]
-): LookupResultFound {
-    const lookup = certificate.lookup(path);
-    if (lookup.status !== 'found') {
+    if (lookupResult.status !== LookupPathStatus.Found) {
         throw new Error('No value found');
     }
-    return lookup as LookupResultFound;
-}
 
-function getValueAsArrayBufferOrThrow(lookup: LookupResultFound): ArrayBuffer {
-    const value = lookup.value;
-    if (
-        ArrayBuffer.isView(value) === false &&
-        value instanceof ArrayBuffer === false
-    ) {
-        throw new Error('Value is not an ArrayBuffer');
-    }
-    return value as ArrayBuffer;
+    return lookupResult.value;
 }
