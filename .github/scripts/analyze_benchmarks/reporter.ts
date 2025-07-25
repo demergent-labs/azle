@@ -4,7 +4,7 @@ import { join } from 'path';
 import { AZLE_ROOT } from '#utils/global_paths';
 
 import { generateMarkdownReport } from './markdown';
-import { Statistics } from './statistics';
+import { Error, Statistics } from './statistics';
 
 export type StableOrExperimental = 'stable' | 'experimental';
 export type StableAndExperimentalStatistics = {
@@ -21,7 +21,7 @@ const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
  * @param version Version string for the results
  */
 export async function reportResults(
-    results: StableAndExperimentalStatistics,
+    results: StableAndExperimentalStatistics | Error,
     version: string
 ): Promise<void> {
     await updateBenchmarkJsonFile(results, version);
@@ -40,7 +40,7 @@ export async function readBenchmarkJsonFile(): Promise<
 }
 
 async function updateBenchmarkJsonFile(
-    newResults: StableAndExperimentalStatistics,
+    newResults: StableAndExperimentalStatistics | Error,
     version: string
 ): Promise<void> {
     const previousResults = await readBenchmarkJsonFile();

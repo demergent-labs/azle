@@ -10,6 +10,10 @@ export type Statistics = {
     baselineWeightedEfficiencyScore: number;
 };
 
+export type Error = {
+    error: string;
+};
+
 const MAX_VALID_INSTRUCTIONS = 40_000_000_000;
 const BASELINE_EFFICIENCY_WEIGHTS = {
     min: 0.6,
@@ -24,7 +28,7 @@ const BASELINE_EFFICIENCY_WEIGHTS = {
  */
 export function calculateVersionStatistics(
     entries: BenchmarkEntry[]
-): Statistics {
+): Statistics | Error {
     const instructions = entries.map((entry) =>
         Number(entry.instructions.__bigint__)
     );
@@ -36,9 +40,9 @@ export function calculateVersionStatistics(
  * Calculates statistical measures for an array of instruction counts
  * @param instructions Array of instruction counts
  * @returns Statistical analysis including mean, median, standard deviation, etc.
- * @throws Error if input array is empty or contains no valid instructions
+ * @throws Error if input array is empty
  */
-function calculateStatistics(instructions: number[]): Statistics {
+function calculateStatistics(instructions: number[]): Statistics | Error {
     if (instructions.length === 0) {
         throw new Error('Cannot calculate statistics for empty array');
     }
@@ -49,9 +53,9 @@ function calculateStatistics(instructions: number[]): Statistics {
     );
 
     if (filteredInstructions.length === 0) {
-        throw new Error(
-            'No valid instructions after filtering (all values > 40 billion)'
-        );
+        return {
+            error: 'No valid instructions after filtering (all values > 40 billion)'
+        };
     }
 
     const sorted = [...filteredInstructions].sort((a, b) => a - b);
