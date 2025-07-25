@@ -217,6 +217,38 @@ jobs:
                   prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
                   path: ${{ matrix.test.displayPath }}
 
+            - name: Create GraphQL mutation file
+              run: |
+                  mkdir -p .github/api
+                  cat > .github/api/createCommitOnBranch.gql << 'EOF'
+                  mutation (
+                      $githubRepository: String!,
+                      $branchName: String!,
+                      $expectedHeadOid: GitObjectID!
+                      $commitMessage: String!
+                      $files: [FileAddition!]!
+                  ) {
+                    createCommitOnBranch(
+                      input: {
+                      branch:
+                      {
+                          repositoryNameWithOwner: $githubRepository,
+                          branchName: $branchName
+                      },
+                      message: {headline: $commitMessage},
+                      fileChanges: {
+                          additions: $files
+                      }
+                      expectedHeadOid: $expectedHeadOid
+                      }
+                    ){
+                      commit {
+                      url
+                      }
+                    }
+                  }
+                  EOF
+
             - name: Create branch and commit changes via GraphQL
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
