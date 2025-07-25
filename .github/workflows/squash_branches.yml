@@ -108,13 +108,24 @@ jobs:
                     exit 0
                   fi
 
-                  echo "Committing ${#CHANGED_FILES[@]} files via GraphQL API..."
+                                    echo "Committing ${#CHANGED_FILES[@]} files via GraphQL API..."
 
-                  # Build files parameter for GraphQL
+                  # Create temporary directory for base64 files
+                  TEMP_DIR=$(mktemp -d)
+                  trap "rm -rf $TEMP_DIR" EXIT
+
+                  # Build files parameter using temporary files (avoids "Argument list too long")
                   FILES=""
+                  counter=0
                   for file in "${CHANGED_FILES[@]}"; do
                     echo "Processing file: $file"
-                    FILES="${FILES} -F files[][path]=$file -F files[][contents]=$(base64 -w0 $file)"
+
+                    # Create temporary file for base64 content
+                    temp_file="$TEMP_DIR/file_${counter}.b64"
+                    base64 -w0 "$file" > "$temp_file"
+
+                    FILES="${FILES} -F files[][path]=$file -F files[][contents]=@$temp_file"
+                    counter=$((counter + 1))
                   done
 
                   # Get current HEAD commit
