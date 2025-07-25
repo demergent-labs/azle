@@ -10,9 +10,7 @@ on:
     workflow_dispatch:
 
 permissions:
-    contents: write
-    pull-requests: write
-    actions: read
+    contents: read
 
 jobs:
     workflow-config:

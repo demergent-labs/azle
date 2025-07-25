@@ -12,9 +12,7 @@ on:
         - cron: '0 10 * * *'
 
 permissions:
-    contents: write
-    pull-requests: write
-    actions: read
+    contents: read
 
 jobs:
     determine-signing-key:
@@ -37,6 +35,8 @@ jobs:
         needs:
             - determine-signing-key
             - determine-prefix
+        permissions:
+            contents: write
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
             prefix: ${{ needs.determine-prefix.outputs.prefix }}
@@ -77,7 +77,7 @@ jobs:
               uses: ./.github/actions/retry_command
               with:
                   command: 'npm install'
-                  working-directory: ./examples
+                  working-directory: ${{ github.workspace }}/examples
 
             # Run global prettier/lint fixes
             - name: Run Prettier
@@ -96,7 +96,7 @@ jobs:
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
               with:
-                  directories: ./examples
+                  directories: ${{ github.workspace }}/examples
 
     update-test-dependencies:
         needs:
@@ -122,12 +122,17 @@ jobs:
 
             - uses: ./.github/actions/setup_dfx
 
+            - name: Install azle dependencies
+              uses: ./.github/actions/retry_command
+              with:
+                  command: 'npm install'
+
             # Install dependencies at the examples workspace root
             - name: Install workspace dependencies
               uses: ./.github/actions/retry_command
               with:
                   command: 'npm install'
-                  working-directory: ./examples
+                  working-directory: ${{ github.workspace }}/examples
 
             # Conditionally delete package-lock.json if input is true
             - name: Delete package-lock.json
