@@ -16,6 +16,8 @@ permissions:
 
 jobs:
     create-branch-prefix:
+        permissions:
+            contents: write
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
             prefix: 'release'
