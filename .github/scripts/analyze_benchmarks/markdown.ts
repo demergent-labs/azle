@@ -46,6 +46,24 @@ function generateVersionTable(
     results: StableAndExperimentalStatistics,
     comparisonResults: StableAndExperimentalStatistics
 ): string {
+    // Check if either stable or experimental has an error
+    const stableError = results.stable.error;
+    const experimentalError = results.experimental.error;
+
+    if (stableError || experimentalError) {
+        let errorMessage = `## Version \`${version}\`\n\n`;
+        errorMessage += `⚠️ **WARNING: Benchmark analysis failed for version ${version}**\n\n`;
+
+        if (stableError) {
+            errorMessage += `**Stable Error:** ${stableError}\n\n`;
+        }
+        if (experimentalError) {
+            errorMessage += `**Experimental Error:** ${experimentalError}\n\n`;
+        }
+
+        return errorMessage;
+    }
+
     return `## Version \`${version}\`
 
 <table>
@@ -122,7 +140,9 @@ function generateStatsTableRows(
     ${Object.entries(results.stable)
         .filter(
             ([key]) =>
-                key !== 'count' && key !== 'baselineWeightedEfficiencyScore'
+                key !== 'count' &&
+                key !== 'baselineWeightedEfficiencyScore' &&
+                key !== 'error'
         )
         .map(([key, value]) => {
             const statsKey = key as keyof Statistics;
@@ -202,11 +222,22 @@ function calculateVersionChanges(
     previous: Statistics,
     current: Statistics
 ): Statistics {
+    // If either has an error, return default statistics
+    if (previous.error || current.error) {
+        return createDefaultStatistics();
+    }
+
     return Object.keys(previous).reduce((changes, key) => {
         const statsKey = key as keyof Statistics;
+        // Skip the error field if it exists
+        if (statsKey === 'error') {
+            return changes;
+        }
+        const prevValue = previous[statsKey];
+        const currValue = current[statsKey];
         return {
             ...changes,
-            [statsKey]: calculateChange(previous[statsKey], current[statsKey])
+            [statsKey]: calculateChange(prevValue, currValue)
         };
     }, {} as Statistics);
 }

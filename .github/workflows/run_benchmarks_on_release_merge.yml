@@ -7,7 +7,6 @@ on:
 
 permissions:
     contents: read
-    actions: read
 
 jobs:
     determine-context:
@@ -23,6 +22,8 @@ jobs:
     run-benchmarks:
         name: Run Benchmarks
         needs: determine-context
+        permissions:
+            contents: write
         if: needs.determine-context.outputs.should-run == 'true'
         uses: ./.github/workflows/benchmark.yml
         with:

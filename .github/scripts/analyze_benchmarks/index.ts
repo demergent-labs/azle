@@ -2,11 +2,11 @@ import { join } from 'path';
 
 import { AZLE_ROOT } from '#utils/global_paths';
 
-import { version as currentAzleVersion } from '../../package.json';
+import { version as currentAzleVersion } from '../../../package.json';
 import { extractBenchmarksEntriesFromFiles } from './extractor';
 import { findBenchmarkFiles } from './file_finder';
 import { reportResults, StableAndExperimentalStatistics } from './reporter';
-import { calculateVersionStatistics } from './statistics';
+import { calculateVersionStatistics, Error } from './statistics';
 
 /**
  * Analyzes benchmarks for a specific version across stable and experimental examples
@@ -15,7 +15,7 @@ import { calculateVersionStatistics } from './statistics';
  */
 async function analyzeBenchmarksForVersion(
     targetVersion: string
-): Promise<StableAndExperimentalStatistics> {
+): Promise<StableAndExperimentalStatistics | Error> {
     const stableBenchmarkFilePaths = await findBenchmarkFiles(
         join(AZLE_ROOT, 'examples', 'stable')
     );
@@ -33,11 +33,22 @@ async function analyzeBenchmarksForVersion(
     const targetVersionExperimentalEntries =
         experimentalBenchmarkEntriesByVersion[targetVersion];
 
+    const stableStats = calculateVersionStatistics(targetVersionStableEntries);
+    const experimentalStats = calculateVersionStatistics(
+        targetVersionExperimentalEntries
+    );
+
+    if ('error' in stableStats) {
+        return stableStats;
+    }
+
+    if ('error' in experimentalStats) {
+        return experimentalStats;
+    }
+
     return {
-        stable: calculateVersionStatistics(targetVersionStableEntries),
-        experimental: calculateVersionStatistics(
-            targetVersionExperimentalEntries
-        )
+        stable: stableStats,
+        experimental: experimentalStats
     };
 }
 

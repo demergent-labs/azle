@@ -13,13 +13,14 @@ on:
                 default: true
 
 permissions:
-    contents: write
-    actions: read
+    contents: read
 
 jobs:
     delete-branches:
         name: 'Delete branches with prefix ${{ inputs.branch-prefix }} | Dry run: ${{ inputs.dry-run }}'
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
         steps:
             - uses: actions/checkout@v4
               with:
