@@ -4,7 +4,7 @@
         "test": "AZLE_EXPERIMENTAL=true jest"
     },
     "dependencies": {
-        "azle": "0.32.0",
+        "azle": "0.33.0-rc.20",
         "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd",
         "express": "^4.18.2",
         "sql.js": "1.8.0",
