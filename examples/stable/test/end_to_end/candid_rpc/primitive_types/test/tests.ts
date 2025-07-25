@@ -316,9 +316,8 @@ export function getTests(
 
         it('getEmpty', async () => {
             const rejectMessage = 'Anything you want';
-            const canisterId = '[a-z2-7-]{27}';
             const expectedErrorMessage = new RegExp(
-                `Call failed:\\s*Canister: ${canisterId}\\s*Method: getEmpty \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "Error from Canister ${canisterId}: Canister called \`ic0.trap\` with message: 'Uncaught: ${rejectMessage}.*"`
+                `Uncaught: ${rejectMessage}`
             );
             await expect(primitiveTypesCanister.getEmpty()).rejects.toThrow(
                 expectedErrorMessage

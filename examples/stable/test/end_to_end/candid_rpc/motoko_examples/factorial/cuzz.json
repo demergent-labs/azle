@@ -1,5 +1,3 @@
 {
-    "expectedErrors": [
-        "Method: fac \\(update\\)[\\s\\S]*\"Request ID\":[\\s\\S]*\"Error code\":[\\s\\S]*\"Reject code\":[\\s\\S]*\"Reject message\":.*Canister trapped: heap out of bounds"
-    ]
+    "expectedErrors": ["Canister trapped: heap out of bounds"]
 }

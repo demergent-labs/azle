@@ -121,7 +121,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test {
 
         it('listOfEmpty test', async () => {
             await expect(listOfListsCanister.listOfEmpty()).rejects.toThrow(
-                /Call failed/
+                'Uncaught Error: Anything you want'
             );
         });
 

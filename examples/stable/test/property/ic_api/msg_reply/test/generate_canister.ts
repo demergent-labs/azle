@@ -16,7 +16,7 @@ export default class {
     alwaysReplyQuery(): void {
         const argData = msgArgData();
 
-        const input = IDL.decode([${idlType}], argData.buffer instanceof ArrayBuffer ? argData.buffer : new Uint8Array(argData).buffer)[0] as unknown as ${tsType};
+        const input = IDL.decode([${idlType}], argData)[0] as unknown as ${tsType};
 
         const encoded = new Uint8Array(IDL.encode([${idlType}], [input]));
 
@@ -27,7 +27,7 @@ export default class {
     alwaysReplyUpdate(): void {
         const argData = msgArgData();
 
-        const input = IDL.decode([${idlType}], argData.buffer instanceof ArrayBuffer ? argData.buffer : new Uint8Array(argData).buffer)[0] as unknown as ${tsType};
+        const input = IDL.decode([${idlType}], argData)[0] as unknown as ${tsType};
 
         const encoded = new Uint8Array(IDL.encode([${idlType}], [input]));
 

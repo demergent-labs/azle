@@ -101,7 +101,7 @@ async function createAndVerifyCertificate(
     }
     expect(certificateBytes.length).toBeGreaterThan(0);
 
-    const certificate = new Uint8Array(certificateBytes[0]).buffer;
+    const certificate = new Uint8Array(certificateBytes[0]);
 
     const rootKey = await agent.fetchRootKey();
 
@@ -133,16 +133,14 @@ function verifyCertifiedData(
 
     const rawData = findLookupValueOrThrow(certificate, [
         'canister',
-        canisterPrincipalBytes.buffer instanceof ArrayBuffer
-            ? canisterPrincipalBytes.buffer
-            : new Uint8Array(canisterPrincipalBytes).buffer,
+        canisterPrincipalBytes,
         'certified_data'
     ]);
 
-    const candidEncodedRawData: ArrayBuffer = new Uint8Array([
+    const candidEncodedRawData = new Uint8Array([
         ...new TextEncoder().encode('DIDL\x00\x01\x79'),
         ...new Uint8Array(rawData)
-    ]).buffer;
+    ]);
 
     const decodedData = IDL.decode([IDL.Nat32], candidEncodedRawData)[0];
 

@@ -136,6 +136,7 @@ export async function getBuildOptions(
 
     return {
         ...stableBuildOptions,
+        target: 'es2021',
         alias: {
             internal: `${WASMEDGE_QUICKJS_PATH}/modules/internal`,
             util: `${WASMEDGE_QUICKJS_PATH}/modules/util`,
