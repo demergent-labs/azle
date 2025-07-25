@@ -324,6 +324,7 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: read
+            actions: write
             pull-requests: write
         steps:
             - uses: actions/checkout@v4
