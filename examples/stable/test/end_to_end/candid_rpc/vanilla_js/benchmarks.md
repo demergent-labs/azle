@@ -1,3 +1,5 @@
+⚠️ **WARNING: Benchmark process failed for version 0.32.0**
+
 # Benchmarks for vanilla_js
 
 ## Current benchmarks Azle version: 0.32.0
