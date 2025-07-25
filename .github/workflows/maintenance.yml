@@ -51,8 +51,6 @@ jobs:
             - create-branch-prefix
             - determine-signing-key
         runs-on: ubuntu-latest
-        permissions:
-            contents: write
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
@@ -107,8 +105,6 @@ jobs:
             - determine-signing-key
         name: Update dependencies for ${{ matrix.test.name }}
         runs-on: ubuntu-latest
-        permissions:
-            contents: write
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
