@@ -29,8 +29,6 @@ jobs:
         needs:
             - create-branch-prefix
         runs-on: ubuntu-latest
-        permissions:
-            contents: write
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -104,8 +102,6 @@ jobs:
             - create-branch-prefix
         name: Update ${{ matrix.test.name }} files for release commit
         runs-on: ubuntu-latest
-        permissions:
-            contents: write
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -184,8 +180,6 @@ jobs:
             - squash-branches
         name: Create Release
         runs-on: ubuntu-latest
-        permissions:
-            contents: write
         steps:
             - uses: actions/checkout@v4
               with:
@@ -212,9 +206,6 @@ jobs:
             - squash-branches
             - create-branch-prefix
         runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            pull-requests: write
         steps:
             - uses: actions/checkout@v4
               with:

@@ -64,9 +64,6 @@ jobs:
         needs: evaluate-auto-merge-conditions
         if: ${{ needs.evaluate-auto-merge-conditions.outputs.should_auto_merge == 'true' }}
         runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            pull-requests: write
         steps:
             - uses: actions/checkout@v4
               with:
