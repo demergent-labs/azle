@@ -72,9 +72,6 @@ jobs:
         with:
             prefix: 'benchmark'
             version: $(jq -r '.version' package.json)
-            signing-key-id: ${{ inputs.signing-key-id }}
-        secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
     run-benchmarks:
         name: ${{ matrix.benchmark_group.name }}

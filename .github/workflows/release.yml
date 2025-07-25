@@ -20,9 +20,6 @@ jobs:
         with:
             prefix: 'release'
             version: ${{ inputs.release-version }}
-            signing-key-id: ${{ inputs.signing-key-id }}
-        secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
     prepare-release:
         name: Prepare Release
