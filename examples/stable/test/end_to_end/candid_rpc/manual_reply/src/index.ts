@@ -199,7 +199,7 @@ export default class {
 
         const message = IDL.decode([IDL.Text], argData)[0] as string;
 
-        if (message === 'reject') {
+        if (message === 'reject on purpose') {
             msgReject(message);
             return;
         }

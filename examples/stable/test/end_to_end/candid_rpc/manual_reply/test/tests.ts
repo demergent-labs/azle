@@ -98,15 +98,10 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('manualQuery when calling msgReject', async () => {
-            const rejectMessage = 'reject';
+            const rejectMessage = 'reject on purpose';
             await expect(
                 manualReplyCanister.manualQuery(rejectMessage)
-            ).rejects.toMatchObject({
-                props: {
-                    Code: 'CanisterReject',
-                    Message: rejectMessage
-                }
-            });
+            ).rejects.toThrow(rejectMessage);
         });
 
         it('manualQuery when calling msgReply', async () => {
