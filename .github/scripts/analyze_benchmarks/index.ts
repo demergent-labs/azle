@@ -6,6 +6,7 @@ import { version as currentAzleVersion } from '../../../package.json';
 import { extractBenchmarksEntriesFromFiles } from './extractor';
 import { findBenchmarkFiles } from './file_finder';
 import {
+    MARKDOWN_FILE,
     reportErrorResult,
     reportResults,
     StableAndExperimentalStatistics
@@ -60,6 +61,7 @@ async function runBenchmarkAnalysis(specifiedVersion?: string): Promise<void> {
             error instanceof Error ? error.message : String(error);
         await reportErrorResult(errorMessage, versionToAnalyze);
     }
+    console.info(`Report generated at ${MARKDOWN_FILE}`);
 }
 
 runBenchmarkAnalysis(process.argv[2]);
