@@ -94,7 +94,6 @@ jobs:
         needs:
             - prepare-maintenance
             - create-branch-prefix
-            - determine-signing-key
         name: Update dependencies for ${{ matrix.test.name }}
         runs-on: ubuntu-latest
         env:
