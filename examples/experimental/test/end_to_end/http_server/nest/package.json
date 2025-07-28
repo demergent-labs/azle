@@ -4,7 +4,7 @@
         "test": "AZLE_EXPERIMENTAL=true jest"
     },
     "dependencies": {
-        "@nestjs/common": "^10.4.16",
+        "@nestjs/common": "^11.1.5",
         "@nestjs/core": "^11.1.5",
         "@nestjs/platform-express": "^11.1.5",
         "azle": "0.32.0",

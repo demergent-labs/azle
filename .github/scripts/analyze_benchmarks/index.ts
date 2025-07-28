@@ -2,10 +2,15 @@ import { join } from 'path';
 
 import { AZLE_ROOT } from '#utils/global_paths';
 
-import { version as currentAzleVersion } from '../../package.json';
+import { version as currentAzleVersion } from '../../../package.json';
 import { extractBenchmarksEntriesFromFiles } from './extractor';
 import { findBenchmarkFiles } from './file_finder';
-import { reportResults, StableAndExperimentalStatistics } from './reporter';
+import {
+    MARKDOWN_FILE,
+    reportErrorResult,
+    reportResults,
+    StableAndExperimentalStatistics
+} from './reporter';
 import { calculateVersionStatistics } from './statistics';
 
 /**
@@ -48,8 +53,15 @@ async function analyzeBenchmarksForVersion(
 async function runBenchmarkAnalysis(specifiedVersion?: string): Promise<void> {
     const versionToAnalyze = specifiedVersion ?? currentAzleVersion;
     console.info('Analyzing benchmarks...');
-    const statistics = await analyzeBenchmarksForVersion(versionToAnalyze);
-    await reportResults(statistics, versionToAnalyze);
+    try {
+        const statistics = await analyzeBenchmarksForVersion(versionToAnalyze);
+        await reportResults(statistics, versionToAnalyze);
+    } catch (error) {
+        const errorMessage =
+            error instanceof Error ? error.message : String(error);
+        await reportErrorResult(errorMessage, versionToAnalyze);
+    }
+    console.info(`Report generated at ${MARKDOWN_FILE}`);
 }
 
 runBenchmarkAnalysis(process.argv[2]);

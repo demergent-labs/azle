@@ -13,7 +13,6 @@ on:
 
 permissions:
     contents: read
-    actions: write
 
 jobs:
     test-cli-commands-outside-azle-repo-wsl-ubuntu:
