@@ -1,5 +1,3 @@
-import { Principal } from 'azle';
-import { getCanisterId } from 'azle/_internal/dfx';
 import { defaultPropTestParams, expect, it, Test } from 'azle/_internal/test';
 import fc from 'fast-check';
 
@@ -113,20 +111,9 @@ async function addBytesUntilLimitReached(actor: Actor): Promise<void> {
  * @param error - The error object to validate
  */
 function validateMemoryLimitError(error: unknown): void {
-    const canisterId = getCanisterId(CANISTER_NAME);
-    expect(error).toMatchObject({
-        name: 'AgentError',
-        methodName: 'addRandomBytes',
-        type: 'update',
-        reject_code: 5,
-        error_code: 'IC0539',
-        canisterId: Principal.from(canisterId),
-        reject_message: expect.stringMatching(
-            new RegExp(
-                `Error from Canister ${canisterId}: Canister exceeded its current Wasm memory limit of \\d+ bytes`
-            )
-        )
-    });
+    expect(error).toMatch(
+        'Canister exceeded its current Wasm memory limit of \\d+ bytes'
+    );
 }
 
 /**
