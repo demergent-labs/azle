@@ -1,5 +1,11 @@
 # Benchmarks
 
+## Version `0.32.0`
+
+⚠️ **WARNING: Benchmark analysis failed for version 0.32.0**
+
+**Error:** No valid instructions after filtering (all values > 40 billion)
+
 ## Version `0.30.0`
 
 <table>

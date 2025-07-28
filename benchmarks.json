@@ -158,5 +158,8 @@
             "max": 18333390745,
             "baselineWeightedEfficiencyScore": 116049828.68333332
         }
+    },
+    "0.32.0": {
+        "error": "No valid instructions after filtering (all values > 40 billion)"
     }
 }
