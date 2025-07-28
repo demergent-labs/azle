@@ -31,4 +31,5 @@ jobs:
             exclude-unstable-benchmarks: false
             exclude-release-only-benchmarks: false
         secrets:
+            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

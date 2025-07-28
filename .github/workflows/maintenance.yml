@@ -32,6 +32,8 @@ jobs:
         with:
             prefix: ${{ needs.determine-prefix.outputs.prefix }}
             version: $(jq -r '.version' package.json)
+        secrets:
+            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
 
     prepare-maintenance:
         name: Prepare Maintenance
@@ -167,6 +169,7 @@ jobs:
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'Example/test maintenance: update dependencies'
         secrets:
+            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     create-pr:
