@@ -110,9 +110,9 @@ async function addBytesUntilLimitReached(actor: Actor): Promise<void> {
  *
  * @param error - The error object to validate
  */
-function validateMemoryLimitError(error: unknown): void {
-    expect(error).toMatch(
-        'Canister exceeded its current Wasm memory limit of \\d+ bytes'
+function validateMemoryLimitError(error: any): void {
+    expect(error.toString()).toMatch(
+        /Canister exceeded its current Wasm memory limit of \d+ bytes/
     );
 }
 
