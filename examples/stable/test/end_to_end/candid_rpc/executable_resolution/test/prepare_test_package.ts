@@ -4,7 +4,9 @@ import { copyFile, mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { join, resolve } from 'path';
 
 const TEST_PACKAGES_DIR = join(__dirname, 'test_packages');
-const AZLE_ROOT = resolve(__dirname, '..', '..', '..', '..', '..', '..', '..');
+const AZLE_ROOT =
+    process.env.AZLE_ROOT ||
+    resolve(__dirname, '..', '..', '..', '..', '..', '..', '..');
 const ORIG_PACKAGE_JSON_PATH = join(AZLE_ROOT, 'package.json');
 const BACKUP_PACKAGE_JSON_PATH = join(AZLE_ROOT, 'package.json.bak');
 
