@@ -17,6 +17,9 @@ on:
             base-branch:
                 description: 'The generated base branch name ({prefix}--{version})'
                 value: ${{ jobs.create-branch-prefix.outputs.base-branch }}
+        secrets:
+            AZLE_BOT_KEY:
+                required: true
 
 permissions:
     contents: read

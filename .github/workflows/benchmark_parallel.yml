@@ -17,6 +17,8 @@ on:
                 default: ''
 
         secrets:
+            AZLE_BOT_KEY:
+                required: true
             GH_TOKEN:
                 required: true
 
