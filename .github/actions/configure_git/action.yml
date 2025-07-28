@@ -1,21 +1,10 @@
 name: Configure Git
-description: 'Configures git with user info and GPG signing'
-inputs:
-    gpg-signing-key:
-        description: 'The GPG signing key to use for signing commits'
-        required: true
-    signing-key-id:
-        description: 'The GPG signing key ID to configure for git'
-        required: true
+description: 'Configures git with azle-bot user info'
 runs:
     using: composite
     steps:
         - name: Configure git
           run: |
-              # TODO we should use some Action-specific bot account
-              git config --global user.name 'Jordan Last'
-              git config --global user.email 'jordan.michael.last@gmail.com'
-              git config --global commit.gpgsign true
-              echo -n "${{ inputs.gpg-signing-key }}" | base64 --decode | gpg --import
-              git config --global user.signingkey ${{ inputs.signing-key-id }}
+              git config --global user.name 'azle-bot[bot]'
+              git config --global user.email 'azle-bot[bot]@users.noreply.github.com'
           shell: bash

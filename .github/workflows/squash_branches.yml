@@ -11,15 +11,8 @@ on:
             commit-message:
                 required: true
                 type: string
-            signing-key-id:
-                required: true
-                type: string
         secrets:
-            GPG_SIGNING_KEY:
-                required: true
             GH_TOKEN:
-                required: true
-            LASTMJS_GITHUB_TOKEN:
                 required: true
 
 permissions:
@@ -30,19 +23,23 @@ jobs:
         name: Squash Branches
         runs-on: ubuntu-latest
         env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
                   fetch-depth: 0
 
             - uses: ./.github/actions/configure_git
-              with:
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
-                  signing-key-id: ${{ inputs.signing-key-id }}
+
             - name: Collect branches
               id: collect-branches
               run: |
@@ -69,7 +66,7 @@ jobs:
 
             - name: Squash changes
               env:
-                  PAT: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  PAT: ${{ steps.github-app-auth.outputs.token }}
               run: |
                   CURRENT_BRANCH=$(git branch --show-current)
 

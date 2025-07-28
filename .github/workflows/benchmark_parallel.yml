@@ -15,17 +15,9 @@ on:
                 required: false
                 type: string
                 default: ''
-            signing-key-id:
-                required: true
-                type: string
-                description: 'Signing key ID to use for signing commits'
 
         secrets:
-            GPG_SIGNING_KEY:
-                required: true
             GH_TOKEN:
-                required: true
-            LASTMJS_GITHUB_TOKEN:
                 required: true
 
 permissions:
@@ -59,17 +51,22 @@ jobs:
         name: Run benchmarks for ${{ matrix.test.name }}
         runs-on: ubuntu-latest
         env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         strategy:
             fail-fast: false
             matrix:
                 test: ${{ fromJson(needs.prepare-benchmark.outputs.test-infos) }}
         steps:
+            - id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ inputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - name: Report full path of test
               # Just in case the path isn't obvious from the name, this will remove ambiguity
@@ -131,6 +128,4 @@ jobs:
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
                   create-branch: 'true'
-                  signing-key-id: ${{ inputs.signing-key-id }}
