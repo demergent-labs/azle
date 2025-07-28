@@ -28,7 +28,7 @@ export function getTests(): Test {
                             expectedErrorMessage
                         );
                         await expect(actor.queryTrap(message)).rejects.toThrow(
-                            message.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+                            message
                         );
                     }
                 ),
@@ -53,7 +53,7 @@ export function getTests(): Test {
                             expectedErrorMessage
                         );
                         await expect(actor.updateTrap(message)).rejects.toThrow(
-                            message.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+                            message
                         );
                     }
                 ),
