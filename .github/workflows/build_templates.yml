@@ -36,10 +36,17 @@ jobs:
         if: ${{ needs.workflow-config.outputs.is-dependabot == 'true' || github.event_name == 'workflow_dispatch' }}
         runs-on: ubuntu-latest
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - uses: ./.github/actions/setup_node
 
@@ -66,5 +73,4 @@ jobs:
               with:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
-                  signing-key-id: ${{ needs.workflow-config.outputs.is-dependabot == 'true' && '2ED5FB11C6D5168EB9D69C5EF524010C7419CA66' || 'C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0' }}
+                  token: ${{ steps.github-app-auth.outputs.token }}

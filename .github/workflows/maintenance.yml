@@ -12,17 +12,9 @@ on:
         - cron: '0 10 * * *'
 
 permissions:
-    contents: read
+    contents: write
 
 jobs:
-    determine-signing-key:
-        runs-on: ubuntu-latest
-        outputs:
-            signing-key-id: ${{ steps.set-key.outputs.key }}
-        steps:
-            - id: set-key
-              run: echo "key=C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0" >> $GITHUB_OUTPUT
-
     determine-prefix:
         runs-on: ubuntu-latest
         outputs:
@@ -33,7 +25,6 @@ jobs:
 
     create-branch-prefix:
         needs:
-            - determine-signing-key
             - determine-prefix
         permissions:
             contents: write
@@ -41,23 +32,28 @@ jobs:
         with:
             prefix: ${{ needs.determine-prefix.outputs.prefix }}
             version: $(jq -r '.version' package.json)
-            signing-key-id: ${{ needs.determine-signing-key.outputs.signing-key-id }}
         secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
 
     prepare-maintenance:
         name: Prepare Maintenance
         needs:
             - create-branch-prefix
-            - determine-signing-key
         runs-on: ubuntu-latest
         outputs:
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - uses: ./.github/actions/setup_node
 
@@ -90,8 +86,7 @@ jobs:
               with:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'Example/test maintenance: formatting and linting'
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
-                  signing-key-id: ${{ needs.determine-signing-key.outputs.signing-key-id }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - id: get-test-infos
               uses: ./.github/actions/get_test_infos
@@ -102,21 +97,26 @@ jobs:
         needs:
             - prepare-maintenance
             - create-branch-prefix
-            - determine-signing-key
         name: Update dependencies for ${{ matrix.test.name }}
         runs-on: ubuntu-latest
         env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         strategy:
             fail-fast: false
             matrix:
                 test: ${{ fromJson(needs.prepare-maintenance.outputs.test-infos) }}
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - uses: ./.github/actions/setup_node
 
@@ -158,25 +158,22 @@ jobs:
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Example/test maintenance: update dependencies'
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
                   create-branch: 'true'
-                  signing-key-id: ${{ needs.determine-signing-key.outputs.signing-key-id }}
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
 
     squash-branches:
         needs:
             - update-test-dependencies
             - create-branch-prefix
-            - determine-signing-key
         uses: ./.github/workflows/squash_branches.yml
         with:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'Example/test maintenance: update dependencies'
-            signing-key-id: ${{ needs.determine-signing-key.outputs.signing-key-id }}
         secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
     create-pr:
         needs:
@@ -184,6 +181,13 @@ jobs:
             - create-branch-prefix
         runs-on: ubuntu-latest
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.ref }}
@@ -204,7 +208,7 @@ jobs:
             - name: Create Pull Request
               if: steps.check-diff.outputs.has_changes == 'true'
               env:
-                  GH_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
               run: |
                   gh pr create \
                     --base main \

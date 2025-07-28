@@ -5,11 +5,6 @@ on:
             release-version:
                 required: true
                 description: 'Release version'
-            signing-key-id:
-                required: true
-                type: string
-                default: C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-                description: 'Signing key ID'
 
 permissions:
     contents: read
@@ -22,9 +17,8 @@ jobs:
         with:
             prefix: 'release'
             version: ${{ inputs.release-version }}
-            signing-key-id: ${{ inputs.signing-key-id }}
         secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
 
     prepare-release:
         name: Prepare Release
@@ -32,16 +26,22 @@ jobs:
             - create-branch-prefix
         runs-on: ubuntu-latest
         env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         outputs:
             release-version: ${{ inputs.release-version }}
             test-infos: ${{ steps.get-test-infos.outputs.test-infos }}
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - uses: ./.github/actions/setup_node
               with:
@@ -82,8 +82,7 @@ jobs:
               with:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'Prepare release ${{ inputs.release-version }}'
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
-                  signing-key-id: ${{ inputs.signing-key-id }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - name: Publish to npm
               run: |
@@ -105,17 +104,23 @@ jobs:
         name: Update ${{ matrix.test.name }} files for release commit
         runs-on: ubuntu-latest
         env:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         strategy:
             fail-fast: false
             matrix:
                 test: ${{ fromJson(needs.prepare-release.outputs.test-infos) }}
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ needs.create-branch-prefix.outputs.base-branch }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - uses: ./.github/actions/setup_node
 
@@ -156,9 +161,8 @@ jobs:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Update test files for ${{ matrix.test.displayPath }}'
                   add-files: ${{ matrix.test.path }}
-                  gpg-signing-key: ${{ secrets.GPG_SIGNING_KEY }}
                   create-branch: 'true'
-                  signing-key-id: ${{ inputs.signing-key-id }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
     squash-branches:
         needs:
@@ -170,11 +174,9 @@ jobs:
             base-branch: ${{ needs.create-branch-prefix.outputs.base-branch }}
             branch-prefix: ${{ needs.create-branch-prefix.outputs.branch-prefix }}
             commit-message: 'Update test files for all tests and examples ${{ inputs.release-version }}'
-            signing-key-id: ${{ inputs.signing-key-id }}
         secrets:
-            GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+            AZLE_BOT_KEY: ${{ secrets.AZLE_BOT_KEY }}
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            LASTMJS_GITHUB_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
 
     create-release:
         needs:
@@ -183,14 +185,21 @@ jobs:
         name: Create Release
         runs-on: ubuntu-latest
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.ref }}
-                  token: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
             - name: Create release
               env:
-                  GH_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
               run: |
                   VERSION=${{ inputs.release-version }}
                   git tag $VERSION
@@ -209,13 +218,20 @@ jobs:
             - create-branch-prefix
         runs-on: ubuntu-latest
         steps:
+            - name: Generate GitHub App Token
+              id: github-app-auth
+              uses: actions/create-github-app-token@v1
+              with:
+                  app-id: ${{ vars.AZLE_BOT_ID }}
+                  private-key: ${{ secrets.AZLE_BOT_KEY }}
+
             - uses: actions/checkout@v4
               with:
                   ref: ${{ github.ref }}
 
             - name: Create Pull Request
               env:
-                  GH_TOKEN: ${{ secrets.LASTMJS_GITHUB_TOKEN }}
+                  GH_TOKEN: ${{ steps.github-app-auth.outputs.token }}
               run: |
                   gh pr create \
                     --base main \
