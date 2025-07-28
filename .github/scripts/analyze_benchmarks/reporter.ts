@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs/promises';
+import { appendFile, readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { AZLE_ROOT } from '#utils/global_paths';
@@ -12,8 +12,8 @@ export type StableAndExperimentalStatistics = {
     experimental: Statistics;
 };
 
-const RESULTS_FILE = join(AZLE_ROOT, 'benchmarks.json');
-const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
+export const RESULTS_FILE = join(AZLE_ROOT, 'benchmarks.json');
+export const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
 
 /**
  * Reports benchmark results by updating JSON file and generating markdown report
@@ -26,6 +26,14 @@ export async function reportResults(
 ): Promise<void> {
     await updateBenchmarkJsonFile(results, version);
     await outputMarkdownFromJson();
+}
+
+export async function reportErrorResult(
+    error: string,
+    version: string
+): Promise<void> {
+    const errorMessage = `## Version \`${version}\`\n\n⚠️ **WARNING: Benchmark analysis failed for version ${version}**\n\n**Error:** ${error}\n\n`;
+    await appendFile(MARKDOWN_FILE, errorMessage);
 }
 
 /**
@@ -54,5 +62,4 @@ async function updateBenchmarkJsonFile(
 async function outputMarkdownFromJson(): Promise<void> {
     const markdownContent = await generateMarkdownReport();
     await writeFile(MARKDOWN_FILE, markdownContent);
-    console.info(`Report generated at ${MARKDOWN_FILE}`);
 }

@@ -12,12 +12,12 @@ on:
                 description: 'Signing key ID'
 
 permissions:
-    contents: write
-    pull-requests: write
-    actions: read
+    contents: read
 
 jobs:
     create-branch-prefix:
+        permissions:
+            contents: write
         uses: ./.github/workflows/create_branch_prefix.yml
         with:
             prefix: 'release'
