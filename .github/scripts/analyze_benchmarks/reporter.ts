@@ -33,7 +33,7 @@ export async function reportResults(
  * @returns Record of version-keyed benchmark statistics
  */
 export async function readBenchmarkJsonFile(): Promise<
-    Record<string, Record<StableOrExperimental, Statistics>>
+    Record<string, Record<StableOrExperimental, Statistics> | Error>
 > {
     const fileContent = await readFile(RESULTS_FILE, 'utf-8');
     return JSON.parse(fileContent);

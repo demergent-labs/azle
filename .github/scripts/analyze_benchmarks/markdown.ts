@@ -5,7 +5,7 @@ import {
     StableAndExperimentalStatistics,
     StableOrExperimental
 } from './reporter';
-import { Statistics } from './statistics';
+import { Error, Statistics } from './statistics';
 
 export async function generateMarkdownReport(): Promise<string> {
     const benchmarksJson = await readBenchmarkJsonFile();
@@ -25,10 +25,19 @@ ${generateVersionTables(sortedBenchmarks)}
 }
 
 function generateVersionTables(
-    benchmarksJson: Record<string, Record<StableOrExperimental, Statistics>>
+    benchmarksJson: Record<
+        string,
+        Record<StableOrExperimental, Statistics> | Error
+    >
 ): string {
     return Object.entries(benchmarksJson).reduce(
         (acc, [version, stats], index) => {
+            // Check if this version has an error
+            if ('error' in stats) {
+                const errorMessage = `## Version \`${version}\`\n\n⚠️ **WARNING: Benchmark analysis failed for version ${version}**\n\n**Error:** ${stats.error}\n\n`;
+                return `${acc}${errorMessage}`;
+            }
+
             const comparison = compareChanges(benchmarksJson, index);
             const versionTable = generateVersionTable(
                 version,
@@ -46,24 +55,6 @@ function generateVersionTable(
     results: StableAndExperimentalStatistics,
     comparisonResults: StableAndExperimentalStatistics
 ): string {
-    // Check if either stable or experimental has an error
-    const stableError = results.stable.error;
-    const experimentalError = results.experimental.error;
-
-    if (stableError || experimentalError) {
-        let errorMessage = `## Version \`${version}\`\n\n`;
-        errorMessage += `⚠️ **WARNING: Benchmark analysis failed for version ${version}**\n\n`;
-
-        if (stableError) {
-            errorMessage += `**Stable Error:** ${stableError}\n\n`;
-        }
-        if (experimentalError) {
-            errorMessage += `**Experimental Error:** ${experimentalError}\n\n`;
-        }
-
-        return errorMessage;
-    }
-
     return `## Version \`${version}\`
 
 <table>
@@ -140,22 +131,25 @@ function generateStatsTableRows(
     ${Object.entries(results.stable)
         .filter(
             ([key]) =>
-                key !== 'count' &&
-                key !== 'baselineWeightedEfficiencyScore' &&
-                key !== 'error'
+                key !== 'count' && key !== 'baselineWeightedEfficiencyScore'
         )
         .map(([key, value]) => {
             const statsKey = key as keyof Statistics;
             const stableChange = comparisonResults.stable[statsKey];
             const experimentalChange = comparisonResults.experimental[statsKey];
             const metric = camelToTitleCase(key);
-            const stableFormattedValue = formatNumber(Math.floor(value));
-            const experimentalFormattedValue = formatNumber(
-                Math.floor(results.experimental[statsKey])
+            const stableFormattedValue = formatNumber(
+                Math.floor(value as number)
             );
-            const stableFormattedChange = formatChangeValue(stableChange);
-            const experimentalFormattedChange =
-                formatChangeValue(experimentalChange);
+            const experimentalFormattedValue = formatNumber(
+                Math.floor(results.experimental[statsKey] as number)
+            );
+            const stableFormattedChange = formatChangeValue(
+                stableChange as number
+            );
+            const experimentalFormattedChange = formatChangeValue(
+                experimentalChange as number
+            );
 
             return `\t<tr>
         <td>${metric}</td>
@@ -178,20 +172,32 @@ function formatChangeValue(change: number): string {
 }
 
 function compareChanges(
-    results: Record<string, StableAndExperimentalStatistics>,
+    results: Record<string, Record<StableOrExperimental, Statistics> | Error>,
     index: number
 ): StableAndExperimentalStatistics {
     const versions = Object.keys(results);
     if (index + 1 < versions.length) {
         const previous = versions[index + 1];
         const current = versions[index];
+
+        const previousData = results[previous];
+        const currentData = results[current];
+
+        // If either previous or current has an error, return default statistics
+        if ('error' in previousData || 'error' in currentData) {
+            return {
+                stable: createDefaultStatistics(),
+                experimental: createDefaultStatistics()
+            };
+        }
+
         const stable = calculateVersionChanges(
-            results[previous].stable,
-            results[current].stable
+            previousData.stable,
+            currentData.stable
         );
         const experimental = calculateVersionChanges(
-            results[previous].experimental,
-            results[current].experimental
+            previousData.experimental,
+            currentData.experimental
         );
         return { stable, experimental };
     }
@@ -222,19 +228,10 @@ function calculateVersionChanges(
     previous: Statistics,
     current: Statistics
 ): Statistics {
-    // If either has an error, return default statistics
-    if (previous.error || current.error) {
-        return createDefaultStatistics();
-    }
-
     return Object.keys(previous).reduce((changes, key) => {
         const statsKey = key as keyof Statistics;
-        // Skip the error field if it exists
-        if (statsKey === 'error') {
-            return changes;
-        }
-        const prevValue = previous[statsKey];
-        const currValue = current[statsKey];
+        const prevValue = previous[statsKey] as number;
+        const currValue = current[statsKey] as number;
         return {
             ...changes,
             [statsKey]: calculateChange(prevValue, currValue)
