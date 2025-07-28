@@ -1,3 +1,5 @@
+⚠️ **WARNING: Benchmark process failed for version 0.32.0**
+
 # Benchmarks for stable_b_tree_map_instruction_threshold
 
 ## Current benchmarks Azle version: 0.32.0

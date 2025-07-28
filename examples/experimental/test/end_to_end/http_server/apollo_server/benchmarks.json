@@ -16,13 +16,7 @@
         },
         "current": {
             "version": "0.32.0",
-            "benchmarks": [
-                {
-                    "instructions": "11359532116",
-                    "method_name": "init",
-                    "timestamp": "1750853914456815167"
-                }
-            ]
+            "benchmarks": []
         }
     }
 }

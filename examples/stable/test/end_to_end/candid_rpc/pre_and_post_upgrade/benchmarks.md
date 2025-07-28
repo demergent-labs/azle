@@ -1,3 +1,5 @@
+⚠️ **WARNING: Benchmark process failed for version 0.32.0**
+
 # Benchmarks for pre_and_post_upgrade
 
 ## Current benchmarks Azle version: 0.32.0

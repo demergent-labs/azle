@@ -27,14 +27,9 @@
             "version": "0.32.0",
             "benchmarks": [
                 {
-                    "instructions": "7736401550",
-                    "method_name": "init",
-                    "timestamp": "1750853904404847437"
-                },
-                {
-                    "instructions": "53363901",
-                    "method_name": "http_request_update",
-                    "timestamp": "1750853918580417646"
+                    "instructions": "46697248",
+                    "method_name": "1",
+                    "timestamp": "1753714849691796545"
                 }
             ]
         }
