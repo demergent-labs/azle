@@ -233,6 +233,7 @@ jobs:
               working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
               shell: bash -l {0}
               env:
+                  AZLE_ROOT: ${{ github.workspace }}
                   AZLE_EXPERIMENTAL: ${{ inputs.run-experimental }}
                   AZLE_FUZZ: ${{ inputs.fuzz }}
                   AZLE_FUZZ_CALL_DELAY: ${{ inputs.fuzz-call-delay }}
