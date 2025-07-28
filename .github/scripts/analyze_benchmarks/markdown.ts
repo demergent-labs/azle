@@ -5,7 +5,7 @@ import {
     StableAndExperimentalStatistics,
     StableOrExperimental
 } from './reporter';
-import { Error, Statistics } from './statistics';
+import { Statistics } from './statistics';
 
 export async function generateMarkdownReport(): Promise<string> {
     const benchmarksJson = await readBenchmarkJsonFile();
@@ -25,19 +25,10 @@ ${generateVersionTables(sortedBenchmarks)}
 }
 
 function generateVersionTables(
-    benchmarksJson: Record<
-        string,
-        Record<StableOrExperimental, Statistics> | Error
-    >
+    benchmarksJson: Record<string, Record<StableOrExperimental, Statistics>>
 ): string {
     return Object.entries(benchmarksJson).reduce(
         (acc, [version, stats], index) => {
-            // Check if this version has an error
-            if ('error' in stats) {
-                const errorMessage = `## Version \`${version}\`\n\n⚠️ **WARNING: Benchmark analysis failed for version ${version}**\n\n**Error:** ${stats.error}\n\n`;
-                return `${acc}${errorMessage}`;
-            }
-
             const comparison = compareChanges(benchmarksJson, index);
             const versionTable = generateVersionTable(
                 version,
@@ -138,18 +129,13 @@ function generateStatsTableRows(
             const stableChange = comparisonResults.stable[statsKey];
             const experimentalChange = comparisonResults.experimental[statsKey];
             const metric = camelToTitleCase(key);
-            const stableFormattedValue = formatNumber(
-                Math.floor(value as number)
-            );
+            const stableFormattedValue = formatNumber(Math.floor(value));
             const experimentalFormattedValue = formatNumber(
-                Math.floor(results.experimental[statsKey] as number)
+                Math.floor(results.experimental[statsKey])
             );
-            const stableFormattedChange = formatChangeValue(
-                stableChange as number
-            );
-            const experimentalFormattedChange = formatChangeValue(
-                experimentalChange as number
-            );
+            const stableFormattedChange = formatChangeValue(stableChange);
+            const experimentalFormattedChange =
+                formatChangeValue(experimentalChange);
 
             return `\t<tr>
         <td>${metric}</td>
@@ -172,32 +158,20 @@ function formatChangeValue(change: number): string {
 }
 
 function compareChanges(
-    results: Record<string, Record<StableOrExperimental, Statistics> | Error>,
+    results: Record<string, StableAndExperimentalStatistics>,
     index: number
 ): StableAndExperimentalStatistics {
     const versions = Object.keys(results);
     if (index + 1 < versions.length) {
         const previous = versions[index + 1];
         const current = versions[index];
-
-        const previousData = results[previous];
-        const currentData = results[current];
-
-        // If either previous or current has an error, return default statistics
-        if ('error' in previousData || 'error' in currentData) {
-            return {
-                stable: createDefaultStatistics(),
-                experimental: createDefaultStatistics()
-            };
-        }
-
         const stable = calculateVersionChanges(
-            previousData.stable,
-            currentData.stable
+            results[previous].stable,
+            results[current].stable
         );
         const experimental = calculateVersionChanges(
-            previousData.experimental,
-            currentData.experimental
+            results[previous].experimental,
+            results[current].experimental
         );
         return { stable, experimental };
     }
@@ -230,11 +204,9 @@ function calculateVersionChanges(
 ): Statistics {
     return Object.keys(previous).reduce((changes, key) => {
         const statsKey = key as keyof Statistics;
-        const prevValue = previous[statsKey] as number;
-        const currValue = current[statsKey] as number;
         return {
             ...changes,
-            [statsKey]: calculateChange(prevValue, currValue)
+            [statsKey]: calculateChange(previous[statsKey], current[statsKey])
         };
     }, {} as Statistics);
 }

@@ -1,10 +1,10 @@
-import { readFile, writeFile } from 'fs/promises';
+import { appendFile, readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { AZLE_ROOT } from '#utils/global_paths';
 
 import { generateMarkdownReport } from './markdown';
-import { Error, Statistics } from './statistics';
+import { Statistics } from './statistics';
 
 export type StableOrExperimental = 'stable' | 'experimental';
 export type StableAndExperimentalStatistics = {
@@ -21,11 +21,20 @@ const MARKDOWN_FILE = RESULTS_FILE.replace('.json', '.md');
  * @param version Version string for the results
  */
 export async function reportResults(
-    results: StableAndExperimentalStatistics | Error,
+    results: StableAndExperimentalStatistics,
     version: string
 ): Promise<void> {
     await updateBenchmarkJsonFile(results, version);
     await outputMarkdownFromJson();
+}
+
+export async function reportErrorResult(
+    error: string,
+    version: string
+): Promise<void> {
+    const errorMessage = `## Version \`${version}\`\n\n⚠️ **WARNING: Benchmark analysis failed for version ${version}**\n\n**Error:** ${error}\n\n`;
+    await appendFile(MARKDOWN_FILE, errorMessage);
+    console.info(`Report generated at ${MARKDOWN_FILE}`);
 }
 
 /**
@@ -33,14 +42,14 @@ export async function reportResults(
  * @returns Record of version-keyed benchmark statistics
  */
 export async function readBenchmarkJsonFile(): Promise<
-    Record<string, Record<StableOrExperimental, Statistics> | Error>
+    Record<string, Record<StableOrExperimental, Statistics>>
 > {
     const fileContent = await readFile(RESULTS_FILE, 'utf-8');
     return JSON.parse(fileContent);
 }
 
 async function updateBenchmarkJsonFile(
-    newResults: StableAndExperimentalStatistics | Error,
+    newResults: StableAndExperimentalStatistics,
     version: string
 ): Promise<void> {
     const previousResults = await readBenchmarkJsonFile();
