@@ -1,5 +1,5 @@
 name: Commit and Push Changes
-description: 'Commits changes using GitHub Git Database API for verified app commits'
+description: 'Commits and pushes changes with optional GPG signing using GitHub App token'
 
 inputs:
     branch-name:
@@ -13,17 +13,40 @@ inputs:
         description: 'Commit message'
         required: true
     add-files:
-        description: 'File pattern to consider for changes. Defaults to "--all"'
+        description: 'File pattern to git add. Defaults to "--all"'
         required: false
         default: '--all'
     token:
-        description: 'GitHub App token with Contents: read & write permissions'
+        description: 'GitHub App token'
         required: true
+    gpg-private-key:
+        description: 'GPG private key for signing commits (base64 encoded)'
+        required: false
+    gpg-passphrase:
+        description: 'Passphrase for the GPG key'
+        required: false
+    committer-name:
+        description: 'Committer name for signed commits'
+        required: false
+        default: 'azle-bot[bot]'
+    committer-email:
+        description: 'Committer email for signed commits'
+        required: false
+        default: 'azle-bot[bot]@users.noreply.github.com'
 
 runs:
     using: composite
     steps:
-        - name: Commit and push via Git API
+        - name: Setup GPG if provided
+          shell: bash
+          if: ${{ inputs.gpg-private-key != '' }}
+          run: |
+              echo "Setting up GPG..."
+              sudo apt-get update && sudo apt-get install -y gnupg
+              echo "${{ inputs.gpg-private-key }}" | base64 --decode | gpg --batch --passphrase "${{ inputs.gpg-passphrase }}" --import
+              git config --global commit.gpgsign true
+              git config --global user.signingkey $(gpg --list-secret-keys --keyid-format=long | grep sec | awk '{print $2}' | cut -d '/' -f2)
+        - name: Commit and push
           shell: bash
           env:
               GITHUB_TOKEN: ${{ inputs.token }}
@@ -33,86 +56,44 @@ runs:
               REPO="$REPO_OWNER/$REPO_NAME"
               BASE_BRANCH="${{ github.ref_name }}"
               TARGET_BRANCH="${{ inputs.branch-name }}"
-              TARGET_REF="heads/$TARGET_BRANCH"
+
+              # Configure git
+              git config user.name "${{ inputs.committer-name }}"
+              git config user.email "${{ inputs.committer-email }}"
+
+              # Set authenticated remote
+              git remote set-url --push origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git"
 
               # Fetch latest
               git fetch origin
 
-              # Determine parent SHA
-              BASE_SHA=$(gh api repos/$REPO/git/ref/heads/$BASE_BRANCH --jq '.object.sha')
-
-              BRANCH_EXISTS=$(gh api repos/$REPO/git/ref/$TARGET_REF --jq '.object.sha' 2>/dev/null || echo "")
-
-              if [ -z "$BRANCH_EXISTS" ]; then
-                if [[ "${{ inputs.create-branch }}" != "true" ]]; then
-                  echo "Branch $TARGET_BRANCH does not exist and create-branch is false"
-                  exit 1
+              # Handle branch
+              if [[ "${{ inputs.create-branch }}" == "true" ]]; then
+                if git rev-parse "origin/$TARGET_BRANCH" >/dev/null 2>&1; then
+                  git checkout "$TARGET_BRANCH"
+                else
+                  git checkout -b "$TARGET_BRANCH" "origin/$BASE_BRANCH"
                 fi
-                PARENT_SHA="$BASE_SHA"
               else
-                PARENT_SHA="$BRANCH_EXISTS"
+                git checkout "$TARGET_BRANCH"
               fi
 
-              # Get base tree
-              BASE_TREE=$(gh api repos/$REPO/git/commits/$PARENT_SHA --jq '.tree.sha')
-
-              # Stage changes using git add (to easily detect changes)
+              # Add changes
               git add "${{ inputs.add-files }}"
 
-              # Check for changes
               if git diff --cached --quiet; then
                 echo "No changes to commit"
                 exit 0
               fi
 
-              # Get changed files with status
-              CHANGED_FILES=$(git diff --cached --name-status)
-
-              # Create tree entries JSON
-              TREE_ENTRIES=()
-
-              while IFS= read -r line; do
-                STATUS=$(echo "$line" | cut -f1)
-                FILE=$(echo "$line" | cut -f2-)
-
-                if [ "$STATUS" = "D" ]; then
-                  TREE_ENTRIES+=("{\"path\": \"$FILE\", \"mode\": \"100644\", \"type\": \"blob\", \"sha\": null}")
-                else
-                  # Create blob
-                  CONTENT=$(base64 -w0 "$FILE")
-                  TEMP_BLOB=$(mktemp)
-                  echo '{"encoding": "base64", "content": "'$CONTENT'"}' > "$TEMP_BLOB"
-                  BLOB_SHA=$(gh api repos/$REPO/git/blobs --input "$TEMP_BLOB" --jq '.sha')
-                  rm "$TEMP_BLOB"
-                  TREE_ENTRIES+=("{\"path\": \"$FILE\", \"mode\": \"100644\", \"type\": \"blob\", \"sha\": \"$BLOB_SHA\"}")
-                fi
-              done <<< "$CHANGED_FILES"
-
-              # Build tree payload
-              TEMP_TREE=$(mktemp)
-              echo '{"base_tree": "'$BASE_TREE'", "tree": []}' > "$TEMP_TREE"
-
-              for entry in "${TREE_ENTRIES[@]}"; do
-                jq --argjson e "$entry" '.tree += [$e]' "$TEMP_TREE" > temp.json
-                mv temp.json "$TEMP_TREE"
-              done
-
-              # Create tree
-              TREE_SHA=$(gh api repos/$REPO/git/trees --input "$TEMP_TREE" --jq '.sha')
-              rm "$TEMP_TREE"
-
-              # Create commit
-              TEMP_COMMIT=$(mktemp)
-              echo '{"message": "'"${{ inputs.commit-message }}"'", "tree": "'$TREE_SHA'", "parents": ["'$PARENT_SHA'"], "author": {"name": "azle-bot[bot]", "email": "azle-bot[bot]@users.noreply.github.com"}}' > "$TEMP_COMMIT"
-
-              COMMIT_SHA=$(gh api repos/$REPO/git/commits --input "$TEMP_COMMIT" --jq '.sha')
-              rm "$TEMP_COMMIT"
-
-              # Update or create ref
-              if [ -n "$BRANCH_EXISTS" ]; then
-                gh api repos/$REPO/git/refs/$TARGET_REF --method PATCH -f sha="$COMMIT_SHA"
+              # Commit with sign if GPG set up
+              if [ -n "${{ inputs.gpg-private-key }}" ]; then
+                git commit -S -m "${{ inputs.commit-message }}"
               else
-                gh api repos/$REPO/git/refs --method POST -f ref="refs/$TARGET_REF" -f sha="$COMMIT_SHA"
+                git commit -m "${{ inputs.commit-message }}"
               fi
 
-              echo "Successfully created commit $COMMIT_SHA on $TARGET_BRANCH"
+              # Push
+              git push origin "$TARGET_BRANCH"
+
+              echo "Successfully committed and pushed to $TARGET_BRANCH"
