@@ -70,6 +70,8 @@ jobs:
 
             - uses: ./.github/actions/commit_and_push
               if: ${{ github.event_name == 'pull_request' }}
+              env:
+                  AZLE_BOT_ID: ${{ vars.AZLE_BOT_ID }}
               with:
                   branch-name: ${{ github.head_ref }}
                   commit-message: 'chore: update templates for dependency changes'

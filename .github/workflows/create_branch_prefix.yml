@@ -54,6 +54,8 @@ jobs:
                   echo "base-branch=${{ inputs.prefix }}--$VERSION" >> $GITHUB_OUTPUT
 
             - uses: ./.github/actions/configure_git
+              env:
+                  AZLE_BOT_ID: ${{ vars.AZLE_BOT_ID }}
 
             - name: Create base branch
               run: git checkout -b ${{ steps.create-prefix.outputs.base-branch }}
