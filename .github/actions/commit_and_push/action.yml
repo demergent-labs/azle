@@ -129,12 +129,18 @@ runs:
 
               echo "Created new tree: $NEW_TREE_SHA"
 
-              # Create commit (with empty author/committer for GitHub App signing)
-              COMMIT_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/commits \
+              # Create commit using complete JSON payload (with empty author/committer for GitHub App signing)
+              COMMIT_PAYLOAD=$(jq -n \
+                --arg message "${{ inputs.commit-message }}" \
+                --arg tree "$NEW_TREE_SHA" \
+                --argjson parents "[\"$TARGET_SHA\"]" \
+                '{message: $message, tree: $tree, parents: $parents}')
+
+              echo "Commit payload: $COMMIT_PAYLOAD"
+
+              COMMIT_SHA=$(echo "$COMMIT_PAYLOAD" | gh api repos/$REPO_OWNER/$REPO_NAME/git/commits \
                 --method POST \
-                --field message="${{ inputs.commit-message }}" \
-                --field tree="$NEW_TREE_SHA" \
-                --field parents="[\"$TARGET_SHA\"]" \
+                --input - \
                 --jq '.sha')
 
               echo "Created commit: $COMMIT_SHA"
