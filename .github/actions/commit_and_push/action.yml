@@ -80,7 +80,10 @@ runs:
                 else
                   # Create blob
                   CONTENT=$(base64 -w0 "$FILE")
-                  BLOB_SHA=$(gh api repos/$REPO/git/blobs -f content="$CONTENT" -f encoding="base64" --jq '.sha')
+                  TEMP_BLOB=$(mktemp)
+                  echo '{"encoding": "base64", "content": "'$CONTENT'"}' > "$TEMP_BLOB"
+                  BLOB_SHA=$(gh api repos/$REPO/git/blobs --input "$TEMP_BLOB" --jq '.sha')
+                  rm "$TEMP_BLOB"
                   TREE_ENTRIES+=("{\"path\": \"$FILE\", \"mode\": \"100644\", \"type\": \"blob\", \"sha\": \"$BLOB_SHA\"}")
                 fi
               done <<< "$CHANGED_FILES"
