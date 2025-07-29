@@ -83,6 +83,8 @@ jobs:
               run: npx eslint . --fix
 
             - uses: ./.github/actions/commit_and_push
+              env:
+                  AZLE_BOT_ID: ${{ vars.AZLE_BOT_ID }}
               with:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'Example/test maintenance: formatting and linting'
@@ -154,6 +156,8 @@ jobs:
                   path: ${{ matrix.test.displayPath }}
 
             - uses: ./.github/actions/commit_and_push
+              env:
+                  AZLE_BOT_ID: ${{ vars.AZLE_BOT_ID }}
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Example/test maintenance: update dependencies'

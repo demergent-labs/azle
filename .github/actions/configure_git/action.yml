@@ -6,5 +6,9 @@ runs:
         - name: Configure git
           run: |
               git config --global user.name 'azle-bot[bot]'
-              git config --global user.email 'azle-bot[bot]@users.noreply.github.com'
+              if [[ -n "$AZLE_BOT_ID" ]]; then
+                  git config --global user.email "${AZLE_BOT_ID}+azle-bot[bot]@users.noreply.github.com"
+              else
+                  git config --global user.email 'azle-bot[bot]@users.noreply.github.com'
+              fi
           shell: bash
