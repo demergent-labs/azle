@@ -1,5 +1,5 @@
-import jsSHA from 'jssha';
 import { getCrc32 } from '@dfinity/principal';
+import jsSHA from 'jssha';
 
 import { Principal } from '#lib/index';
 
