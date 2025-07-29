@@ -118,7 +118,7 @@ runs:
               NEW_TREE_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/trees \
                 --method POST \
                 --field base_tree="$TREE_SHA" \
-                --field tree="$TREE_ITEMS" \
+                --raw-field tree="$TREE_ITEMS" \
                 --jq '.sha')
 
               echo "Created new tree: $NEW_TREE_SHA"
