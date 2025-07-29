@@ -4,5 +4,10 @@
         "Uncaught Error: call rejected: 3 - Unable to route management canister request",
         "Uncaught Error: call rejected: 3 - InstallChunkedCode Error: Store canister .* was not found on subnet .* of target canister",
         "Uncaught Error: call rejected: 3 - Canister .* not found"
-    ]
+    ],
+    "size": {
+        "blob": {
+            "max": 1000000
+        }
+    }
 }

@@ -241,18 +241,9 @@ export function getTests(): Test {
 
         it('throws error when trying to set certified data in query method', async () => {
             const actor = await getCanisterActor<Actor>(CANISTER_NAME);
-            const canisterId = getCanisterId(CANISTER_NAME);
 
-            const expectedErrorMessage = new RegExp(
-                `Call failed:\\s*Canister: ${canisterId}\\s*Method: setDataCertificateInQuery \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "Error from Canister ${canisterId}:`
-            );
-            await expect(actor.setDataCertificateInQuery()).rejects.toThrow(
-                expectedErrorMessage
-            );
             await expect(actor.setDataCertificateInQuery()).rejects.toThrow(
                 'Canister violated contract: "ic0_certified_data_set" cannot be executed in non replicated query mode'
-                    .replace(/\\/g, '\\\\')
-                    .replace(/"/g, '\\"')
             );
         });
 
@@ -263,7 +254,6 @@ export function getTests(): Test {
                     fc.uint8Array({ minLength: 33, maxLength: 100 }), // invalid data
                     async (validData, invalidData) => {
                         const agent = await createAuthenticatedAgent(whoami());
-                        const canisterId = getCanisterId(CANISTER_NAME);
                         const actor = await getCanisterActor<Actor>(
                             CANISTER_NAME,
                             {
@@ -280,13 +270,6 @@ export function getTests(): Test {
                             CANISTER_NAME
                         );
 
-                        // Then verify invalid data throws error
-                        const expectedErrorMessage = new RegExp(
-                            `Call failed:\\s*Canister: ${canisterId}\\s*Method: setData \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0504"\\s*"Reject code": "5"\\s*"Reject message": "Error from Canister ${canisterId}:`
-                        );
-                        await expect(
-                            actor.setData(invalidData)
-                        ).rejects.toThrow(expectedErrorMessage);
                         await expect(
                             actor.setData(invalidData)
                         ).rejects.toThrow(
@@ -384,7 +367,7 @@ async function createAndVerifyCertificate(
 
     expect(certificateBytes.length).toBeGreaterThan(0);
 
-    const certificate = new Uint8Array(certificateBytes[0]).buffer;
+    const certificate = new Uint8Array(certificateBytes[0]);
 
     const rootKey = await agent.fetchRootKey();
 
@@ -414,19 +397,21 @@ function verifyCertifiedData(
     canisterPrincipal: Principal,
     expectedValue: Uint8Array
 ): void {
+    const canisterPrincipalBytes = canisterPrincipal.toUint8Array();
+
     const rawData = findLookupValueOrThrow(certificate, [
         'canister',
-        new Uint8Array(canisterPrincipal.toUint8Array()).buffer,
+        canisterPrincipalBytes,
         'certified_data'
     ]);
 
     const lengthByte = String.fromCharCode(expectedValue.length);
 
-    const candidEncodedRawData: ArrayBuffer = new Uint8Array([
+    const candidEncodedRawData = new Uint8Array([
         ...new TextEncoder().encode('DIDL\x01\x6d\x7b\x01\x00'),
         ...new TextEncoder().encode(lengthByte),
         ...new Uint8Array(rawData)
-    ]).buffer;
+    ]);
 
     const decodedData = IDL.decode(
         [IDL.Vec(IDL.Nat8)],

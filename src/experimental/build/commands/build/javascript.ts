@@ -136,6 +136,9 @@ export async function getBuildOptions(
 
     return {
         ...stableBuildOptions,
+        // It seems that the version of QuickJS that wasmedge-quickjs uses in Azle does not support some syntax from es2024.
+        // Thus we are pegging the target to es2021. We will eventually get rid of wasmedge-quickjs and just use rquickjs for experimental anyway.
+        target: 'es2021',
         alias: {
             internal: `${WASMEDGE_QUICKJS_PATH}/modules/internal`,
             util: `${WASMEDGE_QUICKJS_PATH}/modules/util`,

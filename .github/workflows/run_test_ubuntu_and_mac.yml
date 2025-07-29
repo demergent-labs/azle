@@ -181,7 +181,7 @@ jobs:
               if: ${{ inputs.run-experimental }}
               uses: ./.github/actions/retry_command
               with:
-                  command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd'
+                  command: 'npm install https://github.com/demergent-labs/azle-experimental-deps#d1ccd00dc75e49609949ed7910a4e610c49027b7'
                   working-directory: ${{ steps.set-working-dir.outputs.working-dir }}
 
             - run: npm link azle

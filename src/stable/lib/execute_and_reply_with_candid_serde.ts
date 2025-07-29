@@ -219,11 +219,7 @@ export function idlEncode(
     args: any[]
 ): Uint8Array {
     try {
-        // TODO IDL.encode has ArrayBuffer as the return type, but it actually returns a Uint8Array
-        // TODO we are not sure if they will make the final type and return value an ArrayBuffer
-        // TODO or a Uint8Array: https://github.com/demergent-labs/azle/issues/2061
-        const result = IDL.encode(argTypes, args);
-        return result instanceof Uint8Array ? result : new Uint8Array(result);
+        return IDL.encode(argTypes, args);
     } catch (error) {
         throw new Error(`Failed to encode Candid arguments: ${error}`);
     }
@@ -242,12 +238,7 @@ export function idlDecode(
     bytes: Uint8Array
 ): JsonValue[] {
     try {
-        return IDL.decode(
-            retTypes,
-            bytes.buffer instanceof ArrayBuffer
-                ? bytes.buffer
-                : new Uint8Array(bytes).buffer
-        );
+        return IDL.decode(retTypes, bytes);
     } catch (error) {
         throw new Error(`Failed to decode Candid bytes: ${error}`);
     }

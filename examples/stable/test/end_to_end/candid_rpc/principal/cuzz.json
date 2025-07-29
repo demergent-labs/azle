@@ -1,6 +1,7 @@
 {
     "expectedErrors": [
-        "Method: principalFromText \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: Invalid character",
-        "Method: principalFromText \\(query\\)[\\s\\S]*\"Status\":[\\s\\S]*\"Code\":[\\s\\S]*\"Message\":.*Uncaught Error: .*does not have a valid checksum"
+        "Uncaught Error: Invalid character",
+        "Uncaught Error: .*does not have a valid checksum",
+        "Uncaught Error: hex string expected"
     ]
 }

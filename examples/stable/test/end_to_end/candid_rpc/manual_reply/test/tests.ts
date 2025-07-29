@@ -1,5 +1,4 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { getCanisterId } from 'azle/_internal/dfx';
 import { expect, it, Test } from 'azle/_internal/test';
 
 import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
@@ -7,14 +6,10 @@ import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
 export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('manualUpdate when calling msgReject', async () => {
-            const rejectMessage = 'reject';
-            const canisterId = getCanisterId('manual_reply');
-            const expectedErrorMessage = new RegExp(
-                `Call failed:\\s*Canister: ${canisterId}\\s*Method: manualUpdate \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0406"\\s*"Reject code": "4"\\s*"Reject message": "${rejectMessage}`
-            );
+            const rejectMessage = 'reject on purpose';
             await expect(
                 manualReplyCanister.manualUpdate(rejectMessage)
-            ).rejects.toThrow(expectedErrorMessage);
+            ).rejects.toThrow(rejectMessage);
         });
 
         it('manualUpdate when calling msgReply', async () => {
@@ -103,15 +98,10 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('manualQuery when calling msgReject', async () => {
-            const rejectMessage = 'reject';
+            const rejectMessage = 'reject on purpose';
             await expect(
                 manualReplyCanister.manualQuery(rejectMessage)
-            ).rejects.toMatchObject({
-                props: {
-                    Code: 'CanisterReject',
-                    Message: rejectMessage
-                }
-            });
+            ).rejects.toThrow(rejectMessage);
         });
 
         it('manualQuery when calling msgReply', async () => {

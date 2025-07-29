@@ -18,7 +18,7 @@
     "dependencies": {
         "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
         "azle": "0.32.0",
-        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d804c0838c50aa4221e50d8d522c86163ea68cdd",
+        "azle-experimental-deps": "github:demergent-labs/azle-experimental-deps#d1ccd00dc75e49609949ed7910a4e610c49027b7",
         "@azle/basic_bitcoin_demo": "0.0.0",
         "bitcoinjs-lib": "^6.1.5",
         "express": "^4.18.2",
@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "@types/express": "^4.17.21",
-        "cuzz": "^0.0.14",
+        "cuzz": "^0.0.17",
         "jest": "^30.0.4",
         "ts-jest": "^29.4.0"
     }

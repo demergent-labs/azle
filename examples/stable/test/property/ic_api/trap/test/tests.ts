@@ -1,4 +1,3 @@
-import { getCanisterId } from 'azle/_internal/dfx';
 import {
     defaultPropTestParams,
     expect,
@@ -11,8 +10,6 @@ import fc from 'fast-check';
 import { _SERVICE as Actor } from './dfx_generated/canister/canister.did';
 
 export function getTests(): Test {
-    const canisterId = getCanisterId('canister');
-
     return () => {
         it('should trap from a query method', async () => {
             const actor = await getCanisterActor<Actor>('canister');
@@ -25,13 +22,13 @@ export function getTests(): Test {
                     }),
                     async (message) => {
                         const expectedErrorMessage = new RegExp(
-                            `Call failed:\\s*Canister: ${canisterId}\\s*Method: queryTrap \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "Error from Canister ${canisterId}: Canister called \`ic0.trap\` with message: 'trap proptest message:`
+                            `Canister called \`ic0.trap\` with message: 'trap proptest message:`
                         );
                         await expect(actor.queryTrap(message)).rejects.toThrow(
                             expectedErrorMessage
                         );
                         await expect(actor.queryTrap(message)).rejects.toThrow(
-                            message.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+                            message
                         );
                     }
                 ),
@@ -50,13 +47,13 @@ export function getTests(): Test {
                     }),
                     async (message) => {
                         const expectedErrorMessage = new RegExp(
-                            `Call failed:\\s*Canister: ${canisterId}\\s*Method: updateTrap \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0503"\\s*"Reject code": "5"\\s*"Reject message": "Error from Canister ${canisterId}: Canister called \`ic0.trap\` with message: 'trap proptest message:`
+                            `Canister called \`ic0.trap\` with message: 'trap proptest message:`
                         );
                         await expect(actor.updateTrap(message)).rejects.toThrow(
                             expectedErrorMessage
                         );
                         await expect(actor.updateTrap(message)).rejects.toThrow(
-                            message.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+                            message
                         );
                     }
                 ),
@@ -75,16 +72,14 @@ export function getTests(): Test {
                     }),
                     async (message) => {
                         const expectedErrorMessage = new RegExp(
-                            `Call failed:\\s*Canister: ${canisterId}\\s*Method: inspectMessageTrap \\(update\\)\\s*"Request ID": "[a-f0-9]{64}"\\s*"Error code": "IC0503"\\s*"Reject code": "5"\\s*"Reject message": "Error from Canister ${canisterId}: Canister called \`ic0.trap\` with message: 'trap proptest message:`
+                            `Canister called \`ic0.trap\` with message: 'trap proptest message:`
                         );
                         await expect(
                             actor.inspectMessageTrap(message)
                         ).rejects.toThrow(expectedErrorMessage);
                         await expect(
                             actor.inspectMessageTrap(message)
-                        ).rejects.toThrow(
-                            message.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-                        );
+                        ).rejects.toThrow(message);
                     }
                 ),
                 defaultPropTestParams()
