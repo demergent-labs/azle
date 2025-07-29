@@ -21,13 +21,52 @@ inputs:
 runs:
     using: composite
     steps:
-        - name: Configure git for token-based operations
+        - name: Configure git for GitHub App
           shell: bash
           run: |
-              git config --global user.name "github-actions[bot]"
-              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+              # Configure git to use the GitHub App token
+              git config --global user.name "azle-bot[bot]"
+              git config --global user.email "azle-bot[bot]@users.noreply.github.com"
 
-        - name: Commit and push changes using GitHub API
+        - name: Test GitHub App API permissions
+          shell: bash
+          env:
+              GITHUB_TOKEN: ${{ inputs.token }}
+          run: |
+              echo "Testing GitHub App API access..."
+              REPO_OWNER="${{ github.repository_owner }}"
+              REPO_NAME="${{ github.event.repository.name }}"
+
+              # Test basic repo access
+              echo "Testing basic repo access..."
+              if gh api repos/$REPO_OWNER/$REPO_NAME --jq '.name'; then
+                echo "✅ Basic repo access works"
+              else
+                echo "❌ Basic repo access failed"
+                exit 1
+              fi
+
+              # Test contents permission
+              echo "Testing contents permission..."
+              if gh api repos/$REPO_OWNER/$REPO_NAME/contents/README.md --jq '.name' 2>/dev/null; then
+                echo "✅ Contents read access works"
+              else
+                echo "❌ Contents read access failed"
+              fi
+
+              # Test git refs access
+              echo "Testing git refs read access..."
+              if gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/${{ github.ref_name }} --jq '.ref' 2>/dev/null; then
+                echo "✅ Git refs read access works"
+              else
+                echo "❌ Git refs read access failed"
+              fi
+
+              # Show what permissions the token actually has
+              echo "Checking token permissions..."
+              gh api user --include-headers 2>&1 | grep -i 'x-oauth-scopes\|x-accepted-oauth-scopes' || echo "No OAuth scope headers found (this is normal for GitHub Apps)"
+
+        - name: Commit and push changes using GitHub Commits API
           shell: bash
           env:
               GITHUB_TOKEN: ${{ inputs.token }}
@@ -38,7 +77,6 @@ runs:
               BASE_BRANCH="${{ github.ref_name }}"
               TARGET_BRANCH="${{ inputs.branch-name }}"
 
-              echo "Repository: $REPO_OWNER/$REPO_NAME"
               echo "Base branch: $BASE_BRANCH"
               echo "Target branch: $TARGET_BRANCH"
 
@@ -51,48 +89,19 @@ runs:
                 exit 0
               fi
 
-              echo "Changes detected, proceeding with API commit..."
+              echo "Changes detected, proceeding with GitHub Commits API..."
 
-              # Get the current commit SHA of the base branch
-              BASE_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$BASE_BRANCH --jq '.object.sha')
-              echo "Base SHA: $BASE_SHA"
-
-              # Check if target branch exists
+              # Create branch if needed using git (since this worked before)
               if [[ "${{ inputs.create-branch }}" == "true" ]]; then
                 echo "Creating new branch: $TARGET_BRANCH"
-
-                # Use git commands for branch creation since API is failing
-                echo "Using git commands for branch creation due to API limitations..."
                 git fetch origin
-
-                # Create and switch to new branch
-                if git switch -c "$TARGET_BRANCH" "origin/$BASE_BRANCH" 2>/dev/null; then
-                  echo "Successfully created branch $TARGET_BRANCH using git"
-                  # Push the new branch to establish it on remote
-                  git push origin "$TARGET_BRANCH"
-                else
-                  echo "Branch $TARGET_BRANCH may already exist, switching to it..."
-                  git switch "$TARGET_BRANCH" 2>/dev/null || {
-                    echo "ERROR: Failed to create or switch to branch $TARGET_BRANCH"
-                    exit 1
-                  }
-                fi
+                git switch -c "$TARGET_BRANCH" "origin/$BASE_BRANCH" 2>/dev/null || git switch "$TARGET_BRANCH"
+                git push origin "$TARGET_BRANCH" || echo "Branch may already exist"
               else
                 echo "Using existing branch: $TARGET_BRANCH"
                 git fetch origin
-                git switch "$TARGET_BRANCH" 2>/dev/null || {
-                  echo "ERROR: Failed to switch to existing branch $TARGET_BRANCH"
-                  exit 1
-                }
+                git switch "$TARGET_BRANCH"
               fi
-
-              # Get the current tree SHA of the target branch
-              TARGET_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$TARGET_BRANCH --jq '.object.sha')
-              TREE_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/commits/$TARGET_SHA --jq '.tree.sha')
-              echo "Current tree SHA: $TREE_SHA"
-
-              # Create blobs for all changed files
-              echo "Creating blobs for changed files..."
 
               # Get list of changed files
               CHANGED_FILES=$(git diff --cached --name-only)
@@ -102,75 +111,48 @@ runs:
                 exit 0
               fi
 
-              # Create a new tree with the changed files
-              TREE_ITEMS="[]"
+              # Try using the higher-level Contents API to update files
+              echo "Using GitHub Contents API to update files..."
 
               for file in $CHANGED_FILES; do
                 if [ -f "$file" ]; then
-                  echo "Processing file: $file"
+                  echo "Updating file: $file"
 
-                  # Create a temporary JSON file for the blob
-                  TEMP_JSON=$(mktemp)
+                  # Get current file SHA if it exists
+                  CURRENT_SHA=""
+                  if FILE_INFO=$(gh api "repos/$REPO_OWNER/$REPO_NAME/contents/$file" --jq '.sha' 2>/dev/null); then
+                    CURRENT_SHA="$FILE_INFO"
+                    echo "Current SHA for $file: $CURRENT_SHA"
+                  else
+                    echo "File $file doesn't exist yet, creating new file"
+                  fi
 
-                  # Create JSON payload without storing base64 in variable
-                  {
-                    echo -n '{"content":"'
-                    base64 -w 0 "$file"
-                    echo '","encoding":"base64"}'
-                  } > "$TEMP_JSON"
+                  # Create file content
+                  FILE_CONTENT=$(base64 -w 0 "$file")
 
-                  # Create blob using the JSON file
-                  BLOB_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/blobs \
-                    --method POST \
-                    --input "$TEMP_JSON" \
-                    --jq '.sha')
+                  # Update/create file using Contents API
+                  PAYLOAD=$(jq -n \
+                    --arg message "${{ inputs.commit-message }}" \
+                    --arg content "$FILE_CONTENT" \
+                    --arg branch "$TARGET_BRANCH" \
+                    $([ -n "$CURRENT_SHA" ] && echo "--arg sha \"$CURRENT_SHA\"") \
+                    '{
+                      message: $message,
+                      content: $content,
+                      branch: $branch
+                    } + (if $sha then {sha: $sha} else {} end)')
 
-                  # Clean up temp file
-                  rm "$TEMP_JSON"
-
-                  echo "Created blob for $file: $BLOB_SHA"
-
-                  # Add to tree items
-                  TREE_ITEMS=$(echo "$TREE_ITEMS" | jq ". + [{\"path\": \"$file\", \"mode\": \"100644\", \"type\": \"blob\", \"sha\": \"$BLOB_SHA\"}]")
+                  echo "Updating $file via Contents API..."
+                  if echo "$PAYLOAD" | gh api "repos/$REPO_OWNER/$REPO_NAME/contents/$file" \
+                    --method PUT \
+                    --input - \
+                    --jq '.commit.sha'; then
+                    echo "✅ Successfully updated $file"
+                  else
+                    echo "❌ Failed to update $file"
+                    exit 1
+                  fi
                 fi
               done
 
-              echo "Tree items: $TREE_ITEMS"
-
-              # Create new tree using complete JSON payload
-              TREE_PAYLOAD=$(jq -n \
-                --arg base_tree "$TREE_SHA" \
-                --argjson tree "$TREE_ITEMS" \
-                '{base_tree: $base_tree, tree: $tree}')
-
-              echo "Tree payload: $TREE_PAYLOAD"
-
-              NEW_TREE_SHA=$(echo "$TREE_PAYLOAD" | gh api repos/$REPO_OWNER/$REPO_NAME/git/trees \
-                --method POST \
-                --input - \
-                --jq '.sha')
-
-              echo "Created new tree: $NEW_TREE_SHA"
-
-              # Create commit using complete JSON payload (with empty author/committer for GitHub App signing)
-              COMMIT_PAYLOAD=$(jq -n \
-                --arg message "${{ inputs.commit-message }}" \
-                --arg tree "$NEW_TREE_SHA" \
-                --argjson parents "[\"$TARGET_SHA\"]" \
-                '{message: $message, tree: $tree, parents: $parents}')
-
-              echo "Commit payload: $COMMIT_PAYLOAD"
-
-              COMMIT_SHA=$(echo "$COMMIT_PAYLOAD" | gh api repos/$REPO_OWNER/$REPO_NAME/git/commits \
-                --method POST \
-                --input - \
-                --jq '.sha')
-
-              echo "Created commit: $COMMIT_SHA"
-
-              # Update branch reference
-              gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$TARGET_BRANCH \
-                --method PATCH \
-                --field sha="$COMMIT_SHA"
-
-              echo "Successfully pushed commit to $TARGET_BRANCH"
+              echo "Successfully committed all changes to $TARGET_BRANCH using GitHub API"
