@@ -127,8 +127,6 @@ jobs:
                   path: ${{ matrix.test.displayPath }}
 
             - uses: ./.github/actions/commit_and_push
-              env:
-                  AZLE_BOT_ID: ${{ vars.AZLE_BOT_ID }}
               with:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'

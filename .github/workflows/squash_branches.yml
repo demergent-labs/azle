@@ -40,10 +40,6 @@ jobs:
                   token: ${{ steps.github-app-auth.outputs.token }}
                   fetch-depth: 0
 
-            - uses: ./.github/actions/configure_git
-              env:
-                  AZLE_BOT_ID: ${{ vars.AZLE_BOT_ID }}
-
             - name: Collect branches
               id: collect-branches
               run: |

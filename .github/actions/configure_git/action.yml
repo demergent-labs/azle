@@ -5,16 +5,10 @@ runs:
     steps:
         - name: Configure git
           run: |
-              echo "AZLE_BOT_ID environment variable: '$AZLE_BOT_ID'"
               git config --global user.name 'azle-bot[bot]'
               if [[ -n "$AZLE_BOT_ID" ]]; then
-                  echo "Setting email with app ID: ${AZLE_BOT_ID}+azle-bot[bot]@users.noreply.github.com"
                   git config --global user.email "${AZLE_BOT_ID}+azle-bot[bot]@users.noreply.github.com"
               else
-                  echo "Setting fallback email: azle-bot[bot]@users.noreply.github.com"
                   git config --global user.email 'azle-bot[bot]@users.noreply.github.com'
               fi
-              echo "Final git config:"
-              git config --global user.name
-              git config --global user.email
           shell: bash

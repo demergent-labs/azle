@@ -22,8 +22,6 @@ inputs:
 runs:
     using: composite
     steps:
-        - uses: ./.github/actions/configure_git
-
         - name: Commit and push changes
           shell: bash
           env:
@@ -32,6 +30,7 @@ runs:
               # Create new branch if requested
               if [[ "${{ inputs.create-branch }}" == "true" ]]; then
                   git switch -c "${{ inputs.branch-name }}"
+                  git push origin "${{ inputs.branch-name }}"
               else
                   git switch "${{ inputs.branch-name }}"
               fi
@@ -40,16 +39,40 @@ runs:
               echo "Current git status:"
               git status
 
-              # Add and commit changes if there are any
+              # Add and stage changes if there are any
               echo "Adding files: ${{ inputs.add-files }}"
               git add "${{ inputs.add-files }}"
 
               if ! git diff --cached --quiet; then
-                # Use GitHub CLI to create a verified commit
-                echo "Creating commit with GitHub CLI..."
-                git commit -m "${{ inputs.commit-message }}"
-                git push origin "${{ inputs.branch-name }}"
+                  echo "Creating verified commit using GitHub API..."
+
+                  # Get the current branch SHA
+                  CURRENT_SHA=$(git rev-parse HEAD)
+                  echo "Current SHA: $CURRENT_SHA"
+
+                  # Get the tree SHA for the staged changes
+                  TREE_SHA=$(git write-tree)
+                  echo "Tree SHA: $TREE_SHA"
+
+                  # Create commit using GitHub API (this will be automatically verified)
+                  COMMIT_RESPONSE=$(gh api \
+                    --method POST \
+                    repos/:owner/:repo/git/commits \
+                    -f message="${{ inputs.commit-message }}" \
+                    -f tree="$TREE_SHA" \
+                    -f parents[]="$CURRENT_SHA")
+
+                  # Extract the new commit SHA
+                  NEW_COMMIT_SHA=$(echo "$COMMIT_RESPONSE" | jq -r '.sha')
+                  echo "New commit SHA: $NEW_COMMIT_SHA"
+
+                  # Update the branch reference to point to the new commit
+                  gh api \
+                    --method PATCH \
+                    repos/:owner/:repo/git/refs/heads/${{ inputs.branch-name }} \
+                    -f sha="$NEW_COMMIT_SHA"
+
+                  echo "Successfully created verified commit using GitHub API"
               else
-                # The above commands exit with 1 if there are no changes to commit
-                echo "No changes to commit. Skipping commit and push."
+                  echo "No changes to commit. Skipping commit and push."
               fi
