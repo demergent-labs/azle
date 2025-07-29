@@ -21,6 +21,12 @@ inputs:
 runs:
     using: composite
     steps:
+        - name: Configure git for token-based operations
+          shell: bash
+          run: |
+              git config --global user.name "github-actions[bot]"
+              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
         - name: Commit and push changes using GitHub API
           shell: bash
           env:
@@ -54,26 +60,30 @@ runs:
               # Check if target branch exists
               if [[ "${{ inputs.create-branch }}" == "true" ]]; then
                 echo "Creating new branch: $TARGET_BRANCH"
-                # Create the branch reference
-                if ! BRANCH_CREATE_OUTPUT=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/refs \
-                  --method POST \
-                  --field ref="refs/heads/$TARGET_BRANCH" \
-                  --field sha="$BASE_SHA" 2>&1); then
-                  echo "Failed to create branch $TARGET_BRANCH."
-                  echo "Error output: $BRANCH_CREATE_OUTPUT"
-                  echo "Checking if it already exists..."
 
-                  # Check if branch exists
-                  if ! gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$TARGET_BRANCH >/dev/null 2>&1; then
-                    echo "ERROR: Branch creation failed and branch does not exist. This likely indicates insufficient permissions."
-                    echo "Please ensure the GitHub App has 'Contents: write' permission."
+                # Use git commands for branch creation since API is failing
+                echo "Using git commands for branch creation due to API limitations..."
+                git fetch origin
+
+                # Create and switch to new branch
+                if git switch -c "$TARGET_BRANCH" "origin/$BASE_BRANCH" 2>/dev/null; then
+                  echo "Successfully created branch $TARGET_BRANCH using git"
+                  # Push the new branch to establish it on remote
+                  git push origin "$TARGET_BRANCH"
+                else
+                  echo "Branch $TARGET_BRANCH may already exist, switching to it..."
+                  git switch "$TARGET_BRANCH" 2>/dev/null || {
+                    echo "ERROR: Failed to create or switch to branch $TARGET_BRANCH"
                     exit 1
-                  else
-                    echo "Branch $TARGET_BRANCH already exists, continuing..."
-                  fi
+                  }
                 fi
               else
                 echo "Using existing branch: $TARGET_BRANCH"
+                git fetch origin
+                git switch "$TARGET_BRANCH" 2>/dev/null || {
+                  echo "ERROR: Failed to switch to existing branch $TARGET_BRANCH"
+                  exit 1
+                }
               fi
 
               # Get the current tree SHA of the target branch
