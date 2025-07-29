@@ -1,5 +1,5 @@
 name: Commit and Push Changes
-description: 'Configures git, commits changes, and pushes to a new branch'
+description: 'Uses GitHub API to commit changes and push to a branch (commits will be signed by GitHub App)'
 inputs:
     branch-name:
         description: 'Name of the branch to push to'
@@ -15,33 +15,115 @@ inputs:
         description: 'Optional file pattern to limit git add. E.g. "src/" to only add changes from the src directory. Defaults to "--all" to add all changes.'
         required: false
         default: '--all'
+    token:
+        description: 'GitHub token (should be from GitHub App for signed commits)'
+        required: true
 runs:
     using: composite
     steps:
-        - uses: ./.github/actions/configure_git
-
-        - name: Commit and push changes
+        - name: Commit and push changes using GitHub API
           shell: bash
+          env:
+              GITHUB_TOKEN: ${{ inputs.token }}
           run: |
-              # Create new branch if requested
-              if [[ "${{ inputs.create-branch }}" == "true" ]]; then
-                  git switch -c "${{ inputs.branch-name }}"
-              else
-                  git switch "${{ inputs.branch-name }}"
-              fi
+              # Get repository information
+              REPO_OWNER="${{ github.repository_owner }}"
+              REPO_NAME="${{ github.event.repository.name }}"
+              BASE_BRANCH="${{ github.ref_name }}"
+              TARGET_BRANCH="${{ inputs.branch-name }}"
 
-              # Show status of working directory
-              echo "Current git status:"
-              git status
+              echo "Repository: $REPO_OWNER/$REPO_NAME"
+              echo "Base branch: $BASE_BRANCH"
+              echo "Target branch: $TARGET_BRANCH"
 
-              # Add and commit changes if there are any
+              # Check if there are any changes to commit
               echo "Adding files: ${{ inputs.add-files }}"
               git add "${{ inputs.add-files }}"
 
-              if ! git diff --cached --quiet; then
-                git commit -m "${{ inputs.commit-message }}"
-                git push origin "${{ inputs.branch-name }}"
-              else
-                # The above commands exit with 1 if there are no changes to commit
+              if git diff --cached --quiet; then
                 echo "No changes to commit. Skipping commit and push."
+                exit 0
               fi
+
+              echo "Changes detected, proceeding with API commit..."
+
+              # Get the current commit SHA of the base branch
+              BASE_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$BASE_BRANCH --jq '.object.sha')
+              echo "Base SHA: $BASE_SHA"
+
+              # Check if target branch exists
+              if [[ "${{ inputs.create-branch }}" == "true" ]]; then
+                echo "Creating new branch: $TARGET_BRANCH"
+                # Create the branch reference
+                gh api repos/$REPO_OWNER/$REPO_NAME/git/refs \
+                  --method POST \
+                  --field ref="refs/heads/$TARGET_BRANCH" \
+                  --field sha="$BASE_SHA" || echo "Branch may already exist"
+              else
+                echo "Using existing branch: $TARGET_BRANCH"
+              fi
+
+              # Get the current tree SHA of the target branch
+              TARGET_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$TARGET_BRANCH --jq '.object.sha')
+              TREE_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/commits/$TARGET_SHA --jq '.tree.sha')
+              echo "Current tree SHA: $TREE_SHA"
+
+              # Create blobs for all changed files
+              echo "Creating blobs for changed files..."
+
+              # Get list of changed files
+              CHANGED_FILES=$(git diff --cached --name-only)
+
+              if [ -z "$CHANGED_FILES" ]; then
+                echo "No files to commit"
+                exit 0
+              fi
+
+              # Create a new tree with the changed files
+              TREE_ITEMS="[]"
+
+              for file in $CHANGED_FILES; do
+                if [ -f "$file" ]; then
+                  echo "Processing file: $file"
+
+                  # Create blob for the file
+                  BLOB_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/blobs \
+                    --method POST \
+                    --field content="$(base64 -w 0 "$file")" \
+                    --field encoding="base64" \
+                    --jq '.sha')
+
+                  echo "Created blob for $file: $BLOB_SHA"
+
+                  # Add to tree items
+                  TREE_ITEMS=$(echo "$TREE_ITEMS" | jq ". + [{\"path\": \"$file\", \"mode\": \"100644\", \"type\": \"blob\", \"sha\": \"$BLOB_SHA\"}]")
+                fi
+              done
+
+              echo "Tree items: $TREE_ITEMS"
+
+              # Create new tree
+              NEW_TREE_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/trees \
+                --method POST \
+                --field base_tree="$TREE_SHA" \
+                --field tree="$TREE_ITEMS" \
+                --jq '.sha')
+
+              echo "Created new tree: $NEW_TREE_SHA"
+
+              # Create commit (with empty author/committer for GitHub App signing)
+              COMMIT_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/commits \
+                --method POST \
+                --field message="${{ inputs.commit-message }}" \
+                --field tree="$NEW_TREE_SHA" \
+                --field parents="[\"$TARGET_SHA\"]" \
+                --jq '.sha')
+
+              echo "Created commit: $COMMIT_SHA"
+
+              # Update branch reference
+              gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$TARGET_BRANCH \
+                --method PATCH \
+                --field sha="$COMMIT_SHA"
+
+              echo "Successfully pushed commit to $TARGET_BRANCH"
