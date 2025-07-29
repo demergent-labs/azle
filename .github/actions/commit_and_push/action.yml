@@ -86,19 +86,24 @@ runs:
                 if [ -f "$file" ]; then
                   echo "Processing file: $file"
 
-                  # Create a temporary file for the blob content
-                  TEMP_FILE=$(mktemp)
-                  base64 -w 0 "$file" > "$TEMP_FILE"
+                  # Create a temporary JSON file for the blob
+                  TEMP_JSON=$(mktemp)
 
-                  # Create blob for the file using input file
+                  # Create JSON payload without storing base64 in variable
+                  {
+                    echo -n '{"content":"'
+                    base64 -w 0 "$file"
+                    echo '","encoding":"base64"}'
+                  } > "$TEMP_JSON"
+
+                  # Create blob using the JSON file
                   BLOB_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/blobs \
                     --method POST \
-                    --field encoding="base64" \
-                    --input "$TEMP_FILE" \
+                    --input "$TEMP_JSON" \
                     --jq '.sha')
 
                   # Clean up temp file
-                  rm "$TEMP_FILE"
+                  rm "$TEMP_JSON"
 
                   echo "Created blob for $file: $BLOB_SHA"
 
