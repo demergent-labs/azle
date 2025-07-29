@@ -55,11 +55,13 @@ runs:
               if [[ "${{ inputs.create-branch }}" == "true" ]]; then
                 echo "Creating new branch: $TARGET_BRANCH"
                 # Create the branch reference
-                if ! gh api repos/$REPO_OWNER/$REPO_NAME/git/refs \
+                if ! BRANCH_CREATE_OUTPUT=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/refs \
                   --method POST \
                   --field ref="refs/heads/$TARGET_BRANCH" \
-                  --field sha="$BASE_SHA" 2>/dev/null; then
-                  echo "Failed to create branch $TARGET_BRANCH. Checking if it already exists..."
+                  --field sha="$BASE_SHA" 2>&1); then
+                  echo "Failed to create branch $TARGET_BRANCH."
+                  echo "Error output: $BRANCH_CREATE_OUTPUT"
+                  echo "Checking if it already exists..."
 
                   # Check if branch exists
                   if ! gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$TARGET_BRANCH >/dev/null 2>&1; then
