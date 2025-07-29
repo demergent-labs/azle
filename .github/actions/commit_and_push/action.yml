@@ -55,10 +55,21 @@ runs:
               if [[ "${{ inputs.create-branch }}" == "true" ]]; then
                 echo "Creating new branch: $TARGET_BRANCH"
                 # Create the branch reference
-                gh api repos/$REPO_OWNER/$REPO_NAME/git/refs \
+                if ! gh api repos/$REPO_OWNER/$REPO_NAME/git/refs \
                   --method POST \
                   --field ref="refs/heads/$TARGET_BRANCH" \
-                  --field sha="$BASE_SHA" || echo "Branch may already exist"
+                  --field sha="$BASE_SHA" 2>/dev/null; then
+                  echo "Failed to create branch $TARGET_BRANCH. Checking if it already exists..."
+
+                  # Check if branch exists
+                  if ! gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/$TARGET_BRANCH >/dev/null 2>&1; then
+                    echo "ERROR: Branch creation failed and branch does not exist. This likely indicates insufficient permissions."
+                    echo "Please ensure the GitHub App has 'Contents: write' permission."
+                    exit 1
+                  else
+                    echo "Branch $TARGET_BRANCH already exists, continuing..."
+                  fi
+                fi
               else
                 echo "Using existing branch: $TARGET_BRANCH"
               fi
