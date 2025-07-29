@@ -154,6 +154,7 @@ jobs:
                   branch-name: ${{ needs.create-branch-prefix.outputs.base-branch }}
                   commit-message: 'analyze benchmark results'
                   create-branch: 'false'
+                  token: ${{ steps.github-app-auth.outputs.token }}
 
     create-pr:
         needs:

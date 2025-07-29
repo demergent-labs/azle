@@ -133,3 +133,4 @@ jobs:
                   branch-name: ${{ steps.create-branch-name.outputs.branch-name }}
                   commit-message: 'Run benchmarks for ${{ matrix.test.displayPath }}'
                   create-branch: 'true'
+                  token: ${{ steps.github-app-auth.outputs.token }}
