@@ -114,11 +114,17 @@ runs:
 
               echo "Tree items: $TREE_ITEMS"
 
-              # Create new tree
-              NEW_TREE_SHA=$(gh api repos/$REPO_OWNER/$REPO_NAME/git/trees \
+              # Create new tree using complete JSON payload
+              TREE_PAYLOAD=$(jq -n \
+                --arg base_tree "$TREE_SHA" \
+                --argjson tree "$TREE_ITEMS" \
+                '{base_tree: $base_tree, tree: $tree}')
+
+              echo "Tree payload: $TREE_PAYLOAD"
+
+              NEW_TREE_SHA=$(echo "$TREE_PAYLOAD" | gh api repos/$REPO_OWNER/$REPO_NAME/git/trees \
                 --method POST \
-                --field base_tree="$TREE_SHA" \
-                --raw-field tree="$TREE_ITEMS" \
+                --input - \
                 --jq '.sha')
 
               echo "Created new tree: $NEW_TREE_SHA"
