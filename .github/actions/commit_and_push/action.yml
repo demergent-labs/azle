@@ -1,173 +1,75 @@
 name: Commit and Push Changes
-description: 'Uses GitHub API to commit changes and push to a branch (commits will be signed by GitHub App)'
+description: 'Commits changes and pushes to a branch using GitHub App token for signed commits'
+
 inputs:
     branch-name:
         description: 'Name of the branch to push to'
         required: true
     create-branch:
-        description: 'Whether to create the branch specified by branch-name'
+        description: 'Whether to create the branch if it does not exist'
         required: false
         default: 'false'
     commit-message:
         description: 'Commit message'
         required: true
     add-files:
-        description: 'Optional file pattern to limit git add. E.g. "src/" to only add changes from the src directory. Defaults to "--all" to add all changes.'
+        description: 'File pattern to git add. Defaults to "--all"'
         required: false
         default: '--all'
     token:
-        description: 'GitHub token (should be from GitHub App for signed commits)'
+        description: 'GitHub App token'
         required: true
+
 runs:
     using: composite
     steps:
-        - name: Configure git for GitHub App
-          shell: bash
-          run: |
-              # Configure git to use the GitHub App token
-              git config --global user.name "azle-bot[bot]"
-              git config --global user.email "azle-bot[bot]@users.noreply.github.com"
-
-        - name: Test GitHub App API permissions
+        - name: Commit and push with App token
           shell: bash
           env:
               GITHUB_TOKEN: ${{ inputs.token }}
           run: |
-              echo "Testing GitHub App API access..."
               REPO_OWNER="${{ github.repository_owner }}"
               REPO_NAME="${{ github.event.repository.name }}"
-
-              # Test basic repo access
-              echo "Testing basic repo access..."
-              if gh api repos/$REPO_OWNER/$REPO_NAME --jq '.name'; then
-                echo "✅ Basic repo access works"
-              else
-                echo "❌ Basic repo access failed"
-                exit 1
-              fi
-
-              # Test contents permission
-              echo "Testing contents permission..."
-              if gh api repos/$REPO_OWNER/$REPO_NAME/contents/README.md --jq '.name' 2>/dev/null; then
-                echo "✅ Contents read access works"
-              else
-                echo "❌ Contents read access failed"
-              fi
-
-              # Test git refs access
-              echo "Testing git refs read access..."
-              if gh api repos/$REPO_OWNER/$REPO_NAME/git/refs/heads/${{ github.ref_name }} --jq '.ref' 2>/dev/null; then
-                echo "✅ Git refs read access works"
-              else
-                echo "❌ Git refs read access failed"
-              fi
-
-              # Show what permissions the token actually has
-              echo "Checking token permissions..."
-              gh api user --include-headers 2>&1 | grep -i 'x-oauth-scopes\|x-accepted-oauth-scopes' || echo "No OAuth scope headers found (this is normal for GitHub Apps)"
-
-        - name: Commit and push changes using GitHub Commits API
-          shell: bash
-          env:
-              GITHUB_TOKEN: ${{ inputs.token }}
-          run: |
-              # Get repository information
-              REPO_OWNER="${{ github.repository_owner }}"
-              REPO_NAME="${{ github.event.repository.name }}"
+              REPO="$REPO_OWNER/$REPO_NAME"
               BASE_BRANCH="${{ github.ref_name }}"
               TARGET_BRANCH="${{ inputs.branch-name }}"
 
-              echo "Base branch: $BASE_BRANCH"
-              echo "Target branch: $TARGET_BRANCH"
+              # Configure git
+              git config user.name "azle-bot[bot]"
+              git config user.email "azle-bot[bot]@users.noreply.github.com"
 
-              # Check if there are any changes to commit
-              echo "Adding files: ${{ inputs.add-files }}"
+              # Set authenticated remote
+              git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git"
+
+              # Fetch latest
+              git fetch origin
+
+              # Handle branch switching/creation
+              if [[ "${{ inputs.create-branch }}" == "true" ]]; then
+                if git rev-parse "origin/$TARGET_BRANCH" >/dev/null 2>&1; then
+                  echo "Branch $TARGET_BRANCH exists, switching to it"
+                  git checkout "$TARGET_BRANCH"
+                else
+                  echo "Creating new branch $TARGET_BRANCH from $BASE_BRANCH"
+                  git checkout -b "$TARGET_BRANCH" "origin/$BASE_BRANCH"
+                fi
+              else
+                git checkout "$TARGET_BRANCH"
+              fi
+
+              # Add changes
               git add "${{ inputs.add-files }}"
 
+              # Check for changes
               if git diff --cached --quiet; then
-                echo "No changes to commit. Skipping commit and push."
+                echo "No changes to commit"
                 exit 0
               fi
 
-              echo "Changes detected, proceeding with GitHub Commits API..."
+              # Commit
+              git commit -m "${{ inputs.commit-message }}"
 
-              # Create branch if needed using git (since this worked before)
-              if [[ "${{ inputs.create-branch }}" == "true" ]]; then
-                echo "Creating new branch: $TARGET_BRANCH"
-                git fetch origin
-                git switch -c "$TARGET_BRANCH" "origin/$BASE_BRANCH" 2>/dev/null || git switch "$TARGET_BRANCH"
-                git push origin "$TARGET_BRANCH" || echo "Branch may already exist"
-              else
-                echo "Using existing branch: $TARGET_BRANCH"
-                git fetch origin
-                git switch "$TARGET_BRANCH"
-              fi
+              # Push
+              git push origin "$TARGET_BRANCH"
 
-              # Get list of changed files
-              CHANGED_FILES=$(git diff --cached --name-only)
-
-              if [ -z "$CHANGED_FILES" ]; then
-                echo "No files to commit"
-                exit 0
-              fi
-
-              # Try using the higher-level Contents API to update files
-              echo "Using GitHub Contents API to update files..."
-
-              for file in $CHANGED_FILES; do
-                if [ -f "$file" ]; then
-                  echo "Updating file: $file"
-
-                  # Get current file SHA if it exists
-                  CURRENT_SHA=""
-                  if FILE_INFO=$(gh api "repos/$REPO_OWNER/$REPO_NAME/contents/$file" --jq '.sha' 2>/dev/null); then
-                    CURRENT_SHA="$FILE_INFO"
-                    echo "Current SHA for $file: $CURRENT_SHA"
-                  else
-                    echo "File $file doesn't exist yet, creating new file"
-                  fi
-
-                  # Create file content and write to temp file to avoid argument length limits
-                  TEMP_CONTENT=$(mktemp)
-                  base64 -w 0 "$file" > "$TEMP_CONTENT"
-
-                  # Create JSON payload using a temporary file to avoid argument length limits
-                  TEMP_PAYLOAD=$(mktemp)
-
-                  # Build JSON structure piece by piece
-                  echo "{" > "$TEMP_PAYLOAD"
-                  echo "  \"message\": $(echo "${{ inputs.commit-message }}" | jq -R .)," >> "$TEMP_PAYLOAD"
-                  echo -n "  \"content\": " >> "$TEMP_PAYLOAD"
-                  jq -R . < "$TEMP_CONTENT" >> "$TEMP_PAYLOAD"
-                  echo "," >> "$TEMP_PAYLOAD"
-                  echo "  \"branch\": $(echo "$TARGET_BRANCH" | jq -R .)" >> "$TEMP_PAYLOAD"
-
-                  # Add SHA if it exists
-                  if [ -n "$CURRENT_SHA" ]; then
-                    echo "," >> "$TEMP_PAYLOAD"
-                    echo "  \"sha\": $(echo "$CURRENT_SHA" | jq -R .)" >> "$TEMP_PAYLOAD"
-                  fi
-
-                  echo "}" >> "$TEMP_PAYLOAD"
-
-                  # Clean up content temp file
-                  rm "$TEMP_CONTENT"
-
-                  echo "Updating $file via Contents API..."
-                  if cat "$TEMP_PAYLOAD" | gh api "repos/$REPO_OWNER/$REPO_NAME/contents/$file" \
-                    --method PUT \
-                    --input - \
-                    --jq '.commit.sha'; then
-                    echo "✅ Successfully updated $file"
-                  else
-                    echo "❌ Failed to update $file"
-                    rm "$TEMP_PAYLOAD"
-                    exit 1
-                  fi
-
-                  # Clean up temp file
-                  rm "$TEMP_PAYLOAD"
-                fi
-              done
-
-              echo "Successfully committed all changes to $TARGET_BRANCH using GitHub API"
+              echo "Successfully committed and pushed to $TARGET_BRANCH"
