@@ -46,54 +46,38 @@ runs:
               echo "${{ inputs.gpg-private-key }}" | base64 --decode | gpg --batch --passphrase "${{ inputs.gpg-passphrase }}" --import
               git config --global commit.gpgsign true
               git config --global user.signingkey $(gpg --list-secret-keys --keyid-format=long | grep sec | awk '{print $2}' | cut -d '/' -f2)
-        - name: Commit and push
+        - name: Commit via GraphQL
           shell: bash
           env:
               GITHUB_TOKEN: ${{ inputs.token }}
           run: |
-              REPO_OWNER="${{ github.repository_owner }}"
-              REPO_NAME="${{ github.event.repository.name }}"
-              REPO="$REPO_OWNER/$REPO_NAME"
+              REPO="${{ github.repository_owner }}/${{ github.event.repository.name }}"
               BASE_BRANCH="${{ github.ref_name }}"
               TARGET_BRANCH="${{ inputs.branch-name }}"
 
-              # Configure git
-              git config user.name "${{ inputs.committer-name }}"
-              git config user.email "${{ inputs.committer-email }}"
-
-              # Set authenticated remote
-              git remote set-url --push origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git"
-
-              # Fetch latest
-              git fetch origin
-
-              # Handle branch
+              # Determine base SHA and create branch if needed
+              BASE_SHA=$(gh api repos/$REPO/git/ref/heads/$BASE_BRANCH --jq .object.sha)
               if [[ "${{ inputs.create-branch }}" == "true" ]]; then
-                if git rev-parse "origin/$TARGET_BRANCH" >/dev/null 2>&1; then
-                  git checkout "$TARGET_BRANCH"
-                else
-                  git checkout -b "$TARGET_BRANCH" "origin/$BASE_BRANCH"
+                if ! gh api repos/$REPO/git/ref/heads/$TARGET_BRANCH >/dev/null 2>&1; then
+                  gh api repos/$REPO/git/refs -X POST -f ref="refs/heads/$TARGET_BRANCH" -f sha="$BASE_SHA"
                 fi
-              else
-                git checkout "$TARGET_BRANCH"
               fi
 
-              # Add changes
+              # Stage and detect changes
               git add "${{ inputs.add-files }}"
-
-              if git diff --cached --quiet; then
+              CHANGED=$(git diff --cached --name-only)
+              if [ -z "$CHANGED" ]; then
                 echo "No changes to commit"
                 exit 0
               fi
 
-              # Commit with sign if GPG set up
-              if [ -n "${{ inputs.gpg-private-key }}" ]; then
-                git commit -S -m "${{ inputs.commit-message }}"
-              else
-                git commit -m "${{ inputs.commit-message }}"
-              fi
+              # Build fileChanges JSON array
+              CHANGES_JSON="[]"
+              for f in $CHANGED; do
+                CONTENT=$(base64 -w0 "$f")
+                CHANGES_JSON=$(echo "$CHANGES_JSON" | jq --arg path "$f" --arg contents "$CONTENT" '. += [{"path": $path, "contents": $contents}]')
+              done
 
-              # Push
-              git push origin "$TARGET_BRANCH"
-
-              echo "Successfully committed and pushed to $TARGET_BRANCH"
+              # Run GraphQL mutation to commit
+              gh api graphql -f query='mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid url } } }' \
+                -f input='{"branch":{"repositoryNameWithOwner":"'"$REPO"'","branchName":"'"$TARGET_BRANCH"'"},"fileChanges":{"replacements":'"$CHANGES_JSON"'},"commit":{"message":{"headline":"'"${{ inputs.commit-message }}"'"}}}'
